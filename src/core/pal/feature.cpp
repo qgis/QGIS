@@ -797,7 +797,7 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
   if ( !orientation_forced )
     orientation = ( angle > 0.55 * M_PI || angle < -0.45 * M_PI ? -1 : 1 );
 
-  if ( mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved )
+  if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Curved || mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved )
   {
     if ( !isUprightLabel() )
     {
@@ -997,7 +997,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
   // an orientation of 0 means try both orientations and choose the best
   int orientation = 0;
   if ( !( flags & FLAG_MAP_ORIENTATION )
-       && mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved )
+       && ( mLF->layer()->arrangement() == QgsPalLayerSettings::Curved || mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved ) )
   {
     //... but if we are labeling the perimeter of a polygon and using line orientation flags,
     // then we can only accept a single orientation, as we need to ensure that the labels fall
@@ -1024,7 +1024,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
         delete slp;
         slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i * delta, flip );
       }
-      else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved )
+      else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Curved || mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved )
       {
         if ( isUprightLabel() && !flip )
         {
@@ -1352,9 +1352,7 @@ int FeaturePart::createCandidates( QList< LabelPosition*>& lPos,
           createCandidatesAroundPoint( x[0], y[0], lPos, angle );
         break;
       case GEOS_LINESTRING:
-        if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Curved )
-          createCurvedCandidatesAlongLine( lPos, mapShape );
-        else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved )
+        if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Curved || mLF->layer()->arrangement() == QgsPalLayerSettings::PerimeterCurved )
           createCurvedCandidatesAlongLine( lPos, mapShape );
         else
           createCandidatesAlongLine( lPos, mapShape );
@@ -1539,7 +1537,7 @@ double FeaturePart::calculatePriority() const
   return mLF->priority() >= 0 ? mLF->priority() : mLF->layer()->priority();
 }
 
-// Returns whether a label must be displayed upright
+// Returns whether a label must be displayed upright 
 bool FeaturePart::isUprightLabel() const
 {
   bool uprightLabel = false;
