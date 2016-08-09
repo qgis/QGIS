@@ -21,14 +21,14 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:dissolve_two_fields fid="polys.1">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>6.241458733205375,-0.054510556621882 7.241458733205375,-1.054510556621882 5.241458733205375,-1.054510556621882 6.241458733205375,-0.054510556621882</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>6.24145873320538,-0.054510556621882 7.24145873320538,-1.05451055662188 5.24145873320538,-1.05451055662188 6.24145873320538,-0.054510556621882</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:name>dd</ogr:name>
       <ogr:floatval>0</ogr:floatval>
     </ogr:dissolve_two_fields>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:dissolve_two_fields fid="polys.2">
-      <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>4.172552783109405,4.822648752399233 4.172552783109405,5.822648752399233 5.172552783109405,5.822648752399233 5.172552783109405,4.822648752399233 4.172552783109405,4.822648752399233</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2.443378119001919,4.423608445297505 2.443378119001919,5.0 2,5 2,6 3,6 3.0,5.423608445297505 3.443378119001919,5.423608445297505 3.443378119001919,4.423608445297505 2.443378119001919,4.423608445297505</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>4.17255278310941,4.82264875239923 4.17255278310941,5.82264875239923 5.17255278310941,5.82264875239923 5.17255278310941,4.82264875239923 4.17255278310941,4.82264875239923</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2.44337811900192,4.42360844529751 2.44337811900192,5.0 2,5 2,6 3,6 3.0,5.42360844529751 3.44337811900192,5.42360844529751 3.44337811900192,4.42360844529751 2.44337811900192,4.42360844529751</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
       <ogr:name>bb</ogr:name>
       <ogr:intval>1</ogr:intval>
       <ogr:floatval>0.123</ogr:floatval>
@@ -42,7 +42,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:dissolve_two_fields fid="polys.8">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2.620729366602688,5.088675623800385 2.620729366602688,6.088675623800385 3.620729366602688,6.088675623800385 3.620729366602688,5.088675623800385 2.620729366602688,5.088675623800385</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2.62072936660269,5.08867562380038 2.62072936660269,6.08867562380038 3.62072936660269,6.08867562380038 3.62072936660269,5.08867562380038 2.62072936660269,5.08867562380038</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:name>bb</ogr:name>
       <ogr:intval>2</ogr:intval>
       <ogr:floatval>0.123</ogr:floatval>
@@ -50,7 +50,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:dissolve_two_fields fid="polys.7">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>8.162955854126682,2.738771593090211 8.162955854126682,3.738771593090211 9.162955854126682,3.738771593090211 9.162955854126682,2.738771593090211 8.162955854126682,2.738771593090211</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>8.16295585412668,2.73877159309021 8.16295585412668,3.73877159309021 9.16295585412668,3.73877159309021 9.16295585412668,2.73877159309021 8.16295585412668,2.73877159309021</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:name>cc</ogr:name>
       <ogr:floatval>0.123</ogr:floatval>
     </ogr:dissolve_two_fields>
