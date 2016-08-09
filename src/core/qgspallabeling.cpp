@@ -2442,6 +2442,16 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     }
   }
 
+  // if using perimeter based labeling for polygons, get the polygon's
+  // linear boundary and use that for the label geometry
+  if (( geom->type() == QGis::Polygon )
+      && ( placement == Line || placement == PerimeterCurved ) )
+  {
+    QgsGeometry* boundaryGeom = new QgsGeometry( geom->geometry()->boundary() );
+    geom = boundaryGeom;
+    scopedClonedGeom.reset( boundaryGeom );
+  }
+
   // whether we're going to create a centroid for polygon
   bool centroidPoly = (( placement == QgsPalLayerSettings::AroundPoint
                          || placement == QgsPalLayerSettings::OverPoint )
@@ -2461,6 +2471,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : nullptr ) )
   {
     scopedPreparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : nullptr ) );
+
     if ( !scopedPreparedGeom.data() )
       return;
     preparedGeom = scopedPreparedGeom.data();
@@ -2516,16 +2527,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     }
   }
 
-  GEOSGeometry* geos_geom_clone;
-  GEOSGeomTypes geomType = ( GEOSGeomTypes ) GEOSGeomTypeId_r( QgsGeometry::getGEOSHandler(), geos_geom );
-  if (( geomType == GEOS_POLYGON || geomType == GEOS_MULTIPOLYGON ) && repeatDistance > 0 && ( placement == Line || placement == PerimeterCurved ) )
-  {
-    geos_geom_clone = GEOSBoundary_r( QgsGeometry::getGEOSHandler(), geos_geom );
-  }
-  else
-  {
-    geos_geom_clone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom );
-  }
+  GEOSGeometry* geos_geom_clone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom );
   GEOSGeometry* geosObstacleGeomClone = nullptr;
   if ( geosObstacleGeom )
   {
