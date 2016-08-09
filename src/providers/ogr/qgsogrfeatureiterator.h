@@ -70,10 +70,10 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     //! fetch next feature filter expression
     bool nextFeatureFilterExpression( QgsFeature& f ) override;
 
-    bool readFeature( OGRFeatureH fet, QgsFeature& feature );
+    bool readFeature( OGRFeatureH fet, QgsFeature& feature ) const;
 
     //! Get an attribute associated with a feature
-    void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex );
+    void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex ) const;
 
     bool mFeatureFetched;
 
@@ -90,6 +90,10 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     QgsOgrAbstractGeometrySimplifier* mGeometrySimplifier;
 
     bool mExpressionCompiled;
+    QgsFeatureIds mFilterFids;
+    QgsFeatureIds::const_iterator mFilterFidsIt;
+
+    bool fetchFeatureWithId( QgsFeatureId id, QgsFeature& feature ) const;
 
     //! returns whether the iterator supports simplify geometries on provider side
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;

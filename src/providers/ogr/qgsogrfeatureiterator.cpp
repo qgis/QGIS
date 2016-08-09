@@ -43,6 +43,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
     , mFetchGeometry( false )
     , mGeometrySimplifier( nullptr )
     , mExpressionCompiled( false )
+    , mFilterFids( mRequest.filterFids() )
+    , mFilterFidsIt( mFilterFids.constBegin() )
 {
   mConn = QgsOgrConnPool::instance()->acquireConnection( mSource->mProvider->dataSourceUri() );
   if ( !mConn->ds )
@@ -213,6 +215,22 @@ bool QgsOgrFeatureIterator::providerCanSimplify( QgsSimplifyMethod::MethodType m
   return false;
 }
 
+bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature& feature ) const
+{
+  feature.setValid( false );
+  OGRFeatureH fet = OGR_L_GetFeature( ogrLayer, FID_TO_NUMBER( id ) );
+  if ( !fet )
+  {
+    return false;
+  }
+
+  if ( readFeature( fet, feature ) )
+    OGR_F_Destroy( fet );
+
+  feature.setValid( true );
+  return true;
+}
+
 bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )
 {
   feature.setValid( false );
@@ -222,19 +240,22 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )
 
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
-    OGRFeatureH fet = OGR_L_GetFeature( ogrLayer, FID_TO_NUMBER( mRequest.filterFid() ) );
-    if ( !fet )
+    bool result = fetchFeatureWithId( mRequest.filterFid(), feature );
+    close(); // the feature has been read or was not found: we have finished here
+    return result;
+  }
+  else if ( mRequest.filterType() == QgsFeatureRequest::FilterFids )
+  {
+    while ( mFilterFidsIt != mFilterFids.constEnd() )
     {
-      close();
-      return false;
+      QgsFeatureId nextId = *mFilterFidsIt;
+      mFilterFidsIt++;
+
+      if ( fetchFeatureWithId( nextId, feature ) )
+        return true;
     }
-
-    if ( readFeature( fet, feature ) )
-      OGR_F_Destroy( fet );
-
-    feature.setValid( true );
-    close(); // the feature has been read: we have finished here
-    return true;
+    close();
+    return false;
   }
 
   OGRFeatureH fet;
@@ -267,6 +288,8 @@ bool QgsOgrFeatureIterator::rewind()
 
   OGR_L_ResetReading( ogrLayer );
 
+  mFilterFidsIt = mFilterFids.constBegin();
+
   return true;
 }
 
@@ -293,7 +316,7 @@ bool QgsOgrFeatureIterator::close()
 }
 
 
-void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex )
+void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex ) const
 {
   OGRFieldDefnH fldDef = OGR_F_GetFieldDefnRef( ogrFet, attindex );
 
@@ -351,7 +374,7 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
 }
 
 
-bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
+bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature ) const
 {
   feature.setFeatureId( OGR_F_GetFID( fet ) );
   feature.initAttributes( mSource->mFields.count() );
