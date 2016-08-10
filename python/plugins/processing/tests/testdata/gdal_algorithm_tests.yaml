@@ -28,24 +28,8 @@ tests:
 #        type: rasterhash
 
 
-  - name: GDAL ogrinfo
-    algorithm: gdalogr:information
-    params:
-      INPUT:
-        name: lines.gml
-        type: vector
-      SUMMARY_ONLY: 'True'
-    results:
-      OUTPUT:
-        name: expected/gdal/vector_info.html
-        type: regex
-        rules:
-          - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
-          - 'Geometry: Line String'
-          - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
-
   - algorithm: gdalorg:rasterinfo
-    name: GDAL gdalinfo
+    name: GDAL Raster information
     params:
       INPUT:
         name: raster.tif
@@ -61,8 +45,36 @@ tests:
           - 'Band 1 Block=16x14 Type=Float32, ColorInterp=Gray'
           - 'Minimum=826.000, Maximum=899.000, Mean=865.867, StdDev=17.808'
 
+  - algorithm: gdalogr:polygonize
+    name: GDAL Polygonize
+    params:
+      FIELD: DN
+      INPUT:
+        name: raster.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/gdal/polygonized.gml
+        type: vector
+
+  - name: OGR Vector information
+    algorithm: gdalogr:information
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      SUMMARY_ONLY: 'True'
+    results:
+      OUTPUT:
+        name: expected/gdal/vector_info.html
+        type: regex
+        rules:
+          - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
+          - 'Geometry: Line String'
+          - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
+
   - algorithm: gdalogr:singlesidedbuffersandoffsetlinesforlines
-    name: Single-sided buffer
+    name: OGR Single-sided buffer for lines
     params:
       DISSOLVEALL: false
       GEOMETRY: geometry
@@ -80,7 +92,7 @@ tests:
         type: vector
 
   - algorithm: gdalogr:singlesidedbuffersandoffsetlinesforlines
-    name: Offset curve
+    name: OGR Offset curve for lines
     params:
       DISSOLVEALL: false
       GEOMETRY: geometry
@@ -96,3 +108,55 @@ tests:
       OUTPUT_LAYER:
         name: expected/gdal/offset_curve.gml
         type: vector
+
+  - algorithm: gdalogr:createpointsalonglines
+    name: OGR Create points along lines
+    params:
+      DISTANCE: 0.25
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/points_along_lines.gml
+        type: vector
+
+  - algorithm: gdalogr:buffervectors
+    name: OGR Basic polygon buffer
+    params:
+      DISSOLVEALL: false
+      DISTANCE: '0.5'
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+      MULTI: false
+      OPTIONS: ''
+    results:
+      OUTPUT_LAYER:
+        name: expected/buffer_polys.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: gdalogr:buffervectors
+    name: OGR Polygon buffer with dissolve
+    params:
+      DISSOLVEALL: true
+      DISTANCE: '0.5'
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+      MULTI: false
+      OPTIONS: ''
+    results:
+      OUTPUT_LAYER:
+        name: expected/buffer_polys_dissolve.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
