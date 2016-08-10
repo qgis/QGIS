@@ -176,6 +176,8 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
   protected:
     /**
      * Should be called in the constructor of child classes.
+     *
+     * @note May be missing Python bindings depending on the platform.
      */
     void init( const QString& description ); // needed in children ctor to call virtual
 
