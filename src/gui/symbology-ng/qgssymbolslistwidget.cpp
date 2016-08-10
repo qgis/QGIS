@@ -425,12 +425,10 @@ void QgsSymbolsListWidget::updateSymbolColor()
   btnColor->blockSignals( false );
 }
 
-static QgsExpressionContext _getExpressionContext( const void* context )
+QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
 {
-  const QgsSymbolsListWidget* widget = ( const QgsSymbolsListWidget* ) context;
-
-  if ( widget->expressionContext() )
-    return QgsExpressionContext( *widget->expressionContext() );
+  if ( expressionContext() )
+    return QgsExpressionContext( *expressionContext() );
 
   //otherwise create a default symbol context
   QgsExpressionContext expContext;
@@ -438,19 +436,17 @@ static QgsExpressionContext _getExpressionContext( const void* context )
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::atlasScope( nullptr );
 
-  if ( widget->mapCanvas() )
+  if ( mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( mapCanvas()->expressionContextScope() );
   }
   else
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
-  const QgsVectorLayer* layer = widget->layer();
-  if ( layer )
-    expContext << QgsExpressionContextUtils::layerScope( layer );
+  expContext << QgsExpressionContextUtils::layerScope( layer() );
 
   return expContext;
 }
@@ -461,7 +457,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
   Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
   {
-    button->registerGetExpressionContextCallback( &_getExpressionContext, this );
+    button->registerExpressionContextGenerator( this );
   }
 
   if ( mSymbol->type() == QgsSymbol::Marker )

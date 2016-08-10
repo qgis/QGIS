@@ -945,6 +945,16 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
   }
 }
 
+QgsExpressionContext QgsProject::createExpressionContext() const
+{
+  QgsExpressionContext context;
+
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
+  return context;
+}
+
 void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
 {
   Q_FOREACH ( QgsMapLayer* layer, layers )

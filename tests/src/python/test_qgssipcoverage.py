@@ -17,6 +17,8 @@ from qgis.testing import unittest
 
 from utilities import printImportant, DoxygenParser
 
+from termcolor import colored
+
 # Import all the things!
 from qgis.analysis import *         # NOQA
 from qgis.core import *             # NOQA
@@ -78,10 +80,14 @@ class TestQgsSipCoverage(unittest.TestCase):
 
         missing_members.sort()
 
-        print("---------------------------------")
-        print('Missing classes:\n {}'.format('\n '.join(missing_objects)))
-        print("---------------------------------")
-        print('Missing members:\n {}'.format('\n '.join(missing_members)))
+        if missing_objects:
+            print("---------------------------------")
+            print(colored('Missing classes:', 'yellow'))
+            print('  ' + '\n  '.join([colored(obj, 'yellow', attrs=['bold']) for obj in missing_objects]))
+        if missing_members:
+            print("---------------------------------")
+            print(colored('Missing members:', 'yellow'))
+            print('  ' + '\n  '.join([colored(mem, 'yellow', attrs=['bold']) for mem in missing_members]))
 
         # print summaries
         missing_class_count = len(missing_objects)
@@ -107,13 +113,13 @@ class TestQgsSipCoverage(unittest.TestCase):
         printImportant("---------------------------------")
         printImportant("{} members missing bindings".format(missing_member_count))
 
-        assert missing_class_count <= 0, """\n\nFAIL: new unbound classes have been introduced, please add SIP bindings for these classes
+        self.assertEquals(missing_class_count, 0, """\n\nFAIL: new unbound classes have been introduced, please add SIP bindings for these classes
 If these classes are not suitable for the Python bindings, please add the Doxygen tag
-"@note not available in Python bindings" to the CLASS Doxygen comments"""
+"@note not available in Python bindings" to the CLASS Doxygen comments""")
 
-        assert missing_member_count <= 0, """\n\nFAIL: new unbound members have been introduced, please add SIP bindings for these members
+        self.assertEquals(missing_member_count, 0, """\n\nFAIL: new unbound members have been introduced, please add SIP bindings for these members
 If these members are not suitable for the Python bindings, please add the Doxygen tag
-"@note not available in Python bindings" to the MEMBER Doxygen comments"""
+"@note not available in Python bindings" to the MEMBER Doxygen comments""")
 
 
 if __name__ == '__main__':

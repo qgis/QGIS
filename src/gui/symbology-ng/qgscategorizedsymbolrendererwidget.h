@@ -80,7 +80,7 @@ class QgsCategorizedSymbolRendererViewStyle: public QProxyStyle
 /** \ingroup gui
  * \class QgsCategorizedSymbolRendererWidget
  */
-class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, private Ui::QgsCategorizedSymbolRendererWidget
+class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, private Ui::QgsCategorizedSymbolRendererWidget, private QgsExpressionContextGenerator
 {
     Q_OBJECT
   public:
@@ -176,6 +176,8 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
   private:
     QString mOldClassificationAttribute;
     QgsCategoryList mCopyBuffer;
+
+    QgsExpressionContext createExpressionContext() const override;
 };
 
 #endif // QGSCATEGORIZEDSYMBOLRENDERERV2WIDGET_H

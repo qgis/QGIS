@@ -118,9 +118,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   << QgsExpressionContextUtils::layerScope( mLayer );
 
   mMapTipExpressionFieldWidget->setLayer( lyr );
-  mMapTipExpressionFieldWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
+  mMapTipExpressionFieldWidget->registerExpressionContextGenerator( this );
   mDisplayExpressionWidget->setLayer( lyr );
-  mDisplayExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
+  mDisplayExpressionWidget->registerExpressionContextGenerator( this );
 
   connect( mInsertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertFieldOrExpression() ) );
 
@@ -1168,9 +1168,9 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorJoinInfo& joi
   mJoinTreeWidget->setCurrentItem( joinItem );
 }
 
-QgsExpressionContext QgsVectorLayerProperties::_getExpressionContext( const void* context )
+QgsExpressionContext QgsVectorLayerProperties::createExpressionContext() const
 {
-  return static_cast<const QgsVectorLayerProperties*>( context )->mContext;
+  return mContext;
 }
 
 void QgsVectorLayerProperties::openPanel( QgsPanelWidget *panel )

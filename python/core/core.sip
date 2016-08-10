@@ -49,6 +49,7 @@
 %Include qgserror.sip
 %Include qgsexpression.sip
 %Include qgsexpressioncontext.sip
+%Include qgsexpressioncontextgenerator.sip
 %Include qgsfeature.sip
 %Include qgsfeaturefilterprovider.sip
 %Include qgsfeatureiterator.sip

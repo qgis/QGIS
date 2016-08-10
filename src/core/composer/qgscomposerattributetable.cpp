@@ -330,8 +330,8 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
     return false;
   }
 
-  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
-  context->setFields( mVectorLayer->fields() );
+  QgsExpressionContext context = createExpressionContext();
+  context.setFields( mVectorLayer->fields() );
 
   attributeMaps.clear();
 
@@ -379,11 +379,11 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
 
   while ( fit.nextFeature( f ) && counter < mMaximumNumberOfFeatures )
   {
-    context->setFeature( f );
+    context.setFeature( f );
     //check feature against filter
     if ( activeFilter && !filterExpression.isNull() )
     {
-      QVariant result = filterExpression->evaluate( context.data() );
+      QVariant result = filterExpression->evaluate( &context );
       // skip this feature if the filter evaluation is false
       if ( !result.toBool() )
       {
@@ -406,9 +406,9 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
       {
         // Lets assume it's an expression
         QgsExpression* expression = new QgsExpression(( *columnIt )->attribute() );
-        context->lastScope()->setVariable( QString( "row_number" ), counter + 1 );
-        expression->prepare( context.data() );
-        QVariant value = expression->evaluate( context.data() );
+        context.lastScope()->setVariable( QString( "row_number" ), counter + 1 );
+        expression->prepare( &context );
+        QVariant value = expression->evaluate( &context );
         attributeMaps.last().insert( i, value.toString() );
       }
 

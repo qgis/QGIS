@@ -231,13 +231,9 @@ void QgsComposition::setAllUnselected()
 
 void QgsComposition::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext* context )
 {
-  const QgsExpressionContext* evalContext = context;
-  QScopedPointer< QgsExpressionContext > scopedContext;
-  if ( !evalContext )
-  {
-    scopedContext.reset( createExpressionContext() );
-    evalContext = scopedContext.data();
-  }
+  QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext* evalContext = context ? context : &scopedContext;
+
 
   //updates data defined properties and redraws composition to match
   if ( property == QgsComposerObject::NumPages || property == QgsComposerObject::AllProperties )
@@ -454,8 +450,8 @@ void QgsComposition::setNumPages( const int pages )
 
   //data defined num pages set?
   QVariant exprVal;
-  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
-  if ( dataDefinedEvaluate( QgsComposerObject::NumPages, exprVal, *context.data(), &mDataDefinedProperties ) )
+  QgsExpressionContext context = createExpressionContext();
+  if ( dataDefinedEvaluate( QgsComposerObject::NumPages, exprVal, context, &mDataDefinedProperties ) )
   {
     bool ok = false;
     int pagesD = exprVal.toInt( &ok );
@@ -3335,13 +3331,8 @@ bool QgsComposition::ddPageSizeActive() const
 
 void QgsComposition::refreshPageSize( const QgsExpressionContext* context )
 {
-  const QgsExpressionContext* evalContext = context;
-  QScopedPointer< QgsExpressionContext > scopedContext;
-  if ( !evalContext )
-  {
-    scopedContext.reset( createExpressionContext() );
-    evalContext = scopedContext.data();
-  }
+  QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext* evalContext = context ? context : &scopedContext;
 
   double pageWidth = mPageWidth;
   double pageHeight = mPageHeight;
@@ -3639,23 +3630,23 @@ void QgsComposition::prepareDataDefinedExpression( QgsDataDefined *dd, QMap<QgsC
   }
 }
 
-QgsExpressionContext* QgsComposition::createExpressionContext() const
+QgsExpressionContext QgsComposition::createExpressionContext() const
 {
-  QgsExpressionContext* context = new QgsExpressionContext();
-  context->appendScope( QgsExpressionContextUtils::globalScope() );
-  context->appendScope( QgsExpressionContextUtils::projectScope() );
-  context->appendScope( QgsExpressionContextUtils::compositionScope( this ) );
+  QgsExpressionContext context = QgsExpressionContext();
+  context.appendScope( QgsExpressionContextUtils::globalScope() );
+  context.appendScope( QgsExpressionContextUtils::projectScope() );
+  context.appendScope( QgsExpressionContextUtils::compositionScope( this ) );
   if ( mAtlasComposition.enabled() )
   {
-    context->appendScope( QgsExpressionContextUtils::atlasScope( &mAtlasComposition ) );
+    context.appendScope( QgsExpressionContextUtils::atlasScope( &mAtlasComposition ) );
   }
   return context;
 }
 
 void QgsComposition::prepareAllDataDefinedExpressions()
 {
-  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
-  prepareDataDefinedExpression( nullptr, &mDataDefinedProperties, *context.data() );
+  QgsExpressionContext context = createExpressionContext();
+  prepareDataDefinedExpression( nullptr, &mDataDefinedProperties, context );
 }
 
 void QgsComposition::relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter )

@@ -111,9 +111,8 @@ void QgsComposerPolyline::_draw( QPainter *painter )
   context.setPainter( painter );
   context.setForceVectorOutput( true );
 
-  QScopedPointer<QgsExpressionContext> expressionContext;
-  expressionContext.reset( createExpressionContext() );
-  context.setExpressionContext( *expressionContext.data() );
+  QgsExpressionContext expressionContext = createExpressionContext();
+  context.setExpressionContext( expressionContext );
 
   painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
   QTransform t = QTransform::fromScale( dotsPerMM, dotsPerMM );

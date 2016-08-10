@@ -148,9 +148,8 @@ void QgsComposerNodesItem::drawNodes( QPainter *painter ) const
   context.setPainter( painter );
   context.setForceVectorOutput( true );
 
-  QScopedPointer<QgsExpressionContext> expressionContext;
-  expressionContext.reset( createExpressionContext() );
-  context.setExpressionContext( *expressionContext.data() );
+  QgsExpressionContext expressionContext = createExpressionContext();
+  context.setExpressionContext( expressionContext );
 
   symbol.data()->startRender( context );
 
@@ -184,9 +183,8 @@ void QgsComposerNodesItem::drawSelectedNode( QPainter *painter ) const
   context.setPainter( painter );
   context.setForceVectorOutput( true );
 
-  QScopedPointer<QgsExpressionContext> expressionContext;
-  expressionContext.reset( createExpressionContext() );
-  context.setExpressionContext( *expressionContext.data() );
+  QgsExpressionContext expressionContext = createExpressionContext();
+  context.setExpressionContext( expressionContext );
 
   symbol.data()->startRender( context );
   symbol.data()->renderPoint( mPolygon.at( mSelectedNode ), nullptr, context );

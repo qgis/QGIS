@@ -33,6 +33,7 @@
 #include "qgssnapper.h"
 #include "qgsunittypes.h"
 #include "qgsprojectversion.h"
+#include "qgsexpressioncontextgenerator.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -67,7 +68,7 @@ class QgsTolerance;
 // project.  Just as the GIMP can have simultaneous multiple images, perhaps
 // QGIS can one day have simultaneous multiple projects.
 
-class CORE_EXPORT QgsProject : public QObject
+class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenerator
 {
     Q_OBJECT
     Q_PROPERTY( QStringList nonIdentifiableLayers READ nonIdentifiableLayers WRITE setNonIdentifiableLayers NOTIFY nonIdentifiableLayersChanged )
@@ -390,6 +391,8 @@ class CORE_EXPORT QgsProject : public QObject
      * @note added in 2.16
      */
     void setEvaluateDefaultValues( bool evaluateDefaultValues );
+
+    QgsExpressionContext createExpressionContext() const override;
 
   protected:
     /** Set error message from read/write operation

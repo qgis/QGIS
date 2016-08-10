@@ -68,10 +68,4 @@ class QgsSymbolsListWidget : QWidget
 
   signals:
     void changed();
-
-  protected:
-    void populateSymbolView();
-    void populateSymbols( const QStringList& symbols );
-    void updateSymbolColor();
-    void updateSymbolInfo();
 };

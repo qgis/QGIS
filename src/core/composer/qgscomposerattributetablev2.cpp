@@ -456,8 +456,8 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
     return false;
   }
 
-  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
-  context->setFields( layer->fields() );
+  QgsExpressionContext context = createExpressionContext();
+  context.setFields( layer->fields() );
 
   //prepare filter expression
   QScopedPointer<QgsExpression> filterExpression;
@@ -519,11 +519,11 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
 
   while ( fit.nextFeature( f ) && counter < mMaximumNumberOfFeatures )
   {
-    context->setFeature( f );
+    context.setFeature( f );
     //check feature against filter
     if ( activeFilter && !filterExpression.isNull() )
     {
-      QVariant result = filterExpression->evaluate( context.data() );
+      QVariant result = filterExpression->evaluate( &context );
       // skip this feature if the filter evaluation is false
       if ( !result.toBool() )
       {
@@ -560,9 +560,9 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
       {
         // Lets assume it's an expression
         QgsExpression* expression = new QgsExpression(( *columnIt )->attribute() );
-        context->lastScope()->setVariable( QString( "row_number" ), counter + 1 );
-        expression->prepare( context.data() );
-        QVariant value = expression->evaluate( context.data() );
+        context.lastScope()->setVariable( QString( "row_number" ), counter + 1 );
+        expression->prepare( &context );
+        QVariant value = expression->evaluate( &context );
         currentRow << value;
       }
     }
@@ -588,13 +588,13 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
   return true;
 }
 
-QgsExpressionContext *QgsComposerAttributeTableV2::createExpressionContext() const
+QgsExpressionContext QgsComposerAttributeTableV2::createExpressionContext() const
 {
-  QgsExpressionContext* context = QgsComposerTableV2::createExpressionContext();
+  QgsExpressionContext context = QgsComposerTableV2::createExpressionContext();
 
   if ( mSource == LayerAttributes )
   {
-    context->appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer ) );
+    context.appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer ) );
   }
 
   return context;

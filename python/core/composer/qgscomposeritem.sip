@@ -645,7 +645,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * scopes for global, project, composition, atlas and item properties.
      * @note added in QGIS 2.12
      */
-    QgsExpressionContext* createExpressionContext() const /Factory/;
+    QgsExpressionContext createExpressionContext() const;
 
   public slots:
     /** Sets the item rotation

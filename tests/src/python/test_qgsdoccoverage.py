@@ -13,9 +13,11 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
+import sys
 from qgis.testing import unittest
+from termcolor import colored
 
-from utilities import printImportant, DoxygenParser
+from utilities import DoxygenParser
 from acceptable_missing_doc import ACCEPTABLE_MISSING_DOCS, ACCEPTABLE_MISSING_ADDED_NOTE, ACCEPTABLE_MISSING_BRIEF
 
 # TO regenerate the list:
@@ -40,22 +42,48 @@ class TestQgsDocCoverage(unittest.TestCase):
         missing = parser.documentable_members - parser.documented_members
 
         print("---------------------------------")
-        printImportant("{} total documentable members".format(parser.documentable_members))
-        printImportant("{} total contain valid documentation".format(parser.documented_members))
-        printImportant("Total documentation coverage {}%".format(coverage))
-        printImportant("---------------------------------")
-        printImportant("{} members missing documentation".format(missing))
+        print("{} total documentable members".format(parser.documentable_members))
+        print("{} total contain valid documentation".format(parser.documented_members))
+        print("Total documentation coverage {}%".format(coverage))
+        print("---------------------------------")
+        print("{} members missing documentation".format(missing))
         print("---------------------------------")
         print("Unacceptable missing documentation:")
-        print(parser.undocumented_string)
 
-        assert len(parser.undocumented_string) == 0, 'FAIL: new undocumented members have been introduced, please add documentation for these members'
+        if parser.undocumented_members:
+            for cls, props in parser.undocumented_members.items():
+                print('\n\nClass {}, {}/{} members documented\n'.format(colored(cls, 'yellow'), props['documented'], props['members']))
+                for mem in props['missing_members']:
+                    print(colored('  ' + mem, 'yellow', attrs=['bold']))
 
-        self.assertTrue(len(parser.classes_missing_group) == 0, 'FAIL: {} classes have been added without Doxygen group tags ("\ingroup"):\n{}'.format(len(parser.classes_missing_group), '\n'.join(parser.classes_missing_group)))
+        # self.assertEquals(len(parser.undocumented_string), 0, 'FAIL: new undocumented members have been introduced, please add documentation for these members')
 
-        self.assertTrue(len(parser.classes_missing_version_added) == 0, 'FAIL: {} classes have been added without a version added doxygen note ("@note added in QGIS x.xx"):\n{}'.format(len(parser.classes_missing_version_added), '\n'.join(parser.classes_missing_version_added)))
+        if parser.classes_missing_group:
+            print("---------------------------------")
+            print('\n')
+            print(colored('{} classes have been added without Doxygen group tag ("\ingroup"):'.format(len(parser.classes_missing_group)), 'yellow'))
+            print('')
+            print('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_group]))
 
-        self.assertTrue(len(parser.classes_missing_brief) == 0, 'FAIL: {} classes have been added without a brief description:\n{}'.format(len(parser.classes_missing_brief), '\n'.join(parser.classes_missing_brief)))
+        if parser.classes_missing_version_added:
+            print("---------------------------------")
+            print('\n')
+            print(colored('{} classes have been added without a version added doxygen note ("@note added in QGIS x.xx"):'.format(len(parser.classes_missing_version_added)), 'yellow'))
+            print('')
+            print('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_version_added]))
+
+        if parser.classes_missing_brief:
+            print("---------------------------------")
+            print('\n')
+            print(colored('{} classes have been added without at least a brief description:'.format(len(parser.classes_missing_brief)), 'yellow'))
+            print('')
+            print('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_brief]))
+
+        sys.stdout.flush()
+        self.assertTrue(not parser.undocumented_members, 'Undocumented members found')
+        self.assertTrue(not parser.classes_missing_group, 'Classes without \group tag found')
+        self.assertTrue(not parser.classes_missing_version_added, 'Classes without version added note found')
+        self.assertTrue(not parser.classes_missing_brief, 'Classes without brief description found')
 
 
 if __name__ == '__main__':

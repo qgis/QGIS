@@ -200,7 +200,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
 {
   const QgsMapSettings &ms = mComposition->mapSettings();
 
-  QScopedPointer< QgsExpressionContext > expressionContext( createExpressionContext() );
+  QgsExpressionContext expressionContext = createExpressionContext();
 
   QgsMapSettings jobMapSettings;
   jobMapSettings.setExtent( extent );
@@ -212,7 +212,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   jobMapSettings.setRotation( mEvaluatedMapRotation );
 
   //set layers to render
-  QStringList theLayerSet = layersToRender( expressionContext.data() );
+  QStringList theLayerSet = layersToRender( &expressionContext );
   if ( -1 != mCurrentExportLayer )
   {
     //exporting with separate layers (eg, to svg layers), so we only want to render a single map layer
@@ -223,7 +223,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
       : QStringList(); //exporting decorations such as map frame/grid/overview, so no map layers required
   }
   jobMapSettings.setLayers( theLayerSet );
-  jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( *expressionContext ) );
+  jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( expressionContext ) );
   jobMapSettings.setDestinationCrs( ms.destinationCrs() );
   jobMapSettings.setCrsTransformEnabled( ms.hasCrsTransformEnabled() );
   jobMapSettings.setFlags( ms.flags() );
@@ -236,9 +236,8 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
     jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, false );
   }
 
-  QgsExpressionContext* context = createExpressionContext();
-  jobMapSettings.setExpressionContext( *context );
-  delete context;
+  QgsExpressionContext context = createExpressionContext();
+  jobMapSettings.setExpressionContext( context );
 
   // composer-specific overrides of flags
   jobMapSettings.setFlag( QgsMapSettings::ForceVectorOutput ); // force vector output (no caching of marker images etc.)
@@ -522,13 +521,8 @@ void QgsComposerMap::setCacheUpdated( bool u )
 
 QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context ) const
 {
-  const QgsExpressionContext* evalContext = context;
-  QScopedPointer< QgsExpressionContext > scopedContext;
-  if ( !evalContext )
-  {
-    scopedContext.reset( createExpressionContext() );
-    evalContext = scopedContext.data();
-  }
+  QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext* evalContext = context ? context : &scopedContext;
 
   QStringList renderLayerSet;
 
@@ -970,13 +964,8 @@ double QgsComposerMap::mapRotation( QgsComposerObject::PropertyValueType valueTy
 
 void QgsComposerMap::refreshMapExtents( const QgsExpressionContext* context )
 {
-  const QgsExpressionContext* evalContext = context;
-  QScopedPointer< QgsExpressionContext > scopedContext;
-  if ( !evalContext )
-  {
-    scopedContext.reset( createExpressionContext() );
-    evalContext = scopedContext.data();
-  }
+  QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext* evalContext = context ? context : &scopedContext;
 
   //data defined map extents set?
   QVariant exprVal;
@@ -2158,9 +2147,9 @@ void QgsComposerMap::requestedExtent( QgsRectangle& extent ) const
   }
 }
 
-QgsExpressionContext* QgsComposerMap::createExpressionContext() const
+QgsExpressionContext QgsComposerMap::createExpressionContext() const
 {
-  QgsExpressionContext* context = QgsComposerItem::createExpressionContext();
+  QgsExpressionContext context = QgsComposerItem::createExpressionContext();
 
   //Can't utilise QgsExpressionContextUtils::mapSettingsScope as we don't always
   //have a QgsMapSettings object available when the context is required, so we manually
@@ -2178,7 +2167,7 @@ QgsExpressionContext* QgsComposerMap::createExpressionContext() const
   QgsGeometry centerPoint = QgsGeometry::fromPoint( extent.center() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "map_extent_center", QVariant::fromValue( centerPoint ), true ) );
 
-  context->appendScope( scope );
+  context.appendScope( scope );
 
   return context;
 }
@@ -2207,13 +2196,8 @@ int QgsComposerMap::overviewFrameMapId() const
 
 void QgsComposerMap::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext* context )
 {
-  const QgsExpressionContext* evalContext = context;
-  QScopedPointer< QgsExpressionContext > scopedContext;
-  if ( !evalContext )
-  {
-    scopedContext.reset( createExpressionContext() );
-    evalContext = scopedContext.data();
-  }
+  QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext* evalContext = context ? context : &scopedContext;
 
   //updates data defined properties and redraws item to match
   if ( property == QgsComposerObject::MapRotation || property == QgsComposerObject::MapScale ||
@@ -2517,8 +2501,8 @@ double QgsComposerMap::atlasMargin( const QgsComposerObject::PropertyValueType v
     //start with user specified margin
     double margin = mAtlasMargin;
     QVariant exprVal;
-    QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
-    if ( dataDefinedEvaluate( QgsComposerObject::MapAtlasMargin, exprVal, *context.data() ) )
+    QgsExpressionContext context = createExpressionContext();
+    if ( dataDefinedEvaluate( QgsComposerObject::MapAtlasMargin, exprVal, context ) )
     {
       bool ok;
       double ddMargin = exprVal.toDouble( &ok );

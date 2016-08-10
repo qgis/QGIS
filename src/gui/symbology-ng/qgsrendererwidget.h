@@ -138,7 +138,7 @@ class QgsFields;
 /** \ingroup gui
 Utility classes for "en masse" size definition
 */
-class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataDefinedValueDialog
+class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataDefinedValueDialog, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -174,8 +174,15 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     void dataDefinedChanged();
 
   protected:
-    QgsDataDefined symbolDataDefined() const;
+    /**
+     * Should be called in the constructor of child classes.
+     *
+     * @note May be missing Python bindings depending on the platform.
+     */
     void init( const QString& description ); // needed in children ctor to call virtual
+
+  private:
+    QgsDataDefined symbolDataDefined() const;
 
     virtual QgsDataDefined symbolDataDefined( const QgsSymbol* ) const = 0;
     virtual double value( const QgsSymbol* ) const = 0;
@@ -184,6 +191,8 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     QList<QgsSymbol*> mSymbolList;
     QgsVectorLayer* mLayer;
     QgsMapCanvas* mMapCanvas;
+
+    QgsExpressionContext createExpressionContext() const override;
 };
 
 /** \ingroup gui
@@ -197,8 +206,8 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
         : QgsDataDefinedValueDialog( symbolList, layer, tr( "Size" ) )
     {
       init( tr( "Symbol size" ) );
-      if ( !symbolList.isEmpty() && symbolList.at( 0 ) && mLayer )
-        mDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, static_cast<const QgsMarkerSymbol*>( symbolList.at( 0 ) ) ) );
+      if ( !symbolList.isEmpty() && symbolList.at( 0 ) && vectorLayer() )
+        mDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), static_cast<const QgsMarkerSymbol*>( symbolList.at( 0 ) ) ) );
     }
 
   protected:

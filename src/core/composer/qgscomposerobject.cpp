@@ -157,13 +157,13 @@ bool QgsComposerObject::dataDefinedEvaluate( const DataDefinedProperty property,
 
 void QgsComposerObject::prepareDataDefinedExpressions() const
 {
-  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
+  QgsExpressionContext context = createExpressionContext();
 
   //prepare all QgsDataDefineds
   QMap< DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.constBegin();
   if ( it != mDataDefinedProperties.constEnd() )
   {
-    it.value()->prepareExpression( *context.data() );
+    it.value()->prepareExpression( context );
   }
 }
 
@@ -187,18 +187,16 @@ QStringList QgsComposerObject::customProperties() const
   return mCustomProperties.keys();
 }
 
-QgsExpressionContext* QgsComposerObject::createExpressionContext() const
+QgsExpressionContext QgsComposerObject::createExpressionContext() const
 {
-  QgsExpressionContext* context = nullptr;
   if ( mComposition )
   {
-    context = mComposition->createExpressionContext();
+    return mComposition->createExpressionContext();
   }
   else
   {
-    context = new QgsExpressionContext();
-    context->appendScope( QgsExpressionContextUtils::globalScope() );
-    context->appendScope( QgsExpressionContextUtils::projectScope() );
+    return QgsExpressionContext()
+           << QgsExpressionContextUtils::globalScope()
+           << QgsExpressionContextUtils::projectScope();
   }
-  return context;
 }

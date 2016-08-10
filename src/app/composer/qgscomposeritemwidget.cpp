@@ -112,12 +112,11 @@ QgsVectorLayer* QgsComposerItemBaseWidget::atlasCoverageLayer() const
 
 void QgsComposerItemWidget::updateVariables()
 {
-  QgsExpressionContext* context = mItem->createExpressionContext();
-  mVariableEditor->setContext( context );
-  int editableIndex = context->indexOfScope( tr( "Composer Item" ) );
+  QgsExpressionContext context = mItem->createExpressionContext();
+  mVariableEditor->setContext( &context );
+  int editableIndex = context.indexOfScope( tr( "Composer Item" ) );
   if ( editableIndex >= 0 )
     mVariableEditor->setEditableScopeIndex( editableIndex );
-  delete context;
 }
 
 QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item )
@@ -566,18 +565,6 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mExcludeFromPrintsCheckBox->blockSignals( false );
 }
 
-static QgsExpressionContext _getExpressionContext( const void* context )
-{
-  const QgsComposerObject* composerObject = ( const QgsComposerObject* ) context;
-  if ( !composerObject )
-  {
-    return QgsExpressionContext();
-  }
-
-  QScopedPointer< QgsExpressionContext > expContext( composerObject->createExpressionContext() );
-  return QgsExpressionContext( *expContext );
-}
-
 void QgsComposerItemWidget::populateDataDefinedButtons()
 {
   QgsVectorLayer* vl = atlasCoverageLayer();
@@ -585,7 +572,7 @@ void QgsComposerItemWidget::populateDataDefinedButtons()
   Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
   {
     button->blockSignals( true );
-    button->registerGetExpressionContextCallback( &_getExpressionContext, mItem );
+    button->registerExpressionContextGenerator( mItem );
   }
 
   //initialise buttons to use atlas coverage layer

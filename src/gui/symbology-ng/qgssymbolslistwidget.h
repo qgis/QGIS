@@ -28,7 +28,7 @@ class QMenu;
 /** \ingroup gui
  * \class QgsSymbolsListWidget
  */
-class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListWidget
+class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListWidget, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
   signals:
     void changed();
 
-  protected:
+  private:
     QgsSymbol* mSymbol;
     QgsStyle* mStyle;
     QMenu* mAdvancedMenu;
@@ -114,13 +114,14 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void updateSymbolColor();
     void updateSymbolInfo();
 
-  private:
     /** Displays alpha value as transparency in mTransparencyLabel*/
     void displayTransparency( double alpha );
     /** Recursive function to create the group tree in the widget */
     void populateGroups( const QString& parent = "", const QString& prepend = "" );
 
     QgsExpressionContext* mPresetExpressionContext;
+
+    QgsExpressionContext createExpressionContext() const override;
 };
 
 #endif //QGSSYMBOLSLISTWIDGET_H

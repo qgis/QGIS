@@ -34,8 +34,7 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
     const DataTypes& datatypes,
     const QString& description )
     : QToolButton( parent )
-    , mExpressionContextCallback( nullptr )
-    , mExpressionContextCallbackContext( nullptr )
+    , mExpressionContextGenerator( nullptr )
 {
   // set up static icons
   if ( mIconDataDefine.isNull() )
@@ -324,9 +323,9 @@ void QgsDataDefinedButton::aboutToShowMenu()
 
   mVariablesMenu->clear();
   bool variableActive = false;
-  if ( mExpressionContextCallback )
+  if ( mExpressionContextGenerator )
   {
-    QgsExpressionContext context = mExpressionContextCallback( mExpressionContextCallbackContext );
+    QgsExpressionContext context = mExpressionContextGenerator->createExpressionContext();
     QStringList variables = context.variableNames();
     Q_FOREACH ( const QString& variable, variables )
     {
@@ -503,7 +502,7 @@ void QgsDataDefinedButton::showAssistant()
 
 void QgsDataDefinedButton::showExpressionDialog()
 {
-  QgsExpressionContext context = mExpressionContextCallback ? mExpressionContextCallback( mExpressionContextCallbackContext ) : QgsExpressionContext();
+  QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : QgsExpressionContext();
 
   QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer*>( mVectorLayer ), getExpression(), this, "generic", context );
   if ( d.exec() == QDialog::Accepted )
@@ -687,10 +686,9 @@ QList<QWidget*> QgsDataDefinedButton::registeredCheckedWidgets()
   return wdgtList;
 }
 
-void QgsDataDefinedButton::registerGetExpressionContextCallback( QgsDataDefinedButton::ExpressionContextCallback fnGetExpressionContext, const void *context )
+void QgsDataDefinedButton::registerExpressionContextGenerator( QgsExpressionContextGenerator* generator )
 {
-  mExpressionContextCallback = fnGetExpressionContext;
-  mExpressionContextCallbackContext = context;
+  mExpressionContextGenerator = generator;
 }
 
 void QgsDataDefinedButton::setAssistant( const QString& title, QgsDataDefinedAssistant *assistant )

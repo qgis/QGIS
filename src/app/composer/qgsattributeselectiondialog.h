@@ -23,6 +23,7 @@
 #include <QSet>
 #include <QItemDelegate>
 #include "ui_qgsattributeselectiondialogbase.h"
+#include "qgsexpressioncontextgenerator.h"
 
 class QGridLayout;
 class QgsVectorLayer;
@@ -56,7 +57,7 @@ class QgsComposerColumnAlignmentDelegate : public QItemDelegate
 // QgsComposerColumnAlignmentDelegate
 
 /** A delegate for showing column attribute source as a QgsFieldExpressionWidget*/
-class QgsComposerColumnSourceDelegate : public QItemDelegate
+class QgsComposerColumnSourceDelegate : public QItemDelegate, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -71,6 +72,7 @@ class QgsComposerColumnSourceDelegate : public QItemDelegate
   private:
     QgsVectorLayer* mVectorLayer;
     const QgsComposerObject* mComposerObject;
+    QgsExpressionContext createExpressionContext() const override;
 };
 
 // QgsComposerColumnWidthDelegate

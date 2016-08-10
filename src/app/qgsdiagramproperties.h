@@ -24,7 +24,7 @@
 class QgsVectorLayer;
 class QgsMapCanvas;
 
-class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPropertiesBase
+class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPropertiesBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -64,6 +64,8 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
 
     QString guessLegendText( const QString &expression );
     QgsMapCanvas *mMapCanvas;
+
+    QgsExpressionContext createExpressionContext() const override;
 };
 
 #endif // QGSDIAGRAMPROPERTIES_H

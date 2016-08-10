@@ -388,27 +388,25 @@ QgsRendererWidget* QgsGraduatedSymbolRendererWidget::create( QgsVectorLayer* lay
   return new QgsGraduatedSymbolRendererWidget( layer, style, renderer );
 }
 
-static QgsExpressionContext _getExpressionContext( const void* context )
+QgsExpressionContext QgsGraduatedSymbolRendererWidget::createExpressionContext() const
 {
-  const QgsGraduatedSymbolRendererWidget* widget = ( const QgsGraduatedSymbolRendererWidget* ) context;
-
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::atlasScope( nullptr );
 
-  if ( widget->mapCanvas() )
+  if ( mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( mapCanvas()->expressionContextScope() );
   }
   else
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
-  if ( widget->vectorLayer() )
-    expContext << QgsExpressionContextUtils::layerScope( widget->vectorLayer() );
+  if ( vectorLayer() )
+    expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
 
   return expContext;
 }
@@ -507,7 +505,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   connect( mHistogramWidget, SIGNAL( rangesModified( bool ) ), this, SLOT( refreshRanges( bool ) ) );
   connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), mHistogramWidget, SLOT( setSourceFieldExp( QString ) ) );
 
-  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
+  mExpressionWidget->registerExpressionContextGenerator( this );
 }
 
 void QgsGraduatedSymbolRendererWidget::on_mSizeUnitWidget_changed()

@@ -29,15 +29,15 @@ class QgsMapCanvas;
 /** \ingroup gui
  * \class QgsSymbolLayerWidget
  */
-class GUI_EXPORT QgsSymbolLayerWidget : public QWidget
+class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
     QgsSymbolLayerWidget( QWidget* parent, const QgsVectorLayer* vl = nullptr )
         : QWidget( parent )
-        , mVectorLayer( vl )
         , mPresetExpressionContext( nullptr )
+        , mVectorLayer( vl )
         , mMapCanvas( nullptr )
     {}
     virtual ~QgsSymbolLayerWidget() {}
@@ -85,14 +85,17 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget
     void setExpressionContext( QgsExpressionContext* context ) { mPresetExpressionContext = context; }
 
   protected:
-    const QgsVectorLayer* mVectorLayer;
+    void registerDataDefinedButton( QgsDataDefinedButton* button, const QString& propertyName, QgsDataDefinedButton::DataType type, const QString& description );
+
+    QgsExpressionContext createExpressionContext() const override;
 
     //! Optional preset expression context
     QgsExpressionContext* mPresetExpressionContext;
 
-    QgsMapCanvas* mMapCanvas;
+  private:
+    const QgsVectorLayer* mVectorLayer;
 
-    void registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description );
+    QgsMapCanvas* mMapCanvas;
 
     /** Get label for data defined entry.
      * Implemented only for 'size' of marker symbols

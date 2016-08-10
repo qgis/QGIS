@@ -108,8 +108,9 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
   QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
   QgsFillSymbol* newSymbol = mComposerShape->shapeStyleSymbol()->clone();
+  QgsExpressionContext context = mComposerShape->createExpressionContext();
   QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), coverageLayer, this );
-  d.setExpressionContext( mComposerShape->createExpressionContext() );
+  d.setExpressionContext( &context );
 
   if ( d.exec() == QDialog::Accepted )
   {

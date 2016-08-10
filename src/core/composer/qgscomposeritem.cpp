@@ -709,13 +709,8 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOn
 
   //TODO QGIS 3.0
   //maintain pre 2.12 API. remove when API break allowed
-  QScopedPointer< QgsExpressionContext > scopedContext;
-  const QgsExpressionContext* evalContext = context;
-  if ( !evalContext )
-  {
-    scopedContext.reset( createExpressionContext() );
-    evalContext = scopedContext.data();
-  }
+  QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext* evalContext = context ? context : &scopedContext;
 
   //data defined position or size set? if so, update rect with data defined values
   QVariant exprVal;
@@ -851,10 +846,10 @@ bool QgsComposerItem::shouldDrawItem() const
   return !mEvaluatedExcludeFromExports;
 }
 
-QgsExpressionContext* QgsComposerItem::createExpressionContext() const
+QgsExpressionContext QgsComposerItem::createExpressionContext() const
 {
-  QgsExpressionContext* context = QgsComposerObject::createExpressionContext();
-  context->appendScope( QgsExpressionContextUtils::composerItemScope( this ) );
+  QgsExpressionContext context = QgsComposerObject::createExpressionContext();
+  context.appendScope( QgsExpressionContextUtils::composerItemScope( this ) );
   return context;
 }
 
@@ -891,8 +886,8 @@ void QgsComposerItem::setBlendMode( const QPainter::CompositionMode blendMode )
 {
   mBlendMode = blendMode;
   // Update the composer effect to use the new blend mode
-  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
-  refreshBlendMode( *context.data() );
+  QgsExpressionContext context = createExpressionContext();
+  refreshBlendMode( context );
 }
 
 void QgsComposerItem::refreshBlendMode( const QgsExpressionContext& context )
@@ -917,8 +912,8 @@ void QgsComposerItem::refreshBlendMode( const QgsExpressionContext& context )
 void QgsComposerItem::setTransparency( const int transparency )
 {
   mTransparency = transparency;
-  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
-  refreshTransparency( true, *context.data() );
+  QgsExpressionContext context = createExpressionContext();
+  refreshTransparency( true, context );
 }
 
 void QgsComposerItem::refreshTransparency( const bool updateItem, const QgsExpressionContext& context )
@@ -1068,8 +1063,8 @@ void QgsComposerItem::setItemRotation( const double r, const bool adjustPosition
     mItemRotation = r;
   }
 
-  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
-  refreshRotation( true, adjustPosition, *context.data() );
+  QgsExpressionContext context = createExpressionContext();
+  refreshRotation( true, adjustPosition, context );
 }
 
 void QgsComposerItem::refreshRotation( const bool updateItem, const bool adjustPosition, const QgsExpressionContext& context )
@@ -1356,13 +1351,8 @@ void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataD
 {
   //maintain 2.10 API
   //TODO QGIS 3.0 - remove this
-  const QgsExpressionContext* evalContext = context;
-  QScopedPointer< QgsExpressionContext > scopedContext;
-  if ( !evalContext )
-  {
-    scopedContext.reset( createExpressionContext() );
-    evalContext = scopedContext.data();
-  }
+  QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext* evalContext = context ? context : &scopedContext;
 
   //update data defined properties and redraw item to match
   if ( property == QgsComposerObject::PositionX || property == QgsComposerObject::PositionY ||

@@ -122,9 +122,15 @@ class QgsDataDefinedValueDialog : QDialog
     void dataDefinedChanged();
 
   protected:
-    QgsDataDefined symbolDataDefined() const;
+    /**
+     * Should be called in the constructor of child classes.
+     *
+     * @note May be missing Python bindings depending on the platform.
+     */
     void init( const QString& description ); // needed in children ctor to call virtual
 
+  private:
+    QgsDataDefined symbolDataDefined() const;
     virtual QgsDataDefined symbolDataDefined( const QgsSymbol* ) const = 0;
     virtual double value( const QgsSymbol* ) const = 0;
     virtual void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) = 0;

@@ -40,23 +40,19 @@
 #include <QMessageBox>
 #include <QSettings>
 
-static QgsExpressionContext _getExpressionContext( const void* context )
+QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::atlasScope( nullptr )
-  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
-
-  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
-  if ( layer )
-    expContext << QgsExpressionContextUtils::layerScope( layer );
+  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
+  << QgsExpressionContextUtils::layerScope( mLayer );
 
   return expContext;
 }
 
-QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer,
-    QWidget* parent, QgsMapCanvas *canvas )
+QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent, QgsMapCanvas *canvas )
     : QWidget( parent )
     , mMapCanvas( canvas )
 {
@@ -83,7 +79,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer,
   mDiagramTypeComboBox->blockSignals( false );
 
   mScaleRangeWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
-  mSizeFieldExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
+  mSizeFieldExpressionWidget->registerExpressionContextGenerator( this );
 
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
   mBackgroundColorButton->setAllowAlpha( true );

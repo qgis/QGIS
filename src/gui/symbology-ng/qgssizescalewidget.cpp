@@ -73,27 +73,25 @@ void QgsSizeScaleWidget::setFromSymbol()
   updatePreview();
 }
 
-static QgsExpressionContext _getExpressionContext( const void* context )
+QgsExpressionContext QgsSizeScaleWidget::createExpressionContext() const
 {
-  const QgsSizeScaleWidget* widget = ( const QgsSizeScaleWidget* ) context;
-
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::atlasScope( nullptr );
 
-  if ( widget->mapCanvas() )
+  if ( mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( widget->mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( widget->mapCanvas()->expressionContextScope() );
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( mapCanvas()->expressionContextScope() );
   }
   else
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
-  if ( widget->layer() )
-    expContext << QgsExpressionContextUtils::layerScope( widget->layer() );
+  if ( layer() )
+    expContext << QgsExpressionContextUtils::layerScope( layer() );
 
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1, true ) );
@@ -113,7 +111,7 @@ QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsS
   setupUi( this );
   setWindowFlags( Qt::WindowStaysOnTopHint );
 
-  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
+  mExpressionWidget->registerExpressionContextGenerator( this );
 
   if ( mLayer )
   {

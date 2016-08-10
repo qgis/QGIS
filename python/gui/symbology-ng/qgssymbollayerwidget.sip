@@ -51,15 +51,9 @@ class QgsSymbolLayerWidget : QWidget
     void setExpressionContext( QgsExpressionContext* context );
 
   protected:
+    void registerDataDefinedButton( QgsDataDefinedButton* button, const QString& propertyName, QgsDataDefinedButton::DataType type, const QString& description );
 
-    void registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description );
-
-    /** Get label for data defined entry.
-     * Implemented only for 'size' of marker symbols
-     * @note added in 2.1
-     * @deprecated no longer used
-     */
-    virtual QString dataDefinedPropertyLabel( const QString &entryName ) /Deprecated/;
+    QgsExpressionContext createExpressionContext() const;
 
   signals:
     /**

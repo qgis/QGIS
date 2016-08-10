@@ -143,18 +143,6 @@ QgsCompositionWidget::~QgsCompositionWidget()
 
 }
 
-static QgsExpressionContext _getExpressionContext( const void* context )
-{
-  const QgsComposition* composition = ( const QgsComposition* ) context;
-  if ( !composition )
-  {
-    return QgsExpressionContext();
-  }
-
-  QScopedPointer< QgsExpressionContext > expContext( composition->createExpressionContext() );
-  return QgsExpressionContext( *expContext );
-}
-
 void QgsCompositionWidget::populateDataDefinedButtons()
 {
   if ( !mComposition )
@@ -173,7 +161,7 @@ void QgsCompositionWidget::populateDataDefinedButtons()
   Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
   {
     button->blockSignals( true );
-    button->registerGetExpressionContextCallback( &_getExpressionContext, mComposition );
+    button->registerExpressionContextGenerator( mComposition );
   }
 
   mPaperSizeDDBtn->init( vl, mComposition->dataDefinedProperty( QgsComposerObject::PresetPaperSize ),
@@ -583,8 +571,9 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
   {
     newSymbol = new QgsFillSymbol();
   }
+  QgsExpressionContext context = mComposition->createExpressionContext();
   QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), coverageLayer, this );
-  d.setExpressionContext( mComposition->createExpressionContext() );
+  d.setExpressionContext( &context );
 
   if ( d.exec() == QDialog::Accepted )
   {

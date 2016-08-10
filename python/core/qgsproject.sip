@@ -324,6 +324,8 @@ class QgsProject : QObject
      */
     void setEvaluateDefaultValues( bool evaluateDefaultValues );
 
+    QgsExpressionContext createExpressionContext() const;
+
   protected:
 
     /** Set error message from read/write operation

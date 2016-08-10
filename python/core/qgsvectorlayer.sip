@@ -1385,6 +1385,8 @@ class QgsVectorLayer : QgsMapLayer
      */
     void setMapTipTemplate( const QString& mapTipTemplate );
 
+    QgsExpressionContext createExpressionContext() const;
+
   public slots:
     /**
      * Select feature by its ID

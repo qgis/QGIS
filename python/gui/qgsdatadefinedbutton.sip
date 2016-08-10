@@ -185,17 +185,14 @@ class QgsDataDefinedButton : QToolButton
      */
     void clearCheckedWidgets();
 
-    //! Callback function for retrieving the expression context for the button
-    //typedef QgsExpressionContext( *ExpressionContextCallback )( const void* context );
-
-    /** Register callback function for retrieving the expression context for the button
-     * @param fnGetExpressionContext call back function, will be called when the data defined
-     * button requires the current expression context
-     * @param context context for callback function
-     * @note added in QGIS 2.12
-     * @note not available in Python bindings
+    /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for the button.
+     * @param generator A QgsExpressionContextGenerator class that will be used to
+     *                  create an expression context when required.
+     * @note added in QGIS 3.0
      */
-    //void registerGetExpressionContextCallback( ExpressionContextCallback fnGetExpressionContext, const void* context );
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator* generator );
 
     /**
      * Sets an assistant used to define the data defined object properties.

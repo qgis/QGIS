@@ -33,7 +33,7 @@ class QgsMapCanvas;
 /** \ingroup gui
  * \class QgsSizeScaleWidget
  */
-class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui_SizeScaleBase
+class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui_SizeScaleBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -67,6 +67,7 @@ class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui
     QgsScaleExpression* createExpression() const;
     void setFromSymbol();
 
+    QgsExpressionContext createExpressionContext() const override;
 };
 
 /// @cond PRIVATE

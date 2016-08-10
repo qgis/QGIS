@@ -38,6 +38,7 @@
 #include "qgsattributetableconfig.h"
 #include "qgsaggregatecalculator.h"
 #include "qgsfeatureiterator.h"
+#include "qgsexpressioncontextgenerator.h"
 
 class QPainter;
 class QImage;
@@ -405,7 +406,7 @@ protected:
  */
 
 
-class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
+class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -1496,6 +1497,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in 3.0
      */
     void setMapTipTemplate( const QString& mapTipTemplate );
+
+    QgsExpressionContext createExpressionContext() const override;
 
   public slots:
     /**

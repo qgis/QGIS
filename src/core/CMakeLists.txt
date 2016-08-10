@@ -637,6 +637,7 @@ SET(QGIS_CORE_HDRS
   qgsexception.h
   qgsexpression.h
   qgsexpressioncontext.h
+  qgsexpressioncontextgenerator.h
   qgsexpressionfieldbuffer.h
   qgsfeature.h
   qgsfeature_p.h

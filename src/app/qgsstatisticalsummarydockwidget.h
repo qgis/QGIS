@@ -32,7 +32,7 @@ class QgsBrowserTreeFilterProxyModel;
 
 /** A dock widget which displays a statistical summary of the values in a field or expression
  */
-class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private Ui::QgsStatisticalSummaryWidgetBase
+class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private Ui::QgsStatisticalSummaryWidgetBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -71,6 +71,8 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     void updateStringStatistics( bool selectedOnly );
     void updateDateTimeStatistics( bool selectedOnly );
     void addRow( int row, const QString& name, const QString& value, bool showValue );
+
+    QgsExpressionContext createExpressionContext() const override;
 };
 
 #endif // QGSSTATISTICALSUMMARYDOCKWIDGET_H
