@@ -1425,30 +1425,8 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   }
   mJoinBuffer->readXml( layer_node );
 
-  if ( !mExpressionFieldBuffer )
-    mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
-  mExpressionFieldBuffer->readXml( layer_node );
-
   updateFields();
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
-
-  mDisplayExpression = layer_node.namedItem( "previewExpression" ).toElement().text();
-  mMapTipTemplate = layer_node.namedItem( "mapTip" ).toElement().text();
-
-  QString displayField = layer_node.namedItem( "displayfield" ).toElement().text();
-
-  // Try to migrate pre QGIS 3.0 display field property
-  if ( mUpdatedFields.fieldNameIndex( displayField ) < 0 )
-  {
-    // if it's not a field, it's a maptip
-    if ( mMapTipTemplate.isEmpty() )
-      mMapTipTemplate = displayField;
-  }
-  else
-  {
-    if ( mDisplayExpression.isEmpty() )
-      mDisplayExpression = QgsExpression::quotedColumnRef( displayField );
-  }
 
   QString errorMsg;
   if ( !readSymbology( layer_node, errorMsg ) )
@@ -1626,21 +1604,6 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
     layer_node.appendChild( provider );
   }
 
-  // save readonly state
-  mapLayerNode.setAttribute( "readOnly", mReadOnly );
-
-  // save preview expression
-  QDomElement prevExpElem = document.createElement( "previewExpression" );
-  QDomText prevExpText = document.createTextNode( mDisplayExpression );
-  prevExpElem.appendChild( prevExpText );
-  layer_node.appendChild( prevExpElem );
-
-  // save map tip
-  QDomElement mapTipElem = document.createElement( "mapTip" );
-  QDomText mapTipText = document.createTextNode( mMapTipTemplate );
-  mapTipElem.appendChild( mapTipText );
-  layer_node.appendChild( mapTipElem );
-
   //save joins
   mJoinBuffer->writeXml( layer_node, document );
 
@@ -1654,9 +1617,6 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   }
   layer_node.appendChild( dependenciesElement );
 
-  // save expression fields
-  mExpressionFieldBuffer->writeXml( layer_node, document );
-
   writeStyleManager( layer_node, document );
 
   // renderer specific settings
@@ -1667,7 +1627,31 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
 bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
 {
+  if ( !mExpressionFieldBuffer )
+    mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
+  mExpressionFieldBuffer->readXml( node );
+
+  updatedFields();
+
   readStyle( node, errorMessage );
+
+  mDisplayExpression = node.namedItem( "previewExpression" ).toElement().text();
+  mMapTipTemplate = node.namedItem( "mapTip" ).toElement().text();
+
+  QString displayField = node.namedItem( "displayfield" ).toElement().text();
+
+  // Try to migrate pre QGIS 3.0 display field property
+  if ( mUpdatedFields.fieldNameIndex( displayField ) < 0 )
+  {
+    // if it's not a field, it's a maptip
+    if ( mMapTipTemplate.isEmpty() )
+      mMapTipTemplate = displayField;
+  }
+  else
+  {
+    if ( mDisplayExpression.isEmpty() )
+      mDisplayExpression = QgsExpression::quotedColumnRef( displayField );
+  }
 
   // process the attribute actions
   mActions->readXml( node );
@@ -1904,6 +1888,24 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   mAttributeTableConfig.writeXml( node );
   mEditFormConfig->writeXml( node );
   mConditionalStyles->writeXml( node, doc );
+
+  // save expression fields
+  mExpressionFieldBuffer->writeXml( node, doc );
+
+  // save readonly state
+  node.toElement().setAttribute( "readOnly", mReadOnly );
+
+  // save preview expression
+  QDomElement prevExpElem = doc.createElement( "previewExpression" );
+  QDomText prevExpText = doc.createTextNode( mDisplayExpression );
+  prevExpElem.appendChild( prevExpText );
+  node.appendChild( prevExpElem );
+
+  // save map tip
+  QDomElement mapTipElem = doc.createElement( "mapTip" );
+  QDomText mapTipText = doc.createTextNode( mMapTipTemplate );
+  mapTipElem.appendChild( mapTipText );
+  node.toElement().appendChild( mapTipElem );
 
   return true;
 }
