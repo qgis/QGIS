@@ -147,6 +147,7 @@ from .DefineProjection import DefineProjection
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 from .MergeLines import MergeLines
+from .BoundingBox import BoundingBox
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -198,7 +199,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         CheckValidity(), OrientedMinimumBoundingBox(), Smooth(),
                         ReverseLineDirection(), SpatialIndex(), DefineProjection(),
                         RectanglesOvalsDiamondsVariable(),
-                        RectanglesOvalsDiamondsFixed(), MergeLines()
+                        RectanglesOvalsDiamondsFixed(), MergeLines(),
+                        BoundingBox()
                         ]
 
         if hasMatplotlib:
