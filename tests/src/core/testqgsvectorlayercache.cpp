@@ -54,6 +54,7 @@ class TestVectorLayerCache : public QObject
     void testSubsetRequest();
     void testFullCache();
     void testFullCacheThroughRequest();
+    void testCanUseCacheForRequest();
 
     void onCommittedFeaturesAdded( const QString&, const QgsFeatureList& );
 
@@ -265,6 +266,67 @@ void TestVectorLayerCache::testFullCacheThroughRequest()
 
   // so it should be a full cache!
   QVERIFY( cache.hasFullCache() );
+}
+
+void TestVectorLayerCache::testCanUseCacheForRequest()
+{
+  //first get some feature ids from layer
+  QgsFeature f;
+  QgsFeatureIterator it = mPointsLayer->getFeatures();
+  it.nextFeature( f );
+  QgsFeatureId id1 = f.id();
+  it.nextFeature( f );
+  QgsFeatureId id2 = f.id();
+
+  QgsVectorLayerCache cache( mPointsLayer, 10 );
+  // initially nothing in cache, so can't use it to fulfill the request
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id1 ), it ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id2 ), it ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFids( QgsFeatureIds() << id1 << id2 ), it ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterRect( QgsRectangle( 1, 2, 3, 4 ) ), it ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterExpression( "$x<5" ), it ) );
+
+  // get just the first feature into the cache
+  it = cache.getFeatures( QgsFeatureRequest().setFilterFid( id1 ) );
+  while ( it.nextFeature( f ) ) { }
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id1 ), it ) );
+  //verify that the returned iterator was correct
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.id(), id1 );
+  QVERIFY( !it.nextFeature( f ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id2 ), it ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFids( QgsFeatureIds() << id1 << id2 ), it ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterRect( QgsRectangle( 1, 2, 3, 4 ) ), it ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterExpression( "$x<5" ), it ) );
+
+  // get feature 2 into cache
+  it = cache.getFeatures( QgsFeatureRequest().setFilterFid( id2 ) );
+  while ( it.nextFeature( f ) ) { }
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id1 ), it ) );
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.id(), id1 );
+  QVERIFY( !it.nextFeature( f ) );
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id2 ), it ) );
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.id(), id2 );
+  QVERIFY( !it.nextFeature( f ) );
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFids( QgsFeatureIds() << id1 << id2 ), it ) );
+  QVERIFY( it.nextFeature( f ) );
+  QgsFeatureIds result;
+  result << f.id();
+  QVERIFY( it.nextFeature( f ) );
+  result << f.id();
+  QCOMPARE( result, QgsFeatureIds() << id1 << id2 );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterRect( QgsRectangle( 1, 2, 3, 4 ) ), it ) );
+  QVERIFY( !cache.canUseCacheForRequest( QgsFeatureRequest().setFilterExpression( "$x<5" ), it ) );
+
+  // can only use rect/expression requests if cache has everything
+  cache.setFullCache( true );
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id1 ), it ) );
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id2 ), it ) );
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFids( QgsFeatureIds() << id1 << id2 ), it ) );
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterRect( QgsRectangle( 1, 2, 3, 4 ) ), it ) );
+  QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterExpression( "$x<5" ), it ) );
 }
 
 void TestVectorLayerCache::onCommittedFeaturesAdded( const QString& layerId, const QgsFeatureList& features )

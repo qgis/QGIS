@@ -338,5 +338,16 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     friend class QgsCachedFeatureIterator;
     friend class QgsCachedFeatureWriterIterator;
     friend class QgsCachedFeature;
+
+    /** Returns true if the cache contains all the features required for a specified request.
+     * @param featureRequest feature request
+     * @param it will be set to iterator for matching features
+     * @returns true if cache can satisfy request
+     * @note this method only checks for available features, not whether the cache
+     * contains required attributes or geometry. For that, use checkInformationCovered()
+     */
+    bool canUseCacheForRequest( const QgsFeatureRequest& featureRequest, QgsFeatureIterator& it );
+
+    friend class TestVectorLayerCache;
 };
 #endif // QgsVectorLayerCache_H
