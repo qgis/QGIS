@@ -265,6 +265,10 @@ qgis:orientedminimumboundingbox: >
 qgis:pointsdisplacement:
 
 
+qgis:pointonsurface: >
+  Returns a point guaranteed to lie on the surface of a geometry.
+
+
 qgis:pointslayerfromtable: >
   This algorithm generates a points layer based on the values from an input table.
 
