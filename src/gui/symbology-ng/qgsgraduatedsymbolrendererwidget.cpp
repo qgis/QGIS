@@ -388,7 +388,7 @@ QgsRendererWidget* QgsGraduatedSymbolRendererWidget::create( QgsVectorLayer* lay
   return new QgsGraduatedSymbolRendererWidget( layer, style, renderer );
 }
 
-QgsExpressionContext QgsGraduatedSymbolRendererV2Widget::createExpressionContext() const
+QgsExpressionContext QgsGraduatedSymbolRendererWidget::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()

@@ -80,7 +80,7 @@ class QgsCategorizedSymbolRendererViewStyle: public QProxyStyle
 /** \ingroup gui
  * \class QgsCategorizedSymbolRendererWidget
  */
-class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererV2Widget, private Ui::QgsCategorizedSymbolRendererV2Widget, private QgsExpressionContextGenerator
+class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, private Ui::QgsCategorizedSymbolRendererWidget, private QgsExpressionContextGenerator
 {
     Q_OBJECT
   public:

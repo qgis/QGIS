@@ -384,7 +384,7 @@ QgsRendererWidget* QgsCategorizedSymbolRendererWidget::create( QgsVectorLayer* l
   return new QgsCategorizedSymbolRendererWidget( layer, style, renderer );
 }
 
-QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
     : QgsRendererWidget( layer, style )
     , mRenderer( nullptr )
     , mModel( nullptr )
@@ -1049,7 +1049,7 @@ void QgsCategorizedSymbolRendererWidget::keyPressEvent( QKeyEvent* event )
   }
 }
 
-QgsExpressionContext QgsCategorizedSymbolRendererV2Widget::createExpressionContext() const
+QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()

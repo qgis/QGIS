@@ -182,9 +182,9 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
   private:
     QgsDataDefined symbolDataDefined() const;
 
-    virtual QgsDataDefined symbolDataDefined( const QgsSymbolV2* ) const = 0;
-    virtual double value( const QgsSymbolV2* ) const = 0;
-    virtual void setDataDefined( QgsSymbolV2* symbol, const QgsDataDefined& dd ) = 0;
+    virtual QgsDataDefined symbolDataDefined( const QgsSymbol* ) const = 0;
+    virtual double value( const QgsSymbol* ) const = 0;
+    virtual void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) = 0;
 
     QList<QgsSymbol*> mSymbolList;
     QgsVectorLayer* mLayer;

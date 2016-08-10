@@ -49,7 +49,7 @@
 #include <QSvgRenderer>
 #include <QMessageBox>
 
-QgsExpressionContext QgsSymbolLayerV2Widget::createExpressionContext() const
+QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
 {
   if ( expressionContext() )
     return *expressionContext();
