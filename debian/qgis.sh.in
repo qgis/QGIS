@@ -15,7 +15,13 @@ if dpkg -s qgis-oracle-provider >/dev/null 2>&1; then
 		LD_LIBRARY_PATH=$LD_LIBRARY_PATH:{ORACLE_LIBDIR}
 	fi
 fi
-
 export LD_LIBRARY_PATH
+
+if [ "$LD_PRELOAD" = "" ]; then
+	LD_PRELOAD=/usr/lib/libqgis_vsipreload.so.{QGIS_ABI}
+else
+	LD_PRELOAD=$LD_PRELOAD:/usr/lib/libqgis_vsipreload.so.{QGIS_ABI}
+fi
+export LD_PRELOAD
 
 exec $0.bin "$@"
