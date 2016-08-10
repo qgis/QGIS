@@ -26,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import re
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -48,6 +49,7 @@ class GdalAlgorithm(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         commands = self.getConsoleCommands()
+        progress.setInfo('START COMMANDS: ' + ' '.join(commands))
         layers = dataobjects.getVectorLayers()
         supported = dataobjects.getSupportedOutputVectorLayerExtensions()
         for i, c in enumerate(commands):
@@ -58,9 +60,11 @@ class GdalAlgorithm(GeoAlgorithm):
                     c = c.replace(layer.source(), exported)
                     if os.path.isfile(layer.source()):
                         fileName = os.path.splitext(os.path.split(layer.source())[1])[0]
-                        c = c.replace(' ' + fileName + ' ', ' ' + exportedFileName + ' ')
+                        c = re.sub('[\s]{}[\s]'.format(fileName),  ' ' + exportedFileName + ' ', c)
+                        c = re.sub('["\']{}["\']'.format(fileName),  "'" + exportedFileName + "'", c)
 
             commands[i] = c
+            progress.setInfo('LAST COMMANDS: ' + ' '.join(commands))
         GdalUtils.runGdal(commands, progress)
 
     def shortHelp(self):
