@@ -33,13 +33,13 @@ from qgis.core import (QgsVectorLayer,
                        QgsMapLayerRegistry,
                        QgsRectangle,
                        QgsMultiRenderChecker,
-                       QgsRuleBasedRendererV2,
-                       QgsFillSymbolV2,
-                       QgsMarkerSymbolV2,
-                       QgsRendererCategoryV2,
-                       QgsCategorizedSymbolRendererV2,
-                       QgsGraduatedSymbolRendererV2,
-                       QgsRendererRangeV2
+                       QgsRuleBasedRenderer,
+                       QgsFillSymbol,
+                       QgsMarkerSymbol,
+                       QgsRendererCategory,
+                       QgsCategorizedSymbolRenderer,
+                       QgsGraduatedSymbolRenderer,
+                       QgsRendererRange
                        )
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
@@ -60,21 +60,21 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         QgsMapLayerRegistry.instance().addMapLayer(layer)
 
         # Create rulebased style
-        sym1 = QgsFillSymbolV2.createSimple({'color': '#fdbf6f'})
-        sym2 = QgsFillSymbolV2.createSimple({'color': '#71bd6c'})
-        sym3 = QgsFillSymbolV2.createSimple({'color': '#1f78b4'})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
+        sym2 = QgsFillSymbol.createSimple({'color': '#71bd6c'})
+        sym3 = QgsFillSymbol.createSimple({'color': '#1f78b4'})
 
-        self.r1 = QgsRuleBasedRendererV2.Rule(sym1, 0, 0, '"id" = 1')
-        self.r2 = QgsRuleBasedRendererV2.Rule(sym2, 0, 0, '"id" = 2')
-        self.r3 = QgsRuleBasedRendererV2.Rule(sym3, 0, 0, 'ELSE')
+        self.r1 = QgsRuleBasedRenderer.Rule(sym1, 0, 0, '"id" = 1')
+        self.r2 = QgsRuleBasedRenderer.Rule(sym2, 0, 0, '"id" = 2')
+        self.r3 = QgsRuleBasedRenderer.Rule(sym3, 0, 0, 'ELSE')
 
-        self.rootrule = QgsRuleBasedRendererV2.Rule(None)
+        self.rootrule = QgsRuleBasedRenderer.Rule(None)
         self.rootrule.appendChild(self.r1)
         self.rootrule.appendChild(self.r2)
         self.rootrule.appendChild(self.r3)
 
-        self.renderer = QgsRuleBasedRendererV2(self.rootrule)
-        layer.setRendererV2(self.renderer)
+        self.renderer = QgsRuleBasedRenderer(self.rootrule)
+        layer.setRenderer(self.renderer)
         self.mapsettings = self.iface.mapCanvas().mapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
         self.mapsettings.setOutputDpi(96)
@@ -111,31 +111,31 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
 
         # First, try with a field based category (id)
         cats = []
-        cats.append(QgsRendererCategoryV2(1, QgsMarkerSymbolV2(), "id 1"))
-        cats.append(QgsRendererCategoryV2(2, QgsMarkerSymbolV2(), "id 2"))
-        c = QgsCategorizedSymbolRendererV2("id", cats)
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "id 1"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "id 2"))
+        c = QgsCategorizedSymbolRenderer("id", cats)
 
-        QgsRuleBasedRendererV2.refineRuleCategories(self.r2, c)
+        QgsRuleBasedRenderer.refineRuleCategories(self.r2, c)
         assert self.r2.children()[0].filterExpression() == '"id" = 1'
         assert self.r2.children()[1].filterExpression() == '"id" = 2'
 
         # Next try with an expression based category
         cats = []
-        cats.append(QgsRendererCategoryV2(1, QgsMarkerSymbolV2(), "result 1"))
-        cats.append(QgsRendererCategoryV2(2, QgsMarkerSymbolV2(), "result 2"))
-        c = QgsCategorizedSymbolRendererV2("id + 1", cats)
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "result 1"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "result 2"))
+        c = QgsCategorizedSymbolRenderer("id + 1", cats)
 
-        QgsRuleBasedRendererV2.refineRuleCategories(self.r1, c)
+        QgsRuleBasedRenderer.refineRuleCategories(self.r1, c)
         assert self.r1.children()[0].filterExpression() == 'id + 1 = 1'
         assert self.r1.children()[1].filterExpression() == 'id + 1 = 2'
 
         # Last try with an expression which is just a quoted field name
         cats = []
-        cats.append(QgsRendererCategoryV2(1, QgsMarkerSymbolV2(), "result 1"))
-        cats.append(QgsRendererCategoryV2(2, QgsMarkerSymbolV2(), "result 2"))
-        c = QgsCategorizedSymbolRendererV2('"id"', cats)
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "result 1"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "result 2"))
+        c = QgsCategorizedSymbolRenderer('"id"', cats)
 
-        QgsRuleBasedRendererV2.refineRuleCategories(self.r3, c)
+        QgsRuleBasedRenderer.refineRuleCategories(self.r3, c)
         assert self.r3.children()[0].filterExpression() == '"id" = 1'
         assert self.r3.children()[1].filterExpression() == '"id" = 2'
 
@@ -144,31 +144,31 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
 
         # First, try with a field based category (id)
         ranges = []
-        ranges.append(QgsRendererRangeV2(0, 1, QgsMarkerSymbolV2(), "0-1"))
-        ranges.append(QgsRendererRangeV2(1, 2, QgsMarkerSymbolV2(), "1-2"))
-        g = QgsGraduatedSymbolRendererV2("id", ranges)
+        ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
+        ranges.append(QgsRendererRange(1, 2, QgsMarkerSymbol(), "1-2"))
+        g = QgsGraduatedSymbolRenderer("id", ranges)
 
-        QgsRuleBasedRendererV2.refineRuleRanges(self.r2, g)
+        QgsRuleBasedRenderer.refineRuleRanges(self.r2, g)
         assert self.r2.children()[0].filterExpression() == '"id" >= 0.0000 AND "id" <= 1.0000'
         assert self.r2.children()[1].filterExpression() == '"id" > 1.0000 AND "id" <= 2.0000'
 
         # Next try with an expression based range
         ranges = []
-        ranges.append(QgsRendererRangeV2(0, 1, QgsMarkerSymbolV2(), "0-1"))
-        ranges.append(QgsRendererRangeV2(1, 2, QgsMarkerSymbolV2(), "1-2"))
-        g = QgsGraduatedSymbolRendererV2("id / 2", ranges)
+        ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
+        ranges.append(QgsRendererRange(1, 2, QgsMarkerSymbol(), "1-2"))
+        g = QgsGraduatedSymbolRenderer("id / 2", ranges)
 
-        QgsRuleBasedRendererV2.refineRuleRanges(self.r1, g)
+        QgsRuleBasedRenderer.refineRuleRanges(self.r1, g)
         assert self.r1.children()[0].filterExpression() == '(id / 2) >= 0.0000 AND (id / 2) <= 1.0000'
         assert self.r1.children()[1].filterExpression() == '(id / 2) > 1.0000 AND (id / 2) <= 2.0000'
 
         # Last try with an expression which is just a quoted field name
         ranges = []
-        ranges.append(QgsRendererRangeV2(0, 1, QgsMarkerSymbolV2(), "0-1"))
-        ranges.append(QgsRendererRangeV2(1, 2, QgsMarkerSymbolV2(), "1-2"))
-        g = QgsGraduatedSymbolRendererV2('"id"', ranges)
+        ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
+        ranges.append(QgsRendererRange(1, 2, QgsMarkerSymbol(), "1-2"))
+        g = QgsGraduatedSymbolRenderer('"id"', ranges)
 
-        QgsRuleBasedRendererV2.refineRuleRanges(self.r3, g)
+        QgsRuleBasedRenderer.refineRuleRanges(self.r3, g)
         assert self.r3.children()[0].filterExpression() == '"id" >= 0.0000 AND "id" <= 1.0000'
         assert self.r3.children()[1].filterExpression() == '"id" > 1.0000 AND "id" <= 2.0000'
 
@@ -177,15 +177,15 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
 
         # First, try with a field based category (id)
         cats = []
-        cats.append(QgsRendererCategoryV2(1, QgsMarkerSymbolV2(), "id 1"))
-        cats.append(QgsRendererCategoryV2(2, QgsMarkerSymbolV2(), "id 2"))
-        cats.append(QgsRendererCategoryV2('a\'b', QgsMarkerSymbolV2(), "id a'b"))
-        cats.append(QgsRendererCategoryV2('a\nb', QgsMarkerSymbolV2(), "id a\\nb"))
-        cats.append(QgsRendererCategoryV2('a\\b', QgsMarkerSymbolV2(), "id a\\\\b"))
-        cats.append(QgsRendererCategoryV2('a\tb', QgsMarkerSymbolV2(), "id a\\tb"))
-        c = QgsCategorizedSymbolRendererV2("id", cats)
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "id 1"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "id 2"))
+        cats.append(QgsRendererCategory('a\'b', QgsMarkerSymbol(), "id a'b"))
+        cats.append(QgsRendererCategory('a\nb', QgsMarkerSymbol(), "id a\\nb"))
+        cats.append(QgsRendererCategory('a\\b', QgsMarkerSymbol(), "id a\\\\b"))
+        cats.append(QgsRendererCategory('a\tb', QgsMarkerSymbol(), "id a\\tb"))
+        c = QgsCategorizedSymbolRenderer("id", cats)
 
-        r = QgsRuleBasedRendererV2.convertFromRenderer(c)
+        r = QgsRuleBasedRenderer.convertFromRenderer(c)
         self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" = 1')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" = 2')
         self.assertEqual(r.rootRule().children()[2].filterExpression(), '"id" = \'a\'\'b\'')
@@ -195,21 +195,21 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
 
         # Next try with an expression based category
         cats = []
-        cats.append(QgsRendererCategoryV2(1, QgsMarkerSymbolV2(), "result 1"))
-        cats.append(QgsRendererCategoryV2(2, QgsMarkerSymbolV2(), "result 2"))
-        c = QgsCategorizedSymbolRendererV2("id + 1", cats)
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "result 1"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "result 2"))
+        c = QgsCategorizedSymbolRenderer("id + 1", cats)
 
-        r = QgsRuleBasedRendererV2.convertFromRenderer(c)
+        r = QgsRuleBasedRenderer.convertFromRenderer(c)
         self.assertEqual(r.rootRule().children()[0].filterExpression(), 'id + 1 = 1')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), 'id + 1 = 2')
 
         # Last try with an expression which is just a quoted field name
         cats = []
-        cats.append(QgsRendererCategoryV2(1, QgsMarkerSymbolV2(), "result 1"))
-        cats.append(QgsRendererCategoryV2(2, QgsMarkerSymbolV2(), "result 2"))
-        c = QgsCategorizedSymbolRendererV2('"id"', cats)
+        cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "result 1"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "result 2"))
+        c = QgsCategorizedSymbolRenderer('"id"', cats)
 
-        r = QgsRuleBasedRendererV2.convertFromRenderer(c)
+        r = QgsRuleBasedRenderer.convertFromRenderer(c)
         self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" = 1')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" = 2')
 
@@ -218,31 +218,31 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
 
         # First, try with a field based category (id)
         ranges = []
-        ranges.append(QgsRendererRangeV2(0, 1, QgsMarkerSymbolV2(), "0-1"))
-        ranges.append(QgsRendererRangeV2(1, 2, QgsMarkerSymbolV2(), "1-2"))
-        g = QgsGraduatedSymbolRendererV2("id", ranges)
+        ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
+        ranges.append(QgsRendererRange(1, 2, QgsMarkerSymbol(), "1-2"))
+        g = QgsGraduatedSymbolRenderer("id", ranges)
 
-        r = QgsRuleBasedRendererV2.convertFromRenderer(g)
+        r = QgsRuleBasedRenderer.convertFromRenderer(g)
         self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" >= 0.000000 AND "id" <= 1.000000')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" > 1.000000 AND "id" <= 2.000000')
 
         # Next try with an expression based range
         ranges = []
-        ranges.append(QgsRendererRangeV2(0, 1, QgsMarkerSymbolV2(), "0-1"))
-        ranges.append(QgsRendererRangeV2(1, 2, QgsMarkerSymbolV2(), "1-2"))
-        g = QgsGraduatedSymbolRendererV2("id / 2", ranges)
+        ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
+        ranges.append(QgsRendererRange(1, 2, QgsMarkerSymbol(), "1-2"))
+        g = QgsGraduatedSymbolRenderer("id / 2", ranges)
 
-        r = QgsRuleBasedRendererV2.convertFromRenderer(g)
+        r = QgsRuleBasedRenderer.convertFromRenderer(g)
         self.assertEqual(r.rootRule().children()[0].filterExpression(), '(id / 2) >= 0.000000 AND (id / 2) <= 1.000000')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), '(id / 2) > 1.000000 AND (id / 2) <= 2.000000')
 
         # Last try with an expression which is just a quoted field name
         ranges = []
-        ranges.append(QgsRendererRangeV2(0, 1, QgsMarkerSymbolV2(), "0-1"))
-        ranges.append(QgsRendererRangeV2(1, 2, QgsMarkerSymbolV2(), "1-2"))
-        g = QgsGraduatedSymbolRendererV2('"id"', ranges)
+        ranges.append(QgsRendererRange(0, 1, QgsMarkerSymbol(), "0-1"))
+        ranges.append(QgsRendererRange(1, 2, QgsMarkerSymbol(), "1-2"))
+        g = QgsGraduatedSymbolRenderer('"id"', ranges)
 
-        r = QgsRuleBasedRendererV2.convertFromRenderer(g)
+        r = QgsRuleBasedRenderer.convertFromRenderer(g)
         self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" >= 0.000000 AND "id" <= 1.000000')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" > 1.000000 AND "id" <= 2.000000')
 

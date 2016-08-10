@@ -29,7 +29,7 @@
 
 class QgsExpression;
 class QgsSymbolLayer;
-class QgsVectorColorRampV2;
+class QgsVectorColorRamp;
 
 typedef QMap<QString, QString> QgsStringMap;
 typedef QMap<QString, QgsSymbol* > QgsSymbolMap;
@@ -138,13 +138,13 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayer* layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
-    static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
+    static QIcon colorRampPreviewIcon( QgsVectorColorRamp* ramp, QSize size );
 
     static void drawStippledBackground( QPainter* painter, QRect rect );
 
     //! @note customContext parameter added in 2.6
     static QPixmap symbolPreviewPixmap( QgsSymbol* symbol, QSize size, QgsRenderContext* customContext = nullptr );
-    static QPixmap colorRampPreviewPixmap( QgsVectorColorRampV2* ramp, QSize size );
+    static QPixmap colorRampPreviewPixmap( QgsVectorColorRamp* ramp, QSize size );
 
     /** Returns the maximum estimated bleed for the symbol */
     static double estimateMaxSymbolBleed( QgsSymbol* symbol );
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QString symbolProperties( QgsSymbol* symbol );
 
-    static bool createSymbolLayerV2ListFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerList &layers );
+    static bool createSymbolLayerListFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerList &layers );
 
     static QgsSymbolLayer* createFillLayerFromSld( QDomElement &element );
     static QgsSymbolLayer* createLineLayerFromSld( QDomElement &element );
@@ -297,8 +297,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     static void clearSymbolMap( QgsSymbolMap& symbols );
 
-    static QgsVectorColorRampV2* loadColorRamp( QDomElement& element );
-    static QDomElement saveColorRamp( const QString& name, QgsVectorColorRampV2* ramp, QDomDocument& doc );
+    static QgsVectorColorRamp* loadColorRamp( QDomElement& element );
+    static QDomElement saveColorRamp( const QString& name, QgsVectorColorRamp* ramp, QDomDocument& doc );
 
     /**
      * Returns a friendly display name for a color

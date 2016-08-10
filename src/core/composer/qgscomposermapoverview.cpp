@@ -53,7 +53,7 @@ void QgsComposerMapOverview::createDefaultFrameSymbol()
   properties.insert( "color", "255,0,0,255" );
   properties.insert( "style", "solid" );
   properties.insert( "style_border", "no" );
-  mFrameSymbol = QgsFillSymbolV2::createSimple( properties );
+  mFrameSymbol = QgsFillSymbol::createSimple( properties );
   mFrameSymbol->setAlpha( 0.3 );
 }
 
@@ -193,7 +193,7 @@ bool QgsComposerMapOverview::readXml( const QDomElement &itemElem, const QDomDoc
   if ( !frameStyleElem.isNull() )
   {
     delete mFrameSymbol;
-    mFrameSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbolV2>( frameStyleElem );
+    mFrameSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( frameStyleElem );
   }
   return ok;
 }
@@ -242,7 +242,7 @@ void QgsComposerMapOverview::connectSignals()
   }
 }
 
-void QgsComposerMapOverview::setFrameSymbol( QgsFillSymbolV2 *symbol )
+void QgsComposerMapOverview::setFrameSymbol( QgsFillSymbol *symbol )
 {
   delete mFrameSymbol;
   mFrameSymbol = symbol;

@@ -128,8 +128,8 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
                     selFeat = random.sample(FIDs, selValue)
 
                 selran.extend(selFeat)
-            layer.setSelectedFeatures(selran)
+            layer.selectByIds(selran)
         else:
-            layer.setSelectedFeatures(range(featureCount))
+            layer.selectByIds(range(featureCount))  # FIXME: implies continuous feature ids
 
         self.setOutputValue(self.OUTPUT, filename)

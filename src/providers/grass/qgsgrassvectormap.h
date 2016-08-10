@@ -20,7 +20,7 @@
 #include <QDateTime>
 #include <QObject>
 
-#include "qgsabstractgeometryv2.h"
+#include "qgsabstractgeometry.h"
 
 #include "qgsgrass.h"
 #include "qgsgrassvectormaplayer.h"
@@ -82,16 +82,16 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 
     QHash<int, int> & oldLids() { return mOldLids; }
     QHash<int, int> & newLids() { return mNewLids; }
-    QHash<int, QgsAbstractGeometryV2*> & oldGeometries() { return mOldGeometries; }
+    QHash<int, QgsAbstractGeometry*> & oldGeometries() { return mOldGeometries; }
     QHash<int, int> & oldTypes() { return mOldTypes; }
     QHash<QgsFeatureId, int> & newCats() { return mNewCats; }
     QMap<int, QList<QgsGrassUndoCommand *> > & undoCommands() { return mUndoCommands; }
 
     /** Get geometry of line.
      * @return geometry (point,line or polygon(GV_FACE)) or 0 */
-    QgsAbstractGeometryV2 * lineGeometry( int id );
-    QgsAbstractGeometryV2 * nodeGeometry( int id );
-    QgsAbstractGeometryV2 * areaGeometry( int id );
+    QgsAbstractGeometry * lineGeometry( int id );
+    QgsAbstractGeometry * nodeGeometry( int id );
+    QgsAbstractGeometry * areaGeometry( int id );
 
     /** Open map if not yet open. Open/close lock */
     bool open();
@@ -193,7 +193,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     // Current line ids for old line ids (old lid -> new lid)
     QHash<int, int> mNewLids;
     // Hash of original lines' geometries of lines which were changed, keys are GRASS lid
-    QHash<int, QgsAbstractGeometryV2*> mOldGeometries;
+    QHash<int, QgsAbstractGeometry*> mOldGeometries;
     // Hash of original lines' geometries GRASS types of lines which were changed, keys are GRASS lid
     QHash<int, int> mOldTypes;
     // New categories attached to new features or old features without category

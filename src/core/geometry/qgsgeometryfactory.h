@@ -20,8 +20,8 @@
 
 #include <QString>
 
-class QgsAbstractGeometryV2;
-class QgsLineStringV2;
+class QgsAbstractGeometry;
+class QgsLineString;
 class QgsConstWkbPtr;
 class QgsRectangle;
 
@@ -45,31 +45,31 @@ class CORE_EXPORT QgsGeometryFactory
   public:
     /** Construct geometry from a WKB string.
      */
-    static QgsAbstractGeometryV2* geomFromWkb( QgsConstWkbPtr wkb );
+    static QgsAbstractGeometry* geomFromWkb( QgsConstWkbPtr wkb );
 
     /** Construct geometry from a WKT string.
      */
-    static QgsAbstractGeometryV2* geomFromWkt( const QString& text );
+    static QgsAbstractGeometry* geomFromWkt( const QString& text );
 
     /** Construct geometry from a point */
-    static QgsAbstractGeometryV2* fromPoint( const QgsPoint& point );
+    static QgsAbstractGeometry* fromPoint( const QgsPoint& point );
     /** Construct geometry from a multipoint */
-    static QgsAbstractGeometryV2* fromMultiPoint( const QgsMultiPoint& multipoint );
+    static QgsAbstractGeometry* fromMultiPoint( const QgsMultiPoint& multipoint );
     /** Construct geometry from a polyline */
-    static QgsAbstractGeometryV2* fromPolyline( const QgsPolyline& polyline );
+    static QgsAbstractGeometry* fromPolyline( const QgsPolyline& polyline );
     /** Construct geometry from a multipolyline*/
-    static QgsAbstractGeometryV2* fromMultiPolyline( const QgsMultiPolyline& multiline );
+    static QgsAbstractGeometry* fromMultiPolyline( const QgsMultiPolyline& multiline );
     /** Construct geometry from a polygon */
-    static QgsAbstractGeometryV2* fromPolygon( const QgsPolygon& polygon );
+    static QgsAbstractGeometry* fromPolygon( const QgsPolygon& polygon );
     /** Construct geometry from a multipolygon */
-    static QgsAbstractGeometryV2* fromMultiPolygon( const QgsMultiPolygon& multipoly );
+    static QgsAbstractGeometry* fromMultiPolygon( const QgsMultiPolygon& multipoly );
     /** Construct geometry from a rectangle */
-    static QgsAbstractGeometryV2* fromRect( const QgsRectangle& rect );
+    static QgsAbstractGeometry* fromRect( const QgsRectangle& rect );
     /** Return empty geometry from wkb type*/
-    static QgsAbstractGeometryV2* geomFromWkbType( QgsWkbTypes::Type t );
+    static QgsAbstractGeometry* geomFromWkbType( QgsWkbTypes::Type t );
 
   private:
-    static QgsLineStringV2* linestringFromPolyline( const QgsPolyline& polyline );
+    static QgsLineString* linestringFromPolyline( const QgsPolyline& polyline );
 };
 
 #endif // QGSGEOMETRYFACTORY_H

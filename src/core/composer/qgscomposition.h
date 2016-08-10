@@ -61,7 +61,7 @@ class QgsComposerMultiFrame;
 class QgsComposerMultiFrameCommand;
 class QgsVectorLayer;
 class QgsComposer;
-class QgsFillSymbolV2;
+class QgsFillSymbol;
 class QgsDataDefined;
 class QgsComposerModel;
 class QgsPaperItem;
@@ -222,9 +222,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     bool shouldExportPage( const int page ) const;
 
     /** Note: added in version 2.1*/
-    void setPageStyleSymbol( QgsFillSymbolV2* symbol );
+    void setPageStyleSymbol( QgsFillSymbol* symbol );
     /** Note: added in version 2.1*/
-    QgsFillSymbolV2* pageStyleSymbol() { return mPageStyleSymbol; }
+    QgsFillSymbol* pageStyleSymbol() { return mPageStyleSymbol; }
 
     /** Returns the position within a page of a point in the composition
       @note Added in QGIS 2.1
@@ -926,7 +926,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     double mSpaceBetweenPages; //space in preview between pages
 
     /** Drawing style for page*/
-    QgsFillSymbolV2* mPageStyleSymbol;
+    QgsFillSymbol* mPageStyleSymbol;
     void createDefaultPageStyleSymbol();
 
     /** List multiframe objects*/

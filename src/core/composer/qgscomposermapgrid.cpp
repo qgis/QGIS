@@ -244,7 +244,7 @@ void QgsComposerMapGrid::createDefaultGridLineSymbol()
   properties.insert( "color", "0,0,0,255" );
   properties.insert( "width", "0.3" );
   properties.insert( "capstyle", "flat" );
-  mGridLineSymbol = QgsLineSymbolV2::createSimple( properties );
+  mGridLineSymbol = QgsLineSymbol::createSimple( properties );
 }
 
 void QgsComposerMapGrid::createDefaultGridMarkerSymbol()
@@ -254,7 +254,7 @@ void QgsComposerMapGrid::createDefaultGridMarkerSymbol()
   properties.insert( "name", "circle" );
   properties.insert( "size", "2.0" );
   properties.insert( "color", "0,0,0,255" );
-  mGridMarkerSymbol = QgsMarkerSymbolV2::createSimple( properties );
+  mGridMarkerSymbol = QgsMarkerSymbol::createSimple( properties );
 }
 
 void QgsComposerMapGrid::setGridLineWidth( const double width )
@@ -377,13 +377,13 @@ bool QgsComposerMapGrid::readXml( const QDomElement& itemElem, const QDomDocumen
     if ( !symbolElem.isNull() )
     {
       delete mGridLineSymbol;
-      mGridLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbolV2>( symbolElem );
+      mGridLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem );
     }
   }
   else
   {
     //old project file, read penWidth /penColorRed, penColorGreen, penColorBlue
-    mGridLineSymbol = QgsLineSymbolV2::createSimple( QgsStringMap() );
+    mGridLineSymbol = QgsLineSymbol::createSimple( QgsStringMap() );
     mGridLineSymbol->setWidth( itemElem.attribute( "penWidth", "0" ).toDouble() );
     mGridLineSymbol->setColor( QColor( itemElem.attribute( "penColorRed", "0" ).toInt(),
                                        itemElem.attribute( "penColorGreen", "0" ).toInt(),
@@ -397,7 +397,7 @@ bool QgsComposerMapGrid::readXml( const QDomElement& itemElem, const QDomDocumen
     if ( !symbolElem.isNull() )
     {
       delete mGridMarkerSymbol;
-      mGridMarkerSymbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbolV2>( symbolElem );
+      mGridMarkerSymbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem );
     }
   }
 
@@ -2010,13 +2010,13 @@ QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( QPointF p
   return distanceToSide.at( 0 ).second;
 }
 
-void QgsComposerMapGrid::setLineSymbol( QgsLineSymbolV2* symbol )
+void QgsComposerMapGrid::setLineSymbol( QgsLineSymbol* symbol )
 {
   delete mGridLineSymbol;
   mGridLineSymbol = symbol;
 }
 
-void QgsComposerMapGrid::setMarkerSymbol( QgsMarkerSymbolV2 *symbol )
+void QgsComposerMapGrid::setMarkerSymbol( QgsMarkerSymbol *symbol )
 {
   delete mGridMarkerSymbol;
   mGridMarkerSymbol = symbol;

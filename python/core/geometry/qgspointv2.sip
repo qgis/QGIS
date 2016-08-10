@@ -3,7 +3,7 @@
  * \brief Point geometry type, with support for z-dimension and m-values.
  * \note added in QGIS 2.10
  */
-class QgsPointV2: public QgsAbstractGeometryV2
+class QgsPointV2: public QgsAbstractGeometry
 {
 %TypeHeaderCode
 #include <qgspointv2.h>
@@ -157,7 +157,7 @@ class QgsPointV2: public QgsAbstractGeometryV2
                     bool transformZ = false );
     void transform( const QTransform& t );
     virtual QList< QList< QList< QgsPointV2 > > > coordinateSequence() const;
-    virtual QgsAbstractGeometryV2* boundary() const /Factory/;
+    virtual QgsAbstractGeometry* boundary() const /Factory/;
 
     //low-level editing
     virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex );

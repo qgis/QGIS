@@ -21,11 +21,11 @@
 
 #include <qgsfield.h>
 #include <qgsgeometry.h>
-#include <qgsmultipointv2.h>
-#include <qgsmultilinestringv2.h>
-#include <qgsmultipolygonv2.h>
-#include <qgspolygonv2.h>
-#include <qgslinestringv2.h>
+#include <qgsmultipoint.h>
+#include <qgsmultilinestring.h>
+#include <qgsmultipolygon.h>
+#include <qgspolygon.h>
+#include <qgslinestring.h>
 #include <qgsvectorlayer.h>
 
 class QgsGlobeFeatureUtils
@@ -41,9 +41,9 @@ class QgsGlobeFeatureUtils
       return osg::Vec3d( pt.x(), pt.y(), pt.z() );
     }
 
-    static inline osgEarth::Features::LineString* lineStringFromQgsLineString( const QgsLineStringV2* lineString )
+    static inline osgEarth::Features::LineString* lineStringFromQgsLineString( const QgsLineString* lineString )
     {
-      QgsLineStringV2* linearString = lineString->curveToLine();
+      QgsLineString* linearString = lineString->curveToLine();
       osgEarth::Features::LineString* retLineString = new osgEarth::Features::LineString();
       for ( int iVtx = 0, nVtx = linearString->vertexCount(); iVtx < nVtx; ++iVtx )
       {
@@ -116,16 +116,16 @@ class QgsGlobeFeatureUtils
         case QgsWkbTypes::CircularString:
         case QgsWkbTypes::CompoundCurve:
         {
-          return lineStringFromQgsLineString( static_cast<QgsLineStringV2*>( geom.geometry() ) );
+          return lineStringFromQgsLineString( static_cast<QgsLineString*>( geom.geometry() ) );
         }
 
         case QgsWkbTypes::MultiLineString:
         {
           osgEarth::Features::MultiGeometry* multiGeometry = new osgEarth::Features::MultiGeometry();
-          QgsMultiLineStringV2* multiLineString = static_cast<QgsMultiLineStringV2*>( geom.geometry() );
+          QgsMultiLineString* multiLineString = static_cast<QgsMultiLineString*>( geom.geometry() );
           for ( int i = 0, n = multiLineString->numGeometries(); i < n; ++i )
           {
-            multiGeometry->getComponents().push_back( lineStringFromQgsLineString( static_cast<QgsLineStringV2*>( multiLineString->geometryN( i ) ) ) );
+            multiGeometry->getComponents().push_back( lineStringFromQgsLineString( static_cast<QgsLineString*>( multiLineString->geometryN( i ) ) ) );
           }
           return multiGeometry;
         }

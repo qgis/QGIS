@@ -18,14 +18,14 @@
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsrectangle.h"
-#include "geometry/qgsabstractgeometryv2.h"
-#include "geometry/qgscircularstringv2.h"
-#include "geometry/qgscompoundcurvev2.h"
-#include "geometry/qgscurvepolygonv2.h"
-#include "geometry/qgslinestringv2.h"
-#include "geometry/qgsmultipointv2.h"
-#include "geometry/qgsmulticurvev2.h"
-#include "geometry/qgspolygonv2.h"
+#include "geometry/qgsabstractgeometry.h"
+#include "geometry/qgscircularstring.h"
+#include "geometry/qgscompoundcurve.h"
+#include "geometry/qgscurvepolygon.h"
+#include "geometry/qgslinestring.h"
+#include "geometry/qgsmultipoint.h"
+#include "geometry/qgsmulticurve.h"
+#include "geometry/qgspolygon.h"
 #include "geometry/qgspointv2.h"
 
 #include <QEventLoop>
@@ -114,7 +114,7 @@ static QgsPointV2* parsePoint( const QVariantList& coordList, QgsWkbTypes::Type 
   return new QgsPointV2( pointType, x, y, z, m );
 }
 
-static QgsCircularStringV2* parseCircularString( const QVariantMap& curveData, QgsWkbTypes::Type pointType, const QgsPointV2& startPoint )
+static QgsCircularString* parseCircularString( const QVariantMap& curveData, QgsWkbTypes::Type pointType, const QgsPointV2& startPoint )
 {
   QVariantList coordsList = curveData["c"].toList();
   if ( coordsList.isEmpty() )
@@ -131,16 +131,16 @@ static QgsCircularStringV2* parseCircularString( const QVariantMap& curveData, Q
     points.append( *point );
     delete point;
   }
-  QgsCircularStringV2* curve = new QgsCircularStringV2();
+  QgsCircularString* curve = new QgsCircularString();
   curve->setPoints( points );
   return curve;
 }
 
-static QgsCompoundCurveV2* parseCompoundCurve( const QVariantList& curvesList, QgsWkbTypes::Type pointType )
+static QgsCompoundCurve* parseCompoundCurve( const QVariantList& curvesList, QgsWkbTypes::Type pointType )
 {
   // [[6,3],[5,3],{"b":[[3,2],[6,1],[2,4]]},[1,2],{"c": [[3,3],[1,4]]}]
-  QgsCompoundCurveV2* compoundCurve = new QgsCompoundCurveV2();
-  QgsLineStringV2* lineString = new QgsLineStringV2();
+  QgsCompoundCurve* compoundCurve = new QgsCompoundCurve();
+  QgsLineString* lineString = new QgsLineString();
   compoundCurve->addCurve( lineString );
   foreach ( const QVariant& curveData, curvesList )
   {
@@ -158,7 +158,7 @@ static QgsCompoundCurveV2* parseCompoundCurve( const QVariantList& curvesList, Q
     else if ( curveData.type() == QVariant::Map )
     {
       // The last point of the linestring is the start point of this circular string
-      QgsCircularStringV2* circularString = parseCircularString( curveData.toMap(), pointType, lineString->endPoint() );
+      QgsCircularString* circularString = parseCircularString( curveData.toMap(), pointType, lineString->endPoint() );
       if ( !circularString )
       {
         delete compoundCurve;
@@ -172,7 +172,7 @@ static QgsCompoundCurveV2* parseCompoundCurve( const QVariantList& curvesList, Q
       compoundCurve->addCurve( circularString );
 
       // Prepare a new line string
-      lineString = new QgsLineStringV2;
+      lineString = new QgsLineString;
       compoundCurve->addCurve( lineString );
       lineString->addVertex( circularString->endPoint() );
     }
@@ -180,7 +180,7 @@ static QgsCompoundCurveV2* parseCompoundCurve( const QVariantList& curvesList, Q
   return compoundCurve;
 }
 
-static QgsAbstractGeometryV2* parseEsriGeometryPoint( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
+static QgsAbstractGeometry* parseEsriGeometryPoint( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
 {
   // {"x" : <x>, "y" : <y>, "z" : <z>, "m" : <m>}
   bool xok = false, yok = false;
@@ -193,7 +193,7 @@ static QgsAbstractGeometryV2* parseEsriGeometryPoint( const QVariantMap& geometr
   return new QgsPointV2( pointType, x, y, z, m );
 }
 
-static QgsAbstractGeometryV2* parseEsriGeometryMultiPoint( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
+static QgsAbstractGeometry* parseEsriGeometryMultiPoint( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
 {
   // {"points" : [[ <x1>, <y1>, <z1>, <m1> ] , [ <x2>, <y2>, <z2>, <m2> ], ... ]}
   QVariantList coordsList = geometryData["points"].toList();
@@ -215,7 +215,7 @@ static QgsAbstractGeometryV2* parseEsriGeometryMultiPoint( const QVariantMap& ge
   return multiPoint;
 }
 
-static QgsAbstractGeometryV2* parseEsriGeometryPolyline( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
+static QgsAbstractGeometry* parseEsriGeometryPolyline( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
 {
   // {"curvePaths": [[[0,0], {"c": [[3,3],[1,4]]} ]]}
   QVariantList pathsList;
@@ -225,10 +225,10 @@ static QgsAbstractGeometryV2* parseEsriGeometryPolyline( const QVariantMap& geom
     pathsList = geometryData["curvePaths"].toList();
   if ( pathsList.isEmpty() )
     return nullptr;
-  QgsMultiCurveV2* multiCurve = new QgsMultiCurveV2();
+  QgsMultiCurve* multiCurve = new QgsMultiCurve();
   foreach ( const QVariant& pathData, pathsList )
   {
-    QgsCompoundCurveV2* curve = parseCompoundCurve( pathData.toList(), pointType );
+    QgsCompoundCurve* curve = parseCompoundCurve( pathData.toList(), pointType );
     if ( !curve )
     {
       delete multiCurve;
@@ -239,7 +239,7 @@ static QgsAbstractGeometryV2* parseEsriGeometryPolyline( const QVariantMap& geom
   return multiCurve;
 }
 
-static QgsAbstractGeometryV2* parseEsriGeometryPolygon( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
+static QgsAbstractGeometry* parseEsriGeometryPolygon( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
 {
   // {"curveRings": [[[0,0], {"c": [[3,3],[1,4]]} ]]}
   QVariantList ringsList;
@@ -249,8 +249,8 @@ static QgsAbstractGeometryV2* parseEsriGeometryPolygon( const QVariantMap& geome
     ringsList = geometryData["ringPaths"].toList();
   if ( ringsList.isEmpty() )
     return nullptr;
-  QgsCurvePolygonV2* polygon = new QgsCurvePolygonV2();
-  QgsCompoundCurveV2* ext = parseCompoundCurve( ringsList.front().toList(), pointType );
+  QgsCurvePolygon* polygon = new QgsCurvePolygon();
+  QgsCompoundCurve* ext = parseCompoundCurve( ringsList.front().toList(), pointType );
   if ( !ext )
   {
     delete polygon;
@@ -259,7 +259,7 @@ static QgsAbstractGeometryV2* parseEsriGeometryPolygon( const QVariantMap& geome
   polygon->setExteriorRing( ext );
   for ( int i = 1, n = ringsList.size(); i < n; ++i )
   {
-    QgsCompoundCurveV2* curve = parseCompoundCurve( ringsList[i].toList(), pointType );
+    QgsCompoundCurve* curve = parseCompoundCurve( ringsList[i].toList(), pointType );
     if ( !curve )
     {
       delete polygon;
@@ -270,7 +270,7 @@ static QgsAbstractGeometryV2* parseEsriGeometryPolygon( const QVariantMap& geome
   return polygon;
 }
 
-static QgsAbstractGeometryV2* parseEsriEnvelope( const QVariantMap& geometryData )
+static QgsAbstractGeometry* parseEsriEnvelope( const QVariantMap& geometryData )
 {
   // {"xmin" : -109.55, "ymin" : 25.76, "xmax" : -86.39, "ymax" : 49.94}
   bool xminOk = false, yminOk = false, xmaxOk = false, ymaxOk = false;
@@ -280,7 +280,7 @@ static QgsAbstractGeometryV2* parseEsriEnvelope( const QVariantMap& geometryData
   double ymax = geometryData["ymax"].toDouble( &ymaxOk );
   if ( !xminOk || !yminOk || !xmaxOk || !ymaxOk )
     return nullptr;
-  QgsLineStringV2* ext = new QgsLineStringV2();
+  QgsLineString* ext = new QgsLineString();
   ext->addVertex( QgsPointV2( xmin, ymin ) );
   ext->addVertex( QgsPointV2( xmax, ymin ) );
   ext->addVertex( QgsPointV2( xmax, ymax ) );
@@ -291,7 +291,7 @@ static QgsAbstractGeometryV2* parseEsriEnvelope( const QVariantMap& geometryData
   return poly;
 }
 
-QgsAbstractGeometryV2* QgsArcGisRestUtils::parseEsriGeoJSON( const QVariantMap& geometryData, const QString& esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem *crs )
+QgsAbstractGeometry* QgsArcGisRestUtils::parseEsriGeoJSON( const QVariantMap& geometryData, const QString& esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem *crs )
 {
   QgsWkbTypes::Type pointType = QgsWkbTypes::zmType( QgsWkbTypes::Point, readZ, readM );
   if ( crs )

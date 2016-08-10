@@ -23,7 +23,7 @@ import sys
 
 from qgis.PyQt.QtCore import QThreadPool, qDebug
 
-from qgis.core import QgsPalLayerSettings, QgsSingleSymbolRendererV2, QgsMarkerSymbolV2
+from qgis.core import QgsPalLayerSettings, QgsSingleSymbolRenderer, QgsMarkerSymbol
 from utilities import getTempfilePath, renderMapToImage, mapSettingsString
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
@@ -256,14 +256,14 @@ class TestPointPlacement(TestPlacementBase):
         # Test ordered placements for point using symbol bounds offset
         self.layer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_placement')
         # Make a big symbol
-        symbol = QgsMarkerSymbolV2.createSimple({u'color': u'31,120,180,255',
-                                                 u'outline_color': u'0,0,0,0',
-                                                 u'outline_style': u'solid',
-                                                 u'size': u'10',
-                                                 u'name': u'rectangle',
-                                                 u'size_unit': u'MM'})
-        renderer = QgsSingleSymbolRendererV2(symbol)
-        self.layer.setRendererV2(renderer)
+        symbol = QgsMarkerSymbol.createSimple({u'color': u'31,120,180,255',
+                                               u'outline_color': u'0,0,0,0',
+                                               u'outline_style': u'solid',
+                                               u'size': u'10',
+                                               u'name': u'rectangle',
+                                               u'size_unit': u'MM'})
+        renderer = QgsSingleSymbolRenderer(symbol)
+        self.layer.setRenderer(renderer)
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
         self.lyr.dist = 2

@@ -74,7 +74,7 @@ void QgsFieldModel::setLayer( QgsVectorLayer *layer )
   if ( mLayer )
   {
     disconnect( mLayer, SIGNAL( updatedFields() ), this, SLOT( updateModel() ) );
-    disconnect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( layerDeleted() ) );
+    disconnect( mLayer, SIGNAL( destroyed() ), this, SLOT( layerDeleted() ) );
   }
 
   mLayer = layer;
@@ -82,7 +82,7 @@ void QgsFieldModel::setLayer( QgsVectorLayer *layer )
   if ( mLayer )
   {
     connect( mLayer, SIGNAL( updatedFields() ), this, SLOT( updateModel() ) );
-    connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( layerDeleted() ) );
+    connect( mLayer, SIGNAL( destroyed() ), this, SLOT( layerDeleted() ) );
   }
 
   updateModel();

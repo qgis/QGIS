@@ -87,7 +87,7 @@ void QgsComposerPolyline::createDefaultPolylineStyleSymbol()
   properties.insert( "width", "0.3" );
   properties.insert( "capstyle", "square" );
 
-  mPolylineStyleSymbol.reset( QgsLineSymbolV2::createSimple( properties ) );
+  mPolylineStyleSymbol.reset( QgsLineSymbol::createSimple( properties ) );
 
   emit frameChanged();
 }
@@ -126,12 +126,12 @@ void QgsComposerPolyline::_draw( QPainter *painter )
 
 void QgsComposerPolyline::_readXmlStyle( const QDomElement &elmt )
 {
-  mPolylineStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbolV2>( elmt ) );
+  mPolylineStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elmt ) );
 }
 
-void QgsComposerPolyline::setPolylineStyleSymbol( QgsLineSymbolV2* symbol )
+void QgsComposerPolyline::setPolylineStyleSymbol( QgsLineSymbol* symbol )
 {
-  mPolylineStyleSymbol.reset( static_cast<QgsLineSymbolV2*>( symbol->clone() ) );
+  mPolylineStyleSymbol.reset( static_cast<QgsLineSymbol*>( symbol->clone() ) );
   update();
   emit frameChanged();
 }

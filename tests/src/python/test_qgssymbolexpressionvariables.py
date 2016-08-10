@@ -34,8 +34,8 @@ from qgis.core import (
     QgsMapLayerRegistry,
     QgsRectangle,
     QgsMultiRenderChecker,
-    QgsSingleSymbolRendererV2,
-    QgsFillSymbolV2,
+    QgsSingleSymbolRenderer,
+    QgsFillSymbol,
 )
 
 from qgis.testing import unittest, start_app
@@ -66,11 +66,11 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
 
     def testPartNum(self):
         # Create rulebased style
-        sym1 = QgsFillSymbolV2.createSimple({'color': '#fdbf6f'})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
 
-        renderer = QgsSingleSymbolRendererV2(sym1)
+        renderer = QgsSingleSymbolRenderer(sym1)
         renderer.symbols()[0].symbolLayers()[0].setDataDefinedProperty('color', 'color_rgb( (@geometry_part_num - 1) * 200, 0, 0 )')
-        self.layer.setRendererV2(renderer)
+        self.layer.setRenderer(renderer)
 
         # Setup rendering check
         renderchecker = QgsMultiRenderChecker()
@@ -82,11 +82,11 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
 
     def testPartCount(self):
         # Create rulebased style
-        sym1 = QgsFillSymbolV2.createSimple({'color': '#fdbf6f'})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
 
-        renderer = QgsSingleSymbolRendererV2(sym1)
+        renderer = QgsSingleSymbolRenderer(sym1)
         renderer.symbols()[0].symbolLayers()[0].setDataDefinedProperty('color', 'color_rgb( (@geometry_part_count - 1) * 200, 0, 0 )')
-        self.layer.setRendererV2(renderer)
+        self.layer.setRenderer(renderer)
 
         # Setup rendering check
         renderchecker = QgsMultiRenderChecker()
@@ -98,11 +98,11 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
 
     def testSymbolColor(self):
         # Create rulebased style
-        sym1 = QgsFillSymbolV2.createSimple({'color': '#ff0000'})
+        sym1 = QgsFillSymbol.createSimple({'color': '#ff0000'})
 
-        renderer = QgsSingleSymbolRendererV2(sym1)
+        renderer = QgsSingleSymbolRenderer(sym1)
         renderer.symbols()[0].symbolLayers()[0].setDataDefinedProperty('color', 'set_color_part( @symbol_color, \'value\', "Value" * 4)')
-        self.layer.setRendererV2(renderer)
+        self.layer.setRenderer(renderer)
 
         # Setup rendering check
         renderchecker = QgsMultiRenderChecker()

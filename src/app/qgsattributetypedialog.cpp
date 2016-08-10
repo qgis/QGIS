@@ -83,7 +83,7 @@ QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
   qDeleteAll( mEditorConfigWidgets );
 }
 
-const QString QgsAttributeTypeDialog::editorWidgetV2Type()
+const QString QgsAttributeTypeDialog::editorWidgetType()
 {
   QListWidgetItem* item = selectionListWidget->currentItem();
   if ( item )
@@ -96,7 +96,7 @@ const QString QgsAttributeTypeDialog::editorWidgetV2Type()
   }
 }
 
-const QString QgsAttributeTypeDialog::editorWidgetV2Text()
+const QString QgsAttributeTypeDialog::editorWidgetText()
 {
   QListWidgetItem* item = selectionListWidget->currentItem();
   if ( item )
@@ -109,7 +109,7 @@ const QString QgsAttributeTypeDialog::editorWidgetV2Text()
   }
 }
 
-const QgsEditorWidgetConfig QgsAttributeTypeDialog::editorWidgetV2Config()
+const QgsEditorWidgetConfig QgsAttributeTypeDialog::editorWidgetConfig()
 {
   QListWidgetItem* item = selectionListWidget->currentItem();
   if ( item )
@@ -125,7 +125,7 @@ const QgsEditorWidgetConfig QgsAttributeTypeDialog::editorWidgetV2Config()
   return QgsEditorWidgetConfig();
 }
 
-void QgsAttributeTypeDialog::setWidgetV2Type( const QString& type )
+void QgsAttributeTypeDialog::setWidgetType( const QString& type )
 {
   for ( int i = 0; i < selectionListWidget->count(); i++ )
   {
@@ -147,7 +147,7 @@ void QgsAttributeTypeDialog::setWidgetV2Type( const QString& type )
 
     if ( cfgWdg )
     {
-      cfgWdg->setConfig( mWidgetV2Config );
+      cfgWdg->setConfig( mWidgetConfig );
 
       stackedWidget->addWidget( cfgWdg );
       stackedWidget->setCurrentWidget( cfgWdg );
@@ -160,9 +160,9 @@ void QgsAttributeTypeDialog::setWidgetV2Type( const QString& type )
   }
 }
 
-void QgsAttributeTypeDialog::setWidgetV2Config( const QgsEditorWidgetConfig& config )
+void QgsAttributeTypeDialog::setWidgetConfig( const QgsEditorWidgetConfig& config )
 {
-  mWidgetV2Config = config;
+  mWidgetConfig = config;
 }
 
 bool QgsAttributeTypeDialog::fieldEditable() const
@@ -219,5 +219,5 @@ void QgsAttributeTypeDialog::on_selectionListWidget_currentRowChanged( int index
 {
   const QString editType = selectionListWidget->item( index )->data( Qt::UserRole ).toString();
 
-  setWidgetV2Type( editType );
+  setWidgetType( editType );
 }

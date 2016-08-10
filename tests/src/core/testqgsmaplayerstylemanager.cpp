@@ -19,7 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgssinglesymbolrendererv2.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayer.h"
 
 
@@ -82,9 +82,9 @@ void TestQgsMapLayerStyleManager::testStyle()
   QgsMapLayerStyle st;
   QCOMPARE( st.isValid(), false );
 
-  QgsLineSymbolV2* sym1 = new QgsLineSymbolV2();
+  QgsLineSymbol* sym1 = new QgsLineSymbol();
   sym1->setColor( Qt::magenta );
-  mVL->setRendererV2( new QgsSingleSymbolRendererV2( sym1 ) );
+  mVL->setRenderer( new QgsSingleSymbolRenderer( sym1 ) );
 
   QgsMapLayerStyle st1;
   st1.readFromLayer( mVL );
@@ -92,9 +92,9 @@ void TestQgsMapLayerStyleManager::testStyle()
 
   qDebug( "CNT-1: %s", st1.xmlData().toAscii().data() );
 
-  QgsLineSymbolV2* sym2 = new QgsLineSymbolV2();
+  QgsLineSymbol* sym2 = new QgsLineSymbol();
   sym2->setColor( Qt::red );
-  mVL->setRendererV2( new QgsSingleSymbolRendererV2( sym2 ) );
+  mVL->setRenderer( new QgsSingleSymbolRenderer( sym2 ) );
 
   QgsMapLayerStyle st2;
   st2.readFromLayer( mVL );
@@ -103,13 +103,13 @@ void TestQgsMapLayerStyleManager::testStyle()
 
   st1.writeToLayer( mVL );
 
-  QgsSingleSymbolRendererV2* r1 = dynamic_cast<QgsSingleSymbolRendererV2*>( mVL->rendererV2() );
+  QgsSingleSymbolRenderer* r1 = dynamic_cast<QgsSingleSymbolRenderer*>( mVL->renderer() );
   QVERIFY( r1 );
   QCOMPARE( r1->symbol()->color(), QColor( Qt::magenta ) );
 
   st2.writeToLayer( mVL );
 
-  QgsSingleSymbolRendererV2* r2 = dynamic_cast<QgsSingleSymbolRendererV2*>( mVL->rendererV2() );
+  QgsSingleSymbolRenderer* r2 = dynamic_cast<QgsSingleSymbolRenderer*>( mVL->renderer() );
   QVERIFY( r2 );
   QCOMPARE( r2->symbol()->color(), QColor( Qt::red ) );
 }
@@ -117,7 +117,7 @@ void TestQgsMapLayerStyleManager::testStyle()
 
 void TestQgsMapLayerStyleManager::testReadWrite()
 {
-  QgsSingleSymbolRendererV2* r0 = dynamic_cast<QgsSingleSymbolRendererV2*>( mVL->rendererV2() );
+  QgsSingleSymbolRenderer* r0 = dynamic_cast<QgsSingleSymbolRenderer*>( mVL->renderer() );
   QVERIFY( r0 );
   r0->symbol()->setColor( Qt::red );
 
@@ -127,7 +127,7 @@ void TestQgsMapLayerStyleManager::testReadWrite()
 
   sm0.addStyleFromLayer( "blue" );
   sm0.setCurrentStyle( "blue" );
-  QgsSingleSymbolRendererV2* r1 = dynamic_cast<QgsSingleSymbolRendererV2*>( mVL->rendererV2() );
+  QgsSingleSymbolRenderer* r1 = dynamic_cast<QgsSingleSymbolRenderer*>( mVL->renderer() );
   QVERIFY( r1 );
   r1->symbol()->setColor( Qt::blue );
 
@@ -154,21 +154,21 @@ void TestQgsMapLayerStyleManager::testReadWrite()
   // now use the default style - the symbol should get red color
   sm1.setCurrentStyle( QString() );
 
-  QgsSingleSymbolRendererV2* r2 = dynamic_cast<QgsSingleSymbolRendererV2*>( mVL->rendererV2() );
+  QgsSingleSymbolRenderer* r2 = dynamic_cast<QgsSingleSymbolRenderer*>( mVL->renderer() );
   QVERIFY( r2 );
   QCOMPARE( r2->symbol()->color(), QColor( Qt::red ) );
 }
 
 static void _setVLColor( QgsVectorLayer* vl, const QColor& c )
 {
-  QgsSingleSymbolRendererV2* renderer = dynamic_cast<QgsSingleSymbolRendererV2*>( vl->rendererV2() );
+  QgsSingleSymbolRenderer* renderer = dynamic_cast<QgsSingleSymbolRenderer*>( vl->renderer() );
   if ( renderer )
     renderer->symbol()->setColor( c );
 }
 
 static QColor _getVLColor( QgsVectorLayer* vl )
 {
-  QgsSingleSymbolRendererV2* renderer = dynamic_cast<QgsSingleSymbolRendererV2*>( vl->rendererV2() );
+  QgsSingleSymbolRenderer* renderer = dynamic_cast<QgsSingleSymbolRenderer*>( vl->renderer() );
   if ( renderer )
     return renderer->symbol()->color();
   else

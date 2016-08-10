@@ -18,7 +18,7 @@
 #include "qgsexpression.h"
 #include "qgsfontutils.h"
 #include "qgssymbollayerutils.h"
-#include "qgsmarkersymbollayerv2.h"
+#include "qgsmarkersymbollayer.h"
 
 QgsConditionalLayerStyles::QgsConditionalLayerStyles()
     : mRowStyles( QList<QgsConditionalStyle>() )
@@ -304,7 +304,7 @@ bool QgsConditionalStyle::readXml( const QDomNode &node )
   QDomElement symbolElm = styleElm.firstChildElement( "symbol" );
   if ( !symbolElm.isNull() )
   {
-    QgsSymbol* symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbolV2>( symbolElm );
+    QgsSymbol* symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElm );
     setSymbol( symbol );
   }
   return true;

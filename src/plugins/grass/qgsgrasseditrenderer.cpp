@@ -16,13 +16,13 @@
 
 #include  <QVBoxLayout>
 
-#include "qgscategorizedsymbolrendererv2.h"
-#include "qgscategorizedsymbolrendererv2widget.h"
+#include "qgscategorizedsymbolrenderer.h"
+#include "qgscategorizedsymbolrendererwidget.h"
 #include "qgsfeature.h"
-#include "qgslinesymbollayerv2.h"
+#include "qgslinesymbollayer.h"
 #include "qgslogger.h"
-#include "qgsmarkersymbollayerv2.h"
-#include "qgsrendererv2registry.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsrendererregistry.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
@@ -31,7 +31,7 @@
 #include "qgsgrassprovider.h"
 
 QgsGrassEditRenderer::QgsGrassEditRenderer()
-    : QgsFeatureRendererV2( "grassEdit" )
+    : QgsFeatureRenderer( "grassEdit" )
     , mLineRenderer( 0 )
     , mMarkerRenderer( 0 )
 {
@@ -54,29 +54,29 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   QgsCategoryList categoryList;
 
   // first/last vertex marker to distinguish vertices from nodes
-  QgsMarkerLineSymbolLayerV2 * firstVertexMarkerLine = new QgsMarkerLineSymbolLayerV2( false );
-  QgsSimpleMarkerSymbolLayerV2 *markerSymbolLayer = new QgsSimpleMarkerSymbolLayerV2( QgsSimpleMarkerSymbolLayerBase::Cross2, 2 );
+  QgsMarkerLineSymbolLayer * firstVertexMarkerLine = new QgsMarkerLineSymbolLayer( false );
+  QgsSimpleMarkerSymbolLayer *markerSymbolLayer = new QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Cross2, 2 );
   markerSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   markerSymbolLayer->setBorderColor( QColor( 255, 0, 0 ) );
   markerSymbolLayer->setOutlineWidth( 0.5 );
   QgsSymbolLayerList markerLayers;
   markerLayers << markerSymbolLayer;
-  QgsMarkerSymbolV2 * markerSymbol = new QgsMarkerSymbolV2( markerLayers );
+  QgsMarkerSymbol * markerSymbol = new QgsMarkerSymbol( markerLayers );
   firstVertexMarkerLine->setSubSymbol( markerSymbol );
-  firstVertexMarkerLine->setPlacement( QgsMarkerLineSymbolLayerV2::FirstVertex );
-  QgsMarkerLineSymbolLayerV2 * lastVertexMarkerLine = static_cast<QgsMarkerLineSymbolLayerV2 *>( firstVertexMarkerLine->clone() );
-  lastVertexMarkerLine->setPlacement( QgsMarkerLineSymbolLayerV2::LastVertex );
+  firstVertexMarkerLine->setPlacement( QgsMarkerLineSymbolLayer::FirstVertex );
+  QgsMarkerLineSymbolLayer * lastVertexMarkerLine = static_cast<QgsMarkerLineSymbolLayer *>( firstVertexMarkerLine->clone() );
+  lastVertexMarkerLine->setPlacement( QgsMarkerLineSymbolLayer::LastVertex );
   Q_FOREACH ( int value, colors.keys() )
   {
     QgsSymbol * symbol = QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry );
     symbol->setColor( colors.value( value ) );
     symbol->appendSymbolLayer( firstVertexMarkerLine->clone() );
     symbol->appendSymbolLayer( lastVertexMarkerLine->clone() );
-    categoryList << QgsRendererCategoryV2( QVariant( value ), symbol, labels.value( value ) );
+    categoryList << QgsRendererCategory( QVariant( value ), symbol, labels.value( value ) );
   }
   delete firstVertexMarkerLine;
   delete lastVertexMarkerLine;
-  mLineRenderer = new QgsCategorizedSymbolRendererV2( "topo_symbol", categoryList );
+  mLineRenderer = new QgsCategorizedSymbolRenderer( "topo_symbol", categoryList );
 
   colors.clear();
   labels.clear();
@@ -97,10 +97,10 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   {
     QgsSymbol * symbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
     symbol->setColor( colors.value( value ) );
-    categoryList << QgsRendererCategoryV2( QVariant( value ), symbol, labels.value( value ) );
+    categoryList << QgsRendererCategory( QVariant( value ), symbol, labels.value( value ) );
   }
 
-  mMarkerRenderer = new QgsCategorizedSymbolRendererV2( "topo_symbol", categoryList );
+  mMarkerRenderer = new QgsCategorizedSymbolRenderer( "topo_symbol", categoryList );
 }
 
 QgsGrassEditRenderer::~QgsGrassEditRenderer()
@@ -109,12 +109,12 @@ QgsGrassEditRenderer::~QgsGrassEditRenderer()
   delete mLineRenderer;
 }
 
-void QgsGrassEditRenderer::setLineRenderer( QgsFeatureRendererV2 *renderer )
+void QgsGrassEditRenderer::setLineRenderer( QgsFeatureRenderer *renderer )
 {
   delete mLineRenderer;
   mLineRenderer = renderer;
 }
-void QgsGrassEditRenderer::setMarkerRenderer( QgsFeatureRendererV2 *renderer )
+void QgsGrassEditRenderer::setMarkerRenderer( QgsFeatureRenderer *renderer )
 {
   delete mMarkerRenderer;
   mMarkerRenderer = renderer;
@@ -178,7 +178,7 @@ QList<QString> QgsGrassEditRenderer::usedAttributes()
   return mLineRenderer->usedAttributes();
 }
 
-QgsFeatureRendererV2* QgsGrassEditRenderer::clone() const
+QgsFeatureRenderer* QgsGrassEditRenderer::clone() const
 {
   QgsGrassEditRenderer* r = new QgsGrassEditRenderer();
   if ( mLineRenderer )
@@ -219,7 +219,7 @@ QDomElement QgsGrassEditRenderer::save( QDomDocument& doc )
 }
 
 
-QgsFeatureRendererV2* QgsGrassEditRenderer::create( QDomElement& element )
+QgsFeatureRenderer* QgsGrassEditRenderer::create( QDomElement& element )
 {
   QgsGrassEditRenderer *renderer = new QgsGrassEditRenderer();
 
@@ -231,10 +231,10 @@ QgsFeatureRendererV2* QgsGrassEditRenderer::create( QDomElement& element )
     {
       QString rendererType = elem.attribute( "type" );
       QgsDebugMsg( "childElem.tagName() = " + childElem.tagName() + " rendererType = " + rendererType );
-      QgsRendererV2AbstractMetadata* meta = QgsRendererV2Registry::instance()->rendererMetadata( rendererType );
+      QgsRendererAbstractMetadata* meta = QgsRendererRegistry::instance()->rendererMetadata( rendererType );
       if ( meta )
       {
-        QgsFeatureRendererV2* subRenderer = meta->createRenderer( elem );
+        QgsFeatureRenderer* subRenderer = meta->createRenderer( elem );
         if ( subRenderer )
         {
           QgsDebugMsg( "renderer created : " + renderer->type() );
@@ -256,13 +256,13 @@ QgsFeatureRendererV2* QgsGrassEditRenderer::create( QDomElement& element )
 
 //--------------------------------------- QgsGrassEditRendererWidget --------------------------------------------
 
-QgsRendererV2Widget* QgsGrassEditRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererWidget* QgsGrassEditRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
 {
   return new QgsGrassEditRendererWidget( layer, style, renderer );
 }
 
-QgsGrassEditRendererWidget::QgsGrassEditRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    : QgsRendererV2Widget( layer, style )
+QgsGrassEditRendererWidget::QgsGrassEditRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+    : QgsRendererWidget( layer, style )
     , mRenderer( 0 )
     , mLineRendererWidget( 0 )
     , mPointRendererWidget( 0 )
@@ -275,10 +275,10 @@ QgsGrassEditRendererWidget::QgsGrassEditRendererWidget( QgsVectorLayer* layer, Q
 
   QVBoxLayout* layout = new QVBoxLayout( this );
 
-  mLineRendererWidget = QgsCategorizedSymbolRendererV2Widget::create( layer, style, mRenderer->lineRenderer()->clone() );
+  mLineRendererWidget = QgsCategorizedSymbolRendererWidget::create( layer, style, mRenderer->lineRenderer()->clone() );
   layout->addWidget( mLineRendererWidget );
 
-  mPointRendererWidget = QgsCategorizedSymbolRendererV2Widget::create( layer, style, mRenderer->pointRenderer()->clone() );
+  mPointRendererWidget = QgsCategorizedSymbolRendererWidget::create( layer, style, mRenderer->pointRenderer()->clone() );
   layout->addWidget( mPointRendererWidget );
 }
 
@@ -287,7 +287,7 @@ QgsGrassEditRendererWidget::~QgsGrassEditRendererWidget()
   delete mRenderer;
 }
 
-QgsFeatureRendererV2* QgsGrassEditRendererWidget::renderer()
+QgsFeatureRenderer* QgsGrassEditRendererWidget::renderer()
 {
   mRenderer->setLineRenderer( mLineRendererWidget->renderer()->clone() );
   mRenderer->setMarkerRenderer( mPointRendererWidget->renderer()->clone() );

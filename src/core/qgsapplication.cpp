@@ -736,7 +736,7 @@ QStringList QgsApplication::composerTemplatePaths()
   return myPathList;
 }
 
-QString QgsApplication::userStyleV2Path()
+QString QgsApplication::userStylePath()
 {
   return qgisSettingsDirPath() + QLatin1String( "symbology-ng-style.db" );
 }
@@ -840,7 +840,7 @@ QString QgsApplication::userThemesFolder()
   return qgisSettingsDirPath() + QLatin1String( "/themes" );
 }
 
-QString QgsApplication::defaultStyleV2Path()
+QString QgsApplication::defaultStylePath()
 {
   return ABISYM( mPkgDataPath ) + QLatin1String( "/resources/symbology-ng-style.db" );
 }

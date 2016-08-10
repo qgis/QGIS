@@ -31,7 +31,7 @@ void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError*>
       continue;
     }
     QgsGeometry featureGeom = feature.geometry();
-    QgsAbstractGeometryV2* geom = featureGeom.geometry();
+    QgsAbstractGeometry* geom = featureGeom.geometry();
 
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
@@ -67,7 +67,7 @@ void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError* error, int 
   }
 
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometryV2* geom = featureGeom.geometry();
+  QgsAbstractGeometry* geom = featureGeom.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if point still exists

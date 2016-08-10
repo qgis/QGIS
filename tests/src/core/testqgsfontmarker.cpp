@@ -28,8 +28,8 @@
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
 #include <qgssymbol.h>
-#include <qgssinglesymbolrendererv2.h>
-#include "qgsmarkersymbollayerv2.h"
+#include <qgssinglesymbolrenderer.h>
+#include "qgsmarkersymbollayer.h"
 #include "qgsdatadefined.h"
 #include "qgsfontutils.h"
 
@@ -68,9 +68,9 @@ class TestQgsFontMarkerSymbol : public QObject
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPointsLayer;
-    QgsFontMarkerSymbolLayerV2* mFontMarkerLayer;
-    QgsMarkerSymbolV2* mMarkerSymbol;
-    QgsSingleSymbolRendererV2* mSymbolRenderer;
+    QgsFontMarkerSymbolLayer* mFontMarkerLayer;
+    QgsMarkerSymbol* mMarkerSymbol;
+    QgsSingleSymbolRenderer* mSymbolRenderer;
     QString mTestDataDir;
     QString mReport;
 };
@@ -101,11 +101,11 @@ void TestQgsFontMarkerSymbol::initTestCase()
     QList<QgsMapLayer *>() << mpPointsLayer );
 
   //setup symbol
-  mFontMarkerLayer = new QgsFontMarkerSymbolLayerV2();
-  mMarkerSymbol = new QgsMarkerSymbolV2();
+  mFontMarkerLayer = new QgsFontMarkerSymbolLayer();
+  mMarkerSymbol = new QgsMarkerSymbol();
   mMarkerSymbol->changeSymbolLayer( 0, mFontMarkerLayer );
-  mSymbolRenderer = new QgsSingleSymbolRendererV2( mMarkerSymbol );
-  mpPointsLayer->setRendererV2( mSymbolRenderer );
+  mSymbolRenderer = new QgsSingleSymbolRenderer( mMarkerSymbol );
+  mpPointsLayer->setRenderer( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui

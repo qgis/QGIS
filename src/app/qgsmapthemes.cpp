@@ -24,7 +24,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsproject.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
 #include "qgsnewnamedialog.h"

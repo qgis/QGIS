@@ -228,7 +228,7 @@ void TestQgsMapRendererJob::testErrors()
   QgsMapLayerRegistry::instance()->addMapLayer( l );
   QgsMapSettings settings( _mapSettings( QStringList( l->id() ) ) );
 
-  l->setRendererV2( 0 ); // this has to produce an error
+  l->setRenderer( nullptr ); // this has to produce an error
 
   QgsMapRendererSequentialJob job( settings );
   job.start();

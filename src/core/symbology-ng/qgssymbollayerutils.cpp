@@ -18,7 +18,7 @@
 #include "qgssymbollayer.h"
 #include "qgssymbollayerregistry.h"
 #include "qgssymbol.h"
-#include "qgsvectorcolorrampv2.h"
+#include "qgsvectorcolorramp.h"
 #include "qgsexpression.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
@@ -619,12 +619,12 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( QgsSymbolLayer* layer, QgsUni
   return QIcon( pixmap );
 }
 
-QIcon QgsSymbolLayerUtils::colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size )
+QIcon QgsSymbolLayerUtils::colorRampPreviewIcon( QgsVectorColorRamp* ramp, QSize size )
 {
   return QIcon( colorRampPreviewPixmap( ramp, size ) );
 }
 
-QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsVectorColorRampV2* ramp, QSize size )
+QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsVectorColorRamp* ramp, QSize size )
 {
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );
@@ -951,11 +951,11 @@ QgsSymbol* QgsSymbolLayerUtils::loadSymbol( const QDomElement &element )
 
   QgsSymbol* symbol = nullptr;
   if ( symbolType == "line" )
-    symbol = new QgsLineSymbolV2( layers );
+    symbol = new QgsLineSymbol( layers );
   else if ( symbolType == "fill" )
-    symbol = new QgsFillSymbolV2( layers );
+    symbol = new QgsFillSymbol( layers );
   else if ( symbolType == "marker" )
-    symbol = new QgsMarkerSymbolV2( layers );
+    symbol = new QgsMarkerSymbol( layers );
   else
   {
     QgsDebugMsg( "unknown symbol type " + symbolType );
@@ -1069,7 +1069,7 @@ QString QgsSymbolLayerUtils::symbolProperties( QgsSymbol* symbol )
   return props;
 }
 
-bool QgsSymbolLayerUtils::createSymbolLayerV2ListFromSld( QDomElement& element,
+bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement& element,
     QgsWkbTypes::GeometryType geomType,
     QgsSymbolLayerList &layers )
 {
@@ -1839,9 +1839,9 @@ bool QgsSymbolLayerUtils::fillFromSld( QDomElement &element, Qt::BrushStyle &bru
 }
 
 void QgsSymbolLayerUtils::lineToSld( QDomDocument &doc, QDomElement &element,
-                                       Qt::PenStyle penStyle, const QColor& color, double width,
-                                       const Qt::PenJoinStyle *penJoinStyle, const Qt::PenCapStyle *penCapStyle,
-                                       const QVector<qreal> *customDashPattern, double dashOffset )
+                                     Qt::PenStyle penStyle, const QColor& color, double width,
+                                     const Qt::PenJoinStyle *penJoinStyle, const Qt::PenCapStyle *penCapStyle,
+                                     const QVector<qreal> *customDashPattern, double dashOffset )
 {
   QVector<qreal> dashPattern;
   const QVector<qreal> *pattern = &dashPattern;
@@ -1916,9 +1916,9 @@ void QgsSymbolLayerUtils::lineToSld( QDomDocument &doc, QDomElement &element,
 
 
 bool QgsSymbolLayerUtils::lineFromSld( QDomElement &element,
-    Qt::PenStyle &penStyle, QColor &color, double &width,
-    Qt::PenJoinStyle *penJoinStyle, Qt::PenCapStyle *penCapStyle,
-    QVector<qreal> *customDashPattern, double *dashOffset )
+                                       Qt::PenStyle &penStyle, QColor &color, double &width,
+                                       Qt::PenJoinStyle *penJoinStyle, Qt::PenCapStyle *penCapStyle,
+                                       QVector<qreal> *customDashPattern, double *dashOffset )
 {
   QgsDebugMsg( "Entered." );
 
@@ -2780,7 +2780,7 @@ void QgsSymbolLayerUtils::clearSymbolMap( QgsSymbolMap& symbols )
 }
 
 
-QgsVectorColorRampV2* QgsSymbolLayerUtils::loadColorRamp( QDomElement& element )
+QgsVectorColorRamp* QgsSymbolLayerUtils::loadColorRamp( QDomElement& element )
 {
   QString rampType = element.attribute( "type" );
 
@@ -2788,13 +2788,13 @@ QgsVectorColorRampV2* QgsSymbolLayerUtils::loadColorRamp( QDomElement& element )
   QgsStringMap props = QgsSymbolLayerUtils::parseProperties( element );
 
   if ( rampType == "gradient" )
-    return QgsVectorGradientColorRampV2::create( props );
+    return QgsVectorGradientColorRamp::create( props );
   else if ( rampType == "random" )
-    return QgsVectorRandomColorRampV2::create( props );
+    return QgsVectorRandomColorRamp::create( props );
   else if ( rampType == "colorbrewer" )
-    return QgsVectorColorBrewerColorRampV2::create( props );
+    return QgsVectorColorBrewerColorRamp::create( props );
   else if ( rampType == "cpt-city" )
-    return QgsCptCityColorRampV2::create( props );
+    return QgsCptCityColorRamp::create( props );
   else
   {
     QgsDebugMsg( "unknown colorramp type " + rampType );
@@ -2803,7 +2803,7 @@ QgsVectorColorRampV2* QgsSymbolLayerUtils::loadColorRamp( QDomElement& element )
 }
 
 
-QDomElement QgsSymbolLayerUtils::saveColorRamp( const QString& name, QgsVectorColorRampV2* ramp, QDomDocument& doc )
+QDomElement QgsSymbolLayerUtils::saveColorRamp( const QString& name, QgsVectorColorRamp* ramp, QDomDocument& doc )
 {
   QDomElement rampEl = doc.createElement( "colorramp" );
   rampEl.setAttribute( "type", ramp->type() );

@@ -29,7 +29,7 @@
 
 #include "qgssymbollayerwidget.h"
 #include "qgsarrowsymbollayerwidget.h"
-#include "qgsellipsesymbollayerv2widget.h"
+#include "qgsellipsesymbollayerwidget.h"
 #include "qgsvectorfieldsymbollayerwidget.h"
 #include "qgssymbol.h" //for the unit
 #include "qgspanelwidget.h"
@@ -60,23 +60,23 @@ static void _initWidgetFunctions()
   if ( initialized )
     return;
 
-  _initWidgetFunction( "SimpleLine", QgsSimpleLineSymbolLayerV2Widget::create );
-  _initWidgetFunction( "MarkerLine", QgsMarkerLineSymbolLayerV2Widget::create );
+  _initWidgetFunction( "SimpleLine", QgsSimpleLineSymbolLayerWidget::create );
+  _initWidgetFunction( "MarkerLine", QgsMarkerLineSymbolLayerWidget::create );
   _initWidgetFunction( "ArrowLine", QgsArrowSymbolLayerWidget::create );
 
-  _initWidgetFunction( "SimpleMarker", QgsSimpleMarkerSymbolLayerV2Widget::create );
+  _initWidgetFunction( "SimpleMarker", QgsSimpleMarkerSymbolLayerWidget::create );
   _initWidgetFunction( "FilledMarker", QgsFilledMarkerSymbolLayerWidget::create );
-  _initWidgetFunction( "SvgMarker", QgsSvgMarkerSymbolLayerV2Widget::create );
-  _initWidgetFunction( "FontMarker", QgsFontMarkerSymbolLayerV2Widget::create );
-  _initWidgetFunction( "EllipseMarker", QgsEllipseSymbolLayerV2Widget::create );
+  _initWidgetFunction( "SvgMarker", QgsSvgMarkerSymbolLayerWidget::create );
+  _initWidgetFunction( "FontMarker", QgsFontMarkerSymbolLayerWidget::create );
+  _initWidgetFunction( "EllipseMarker", QgsEllipseSymbolLayerWidget::create );
   _initWidgetFunction( "VectorField", QgsVectorFieldSymbolLayerWidget::create );
 
-  _initWidgetFunction( "SimpleFill", QgsSimpleFillSymbolLayerV2Widget::create );
-  _initWidgetFunction( "GradientFill", QgsGradientFillSymbolLayerV2Widget::create );
-  _initWidgetFunction( "ShapeburstFill", QgsShapeburstFillSymbolLayerV2Widget::create );
+  _initWidgetFunction( "SimpleFill", QgsSimpleFillSymbolLayerWidget::create );
+  _initWidgetFunction( "GradientFill", QgsGradientFillSymbolLayerWidget::create );
+  _initWidgetFunction( "ShapeburstFill", QgsShapeburstFillSymbolLayerWidget::create );
   _initWidgetFunction( "RasterFill", QgsRasterFillSymbolLayerWidget::create );
   _initWidgetFunction( "SVGFill", QgsSVGFillSymbolLayerWidget::create );
-  _initWidgetFunction( "CentroidFill", QgsCentroidFillSymbolLayerV2Widget::create );
+  _initWidgetFunction( "CentroidFill", QgsCentroidFillSymbolLayerWidget::create );
   _initWidgetFunction( "LinePatternFill", QgsLinePatternFillSymbolLayerWidget::create );
   _initWidgetFunction( "PointPatternFill", QgsPointPatternFillSymbolLayerWidget::create );
 

@@ -21,7 +21,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsproject.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 
 #include <QInputDialog>
@@ -113,20 +113,20 @@ void QgsMapThemeCollection::applyPresetCheckedLegendNodesToLayer( const QString&
   const PresetRecord& rec = mPresets[name];
 
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
-  if ( !vlayer || !vlayer->rendererV2() )
+  if ( !vlayer || !vlayer->renderer() )
     return;
 
-  if ( !vlayer->rendererV2()->legendSymbolItemsCheckable() )
+  if ( !vlayer->renderer()->legendSymbolItemsCheckable() )
     return; // no need to do anything
 
   bool someNodesUnchecked = rec.mPerLayerCheckedLegendSymbols.contains( layerID );
 
-  Q_FOREACH ( const QgsLegendSymbolItemV2& item, vlayer->rendererV2()->legendSymbolItemsV2() )
+  Q_FOREACH ( const QgsLegendSymbolItem& item, vlayer->renderer()->legendSymbolItemsV2() )
   {
-    bool checked = vlayer->rendererV2()->legendSymbolItemChecked( item.ruleKey() );
+    bool checked = vlayer->renderer()->legendSymbolItemChecked( item.ruleKey() );
     bool shouldBeChecked = someNodesUnchecked ? rec.mPerLayerCheckedLegendSymbols[layerID].contains( item.ruleKey() ) : true;
     if ( checked != shouldBeChecked )
-      vlayer->rendererV2()->checkLegendSymbolItem( item.ruleKey(), shouldBeChecked );
+      vlayer->renderer()->checkLegendSymbolItem( item.ruleKey(), shouldBeChecked );
   }
 }
 

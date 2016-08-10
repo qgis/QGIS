@@ -250,7 +250,7 @@ class CORE_EXPORT QgsDxfExport
      * @param lineStyleName line type to use
      * @param color color to use
      * @param width line width to use
-     * @deprecated use QgsPointSequenceV2 variant
+     * @deprecated use QgsPointSequence variant
      */
     Q_DECL_DEPRECATED void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
 
@@ -264,7 +264,7 @@ class CORE_EXPORT QgsDxfExport
      * @note not available in Python bindings
      * @note added in 2.15
      */
-    void writePolyline( const QgsPointSequenceV2 &line, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
+    void writePolyline( const QgsPointSequence &line, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
 
     /**
      * Draw dxf filled polygon (HATCH)
@@ -272,7 +272,7 @@ class CORE_EXPORT QgsDxfExport
      * @param layer layer name to use
      * @param hatchPattern hatchPattern to use
      * @param color color to use
-     * @deprecated use version with QgsRingSequenceV2
+     * @deprecated use version with QgsRingSequence
      */
     Q_DECL_DEPRECATED void writePolygon( const QgsPolygon &polygon, const QString &layer, const QString &hatchPattern, const QColor& color );
 
@@ -285,7 +285,7 @@ class CORE_EXPORT QgsDxfExport
      * @note not available in Python bindings
      * @note added in 2.15
      */
-    void writePolygon( const QgsRingSequenceV2 &polygon, const QString &layer, const QString &hatchPattern, const QColor& color );
+    void writePolygon( const QgsRingSequence &polygon, const QString &layer, const QString &hatchPattern, const QColor& color );
 
     /**
      * Draw dxf filled polygon (SOLID)

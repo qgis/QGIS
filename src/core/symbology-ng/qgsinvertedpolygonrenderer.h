@@ -16,7 +16,7 @@
 #define QGSINVERTEDPOLYGONRENDERER_H
 
 #include "qgis.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
@@ -36,7 +36,7 @@
  *
  * @note added in 2.4
  */
-class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
+class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
 {
   public:
 
@@ -44,7 +44,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
      * @param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned.
      * Ownership will be transferred.
      */
-    QgsInvertedPolygonRenderer( QgsFeatureRendererV2* embeddedRenderer = nullptr );
+    QgsInvertedPolygonRenderer( QgsFeatureRenderer* embeddedRenderer = nullptr );
 
     virtual ~QgsInvertedPolygonRenderer();
 
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) override;
 
     /** Creates a renderer out of an XML, for loading*/
-    static QgsFeatureRendererV2* create( QDomElement& element );
+    static QgsFeatureRenderer* create( QDomElement& element );
 
     /** Creates an XML representation of the renderer. Used for saving purpose
      * @param doc the XML document where to create the XML subtree
@@ -117,8 +117,8 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
      */
     virtual QDomElement save( QDomDocument& doc ) override;
 
-    void setEmbeddedRenderer( QgsFeatureRendererV2* subRenderer ) override;
-    const QgsFeatureRendererV2* embeddedRenderer() const override;
+    void setEmbeddedRenderer( QgsFeatureRenderer* subRenderer ) override;
+    const QgsFeatureRenderer* embeddedRenderer() const override;
 
     virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol ) override;
 
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
      * @note added in 2.5
      * @returns a new renderer if the conversion was possible, otherwise 0.
      */
-    static QgsInvertedPolygonRenderer* convertFromRenderer( const QgsFeatureRendererV2* renderer );
+    static QgsInvertedPolygonRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer );
 
   private:
     /** Private copy constructor. @see clone() */
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     QgsInvertedPolygonRenderer& operator=( const QgsInvertedPolygonRenderer& );
 
     /** Embedded renderer */
-    QScopedPointer<QgsFeatureRendererV2> mSubRenderer;
+    QScopedPointer<QgsFeatureRenderer> mSubRenderer;
 
     /** Structure where the reversed geometry is built during renderFeature */
     struct CombinedFeature

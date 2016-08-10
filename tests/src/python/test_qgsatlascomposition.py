@@ -23,8 +23,8 @@ from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from qgis.PyQt.QtCore import QFileInfo, QRectF, qWarning
 from qgis.core import QgsUnitTypes, QgsVectorLayer, QgsMapLayerRegistry, QgsMapSettings, QgsCoordinateReferenceSystem, \
-    QgsComposition, QgsFillSymbolV2, QgsSingleSymbolRendererV2, QgsComposerLabel, QgsComposerMap, QgsFontUtils, \
-    QgsRectangle, QgsComposerLegend, QgsFeature, QgsGeometry, QgsPoint, QgsRendererCategoryV2, QgsCategorizedSymbolRendererV2, QgsMarkerSymbolV2
+    QgsComposition, QgsFillSymbol, QgsSingleSymbolRenderer, QgsComposerLabel, QgsComposerMap, QgsFontUtils, \
+    QgsRectangle, QgsComposerLegend, QgsFeature, QgsGeometry, QgsPoint, QgsRendererCategory, QgsCategorizedSymbolRenderer, QgsMarkerSymbol
 from qgscompositionchecker import QgsCompositionChecker
 
 start_app()
@@ -60,9 +60,9 @@ class TestQgsAtlasComposition(unittest.TestCase):
 
         # fix the renderer, fill with green
         props = {"color": "0,127,0"}
-        fillSymbol = QgsFillSymbolV2.createSimple(props)
-        renderer = QgsSingleSymbolRendererV2(fillSymbol)
-        mVectorLayer.setRendererV2(renderer)
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        renderer = QgsSingleSymbolRenderer(fillSymbol)
+        mVectorLayer.setRenderer(renderer)
 
         # the atlas map
         self.mAtlasMap = QgsComposerMap(self.mComposition, 20, 20, 130, 130)
@@ -85,7 +85,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
 
         # set the fill symbol of the overview map
         props2 = {"color": "127,0,0,127"}
-        fillSymbol2 = QgsFillSymbolV2.createSimple(props2)
+        fillSymbol2 = QgsFillSymbol.createSimple(props2)
         mOverview.setOverviewFrameMapSymbol(fillSymbol2)
 
         # header label
@@ -302,9 +302,9 @@ class TestQgsAtlasComposition(unittest.TestCase):
         pr.addFeatures([f1, f2])
 
         # categorized symbology
-        r = QgsCategorizedSymbolRendererV2("attr", [QgsRendererCategoryV2(1, QgsMarkerSymbolV2.createSimple({"color": "255,0,0"}), "red"),
-                                                    QgsRendererCategoryV2(2, QgsMarkerSymbolV2.createSimple({"color": "0,0,255"}), "blue")])
-        ptLayer.setRendererV2(r)
+        r = QgsCategorizedSymbolRenderer("attr", [QgsRendererCategory(1, QgsMarkerSymbol.createSimple({"color": "255,0,0"}), "red"),
+                                                  QgsRendererCategory(2, QgsMarkerSymbol.createSimple({"color": "0,0,255"}), "blue")])
+        ptLayer.setRenderer(r)
 
         QgsMapLayerRegistry.instance().addMapLayer(ptLayer)
 

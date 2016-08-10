@@ -78,7 +78,7 @@ void QgsGeometrySnapper::processFeature( QgsFeatureId id )
 
 
   // Get potential reference features and construct snap index
-  QList<QgsAbstractGeometryV2*> refGeometries;
+  QList<QgsAbstractGeometry*> refGeometries;
   mIndexMutex.lock();
   QList<QgsFeatureId> refFeatureIds = mIndex.intersects( feature.geometry().boundingBox() );
   mIndexMutex.unlock();
@@ -97,14 +97,14 @@ void QgsGeometrySnapper::processFeature( QgsFeatureId id )
     }
   }
   QgsSnapIndex refSnapIndex( center, 10 * snapTolerance );
-  Q_FOREACH ( const QgsAbstractGeometryV2* geom, refGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry* geom, refGeometries )
   {
     refSnapIndex.addGeometry( geom );
   }
 
   // Snap geometries
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometryV2* subjGeom = featureGeom.geometry();
+  QgsAbstractGeometry* subjGeom = featureGeom.geometry();
   QList < QList< QList<PointFlag> > > subjPointFlags;
 
   // Pass 1: snap vertices of subject geometry to reference vertices
@@ -149,12 +149,12 @@ void QgsGeometrySnapper::processFeature( QgsFeatureId id )
   QgsSnapIndex* subjSnapIndex = new QgsSnapIndex( center, 10 * snapTolerance );
   subjSnapIndex->addGeometry( subjGeom );
 
-  QgsAbstractGeometryV2* origSubjGeom = subjGeom->clone();
+  QgsAbstractGeometry* origSubjGeom = subjGeom->clone();
   QgsSnapIndex* origSubjSnapIndex = new QgsSnapIndex( center, 10 * snapTolerance );
   origSubjSnapIndex->addGeometry( origSubjGeom );
 
   // Pass 2: add missing vertices to subject geometry
-  Q_FOREACH ( const QgsAbstractGeometryV2* refGeom, refGeometries )
+  Q_FOREACH ( const QgsAbstractGeometry* refGeom, refGeometries )
   {
     for ( int iPart = 0, nParts = refGeom->partCount(); iPart < nParts; ++iPart )
     {
@@ -258,7 +258,7 @@ bool QgsGeometrySnapper::getFeature( QgsVectorLayer *layer, QMutex &mutex, QgsFe
 }
 
 
-int QgsGeometrySnapper::polyLineSize( const QgsAbstractGeometryV2* geom, int iPart, int iRing ) const
+int QgsGeometrySnapper::polyLineSize( const QgsAbstractGeometry* geom, int iPart, int iRing ) const
 {
   int nVerts = geom->vertexCount( iPart, iRing );
   QgsPointV2 front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );

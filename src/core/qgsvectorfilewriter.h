@@ -325,7 +325,7 @@ class CORE_EXPORT QgsVectorFileWriter
     QString errorMessage();
 
     /** Add feature to the currently opened data source */
-    bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = nullptr, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
+    bool addFeature( QgsFeature& feature, QgsFeatureRenderer* renderer = nullptr, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
 
     //! @note not available in python bindings
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; }
@@ -441,7 +441,7 @@ class CORE_EXPORT QgsVectorFileWriter
 
     void startRender( QgsVectorLayer* vl );
     void stopRender( QgsVectorLayer* vl );
-    QgsFeatureRendererV2* symbologyRenderer( QgsVectorLayer* vl ) const;
+    QgsFeatureRenderer* symbologyRenderer( QgsVectorLayer* vl ) const;
     /** Adds attributes needed for classification*/
     void addRendererAttributes( QgsVectorLayer* vl, QgsAttributeList& attList );
     static QMap<QString, MetaData> sDriverMetadata;

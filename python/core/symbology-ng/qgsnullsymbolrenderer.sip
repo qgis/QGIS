@@ -5,7 +5,7 @@
  * \note Added in version 2.16
  */
 
-class QgsNullSymbolRenderer : QgsFeatureRendererV2
+class QgsNullSymbolRenderer : QgsFeatureRenderer
 {
 %TypeHeaderCode
 #include <qgsnullsymbolrenderer.h>
@@ -26,14 +26,14 @@ class QgsNullSymbolRenderer : QgsFeatureRendererV2
 
     virtual QList<QString> usedAttributes();
     virtual QString dump() const;
-    virtual QgsFeatureRendererV2* clone() const /Factory/;
+    virtual QgsFeatureRenderer* clone() const /Factory/;
     virtual QgsSymbolList symbols( QgsRenderContext& context ) /PyName=symbols2/;
 
     /** Creates a null renderer from XML element.
      * @param element DOM element
      * @returns new null symbol renderer
      */
-    static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
+    static QgsFeatureRenderer* create( QDomElement& element ) /Factory/;
 
     virtual QDomElement save( QDomDocument& doc );
 
@@ -41,6 +41,6 @@ class QgsNullSymbolRenderer : QgsFeatureRendererV2
      * @param renderer renderer to convert from
      * @returns a new renderer if the conversion was possible, otherwise nullptr.
      */
-    static QgsNullSymbolRenderer* convertFromRenderer( const QgsFeatureRendererV2 *renderer ) /Factory/;
+    static QgsNullSymbolRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 
 };

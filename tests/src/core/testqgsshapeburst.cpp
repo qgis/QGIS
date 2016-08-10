@@ -29,9 +29,9 @@
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
 #include <qgssymbol.h>
-#include <qgssinglesymbolrendererv2.h>
-#include <qgsfillsymbollayerv2.h>
-#include <qgsvectorcolorrampv2.h>
+#include <qgssinglesymbolrenderer.h>
+#include <qgsfillsymbollayer.h>
+#include <qgsvectorcolorramp.h>
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
@@ -71,9 +71,9 @@ class TestQgsShapeburst : public QObject
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer;
-    QgsShapeburstFillSymbolLayerV2* mShapeburstFill;
-    QgsFillSymbolV2* mFillSymbol;
-    QgsSingleSymbolRendererV2* mSymbolRenderer;
+    QgsShapeburstFillSymbolLayer* mShapeburstFill;
+    QgsFillSymbol* mFillSymbol;
+    QgsSingleSymbolRenderer* mSymbolRenderer;
     QString mTestDataDir;
     QString mReport;
 };
@@ -108,11 +108,11 @@ void TestQgsShapeburst::initTestCase()
     QList<QgsMapLayer *>() << mpPolysLayer );
 
   //setup shapeburst fill
-  mShapeburstFill = new QgsShapeburstFillSymbolLayerV2();
-  mFillSymbol = new QgsFillSymbolV2();
+  mShapeburstFill = new QgsShapeburstFillSymbolLayer();
+  mFillSymbol = new QgsFillSymbol();
   mFillSymbol->changeSymbolLayer( 0, mShapeburstFill );
-  mSymbolRenderer = new QgsSingleSymbolRendererV2( mFillSymbol );
-  mpPolysLayer->setRendererV2( mSymbolRenderer );
+  mSymbolRenderer = new QgsSingleSymbolRenderer( mFillSymbol );
+  mpPolysLayer->setRenderer( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui
@@ -160,15 +160,15 @@ void TestQgsShapeburst::shapeburstSymbolRamp()
 {
   mReport += "<h2>Shapeburst symbol renderer ramp test</h2>\n";
 
-  QgsVectorGradientColorRampV2* gradientRamp = new QgsVectorGradientColorRampV2( QColor( Qt::yellow ), QColor( 255, 105, 180 ) );
+  QgsVectorGradientColorRamp* gradientRamp = new QgsVectorGradientColorRamp( QColor( Qt::yellow ), QColor( 255, 105, 180 ) );
   QgsGradientStopsList stops;
   stops.append( QgsGradientStop( 0.5, QColor( 255, 255, 255, 0 ) ) );
   gradientRamp->setStops( stops );
 
   mShapeburstFill->setColorRamp( gradientRamp );
-  mShapeburstFill->setColorType( QgsShapeburstFillSymbolLayerV2::ColorRamp );
+  mShapeburstFill->setColorType( QgsShapeburstFillSymbolLayer::ColorRamp );
   QVERIFY( imageCheck( "shapeburst_ramp" ) );
-  mShapeburstFill->setColorType( QgsShapeburstFillSymbolLayerV2::SimpleTwoColor );
+  mShapeburstFill->setColorType( QgsShapeburstFillSymbolLayer::SimpleTwoColor );
 }
 
 void TestQgsShapeburst::shapeburstBlur()

@@ -33,7 +33,7 @@ class QgsComposerAttributeTableColumnModel;
 class QgsComposerAttributeTableColumnModelV2;
 class QgsComposerTableSortColumnsProxyModel;
 class QgsComposerTableSortColumnsProxyModelV2;
-class QgsComposerTableAvailableSortProxyModelV2;
+class QgsComposerTableAvailableSortProxyModel;
 class QgsComposerObject;
 
 // QgsComposerColumnAlignmentDelegate

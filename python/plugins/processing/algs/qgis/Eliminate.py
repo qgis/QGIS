@@ -206,7 +206,7 @@ class Eliminate(GeoAlgorithm):
                     if match:
                         selected.append(feature.id())
 
-            processLayer.setSelectedFeatures(selected)
+            processLayer.selectByIds(selected)
 
         if processLayer.selectedFeatureCount() == 0:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,

@@ -28,8 +28,8 @@
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
 #include <qgssymbol.h>
-#include <qgssinglesymbolrendererv2.h>
-#include <qgsfillsymbollayerv2.h>
+#include <qgssinglesymbolrenderer.h>
+#include <qgsfillsymbollayer.h>
 
 //qgis test includes
 #include "qgsrenderchecker.h"
@@ -65,9 +65,9 @@ class TestQgsCentroidFillSymbol : public QObject
     bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer;
-    QgsCentroidFillSymbolLayerV2* mCentroidFill;
-    QgsFillSymbolV2* mFillSymbol;
-    QgsSingleSymbolRendererV2* mSymbolRenderer;
+    QgsCentroidFillSymbolLayer* mCentroidFill;
+    QgsFillSymbol* mFillSymbol;
+    QgsSingleSymbolRenderer* mSymbolRenderer;
     QString mTestDataDir;
     QString mReport;
 };
@@ -102,11 +102,11 @@ void TestQgsCentroidFillSymbol::initTestCase()
     QList<QgsMapLayer *>() << mpPolysLayer );
 
   //setup gradient fill
-  mCentroidFill = new QgsCentroidFillSymbolLayerV2();
-  mFillSymbol = new QgsFillSymbolV2();
+  mCentroidFill = new QgsCentroidFillSymbolLayer();
+  mFillSymbol = new QgsFillSymbol();
   mFillSymbol->changeSymbolLayer( 0, mCentroidFill );
-  mSymbolRenderer = new QgsSingleSymbolRendererV2( mFillSymbol );
-  mpPolysLayer->setRendererV2( mSymbolRenderer );
+  mSymbolRenderer = new QgsSingleSymbolRenderer( mFillSymbol );
+  mpPolysLayer->setRenderer( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui

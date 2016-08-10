@@ -18,13 +18,13 @@
 
 #include "qgssizescalewidget.h"
 
-#include "qgsstylev2managerdialog.h"
+#include "qgsstylemanagerdialog.h"
 #include "qgsdatadefined.h"
 
 #include "qgssymbol.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbollayerutils.h"
-#include "qgsmarkersymbollayerv2.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgsmapcanvas.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
@@ -41,7 +41,7 @@
 #include <QScopedPointer>
 
 
-QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer )
+QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer )
     : QWidget( parent )
     , mSymbol( symbol )
     , mStyle( style )
@@ -219,7 +219,7 @@ void QgsSymbolsListWidget::populateSymbols( const QStringList& names )
 
 void QgsSymbolsListWidget::openStyleManager()
 {
-  QgsStyleV2ManagerDialog dlg( mStyle, this );
+  QgsStyleManagerDialog dlg( mStyle, this );
   dlg.exec();
 
   populateSymbolView();
@@ -242,7 +242,7 @@ void QgsSymbolsListWidget::setSymbolColor( const QColor& color )
 
 void QgsSymbolsListWidget::setMarkerAngle( double angle )
 {
-  QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
+  QgsMarkerSymbol* markerSymbol = static_cast<QgsMarkerSymbol*>( mSymbol );
   if ( markerSymbol->angle() == angle )
     return;
   markerSymbol->setAngle( angle );
@@ -251,7 +251,7 @@ void QgsSymbolsListWidget::setMarkerAngle( double angle )
 
 void QgsSymbolsListWidget::updateDataDefinedMarkerAngle()
 {
-  QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
+  QgsMarkerSymbol* markerSymbol = static_cast<QgsMarkerSymbol*>( mSymbol );
   QgsDataDefined dd = mRotationDDBtn->currentDataDefined();
 
   spinAngle->setEnabled( !mRotationDDBtn->isActive() );
@@ -270,7 +270,7 @@ void QgsSymbolsListWidget::updateDataDefinedMarkerAngle()
 
 void QgsSymbolsListWidget::setMarkerSize( double size )
 {
-  QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
+  QgsMarkerSymbol* markerSymbol = static_cast<QgsMarkerSymbol*>( mSymbol );
   if ( markerSymbol->size() == size )
     return;
   markerSymbol->setSize( size );
@@ -279,7 +279,7 @@ void QgsSymbolsListWidget::setMarkerSize( double size )
 
 void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
 {
-  QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
+  QgsMarkerSymbol* markerSymbol = static_cast<QgsMarkerSymbol*>( mSymbol );
   QgsDataDefined dd = mSizeDDBtn->currentDataDefined();
 
   spinSize->setEnabled( !mSizeDDBtn->isActive() );
@@ -299,7 +299,7 @@ void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
 
 void QgsSymbolsListWidget::setLineWidth( double width )
 {
-  QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
+  QgsLineSymbol* lineSymbol = static_cast<QgsLineSymbol*>( mSymbol );
   if ( lineSymbol->width() == width )
     return;
   lineSymbol->setWidth( width );
@@ -308,7 +308,7 @@ void QgsSymbolsListWidget::setLineWidth( double width )
 
 void QgsSymbolsListWidget::updateDataDefinedLineWidth()
 {
-  QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
+  QgsLineSymbol* lineSymbol = static_cast<QgsLineSymbol*>( mSymbol );
   QgsDataDefined dd = mWidthDDBtn->currentDataDefined();
 
   spinWidth->setEnabled( !mWidthDDBtn->isActive() );
@@ -466,7 +466,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
   if ( mSymbol->type() == QgsSymbol::Marker )
   {
-    QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
+    QgsMarkerSymbol* markerSymbol = static_cast<QgsMarkerSymbol*>( mSymbol );
     spinSize->setValue( markerSymbol->size() );
     spinAngle->setValue( markerSymbol->angle() );
 
@@ -487,7 +487,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   }
   else if ( mSymbol->type() == QgsSymbol::Line )
   {
-    QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
+    QgsLineSymbol* lineSymbol = static_cast<QgsLineSymbol*>( mSymbol );
     spinWidth->setValue( lineSymbol->width() );
 
     if ( mLayer )
@@ -569,12 +569,12 @@ void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( int index )
     if ( groupsCombo->itemData( index ).toString() == "smart" )
     {
       groupid = mStyle->smartgroupId( text );
-      symbols = mStyle->symbolsOfSmartgroup( QgsStyleV2::SymbolEntity, groupid );
+      symbols = mStyle->symbolsOfSmartgroup( QgsStyle::SymbolEntity, groupid );
     }
     else
     {
       groupid = groupsCombo->itemData( index ).toInt();
-      symbols = mStyle->symbolsOfGroup( QgsStyleV2::SymbolEntity, groupid );
+      symbols = mStyle->symbolsOfGroup( QgsStyle::SymbolEntity, groupid );
     }
   }
   populateSymbols( symbols );
@@ -582,6 +582,6 @@ void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( int index )
 
 void QgsSymbolsListWidget::on_groupsCombo_editTextChanged( const QString &text )
 {
-  QStringList symbols = mStyle->findSymbols( QgsStyleV2::SymbolEntity, text );
+  QStringList symbols = mStyle->findSymbols( QgsStyle::SymbolEntity, text );
   populateSymbols( symbols );
 }

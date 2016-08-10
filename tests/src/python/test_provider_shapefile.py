@@ -123,7 +123,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer(u'{}|layerid=0'.format(self.repackfile), u'test', u'ogr')
 
         ids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk=1'))]
-        vl.setSelectedFeatures(ids)
+        vl.selectByIds(ids)
         self.assertEqual(vl.selectedFeaturesIds(), ids)
         self.assertEqual(vl.pendingFeatureCount(), 5)
         self.assertTrue(vl.startEditing())

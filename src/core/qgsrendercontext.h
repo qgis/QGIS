@@ -20,7 +20,7 @@
 
 #include <QColor>
 
-#include "qgsabstractgeometryv2.h"
+#include "qgsabstractgeometry.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
@@ -29,9 +29,9 @@
 
 class QPainter;
 
-class QgsAbstractGeometryV2;
+class QgsAbstractGeometry;
 class QgsLabelingEngineInterface;
-class QgsLabelingEngineV2;
+class QgsLabelingEngine;
 class QgsMapSettings;
 class QgsFeatureFilterProvider;
 
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsRenderContext
 
     //! Get access to new labeling engine (may be nullptr)
     //! @note not available in Python bindings
-    QgsLabelingEngineV2* labelingEngineV2() const { return mLabelingEngine2; }
+    QgsLabelingEngine* labelingEngineV2() const { return mLabelingEngine2; }
 
     QColor selectionColor() const { return mSelectionColor; }
 
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsRenderContext
     void setLabelingEngine( QgsLabelingEngineInterface* iface ) { mLabelingEngine = iface; }
     //! Assign new labeling engine
     //! @note not available in Python bindings
-    void setLabelingEngineV2( QgsLabelingEngineV2* engine2 ) { mLabelingEngine2 = engine2; }
+    void setLabelingEngineV2( QgsLabelingEngine* engine2 ) { mLabelingEngine2 = engine2; }
     void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
 
     /** Sets whether vector selections should be shown in the rendered map
@@ -206,9 +206,9 @@ class CORE_EXPORT QgsRenderContext
     const QgsExpressionContext& expressionContext() const { return mExpressionContext; }
 
     /** Returns pointer to the unsegmentized geometry*/
-    const QgsAbstractGeometryV2* geometry() const { return mGeometry; }
+    const QgsAbstractGeometry* geometry() const { return mGeometry; }
     /** Sets pointer to original (unsegmentized) geometry*/
-    void setGeometry( const QgsAbstractGeometryV2* geometry ) { mGeometry = geometry; }
+    void setGeometry( const QgsAbstractGeometry* geometry ) { mGeometry = geometry; }
 
     /** Set a filter feature provider used for additional filtering of rendered features.
      * @param ffp the filter feature provider
@@ -232,9 +232,9 @@ class CORE_EXPORT QgsRenderContext
 
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     @param type the segmentation tolerance typename*/
-    void setSegmentationToleranceType( QgsAbstractGeometryV2::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
+    void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
     /** Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)*/
-    QgsAbstractGeometryV2::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
+    QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
 
   private:
 
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsRenderContext
     QgsLabelingEngineInterface* mLabelingEngine;
 
     /** Newer labeling engine implementation (can be nullptr) */
-    QgsLabelingEngineV2* mLabelingEngine2;
+    QgsLabelingEngine* mLabelingEngine2;
 
     /** Color used for features that are marked as selected */
     QColor mSelectionColor;
@@ -278,14 +278,14 @@ class CORE_EXPORT QgsRenderContext
     QgsExpressionContext mExpressionContext;
 
     /** Pointer to the (unsegmentized) geometry*/
-    const QgsAbstractGeometryV2* mGeometry;
+    const QgsAbstractGeometry* mGeometry;
 
     /** The feature filter provider */
     const QgsFeatureFilterProvider* mFeatureFilterProvider;
 
     double mSegmentationTolerance;
 
-    QgsAbstractGeometryV2::SegmentationToleranceType mSegmentationToleranceType;
+    QgsAbstractGeometry::SegmentationToleranceType mSegmentationToleranceType;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRenderContext::Flags )

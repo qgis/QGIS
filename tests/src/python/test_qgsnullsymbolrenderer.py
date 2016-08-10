@@ -55,7 +55,7 @@ class TestQgsNullSymbolRenderer(unittest.TestCase):
         QgsMapLayerRegistry.instance().addMapLayer(self.layer)
 
         self.renderer = QgsNullSymbolRenderer()
-        self.layer.setRendererV2(self.renderer)
+        self.layer.setRenderer(self.renderer)
 
         rendered_layers = [self.layer.id()]
         self.mapsettings = self.iface.mapCanvas().mapSettings()

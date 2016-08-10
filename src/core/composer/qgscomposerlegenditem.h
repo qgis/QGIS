@@ -73,15 +73,15 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
 class QgsSymbol;
 
 /** \ingroup core
- * \class QgsComposerSymbolV2Item
+ * \class QgsComposerSymbolItem
  */
-class CORE_EXPORT QgsComposerSymbolV2Item: public QgsComposerLegendItem
+class CORE_EXPORT QgsComposerSymbolItem: public QgsComposerLegendItem
 {
   public:
-    QgsComposerSymbolV2Item();
-    QgsComposerSymbolV2Item( const QString& text );
-    QgsComposerSymbolV2Item( const QIcon& icon, const QString& text );
-    virtual ~QgsComposerSymbolV2Item();
+    QgsComposerSymbolItem();
+    QgsComposerSymbolItem( const QString& text );
+    QgsComposerSymbolItem( const QIcon& icon, const QString& text );
+    virtual ~QgsComposerSymbolItem();
 
     virtual QStandardItem* clone() const override;
 
@@ -89,13 +89,13 @@ class CORE_EXPORT QgsComposerSymbolV2Item: public QgsComposerLegendItem
     virtual void readXml( const QDomElement& itemElem, bool xServerAvailable = true ) override;
 
     /** Set symbol (takes ownership)*/
-    void setSymbolV2( QgsSymbol* s );
-    QgsSymbol* symbolV2() {return mSymbolV2;}
+    void setSymbol( QgsSymbol* s );
+    QgsSymbol* symbol() {return mSymbol;}
 
     ItemType itemType() const override { return SymbologyV2Item; }
 
   private:
-    QgsSymbol* mSymbolV2;
+    QgsSymbol* mSymbol;
 };
 
 /** \ingroup core

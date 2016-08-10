@@ -18,7 +18,7 @@
 
 
 #include "qgsmaptooladvanceddigitizing.h"
-#include "qgscompoundcurvev2.h"
+#include "qgscompoundcurve.h"
 #include "qgsgeometry.h"
 
 #include <QPoint>
@@ -50,14 +50,14 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     virtual void deactivate() override;
 
     /** Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS*/
-    int addCurve( QgsCurveV2* c );
+    int addCurve( QgsCurve* c );
 
     /**
      * Get the capture curve
      *
      * @return Capture curve
      */
-    const QgsCompoundCurveV2* captureCurve() const { return &mCaptureCurve; }
+    const QgsCompoundCurve* captureCurve() const { return &mCaptureCurve; }
 
 
     /**
@@ -224,7 +224,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QgsRubberBand* mTempRubberBand;
 
     /** List to store the points of digitised lines and polygons (in layer coordinates)*/
-    QgsCompoundCurveV2 mCaptureCurve;
+    QgsCompoundCurve mCaptureCurve;
 
     void validateGeometry();
     QStringList mValidationWarnings;

@@ -17,14 +17,14 @@
 #define QGS25DRENDERERWIDGET_H
 
 #include "ui_qgs25drendererwidgetbase.h"
-#include "qgsrendererv2widget.h"
+#include "qgsrendererwidget.h"
 
 class Qgs25DRenderer;
 
 /** \ingroup gui
  * \class Qgs25DRendererWidget
  */
-class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererV2Widget, Ui::Qgs25DRendererWidgetBase
+class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, Ui::Qgs25DRendererWidgetBase
 {
     Q_OBJECT
 
@@ -34,16 +34,16 @@ class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererV2Widget, Ui::Qgs25DRe
      * @param style
      * @param renderer the mask renderer (will take ownership)
      */
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
     /** Constructor
      * @param layer the layer where this renderer is applied
      * @param style
      * @param renderer the mask renderer (will take ownership)
      */
-    Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
-    QgsFeatureRendererV2* renderer() override;
+    QgsFeatureRenderer* renderer() override;
 
   private slots:
     void updateRenderer();

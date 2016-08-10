@@ -24,19 +24,19 @@
 #include "qgslabelingwidget.h"
 #include "qgslayerstylingwidget.h"
 #include "qgsrastertransparencywidget.h"
-#include "qgsrendererv2propertiesdialog.h"
+#include "qgsrendererpropertiesdialog.h"
 #include "qgsrendererrasterpropertieswidget.h"
 #include "qgsrasterhistogramwidget.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrasterrendererwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsundowidget.h"
-#include "qgsrendererv2.h"
-#include "qgsrendererv2registry.h"
+#include "qgsrenderer.h"
+#include "qgsrendererregistry.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsmaplayerconfigwidget.h"
@@ -232,11 +232,11 @@ void QgsLayerStylingWidget::apply()
   }
   if ( QgsPanelWidgetWrapper* wrapper = qobject_cast<QgsPanelWidgetWrapper*>( current ) )
   {
-    if ( QgsRendererV2PropertiesDialog* widget = qobject_cast<QgsRendererV2PropertiesDialog*>( wrapper->widget() ) )
+    if ( QgsRendererPropertiesDialog* widget = qobject_cast<QgsRendererPropertiesDialog*>( wrapper->widget() ) )
     {
       widget->apply();
       QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mCurrentLayer );
-      QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( layer->rendererV2()->type() );
+      QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( layer->renderer()->type() );
       undoName = QString( "Style Change - %1" ).arg( m->visibleName() );
       styleWasChanged = true;
     }
@@ -346,7 +346,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     {
       case 0: // Style
       {
-        QgsRendererV2PropertiesDialog* styleWidget = new QgsRendererV2PropertiesDialog( vlayer, QgsStyleV2::defaultStyle(), true, mStackedWidget );
+        QgsRendererPropertiesDialog* styleWidget = new QgsRendererPropertiesDialog( vlayer, QgsStyle::defaultStyle(), true, mStackedWidget );
         styleWidget->setMapCanvas( mMapCanvas );
         styleWidget->setDockMode( true );
         connect( styleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );

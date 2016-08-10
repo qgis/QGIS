@@ -21,7 +21,7 @@
 #include <QBrush>
 #include <QPen>
 
-class QgsFillSymbolV2;
+class QgsFillSymbol;
 
 /** \ingroup core
  * Composer item for polygons.
@@ -52,10 +52,10 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
     virtual QString displayName() const override;
 
     /** Returns the QgsSymbol used to draw the shape. */
-    QgsFillSymbolV2* polygonStyleSymbol() { return mPolygonStyleSymbol.data(); }
+    QgsFillSymbol* polygonStyleSymbol() { return mPolygonStyleSymbol.data(); }
 
     /** Set the QgsSymbol used to draw the shape. */
-    void setPolygonStyleSymbol( QgsFillSymbolV2* symbol );
+    void setPolygonStyleSymbol( QgsFillSymbol* symbol );
 
     /** Return correct graphics item type. */
     virtual int type() const override { return ComposerPolygon; }
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
   protected:
 
     /** QgsSymbol use to draw the shape. */
-    QScopedPointer<QgsFillSymbolV2> mPolygonStyleSymbol;
+    QScopedPointer<QgsFillSymbol> mPolygonStyleSymbol;
 
     /** Add the node newPoint at the given position according to some
      * criteres. */

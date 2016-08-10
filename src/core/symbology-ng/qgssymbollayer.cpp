@@ -448,7 +448,7 @@ void QgsSymbolLayer::copyPaintEffect( QgsSymbolLayer *destLayer ) const
   destLayer->setPaintEffect( mPaintEffect->clone() );
 }
 
-QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
+QgsMarkerSymbolLayer::QgsMarkerSymbolLayer( bool locked )
     : QgsSymbolLayer( QgsSymbol::Marker, locked )
     , mAngle( 0 )
     , mLineAngle( 0 )
@@ -462,7 +462,7 @@ QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
 
 }
 
-QgsLineSymbolLayerV2::QgsLineSymbolLayerV2( bool locked )
+QgsLineSymbolLayer::QgsLineSymbolLayer( bool locked )
     : QgsSymbolLayer( QgsSymbol::Line, locked )
     , mWidth( 0 )
     , mWidthUnit( QgsUnitTypes::RenderMillimeters )
@@ -471,35 +471,35 @@ QgsLineSymbolLayerV2::QgsLineSymbolLayerV2( bool locked )
 {
 }
 
-QgsFillSymbolLayerV2::QgsFillSymbolLayerV2( bool locked )
+QgsFillSymbolLayer::QgsFillSymbolLayer( bool locked )
     : QgsSymbolLayer( QgsSymbol::Fill, locked )
     , mAngle( 0.0 )
 {
 }
 
-void QgsMarkerSymbolLayerV2::startRender( QgsSymbolRenderContext& context )
+void QgsMarkerSymbolLayer::startRender( QgsSymbolRenderContext& context )
 {
   Q_UNUSED( context );
 }
 
-void QgsMarkerSymbolLayerV2::drawPreviewIcon( QgsSymbolRenderContext& context, QSize size )
+void QgsMarkerSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext& context, QSize size )
 {
   startRender( context );
   renderPoint( QPointF( size.width() / 2, size.height() / 2 ), context );
   stopRender( context );
 }
 
-void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolRenderContext& context, double& offsetX, double& offsetY ) const
+void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext& context, double& offsetX, double& offsetY ) const
 {
   markerOffset( context, mSize, mSize, mSizeUnit, mSizeUnit, offsetX, offsetY, mSizeMapUnitScale, mSizeMapUnitScale );
 }
 
-void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolRenderContext& context, double width, double height, double& offsetX, double& offsetY ) const
+void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext& context, double width, double height, double& offsetX, double& offsetY ) const
 {
   markerOffset( context, width, height, mSizeUnit, mSizeUnit, offsetX, offsetY, mSizeMapUnitScale, mSizeMapUnitScale );
 }
 
-void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolRenderContext& context, double width, double height,
+void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext& context, double width, double height,
     QgsUnitTypes::RenderUnit widthUnit, QgsUnitTypes::RenderUnit heightUnit,
     double& offsetX, double& offsetY, const QgsMapUnitScale& widthMapUnitScale, const QgsMapUnitScale& heightMapUnitScale ) const
 {
@@ -556,52 +556,52 @@ void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolRenderContext& context, doub
   }
 }
 
-QPointF QgsMarkerSymbolLayerV2::_rotatedOffset( QPointF offset, double angle )
+QPointF QgsMarkerSymbolLayer::_rotatedOffset( QPointF offset, double angle )
 {
   angle = DEG2RAD( angle );
   double c = cos( angle ), s = sin( angle );
   return QPointF( offset.x() * c - offset.y() * s, offset.x() * s + offset.y() * c );
 }
 
-QgsMarkerSymbolLayerV2::HorizontalAnchorPoint QgsMarkerSymbolLayerV2::decodeHorizontalAnchorPoint( const QString& str )
+QgsMarkerSymbolLayer::HorizontalAnchorPoint QgsMarkerSymbolLayer::decodeHorizontalAnchorPoint( const QString& str )
 {
   if ( str.compare( "left", Qt::CaseInsensitive ) == 0 )
   {
-    return QgsMarkerSymbolLayerV2::Left;
+    return QgsMarkerSymbolLayer::Left;
   }
   else if ( str.compare( "right", Qt::CaseInsensitive ) == 0 )
   {
-    return QgsMarkerSymbolLayerV2::Right;
+    return QgsMarkerSymbolLayer::Right;
   }
   else
   {
-    return QgsMarkerSymbolLayerV2::HCenter;
+    return QgsMarkerSymbolLayer::HCenter;
   }
 }
 
-QgsMarkerSymbolLayerV2::VerticalAnchorPoint QgsMarkerSymbolLayerV2::decodeVerticalAnchorPoint( const QString& str )
+QgsMarkerSymbolLayer::VerticalAnchorPoint QgsMarkerSymbolLayer::decodeVerticalAnchorPoint( const QString& str )
 {
   if ( str.compare( "top", Qt::CaseInsensitive ) == 0 )
   {
-    return QgsMarkerSymbolLayerV2::Top;
+    return QgsMarkerSymbolLayer::Top;
   }
   else if ( str.compare( "bottom", Qt::CaseInsensitive ) == 0 )
   {
-    return QgsMarkerSymbolLayerV2::Bottom;
+    return QgsMarkerSymbolLayer::Bottom;
   }
   else
   {
-    return QgsMarkerSymbolLayerV2::VCenter;
+    return QgsMarkerSymbolLayer::VCenter;
   }
 }
 
-void QgsMarkerSymbolLayerV2::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+void QgsMarkerSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   mSizeUnit = unit;
   mOffsetUnit = unit;
 }
 
-QgsUnitTypes::RenderUnit QgsMarkerSymbolLayerV2::outputUnit() const
+QgsUnitTypes::RenderUnit QgsMarkerSymbolLayer::outputUnit() const
 {
   if ( mOffsetUnit != mSizeUnit )
   {
@@ -610,13 +610,13 @@ QgsUnitTypes::RenderUnit QgsMarkerSymbolLayerV2::outputUnit() const
   return mOffsetUnit;
 }
 
-void QgsMarkerSymbolLayerV2::setMapUnitScale( const QgsMapUnitScale &scale )
+void QgsMarkerSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 {
   mSizeMapUnitScale = scale;
   mOffsetMapUnitScale = scale;
 }
 
-QgsMapUnitScale QgsMarkerSymbolLayerV2::mapUnitScale() const
+QgsMapUnitScale QgsMarkerSymbolLayer::mapUnitScale() const
 {
   if ( mSizeMapUnitScale == mOffsetMapUnitScale )
   {
@@ -625,28 +625,28 @@ QgsMapUnitScale QgsMarkerSymbolLayerV2::mapUnitScale() const
   return QgsMapUnitScale();
 }
 
-void QgsLineSymbolLayerV2::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+void QgsLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   mWidthUnit = unit;
 }
 
-QgsUnitTypes::RenderUnit QgsLineSymbolLayerV2::outputUnit() const
+QgsUnitTypes::RenderUnit QgsLineSymbolLayer::outputUnit() const
 {
   return mWidthUnit;
 }
 
-void QgsLineSymbolLayerV2::setMapUnitScale( const QgsMapUnitScale& scale )
+void QgsLineSymbolLayer::setMapUnitScale( const QgsMapUnitScale& scale )
 {
   mWidthMapUnitScale = scale;
 }
 
-QgsMapUnitScale QgsLineSymbolLayerV2::mapUnitScale() const
+QgsMapUnitScale QgsLineSymbolLayer::mapUnitScale() const
 {
   return mWidthMapUnitScale;
 }
 
 
-void QgsLineSymbolLayerV2::drawPreviewIcon( QgsSymbolRenderContext& context, QSize size )
+void QgsLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext& context, QSize size )
 {
   QPolygonF points;
   // we're adding 0.5 to get rid of blurred preview:
@@ -658,7 +658,7 @@ void QgsLineSymbolLayerV2::drawPreviewIcon( QgsSymbolRenderContext& context, QSi
   stopRender( context );
 }
 
-void QgsLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
+void QgsLineSymbolLayer::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
 {
   renderPolyline( points, context );
   if ( rings )
@@ -668,14 +668,14 @@ void QgsLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<
   }
 }
 
-double QgsLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext &context ) const
+double QgsLineSymbolLayer::dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( context );
   return width() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
 }
 
 
-void QgsFillSymbolLayerV2::drawPreviewIcon( QgsSymbolRenderContext& context, QSize size )
+void QgsFillSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext& context, QSize size )
 {
   QPolygonF poly = QRectF( QPointF( 0, 0 ), QPointF( size.width(), size.height() ) );
   startRender( context );
@@ -683,7 +683,7 @@ void QgsFillSymbolLayerV2::drawPreviewIcon( QgsSymbolRenderContext& context, QSi
   stopRender( context );
 }
 
-void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
+void QgsFillSymbolLayer::_renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
 {
   if ( !p )
   {
@@ -730,7 +730,7 @@ void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points,
   }
 }
 
-void QgsMarkerSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
+void QgsMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
 {
   QDomElement symbolizerElem = doc.createElement( "se:PointSymbolizer" );
   if ( !props.value( "uom", "" ).isEmpty() )

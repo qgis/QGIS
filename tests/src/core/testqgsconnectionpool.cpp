@@ -18,7 +18,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgspointv2.h"
-#include "qgslinestringv2.h"
+#include "qgslinestring.h"
 #include "qgsvectorlayer.h"
 #include <QEventLoop>
 #include <QObject>
@@ -124,7 +124,7 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   for ( int i = 0, n = layer2Features.count(); i < n; ++i )
   {
     QgsGeometry featureGeom = layer2Features[i].geometry();
-    const QgsLineStringV2* geom = dynamic_cast<const QgsLineStringV2*>( featureGeom.geometry() );
+    const QgsLineString* geom = dynamic_cast<const QgsLineString*>( featureGeom.geometry() );
     QVERIFY( geom != nullptr );
     int nVtx = geom->vertexCount();
     QVERIFY( nVtx == nRoutePts );

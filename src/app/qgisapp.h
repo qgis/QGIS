@@ -1254,7 +1254,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Stops rendering of the main map
     void stopRendering();
 
-    void showStyleManagerV2();
+    void showStyleManager();
 
     void writeAnnotationItemsToProject( QDomDocument& doc );
 

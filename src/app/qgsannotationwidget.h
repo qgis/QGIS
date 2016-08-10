@@ -21,7 +21,7 @@
 #include "ui_qgsannotationwidgetbase.h"
 
 class QgsAnnotationItem;
-class QgsMarkerSymbolV2;
+class QgsMarkerSymbol;
 
 /** A configuration widget to configure the annotation item properties. Usually embedded by QgsAnnotationItem
 subclass configuration dialogs*/
@@ -44,7 +44,7 @@ class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationW
 
   private:
     QgsAnnotationItem* mItem;
-    QScopedPointer< QgsMarkerSymbolV2 > mMarkerSymbol;
+    QScopedPointer< QgsMarkerSymbol > mMarkerSymbol;
 
     void blockAllSignals( bool block );
     void updateCenterIcon();

@@ -17,13 +17,13 @@
 
 //#include "qgsfeatureiterator.h"
 #include "diagram/qgsdiagram.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgsgeometrycache.h"
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsrendercontext.h"
-#include "qgssinglesymbolrendererv2.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgssymbollayer.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
@@ -48,7 +48,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
     , mInterruptionChecker( context )
     , mLayer( layer )
     , mFields( layer->fields() )
-    , mRendererV2( nullptr )
+    , mRenderer( nullptr )
     , mCache( nullptr )
     , mLabeling( false )
     , mDiagrams( false )
@@ -58,7 +58,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
 {
   mSource = new QgsVectorLayerFeatureSource( layer );
 
-  mRendererV2 = layer->rendererV2() ? layer->rendererV2()->clone() : nullptr;
+  mRenderer = layer->renderer() ? layer->renderer()->clone() : nullptr;
   mSelectedFeatureIds = layer->selectedFeaturesIds();
 
   mDrawVertexMarkers = nullptr != layer->editBuffer();
@@ -90,20 +90,20 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
 
   mVertexMarkerSize = settings.value( "/qgis/digitizing/marker_size", 3 ).toInt();
 
-  if ( !mRendererV2 )
+  if ( !mRenderer )
     return;
 
-  QgsDebugMsgLevel( "rendering v2:\n  " + mRendererV2->dump(), 2 );
+  QgsDebugMsgLevel( "rendering v2:\n  " + mRenderer->dump(), 2 );
 
   if ( mDrawVertexMarkers )
   {
     // set editing vertex markers style
-    mRendererV2->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
+    mRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
   }
 
   mContext.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
 
-  mAttrNames = mRendererV2->usedAttributes();
+  mAttrNames = mRenderer->usedAttributes();
 
   //register label and diagram layer to the labeling engine
   prepareLabeling( layer, mAttrNames );
@@ -114,7 +114,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
 
 QgsVectorLayerRenderer::~QgsVectorLayerRenderer()
 {
-  delete mRendererV2;
+  delete mRenderer;
   delete mSource;
 }
 
@@ -124,17 +124,17 @@ bool QgsVectorLayerRenderer::render()
   if ( mGeometryType == QgsWkbTypes::NullGeometry || mGeometryType == QgsWkbTypes::UnknownGeometry )
     return true;
 
-  if ( !mRendererV2 )
+  if ( !mRenderer )
   {
     mErrors.append( QObject::tr( "No renderer for drawing." ) );
     return false;
   }
 
   bool usingEffect = false;
-  if ( mRendererV2->paintEffect() && mRendererV2->paintEffect()->enabled() )
+  if ( mRenderer->paintEffect() && mRenderer->paintEffect()->enabled() )
   {
     usingEffect = true;
-    mRendererV2->paintEffect()->begin( mContext );
+    mRenderer->paintEffect()->begin( mContext );
   }
 
   // Per feature blending mode
@@ -145,20 +145,20 @@ bool QgsVectorLayerRenderer::render()
     mContext.painter()->setCompositionMode( mFeatureBlendMode );
   }
 
-  mRendererV2->startRender( mContext, mFields );
+  mRenderer->startRender( mContext, mFields );
 
-  QString rendererFilter = mRendererV2->filter( mFields );
+  QString rendererFilter = mRenderer->filter( mFields );
 
   QgsRectangle requestExtent = mContext.extent();
-  mRendererV2->modifyRequestExtent( requestExtent, mContext );
+  mRenderer->modifyRequestExtent( requestExtent, mContext );
 
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
                                      .setFilterRect( requestExtent )
                                      .setSubsetOfAttributes( mAttrNames, mFields )
                                      .setExpressionContext( mContext.expressionContext() );
-  if ( mRendererV2->orderByEnabled() )
+  if ( mRenderer->orderByEnabled() )
   {
-    featureRequest.setOrderBy( mRendererV2->orderBy() );
+    featureRequest.setOrderBy( mRenderer->orderBy() );
   }
 
   const QgsFeatureFilterProvider* featureFilterProvider = mContext.featureFilterProvider();
@@ -250,17 +250,17 @@ bool QgsVectorLayerRenderer::render()
   // Attach an interruption checker so that iterators that have potentially
   // slow fetchFeature() implementations, such as in the WFS provider, can
   // check it, instead of relying on just the mContext.renderingStopped() check
-  // in drawRendererV2()
+  // in drawRenderer()
   fit.setInterruptionChecker( &mInterruptionChecker );
 
-  if (( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels ) && mRendererV2->usingSymbolLevels() )
-    drawRendererV2Levels( fit );
+  if (( mRenderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) && mRenderer->usingSymbolLevels() )
+    drawRendererLevels( fit );
   else
-    drawRendererV2( fit );
+    drawRenderer( fit );
 
   if ( usingEffect )
   {
-    mRendererV2->paintEffect()->end( mContext );
+    mRenderer->paintEffect()->end( mContext );
   }
 
   //apply layer transparency for vector layers
@@ -291,7 +291,7 @@ void QgsVectorLayerRenderer::setGeometryCachePointer( QgsGeometryCache* cache )
 
 
 
-void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
+void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator& fit )
 {
   QgsExpressionContextScope* symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
   mContext.expressionContext().appendScope( symbolScope );
@@ -322,7 +322,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
       }
 
       // render feature
-      bool rendered = mRendererV2->renderFeature( fet, mContext, -1, sel, drawMarker );
+      bool rendered = mRenderer->renderFeature( fet, mContext, -1, sel, drawMarker );
 
       // labeling - register feature
       if ( rendered )
@@ -342,7 +342,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
         if ( mContext.labelingEngineV2() )
         {
           QScopedPointer<QgsGeometry> obstacleGeometry;
-          QgsSymbolList symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
+          QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, mContext );
 
           if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
           {
@@ -375,17 +375,17 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
 
   delete mContext.expressionContext().popScope();
 
-  stopRendererV2( nullptr );
+  stopRenderer( nullptr );
 }
 
-void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
+void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator& fit )
 {
   QHash< QgsSymbol*, QList<QgsFeature> > features; // key = symbol, value = array of features
 
-  QgsSingleSymbolRendererV2* selRenderer = nullptr;
+  QgsSingleSymbolRenderer* selRenderer = nullptr;
   if ( !mSelectedFeatureIds.isEmpty() )
   {
-    selRenderer = new QgsSingleSymbolRendererV2( QgsSymbol::defaultSymbol( mGeometryType ) ) ;
+    selRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( mGeometryType ) ) ;
     selRenderer->symbol()->setColor( mContext.selectionColor() );
     selRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
     selRenderer->startRender( mContext, mFields );
@@ -401,7 +401,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     if ( mContext.renderingStopped() )
     {
       qDebug( "rendering stop!" );
-      stopRendererV2( selRenderer );
+      stopRenderer( selRenderer );
       delete mContext.expressionContext().popScope();
       return;
     }
@@ -410,7 +410,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       continue; // skip features without geometry
 
     mContext.expressionContext().setFeature( fet );
-    QgsSymbol* sym = mRendererV2->symbolForFeature( fet, mContext );
+    QgsSymbol* sym = mRenderer->symbolForFeature( fet, mContext );
     if ( !sym )
     {
       continue;
@@ -444,7 +444,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     if ( mContext.labelingEngineV2() )
     {
       QScopedPointer<QgsGeometry> obstacleGeometry;
-      QgsSymbolList symbols = mRendererV2->originalSymbolsForFeature( fet, mContext );
+      QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, mContext );
 
       if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
       {
@@ -471,7 +471,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
 
   // find out the order
   QgsSymbolLevelOrder levels;
-  QgsSymbolList symbols = mRendererV2->symbols( mContext );
+  QgsSymbolList symbols = mRenderer->symbols( mContext );
   for ( int i = 0; i < symbols.count(); i++ )
   {
     QgsSymbol* sym = symbols[i];
@@ -506,7 +506,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       {
         if ( mContext.renderingStopped() )
         {
-          stopRendererV2( selRenderer );
+          stopRenderer( selRenderer );
           return;
         }
 
@@ -518,7 +518,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
 
         try
         {
-          mRendererV2->renderFeature( *fit, mContext, layer, sel, drawMarker );
+          mRenderer->renderFeature( *fit, mContext, layer, sel, drawMarker );
         }
         catch ( const QgsCsException &cse )
         {
@@ -530,13 +530,13 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     }
   }
 
-  stopRendererV2( selRenderer );
+  stopRenderer( selRenderer );
 }
 
 
-void QgsVectorLayerRenderer::stopRendererV2( QgsSingleSymbolRendererV2* selRenderer )
+void QgsVectorLayerRenderer::stopRenderer( QgsSingleSymbolRenderer* selRenderer )
 {
-  mRendererV2->stopRender( mContext );
+  mRenderer->stopRender( mContext );
   if ( selRenderer )
   {
     selRenderer->stopRender( mContext );
@@ -551,7 +551,7 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QStringList
 {
   if ( !mContext.labelingEngine() )
   {
-    if ( QgsLabelingEngineV2* engine2 = mContext.labelingEngineV2() )
+    if ( QgsLabelingEngine* engine2 = mContext.labelingEngineV2() )
     {
       if ( layer->labeling() )
       {
@@ -608,7 +608,7 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList
 {
   if ( !mContext.labelingEngine() )
   {
-    if ( QgsLabelingEngineV2* engine2 = mContext.labelingEngineV2() )
+    if ( QgsLabelingEngine* engine2 = mContext.labelingEngineV2() )
     {
       if ( layer->diagramsEnabled() )
       {

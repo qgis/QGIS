@@ -33,8 +33,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsMapLayerRegistry,
                        QgsRectangle,
                        QgsMultiRenderChecker,
-                       QgsSingleSymbolRendererV2,
-                       QgsFillSymbolV2,
+                       QgsSingleSymbolRenderer,
+                       QgsFillSymbol,
                        QgsFeatureRequest
                        )
 from qgis.testing import unittest
@@ -53,10 +53,10 @@ class TestQgsSingleSymbolRenderer(unittest.TestCase):
         QgsMapLayerRegistry.instance().addMapLayer(layer)
 
         # Create rulebased style
-        sym1 = QgsFillSymbolV2.createSimple({'color': '#fdbf6f'})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
 
-        self.renderer = QgsSingleSymbolRendererV2(sym1)
-        layer.setRendererV2(self.renderer)
+        self.renderer = QgsSingleSymbolRenderer(sym1)
+        layer.setRenderer(self.renderer)
 
         rendered_layers = [layer.id()]
         self.mapsettings = self.iface.mapCanvas().mapSettings()

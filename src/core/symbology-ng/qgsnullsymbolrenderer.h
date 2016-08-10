@@ -16,7 +16,7 @@
 #define QGSNULLSYMBOLRENDERER_H
 
 #include "qgis.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgssymbol.h"
 
 /** \ingroup core
@@ -26,7 +26,7 @@
  * \note Added in version 2.16
  */
 
-class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRendererV2
+class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
 {
   public:
 
@@ -44,14 +44,14 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRendererV2
 
     virtual QList<QString> usedAttributes() override;
     virtual QString dump() const override;
-    virtual QgsFeatureRendererV2* clone() const override;
+    virtual QgsFeatureRenderer* clone() const override;
     virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
 
     /** Creates a null renderer from XML element.
      * @param element DOM element
      * @returns new null symbol renderer
      */
-    static QgsFeatureRendererV2* create( QDomElement& element );
+    static QgsFeatureRenderer* create( QDomElement& element );
 
     virtual QDomElement save( QDomDocument& doc ) override;
 
@@ -59,7 +59,7 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRendererV2
      * @param renderer renderer to convert from
      * @returns a new renderer if the conversion was possible, otherwise nullptr.
      */
-    static QgsNullSymbolRenderer* convertFromRenderer( const QgsFeatureRendererV2 *renderer );
+    static QgsNullSymbolRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer );
 
   private:
 

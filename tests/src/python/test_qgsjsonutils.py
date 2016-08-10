@@ -26,7 +26,7 @@ from qgis.core import (QgsJSONUtils,
                        QgsWkbTypes,
                        QgsGeometry,
                        QgsPointV2,
-                       QgsLineStringV2,
+                       QgsLineString,
                        NULL,
                        QgsVectorLayer,
                        QgsRelation
@@ -170,9 +170,9 @@ class TestQgsJSONUtils(unittest.TestCase):
         self.assertEqual(exporter.exportFeature(feature), expected)
 
         # test with linestring for bbox inclusion
-        l = QgsLineStringV2()
+        l = QgsLineString()
         l.setPoints([QgsPointV2(5, 6), QgsPointV2(15, 16)])
-        feature.setGeometry(QgsGeometry(QgsLineStringV2(l)))
+        feature.setGeometry(QgsGeometry(QgsLineString(l)))
 
         expected = """{
    "type":"Feature",
@@ -297,7 +297,7 @@ class TestQgsJSONUtils(unittest.TestCase):
         # test excluding geometry
         exporter.setIncludeGeometry(False)
         self.assertEqual(exporter.includeGeometry(), False)
-        feature.setGeometry(QgsGeometry(QgsLineStringV2(l)))
+        feature.setGeometry(QgsGeometry(QgsLineString(l)))
 
         expected = """{
    "type":"Feature",

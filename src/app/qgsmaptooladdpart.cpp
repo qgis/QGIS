@@ -15,9 +15,9 @@
 
 #include "qgsmaptooladdpart.h"
 #include "qgsadvanceddigitizingdockwidget.h"
-#include "qgscurvepolygonv2.h"
+#include "qgscurvepolygon.h"
 #include "qgsgeometry.h"
-#include "qgslinestringv2.h"
+#include "qgslinestring.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
@@ -86,7 +86,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       }
 
       vlayer->beginEditCommand( tr( "Part added" ) );
-      errorCode = vlayer->addPart( QgsPointSequenceV2() << layerPoint );
+      errorCode = vlayer->addPart( QgsPointSequence() << layerPoint );
     }
     break;
 
@@ -132,7 +132,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
       bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
-      QgsCurveV2* curveToAdd = nullptr;
+      QgsCurve* curveToAdd = nullptr;
       if ( hasCurvedSegments && providerSupportsCurvedSegments )
       {
         curveToAdd = captureCurve()->clone();
@@ -146,12 +146,12 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       if ( mode() == CapturePolygon )
       {
         //avoid intersections
-        QgsCurvePolygonV2* cp = new QgsCurvePolygonV2();
+        QgsCurvePolygon* cp = new QgsCurvePolygon();
         cp->setExteriorRing( curveToAdd );
         QgsGeometry* geom = new QgsGeometry( cp );
         geom->avoidIntersections();
 
-        const QgsCurvePolygonV2* cpGeom = dynamic_cast<const QgsCurvePolygonV2*>( geom->geometry() );
+        const QgsCurvePolygon* cpGeom = dynamic_cast<const QgsCurvePolygon*>( geom->geometry() );
         if ( !cpGeom )
         {
           stopCapturing();

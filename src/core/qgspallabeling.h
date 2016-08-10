@@ -58,7 +58,7 @@ class QgsCoordinateTransform;
 class QgsLabelSearchTree;
 class QgsMapSettings;
 class QgsLabelFeature;
-class QgsLabelingEngineV2;
+class QgsLabelingEngine;
 class QgsPalLayerSettings;
 class QgsVectorLayerLabelProvider;
 class QgsDxfExport;
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /** Placement modes which determine how label candidates are generated for a feature.
      */
-    //TODO QGIS 3.0 - move to QgsLabelingEngineV2
+    //TODO QGIS 3.0 - move to QgsLabelingEngine
     enum Placement
     {
       AroundPoint, /**< Arranges candidates in a circle around a point (or centroid of a polygon). Applies to point or polygon layers only.*/
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsPalLayerSettings
     };
 
     //! Positions for labels when using the QgsPalLabeling::OrderedPositionsAroundPoint placement mode
-    //TODO QGIS 3.0 - move to QgsLabelingEngineV2
+    //TODO QGIS 3.0 - move to QgsLabelingEngine
     enum PredefinedPointPosition
     {
       TopLeft, //!< Label on top-left of point
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     //! Behaviour modifier for label offset and distance, only applies in some
     //! label placement modes.
-    //TODO QGIS 3.0 - move to QgsLabelingEngineV2
+    //TODO QGIS 3.0 - move to QgsLabelingEngine
     enum OffsetType
     {
       FromPoint, //!< Offset distance applies from point geometry
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /** Line placement flags, which control how candidates are generated for a linear feature.
      */
-    //TODO QGIS 3.0 - move to QgsLabelingEngineV2, rename to LinePlacementFlag, use Q_DECLARE_FLAGS to make
+    //TODO QGIS 3.0 - move to QgsLabelingEngine, rename to LinePlacementFlag, use Q_DECLARE_FLAGS to make
     //LinePlacementFlags type, and replace use of pal::LineArrangementFlag
     enum LinePlacementFlags
     {
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsPalLayerSettings
     /** Valid obstacle types, which affect how features within the layer will act as obstacles
      * for labels.
      */
-    //TODO QGIS 3.0 - Move to QgsLabelingEngineV2
+    //TODO QGIS 3.0 - Move to QgsLabelingEngine
     enum ObstacleType
     {
       PolygonInterior, /*!< avoid placing labels over interior of polygon (prefer placing labels totally
@@ -644,7 +644,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * @param f feature to label
      * @param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
-     * @param labelFeature if using QgsLabelingEngineV2, this will receive the label feature. Not available
+     * @param labelFeature if using QgsLabelingEngine, this will receive the label feature. Not available
      * in Python bindings.
      * @param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
      * should be used as an obstacle for labels (eg, if the feature has been rendered with an offset point
@@ -1188,7 +1188,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     QgsPalLayerSettings mInvalidLayerSettings;
 
     //! New labeling engine to interface with PAL
-    QgsLabelingEngineV2* mEngine;
+    QgsLabelingEngine* mEngine;
 
     // list of candidates from last labeling
     QList<QgsLabelCandidate> mCandidates;

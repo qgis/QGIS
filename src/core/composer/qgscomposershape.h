@@ -22,7 +22,7 @@
 #include <QBrush>
 #include <QPen>
 
-class QgsFillSymbolV2;
+class QgsFillSymbol;
 
 /** \ingroup core
  * A composer items that draws common shapes (ellipse, triangle, rectangle)*/
@@ -69,17 +69,17 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     /** Returns the radius for rounded rectangle corners*/
     double cornerRadius() const { return mCornerRadius; }
 
-    /** Sets the QgsFillSymbolV2 used to draw the shape. Must also call setUseSymbolV2( true ) to
+    /** Sets the QgsFillSymbol used to draw the shape. Must also call setUseSymbol( true ) to
      * enable drawing with a symbol.
      * Note: added in version 2.1*/
-    void setShapeStyleSymbol( QgsFillSymbolV2* symbol );
-    /** Returns the QgsFillSymbolV2 used to draw the shape.
+    void setShapeStyleSymbol( QgsFillSymbol* symbol );
+    /** Returns the QgsFillSymbol used to draw the shape.
      * Note: added in version 2.1*/
-    QgsFillSymbolV2* shapeStyleSymbol() { return mShapeStyleSymbol; }
+    QgsFillSymbol* shapeStyleSymbol() { return mShapeStyleSymbol; }
 
-    /** Controls whether the shape should be drawn using a QgsFillSymbolV2.
+    /** Controls whether the shape should be drawn using a QgsFillSymbol.
      * Note: Added in v2.1 */
-    void setUseSymbolV2( bool useSymbolV2 );
+    void setUseSymbol( bool useSymbol );
 
     /** Depending on the symbol style, the bounding rectangle can be larger than the shape
     @note this function was added in version 2.3*/
@@ -114,9 +114,9 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 
     double mCornerRadius;
 
-    bool mUseSymbolV2;
+    bool mUseSymbol;
 
-    QgsFillSymbolV2* mShapeStyleSymbol;
+    QgsFillSymbol* mShapeStyleSymbol;
     double mMaxSymbolBleed;
     /** Current bounding rectangle of shape*/
     QRectF mCurrentRectangle;

@@ -59,7 +59,7 @@ void QgsComposerPolygon::createDefaultPolygonStyleSymbol()
   properties.insert( "width_border", "0.3" );
   properties.insert( "joinstyle", "miter" );
 
-  mPolygonStyleSymbol.reset( QgsFillSymbolV2::createSimple( properties ) );
+  mPolygonStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
 
   emit frameChanged();
 }
@@ -104,12 +104,12 @@ void QgsComposerPolygon::_draw( QPainter *painter )
 
 void QgsComposerPolygon::_readXmlStyle( const QDomElement &elmt )
 {
-  mPolygonStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbolV2>( elmt ) );
+  mPolygonStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elmt ) );
 }
 
-void QgsComposerPolygon::setPolygonStyleSymbol( QgsFillSymbolV2* symbol )
+void QgsComposerPolygon::setPolygonStyleSymbol( QgsFillSymbol* symbol )
 {
-  mPolygonStyleSymbol.reset( static_cast<QgsFillSymbolV2*>( symbol->clone() ) );
+  mPolygonStyleSymbol.reset( static_cast<QgsFillSymbol*>( symbol->clone() ) );
   update();
   emit frameChanged();
 }

@@ -31,7 +31,7 @@ QgsAnnotationItem::QgsAnnotationItem( QgsMapCanvas* mapCanvas )
     , mBalloonSegment( -1 )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
-  mMarkerSymbol = new QgsMarkerSymbolV2();
+  mMarkerSymbol = new QgsMarkerSymbol();
   mFrameBorderWidth = 1.0;
   mFrameColor = QColor( 0, 0, 0 );
   mFrameBackgroundColor = QColor( 255, 255, 255 );
@@ -43,7 +43,7 @@ QgsAnnotationItem::~QgsAnnotationItem()
   delete mMarkerSymbol;
 }
 
-void QgsAnnotationItem::setMarkerSymbol( QgsMarkerSymbolV2* symbol )
+void QgsAnnotationItem::setMarkerSymbol( QgsMarkerSymbol* symbol )
 {
   delete mMarkerSymbol;
   mMarkerSymbol = symbol;
@@ -479,7 +479,7 @@ void QgsAnnotationItem::_readXml( const QDomDocument& doc, const QDomElement& an
   QDomElement symbolElem = annotationElem.firstChildElement( "symbol" );
   if ( !symbolElem.isNull() )
   {
-    QgsMarkerSymbolV2* symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbolV2>( symbolElem );
+    QgsMarkerSymbol* symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem );
     if ( symbol )
     {
       delete mMarkerSymbol;

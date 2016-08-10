@@ -90,5 +90,5 @@ class SelectByAttributeSum(GeoAlgorithm):
                         completed = True
                         break
 
-        layer.setSelectedFeatures(selected)
+        layer.selectByIds(selected)
         self.setOutputValue(self.OUTPUT, fileName)

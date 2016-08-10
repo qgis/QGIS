@@ -19,13 +19,13 @@
 #include <QLayout>
 #include <QLabel>
 
-QgsRendererV2Widget* QgsNullSymbolRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererWidget* QgsNullSymbolRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
 {
   return new QgsNullSymbolRendererWidget( layer, style, renderer );
 }
 
-QgsNullSymbolRendererWidget::QgsNullSymbolRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    : QgsRendererV2Widget( layer, style )
+QgsNullSymbolRendererWidget::QgsNullSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+    : QgsRendererWidget( layer, style )
     , mRenderer( nullptr )
 {
   if ( renderer )
@@ -47,7 +47,7 @@ QgsNullSymbolRendererWidget::~QgsNullSymbolRendererWidget()
   delete mRenderer;
 }
 
-QgsFeatureRendererV2* QgsNullSymbolRendererWidget::renderer()
+QgsFeatureRenderer* QgsNullSymbolRendererWidget::renderer()
 {
   return mRenderer;
 }

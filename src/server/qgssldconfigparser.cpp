@@ -21,8 +21,8 @@
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include "qgsrasterlayer.h"
-#include "qgsrendererv2.h"
-#include "qgssinglesymbolrendererv2.h"
+#include "qgsrenderer.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -228,8 +228,8 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
         QgsVectorLayer* v = dynamic_cast<QgsVectorLayer*>( fallbackLayerList.at( 0 ) );
         if ( v )
         {
-          QgsFeatureRendererV2* r = rendererFromUserStyle( userStyleElement, v );
-          v->setRendererV2( r );
+          QgsFeatureRenderer* r = rendererFromUserStyle( userStyleElement, v );
+          v->setRenderer( r );
           labelSettingsFromUserStyle( userStyleElement, v );
 
           resultList.push_back( v );
@@ -290,7 +290,7 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
     return resultList;
   }
 
-  QgsFeatureRendererV2* theRenderer = nullptr;
+  QgsFeatureRenderer* theRenderer = nullptr;
 
   QgsRasterLayer* theRasterLayer = dynamic_cast<QgsRasterLayer*>( theMapLayer );
   if ( theRasterLayer )
@@ -319,7 +319,7 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
   if ( userStyleElement.isNull() )//apply a default style
   {
     QgsSymbol* symbol = QgsSymbol::defaultSymbol( theVectorLayer->geometryType() );
-    theRenderer = new QgsSingleSymbolRendererV2( symbol );
+    theRenderer = new QgsSingleSymbolRenderer( symbol );
   }
   else
   {
@@ -335,7 +335,7 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
     delete theVectorLayer;
     return resultList;
   }
-  theVectorLayer->setRendererV2( theRenderer );
+  theVectorLayer->setRenderer( theRenderer );
   QgsDebugMsg( "Returning the vectorlayer" );
   resultList.push_back( theVectorLayer );
   return resultList;
@@ -856,7 +856,7 @@ QDomElement QgsSLDConfigParser::findNamedStyleElement( const QDomElement& layerE
   return defaultResult;
 }
 
-QgsFeatureRendererV2* QgsSLDConfigParser::rendererFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const
+QgsFeatureRenderer* QgsSLDConfigParser::rendererFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const
 {
   if ( !vec || userStyleElement.isNull() )
   {
@@ -866,7 +866,7 @@ QgsFeatureRendererV2* QgsSLDConfigParser::rendererFromUserStyle( const QDomEleme
   QgsDebugMsg( "Entering" );
 
   QString errorMessage;
-  QgsFeatureRendererV2* renderer = QgsFeatureRendererV2::loadSld( userStyleElement.parentNode(), vec->geometryType(), errorMessage );
+  QgsFeatureRenderer* renderer = QgsFeatureRenderer::loadSld( userStyleElement.parentNode(), vec->geometryType(), errorMessage );
   if ( !renderer )
   {
     throw QgsMapServiceException( "SLD error", errorMessage );
@@ -1158,8 +1158,8 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   QgsVectorLayer* contourLayer = new QgsVectorLayer( tmpFileName, "layer", "ogr" );
 
   //create renderer
-  QgsFeatureRendererV2* theRenderer = rendererFromUserStyle( userStyleElem, contourLayer );
-  contourLayer->setRendererV2( theRenderer );
+  QgsFeatureRenderer* theRenderer = rendererFromUserStyle( userStyleElem, contourLayer );
+  contourLayer->setRenderer( theRenderer );
 
   //add labelling if requested
   labelSettingsFromUserStyle( userStyleElem, contourLayer );

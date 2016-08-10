@@ -16,7 +16,7 @@
 #define QGSHEATMAPRENDERERWIDGET_H
 
 #include "ui_qgsheatmaprendererwidgetbase.h"
-#include "qgsrendererv2widget.h"
+#include "qgsrendererwidget.h"
 
 class QMenu;
 class QgsHeatmapRenderer;
@@ -24,7 +24,7 @@ class QgsHeatmapRenderer;
 /** \ingroup gui
  * \class QgsHeatmapRendererWidget
  */
-class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererV2Widget, private Ui::QgsHeatmapRendererWidgetBase
+class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui::QgsHeatmapRendererWidgetBase
 {
     Q_OBJECT
 
@@ -34,17 +34,17 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererV2Widget, private 
      * @param style
      * @param renderer the mask renderer (will take ownership)
      */
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
     /** Constructor
      * @param layer the layer where this renderer is applied
      * @param style
      * @param renderer the mask renderer (will take ownership)
      */
-    QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
     /** @returns the current feature renderer */
-    virtual QgsFeatureRendererV2* renderer() override;
+    virtual QgsFeatureRenderer* renderer() override;
 
     void setMapCanvas( QgsMapCanvas* canvas ) override;
 

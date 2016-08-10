@@ -4,7 +4,7 @@
  * \note Added in version 2.16
  */
 
-class QgsNullSymbolRendererWidget : QgsRendererV2Widget
+class QgsNullSymbolRendererWidget : QgsRendererWidget
 {
 %TypeHeaderCode
 #include <qgsnullsymbolrendererwidget.h>
@@ -13,12 +13,12 @@ class QgsNullSymbolRendererWidget : QgsRendererV2Widget
   public:
 
     //! Creates a new QgsNullSymbolRendererWidget object
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) /Factory/;
 
     //! Constructor for QgsNullSymbolRendererWidget
-    QgsNullSymbolRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    QgsNullSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
     ~QgsNullSymbolRendererWidget();
 
     //! Returns a pointer to the configured renderer
-    virtual QgsFeatureRendererV2* renderer();
+    virtual QgsFeatureRenderer* renderer();
 };

@@ -187,7 +187,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     /** Adds details of the closest vertex to derived attributes
      */
-    void closestVertexAttributes( const QgsAbstractGeometryV2& geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString >& derivedAttributes );
+    void closestVertexAttributes( const QgsAbstractGeometry& geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString >& derivedAttributes );
 
     QString formatCoordinate( const QgsPoint& canvasPoint ) const;
     QString formatXCoordinate( const QgsPoint& canvasPoint ) const;

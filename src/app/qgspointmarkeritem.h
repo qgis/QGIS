@@ -22,7 +22,7 @@
 #include <QFontMetricsF>
 #include <QPixmap>
 
-class QgsMarkerSymbolV2;
+class QgsMarkerSymbol;
 
 /** \ingroup app
  * \class QgsPointMarkerItem
@@ -48,12 +48,12 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
      * @see symbol()
      * @see updateSize()
      */
-    void setSymbol( QgsMarkerSymbolV2* symbol );
+    void setSymbol( QgsMarkerSymbol* symbol );
 
     /** Returns the marker symbol used for rendering the point.
      * @see setSymbol()
      */
-    QgsMarkerSymbolV2* symbol();
+    QgsMarkerSymbol* symbol();
 
     /** Sets the feature used for rendering the marker symbol. The feature's attributes
      * may affect the rendered symbol if data defined overrides are in place.
@@ -90,7 +90,7 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
   private:
 
     QgsFeature mFeature;
-    QScopedPointer< QgsMarkerSymbolV2 > mMarkerSymbol;
+    QScopedPointer< QgsMarkerSymbol > mMarkerSymbol;
     QPointF mLocation;
     QScopedPointer< QgsDrawSourceEffect > mOpacityEffect;
 

@@ -88,7 +88,7 @@ class QgsRenderContext
 
     //! Get access to new labeling engine (may be nullptr)
     //! @note not available in Python bindings
-    // QgsLabelingEngineV2* labelingEngineV2() const { return mLabelingEngine2; }
+    // QgsLabelingEngine* labelingEngineV2() const { return mLabelingEngine2; }
 
     QColor selectionColor() const;
 
@@ -121,7 +121,7 @@ class QgsRenderContext
     void setLabelingEngine( QgsLabelingEngineInterface* iface );
     //! Assign new labeling engine
     //! @note not available in Python bindings
-    // void setLabelingEngineV2( QgsLabelingEngineV2* engine2 ) { mLabelingEngine2 = engine2; }
+    // void setLabelingEngineV2( QgsLabelingEngine* engine2 ) { mLabelingEngine2 = engine2; }
     void setSelectionColor( const QColor& color );
 
     /** Sets whether vector selections should be shown in the rendered map
@@ -165,9 +165,9 @@ class QgsRenderContext
     //const QgsExpressionContext& expressionContext() const;
 
     /** Returns pointer to the unsegmentized geometry*/
-    const QgsAbstractGeometryV2* geometry() const;
+    const QgsAbstractGeometry* geometry() const;
     /** Sets pointer to original (unsegmentized) geometry*/
-    void setGeometry( const QgsAbstractGeometryV2* geometry );
+    void setGeometry( const QgsAbstractGeometry* geometry );
 
     /** Set a filter feature provider used for additional filtering of rendered features.
      * @param ffp the filter feature provider
@@ -191,7 +191,7 @@ class QgsRenderContext
 
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     @param type the segmentation tolerance typename*/
-    void setSegmentationToleranceType( QgsAbstractGeometryV2::SegmentationToleranceType type );
+    void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
     /** Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)*/
-    QgsAbstractGeometryV2::SegmentationToleranceType segmentationToleranceType() const;
+    QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const;
 };

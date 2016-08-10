@@ -95,13 +95,13 @@ class QgsSymbolLayerUtils
      */
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayer* layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
-    static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
+    static QIcon colorRampPreviewIcon( QgsVectorColorRamp* ramp, QSize size );
 
     static void drawStippledBackground( QPainter* painter, QRect rect );
 
     //! @note customContext parameter added in 2.6
     static QPixmap symbolPreviewPixmap( QgsSymbol* symbol, QSize size, QgsRenderContext* customContext = 0 );
-    static QPixmap colorRampPreviewPixmap( QgsVectorColorRampV2* ramp, QSize size );
+    static QPixmap colorRampPreviewPixmap( QgsVectorColorRamp* ramp, QSize size );
 
     /** Returns the maximum estimated bleed for the symbol */
     static double estimateMaxSymbolBleed( QgsSymbol* symbol );
@@ -129,7 +129,7 @@ class QgsSymbolLayerUtils
      */
     static QString symbolProperties( QgsSymbol* symbol );
 
-    static bool createSymbolLayerV2ListFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerList &layers );
+    static bool createSymbolLayerListFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerList &layers );
 
     static QgsSymbolLayer* createFillLayerFromSld( QDomElement &element );
     static QgsSymbolLayer* createLineLayerFromSld( QDomElement &element );
@@ -241,8 +241,8 @@ class QgsSymbolLayerUtils
 
     static void clearSymbolMap( QgsSymbolMap& symbols );
 
-    static QgsVectorColorRampV2* loadColorRamp( QDomElement& element ) /Factory/;
-    static QDomElement saveColorRamp( const QString& name, QgsVectorColorRampV2* ramp, QDomDocument& doc );
+    static QgsVectorColorRamp* loadColorRamp( QDomElement& element ) /Factory/;
+    static QDomElement saveColorRamp( const QString& name, QgsVectorColorRamp* ramp, QDomDocument& doc );
 
     /**
      * Returns a friendly display name for a color

@@ -556,10 +556,10 @@ bool QgsComposition::shouldExportPage( const int page ) const
   return true;
 }
 
-void QgsComposition::setPageStyleSymbol( QgsFillSymbolV2* symbol )
+void QgsComposition::setPageStyleSymbol( QgsFillSymbol* symbol )
 {
   delete mPageStyleSymbol;
-  mPageStyleSymbol = static_cast<QgsFillSymbolV2*>( symbol->clone() );
+  mPageStyleSymbol = static_cast<QgsFillSymbol*>( symbol->clone() );
   QgsProject::instance()->setDirty( true );
 }
 
@@ -571,7 +571,7 @@ void QgsComposition::createDefaultPageStyleSymbol()
   properties.insert( "style", "solid" );
   properties.insert( "style_border", "no" );
   properties.insert( "joinstyle", "miter" );
-  mPageStyleSymbol = QgsFillSymbolV2::createSimple( properties );
+  mPageStyleSymbol = QgsFillSymbol::createSimple( properties );
 }
 
 QPointF QgsComposition::positionOnPage( QPointF position ) const
@@ -963,7 +963,7 @@ bool QgsComposition::readXml( const QDomElement& compositionElem, const QDomDocu
   if ( !pageStyleSymbolElem.isNull() )
   {
     delete mPageStyleSymbol;
-    mPageStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbolV2>( pageStyleSymbolElem );
+    mPageStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( pageStyleSymbolElem );
   }
 
   if ( widthConversionOk && heightConversionOk )
@@ -1331,7 +1331,7 @@ void QgsComposition::addItemsFromXml( const QDomElement& elem, const QDomDocumen
     QgsComposerShape* newShape = new QgsComposerShape( this );
     newShape->readXml( currentComposerShapeElem, doc );
     //new shapes should default to symbol v2
-    newShape->setUseSymbolV2( true );
+    newShape->setUseSymbol( true );
     if ( pos )
     {
       if ( pasteInPlace )

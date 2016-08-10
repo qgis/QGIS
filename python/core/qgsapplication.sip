@@ -225,7 +225,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static QPixmap getThemePixmap( const QString &theName );
 
     //! Returns the path to user's style.
-    static QString userStyleV2Path();
+    static QString userStylePath();
 
     //! Returns the short name regular expression for line edit validator
     static QRegExp shortNameRegExp();
@@ -258,7 +258,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static QString userThemesFolder();
 
     //! Returns the path to default style (works as a starting point).
-    static QString defaultStyleV2Path();
+    static QString defaultStylePath();
 
     //! Returns the path to default themes folder from install (works as a starting point).
     static QString defaultThemesFolder();

@@ -30,7 +30,7 @@ class QgsVectorLayerLabelProvider;
  *
  * @note added in 2.12
  * @note not available in Python bindings
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
  */
 class CORE_EXPORT QgsAbstractVectorLayerLabeling
 {
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
  *
  * @note added in 2.12
  * @note not available in Python bindings
- * @note this class is not a part of public API yet. See notes in QgsLabelingEngineV2
+ * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
  */
 class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLabeling
 {

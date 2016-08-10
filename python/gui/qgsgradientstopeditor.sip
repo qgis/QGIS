@@ -17,18 +17,18 @@ class QgsGradientStopEditor : QWidget
      * @param parent parent widget
      * @param ramp optional initial gradient ramp
      */
-    QgsGradientStopEditor( QWidget* parent /TransferThis/ = nullptr, QgsVectorGradientColorRampV2* ramp = nullptr );
+    QgsGradientStopEditor( QWidget* parent /TransferThis/ = nullptr, QgsVectorGradientColorRamp* ramp = nullptr );
 
     /** Sets the current ramp shown in the editor.
      * @param ramp color ramp
      * @see gradientRamp()
      */
-    void setGradientRamp( const QgsVectorGradientColorRampV2& ramp );
+    void setGradientRamp( const QgsVectorGradientColorRamp& ramp );
 
     /** Returns the current ramp created by the editor.
      * @see setGradientRamp()
      */
-    QgsVectorGradientColorRampV2 gradientRamp() const;
+    QgsVectorGradientColorRamp gradientRamp() const;
 
     /** Sets the currently selected stop.
      * @param index index of stop, where 0 corresponds to the first stop

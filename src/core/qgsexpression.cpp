@@ -38,17 +38,17 @@
 #include "qgsogcutils.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerutils.h"
-#include "qgsvectorcolorrampv2.h"
-#include "qgsstylev2.h"
+#include "qgsvectorcolorramp.h"
+#include "qgsstyle.h"
 #include "qgsexpressioncontext.h"
 #include "qgsproject.h"
 #include "qgsstringutils.h"
-#include "qgsgeometrycollectionv2.h"
+#include "qgsgeometrycollection.h"
 #include "qgspointv2.h"
-#include "qgspolygonv2.h"
-#include "qgsmultipointv2.h"
-#include "qgsmultilinestringv2.h"
-#include "qgscurvepolygonv2.h"
+#include "qgspolygon.h"
+#include "qgsmultipoint.h"
+#include "qgsmultilinestring.h"
+#include "qgscurvepolygon.h"
 #include "qgsexpressionprivate.h"
 #include "qgsexpressionsorter.h"
 
@@ -1643,9 +1643,9 @@ static QVariant fcnNodesToPoints( const QVariantList& values, const QgsExpressio
 
   QgsMultiPointV2* mp = new QgsMultiPointV2();
 
-  Q_FOREACH ( const QgsRingSequenceV2 &part, geom.geometry()->coordinateSequence() )
+  Q_FOREACH ( const QgsRingSequence &part, geom.geometry()->coordinateSequence() )
   {
-    Q_FOREACH ( const QgsPointSequenceV2 &ring, part )
+    Q_FOREACH ( const QgsPointSequence &ring, part )
     {
       bool skipLast = false;
       if ( ignoreClosing && ring.count() > 2 && ring.first() == ring.last() )
@@ -1670,16 +1670,16 @@ static QVariant fcnSegmentsToLines( const QVariantList& values, const QgsExpress
   if ( geom.isEmpty() )
     return QVariant();
 
-  QList< QgsLineStringV2* > linesToProcess = QgsGeometryUtils::extractLineStrings( geom.geometry() );
+  QList< QgsLineString* > linesToProcess = QgsGeometryUtils::extractLineStrings( geom.geometry() );
 
   //ok, now we have a complete list of segmentized lines from the geometry
-  QgsMultiLineStringV2* ml = new QgsMultiLineStringV2();
-  Q_FOREACH ( QgsLineStringV2* line, linesToProcess )
+  QgsMultiLineString* ml = new QgsMultiLineString();
+  Q_FOREACH ( QgsLineString* line, linesToProcess )
   {
     for ( int i = 0; i < line->numPoints() - 1; ++i )
     {
-      QgsLineStringV2* segment = new QgsLineStringV2();
-      segment->setPoints( QgsPointSequenceV2()
+      QgsLineString* segment = new QgsLineString();
+      segment->setPoints( QgsPointSequence()
                           << line->pointN( i )
                           << line->pointN( i + 1 ) );
       ml->addGeometry( segment );
@@ -1697,7 +1697,7 @@ static QVariant fcnInteriorRingN( const QVariantList& values, const QgsExpressio
   if ( geom.isEmpty() )
     return QVariant();
 
-  QgsCurvePolygonV2* curvePolygon = dynamic_cast< QgsCurvePolygonV2* >( geom.geometry() );
+  QgsCurvePolygon* curvePolygon = dynamic_cast< QgsCurvePolygon* >( geom.geometry() );
   if ( !curvePolygon )
     return QVariant();
 
@@ -1707,7 +1707,7 @@ static QVariant fcnInteriorRingN( const QVariantList& values, const QgsExpressio
   if ( idx >= curvePolygon->numInteriorRings() || idx < 0 )
     return QVariant();
 
-  QgsCurveV2* curve = static_cast< QgsCurveV2* >( curvePolygon->interiorRing( idx )->clone() );
+  QgsCurve* curve = static_cast< QgsCurve* >( curvePolygon->interiorRing( idx )->clone() );
   QVariant result = curve ? QVariant::fromValue( QgsGeometry( curve ) ) : QVariant();
   return result;
 }
@@ -1719,7 +1719,7 @@ static QVariant fcnGeometryN( const QVariantList& values, const QgsExpressionCon
   if ( geom.isEmpty() )
     return QVariant();
 
-  QgsGeometryCollectionV2* collection = dynamic_cast< QgsGeometryCollectionV2* >( geom.geometry() );
+  QgsGeometryCollection* collection = dynamic_cast< QgsGeometryCollection* >( geom.geometry() );
   if ( !collection )
     return QVariant();
 
@@ -1729,7 +1729,7 @@ static QVariant fcnGeometryN( const QVariantList& values, const QgsExpressionCon
   if ( idx < 0 || idx >= collection->numGeometries() )
     return QVariant();
 
-  QgsAbstractGeometryV2* part = collection->geometryN( idx )->clone();
+  QgsAbstractGeometry* part = collection->geometryN( idx )->clone();
   QVariant result = part ? QVariant::fromValue( QgsGeometry( part ) ) : QVariant();
   return result;
 }
@@ -1741,7 +1741,7 @@ static QVariant fcnBoundary( const QVariantList& values, const QgsExpressionCont
   if ( geom.isEmpty() )
     return QVariant();
 
-  QgsAbstractGeometryV2* boundary = geom.geometry()->boundary();
+  QgsAbstractGeometry* boundary = geom.geometry()->boundary();
   if ( !boundary )
     return QVariant();
 
@@ -1801,7 +1801,7 @@ static QVariant fcnMakeLine( const QVariantList& values, const QgsExpressionCont
     return QVariant();
   }
 
-  QgsLineStringV2* lineString = new QgsLineStringV2();
+  QgsLineString* lineString = new QgsLineString();
   lineString->clear();
 
   Q_FOREACH ( const QVariant& value, values )
@@ -1836,7 +1836,7 @@ static QVariant fcnMakePolygon( const QVariantList& values, const QgsExpressionC
     return QVariant();
 
   QgsPolygonV2* polygon = new QgsPolygonV2();
-  polygon->setExteriorRing( dynamic_cast< QgsCurveV2* >( outerRing.geometry()->clone() ) );
+  polygon->setExteriorRing( dynamic_cast< QgsCurve* >( outerRing.geometry()->clone() ) );
 
   for ( int i = 1; i < values.count(); ++i )
   {
@@ -1847,7 +1847,7 @@ static QVariant fcnMakePolygon( const QVariantList& values, const QgsExpressionC
     if ( ringGeom.type() != QgsWkbTypes::LineGeometry || ringGeom.isMultipart() || ringGeom.isEmpty() )
       continue;
 
-    polygon->addInteriorRing( dynamic_cast< QgsCurveV2* >( ringGeom.geometry()->clone() ) );
+    polygon->addInteriorRing( dynamic_cast< QgsCurve* >( ringGeom.geometry()->clone() ) );
   }
 
   return QVariant::fromValue( QgsGeometry( polygon ) );
@@ -2009,17 +2009,17 @@ static QVariant fcnGeomNumInteriorRings( const QVariantList& values, const QgsEx
   if ( geom.isEmpty() )
     return QVariant();
 
-  QgsCurvePolygonV2* curvePolygon = dynamic_cast< QgsCurvePolygonV2* >( geom.geometry() );
+  QgsCurvePolygon* curvePolygon = dynamic_cast< QgsCurvePolygon* >( geom.geometry() );
   if ( curvePolygon )
     return QVariant( curvePolygon->numInteriorRings() );
 
-  QgsGeometryCollectionV2* collection = dynamic_cast< QgsGeometryCollectionV2* >( geom.geometry() );
+  QgsGeometryCollection* collection = dynamic_cast< QgsGeometryCollection* >( geom.geometry() );
   if ( collection )
   {
     //find first CurvePolygon in collection
     for ( int i = 0; i < collection->numGeometries(); ++i )
     {
-      curvePolygon = dynamic_cast< QgsCurvePolygonV2*>( collection->geometryN( i ) );
+      curvePolygon = dynamic_cast< QgsCurvePolygon*>( collection->geometryN( i ) );
       if ( !curvePolygon )
         continue;
 
@@ -2037,19 +2037,19 @@ static QVariant fcnGeomNumRings( const QVariantList& values, const QgsExpression
   if ( geom.isEmpty() )
     return QVariant();
 
-  QgsCurvePolygonV2* curvePolygon = dynamic_cast< QgsCurvePolygonV2* >( geom.geometry() );
+  QgsCurvePolygon* curvePolygon = dynamic_cast< QgsCurvePolygon* >( geom.geometry() );
   if ( curvePolygon )
     return QVariant( curvePolygon->ringCount() );
 
   bool foundPoly = false;
   int ringCount = 0;
-  QgsGeometryCollectionV2* collection = dynamic_cast< QgsGeometryCollectionV2* >( geom.geometry() );
+  QgsGeometryCollection* collection = dynamic_cast< QgsGeometryCollection* >( geom.geometry() );
   if ( collection )
   {
     //find CurvePolygons in collection
     for ( int i = 0; i < collection->numGeometries(); ++i )
     {
-      curvePolygon = dynamic_cast< QgsCurvePolygonV2*>( collection->geometryN( i ) );
+      curvePolygon = dynamic_cast< QgsCurvePolygon*>( collection->geometryN( i ) );
       if ( !curvePolygon )
         continue;
 
@@ -2114,7 +2114,7 @@ static QVariant fcnIsClosed( const QVariantList& values, const QgsExpressionCont
   if ( fGeom.isEmpty() )
     return QVariant();
 
-  QgsCurveV2* curve = dynamic_cast< QgsCurveV2* >( fGeom.geometry() );
+  QgsCurve* curve = dynamic_cast< QgsCurve* >( fGeom.geometry() );
   if ( !curve )
     return QVariant();
 
@@ -2256,11 +2256,11 @@ static QVariant fcnReverse( const QVariantList& values, const QgsExpressionConte
   if ( fGeom.isEmpty() )
     return QVariant();
 
-  QgsCurveV2* curve = dynamic_cast< QgsCurveV2* >( fGeom.geometry() );
+  QgsCurve* curve = dynamic_cast< QgsCurve* >( fGeom.geometry() );
   if ( !curve )
     return QVariant();
 
-  QgsCurveV2* reversed = curve->reversed();
+  QgsCurve* reversed = curve->reversed();
   QVariant result = reversed ? QVariant::fromValue( QgsGeometry( reversed ) ) : QVariant();
   return result;
 }
@@ -2271,11 +2271,11 @@ static QVariant fcnExteriorRing( const QVariantList& values, const QgsExpression
   if ( fGeom.isEmpty() )
     return QVariant();
 
-  QgsCurvePolygonV2* curvePolygon = dynamic_cast< QgsCurvePolygonV2* >( fGeom.geometry() );
+  QgsCurvePolygon* curvePolygon = dynamic_cast< QgsCurvePolygon* >( fGeom.geometry() );
   if ( !curvePolygon || !curvePolygon->exteriorRing() )
     return QVariant();
 
-  QgsCurveV2* exterior = static_cast< QgsCurveV2* >( curvePolygon->exteriorRing()->clone() );
+  QgsCurve* exterior = static_cast< QgsCurve* >( curvePolygon->exteriorRing()->clone() );
   QVariant result = exterior ? QVariant::fromValue( QgsGeometry( exterior ) ) : QVariant();
   return result;
 }
@@ -2454,7 +2454,7 @@ static QVariant fcnOrderParts( const QVariantList& values, const QgsExpressionCo
     unconstedContext = new QgsExpressionContext();
   }
 
-  QgsGeometryCollectionV2* collection = dynamic_cast<QgsGeometryCollectionV2*>( fGeom.geometry() );
+  QgsGeometryCollection* collection = dynamic_cast<QgsGeometryCollection*>( fGeom.geometry() );
   Q_ASSERT( collection ); // Should have failed the multipart check above
 
   QgsFeatureRequest::OrderBy orderBy;
@@ -2470,7 +2470,7 @@ static QVariant fcnOrderParts( const QVariantList& values, const QgsExpressionCo
 
   sorter.sortFeatures( partFeatures, unconstedContext );
 
-  QgsGeometryCollectionV2* orderedGeom = dynamic_cast<QgsGeometryCollectionV2*>( fGeom.geometry()->clone() );
+  QgsGeometryCollection* orderedGeom = dynamic_cast<QgsGeometryCollection*>( fGeom.geometry()->clone() );
 
   Q_ASSERT( orderedGeom );
 
@@ -2612,7 +2612,7 @@ static QVariant fncColorRgba( const QVariantList &values, const QgsExpressionCon
 QVariant fcnRampColor( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   QString rampName = getStringValue( values.at( 0 ), parent );
-  const QgsVectorColorRampV2 *mRamp = QgsStyleV2::defaultStyle()->colorRampRef( rampName );
+  const QgsVectorColorRamp *mRamp = QgsStyle::defaultStyle()->colorRampRef( rampName );
   if ( ! mRamp )
   {
     parent->setEvalErrorString( QObject::tr( "\"%1\" is not a valid color ramp" ).arg( rampName ) );

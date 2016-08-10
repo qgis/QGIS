@@ -96,7 +96,7 @@ class QgsImageOperation
       double spread;
       /** Color ramp to use for shading the distance transform
        */
-      QgsVectorColorRampV2* ramp;
+      QgsVectorColorRamp* ramp;
     };
 
     /** Performs a distance transform on the source image and shades the result

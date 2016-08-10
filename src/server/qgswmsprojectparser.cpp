@@ -24,7 +24,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmapserviceexception.h"
 #include "qgspallabeling.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 
 #include "qgscomposition.h"
@@ -1863,7 +1863,7 @@ QDomDocument QgsWmsProjectParser::getStyles( QStringList& layerList ) const
           layer->styleManager()->setCurrentStyle( styleName );
           if ( styleName.isEmpty() )
             styleName = EMPTY_STYLE_NAME;
-          QDomElement styleElem = layer->rendererV2()->writeSld( myDocument, styleName );
+          QDomElement styleElem = layer->renderer()->writeSld( myDocument, styleName );
           namedLayerNode.appendChild( styleElem );
         }
       }

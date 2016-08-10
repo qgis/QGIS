@@ -28,7 +28,7 @@
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h" //for pointOnLineWithDistance
 #include "qgssymbol.h" //for symbology
-#include "qgsmarkersymbollayerv2.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgsrendercontext.h"
 #include "qgsmapcanvas.h"
 
@@ -74,14 +74,14 @@ QgsDecorationGrid::~QgsDecorationGrid()
     delete mMarkerSymbol;
 }
 
-void QgsDecorationGrid::setLineSymbol( QgsLineSymbolV2* symbol )
+void QgsDecorationGrid::setLineSymbol( QgsLineSymbol* symbol )
 {
   if ( mLineSymbol )
     delete mLineSymbol;
   mLineSymbol = symbol;
 }
 
-void QgsDecorationGrid::setMarkerSymbol( QgsMarkerSymbolV2* symbol )
+void QgsDecorationGrid::setMarkerSymbol( QgsMarkerSymbol* symbol )
 {
   if ( mMarkerSymbol )
     delete mMarkerSymbol;
@@ -134,10 +134,10 @@ void QgsDecorationGrid::projectRead()
   {
     doc.setContent( xml );
     elem = doc.documentElement();
-    mLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbolV2>( elem );
+    mLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem );
   }
   if ( ! mLineSymbol )
-    mLineSymbol = new QgsLineSymbolV2();
+    mLineSymbol = new QgsLineSymbol();
 
   if ( mMarkerSymbol )
     setMarkerSymbol( nullptr );
@@ -146,15 +146,15 @@ void QgsDecorationGrid::projectRead()
   {
     doc.setContent( xml );
     elem = doc.documentElement();
-    mMarkerSymbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbolV2>( elem );
+    mMarkerSymbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( elem );
   }
   if ( ! mMarkerSymbol )
   {
     // set default symbol : cross with width=3
     QgsSymbolLayerList symbolList;
-    symbolList << new QgsSimpleMarkerSymbolLayerV2( QgsSimpleMarkerSymbolLayerBase::Cross, 3, 0 );
-    mMarkerSymbol = new QgsMarkerSymbolV2( symbolList );
-    // mMarkerSymbol = new QgsMarkerSymbolV2();
+    symbolList << new QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Cross, 3, 0 );
+    mMarkerSymbol = new QgsMarkerSymbol( symbolList );
+    // mMarkerSymbol = new QgsMarkerSymbol();
   }
 }
 

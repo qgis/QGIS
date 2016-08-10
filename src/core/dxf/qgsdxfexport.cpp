@@ -30,11 +30,11 @@
 #include "qgsdxfpallabeling.h"
 #include "qgsvectordataprovider.h"
 #include "qgspoint.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgssymbollayer.h"
-#include "qgsfillsymbollayerv2.h"
+#include "qgsfillsymbollayer.h"
 #include "qgsfeatureiterator.h"
-#include "qgslinesymbollayerv2.h"
+#include "qgslinesymbollayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsunittypes.h"
@@ -622,7 +622,7 @@ void QgsDxfExport::writeTables()
   slIt = slList.constBegin();
   for ( ; slIt != slList.constEnd(); ++slIt )
   {
-    QgsMarkerSymbolLayerV2 *ml = dynamic_cast< QgsMarkerSymbolLayerV2*>( slIt->first );
+    QgsMarkerSymbolLayer *ml = dynamic_cast< QgsMarkerSymbolLayer*>( slIt->first );
     if ( !ml )
       continue;
 
@@ -847,7 +847,7 @@ void QgsDxfExport::writeBlocks()
   QList< QPair< QgsSymbolLayer*, QgsSymbol* > >::const_iterator slIt = slList.constBegin();
   for ( ; slIt != slList.constEnd(); ++slIt )
   {
-    QgsMarkerSymbolLayerV2 *ml = dynamic_cast< QgsMarkerSymbolLayerV2*>( slIt->first );
+    QgsMarkerSymbolLayer *ml = dynamic_cast< QgsMarkerSymbolLayer*>( slIt->first );
     if ( !ml )
       continue;
 
@@ -931,7 +931,7 @@ void QgsDxfExport::writeEntities()
   Q_NOWARN_DEPRECATED_POP
 
   // label engine
-  QgsLabelingEngineV2 engine;
+  QgsLabelingEngine engine;
   engine.readSettingsFromProject();
   engine.setMapSettings( mapSettings );
 
@@ -946,7 +946,7 @@ void QgsDxfExport::writeEntities()
     }
 
     QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, 0, nullptr );
-    QgsFeatureRendererV2* renderer = vl->rendererV2();
+    QgsFeatureRenderer* renderer = vl->renderer();
     if ( !renderer )
     {
       continue;
@@ -989,7 +989,7 @@ void QgsDxfExport::writeEntities()
     }
 
     if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology &&
-         ( renderer->capabilities() & QgsFeatureRendererV2::SymbolLevels ) &&
+         ( renderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) &&
          renderer->usingSymbolLevels() )
     {
       writeEntitiesSymbolLevels( vl );
@@ -1072,7 +1072,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
     return;
   }
 
-  QgsFeatureRendererV2* renderer = layer->rendererV2();
+  QgsFeatureRenderer* renderer = layer->renderer();
   if ( !renderer )
   {
     // TODO return error
@@ -3346,7 +3346,7 @@ void QgsDxfExport::writePoint( const QgsPointV2 &pt, const QString& layer, const
 {
 #if 0
   // debug: draw rectangle for debugging
-  const QgsMarkerSymbolLayerV2* msl = dynamic_cast< const QgsMarkerSymbolLayerV2* >( symbolLayer );
+  const QgsMarkerSymbolLayer* msl = dynamic_cast< const QgsMarkerSymbolLayer* >( symbolLayer );
   if ( msl )
   {
     double halfSize = msl->size() * mapUnitScaleFactor( mSymbologyScaleDenominator,
@@ -3366,7 +3366,7 @@ void QgsDxfExport::writePoint( const QgsPointV2 &pt, const QString& layer, const
   if ( !symbolLayer || blockIt == mPointSymbolBlocks.constEnd() )
   {
     // write symbol directly here
-    const QgsMarkerSymbolLayerV2* msl = dynamic_cast< const QgsMarkerSymbolLayerV2* >( symbolLayer );
+    const QgsMarkerSymbolLayer* msl = dynamic_cast< const QgsMarkerSymbolLayer* >( symbolLayer );
     if ( msl && symbol )
     {
       if ( symbolLayer->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, msl->sizeUnit(), mMapUnits ), layer, ctx, QPointF( pt.x(), pt.y() ) ) )
@@ -3392,13 +3392,13 @@ void QgsDxfExport::writePoint( const QgsPointV2 &pt, const QString& layer, const
 
 void QgsDxfExport::writePolyline( const QgsPolyline &line, const QString& layer, const QString& lineStyleName, const QColor& color, double width )
 {
-  QgsPointSequenceV2 s;
+  QgsPointSequence s;
   Q_FOREACH ( const QgsPoint& p, line )
     s << QgsPointV2( p );
   writePolyline( s, layer, lineStyleName, color, width );
 }
 
-void QgsDxfExport::writePolyline( const QgsPointSequenceV2 &line, const QString& layer, const QString& lineStyleName, const QColor& color, double width )
+void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString& layer, const QString& lineStyleName, const QColor& color, double width )
 {
   int n = line.size();
   if ( n == 0 )
@@ -3466,11 +3466,11 @@ void QgsDxfExport::writePolyline( const QgsPointSequenceV2 &line, const QString&
 
 void QgsDxfExport::writePolygon( const QgsPolygon &polygon, const QString& layer, const QString& hatchPattern, const QColor& color )
 {
-  QgsRingSequenceV2 r;
+  QgsRingSequence r;
 
   Q_FOREACH ( const QgsPolyline& l, polygon )
   {
-    QgsPointSequenceV2 s;
+    QgsPointSequence s;
     Q_FOREACH ( const QgsPoint& p, l )
       s << QgsPointV2( p );
     r << s;
@@ -3480,7 +3480,7 @@ void QgsDxfExport::writePolygon( const QgsPolygon &polygon, const QString& layer
 }
 
 
-void QgsDxfExport::writePolygon( const QgsRingSequenceV2 &polygon, const QString& layer, const QString& hatchPattern, const QColor& color )
+void QgsDxfExport::writePolygon( const QgsRingSequence &polygon, const QString& layer, const QString& hatchPattern, const QColor& color )
 {
   writeGroup( 0, "HATCH" );         // Entity type
   writeHandle();
@@ -3526,7 +3526,7 @@ void QgsDxfExport::writeLine( const QgsPoint& pt1, const QgsPoint& pt2, const QS
 
 void QgsDxfExport::writeLine( const QgsPointV2& pt1, const QgsPointV2& pt2, const QString& layer, const QString& lineStyleName, const QColor& color, double width )
 {
-  writePolyline( QgsPointSequenceV2() << pt1 << pt2, layer, lineStyleName, color, width );
+  writePolyline( QgsPointSequence() << pt1 << pt2, layer, lineStyleName, color, width );
 }
 
 void QgsDxfExport::writePoint( const QString &layer, const QColor &color, const QgsPoint &pt )
@@ -3680,12 +3680,12 @@ void QgsDxfExport::writeSolid( const QString& layer, const QColor& color, const 
 {
   // pt1 pt2
   // pt3 pt4
-  QgsPointSequenceV2 p;
+  QgsPointSequence p;
   p << QgsPointV2( pt1 ) << QgsPointV2( pt2 ) << QgsPointV2( pt4 );
   if ( pt3 != pt4 )
     p << QgsPointV2( pt3 );
   p << QgsPointV2( pt1 );
-  writePolygon( QgsRingSequenceV2() << p, layer, "SOLID", color );
+  writePolygon( QgsRingSequence() << p, layer, "SOLID", color );
 }
 
 QgsRectangle QgsDxfExport::dxfExtent() const
@@ -3720,7 +3720,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer
     return;
 
   QgsGeometry featGeom = fet->geometry();
-  const QgsAbstractGeometryV2 *geom = featGeom.geometry();
+  const QgsAbstractGeometry *geom = featGeom.geometry();
 
   QgsWkbTypes::Type geometryType = geom->wkbType();
 
@@ -3764,7 +3764,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer
 
   if ( QgsWkbTypes::flatType( geometryType ) == QgsWkbTypes::MultiPoint )
   {
-    const QgsCoordinateSequenceV2 &cs = geom->coordinateSequence();
+    const QgsCoordinateSequence &cs = geom->coordinateSequence();
     for ( int i = 0; i < cs.size(); i++ )
     {
       writePoint( cs.at( i ).at( 0 ).at( 0 ), layer, penColor, ctx, symbolLayer, symbol, angle );
@@ -3777,7 +3777,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer
     // single line
     if ( QgsWkbTypes::flatType( geometryType ) == QgsWkbTypes::LineString )
     {
-      const QgsAbstractGeometryV2 *offsetGeom = geom;
+      const QgsAbstractGeometry *offsetGeom = geom;
       if ( !qgsDoubleNear( offset, 0.0 ) )
       {
         QgsGeos geos( geom );
@@ -3795,7 +3795,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer
     // multiline
     if ( QgsWkbTypes::flatType( geometryType ) == QgsWkbTypes::MultiLineString )
     {
-      const QgsAbstractGeometryV2 *offsetGeom = geom;
+      const QgsAbstractGeometry *offsetGeom = geom;
 
       if ( !qgsDoubleNear( offset, 0.0 ) )
       {
@@ -3805,7 +3805,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer
           offsetGeom = geom;
       }
 
-      const QgsCoordinateSequenceV2 &cs = offsetGeom->coordinateSequence();
+      const QgsCoordinateSequence &cs = offsetGeom->coordinateSequence();
       for ( int i = 0; i < cs.size(); i++ )
       {
         writePolyline( cs.at( i ).at( 0 ), layer, lineStyleName, penColor, width );
@@ -3818,7 +3818,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer
     // polygon
     if ( QgsWkbTypes::flatType( geometryType ) == QgsWkbTypes::Polygon )
     {
-      const QgsAbstractGeometryV2 *bufferGeom = geom;
+      const QgsAbstractGeometry *bufferGeom = geom;
 
       if ( !qgsDoubleNear( offset, 0.0 ) )
       {
@@ -3828,7 +3828,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer
           bufferGeom = geom;
       }
 
-      const QgsCoordinateSequenceV2 &cs = bufferGeom->coordinateSequence();
+      const QgsCoordinateSequence &cs = bufferGeom->coordinateSequence();
       for ( int i = 0; i < cs.at( 0 ).size(); i++ )
       {
         writePolyline( cs.at( 0 ).at( i ), layer, lineStyleName, penColor, width );
@@ -3841,7 +3841,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer
     // multipolygon or polygon
     if ( QgsWkbTypes::flatType( geometryType ) == QgsWkbTypes::MultiPolygon )
     {
-      const QgsAbstractGeometryV2 *bufferGeom = geom;
+      const QgsAbstractGeometry *bufferGeom = geom;
 
       if ( !qgsDoubleNear( offset, 0.0 ) )
       {
@@ -3851,7 +3851,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer
           bufferGeom = geom;
       }
 
-      const QgsCoordinateSequenceV2 &cs = bufferGeom->coordinateSequence();
+      const QgsCoordinateSequence &cs = bufferGeom->coordinateSequence();
       for ( int i = 0; i < cs.size(); i++ )
         for ( int j = 0; j < cs.at( i ).size(); j++ )
           writePolyline( cs.at( i ).at( j ), layer, lineStyleName, penColor, width );
@@ -3872,7 +3872,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer
     // multipolygon or polygon
     if ( QgsWkbTypes::flatType( geometryType ) == QgsWkbTypes::MultiPolygon )
     {
-      const QgsCoordinateSequenceV2 &cs = geom->coordinateSequence();
+      const QgsCoordinateSequence &cs = geom->coordinateSequence();
       for ( int i = 0; i < cs.size(); i++ )
       {
         writePolygon( cs.at( i ), layer, "SOLID", brushColor );
@@ -3985,8 +3985,8 @@ QList< QPair< QgsSymbolLayer*, QgsSymbol* > > QgsDxfExport::symbolLayers( QgsRen
       continue;
     }
 
-    // get rendererv2
-    QgsFeatureRendererV2* r = vl->rendererV2();
+    // get renderer
+    QgsFeatureRenderer* r = vl->renderer();
     if ( !r )
     {
       continue;
@@ -4083,7 +4083,7 @@ int QgsDxfExport::nLineTypes( const QList< QPair< QgsSymbolLayer*, QgsSymbol* > 
   QList< QPair< QgsSymbolLayer*, QgsSymbol*> >::const_iterator slIt = symbolLayers.constBegin();
   for ( ; slIt != symbolLayers.constEnd(); ++slIt )
   {
-    const QgsSimpleLineSymbolLayerV2* simpleLine = dynamic_cast< const QgsSimpleLineSymbolLayerV2* >( slIt->first );
+    const QgsSimpleLineSymbolLayer* simpleLine = dynamic_cast< const QgsSimpleLineSymbolLayer* >( slIt->first );
     if ( simpleLine )
     {
       if ( simpleLine->useCustomDashPattern() )

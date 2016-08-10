@@ -17,7 +17,7 @@
 #ifndef QGS_GEOMETRYCHECKERUTILS_H
 #define QGS_GEOMETRYCHECKERUTILS_H
 
-#include "geometry/qgsabstractgeometryv2.h"
+#include "geometry/qgsabstractgeometry.h"
 #include "geometry/qgspointv2.h"
 #include <qmath.h>
 
@@ -26,18 +26,18 @@ class QgsGeometryEngine;
 namespace QgsGeometryCheckerUtils
 {
 
-  QgsGeometryEngine *createGeomEngine( QgsAbstractGeometryV2* geometry, double tolerance );
+  QgsGeometryEngine *createGeomEngine( QgsAbstractGeometry* geometry, double tolerance );
 
-  QgsAbstractGeometryV2* getGeomPart( QgsAbstractGeometryV2* geom, int partIdx );
+  QgsAbstractGeometry* getGeomPart( QgsAbstractGeometry* geom, int partIdx );
 
-  void filter1DTypes( QgsAbstractGeometryV2* geom );
+  void filter1DTypes( QgsAbstractGeometry* geom );
 
   /**
    * @brief Return the number of points in a polyline, accounting for duplicate start and end point if the polyline is closed
    * @param polyLine The polyline
    * @return The number of distinct points of the polyline
    */
-  inline int polyLineSize( const QgsAbstractGeometryV2* geom, int iPart, int iRing, bool* isClosed = nullptr )
+  inline int polyLineSize( const QgsAbstractGeometry* geom, int iPart, int iRing, bool* isClosed = nullptr )
   {
     if ( !geom->isEmpty() )
     {
@@ -57,7 +57,7 @@ namespace QgsGeometryCheckerUtils
     }
   }
 
-  double sharedEdgeLength( const QgsAbstractGeometryV2* geom1, const QgsAbstractGeometryV2* geom2, double tol );
+  double sharedEdgeLength( const QgsAbstractGeometry* geom1, const QgsAbstractGeometry* geom2, double tol );
 
   /**
      * @brief Determine whether two points are equal up to the specified tolerance
@@ -72,7 +72,7 @@ namespace QgsGeometryCheckerUtils
     return ( dx * dx + dy * dy ) < tol * tol;
   }
 
-  inline bool canDeleteVertex( const QgsAbstractGeometryV2* geom, int iPart, int iRing )
+  inline bool canDeleteVertex( const QgsAbstractGeometry* geom, int iPart, int iRing )
   {
     int nVerts = geom->vertexCount( iPart, iRing );
     QgsPointV2 front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );

@@ -101,7 +101,7 @@ struct VTable
   {
     if ( mLayer )
     {
-      QObject::connect( layer, SIGNAL( layerDeleted() ), &mSlotToFunction, SLOT( onSignal() ) );
+      QObject::connect( layer, SIGNAL( destroyed() ), &mSlotToFunction, SLOT( onSignal() ) );
       init_();
     }
   }

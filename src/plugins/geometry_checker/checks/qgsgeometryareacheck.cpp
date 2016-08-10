@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgeometryengine.h"
-#include "qgsgeometrycollectionv2.h"
+#include "qgsgeometrycollection.h"
 #include "qgsgeometryareacheck.h"
 #include "../utils/qgsfeaturepool.h"
 
@@ -31,10 +31,10 @@ void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
     }
 
     QgsGeometry g = feature.geometry();
-    QgsAbstractGeometryV2* geom = g.geometry();
-    if ( dynamic_cast<QgsGeometryCollectionV2*>( geom ) )
+    QgsAbstractGeometry* geom = g.geometry();
+    if ( dynamic_cast<QgsGeometryCollection*>( geom ) )
     {
-      QgsGeometryCollectionV2* multiGeom = static_cast<QgsGeometryCollectionV2*>( geom );
+      QgsGeometryCollection* multiGeom = static_cast<QgsGeometryCollection*>( geom );
       for ( int i = 0, n = multiGeom->numGeometries(); i < n; ++i )
       {
         double value;
@@ -64,7 +64,7 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError* error, int method, i
     return;
   }
   QgsGeometry g = feature.geometry();
-  QgsAbstractGeometryV2* geom = g.geometry();
+  QgsAbstractGeometry* geom = g.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if polygon still exists
@@ -75,10 +75,10 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError* error, int method, i
   }
 
   // Check if error still applies
-  if ( dynamic_cast<QgsGeometryCollectionV2*>( geom ) )
+  if ( dynamic_cast<QgsGeometryCollection*>( geom ) )
   {
     double value;
-    if ( !checkThreshold( static_cast<QgsGeometryCollectionV2*>( geom )->geometryN( vidx.part ), value ) )
+    if ( !checkThreshold( static_cast<QgsGeometryCollection*>( geom )->geometryN( vidx.part ), value ) )
     {
       error->setObsolete();
       return;
@@ -129,7 +129,7 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
   int mergePartIdx = -1;
   bool matchFound = false;
   QgsGeometry g = feature.geometry();;
-  QgsAbstractGeometryV2* geom = g.geometry();
+  QgsAbstractGeometry* geom = g.geometry();
 
   // Search for touching neighboring geometries
   Q_FOREACH ( QgsFeatureId testId, mFeaturePool->getIntersects( g.boundingBox() ) )
@@ -140,7 +140,7 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
       continue;
     }
     QgsGeometry testFeatureGeom = testFeature.geometry();
-    QgsAbstractGeometryV2* testGeom = testFeatureGeom.geometry();
+    QgsAbstractGeometry* testGeom = testFeatureGeom.geometry();
     for ( int testPartIdx = 0, nTestParts = testGeom->partCount(); testPartIdx < nTestParts; ++testPartIdx )
     {
       if ( testId == feature.id() && testPartIdx == partIdx )
@@ -159,8 +159,8 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
           }
           else
           {
-            if ( dynamic_cast<QgsGeometryCollectionV2*>( testGeom ) )
-              val = static_cast<QgsGeometryCollectionV2*>( testGeom )->geometryN( testPartIdx )->area();
+            if ( dynamic_cast<QgsGeometryCollection*>( testGeom ) )
+              val = static_cast<QgsGeometryCollection*>( testGeom )->geometryN( testPartIdx )->area();
             else
               val = testGeom->area();
           }
@@ -196,9 +196,9 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
 
   // Merge geometries
   QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
-  QgsAbstractGeometryV2* mergeGeom = mergeFeatureGeom.geometry();
+  QgsAbstractGeometry* mergeGeom = mergeFeatureGeom.geometry();
   QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), QgsGeometryCheckPrecision::tolerance() );
-  QgsAbstractGeometryV2* combinedGeom = geomEngine->combine( *QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), &errMsg );
+  QgsAbstractGeometry* combinedGeom = geomEngine->combine( *QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), &errMsg );
   delete geomEngine;
   if ( !combinedGeom || combinedGeom->isEmpty() )
   {

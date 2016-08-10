@@ -28,7 +28,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgspluginlayer.h"
 #include "qgsrasterlayer.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 
@@ -1122,7 +1122,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::filterLegendNodes( const 
   {
     Q_FOREACH ( QgsLayerTreeModelLegendNode* node, nodes )
     {
-      QgsSymbol* ruleKey = reinterpret_cast< QgsSymbol* >( node->data( QgsSymbolLegendNode::SymbolV2LegacyRuleKeyRole ).value<void*>() );
+      QgsSymbol* ruleKey = reinterpret_cast< QgsSymbol* >( node->data( QgsSymbolLegendNode::SymbolLegacyRuleKeyRole ).value<void*>() );
       bool checked = mLegendFilterUsesExtent || node->data( Qt::CheckStateRole ).toInt() == Qt::Checked;
       if ( ruleKey && checked )
       {

@@ -23,7 +23,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsrubberband.h"
 #include "qgscsexception.h"
 #include "qgslogger.h"
@@ -232,7 +232,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
   context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
-  QgsFeatureRendererV2* r = vlayer->rendererV2();
+  QgsFeatureRenderer* r = vlayer->renderer();
   if ( r )
     r->startRender( context, vlayer->fields() );
 

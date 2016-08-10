@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgeometryrubberband.h"
-#include "qgsabstractgeometryv2.h"
+#include "qgsabstractgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgspointv2.h"
 #include <QPainter>
@@ -54,7 +54,7 @@ void QgsGeometryRubberBand::paint( QPainter* painter )
   painter->setPen( mPen );
 
 
-  QgsAbstractGeometryV2* paintGeom = mGeometry->clone();
+  QgsAbstractGeometry* paintGeom = mGeometry->clone();
 
   paintGeom->transform( mMapCanvas->getCoordinateTransform()->transform() );
   paintGeom->draw( *painter );
@@ -107,7 +107,7 @@ void QgsGeometryRubberBand::drawVertex( QPainter* p, double x, double y )
   }
 }
 
-void QgsGeometryRubberBand::setGeometry( QgsAbstractGeometryV2* geom )
+void QgsGeometryRubberBand::setGeometry( QgsAbstractGeometry* geom )
 {
   delete mGeometry;
   mGeometry = geom;

@@ -21,8 +21,8 @@
 #include "qgsunittypes.h"
 
 class QgsGeometry;
-class QgsAbstractGeometryV2;
-class QgsCurveV2;
+class QgsAbstractGeometry;
+class QgsCurve;
 class QgsConstWkbPtr;
 
 /** \ingroup core
@@ -375,9 +375,9 @@ class CORE_EXPORT QgsDistanceArea
     double getQ( double x ) const;
     double getQbar( double x ) const;
 
-    double measure( const QgsAbstractGeometryV2* geomV2, MeasureType type = Default ) const;
-    double measureLine( const QgsCurveV2* curve ) const;
-    double measurePolygon( const QgsCurveV2* curve ) const;
+    double measure( const QgsAbstractGeometry* geomV2, MeasureType type = Default ) const;
+    double measureLine( const QgsCurve* curve ) const;
+    double measurePolygon( const QgsCurve* curve ) const;
 
     // temporary area measurement stuff
 

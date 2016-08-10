@@ -21,8 +21,8 @@ from qgis.core import (QgsComposerLegend,
                        QgsMapSettings,
                        QgsVectorLayer,
                        QgsMapLayerRegistry,
-                       QgsMarkerSymbolV2,
-                       QgsSingleSymbolRendererV2,
+                       QgsMarkerSymbol,
+                       QgsSingleSymbolRenderer,
                        QgsRectangle
                        )
 from qgis.testing import (start_app,
@@ -45,9 +45,9 @@ class TestQgsComposerLegend(unittest.TestCase):
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
         QgsMapLayerRegistry.instance().addMapLayers([point_layer])
 
-        marker_symbol = QgsMarkerSymbolV2.createSimple({'color': '#ff0000', 'outline_style': 'no', 'size': '5', 'size_unit': 'MapUnit'})
+        marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no', 'size': '5', 'size_unit': 'MapUnit'})
 
-        point_layer.setRendererV2(QgsSingleSymbolRendererV2(marker_symbol))
+        point_layer.setRenderer(QgsSingleSymbolRenderer(marker_symbol))
 
         s = QgsMapSettings()
         s.setLayers([point_layer.id()])

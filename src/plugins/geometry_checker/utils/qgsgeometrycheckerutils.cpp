@@ -17,34 +17,34 @@
 #include "qgsgeometryutils.h"
 #include <qmath.h>
 #include "qgsgeos.h"
-#include "qgsgeometrycollectionv2.h"
-#include "qgssurfacev2.h"
+#include "qgsgeometrycollection.h"
+#include "qgssurface.h"
 
 namespace QgsGeometryCheckerUtils
 {
 
-  QgsGeometryEngine* createGeomEngine( QgsAbstractGeometryV2* geometry, double tolerance )
+  QgsGeometryEngine* createGeomEngine( QgsAbstractGeometry* geometry, double tolerance )
   {
     return new QgsGeos( geometry, tolerance );
   }
 
-  QgsAbstractGeometryV2* getGeomPart( QgsAbstractGeometryV2* geom, int partIdx )
+  QgsAbstractGeometry* getGeomPart( QgsAbstractGeometry* geom, int partIdx )
   {
-    if ( dynamic_cast<QgsGeometryCollectionV2*>( geom ) )
+    if ( dynamic_cast<QgsGeometryCollection*>( geom ) )
     {
-      return static_cast<QgsGeometryCollectionV2*>( geom )->geometryN( partIdx );
+      return static_cast<QgsGeometryCollection*>( geom )->geometryN( partIdx );
     }
     return geom;
   }
 
-  void filter1DTypes( QgsAbstractGeometryV2* geom )
+  void filter1DTypes( QgsAbstractGeometry* geom )
   {
-    if ( dynamic_cast<QgsGeometryCollectionV2*>( geom ) )
+    if ( dynamic_cast<QgsGeometryCollection*>( geom ) )
     {
-      QgsGeometryCollectionV2* geomCollection = static_cast<QgsGeometryCollectionV2*>( geom );
+      QgsGeometryCollection* geomCollection = static_cast<QgsGeometryCollection*>( geom );
       for ( int nParts = geom->partCount(), iPart = nParts - 1; iPart >= 0; --iPart )
       {
-        if ( !dynamic_cast<QgsSurfaceV2*>( geomCollection->geometryN( iPart ) ) )
+        if ( !dynamic_cast<QgsSurface*>( geomCollection->geometryN( iPart ) ) )
         {
           geomCollection->removeGeometry( iPart );
         }
@@ -60,7 +60,7 @@ namespace QgsGeometryCheckerUtils
     return nom / qSqrt( dx * dx + dy * dy );
   }
 
-  double sharedEdgeLength( const QgsAbstractGeometryV2* geom1, const QgsAbstractGeometryV2* geom2, double tol )
+  double sharedEdgeLength( const QgsAbstractGeometry* geom1, const QgsAbstractGeometry* geom2, double tol )
   {
     double len = 0;
 

@@ -16,17 +16,17 @@
 #ifndef QGSVECTORLAYERRENDERER_H
 #define QGSVECTORLAYERRENDERER_H
 
-class QgsFeatureRendererV2;
+class QgsFeatureRenderer;
 class QgsRenderContext;
 class QgsVectorLayer;
 class QgsVectorLayerFeatureSource;
 
-class QgsDiagramRendererV2;
+class QgsDiagramRenderer;
 class QgsDiagramLayerSettings;
 
 class QgsGeometryCache;
 class QgsFeatureIterator;
-class QgsSingleSymbolRendererV2;
+class QgsSingleSymbolRenderer;
 
 #include <QList>
 #include <QPainter>
@@ -85,16 +85,16 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     void prepareLabeling( QgsVectorLayer* layer, QStringList& attributeNames );
     void prepareDiagrams( QgsVectorLayer* layer, QStringList& attributeNames );
 
-    /** Draw layer with renderer V2. QgsFeatureRendererV2::startRender() needs to be called before using this method
+    /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
      */
-    void drawRendererV2( QgsFeatureIterator& fit );
+    void drawRenderer( QgsFeatureIterator& fit );
 
-    /** Draw layer with renderer V2 using symbol levels. QgsFeatureRendererV2::startRender() needs to be called before using this method
+    /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
      */
-    void drawRendererV2Levels( QgsFeatureIterator& fit );
+    void drawRendererLevels( QgsFeatureIterator& fit );
 
     /** Stop version 2 renderer and selected renderer (if required) */
-    void stopRendererV2( QgsSingleSymbolRendererV2* selRenderer );
+    void stopRenderer( QgsSingleSymbolRenderer* selRenderer );
 
 
   protected:
@@ -112,7 +112,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QgsVectorLayerFeatureSource* mSource;
 
-    QgsFeatureRendererV2 *mRendererV2;
+    QgsFeatureRenderer *mRenderer;
 
     QgsGeometryCache* mCache;
 
@@ -129,10 +129,10 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     //! used with new labeling engine (QgsPalLabeling): whether diagrams are enabled
     bool mDiagrams;
 
-    //! used with new labeling engine (QgsLabelingEngineV2): provider for labels.
+    //! used with new labeling engine (QgsLabelingEngine): provider for labels.
     //! may be null. no need to delete: if exists it is owned by labeling engine
     QgsVectorLayerLabelProvider* mLabelProvider;
-    //! used with new labeling engine (QgsLabelingEngineV2): provider for diagrams.
+    //! used with new labeling engine (QgsLabelingEngine): provider for diagrams.
     //! may be null. no need to delete: if exists it is owned by labeling engine
     QgsVectorLayerDiagramProvider* mDiagramProvider;
 

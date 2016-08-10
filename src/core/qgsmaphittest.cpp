@@ -20,7 +20,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsrendercontext.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerutils.h"
@@ -59,15 +59,15 @@ void QgsMapHitTest::run()
   Q_FOREACH ( const QString& layerID, mSettings.layers() )
   {
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) );
-    if ( !vl || !vl->rendererV2() )
+    if ( !vl || !vl->renderer() )
       continue;
 
     if ( !mOnlyExpressions )
     {
       if ( !vl->isInScaleRange( mSettings.scale() ) )
       {
-        mHitTest[vl] = SymbolV2Set(); // no symbols -> will not be shown
-        mHitTestRuleKey[vl] = SymbolV2Set();
+        mHitTest[vl] = SymbolSet(); // no symbols -> will not be shown
+        mHitTestRuleKey[vl] = SymbolSet();
         continue;
       }
 
@@ -79,8 +79,8 @@ void QgsMapHitTest::run()
     }
 
     context.expressionContext() << QgsExpressionContextUtils::layerScope( vl );
-    SymbolV2Set& usedSymbols = mHitTest[vl];
-    SymbolV2Set& usedSymbolsRuleKey = mHitTestRuleKey[vl];
+    SymbolSet& usedSymbols = mHitTest[vl];
+    SymbolSet& usedSymbolsRuleKey = mHitTestRuleKey[vl];
     runHitTestLayer( vl, usedSymbols, usedSymbolsRuleKey, context );
   }
 
@@ -103,14 +103,14 @@ bool QgsMapHitTest::legendKeyVisible( const QString& ruleKey, QgsVectorLayer* la
   return mHitTestRuleKey.value( layer ).contains( ruleKey );
 }
 
-void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols, SymbolV2Set& usedSymbolsRuleKey, QgsRenderContext& context )
+void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolSet& usedSymbols, SymbolSet& usedSymbolsRuleKey, QgsRenderContext& context )
 {
   bool hasStyleOverride = mSettings.layerStyleOverrides().contains( vl->id() );
   if ( hasStyleOverride )
     vl->styleManager()->setOverrideStyle( mSettings.layerStyleOverrides().value( vl->id() ) );
 
-  QgsFeatureRendererV2* r = vl->rendererV2();
-  bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRendererV2::MoreSymbolsPerFeature;
+  QgsFeatureRenderer* r = vl->renderer();
+  bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
   r->startRender( context, vl->fields() );
 
   QgsGeometry transformedPolygon = mPolygon;
@@ -139,8 +139,8 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbol
   }
   QgsFeatureIterator fi = vl->getFeatures( request );
 
-  SymbolV2Set lUsedSymbols;
-  SymbolV2Set lUsedSymbolsRuleKey;
+  SymbolSet lUsedSymbols;
+  SymbolSet lUsedSymbolsRuleKey;
   bool allExpressionFalse = false;
   bool hasExpression = mLayerFilterExpression.contains( vl->id() );
   QScopedPointer<QgsExpression> expr;

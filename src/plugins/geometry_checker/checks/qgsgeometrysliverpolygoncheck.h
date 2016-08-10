@@ -32,7 +32,7 @@ class QgsGeometrySliverPolygonCheck : public QgsGeometryAreaCheck
   private:
     double mMaxArea;
 
-    bool checkThreshold( const QgsAbstractGeometryV2 *geom, double &value ) const override
+    bool checkThreshold( const QgsAbstractGeometry *geom, double &value ) const override
     {
       QgsRectangle bb = geom->boundingBox();
       double maxDim = qMax( bb.width(), bb.height() );

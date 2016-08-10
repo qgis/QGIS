@@ -97,7 +97,7 @@ void QgsMapToolNodeTool::createTopologyRubberBands()
         rb->setOutlineColor( color );
         rb->setBrushStyle( Qt::NoBrush );
         rb->setOutlineWidth( settings.value( "/qgis/digitizing/line_width", 1 ).toInt() );
-        QgsAbstractGeometryV2* rbGeom = feature.geometry().geometry()->clone();
+        QgsAbstractGeometry* rbGeom = feature.geometry().geometry()->clone();
         if ( mCanvas->mapSettings().layerTransform( vlayer ).isValid() )
           rbGeom->transform( mCanvas->mapSettings().layerTransform( vlayer ) );
         rb->setGeometry( rbGeom );
@@ -140,7 +140,7 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
       rb->setOutlineColor( color );
       rb->setBrushStyle( Qt::NoBrush );
       rb->setOutlineWidth( settings.value( "/qgis/digitizing/line_width", 1 ).toInt() );
-      QgsAbstractGeometryV2* rbGeom = mSelectedFeature->geometry()->geometry()->clone();
+      QgsAbstractGeometry* rbGeom = mSelectedFeature->geometry()->geometry()->clone();
       if ( mCanvas->mapSettings().layerTransform( vlayer ).isValid() )
         rbGeom->transform( mCanvas->mapSettings().layerTransform( vlayer ) );
       rb->setGeometry( rbGeom );
@@ -401,7 +401,7 @@ void QgsMapToolNodeTool::updateSelectFeature( const QgsGeometry &geom )
     color.setAlphaF( myAlpha );
     mSelectRubberBand->setFillColor( color );
 
-    QgsAbstractGeometryV2* rbGeom = geom.geometry()->clone();
+    QgsAbstractGeometry* rbGeom = geom.geometry()->clone();
     QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
     if ( mCanvas->mapSettings().layerTransform( vlayer ).isValid() )
       rbGeom->transform( mCanvas->mapSettings().layerTransform( vlayer ) );

@@ -24,16 +24,16 @@
 #include "qgscoordinatetransform.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
-#include "qgsgeometrycollectionv2.h"
+#include "qgsgeometrycollection.h"
 #include "qgsdistancearea.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgsmultisurfacev2.h"
+#include "qgsmultisurface.h"
 #include "qgswkbptr.h"
-#include "qgslinestringv2.h"
-#include "qgspolygonv2.h"
-#include "qgssurfacev2.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
+#include "qgssurface.h"
 #include "qgsunittypes.h"
 #include "qgscsexception.h"
 
@@ -262,7 +262,7 @@ bool  QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
   return true;
 }
 
-double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2, MeasureType type ) const
+double QgsDistanceArea::measure( const QgsAbstractGeometry* geomV2, MeasureType type ) const
 {
   if ( !geomV2 )
   {
@@ -296,7 +296,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2, MeasureTyp
   else
   {
     //multigeom is sum of measured parts
-    const QgsGeometryCollectionV2* collection = dynamic_cast<const QgsGeometryCollectionV2*>( geomV2 );
+    const QgsGeometryCollection* collection = dynamic_cast<const QgsGeometryCollection*>( geomV2 );
     if ( collection )
     {
       double sum = 0;
@@ -309,32 +309,32 @@ double QgsDistanceArea::measure( const QgsAbstractGeometryV2* geomV2, MeasureTyp
 
     if ( measureType == Length )
     {
-      const QgsCurveV2* curve = dynamic_cast<const QgsCurveV2*>( geomV2 );
+      const QgsCurve* curve = dynamic_cast<const QgsCurve*>( geomV2 );
       if ( !curve )
       {
         return 0.0;
       }
 
-      QgsLineStringV2* lineString = curve->curveToLine();
+      QgsLineString* lineString = curve->curveToLine();
       double length = measureLine( lineString );
       delete lineString;
       return length;
     }
     else
     {
-      const QgsSurfaceV2* surface = dynamic_cast<const QgsSurfaceV2*>( geomV2 );
+      const QgsSurface* surface = dynamic_cast<const QgsSurface*>( geomV2 );
       if ( !surface )
         return 0.0;
 
       QgsPolygonV2* polygon = surface->surfaceToPolygon();
 
       double area = 0;
-      const QgsCurveV2* outerRing = polygon->exteriorRing();
+      const QgsCurve* outerRing = polygon->exteriorRing();
       area += measurePolygon( outerRing );
 
       for ( int i = 0; i < polygon->numInteriorRings(); ++i )
       {
-        const QgsCurveV2* innerRing = polygon->interiorRing( i );
+        const QgsCurve* innerRing = polygon->interiorRing( i );
         area -= measurePolygon( innerRing );
       }
       delete polygon;
@@ -348,7 +348,7 @@ double QgsDistanceArea::measure( const QgsGeometry *geometry ) const
   if ( !geometry )
     return 0.0;
 
-  const QgsAbstractGeometryV2* geomV2 = geometry->geometry();
+  const QgsAbstractGeometry* geomV2 = geometry->geometry();
   return measure( geomV2 );
 }
 
@@ -357,7 +357,7 @@ double QgsDistanceArea::measureArea( const QgsGeometry* geometry ) const
   if ( !geometry )
     return 0.0;
 
-  const QgsAbstractGeometryV2* geomV2 = geometry->geometry();
+  const QgsAbstractGeometry* geomV2 = geometry->geometry();
   return measure( geomV2, Area );
 }
 
@@ -366,7 +366,7 @@ double QgsDistanceArea::measureArea( const QgsGeometry& geometry ) const
   if ( geometry.isEmpty() )
     return 0.0;
 
-  const QgsAbstractGeometryV2* geomV2 = geometry.geometry();
+  const QgsAbstractGeometry* geomV2 = geometry.geometry();
   return measure( geomV2, Area );
 }
 
@@ -375,7 +375,7 @@ double QgsDistanceArea::measureLength( const QgsGeometry* geometry ) const
   if ( !geometry )
     return 0.0;
 
-  const QgsAbstractGeometryV2* geomV2 = geometry->geometry();
+  const QgsAbstractGeometry* geomV2 = geometry->geometry();
   return measure( geomV2, Length );
 }
 
@@ -384,7 +384,7 @@ double QgsDistanceArea::measureLength( const QgsGeometry& geometry ) const
   if ( geometry.isEmpty() )
     return 0.0;
 
-  const QgsAbstractGeometryV2* geomV2 = geometry.geometry();
+  const QgsAbstractGeometry* geomV2 = geometry.geometry();
   return measure( geomV2, Length );
 }
 
@@ -401,7 +401,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry& geometry ) const
   if ( geometry.isEmpty() )
     return 0.0;
 
-  const QgsAbstractGeometryV2* geomV2 = geometry.geometry();
+  const QgsAbstractGeometry* geomV2 = geometry.geometry();
   if ( !geomV2 || geomV2->dimension() < 2 )
   {
     return 0.0;
@@ -413,24 +413,24 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry& geometry ) const
   }
 
   //create list with (single) surfaces
-  QList< const QgsSurfaceV2* > surfaces;
-  const QgsSurfaceV2* surf = dynamic_cast<const QgsSurfaceV2*>( geomV2 );
+  QList< const QgsSurface* > surfaces;
+  const QgsSurface* surf = dynamic_cast<const QgsSurface*>( geomV2 );
   if ( surf )
   {
     surfaces.append( surf );
   }
-  const QgsMultiSurfaceV2* multiSurf = dynamic_cast<const QgsMultiSurfaceV2*>( geomV2 );
+  const QgsMultiSurface* multiSurf = dynamic_cast<const QgsMultiSurface*>( geomV2 );
   if ( multiSurf )
   {
     surfaces.reserve(( surf ? 1 : 0 ) + multiSurf->numGeometries() );
     for ( int i = 0; i  < multiSurf->numGeometries(); ++i )
     {
-      surfaces.append( static_cast<const QgsSurfaceV2*>( multiSurf->geometryN( i ) ) );
+      surfaces.append( static_cast<const QgsSurface*>( multiSurf->geometryN( i ) ) );
     }
   }
 
   double length = 0;
-  QList<const QgsSurfaceV2*>::const_iterator surfaceIt = surfaces.constBegin();
+  QList<const QgsSurface*>::const_iterator surfaceIt = surfaces.constBegin();
   for ( ; surfaceIt != surfaces.constEnd(); ++surfaceIt )
   {
     if ( !*surfaceIt )
@@ -439,7 +439,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry& geometry ) const
     }
 
     QgsPolygonV2* poly = ( *surfaceIt )->surfaceToPolygon();
-    const QgsCurveV2* outerRing = poly->exteriorRing();
+    const QgsCurve* outerRing = poly->exteriorRing();
     if ( outerRing )
     {
       length += measure( outerRing );
@@ -454,14 +454,14 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry& geometry ) const
   return length;
 }
 
-double QgsDistanceArea::measureLine( const QgsCurveV2* curve ) const
+double QgsDistanceArea::measureLine( const QgsCurve* curve ) const
 {
   if ( !curve )
   {
     return 0.0;
   }
 
-  QgsPointSequenceV2 linePointsV2;
+  QgsPointSequence linePointsV2;
   QList<QgsPoint> linePoints;
   curve->points( linePointsV2 );
   QgsGeometry::convertPointList( linePointsV2, linePoints );
@@ -658,14 +658,14 @@ QgsConstWkbPtr QgsDistanceArea::measurePolygon( QgsConstWkbPtr wkbPtr, double* a
   return wkbPtr;
 }
 
-double QgsDistanceArea::measurePolygon( const QgsCurveV2* curve ) const
+double QgsDistanceArea::measurePolygon( const QgsCurve* curve ) const
 {
   if ( !curve )
   {
     return 0.0;
   }
 
-  QgsPointSequenceV2 linePointsV2;
+  QgsPointSequence linePointsV2;
   curve->points( linePointsV2 );
   QList<QgsPoint> linePoints;
   QgsGeometry::convertPointList( linePointsV2, linePoints );

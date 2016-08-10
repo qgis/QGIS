@@ -22,7 +22,7 @@
 #include <QBrush>
 #include <QPen>
 
-class QgsLineSymbolV2;
+class QgsLineSymbol;
 
 /** \ingroup core
  * An item that draws an arrow between two points.
@@ -177,14 +177,14 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      * @see lineSymbol
      * @note added in 2.5
      */
-    void setLineSymbol( QgsLineSymbolV2* symbol );
+    void setLineSymbol( QgsLineSymbol* symbol );
 
     /** Returns the line symbol used for drawing the line portion of the arrow
      * @returns line symbol
      * @see setLineSymbol
      * @note added in 2.5
      */
-    QgsLineSymbolV2* lineSymbol() { return mLineSymbol; }
+    QgsLineSymbol* lineSymbol() { return mLineSymbol; }
 
     /** Returns marker mode, which controls how the arrow endpoints are drawn
      * @returns marker mode
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      */
     int mBoundsBehaviour;
 
-    QgsLineSymbolV2* mLineSymbol;
+    QgsLineSymbol* mLineSymbol;
 
     /** Adapts the item scene rect to contain the start point, the stop point including the arrow marker and the outline.
      *  Needs to be called whenever the arrow width/height, the outline with or the endpoints are changed

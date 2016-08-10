@@ -20,7 +20,7 @@
 #include "qgscomposerlegend.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
@@ -62,44 +62,44 @@ void QgsComposerLegendItem::writeXmlChildren( QDomElement& elem, QDomDocument& d
 }
 
 
-////////////////QgsComposerSymbolV2Item
+////////////////QgsComposerSymbolItem
 
 
-QgsComposerSymbolV2Item::QgsComposerSymbolV2Item(): QgsComposerLegendItem( QgsComposerLegendStyle::Symbol ), mSymbolV2( nullptr )
+QgsComposerSymbolItem::QgsComposerSymbolItem(): QgsComposerLegendItem( QgsComposerLegendStyle::Symbol ), mSymbol( nullptr )
 {
 }
 
-QgsComposerSymbolV2Item::QgsComposerSymbolV2Item( const QString& text ): QgsComposerLegendItem( text, QgsComposerLegendStyle::Symbol ), mSymbolV2( nullptr )
+QgsComposerSymbolItem::QgsComposerSymbolItem( const QString& text ): QgsComposerLegendItem( text, QgsComposerLegendStyle::Symbol ), mSymbol( nullptr )
 {
 }
 
-QgsComposerSymbolV2Item::QgsComposerSymbolV2Item( const QIcon& icon, const QString& text ): QgsComposerLegendItem( icon, text, QgsComposerLegendStyle::Symbol ), mSymbolV2( nullptr )
+QgsComposerSymbolItem::QgsComposerSymbolItem( const QIcon& icon, const QString& text ): QgsComposerLegendItem( icon, text, QgsComposerLegendStyle::Symbol ), mSymbol( nullptr )
 {
 }
 
-QgsComposerSymbolV2Item::~QgsComposerSymbolV2Item()
+QgsComposerSymbolItem::~QgsComposerSymbolItem()
 {
-  delete mSymbolV2;
+  delete mSymbol;
 }
 
-QStandardItem* QgsComposerSymbolV2Item::clone() const
+QStandardItem* QgsComposerSymbolItem::clone() const
 {
-  QgsComposerSymbolV2Item* cloneItem = new QgsComposerSymbolV2Item();
+  QgsComposerSymbolItem* cloneItem = new QgsComposerSymbolItem();
   *cloneItem = *this;
-  if ( mSymbolV2 )
+  if ( mSymbol )
   {
-    cloneItem->setSymbolV2( mSymbolV2->clone() );
+    cloneItem->setSymbol( mSymbol->clone() );
   }
   return cloneItem;
 }
 
-void QgsComposerSymbolV2Item::writeXml( QDomElement& elem, QDomDocument& doc ) const
+void QgsComposerSymbolItem::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
   QDomElement vectorClassElem = doc.createElement( "VectorClassificationItemNg" );
-  if ( mSymbolV2 )
+  if ( mSymbol )
   {
     QgsSymbolMap saveSymbolMap;
-    saveSymbolMap.insert( "classificationSymbol", mSymbolV2 );
+    saveSymbolMap.insert( "classificationSymbol", mSymbol );
     QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( saveSymbolMap, "symbols", doc );
     vectorClassElem.appendChild( symbolsElem );
   }
@@ -108,7 +108,7 @@ void QgsComposerSymbolV2Item::writeXml( QDomElement& elem, QDomDocument& doc ) c
   elem.appendChild( vectorClassElem );
 }
 
-void QgsComposerSymbolV2Item::readXml( const QDomElement& itemElem, bool xServerAvailable )
+void QgsComposerSymbolItem::readXml( const QDomElement& itemElem, bool xServerAvailable )
 {
   if ( itemElem.isNull() )
   {
@@ -128,7 +128,7 @@ void QgsComposerSymbolV2Item::readXml( const QDomElement& itemElem, bool xServer
       QgsSymbol* symbolNg = mapIt.value();
       if ( symbolNg )
       {
-        setSymbolV2( symbolNg );
+        setSymbol( symbolNg );
         if ( xServerAvailable )
         {
           setIcon( QgsSymbolLayerUtils::symbolPreviewIcon( symbolNg, QSize( 30, 30 ) ) );
@@ -138,10 +138,10 @@ void QgsComposerSymbolV2Item::readXml( const QDomElement& itemElem, bool xServer
   }
 }
 
-void QgsComposerSymbolV2Item::setSymbolV2( QgsSymbol* s )
+void QgsComposerSymbolItem::setSymbol( QgsSymbol* s )
 {
-  delete mSymbolV2;
-  mSymbolV2 = s;
+  delete mSymbol;
+  mSymbol = s;
 }
 
 ////////////////////QgsComposerRasterSymbolItem
@@ -270,7 +270,7 @@ void QgsComposerLayerItem::readXml( const QDomElement& itemElem, bool xServerAva
     }
     else if ( elemTag == "VectorClassificationItemNg" )
     {
-      currentChildItem = new QgsComposerSymbolV2Item();
+      currentChildItem = new QgsComposerSymbolItem();
     }
     else if ( elemTag == "RasterClassificationItem" )
     {
@@ -291,7 +291,7 @@ void QgsComposerLayerItem::setDefaultStyle( double scaleDenominator, const QStri
   QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId() ) );
   if ( vLayer )
   {
-    QgsFeatureRendererV2* renderer = vLayer->rendererV2();
+    QgsFeatureRenderer* renderer = vLayer->renderer();
     if ( renderer )
     {
       QPair<QString, QgsSymbol*> symbolItem = renderer->legendSymbolItems( scaleDenominator, rule ).value( 0 );

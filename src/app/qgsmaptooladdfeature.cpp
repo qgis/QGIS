@@ -17,15 +17,15 @@
 #include "qgsapplication.h"
 #include "qgsattributedialog.h"
 #include "qgscsexception.h"
-#include "qgscurvepolygonv2.h"
+#include "qgscurvepolygon.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
-#include "qgslinestringv2.h"
-#include "qgsmultipointv2.h"
+#include "qgslinestring.h"
+#include "qgsmultipoint.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmapmouseevent.h"
-#include "qgspolygonv2.h"
+#include "qgspolygon.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -241,7 +241,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
       bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
-      QgsCurveV2* curveToAdd = nullptr;
+      QgsCurve* curveToAdd = nullptr;
       if ( hasCurvedSegments && providerSupportsCurvedSegments )
       {
         curveToAdd = captureCurve()->clone();
@@ -259,10 +259,10 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       }
       else
       {
-        QgsCurvePolygonV2* poly = nullptr;
+        QgsCurvePolygon* poly = nullptr;
         if ( hasCurvedSegments && providerSupportsCurvedSegments )
         {
-          poly = new QgsCurvePolygonV2();
+          poly = new QgsCurvePolygon();
         }
         else
         {

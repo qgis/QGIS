@@ -40,7 +40,7 @@
 #include <qgsproject.h>
 #include <qgspoint.h>
 #include <qgsdistancearea.h>
-#include <symbology-ng/qgsrendererv2.h>
+#include <symbology-ng/qgsrenderer.h>
 #include <symbology-ng/qgssymbol.h>
 #include <qgspallabeling.h>
 
@@ -777,9 +777,9 @@ void GlobePlugin::addModelLayer( QgsVectorLayer* vLayer, QgsGlobeVectorLayerConf
   featureOpt.setLayer( vLayer );
   osgEarth::Style style;
 
-  if ( !vLayer->rendererV2()->symbols().isEmpty() )
+  if ( !vLayer->renderer()->symbols().isEmpty() )
   {
-    Q_FOREACH ( QgsSymbol* sym, vLayer->rendererV2()->symbols() )
+    Q_FOREACH ( QgsSymbol* sym, vLayer->renderer()->symbols() )
     {
       if ( sym->type() == QgsSymbol::Line )
       {

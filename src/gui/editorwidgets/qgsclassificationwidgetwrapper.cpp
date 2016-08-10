@@ -15,7 +15,7 @@
 
 #include "qgsclassificationwidgetwrapper.h"
 
-#include "qgscategorizedsymbolrendererv2.h"
+#include "qgscategorizedsymbolrenderer.h"
 #include "qgsvectorlayer.h"
 
 QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
@@ -45,7 +45,7 @@ void QgsClassificationWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mComboBox )
   {
-    const QgsCategorizedSymbolRendererV2 *csr = dynamic_cast<const QgsCategorizedSymbolRendererV2 *>( layer()->rendererV2() );
+    const QgsCategorizedSymbolRenderer *csr = dynamic_cast<const QgsCategorizedSymbolRenderer *>( layer()->renderer() );
     if ( csr )
     {
       const QgsCategoryList categories = csr->categories();

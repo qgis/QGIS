@@ -25,7 +25,7 @@
 #include "qgscomposermap.h"
 #include "qgsmapsettings.h"
 #include "qgsmultirenderchecker.h"
-#include "qgsfillsymbollayerv2.h"
+#include "qgsfillsymbollayer.h"
 
 #include <QObject>
 #include <QtTest/QtTest>
@@ -392,8 +392,8 @@ void TestQgsComposition::resizeToContents()
 {
   //add some items to a composition
   QgsComposition* composition = new QgsComposition( *mMapSettings );
-  QgsSimpleFillSymbolLayerV2* simpleFill = new QgsSimpleFillSymbolLayerV2();
-  QgsFillSymbolV2* fillSymbol = new QgsFillSymbolV2();
+  QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::yellow );
   simpleFill->setBorderColor( Qt::transparent );
@@ -433,8 +433,8 @@ void TestQgsComposition::resizeToContentsMargin()
   //resize to contents, with margin
 
   QgsComposition* composition = new QgsComposition( *mMapSettings );
-  QgsSimpleFillSymbolLayerV2* simpleFill = new QgsSimpleFillSymbolLayerV2();
-  QgsFillSymbolV2* fillSymbol = new QgsFillSymbolV2();
+  QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::yellow );
   simpleFill->setBorderColor( Qt::transparent );
@@ -474,8 +474,8 @@ void TestQgsComposition::resizeToContentsMultiPage()
   //resize to contents with multi-page composition, should result in a single page
 
   QgsComposition* composition = new QgsComposition( *mMapSettings );
-  QgsSimpleFillSymbolLayerV2* simpleFill = new QgsSimpleFillSymbolLayerV2();
-  QgsFillSymbolV2* fillSymbol = new QgsFillSymbolV2();
+  QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::yellow );
   simpleFill->setBorderColor( Qt::transparent );

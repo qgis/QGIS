@@ -1,13 +1,13 @@
-class QgsPointDisplacementRendererWidget: QgsRendererV2Widget
+class QgsPointDisplacementRendererWidget: QgsRendererWidget
 {
 %TypeHeaderCode
 #include <qgspointdisplacementrendererwidget.h>
 %End
   public:
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
-    QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) /Factory/;
+    QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
     ~QgsPointDisplacementRendererWidget();
 
-    QgsFeatureRendererV2* renderer();
+    QgsFeatureRenderer* renderer();
     void setMapCanvas( QgsMapCanvas* canvas );
 };

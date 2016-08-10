@@ -24,8 +24,8 @@
 #include "qgstreewidgetitem.h"
 
 // for color ramps - todo add rasterStyle and refactor raster vs. vector ramps
-#include "qgsstylev2.h"
-#include "qgsvectorcolorrampv2.h"
+#include "qgsstyle.h"
+#include "qgsvectorcolorramp.h"
 #include "qgscolordialog.h"
 
 #include <QFileDialog>
@@ -46,7 +46,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
 
   QString defaultPalette = settings.value( "/Raster/defaultPalette", "Spectral" ).toString();
 
-  mColorRampComboBox->populate( QgsStyleV2::defaultStyle() );
+  mColorRampComboBox->populate( QgsStyle::defaultStyle() );
 
   QgsDebugMsg( "defaultPalette = " + defaultPalette );
   mColorRampComboBox->setCurrentIndex( mColorRampComboBox->findText( defaultPalette ) );
@@ -331,7 +331,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   double min = lineEditValue( mMinLineEdit );
   double max = lineEditValue( mMaxLineEdit );
 
-  QScopedPointer< QgsVectorColorRampV2 > colorRamp( mColorRampComboBox->currentColorRamp() );
+  QScopedPointer< QgsVectorColorRamp > colorRamp( mColorRampComboBox->currentColorRamp() );
 
   if ( mClassificationModeComboBox->itemData( mClassificationModeComboBox->currentIndex() ).toInt() == Continuous )
   {
@@ -344,7 +344,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
         double intervalDiff = max - min;
 
         // remove last class when ColorRamp is gradient and discrete, as they are implemented with an extra stop
-        QgsVectorGradientColorRampV2* colorGradientRamp = dynamic_cast<QgsVectorGradientColorRampV2*>( colorRamp.data() );
+        QgsVectorGradientColorRamp* colorGradientRamp = dynamic_cast<QgsVectorGradientColorRamp*>( colorRamp.data() );
         if ( colorGradientRamp != NULL && colorGradientRamp->isDiscrete() )
         {
           numberOfEntries--;
@@ -514,7 +514,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColorRampComboBox_currentIndexC
   QSettings settings;
   settings.setValue( "/Raster/defaultPalette", mColorRampComboBox->currentText() );
 
-  QgsVectorColorRampV2* ramp = mColorRampComboBox->currentColorRamp();
+  QgsVectorColorRamp* ramp = mColorRampComboBox->currentColorRamp();
   if ( !ramp )
     return;
 

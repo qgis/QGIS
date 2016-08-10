@@ -442,7 +442,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     void setTopoFields();
 
-    void setPoints( struct line_pnts *points, const QgsAbstractGeometryV2 * geometry );
+    void setPoints( struct line_pnts *points, const QgsAbstractGeometry * geometry );
 
     // Get other edited layer, returns 0 if layer does not exist
     QgsGrassVectorMapLayer * otherEditLayer( int layerField );

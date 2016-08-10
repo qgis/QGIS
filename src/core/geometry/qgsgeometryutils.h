@@ -19,7 +19,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspointv2.h"
 #include <limits>
 
-class QgsLineStringV2;
+class QgsLineString;
 
 /** \ingroup core
  * \class QgsGeometryUtils
@@ -35,11 +35,11 @@ class CORE_EXPORT QgsGeometryUtils
     /** Returns list of linestrings extracted from the passed geometry. The returned objects
      *  have to be deleted by the caller.
      */
-    static QList<QgsLineStringV2*> extractLineStrings( const QgsAbstractGeometryV2* geom );
+    static QList<QgsLineString*> extractLineStrings( const QgsAbstractGeometry* geom );
 
     /** Returns the closest vertex to a geometry for a specified point
      */
-    static QgsPointV2 closestVertex( const QgsAbstractGeometryV2& geom, const QgsPointV2& pt, QgsVertexId& id );
+    static QgsPointV2 closestVertex( const QgsAbstractGeometry& geom, const QgsPointV2& pt, QgsVertexId& id );
 
     /** Returns the distance along a geometry from its first vertex to the specified vertex.
      * @param geom geometry
@@ -47,11 +47,11 @@ class CORE_EXPORT QgsGeometryUtils
      * @returns distance to vertex (following geometry)
      * @note added in QGIS 2.16
      */
-    static double distanceToVertex( const QgsAbstractGeometryV2& geom, const QgsVertexId& id );
+    static double distanceToVertex( const QgsAbstractGeometry& geom, const QgsVertexId& id );
 
     /** Returns vertices adjacent to a specified vertex within a geometry.
      */
-    static void adjacentVertices( const QgsAbstractGeometryV2& geom, QgsVertexId atVertex, QgsVertexId& beforeVertex, QgsVertexId& afterVertex );
+    static void adjacentVertices( const QgsAbstractGeometry& geom, QgsVertexId atVertex, QgsVertexId& beforeVertex, QgsVertexId& afterVertex );
 
     /** Returns the squared 2D distance between two points.
      */
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @return The list of self intersections
      * @note added in QGIS 2.12
      */
-    static QList<SelfIntersection> getSelfIntersections( const QgsAbstractGeometryV2* geom, int part, int ring, double tolerance );
+    static QList<SelfIntersection> getSelfIntersections( const QgsAbstractGeometry* geom, int part, int ring, double tolerance );
 
     /** Returns < 0 if point(x/y) is left of the line x1,y1 -> x2,y2*/
     static double leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
@@ -156,17 +156,17 @@ class CORE_EXPORT QgsGeometryUtils
 
     /** Returns a list of points contained in a WKT string.
      */
-    static QgsPointSequenceV2 pointsFromWKT( const QString& wktCoordinateList, bool is3D, bool isMeasure );
+    static QgsPointSequence pointsFromWKT( const QString& wktCoordinateList, bool is3D, bool isMeasure );
     /** Returns a LinearRing { uint32 numPoints; Point points[numPoints]; } */
-    static void pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequenceV2 &points, bool is3D, bool isMeasure );
+    static void pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &points, bool is3D, bool isMeasure );
     /** Returns a WKT coordinate list */
-    static QString pointsToWKT( const QgsPointSequenceV2 &points, int precision, bool is3D, bool isMeasure );
+    static QString pointsToWKT( const QgsPointSequence &points, int precision, bool is3D, bool isMeasure );
     /** Returns a gml::coordinates DOM element */
-    static QDomElement pointsToGML2( const QgsPointSequenceV2 &points, QDomDocument &doc, int precision, const QString& ns );
+    static QDomElement pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString& ns );
     /** Returns a gml::posList DOM element */
-    static QDomElement pointsToGML3( const QgsPointSequenceV2 &points, QDomDocument &doc, int precision, const QString& ns, bool is3D );
+    static QDomElement pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString& ns, bool is3D );
     /** Returns a geoJSON coordinates string */
-    static QString pointsToJSON( const QgsPointSequenceV2 &points, int precision );
+    static QString pointsToJSON( const QgsPointSequence &points, int precision );
 
     /** Ensures that an angle is in the range 0 <= angle < 2 pi.
      * @param angle angle in radians

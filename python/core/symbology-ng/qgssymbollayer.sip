@@ -2,43 +2,43 @@ class QgsSymbolLayer
 {
 %TypeHeaderCode
 #include <qgssymbollayer.h>
-#include <qgslinesymbollayerv2.h>
+#include <qgslinesymbollayer.h>
 %End
 
 %ConvertToSubClassCode
   switch (sipCpp->type())
   {
     case QgsSymbol::Marker:
-      if (dynamic_cast<QgsEllipseSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsEllipseSymbolLayerV2;
-      else if (dynamic_cast<QgsFontMarkerSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsFontMarkerSymbolLayerV2;
-      else if (dynamic_cast<QgsSimpleMarkerSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsSimpleMarkerSymbolLayerV2;
+      if (dynamic_cast<QgsEllipseSymbolLayer*>(sipCpp) != NULL)
+	sipType = sipType_QgsEllipseSymbolLayer;
+      else if (dynamic_cast<QgsFontMarkerSymbolLayer*>(sipCpp) != NULL)
+	sipType = sipType_QgsFontMarkerSymbolLayer;
+      else if (dynamic_cast<QgsSimpleMarkerSymbolLayer*>(sipCpp) != NULL)
+	sipType = sipType_QgsSimpleMarkerSymbolLayer;
       else if (dynamic_cast<QgsFilledMarkerSymbolLayer*>(sipCpp) != NULL)
 	sipType = sipType_QgsFilledMarkerSymbolLayer;
-      else if (dynamic_cast<QgsSvgMarkerSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsSvgMarkerSymbolLayerV2;
+      else if (dynamic_cast<QgsSvgMarkerSymbolLayer*>(sipCpp) != NULL)
+	sipType = sipType_QgsSvgMarkerSymbolLayer;
       else if (dynamic_cast<QgsVectorFieldSymbolLayer*>(sipCpp) != NULL)
 	sipType = sipType_QgsVectorFieldSymbolLayer;
       else
-	sipType = sipType_QgsMarkerSymbolLayerV2;
+	sipType = sipType_QgsMarkerSymbolLayer;
       break;
 
     case QgsSymbol::Line:
-      if (dynamic_cast<QgsMarkerLineSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsMarkerLineSymbolLayerV2;
-      else if (dynamic_cast<QgsSimpleLineSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsSimpleLineSymbolLayerV2;
+      if (dynamic_cast<QgsMarkerLineSymbolLayer*>(sipCpp) != NULL)
+	sipType = sipType_QgsMarkerLineSymbolLayer;
+      else if (dynamic_cast<QgsSimpleLineSymbolLayer*>(sipCpp) != NULL)
+	sipType = sipType_QgsSimpleLineSymbolLayer;
       else if (dynamic_cast<QgsArrowSymbolLayer*>(sipCpp) != NULL)
 	sipType = sipType_QgsArrowSymbolLayer;
       else
-	sipType = sipType_QgsLineSymbolLayerV2;
+	sipType = sipType_QgsLineSymbolLayer;
       break;
 
     case QgsSymbol::Fill:
-      if (dynamic_cast<QgsSimpleFillSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsSimpleFillSymbolLayerV2;
+      if (dynamic_cast<QgsSimpleFillSymbolLayer*>(sipCpp) != NULL)
+	sipType = sipType_QgsSimpleFillSymbolLayer;
       else if (dynamic_cast<QgsImageFillSymbolLayer*>(sipCpp) != NULL)
       {
 	if (dynamic_cast<QgsLinePatternFillSymbolLayer*>(sipCpp) != NULL)
@@ -52,18 +52,18 @@ class QgsSymbolLayer
 	else
 	  sipType = sipType_QgsImageFillSymbolLayer;
       }
-      else if (dynamic_cast<QgsCentroidFillSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsCentroidFillSymbolLayerV2;
-      else if (dynamic_cast<QgsGradientFillSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsGradientFillSymbolLayerV2;
-      else if (dynamic_cast<QgsShapeburstFillSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsShapeburstFillSymbolLayerV2;
+      else if (dynamic_cast<QgsCentroidFillSymbolLayer*>(sipCpp) != NULL)
+	sipType = sipType_QgsCentroidFillSymbolLayer;
+      else if (dynamic_cast<QgsGradientFillSymbolLayer*>(sipCpp) != NULL)
+	sipType = sipType_QgsGradientFillSymbolLayer;
+      else if (dynamic_cast<QgsShapeburstFillSymbolLayer*>(sipCpp) != NULL)
+	sipType = sipType_QgsShapeburstFillSymbolLayer;
       else
-	sipType = sipType_QgsFillSymbolLayerV2;
+	sipType = sipType_QgsFillSymbolLayer;
       break;
 
     case QgsSymbol::Hybrid:
-      sipType = sipType_QgsGeometryGeneratorSymbolLayerV2;
+      sipType = sipType_QgsGeometryGeneratorSymbolLayer;
       break;
   }
 %End
@@ -342,10 +342,10 @@ class QgsSymbolLayer
 //////////////////////
 
 /** \ingroup core
- * \class QgsMarkerSymbolLayerV2
+ * \class QgsMarkerSymbolLayer
  * \brief Abstract base class for marker symbol layers.
  */
-class QgsMarkerSymbolLayerV2 : QgsSymbolLayer
+class QgsMarkerSymbolLayer : QgsSymbolLayer
 {
 %TypeHeaderCode
 #include <qgssymbollayer.h>
@@ -560,10 +560,10 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayer
 
   protected:
 
-    /** Constructor for QgsMarkerSymbolLayerV2.
+    /** Constructor for QgsMarkerSymbolLayer.
      * @param locked set to true to lock symbol color
      */
-    QgsMarkerSymbolLayerV2( bool locked = false );
+    QgsMarkerSymbolLayer( bool locked = false );
 
     /** Calculates the required marker offset, including both the symbol offset
      * and any displacement required to align with the marker's anchor point.
@@ -598,7 +598,7 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayer
     static QPointF _rotatedOffset( QPointF offset, double angle );
 };
 
-class QgsLineSymbolLayerV2 : QgsSymbolLayer
+class QgsLineSymbolLayer : QgsSymbolLayer
 {
 %TypeHeaderCode
 #include <qgssymbollayer.h>
@@ -655,10 +655,10 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayer
     virtual double dxfOffset( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const;
 
   protected:
-    QgsLineSymbolLayerV2( bool locked = false );
+    QgsLineSymbolLayer( bool locked = false );
 };
 
-class QgsFillSymbolLayerV2 : QgsSymbolLayer
+class QgsFillSymbolLayer : QgsSymbolLayer
 {
 %TypeHeaderCode
 #include <qgssymbollayer.h>
@@ -673,7 +673,7 @@ class QgsFillSymbolLayerV2 : QgsSymbolLayer
     double angle() const;
 
   protected:
-    QgsFillSymbolLayerV2( bool locked = false );
+    QgsFillSymbolLayer( bool locked = false );
     /** Default method to render polygon*/
     void _renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
 };

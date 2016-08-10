@@ -102,8 +102,8 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         QString mConstraint;
         QString mConstraintDescription;
         QPushButton* mButton;
-        QString mEditorWidgetV2Type;
-        QMap<QString, QVariant> mEditorWidgetV2Config;
+        QString mEditorWidgetType;
+        QMap<QString, QVariant> mEditorWidgetConfig;
     };
 
   public:
@@ -219,12 +219,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
       RelColCount
     };
 
-    static QMap< QgsVectorLayer::EditType, QString > editTypeMap;
-    static void setupEditTypes();
-    static QString editTypeButtonText( QgsVectorLayer::EditType type );
-
   private:
-
     void updateFieldRenamingStatus();
 
 };

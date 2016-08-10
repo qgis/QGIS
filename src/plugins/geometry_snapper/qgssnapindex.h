@@ -18,20 +18,20 @@
 #define QGSSNAPINDEX_H
 
 #include "qgspointv2.h"
-#include "qgsabstractgeometryv2.h"
+#include "qgsabstractgeometry.h"
 
 class QgsSnapIndex
 {
   public:
     struct CoordIdx
     {
-      CoordIdx( const QgsAbstractGeometryV2* _geom, QgsVertexId _vidx )
+      CoordIdx( const QgsAbstractGeometry* _geom, QgsVertexId _vidx )
           : geom( _geom )
           , vidx( _vidx )
       {}
       QgsPointV2 point() const { return geom->vertexAt( vidx ); }
 
-      const QgsAbstractGeometryV2* geom;
+      const QgsAbstractGeometry* geom;
       QgsVertexId vidx;
     };
 
@@ -69,7 +69,7 @@ class QgsSnapIndex
 
     QgsSnapIndex( const QgsPointV2& origin, double cellSize );
     ~QgsSnapIndex();
-    void addGeometry( const QgsAbstractGeometryV2 *geom );
+    void addGeometry( const QgsAbstractGeometry *geom );
     QgsPointV2 getClosestSnapToPoint( const QgsPointV2& p, const QgsPointV2& q );
     SnapItem *getSnapItem( const QgsPointV2& pos, double tol, PointSnapItem **pSnapPoint = nullptr, SegmentSnapItem **pSnapSegment = nullptr ) const;
 

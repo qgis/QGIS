@@ -29,8 +29,8 @@
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
 #include <qgssymbol.h>
-#include <qgssinglesymbolrendererv2.h>
-#include <qgsfillsymbollayerv2.h>
+#include <qgssinglesymbolrenderer.h>
+#include <qgsfillsymbollayer.h>
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
@@ -69,8 +69,8 @@ class TestQgsRasterFill : public QObject
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer;
     QgsRasterFillSymbolLayer* mRasterFill;
-    QgsFillSymbolV2* mFillSymbol;
-    QgsSingleSymbolRendererV2* mSymbolRenderer;
+    QgsFillSymbol* mFillSymbol;
+    QgsSingleSymbolRenderer* mSymbolRenderer;
     QString mTestDataDir;
     QString mReport;
 };
@@ -106,10 +106,10 @@ void TestQgsRasterFill::initTestCase()
 
   //setup raster fill
   mRasterFill = new QgsRasterFillSymbolLayer();
-  mFillSymbol = new QgsFillSymbolV2();
+  mFillSymbol = new QgsFillSymbol();
   mFillSymbol->changeSymbolLayer( 0, mRasterFill );
-  mSymbolRenderer = new QgsSingleSymbolRendererV2( mFillSymbol );
-  mpPolysLayer->setRendererV2( mSymbolRenderer );
+  mSymbolRenderer = new QgsSingleSymbolRenderer( mFillSymbol );
+  mpPolysLayer->setRenderer( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui

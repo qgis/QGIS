@@ -32,9 +32,9 @@ from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (
     QgsVectorLayer,
-    QgsSingleSymbolRendererV2,
-    QgsLineSymbolV2,
-    QgsFillSymbolV2,
+    QgsSingleSymbolRenderer,
+    QgsLineSymbol,
+    QgsFillSymbol,
     QgsMapLayerRegistry,
     QgsRectangle,
     QgsArrowSymbolLayer,
@@ -63,8 +63,8 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         QgsMapLayerRegistry.instance().addMapLayer(self.lines_layer)
 
         # Create style
-        sym2 = QgsLineSymbolV2.createSimple({'color': '#fdbf6f'})
-        self.lines_layer.setRendererV2(QgsSingleSymbolRendererV2(sym2))
+        sym2 = QgsLineSymbol.createSimple({'color': '#fdbf6f'})
+        self.lines_layer.setRenderer(QgsSingleSymbolRenderer(sym2))
 
         self.mapsettings = self.iface.mapCanvas().mapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
@@ -76,7 +76,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         QgsMapLayerRegistry.instance().removeAllMapLayers()
 
     def test_1(self):
-        sym = self.lines_layer.rendererV2().symbol()
+        sym = self.lines_layer.renderer().symbol()
         sym_layer = QgsArrowSymbolLayer.create({'head_length': '6.5', 'head_thickness': '6.5'})
         dd = QgsDataDefined("(@geometry_point_num % 4) * 2")
         sym_layer.setDataDefinedProperty("arrow_width", dd)
@@ -84,7 +84,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         sym_layer.setDataDefinedProperty("head_length", dd2)
         dd3 = QgsDataDefined("(@geometry_point_num % 4) * 2")
         sym_layer.setDataDefinedProperty("head_thickness", dd3)
-        fill_sym = QgsFillSymbolV2.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
+        fill_sym = QgsFillSymbol.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
         sym_layer.setSubSymbol(fill_sym)
         sym.changeSymbolLayer(0, sym_layer)
 
@@ -97,10 +97,10 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         self.assertTrue(renderchecker.runTest('arrowsymbollayer_1'))
 
     def test_2(self):
-        sym = self.lines_layer.rendererV2().symbol()
+        sym = self.lines_layer.renderer().symbol()
         # double headed
         sym_layer = QgsArrowSymbolLayer.create({'arrow_width': '5', 'head_length': '4', 'head_thickness': '6', 'head_type': '2'})
-        fill_sym = QgsFillSymbolV2.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
+        fill_sym = QgsFillSymbol.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
         sym_layer.setSubSymbol(fill_sym)
         sym.changeSymbolLayer(0, sym_layer)
 
@@ -113,10 +113,10 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         self.assertTrue(renderchecker.runTest('arrowsymbollayer_2'))
 
     def test_3(self):
-        sym = self.lines_layer.rendererV2().symbol()
+        sym = self.lines_layer.renderer().symbol()
         # double headed
         sym_layer = QgsArrowSymbolLayer.create({'arrow_width': '7', 'head_length': '6', 'head_thickness': '8', 'head_type': '0', 'arrow_type': '1', 'is_curved': '0'})
-        fill_sym = QgsFillSymbolV2.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
+        fill_sym = QgsFillSymbol.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
         sym_layer.setSubSymbol(fill_sym)
         sym.changeSymbolLayer(0, sym_layer)
 
@@ -131,12 +131,12 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         self.assertTrue(renderchecker.runTest('arrowsymbollayer_3'))
 
     def test_unrepeated(self):
-        sym = self.lines_layer.rendererV2().symbol()
+        sym = self.lines_layer.renderer().symbol()
         # double headed
         sym_layer = QgsArrowSymbolLayer.create({'arrow_width': '7', 'head_length': '6', 'head_thickness': '8', 'head_type': '0', 'arrow_type': '0'})
         # no repetition
         sym_layer.setIsRepeated(False)
-        fill_sym = QgsFillSymbolV2.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
+        fill_sym = QgsFillSymbol.createSimple({'color': '#8bcfff', 'outline_color': '#000000', 'outline_style': 'solid', 'outline_width': '1'})
         sym_layer.setSubSymbol(fill_sym)
         sym.changeSymbolLayer(0, sym_layer)
 

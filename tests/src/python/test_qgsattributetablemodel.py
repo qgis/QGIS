@@ -71,7 +71,7 @@ class TestQgsAttributeTableModel(unittest.TestCase):
         self.layer.startEditing()
         self.layer.deleteFeature(5)
         self.assertEquals(self.am.rowCount(), 9)
-        self.layer.setSelectedFeatures([1, 3, 6, 7])
+        self.layer.selectByIds([1, 3, 6, 7])
         self.layer.deleteSelectedFeatures()
         self.assertEquals(self.am.rowCount(), 5)
 

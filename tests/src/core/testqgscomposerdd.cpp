@@ -26,7 +26,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsfeature.h"
 #include "qgssymbol.h"
-#include "qgssinglesymbolrendererv2.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgsdatadefined.h"
 
 #include <QObject>
@@ -96,9 +96,9 @@ void TestQgsComposerDD::initTestCase()
   // fix the renderer, fill with green
   QgsStringMap props;
   props.insert( "color", "0,127,0" );
-  QgsFillSymbolV2* fillSymbol = QgsFillSymbolV2::createSimple( props );
-  QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( fillSymbol );
-  mVectorLayer->setRendererV2( renderer );
+  QgsFillSymbol* fillSymbol = QgsFillSymbol::createSimple( props );
+  QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( fillSymbol );
+  mVectorLayer->setRenderer( renderer );
 
   // the atlas map
   mAtlasMap = new QgsComposerMap( mComposition, 20, 20, 130, 130 );

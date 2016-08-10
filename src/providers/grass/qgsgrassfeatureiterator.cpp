@@ -250,7 +250,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
   int type = 0;
   int lid = 0;
   QgsFeatureId featureId = 0;
-  QgsAbstractGeometryV2 *oldGeometry = 0;
+  QgsAbstractGeometry *oldGeometry = 0;
   int cidxFieldIndex = mSource->mLayer->cidxFieldIndex();
 
 #ifdef QGISDEBUG
@@ -601,7 +601,7 @@ void QgsGrassFeatureIterator::setFeatureGeometry( QgsFeature& feature, int id, i
 {
   QgsDebugMsgLevel( QString( "id = %1 type = %2" ).arg( id ).arg( type ), 3 );
 
-  QgsAbstractGeometryV2 *geometry = 0;
+  QgsAbstractGeometry *geometry = 0;
   if ( type & ( GV_POINTS | GV_LINES | GV_FACE ) )
   {
     geometry = mSource->mLayer->map()->lineGeometry( id );

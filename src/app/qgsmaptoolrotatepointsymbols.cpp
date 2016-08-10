@@ -17,7 +17,7 @@
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgspointrotationitem.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgssnappingutils.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
@@ -93,7 +93,7 @@ void QgsMapToolRotatePointSymbols::canvasPressOnFeature( QgsMapMouseEvent *e, co
   mRotating = true;
 }
 
-bool QgsMapToolRotatePointSymbols::checkSymbolCompatibility( QgsMarkerSymbolV2* markerSymbol, QgsRenderContext& )
+bool QgsMapToolRotatePointSymbols::checkSymbolCompatibility( QgsMarkerSymbol* markerSymbol, QgsRenderContext& )
 {
   bool ok = false;
   if ( markerSymbol->dataDefinedAngle().isActive() && !markerSymbol->dataDefinedAngle().useExpression() )
@@ -210,7 +210,7 @@ double QgsMapToolRotatePointSymbols::calculateAzimut( QPoint mousePos )
   return 180 - atan2(( double ) dx, ( double ) dy ) * 180.0 / M_PI;
 }
 
-void QgsMapToolRotatePointSymbols::createPixmapItem( QgsMarkerSymbolV2* markerSymbol )
+void QgsMapToolRotatePointSymbols::createPixmapItem( QgsMarkerSymbol* markerSymbol )
 {
   if ( !mCanvas )
   {
@@ -223,7 +223,7 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsMarkerSymbolV2* markerSy
   if ( markerSymbol )
   {
     QgsSymbol* clone = markerSymbol->clone();
-    QgsMarkerSymbolV2* markerClone = static_cast<QgsMarkerSymbolV2*>( clone );
+    QgsMarkerSymbol* markerClone = static_cast<QgsMarkerSymbol*>( clone );
     markerClone->setDataDefinedAngle( QgsDataDefined() );
     pointImage = markerClone->bigSymbolPreviewImage();
     delete clone;

@@ -28,7 +28,7 @@ QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, 
 
   connect( mLayer, SIGNAL( featureDeleted( QgsFeatureId ) ), SLOT( featureDeleted( QgsFeatureId ) ) );
   connect( mLayer, SIGNAL( featureAdded( QgsFeatureId ) ), SLOT( onFeatureAdded( QgsFeatureId ) ) );
-  connect( mLayer, SIGNAL( layerDeleted() ), SLOT( layerDeleted() ) );
+  connect( mLayer, SIGNAL( destroyed() ), SLOT( layerDeleted() ) );
 
   setCacheGeometry( true );
   setCacheSubsetOfAttributes( mLayer->attributeList() );

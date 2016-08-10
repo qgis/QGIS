@@ -28,9 +28,9 @@
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
 #include <qgssymbol.h>
-#include <qgssinglesymbolrendererv2.h>
-#include <qgsfillsymbollayerv2.h>
-#include "qgslinesymbollayerv2.h"
+#include <qgssinglesymbolrenderer.h>
+#include <qgsfillsymbollayer.h>
+#include "qgslinesymbollayer.h"
 #include "qgsdatadefined.h"
 
 //qgis test includes
@@ -68,8 +68,8 @@ class TestQgsPointPatternFillSymbol : public QObject
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer;
     QgsPointPatternFillSymbolLayer* mPointPatternFill;
-    QgsFillSymbolV2* mFillSymbol;
-    QgsSingleSymbolRendererV2* mSymbolRenderer;
+    QgsFillSymbol* mFillSymbol;
+    QgsSingleSymbolRenderer* mSymbolRenderer;
     QString mTestDataDir;
     QString mReport;
 };
@@ -105,10 +105,10 @@ void TestQgsPointPatternFillSymbol::initTestCase()
 
   //setup symbol
   mPointPatternFill = new QgsPointPatternFillSymbolLayer();
-  mFillSymbol = new QgsFillSymbolV2();
+  mFillSymbol = new QgsFillSymbol();
   mFillSymbol->changeSymbolLayer( 0, mPointPatternFill );
-  mSymbolRenderer = new QgsSingleSymbolRendererV2( mFillSymbol );
-  mpPolysLayer->setRendererV2( mSymbolRenderer );
+  mSymbolRenderer = new QgsSingleSymbolRenderer( mFillSymbol );
+  mpPolysLayer->setRenderer( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui
@@ -140,7 +140,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbol()
   properties.insert( "color", "0,0,0,255" );
   properties.insert( "name", "circle" );
   properties.insert( "size", "5.0" );
-  QgsMarkerSymbolV2* pointSymbol = QgsMarkerSymbolV2::createSimple( properties );
+  QgsMarkerSymbol* pointSymbol = QgsMarkerSymbol::createSimple( properties );
 
   mPointPatternFill->setSubSymbol( pointSymbol );
   QVERIFY( imageCheck( "symbol_pointfill" ) );
@@ -154,7 +154,7 @@ void TestQgsPointPatternFillSymbol::dataDefinedSubSymbol()
   properties.insert( "color", "0,0,0,255" );
   properties.insert( "name", "circle" );
   properties.insert( "size", "5.0" );
-  QgsMarkerSymbolV2* pointSymbol = QgsMarkerSymbolV2::createSimple( properties );
+  QgsMarkerSymbol* pointSymbol = QgsMarkerSymbol::createSimple( properties );
   pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( "color", new QgsDataDefined( QString( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
   mPointPatternFill->setSubSymbol( pointSymbol );
   QVERIFY( imageCheck( "datadefined_subsymbol" ) );

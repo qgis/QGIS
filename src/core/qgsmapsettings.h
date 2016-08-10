@@ -21,7 +21,7 @@
 #include <QSize>
 #include <QStringList>
 
-#include "qgsabstractgeometryv2.h"
+#include "qgsabstractgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatumtransformstore.h"
 #include "qgsmaptopixel.h"
@@ -287,9 +287,9 @@ class CORE_EXPORT QgsMapSettings
     double segmentationTolerance() const { return mSegmentationTolerance; }
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     @param type the segmentation tolerance typename*/
-    void setSegmentationToleranceType( QgsAbstractGeometryV2::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
+    void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
     /** Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)*/
-    QgsAbstractGeometryV2::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
+    QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
 
   protected:
 
@@ -319,7 +319,7 @@ class CORE_EXPORT QgsMapSettings
     QImage::Format mImageFormat;
 
     double mSegmentationTolerance;
-    QgsAbstractGeometryV2::SegmentationToleranceType mSegmentationToleranceType;
+    QgsAbstractGeometry::SegmentationToleranceType mSegmentationToleranceType;
 
 
     // derived properties

@@ -4,7 +4,7 @@ class QgsSizeScaleWidget : QgsDataDefinedAssistant
 #include <qgssizescalewidget.h>
 %End
   public:
-    QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsMarkerSymbolV2 * symbol );
+    QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsMarkerSymbol * symbol );
 
     QgsDataDefined dataDefined() const;
 

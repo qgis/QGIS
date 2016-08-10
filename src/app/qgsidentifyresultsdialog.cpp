@@ -65,7 +65,7 @@
 #include <qwt_plot_curve.h>
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
-#include "qgsvectorcolorrampv2.h" // for random colors
+#include "qgsvectorcolorramp.h" // for random colors
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWebView( parent )
 {
@@ -396,7 +396,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( vlayer ) ) );
     lstResults->addTopLevelItem( layItem );
 
-    connect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
+    connect( vlayer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
     connect( vlayer, SIGNAL( crsChanged() ), this, SLOT( layerDestroyed() ) );
     connect( vlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
     connect( vlayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ),
@@ -609,7 +609,7 @@ QgsIdentifyPlotCurve::QgsIdentifyPlotCurve( const QMap<QString, QString> &attrib
 
   if ( color == QColor() )
   {
-    color = QgsVectorRandomColorRampV2::randomColors( 1 ).at( 0 );
+    color = QgsVectorRandomColorRamp::randomColors( 1 ).at( 0 );
   }
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   mPlotCurve->setSymbol( new QwtSymbol( QwtSymbol::Ellipse, QBrush( Qt::white ),
@@ -1422,17 +1422,14 @@ void QgsIdentifyResultsDialog::disconnectLayer( QObject *layer )
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( vlayer )
   {
-    disconnect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
     disconnect( vlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
     disconnect( vlayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ),
                 this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
     disconnect( vlayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
     disconnect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   }
-  else
-  {
-    disconnect( layer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
-  }
+
+  disconnect( layer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
 }
 
 void QgsIdentifyResultsDialog::featureDeleted( QgsFeatureId fid )

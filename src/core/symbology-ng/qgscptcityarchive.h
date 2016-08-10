@@ -17,14 +17,14 @@
 #ifndef QGSCPTCITYARCHIVE_H
 #define QGSCPTCITYARCHIVE_H
 
-#include "qgsvectorcolorrampv2.h"
+#include "qgsvectorcolorramp.h"
 
 #include <QAbstractItemModel>
 #include <QIcon>
 #include <QMimeData>
 #include <QAction>
 
-class QgsCptCityColorRampV2;
+class QgsCptCityColorRamp;
 class QgsCptCityDataItem;
 class QgsCptCitySelectionItem;
 
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
     virtual int leafCount() const override { return 1; }
 
     // --- New virtual methods for layer item derived classes ---
-    const QgsCptCityColorRampV2& ramp() const { return mRamp; }
+    const QgsCptCityColorRamp& ramp() const { return mRamp; }
     QIcon icon() override;
     QIcon icon( QSize size ) override;
     void init();
@@ -232,7 +232,7 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
   protected:
 
     bool mInitialised;
-    QgsCptCityColorRampV2 mRamp;
+    QgsCptCityColorRamp mRamp;
     QList< QIcon > mIcons;
 };
 

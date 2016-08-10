@@ -23,15 +23,15 @@
 #include <qgsapplication.h>
 #include "qgsconfig.h"
 #include "qgslogger.h"
-#include "qgsvectorcolorrampv2.h"
+#include "qgsvectorcolorramp.h"
 #include "qgscptcityarchive.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
-#include "qgslinesymbollayerv2.h"
-#include "qgsfillsymbollayerv2.h"
-#include "qgssinglesymbolrendererv2.h"
+#include "qgslinesymbollayer.h"
+#include "qgsfillsymbollayer.h"
+#include "qgssinglesymbolrenderer.h"
 
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 
 /** \ingroup UnitTests
  * This is a unit test to verify that symbols are working correctly
@@ -96,7 +96,7 @@ void TestQgsSymbol::initTestCase()
   QCoreApplication::setApplicationName( "QGIS-TEST" );
 
   // initialize with a clean style
-  QFile styleFile( QgsApplication::userStyleV2Path() );
+  QFile styleFile( QgsApplication::userStylePath() );
   if ( styleFile.exists() )
   {
     styleFile.remove();
@@ -180,41 +180,41 @@ void TestQgsSymbol::testCanvasClip()
   mReport += "<h2>Line canvas clip</h2>\n";
   ms.setLayers( QStringList() << mpLinesLayer->id() );
 
-  QgsMarkerLineSymbolLayerV2* markerLine = new QgsMarkerLineSymbolLayerV2();
-  markerLine->setPlacement( QgsMarkerLineSymbolLayerV2:: CentralPoint );
-  QgsLineSymbolV2* lineSymbol = new QgsLineSymbolV2();
+  QgsMarkerLineSymbolLayer* markerLine = new QgsMarkerLineSymbolLayer();
+  markerLine->setPlacement( QgsMarkerLineSymbolLayer:: CentralPoint );
+  QgsLineSymbol* lineSymbol = new QgsLineSymbol();
   lineSymbol->changeSymbolLayer( 0, markerLine );
-  QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( lineSymbol );
-  mpLinesLayer->setRendererV2( renderer );
+  QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( lineSymbol );
+  mpLinesLayer->setRenderer( renderer );
   bool result;
 
   lineSymbol->setClipFeaturesToExtent( true );
-  result = imageCheck( ms, "stylev2_linecanvasclip" );
+  result = imageCheck( ms, "style_linecanvasclip" );
   QVERIFY( result );
 
   lineSymbol->setClipFeaturesToExtent( false );
-  result = imageCheck( ms, "stylev2_linecanvasclip_off" );
+  result = imageCheck( ms, "style_linecanvasclip_off" );
   QVERIFY( result );
 
   //poly
   mReport += "<h2>Polygon canvas clip</h2>\n";
   ms.setLayers( QStringList() << mpPolysLayer->id() );
 
-  QgsCentroidFillSymbolLayerV2* centroidFill = new QgsCentroidFillSymbolLayerV2();
-  QgsFillSymbolV2* fillSymbol = new QgsFillSymbolV2();
+  QgsCentroidFillSymbolLayer* centroidFill = new QgsCentroidFillSymbolLayer();
+  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, centroidFill );
-  renderer = new QgsSingleSymbolRendererV2( fillSymbol );
-  mpPolysLayer->setRendererV2( renderer );
+  renderer = new QgsSingleSymbolRenderer( fillSymbol );
+  mpPolysLayer->setRenderer( renderer );
 
   extent = QgsRectangle( -106.0, 29.0, -94, 36.0 );
   ms.setExtent( extent );
 
   fillSymbol->setClipFeaturesToExtent( true );
-  result = imageCheck( ms, "stylev2_polycanvasclip" );
+  result = imageCheck( ms, "style_polycanvasclip" );
   QVERIFY( result );
 
   fillSymbol->setClipFeaturesToExtent( false );
-  result = imageCheck( ms, "stylev2_polycanvasclip_off" );
+  result = imageCheck( ms, "style_polycanvasclip_off" );
   QVERIFY( result );
 }
 
@@ -435,12 +435,12 @@ void TestQgsSymbol::symbolProperties()
   //test QgsSymbolLayerUtils::symbolProperties
 
   //make a symbol
-  QgsSimpleFillSymbolLayerV2* fill = new QgsSimpleFillSymbolLayerV2();
+  QgsSimpleFillSymbolLayer* fill = new QgsSimpleFillSymbolLayer();
   fill->setColor( QColor( 25, 125, 225 ) );
-  QgsFillSymbolV2* fillSymbol = new QgsFillSymbolV2();
+  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, fill );
 
-  QgsFillSymbolV2* fillSymbol2 = static_cast< QgsFillSymbolV2* >( fillSymbol->clone() );
+  QgsFillSymbol* fillSymbol2 = static_cast< QgsFillSymbol* >( fillSymbol->clone() );
 
   //test that two different symbol pointers return same properties
   QCOMPARE( QgsSymbolLayerUtils::symbolProperties( fillSymbol ),

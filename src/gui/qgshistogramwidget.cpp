@@ -90,7 +90,7 @@ QgsHistogramWidget::~QgsHistogramWidget()
   settings.setValue( "/HistogramWidget/showStdev", mStdevCheckBox->isChecked() );
 }
 
-static bool _rangesByLower( const QgsRendererRangeV2& a, const QgsRendererRangeV2& b )
+static bool _rangesByLower( const QgsRendererRange& a, const QgsRendererRange& b )
 {
   return a.lowerValue() < b.lowerValue() ? -1 : 0;
 }
@@ -208,7 +208,7 @@ void QgsHistogramWidget::drawHistogram()
 
   // make colors list
   mHistoColors.clear();
-  Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
+  Q_FOREACH ( const QgsRendererRange& range, mRanges )
   {
     mHistoColors << ( range.symbol() ? range.symbol()->color() : Qt::black );
   }
@@ -285,7 +285,7 @@ void QgsHistogramWidget::drawHistogram()
 #endif
 
   mRangeMarkers.clear();
-  Q_FOREACH ( const QgsRendererRangeV2& range, mRanges )
+  Q_FOREACH ( const QgsRendererRange& range, mRanges )
   {
     QwtPlotMarker* rangeMarker = new QwtPlotMarker();
     rangeMarker->attach( mpPlot );

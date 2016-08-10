@@ -14,20 +14,20 @@
  ***************************************************************************/
 #include "qgsinvertedpolygonrendererwidget.h"
 #include "qgsinvertedpolygonrenderer.h"
-#include "qgsrendererv2registry.h"
+#include "qgsrendererregistry.h"
 
 #include "qgssymbol.h"
 
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 
-QgsRendererV2Widget* QgsInvertedPolygonRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererWidget* QgsInvertedPolygonRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
 {
   return new QgsInvertedPolygonRendererWidget( layer, style, renderer );
 }
 
-QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    : QgsRendererV2Widget( layer, style )
+QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+    : QgsRendererWidget( layer, style )
 {
   if ( !layer )
   {
@@ -68,7 +68,7 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
 
   int currentEmbeddedIdx = 0;
   //insert possible renderer types
-  QStringList rendererList = QgsRendererV2Registry::instance()->renderersList( QgsRendererV2AbstractMetadata::PolygonLayer );
+  QStringList rendererList = QgsRendererRegistry::instance()->renderersList( QgsRendererAbstractMetadata::PolygonLayer );
   QStringList::const_iterator it = rendererList.constBegin();
   int idx = 0;
   mRendererComboBox->blockSignals( true );
@@ -76,9 +76,9 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
   {
     if ( *it != "invertedPolygonRenderer" ) //< an inverted renderer cannot contain another inverted renderer
     {
-      QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( *it );
+      QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), /* data */ *it );
-      const QgsFeatureRendererV2* embeddedRenderer = mRenderer->embeddedRenderer();
+      const QgsFeatureRenderer* embeddedRenderer = mRenderer->embeddedRenderer();
       if ( embeddedRenderer && embeddedRenderer->type() == m->name() )
       {
         // store the combo box index of the current renderer
@@ -97,11 +97,11 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
   }
 }
 
-QgsFeatureRendererV2* QgsInvertedPolygonRendererWidget::renderer()
+QgsFeatureRenderer* QgsInvertedPolygonRendererWidget::renderer()
 {
   if ( mRenderer && mEmbeddedRendererWidget )
   {
-    QgsFeatureRendererV2* embeddedRenderer = mEmbeddedRendererWidget->renderer();
+    QgsFeatureRenderer* embeddedRenderer = mEmbeddedRendererWidget->renderer();
     if ( embeddedRenderer )
     {
       mRenderer->setEmbeddedRenderer( embeddedRenderer->clone() );
@@ -112,7 +112,7 @@ QgsFeatureRendererV2* QgsInvertedPolygonRendererWidget::renderer()
 
 void QgsInvertedPolygonRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
 {
-  QgsRendererV2Widget::setMapCanvas( canvas );
+  QgsRendererWidget::setMapCanvas( canvas );
   if ( mEmbeddedRendererWidget )
     mEmbeddedRendererWidget->setMapCanvas( canvas );
 }
@@ -120,10 +120,10 @@ void QgsInvertedPolygonRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
 void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged( int index )
 {
   QString rendererId = mRendererComboBox->itemData( index ).toString();
-  QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererId );
+  QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( rendererId );
   if ( m )
   {
-    mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRendererV2*>( mRenderer->embeddedRenderer() )->clone() ) );
+    mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRenderer*>( mRenderer->embeddedRenderer() )->clone() ) );
     connect( mEmbeddedRendererWidget.data(), SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
     mEmbeddedRendererWidget->setMapCanvas( mMapCanvas );
 

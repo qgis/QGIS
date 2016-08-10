@@ -30,7 +30,7 @@
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
 #include <qgssymbol.h>
-#include <qgssinglesymbolrendererv2.h>
+#include <qgssinglesymbolrenderer.h>
 //qgis test includes
 #include "qgsrenderchecker.h"
 
@@ -96,7 +96,7 @@ class TestQgsVectorLayer : public QObject
 
     void QgsVectorLayerNonSpatialIterator();
     void QgsVectorLayerGetValues();
-    void QgsVectorLayersetRendererV2();
+    void QgsVectorLayersetRenderer();
     void QgsVectorLayersetFeatureBlendMode();
     void QgsVectorLayersetLayerTransparency();
     void uniqueValues();
@@ -263,18 +263,18 @@ void TestQgsVectorLayer::QgsVectorLayerGetValues()
   delete layer;
 }
 
-void TestQgsVectorLayer::QgsVectorLayersetRendererV2()
+void TestQgsVectorLayer::QgsVectorLayersetRenderer()
 {
   QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
   TestSignalReceiver receiver;
   QObject::connect( vLayer, SIGNAL( rendererChanged() ),
                     &receiver, SLOT( onRendererChanged() ) );
-  QgsSingleSymbolRendererV2* symbolRenderer = new QgsSingleSymbolRendererV2( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  QgsSingleSymbolRenderer* symbolRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
 
   QCOMPARE( receiver.rendererChanged, false );
-  vLayer->setRendererV2( symbolRenderer );
+  vLayer->setRenderer( symbolRenderer );
   QCOMPARE( receiver.rendererChanged, true );
-  QCOMPARE( vLayer->rendererV2(), symbolRenderer );
+  QCOMPARE( vLayer->renderer(), symbolRenderer );
 }
 
 void TestQgsVectorLayer::QgsVectorLayersetFeatureBlendMode()

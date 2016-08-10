@@ -28,9 +28,9 @@
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
 #include <qgssymbol.h>
-#include <qgssinglesymbolrendererv2.h>
-#include "qgsmarkersymbollayerv2.h"
-#include "qgsfillsymbollayerv2.h"
+#include <qgssinglesymbolrenderer.h>
+#include "qgsmarkersymbollayer.h"
+#include "qgsfillsymbollayer.h"
 #include "qgsdatadefined.h"
 
 //qgis test includes
@@ -69,8 +69,8 @@ class TestQgsFilledMarkerSymbol : public QObject
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPointsLayer;
     QgsFilledMarkerSymbolLayer* mFilledMarkerLayer;
-    QgsMarkerSymbolV2* mMarkerSymbol;
-    QgsSingleSymbolRendererV2* mSymbolRenderer;
+    QgsMarkerSymbol* mMarkerSymbol;
+    QgsSingleSymbolRenderer* mSymbolRenderer;
     QString mTestDataDir;
     QString mReport;
 };
@@ -101,24 +101,24 @@ void TestQgsFilledMarkerSymbol::initTestCase()
     QList<QgsMapLayer *>() << mpPointsLayer );
 
   //setup symbol
-  QgsGradientFillSymbolLayerV2* gradientFill = new QgsGradientFillSymbolLayerV2();
+  QgsGradientFillSymbolLayer* gradientFill = new QgsGradientFillSymbolLayer();
   gradientFill->setColor( QColor( "red" ) );
   gradientFill->setColor2( QColor( "blue" ) );
-  gradientFill->setGradientType( QgsGradientFillSymbolLayerV2::Linear );
-  gradientFill->setGradientColorType( QgsGradientFillSymbolLayerV2::SimpleTwoColor );
-  gradientFill->setCoordinateMode( QgsGradientFillSymbolLayerV2::Feature );
-  gradientFill->setGradientSpread( QgsGradientFillSymbolLayerV2::Pad );
+  gradientFill->setGradientType( QgsGradientFillSymbolLayer::Linear );
+  gradientFill->setGradientColorType( QgsGradientFillSymbolLayer::SimpleTwoColor );
+  gradientFill->setCoordinateMode( QgsGradientFillSymbolLayer::Feature );
+  gradientFill->setGradientSpread( QgsGradientFillSymbolLayer::Pad );
   gradientFill->setReferencePoint1( QPointF( 0, 0 ) );
   gradientFill->setReferencePoint2( QPointF( 1, 1 ) );
-  QgsFillSymbolV2* fillSymbol = new QgsFillSymbolV2();
+  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, gradientFill );
 
   mFilledMarkerLayer = new QgsFilledMarkerSymbolLayer();
   mFilledMarkerLayer->setSubSymbol( fillSymbol );
-  mMarkerSymbol = new QgsMarkerSymbolV2();
+  mMarkerSymbol = new QgsMarkerSymbol();
   mMarkerSymbol->changeSymbolLayer( 0, mFilledMarkerLayer );
-  mSymbolRenderer = new QgsSingleSymbolRendererV2( mMarkerSymbol );
-  mpPointsLayer->setRendererV2( mSymbolRenderer );
+  mSymbolRenderer = new QgsSingleSymbolRenderer( mMarkerSymbol );
+  mpPointsLayer->setRenderer( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui

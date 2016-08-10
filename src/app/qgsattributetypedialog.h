@@ -20,10 +20,8 @@
 #include "ui_qgsattributetypeedit.h"
 
 #include "qgseditorconfigwidget.h"
-#include "qgsvectorlayer.h"
+
 class QDialog;
-class QLayout;
-class QgsField;
 
 class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
 {
@@ -34,33 +32,20 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     ~QgsAttributeTypeDialog();
 
     /**
-     * Setting index, which page should be selected
-     * @param index of page to be selected
-     * @param editTypeInt type of edit type which was selected before save
-     */
-    void setIndex( int index, QgsVectorLayer::EditType type );
-
-    /**
      * Setting page which is to be selected
      * @param index index of page which was selected
      */
     void setPage( int index );
 
-    /**
-     * Getter to get selected edit type
-     * @return selected edit type
-     */
-    QgsVectorLayer::EditType type();
+    const QString editorWidgetType();
 
-    const QString editorWidgetV2Type();
+    const QString editorWidgetText();
 
-    const QString editorWidgetV2Text();
+    void setWidgetType( const QString& type );
 
-    void setWidgetV2Type( const QString& type );
+    const QgsEditorWidgetConfig editorWidgetConfig();
 
-    const QgsEditorWidgetConfig editorWidgetV2Config();
-
-    void setWidgetV2Config( const QgsEditorWidgetConfig& config );
+    void setWidgetConfig( const QgsEditorWidgetConfig& config );
 
     /**
      * Setter for checkbox to label on top
@@ -130,7 +115,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     QgsVectorLayer *mLayer;
     int mFieldIdx;
 
-    QgsEditorWidgetConfig mWidgetV2Config;
+    QgsEditorWidgetConfig mWidgetConfig;
 
     //! Cached configuration dialog (lazy loaded)
     QMap< QString, QgsEditorConfigWidget* > mEditorConfigWidgets;

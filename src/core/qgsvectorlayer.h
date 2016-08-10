@@ -46,12 +46,12 @@ class QgsAbstractGeometrySimplifier;
 class QgsActionManager;
 class QgsConditionalLayerStyles;
 class QgsCoordinateTransform;
-class QgsCurveV2;
+class QgsCurve;
 class QgsDiagramLayerSettings;
-class QgsDiagramRendererV2;
+class QgsDiagramRenderer;
 class QgsEditorWidgetWrapper;
 class QgsExpressionFieldBuffer;
-class QgsFeatureRendererV2;
+class QgsFeatureRenderer;
 class QgsGeometry;
 class QgsGeometryCache;
 class QgsGeometryVertexIndex;
@@ -60,7 +60,7 @@ class QgsRectangle;
 class QgsRectangle;
 class QgsRelation;
 class QgsRelationManager;
-class QgsSingleSymbolRendererV2;
+class QgsSingleSymbolRenderer;
 class QgsSymbol;
 class QgsVectorDataProvider;
 class QgsVectorLayerEditBuffer;
@@ -70,7 +70,7 @@ class QgsPointV2;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
-typedef QList<QgsPointV2> QgsPointSequenceV2;
+typedef QList<QgsPointV2> QgsPointSequence;
 
 
 struct CORE_EXPORT QgsVectorJoinInfo
@@ -424,22 +424,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       UiFileLayout = 2
     };
 
-    struct RangeData
-    {
-      //! @deprecated Use the editorWidgetV2() system instead
-      Q_DECL_DEPRECATED RangeData() { mMin = QVariant( 0 ); mMax = QVariant( 5 ); mStep = QVariant( 1 );}
-      //! @deprecated Use the editorWidgetV2() system instead
-      Q_DECL_DEPRECATED RangeData( const QVariant& theMin, const QVariant& theMax, const QVariant& theStep )
-          : mMin( theMin )
-          , mMax( theMax )
-          , mStep( theStep )
-      {}
-
-      QVariant mMin;
-      QVariant mMax;
-      QVariant mStep;
-    };
-
     struct ValueRelationData
     {
       ValueRelationData()
@@ -466,46 +450,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       bool mAllowNull;
       bool mOrderByValue;
       bool mAllowMulti;  /* allow selection of multiple keys */
-    };
-
-    /**
-     * Types of feature form suppression after feature creation
-     * @note added in 2.1
-     * @deprecated in 2.14, Use QgsEditFormConfig instead
-     */
-    enum FeatureFormSuppress
-    {
-      SuppressDefault = 0, // use the application-wide setting
-      SuppressOn = 1,
-      SuppressOff = 2
-    };
-
-    /**
-     * @deprecated Use the editorWidgetV2() system instead
-     */
-    enum EditType
-    {
-      LineEdit,
-      UniqueValues,
-      UniqueValuesEditable,
-      ValueMap,
-      Classification,
-      EditRange,
-      SliderRange,
-      CheckBox,
-      FileName,
-      Enumeration,
-      Immutable,      /**< The attribute value should not be changed in the attribute form */
-      Hidden,         /**< The attribute value should not be shown in the attribute form */
-      TextEdit,       /**< multiline edit */
-      Calendar,       /**< calendar widget */
-      DialRange,      /**< dial range */
-      ValueRelation,  /**< value map from an table */
-      UuidGenerator,  /**< uuid generator - readonly and automatically intialized */
-      Photo,          /**< phote widget */
-      WebView,        /**< webview widget */
-      Color,          /**< color */
-      EditorWidgetV2, /**< modularized edit widgets @note added in 2.1 */
     };
 
     //! Result of an edit operation
@@ -670,18 +614,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**
      * Select features found within the search rectangle (in layer's coordinates)
-     *
-     * @param rect            The search rectangle
-     * @param addToSelection  If set to true will not clear before selecting
-     *
-     * @see   invertSelectionInRectangle(QgsRectangle & rect)
-     * @see selectByExpression()
-     * @deprecated use selectByRect() instead
-     */
-    Q_DECL_DEPRECATED void select( QgsRectangle & rect, bool addToSelection );
-
-    /**
-     * Select features found within the search rectangle (in layer's coordinates)
      * @param rect search rectangle
      * @param behaviour selection type, allows adding to current selection, removing
      * from selection, etc.
@@ -775,16 +707,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     const QgsFeatureIds &selectedFeaturesIds() const;
 
-    /**
-     * Change selection to the new set of features. Dismisses the current selection.
-     * Will emit the { @link selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&qt_check_for_QOBJECT_macro, bool ) } signal with the
-     * clearAndSelect flag set.
-     *
-     * @param ids   The ids which will be the new selection
-     * @deprecated use selectByIds() instead
-     */
-    Q_DECL_DEPRECATED void setSelectedFeatures( const QgsFeatureIds &ids );
-
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected() const;
 
@@ -801,25 +723,25 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool diagramsEnabled() const;
 
     /** Sets diagram rendering object (takes ownership) */
-    void setDiagramRenderer( QgsDiagramRendererV2* r );
-    const QgsDiagramRendererV2* diagramRenderer() const { return mDiagramRenderer; }
+    void setDiagramRenderer( QgsDiagramRenderer* r );
+    const QgsDiagramRenderer* diagramRenderer() const { return mDiagramRenderer; }
 
     void setDiagramLayerSettings( const QgsDiagramLayerSettings& s );
     const QgsDiagramLayerSettings *diagramLayerSettings() const { return mDiagramLayerSettings; }
 
-    /** Return renderer V2. */
-    QgsFeatureRendererV2* rendererV2() { return mRendererV2; }
+    /** Return renderer. */
+    QgsFeatureRenderer* renderer() { return mRenderer; }
 
-    /** Return const renderer V2.
+    /** Return const renderer.
      * @note not available in python bindings
      */
-    const QgsFeatureRendererV2* rendererV2() const { return mRendererV2; }
+    const QgsFeatureRenderer* renderer() const { return mRenderer; }
 
     /**
      * Set renderer which will be invoked to represent this layer.
      * Ownership is transferred.
      */
-    void setRendererV2( QgsFeatureRendererV2* r );
+    void setRenderer( QgsFeatureRenderer* r );
 
     /** Returns point, line or polygon */
     QgsWkbTypes::GeometryType geometryType() const;
@@ -884,18 +806,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * Retained for backward compatibility
      */
     virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag ) override;
-
-    /**
-     * Will load a named style from a provided QML string.
-     *
-     * @param namedStyle  A QML string
-     * @param errorMsg    An error message indicating problems if any
-     *
-     * @return true on success
-     *
-     * @deprecated Will be removed for QGIS 3 in favor of importNamedStyle
-     */
-    Q_DECL_DEPRECATED virtual bool applyNamedStyle( const QString& namedStyle, QString &errorMsg );
 
     /** Convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
      * @param elem the DOM element
@@ -1054,18 +964,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex );
 
-    /** Deletes a vertex from a feature
-     * @deprecated use deleteVertexV2() instead
-     */
-    Q_DECL_DEPRECATED bool deleteVertex( QgsFeatureId atFeatureId, int atVertex );
-
     /** Deletes a vertex from a feature.
      * @param featureId ID of feature to remove vertex from
      * @param vertex index of vertex to delete
      * @note added in QGIS 2.14
      */
-    //TODO QGIS 3.0 - rename back to deleteVertex
-    EditResult deleteVertexV2( QgsFeatureId featureId, int vertex );
+    EditResult deleteVertex( QgsFeatureId featureId, int vertex );
 
     /** Deletes the selected features
      *  @return true in case of success and false otherwise
@@ -1098,7 +1002,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note available in python as addCurvedRing
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( QgsCurveV2* ring, QgsFeatureId* featureId = nullptr );
+    int addRing( QgsCurve* ring, QgsFeatureId* featureId = nullptr );
 
     /** Adds a new part polygon to a multipart feature
      * @return
@@ -1127,10 +1031,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note available in python bindings as addPartV2
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QgsPointSequenceV2 &ring );
+    int addPart( const QgsPointSequence &ring );
 
     //! @note available in python as addCurvedPart
-    int addPart( QgsCurveV2* ring );
+    int addPart( QgsCurve* ring );
 
     /** Translates feature by dx, dy
      *  @param featureId id of the feature to translate
@@ -1200,15 +1104,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     virtual bool isSpatial() const override;
 
-    /**
-     * Returns true if the provider is in read-only mode
-     *
-     * @deprecated Use readOnly() instead. Will be made private with QGIS 3
-     *
-     * TODO QGIS3: make private
-     */
-    Q_DECL_DEPRECATED virtual bool isReadOnly() const override;
-
     /** Returns true if the provider has been modified since the last commit */
     virtual bool isModified() const;
 
@@ -1245,6 +1140,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool draw( QgsRenderContext& rendererContext ) override;
 
+    /** Return the extent of the layer */
     QgsRectangle extent() const override;
 
     /**
@@ -1308,14 +1204,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**
      * Changes an attribute value (but does not commit it)
      *
-     * @deprecated The emitSignal parameter is obsolete and not considered at the moment. It will
-     *             be removed in future releases. Remove it to be prepared for the future. (Since 2.1)
-     */
-    Q_DECL_DEPRECATED bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant& value, bool emitSignal );
-
-    /**
-     * Changes an attribute value (but does not commit it)
-     *
      * @param fid   The feature id of the feature to be changed
      * @param field The index of the field to be updated
      * @param newValue The value which will be assigned to the field
@@ -1342,68 +1230,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in QGIS 2.16
     */
     bool renameAttribute( int attIndex, const QString& newName );
-
-    /**
-     * Adds a tab (for the attribute editor form) holding groups and fields
-     *
-     * @deprecated Use `editFormConfig()->addTab()` instead
-     */
-    Q_DECL_DEPRECATED void addAttributeEditorWidget( QgsAttributeEditorElement* data ) {mEditFormConfig->addTab( data );}
-
-    /**
-     * Get the id for the editor widget used to represent the field at the given index
-     *
-     * @param fieldIdx  The index of the field
-     *
-     * @return The id for the editor widget or a NULL string if not applicable
-     *
-     * @deprecated Use `editFormConfig()->widgetType()` instead
-     */
-    Q_DECL_DEPRECATED const QString editorWidgetV2( int fieldIdx ) const { return mEditFormConfig->widgetType( fieldIdx ); }
-
-    /**
-     * Get the id for the editor widget used to represent the field at the given index
-     *
-     * @param fieldName  The name of the field
-     *
-     * @return The id for the editor widget or a NULL string if not applicable
-     *
-     * @note python method name editorWidgetV2ByName
-     *
-     * @deprecated Use `editFormConfig()->widgetType()` instead
-     */
-    Q_DECL_DEPRECATED const QString editorWidgetV2( const QString& fieldName ) const { return mEditFormConfig->widgetType( fieldName ); }
-
-    /**
-     * Get the configuration for the editor widget used to represent the field at the given index
-     *
-     * @param fieldIdx  The index of the field
-     *
-     * @return The configuration for the editor widget or an empty config if the field does not exist
-     *
-     * @deprecated Use `editFormConfig()->widgetConfig()` instead
-     */
-    Q_DECL_DEPRECATED const QgsEditorWidgetConfig editorWidgetV2Config( int fieldIdx ) const { return mEditFormConfig->widgetConfig( fieldIdx ); }
-
-    /**
-     * Get the configuration for the editor widget used to represent the field with the given name
-     *
-     * @param fieldName The name of the field
-     *
-     * @return The configuration for the editor widget or an empty config if the field does not exist
-     *
-     * @note python method name is editorWidgetV2ConfigByName
-     *
-     * @deprecated Use `editFormConfig()->widgetConfig()` instead
-     */
-    Q_DECL_DEPRECATED const QgsEditorWidgetConfig editorWidgetV2Config( const QString& fieldName ) const { return mEditFormConfig->widgetConfig( fieldName ); }
-
-    /**
-     * Returns a list of tabs holding groups and fields
-     *
-     * @deprecated Use `editFormConfig()->tabs()` instead
-     */
-    Q_DECL_DEPRECATED QList< QgsAttributeEditorElement* > attributeEditorElements() { return mEditFormConfig->tabs(); }
 
     /**
      * Get the configuration of the form used to represent this vector layer.
@@ -1495,147 +1321,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool rollBack( bool deleteBuffer = true );
 
-    /**
-     * Get edit type
-     *
-     * @deprecated Use `editFormConfig()->widgetType()` instead
-     */
-    Q_DECL_DEPRECATED EditType editType( int idx );
-
-    /**
-     * Set edit type
-     *
-     * @deprecated Use `editFormConfig()->setWidgetType()` instead
-     */
-    Q_DECL_DEPRECATED void setEditType( int idx, EditType edit );
-
-    /**
-     * Get the active layout for the attribute editor for this layer
-     * @deprecated Use `editFormConfig()->layout()` instead
-     */
-    Q_DECL_DEPRECATED EditorLayout editorLayout() { return static_cast< EditorLayout >( mEditFormConfig->layout() ); }
-
-    /**
-     * Set the active layout for the attribute editor for this layer
-     * @deprecated Use `editFormConfig()->setLayout()` instead
-     */
-    Q_DECL_DEPRECATED void setEditorLayout( EditorLayout editorLayout ) { mEditFormConfig->setLayout( static_cast< QgsEditFormConfig::EditorLayout >( editorLayout ) ); }
-
-    /**
-     * Set the editor widget type for a field
-     *
-     * QGIS ships the following widget types, additional types may be available depending
-     * on plugins.
-     *
-     * <ul>
-     * <li>CheckBox (QgsCheckboxWidgetWrapper)</li>
-     * <li>Classification (QgsClassificationWidgetWrapper)</li>
-     * <li>Color (QgsColorWidgetWrapper)</li>
-     * <li>DateTime (QgsDateTimeEditWrapper)</li>
-     * <li>Enumeration (QgsEnumerationWidgetWrapper)</li>
-     * <li>FileName (QgsFileNameWidgetWrapper)</li>
-     * <li>Hidden (QgsHiddenWidgetWrapper)</li>
-     * <li>Photo (QgsPhotoWidgetWrapper)</li>
-     * <li>Range (QgsRangeWidgetWrapper)</li>
-     * <li>RelationReference (QgsRelationReferenceWidgetWrapper)</li>
-     * <li>TextEdit (QgsTextEditWrapper)</li>
-     * <li>UniqueValues (QgsUniqueValuesWidgetWrapper)</li>
-     * <li>UuidGenerator (QgsUuidWidgetWrapper)</li>
-     * <li>ValueMap (QgsValueMapWidgetWrapper)</li>
-     * <li>ValueRelation (QgsValueRelationWidgetWrapper)</li>
-     * <li>WebView (QgsWebViewWidgetWrapper)</li>
-     * </ul>
-     *
-     * @param attrIdx     Index of the field
-     * @param widgetType  Type id of the editor widget to use
-     *
-     * @deprecated Use `editFormConfig()->setWidgetType()` instead
-     */
-    Q_DECL_DEPRECATED void setEditorWidgetV2( int attrIdx, const QString& widgetType ) { mEditFormConfig->setWidgetType( attrIdx, widgetType ); }
-
-    /**
-     * Set the editor widget config for a field.
-     *
-     * Python: Will accept a map.
-     *
-     * Example:
-     * \code{.py}
-     *   layer.setEditorWidgetV2Config( 1, { 'Layer': 'otherlayerid_1234', 'Key': 'Keyfield', 'Value': 'ValueField' } )
-     * \endcode
-     *
-     * @param attrIdx     Index of the field
-     * @param config      The config to set for this field
-     *
-     * @see setEditorWidgetV2() for a list of widgets and choose the widget to see the available options.
-     *
-     * @deprecated Use `editFormConfig()->setWidgetConfig()` instead
-     */
-    Q_DECL_DEPRECATED void setEditorWidgetV2Config( int attrIdx, const QgsEditorWidgetConfig& config ) { mEditFormConfig->setWidgetConfig( attrIdx, config ); }
-
-    /**
-     * Set string representing 'true' for a checkbox
-     *
-     * @deprecated Use @deprecated Use `editFormConfig()->setWidgetConfig()` instead
-     */
-    Q_DECL_DEPRECATED void setCheckedState( int idx, const QString& checked, const QString& notChecked );
-
-    /**
-     * Get edit form
-     *
-     * @deprecated Use `editFormConfig()->uiForm()` instead
-     */
-    Q_DECL_DEPRECATED QString editForm() const { return mEditFormConfig->uiForm(); }
-
-    /**
-     * Set edit form
-     * @deprecated Use `editFormConfig()->setUiForm()` instead
-     */
-    Q_DECL_DEPRECATED void setEditForm( const QString& ui ) { mEditFormConfig->setUiForm( ui ); }
-
-    /** Type of feature form pop-up suppression after feature creation (overrides app setting)
-     * @note added in 2.1
-     * @deprecated Use `editFormConfig()->suppress()` instead
-     */
-    Q_DECL_DEPRECATED QgsVectorLayer::FeatureFormSuppress featureFormSuppress() const { return static_cast< FeatureFormSuppress >( mEditFormConfig->suppress() ); }
-
-    /** Set type of feature form pop-up suppression after feature creation (overrides app setting)
-     * @note added in 2.1
-     * @deprecated Use `editFormConfig()->setSuppress()` instead
-     */
-    Q_DECL_DEPRECATED void setFeatureFormSuppress( QgsVectorLayer::FeatureFormSuppress s ) { mEditFormConfig->setSuppress( static_cast< QgsEditFormConfig::FeatureFormSuppress >( s ) ); }
-
     /** Get annotation form */
     QString annotationForm() const { return mAnnotationForm; }
 
     /** Set annotation form for layer */
     void setAnnotationForm( const QString& ui );
-
-    /**
-     * Get python function for edit form initialization
-     *
-     * @deprecated Use `editFormConfig()->initFunction()` instead
-     */
-    Q_DECL_DEPRECATED QString editFormInit() const { return mEditFormConfig->initFunction(); }
-
-    /**
-     * Set python function for edit form initialization
-     *
-     * @deprecated Use `editFormConfig()->setInitFunction()` instead
-     */
-    Q_DECL_DEPRECATED void setEditFormInit( const QString& function ) { mEditFormConfig->setInitFunction( function ); }
-
-    /**
-     * Access value map
-     * @deprecated Use `editFormConfig()->widgetConfig()` instead
-     */
-    Q_DECL_DEPRECATED QMap<QString, QVariant> valueMap( int idx );
-
-    /**
-     * Access range widget config data
-     *
-     * @deprecated Use `editFormConfig()->widgetConfig()` instead
-     */
-    Q_DECL_DEPRECATED RangeData range( int idx );
 
     /** Access value relation widget data */
     ValueRelationData valueRelation( int idx ) const;
@@ -1647,45 +1337,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @return A list of relations
      */
     QList<QgsRelation> referencingRelations( int idx ) const;
-
-    /**
-     * Access date format
-     *
-     * @deprecated Use `editFormConfig()->widgetConfig()` instead
-     */
-    Q_DECL_DEPRECATED QString dateFormat( int idx );
-
-    /**
-     * Access widget size for photo and webview widget
-     *
-     * @deprecated Use `editFormConfig()->widgetConfig()` instead
-     */
-    Q_DECL_DEPRECATED QSize widgetSize( int idx );
-
-    /**
-     * Is edit widget editable
-     *
-     * @deprecated Use `editFormConfig()->fieldEditable()` instead
-     */
-    Q_DECL_DEPRECATED bool fieldEditable( int idx ) { return !mEditFormConfig->readOnly( idx ); }
-
-    /**
-     * Label widget on top
-     * @deprecated Use `editFormConfig()->labelOnTop()` instead
-     */
-    Q_DECL_DEPRECATED bool labelOnTop( int idx ) { return mEditFormConfig->labelOnTop( idx ); }
-
-    /**
-     * Set edit widget editable
-     * @deprecated Use `editFormConfig()->setFieldEditable()` instead
-     */
-    Q_DECL_DEPRECATED void setFieldEditable( int idx, bool editable ) { mEditFormConfig->setReadOnly( idx, !editable ); }
-
-    /**
-     * Label widget on top
-     * @deprecated Use `editFormConfig()->setLabelOnTop()` instead
-     */
-    Q_DECL_DEPRECATED void setLabelOnTop( int idx, bool onTop ) { mEditFormConfig->setLabelOnTop( idx, onTop ); }
 
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
     QgsVectorLayerEditBuffer* editBuffer() { return mEditBuffer; }
@@ -1795,6 +1446,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *  @note added in 2.2
      */
     void setSimplifyMethod( const QgsVectorSimplifyMethod& simplifyMethod ) { mSimplifyMethod = simplifyMethod; }
+
     /** Returns the simplification settings for fast rendering of features
      *  @note added in 2.2
      */
@@ -1885,7 +1537,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**
      * Clear selection
      *
-     * @see setSelectedFeatures(const QgsFeatureIds&)
+     * @see selectByIds()
      */
     void removeSelection();
 
@@ -2014,10 +1666,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void updatedFields();
 
-    /**
-     * TODO QGIS3: remove in favor of QObject::destroyed
-     */
-    void layerDeleted();
 
     /**
      * Is emitted whenever an attribute value change is done in the edit buffer.
@@ -2050,9 +1698,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void committedAttributeValuesChanges( const QString& layerId, const QgsChangedAttributesMap& changedAttributesValues );
     /** This signal is emitted, when geometry changes are saved to the provider */
     void committedGeometriesChanges( const QString& layerId, const QgsGeometryMap& changedGeometries );
-
-    /** Deprecated: This signal has never been emitted */
-    Q_DECL_DEPRECATED void saveLayerToProject();
 
     /** Emitted when the font family defined for labeling layer is not found on system */
     void labelingFontNotFound( QgsVectorLayer* layer, const QString& fontfamily );
@@ -2134,6 +1779,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void setExtent( const QgsRectangle &rect ) override;
 
   private:                       // Private methods
+    /**
+     * Returns true if the provider is in read-only mode
+     */
+    virtual bool isReadOnly() const override;
 
     /** Vector layers are not copyable */
     QgsVectorLayer( const QgsVectorLayer & rhs );
@@ -2218,7 +1867,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsWkbTypes::Type mWkbType;
 
     /** Renderer object which holds the information about how to display the features */
-    QgsFeatureRendererV2 *mRendererV2;
+    QgsFeatureRenderer *mRenderer;
 
     /** Simplification object which holds the information about how to simplify the features for fast rendering */
     QgsVectorSimplifyMethod mSimplifyMethod;
@@ -2257,7 +1906,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsExpressionFieldBuffer* mExpressionFieldBuffer;
 
     //diagram rendering object. 0 if diagram drawing is disabled
-    QgsDiagramRendererV2* mDiagramRenderer;
+    QgsDiagramRenderer* mDiagramRenderer;
 
     //stores infos about diagram placement (placement type, priority, position distance)
     QgsDiagramLayerSettings *mDiagramLayerSettings;

@@ -19,7 +19,7 @@
 #include "qgsmaptoolpointsymbol.h"
 
 class QgsPointRotationItem;
-class QgsMarkerSymbolV2;
+class QgsMarkerSymbol;
 
 /** \ingroup app
  * \class QgsMapToolRotatePointSymbols
@@ -45,7 +45,7 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolPointSymbol
   protected:
 
     virtual void canvasPressOnFeature( QgsMapMouseEvent* e, const QgsFeature& feature, const QgsPoint& snappedPoint ) override;
-    virtual bool checkSymbolCompatibility( QgsMarkerSymbolV2* markerSymbol, QgsRenderContext& context ) override;
+    virtual bool checkSymbolCompatibility( QgsMarkerSymbol* markerSymbol, QgsRenderContext& context ) override;
     virtual void noCompatibleSymbols() override;
 
   private:
@@ -61,13 +61,13 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolPointSymbol
     /** True if ctrl was pressed during the last mouse move event*/
     bool mCtrlPressed;
     //! Clone of first found marker symbol for feature with rotation attribute set
-    QScopedPointer< QgsMarkerSymbolV2 > mMarkerSymbol;
+    QScopedPointer< QgsMarkerSymbol > mMarkerSymbol;
 
     void drawArrow( double azimut ) const;
     /** Calculates the azimut between mousePos and mSnappedPoint*/
     double calculateAzimut( QPoint mousePos );
     /** Create item with the point symbol for a specific feature. This will be used to show the rotation to the user*/
-    void createPixmapItem( QgsMarkerSymbolV2 *markerSymbol );
+    void createPixmapItem( QgsMarkerSymbol *markerSymbol );
     /** Sets the rotation of the pixmap item*/
     void setPixmapItemRotation( double rotation );
     /** Rounds value to 15 degree integer (used if ctrl pressed)*/

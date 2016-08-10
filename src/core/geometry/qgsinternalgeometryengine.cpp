@@ -16,10 +16,10 @@
 
 #include "qgsinternalgeometryengine.h"
 
-#include "qgslinestringv2.h"
-#include "qgsmultipolygonv2.h"
-#include "qgspolygonv2.h"
-#include "qgsmulticurvev2.h"
+#include "qgslinestring.h"
+#include "qgsmultipolygon.h"
+#include "qgspolygon.h"
+#include "qgsmulticurve.h"
 #include "qgsgeometry.h"
 
 #include <QTransform>
@@ -38,21 +38,21 @@ QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry& geometr
 
 QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y )
 {
-  QList<QgsLineStringV2*> linesToProcess;
+  QList<QgsLineString*> linesToProcess;
 
-  const QgsMultiCurveV2* multiCurve = dynamic_cast< const QgsMultiCurveV2* >( mGeometry );
+  const QgsMultiCurve* multiCurve = dynamic_cast< const QgsMultiCurve* >( mGeometry );
   if ( multiCurve )
   {
     for ( int i = 0; i < multiCurve->partCount(); ++i )
     {
-      linesToProcess << static_cast<QgsLineStringV2*>( multiCurve->geometryN( i )->clone() );
+      linesToProcess << static_cast<QgsLineString*>( multiCurve->geometryN( i )->clone() );
     }
   }
 
-  const QgsCurveV2* curve = dynamic_cast< const QgsCurveV2* >( mGeometry );
+  const QgsCurve* curve = dynamic_cast< const QgsCurve* >( mGeometry );
   if ( curve )
   {
-    linesToProcess << static_cast<QgsLineStringV2*>( curve->segmentize() );
+    linesToProcess << static_cast<QgsLineString*>( curve->segmentize() );
   }
 
   QgsMultiPolygonV2 *multipolygon = linesToProcess.size() > 1 ? new QgsMultiPolygonV2() : nullptr;
@@ -60,11 +60,11 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y )
 
   if ( !linesToProcess.empty() )
   {
-    Q_FOREACH ( QgsLineStringV2* line, linesToProcess )
+    Q_FOREACH ( QgsLineString* line, linesToProcess )
     {
       QTransform transform = QTransform::fromTranslate( x, y );
 
-      QgsLineStringV2* secondline = line->reversed();
+      QgsLineString* secondline = line->reversed();
       secondline->transform( transform );
 
       line->append( secondline );

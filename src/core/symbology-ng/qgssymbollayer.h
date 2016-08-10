@@ -410,10 +410,10 @@ class CORE_EXPORT QgsSymbolLayer
 //////////////////////
 
 /** \ingroup core
- * \class QgsMarkerSymbolLayerV2
+ * \class QgsMarkerSymbolLayer
  * \brief Abstract base class for marker symbol layers.
  */
-class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayer
+class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
 {
   public:
 
@@ -607,7 +607,7 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayer
      * @param props symbol layer definition (see properties())
      */
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
-    { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "QgsMarkerSymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
+    { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "QgsMarkerSymbolLayer %1 not implemented yet" ).arg( layerType() ) ) ); }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
@@ -625,10 +625,10 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayer
 
   protected:
 
-    /** Constructor for QgsMarkerSymbolLayerV2.
+    /** Constructor for QgsMarkerSymbolLayer.
      * @param locked set to true to lock symbol color
      */
-    QgsMarkerSymbolLayerV2( bool locked = false );
+    QgsMarkerSymbolLayer( bool locked = false );
 
     /** Calculates the required marker offset, including both the symbol offset
      * and any displacement required to align with the marker's anchor point.
@@ -686,14 +686,14 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayer
     VerticalAnchorPoint mVerticalAnchorPoint;
 
   private:
-    static QgsMarkerSymbolLayerV2::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString& str );
-    static QgsMarkerSymbolLayerV2::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString& str );
+    static QgsMarkerSymbolLayer::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString& str );
+    static QgsMarkerSymbolLayer::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString& str );
 };
 
 /** \ingroup core
- * \class QgsLineSymbolLayerV2
+ * \class QgsLineSymbolLayer
  */
-class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayer
+class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
 {
   public:
     virtual void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context ) = 0;
@@ -745,7 +745,7 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayer
     virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const override;
 
   protected:
-    QgsLineSymbolLayerV2( bool locked = false );
+    QgsLineSymbolLayer( bool locked = false );
 
     double mWidth;
     QgsUnitTypes::RenderUnit mWidthUnit;
@@ -756,9 +756,9 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayer
 };
 
 /** \ingroup core
- * \class QgsFillSymbolLayerV2
+ * \class QgsFillSymbolLayer
  */
-class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayer
+class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
 {
   public:
     virtual void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) = 0;
@@ -769,7 +769,7 @@ class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayer
     double angle() const { return mAngle; }
 
   protected:
-    QgsFillSymbolLayerV2( bool locked = false );
+    QgsFillSymbolLayer( bool locked = false );
     /** Default method to render polygon*/
     void _renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
 

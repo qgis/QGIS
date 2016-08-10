@@ -40,12 +40,12 @@ class QgsSymbolLayer;
 class QgsRenderContext;
 class QgsVectorLayer;
 class QgsPaintEffect;
-class QgsMarkerSymbolLayerV2;
-class QgsLineSymbolLayerV2;
-class QgsFillSymbolLayerV2;
+class QgsMarkerSymbolLayer;
+class QgsLineSymbolLayer;
+class QgsFillSymbolLayer;
 class QgsDataDefined;
 class QgsSymbolRenderContext;
-class QgsFeatureRendererV2;
+class QgsFeatureRenderer;
 
 typedef QList<QgsSymbolLayer*> QgsSymbolLayerList;
 
@@ -54,7 +54,7 @@ typedef QList<QgsSymbolLayer*> QgsSymbolLayerList;
  */
 class CORE_EXPORT QgsSymbol
 {
-    friend class QgsFeatureRendererV2;
+    friend class QgsFeatureRenderer;
 
   public:
 
@@ -480,18 +480,18 @@ class CORE_EXPORT QgsSymbolRenderContext
 
 
 /** \ingroup core
- * \class QgsMarkerSymbolV2
+ * \class QgsMarkerSymbol
  */
-class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbol
+class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
 {
   public:
 
     /** Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
      * This is a convenience method for easier creation of marker symbols.
      */
-    static QgsMarkerSymbolV2* createSimple( const QgsStringMap& properties );
+    static QgsMarkerSymbol* createSimple( const QgsStringMap& properties );
 
-    QgsMarkerSymbolV2( const QgsSymbolLayerList& layers = QgsSymbolLayerList() );
+    QgsMarkerSymbol( const QgsSymbolLayerList& layers = QgsSymbolLayerList() );
 
     /** Sets the angle for the whole symbol. Individual symbol layer sizes
      * will be rotated to maintain their current relative angle to the whole symbol angle.
@@ -617,27 +617,27 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbol
     */
     QRectF bounds( QPointF point, QgsRenderContext& context, const QgsFeature &feature = QgsFeature() ) const;
 
-    virtual QgsMarkerSymbolV2* clone() const override;
+    virtual QgsMarkerSymbol* clone() const override;
 
   private:
 
-    void renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, QPointF point, QgsSymbolRenderContext& context );
+    void renderPointUsingLayer( QgsMarkerSymbolLayer* layer, QPointF point, QgsSymbolRenderContext& context );
 
 };
 
 
 /** \ingroup core
- * \class QgsLineSymbolV2
+ * \class QgsLineSymbol
  */
-class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbol
+class CORE_EXPORT QgsLineSymbol : public QgsSymbol
 {
   public:
     /** Create a line symbol with one symbol layer: SimpleLine with specified properties.
      * This is a convenience method for easier creation of line symbols.
      */
-    static QgsLineSymbolV2* createSimple( const QgsStringMap& properties );
+    static QgsLineSymbol* createSimple( const QgsStringMap& properties );
 
-    QgsLineSymbolV2( const QgsSymbolLayerList& layers = QgsSymbolLayerList() );
+    QgsLineSymbol( const QgsSymbolLayerList& layers = QgsSymbolLayerList() );
 
     void setWidth( double width );
     double width() const;
@@ -659,31 +659,31 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbol
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsLineSymbolV2* clone() const override;
+    virtual QgsLineSymbol* clone() const override;
 
   private:
 
-    void renderPolylineUsingLayer( QgsLineSymbolLayerV2* layer, const QPolygonF& points, QgsSymbolRenderContext& context );
+    void renderPolylineUsingLayer( QgsLineSymbolLayer* layer, const QPolygonF& points, QgsSymbolRenderContext& context );
 
 };
 
 
 /** \ingroup core
- * \class QgsFillSymbolV2
+ * \class QgsFillSymbol
  */
-class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbol
+class CORE_EXPORT QgsFillSymbol : public QgsSymbol
 {
   public:
     /** Create a fill symbol with one symbol layer: SimpleFill with specified properties.
      * This is a convenience method for easier creation of fill symbols.
      */
-    static QgsFillSymbolV2* createSimple( const QgsStringMap& properties );
+    static QgsFillSymbol* createSimple( const QgsStringMap& properties );
 
-    QgsFillSymbolV2( const QgsSymbolLayerList& layers = QgsSymbolLayerList() );
+    QgsFillSymbol( const QgsSymbolLayerList& layers = QgsSymbolLayerList() );
     void setAngle( double angle );
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsFillSymbolV2* clone() const override;
+    virtual QgsFillSymbol* clone() const override;
 
   private:
 

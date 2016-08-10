@@ -221,7 +221,7 @@
 #include "qgsstatusbarcoordinateswidget.h"
 #include "qgsstatusbarmagnifierwidget.h"
 #include "qgsstatusbarscalewidget.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssvgannotationitem.h"
 #include "qgssymbolselectordialog.h"
 #include "qgstextannotationitem.h"
@@ -448,7 +448,7 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
 
           QScopedPointer< QgsSymbol > symbol( originalSymbol->clone() );
           QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() );
-          QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyleV2::defaultStyle(), vlayer, this );
+          QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyle::defaultStyle(), vlayer, this );
           dlg.setMapCanvas( mMapCanvas );
           if ( dlg.exec() )
           {
@@ -1648,7 +1648,7 @@ void QgisApp::createActions()
   connect( mActionOptions, SIGNAL( triggered() ), this, SLOT( options() ) );
   connect( mActionCustomProjection, SIGNAL( triggered() ), this, SLOT( customProjection() ) );
   connect( mActionConfigureShortcuts, SIGNAL( triggered() ), this, SLOT( configureShortcuts() ) );
-  connect( mActionStyleManagerV2, SIGNAL( triggered() ), this, SLOT( showStyleManagerV2() ) );
+  connect( mActionStyleManagerV2, SIGNAL( triggered() ), this, SLOT( showStyleManager() ) );
   connect( mActionCustomization, SIGNAL( triggered() ), this, SLOT( customize() ) );
 
 #ifdef Q_OS_MAC
@@ -1744,12 +1744,12 @@ void QgisApp::createActions()
 
 }
 
-#include "qgsstylev2.h"
-#include "qgsstylev2managerdialog.h"
+#include "qgsstyle.h"
+#include "qgsstylemanagerdialog.h"
 
-void QgisApp::showStyleManagerV2()
+void QgisApp::showStyleManager()
 {
-  QgsStyleV2ManagerDialog dlg( QgsStyleV2::defaultStyle(), this );
+  QgsStyleManagerDialog dlg( QgsStyle::defaultStyle(), this );
   dlg.exec();
 }
 
@@ -8910,7 +8910,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
     mLayerTreeCanvasBridge->setAutoEnableCrsTransform( otfTransformAutoEnable );
 
     mMapCanvas->setSegmentationTolerance( mySettings.value( "/qgis/segmentationTolerance", "0.01745" ).toDouble() );
-    mMapCanvas->setSegmentationToleranceType( QgsAbstractGeometryV2::SegmentationToleranceType( mySettings.value( "/qgis/segmentationToleranceType", "0" ).toInt() ) );
+    mMapCanvas->setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType( mySettings.value( "/qgis/segmentationToleranceType", "0" ).toInt() ) );
 
     double factor = mySettings.value( "/qgis/magnifier_factor_default", 1.0 ).toDouble();
     mMagnifierWidget->setDefaultFactor( factor );

@@ -17,7 +17,7 @@
 
 #include "ui_qgsinvertedpolygonrendererwidgetbase.h"
 #include "qgsinvertedpolygonrenderer.h"
-#include "qgsrendererv2widget.h"
+#include "qgsrendererwidget.h"
 
 class QMenu;
 
@@ -26,7 +26,7 @@ class QMenu;
  *
  * @note added in 2.4
  */
-class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererV2Widget, private Ui::QgsInvertedPolygonRendererWidgetBase
+class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, private Ui::QgsInvertedPolygonRendererWidgetBase
 {
     Q_OBJECT
 
@@ -36,24 +36,24 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererV2Widget, 
      * @param style
      * @param renderer the mask renderer (will take ownership)
      */
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
     /** Constructor
      * @param layer the layer where this renderer is applied
      * @param style
      * @param renderer the mask renderer (will take ownership)
      */
-    QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
     /** @returns the current feature renderer */
-    virtual QgsFeatureRendererV2* renderer() override;
+    virtual QgsFeatureRenderer* renderer() override;
     void setMapCanvas( QgsMapCanvas* canvas ) override;
 
   protected:
     /** The mask renderer */
     QScopedPointer<QgsInvertedPolygonRenderer> mRenderer;
     /** The widget used to represent the mask's embedded renderer */
-    QScopedPointer<QgsRendererV2Widget> mEmbeddedRendererWidget;
+    QScopedPointer<QgsRendererWidget> mEmbeddedRendererWidget;
 
   private slots:
     void on_mRendererComboBox_currentIndexChanged( int index );

@@ -451,7 +451,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see setMarkerSymbol
      * @see setStyle
      */
-    void setLineSymbol( QgsLineSymbolV2* symbol /Transfer/ );
+    void setLineSymbol( QgsLineSymbol* symbol /Transfer/ );
 
     /** Gets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
@@ -461,7 +461,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see style
      * @note not available in python bindings
      */
-    // const QgsLineSymbolV2* lineSymbol() const { return mGridLineSymbol; }
+    // const QgsLineSymbol* lineSymbol() const { return mGridLineSymbol; }
 
     /** Gets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
@@ -470,7 +470,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see markerSymbol
      * @see style
      */
-    QgsLineSymbolV2* lineSymbol();
+    QgsLineSymbol* lineSymbol();
 
     /** Sets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
@@ -479,7 +479,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see setLineSymbol
      * @see setStyle
      */
-    void setMarkerSymbol( QgsMarkerSymbolV2* symbol /Transfer/);
+    void setMarkerSymbol( QgsMarkerSymbol* symbol /Transfer/);
 
     /** Gets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
@@ -489,7 +489,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see style
      * @note not available in python bindings
      */
-    // const QgsMarkerSymbolV2* markerSymbol() const { return mGridMarkerSymbol; }
+    // const QgsMarkerSymbol* markerSymbol() const { return mGridMarkerSymbol; }
 
     /** Gets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.
@@ -498,7 +498,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see lineSymbol
      * @see style
      */
-    QgsMarkerSymbolV2* markerSymbol();
+    QgsMarkerSymbol* markerSymbol();
 
     //
     // ANNOTATIONS

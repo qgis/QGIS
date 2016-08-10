@@ -157,20 +157,20 @@ class QgsComposerMapOverview : QgsComposerMapItem
      * @param symbol fill symbol for overview
      * @see frameSymbol
      */
-    void setFrameSymbol( QgsFillSymbolV2* symbol /Transfer/ );
+    void setFrameSymbol( QgsFillSymbol* symbol /Transfer/ );
 
     /** Gets the fill symbol used for drawing the overview extent.
      * @returns fill symbol for overview
      * @see setFrameSymbol
      */
-    QgsFillSymbolV2* frameSymbol();
+    QgsFillSymbol* frameSymbol();
 
     /** Gets the fill symbol used for drawing the overview extent.
      * @returns fill symbol for overview
      * @see setFrameSymbol
      * @note not available in python bindings
      */
-    // const QgsFillSymbolV2* frameSymbol() const { return mFrameSymbol; }
+    // const QgsFillSymbol* frameSymbol() const { return mFrameSymbol; }
 
     /** Retrieves the blending mode used for drawing the overview.
      * @returns blending mode for overview

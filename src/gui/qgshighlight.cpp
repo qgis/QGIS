@@ -15,11 +15,11 @@
 
 #include <QImage>
 
-#include "qgsmarkersymbollayerv2.h"
-#include "qgslinesymbollayerv2.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgslinesymbollayer.h"
 
 #include "qgscoordinatetransform.h"
-#include "qgsfillsymbollayerv2.h"
+#include "qgsfillsymbollayer.h"
 #include "qgsgeometry.h"
 #include "qgshighlight.h"
 #include "qgsmapcanvas.h"
@@ -28,7 +28,7 @@
 #include "qgssymbollayer.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 
 /* Few notes about highlighting (RB):
  - The highlight fill must always be partially transparent because above highlighted layer
@@ -127,13 +127,13 @@ void QgsHighlight::setFillColor( const QColor & fillColor )
   mBrush.setStyle( Qt::SolidPattern );
 }
 
-QgsFeatureRendererV2 * QgsHighlight::getRenderer( QgsRenderContext & context, const QColor & color, const QColor & fillColor )
+QgsFeatureRenderer * QgsHighlight::getRenderer( QgsRenderContext & context, const QColor & color, const QColor & fillColor )
 {
-  QgsFeatureRendererV2 *renderer = nullptr;
+  QgsFeatureRenderer *renderer = nullptr;
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayer );
-  if ( layer && layer->rendererV2() )
+  if ( layer && layer->renderer() )
   {
-    renderer = layer->rendererV2()->clone();
+    renderer = layer->renderer()->clone();
   }
   if ( renderer )
   {
@@ -167,17 +167,17 @@ void QgsHighlight::setSymbol( QgsSymbol* symbol, const QgsRenderContext & contex
       symbolLayer->setFillColor( fillColor ); // marker and fill symbology layers
 
       // Data defined widths overwrite what we set here (widths do not work with data defined)
-      QgsSimpleMarkerSymbolLayerV2 * simpleMarker = dynamic_cast<QgsSimpleMarkerSymbolLayerV2*>( symbolLayer );
+      QgsSimpleMarkerSymbolLayer * simpleMarker = dynamic_cast<QgsSimpleMarkerSymbolLayer*>( symbolLayer );
       if ( simpleMarker )
       {
         simpleMarker->setOutlineWidth( getSymbolWidth( context, simpleMarker->outlineWidth(), simpleMarker->outlineWidthUnit() ) );
       }
-      QgsSimpleLineSymbolLayerV2 * simpleLine = dynamic_cast<QgsSimpleLineSymbolLayerV2*>( symbolLayer );
+      QgsSimpleLineSymbolLayer * simpleLine = dynamic_cast<QgsSimpleLineSymbolLayer*>( symbolLayer );
       if ( simpleLine )
       {
         simpleLine->setWidth( getSymbolWidth( context, simpleLine->width(), simpleLine->widthUnit() ) );
       }
-      QgsSimpleFillSymbolLayerV2 * simpleFill = dynamic_cast<QgsSimpleFillSymbolLayerV2*>( symbolLayer );
+      QgsSimpleFillSymbolLayer * simpleFill = dynamic_cast<QgsSimpleFillSymbolLayer*>( symbolLayer );
       if ( simpleFill )
       {
         simpleFill->setBorderWidth( getSymbolWidth( context, simpleFill->borderWidth(), simpleFill->outputUnit() ) );
@@ -358,7 +358,7 @@ void QgsHighlight::paint( QPainter* p )
     QColor tmpColor( 255, 0, 0, 255 );
     QColor tmpFillColor( 0, 255, 0, 255 );
 
-    QgsFeatureRendererV2 *renderer = getRenderer( context, tmpColor, tmpFillColor );
+    QgsFeatureRenderer *renderer = getRenderer( context, tmpColor, tmpFillColor );
     if ( layer && renderer )
     {
 
@@ -424,7 +424,7 @@ void QgsHighlight::updateRect()
   else if ( mFeature.hasGeometry() )
   {
     // We are currently using full map canvas extent for two reasons:
-    // 1) currently there is no method in QgsFeatureRendererV2 to get rendered feature
+    // 1) currently there is no method in QgsFeatureRenderer to get rendered feature
     //    bounding box
     // 2) using different extent would result in shifted fill patterns
 

@@ -148,5 +148,5 @@ class SelectByLocation(GeoAlgorithm):
         elif method == 2:
             selectedSet = list(oldSelection.difference(selectedSet))
 
-        inputLayer.setSelectedFeatures(selectedSet)
+        inputLayer.selectByIds(selectedSet)
         self.setOutputValue(self.OUTPUT, filename)

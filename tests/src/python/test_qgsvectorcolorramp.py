@@ -14,11 +14,11 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsVectorGradientColorRampV2,
+from qgis.core import (QgsVectorGradientColorRamp,
                        QgsGradientStop,
-                       QgsVectorRandomColorRampV2,
-                       QgsRandomColorsV2,
-                       QgsVectorColorBrewerColorRampV2)
+                       QgsVectorRandomColorRamp,
+                       QgsRandomColors,
+                       QgsVectorColorBrewerColorRamp)
 from qgis.PyQt.QtGui import QColor, QGradient
 from qgis.testing import unittest
 
@@ -35,7 +35,7 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertNotEqual(QgsGradientStop(0.1, QColor(180, 20, 30)), QgsGradientStop(0.1, QColor(180, 40, 30)))
 
         # test gradient with only start/end color
-        r = QgsVectorGradientColorRampV2(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
+        r = QgsVectorGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
         self.assertEqual(r.type(), 'gradient')
         self.assertEqual(r.color1(), QColor(200, 0, 0, 100))
         self.assertEqual(r.color2(), QColor(0, 200, 0, 200))
@@ -49,8 +49,8 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(r.color(0.5), QColor(100, 100, 0, 150))
 
         # test gradient with stops
-        r = QgsVectorGradientColorRampV2(QColor(200, 0, 0), QColor(0, 200, 0), False, [QgsGradientStop(0.1, QColor(180, 20, 40)),
-                                                                                       QgsGradientStop(0.9, QColor(40, 60, 100))])
+        r = QgsVectorGradientColorRamp(QColor(200, 0, 0), QColor(0, 200, 0), False, [QgsGradientStop(0.1, QColor(180, 20, 40)),
+                                                                                     QgsGradientStop(0.9, QColor(40, 60, 100))])
         self.assertEqual(r.color1(), QColor(200, 0, 0))
         self.assertEqual(r.color2(), QColor(0, 200, 0))
         self.assertEqual(r.isDiscrete(), False)
@@ -88,7 +88,7 @@ class PyQgsVectorColorRamp(unittest.TestCase):
 
         # test creating from properties
         props = r.properties()
-        fromProps = QgsVectorGradientColorRampV2.create(props)
+        fromProps = QgsVectorGradientColorRamp.create(props)
         self.assertEqual(fromProps.color1(), QColor(0, 0, 200))
         self.assertEqual(fromProps.color2(), QColor(0, 0, 100))
         s = fromProps.stops()
@@ -115,14 +115,14 @@ class PyQgsVectorColorRamp(unittest.TestCase):
 
         # test discrete ramps
         # first with no stops
-        d = QgsVectorGradientColorRampV2(QColor(200, 0, 0), QColor(0, 200, 0), True)
+        d = QgsVectorGradientColorRamp(QColor(200, 0, 0), QColor(0, 200, 0), True)
         self.assertEqual(d.isDiscrete(), True)
         self.assertEqual(d.color(0), QColor(200, 0, 0))
         self.assertEqual(d.color(0.5), QColor(200, 0, 0))
         self.assertEqual(d.color(1), QColor(0, 200, 0))
         # then with stops
-        d = QgsVectorGradientColorRampV2(QColor(200, 0, 0), QColor(0, 200, 0), True, [QgsGradientStop(0.1, QColor(180, 20, 40)),
-                                                                                      QgsGradientStop(0.9, QColor(40, 60, 100))])
+        d = QgsVectorGradientColorRamp(QColor(200, 0, 0), QColor(0, 200, 0), True, [QgsGradientStop(0.1, QColor(180, 20, 40)),
+                                                                                    QgsGradientStop(0.9, QColor(40, 60, 100))])
         self.assertEqual(d.isDiscrete(), True)
         self.assertEqual(d.color(0), QColor(200, 0, 0))
         self.assertEqual(d.color(0.05), QColor(200, 0, 0))
@@ -134,8 +134,8 @@ class PyQgsVectorColorRamp(unittest.TestCase):
 
         # to gradient
         g = QGradient()
-        r = QgsVectorGradientColorRampV2(QColor(200, 0, 0), QColor(0, 200, 0), False, [QgsGradientStop(0.1, QColor(180, 20, 40)),
-                                                                                       QgsGradientStop(0.9, QColor(40, 60, 100))])
+        r = QgsVectorGradientColorRamp(QColor(200, 0, 0), QColor(0, 200, 0), False, [QgsGradientStop(0.1, QColor(180, 20, 40)),
+                                                                                     QgsGradientStop(0.9, QColor(40, 60, 100))])
         r.addStopsToGradient(g, 0.5)
         self.assertEqual(len(g.stops()), 4)
         self.assertEqual(g.stops()[0], (0.0, QColor(200, 0, 0, 127)))
@@ -162,7 +162,7 @@ class PyQgsVectorColorRamp(unittest.TestCase):
 
     def testQgsVectorRandomColorRampV2(self):
         # test random color ramp
-        r = QgsVectorRandomColorRampV2(5)
+        r = QgsVectorRandomColorRamp(5)
         self.assertEqual(r.type(), 'random')
         self.assertEqual(r.count(), 5)
         self.assertEqual(r.value(0), 0)
@@ -208,7 +208,7 @@ class PyQgsVectorColorRamp(unittest.TestCase):
 
         # test creating from properties
         props = r.properties()
-        fromProps = QgsVectorRandomColorRampV2.create(props)
+        fromProps = QgsVectorRandomColorRamp.create(props)
         self.assertEqual(fromProps.count(), 5)
         self.assertEqual(fromProps.hueMin(), 10)
         self.assertEqual(fromProps.hueMax(), 60)
@@ -242,7 +242,7 @@ class PyQgsVectorColorRamp(unittest.TestCase):
 
     def testQgsRandomColorsV2(self):
         # test random colors
-        r = QgsRandomColorsV2()
+        r = QgsRandomColors()
         self.assertEqual(r.type(), 'randomcolors')
         self.assertEqual(r.count(), -1)  # no color count
         self.assertEqual(r.value(0), 0)  # all values should be 0
@@ -254,7 +254,7 @@ class PyQgsVectorColorRamp(unittest.TestCase):
             self.assertTrue(c.isValid())
 
         # test creating from properties
-        # QgsRandomColorsV2 has no properties for now, but test to ensure no crash
+        # QgsRandomColors has no properties for now, but test to ensure no crash
         props = r.properties()  # NOQA
 
         # test cloning ramp
@@ -270,7 +270,7 @@ class PyQgsVectorColorRamp(unittest.TestCase):
 
     def testQgsVectorColorBrewerColorRampV2(self):
         # test color brewer color ramps
-        r = QgsVectorColorBrewerColorRampV2('OrRd', 6)
+        r = QgsVectorColorBrewerColorRamp('OrRd', 6)
         self.assertEqual(r.type(), 'colorbrewer')
         self.assertEqual(r.schemeName(), 'OrRd')
         self.assertEqual(r.count(), 6)
@@ -291,13 +291,13 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(r.color(1.0), QColor(179, 0, 0))
 
         # try using an invalid scheme name
-        bad = QgsVectorColorBrewerColorRampV2('badscheme', 6)
+        bad = QgsVectorColorBrewerColorRamp('badscheme', 6)
         self.assertFalse(bad.color(0).isValid())
         self.assertEqual(bad.value(1), 0)
 
         # test creating from properties
         props = r.properties()
-        fromProps = QgsVectorColorBrewerColorRampV2.create(props)
+        fromProps = QgsVectorColorBrewerColorRamp.create(props)
         self.assertEqual(fromProps.type(), 'colorbrewer')
         self.assertEqual(fromProps.schemeName(), 'OrRd')
         self.assertEqual(fromProps.count(), 6)
@@ -340,10 +340,10 @@ class PyQgsVectorColorRamp(unittest.TestCase):
         self.assertEqual(r.color(1.0), QColor(222, 45, 38))
 
         # test static members
-        names = QgsVectorColorBrewerColorRampV2.listSchemeNames()
+        names = QgsVectorColorBrewerColorRamp.listSchemeNames()
         self.assertTrue('Reds' in names and 'OrRd' in names)
-        self.assertEqual(len(QgsVectorColorBrewerColorRampV2.listSchemeVariants('bad scheme')), 0)
-        variants = QgsVectorColorBrewerColorRampV2.listSchemeVariants('Reds')
+        self.assertEqual(len(QgsVectorColorBrewerColorRamp.listSchemeVariants('bad scheme')), 0)
+        variants = QgsVectorColorBrewerColorRamp.listSchemeVariants('Reds')
         self.assertEqual(variants, [3, 4, 5, 6, 7, 8, 9])
 
 if __name__ == '__main__':

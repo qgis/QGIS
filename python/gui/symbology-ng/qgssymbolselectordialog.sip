@@ -5,7 +5,7 @@ class QgsSymbolSelectorWidget : QgsPanelWidget
 %End
 
   public:
-    QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = 0);
+    QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyle* style, const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = 0);
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu* advancedMenu();
@@ -97,7 +97,7 @@ class QgsSymbolSelectorDialog : QDialog
 %End
 
   public:
-    QgsSymbolSelectorDialog( QgsSymbol* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = 0, bool embedded = false );
+    QgsSymbolSelectorDialog( QgsSymbol* symbol, QgsStyle* style, const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = 0, bool embedded = false );
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu* advancedMenu();

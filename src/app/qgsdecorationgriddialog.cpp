@@ -21,7 +21,7 @@
 
 #include "qgslogger.h"
 #include "qgscontexthelp.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
 #include "qgisapp.h"
@@ -91,7 +91,7 @@ void QgsDecorationGridDialog::updateGuiElements()
     delete mLineSymbol;
   if ( mDeco.lineSymbol() )
   {
-    mLineSymbol = static_cast<QgsLineSymbolV2*>( mDeco.lineSymbol()->clone() );
+    mLineSymbol = static_cast<QgsLineSymbol*>( mDeco.lineSymbol()->clone() );
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mLineSymbol, mLineSymbolButton->iconSize() );
     mLineSymbolButton->setIcon( icon );
   }
@@ -99,7 +99,7 @@ void QgsDecorationGridDialog::updateGuiElements()
     delete mMarkerSymbol;
   if ( mDeco.markerSymbol() )
   {
-    mMarkerSymbol = static_cast<QgsMarkerSymbolV2*>( mDeco.markerSymbol()->clone() );
+    mMarkerSymbol = static_cast<QgsMarkerSymbol*>( mDeco.markerSymbol()->clone() );
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mMarkerSymbol, mMarkerSymbolButton->iconSize() );
     mMarkerSymbolButton->setIcon( icon );
   }
@@ -213,8 +213,8 @@ void QgsDecorationGridDialog::on_mLineSymbolButton_clicked()
   if ( ! mLineSymbol )
     return;
 
-  QgsLineSymbolV2* lineSymbol = mLineSymbol->clone();
-  QgsSymbolSelectorDialog dlg( lineSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsLineSymbol* lineSymbol = mLineSymbol->clone();
+  QgsSymbolSelectorDialog dlg( lineSymbol, QgsStyle::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete lineSymbol;
@@ -236,8 +236,8 @@ void QgsDecorationGridDialog::on_mMarkerSymbolButton_clicked()
   if ( ! mMarkerSymbol )
     return;
 
-  QgsMarkerSymbolV2* markerSymbol = mMarkerSymbol->clone();
-  QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), nullptr, this );
+  QgsMarkerSymbol* markerSymbol = mMarkerSymbol->clone();
+  QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyle::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete markerSymbol;

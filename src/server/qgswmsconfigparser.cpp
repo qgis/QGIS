@@ -31,7 +31,7 @@
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
 
-#include "qgsrendererv2.h"
+#include "qgsrenderer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
@@ -321,7 +321,7 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
     }
 
     QString errorMsg;
-    QScopedPointer<QgsFeatureRendererV2> renderer( QgsFeatureRendererV2::loadSld( sldDoc.documentElement(), geom.type(), errorMsg ) );
+    QScopedPointer<QgsFeatureRenderer> renderer( QgsFeatureRenderer::loadSld( sldDoc.documentElement(), geom.type(), errorMsg ) );
     if ( !renderer.data() )
     {
       continue;
@@ -341,7 +341,7 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
       continue;
     }
 
-    layer->setRendererV2( renderer.take() );
+    layer->setRenderer( renderer.take() );
     layerSet.prepend( layer.data()->id() );
     highlightLayers.append( layer.data()->id() );
     QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << layer.take() );

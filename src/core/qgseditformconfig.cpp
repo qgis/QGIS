@@ -30,12 +30,12 @@ QString QgsEditFormConfig::widgetType( int fieldIdx ) const
   if ( fieldIdx < 0 || fieldIdx >= mFields.count() )
     return "TextEdit";
 
-  return mEditorWidgetV2Types.value( mFields.at( fieldIdx ).name(), "TextEdit" );
+  return mEditorWidgetTypes.value( mFields.at( fieldIdx ).name(), "TextEdit" );
 }
 
 QString QgsEditFormConfig::widgetType( const QString& fieldName ) const
 {
-  return mEditorWidgetV2Types.value( fieldName, "TextEdit" );
+  return mEditorWidgetTypes.value( fieldName, "TextEdit" );
 }
 
 QgsEditorWidgetConfig QgsEditFormConfig::widgetConfig( int fieldIdx ) const
@@ -59,7 +59,7 @@ void QgsEditFormConfig::setFields( const QgsFields& fields )
 void QgsEditFormConfig::setWidgetType( int attrIdx, const QString& widgetType )
 {
   if ( attrIdx >= 0 && attrIdx < mFields.count() )
-    mEditorWidgetV2Types[ mFields.at( attrIdx ).name()] = widgetType;
+    mEditorWidgetTypes[ mFields.at( attrIdx ).name()] = widgetType;
 }
 
 void QgsEditFormConfig::setWidgetConfig( int attrIdx, const QgsEditorWidgetConfig& config )
