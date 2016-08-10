@@ -247,7 +247,6 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
     {
       if ( mMapCanvas )
         mActiveWidget->setMapCanvas( mMapCanvas );
-      changeOrderBy( mActiveWidget->renderer()->orderBy(), mActiveWidget->renderer()->orderByEnabled() );
       connect( mActiveWidget, SIGNAL( layerVariablesChanged() ), this, SIGNAL( layerVariablesChanged() ) );
     }
     connect( mActiveWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
