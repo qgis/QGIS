@@ -81,7 +81,7 @@ class PostGisDBPlugin(DBPlugin):
         service, host, port, database, username, password, authcfg = [settings.value(x, "", type=str) for x in settingsList]
 
         useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
-        sslmode = settings.value("sslmode", QgsDataSourceUri.SSLprefer, type=int)
+        sslmode = settings.value("sslmode", QgsDataSourceUri.SslPrefer, type=int)
 
         settings.endGroup()
 
