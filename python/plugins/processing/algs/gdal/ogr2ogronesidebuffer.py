@@ -83,22 +83,22 @@ class Ogr2OgrOneSideBuffer(GdalAlgorithm):
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
         operation = self.getParameterValue(self.OPERATION)
-        geometry = unicode(self.getParameterValue(self.GEOMETRY))
+        geometry = self.getParameterValue(self.GEOMETRY)
         distance = self.getParameterValue(self.RADIUS)
         leftright = self.getParameterValue(self.LEFTRIGHT)
         dissolveall = self.getParameterValue(self.DISSOLVEALL)
         field = self.getParameterValue(self.FIELD)
         multi = self.getParameterValue(self.MULTI)
+        options = self.getParameterValue(self.OPTIONS)
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
         output = ogrConnectionString(outFile)
-        options = unicode(self.getParameterValue(self.OPTIONS))
 
         layername = ogrLayerName(inLayer)
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
 
         arguments = []
         arguments.append(output)

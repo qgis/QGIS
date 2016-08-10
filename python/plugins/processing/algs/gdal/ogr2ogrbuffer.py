@@ -74,43 +74,42 @@ class Ogr2OgrBuffer(GdalAlgorithm):
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
-        layername = "'" + ogrLayerName(inLayer) + "'"
-        geometry = unicode(self.getParameterValue(self.GEOMETRY))
-        distance = unicode(self.getParameterValue(self.DISTANCE))
+        geometry = self.getParameterValue(self.GEOMETRY)
+        distance = self.getParameterValue(self.DISTANCE)
         dissolveall = self.getParameterValue(self.DISSOLVEALL)
-        field = unicode(self.getParameterValue(self.FIELD))
+        field = self.getParameterValue(self.FIELD)
         multi = self.getParameterValue(self.MULTI)
+        options = self.getParameterValue(self.OPTIONS)
+
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        layername = ogrLayerName(inLayer)
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
         output = ogrConnectionString(outFile)
-        options = unicode(self.getParameterValue(self.OPTIONS))
 
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
         arguments.append(ogrLayerName(inLayer))
-        if dissolveall or field != 'None':
-            arguments.append('-dialect sqlite -sql "SELECT ST_Union(ST_Buffer(')
+        arguments.append('-dialect')
+        arguments.append('sqlite')
+        arguments.append('-sql')
+
+        if dissolveall or field is not None:
+            sql = "SELECT ST_Union(ST_Buffer({}, {})), * FROM '{}'".format(geometry, distance, layername)
         else:
-            arguments.append('-dialect sqlite -sql "SELECT ST_Buffer(')
-        arguments.append(geometry)
-        arguments.append(',')
-        arguments.append(distance)
-        if dissolveall or field != 'None':
-            arguments.append(')),*')
+            sql = "SELECT ST_Buffer({}, {}), * FROM '{}'".format(geometry, distance, layername)
+
+        if field is not None:
+            sql = '{} GROUP BY {}'.format(sql, field)
         else:
-            arguments.append('),*')
-        arguments.append('FROM')
-        arguments.append(layername)
-        if field != 'None':
-            arguments.append('GROUP')
-            arguments.append('BY')
-            arguments.append(field)
-        arguments.append('"')
-        if field != 'None' and multi:
+            sql = '{}'.format(sql)
+
+        arguments.append(sql)
+
+        if field is not None and multi:
             arguments.append('-explodecollections')
 
         if len(options) > 0:

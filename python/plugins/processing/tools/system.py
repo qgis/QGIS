@@ -82,13 +82,13 @@ def setTempOutput(out, alg):
 def getTempFilename(ext=None):
     path = tempFolder()
     if ext is None:
-        #filename = path + os.sep + unicode(time.time()) \
-        #    + unicode(getNumExportedLayers())
-        filename = os.tempnam(path)
+        filename = path + os.sep + unicode(time.time()) \
+            + unicode(getNumExportedLayers())
+        #filename = os.tempnam(path)
     else:
-        #filename = path + os.sep + unicode(time.time()) \
-        #    + unicode(getNumExportedLayers()) + '.' + ext
-        filename = '{}.{}'.format(os.tempnam(path), ext)
+        filename = path + os.sep + unicode(time.time()) \
+            + unicode(getNumExportedLayers()) + '.' + ext
+        #filename = '{}.{}'.format(os.tempnam(path), ext)
     return filename
 
 
