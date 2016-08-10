@@ -16,21 +16,19 @@
 #ifndef QGSMAPTOOLMOVEFEATURE_H
 #define QGSMAPTOOLMOVEFEATURE_H
 
-#include "qgsmaptooledit.h"
+#include "qgsmaptooladvanceddigitizing.h"
 
 /** Map tool for translating feature position by mouse drag*/
-class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolEdit
+class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
     QgsMapToolMoveFeature( QgsMapCanvas* canvas );
     virtual ~QgsMapToolMoveFeature();
 
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    virtual void cadCanvasMoveEvent( QgsMapMouseEvent* e ) override;
 
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
-
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     //! called when map tool is being deactivated
     void deactivate() override;
@@ -44,6 +42,9 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolEdit
 
     /** Id of moved feature*/
     QgsFeatureIds mMovedFeatures;
+
+    QPoint mPressPos;
+
 };
 
 #endif

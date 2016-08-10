@@ -39,6 +39,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     {
       CaptureNone,    //!< Do not capture
       CapturePoint,   //!< Capture points
+      CaptureSegment, //!< Capture a segment (i.e. 2 points)
       CaptureLine,    //!< Capture lines
       CapturePolygon  //!< Capture polygons
     };
@@ -85,6 +86,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     virtual void deactivate() override;
 
     QgsAdvancedDigitizingDockWidget* cadDockWidget() const { return mCadDockWidget; }
+
 
   protected:
     /**

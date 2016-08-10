@@ -659,8 +659,9 @@ void QgsMapToolCapture::validateGeometry()
     case CaptureNone:
     case CapturePoint:
       return;
+    case CaptureSegment:
     case CaptureLine:
-      if ( size() < 2 )
+      if ( size() < 2  || ( mCaptureMode == CaptureSegment && size() > 2 ) )
         return;
       g.reset( new QgsGeometry( mCaptureCurve.curveToLine() ) );
       break;
