@@ -1934,6 +1934,14 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+  if ( !mAuth.setAuthorizationReply( mCapabilitiesReply ) )
+  {
+    mCapabilitiesReply->deleteLater();
+    mCapabilitiesReply = nullptr;
+    mError = tr( "Download of capabilities failed: network reply update failed for authentication config" );
+    QgsMessageLog::logMessage( mError, tr( "WMS" ) );
+    return false;
+  }
   connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
   connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
 
@@ -2002,7 +2010,19 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
 
           QgsDebugMsg( QString( "redirected getcapabilities: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ) );
           mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
-          connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
+          
+		  if ( !mAuth.setAuthorizationReply( mCapabilitiesReply ) )
+          {
+            mHttpCapabilitiesResponse.clear();
+            mCapabilitiesReply->deleteLater();
+            mCapabilitiesReply = nullptr;
+            mError = tr( "Download of capabilities failed: network reply update failed for authentication config" );
+            QgsMessageLog::logMessage( mError, tr( "WMS" ) );
+            emit downloadFinished();
+            return;
+          }
+		  
+		  connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
           connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
           return;
         }

@@ -56,6 +56,16 @@ struct QgsWFSAuthorization
     return true;
   }
 
+  //! set authorization reply
+  bool setAuthorizationReply( QNetworkReply * reply ) const
+  {
+    if ( !mAuthCfg.isEmpty() )
+    {
+      return QgsAuthManager::instance()->updateNetworkReply( reply, mAuthCfg );
+    }
+    return true;
+  }
+
   //! Username for basic http authentication
   QString mUserName;
 
