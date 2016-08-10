@@ -33,6 +33,12 @@ qgis:basicstatisticsfortextfields: >
 
   Statistics are generated as an HTML file.
 
+qgis:boundary: >
+  Returns the closure of the combinatorial boundary of the input geometries (ie the topological boundary of the geometry). For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon. Only valid for polygon or line layers.
+
+qgis:boundingboxes: >
+  This algorithm calculates the bounding box (envelope) of each feature in an input layer.
+
 qgis:buildvirtualvector: >
   This algorithm creates a virtual layer that contains a set of vector layer.
 
@@ -257,6 +263,10 @@ qgis:orientedminimumboundingbox: >
   As an alternative, the output layer can contain not just a single  rectangle, but one for each input feature, representing the minimum rectangle that covers each of them.
 
 qgis:pointsdisplacement:
+
+
+qgis:pointonsurface: >
+  Returns a point guaranteed to lie on the surface of a geometry.
 
 
 qgis:pointslayerfromtable: >

@@ -653,7 +653,7 @@ class VectorWriter:
                 extension = 'shp'
                 self.destination = self.destination + '.shp'
 
-            if geometryType == QgsWkbTypes.NullGeometry:
+            if geometryType == QgsWkbTypes.NoGeometry:
                 if extension == 'shp':
                     extension = 'dbf'
                     self.destination = self.destination[:self.destination.rfind('.')] + '.dbf'

@@ -440,3 +440,145 @@ tests:
         name: expected/multi_to_single.gml
         type: vector
   
+  - algorithm: qgis:boundingboxes
+    name: Bounding boxes for lines
+    params:
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/lines_bounds.gml
+        type: vector
+
+  - algorithm: qgis:boundingboxes
+    name: Bounding boxes for multilines
+    params:
+      INPUT_LAYER:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/multiline_bounds.gml
+        type: vector
+
+  - algorithm: qgis:boundingboxes
+    name: Bounding boxes for multipolygons
+    params:
+      INPUT_LAYER:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/multipoly_bounds.gml
+        type: vector
+
+  - algorithm: qgis:boundingboxes
+    name: Bounding boxes for points
+    params:
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/point_bounds.gml
+        type: vector
+
+  - algorithm: qgis:boundingboxes
+    name: Bounding boxes for polygons
+    params:
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/poly_bounds.gml
+        type: vector
+
+  - algorithm: qgis:boundingboxes
+    name: Bounding boxes for multipoints
+    params:
+      INPUT_LAYER:
+        name: multipoints.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/multipoint_bounds.gml
+        type: vector
+
+  - algorithm: qgis:boundary
+    name: Polygon boundary
+    params:
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/poly_boundary.gml
+        type: vector
+
+  - algorithm: qgis:boundary
+    name: Multipoly boundary
+    params:
+      INPUT_LAYER:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/multipoly_boundary.gml
+        type: vector
+
+  - algorithm: qgis:boundary
+    name: Line boundary
+    params:
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/lines_boundary.gml
+        type: vector
+
+  - algorithm: qgis:boundary
+    name: Multiline boundary
+    params:
+      INPUT_LAYER:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/multiline_boundary.gml
+        type: vector
+
+  - algorithm: qgis:pointonsurface
+    name: Point on polygon surface
+    params:
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/point_on_poly.gml
+        type: vector
+
+  - algorithm: qgis:pointonsurface
+    name: Point on multipoint surface
+    params:
+      INPUT_LAYER:
+        name: multipoints.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/point_on_multipoint.gml
+        type: vector
+
+  - algorithm: qgis:pointonsurface
+    name: Point on line surface
+    params:
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/point_on_line.gml
+        type: vector
