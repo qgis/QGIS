@@ -312,7 +312,10 @@ class QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
+%If (!QT5_SUPPORT)
     int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+%End
+    int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry )/PyName=addPoints/;
 
     /** Adds a new part to a the geometry.
      * @param points points describing part to add
@@ -321,7 +324,10 @@ class QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
+%If (!QT5_SUPPORT)
     int addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+%End
+    int addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry )/PyName=addPointsV2/;
 
     /** Adds a new part to this geometry.
      * @param part part to add (ownership is transferred)
@@ -737,6 +743,7 @@ class QgsGeometry
      * @note added in QGIS 2.9
      */
     static bool compare( const QgsPolyline& p1, const QgsPolyline& p2, double epsilon = 4 * DBL_EPSILON );
+    static bool compare( const QgsPolyline& p1, const QgsPolyline& p2, double epsilon = 4 * DBL_EPSILON )/PyName=comparePolylines/;
 
     /** Compares two polygons for equality within a specified tolerance.
      * @param p1 first polygon
@@ -747,6 +754,7 @@ class QgsGeometry
      * @note added in QGIS 2.9
      */
     static bool compare( const QgsPolygon& p1, const QgsPolygon& p2, double epsilon = 4 * DBL_EPSILON );
+    static bool compare( const QgsPolygon& p1, const QgsPolygon& p2, double epsilon = 4 * DBL_EPSILON )/PyName=comparePolygons/;
 
     /** Compares two multipolygons for equality within a specified tolerance.
      * @param p1 first multipolygon
@@ -758,6 +766,7 @@ class QgsGeometry
      * @note added in QGIS 2.9
      */
     static bool compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon = 4 * DBL_EPSILON );
+    static bool compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon = 4 * DBL_EPSILON )/PyName=compareMultiPolygons/;
 
     /** Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
      * roughly doubles the number of vertices in a geometry.
