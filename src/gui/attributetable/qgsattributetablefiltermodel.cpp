@@ -294,11 +294,6 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
       disconnect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
     }
 
-    if ( filterMode == ShowSelected )
-    {
-      generateListOfVisibleFeatures();
-    }
-
     mFilterMode = filterMode;
     invalidateFilter();
   }
@@ -359,7 +354,6 @@ void QgsAttributeTableFilterModel::selectionChanged()
 {
   if ( ShowSelected == mFilterMode )
   {
-    generateListOfVisibleFeatures();
     invalidateFilter();
   }
   else if ( mSelectedOnTop )
