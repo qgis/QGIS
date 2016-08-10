@@ -33,6 +33,9 @@ qgis:basicstatisticsfortextfields: >
 
   Statistics are generated as an HTML file.
 
+qgis:boundingboxes: >
+  This algorithm calculates the bounding box (envelope) of each feature in an input layer.
+
 qgis:buildvirtualvector: >
   This algorithm creates a virtual layer that contains a set of vector layer.
 
