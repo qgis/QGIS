@@ -30,7 +30,6 @@ from processing.tools.general import *              # NOQA
 from processing.tools.vector import *               # NOQA
 from processing.tools.raster import *               # NOQA
 from processing.tools.system import *               # NOQA
-from processing.tests.TestData import loadTestData  # NOQA
 
 
 def classFactory(iface):
