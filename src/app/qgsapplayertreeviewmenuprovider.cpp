@@ -73,7 +73,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       menu->addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
       menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ),
-                       tr( "&Set Group CRS" ), QgisApp::instance(), SLOT( legendGroupSetCRS() ) );
+                       tr( "&Set Group CRS" ), QgisApp::instance(), SLOT( legendGroupSetCrs() ) );
 
       menu->addAction( actions->actionRenameGroupOrLayer( menu ) );
 
@@ -124,10 +124,10 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
           menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), SLOT( zoomToLayerScale() ) );
 
         // set layer crs
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCrs() ) );
 
         // assign layer crs to project
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCrsFromLayer() ) );
       }
 
       // style-related actions
