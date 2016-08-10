@@ -112,10 +112,7 @@ class DensifyGeometries(GeoAlgorithm):
 
     def densify(self, polyline, pointsNumber):
         output = []
-        if pointsNumber != 1:
-            multiplier = 1.0 / float(pointsNumber + 1)
-        else:
-            multiplier = 1
+        multiplier = 1.0 / float(pointsNumber + 1)
         for i in xrange(len(polyline) - 1):
             p1 = polyline[i]
             p2 = polyline[i + 1]
