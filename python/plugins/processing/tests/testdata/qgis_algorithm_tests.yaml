@@ -549,3 +549,36 @@ tests:
       OUTPUT_LAYER:
         name: expected/multiline_boundary.gml
         type: vector
+
+  - algorithm: qgis:pointonsurface
+    name: Point on polygon surface
+    params:
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/point_on_poly.gml
+        type: vector
+
+  - algorithm: qgis:pointonsurface
+    name: Point on multipoint surface
+    params:
+      INPUT_LAYER:
+        name: multipoints.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/point_on_multipoint.gml
+        type: vector
+
+  - algorithm: qgis:pointonsurface
+    name: Point on line surface
+    params:
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/point_on_line.gml
+        type: vector
