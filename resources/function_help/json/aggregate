@@ -12,7 +12,6 @@
   "examples": [
 	{ "expression":"aggregate(layer:='rail_stations',aggregate:='sum',expression:=\"passengers\")", "returns":"sum of all values from the passengers field in the rail_stations layer"},
 	{ "expression":"aggregate('rail_stations','sum', \"passengers\"/7)", "returns":"calculates a daily average of \"passengers\" by dividing the \"passengers\" field by 7 before summing the values"},
-	{ "expression":"aggregate(layer:='rail_stations',aggregate:='sum',expression:=\"passengers\")", "returns":"sum of all values from the passengers field in the rail_stations layer"},
 	{ "expression":"aggregate(layer:='rail_stations',calculation:='sum',expression:=\"passengers\",filter:=\"class\">3)", "returns":"sums up all values from the \"passengers\" field from features where the \"class\" attribute is greater than 3 only"},
 	{ "expression":"aggregate(layer:='rail_stations',calculation:='concatenate', expression:=\"name\", concatenator:=',')", "returns":"comma separated list of the name field for all features in the rail_stations layer"}
   ]
