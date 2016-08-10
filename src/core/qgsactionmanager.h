@@ -90,24 +90,10 @@ class CORE_EXPORT QgsActionManager
      * @param index action index
      * @param feature feature to run action for
      * @param context expression context to evalute expressions under
-     * @param substitutionMap deprecated - kept for compatibility with projects, will be removed for 3.0
      */
-    // TODO QGIS 3.0 remove substition map - force use of expression variables
     void doAction( int index,
                    const QgsFeature& feature,
-                   const QgsExpressionContext& context,
-                   const QMap<QString, QVariant> *substitutionMap = nullptr );
-
-    /** Does the action using the expression builder to expand it
-     *  and getting values from the passed feature attribute map.
-     *  substitutionMap is used to pass custom substitutions, to replace
-     *  each key in the map with the associated value
-     *  @note available in python bindings as doActionFeatureWithSubstitution
-     *  @deprecated use QgsExpressionContext variant instead
-     */
-    Q_DECL_DEPRECATED void doAction( int index,
-                                     const QgsFeature &feat,
-                                     const QMap<QString, QVariant> *substitutionMap );
+                   const QgsExpressionContext& context );
 
     //! Removes all actions
     void clearActions();
@@ -119,26 +105,6 @@ class CORE_EXPORT QgsActionManager
 
     //! Return the layer
     QgsVectorLayer* layer() const { return mLayer; }
-
-    /** Expands the given action, replacing all %'s with the value as
-     *  given.
-     * @deprecated use QgsExpression::replaceExpressionText() instead
-     */
-    Q_DECL_DEPRECATED QString expandAction( QString action, const QgsAttributeMap &attributes, uint defaultValueIndex );
-
-    /** Expands the given action using the expression builder
-     *  This function currently replaces each expression between [% and %]
-     *  placeholders in the action with the result of its evaluation on
-     *  the feature passed as argument.
-     *
-     *  Additional substitutions can be passed through the substitutionMap
-     *  parameter
-     *  @deprecated use QgsExpression::replaceExpressionText() instead
-     */
-    Q_DECL_DEPRECATED QString expandAction( const QString& action,
-                                            QgsFeature &feat,
-                                            const QMap<QString, QVariant> *substitutionMap = nullptr );
-
 
     //! Writes the actions out in XML format
     bool writeXml( QDomNode& layer_node, QDomDocument& doc ) const;

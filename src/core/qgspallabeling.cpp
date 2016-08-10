@@ -2299,8 +2299,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
       QgsDebugMsgLevel( QString( "Expression parser error:%1" ).arg( exp->parserErrorString() ), 4 );
       return;
     }
-    exp->setScale( context.rendererScale() );
-//    QVariant result = exp->evaluate( &f, layer->pendingFields() );
+
     QVariant result = exp->evaluate( &context.expressionContext() ); // expression prepared in QgsPalLabeling::prepareLayer()
     if ( exp->hasEvalError() )
     {

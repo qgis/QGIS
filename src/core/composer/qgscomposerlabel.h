@@ -53,16 +53,6 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     /** Returns the text as it appears on screen (with replaced data field) */
     QString displayText() const;
 
-    /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions.
-      * @deprecated use atlas features and setSubstitutions() instead
-      */
-    Q_DECL_DEPRECATED void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, const QMap<QString, QVariant>& substitutions = ( QMap<QString, QVariant>() ) );
-
-    /** Sets the list of local variable substitutions for evaluating expressions in label text.
-     * @note added in QGIS 2.12
-     */
-    void setSubstitutions( const QMap<QString, QVariant>& substitutions = ( QMap<QString, QVariant>() ) );
-
     QFont font() const;
     void setFont( const QFont& f );
     /** Accessor for the vertical alignment of the label
@@ -213,7 +203,6 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 
     QScopedPointer<QgsFeature> mExpressionFeature;
     QgsVectorLayer* mExpressionLayer;
-    QMap<QString, QVariant> mSubstitutions;
     QgsDistanceArea* mDistanceArea;
 
     QgsWebPage* mWebPage;

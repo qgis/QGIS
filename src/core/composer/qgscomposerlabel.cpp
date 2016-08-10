@@ -240,38 +240,6 @@ void QgsComposerLabel::setHtmlState( int state )
   }
 }
 
-void QgsComposerLabel::setExpressionContext( QgsFeature *feature, QgsVectorLayer* layer, const QMap<QString, QVariant>& substitutions )
-{
-  mExpressionFeature.reset( feature ? new QgsFeature( *feature ) : nullptr );
-  mExpressionLayer = layer;
-  mSubstitutions = substitutions;
-
-  //setup distance area conversion
-  if ( layer )
-  {
-    mDistanceArea->setSourceCrs( layer->crs().srsid() );
-  }
-  else if ( mComposition )
-  {
-    //set to composition's mapsettings' crs
-    mDistanceArea->setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
-  }
-  if ( mComposition )
-  {
-    mDistanceArea->setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
-  }
-  mDistanceArea->setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
-  contentChanged();
-
-  // Force label to redraw -- fixes label printing for labels with blend modes when used with atlas
-  update();
-}
-
-void QgsComposerLabel::setSubstitutions( const QMap<QString, QVariant>& substitutions )
-{
-  mSubstitutions = substitutions;
-}
-
 void QgsComposerLabel::refreshExpressionContext()
 {
   mExpressionLayer = nullptr;
@@ -307,7 +275,6 @@ QString QgsComposerLabel::displayText() const
 {
   QString displayText = mText;
   replaceDateText( displayText );
-  QMap<QString, QVariant> subs = mSubstitutions;
 
   QScopedPointer<QgsExpressionContext> context( createExpressionContext() );
   //overwrite layer/feature if they have been set via setExpressionContext
@@ -317,7 +284,7 @@ QString QgsComposerLabel::displayText() const
   if ( mExpressionLayer )
     context->setFields( mExpressionLayer->fields() );
 
-  return QgsExpression::replaceExpressionText( displayText, context.data(), &subs, mDistanceArea );
+  return QgsExpression::replaceExpressionText( displayText, context.data(), mDistanceArea );
 }
 
 void QgsComposerLabel::replaceDateText( QString& text ) const

@@ -142,17 +142,6 @@ QString QgsDataDefined::expressionOrField() const
   return d->useExpression ? d->expressionString : QString( "\"%1\"" ).arg( d->field );
 }
 
-QMap<QString, QVariant> QgsDataDefined::expressionParams() const
-{
-  return d->expressionParams;
-}
-
-void QgsDataDefined::setExpressionParams( const QMap<QString, QVariant>& params )
-{
-  d.detach();
-  d->expressionParams = params;
-}
-
 bool QgsDataDefined::prepareExpression( QgsVectorLayer* layer )
 {
   if ( layer )
@@ -186,18 +175,6 @@ bool QgsDataDefined::prepareExpression( const QgsExpressionContext& context )
   {
     QgsDebugMsg( "Parser error:" + d->expression->parserErrorString() );
     return false;
-  }
-
-  // setup expression parameters
-  QVariant scaleV = d->expressionParams.value( "scale" );
-  if ( scaleV.isValid() )
-  {
-    bool ok;
-    double scale = scaleV.toDouble( &ok );
-    if ( ok )
-    {
-      d->expression->setScale( scale );
-    }
   }
 
   d->expression->prepare( &context );
@@ -284,12 +261,6 @@ void QgsDataDefined::setField( const QString &field )
   d->useExpression = false;
   d->field = field;
   d->exprRefColumns.clear();
-}
-
-void QgsDataDefined::insertExpressionParam( const QString& key, const QVariant& param )
-{
-  d.detach();
-  d->expressionParams.insert( key, param );
 }
 
 QgsStringMap QgsDataDefined::toMap( const QString &baseName ) const

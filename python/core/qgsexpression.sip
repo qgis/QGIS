@@ -22,10 +22,6 @@ class QgsExpression
     //! Returns root node of the expression. Root node is null is parsing has failed
     const QgsExpression::Node* rootNode() const;
 
-    //! Get the expression ready for evaluation - find out column indexes.
-    //! @deprecated use prepare( const QgsExpressionContext *context ) instead
-    bool prepare( const QgsFields &fields ) /Deprecated/;
-
     /** Get the expression ready for evaluation - find out column indexes.
      * @param context context for preparing expression
      * @note added in QGIS 2.12
@@ -47,28 +43,6 @@ class QgsExpression
 
     // evaluation
 
-    //! Evaluate the feature and return the result
-    //! @note prepare() should be called before calling this method
-    //! @deprecated use evaluate( const QgsExpressionContext* context ) instead
-    QVariant evaluate( const QgsFeature* f ) /Deprecated/;
-
-    //! Evaluate the feature and return the result
-    //! @note prepare() should be called before calling this method
-    //! @note available in python bindings as evaluatePrepared
-    //! @deprecated use evaluate( const QgsExpressionContext* context ) instead
-    QVariant evaluate( const QgsFeature& f ) /PyName=evaluatePrepared,Deprecated/;
-
-    //! Evaluate the feature and return the result
-    //! @note this method does not expect that prepare() has been called on this instance
-    //! @deprecated use evaluate( const QgsExpressionContext* context ) instead
-    QVariant evaluate( const QgsFeature* f, const QgsFields& fields ) /Deprecated/;
-
-    //! Evaluate the feature and return the result
-    //! @note this method does not expect that prepare() has been called on this instance
-    //! @note not available in python bindings
-    //! @deprecated use evaluate( const QgsExpressionContext* context ) instead
-    // inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields ) { return evaluate( &f, fields ); }
-
     /** Evaluate the feature and return the result.
      * @note this method does not expect that prepare() has been called on this instance
      * @note added in QGIS 2.12
@@ -89,38 +63,10 @@ class QgsExpression
     //! Set evaluation error (used internally by evaluation functions)
     void setEvalErrorString( const QString& str );
 
-    //! Set the number for $rownum special column
-    //! @deprecated use QgsExpressionContext to set row number instead
-    void setCurrentRowNumber( int rowNumber ) /Deprecated/;
-    //! Return the number used for $rownum special column
-    //! @deprecated use QgsExpressionContext to retrieve row number instead
-    int currentRowNumber() /Deprecated/;    //TODO QGIS 3.0: make the following methods private. They are still required for replaceExpressionText
-    //but should not be publicly used
-    /** Assign a special column
-     * @deprecated use global or project QgsExpressionContext variables instead
-     */
-    static void setSpecialColumn( const QString& name, const QVariant& value ) /Deprecated/;
-    /** Unset a special column
-     * @deprecated use global or project QgsExpressionContext variables instead
-     */
-    static void unsetSpecialColumn( const QString& name ) /Deprecated/;
-    /** Return the value of the given special column or a null QVariant if undefined
-     * @deprecated use global or project QgsExpressionContext variables instead
-     */
-    static QVariant specialColumn( const QString& name ) /Deprecated/;
-
-    /** Check whether a special column exists
-     * @note added in 2.2
-     */
-    static bool hasSpecialColumn( const QString& name );
-
     /** Checks whether an expression consists only of a single field reference
      * @note added in 2.9
      */
     bool isField() const;
-
-    //! @deprecated use QgsExpressionContext variant instead
-    static bool isValid( const QString& text, const QgsFields& fields, QString &errorMessage ) /Deprecated/;
 
     /** Tests whether a string is a valid expression.
      * @param text string to test
@@ -130,10 +76,6 @@ class QgsExpression
      * @note added in QGIS 2.12
      */
     static bool isValid( const QString& text, const QgsExpressionContext* context, QString &errorMessage );
-
-    void setScale( double scale );
-
-    double scale();
 
     //! Return the original, unmodified expression string.
     //! If there was none supplied because it was constructed by sole
@@ -157,10 +99,11 @@ class QgsExpression
      * (used by $length, $area and $perimeter functions only). By default, no geometry
      * calculator is set and all distance and area calculations are performed using simple
      * cartesian methods (ie no ellipsoidal calculations).
+     * @param calc geometry calculator. Ownership is not transferred. Set to a nullptr to force
+     * cartesian calculations.
      * @see geomCalculator()
      */
-    //TODO QGIS 3.0 change calc to a pointer, so that calculator can be cleared by passing nullptr
-    void setGeomCalculator( const QgsDistanceArea &calc );
+    void setGeomCalculator( const QgsDistanceArea* calc );
 
     /** Returns the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
      * @note distances are only converted when a geomCalculator() has been set
@@ -192,37 +135,17 @@ class QgsExpression
      */
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 
-    /** This function currently replaces each expression between [% and %]
-     * in the string with the result of its evaluation on the feature
-     * passed as argument.
-     *
-     * Additional substitutions can be passed through the substitutionMap
-     * parameter
-     * @param action
-     * @param feat
-     * @param layer
-     * @param substitutionMap
-     * @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance and area conversion
-     * @deprecated use QgsExpressionContext variant instead
-     */
-    static QString replaceExpressionText( const QString &action, const QgsFeature *feat,
-                                          QgsVectorLayer *layer,
-                                          const QMap<QString, QVariant> *substitutionMap = 0,
-                                          const QgsDistanceArea* distanceArea = 0 ) /Deprecated/;
-
     /** This function replaces each expression between [% and %]
      * in the string with the result of its evaluation with the specified context
      *
      * Additional substitutions can be passed through the substitutionMap parameter
      * @param action
      * @param context expression context
-     * @param substitutionMap
      * @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
      * and area conversion
      * @note added in QGIS 2.12
      */
     static QString replaceExpressionText( const QString &action, const QgsExpressionContext* context,
-                                          const QMap<QString, QVariant> *substitutionMap = 0,
                                           const QgsDistanceArea* distanceArea = 0 );
 
     /** Attempts to evaluate a text string as an expression to a resultant double
@@ -383,7 +306,7 @@ class QgsExpression
         const QgsExpression::ParameterList& parameters() const;
 
         /** Does this function use a geometry object. */
-        bool usesgeometry() const;
+        bool usesGeometry() const;
 
         /** Returns a list of possible aliases for the function. These include
          * other permissible names for the function, eg deprecated names.
@@ -408,20 +331,15 @@ class QgsExpression
         /** The group the function belongs to. */
         QString group() const;
         /** The help text for the function. */
-        const QString helptext() const;
-
-        //! @deprecated Use QgsExpressionContext variant instead
-        virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) /Deprecated/;
+        const QString helpText() const;
 
         /** Returns result of evaluating the function.
          * @param values list of values passed to the function
          * @param context context expression is being evaluated against
          * @param parent parent expression
          * @returns result of function
-         * @note named funcV2 in Python bindings. Will be renamed to func to replace deprecated method in QGIS 3.0.
          */
-        //TODO QGIS 3.0 - rename python method
-        virtual QVariant func( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) /PyName=funcV2/;
+        virtual QVariant func( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) = 0;
 
         virtual bool handlesNull() const;
     };
@@ -458,11 +376,6 @@ class QgsExpression
      *  @return The number of function defined in the parser.
      */
     static int functionCount();
-
-    /**
-     * Returns a list of special Column definitions
-     */
-    static QList<QgsExpression::Function *> specialColumns();
 
     /** Returns a quoted column reference (in double quotes)
      * @see quotedString()
@@ -537,30 +450,16 @@ class QgsExpression
         /**
          * Abstract virtual eval method
          * Errors are reported to the parent
-         * @deprecated use QgsExpressionContext variant instead
-         */
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f ) /Deprecated/;
-
-        /**
-         * Abstract virtual eval method
-         * Errors are reported to the parent
          * @note added in QGIS 2.12
          */
-        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
-
-        /**
-         * Abstract virtual preparation method
-         * Errors are reported to the parent
-         * @deprecated use QgsExpressionContext variant instead
-         */
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields ) /Deprecated/;
+        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) = 0;
 
         /**
          * Abstract virtual preparation method
          * Errors are reported to the parent
          * @note added in QGIS 2.12
          */
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context );
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) = 0;
 
         /**
          * Abstract virtual dump method
@@ -669,37 +568,6 @@ class QgsExpression
         QgsExpression::NodeList* clone() const;
 
         virtual QString dump() const;
-    };
-
-    //TODO QGIS 3.0 - remove
-    //! @deprecated use QgsInterval instead
-    class Interval
-   {
-      public:
-        Interval( int seconds = 0 );
-
-        //! interval length in years
-        double years() const;
-        //! interval length in months
-        double months() const;
-        //! interval length in weeks
-        double weeks() const;
-        //! interval length in days
-        double days() const;
-        //! interval length in hours
-        double hours() const;
-        //! interval length in minutus
-        double minutes() const;
-        //! interval length in seconds
-        double seconds() const;
-        //! getter interval validity
-        bool isValid() const;
-        //! setter interval validity
-        void setValid( bool valid );
-        //! compare two intervals
-        bool operator==( QgsExpression::Interval other ) const;
-        //! convert a string to an interval
-        static QgsExpression::Interval fromString( const QString& string );
     };
 
     class NodeUnaryOperator : QgsExpression::Node
@@ -897,13 +765,13 @@ class QgsExpression
      * @param name function name
      * @see variableHelpText()
      */
-    static QString helptext( QString name );
+    static QString helpText( QString name );
 
     /** Returns the help text for a specified variable.
      * @param variableName name of variable
      * @param showValue set to true to include current value of variable in help text
      * @param value current value of variable to show in help text
-     * @see helptext()
+     * @see helpText()
      * @note added in QGIS 2.12
      */
     static QString variableHelpText( const QString& variableName, bool showValue = true, const QVariant& value = QVariant() );

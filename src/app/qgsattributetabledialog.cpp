@@ -443,7 +443,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, const 
   QString error;
 
   QgsExpression exp( expression );
-  exp.setGeomCalculator( *myDa );
+  exp.setGeomCalculator( myDa );
   exp.setDistanceUnits( QgsProject::instance()->distanceUnits() );
   exp.setAreaUnits( QgsProject::instance()->areaUnits() );
   bool useGeometry = exp.needsGeometry();
@@ -945,7 +945,7 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, 
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  filterExpression.setGeomCalculator( myDa );
+  filterExpression.setGeomCalculator( &myDa );
   filterExpression.setDistanceUnits( QgsProject::instance()->distanceUnits() );
   filterExpression.setAreaUnits( QgsProject::instance()->areaUnits() );
   QgsFeatureRequest request( mMainView->masterModel()->request() );

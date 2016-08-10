@@ -136,12 +136,6 @@ class CORE_EXPORT QgsDataDefined
      */
     QString expressionOrField() const;
 
-    //! @note not available in python bindings
-    QMap<QString, QVariant> expressionParams() const;
-    //! @note not available in python bindings
-    void setExpressionParams( const QMap<QString, QVariant>& params );
-    void insertExpressionParam( const QString& key, const QVariant& param );
-
     /** Prepares the expression using a vector layer
      * @param layer vector layer
      * @returns true if expression was successfully prepared

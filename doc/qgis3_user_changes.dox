@@ -1,0 +1,24 @@
+/*! \page qgis3_user_changes QGIS 3.0 User Changes
+
+\tableofcontents
+
+Notes regarding user related changes for QGIS 3.0 which should be included in the release notes.
+
+\section qgis3_user_changes_expressions Expressions
+
+QGIS 3.0 brings some changes to the expression engine, which may require existing projects to
+be updated so that any expressions in use have the following changes:
+<ul>
+<li>$rownum has been replaced by \@row_number</li>
+<li>$scale has been replaced by \@map_scale</li>
+<li>$map has been replaced by \@map_id</li>
+<li>$numpages has been replaced by \@layout_numpages</li>
+<li>$page has been replaced by \@layout_page</li>
+<li>$feature has been replaced by \@atlas_featurenumber</li>
+<li>$atlasfeatureid has been replaced by \@atlas_featureid</li>
+<li>$atlasfeature has been replaced by \@atlas_feature</li>
+<li>$atlasgeometry has been replaced by \@atlas_geometry</li>
+<li>$numfeatures has been replaced by \@atlas_totalfeatures</li>
+</ul>
+
+*/

@@ -72,7 +72,10 @@ def register_function(function, arg_count, group, usesgeometry=False, referenced
             self.function = func
             self.expandargs = expandargs
 
-        def func(self, values, feature, parent):
+        def func(self, values, context, parent):
+            feature = None
+            if context:
+                feature = context.feature()
             try:
                 if self.expandargs:
                     values.append(feature)

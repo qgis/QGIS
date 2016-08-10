@@ -1084,63 +1084,22 @@ class TestQgsExpression: public QObject
       QCOMPARE( res2.type(), QVariant::Invalid );
     }
 
-    void eval_rownum()
-    {
-      QgsExpression exp( "$rownum + 1" );
-      QVariant v1 = exp.evaluate();
-      QCOMPARE( v1.toInt(), 1 );
-
-      Q_NOWARN_DEPRECATED_PUSH
-      exp.setCurrentRowNumber( 100 );
-      Q_NOWARN_DEPRECATED_POP
-      QVariant v2 = exp.evaluate();
-      QCOMPARE( v2.toInt(), 101 );
-
-      QgsExpressionContext context;
-      context << new QgsExpressionContextScope();
-      context.lastScope()->setVariable( "row_number", 101 );
-      QVariant v3 = exp.evaluate();
-      QCOMPARE( v3.toInt(), 101 );
-    }
-
-    void eval_scale()
-    {
-      QgsExpression exp( "$scale" );
-      QVariant v1 = exp.evaluate();
-      QCOMPARE( v1.toInt(), 0 );
-
-      exp.setScale( 100.00 );
-      QVariant v2 = exp.evaluate();
-      QCOMPARE( v2.toDouble(), 100.00 );
-    }
-
     void eval_feature_id()
     {
       QgsFeature f( 100 );
       QgsExpression exp( "$id * 2" );
-      Q_NOWARN_DEPRECATED_PUSH
-      QVariant v = exp.evaluate( &f );
-      Q_NOWARN_DEPRECATED_POP
-      QCOMPARE( v.toInt(), 200 );
-
       QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
-      QVariant v2 = exp.evaluate( &context );
-      QCOMPARE( v2.toInt(), 200 );
+      QVariant v = exp.evaluate( &context );
+      QCOMPARE( v.toInt(), 200 );
     }
 
     void eval_current_feature()
     {
       QgsFeature f( 100 );
       QgsExpression exp( "$currentfeature" );
-      Q_NOWARN_DEPRECATED_PUSH
-      QVariant v = exp.evaluate( &f );
-      Q_NOWARN_DEPRECATED_POP
-      QgsFeature evalFeature = v.value<QgsFeature>();
-      QCOMPARE( evalFeature.id(), f.id() );
-
       QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
-      v = exp.evaluate( &context );
-      evalFeature = v.value<QgsFeature>();
+      QVariant v = exp.evaluate( &context );
+      QgsFeature evalFeature = v.value<QgsFeature>();
       QCOMPARE( evalFeature.id(), f.id() );
     }
 
@@ -1154,17 +1113,11 @@ class TestQgsExpression: public QObject
       f.setAttribute( QString( "col1" ), QString( "test value" ) );
       f.setAttribute( QString( "second_column" ), 5 );
       QgsExpression exp( "attribute($currentfeature,'col1')" );
-      Q_NOWARN_DEPRECATED_PUSH
-      QVariant v = exp.evaluate( &f );
-      QCOMPARE( v.toString(), QString( "test value" ) );
-      QgsExpression exp2( "attribute($currentfeature,'second'||'_column')" );
-      v = exp2.evaluate( &f );
-      Q_NOWARN_DEPRECATED_POP
-      QCOMPARE( v.toInt(), 5 );
 
       QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
-      v = exp.evaluate( &context );
+      QVariant v = exp.evaluate( &context );
       QCOMPARE( v.toString(), QString( "test value" ) );
+      QgsExpression exp2( "attribute($currentfeature,'second'||'_column')" );
       v = exp2.evaluate( &context );
       QCOMPARE( v.toInt(), 5 );
     }
@@ -1564,14 +1517,9 @@ class TestQgsExpression: public QObject
       QgsExpression exp( string );
       QCOMPARE( exp.hasParserError(), false );
       QCOMPARE( exp.needsGeometry(), true );
-      Q_NOWARN_DEPRECATED_PUSH
-      QVariant out = exp.evaluate( &f );
-      Q_NOWARN_DEPRECATED_POP
-      QCOMPARE( exp.hasEvalError(), evalError );
-      QCOMPARE( out.toDouble(), result );
 
       QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
-      out = exp.evaluate( &context );
+      QVariant out = exp.evaluate( &context );
       QCOMPARE( exp.hasEvalError(), evalError );
       QCOMPARE( out.toDouble(), result );
     }
@@ -1591,29 +1539,19 @@ class TestQgsExpression: public QObject
 
       QgsExpressionContext context;
 
-      Q_NOWARN_DEPRECATED_PUSH
       QgsExpression exp1( "$area" );
-      QVariant vArea = exp1.evaluate( &fPolygon );
-      QCOMPARE( vArea.toDouble(), 40. );
-
       context.setFeature( fPolygon );
-      vArea = exp1.evaluate( &context );
+      QVariant vArea = exp1.evaluate( &context );
       QCOMPARE( vArea.toDouble(), 40. );
 
       QgsExpression exp2( "$length" );
-      QVariant vLength = exp2.evaluate( &fPolyline );
-      QCOMPARE( vLength.toDouble(), 10. );
-
       context.setFeature( fPolyline );
-      vLength = exp2.evaluate( &context );
+      QVariant vLength = exp2.evaluate( &context );
       QCOMPARE( vLength.toDouble(), 10. );
 
       QgsExpression exp3( "$perimeter" );
-      QVariant vPerimeter = exp3.evaluate( &fPolygon );
-      QCOMPARE( vPerimeter.toDouble(), 26. );
-
       context.setFeature( fPolygon );
-      vPerimeter = exp3.evaluate( &context );
+      QVariant vPerimeter = exp3.evaluate( &context );
       QCOMPARE( vPerimeter.toDouble(), 26. );
 
       QgsExpression deprecatedExpXAt( "$x_at(1)" );
@@ -1671,66 +1609,47 @@ class TestQgsExpression: public QObject
       QCOMPARE( yAt.toDouble(), 6.0 );
 
       QgsExpression exp4( "bounds_width($geometry)" );
-      QVariant vBoundsWidth = exp4.evaluate( &fPolygon );
-      QCOMPARE( vBoundsWidth.toDouble(), 8.0 );
-
       context.setFeature( fPolygon );
-      vBoundsWidth = exp4.evaluate( &context );
+      QVariant vBoundsWidth = exp4.evaluate( &context );
       QCOMPARE( vBoundsWidth.toDouble(), 8.0 );
 
       QgsExpression exp5( "bounds_height($geometry)" );
-      QVariant vBoundsHeight = exp5.evaluate( &fPolygon );
-      QCOMPARE( vBoundsHeight.toDouble(), 5.0 );
-
-      vBoundsHeight = exp5.evaluate( &context );
+      QVariant vBoundsHeight = exp5.evaluate( &context );
       QCOMPARE( vBoundsHeight.toDouble(), 5.0 );
 
       QgsExpression exp6( "xmin($geometry)" );
-      QVariant vXMin = exp6.evaluate( &fPolygon );
-      QCOMPARE( vXMin.toDouble(), 2.0 );
-
-      vXMin = exp6.evaluate( &context );
+      QVariant vXMin = exp6.evaluate( &context );
       QCOMPARE( vXMin.toDouble(), 2.0 );
 
       QgsExpression exp7( "xmax($geometry)" );
-      QVariant vXMax = exp7.evaluate( &fPolygon );
-      QCOMPARE( vXMax.toDouble(), 10.0 );
-
-      vXMax = exp7.evaluate( &context );
+      QVariant vXMax = exp7.evaluate( &context );
       QCOMPARE( vXMax.toDouble(), 10.0 );
 
       QgsExpression exp8( "ymin($geometry)" );
-      QVariant vYMin = exp8.evaluate( &fPolygon );
-      QCOMPARE( vYMin.toDouble(), 1.0 );
-
-      vYMin = exp8.evaluate( &context );
+      QVariant vYMin = exp8.evaluate( &context );
       QCOMPARE( vYMin.toDouble(), 1.0 );
 
       QgsExpression exp9( "ymax($geometry)" );
-      QVariant vYMax = exp9.evaluate( &fPolygon );
-      QCOMPARE( vYMax.toDouble(), 6.0 );
-
-      exp9.evaluate( &context );
+      QVariant vYMax = exp9.evaluate( &context );
       QCOMPARE( vYMax.toDouble(), 6.0 );
 
       QgsExpression exp10( "num_points($geometry)" );
-      QVariant vVertices = exp10.evaluate( &fPolygon );
+      QVariant vVertices = exp10.evaluate( &context );
       QCOMPARE( vVertices.toInt(), 5 );
 
+      context.setFeature( fPolyline );
       QgsExpression exp11( "length($geometry)" );
-      QVariant vLengthLine = exp11.evaluate( &fPolyline );
+      QVariant vLengthLine = exp11.evaluate( &context );
       QCOMPARE( vLengthLine.toDouble(), 10.0 );
 
+      context.setFeature( fPolygon );
       QgsExpression exp12( "area($geometry)" );
-      QVariant vAreaPoly = exp12.evaluate( &fPolygon );
+      QVariant vAreaPoly = exp12.evaluate( &context );
       QCOMPARE( vAreaPoly.toDouble(), 40.0 );
 
       QgsExpression exp13( "perimeter($geometry)" );
-      QVariant vPerimeterPoly = exp13.evaluate( &fPolygon );
+      QVariant vPerimeterPoly = exp13.evaluate( &context );
       QCOMPARE( vPerimeterPoly.toDouble(), 26.0 );
-
-      Q_NOWARN_DEPRECATED_POP
-
     }
 
     void geom_calculator()
@@ -1766,7 +1685,7 @@ class TestQgsExpression: public QObject
 
       // test area with geomCalculator
       QgsExpression expArea2( "$area" );
-      expArea2.setGeomCalculator( da );
+      expArea2.setGeomCalculator( &da );
       vArea = expArea2.evaluate( &context );
       expected = 1009089817.0;
       QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
@@ -1797,7 +1716,7 @@ class TestQgsExpression: public QObject
 
       // test perimeter with geomCalculator
       QgsExpression expPerimeter2( "$perimeter" );
-      expPerimeter2.setGeomCalculator( da );
+      expPerimeter2.setGeomCalculator( &da );
       vPerimeter = expPerimeter2.evaluate( &context );
       expected = 128289.074;
       QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
@@ -1834,7 +1753,7 @@ class TestQgsExpression: public QObject
 
       // test length with geomCalculator
       QgsExpression expLength2( "$length" );
-      expLength2.setGeomCalculator( da );
+      expLength2.setGeomCalculator( &da );
       vLength = expLength2.evaluate( &context );
       expected = 26932.156;
       QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
@@ -1870,40 +1789,24 @@ class TestQgsExpression: public QObject
 
       QgsExpressionContext context;
 
-      Q_NOWARN_DEPRECATED_PUSH
       QgsExpression exp1( "geomToWKT($geometry)" );
-      QVariant vWktLine = exp1.evaluate( &fPolyline );
-      QCOMPARE( vWktLine.toString(), QString( "LineString (0 0, 10 0)" ) );
-
       context.setFeature( fPolyline );
-      vWktLine = exp1.evaluate( &context );
+      QVariant vWktLine = exp1.evaluate( &context );
       QCOMPARE( vWktLine.toString(), QString( "LineString (0 0, 10 0)" ) );
 
       QgsExpression exp2( "geomToWKT($geometry)" );
-      QVariant vWktPolygon = exp2.evaluate( &fPolygon );
-      QCOMPARE( vWktPolygon.toString(), QString( "Polygon ((2 1, 10 1, 10 6, 2 6, 2 1))" ) );
-
       context.setFeature( fPolygon );
-      vWktPolygon = exp2.evaluate( &context );
+      QVariant vWktPolygon = exp2.evaluate( &context );
       QCOMPARE( vWktPolygon.toString(), QString( "Polygon ((2 1, 10 1, 10 6, 2 6, 2 1))" ) );
 
       QgsExpression exp3( "geomToWKT($geometry)" );
-      QVariant vWktPoint = exp3.evaluate( &fPoint );
-      QCOMPARE( vWktPoint.toString(), QString( "Point (-1.23456789 9.87654321)" ) );
-
       context.setFeature( fPoint );
-      vWktPoint = exp3.evaluate( &context );
+      QVariant vWktPoint = exp3.evaluate( &context );
       QCOMPARE( vWktPoint.toString(), QString( "Point (-1.23456789 9.87654321)" ) );
 
       QgsExpression exp4( "geomToWKT($geometry, 3)" );
-      QVariant vWktPointSimplify = exp4.evaluate( &fPoint );
+      QVariant vWktPointSimplify = exp4.evaluate( &context );
       QCOMPARE( vWktPointSimplify.toString(), QString( "Point (-1.235 9.877)" ) );
-
-      vWktPointSimplify = exp4.evaluate( &context );
-      QCOMPARE( vWktPointSimplify.toString(), QString( "Point (-1.235 9.877)" ) );
-
-      Q_NOWARN_DEPRECATED_POP
-
     }
 
     void eval_geometry_constructor_data()
@@ -1959,23 +1862,13 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.hasParserError(), false );
       QCOMPARE( exp.needsGeometry(), false );
 
-      //deprecated method
-      Q_NOWARN_DEPRECATED_PUSH
-      QVariant out = exp.evaluate( &f );
+      //replacement method
+      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
+      QVariant out = exp.evaluate( &context );
       QCOMPARE( exp.hasEvalError(), evalError );
 
       QCOMPARE( out.canConvert<QgsGeometry>(), true );
       QgsGeometry outGeom = out.value<QgsGeometry>();
-      QCOMPARE( geom.equals( outGeom ), true );
-      Q_NOWARN_DEPRECATED_POP
-
-      //replacement method
-      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
-      out = exp.evaluate( &context );
-      QCOMPARE( exp.hasEvalError(), evalError );
-
-      QCOMPARE( out.canConvert<QgsGeometry>(), true );
-      outGeom = out.value<QgsGeometry>();
       QCOMPARE( geom.equals( outGeom ), true );
     }
 
@@ -2032,22 +1925,11 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.hasParserError(), false );
       QCOMPARE( exp.needsGeometry(), needsGeom );
 
-      //deprecated method
-      Q_NOWARN_DEPRECATED_PUSH
-      QVariant out = exp.evaluate( &f );
+      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
+      QVariant out = exp.evaluate( &context );
       QCOMPARE( exp.hasEvalError(), evalError );
-
       QCOMPARE( out.canConvert<QgsGeometry>(), true );
       QgsGeometry outGeom = out.value<QgsGeometry>();
-      QCOMPARE( geom.equals( outGeom ), true );
-      Q_NOWARN_DEPRECATED_POP
-
-      //replacement method
-      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
-      out = exp.evaluate( &context );
-      QCOMPARE( exp.hasEvalError(), evalError );
-      QCOMPARE( out.canConvert<QgsGeometry>(), true );
-      outGeom = out.value<QgsGeometry>();
       QCOMPARE( geom.equals( outGeom ), true );
     }
 
@@ -2101,15 +1983,8 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.hasParserError(), false );
       QCOMPARE( exp.needsGeometry(), true );
 
-      //deprecated method
-      Q_NOWARN_DEPRECATED_PUSH
-      QVariant out = exp.evaluate( &f );
-      QCOMPARE( exp.hasEvalError(), evalError );
-      QCOMPARE( out.toInt(), result.toInt() );
-      Q_NOWARN_DEPRECATED_POP
-
       QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
-      out = exp.evaluate( &context );
+      QVariant out = exp.evaluate( &context );
       QCOMPARE( exp.hasEvalError(), evalError );
       QCOMPARE( out.toInt(), result.toInt() );
     }
@@ -2179,52 +2054,13 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.hasParserError(), false );
       QCOMPARE( exp.needsGeometry(), needGeom );
 
-      //deprecated method
-      Q_NOWARN_DEPRECATED_PUSH
-      QVariant out = exp.evaluate( &f );
+      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
+      QVariant out = exp.evaluate( &context );
       QCOMPARE( exp.hasEvalError(), evalError );
 
       QCOMPARE( out.canConvert<QgsGeometry>(), true );
       QgsGeometry outGeom = out.value<QgsGeometry>();
       QVERIFY( compareWkt( outGeom.exportToWkt(), result.exportToWkt() ) );
-      Q_NOWARN_DEPRECATED_POP
-
-      //replacement method
-      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
-      out = exp.evaluate( &context );
-      QCOMPARE( exp.hasEvalError(), evalError );
-
-      QCOMPARE( out.canConvert<QgsGeometry>(), true );
-      outGeom = out.value<QgsGeometry>();
-      QVERIFY( compareWkt( outGeom.exportToWkt(), result.exportToWkt() ) );
-    }
-
-    void eval_special_columns()
-    {
-      Q_NOWARN_DEPRECATED_PUSH
-      QTest::addColumn<QString>( "string" );
-      QTest::addColumn<QVariant>( "result" );
-
-      QgsExpression::setSpecialColumn( "$var1", QVariant(( int )42 ) );
-
-      QgsExpression exp( "$var1 + 1" );
-      QVariant v1 = exp.evaluate();
-      QCOMPARE( v1.toInt(), 43 );
-
-      QgsExpression::setSpecialColumn( "$var1", QVariant(( int )100 ) );
-      QVariant v2 = exp.evaluate();
-      QCOMPARE( v2.toInt(), 101 );
-
-      QgsExpression exp2( "_specialcol_('$var1')+1" );
-      QVariant v3 = exp2.evaluate();
-      QCOMPARE( v3.toInt(), 101 );
-
-      QgsExpression exp3( "_specialcol_('undefined')" );
-      QVariant v4 = exp3.evaluate();
-      QCOMPARE( v4, QVariant() );
-
-      QgsExpression::unsetSpecialColumn( "$var1" );
-      Q_NOWARN_DEPRECATED_POP
     }
 
     void eval_eval()

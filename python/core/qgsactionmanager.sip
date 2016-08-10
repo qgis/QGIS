@@ -75,24 +75,10 @@ class QgsActionManager
      * @param index action index
      * @param feature feature to run action for
      * @param context expression context to evalute expressions under
-     * @param substitutionMap deprecated - kept for compatibility with projects, will be removed for 3.0
      */
-    // TODO QGIS 3.0 remove substition map - force use of expression variables
     void doAction( int index,
                    const QgsFeature& feature,
-                   const QgsExpressionContext& context,
-                   const QMap<QString, QVariant> *substitutionMap = nullptr );
-
-
-    /** Does the action using the expression builder to expand it
-     *  and getting values from the passed feature attribute map.
-     *  substitutionMap is used to pass custom substitutions, to replace
-     *  each key in the map with the associated value
-     *  @note available in python bindings as doActionFeatureWithSubstitution
-     */
-    void doAction( int index,
-                   const QgsFeature &feat,
-                   const QMap<QString, QVariant> *substitutionMap ) /PyName=doActionFeatureWithSubstitution/;
+                   const QgsExpressionContext& context );
 
     //! Removes all actions
     void clearActions();
@@ -102,26 +88,6 @@ class QgsActionManager
 
     //! Return the layer
     QgsVectorLayer* layer() const;
-
-    /** Expands the given action, replacing all %'s with the value as
-     *  given.
-     * @deprecated use QgsExpression::replaceExpressionText() instead
-     */
-    QString expandAction( QString action, const QMap<int, QVariant> &attributes, uint defaultValueIndex ) /Deprecated/;
-
-    /** Expands the given action using the expression builder
-     *  This function currently replaces each expression between [% and %]
-     *  placeholders in the action with the result of its evaluation on
-     *  the feature passed as argument.
-     *
-     *  Additional substitutions can be passed through the substitutionMap
-     *  parameter
-     *  @deprecated use QgsExpression::replaceExpressionText() instead
-     */
-    QString expandAction( const QString& action,
-                          QgsFeature &feat,
-                          const QMap<QString, QVariant> *substitutionMap = 0 ) /Deprecated/;
-
 
     //! Writes the actions out in XML format
     bool writeXml( QDomNode& layer_node, QDomDocument& doc ) const;

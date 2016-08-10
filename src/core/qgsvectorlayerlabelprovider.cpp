@@ -195,16 +195,9 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QStr
         continue;
       }
 
-      // NOTE: the following also prepares any expressions for later use
-
-      // store parameters for data defined expressions
-      QMap<QString, QVariant> exprParams;
-      exprParams.insert( "scale", context.rendererScale() );
-
-      dd->setExpressionParams( exprParams );
-
       // this will return columns for expressions or field name, depending upon what is set to be used
-      QStringList cols = dd->referencedColumns( context.expressionContext() ); // <-- prepares any expressions, too
+      // this also prepares any expressions, too
+      QStringList cols = dd->referencedColumns( context.expressionContext() );
 
       //QgsDebugMsgLevel( QString( "Data defined referenced columns:" ) + cols.join( "," ), 4 );
       Q_FOREACH ( const QString& name, cols )

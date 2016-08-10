@@ -69,43 +69,27 @@ class TestQgsComposerLabel(unittest.TestCase):
         assert mLabel.displayText() == "__[NAME_1]42__"
 
     def feature_evaluation_test(self, mComposition, mLabel, mVectorLayer):
-        provider = mVectorLayer.dataProvider()
+        atlas = mComposition.atlasComposition()
+        atlas.setCoverageLayer(mVectorLayer)
+        atlas.setEnabled(True)
+        mComposition.setAtlasMode(QgsComposition.ExportAtlas)
 
-        fi = provider.getFeatures(QgsFeatureRequest())
-        feat = QgsFeature()
-
-        fi.nextFeature(feat)
-        mLabel.setExpressionContext(feat, mVectorLayer)
         mLabel.setText("[%\"NAME_1\"||'_ok'%]")
+        atlas.beginRender()
+        atlas.prepareForFeature(0)
         assert mLabel.displayText() == "Basse-Normandie_ok"
 
-        fi.nextFeature(feat)
-        mLabel.setExpressionContext(feat, mVectorLayer)
+        atlas.prepareForFeature(1)
         assert mLabel.displayText() == "Bretagne_ok"
-
-        # evaluation with local variables
-        locs = {"$test": "OK"}
-        mLabel.setExpressionContext(feat, mVectorLayer, locs)
-        mLabel.setText("[%\"NAME_1\"||$test%]")
-        assert mLabel.displayText() == "BretagneOK"
 
     def page_evaluation_test(self, mComposition, mLabel, mVectorLayer):
         mComposition.setNumPages(2)
-        mLabel.setText("[%$page||'/'||$numpages%]")
+        mLabel.setText("[%@layout_page||'/'||@layout_numpages%]")
         assert mLabel.displayText() == "1/2"
 
         # move the the second page and re-evaluate
         mLabel.setItemPosition(0, 320)
         assert mLabel.displayText() == "2/2"
-
-        # use setSpecialColumn
-        mLabel.setText("[%$var1 + 1%]")
-        QgsExpression.setSpecialColumn("$var1", 41)
-        assert mLabel.displayText() == "42"
-        QgsExpression.setSpecialColumn("$var1", 99)
-        assert mLabel.displayText() == "100"
-        QgsExpression.unsetSpecialColumn("$var1")
-        assert mLabel.displayText() == "[%$var1 + 1%]"
 
 if __name__ == '__main__':
     unittest.main()

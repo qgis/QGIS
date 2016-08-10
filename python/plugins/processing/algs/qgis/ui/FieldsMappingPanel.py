@@ -35,7 +35,7 @@ from qgis.PyQt.QtWidgets import QComboBox, QHeaderView, QLineEdit, QMessageBox, 
 from qgis.PyQt.QtCore import QItemSelectionModel
 from qgis.PyQt.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt, pyqtSlot
 
-from qgis.core import QgsExpression
+from qgis.core import QgsExpression, QgsExpressionContextUtils
 from qgis.gui import QgsFieldExpressionWidget
 
 from processing.tools import dataobjects
@@ -92,9 +92,10 @@ class FieldsMappingModel(QAbstractTableModel):
             return
         if self._layer is None:
             return
-        dp = self._layer.dataProvider()
+        context = QgsExpressionContextUtils.createFeatureBasedContext(QgsFeature(), self._layer.fields())
         for feature in dp.getFeatures():
-            expression.evaluate(feature, dp.fields())
+            context.setFeature(feature)
+            expression.evaluate(context)
             if expression.hasEvalError():
                 self._errors[row] = expression.evalErrorString()
                 return

@@ -848,7 +848,7 @@ void registerQgisFunctions( sqlite3* db )
   // register QGIS expression functions
   Q_FOREACH ( QgsExpression::Function* foo, QgsExpression::Functions() )
   {
-    if ( foo->usesgeometry() || foo->lazyEval() )
+    if ( foo->usesGeometry() || foo->lazyEval() )
     {
       // there is no "current" feature here, so calling functions that access "the" geometry does not make sense
       // also, we can't pass Node values for lazy evaluations

@@ -23,6 +23,7 @@ This page tries to maintain a list with incompatible changes that happened in pr
 <table>
 <caption id="renamed_classes">Renamed classes</caption>
 <tr><th>API 2.x                          <th>API 3.X
+<tr><td>QgsAttributeAction               <td>QgsActionManager
 <tr><td>QgsColorButtonV2                 <td>QgsColorButton
 <tr><td>QgsSymbolLayerV2                 <td>QgsSymbolLayer
 <tr><td>QgsSymbolLayerV2AbstractMetadata <td>QgsSymbolLayerAbstractMetadata
@@ -127,6 +128,15 @@ corresponding counterparts in QgsUnitTypes should be used instead.</li>
 <li>fileMenu() has been removed, use projectMenu() instead.
 </ul>
 
+\subsection qgis_api_break_3_0_QgsActionManager QgsActionManager
+
+<ul>
+<li>doAction() no longer accepts a substitution map. Use expression context variables instead.</li>
+<li>The doAction() variant which takes a QgsFeature along has been removed. Use the expression context
+variant instead.</li>
+<li>expandAction() has been removed. Use QgsExpression::replaceExpressionText() instead.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsAtlasComposition QgsAtlasComposition
 
 <ul>
@@ -143,6 +153,15 @@ corresponding counterparts in QgsUnitTypes should be used instead.</li>
 <ul>
 <li>DataSourceURI has been renamed to DataSourceUri</li>
 <li>GenericDataSourceURI has been renamed to GenericDataSourceUri</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsComposerLabel QgsComposerLabel
+
+<ul>
+<li>setExpressionContext() has been removed. Setup the composition using an atlas and with
+expression variables in the composer label item instead.</li>
+<li>setSubstitutions has been removed. Use expression context variables in the composer
+label item instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsComposerLegend QgsComposerLegend
@@ -243,6 +262,13 @@ be returned in place of a null pointer.</li>
 <li>updateCRSCache() has been renamed to updateCrsCache</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsDataDefined QgsDataDefined
+
+<ul>
+<li>expressionParams(), setExpressionParams() and insertExpressionParam() have been removed.
+QgsExpressionContext variables should be used in their place.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsDataDefinedSymbolDialog QgsDataDefinedSymbolDialog
 
 <ul>
@@ -288,6 +314,27 @@ be returned in place of a null pointer.</li>
 <li>setCoordinateTransform() now takes a QgsCoordinateTransform object, not a pointer. Use an invalid QgsCoordinateTransform in
 place of a null pointer.</li>
 <li>The ct member has been removed. Use coordinateTransform() and setCoordinateTransform() instead.
+</ul>
+
+\subsection qgis_api_break_3_0_QgsExpression QgsExpression
+
+<ul>
+<li>prepare( const QgsFields &fields ) has been removed. Use prepare( const QgsExpressionContext *context ) instead.</li>
+<li>The evaluate methods which accept feature parameters have been removed. Use the version which takes a QgsExpressionContext
+argument instead.</li>
+<li>isValid( const QString& text, const QgsFields& fields, QString &errorMessage ) has been removed, use the QgsExpressionContext
+version instead.</li>
+<li>setCurrentRowNumber, currentRowNumber, scale, setScale, setSpecialColumn, unsetSpecialColumn, specialColumn, hasSpecialColumn have been
+removed. Use QgsExpressionContext variables instead.</li>
+<li>The replaceExpressionText version which accepts a QgsFeature argument has been removed. Use the QgsExpressionContext
+version instead.</li>
+<li>QgsExpression::Function::func has been modified to use a QgsExpressionContext argument rather than a QgsFeature.</li>
+<li>QgsExpression::Function::usesgeometry() has been renamed to usesGeometry()</li>
+<li>QgsExpression::Function::helptext() has been renamed to helpText()</li>
+<li>The QgsExpression::Node::eval and prepare versions which take a QgsFeature has been removed, use the QgsExpressionContext versions instead.</li>
+<li>QgsExpression::Interval has been removed. Use QgsInterval instead.</li>
+<li>replaceExpressionText() no longer accepts a substitution map parameter. Use expression context variables instead.</li>
+<li>helptext() has been renamed to helpText()</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsFeature QgsFeature
