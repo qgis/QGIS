@@ -194,7 +194,7 @@ static void _updateBestMatch( QgsPointLocator::Match& bestMatch, const QgsPoint&
   {
     _replaceIfBetter( bestMatch, loc->nearestVertex( pointMap, tolerance, filter ), tolerance );
   }
-  if ( bestMatch.type() != QgsPointLocator::Vertex && ( type & QgsPointLocator::Edge ) )
+  if ( bestMatch.type() != QgsPointLocator::Vertex && ( loc->layer()->geometryType() != QgsWkbTypes::PointGeometry && type & QgsPointLocator::Edge ) )
   {
     _replaceIfBetter( bestMatch, loc->nearestEdge( pointMap, tolerance, filter ), tolerance );
   }
