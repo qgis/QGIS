@@ -205,8 +205,15 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * Check if a certain feature id is cached.
      * @param  fid The feature id to look for
      * @return True if this id is in the cache
+     * @see cachedFeatureIds()
      */
-    bool isFidCached( const QgsFeatureId fid );
+    bool isFidCached( const QgsFeatureId fid ) const;
+
+    /** Returns the set of feature IDs for features which are cached.
+     * @note added in QGIS 3.0
+     * @see isFidCached()
+     */
+    QgsFeatureIds cachedFeatureIds() const { return mCache.keys().toSet(); }
 
     /**
      * Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features

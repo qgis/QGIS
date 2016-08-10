@@ -42,12 +42,36 @@ void QgsCacheIndexFeatureId::requestCompleted( const QgsFeatureRequest& featureR
 
 bool QgsCacheIndexFeatureId::getCacheIterator( QgsFeatureIterator &featureIterator, const QgsFeatureRequest &featureRequest )
 {
-  if ( featureRequest.filterType() == QgsFeatureRequest::FilterFid )
+  switch ( featureRequest.filterType() )
   {
-    if ( C->isFidCached( featureRequest.filterFid() ) )
+    case QgsFeatureRequest::FilterFid:
     {
-      featureIterator = QgsFeatureIterator( new QgsCachedFeatureIterator( C, featureRequest ) );
-      return true;
+      if ( C->isFidCached( featureRequest.filterFid() ) )
+      {
+        featureIterator = QgsFeatureIterator( new QgsCachedFeatureIterator( C, featureRequest ) );
+        return true;
+      }
+      break;
+    }
+    case QgsFeatureRequest::FilterFids:
+    {
+      if ( C->cachedFeatureIds().contains( featureRequest.filterFids() ) )
+      {
+        featureIterator = QgsFeatureIterator( new QgsCachedFeatureIterator( C, featureRequest ) );
+        return true;
+      }
+      break;
+    }
+    case QgsFeatureRequest::FilterNone:
+    case QgsFeatureRequest::FilterRect:
+    case QgsFeatureRequest::FilterExpression:
+    {
+      if ( C->hasFullCache() )
+      {
+        featureIterator = QgsFeatureIterator( new QgsCachedFeatureIterator( C, featureRequest ) );
+        return true;
+      }
+      break;
     }
   }
 

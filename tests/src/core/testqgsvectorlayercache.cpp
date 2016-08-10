@@ -289,6 +289,7 @@ void TestVectorLayerCache::testCanUseCacheForRequest()
   // get just the first feature into the cache
   it = cache.getFeatures( QgsFeatureRequest().setFilterFid( id1 ) );
   while ( it.nextFeature( f ) ) { }
+  QCOMPARE( cache.cachedFeatureIds(), QgsFeatureIds() << id1 );
   QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id1 ), it ) );
   //verify that the returned iterator was correct
   QVERIFY( it.nextFeature( f ) );
@@ -302,6 +303,7 @@ void TestVectorLayerCache::testCanUseCacheForRequest()
   // get feature 2 into cache
   it = cache.getFeatures( QgsFeatureRequest().setFilterFid( id2 ) );
   while ( it.nextFeature( f ) ) { }
+  QCOMPARE( cache.cachedFeatureIds(), QgsFeatureIds() << id1 << id2 );
   QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterFid( id1 ), it ) );
   QVERIFY( it.nextFeature( f ) );
   QCOMPARE( f.id(), id1 );
