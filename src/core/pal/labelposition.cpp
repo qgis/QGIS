@@ -97,7 +97,7 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   y[3] = y1 + dy2;
 
   // upside down ? (curved labels are always correct)
-  if ( !feature->isCurved() &&
+  if ( !feature->layer()->isCurved() &&
        this->alpha > M_PI / 2 && this->alpha <= 3*M_PI / 2 )
   {
     if ( feature->isUprightLabel() )
