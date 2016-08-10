@@ -84,13 +84,12 @@ class Ogr2OgrOneSideBuffer(GdalAlgorithm):
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
-        layername = "'" + ogrLayerName(inLayer) + "'"
         operation = self.getParameterValue(self.OPERATION)
         geometry = unicode(self.getParameterValue(self.GEOMETRY))
-        distance = unicode(self.getParameterValue(self.RADIUS))
-        leftright = self.LEFTRIGHTLIST[self.getParameterValue(self.LEFTRIGHT)]
+        distance = self.getParameterValue(self.RADIUS)
+        leftright = self.getParameterValue(self.LEFTRIGHT)
         dissolveall = self.getParameterValue(self.DISSOLVEALL)
-        field = unicode(self.getParameterValue(self.FIELD))
+        field = self.getParameterValue(self.FIELD)
         multi = self.getParameterValue(self.MULTI)
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
@@ -99,53 +98,33 @@ class Ogr2OgrOneSideBuffer(GdalAlgorithm):
         output = ogrConnectionString(outFile)
         options = unicode(self.getParameterValue(self.OPTIONS))
 
+        layername = ogrLayerName(inLayer)
+
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(ogrLayerName(inLayer))
-        if dissolveall or field != 'None':
-            if operation == 0:
-                arguments.append('-dialect sqlite -sql "SELECT ST_Union(ST_SingleSidedBuffer(')
-            else:
-                arguments.append('-dialect sqlite -sql "SELECT ST_Union(ST_OffsetCurve(')
-        else:
-            if operation == 0:
-                arguments.append('-dialect sqlite -sql "SELECT ST_SingleSidedBuffer(')
-            else:
-                arguments.append('-dialect sqlite -sql "SELECT ST_OffsetCurve(')
-        arguments.append(geometry)
-        arguments.append(',')
-        arguments.append(distance)
-        if dissolveall or field != 'None':
-            if leftright == 'Left':
-                if operation == 0:
-                    arguments.append(',0)),*')
-                else:
-                    arguments.append(')),*')
-            else:
-                if operation == 0:
-                    arguments.append(',1)),*')
-                else:
-                    arguments.append(')),*')
-        else:
-            if leftright == 'Left':
-                if operation == 0:
-                    arguments.append(',0),*')
-                else:
-                    arguments.append('),*')
-            else:
-                if operation == 0:
-                    arguments.append(',1),*')
-                else:
-                    arguments.append('),*')
-        arguments.append('FROM')
         arguments.append(layername)
-        if field != 'None':
-            arguments.append('GROUP')
-            arguments.append('BY')
-            arguments.append(field)
-        arguments.append('"')
-        if field != 'None' and multi:
+        arguments.append('-dialect')
+        arguments.append('sqlite')
+        arguments.append('-sql')
+
+        if dissolveall or field is not None:
+            if operation == 0:
+                sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})), * FROM '{}'".format(geometry, distance, leftright, layername)
+            else:
+                sql = "SELECT ST_Union(ST_OffsetCurve({}, {}, {})) * FROM '{}'".format(geometry, distance, leftright, layername)
+        else:
+            if operation == 0:
+                sql = "SELECT ST_SingleSidedBuffer({},{},{}), * FROM '{}'".format(geometry, distance, leftright, layername)
+            else:
+                sql = "SELECT ST_OffsetCurve({}, {}, {}), * FROM '{}'".format(geometry, distance, leftright, layername)
+
+            if field is not None:
+                sql = '"{} GROUP BY {}"'.format(sql, field)
+
+        arguments.append(sql)
+
+        if field is not None and multi:
             arguments.append('-explodecollections')
 
         if len(options) > 0:

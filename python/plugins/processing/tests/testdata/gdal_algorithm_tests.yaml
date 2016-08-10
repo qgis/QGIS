@@ -60,3 +60,39 @@ tests:
           - 'Origin = \(270736.067325068172067,4459029.574521748349071\)'
           - 'Band 1 Block=16x14 Type=Float32, ColorInterp=Gray'
           - 'Minimum=826.000, Maximum=899.000, Mean=865.867, StdDev=17.808'
+
+  - algorithm: gdalogr:singlesidedbuffersandoffsetlinesforlines
+    name: Single-sided buffer
+    params:
+      DISSOLVEALL: false
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      LEFTRIGHT: '0'
+      MULTI: false
+      OPERATION: '0'
+      OPTIONS: ''
+      RADIUS: '0.05'
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/single_sided_buffer.gml
+        type: vector
+
+  - algorithm: gdalogr:singlesidedbuffersandoffsetlinesforlines
+    name: Offset curve
+    params:
+      DISSOLVEALL: false
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      LEFTRIGHT: '0'
+      MULTI: false
+      OPERATION: '1'
+      OPTIONS: ''
+      RADIUS: '0.05'
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/offset_curve.gml
+        type: vector
