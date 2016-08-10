@@ -258,7 +258,8 @@ void QgsFeatureListView::mouseReleaseEvent( QMouseEvent *event )
   }
   else
   {
-    mFeatureSelectionModel->enableSync( true );
+    if ( mFeatureSelectionModel )
+      mFeatureSelectionModel->enableSync( true );
   }
 }
 
