@@ -347,6 +347,20 @@ class CORE_EXPORT QgsVectorFileWriter
 
     static bool driverMetadata( const QString& driverName, MetaData& driverMetadata );
 
+    /** Returns a list of the default dataset options for a specified driver.
+     * @param driverName name of OGR driver
+     * @note added in QGIS 3.0
+     * @see defaultLayerOptions()
+     */
+    static QStringList defaultDatasetOptions( const QString& driverName );
+
+    /** Returns a list of the default layer options for a specified driver.
+     * @param driverName name of OGR driver
+     * @note added in QGIS 3.0
+     * @see defaultDatasetOptions()
+     */
+    static QStringList defaultLayerOptions( const QString& driverName );
+
     /**
      * Get the ogr geometry type from an internal QGIS wkb type enum.
      *
@@ -448,6 +462,9 @@ class CORE_EXPORT QgsVectorFileWriter
 
     QgsVectorFileWriter( const QgsVectorFileWriter& rh );
     QgsVectorFileWriter& operator=( const QgsVectorFileWriter& rh );
+
+    //! Concatenates a list of options using their default values
+    static QStringList concatenateOptions( const QMap<QString, Option*>& options );
 };
 
 #endif

@@ -461,6 +461,30 @@ class TestQgsVectorLayer(unittest.TestCase):
         int8_idx = created_layer.fieldNameIndex('int8')
         self.assertEqual(f.attributes()[int8_idx], 2123456789)
 
+    def testDefaultDatasetOptions(self):
+        """ Test retrieving default dataset options for a format """
+
+        # NOTE - feel free to adapt these if the defaults change!
+        options = QgsVectorFileWriter.defaultDatasetOptions('not a format')
+        self.assertEqual(options, [])
+        options = QgsVectorFileWriter.defaultDatasetOptions('ESRI Shapefile')
+        self.assertEqual(options, [])
+        options = QgsVectorFileWriter.defaultDatasetOptions('GML')
+        # just test a few
+        self.assertTrue('GML3_LONGSRS=YES' in options)
+        self.assertTrue('STRIP_PREFIX=NO' in options)
+
+    def testDefaultLayerOptions(self):
+        """ Test retrieving default layer options for a format """
+
+        # NOTE - feel free to adapt these if the defaults change!
+        options = QgsVectorFileWriter.defaultLayerOptions('not a format')
+        self.assertEqual(options, [])
+        options = QgsVectorFileWriter.defaultLayerOptions('ESRI Shapefile')
+        self.assertEqual(options, ['RESIZE=NO'])
+        options = QgsVectorFileWriter.defaultLayerOptions('GML')
+        self.assertEqual(options, [])
+
 
 if __name__ == '__main__':
     unittest.main()

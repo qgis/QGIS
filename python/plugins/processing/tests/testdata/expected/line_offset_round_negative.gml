@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ogr:FeatureCollection
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation="http://ogr.maptools.org/ line_offset_round_negative.xsd"
+     xsi:schemaLocation=""
      xmlns:ogr="http://ogr.maptools.org/"
      xmlns:gml="http://www.opengis.net/gml">
   <gml:boundedBy>
@@ -13,7 +13,7 @@
                                                                                                                               
   <gml:featureMember>
     <ogr:line_offset_round_negative fid="lines.0">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>11.707106781186548,4.292893218813452 10.0,2.585786437626905 10,2 9.98078528040323,1.804909677983872 9.923879532511286,1.61731656763491 9.831469612302543,1.444429766980398 9.707106781186548,1.292893218813453 9.555570233019605,1.168530387697455 9.38268343236509,1.076120467488713 9.195090322016128,1.01921471959677 9,1 6,1</gml:coordinates></gml:LineString></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>11.707106781186548,4.292893218813452 10.0,2.585786437626905 10,2 9.98078528040323,1.804909677983872 9.923879532511286,1.61731656763491 9.831469612302545,1.444429766980398 9.707106781186548,1.292893218813453 9.555570233019603,1.168530387697455 9.38268343236509,1.076120467488713 9.195090322016128,1.01921471959677 9,1 6,1</gml:coordinates></gml:LineString></ogr:geometryProperty>
     </ogr:line_offset_round_negative>
   </gml:featureMember>
   <gml:featureMember>
