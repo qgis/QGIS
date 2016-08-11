@@ -403,6 +403,17 @@ static bool operator<( const QVariant &a, const QVariant &b )
 }
 #endif
 
+#if QT_VERSION >= 0x050000 && QT_VERSION < 0x050600
+#include <algorithm>
+template <typename T>
+bool operator<( const QList<T> &lhs, const QList<T> &rhs )
+{
+  return std::lexicographical_compare( lhs.begin(), lhs.end(),
+                                       rhs.begin(), rhs.end() );
+}
+#endif
+
+
 QgsFeatureIterator QgsPostgresProvider::getFeatures( const QgsFeatureRequest& request ) const
 {
   if ( !mValid )
