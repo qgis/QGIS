@@ -311,11 +311,12 @@ bool QgsPointV2::moveVertex( QgsVertexId position, const QgsPointV2& newPos )
 
 double QgsPointV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const
 {
+  Q_UNUSED( pt );
+  Q_UNUSED( segmentPt );
+  Q_UNUSED( vertexAfter );
   Q_UNUSED( leftOf );
   Q_UNUSED( epsilon );
-  segmentPt = *this;
-  vertexAfter = QgsVertexId( 0, 0, 0 );
-  return QgsGeometryUtils::sqrDistance2D( *this, pt );
+  return -1;  // no segments - return error
 }
 
 bool QgsPointV2::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const
