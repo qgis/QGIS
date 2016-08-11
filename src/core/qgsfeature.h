@@ -17,6 +17,7 @@ email                : sherman at mrcc.com
 #define QGSFEATURE_H
 
 #include <QMap>
+#include <QMetaType>
 #include <QString>
 #include <QVariant>
 #include <QList>
@@ -32,73 +33,13 @@ class QgsFields;
 class QgsFeaturePrivate;
 
 // feature id class (currently 64 bit)
-#if 0
-#include <limits>
-
-class QgsFeatureId
-{
-  public:
-    QgsFeatureId( qint64 id = 0 ) : mId( id ) {}
-    QgsFeatureId( QString str ) : mId( str.toLongLong() ) {}
-    QgsFeatureId &operator=( const QgsFeatureId &other ) { mId = other.mId; return *this; }
-    QgsFeatureId &operator++() { mId++; return *this; }
-    QgsFeatureId operator++( int ) { QgsFeatureId pId = mId; ++( *this ); return pId; }
-
-    bool operator==( const QgsFeatureId &id ) const { return mId == id.mId; }
-    bool operator!=( const QgsFeatureId &id ) const { return mId != id.mId; }
-    bool operator<( const QgsFeatureId &id ) const { return mId < id.mId; }
-    bool operator>( const QgsFeatureId &id ) const { return mId > id.mId; }
-    operator QString() const { return QString::number( mId ); }
-
-    bool isNew() const
-    {
-      return mId < 0;
-    }
-
-    qint64 toLongLong() const
-    {
-      return mId;
-    }
-
-  private:
-    qint64 mId;
-
-    friend uint qHash( const QgsFeatureId &id );
-};
-
-/** Writes the feature id to stream out. QGIS version compatibility is not guaranteed. */
-CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsFeatureId& featureId );
-/** Reads a feature id from stream in into feature id. QGIS version compatibility is not guaranteed. */
-CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsFeatureId& featureId );
-
-inline uint qHash( const QgsFeatureId &id )
-{
-  return qHash( id.mId );
-}
-
-#define FID_IS_NEW(fid)     (fid).isNew()
-#define FID_TO_NUMBER(fid)  (fid).toLongLong()
-#define FID_TO_STRING(fid)  static_cast<QString>(fid)
-#define STRING_TO_FID(str)  QgsFeatureId(str)
-#endif
 
 // 64 bit feature ids
-#if 1
 typedef qint64 QgsFeatureId;
 #define FID_IS_NEW(fid)     (fid<0)
 #define FID_TO_NUMBER(fid)  static_cast<qint64>(fid)
 #define FID_TO_STRING(fid)  QString::number( fid )
 #define STRING_TO_FID(str)  (str).toLongLong()
-#endif
-
-// 32 bit feature ids
-#if 0
-typedef int QgsFeatureId;
-#define FID_IS_NEW(fid)     (fid<0)
-#define FID_TO_NUMBER(fid)  static_cast<int>(fid)
-#define FID_TO_STRING(fid)  QString::number( fid )
-#define STRING_TO_FID(str)  (str).toLong()
-#endif
 
 // key = field index, value = field value
 typedef QMap<int, QVariant> QgsAttributeMap;
