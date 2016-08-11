@@ -881,3 +881,15 @@ tests:
       OUTPUT_HTML_FILE:
         name: expected/rasterlayerstatistics.html
         type: file
+
+  - algorithm: qgis:createconstantrasterlayer
+    name: Create constant raster
+    params:
+      INPUT:
+        name: raster.tif
+        type: raster
+      NUMBER: 1.0
+    results:
+      OUTPUT:
+        hash: 16d3758b7e66a0f0c50e944baa8b6ee946b129d0b44600fa2d46410d
+        type: rasterhash
