@@ -17,11 +17,9 @@ email                : sherman at mrcc.com
 #define QGSFEATURE_H
 
 #include <QMap>
-#include <QMetaType>
 #include <QString>
 #include <QVariant>
 #include <QList>
-#include <QHash>
 #include <QVector>
 #include <QSet>
 #include <QExplicitlySharedDataPointer>
