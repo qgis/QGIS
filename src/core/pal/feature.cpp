@@ -1107,7 +1107,10 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
     // and we're calculating the mean line here
     double dist = 0.9 * li->label_height / 2;
     if ( orientation < 0 )
+    {
       dist = -dist;
+      flip = true;
+    }
     start_x += dist * cos( angle + M_PI_2 );
     start_y -= dist * sin( angle + M_PI_2 );
 
@@ -1243,7 +1246,6 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
       {
         // Retry with the opposite orientation
         orientation = -orientation;
-        flip = true;
         delete slp;
         slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i * delta, flip );
       }
