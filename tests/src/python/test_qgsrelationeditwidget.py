@@ -49,7 +49,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         :return:
         """
         QgsEditorWidgetRegistry.initEditors()
-        cls.dbconn = u'dbname=\'qgis_test\' host=localhost port=5432 user=\'postgres\' password=\'postgres\''
+        cls.dbconn = u'service=\'qgis_test\''
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layer
@@ -125,7 +125,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
 
         self.assertEqual(self.table_view.model().rowCount(), 4)
 
-    @unittest.expectedFailure(os.environ['QT_VERSION'] == '4' and os.environ['TRAVIS_OS_NAME'] == 'linux') # It's probably not related to this variables at all, but that's the closest we can get to the real source of this problem at the moment...
+	@unittest.expectedFailure(os.environ['QT_VERSION'] == '4' and os.environ['TRAVIS_OS_NAME'] == 'linux') # It's probably not related to this variables at all, but that's the closest we can get to the real source of this problem at the moment...
     def test_add_feature(self):
         """
         Check if a new related feature is added
@@ -182,7 +182,6 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         Check if a linked feature can be unlinked
         """
         wrapper = self.createWrapper(self.vl_b)
-        wdg = wrapper.widget()  # NOQA
 
         # All authors are listed
         self.assertEqual(self.table_view.model().rowCount(), 4)
@@ -191,6 +190,8 @@ class TestQgsRelationEditWidget(unittest.TestCase):
             QgsFeatureRequest().setFilterExpression('"name" IN (\'Richard Helm\', \'Ralph Johnson\')'))
 
         self.widget.featureSelectionManager().select([f.id() for f in it])
+
+        self.assertEqual(2, self.widget.featureSelectionManager().selectedFeatureCount())
 
         btn = self.widget.findChild(QToolButton, 'mUnlinkFeatureButton')
         btn.click()
