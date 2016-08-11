@@ -684,12 +684,11 @@ void TestQgsGeometry::point()
   p20.deleteVertex( QgsVertexId( 0, 0, 0 ) );
   QCOMPARE( p20, QgsPointV2( 2.0, 3.0 ) );
 
-  //closestSegment
+  // closestSegment
   QgsPointV2 closest;
   QgsVertexId after;
-  QCOMPARE( p20.closestSegment( QgsPointV2( 4.0, 6.0 ), closest, after, 0, 0 ), 13.0 );
-  QCOMPARE( closest, p20 );
-  QCOMPARE( after, QgsVertexId( 0, 0, 0 ) );
+  // return error - points have no segments
+  QVERIFY( p20.closestSegment( QgsPointV2( 4.0, 6.0 ), closest, after, 0, 0 ) < 0 );
 
   //nextVertex
   QgsPointV2 p21( 3.0, 4.0 );
@@ -3023,6 +3022,12 @@ void TestQgsGeometry::multiPoint()
   boundaryMP.addGeometry( new QgsPointV2( 0, 0 ) );
   boundaryMP.addGeometry( new QgsPointV2( 1, 1 ) );
   QVERIFY( !boundaryMP.boundary() );
+
+  // closestSegment
+  QgsPointV2 closest;
+  QgsVertexId after;
+  // return error - points have no segments
+  QVERIFY( boundaryMP.closestSegment( QgsPointV2( 0.5, 0.5 ), closest, after, 0, 0 ) < 0 );
 }
 
 void TestQgsGeometry::multiLineString()
