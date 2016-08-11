@@ -160,3 +160,33 @@ tests:
         compare:
           geometry:
             precision: 7
+
+  - algorithm: gdalogr:clipvectorsbypolygon
+    name: OGR Clip points by polygons
+    params:
+      CLIP_LAYER:
+        name: polys.gml
+        type: vector
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT_LAYER:
+        name: expected/clip_points_by_polygons.gml
+        type: vector
+
+  - algorithm: gdalogr:clipvectorsbypolygon
+    name: OGR Clip points by multipolygons
+    params:
+      CLIP_LAYER:
+        name: multipolys.gml
+        type: vector
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT_LAYER:
+        name: expected/clip_points_by_multipolygons.gml
+        type: vector
