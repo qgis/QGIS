@@ -733,7 +733,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
 
     case pktFidMap:
     {
-      QList<QVariant> primaryKeyVals;
+      QVariantList primaryKeyVals;
 
       Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
       {
@@ -748,7 +748,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
         col++;
       }
 
-      fid = mSource->mShared->lookupFid( QVariant( primaryKeyVals ) );
+      fid = mSource->mShared->lookupFid( primaryKeyVals );
 
     }
     break;

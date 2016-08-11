@@ -319,6 +319,8 @@ QString QgsPostgresProvider::storageType() const
 }
 
 // Qt5 has that built in
+// ... BUT it does not behave exactly the same way as our implementation
+// (e.g. comparison of QVariantList does not work)
 #if QT_VERSION < 0x050000
 static bool operator<( const QVariant &a, const QVariant &b )
 {
@@ -488,11 +490,9 @@ void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &p
 
     case pktFidMap:
     {
-      QVariant pkValsVariant = mShared->lookupKey( featureId );
-      QList<QVariant> pkVals;
-      if ( !pkValsVariant.isNull() )
+      QVariantList pkVals = mShared->lookupKey( featureId );
+      if ( !pkVals.isEmpty() )
       {
-        pkVals = pkValsVariant.toList();
         Q_ASSERT( pkVals.size() == mPrimaryKeyAttrs.size() );
       }
 
@@ -554,11 +554,9 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields& 
 
     case pktFidMap:
     {
-      QVariant pkValsVariant = sharedData->lookupKey( featureId );
-      if ( !pkValsVariant.isNull() )
+      QVariantList pkVals = sharedData->lookupKey( featureId );
+      if ( !pkVals.isEmpty() )
       {
-        QList<QVariant> pkVals = pkValsVariant.toList();
-
         Q_ASSERT( pkVals.size() == pkAttrs.size() );
 
         QString delim = "";
@@ -2058,14 +2056,14 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         }
         else
         {
-          QList<QVariant> primaryKeyVals;
+          QVariantList primaryKeyVals;
 
           Q_FOREACH ( int idx, mPrimaryKeyAttrs )
           {
             primaryKeyVals << attrs.at( idx );
           }
 
-          features->setFeatureId( mShared->lookupFid( QVariant( primaryKeyVals ) ) );
+          features->setFeatureId( mShared->lookupFid( primaryKeyVals ) );
         }
         QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
       }
@@ -2416,9 +2414,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
       // update feature id map if key was changed
       if ( pkChanged && mPrimaryKeyType == pktFidMap )
       {
-        QVariant v = mShared->removeFid( fid );
-
-        QList<QVariant> k = v.toList();
+        QVariantList k = mShared->removeFid( fid );
 
         for ( int i = 0; i < mPrimaryKeyAttrs.size(); i++ )
         {
@@ -2766,9 +2762,7 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
       // update feature id map if key was changed
       if ( pkChanged && mPrimaryKeyType == pktFidMap )
       {
-        QVariant v = mShared->removeFid( fid );
-
-        QList<QVariant> k = v.toList();
+        QVariantList k = mShared->removeFid( fid );
 
         for ( int i = 0; i < mPrimaryKeyAttrs.size(); i++ )
         {
@@ -4291,11 +4285,11 @@ void QgsPostgresSharedData::setFeaturesCounted( long count )
 }
 
 
-QgsFeatureId QgsPostgresSharedData::lookupFid( const QVariant &v )
+QgsFeatureId QgsPostgresSharedData::lookupFid( const QVariantList& v )
 {
   QMutexLocker locker( &mMutex );
 
-  QMap<QVariant, QgsFeatureId>::const_iterator it = mKeyToFid.constFind( v );
+  QMap<QVariantList, QgsFeatureId>::const_iterator it = mKeyToFid.constFind( v );
 
   if ( it != mKeyToFid.constEnd() )
   {
@@ -4309,17 +4303,17 @@ QgsFeatureId QgsPostgresSharedData::lookupFid( const QVariant &v )
 }
 
 
-QVariant QgsPostgresSharedData::removeFid( QgsFeatureId fid )
+QVariantList QgsPostgresSharedData::removeFid( QgsFeatureId fid )
 {
   QMutexLocker locker( &mMutex );
 
-  QVariant v = mFidToKey[ fid ];
+  QVariantList v = mFidToKey[ fid ];
   mFidToKey.remove( fid );
   mKeyToFid.remove( v );
   return v;
 }
 
-void QgsPostgresSharedData::insertFid( QgsFeatureId fid, const QVariant& k )
+void QgsPostgresSharedData::insertFid( QgsFeatureId fid, const QVariantList& k )
 {
   QMutexLocker locker( &mMutex );
 
@@ -4327,12 +4321,12 @@ void QgsPostgresSharedData::insertFid( QgsFeatureId fid, const QVariant& k )
   mKeyToFid.insert( k, fid );
 }
 
-QVariant QgsPostgresSharedData::lookupKey( QgsFeatureId featureId )
+QVariantList QgsPostgresSharedData::lookupKey( QgsFeatureId featureId )
 {
   QMutexLocker locker( &mMutex );
 
-  QMap<QgsFeatureId, QVariant>::const_iterator it = mFidToKey.constFind( featureId );
+  QMap<QgsFeatureId, QVariantList>::const_iterator it = mFidToKey.constFind( featureId );
   if ( it != mFidToKey.constEnd() )
     return it.value();
-  return QVariant();
+  return QVariantList();
 }
