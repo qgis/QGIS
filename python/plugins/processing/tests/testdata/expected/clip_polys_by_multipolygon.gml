@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ogr:FeatureCollection
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation="http://ogr.maptools.org/ clip_polys_by_multipolygon.xsd"
+     xsi:schemaLocation=""
      xmlns:ogr="http://ogr.maptools.org/"
      xmlns:gml="http://www.opengis.net/gml">
   <gml:boundedBy>
@@ -20,18 +20,18 @@
     </ogr:clip_polys_by_multipolygon>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:clip_polys_by_multipolygon fid="polys.3">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>7 1, 8 1, 8 0, 7 0, 7 1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:name>ASDF</ogr:name>
-      <ogr:intval>0</ogr:intval>
-    </ogr:clip_polys_by_multipolygon>
-  </gml:featureMember>
-  <gml:featureMember>
     <ogr:clip_polys_by_multipolygon fid="polys.5">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2 1, 2 2, 3 2, 4 1.66666666666667, 4 1, 2 1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2,1 2,2 3,2 4.0,1.666666666666667 4,1 2,1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:name>elim</ogr:name>
       <ogr:intval>2</ogr:intval>
       <ogr:floatval>3.33</ogr:floatval>
+    </ogr:clip_polys_by_multipolygon>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:clip_polys_by_multipolygon fid="polys.3">
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>7,1 8,1 8,0 7,0 7,1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:name>ASDF</ogr:name>
+      <ogr:intval>0</ogr:intval>
     </ogr:clip_polys_by_multipolygon>
   </gml:featureMember>
 </ogr:FeatureCollection>

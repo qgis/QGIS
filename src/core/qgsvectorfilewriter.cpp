@@ -1744,6 +1744,24 @@ bool QgsVectorFileWriter::driverMetadata( const QString& driverName, QgsVectorFi
   return false;
 }
 
+QStringList QgsVectorFileWriter::defaultDatasetOptions( const QString& driverName )
+{
+  MetaData metadata;
+  bool ok = driverMetadata( driverName, metadata );
+  if ( !ok )
+    return QStringList();
+  return concatenateOptions( metadata.driverOptions );
+}
+
+QStringList QgsVectorFileWriter::defaultLayerOptions( const QString& driverName )
+{
+  MetaData metadata;
+  bool ok = driverMetadata( driverName, metadata );
+  if ( !ok )
+    return QStringList();
+  return concatenateOptions( metadata.layerOptions );
+}
+
 OGRwkbGeometryType QgsVectorFileWriter::ogrTypeFromWkbType( QgsWkbTypes::Type type )
 {
   type = QgsWkbTypes::dropM( type );
@@ -2855,4 +2873,57 @@ void QgsVectorFileWriter::addRendererAttributes( QgsVectorLayer* vl, QgsAttribut
       }
     }
   }
+}
+
+QStringList QgsVectorFileWriter::concatenateOptions( const QMap<QString, QgsVectorFileWriter::Option*>& options )
+{
+  QStringList list;
+  QMap<QString, QgsVectorFileWriter::Option*>::ConstIterator it;
+
+  for ( it = options.constBegin(); it != options.constEnd(); ++it )
+  {
+    QgsVectorFileWriter::Option *option = it.value();
+    switch ( option->type )
+    {
+      case QgsVectorFileWriter::Int:
+      {
+        QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption*>( option );
+        if ( opt )
+        {
+          list.append( QString( "%1=%2" ).arg( it.key() ).arg( opt->defaultValue ) );
+        }
+        break;
+      }
+
+      case QgsVectorFileWriter::Set:
+      {
+        QgsVectorFileWriter::SetOption *opt = dynamic_cast<QgsVectorFileWriter::SetOption*>( option );
+        if ( opt && !opt->defaultValue.isEmpty() )
+        {
+          list.append( QString( "%1=%2" ).arg( it.key(), opt->defaultValue ) );
+        }
+        break;
+      }
+
+      case QgsVectorFileWriter::String:
+      {
+        QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption*>( option );
+        if ( opt )
+        {
+          list.append( QString( "%1=%2" ).arg( it.key(), opt->defaultValue ) );
+        }
+        break;
+      }
+
+      case QgsVectorFileWriter::Hidden:
+        QgsVectorFileWriter::HiddenOption *opt = dynamic_cast<QgsVectorFileWriter::HiddenOption*>( option );
+        if ( opt )
+        {
+          list.append( QString( "%1=%2" ).arg( it.key(), opt->mValue ) );
+        }
+        break;
+    }
+  }
+
+  return list;
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ogr:FeatureCollection
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation="http://ogr.maptools.org/ clip_points_by_multipolygons.xsd"
+     xsi:schemaLocation=""
      xmlns:ogr="http://ogr.maptools.org/"
      xmlns:gml="http://www.opengis.net/gml">
   <gml:boundedBy>
@@ -11,11 +11,6 @@
     </gml:Box>
   </gml:boundedBy>
                                                                                                                                                                
-  <gml:featureMember>
-    <ogr:clip_points_by_multipolygons fid="points.0">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>1,1</gml:coordinates></gml:Point></ogr:geometryProperty>
-    </ogr:clip_points_by_multipolygons>
-  </gml:featureMember>
   <gml:featureMember>
     <ogr:clip_points_by_multipolygons fid="points.1">
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>3,3</gml:coordinates></gml:Point></ogr:geometryProperty>
@@ -39,6 +34,11 @@
   <gml:featureMember>
     <ogr:clip_points_by_multipolygons fid="points.7">
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7,-1</gml:coordinates></gml:Point></ogr:geometryProperty>
+    </ogr:clip_points_by_multipolygons>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:clip_points_by_multipolygons fid="points.0">
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>1,1</gml:coordinates></gml:Point></ogr:geometryProperty>
     </ogr:clip_points_by_multipolygons>
   </gml:featureMember>
 </ogr:FeatureCollection>

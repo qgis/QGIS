@@ -665,8 +665,13 @@ class VectorWriter:
             for field in fields:
                 qgsfields.append(_toQgsField(field))
 
+            # use default dataset/layer options
+            dataset_options = QgsVectorFileWriter.defaultDatasetOptions(OGRCodes[extension])
+            layer_options = QgsVectorFileWriter.defaultLayerOptions(OGRCodes[extension])
+
             self.writer = QgsVectorFileWriter(self.destination, encoding,
-                                              qgsfields, geometryType, crs, OGRCodes[extension])
+                                              qgsfields, geometryType, crs, OGRCodes[extension],
+                                              dataset_options, layer_options)
 
     def addFeature(self, feature):
         if self.isNotFileBased:

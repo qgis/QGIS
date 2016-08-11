@@ -1,0 +1,14 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>clip_lines_by_polygon</Name>
+    <ElementPath>clip_lines_by_polygon</ElementPath>
+    <SRSName>EPSG:4326</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>2</FeatureCount>
+      <ExtentXMin>0.77654</ExtentXMin>
+      <ExtentXMax>8.57235</ExtentXMax>
+      <ExtentYMin>-3.00000</ExtentYMin>
+      <ExtentYMax>2.17905</ExtentYMax>
+    </DatasetSpecificInfo>
+  </GMLFeatureClass>
+</GMLFeatureClassList>

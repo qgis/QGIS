@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ogr:FeatureCollection
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation="http://ogr.maptools.org/ buffer_lines_flat.xsd"
+     xsi:schemaLocation=""
      xmlns:ogr="http://ogr.maptools.org/"
      xmlns:gml="http://www.opengis.net/gml">
   <gml:boundedBy>
@@ -13,7 +13,7 @@
                                                                                                                               
   <gml:featureMember>
     <ogr:buffer_lines_flat fid="lines.0">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>8,3 8.034074173710932,3.258819045102521 8.133974596215561,3.5 8.292893218813452,3.707106781186547 10.292893218813452,5.707106781186548 11.707106781186548,4.292893218813452 10.0,2.585786437626905 10,2 9.951056516295154,1.690983005625053 9.809016994374948,1.412214747707527 9.587785252292472,1.190983005625053 9.309016994374948,1.048943483704846 9,1 6,1 6,3 8,3</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>8,3 8.034074173710932,3.258819045102521 8.133974596215561,3.5 8.292893218813452,3.707106781186547 10.292893218813452,5.707106781186548 11.707106781186548,4.292893218813452 10.0,2.585786437626905 10,2 9.951056516295154,1.690983005625053 9.809016994374947,1.412214747707527 9.587785252292473,1.190983005625053 9.309016994374947,1.048943483704846 9,1 6,1 6,3 8,3</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
     </ogr:buffer_lines_flat>
   </gml:featureMember>
   <gml:featureMember>
