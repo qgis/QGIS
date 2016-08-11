@@ -642,3 +642,18 @@ tests:
       OUTPUT_LAYER:
         name: expected/line_offset_bevel.gml
         type: vector
+
+  - algorithm: qgis:offsetline
+    name: Offset multilines
+    params:
+      DISTANCE: 1.0
+      INPUT_LAYER:
+        name: multilines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+    results:
+      OUTPUT_LAYER:
+        name: expected/multiline_offset.gml
+        type: vector
