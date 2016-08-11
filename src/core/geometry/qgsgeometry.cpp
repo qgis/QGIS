@@ -1319,13 +1319,36 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, int joinSty
     return QgsGeometry();
   }
 
-  QgsGeos geos( d->geometry );
-  QgsAbstractGeometry* offsetGeom = geos.offsetCurve( distance, segments, joinStyle, mitreLimit );
-  if ( !offsetGeom )
+  if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    return QgsGeometry();
+    QList<QgsGeometry> parts = asGeometryCollection();
+    QList<QgsGeometry> results;
+    Q_FOREACH ( const QgsGeometry& part, parts )
+    {
+      QgsGeometry result = part.offsetCurve( distance, segments, joinStyle, mitreLimit );
+      if ( result )
+        results << result;
+    }
+    if ( results.isEmpty() )
+      return QgsGeometry();
+
+    QgsGeometry first = results.takeAt( 0 );
+    Q_FOREACH ( const QgsGeometry& result, results )
+    {
+      first.addPart( & result );
+    }
+    return first;
   }
-  return QgsGeometry( offsetGeom );
+  else
+  {
+    QgsGeos geos( d->geometry );
+    QgsAbstractGeometry* offsetGeom = geos.offsetCurve( distance, segments, joinStyle, mitreLimit );
+    if ( !offsetGeom )
+    {
+      return QgsGeometry();
+    }
+    return QgsGeometry( offsetGeom );
+  }
 }
 
 QgsGeometry QgsGeometry::simplify( double tolerance ) const

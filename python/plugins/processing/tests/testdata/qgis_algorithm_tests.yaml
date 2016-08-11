@@ -642,3 +642,104 @@ tests:
       OUTPUT_LAYER:
         name: expected/line_offset_bevel.gml
         type: vector
+
+  - algorithm: qgis:offsetline
+    name: Offset multilines
+    params:
+      DISTANCE: 1.0
+      INPUT_LAYER:
+        name: multilines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+    results:
+      OUTPUT_LAYER:
+        name: expected/multiline_offset.gml
+        type: vector
+
+  - algorithm: qgis:fixeddistancebuffer
+    name: Buffer polygons using bevel
+    params:
+      DISSOLVE: false
+      DISTANCE: 1.0
+      END_CAP_STYLE: '0'
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN_STYLE: '2'
+      MITRE_LIMIT: 2
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/buffer_polys_bevel.gml
+        type: vector
+
+  - algorithm: qgis:fixeddistancebuffer
+    name: Buffer polygons using mitre
+    params:
+      DISSOLVE: false
+      DISTANCE: 1.0
+      END_CAP_STYLE: '0'
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN_STYLE: '1'
+      MITRE_LIMIT: 2
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/buffer_polys_mitre.gml
+        type: vector
+
+  - algorithm: qgis:fixeddistancebuffer
+    name: Buffer lines
+    params:
+      DISSOLVE: false
+      DISTANCE: 1.0
+      END_CAP_STYLE: '0'
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/buffer_lines.gml
+        type: vector
+
+  - algorithm: qgis:fixeddistancebuffer
+    name: Buffer lines (flat)
+    params:
+      DISSOLVE: false
+      DISTANCE: 1.0
+      END_CAP_STYLE: '1'
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/buffer_lines_flat.gml
+        type: vector
+
+  - algorithm: qgis:fixeddistancebuffer
+    name: Buffer lines (square)
+    params:
+      DISSOLVE: false
+      DISTANCE: 1.0
+      END_CAP_STYLE: '2'
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/buffer_lines_square.gml
+        type: vector
+

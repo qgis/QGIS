@@ -35,6 +35,8 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterSelection
+
 from processing.core.outputs import OutputVector
 from . import Buffer as buff
 from processing.tools import dataobjects
@@ -50,6 +52,9 @@ class FixedDistanceBuffer(GeoAlgorithm):
     DISTANCE = 'DISTANCE'
     SEGMENTS = 'SEGMENTS'
     DISSOLVE = 'DISSOLVE'
+    END_CAP_STYLE = 'END_CAP_STYLE'
+    JOIN_STYLE = 'JOIN_STYLE'
+    MITRE_LIMIT = 'MITRE_LIMIT'
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.png'))
@@ -65,6 +70,22 @@ class FixedDistanceBuffer(GeoAlgorithm):
                                           self.tr('Segments'), 1, default=5))
         self.addParameter(ParameterBoolean(self.DISSOLVE,
                                            self.tr('Dissolve result'), False))
+        self.end_cap_styles = [self.tr('Round'),
+                               'Flat',
+                               'Square']
+        self.addParameter(ParameterSelection(
+            self.END_CAP_STYLE,
+            self.tr('End cap style'),
+            self.end_cap_styles, default=0))
+        self.join_styles = [self.tr('Round'),
+                            'Mitre',
+                            'Bevel']
+        self.addParameter(ParameterSelection(
+            self.JOIN_STYLE,
+            self.tr('Join style'),
+            self.join_styles, default=0))
+        self.addParameter(ParameterNumber(self.MITRE_LIMIT,
+                                          self.tr('Mitre limit'), 1, default=2))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer')))
 
@@ -73,10 +94,13 @@ class FixedDistanceBuffer(GeoAlgorithm):
         distance = self.getParameterValue(self.DISTANCE)
         dissolve = self.getParameterValue(self.DISSOLVE)
         segments = int(self.getParameterValue(self.SEGMENTS))
+        end_cap_style = self.getParameterValue(self.END_CAP_STYLE) + 1
+        join_style = self.getParameterValue(self.JOIN_STYLE) + 1
+        miter_limit = self.getParameterValue(self.MITRE_LIMIT)
 
         writer = self.getOutputFromName(
             self.OUTPUT).getVectorWriter(layer.fields().toList(),
                                          QgsWkbTypes.Polygon, layer.crs())
 
         buff.buffering(progress, writer, distance, None, False, layer,
-                       dissolve, segments)
+                       dissolve, segments, end_cap_style, join_style, miter_limit)

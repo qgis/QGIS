@@ -167,6 +167,14 @@ qgis:fieldcalculator: >
 qgis:fixeddistancebuffer: >
   This algorithm computes a buffer area for all the features in an input layer, using a fixed distance.
 
+  The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded offsets.
+
+  The end cap style parameter controls how line endings are handled in the buffer.
+
+  The join style parameter specifies whether round, mitre or beveled joins should be used when offseting corners in a line.
+
+  The mitre limit parameter is only applicable for mitre join styles, and controls the maximum distance from the offset curve to use when creating a mitred join.
+
 qgis:frequencyanalysis: >
   This algorithms generates a table with frequency analysis of the values of a selected attribute from an input vector layer
 
