@@ -246,7 +246,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * @param leftOf returns whether the point lies on the left side of the nearest segment (true if point is to left of segment,
      * false if point is to right of segment)
      * @param epsilon epsilon for segment snapping
-     * @returns squared distance to closest segment
+     * @returns squared distance to closest segment or negative value on error
      */
     virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt, QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const = 0;
 

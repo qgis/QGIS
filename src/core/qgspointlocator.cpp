@@ -861,6 +861,10 @@ QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPoint& point, doub
       return Match();
   }
 
+  QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == QgsWkbTypes::PointGeometry )
+    return Match();
+
   Match m;
   QgsPointLocator_VisitorNearestEdge visitor( this, m, point, filter );
   QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
@@ -878,6 +882,10 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle& rec
     if ( !mRTree ) // still invalid?
       return MatchList();
   }
+
+  QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == QgsWkbTypes::PointGeometry )
+    return MatchList();
 
   MatchList lst;
   QgsPointLocator_VisitorEdgesInRect visitor( this, lst, rect, filter );
@@ -901,6 +909,10 @@ QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPoint& poin
     if ( !mRTree ) // still invalid?
       return MatchList();
   }
+
+  QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == QgsWkbTypes::PointGeometry || geomType == QgsWkbTypes::LineGeometry )
+    return MatchList();
 
   MatchList lst;
   QgsPointLocator_VisitorArea visitor( this, point, lst );
