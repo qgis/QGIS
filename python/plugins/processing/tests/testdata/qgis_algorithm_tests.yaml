@@ -582,3 +582,63 @@ tests:
       OUTPUT_LAYER:
         name: expected/point_on_line.gml
         type: vector
+
+  - algorithm: qgis:offsetline
+    name: Offset line positive
+    params:
+      DISTANCE: 1.0
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+    results:
+      OUTPUT_LAYER:
+        name: expected/line_offset_round_positive.gml
+        type: vector
+
+  - algorithm: qgis:offsetline
+    name: Offset line negative
+    params:
+      DISTANCE: -1.0
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+    results:
+      OUTPUT_LAYER:
+        name: expected/line_offset_round_negative.gml
+        type: vector
+
+  - algorithm: qgis:offsetline
+    name: Offset line mitre
+    params:
+      DISTANCE: 1.0
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '1'
+      MITRE_LIMIT: 2
+      SEGMENTS: 4
+    results:
+      OUTPUT_LAYER:
+        name: expected/line_offset_mitre.gml
+        type: vector
+
+  - algorithm: qgis:offsetline
+    name: Offset line bevel
+    params:
+      DISTANCE: 1.0
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '2'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+    results:
+      OUTPUT_LAYER:
+        name: expected/line_offset_bevel.gml
+        type: vector

@@ -257,6 +257,15 @@ qgis:numberofuniquevaluesinclasses: >
 
   The resulting layer contains the same features as the input layer, but with an additional attribute containing the count of unique values for that class.
 
+qgis:offsetline: >
+  This algorithm offsets lines by a specified distance. Positive distances will offset lines to the left, and negative distances will offset to the right of lines.
+
+  The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded offsets.
+
+  The join style parameter specifies whether round, mitre or beveled joins should be used when offseting corners in a line.
+
+  The mitre limit parameter is only applicable for mitre join styles, and controls the maximum distance from the offset curve to use when creating a mitred join.
+
 qgis:orientedminimumboundingbox: >
   This algorithm takes a vector layer and generate a new one with the minimum rectangle that covers all the input features.
 

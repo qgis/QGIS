@@ -150,6 +150,7 @@ from .MergeLines import MergeLines
 from .BoundingBox import BoundingBox
 from .Boundary import Boundary
 from .PointOnSurface import PointOnSurface
+from .OffsetLine import OffsetLine
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -202,7 +203,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         ReverseLineDirection(), SpatialIndex(), DefineProjection(),
                         RectanglesOvalsDiamondsVariable(),
                         RectanglesOvalsDiamondsFixed(), MergeLines(),
-                        BoundingBox(), Boundary(), PointOnSurface()
+                        BoundingBox(), Boundary(), PointOnSurface(),
+                        OffsetLine()
                         ]
 
         if hasMatplotlib:
