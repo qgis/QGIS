@@ -161,6 +161,22 @@ tests:
           geometry:
             precision: 7
 
+  - algorithm: gdalogr:buffervectors
+    name: OGR Buffer lines
+    params:
+      DISSOLVEALL: false
+      DISTANCE: '1'
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      MULTI: false
+      OPTIONS: ''
+    results:
+      OUTPUT_LAYER:
+        name: expected/buffer_lines.gml
+        type: vector
+
   - algorithm: gdalogr:clipvectorsbypolygon
     name: OGR Clip points by polygons
     params:
