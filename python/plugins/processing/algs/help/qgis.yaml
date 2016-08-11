@@ -44,6 +44,11 @@ qgis:buildvirtualvector: >
 
   The output virtual layer will not be open in the current project.
 
+qgis:centroids: >
+  This algorithm creates a new point layer, with points representing the centroid of the geometries in an input layer.
+
+  The attributes associated to each point in the output layer are the same ones associated to the original features.
+
 qgis:checkvalidity:
   This algorithm performs a validity check on the geometries of a vector layer.
 
@@ -305,6 +310,8 @@ qgis:polygoncentroids: >
   This algorithm creates a new point layer, with points representing the centroid of polygons of an input layer.
 
   The attributes associated to each point in the output layer are the same ones associated to the original polygon.
+
+  NOTE: This algorithm is deprecated and the generic "centroids" algorithm (which works for line and multi geometry layers) should be used instead.
 
 
 qgis:polygonfromlayerextent: >
