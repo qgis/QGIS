@@ -103,6 +103,20 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
   }
   QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
 
+  if ( !authcfg.isEmpty() )
+  {
+    if ( !QgsAuthManager::instance()->updateNetworkReply( reply, authcfg ) )
+    {
+      reply->deleteLater();
+      QgsMessageLog::logMessage(
+        tr( "GML Getfeature network reply update failed for authcfg %1" ).arg( authcfg ),
+        tr( "Network" ),
+        QgsMessageLog::CRITICAL
+      );
+      return 1;
+    }
+  }
+
   connect( reply, SIGNAL( finished() ), this, SLOT( setFinished() ) );
   connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( handleProgressEvent( qint64, qint64 ) ) );
 

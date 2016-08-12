@@ -165,6 +165,15 @@ bool QgsWFSCapabilities::setAuthorization( QNetworkRequest &request ) const
   return true;
 }
 
+bool QgsWFSCapabilities::setAuthorizationReply( QNetworkReply *reply ) const
+{
+  if ( mUri.hasParam( "authcfg" ) && !mUri.param( "authcfg" ).isEmpty() )
+  {
+    return QgsAuthManager::instance()->updateNetworkReply( reply, mUri.param( "authcfg" ) );
+  }
+  return true;
+}
+
 void QgsWFSCapabilities::requestCapabilities()
 {
   mErrorCode = QgsWFSCapabilities::NoError;
@@ -182,6 +191,17 @@ void QgsWFSCapabilities::requestCapabilities()
 
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+  if ( !setAuthorizationReply( mCapabilitiesReply ) )
+  {
+    mCapabilitiesReply->deleteLater();
+    mCapabilitiesReply = nullptr;
+    mErrorCode = QgsWFSCapabilities::NetworkError;
+    mErrorMessage = tr( "Download of capabilities failed: network reply update failed for authentication config" );
+    QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
+    emit gotCapabilities();
+    return;
+  }
+
   connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
 }
 
@@ -220,6 +240,17 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
     mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+    if ( !setAuthorizationReply( mCapabilitiesReply ) )
+    {
+      mCaps.clear();
+      mCapabilitiesReply->deleteLater();
+      mCapabilitiesReply = nullptr;
+      mErrorCode = QgsWFSCapabilities::NetworkError;
+      mErrorMessage = tr( "Download of capabilities failed: network reply update failed for authentication config" );
+      QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
+      emit gotCapabilities();
+      return;
+    }
 
     connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
     return;
