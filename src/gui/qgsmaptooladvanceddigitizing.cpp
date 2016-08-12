@@ -44,7 +44,7 @@ void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   snap( e );
 
-  QgsAdvancedDigitizingDockWidget::CaptureMode dockMode;
+  QgsAdvancedDigitizingDockWidget::AdvancedDigitizingMode dockMode;
   switch ( mCaptureMode )
   {
     case CaptureLine:

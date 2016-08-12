@@ -73,11 +73,11 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
      * Determines if the dock has to record one, two or many points.
      */
-    enum CaptureMode
+    enum AdvancedDigitizingMode
     {
       SinglePoint, //!< Capture a single point (e.g. for point digitizing)
       TwoPoints,   //!< Capture two points (e.g. for translation)
-      ManyPoints   //!< Capture many points (e.g. line or polygon digitizing)
+      ManyPoints   //!< Capture two or more points (e.g. line or polygon digitizing)
     };
 
     /** \ingroup gui
@@ -222,7 +222,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * @param mode determines if the dock has to record one, two or many points.
      * @return  If the event is hidden (construction mode hides events from the maptool)
      */
-    bool canvasReleaseEvent( QgsMapMouseEvent* e , CaptureMode mode );
+    bool canvasReleaseEvent( QgsMapMouseEvent* e, AdvancedDigitizingMode mode );
     /**
      * Will react on a canvas move event
      *
