@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
-from qgis.PyQt.QtCore import QCoreApplication
+
 from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -45,6 +45,9 @@ from processing.core.outputs import getOutputFromString
 
 from .TauDEMUtils import TauDEMUtils
 
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
 
 class TauDEMAlgorithm(GeoAlgorithm):
 
@@ -59,34 +62,33 @@ class TauDEMAlgorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
+        return QIcon(os.path.join(pluginPath, 'images', 'taudem.svg'))
 
     def defineCharacteristicsFromFile(self):
-        lines = open(self.descriptionFile)
-        line = lines.readline().strip('\n').strip()
-        self.name = line
-        self.i18n_name = QCoreApplication.translate("TAUDEMAlgorithm", line)
-        line = lines.readline().strip('\n').strip()
-        self.cmdName = line
-        line = lines.readline().strip('\n').strip()
-        self.group = line
-        self.i18n_group = QCoreApplication.translate("TAUDEMAlgorithm", line)
+        with codecs.open(self.descriptionFile, 'utf-8') as f:
+            line = f.readline().strip('\n').strip()
+            self.name = line
+            self.i18n_name = self.tr(line)
+            line = f.readline().strip('\n').strip()
+            self.cmdName = line
+            line = f.readline().strip('\n').strip()
+            self.group = line
+            self.i18n_group = self.tr(line)
 
-        line = lines.readline().strip('\n').strip()
-        while line != '':
-            try:
-                line = line.strip('\n').strip()
-                if line.startswith('Parameter'):
-                    param = getParameterFromString(line)
-                    self.addParameter(param)
-                else:
-                    self.addOutput(getOutputFromString(line))
-                line = lines.readline().strip('\n').strip()
-            except Exception as e:
-                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                       self.tr('Could not load TauDEM algorithm: %s\n%s' % (self.descriptionFile, line)))
-                raise e
-        lines.close()
+            line = f.readline().strip('\n').strip()
+            while line != '':
+                try:
+                    line = line.strip('\n').strip()
+                    if line.startswith('Parameter'):
+                        param = getParameterFromString(line)
+                        self.addParameter(param)
+                    else:
+                        self.addOutput(getOutputFromString(line))
+                    line = f.readline().strip('\n').strip()
+                except Exception as e:
+                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                           self.tr('Could not load TauDEM algorithm: {}\n{}'.format(self.descriptionFile, line)))
+                    raise e
 
     def processAlgorithm(self, progress):
         commands = []

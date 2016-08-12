@@ -1,6 +1,0 @@
-D-Infinity Upslope Dependence (multifile)
-dinfupdependence
-Specialized Grid Analysis tools
-ParameterFile|-ang|D-Infinity Flow Direction Grid|True|False
-ParameterFile|-dg|Destination Grid|True|False
-OutputDirectory|-dep|Output Upslope Dependence Grid

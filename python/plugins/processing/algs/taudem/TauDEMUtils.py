@@ -53,27 +53,11 @@ class TauDEMUtils:
 
         if isMac():
             testfolder = os.path.join(QgsApplication.prefixPath(), 'bin')
-            if os.path.exists(os.path.join(testfolder, 'slopearea')):
+            if os.path.exists(os.path.join(testfolder, 'pitremove')):
                 folder = testfolder
             else:
                 testfolder = '/usr/local/bin'
-                if os.path.exists(os.path.join(testfolder, 'slopearea')):
-                    folder = testfolder
-        return folder
-
-    @staticmethod
-    def taudemMultifilePath():
-        folder = ProcessingConfig.getSetting(TauDEMUtils.TAUDEM_MULTIFILE_FOLDER)
-        if folder is None:
-            folder = ''
-
-        if isMac():
-            testfolder = os.path.join(QgsApplication.prefixPath(), 'bin')
-            if os.path.exists(os.path.join(testfolder, 'slopearea')):
-                folder = testfolder
-            else:
-                testfolder = '/usr/local/bin'
-                if os.path.exists(os.path.join(testfolder, 'slopearea')):
+                if os.path.exists(os.path.join(testfolder, 'pitremove')):
                     folder = testfolder
         return folder
 
