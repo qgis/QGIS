@@ -70,6 +70,16 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
       Parallel       //!< Parallel
     };
 
+    /**
+     * Determines if the dock has to record one, two or many points.
+     */
+    enum AdvancedDigitizingMode
+    {
+      SinglePoint, //!< Capture a single point (e.g. for point digitizing)
+      TwoPoints,   //!< Capture two points (e.g. for translation)
+      ManyPoints   //!< Capture two or more points (e.g. line or polygon digitizing)
+    };
+
     /** \ingroup gui
      * @brief The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
      * It contains all values (locked, value, relative) and pointers to corresponding widgets.
@@ -209,10 +219,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Will react on a canvas release event
      *
      * @param e A mouse event (may be modified)
-     * @param captureSegment Capture segments?
+     * @param mode determines if the dock has to record one, two or many points.
      * @return  If the event is hidden (construction mode hides events from the maptool)
      */
-    bool canvasReleaseEvent( QgsMapMouseEvent* e , bool captureSegment );
+    bool canvasReleaseEvent( QgsMapMouseEvent* e, AdvancedDigitizingMode mode );
     /**
      * Will react on a canvas move event
      *

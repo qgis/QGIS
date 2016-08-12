@@ -32,6 +32,7 @@ class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
     {
       CaptureNone,    //!< Do not capture
       CapturePoint,   //!< Capture points
+      CaptureSegment, //!< Capture a segment (i.e. 2 points)
       CaptureLine,    //!< Capture lines
       CapturePolygon  //!< Capture polygons
     };

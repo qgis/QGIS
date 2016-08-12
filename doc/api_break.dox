@@ -261,6 +261,12 @@ variant instead.</li>
 <li>expandAction() has been removed. Use QgsExpression::replaceExpressionText() instead.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsAdvancedDigitizingDockWidget QgsAdvancedDigitizingDockWidget
+
+<ul>
+<li>canvasReleaseEvent takes now QgsAdvancedDigitizingDockWidget::CaptureMode as second argument.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsAtlasComposition QgsAtlasComposition
 
 <ul>

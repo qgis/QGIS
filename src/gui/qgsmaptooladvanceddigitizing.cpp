@@ -43,7 +43,23 @@ void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent* e )
 void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   snap( e );
-  if ( !mCadDockWidget->canvasReleaseEvent( e, mCaptureMode == CaptureLine || mCaptureMode == CapturePolygon ) )
+
+  QgsAdvancedDigitizingDockWidget::AdvancedDigitizingMode dockMode;
+  switch ( mCaptureMode )
+  {
+    case CaptureLine:
+    case CapturePolygon:
+      dockMode = QgsAdvancedDigitizingDockWidget::ManyPoints;
+      break;
+    case CaptureSegment:
+      dockMode = QgsAdvancedDigitizingDockWidget::TwoPoints;
+      break;
+    default:
+      dockMode = QgsAdvancedDigitizingDockWidget::SinglePoint;
+      break;
+  }
+
+  if ( !mCadDockWidget->canvasReleaseEvent( e, dockMode ) )
     cadCanvasReleaseEvent( e );
 }
 
