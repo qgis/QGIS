@@ -31,7 +31,10 @@ import os
 import csv
 import uuid
 import codecs
-import cStringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 import psycopg2
 
