@@ -858,8 +858,8 @@ QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPoint& point, doub
       return Match();
   }
 
-  QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == QgsWkbTypes::PointGeometry )
+  QGis::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == QGis::Point )
     return Match();
 
   Match m;
@@ -880,8 +880,8 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle& rec
       return MatchList();
   }
 
-  QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == QgsWkbTypes::PointGeometry )
+  QGis::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == QGis::Point )
     return MatchList();
 
   MatchList lst;
@@ -907,8 +907,8 @@ QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPoint& poin
       return MatchList();
   }
 
-  QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == QgsWkbTypes::PointGeometry || geomType == QgsWkbTypes::LineGeometry )
+  QGis::GeometryType geomType = mLayer->geometryType();
+  if ( geomType == QGis::Point || geomType == QGis::Line )
     return MatchList();
 
   MatchList lst;
