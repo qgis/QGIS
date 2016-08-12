@@ -412,3 +412,23 @@ CREATE TABLE qgis_test.rename_table
 );
 
 INSERT INTO qgis_test.rename_table (field1,field2) VALUES ('a','b');
+
+
+--------------------------------------
+-- Table with compound primary key
+--
+
+CREATE TABLE qgis_test.compound_pkey
+(
+  pkcol1 int NOT NULL,
+  pkcol2 int NOT NULL,
+  CONSTRAINT compound_pkey_pkey PRIMARY KEY (pkcol1, pkcol2)
+);
+
+INSERT INTO qgis_test.compound_pkey (pkcol1,pkcol2) VALUES (1,1);
+INSERT INTO qgis_test.compound_pkey (pkcol1,pkcol2) VALUES (1,2);
+INSERT INTO qgis_test.compound_pkey (pkcol1,pkcol2) VALUES (1,3);
+INSERT INTO qgis_test.compound_pkey (pkcol1,pkcol2) VALUES (2,1);
+INSERT INTO qgis_test.compound_pkey (pkcol1,pkcol2) VALUES (2,2);
+
+
