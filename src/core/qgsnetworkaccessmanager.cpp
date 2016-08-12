@@ -212,7 +212,9 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 
   emit requestCreated( reply );
 
-  // abort request, when network timeout happens
+  // The timer will call abortRequest slot to abort the connection if needed.
+  // The timer is stopped by the finished signal and is restarted on downloadProgress and
+  // uploadProgress.
   QTimer *timer = new QTimer( reply );
   timer->setObjectName( "timeoutTimer" );
   connect( timer, SIGNAL( timeout() ), this, SLOT( abortRequest() ) );
@@ -221,6 +223,8 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 
   connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ), timer, SLOT( start() ) );
   connect( reply, SIGNAL( uploadProgress( qint64, qint64 ) ), timer, SLOT( start() ) );
+  connect( reply, SIGNAL( finished( ) ), timer, SLOT( stop( ) ) );
+  QgsDebugMsgLevel( QString( "Created [reply:%1]" ).arg(( qint64 ) reply, 0, 16 ), 3 );
 
   return reply;
 }
@@ -233,15 +237,14 @@ void QgsNetworkAccessManager::abortRequest()
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( timer->parent() );
   Q_ASSERT( reply );
 
-  QgsDebugMsg( QString( "Abort [reply:%1]" ).arg(( qint64 ) reply, 0, 16 ) );
-
+  reply->abort();
+  QgsDebugMsgLevel( QString( "Abort [reply:%1] %2" ).arg(( qint64 ) reply, 0, 16 ).arg( reply->url().toString() ), 3 );
   QgsMessageLog::logMessage( tr( "Network request %1 timed out" ).arg( reply->url().toString() ), tr( "Network" ) );
-
-  if ( reply->isRunning() )
-    reply->close();
-
+  // Notify the application
   emit requestTimedOut( reply );
+
 }
+
 
 QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoadControl theControl )
 {
