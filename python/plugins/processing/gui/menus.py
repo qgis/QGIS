@@ -52,7 +52,7 @@ defaultMenuEntries.update({'qgis:convexhull': geoprocessingToolsMenu,
 geometryToolsMenu = vectorMenu + "/" + Processing.tr('G&eometry Tools')
 defaultMenuEntries.update({'qgis:checkvalidity': geometryToolsMenu,
                            'qgis:exportaddgeometrycolumns': geometryToolsMenu,
-                           'qgis:polygoncentroids': geometryToolsMenu,
+                           'qgis:centroids': geometryToolsMenu,
                            'qgis:delaunaytriangulation': geometryToolsMenu,
                            'qgis:voronoipolygons': geometryToolsMenu,
                            'qgis:simplifygeometries': geometryToolsMenu,

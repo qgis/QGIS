@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    Centroids.py
+    PolygonCentroids.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -29,10 +29,10 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes
+from qgis.core import Qgis, QgsGeometry, QgsFeature, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
@@ -40,20 +40,25 @@ from processing.tools import dataobjects, vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class Centroids(GeoAlgorithm):
+class PolygonCentroids(GeoAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
+
+    def __init__(self):
+        GeoAlgorithm.__init__(self)
+        # this algorithm is deprecated - use Centroids instead
+        self.showInToolbox = False
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'centroids.png'))
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Centroids')
+        self.name, self.i18n_name = self.trAlgorithm('Polygon centroids')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Centroids')))
 
@@ -67,18 +72,25 @@ class Centroids(GeoAlgorithm):
                 QgsWkbTypes.Point,
                 layer.crs())
 
+        outFeat = QgsFeature()
+
         features = vector.features(layer)
         total = 100.0 / len(features)
-        for current, input_feature in enumerate(features):
-            output_feature = input_feature
-            if input_feature.geometry():
-                output_geometry = input_feature.geometry().centroid()
-                if not output_geometry:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                           'Error calculating centroid for feature {}'.format(input_feature.id()))
-                output_feature.setGeometry(output_geometry)
+        for current, feat in enumerate(features):
+            inGeom = feat.geometry()
+            attrs = feat.attributes()
 
-            writer.addFeature(output_feature)
+            if inGeom.isEmpty():
+                outGeom = QgsGeometry(None)
+            else:
+                outGeom = QgsGeometry(inGeom.centroid())
+                if not outGeom:
+                    raise GeoAlgorithmExecutionException(
+                        self.tr('Error calculating centroid'))
+
+            outFeat.setGeometry(outGeom)
+            outFeat.setAttributes(attrs)
+            writer.addFeature(outFeat)
             progress.setPercentage(int(current * total))
 
         del writer
