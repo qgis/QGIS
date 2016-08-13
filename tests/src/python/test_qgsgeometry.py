@@ -3314,6 +3314,36 @@ class TestQgsGeometry(unittest.TestCase):
         expected_wkt = "CurvePolygon (CompoundCurve (CircularString (0 0, 1 1, 2 0),(2 0, 0 0)))"
         self.assertEqual(geom.exportToWkt(), QgsGeometry.fromWkt(expected_wkt).exportToWkt())
 
+    def testSingleSidedBuffer(self):
+
+        wkt = "LineString( 0 0, 10 0)"
+        geom = QgsGeometry.fromWkt(wkt)
+        out = geom.singleSidedBuffer(1, 8, QgsGeometry.SideLeft)
+        result = out.exportToWkt()
+        expected_wkt = "Polygon ((10 0, 0 0, 0 1, 10 1, 10 0))"
+        self.assertTrue(compareWkt(result, expected_wkt, 0.00001), "Merge lines: mismatch Expected:\n{}\nGot:\n{}\n".format(expected_wkt, result))
+
+        wkt = "LineString( 0 0, 10 0)"
+        geom = QgsGeometry.fromWkt(wkt)
+        out = geom.singleSidedBuffer(1, 8, QgsGeometry.SideRight)
+        result = out.exportToWkt()
+        expected_wkt = "Polygon ((0 0, 10 0, 10 -1, 0 -1, 0 0))"
+        self.assertTrue(compareWkt(result, expected_wkt, 0.00001), "Merge lines: mismatch Expected:\n{}\nGot:\n{}\n".format(expected_wkt, result))
+
+        wkt = "LineString( 0 0, 10 0, 10 10)"
+        geom = QgsGeometry.fromWkt(wkt)
+        out = geom.singleSidedBuffer(1, 8, QgsGeometry.SideRight, QgsGeometry.JoinStyleMitre)
+        result = out.exportToWkt()
+        expected_wkt = "Polygon ((0 0, 10 0, 10 10, 11 10, 11 -1, 0 -1, 0 0))"
+        self.assertTrue(compareWkt(result, expected_wkt, 0.00001), "Merge lines: mismatch Expected:\n{}\nGot:\n{}\n".format(expected_wkt, result))
+
+        wkt = "LineString( 0 0, 10 0, 10 10)"
+        geom = QgsGeometry.fromWkt(wkt)
+        out = geom.singleSidedBuffer(1, 8, QgsGeometry.SideRight, QgsGeometry.JoinStyleBevel)
+        result = out.exportToWkt()
+        expected_wkt = "Polygon ((0 0, 10 0, 10 10, 11 10, 11 0, 10 -1, 0 -1, 0 0))"
+        self.assertTrue(compareWkt(result, expected_wkt, 0.00001), "Merge lines: mismatch Expected:\n{}\nGot:\n{}\n".format(expected_wkt, result))
+
     def testMisc(self):
 
         # Test that we cannot add a CurvePolygon in a MultiPolygon

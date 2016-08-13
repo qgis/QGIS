@@ -1296,7 +1296,7 @@ QgsGeometry QgsGeometry::buffer( double distance, int segments ) const
   return QgsGeometry( geom );
 }
 
-QgsGeometry QgsGeometry::buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) const
+QgsGeometry QgsGeometry::buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double mitreLimit ) const
 {
   if ( !d->geometry )
   {
@@ -1312,7 +1312,7 @@ QgsGeometry QgsGeometry::buffer( double distance, int segments, int endCapStyle,
   return QgsGeometry( geom );
 }
 
-QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, int joinStyle, double mitreLimit ) const
+QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle joinStyle, double mitreLimit ) const
 {
   if ( !d->geometry )
   {
@@ -1348,6 +1348,46 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, int joinSty
       return QgsGeometry();
     }
     return QgsGeometry( offsetGeom );
+  }
+}
+
+QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, BufferSide side , JoinStyle joinStyle, double mitreLimit ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
+  {
+    QList<QgsGeometry> parts = asGeometryCollection();
+    QList<QgsGeometry> results;
+    Q_FOREACH ( const QgsGeometry& part, parts )
+    {
+      QgsGeometry result = part.singleSidedBuffer( distance, segments, side, joinStyle, mitreLimit );
+      if ( result )
+        results << result;
+    }
+    if ( results.isEmpty() )
+      return QgsGeometry();
+
+    QgsGeometry first = results.takeAt( 0 );
+    Q_FOREACH ( const QgsGeometry& result, results )
+    {
+      first.addPart( & result );
+    }
+    return first;
+  }
+  else
+  {
+    QgsGeos geos( d->geometry );
+    QgsAbstractGeometry* bufferGeom = geos.singleSidedBuffer( distance, segments, side,
+                                      joinStyle, mitreLimit );
+    if ( !bufferGeom )
+    {
+      return QgsGeometry();
+    }
+    return QgsGeometry( bufferGeom );
   }
 }
 

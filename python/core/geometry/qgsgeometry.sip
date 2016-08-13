@@ -447,27 +447,67 @@ class QgsGeometry
      *  @note added in 1.5 */
     bool crosses( const QgsGeometry& geometry ) const;
 
+    //! Side of line to buffer
+    enum BufferSide
+    {
+      SideLeft, //!< Buffer to left of line
+      SideRight, //!< Buffer to right of line
+    };
+
+    //! End cap styles for buffers
+    enum EndCapStyle
+    {
+      CapRound, //!< Round cap
+      CapFlat, //!< Flat cap (in line with start/end of line)
+      CapSquare, //!< Square cap (extends past start/end of line by buffer distance)
+    };
+
+    //! Join styles for buffers
+    enum JoinStyle
+    {
+      JoinStyleRound, //!< Use rounded joins
+      JoinStyleMitre, //!< Use mitred joins
+      JoinStyleBevel, //!< Use beveled joins
+    };
+
     /** Returns a buffer region around this geometry having the given width and with a specified number
         of segments used to approximate curves */
     QgsGeometry buffer( double distance, int segments ) const;
 
     /** Returns a buffer region around the geometry, with additional style options.
      * @param distance    buffer distance
-     * @param segments    For round joins, number of segments to approximate quarter-circle
-     * @param endCapStyle Round (1) / Flat (2) / Square (3) end cap style
-     * @param joinStyle   Round (1) / Mitre (2) / Bevel (3) join style
-     * @param mitreLimit  Limit on the mitre ratio used for very sharp corners
+     * @param segments    for round joins, number of segments to approximate quarter-circle
+     * @param endCapStyle end cap style
+     * @param joinStyle   join style for corners in geometry
+     * @param mitreLimit  limit on the mitre ratio used for very sharp corners (JoinStyleMitre only)
      * @note added in 2.4
-     * @note needs GEOS >= 3.3 - otherwise always returns 0
      */
-    QgsGeometry buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) const;
+    QgsGeometry buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double mitreLimit ) const;
 
     /** Returns an offset line at a given distance and side from an input line.
-     * See buffer() method for details on parameters.
+     * @param distance    buffer distance
+     * @param segments    for round joins, number of segments to approximate quarter-circle
+     * @param joinStyle   join style for corners in geometry
+     * @param mitreLimit  limit on the mitre ratio used for very sharp corners (JoinStyleMitre only)
      * @note added in 2.4
-     * @note needs GEOS >= 3.3 - otherwise always returns 0
      */
-    QgsGeometry offsetCurve( double distance, int segments, int joinStyle, double mitreLimit ) const;
+    QgsGeometry offsetCurve( double distance, int segments, JoinStyle joinStyle, double mitreLimit ) const;
+
+    /**
+     * Returns a single sided buffer for a (multi)line geometry. The buffer is only
+     * applied to one side of the line.
+     * @param distance buffer distance
+     * @param segments for round joins, number of segments to approximate quarter-circle
+     * @param side side of geometry to buffer
+     * @param joinStyle join style for corners
+     * @param mitreLimit limit on the mitre ratio used for very sharp corners
+     * @return buffered geometry, or an empty geometry if buffer could not be
+     * calculated
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry singleSidedBuffer( double distance, int segments, BufferSide side,
+                                   JoinStyle joinStyle = JoinStyleRound,
+                                   double mitreLimit = 2.0 ) const;
 
     /** Returns a simplified version of this geometry using a specified tolerance value */
     QgsGeometry simplify( double tolerance )  const;

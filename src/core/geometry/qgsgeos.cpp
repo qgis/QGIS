@@ -1679,6 +1679,33 @@ QgsAbstractGeometry* QgsGeos::offsetCurve( double distance, int segments, int jo
   return offsetGeom;
 }
 
+QgsAbstractGeometry* QgsGeos::singleSidedBuffer( double distance, int segments, int side, int joinStyle, double mitreLimit, QString* errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return nullptr;
+  }
+
+  GEOSGeomScopedPtr geos;
+  try
+  {
+    GEOSBufferParams* bp  = GEOSBufferParams_create_r( geosinit.ctxt );
+    GEOSBufferParams_setSingleSided_r( geosinit.ctxt, bp, 1 );
+    GEOSBufferParams_setQuadrantSegments_r( geosinit.ctxt, bp, segments );
+    GEOSBufferParams_setJoinStyle_r( geosinit.ctxt, bp, joinStyle );
+    GEOSBufferParams_setMitreLimit_r( geosinit.ctxt, bp, mitreLimit );
+
+    if ( side == 1 )
+    {
+      distance = -distance;
+    }
+    geos.reset( GEOSBufferWithParams_r( geosinit.ctxt, mGeos, bp, distance ) );
+    GEOSBufferParams_destroy_r( geosinit.ctxt, bp );
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr );
+  return fromGeos( geos.get() );
+}
+
 QgsAbstractGeometry* QgsGeos::reshapeGeometry( const QgsLineString& reshapeWithLine, int* errorCode, QString* errorMsg ) const
 {
   if ( !mGeos || reshapeWithLine.numPoints() < 2 || mGeometry->dimension() == 0 )

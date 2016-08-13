@@ -85,6 +85,24 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
                        QString* errorMsg = nullptr ) const override;
 
     QgsAbstractGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const override;
+
+    /**
+     * Returns a single sided buffer for a geometry. The buffer is only
+     * applied to one side of the geometry.
+     * @param distance buffer distance
+     * @param segments for round joins, number of segments to approximate quarter-circle
+     * @param side side of geometry to buffer (0 = left, 1 = right)
+     * @param joinStyle join style for corners ( Round (1) / Mitre (2) / Bevel (3) )
+     * @param mitreLimit limit on the mitre ratio used for very sharp corners
+     * @return buffered geometry, or an nullptr if buffer could not be
+     * calculated
+     * @note added in QGIS 3.0
+     */
+    QgsAbstractGeometry* singleSidedBuffer( double distance, int segments, int side,
+                                            int joinStyle, double mitreLimit,
+                                            QString* errorMsg = nullptr ) const;
+
+
     QgsAbstractGeometry* reshapeGeometry( const QgsLineString& reshapeWithLine, int* errorCode, QString* errorMsg = nullptr ) const;
 
     /** Merges any connected lines in a LineString/MultiLineString geometry and

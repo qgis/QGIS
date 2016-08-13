@@ -718,9 +718,10 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
     double mitreLimit = 2.0; // the default value in GEOS (5.0) allows for fairly sharp endings
     QgsGeometry offsetGeom;
     if ( geometryType == QgsWkbTypes::PolygonGeometry )
-      offsetGeom = tempGeometry.buffer( -dist, quadSegments, GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, mitreLimit );
+      offsetGeom = tempGeometry.buffer( -dist, quadSegments, QgsGeometry::CapFlat,
+                                        QgsGeometry::JoinStyleMitre, mitreLimit );
     else
-      offsetGeom = tempGeometry.offsetCurve( dist, quadSegments, GEOSBUF_JOIN_MITRE, mitreLimit );
+      offsetGeom = tempGeometry.offsetCurve( dist, quadSegments, QgsGeometry::JoinStyleMitre, mitreLimit );
 
     if ( !offsetGeom.isEmpty() )
     {
