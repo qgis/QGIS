@@ -671,73 +671,6 @@ void QgsSymbolLayerUtils::drawStippledBackground( QPainter* painter, QRect rect 
 #include <cmath>
 #include <cfloat>
 
-
-#if !defined(GEOS_VERSION_MAJOR) || !defined(GEOS_VERSION_MINOR) || \
- ((GEOS_VERSION_MAJOR<3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR<3)))
-// calculate line's angle and tangent
-static bool lineInfo( QPointF p1, QPointF p2, double& angle, double& t )
-{
-  double x1 = p1.x(), y1 = p1.y(), x2 = p2.x(), y2 = p2.y();
-
-  if ( x1 == x2 && y1 == y2 )
-    return false;
-
-  // tangent
-  t = ( x1 == x2 ? DBL_MAX : ( y2 - y1 ) / ( x2 - x1 ) );
-
-  // angle
-  if ( t == DBL_MAX )
-    angle = ( y2 > y1 ? M_PI / 2 : M_PI * 3 / 2 );  // angle is 90 or 270
-  else if ( t == 0 )
-    angle = ( x2 > x1 ? 0 : M_PI ); // angle is 0 or 180
-  else if ( t >= 0 )
-    angle = ( y2 > y1 ? atan( t ) : M_PI + atan( t ) );
-  else // t < 0
-    angle = ( y2 > y1 ? M_PI + atan( t ) : atan( t ) );
-
-  return true;
-}
-
-// offset a point with an angle and distance
-static QPointF offsetPoint( QPointF pt, double angle, double dist )
-{
-  return QPointF( pt.x() + dist * cos( angle ), pt.y() + dist * sin( angle ) );
-}
-
-// calc intersection of two (infinite) lines defined by one point and tangent
-static QPointF linesIntersection( QPointF p1, double t1, QPointF p2, double t2 )
-{
-  // parallel lines? (or the difference between angles is less than appr. 10 degree)
-  if (( t1 == DBL_MAX && t2 == DBL_MAX ) || qAbs( atan( t1 ) - atan( t2 ) ) < 0.175 )
-    return QPointF();
-
-  double x, y;
-  if ( t1 == DBL_MAX || t2 == DBL_MAX )
-  {
-    // in case one line is with angle 90 resp. 270 degrees (tangent undefined)
-    // swap them so that line 2 is with undefined tangent
-    if ( t1 == DBL_MAX )
-    {
-      QPointF pSwp = p1;
-      p1 = p2;
-      p2 = pSwp;
-      double  tSwp = t1;
-      t1 = t2;
-      t2 = tSwp;
-    }
-
-    x = p2.x();
-  }
-  else
-  {
-    // usual case
-    x = (( p1.y() - p2.y() ) + t2 * p2.x() - t1 * p1.x() ) / ( t2 - t1 );
-  }
-
-  y = p1.y() + t1 * ( x - p1.x() );
-  return QPointF( x, y );
-}
-#else
 static QPolygonF makeOffsetGeometry( const QgsPolyline& polyline )
 {
   int i, pointCount = polyline.count();
@@ -760,7 +693,6 @@ static QList<QPolygonF> makeOffsetGeometry( const QgsPolygon& polygon )
     resultGeom.append( makeOffsetGeometry( polygon[ ring ] ) );
   return resultGeom;
 }
-#endif
 
 QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::GeometryType geometryType )
 {
@@ -771,12 +703,6 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
     resultLine.append( polyline );
     return resultLine;
   }
-
-  QPolygonF newLine;
-
-  // need at least geos 3.3 for OffsetCurve tool
-#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
- ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
 
   unsigned int i, pointCount = polyline.count();
 
@@ -840,48 +766,6 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
   // returns original polyline when 'GEOSOffsetCurve' fails!
   resultLine.append( polyline );
   return resultLine;
-
-#else
-
-  double angle = 0.0, t_new, t_old = 0;
-  QPointF pt_old, pt_new;
-  QPointF p1 = polyline[0], p2;
-  bool first_point = true;
-
-  for ( int i = 1; i < polyline.count(); i++ )
-  {
-    p2 = polyline[i];
-
-    if ( !lineInfo( p1, p2, angle, t_new ) )
-      continue; // not a line...
-
-    pt_new = offsetPoint( p1, angle + M_PI / 2, dist );
-
-    if ( ! first_point )
-    {
-      // if it's not the first line segment
-      // calc intersection with last line (with offset)
-      QPointF pt_tmp = linesIntersection( pt_old, t_old, pt_new, t_new );
-      if ( !pt_tmp.isNull() )
-        pt_new = pt_tmp;
-    }
-
-    newLine.append( pt_new );
-
-    pt_old = pt_new;
-    t_old = t_new;
-    p1 = p2;
-    first_point = false;
-  }
-
-  // last line segment:
-  pt_new = offsetPoint( p2, angle + M_PI / 2, dist );
-  newLine.append( pt_new );
-
-  resultLine.append( newLine );
-  return resultLine;
-
-#endif
 }
 
 QList<QPolygonF> offsetLine( const QPolygonF& polyline, double dist )

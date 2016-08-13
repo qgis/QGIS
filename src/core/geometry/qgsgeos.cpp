@@ -1296,9 +1296,6 @@ QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, int endCapS
     return nullptr;
   }
 
-#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
- ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
-
   GEOSGeomScopedPtr geos;
   try
   {
@@ -1306,9 +1303,6 @@ QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, int endCapS
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr );
   return fromGeos( geos.get() );
-#else
-  return 0;
-#endif //0
 }
 
 QgsAbstractGeometry* QgsGeos::simplify( double tolerance, QString* errorMsg ) const

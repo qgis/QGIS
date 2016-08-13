@@ -359,9 +359,6 @@ void QgsMapToolOffsetCurve::deleteRubberBandAndGeometry()
 
 void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
 {
-  // need at least geos 3.3 for OffsetCurve tool
-#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
-  ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
   if ( !mRubberBand || mOriginalGeometry.isEmpty() )
   {
     return;
@@ -402,9 +399,6 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
       mRubberBand->setToGeometry( mModifiedGeometry, sourceLayer );
     }
   }
-#else //GEOS_VERSION>=3.3
-  Q_UNUSED( offset );
-#endif //GEOS_VERSION>=3.3
 }
 
 QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry& featureGeom, int vertex )
