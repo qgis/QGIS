@@ -951,9 +951,9 @@ class CORE_EXPORT QgsExpression
         NodeFunction( int fnIndex, NodeList* args ) : mFnIndex( fnIndex )
         {
           const ParameterList& functionParams = Functions()[mFnIndex]->parameters();
-          if ( !args || !args->hasNamedNodes() || functionParams.isEmpty() )
+          if ( !args || functionParams.isEmpty() )
           {
-            // no named parameters, or function does not support them
+            // no parameters, or function does not support them
             mArgs = args;
           }
           else
@@ -962,7 +962,7 @@ class CORE_EXPORT QgsExpression
 
             int idx = 0;
             //first loop through unnamed arguments
-            while ( args->names().at( idx ).isEmpty() )
+            while ( idx < args->names().size() && args->names().at( idx ).isEmpty() )
             {
               mArgs->append( args->list().at( idx )->clone() );
               idx++;

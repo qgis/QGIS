@@ -2514,14 +2514,14 @@ static QVariant fcnShortestLine( const QVariantList& values, const QgsExpression
 
 static QVariant fcnRound( const QVariantList& values, const QgsExpressionContext *, QgsExpression* parent )
 {
-  if ( values.length() == 2 )
+  if ( values.length() == 2 && values.at( 1 ).toInt() != 0 )
   {
     double number = getDoubleValue( values.at( 0 ), parent );
     double scaler = pow( 10.0, getIntValue( values.at( 1 ), parent ) );
     return QVariant( qRound( number * scaler ) / scaler );
   }
 
-  if ( values.length() == 1 )
+  if ( values.length() >= 1 )
   {
     double number = getIntValue( values.at( 0 ), parent );
     return QVariant( qRound( number ) );
