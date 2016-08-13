@@ -253,9 +253,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
                                  pyramidSentence4,
                                  pyramidSentence5 ) );
 
-  tableTransparency->horizontalHeader()->setResizeMode( 0, QHeaderView::Stretch );
-  tableTransparency->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
-
   //resampling
   mResamplingGroupBox->setSaveCheckedState( true );
   const QgsRasterRenderer* renderer = mRasterLayer->renderer();
@@ -481,6 +478,9 @@ void QgsRasterLayerProperties::setupTransparencyTable( int nBands )
     tableTransparency->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "To" ) ) );
     tableTransparency->setHorizontalHeaderItem( 2, new QTableWidgetItem( tr( "Percent Transparent" ) ) );
   }
+
+  tableTransparency->horizontalHeader()->setResizeMode( 0, QHeaderView::Stretch );
+  tableTransparency->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
 }
 
 void QgsRasterLayerProperties::populateTransparencyTable( QgsRasterRenderer* renderer )
