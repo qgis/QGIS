@@ -94,6 +94,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * @param side side of geometry to buffer (0 = left, 1 = right)
      * @param joinStyle join style for corners ( Round (1) / Mitre (2) / Bevel (3) )
      * @param mitreLimit limit on the mitre ratio used for very sharp corners
+     * @param errorMsg error messages emitted, if any
      * @return buffered geometry, or an nullptr if buffer could not be
      * calculated
      * @note added in QGIS 3.0
