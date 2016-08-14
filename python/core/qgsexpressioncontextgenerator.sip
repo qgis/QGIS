@@ -38,4 +38,6 @@ class QgsExpressionContextGenerator
      * and return an expression context.
      */
     virtual QgsExpressionContext createExpressionContext() const = 0;
+
+    virtual ~QgsExpressionContextGenerator();
 };

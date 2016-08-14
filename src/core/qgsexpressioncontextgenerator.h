@@ -43,6 +43,8 @@ class QgsExpressionContextGenerator
      * @note Added in QGIS 3.0
      */
     virtual QgsExpressionContext createExpressionContext() const = 0;
+
+    virtual ~QgsExpressionContextGenerator() {}
 };
 
 #endif // QGSEXPRESSIONCONTEXTGENERATOR_H
