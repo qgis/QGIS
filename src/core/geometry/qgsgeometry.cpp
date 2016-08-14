@@ -1314,7 +1314,7 @@ QgsGeometry QgsGeometry::buffer( double distance, int segments, EndCapStyle endC
 
 QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle joinStyle, double mitreLimit ) const
 {
-  if ( !d->geometry )
+  if ( !d->geometry || type() != QgsWkbTypes::LineGeometry )
   {
     return QgsGeometry();
   }
@@ -1353,7 +1353,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
 
 QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, BufferSide side , JoinStyle joinStyle, double mitreLimit ) const
 {
-  if ( !d->geometry )
+  if ( !d->geometry || type() != QgsWkbTypes::LineGeometry )
   {
     return QgsGeometry();
   }
