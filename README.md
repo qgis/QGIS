@@ -6,8 +6,8 @@ QGIS is an Open Source Geographic Information System. The project was born in
 May of 2002 and was established as a project on SourceForge in June of the same
 year. We've worked hard to make GIS software (which is traditionally expensive
 commercial software) a viable prospect for anyone with basic access to a
-Personal Computer.  QGIS currently runs on most Unix platforms, Windows, and OS
-X. QGIS is developed using the Qt toolkit (http://qt.io) and C++.  This
+Personal Computer.  QGIS currently runs on most Unix platforms (macOS/OS X included)
+and Windows. QGIS is developed using the Qt toolkit (http://qt.io) and C++.  This
 means that QGIS feels snappy to use and has a pleasing, easy to use graphical
 user interface.
 
@@ -41,6 +41,7 @@ modified.
  * ESRI Shapefiles
  * PostgreSQL/PostGIS
  * GRASS
+ * GeoPackage
  * Spatialite
  * [Other OGR supported formats](http://www.gdal.org/ogr_formats.html)
  * MSSQL
