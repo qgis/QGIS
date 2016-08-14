@@ -92,6 +92,9 @@ class Clip(GeoAlgorithm):
         for i, clip_geom in enumerate(clip_geoms):
             input_features = [f for f in vector.features(source_layer, QgsFeatureRequest().setFilterRect(clip_geom.boundingBox()))]
 
+            if not input_features:
+                continue
+
             if single_clip_feature:
                 total = 100.0 / len(input_features)
             else:
@@ -116,11 +119,16 @@ class Clip(GeoAlgorithm):
                     if new_geom.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(new_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                         int_com = in_feat.geometry().combine(new_geom)
                         int_sym = in_feat.geometry().symDifference(new_geom)
-                        new_geom = int_com.difference(int_sym)
-                        if new_geom.isGeosEmpty() or not new_geom.isGeosValid():
+                        if not int_com or not int_sym:
                             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                                    self.tr('GEOS geoprocessing error: One or more '
                                                            'input features have invalid geometry.'))
+                        else:
+                            new_geom = int_com.difference(int_sym)
+                            if new_geom.isGeosEmpty() or not new_geom.isGeosValid():
+                                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                                       self.tr('GEOS geoprocessing error: One or more '
+                                                               'input features have invalid geometry.'))
                 else:
                     # clip geometry totally contains feature geometry, so no need to perform intersection
                     new_geom = in_feat.geometry()
