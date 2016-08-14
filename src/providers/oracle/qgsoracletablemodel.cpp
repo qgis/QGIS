@@ -227,29 +227,23 @@ void QgsOracleTableModel::setSql( const QModelIndex &index, const QString &sql )
 
 QIcon QgsOracleTableModel::iconForWkbType( QgsWkbTypes::Type type )
 {
-  switch ( type )
+  switch ( QgsWkbTypes::geometryType( type ) )
   {
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::Point25D:
-    case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiPoint25D:
+    case QgsWkbTypes::PointGeometry:
       return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
-    case QgsWkbTypes::LineString:
-    case QgsWkbTypes::LineString25D:
-    case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiLineString25D:
+
+    case QgsWkbTypes::LineGeometry:
       return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
-    case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::Polygon25D:
-    case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::MultiPolygon25D:
+
+    case QgsWkbTypes::PolygonGeometry:
       return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
-    case QgsWkbTypes::NoGeometry:
+
+    case QgsWkbTypes::UnknownGeometry:
+      return QgsApplication::getThemeIcon( "/mIconLayer.png" );
+
+    case QgsWkbTypes::NullGeometry:
       return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
-    case QgsWkbTypes::Unknown:
-      break;
   }
-  return QgsApplication::getThemeIcon( "/mIconLayer.png" );
 }
 
 bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )

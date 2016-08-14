@@ -1864,6 +1864,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry
     switch ( type )
     {
       case QgsWkbTypes::Point25D:
+      case QgsWkbTypes::PointZ:
         dim = 3;
         FALLTHROUGH;
 
@@ -1877,6 +1878,8 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry
 
       case QgsWkbTypes::LineString25D:
       case QgsWkbTypes::MultiLineString25D:
+      case QgsWkbTypes::LineStringZ:
+      case QgsWkbTypes::MultiLineStringZ:
         dim = 3;
         FALLTHROUGH;
 
@@ -1914,6 +1917,8 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry
 
       case QgsWkbTypes::Polygon25D:
       case QgsWkbTypes::MultiPolygon25D:
+      case QgsWkbTypes::PolygonZ:
+      case QgsWkbTypes::MultiPolygonZ:
         dim = 3;
         FALLTHROUGH;
 
@@ -1955,6 +1960,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry
       break;
 
       case QgsWkbTypes::MultiPoint25D:
+      case QgsWkbTypes::MultiPointZ:
         dim = 3;
         FALLTHROUGH;
 
@@ -1978,8 +1984,50 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry
       }
       break;
 
+      // currently unsupported curved types
+      case QgsWkbTypes::CircularString:
+      case QgsWkbTypes::CircularStringZ:
+      case QgsWkbTypes::CircularStringM:
+      case QgsWkbTypes::CircularStringZM:
+      case QgsWkbTypes::CompoundCurve:
+      case QgsWkbTypes::CompoundCurveZ:
+      case QgsWkbTypes::CompoundCurveM:
+      case QgsWkbTypes::CompoundCurveZM:
+      case QgsWkbTypes::CurvePolygon:
+      case QgsWkbTypes::CurvePolygonZ:
+      case QgsWkbTypes::CurvePolygonM:
+      case QgsWkbTypes::CurvePolygonZM:
+      case QgsWkbTypes::MultiCurve:
+      case QgsWkbTypes::MultiCurveZ:
+      case QgsWkbTypes::MultiCurveM:
+      case QgsWkbTypes::MultiCurveZM:
+      case QgsWkbTypes::MultiSurface:
+      case QgsWkbTypes::MultiSurfaceZ:
+      case QgsWkbTypes::MultiSurfaceM:
+      case QgsWkbTypes::MultiSurfaceZM:
+
+        // unsupported M values
+      case QgsWkbTypes::PointM:
+      case QgsWkbTypes::PointZM:
+      case QgsWkbTypes::LineStringM:
+      case QgsWkbTypes::LineStringZM:
+      case QgsWkbTypes::PolygonM:
+      case QgsWkbTypes::PolygonZM:
+      case QgsWkbTypes::MultiPointM:
+      case QgsWkbTypes::MultiPointZM:
+      case QgsWkbTypes::MultiLineStringM:
+      case QgsWkbTypes::MultiLineStringZM:
+      case QgsWkbTypes::MultiPolygonM:
+      case QgsWkbTypes::MultiPolygonZM:
+
+        // other unsupported or missing geometry types
+      case QgsWkbTypes::GeometryCollection:
+      case QgsWkbTypes::GeometryCollectionZ:
+      case QgsWkbTypes::GeometryCollectionM:
+      case QgsWkbTypes::GeometryCollectionZM:
       case QgsWkbTypes::Unknown:
       case QgsWkbTypes::NoGeometry:
+
         g.isNull = true;
         break;
     }
