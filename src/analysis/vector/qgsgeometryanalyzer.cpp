@@ -347,14 +347,14 @@ QList<double> QgsGeometryAnalyzer::simpleMeasure( QgsGeometry& mpGeometry )
     list.append( measure.measureArea( mpGeometry ) );
     if ( mpGeometry.type() == QgsWkbTypes::PolygonGeometry )
     {
-      perim = perimeterMeasure( &mpGeometry, measure );
+      perim = perimeterMeasure( mpGeometry, measure );
       list.append( perim );
     }
   }
   return list;
 }
 
-double QgsGeometryAnalyzer::perimeterMeasure( QgsGeometry* geometry, QgsDistanceArea& measure )
+double QgsGeometryAnalyzer::perimeterMeasure( const QgsGeometry& geometry, QgsDistanceArea& measure )
 {
   return measure.measurePerimeter( geometry );
 }
@@ -520,7 +520,6 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
         ++jt;
       }
       QList<double> values;
-      // QgsGeometry* tmpGeometry = 0;
       if ( dissolveGeometry.isEmpty() )
       {
         QgsDebugMsg( "no dissolved geometry - should not happen" );
@@ -615,7 +614,7 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
     }
   }
 
-  QgsGeometry *dissolveGeometry = nullptr; //dissolve geometry
+  QgsGeometry dissolveGeometry; //dissolve geometry
   QMultiMap<QString, QgsFeatureId>::const_iterator jt = map.constBegin();
   QgsFeature outputFeature;
   while ( jt != map.constEnd() )
@@ -653,7 +652,7 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
             outputFeature.setAttributes( currentFeature.attributes() );
             first = false;
           }
-          dissolveFeature( currentFeature, processedFeatures, &dissolveGeometry );
+          dissolveGeometry = dissolveFeature( currentFeature, dissolveGeometry );
           ++processedFeatures;
         }
         ++jt;
@@ -686,38 +685,33 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
           outputFeature.setAttributes( currentFeature.attributes() );
           first = false;
         }
-        dissolveFeature( currentFeature, processedFeatures, &dissolveGeometry );
+        dissolveGeometry = dissolveFeature( currentFeature, dissolveGeometry );
         ++processedFeatures;
         ++jt;
       }
     }
-    outputFeature.setGeometry( *dissolveGeometry );
-    delete dissolveGeometry;
+    outputFeature.setGeometry( dissolveGeometry );
     vWriter.addFeature( outputFeature );
   }
   return true;
 }
 
-void QgsGeometryAnalyzer::dissolveFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry )
+QgsGeometry QgsGeometryAnalyzer::dissolveFeature( const QgsFeature& f, const QgsGeometry& dissolveInto )
 {
   if ( !f.hasGeometry() )
   {
-    return;
+    return dissolveInto;
   }
 
   QgsGeometry featureGeometry = f.geometry();
 
-  if ( nProcessedFeatures == 0 )
+  if ( dissolveInto.isEmpty() )
   {
-    int geomSize = featureGeometry.wkbSize();
-    *dissolveGeometry = new QgsGeometry();
-    unsigned char* wkb = new unsigned char[geomSize];
-    memcpy( wkb, featureGeometry.asWkb(), geomSize );
-    ( *dissolveGeometry )->fromWkb( wkb, geomSize );
+    return featureGeometry;
   }
   else
   {
-    **dissolveGeometry = ( *dissolveGeometry )->combine( featureGeometry );
+    return dissolveInto.combine( featureGeometry );
   }
 }
 
@@ -744,7 +738,7 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
 
   QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, crs );
   QgsFeature currentFeature;
-  QgsGeometry *dissolveGeometry = nullptr; //dissolve geometry (if dissolve enabled)
+  QgsGeometry dissolveGeometry; //dissolve geometry (if dissolve enabled)
 
   //take only selection
   if ( onlySelectedFeatures )
@@ -773,7 +767,7 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
       {
         continue;
       }
-      bufferFeature( currentFeature, processedFeatures, &vWriter, dissolve, *dissolveGeometry, bufferDistance, bufferDistanceField );
+      bufferFeature( currentFeature, processedFeatures, &vWriter, dissolve, dissolveGeometry, bufferDistance, bufferDistanceField );
       ++processedFeatures;
     }
 
@@ -804,7 +798,7 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
       {
         break;
       }
-      bufferFeature( currentFeature, processedFeatures, &vWriter, dissolve, *dissolveGeometry, bufferDistance, bufferDistanceField );
+      bufferFeature( currentFeature, processedFeatures, &vWriter, dissolve, dissolveGeometry, bufferDistance, bufferDistanceField );
       ++processedFeatures;
     }
     if ( p )
@@ -816,13 +810,12 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
   if ( dissolve )
   {
     QgsFeature dissolveFeature;
-    if ( !dissolveGeometry )
+    if ( dissolveGeometry.isEmpty() )
     {
       QgsDebugMsg( "no dissolved geometry - should not happen" );
       return false;
     }
-    dissolveFeature.setGeometry( *dissolveGeometry );
-    delete dissolveGeometry;
+    dissolveFeature.setGeometry( dissolveGeometry );
     vWriter.addFeature( dissolveFeature );
   }
   return true;
@@ -977,7 +970,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
       if ( !lrsGeom.isEmpty() )
       {
         ++nOutputFeatures;
-        addEventLayerFeature( fet, &lrsGeom, featureIdIt->geometry(), fileWriter, memoryProviderFeatures, offsetField, offsetScale, forceSingleGeometry );
+        addEventLayerFeature( fet, lrsGeom, featureIdIt->geometry(), fileWriter, memoryProviderFeatures, offsetField, offsetScale, forceSingleGeometry );
       }
     }
     if ( nOutputFeatures < 1 )
@@ -999,10 +992,10 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   return true;
 }
 
-void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, QgsGeometry* geom, const QgsGeometry& lineGeom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures,
+void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, const QgsGeometry& geom, const QgsGeometry& lineGeom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures,
     int offsetField, double offsetScale, bool forceSingleType )
 {
-  if ( !geom )
+  if ( geom.isEmpty() )
   {
     return;
   }
@@ -1010,28 +1003,30 @@ void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, QgsGeometry
   QList<QgsGeometry> geomList;
   if ( forceSingleType )
   {
-    geomList = geom->asGeometryCollection();
+    geomList = geom.asGeometryCollection();
   }
   else
   {
-    geomList.push_back( *geom );
+    geomList.push_back( geom );
   }
 
   QList<QgsGeometry>::iterator geomIt = geomList.begin();
   for ( ; geomIt != geomList.end(); ++geomIt )
   {
     //consider offset
+    QgsGeometry newGeom = *geomIt;
     if ( offsetField >= 0 )
     {
       double offsetVal = feature.attribute( offsetField ).toDouble();
       offsetVal *= offsetScale;
-      if ( !createOffsetGeometry( &( *geomIt ), lineGeom, offsetVal ) )
+      newGeom = createOffsetGeometry( *geomIt, lineGeom, offsetVal );
+      if ( newGeom.isEmpty() )
       {
         continue;
       }
     }
 
-    feature.setGeometry( *geomIt );
+    feature.setGeometry( newGeom );
     if ( fileWriter )
     {
       fileWriter->addFeature( feature );
@@ -1041,29 +1036,24 @@ void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, QgsGeometry
       memoryFeatures << feature;
     }
   }
-
-  if ( forceSingleType )
-  {
-    delete geom;
-  }
 }
 
-bool QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, const QgsGeometry& lineGeom, double offset )
+QgsGeometry QgsGeometryAnalyzer::createOffsetGeometry( const QgsGeometry& geom, const QgsGeometry& lineGeom, double offset )
 {
   if ( !geom || lineGeom.isEmpty() )
   {
-    return false;
+    return QgsGeometry();
   }
 
   QList<QgsGeometry> inputGeomList;
 
-  if ( geom->isMultipart() )
+  if ( geom.isMultipart() )
   {
-    inputGeomList = geom->asGeometryCollection();
+    inputGeomList = geom.asGeometryCollection();
   }
   else
   {
-    inputGeomList.push_back( *geom );
+    inputGeomList.push_back( geom );
   }
 
   QList<GEOSGeometry*> outputGeomList;
@@ -1071,7 +1061,7 @@ bool QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, const QgsGeom
   GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
   for ( ; inputGeomIt != inputGeomList.constEnd(); ++inputGeomIt )
   {
-    if ( geom->type() == QgsWkbTypes::LineGeometry )
+    if ( geom.type() == QgsWkbTypes::LineGeometry )
     {
       //geos 3.3 needed for line offsets
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
@@ -1079,19 +1069,19 @@ bool QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, const QgsGeom
       GEOSGeometry* offsetGeom = GEOSOffsetCurve_r( geosctxt, ( *inputGeomIt ).asGeos(), -offset, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ );
       if ( !offsetGeom || !GEOSisValid_r( geosctxt, offsetGeom ) )
       {
-        return false;
+        return QgsGeometry();
       }
       if ( !GEOSisValid_r( geosctxt, offsetGeom ) || GEOSGeomTypeId_r( geosctxt, offsetGeom ) != GEOS_LINESTRING || GEOSGeomGetNumPoints_r( geosctxt, offsetGeom ) < 1 )
       {
         GEOSGeom_destroy_r( geosctxt, offsetGeom );
-        return false;
+        return QgsGeometry();
       }
       outputGeomList.push_back( offsetGeom );
 #else
       outputGeomList.push_back( GEOSGeom_clone_r( geosctxt, ( *inputGeomIt )->asGeos() ) );
 #endif
     }
-    else if ( geom->type() == QgsWkbTypes::PointGeometry )
+    else if ( geom.type() == QgsWkbTypes::PointGeometry )
     {
       QgsPoint p = ( *inputGeomIt ).asPoint();
       p = createPointOffset( p.x(), p.y(), offset, lineGeom );
@@ -1103,12 +1093,13 @@ bool QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, const QgsGeom
     }
   }
 
-  if ( !geom->isMultipart() )
+  QgsGeometry outGeometry;
+  if ( !geom.isMultipart() )
   {
     GEOSGeometry* outputGeom = outputGeomList.at( 0 );
     if ( outputGeom )
     {
-      geom->fromGeos( outputGeom );
+      outGeometry.fromGeos( outputGeom );
     }
   }
   else
@@ -1119,18 +1110,18 @@ bool QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, const QgsGeom
       geomArray[i] = outputGeomList.at( i );
     }
     GEOSGeometry* collection = nullptr;
-    if ( geom->type() == QgsWkbTypes::PointGeometry )
+    if ( geom.type() == QgsWkbTypes::PointGeometry )
     {
       collection = GEOSGeom_createCollection_r( geosctxt, GEOS_MULTIPOINT, geomArray, outputGeomList.size() );
     }
-    else if ( geom->type() == QgsWkbTypes::LineGeometry )
+    else if ( geom.type() == QgsWkbTypes::LineGeometry )
     {
       collection = GEOSGeom_createCollection_r( geosctxt, GEOS_MULTILINESTRING, geomArray, outputGeomList.size() );
     }
-    geom->fromGeos( collection );
+    outGeometry.fromGeos( collection );
     delete[] geomArray;
   }
-  return true;
+  return outGeometry;
 }
 
 QgsPoint QgsGeometryAnalyzer::createPointOffset( double x, double y, double dist, const QgsGeometry& lineGeom ) const
