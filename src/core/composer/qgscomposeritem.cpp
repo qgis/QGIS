@@ -1297,7 +1297,9 @@ QGraphicsLineItem* QgsComposerItem::hAlignSnapItem()
   if ( !mHAlignSnapItem )
   {
     mHAlignSnapItem = new QGraphicsLineItem( nullptr );
-    mHAlignSnapItem->setPen( QPen( QColor( Qt::red ) ) );
+    QPen pen = QPen( QColor( Qt::red ) );
+    pen.setWidthF( 0.0 );
+    mHAlignSnapItem->setPen( pen );
     scene()->addItem( mHAlignSnapItem );
     mHAlignSnapItem->setZValue( 90 );
   }
@@ -1309,7 +1311,9 @@ QGraphicsLineItem* QgsComposerItem::vAlignSnapItem()
   if ( !mVAlignSnapItem )
   {
     mVAlignSnapItem = new QGraphicsLineItem( nullptr );
-    mVAlignSnapItem->setPen( QPen( QColor( Qt::red ) ) );
+    QPen pen = QPen( QColor( Qt::red ) );
+    pen.setWidthF( 0.0 );
+    mVAlignSnapItem->setPen( pen );
     scene()->addItem( mVAlignSnapItem );
     mVAlignSnapItem->setZValue( 90 );
   }
