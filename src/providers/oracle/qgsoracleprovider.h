@@ -409,7 +409,6 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     QMap<QVariant, QgsFeatureId> mKeyToFid;  //! map key values to feature id
     QMap<QgsFeatureId, QVariant> mFidToKey;  //! map feature back to fea
-    QgsFeatureId mFidCounter;                //! next feature id if map is used
     QgsOracleConn *mConnection;
 
     bool mHasSpatialIndex;                   //! Geometry column is indexed

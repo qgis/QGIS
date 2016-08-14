@@ -47,7 +47,9 @@ const QString ORACLE_DESCRIPTION = "Oracle data provider";
 QgsOracleProvider::QgsOracleProvider( QString const & uri )
     : QgsVectorDataProvider( uri )
     , mValid( false )
+    , mIsQuery( false )
     , mPrimaryKeyType( pktUnknown )
+    , mFeaturesCounted( -1 )
     , mDetectedGeomType( QgsWkbTypes::Unknown )
     , mRequestedGeomType( QgsWkbTypes::Unknown )
     , mHasSpatialIndex( false )
@@ -133,7 +135,6 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
   }
 
   mLayerExtent.setMinimal();
-  mFeaturesCounted = -1;
 
   // set the primary key
   if ( !determinePrimaryKey() )

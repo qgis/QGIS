@@ -89,6 +89,7 @@ namespace Sqlite
 {
   Query::Query( sqlite3* db, const QString& q )
       : db_( db )
+      , stmt_( nullptr )
       , nBind_( 1 )
   {
     QByteArray ba( q.toLocal8Bit() );

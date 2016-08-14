@@ -42,6 +42,7 @@ QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
 
 QgsFeatureRequest::QgsFeatureRequest( QgsFeatureIds fids )
     : mFilter( FilterFids )
+    , mFilterFid( -1 )
     , mFilterFids( fids )
     , mFilterExpression( nullptr )
     , mFlags( nullptr )
