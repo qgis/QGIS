@@ -152,6 +152,7 @@ from .Boundary import Boundary
 from .PointOnSurface import PointOnSurface
 from .OffsetLine import OffsetLine
 from .PolygonCentroids import PolygonCentroids
+from .Translate import Translate
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -205,7 +206,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RectanglesOvalsDiamondsVariable(),
                         RectanglesOvalsDiamondsFixed(), MergeLines(),
                         BoundingBox(), Boundary(), PointOnSurface(),
-                        OffsetLine(), PolygonCentroids()
+                        OffsetLine(), PolygonCentroids(),
+                        Translate()
                         ]
 
         if hasMatplotlib:
