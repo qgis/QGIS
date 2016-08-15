@@ -259,6 +259,8 @@ class CORE_EXPORT QgsExpressionContext
 
     QgsExpressionContext& operator=( const QgsExpressionContext& other );
 
+    QgsExpressionContext& operator=( QgsExpressionContext && other );
+
     ~QgsExpressionContext();
 
     /** Check whether a variable is specified by any scope within the context.
