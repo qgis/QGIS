@@ -508,10 +508,10 @@ class QgsPostgresSharedData
     void ensureFeaturesCountedAtLeast( long fetched );
 
     // FID lookups
-    QgsFeatureId lookupFid( const QVariant &v ); // lookup existing mapping or add a new one
-    QVariant removeFid( QgsFeatureId fid );
-    void insertFid( QgsFeatureId fid, const QVariant& k );
-    QVariant lookupKey( QgsFeatureId featureId );
+    QgsFeatureId lookupFid( const QVariantList& v ); // lookup existing mapping or add a new one
+    QVariantList removeFid( QgsFeatureId fid );
+    void insertFid( QgsFeatureId fid, const QVariantList& k );
+    QVariantList lookupKey( QgsFeatureId featureId );
 
   protected:
     QMutex mMutex; //!< Access to all data members is guarded by the mutex
@@ -519,8 +519,8 @@ class QgsPostgresSharedData
     long mFeaturesCounted;    //! Number of features in the layer
 
     QgsFeatureId mFidCounter;                    // next feature id if map is used
-    QMap<QVariant, QgsFeatureId> mKeyToFid;      // map key values to feature id
-    QMap<QgsFeatureId, QVariant> mFidToKey;      // map feature back to fea
+    QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id
+    QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature id back to key values
 };
 
 #endif
