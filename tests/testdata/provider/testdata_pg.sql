@@ -68,6 +68,28 @@ INSERT INTO qgis_test."some_poly_data" (pk, geom) VALUES
 (4, NULL)
 ;
 
+-- Provider check with compound key
+
+CREATE TABLE qgis_test."someDataCompound" (
+    key1 integer,
+    key2 integer,
+    pk integer NOT NULL,
+    cnt integer,
+    name text DEFAULT 'qgis',
+    name2 text DEFAULT 'qgis',
+    num_char text,
+    geom public.geometry(Point,4326),
+    PRIMARY KEY(key1, key2)
+);
+
+INSERT INTO qgis_test."someDataCompound" ( key1, key2, pk, cnt, name, name2, num_char, geom) VALUES
+(1, 1, 5, -200, NULL, 'NuLl', '5', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),
+(1, 2, 3,  300, 'Pear', 'PEaR', '3', NULL),
+(2, 1, 1,  100, 'Orange', 'oranGe', '1', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),
+(2, 2, 2,  200, 'Apple', 'Apple', '2', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),
+(2, 3, 4,  400, 'Honey', 'Honey', '4', '0101000020E610000014AE47E17A5450C03333333333935340')
+;
+
 --
 -- TOC entry 3953 (class 2606 OID 377768)
 -- Name: someData_pkey; Type: CONSTRAINT; Schema: qgis_test; Owner: postgres; Tablespace: 

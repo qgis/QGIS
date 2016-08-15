@@ -312,5 +312,35 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(fet.fields()[1].name(), 'newname2')
         self.assertEqual(fet.fields()[2].name(), 'another')
 
+
+class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        cls.dbconn = u'dbname=\'qgis_test\''
+        if 'QGIS_PGTEST_DB' in os.environ:
+            cls.dbconn = os.environ['QGIS_PGTEST_DB']
+        # Create test layers
+        cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'"key1","key2"\' srid=4326 type=POINT table="qgis_test"."someDataCompound" (geom) sql=', 'test', 'postgres')
+        assert cls.vl.isValid()
+        cls.provider = cls.vl.dataProvider()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Run after all tests"""
+
+    def enableCompiler(self):
+        QSettings().setValue(u'/qgis/compileExpressions', True)
+
+    def disableCompiler(self):
+        QSettings().setValue(u'/qgis/compileExpressions', False)
+
+    def uncompiledFilters(self):
+        return set(['intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))'])
+
+    def partiallyCompiledFilters(self):
+        return set([])
+
 if __name__ == '__main__':
     unittest.main()
