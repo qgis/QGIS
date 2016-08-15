@@ -440,7 +440,7 @@ void QgsRelationEditorWidget::unlinkFeature()
     while ( linkedIterator.nextFeature( f ) )
     {
       fids << f.id();
-      QgsDebugMsg( f.id() );
+      QgsDebugMsgLevel( FID_TO_STRING( f.id() ), 4 );
     }
 
     mRelation.referencingLayer()->deleteFeatures( fids );
