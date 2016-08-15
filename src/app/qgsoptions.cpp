@@ -318,7 +318,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mCacheSize->setMinimum( 0 );
   mCacheSize->setMaximum( std::numeric_limits<int>::max() );
   mCacheSize->setSingleStep( 1024 );
-  mCacheSize->setValue( mSettings->value( "cache/size" ).toInt() / 1024 );
+  qint64 cacheSize = mSettings->value( "cache/size", 50 * 1024 * 1024 ).toULongLong();
+  mCacheSize->setValue(( int )( cacheSize / 1024 ) );
 
   //wms search server
   leWmsSearch->setText( mSettings->value( "/qgis/WMSSearchUrl", "http://geopole.org/wms/search?search=%1&type=rss" ).toString() );
