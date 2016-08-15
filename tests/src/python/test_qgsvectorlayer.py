@@ -1200,7 +1200,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         # change an attribute value to a new unique value
         f = QgsFeature()
-        f1_id = layer.getFeatures().next().id()
+        f1_id = next(layer.getFeatures()).id()
         self.assertTrue(layer.changeAttributeValue(f1_id, 1, 481523))
         # note - this isn't 100% accurate, since 123 no longer exists - but it avoids looping through all features
         self.assertEqual(set(layer.uniqueValues(1)), set([123, 457, 888, -1, 0, 999, 9999, 481523]))
@@ -1233,7 +1233,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         # change an attribute value to a new minimum value
         f = QgsFeature()
-        f1_id = layer.getFeatures().next().id()
+        f1_id = next(layer.getFeatures()).id()
         self.assertTrue(layer.changeAttributeValue(f1_id, 1, -1001))
         self.assertEqual(layer.minimumValue(1), -1001)
 
@@ -1265,7 +1265,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         # change an attribute value to a new maximum value
         f = QgsFeature()
-        f1_id = layer.getFeatures().next().id()
+        f1_id = next(layer.getFeatures()).id()
         self.assertTrue(layer.changeAttributeValue(f1_id, 1, 1001))
         self.assertEqual(layer.maximumValue(1), 1001)
 
