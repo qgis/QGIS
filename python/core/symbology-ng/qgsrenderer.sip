@@ -46,6 +46,8 @@ class QgsFeatureRenderer
     sipType = sipType_QgsHeatmapRenderer;
   else if (sipCpp->type() == "invertedPolygonRenderer")
     sipType = sipType_QgsInvertedPolygonRenderer;
+  else if (sipCpp->type() == "pointCluster")
+    sipType = sipType_QgsPointClusterRenderer;
   else if (sipCpp->type() == "pointDisplacement")
     sipType = sipType_QgsPointDisplacementRenderer;
   else if (sipCpp->type() == "25dRenderer")

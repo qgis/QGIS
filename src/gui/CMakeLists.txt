@@ -27,6 +27,7 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgslayerpropertieswidget.cpp
   symbology-ng/qgsnullsymbolrendererwidget.cpp
   symbology-ng/qgspenstylecombobox.cpp
+  symbology-ng/qgspointclusterrendererwidget.cpp
   symbology-ng/qgspointdisplacementrendererwidget.cpp
   symbology-ng/qgsrendererpropertiesdialog.cpp
   symbology-ng/qgsrendererwidget.cpp
@@ -491,6 +492,7 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgslayerpropertieswidget.h
   symbology-ng/qgsnullsymbolrendererwidget.h
   symbology-ng/qgspenstylecombobox.h
+  symbology-ng/qgspointclusterrendererwidget.h  
   symbology-ng/qgspointdisplacementrendererwidget.h
   symbology-ng/qgsrendererpropertiesdialog.h
   symbology-ng/qgsrendererwidget.h

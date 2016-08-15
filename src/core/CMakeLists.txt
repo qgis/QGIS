@@ -30,7 +30,9 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgslinesymbollayer.cpp
   symbology-ng/qgsmarkersymbollayer.cpp
   symbology-ng/qgsnullsymbolrenderer.cpp
+  symbology-ng/qgspointclusterrenderer.cpp
   symbology-ng/qgspointdisplacementrenderer.cpp
+  symbology-ng/qgspointdistancerenderer.cpp
   symbology-ng/qgsrenderer.cpp
   symbology-ng/qgsrendererregistry.cpp
   symbology-ng/qgsrulebasedrenderer.cpp
@@ -802,7 +804,9 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgslegendsymbolitem.h
   symbology-ng/qgslinesymbollayer.h
   symbology-ng/qgsmarkersymbollayer.h
+  symbology-ng/qgspointclusterrenderer.h
   symbology-ng/qgspointdisplacementrenderer.h
+  symbology-ng/qgspointdistancerenderer.h
   symbology-ng/qgsrenderer.h
   symbology-ng/qgsrendererregistry.h
   symbology-ng/qgsrulebasedrenderer.h

@@ -1084,6 +1084,12 @@ be used instead of a null pointer if no transformation is required.</li>
 <li>createMapRenderer(): default implementation (which called plugin's draw() method) has been removed. Plugin layers must implement createMapRenderer().</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsPointDisplacementRenderer QgsPointDisplacementRenderer
+
+<ul>
+<li>The deprecated method setDisplacementGroups() has been removed. This method has had no effect since QGIS 2.4</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsPointLocator QgsPointLocator
 
 <ul>
