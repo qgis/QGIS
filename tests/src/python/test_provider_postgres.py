@@ -139,6 +139,12 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         # Test someData
         test_unique([f for f in vl.getFeatures()], 5)
+        
+        # Test unique with a layer with compound primary key
+        vl = QgsVectorLayer('%s srid=4326 table="qgis_test".%s sql=' % (self.dbconn, 'someData'), "compound_pkey", "postgres")
+        self.assertTrue(vl.isValid())
+        # Test someData
+        test_unique([f for f in vl.getFeatures()], 5)
 
         # Test base_table_bad: layer is invalid
         vl = QgsVectorLayer('%s srid=4326 table="qgis_test".%s (geom) sql=' % (self.dbconn, 'base_table_bad'), "testgeom", "postgres")
