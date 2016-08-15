@@ -71,14 +71,14 @@ INSERT INTO qgis_test."some_poly_data" (pk, geom) VALUES
 -- Provider check with compound key
 
 CREATE TABLE qgis_test."someDataCompound" (
-    key1 integer,
-    key2 integer,
     pk integer NOT NULL,
     cnt integer,
     name text DEFAULT 'qgis',
     name2 text DEFAULT 'qgis',
     num_char text,
     geom public.geometry(Point,4326),
+    key1 integer,
+    key2 integer,
     PRIMARY KEY(key1, key2)
 );
 
