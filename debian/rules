@@ -153,6 +153,10 @@ endif
 		-DORACLE_INCLUDEDIR=$(ORACLE_INCLUDEDIR)
 endif
 
+ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
+	CMAKE_OPTS += -DFCGI_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libfcgi.so
+endif
+
 ifneq (,$(findstring $(DISTRIBUTION),"sid stretch jessie"))
 	CMAKE_OPTS += -DSPATIALINDEX_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libspatialindex.so
 endif
