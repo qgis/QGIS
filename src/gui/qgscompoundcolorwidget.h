@@ -17,6 +17,7 @@
 #define QGSCOMPOUNDCOLORWIDGET_H
 
 #include "qgisgui.h"
+#include "qgspanelwidget.h"
 #include "ui_qgscompoundcolorwidget.h"
 
 /** \ingroup gui
@@ -26,7 +27,7 @@
  * \note Added in version 2.16
  */
 
-class GUI_EXPORT QgsCompoundColorWidget : public QWidget, private Ui::QgsCompoundColorWidgetBase
+class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::QgsCompoundColorWidgetBase
 {
 
     Q_OBJECT

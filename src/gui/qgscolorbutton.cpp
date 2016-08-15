@@ -94,6 +94,17 @@ const QPixmap& QgsColorButton::transparentBackground()
 
 void QgsColorButton::showColorDialog()
 {
+  if ( QgsPanelWidget* panel = QgsPanelWidget::findParentPanel( this ) )
+  {
+    QgsCompoundColorWidget* colorWidget = new QgsCompoundColorWidget( panel, color() );
+    colorWidget->setPanelTitle( mColorDialogTitle );
+    colorWidget->setAllowAlpha( mAllowAlpha );
+    connect( colorWidget, SIGNAL( currentColorChanged( QColor ) ), this, SLOT( setValidTemporaryColor( QColor ) ) );
+    connect( colorWidget, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( panelAccepted( QgsPanelWidget* ) ) );
+    panel->openPanel( colorWidget );
+    return;
+  }
+
   QColor newColor;
   QSettings settings;
 
@@ -355,6 +366,22 @@ void QgsColorButton::setValidColor( const QColor& newColor )
   {
     setColor( newColor );
     addRecentColor( newColor );
+  }
+}
+
+void QgsColorButton::setValidTemporaryColor( const QColor& newColor )
+{
+  if ( newColor.isValid() )
+  {
+    setColor( newColor );
+  }
+}
+
+void QgsColorButton::panelAccepted( QgsPanelWidget* widget )
+{
+  if ( QgsCompoundColorWidget* colorWidget = qobject_cast< QgsCompoundColorWidget* >( widget ) )
+  {
+    addRecentColor( colorWidget->color() );
   }
 }
 

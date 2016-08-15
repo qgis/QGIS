@@ -31,7 +31,7 @@
 
 
 QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& color )
-    : QWidget( parent )
+    : QgsPanelWidget( parent )
     , mAllowAlpha( true )
     , mLastCustomColorIndex( 0 )
     , mPickingColor( false )
