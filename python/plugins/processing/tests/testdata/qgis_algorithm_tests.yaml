@@ -809,3 +809,15 @@ tests:
         name: expected/centroid_polys.gml
         type: vector
   
+  - algorithm: qgis:translategeometry
+    name: Lines translated
+    params:
+      DELTA_X: 0.1
+      DELTA_Y: -0.2
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/lines_translated.gml
+        type: vector
