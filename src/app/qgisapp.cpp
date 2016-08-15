@@ -376,7 +376,7 @@ static void setTitleBarText_( QWidget & qgisApp )
 {
   QString caption = QgisApp::tr( "QGIS " );
 
-  if ( QGis::QGIS_VERSION.endsWith( "Master" ) )
+  if ( QGis::QGIS_RELEASE_NAME == "Master" )
   {
     caption += QString( "%1" ).arg( QGis::QGIS_DEV_VERSION );
   }
