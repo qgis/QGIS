@@ -547,9 +547,15 @@ bool QgsMapToPixelSimplifier::simplifyPoints( QgsWkbTypes::Type wkbType, QgsCons
   if ( numPoints <= ( isaLinearRing ? 6 : 3 ) )
     return false;
 
-  QgsRectangle envelope = calculateBoundingBox( singleType, QgsConstWkbPtr( sourceWkbPtr ), numPoints );
-  sourceWkbPtr -= sizeof( int );
+  const QgsRectangle envelope = calculateBoundingBox( singleType, QgsConstWkbPtr( sourceWkbPtr ), numPoints );
 
+  if ( qMax( envelope.width(), envelope.height() ) / numPoints > tolerance * 2.0 )
+  {
+    //points are in average too far appart to lead to any significant simplification
+    return false;
+  }
+
+  sourceWkbPtr -= sizeof( int );
   int targetWkbSize = 5 + sizeof( int ) + numPoints * ( 2 * sizeof( double ) );
   unsigned char* targetWkb = new unsigned char[ targetWkbSize ];
 
