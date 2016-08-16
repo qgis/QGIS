@@ -43,7 +43,7 @@ tests:
         rules:
           - 'Origin = \(270736.067325068172067,4459029.574521748349071\)'
           - 'Band 1 Block=16x14 Type=Float32, ColorInterp=Gray'
-          - 'Minimum=826.000, Maximum=899.000, Mean=865.867, StdDev=17.808'
+          - 'NoData Value=-32768'
 
   - algorithm: gdalogr:polygonize
     name: GDAL Polygonize
