@@ -39,7 +39,6 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, p
 
   private:
     QgsPointDisplacementRenderer* mRenderer;
-    QgsRendererWidget* mEmbeddedRendererWidget;
 
     void blockAllSignals( bool block );
     void updateCenterIcon();
@@ -60,6 +59,9 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, p
     void on_mMaxScaleDenominatorEdit_textChanged( const QString & text );
     void on_mCenterSymbolPushButton_clicked();
     void on_mRendererSettingsButton_clicked();
+    void updateCenterSymbolFromWidget();
+    void cleanUpSymbolSelector( QgsPanelWidget* container );
+    void updateRendererFromWidget();
 };
 
 #endif // QGSPOINTDISPLACEMENTRENDERERWIDGET_H
