@@ -6,7 +6,7 @@
  * \note Added in version 2.16
  */
 
-class QgsCompoundColorWidget : QWidget
+class QgsCompoundColorWidget : QgsPanelWidget
 {
 %TypeHeaderCode
 #include <qgscompoundcolorwidget.h>
