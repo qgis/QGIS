@@ -747,7 +747,7 @@ template<TYPE>
 
 // QMap<qint64, TYPE> is implemented as a Python dictionary.
 template<TYPE>
-%MappedType QMap<qint64, TYPE> /DocType="dict-of-qint64-TYPE"/
+%MappedType QMap<qint64, TYPE>
 {
 %TypeHeaderCode
 #include <qmap.h>
@@ -1873,7 +1873,7 @@ template <TYPE>
 };
 
 // QList<QgsField> is implemented as a Python list of QgsField.
-%MappedType QList<QgsField> /DocType="list-of-qgsfield"/
+%MappedType QList<QgsField>
 {
 %TypeHeaderCode
 #include <qgsfield.h>
@@ -1978,7 +1978,7 @@ template <TYPE>
 
 %If (QVECTORINT_CONVERSION)
 // QVector<int> is implemented as a Python list of integers.
-%MappedType QVector<int> /DocType="list-of-int"/
+%MappedType QVector<int>
 {
 %TypeHeaderCode
 #include <qvector.h>
