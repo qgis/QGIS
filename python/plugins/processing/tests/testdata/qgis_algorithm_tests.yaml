@@ -821,3 +821,52 @@ tests:
       OUTPUT_LAYER:
         name: expected/lines_translated.gml
         type: vector
+
+  
+  - algorithm: qgis:singlesidedbuffer
+    name: Single sided buffer lines (left, round)
+    params:
+      DISTANCE: 1.0
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+      SIDE: '0'
+    results:
+      OUTPUT_LAYER:
+        name: expected/single_sided_buffer_line.gml
+        type: vector
+
+  - algorithm: qgis:singlesidedbuffer
+    name: Single sided buffer lines (Right, mitre)
+    params:
+      DISTANCE: 1.0
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '1'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+      SIDE: '1'
+    results:
+      OUTPUT_LAYER:
+        name: expected/single_sided_buffer_line_mitre.gml
+        type: vector
+
+  - algorithm: qgis:singlesidedbuffer
+    name: Single sided buffer multiline (bevel)
+    params:
+      DISTANCE: 1.0
+      INPUT_LAYER:
+        name: multilines.gml
+        type: vector
+      JOIN_STYLE: '2'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+      SIDE: '0'
+    results:
+      OUTPUT_LAYER:
+        name: expected/single_sided_buffer_multiline_bevel.gml
+        type: vector

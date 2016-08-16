@@ -1063,9 +1063,6 @@ QgsGeometry QgsGeometryAnalyzer::createOffsetGeometry( const QgsGeometry& geom, 
   {
     if ( geom.type() == QgsWkbTypes::LineGeometry )
     {
-      //geos 3.3 needed for line offsets
-#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
-      ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
       GEOSGeometry* offsetGeom = GEOSOffsetCurve_r( geosctxt, ( *inputGeomIt ).asGeos(), -offset, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ );
       if ( !offsetGeom || !GEOSisValid_r( geosctxt, offsetGeom ) )
       {
@@ -1077,9 +1074,6 @@ QgsGeometry QgsGeometryAnalyzer::createOffsetGeometry( const QgsGeometry& geom, 
         return QgsGeometry();
       }
       outputGeomList.push_back( offsetGeom );
-#else
-      outputGeomList.push_back( GEOSGeom_clone_r( geosctxt, ( *inputGeomIt )->asGeos() ) );
-#endif
     }
     else if ( geom.type() == QgsWkbTypes::PointGeometry )
     {

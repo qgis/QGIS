@@ -2212,6 +2212,37 @@ static QVariant fcnBuffer( const QVariantList& values, const QgsExpressionContex
   QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
+
+static QVariant fcnOffsetCurve( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  double dist = getDoubleValue( values.at( 1 ), parent );
+  int segments = getIntValue( values.at( 2 ), parent );
+  QgsGeometry::JoinStyle join = static_cast< QgsGeometry::JoinStyle >( getIntValue( values.at( 3 ), parent ) );
+  if ( join < QgsGeometry::JoinStyleRound || join > QgsGeometry::JoinStyleBevel )
+    return QVariant();
+  double mitreLimit = getDoubleValue( values.at( 3 ), parent );
+
+  QgsGeometry geom = fGeom.offsetCurve( dist, segments, join, mitreLimit );
+  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  return result;
+}
+
+static QVariant fcnSingleSidedBuffer( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  double dist = getDoubleValue( values.at( 1 ), parent );
+  int segments = getIntValue( values.at( 2 ), parent );
+  QgsGeometry::JoinStyle join = static_cast< QgsGeometry::JoinStyle >( getIntValue( values.at( 3 ), parent ) );
+  if ( join < QgsGeometry::JoinStyleRound || join > QgsGeometry::JoinStyleBevel )
+    return QVariant();
+  double mitreLimit = getDoubleValue( values.at( 3 ), parent );
+
+  QgsGeometry geom = fGeom.singleSidedBuffer( dist, segments, QgsGeometry::SideLeft, join, mitreLimit );
+  QVariant result = !geom.isEmpty() ? QVariant::fromValue( geom ) : QVariant();
+  return result;
+}
+
 static QVariant fcnTranslate( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
@@ -2514,14 +2545,14 @@ static QVariant fcnShortestLine( const QVariantList& values, const QgsExpression
 
 static QVariant fcnRound( const QVariantList& values, const QgsExpressionContext *, QgsExpression* parent )
 {
-  if ( values.length() == 2 )
+  if ( values.length() == 2 && values.at( 1 ).toInt() != 0 )
   {
     double number = getDoubleValue( values.at( 0 ), parent );
     double scaler = pow( 10.0, getIntValue( values.at( 1 ), parent ) );
     return QVariant( qRound( number * scaler ) / scaler );
   }
 
-  if ( values.length() == 1 )
+  if ( values.length() >= 1 )
   {
     double number = getIntValue( values.at( 0 ), parent );
     return QVariant( qRound( number ) );
@@ -3084,7 +3115,8 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "geom_from_gml" << "geomFromGML" << "intersects_bbox" << "bbox"
     << "disjoint" << "intersects" << "touches" << "crosses" << "contains"
     << "relate"
-    << "overlaps" << "within" << "buffer" << "centroid" << "bounds" << "reverse" << "exterior_ring"
+    << "overlaps" << "within" << "buffer" << "offset_curve" << "single_sided_buffer"
+    << "centroid" << "bounds" << "reverse" << "exterior_ring"
     << "boundary" << "line_merge"
     << "bounds_width" << "bounds_height" << "is_closed" << "convex_hull" << "difference"
     << "distance" << "intersection" << "sym_difference" << "combine"
@@ -3271,6 +3303,18 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "within", 2, fcnWithin, "GeometryGroup" )
     << new StaticFunction( "translate", 3, fcnTranslate, "GeometryGroup" )
     << new StaticFunction( "buffer", -1, fcnBuffer, "GeometryGroup" )
+    << new StaticFunction( "offset_curve", ParameterList() << Parameter( "geometry" )
+                           << Parameter( "distance" )
+                           << Parameter( "segments", true, 8.0 )
+                           << Parameter( "join", true, QgsGeometry::JoinStyleRound )
+                           << Parameter( "mitre_limit", true, 2.0 ),
+                           fcnOffsetCurve, "GeometryGroup" )
+    << new StaticFunction( "single_sided_buffer", ParameterList() << Parameter( "geometry" )
+                           << Parameter( "distance" )
+                           << Parameter( "segments", true, 8.0 )
+                           << Parameter( "join", true, QgsGeometry::JoinStyleRound )
+                           << Parameter( "mitre_limit", true, 2.0 ),
+                           fcnSingleSidedBuffer, "GeometryGroup" )
     << new StaticFunction( "centroid", 1, fcnCentroid, "GeometryGroup" )
     << new StaticFunction( "point_on_surface", 1, fcnPointOnSurface, "GeometryGroup" )
     << new StaticFunction( "reverse", 1, fcnReverse, "GeometryGroup" )

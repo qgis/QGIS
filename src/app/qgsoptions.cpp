@@ -889,10 +889,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mValidateGeometries->clear();
   mValidateGeometries->addItem( tr( "Off" ) );
   mValidateGeometries->addItem( tr( "QGIS" ) );
-#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
-    ( (GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR>=3) || GEOS_VERSION_MAJOR>3)
   mValidateGeometries->addItem( tr( "GEOS" ) );
-#endif
 
   QString markerStyle = mSettings->value( "/qgis/digitizing/marker_style", "Cross" ).toString();
   if ( markerStyle == "SemiTransparentCircle" )

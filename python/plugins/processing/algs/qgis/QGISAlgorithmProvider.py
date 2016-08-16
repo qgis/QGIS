@@ -153,6 +153,7 @@ from .PointOnSurface import PointOnSurface
 from .OffsetLine import OffsetLine
 from .PolygonCentroids import PolygonCentroids
 from .Translate import Translate
+from .SingleSidedBuffer import SingleSidedBuffer
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -207,7 +208,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RectanglesOvalsDiamondsFixed(), MergeLines(),
                         BoundingBox(), Boundary(), PointOnSurface(),
                         OffsetLine(), PolygonCentroids(),
-                        Translate()
+                        Translate(), SingleSidedBuffer()
                         ]
 
         if hasMatplotlib:

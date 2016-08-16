@@ -1296,9 +1296,6 @@ QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, int endCapS
     return nullptr;
   }
 
-#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
- ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
-
   GEOSGeomScopedPtr geos;
   try
   {
@@ -1306,9 +1303,6 @@ QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, int endCapS
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr );
   return fromGeos( geos.get() );
-#else
-  return 0;
-#endif //0
 }
 
 QgsAbstractGeometry* QgsGeos::simplify( double tolerance, QString* errorMsg ) const
@@ -1683,6 +1677,33 @@ QgsAbstractGeometry* QgsGeos::offsetCurve( double distance, int segments, int jo
   QgsAbstractGeometry* offsetGeom = fromGeos( offset );
   GEOSGeom_destroy_r( geosinit.ctxt, offset );
   return offsetGeom;
+}
+
+QgsAbstractGeometry* QgsGeos::singleSidedBuffer( double distance, int segments, int side, int joinStyle, double mitreLimit, QString* errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return nullptr;
+  }
+
+  GEOSGeomScopedPtr geos;
+  try
+  {
+    GEOSBufferParams* bp  = GEOSBufferParams_create_r( geosinit.ctxt );
+    GEOSBufferParams_setSingleSided_r( geosinit.ctxt, bp, 1 );
+    GEOSBufferParams_setQuadrantSegments_r( geosinit.ctxt, bp, segments );
+    GEOSBufferParams_setJoinStyle_r( geosinit.ctxt, bp, joinStyle );
+    GEOSBufferParams_setMitreLimit_r( geosinit.ctxt, bp, mitreLimit );
+
+    if ( side == 1 )
+    {
+      distance = -distance;
+    }
+    geos.reset( GEOSBufferWithParams_r( geosinit.ctxt, mGeos, bp, distance ) );
+    GEOSBufferParams_destroy_r( geosinit.ctxt, bp );
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr );
+  return fromGeos( geos.get() );
 }
 
 QgsAbstractGeometry* QgsGeos::reshapeGeometry( const QgsLineString& reshapeWithLine, int* errorCode, QString* errorMsg ) const
