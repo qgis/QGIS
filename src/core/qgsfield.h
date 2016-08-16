@@ -43,6 +43,14 @@ class QgsFieldsPrivate;
 
 class CORE_EXPORT QgsField
 {
+    Q_GADGET
+
+    Q_PROPERTY( bool isNumeric READ isNumeric )
+    Q_PROPERTY( int length READ length )
+    Q_PROPERTY( int precision READ precision )
+    Q_PROPERTY( QString comment READ comment )
+    Q_PROPERTY( QString name READ name )
+
   public:
     /** Constructor. Constructs a new QgsField object.
      * @param name Field name
@@ -106,6 +114,14 @@ class CORE_EXPORT QgsField
      * Returns the field comment
      */
     QString comment() const;
+
+    /**
+     * Returns if this field is numeric. Any integer or floating point type
+     * will return true for this.
+     *
+     * @note added in QGIS 2.18
+     */
+    bool isNumeric() const;
 
     /**
      * Set the field name.

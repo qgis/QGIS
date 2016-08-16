@@ -111,6 +111,11 @@ QString QgsField::comment() const
   return d->comment;
 }
 
+bool QgsField::isNumeric() const
+{
+  return d->type == QVariant::Double || d->type == QVariant::Int || d->type == QVariant::UInt || d->type == QVariant::LongLong || d->type == QVariant::ULongLong;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfield.cpp.

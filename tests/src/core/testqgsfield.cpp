@@ -34,6 +34,7 @@ class TestQgsField: public QObject
     void copy();// test cpy destruction (double delete)
     void assignment();
     void gettersSetters(); //test getters and setters
+    void isNumeric(); //test isNumeric
     void equality(); //test equality operators
     void asVariant(); //test conversion to and from a QVariant
     void displayString();
@@ -115,6 +116,29 @@ void TestQgsField::gettersSetters()
   QCOMPARE( field.precision(), 2 );
   field.setComment( "comment" );
   QCOMPARE( field.comment(), QString( "comment" ) );
+}
+
+void TestQgsField::isNumeric()
+{
+  QgsField field;
+  field.setType( QVariant::Int );
+  QVERIFY( field.isNumeric() );
+  field.setType( QVariant::UInt );
+  QVERIFY( field.isNumeric() );
+  field.setType( QVariant::Double );
+  QVERIFY( field.isNumeric() );
+  field.setType( QVariant::LongLong );
+  QVERIFY( field.isNumeric() );
+  field.setType( QVariant::ULongLong );
+  QVERIFY( field.isNumeric() );
+  field.setType( QVariant::String );
+  QVERIFY( !field.isNumeric() );
+  field.setType( QVariant::DateTime );
+  QVERIFY( !field.isNumeric() );
+  field.setType( QVariant::Bool );
+  QVERIFY( !field.isNumeric() );
+  field.setType( QVariant::Invalid );
+  QVERIFY( !field.isNumeric() );
 }
 
 void TestQgsField::equality()
