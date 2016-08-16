@@ -74,6 +74,14 @@ class QgsField
     QString comment() const;
 
     /**
+     * Returns if this field is numeric. Any integer or floating point type
+     * will return true for this.
+     *
+     * @note added in QGIS 2.18
+     */
+    bool isNumeric() const;
+
+    /**
      * Set the field name.
      * @param name Name of the field
      */
