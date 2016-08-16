@@ -18,7 +18,7 @@
 #include "qgssymbollayerutils.h"
 
 #include <QPainter>
-#include <QStyleOptionFrameV3>
+#include <QStyleOptionFrame>
 #include <QMouseEvent>
 
 #define MARKER_WIDTH 11
