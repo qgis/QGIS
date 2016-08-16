@@ -88,6 +88,9 @@ bool QgsColorRampShader::shade( double theValue, int* theReturnRedValue, int* th
   {
     return false;
   }
+  if ( qIsNaN( theValue ) || qIsInf( theValue ) )
+    return false;
+
   int colorRampItemListCount = mColorRampItemList.count();
   int idx;
   if ( !mLUTInitialized )
