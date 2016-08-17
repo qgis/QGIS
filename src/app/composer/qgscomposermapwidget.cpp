@@ -152,11 +152,6 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
                this, SLOT( atlasLayerChanged( QgsVectorLayer* ) ) );
       connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( compositionAtlasToggled( bool ) ) );
 
-      // repopulate data defined buttons if atlas layer changes
-      connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
-               this, SLOT( populateDataDefinedButtons() ) );
-      connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( populateDataDefinedButtons() ) );
-
       compositionAtlasToggled( atlas->enabled() );
     }
 
@@ -166,37 +161,10 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
     connect( mOverviewFrameMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( overviewMapChanged( QgsComposerItem* ) ) );
   }
 
-  //connections for data defined buttons
-  connect( mScaleDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mScaleDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
-  connect( mMapRotationDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mMapRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
-  connect( mXMinDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mXMinDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
-  connect( mYMinDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mYMinDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
-  connect( mXMaxDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mXMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
-  connect( mYMaxDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mYMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
-  connect( mAtlasMarginDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mAtlasMarginDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
-  connect( mLayersDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mLayersDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
-  connect( mStylePresetsDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mStylePresetsDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
   updateGuiElements();
   loadGridEntries();
   loadOverviewEntries();
+  populateDataDefinedButtons();
   blockAllSignals( false );
 }
 
@@ -206,79 +174,24 @@ QgsComposerMapWidget::~QgsComposerMapWidget()
 
 void QgsComposerMapWidget::populateDataDefinedButtons()
 {
-  QgsVectorLayer* vl = atlasCoverageLayer();
-
-  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
-  {
-    button->blockSignals( true );
-    button->registerExpressionContextGenerator( mComposerMap );
-  }
-
-  //initialise buttons to use atlas coverage layer
-  mScaleDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapScale ),
-                     QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mMapRotationDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapRotation ),
-                           QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mXMinDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapXMin ),
-                    QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mYMinDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapYMin ),
-                    QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mXMaxDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapXMax ),
-                    QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mYMaxDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapYMax ),
-                    QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mAtlasMarginDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapAtlasMargin ),
-                           QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mStylePresetsDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapStylePreset ),
-                            QgsDataDefinedButton::String, tr( "string matching a style preset name" ) );
-  mLayersDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapLayers ),
-                      QgsDataDefinedButton::String, tr( "list of map layer names separated by | characters" ) );
-
-  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
-  {
-    button->blockSignals( false );
-  }
-}
-
-QgsComposerObject::DataDefinedProperty QgsComposerMapWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )
-{
-  if ( widget == mScaleDDBtn )
-  {
-    return QgsComposerObject::MapScale;
-  }
-  else if ( widget == mMapRotationDDBtn )
-  {
-    return QgsComposerObject::MapRotation;
-  }
-  else if ( widget == mXMinDDBtn )
-  {
-    return QgsComposerObject::MapXMin;
-  }
-  else if ( widget == mYMinDDBtn )
-  {
-    return QgsComposerObject::MapYMin;
-  }
-  else if ( widget == mXMaxDDBtn )
-  {
-    return QgsComposerObject::MapXMax;
-  }
-  else if ( widget == mYMaxDDBtn )
-  {
-    return QgsComposerObject::MapYMax;
-  }
-  else if ( widget == mAtlasMarginDDBtn )
-  {
-    return QgsComposerObject::MapAtlasMargin;
-  }
-  else if ( widget == mStylePresetsDDBtn )
-  {
-    return QgsComposerObject::MapStylePreset;
-  }
-  else if ( widget == mLayersDDBtn )
-  {
-    return QgsComposerObject::MapLayers;
-  }
-  return QgsComposerObject::NoProperty;
+  registerDataDefinedButton( mScaleDDBtn, QgsComposerObject::MapScale,
+                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mMapRotationDDBtn, QgsComposerObject::MapRotation,
+                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mXMinDDBtn, QgsComposerObject::MapXMin,
+                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mYMinDDBtn, QgsComposerObject::MapYMin,
+                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mXMaxDDBtn, QgsComposerObject::MapXMax,
+                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mYMaxDDBtn, QgsComposerObject::MapYMax,
+                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mAtlasMarginDDBtn, QgsComposerObject::MapAtlasMargin,
+                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mStylePresetsDDBtn, QgsComposerObject::MapStylePreset,
+                             QgsDataDefinedButton::String, tr( "string matching a style preset name" ) );
+  registerDataDefinedButton( mLayersDDBtn, QgsComposerObject::MapLayers,
+                             QgsDataDefinedButton::String, tr( "list of map layer names separated by | characters" ) );
 }
 
 void QgsComposerMapWidget::compositionAtlasToggled( bool atlasEnabled )

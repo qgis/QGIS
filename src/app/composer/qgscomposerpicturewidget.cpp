@@ -68,18 +68,7 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   connect( mPicture, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
   connect( mPicture, SIGNAL( pictureRotationChanged( double ) ), this, SLOT( setPicRotationSpinValue( double ) ) );
 
-  QgsAtlasComposition* atlas = atlasComposition();
-  if ( atlas )
-  {
-    // repopulate data defined buttons if atlas layer changes
-    connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
-             this, SLOT( populateDataDefinedButtons() ) );
-    connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( populateDataDefinedButtons() ) );
-  }
-
   //connections for data defined buttons
-  connect( mSourceDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mSourceDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
   connect( mSourceDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mPictureLineEdit, SLOT( setDisabled( bool ) ) );
 }
 
@@ -671,33 +660,12 @@ void QgsComposerPictureWidget::resizeEvent( QResizeEvent * event )
   mSearchDirectoriesComboBox->setMinimumWidth( mPreviewListWidget->sizeHint().width() );
 }
 
-QgsComposerObject::DataDefinedProperty QgsComposerPictureWidget::ddPropertyForWidget( QgsDataDefinedButton *widget )
-{
-  if ( widget == mSourceDDBtn )
-  {
-    return QgsComposerObject::PictureSource;
-  }
-
-  return QgsComposerObject::NoProperty;
-}
-
 void QgsComposerPictureWidget::populateDataDefinedButtons()
 {
-  QgsVectorLayer* vl = atlasCoverageLayer();
-
-  //block signals from data defined buttons
-  mSourceDDBtn->blockSignals( true );
-
-  mSourceDDBtn->registerExpressionContextGenerator( mPicture );
-
-  //initialise buttons to use atlas coverage layer
-  mSourceDDBtn->init( vl, mPicture->dataDefinedProperty( QgsComposerObject::PictureSource ),
-                      QgsDataDefinedButton::AnyType, QgsDataDefinedButton::anyStringDesc() );
+  registerDataDefinedButton( mSourceDDBtn, QgsComposerObject::PictureSource,
+                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::anyStringDesc() );
 
   //initial state of controls - disable related controls when dd buttons are active
   mPictureLineEdit->setEnabled( !mSourceDDBtn->isActive() );
-
-  //unblock signals from data defined buttons
-  mSourceDDBtn->blockSignals( false );
 }
 

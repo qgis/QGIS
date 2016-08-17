@@ -52,8 +52,6 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
   protected:
     void resizeEvent( QResizeEvent * event ) override;
 
-    QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget ) override;
-
   protected slots:
     /** Initializes data defined buttons to current atlas coverage layer*/
     void populateDataDefinedButtons();

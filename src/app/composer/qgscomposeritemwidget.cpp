@@ -32,12 +32,13 @@
 
 QgsComposerItemBaseWidget::QgsComposerItemBaseWidget( QWidget* parent, QgsComposerObject *composerObject ): QWidget( parent ), mComposerObject( composerObject )
 {
-
+  connect( atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
+           this, SLOT( updateDataDefinedButtons() ) );
+  connect( atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( updateDataDefinedButtons() ) );
 }
 
 QgsComposerItemBaseWidget::~QgsComposerItemBaseWidget()
 {
-
 }
 
 void QgsComposerItemBaseWidget::updateDataDefinedProperty()
@@ -48,7 +49,11 @@ void QgsComposerItemBaseWidget::updateDataDefinedProperty()
   {
     return;
   }
-  QgsComposerObject::DataDefinedProperty property = ddPropertyForWidget( ddButton );
+  QgsComposerObject::DataDefinedProperty property = QgsComposerObject::NoProperty;
+
+  if ( ddButton->property( "property" ).isValid() )
+    property = static_cast< QgsComposerObject::DataDefinedProperty >( ddButton->property( "property" ).toInt() );
+
   if ( property == QgsComposerObject::NoProperty )
   {
     return;
@@ -57,6 +62,14 @@ void QgsComposerItemBaseWidget::updateDataDefinedProperty()
   //set the data defined property and refresh the item
   setDataDefinedProperty( ddButton, property );
   mComposerObject->refreshDataDefinedProperty( property );
+}
+
+void QgsComposerItemBaseWidget::updateDataDefinedButtons()
+{
+  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  {
+    button->setVectorLayer( atlasCoverageLayer() );
+  }
 }
 
 void QgsComposerItemBaseWidget::setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty p )
@@ -70,12 +83,19 @@ void QgsComposerItemBaseWidget::setDataDefinedProperty( const QgsDataDefinedButt
   mComposerObject->setDataDefinedProperty( p, map.value( "active" ).toInt(), map.value( "useexpr" ).toInt(), map.value( "expression" ), map.value( "field" ) );
 }
 
-QgsComposerObject::DataDefinedProperty QgsComposerItemBaseWidget::ddPropertyForWidget( QgsDataDefinedButton *widget )
+void QgsComposerItemBaseWidget::registerDataDefinedButton( QgsDataDefinedButton* button, QgsComposerObject::DataDefinedProperty property,
+    QgsDataDefinedButton::DataType type, const QString& description )
 {
-  Q_UNUSED( widget );
+  button->blockSignals( true );
+  QgsDataDefined* dd = mComposerObject->dataDefinedProperty( property );
+  button->init( atlasCoverageLayer(), dd, type, description );
+  button->setProperty( "property", property );
 
-  //base implementation, return no property
-  return QgsComposerObject::NoProperty;
+  connect( button, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( button, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
+
+  button->registerExpressionContextGenerator( mComposerObject );
+  button->blockSignals( false );
 }
 
 QgsAtlasComposition* QgsComposerItemBaseWidget::atlasComposition() const
@@ -162,41 +182,6 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   connect( QgsProject::instance(), SIGNAL( variablesChanged() ), this, SLOT( updateVariables() ) );
   if ( mItem->composition() )
     connect( mItem->composition(), SIGNAL( variablesChanged() ), this, SLOT( updateVariables() ) );
-
-  //connect atlas signals to data defined buttons
-  QgsAtlasComposition* atlas = atlasComposition();
-  if ( atlas )
-  {
-    //repopulate data defined buttons if atlas layer changes
-    connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
-             this, SLOT( populateDataDefinedButtons() ) );
-    connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( populateDataDefinedButtons() ) );
-  }
-
-  //connect data defined buttons
-  connect( mXPositionDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mXPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
-  connect( mYPositionDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mYPositionDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
-  connect( mWidthDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
-  connect( mHeightDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mHeightDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
-  connect( mItemRotationDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mItemRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
-  connect( mTransparencyDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mTransparencyDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
-  connect( mBlendModeDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mBlendModeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
-  connect( mExcludePrintsDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mExcludePrintsDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
 }
 
 QgsComposerItemWidget::QgsComposerItemWidget()
@@ -567,75 +552,22 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
 
 void QgsComposerItemWidget::populateDataDefinedButtons()
 {
-  QgsVectorLayer* vl = atlasCoverageLayer();
-
-  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
-  {
-    button->blockSignals( true );
-    button->registerExpressionContextGenerator( mItem );
-  }
-
-  //initialise buttons to use atlas coverage layer
-  mXPositionDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::PositionX ),
-                         QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mYPositionDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::PositionY ),
-                         QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mWidthDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::ItemWidth ),
-                     QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mHeightDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::ItemHeight ),
-                      QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  mItemRotationDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::ItemRotation ),
-                            QgsDataDefinedButton::AnyType, QgsDataDefinedButton::double180RotDesc() );
-  mTransparencyDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::Transparency ),
-                            QgsDataDefinedButton::AnyType, QgsDataDefinedButton::intTranspDesc() );
-  mBlendModeDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::BlendMode ),
-                         QgsDataDefinedButton::String, QgsDataDefinedButton::blendModesDesc() );
-  mExcludePrintsDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::ExcludeFromExports ),
+  registerDataDefinedButton( mXPositionDDBtn, QgsComposerObject::PositionX,
+                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mYPositionDDBtn, QgsComposerObject::PositionY,
+                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mWidthDDBtn, QgsComposerObject::ItemWidth,
+                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mHeightDDBtn, QgsComposerObject::ItemHeight,
+                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  registerDataDefinedButton( mItemRotationDDBtn, QgsComposerObject::ItemRotation,
+                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::double180RotDesc() );
+  registerDataDefinedButton( mTransparencyDDBtn, QgsComposerObject::Transparency,
+                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::intTranspDesc() );
+  registerDataDefinedButton( mBlendModeDDBtn, QgsComposerObject::BlendMode,
+                             QgsDataDefinedButton::String, QgsDataDefinedButton::blendModesDesc() );
+  registerDataDefinedButton( mExcludePrintsDDBtn, QgsComposerObject::ExcludeFromExports,
                              QgsDataDefinedButton::String, QgsDataDefinedButton::boolDesc() );
-
-  //unblock signals from data defined buttons
-  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
-  {
-    button->blockSignals( false );
-  }
-}
-
-QgsComposerObject::DataDefinedProperty QgsComposerItemWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )
-{
-  if ( widget == mXPositionDDBtn )
-  {
-    return QgsComposerObject::PositionX;
-  }
-  else if ( widget == mYPositionDDBtn )
-  {
-    return QgsComposerObject::PositionY;
-  }
-  else if ( widget == mWidthDDBtn )
-  {
-    return QgsComposerObject::ItemWidth;
-  }
-  else if ( widget == mHeightDDBtn )
-  {
-    return QgsComposerObject::ItemHeight;
-  }
-  else if ( widget == mItemRotationDDBtn )
-  {
-    return QgsComposerObject::ItemRotation;
-  }
-  else if ( widget == mTransparencyDDBtn )
-  {
-    return QgsComposerObject::Transparency;
-  }
-  else if ( widget == mBlendModeDDBtn )
-  {
-    return QgsComposerObject::BlendMode;
-  }
-  else if ( widget == mExcludePrintsDDBtn )
-  {
-    return QgsComposerObject::ExcludeFromExports;
-  }
-
-  return QgsComposerObject::NoProperty;
 }
 
 void QgsComposerItemWidget::setValuesForGuiElements()
