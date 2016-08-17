@@ -244,6 +244,7 @@ QIcon QgsOracleTableModel::iconForWkbType( QgsWkbTypes::Type type )
     case QgsWkbTypes::NullGeometry:
       return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
   }
+  return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
 }
 
 bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )
