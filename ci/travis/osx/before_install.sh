@@ -24,6 +24,7 @@ brew install lighttpd
 brew install poppler
 brew install bison
 brew install expat
+brew install gdal-20
 
 brew ln bison --force
 brew ln sqlite --force
