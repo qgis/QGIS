@@ -1436,6 +1436,28 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
 
   readStyleManager( layer_node );
 
+  // default expressions
+  mDefaultExpressionMap.clear();
+  QDomNode defaultsNode = layer_node.namedItem( "defaults" );
+  if ( !defaultsNode.isNull() )
+  {
+    QDomNodeList defaultNodeList = defaultsNode.toElement().elementsByTagName( "default" );
+    for ( int i = 0; i < defaultNodeList.size(); ++i )
+    {
+      QDomElement defaultElem = defaultNodeList.at( i ).toElement();
+
+      QString field = defaultElem.attribute( "field", QString() );
+      QString expression = defaultElem.attribute( "expression", QString() );
+      if ( field.isEmpty() || expression.isEmpty() )
+        continue;
+
+      int index = mUpdatedFields.fieldNameIndex( field );
+      if ( index < 0 )
+        continue;
+
+      mDefaultExpressionMap.insert( index, expression );
+    }
+  }
 
   setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
@@ -1616,6 +1638,26 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
     dependenciesElement.appendChild( depElem );
   }
   layer_node.appendChild( dependenciesElement );
+
+  //default expressions
+  if ( !mDefaultExpressionMap.isEmpty() )
+  {
+    QDomElement defaultsElem = document.createElement( "defaults" );
+    QMap<int, QString>::const_iterator it = mDefaultExpressionMap.constBegin();
+    for ( ; it != mDefaultExpressionMap.constEnd(); ++it )
+    {
+      if ( it.key() >= mUpdatedFields.count() )
+        continue;
+
+      QString fieldName = mUpdatedFields.at( it.key() ).name();
+
+      QDomElement defaultElem = document.createElement( "default" );
+      defaultElem.setAttribute( "field", fieldName );
+      defaultElem.setAttribute( "expression", it.value() );
+      defaultsElem.appendChild( defaultElem );
+    }
+    layer_node.appendChild( defaultsElem );
+  }
 
   writeStyleManager( layer_node, document );
 
@@ -2797,6 +2839,69 @@ void QgsVectorLayer::createJoinCaches() const
   {
     mJoinBuffer->createJoinCaches();
   }
+}
+
+QVariant QgsVectorLayer::defaultValue( int index, const QgsFeature& feature, QgsExpressionContext* context ) const
+{
+  QString expression = mDefaultExpressionMap.value( index, QString() );
+  if ( expression.isEmpty() )
+    return mDataProvider->defaultValue( index );
+
+  QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > tempContext;
+  if ( !evalContext )
+  {
+    // no context passed, so we create a default one
+    tempContext.reset( new QgsExpressionContext() );
+    tempContext->appendScope( QgsExpressionContextUtils::globalScope() );
+    tempContext->appendScope( QgsExpressionContextUtils::projectScope() );
+    tempContext->appendScope( QgsExpressionContextUtils::layerScope( this ) );
+    evalContext = tempContext.data();
+  }
+
+  if ( feature.isValid() )
+  {
+    QgsExpressionContextScope* featScope = new QgsExpressionContextScope();
+    featScope->setFeature( feature );
+    featScope->setFields( feature.fields() );
+    evalContext->appendScope( featScope );
+  }
+
+  QVariant val;
+  QgsExpression exp( expression );
+  exp.prepare( evalContext );
+  if ( exp.hasEvalError() )
+  {
+    QgsLogger::warning( "Error evaluating default value: " + exp.evalErrorString() );
+  }
+  else
+  {
+    val = exp.evaluate( evalContext );
+  }
+
+  if ( feature.isValid() )
+  {
+    delete evalContext->popScope();
+  }
+
+  return val;
+}
+
+void QgsVectorLayer::setDefaultValueExpression( int index, const QString& expression )
+{
+  if ( expression.isEmpty() )
+  {
+    mDefaultExpressionMap.remove( index );
+  }
+  else
+  {
+    mDefaultExpressionMap.insert( index, expression );
+  }
+}
+
+QString QgsVectorLayer::defaultValueExpression( int index ) const
+{
+  return mDefaultExpressionMap.value( index, QString() );
 }
 
 void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit ) const
