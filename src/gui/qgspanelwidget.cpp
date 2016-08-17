@@ -47,6 +47,19 @@ void QgsPanelWidget::setDockMode( bool dockMode )
   mDockMode = dockMode;
 }
 
+QgsPanelWidget*QgsPanelWidget::findParentPanel( QWidget* widget )
+{
+  QWidget* p = widget;
+  while ( p )
+  {
+    if ( QgsPanelWidget* panel = qobject_cast< QgsPanelWidget* >( p ) )
+      return panel;
+
+    p = p->parentWidget();
+  }
+  return nullptr;
+}
+
 void QgsPanelWidget::openPanel( QgsPanelWidget* panel )
 {
   if ( mDockMode )
