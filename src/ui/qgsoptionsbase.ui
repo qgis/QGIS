@@ -3362,7 +3362,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_10">
                  <property name="title">
-                  <string>Panning and zooming</string>
+                  <string>Zooming</string>
                  </property>
                  <layout class="QGridLayout" name="_8">
                   <item row="0" column="0">
