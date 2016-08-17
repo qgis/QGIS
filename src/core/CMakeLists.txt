@@ -454,6 +454,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsdataprovider.h
   qgsdbfilterproxymodel.h
   qgseditformconfig.h
+  qgsfeature.h
   qgsfeedback.h
   qgsfield.h
   qgsgeometryvalidator.h
@@ -640,7 +641,6 @@ SET(QGIS_CORE_HDRS
   qgsexpressioncontext.h
   qgsexpressioncontextgenerator.h
   qgsexpressionfieldbuffer.h
-  qgsfeature.h
   qgsfeature_p.h
   qgsfeatureiterator.h
   qgsfeaturerequest.h

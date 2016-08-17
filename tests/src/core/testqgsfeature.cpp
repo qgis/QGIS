@@ -41,6 +41,7 @@ class TestQgsFeature: public QObject
     void geometry();
     void asVariant(); //test conversion to and from a QVariant
     void fields();
+    void equality();
     void attributeUsingField();
     void dataStream();
 
@@ -357,6 +358,81 @@ void TestQgsFeature::fields()
   QCOMPARE( copy.fieldNameIndex( "bad" ), -1 );
   QCOMPARE( copy.fieldNameIndex( "field1" ), 0 );
   QCOMPARE( copy.fieldNameIndex( "field2" ), 1 );
+}
+
+void TestQgsFeature::equality()
+{
+
+  QgsFeature feature;
+  feature.setFields( mFields, true );
+  feature.setAttribute( 0, QString( "attr1" ) );
+  feature.setAttribute( 1, QString( "attr2" ) );
+  feature.setAttribute( 2, QString( "attr3" ) );
+  feature.setValid( true );
+  feature.setId( 1 );
+  feature.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
+
+  QgsFeature feature2 = feature;
+  QVERIFY( feature == feature2 );
+
+  feature2.setAttribute( 0, "attr1" );
+  QVERIFY( feature == feature2 );
+
+  feature2.setAttribute( 1, 1 );
+  QVERIFY( feature != feature2 );
+
+  QgsFeature feature3;
+  feature3.setFields( mFields, true );
+  feature3.setAttribute( 0, QString( "attr1" ) );
+  feature3.setAttribute( 1, QString( "attr2" ) );
+  feature3.setAttribute( 2, QString( "attr3" ) );
+  feature3.setValid( true );
+  feature3.setId( 1 );
+  feature3.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
+  QVERIFY( feature == feature3 );
+
+  QgsFeature feature4;
+  feature4.setFields( mFields, true );
+  feature4.setAttribute( 0, 1 );
+  feature4.setAttribute( 1, 2 );
+  feature4.setAttribute( 2, 3 );
+  feature4.setValid( true );
+  feature4.setId( 1 );
+  feature4.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
+  QVERIFY( feature != feature4 );
+
+  QgsFeature feature5;
+  feature5.setFields( mFields, true );
+  feature5.setAttribute( 0, QString( "attr1" ) );
+  feature5.setAttribute( 1, QString( "attr2" ) );
+  feature5.setAttribute( 2, QString( "attr3" ) );
+  feature5.setValid( false );
+  feature5.setId( 1 );
+  feature5.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
+
+  QVERIFY( feature != feature5 );
+
+  QgsFeature feature6;
+  feature6.setFields( mFields, true );
+  feature6.setAttribute( 0, QString( "attr1" ) );
+  feature6.setAttribute( 1, QString( "attr2" ) );
+  feature6.setAttribute( 2, QString( "attr3" ) );
+  feature6.setValid( true );
+  feature6.setId( 2 );
+  feature6.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
+
+  QVERIFY( feature != feature6 );
+
+  QgsFeature feature7;
+  feature7.setFields( mFields, true );
+  feature7.setAttribute( 0, QString( "attr1" ) );
+  feature7.setAttribute( 1, QString( "attr2" ) );
+  feature7.setAttribute( 2, QString( "attr3" ) );
+  feature7.setValid( true );
+  feature7.setId( 1 );
+  feature7.setGeometry( QgsGeometry( new QgsPointV2( 1, 3 ) ) );
+
+  QVERIFY( feature != feature7 );
 }
 
 void TestQgsFeature::attributeUsingField()
