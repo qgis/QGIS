@@ -2107,7 +2107,7 @@ int QgsWmsServer::initializeSLDParser( QStringList& layersList, QStringList& sty
 
     if ( !theDocument->setContent( xml, true, &errorMsg, &errorLine, &errorColumn ) )
     {
-      //std::cout << xml.toAscii().data() << std::endl;
+      //std::cout << xml.toLatin1().data() << std::endl;
       QgsMessageLog::logMessage( "Error, could not create DomDocument from SLD" );
       QgsMessageLog::logMessage( QString( "The error message is: %1" ).arg( errorMsg ) );
       delete theDocument;

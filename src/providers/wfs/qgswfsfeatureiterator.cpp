@@ -961,7 +961,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
       const QVariant &v = cachedFeature.attributes().value( idx );
       if ( !v.isNull() && v.type() == QVariant::String )
       {
-        QByteArray wkbGeom( QByteArray::fromHex( v.toString().toAscii() ) );
+        QByteArray wkbGeom( QByteArray::fromHex( v.toString().toLatin1() ) );
         QgsGeometry g;
         unsigned char* wkbClone = new unsigned char[wkbGeom.size()];
         memcpy( wkbClone, wkbGeom.data(), wkbGeom.size() );

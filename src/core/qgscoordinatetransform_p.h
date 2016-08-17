@@ -244,7 +244,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
       sqlite3_stmt* stmt;
       QString sql = QString( "SELECT coord_op_method_code,p1,p2,p3,p4,p5,p6,p7 FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( datumTransform );
-      int prepareRes = sqlite3_prepare( db, sql.toAscii(), sql.size(), &stmt, nullptr );
+      int prepareRes = sqlite3_prepare( db, sql.toLatin1(), sql.size(), &stmt, nullptr );
       if ( prepareRes != SQLITE_OK )
       {
         sqlite3_finalize( stmt );

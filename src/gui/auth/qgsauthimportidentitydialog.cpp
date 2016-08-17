@@ -435,7 +435,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPkcs12()
       return false;
     }
     QSslKey clientkey;
-    clientkey = QSslKey( bundle.privateKey().toRSA().toPEM().toAscii(), QSsl::Rsa );
+    clientkey = QSslKey( bundle.privateKey().toRSA().toPEM().toLatin1(), QSsl::Rsa );
     if ( clientkey.isNull() )
     {
       writeValidation( tr( "Qt private key could not be created from QCA key" ), Invalid, true );
@@ -450,7 +450,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPkcs12()
       {
         if ( ca_cert != cert_chain.primary() )
         {
-          ca_certs << QSslCertificate( ca_cert.toPEM().toAscii() );
+          ca_certs << QSslCertificate( ca_cert.toPEM().toLatin1() );
         }
       }
     }

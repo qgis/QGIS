@@ -107,7 +107,7 @@ QgsRasterLayer* QgsSentDataSourceBuilder::rasterLayerFromSentRDS( const QDomElem
   {
     if ( tmpFile->open() )
     {
-      QByteArray binaryContent = QByteArray::fromBase64( sentRDSElem.text().toAscii() );
+      QByteArray binaryContent = QByteArray::fromBase64( sentRDSElem.text().toLatin1() );
       QDataStream ds( tmpFile );
       ds.writeRawData( binaryContent.data(), binaryContent.length() );
     }

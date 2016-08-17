@@ -208,7 +208,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement& layerElement )
   }
   else if ( provider == "delimitedtext" )
   {
-    QUrl urlSource = QUrl::fromEncoded( mDataSource.toAscii() );
+    QUrl urlSource = QUrl::fromEncoded( mDataSource.toLatin1() );
 
     if ( !mDataSource.startsWith( "file:" ) )
     {
@@ -570,7 +570,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement& layerElement, QDomDocument& docume
   }
   else if ( vlayer && vlayer->providerType() == "delimitedtext" )
   {
-    QUrl urlSource = QUrl::fromEncoded( src.toAscii() );
+    QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
     QUrl urlDest = QUrl::fromLocalFile( QgsProject::instance()->writePath( urlSource.toLocalFile(), relativeBasePath ) );
     urlDest.setQueryItems( urlSource.queryItems() );
     src = QString::fromAscii( urlDest.toEncoded() );
@@ -1298,7 +1298,7 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
   }
   else if ( vlayer && vlayer->providerType() == "delimitedtext" )
   {
-    filename = QUrl::fromEncoded( uri.toAscii() ).toLocalFile();
+    filename = QUrl::fromEncoded( uri.toLatin1() ).toLocalFile();
     // toLocalFile() returns an empty string if theURI is a plain Windows-path, e.g. "C:/style.qml"
     if ( filename.isEmpty() )
       filename = uri;
@@ -1485,7 +1485,7 @@ QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
   }
   else if ( vlayer->providerType() == "delimitedtext" )
   {
-    filename = QUrl::fromEncoded( uri.toAscii() ).toLocalFile();
+    filename = QUrl::fromEncoded( uri.toLatin1() ).toLocalFile();
     // toLocalFile() returns an empty string if theURI is a plain Windows-path, e.g. "C:/style.qml"
     if ( filename.isEmpty() )
       filename = uri;

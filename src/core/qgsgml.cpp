@@ -79,7 +79,7 @@ int QgsGml::getFeatures( const QString& uri, QgsWkbTypes::Type* wkbType, QgsRect
   }
   else if ( !userName.isNull() || !password.isNull() )
   {
-    request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( userName, password ).toAscii().toBase64() );
+    request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( userName, password ).toLatin1().toBase64() );
   }
   QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
 

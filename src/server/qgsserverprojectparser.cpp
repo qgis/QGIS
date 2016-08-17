@@ -198,7 +198,7 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
       QString absoluteFilePath = convertToAbsolutePath( filePath );
       if ( filePath != absoluteFilePath )
       {
-        QUrl destUrl = QUrl::fromEncoded( uri.toAscii() );
+        QUrl destUrl = QUrl::fromEncoded( uri.toLatin1() );
         destUrl.setScheme( "file" );
         destUrl.setPath( absoluteFilePath );
         absoluteUri = destUrl.toEncoded();

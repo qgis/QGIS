@@ -182,7 +182,7 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
 QList<QSslCertificate> QgsAuthCertUtils::certsFromString( const QString &pemtext )
 {
   QList<QSslCertificate> certs;
-  certs = QSslCertificate::fromData( pemtext.toAscii(), QSsl::Pem );
+  certs = QSslCertificate::fromData( pemtext.toLatin1(), QSsl::Pem );
   if ( certs.isEmpty() )
   {
     QgsDebugMsg( "Parsed cert(s) EMPTY" );

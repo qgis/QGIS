@@ -722,7 +722,7 @@ double QgsGrassRasterValue::value( double x, double y, bool *ok )
   QString coor = QString( "%1 %2\n" ).arg( QgsRasterBlock::printValue( x ),
                  QgsRasterBlock::printValue( y ) );
   QgsDebugMsg( "coor : " + coor );
-  mProcess->write( coor.toAscii() ); // how to flush, necessary?
+  mProcess->write( coor.toLatin1() ); // how to flush, necessary?
   mProcess->waitForReadyRead();
   QString str = mProcess->readLine().trimmed();
   QgsDebugMsg( "read from stdout : " + str );

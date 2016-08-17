@@ -106,7 +106,7 @@ QgsSvgCache::QgsSvgCache( QObject *parent )
     , mLeastRecentEntry( nullptr )
     , mMostRecentEntry( nullptr )
 {
-  mMissingSvg = QString( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toAscii();
+  mMissingSvg = QString( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
 }
 
 QgsSvgCache::~QgsSvgCache()

@@ -336,7 +336,7 @@ QImage* QgsAmsProvider::draw( const QgsRectangle & viewExtent, int pixelWidth, i
     requestUrl.addQueryItem( "transparent", "true" );
     requestUrl.addQueryItem( "f", "image" );
     QByteArray reply = QgsArcGisRestUtils::queryService( requestUrl, mErrorTitle, mError );
-    mCachedImage = QImage::fromData( reply, dataSource.param( "format" ).toAscii() );
+    mCachedImage = QImage::fromData( reply, dataSource.param( "format" ).toLatin1() );
     if ( mCachedImage.format() != QImage::Format_ARGB32 )
     {
       mCachedImage = mCachedImage.convertToFormat( QImage::Format_ARGB32 );

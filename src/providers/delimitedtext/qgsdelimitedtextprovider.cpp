@@ -94,7 +94,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
 
   QgsDebugMsg( "Delimited text file uri is " + uri );
 
-  QUrl url = QUrl::fromEncoded( uri.toAscii() );
+  QUrl url = QUrl::fromEncoded( uri.toLatin1() );
   mFile = new QgsDelimitedTextFile();
   mFile->setFromUrl( url );
 
@@ -1089,7 +1089,7 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString& subset, bool upda
 
 void QgsDelimitedTextProvider::setUriParameter( const QString& parameter, const QString& value )
 {
-  QUrl url = QUrl::fromEncoded( dataSourceUri().toAscii() );
+  QUrl url = QUrl::fromEncoded( dataSourceUri().toLatin1() );
   if ( url.hasQueryItem( parameter ) ) url.removeAllQueryItems( parameter );
   if ( ! value.isEmpty() ) url.addQueryItem( parameter, value );
   setDataSourceUri( QString::fromAscii( url.toEncoded() ) );

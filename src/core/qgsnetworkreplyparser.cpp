@@ -66,13 +66,13 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
     // Lines should be terminated by CRLF ("\r\n") but any new line combination may appear
     QByteArray data = mReply->readAll();
     int from, to;
-    from = data.indexOf( boundary.toAscii(), 0 ) + boundary.length() + 1;
+    from = data.indexOf( boundary.toLatin1(), 0 ) + boundary.length() + 1;
     //QVector<QByteArray> partHeaders;
     //QVector<QByteArray> partBodies;
     while ( true )
     {
       // 'to' is not really 'to', but index of the next byte after the end of part
-      to = data.indexOf( boundary.toAscii(), from );
+      to = data.indexOf( boundary.toLatin1(), from );
       if ( to < 0 )
       {
         QgsDebugMsg( QString( "No more boundaries, rest size = %1" ).arg( data.size() - from - 1 ) );
@@ -123,7 +123,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
       {
         QgsDebugMsg( "row = " + row );
         QStringList kv = row.split( ": " );
-        headersMap.insert( kv.value( 0 ).toAscii(), kv.value( 1 ).toAscii() );
+        headersMap.insert( kv.value( 0 ).toLatin1(), kv.value( 1 ).toLatin1() );
       }
       mHeaders.append( headersMap );
 

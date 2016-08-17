@@ -1688,7 +1688,7 @@ const QPair<QSslCertificate, QSslKey> QgsAuthManager::getCertIdentityBundle( con
     QSslKey key;
     if ( query.first() )
     {
-      key =  QSslKey( QgsAuthCrypto::decrypt( mMasterPass, masterPasswordCiv(), query.value( 0 ).toString() ).toAscii(),
+      key =  QSslKey( QgsAuthCrypto::decrypt( mMasterPass, masterPasswordCiv(), query.value( 0 ).toString() ).toLatin1(),
                       QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey );
       if ( key.isNull() )
       {
@@ -2714,7 +2714,7 @@ const QByteArray QgsAuthManager::getTrustedCaCertsPemText()
     {
       certslist << cert.toPem();
     }
-    capem = certslist.join( "\n" ).toAscii(); //+ "\n";
+    capem = certslist.join( "\n" ).toLatin1(); //+ "\n";
   }
   return capem;
 }

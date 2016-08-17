@@ -695,7 +695,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
     return;
   }
 
-  //GDALSetProjection( myGdalMemDataset, theDestCRS.toWkt().toAscii().constData() );
+  //GDALSetProjection( myGdalMemDataset, theDestCRS.toWkt().toLatin1().constData() );
 
   double myMemGeoTransform[6];
   myMemGeoTransform[0] = theExtent.xMinimum(); // top left x

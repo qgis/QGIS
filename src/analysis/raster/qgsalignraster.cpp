@@ -377,14 +377,14 @@ bool QgsAlignRaster::run()
 void QgsAlignRaster::dump() const
 {
   qDebug( "---ALIGN------------------" );
-  qDebug( "wkt %s", mCrsWkt.toAscii().constData() );
+  qDebug( "wkt %s", mCrsWkt.toLatin1().constData() );
   qDebug( "w/h %d,%d", mXSize, mYSize );
   qDebug( "transform" );
   qDebug( "%6.2f %6.2f %6.2f", mGeoTransform[0], mGeoTransform[1], mGeoTransform[2] );
   qDebug( "%6.2f %6.2f %6.2f", mGeoTransform[3], mGeoTransform[4], mGeoTransform[5] );
 
   QgsRectangle e = transform_to_extent( mGeoTransform, mXSize, mYSize );
-  qDebug( "extent %s", e.toString().toAscii().constData() );
+  qDebug( "extent %s", e.toString().toLatin1().constData() );
 }
 
 int QgsAlignRaster::suggestedReferenceLayer() const
@@ -452,7 +452,7 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
   }
 
   // Write out the projection definition.
-  GDALSetProjection( hDstDS, mCrsWkt.toAscii().constData() );
+  GDALSetProjection( hDstDS, mCrsWkt.toLatin1().constData() );
   GDALSetGeoTransform( hDstDS, mGeoTransform );
 
   // Copy the color table, if required.
@@ -521,7 +521,7 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo& info
   // to destination georeferenced coordinates (not destination
   // pixel line).  We do that by omitting the destination dataset
   // handle (setting it to nullptr).
-  void* hTransformArg = GDALCreateGenImgProjTransformer( info.mDataset, info.mCrsWkt.toAscii().constData(), nullptr, destWkt.toAscii().constData(), FALSE, 0, 1 );
+  void* hTransformArg = GDALCreateGenImgProjTransformer( info.mDataset, info.mCrsWkt.toLatin1().constData(), nullptr, destWkt.toLatin1().constData(), FALSE, 0, 1 );
   if ( !hTransformArg )
     return false;
 
@@ -604,12 +604,12 @@ QPointF QgsAlignRaster::RasterInfo::origin() const
 void QgsAlignRaster::RasterInfo::dump() const
 {
   qDebug( "---RASTER INFO------------------" );
-  qDebug( "wkt %s", mCrsWkt.toAscii().constData() );
+  qDebug( "wkt %s", mCrsWkt.toLatin1().constData() );
   qDebug( "w/h %d,%d", mXSize, mYSize );
   qDebug( "cell x/y %f,%f", cellSize().width(), cellSize().width() );
 
   QgsRectangle r = extent();
-  qDebug( "extent %s", r.toString().toAscii().constData() );
+  qDebug( "extent %s", r.toString().toLatin1().constData() );
 
   qDebug( "transform" );
   qDebug( "%6.2f %6.2f %6.2f", mGeoTransform[0], mGeoTransform[1], mGeoTransform[2] );

@@ -630,7 +630,7 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray & uri )
 
 void QgsDataSourceUri::setEncodedUri( const QString & uri )
 {
-  setEncodedUri( uri.toAscii() );
+  setEncodedUri( uri.toLatin1() );
 }
 
 QString QgsDataSourceUri::quotedTablename() const

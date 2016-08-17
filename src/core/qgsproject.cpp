@@ -1779,7 +1779,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
         }
         else if ( provider == "delimitedtext" )
         {
-          QUrl urlSource( QUrl::fromEncoded( datasource.toAscii() ) );
+          QUrl urlSource( QUrl::fromEncoded( datasource.toLatin1() ) );
 
           if ( !datasource.startsWith( "file:" ) )
           {

@@ -257,12 +257,12 @@ const QgsPkiBundle QgsPkiBundle::fromPkcs12Paths( const QString &bundlepath,
     if ( res == QCA::ConvertGood && !bundle.isNull() )
     {
       QCA::CertificateChain cert_chain( bundle.certificateChain() );
-      QSslCertificate cert( cert_chain.primary().toPEM().toAscii() );
+      QSslCertificate cert( cert_chain.primary().toPEM().toLatin1() );
       if ( !cert.isNull() )
       {
         pkibundle.setClientCert( cert );
       }
-      QSslKey cert_key( bundle.privateKey().toPEM().toAscii(), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray() );
+      QSslKey cert_key( bundle.privateKey().toPEM().toLatin1(), QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey, QByteArray() );
       if ( !cert_key.isNull() )
       {
         pkibundle.setClientKey( cert_key );
@@ -275,7 +275,7 @@ const QgsPkiBundle QgsPkiBundle::fromPkcs12Paths( const QString &bundlepath,
         {
           if ( ca_cert != cert_chain.primary() )
           {
-            ca_chain << QSslCertificate( ca_cert.toPEM().toAscii() );
+            ca_chain << QSslCertificate( ca_cert.toPEM().toLatin1() );
           }
         }
         pkibundle.setCaChain( ca_chain );

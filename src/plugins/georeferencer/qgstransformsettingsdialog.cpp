@@ -55,7 +55,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   QStringList listCompressionTr;
   Q_FOREACH ( const QString& item, mListCompression )
   {
-    listCompressionTr.append( tr( item.toAscii().data() ) );
+    listCompressionTr.append( tr( item.toLatin1().data() ) );
   }
   cmbCompressionComboBox->addItems( listCompressionTr );
 

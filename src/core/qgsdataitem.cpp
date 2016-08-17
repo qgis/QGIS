@@ -583,7 +583,7 @@ int QgsDataItem::findItem( QVector<QgsDataItem*> items, QgsDataItem * item )
 {
   for ( int i = 0; i < items.size(); i++ )
   {
-    Q_ASSERT_X( items[i], "findItem", QString( "item %1 is nullptr" ).arg( i ).toAscii() );
+    Q_ASSERT_X( items[i], "findItem", QString( "item %1 is nullptr" ).arg( i ).toLatin1() );
     QgsDebugMsgLevel( QString::number( i ) + " : " + items[i]->mPath + " x " + item->mPath, 2 );
     if ( items[i]->equal( item ) )
       return i;
