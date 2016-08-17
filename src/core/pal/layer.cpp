@@ -190,7 +190,7 @@ bool Layer::registerFeature( QgsLabelFeature* lf )
       continue;
     }
 
-    if ( mMode == LabelPerFeature && ( type == GEOS_POLYGON || type == GEOS_LINESTRING ) )
+    if ( mMode == LabelPerFeature && (( type == GEOS_LINESTRING && mArrangement != QgsPalLayerSettings::PerimeterCurved ) || type == GEOS_POLYGON ) )
     {
       if ( type == GEOS_LINESTRING )
         GEOSLength_r( geosctxt, geom, &geom_size );
