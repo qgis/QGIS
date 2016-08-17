@@ -703,7 +703,7 @@ if __name__ == "__main__":
     from processing.core.Processing import Processing
     Processing.initialize()
 
-#    import OTBSpecific_XMLcreation
+    import OTBSpecific_XMLcreation
 #     try:
 #         import processing
 #     except ImportError, e:
