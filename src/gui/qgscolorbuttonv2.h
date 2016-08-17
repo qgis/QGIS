@@ -22,6 +22,7 @@
 
 class QMimeData;
 class QgsColorSchemeRegistry;
+class QgsPanelWidget;
 
 /** \ingroup gui
  * \class QgsColorButtonV2
@@ -419,6 +420,14 @@ class GUI_EXPORT QgsColorButtonV2 : public QToolButton
     /** Sets color for button, if valid.
      */
     void setValidColor( const QColor& newColor );
+
+    /** Sets color for button, if valid. The color is treated as a temporary color, and is not
+     * added to the recent colors list.
+     */
+    void setValidTemporaryColor( const QColor& newColor );
+
+    //! Called when a color widget panel is accepted, and adds the final color to the recent colors list
+    void panelAccepted( QgsPanelWidget* widget );
 
     /** Adds a color to the recent colors list
      * @param color to add to recent colors list
