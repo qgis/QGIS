@@ -178,7 +178,7 @@ namespace pal
       int createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &lPos, PointSet *mapShape, double initialCost = 0.0 );
 
       LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
-                                              int orientation, int index, double distance );
+                                              int& orientation, int index, double distance, bool& flip );
 
       /** Generate curved candidates for line features.
        * @param lPos pointer to an array of candidates, will be filled by generated candidates
@@ -213,13 +213,13 @@ namespace pal
       double getLabelHeight() const { return mLF->size().height(); }
       double getLabelDistance() const { return mLF->distLabel(); }
 
-      bool getFixedRotation() { return mLF->hasFixedAngle(); }
-      double getLabelAngle() { return mLF->fixedAngle(); }
-      bool getFixedPosition() { return mLF->hasFixedPosition(); }
-      bool getAlwaysShow() { return mLF->alwaysShow(); }
-      bool isObstacle() { return mLF->isObstacle(); }
-      double obstacleFactor() { return mLF->obstacleFactor(); }
-      double repeatDistance() { return mLF->repeatDistance(); }
+      bool getFixedRotation() const { return mLF->hasFixedAngle(); }
+      double getLabelAngle() const { return mLF->fixedAngle(); }
+      bool getFixedPosition() const { return mLF->hasFixedPosition(); }
+      bool getAlwaysShow() const { return mLF->alwaysShow(); }
+      bool isObstacle() const { return mLF->isObstacle(); }
+      double obstacleFactor() const { return mLF->obstacleFactor(); }
+      double repeatDistance() const { return mLF->repeatDistance(); }
 
       //! Get number of holes (inner rings) - they are considered as obstacles
       int getNumSelfObstacles() const { return mHoles.count(); }
@@ -242,6 +242,7 @@ namespace pal
        */
       double calculatePriority() const;
 
+      bool isUprightLabel() const;
 
     protected:
 
