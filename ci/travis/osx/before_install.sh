@@ -22,6 +22,8 @@ brew install osgeo/osgeo4mac/qgis-214 --without-postgresql --only-dependencies
 brew install spawn-fcgi
 brew install lighttpd
 brew install poppler
+brew install bison
+brew install expat
 
 brew ln bison --force
 brew ln sqlite --force
