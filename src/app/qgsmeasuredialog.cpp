@@ -249,7 +249,7 @@ void QgsMeasureDialog::saveWindowLocation()
 QString QgsMeasureDialog::formatDistance( double distance, bool convertUnits ) const
 {
   QSettings settings;
-  bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", false ).toBool();
+  bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", true ).toBool();
 
   if ( convertUnits )
     distance = convertLength( distance, mDistanceUnits );

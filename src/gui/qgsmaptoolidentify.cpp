@@ -673,7 +673,7 @@ QgsUnitTypes::AreaUnit QgsMapToolIdentify::displayAreaUnits() const
 QString QgsMapToolIdentify::formatDistance( double distance ) const
 {
   QSettings settings;
-  bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", false ).toBool();
+  bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", true ).toBool();
 
   return QgsDistanceArea::formatDistance( distance, 3, displayDistanceUnits(), baseUnit );
 }
@@ -681,7 +681,7 @@ QString QgsMapToolIdentify::formatDistance( double distance ) const
 QString QgsMapToolIdentify::formatArea( double area ) const
 {
   QSettings settings;
-  bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", false ).toBool();
+  bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", true ).toBool();
 
   return QgsDistanceArea::formatArea( area, 3, displayAreaUnits(), baseUnit );
 }
