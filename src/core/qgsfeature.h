@@ -24,10 +24,11 @@ email                : sherman at mrcc.com
 #include <QSet>
 #include <QExplicitlySharedDataPointer>
 
+#include "qgsfield.h"
+
 class QgsGeometry;
 class QgsRectangle;
 class QgsFeature;
-class QgsFields;
 class QgsFeaturePrivate;
 
 // feature id class (currently 64 bit)
@@ -123,6 +124,12 @@ class QgsField;
  */
 class CORE_EXPORT QgsFeature
 {
+    Q_GADGET
+
+    Q_PROPERTY( QgsFeatureId id READ id WRITE setId )
+    Q_PROPERTY( QgsAttributes attributes READ attributes WRITE setAttributes )
+    Q_PROPERTY( QgsFields fields READ fields WRITE setFields )
+
   public:
 
     /** Constructor for QgsFeature
@@ -144,6 +151,17 @@ class CORE_EXPORT QgsFeature
      */
     QgsFeature& operator=( const QgsFeature& rhs );
 
+    /**
+     * Compares two features
+     */
+    bool operator==( const QgsFeature& other ) const;
+
+    /**
+     * Compares two features
+     */
+    bool operator!=( const QgsFeature& other ) const;
+
+
     //! Destructor
     virtual ~QgsFeature();
 
@@ -158,6 +176,12 @@ class CORE_EXPORT QgsFeature
      * @see id
      */
     void setFeatureId( QgsFeatureId id );
+
+    /** Sets the feature ID for this feature.
+     * @param id feature id
+     * @see id
+     */
+    void setId( QgsFeatureId id );
 
     /** Returns the feature's attributes.
      * @link attributes @endlink method.

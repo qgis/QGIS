@@ -41,15 +41,35 @@ QgsFeature::QgsFeature( const QgsFields &fields, QgsFeatureId id )
   initAttributes( d->fields.count() );
 }
 
-QgsFeature::QgsFeature( QgsFeature const & rhs )
+QgsFeature::QgsFeature( const QgsFeature& rhs )
     : d( rhs.d )
 {
 }
 
-QgsFeature & QgsFeature::operator=( QgsFeature const & rhs )
+QgsFeature & QgsFeature::operator=( const QgsFeature & rhs )
 {
   d = rhs.d;
   return *this;
+}
+
+bool QgsFeature::operator ==( const QgsFeature& other ) const
+{
+  if ( d == other.d )
+    return true;
+
+  if ( d->fid == other.d->fid
+       && d->valid == other.d->valid
+       && d->fields == other.d->fields
+       && d->attributes == other.d->attributes
+       && d->geometry.equals( other.d->geometry ) )
+    return true;
+
+  return false;
+}
+
+bool QgsFeature::operator!=( const QgsFeature& other ) const
+{
+  return !( *this == other );
 }
 
 QgsFeature::~QgsFeature()
@@ -85,6 +105,21 @@ QgsGeometry QgsFeature::geometry() const
  ****************************************************************************/
 
 void QgsFeature::setFeatureId( QgsFeatureId id )
+{
+  if ( id == d->fid )
+    return;
+
+  d.detach();
+  d->fid = id;
+}
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
+void QgsFeature::setId( QgsFeatureId id )
 {
   if ( id == d->fid )
     return;
