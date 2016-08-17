@@ -83,7 +83,7 @@ class SpatiaLiteDBConnector(DBConnector):
         return self.has_spatial
 
     def _checkRaster(self):
-        """ check if it's a rasterite db """
+        """ check if it's a rasterlite db """
         self.has_raster = self._checkRasterTables()
         return self.has_raster
 
