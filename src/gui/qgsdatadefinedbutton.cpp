@@ -195,7 +195,6 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
     mActionDataTypes->setText( tr( "Field type: " ) + mDataTypesString );
   }
 
-  updateFieldLists();
   updateGui();
 }
 
@@ -216,6 +215,11 @@ QgsDataDefined QgsDataDefinedButton::currentDataDefined() const
   QgsDataDefined dd;
   updateDataDefined( &dd );
   return dd;
+}
+
+void QgsDataDefinedButton::setVectorLayer( QgsVectorLayer* layer )
+{
+  mVectorLayer = layer;
 }
 
 void QgsDataDefinedButton::mouseReleaseEvent( QMouseEvent *event )

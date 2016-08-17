@@ -94,6 +94,13 @@ class QgsDataDefinedButton : QToolButton
      */
     QgsDataDefined currentDataDefined() const;
 
+    /** Sets the vector layer associated with the button. This controls which fields are
+     * displayed within the widget's pop up menu.
+     * @param layer vector layer
+     * @note added in QGIS 3.0
+     */
+    void setVectorLayer( QgsVectorLayer* layer );
+
     /**
      * Whether the current data definition or expression is to be used
      */
