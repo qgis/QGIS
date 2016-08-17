@@ -1317,17 +1317,35 @@ class QgsVectorLayer : QgsMapLayer
     /** Caches joined attributes if required (and not already done) */
     void createJoinCaches();
 
-    /** Returns unique values for column
+    /** Calculates a list of unique values contained within an attribute in the layer. Note that
+     * in some circumstances when unsaved changes are present for the layer then the returned list
+     * may contain outdated values (for instance when the attribute value in a saved feature has
+     * been changed inside the edit buffer then the previous saved value will be included in the
+     * returned list).
      * @param index column index for attribute
      * @param uniqueValues out: result list
-     * @param limit maximum number of values to return (-1 if unlimited)
+     * @param limit maximum number of values to return (or -1 if unlimited)
+     * @see minimumValue()
+     * @see maximumValue()
      */
     void uniqueValues( int index, QList<QVariant> &uniqueValues /Out/, int limit = -1 );
 
-    /** Returns minimum value for an attribute column or invalid variant in case of error */
+    /** Returns the minimum value for an attribute column or an invalid variant in case of error.
+     * Note that in some circumstances when unsaved changes are present for the layer then the
+     * returned value may be outdated (for instance when the attribute value in a saved feature has
+     * been changed inside the edit buffer then the previous saved value may be returned as the minimum).
+     * @see maximumValue()
+     * @see uniqueValues()
+     */
     QVariant minimumValue( int index );
 
-    /** Returns maximum value for an attribute column or invalid variant in case of error */
+    /** Returns the maximum value for an attribute column or an invalid variant in case of error.
+     * Note that in some circumstances when unsaved changes are present for the layer then the
+     * returned value may be outdated (for instance when the attribute value in a saved feature has
+     * been changed inside the edit buffer then the previous saved value may be returned as the maximum).
+     * @see minimumValue()
+     * @see uniqueValues()
+     */
     QVariant maximumValue( int index );
 
     /** Calculates an aggregated value from the layer's features.
