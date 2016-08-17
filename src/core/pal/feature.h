@@ -177,6 +177,15 @@ namespace pal
        */
       int createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &lPos, PointSet *mapShape, double initialCost = 0.0 );
 
+      /** Returns the label position for a curved label at a specific offset along a path.
+       * @param path_positions line path to place label on
+       * @param path_distances array of distances to each segment on path
+       * @param orientation can be 0 for automatic calculation of orientation, or -1/+1 for a specific label orientation
+       * @param index
+       * @param distance distance to offset label along curve by
+       * @param flip
+       * @returns calculated label position
+       */
       LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
                                               int& orientation, int index, double distance, bool& flip );
 
