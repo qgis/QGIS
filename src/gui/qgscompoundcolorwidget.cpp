@@ -28,15 +28,27 @@
 #include <QDesktopWidget>
 #include <QMouseEvent>
 #include <QInputDialog>
+#include <QVBoxLayout>
 
-
-QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& color )
+QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& color, Layout widgetLayout )
     : QgsPanelWidget( parent )
     , mAllowAlpha( true )
     , mLastCustomColorIndex( 0 )
     , mPickingColor( false )
 {
   setupUi( this );
+
+  if ( widgetLayout == LayoutVertical )
+  {
+    // shuffle stuff around
+    QVBoxLayout* newLayout = new QVBoxLayout();
+    newLayout->addWidget( mTabWidget );
+    newLayout->addWidget( mSlidersWidget );
+    newLayout->addWidget( mPreviewWidget );
+    newLayout->addWidget( mSwatchesWidget );
+    delete layout();
+    setLayout( newLayout );
+  }
 
   QSettings settings;
 

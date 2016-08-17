@@ -96,7 +96,8 @@ void QgsColorButtonV2::showColorDialog()
 {
   if ( QgsPanelWidget* panel = QgsPanelWidget::findParentPanel( this ) )
   {
-    QgsCompoundColorWidget* colorWidget = new QgsCompoundColorWidget( panel, color() );
+    QgsCompoundColorWidget* colorWidget = new QgsCompoundColorWidget( panel, color(), panel->dockMode() ? QgsCompoundColorWidget::LayoutVertical :
+        QgsCompoundColorWidget::LayoutDefault );
     colorWidget->setPanelTitle( mColorDialogTitle );
     colorWidget->setAllowAlpha( mAllowAlpha );
     connect( colorWidget, SIGNAL( currentColorChanged( QColor ) ), this, SLOT( setValidTemporaryColor( QColor ) ) );
