@@ -54,6 +54,8 @@ class OutputSelectionPanel(BASE, WIDGET):
 
     SAVE_TO_TEMP_FILE = QCoreApplication.translate(
         'OutputSelectionPanel', '[Save to temporary file]')
+    SAVE_TO_TEMP_LAYER = QCoreApplication.translate(
+        'OutputSelectionPanel', '[Create temporary layer]')
 
     def __init__(self, output, alg):
         super(OutputSelectionPanel, self).__init__(None)
@@ -63,7 +65,12 @@ class OutputSelectionPanel(BASE, WIDGET):
         self.alg = alg
 
         if hasattr(self.leText, 'setPlaceholderText'):
-            self.leText.setPlaceholderText(self.SAVE_TO_TEMP_FILE)
+            if isinstance(output, OutputVector) \
+                    and alg.provider.supportsNonFileBasedOutput():
+                # use memory layers for temporary files if supported
+                self.leText.setPlaceholderText(self.SAVE_TO_TEMP_LAYER)
+            else:
+                self.leText.setPlaceholderText(self.SAVE_TO_TEMP_FILE)
 
         self.btnSelect.clicked.connect(self.selectOutput)
 
@@ -73,8 +80,14 @@ class OutputSelectionPanel(BASE, WIDGET):
         else:
             popupMenu = QMenu()
 
-            actionSaveToTempFile = QAction(
-                self.tr('Save to a temporary file'), self.btnSelect)
+            if isinstance(self.output, OutputVector) \
+                    and self.alg.provider.supportsNonFileBasedOutput():
+                # use memory layers for temporary files if supported
+                actionSaveToTempFile = QAction(
+                    self.tr('Create temporary layer'), self.btnSelect)
+            else:
+                actionSaveToTempFile = QAction(
+                    self.tr('Save to a temporary file'), self.btnSelect)
             actionSaveToTempFile.triggered.connect(self.saveToTemporaryFile)
             popupMenu.addAction(actionSaveToTempFile)
 
@@ -90,10 +103,6 @@ class OutputSelectionPanel(BASE, WIDGET):
 
             if isinstance(self.output, OutputVector) \
                     and self.alg.provider.supportsNonFileBasedOutput():
-                actionSaveToMemory = QAction(
-                    self.tr('Save to memory layer'), self.btnSelect)
-                actionSaveToMemory.triggered.connect(self.saveToMemory)
-                popupMenu.addAction(actionSaveToMemory)
                 actionSaveToSpatialite = QAction(
                     self.tr('Save to Spatialite table...'), self.btnSelect)
                 actionSaveToSpatialite.triggered.connect(self.saveToSpatialite)
@@ -188,9 +197,6 @@ class OutputSelectionPanel(BASE, WIDGET):
                               'the_geom' if self.output.hasGeometry() else None)
             self.leText.setText("spatialite:" + uri.uri())
 
-    def saveToMemory(self):
-        self.leText.setText('memory:')
-
     def selectFile(self):
         fileFilter = self.output.getFileFilter(self.alg)
 
@@ -239,8 +245,13 @@ class OutputSelectionPanel(BASE, WIDGET):
                 fileName = result
                 if fileName.startswith("[") and fileName.endswith("]"):
                     fileName = fileName[1:-1]
-        if fileName.strip() in ['', self.SAVE_TO_TEMP_FILE]:
-            value = None
+        if fileName.strip() in ['', self.SAVE_TO_TEMP_FILE, self.SAVE_TO_TEMP_LAYER]:
+            if isinstance(self.output, OutputVector) \
+                    and self.alg.provider.supportsNonFileBasedOutput():
+                # use memory layers for temporary files if supported
+                value = 'memory:'
+            else:
+                value = None
         elif fileName.startswith('memory:'):
             value = fileName
         elif fileName.startswith('postgis:'):
