@@ -1,5 +1,4 @@
 PyQgsComposerPicture
-PyQgsJSONUtils
 PyQgsLocalServer
 PyQgsMapUnitScale
 PyQgsPalLabelingServer

@@ -31,7 +31,7 @@ from qgis.core import (QgsJSONUtils,
                        QgsVectorLayer,
                        QgsRelation
                        )
-from qgis.PyQt.QtCore import QVariant, QTextCodec
+from qgis.PyQt.QtCore import QT_VERSION, QVariant, QTextCodec
 
 start_app()
 codec = QTextCodec.codecForName("System")
@@ -98,6 +98,7 @@ class TestQgsJSONUtils(unittest.TestCase):
         self.assertEqual(fields[1].name(), "height")
         self.assertEqual(fields[1].type(), QVariant.Double)
 
+    @unittest.expectedFailure(0x50500 <= QT_VERSION < 0x50700)
     def testEncodeValue(self):
         """ test encoding various values for use in GeoJSON strings """
         self.assertEqual(QgsJSONUtils.encodeValue(NULL), 'null')
@@ -120,6 +121,7 @@ class TestQgsJSONUtils(unittest.TestCase):
         self.assertEqual(QgsJSONUtils.encodeValue({'key': 'value', 'key2': 5}), '{"key":"value",\n"key2":5}')
         self.assertEqual(QgsJSONUtils.encodeValue({'key': [1, 2, 3], 'key2': {'nested': 'nested\\result'}}), '{"key":[1,2,3],\n"key2":{"nested":"nested\\\\result"}}')
 
+    @unittest.expectedFailure(0x50500 <= QT_VERSION < 0x50700)
     def testExportAttributes(self):
         """ test exporting feature's attributes to JSON object """
         fields = QgsFields()
@@ -143,6 +145,7 @@ class TestQgsJSONUtils(unittest.TestCase):
 "population":198}"""
         self.assertEqual(QgsJSONUtils.exportAttributes(feature), expected)
 
+    @unittest.expectedFailure(0x50500 <= QT_VERSION < 0x50700)
     def testJSONExporter(self):
         """ test converting features to GeoJSON """
         fields = QgsFields()
@@ -532,6 +535,7 @@ class TestQgsJSONUtils(unittest.TestCase):
 }"""
         self.assertEqual(exporter.exportFeature(pf2), expected)
 
+    @unittest.expectedFailure(0x50500 <= QT_VERSION < 0x50700)
     def testExportFeatures(self):
         """ Test exporting feature collections """
 
