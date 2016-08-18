@@ -2048,6 +2048,7 @@ void QgsVectorLayer::remAttributeAlias( int attIndex )
   if ( mAttributeAliasMap.contains( name ) )
   {
     mAttributeAliasMap.remove( name );
+    mEditFormConfig.setFields( mUpdatedFields, mAttributeAliasMap );
     emit layerModified();
   }
 }
@@ -2068,6 +2069,7 @@ void QgsVectorLayer::addAttributeAlias( int attIndex, const QString& aliasString
   QString name = fields().at( attIndex ).name();
 
   mAttributeAliasMap.insert( name, aliasString );
+  mEditFormConfig.setFields( mUpdatedFields, mAttributeAliasMap );
   emit layerModified(); // TODO[MD]: should have a different signal?
 }
 
@@ -2078,7 +2080,7 @@ QString QgsVectorLayer::attributeAlias( int attributeIndex ) const
 
   QString name = fields().at( attributeIndex ).name();
 
-  return mAttributeAliasMap.value( name, QString() );
+  return mAttributeAliasMap.value( name );
 }
 
 QString QgsVectorLayer::attributeDisplayName( int attributeIndex ) const
@@ -2781,7 +2783,7 @@ void QgsVectorLayer::updateFields()
   if ( oldFields != mUpdatedFields )
   {
     emit updatedFields();
-    mEditFormConfig.setFields( mUpdatedFields );
+    mEditFormConfig.setFields( mUpdatedFields, mAttributeAliasMap );
   }
 }
 

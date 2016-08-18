@@ -16,6 +16,8 @@
 #ifndef QGSEDITFORMCONFIG_P_H
 #define QGSEDITFORMCONFIG_P_H
 
+#include <QMap>
+
 #include "qgsfield.h"
 #include "qgseditformconfig.h"
 
@@ -24,6 +26,7 @@ class QgsEditFormConfigPrivate : public QSharedData
   public:
     QgsEditFormConfigPrivate()
         : mInvisibleRootContainer( new QgsAttributeEditorContainer( QString::null, nullptr ) )
+        , mConfiguredRootContainer( false )
         , mEditorLayout( QgsEditFormConfig::GeneratedLayout )
         , mInitCodeSource( QgsEditFormConfig::CodeSourceNone )
         , mSuppressForm( QgsEditFormConfig::SuppressDefault )
@@ -32,6 +35,7 @@ class QgsEditFormConfigPrivate : public QSharedData
     QgsEditFormConfigPrivate( const QgsEditFormConfigPrivate& o )
         : QSharedData( o )
         , mInvisibleRootContainer( static_cast<QgsAttributeEditorContainer*>( o.mInvisibleRootContainer->clone( nullptr ) ) )
+        , mConfiguredRootContainer( o.mConfiguredRootContainer )
         , mConstraints( o.mConstraints )
         , mConstraintsDescription( o.mConstraintsDescription )
         , mFieldEditables( o.mFieldEditables )
@@ -84,6 +88,7 @@ class QgsEditFormConfigPrivate : public QSharedData
     QgsEditFormConfig::FeatureFormSuppress mSuppressForm;
 
     QgsFields mFields;
+    QMap<QString, QString> mAttributeAliasMap;
 
 };
 

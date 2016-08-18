@@ -241,12 +241,12 @@ class CORE_EXPORT QgsEditFormConfig
     QgsEditorWidgetConfig widgetConfig( const QString& widgetName ) const;
 
     /**
-    * Remove the configuration for the editor widget used to represent the field at the given index
-    *
-    * @param fieldIdx  The index of the field
-    *
-    * @return true if successful, false if the field does not exist
-    */
+     * Remove the configuration for the editor widget used to represent the field at the given index
+     *
+     * @param fieldIdx  The index of the field
+     *
+     * @return true if successful, false if the field does not exist
+     */
     bool removeWidgetConfig( int fieldIdx );
 
     /**
@@ -411,10 +411,8 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Used internally to set the fields when they change.
      * This should only be called from QgsVectorLayer for synchronization reasons
-     *
-     * @param fields The fields
      */
-    void setFields( const QgsFields& fields );
+    void setFields( const QgsFields& fields, const QMap<QString, QString>& attributeAliasMap );
 
     /**
      * Will be called by friend class QgsVectorLayer

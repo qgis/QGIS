@@ -53,10 +53,21 @@ QgsEditorWidgetConfig QgsEditFormConfig::widgetConfig( const QString& widgetName
   return d->mWidgetConfigs.value( widgetName );
 }
 
-void QgsEditFormConfig::setFields( const QgsFields& fields )
+void QgsEditFormConfig::setFields( const QgsFields& fields, const QMap<QString, QString>& attributeAliasMap )
 {
   d.detach();
   d->mFields = fields;
+  d->mAttributeAliasMap = attributeAliasMap;
+
+  if ( !d->mConfiguredRootContainer )
+  {
+    d->mInvisibleRootContainer->clear();
+    for ( int i = 0; i < d->mFields.size(); ++i )
+    {
+      QgsAttributeEditorField* field = new QgsAttributeEditorField( d->mAttributeAliasMap.value( d->mFields.at( i ).name(), d->mFields.at( i ).name() ), i, d->mInvisibleRootContainer );
+      d->mInvisibleRootContainer->addChildElement( field );
+    }
+  }
 }
 
 void QgsEditFormConfig::onRelationsLoaded()
@@ -411,16 +422,24 @@ void QgsEditFormConfig::readXml( const QDomNode& node )
   }
 
   // tabs and groups display info
-  clearTabs();
   QDomNode attributeEditorFormNode = node.namedItem( "attributeEditorForm" );
-  QDomNodeList attributeEditorFormNodeList = attributeEditorFormNode.toElement().childNodes();
-
-  for ( int i = 0; i < attributeEditorFormNodeList.size(); i++ )
+  if ( !attributeEditorFormNode.isNull() )
   {
-    QDomElement elem = attributeEditorFormNodeList.at( i ).toElement();
+    QDomNodeList attributeEditorFormNodeList = attributeEditorFormNode.toElement().childNodes();
 
-    QgsAttributeEditorElement *attributeEditorWidget = attributeEditorElementFromDomElement( elem, this );
-    addTab( attributeEditorWidget );
+    if ( attributeEditorFormNodeList.size() )
+    {
+      d->mConfiguredRootContainer = true;
+      clearTabs();
+
+      for ( int i = 0; i < attributeEditorFormNodeList.size(); i++ )
+      {
+        QDomElement elem = attributeEditorFormNodeList.at( i ).toElement();
+
+        QgsAttributeEditorElement* attributeEditorWidget = attributeEditorElementFromDomElement( elem, nullptr );
+        addTab( attributeEditorWidget );
+      }
+    }
   }
 
 
@@ -510,7 +529,7 @@ void QgsEditFormConfig::writeXml( QDomNode& node ) const
   node.appendChild( editorLayoutElem );
 
   // tabs and groups of edit form
-  if ( tabs().size() > 0 )
+  if ( tabs().size() > 0 && d->mConfiguredRootContainer )
   {
     QDomElement tabsElem = doc.createElement( "attributeEditorForm" );
 
