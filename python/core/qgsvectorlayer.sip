@@ -323,45 +323,6 @@ class QgsVectorLayer : QgsMapLayer
 %End
 
   public:
-    struct GroupData
-    {
-      GroupData();
-      GroupData( const QString& name, const QList<QString>& fields );
-      QString mName;
-      QList<QString> mFields;
-    };
-
-    struct TabData
-    {
-      TabData();
-      TabData( const QString& name, const QList<QString>& fields, const QList<QgsVectorLayer::GroupData>& groups );
-      QString mName;
-      QList<QString> mFields;
-      QList<QgsVectorLayer::GroupData> mGroups;
-    };
-
-    enum EditorLayout
-    {
-      GeneratedLayout,
-      TabLayout,
-      UiFileLayout
-    };
-
-    struct ValueRelationData
-    {
-      ValueRelationData();
-      ValueRelationData( const QString& layer, const QString& key, const QString& value, bool allowNull, bool orderByValue,
-                         bool allowMulti = false,
-                         const QString& filterExpression = QString::null );
-
-      QString mLayer;
-      QString mKey;
-      QString mValue;
-      QString mFilterExpression;
-      bool mAllowNull;
-      bool mOrderByValue;
-      bool mAllowMulti;  /* allow selection of multiple keys */
-    };
 
     //! Result of an edit operation
     enum EditResult
@@ -717,12 +678,6 @@ class QgsVectorLayer : QgsMapLayer
      * Retained for backward compatibility
      */
     virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag );
-
-    /** Convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
-     * @param elem the DOM element
-     * @param parent the QObject which will own this object
-     */
-    QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent );
 
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.
@@ -1130,12 +1085,7 @@ class QgsVectorLayer : QgsMapLayer
      *
      * @note Added in QGIS 2.14
      */
-    QgsEditFormConfig* editFormConfig() const;
-
-    /**
-     * Clears all the tabs for the attribute editor form
-     */
-    void clearAttributeEditorWidgets();
+    QgsEditFormConfig editFormConfig() const;
 
     /**
      * Returns the alias of an attribute name or a null string if there is no alias.
@@ -1217,9 +1167,6 @@ class QgsVectorLayer : QgsMapLayer
 
     /** Set annotation form for layer */
     void setAnnotationForm( const QString& ui );
-
-    /** Access value relation widget data */
-    ValueRelationData valueRelation( int idx ) const;
 
     /**
      * Get relations, where the foreign key is on this layer

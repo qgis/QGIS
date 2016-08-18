@@ -302,7 +302,7 @@ bool QgsAttributeForm::saveEdits()
         bool changed = ( dstVar != srcVar && !dstVar.isNull() && !srcVar.isNull() )
                        || ( dstVar.isNull() != srcVar.isNull() );
         if ( changed && srcVar.isValid()
-             && !mLayer->editFormConfig()->readOnly( eww->fieldIdx() ) )
+             && !mLayer->editFormConfig().readOnly( eww->fieldIdx() ) )
         {
           dst[eww->fieldIdx()] = srcVar;
 
@@ -347,7 +347,7 @@ bool QgsAttributeForm::saveEdits()
         {
           if (( dst.at( i ) == src.at( i ) && dst.at( i ).isNull() == src.at( i ).isNull() )  // If field is not changed...
               || !dst.at( i ).isValid()                                     // or the widget returns invalid (== do not change)
-              || mLayer->editFormConfig()->readOnly( i ) )                           // or the field cannot be edited ...
+              || mLayer->editFormConfig().readOnly( i ) )                           // or the field cannot be edited ...
           {
             continue;
           }
@@ -498,7 +498,7 @@ bool QgsAttributeForm::saveMultiEdits()
       continue;
 
     if ( !w->currentValue().isValid() // if the widget returns invalid (== do not change)
-         || mLayer->editFormConfig()->readOnly( wIt.key() ) ) // or the field cannot be edited ...
+         || mLayer->editFormConfig().readOnly( wIt.key() ) ) // or the field cannot be edited ...
     {
       continue;
     }
@@ -681,7 +681,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
       break;
   }
 
-  if ( eww->layer()->editFormConfig()->notNull( eww->fieldIdx() ) )
+  if ( eww->layer()->editFormConfig().notNull( eww->fieldIdx() ) )
   {
     QLabel* buddy = mBuddyMap.value( eww->widget() );
 
@@ -766,7 +766,7 @@ bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
       QVariant srcVar = eww->value();
       // need to check dstVar.isNull() != srcVar.isNull()
       // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
-      if (( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() && !mLayer->editFormConfig()->readOnly( eww->fieldIdx() ) )
+      if (( dstVar != srcVar || dstVar.isNull() != srcVar.isNull() ) && srcVar.isValid() && !mLayer->editFormConfig().readOnly( eww->fieldIdx() ) )
         dst[eww->fieldIdx()] = srcVar;
     }
     else
@@ -822,7 +822,7 @@ bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields,
       {
         invalidFields.append( eww->field().name() );
 
-        QString desc = eww->layer()->editFormConfig()->expressionDescription( eww->fieldIdx() );
+        QString desc = eww->layer()->editFormConfig().expressionDescription( eww->fieldIdx() );
         descriptions.append( desc );
 
         valid = false; // continue to get all invalif fields
@@ -939,7 +939,7 @@ void QgsAttributeForm::constraintDependencies( QgsEditorWidgetWrapper *w,
       if ( name != ewwName )
       {
         // get expression and referencedColumns
-        QgsExpression expr = eww->layer()->editFormConfig()->expression( eww->fieldIdx() );
+        QgsExpression expr = eww->layer()->editFormConfig().expression( eww->fieldIdx() );
 
         Q_FOREACH ( const QString& colName, expr.referencedColumns() )
         {
@@ -985,7 +985,7 @@ void QgsAttributeForm::synchronizeEnabledState()
     QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
     if ( eww )
     {
-      fieldEditable = !mLayer->editFormConfig()->readOnly( eww->fieldIdx() ) &&
+      fieldEditable = !mLayer->editFormConfig().readOnly( eww->fieldIdx() ) &&
                       (( mLayer->dataProvider() && layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) ||
                        FID_IS_NEW( mFeature.id() ) );
     }
@@ -1067,16 +1067,16 @@ void QgsAttributeForm::init()
   setContentsMargins( 0, 0, 0, 0 );
 
   // Try to load Ui-File for layout
-  if ( mContext.allowCustomUi() && mLayer->editFormConfig()->layout() == QgsEditFormConfig::UiFileLayout &&
-       !mLayer->editFormConfig()->uiForm().isEmpty() )
+  if ( mContext.allowCustomUi() && mLayer->editFormConfig().layout() == QgsEditFormConfig::UiFileLayout &&
+       !mLayer->editFormConfig().uiForm().isEmpty() )
   {
-    QFile file( mLayer->editFormConfig()->uiForm() );
+    QFile file( mLayer->editFormConfig().uiForm() );
 
     if ( file.open( QFile::ReadOnly ) )
     {
       QUiLoader loader;
 
-      QFileInfo fi( mLayer->editFormConfig()->uiForm() );
+      QFileInfo fi( mLayer->editFormConfig().uiForm() );
       loader.setWorkingDirectory( fi.dir() );
       formWidget = loader.load( &file, this );
       formWidget->setWindowFlags( Qt::Widget );
@@ -1093,13 +1093,13 @@ void QgsAttributeForm::init()
   QTabWidget* tabWidget = nullptr;
 
   // Tab layout
-  if ( !formWidget && mLayer->editFormConfig()->layout() == QgsEditFormConfig::TabLayout )
+  if ( !formWidget && mLayer->editFormConfig().layout() == QgsEditFormConfig::TabLayout )
   {
     int row = 0;
     int column = 0;
     int columnCount = 1;
 
-    Q_FOREACH ( QgsAttributeEditorElement* widgDef, mLayer->editFormConfig()->tabs() )
+    Q_FOREACH ( QgsAttributeEditorElement* widgDef, mLayer->editFormConfig().tabs() )
     {
       if ( widgDef->type() == QgsAttributeEditorElement::AeTypeContainer )
       {
@@ -1204,13 +1204,13 @@ void QgsAttributeForm::init()
       //show attribute alias if available
       QString fieldName = mLayer->attributeDisplayName( idx );
 
-      const QString widgetType = mLayer->editFormConfig()->widgetType( idx );
+      const QString widgetType = mLayer->editFormConfig().widgetType( idx );
 
       if ( widgetType == "Hidden" )
         continue;
 
-      const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( idx );
-      bool labelOnTop = mLayer->editFormConfig()->labelOnTop( idx );
+      const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig().widgetConfig( idx );
+      bool labelOnTop = mLayer->editFormConfig().labelOnTop( idx );
 
       // This will also create the widget
       QLabel *l = new QLabel( fieldName );
@@ -1253,7 +1253,7 @@ void QgsAttributeForm::init()
     Q_FOREACH ( const QgsRelation& rel, QgsProject::instance()->relationManager()->referencedRelations( mLayer ) )
     {
       QgsRelationWidgetWrapper* rww = new QgsRelationWidgetWrapper( mLayer, rel, nullptr, this );
-      QgsEditorWidgetConfig cfg = mLayer->editFormConfig()->widgetConfig( rel.id() );
+      QgsEditorWidgetConfig cfg = mLayer->editFormConfig().widgetConfig( rel.id() );
       rww->setConfig( cfg );
       rww->setContext( mContext );
       gridLayout->addWidget( rww->widget(), row++, 0, 1, 2 );
@@ -1377,15 +1377,15 @@ void QgsAttributeForm::initPython()
 
   // Init Python, if init function is not empty and the combo indicates
   // the source for the function code
-  if ( !mLayer->editFormConfig()->initFunction().isEmpty()
-       && mLayer->editFormConfig()->initCodeSource() != QgsEditFormConfig::CodeSourceNone )
+  if ( !mLayer->editFormConfig().initFunction().isEmpty()
+       && mLayer->editFormConfig().initCodeSource() != QgsEditFormConfig::CodeSourceNone )
   {
 
-    QString initFunction = mLayer->editFormConfig()->initFunction();
-    QString initFilePath = mLayer->editFormConfig()->initFilePath();
+    QString initFunction = mLayer->editFormConfig().initFunction();
+    QString initFilePath = mLayer->editFormConfig().initFilePath();
     QString initCode;
 
-    switch ( mLayer->editFormConfig()->initCodeSource() )
+    switch ( mLayer->editFormConfig().initCodeSource() )
     {
       case QgsEditFormConfig::CodeSourceFile:
         if ( ! initFilePath.isEmpty() )
@@ -1411,7 +1411,7 @@ void QgsAttributeForm::initPython()
         break;
 
       case QgsEditFormConfig::CodeSourceDialog:
-        initCode = mLayer->editFormConfig()->initCode();
+        initCode = mLayer->editFormConfig().initCode();
         if ( initCode.isEmpty() )
         {
           QgsLogger::warning( QString( "The python code provided in the dialog is empty!" ) );
@@ -1494,8 +1494,8 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       int fldIdx = vl->fieldNameIndex( fieldDef->name() );
       if ( fldIdx < vl->fields().count() && fldIdx >= 0 )
       {
-        const QString widgetType = mLayer->editFormConfig()->widgetType( fldIdx );
-        const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( fldIdx );
+        const QString widgetType = mLayer->editFormConfig().widgetType( fldIdx );
+        const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig().widgetConfig( fldIdx );
 
         QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, fldIdx, widgetConfig, nullptr, this, mContext );
         QgsAttributeFormEditorWidget* w = new QgsAttributeFormEditorWidget( eww, this );
@@ -1509,7 +1509,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         newWidgetInfo.widget->setObjectName( mLayer->fields().at( fldIdx ).name() );
       }
 
-      newWidgetInfo.labelOnTop = mLayer->editFormConfig()->labelOnTop( fieldDef->idx() );
+      newWidgetInfo.labelOnTop = mLayer->editFormConfig().labelOnTop( fieldDef->idx() );
       newWidgetInfo.labelText = mLayer->attributeDisplayName( fieldDef->idx() );
 
       break;
@@ -1520,7 +1520,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       const QgsAttributeEditorRelation* relDef = dynamic_cast<const QgsAttributeEditorRelation*>( widgetDef );
 
       QgsRelationWidgetWrapper* rww = new QgsRelationWidgetWrapper( mLayer, relDef->relation(), nullptr, this );
-      QgsEditorWidgetConfig cfg = mLayer->editFormConfig()->widgetConfig( relDef->relation().id() );
+      QgsEditorWidgetConfig cfg = mLayer->editFormConfig().widgetConfig( relDef->relation().id() );
       rww->setConfig( cfg );
       rww->setContext( context );
       newWidgetInfo.widget = rww->widget();
@@ -1671,7 +1671,7 @@ void QgsAttributeForm::createWrappers()
       if ( relation.isValid() )
       {
         QgsRelationWidgetWrapper* rww = new QgsRelationWidgetWrapper( mLayer, relation, myWidget, this );
-        rww->setConfig( mLayer->editFormConfig()->widgetConfig( relation.id() ) );
+        rww->setConfig( mLayer->editFormConfig().widgetConfig( relation.id() ) );
         rww->setContext( mContext );
         rww->widget(); // Will initialize the widget
         mWidgets.append( rww );
@@ -1683,8 +1683,8 @@ void QgsAttributeForm::createWrappers()
       {
         if ( field.name() == myWidget->objectName() )
         {
-          const QString widgetType = mLayer->editFormConfig()->widgetType( field.name() );
-          const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( field.name() );
+          const QString widgetType = mLayer->editFormConfig().widgetType( field.name() );
+          const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig().widgetConfig( field.name() );
           int idx = mLayer->fieldNameIndex( field.name() );
 
           QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, idx, widgetConfig, myWidget, this, mContext );

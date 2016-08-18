@@ -125,7 +125,7 @@ bool QgsVectorLayerEditPassthrough::deleteAttribute( int attr )
   if ( L->dataProvider()->deleteAttributes( QgsAttributeIds() << attr ) )
   {
     mModified = true;
-    L->editFormConfig()->removeWidgetConfig( attr );
+    L->editFormConfig().removeWidgetConfig( attr );
     emit attributeDeleted( attr );
     mModified = true;
     return true;

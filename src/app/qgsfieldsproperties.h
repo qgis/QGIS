@@ -119,7 +119,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     /** Creates the a proper item to save from the tree
      * @return A widget definition. Containing another container or the final field
      */
-    QgsAttributeEditorElement* createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent, bool forceGroup = true );
+    QgsAttributeEditorElement* createAttributeEditorWidget( QTreeWidgetItem* item, QgsAttributeEditorElement* parent, bool forceGroup = true );
 
     void init();
     void apply();

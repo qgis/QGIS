@@ -141,7 +141,7 @@ void QgsDualView::columnBoxInit()
     if ( fieldIndex == -1 )
       continue;
 
-    if ( mLayerCache->layer()->editFormConfig()->widgetType( fieldIndex ) != "Hidden" )
+    if ( mLayerCache->layer()->editFormConfig().widgetType( fieldIndex ) != "Hidden" )
     {
       QIcon icon = mLayerCache->layer()->fields().iconForField( fieldIndex );
       QString text = field.name();

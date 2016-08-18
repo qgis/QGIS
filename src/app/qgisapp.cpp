@@ -6147,10 +6147,10 @@ QVariant QgisAppFieldValueConverter::convert( int idx, const QVariant& value )
   {
     return value;
   }
-  QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( mLayer->editFormConfig()->widgetType( idx ) );
+  QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( mLayer->editFormConfig().widgetType( idx ) );
   if ( factory )
   {
-    QgsEditorWidgetConfig cfg( mLayer->editFormConfig()->widgetConfig( idx ) );
+    QgsEditorWidgetConfig cfg( mLayer->editFormConfig().widgetConfig( idx ) );
     return QVariant( factory->representValue( mLayer, idx, cfg, QVariant(), value ) );
   }
   return value;

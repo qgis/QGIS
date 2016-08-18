@@ -127,7 +127,6 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
     , mDataProvider( nullptr )
     , mProviderKey( providerKey )
     , mReadOnly( false )
-    , mEditFormConfig( new QgsEditFormConfig( this ) )
     , mWkbType( QgsWkbTypes::Unknown )
     , mRenderer( nullptr )
     , mLabeling( new QgsVectorLayerSimpleLabeling )
@@ -158,6 +157,7 @@ QgsVectorLayer::QgsVectorLayer( const QString& vectorLayerPath,
 
   connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( selectionChanged() ) );
   connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( repaintRequested() ) );
+  connect( QgsProject::instance()->relationManager(), SIGNAL( relationsLoaded() ), this, SLOT( onRelationsLoaded() ) );
 
   // Default simplify drawing settings
   QSettings settings;
@@ -1656,7 +1656,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   // process the attribute actions
   mActions->readXml( node );
 
-  mEditFormConfig->readXml( node );
+  mEditFormConfig.readXml( node );
 
   QDomNode annotationFormNode = node.namedItem( "annotationform" );
   if ( !annotationFormNode.isNull() )
@@ -1716,7 +1716,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
   }
 
-  mEditFormConfig->readXml( node );
+  mEditFormConfig.readXml( node );
 
   mAttributeTableConfig.readXml( node );
 
@@ -1886,7 +1886,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   // add attribute actions
   mActions->writeXml( node, doc );
   mAttributeTableConfig.writeXml( node );
-  mEditFormConfig->writeXml( node );
+  mEditFormConfig.writeXml( node );
   mConditionalStyles->writeXml( node, doc );
 
   // save expression fields
@@ -2613,6 +2613,7 @@ bool QgsVectorLayer::setReadOnly( bool readonly )
     return false;
 
   mReadOnly = readonly;
+  emit readOnlyChanged();
   return true;
 }
 
@@ -2780,7 +2781,7 @@ void QgsVectorLayer::updateFields()
   if ( oldFields != mUpdatedFields )
   {
     emit updatedFields();
-    mEditFormConfig->setFields( mUpdatedFields );
+    mEditFormConfig.setFields( mUpdatedFields );
   }
 }
 
@@ -3468,6 +3469,20 @@ void QgsVectorLayer::readSldLabeling( const QDomNode& node )
   }
 }
 
+QgsEditFormConfig QgsVectorLayer::editFormConfig() const
+{
+  return mEditFormConfig;
+}
+
+void QgsVectorLayer::setEditFormConfig( const QgsEditFormConfig& editFormConfig )
+{
+  if ( mEditFormConfig == editFormConfig )
+    return;
+
+  mEditFormConfig = editFormConfig;
+  emit editFormConfigChanged();
+}
+
 QString QgsVectorLayer::mapTipTemplate() const
 {
   return mMapTipTemplate;
@@ -3791,84 +3806,14 @@ void QgsVectorLayer::onFeatureDeleted( QgsFeatureId fid )
   emit featureDeleted( fid );
 }
 
-QgsVectorLayer::ValueRelationData QgsVectorLayer::valueRelation( int idx ) const
+void QgsVectorLayer::onRelationsLoaded()
 {
-  if ( mEditFormConfig->widgetType( idx ) == "ValueRelation" )
-  {
-    QgsEditorWidgetConfig cfg = mEditFormConfig->widgetConfig( idx );
-
-    return ValueRelationData( cfg.value( "Layer" ).toString(),
-                              cfg.value( "Key" ).toString(),
-                              cfg.value( "Value" ).toString(),
-                              cfg.value( "AllowNull" ).toBool(),
-                              cfg.value( "OrderByValue" ).toBool(),
-                              cfg.value( "AllowMulti" ).toBool(),
-                              cfg.value( "FilterExpression" ).toString()
-                            );
-  }
-  else
-  {
-    return ValueRelationData();
-  }
+  mEditFormConfig.onRelationsLoaded();
 }
 
 QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 {
   return QgsProject::instance()->relationManager()->referencingRelations( this, idx );
-}
-
-QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const
-{
-  QDomElement elem = doc.createElement( "attributeEditorContainer" );
-  elem.setAttribute( "name", mName );
-  elem.setAttribute( "columnCount", mColumnCount );
-  elem.setAttribute( "groupBox", mIsGroupBox ? 1 : 0 );
-
-  Q_FOREACH ( QgsAttributeEditorElement* child, mChildren )
-  {
-    elem.appendChild( child->toDomElement( doc ) );
-  }
-  return elem;
-}
-
-void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
-{
-  mChildren.append( widget );
-}
-
-void QgsAttributeEditorContainer::setName( const QString& name )
-{
-  mName = name;
-}
-
-QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( QgsAttributeEditorElement::AttributeEditorType type ) const
-{
-  QList<QgsAttributeEditorElement*> results;
-
-  Q_FOREACH ( QgsAttributeEditorElement* elem, mChildren )
-  {
-    if ( elem->type() == type )
-    {
-      results.append( elem );
-    }
-
-    if ( elem->type() == AeTypeContainer )
-    {
-      QgsAttributeEditorContainer* cont = dynamic_cast<QgsAttributeEditorContainer*>( elem );
-      if ( cont )
-        results += cont->findElements( type );
-    }
-  }
-
-  return results;
-}
-
-QDomElement QgsAttributeEditorField::toDomElement( QDomDocument& doc ) const
-{
-  QDomElement elem = doc.createElement( "attributeEditorField" );
-  elem.setAttribute( "name", mName );
-  elem.setAttribute( "index", mIdx );
-  return elem;
 }
 
 int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )
@@ -3987,20 +3932,6 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFl
   }
 
   return QgsMapLayer::loadNamedStyle( theURI, theResultFlag );
-}
-
-QDomElement QgsAttributeEditorRelation::toDomElement( QDomDocument& doc ) const
-{
-  QDomElement elem = doc.createElement( "attributeEditorRelation" );
-  elem.setAttribute( "name", mName );
-  elem.setAttribute( "relation", mRelation.id() );
-  return elem;
-}
-
-bool QgsAttributeEditorRelation::init( QgsRelationManager* relationManager )
-{
-  mRelation = relationManager->relation( mRelationId );
-  return mRelation.isValid();
 }
 
 QSet<QString> QgsVectorLayer::layerDependencies() const

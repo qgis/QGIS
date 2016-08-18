@@ -479,7 +479,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     if ( i >= fields.count() )
       break;
 
-    if ( vlayer->editFormConfig()->widgetType( i ) == "Hidden" )
+    if ( vlayer->editFormConfig().widgetType( i ) == "Hidden" )
     {
       continue;
     }
@@ -669,7 +669,7 @@ QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer* vlayer, const 
   QVariant cache;
   QMap<QString, QVariant>& layerCaches = mWidgetCaches[vlayer->id()];
 
-  QString widgetType = vlayer->editFormConfig()->widgetType( fieldName );
+  QString widgetType = vlayer->editFormConfig().widgetType( fieldName );
   QgsEditorWidgetFactory* factory = QgsEditorWidgetRegistry::instance()->factory( widgetType );
 
   int idx = vlayer->fieldNameIndex( fieldName );
@@ -683,11 +683,11 @@ QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer* vlayer, const 
   }
   else
   {
-    cache = factory->createCache( vlayer, idx, vlayer->editFormConfig()->widgetConfig( fieldName ) );
+    cache = factory->createCache( vlayer, idx, vlayer->editFormConfig().widgetConfig( fieldName ) );
     layerCaches.insert( fieldName, cache );
   }
 
-  return factory->representValue( vlayer, idx, vlayer->editFormConfig()->widgetConfig( fieldName ), cache, value );
+  return factory->representValue( vlayer, idx, vlayer->editFormConfig().widgetConfig( fieldName ), cache, value );
 }
 
 void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,

@@ -283,12 +283,12 @@ QgsFields::QgsFields()
   d = new QgsFieldsPrivate();
 }
 
-QgsFields::QgsFields( const QgsFields &other )
+QgsFields::QgsFields( const QgsFields& other )
     : d( other.d )
 {
 }
 
-QgsFields &QgsFields::operator =( const QgsFields & other )
+QgsFields& QgsFields::operator =( const QgsFields & other )
 {
   d = other.d;
   return *this;
