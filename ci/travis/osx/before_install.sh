@@ -13,11 +13,13 @@
 #                                                                         #
 ###########################################################################
 
-# Needed for Processing
-pip install psycopg2 numpy nose2 pyyaml mock future
-
 # Remove default gdal provided by travis  (we will replace it with gdal 2)
 brew remove gdal || true
+
+brew install python
+
+# Needed for Processing
+pip install psycopg2 numpy nose2 pyyaml mock future
 
 brew tap osgeo/osgeo4mac
 brew update
