@@ -83,6 +83,10 @@ class QgsWmsProjectParser : public QgsWmsConfigParser
     /** True if the feature info response should contain the wkt geometry for vector features*/
     bool featureInfoWithWktGeometry() const  /*override*/ ;
 
+    /** True if the feature info wkt geometry is delivered with segmentized curve types*/
+    bool segmentizeFeatureInfoWktGeometry() const /*override*/ ;
+
+
     /** Returns map with layer aliases for GetFeatureInfo (or 0 pointer if not supported). Key: layer name, Value: layer alias*/
     QHash<QString, QString> featureInfoLayerAliasMap() const  /*override*/ ;
 

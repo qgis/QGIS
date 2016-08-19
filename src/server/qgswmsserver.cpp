@@ -2194,6 +2194,7 @@ int QgsWmsServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   layer->updateFields();
   const QgsFields& fields = layer->pendingFields();
   bool addWktGeometry = mConfigParser && mConfigParser->featureInfoWithWktGeometry();
+  bool segmentizeWktGeometry = mConfigParser && mConfigParser->segmentizeFeatureInfoWktGeometry();
   const QSet<QString>& excludedAttributes = layer->excludeAttributesWms();
 
   QgsFeatureRequest fReq;
@@ -2364,6 +2365,19 @@ int QgsWmsServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
             QgsCoordinateTransform transform = mapRender->transformation( layer );
             if ( transform.isValid() )
               geom.transform( transform );
+          }
+
+          if ( segmentizeWktGeometry )
+          {
+            QgsAbstractGeometry* abstractGeom = geom.geometry();
+            if ( abstractGeom )
+            {
+              if ( QgsWkbTypes::isCurvedType( abstractGeom->wkbType() ) )
+              {
+                QgsAbstractGeometry* segmentizedGeom = abstractGeom-> segmentize();
+                geom.setGeometry( segmentizedGeom );
+              }
+            }
           }
           QDomElement geometryElement = infoDocument.createElement( "Attribute" );
           geometryElement.setAttribute( "name", "geometry" );

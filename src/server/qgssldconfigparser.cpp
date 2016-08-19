@@ -512,6 +512,15 @@ bool QgsSLDConfigParser::featureInfoWithWktGeometry() const
   return false;
 }
 
+bool QgsSLDConfigParser::segmentizeFeatureInfoWktGeometry() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->segmentizeFeatureInfoWktGeometry();
+  }
+  return false;
+}
+
 
 QHash<QString, QString> QgsSLDConfigParser::featureInfoLayerAliasMap() const
 {
