@@ -56,6 +56,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
             : mType( Field )
             , mColumnCount( 1 )
             , mShowAsGroupBox( false )
+            , mShowLabel( true )
         {}
 
         DesignerTreeItemData( Type type, const QString& name )
@@ -63,6 +64,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
             , mName( name )
             , mColumnCount( 1 )
             , mShowAsGroupBox( false )
+            , mShowLabel( true )
         {}
 
         QString name() const { return mName; }
