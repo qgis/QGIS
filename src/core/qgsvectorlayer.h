@@ -1748,14 +1748,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Emitted when the map tip changes
      *
-     * @note added in 3.0
+     * @note added in QGIS 3.0
      */
     void mapTipTemplateChanged();
 
     /**
      * Emitted when the display expression changes
      *
-     * @note added in 3.0
+     * @note added in QGIS 3.0
      */
     void displayExpressionChanged();
 
