@@ -1145,7 +1145,15 @@ void QgsAttributeForm::init()
 
         label->setBuddy( widgetInfo.widget );
 
-        if ( widgetInfo.labelOnTop )
+        if ( !widgetInfo.showLabel )
+        {
+          QVBoxLayout* c = new QVBoxLayout();
+          label->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+          c->addWidget( widgetInfo.widget );
+          layout->addLayout( c, row, column, 1, 2 );
+          column += 2;
+        }
+        else if ( widgetInfo.labelOnTop )
         {
           QVBoxLayout* c = new QVBoxLayout();
           label->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
@@ -1511,6 +1519,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
       newWidgetInfo.labelOnTop = mLayer->editFormConfig()->labelOnTop( fieldDef->idx() );
       newWidgetInfo.labelText = mLayer->attributeDisplayName( fieldDef->idx() );
+      newWidgetInfo.showLabel = widgetDef->showLabel();
 
       break;
     }
@@ -1524,6 +1533,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       rww->setConfig( cfg );
       rww->setContext( context );
       newWidgetInfo.widget = rww->widget();
+      rww->setShowLabel( relDef->showLabel() );
       mWidgets.append( rww );
       newWidgetInfo.labelText = QString::null;
       newWidgetInfo.labelOnTop = true;
@@ -1545,7 +1555,8 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       if ( container->isGroupBox() )
       {
         QGroupBox* groupBox = new QGroupBox( parent );
-        groupBox->setTitle( container->name() );
+        if ( container->showLabel() )
+          groupBox->setTitle( container->name() );
         myContainer = groupBox;
         newWidgetInfo.widget = myContainer;
       }
@@ -1632,6 +1643,8 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       QgsDebugMsg( "Unknown attribute editor widget type encountered..." );
       break;
   }
+
+  newWidgetInfo.showLabel = widgetDef->showLabel();
 
   return newWidgetInfo;
 }
