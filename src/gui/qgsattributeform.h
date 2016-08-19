@@ -287,12 +287,14 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
           : widget( nullptr )
           , labelOnTop( false )
           , labelAlignRight( false )
+          , showLabel( true )
       {}
 
       QWidget* widget;
       QString labelText;
       bool labelOnTop;
       bool labelAlignRight;
+      bool showLabel;
     };
 
     WidgetInfo createWidgetFromDef( const QgsAttributeEditorElement* widgetDef, QWidget* parent, QgsVectorLayer* vl, QgsAttributeEditorContext& context );
