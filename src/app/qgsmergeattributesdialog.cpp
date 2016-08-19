@@ -116,8 +116,8 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   mHiddenAttributes.clear();
   for ( int idx = 0; idx < mFields.count(); ++idx )
   {
-    if ( mVectorLayer->editFormConfig()->widgetType( idx ) == "Hidden" ||
-         mVectorLayer->editFormConfig()->widgetType( idx ) == "Immutable" )
+    if ( mVectorLayer->editFormConfig().widgetType( idx ) == "Hidden" ||
+         mVectorLayer->editFormConfig().widgetType( idx ) == "Immutable" )
     {
       mHiddenAttributes.insert( idx );
       continue;

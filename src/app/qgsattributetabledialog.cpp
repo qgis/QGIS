@@ -68,7 +68,7 @@ QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 
 void QgsAttributeTableDialog::updateMultiEditButtonState()
 {
-  if ( mLayer->editFormConfig()->layout() == QgsEditFormConfig::UiFileLayout )
+  if ( mLayer->editFormConfig().layout() == QgsEditFormConfig::UiFileLayout )
     return;
 
   mActionToggleMultiEdit->setEnabled( mLayer->isEditable() );
@@ -298,7 +298,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mActionSearchForm, SIGNAL( toggled( bool ) ), mMainView, SLOT( toggleSearchMode( bool ) ) );
   updateMultiEditButtonState();
 
-  if ( mLayer->editFormConfig()->layout() == QgsEditFormConfig::UiFileLayout )
+  if ( mLayer->editFormConfig().layout() == QgsEditFormConfig::UiFileLayout )
   {
     //not supported with custom UI
     mActionToggleMultiEdit->setEnabled( false );
@@ -391,7 +391,7 @@ void QgsAttributeTableDialog::columnBoxInit()
     if ( idx < 0 )
       continue;
 
-    if ( mLayer->editFormConfig()->widgetType( idx ) != "Hidden" )
+    if ( mLayer->editFormConfig().widgetType( idx ) != "Hidden" )
     {
       QIcon icon = mLayer->fields().iconForField( idx );
       QString alias = mLayer->attributeDisplayName( idx );
@@ -527,8 +527,8 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   int fldIdx = mLayer->fieldNameIndex( fieldName );
   if ( fldIdx < 0 )
     return;
-  const QString widgetType = mLayer->editFormConfig()->widgetType( fldIdx );
-  const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig()->widgetConfig( fldIdx );
+  const QString widgetType = mLayer->editFormConfig().widgetType( fldIdx );
+  const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig().widgetConfig( fldIdx );
   mCurrentSearchWidgetWrapper = QgsEditorWidgetRegistry::instance()->
                                 createSearchWidget( widgetType, mLayer, fldIdx, widgetConfig, mFilterContainer, mEditorContext );
   if ( mCurrentSearchWidgetWrapper->applyDirectly() )

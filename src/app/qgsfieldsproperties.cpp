@@ -137,8 +137,8 @@ void QgsFieldsProperties::init()
 {
   loadRows();
 
-  mEditorLayoutComboBox->setCurrentIndex( mLayer->editFormConfig()->layout() );
-  mFormSuppressCmbBx->setCurrentIndex( mLayer->editFormConfig()->suppress() );
+  mEditorLayoutComboBox->setCurrentIndex( mLayer->editFormConfig().layout() );
+  mFormSuppressCmbBx->setCurrentIndex( mLayer->editFormConfig().suppress() );
 
   loadAttributeEditorTree();
 }
@@ -238,7 +238,7 @@ void QgsFieldsProperties::loadAttributeEditorTree()
   mDesignerTree->setAcceptDrops( true );
   mDesignerTree->setDragDropMode( QAbstractItemView::DragDrop );
 
-  Q_FOREACH ( QgsAttributeEditorElement* wdg, mLayer->editFormConfig()->tabs() )
+  Q_FOREACH ( QgsAttributeEditorElement* wdg, mLayer->editFormConfig().tabs() )
   {
     loadAttributeEditorTreeItem( wdg, mDesignerTree->invisibleRootItem() );
   }
@@ -382,7 +382,7 @@ void QgsFieldsProperties::loadRelations()
       if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
         nmCombo->addItem( QString( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
 
-      QgsEditorWidgetConfig cfg = mLayer->editFormConfig()->widgetConfig( relation.id() );
+      QgsEditorWidgetConfig cfg = mLayer->editFormConfig().widgetConfig( relation.id() );
 
       QVariant nmrelcfg = cfg.value( "nm-rel" );
 
@@ -827,7 +827,7 @@ void QgsFieldsProperties::updateFieldRenamingStatus()
   }
 }
 
-QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent , bool forceGroup )
+QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTreeWidgetItem* item, QgsAttributeEditorElement* parent , bool forceGroup )
 {
   QgsAttributeEditorElement *widgetDef = nullptr;
 
@@ -926,14 +926,14 @@ void QgsFieldsProperties::apply()
     int idx = mFieldsList->item( i, attrIdCol )->text().toInt();
     FieldConfig cfg = configForRow( i );
 
-    mLayer->editFormConfig()->setReadOnly( i, !cfg.mEditable );
-    mLayer->editFormConfig()->setLabelOnTop( i, cfg.mLabelOnTop );
-    mLayer->editFormConfig()->setNotNull( i, cfg.mNotNull );
-    mLayer->editFormConfig()->setExpressionDescription( i, cfg.mConstraintDescription );
-    mLayer->editFormConfig()->setExpression( i, cfg.mConstraint );
+    mLayer->editFormConfig().setReadOnly( i, !cfg.mEditable );
+    mLayer->editFormConfig().setLabelOnTop( i, cfg.mLabelOnTop );
+    mLayer->editFormConfig().setNotNull( i, cfg.mNotNull );
+    mLayer->editFormConfig().setExpressionDescription( i, cfg.mConstraintDescription );
+    mLayer->editFormConfig().setExpression( i, cfg.mConstraint );
 
-    mLayer->editFormConfig()->setWidgetType( idx, cfg.mEditorWidgetType );
-    mLayer->editFormConfig()->setWidgetConfig( idx, cfg.mEditorWidgetConfig );
+    mLayer->editFormConfig().setWidgetType( idx, cfg.mEditorWidgetType );
+    mLayer->editFormConfig().setWidgetConfig( idx, cfg.mEditorWidgetConfig );
 
     if ( mFieldsList->item( i, attrWMSCol )->checkState() == Qt::Unchecked )
     {
@@ -946,25 +946,26 @@ void QgsFieldsProperties::apply()
   }
 
   // tabs and groups
-  mLayer->clearAttributeEditorWidgets();
+  QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
+  editFormConfig.clearTabs();
   for ( int t = 0; t < mDesignerTree->invisibleRootItem()->childCount(); t++ )
   {
     QTreeWidgetItem* tabItem = mDesignerTree->invisibleRootItem()->child( t );
 
-    mLayer->editFormConfig()->addTab( createAttributeEditorWidget( tabItem, mLayer, false ) );
+    editFormConfig.addTab( createAttributeEditorWidget( tabItem, nullptr, false ) );
   }
 
-  mLayer->editFormConfig()->setLayout(( QgsEditFormConfig::EditorLayout ) mEditorLayoutComboBox->currentIndex() );
+  editFormConfig.setLayout(( QgsEditFormConfig::EditorLayout ) mEditorLayoutComboBox->currentIndex() );
   if ( mEditorLayoutComboBox->currentIndex() == QgsEditFormConfig::UiFileLayout )
-    mLayer->editFormConfig()->setUiForm( mEditFormLineEdit->text() );
+    editFormConfig.setUiForm( mEditFormLineEdit->text() );
 
   // Init function configuration
-  mLayer->editFormConfig()->setInitFunction( mInitFunctionLineEdit->text() );
-  mLayer->editFormConfig()->setInitCode( mInitCodeEditorPython->text() );
-  mLayer->editFormConfig()->setInitFilePath( mInitFilePathLineEdit->text() );
-  mLayer->editFormConfig()->setInitCodeSource(( QgsEditFormConfig::PythonInitCodeSource )mInitCodeSourceComboBox->currentIndex() );
+  editFormConfig.setInitFunction( mInitFunctionLineEdit->text() );
+  editFormConfig.setInitCode( mInitCodeEditorPython->text() );
+  editFormConfig.setInitFilePath( mInitFilePathLineEdit->text() );
+  editFormConfig.setInitCodeSource(( QgsEditFormConfig::PythonInitCodeSource )mInitCodeSourceComboBox->currentIndex() );
 
-  mLayer->editFormConfig()->setSuppress(( QgsEditFormConfig::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
+  editFormConfig.setSuppress(( QgsEditFormConfig::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
 
   mLayer->setExcludeAttributesWms( excludeAttributesWMS );
   mLayer->setExcludeAttributesWfs( excludeAttributesWFS );
@@ -986,8 +987,10 @@ void QgsFieldsProperties::apply()
 
     QString relationName = itemData.name();
 
-    mLayer->editFormConfig()->setWidgetConfig( relationName, cfg );
+    editFormConfig.setWidgetConfig( relationName, cfg );
   }
+
+  mLayer->setEditFormConfig( editFormConfig );
 }
 /*
  * FieldConfig implementation
@@ -1006,15 +1009,15 @@ QgsFieldsProperties::FieldConfig::FieldConfig()
 QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
     : mButton( nullptr )
 {
-  mEditable = !layer->editFormConfig()->readOnly( idx );
+  mEditable = !layer->editFormConfig().readOnly( idx );
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin
                      && layer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression;
-  mLabelOnTop = layer->editFormConfig()->labelOnTop( idx );
-  mNotNull = layer->editFormConfig()->notNull( idx );
-  mConstraint = layer->editFormConfig()->expression( idx );
-  mConstraintDescription = layer->editFormConfig()->expressionDescription( idx );
-  mEditorWidgetType = layer->editFormConfig()->widgetType( idx );
-  mEditorWidgetConfig = layer->editFormConfig()->widgetConfig( idx );
+  mLabelOnTop = layer->editFormConfig().labelOnTop( idx );
+  mNotNull = layer->editFormConfig().notNull( idx );
+  mConstraint = layer->editFormConfig().expression( idx );
+  mConstraintDescription = layer->editFormConfig().expressionDescription( idx );
+  mEditorWidgetType = layer->editFormConfig().widgetType( idx );
+  mEditorWidgetConfig = layer->editFormConfig().widgetConfig( idx );
 }
 
 /*

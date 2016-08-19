@@ -3319,9 +3319,9 @@ QDomElement QgsWmsServer::createFeatureGML(
 
 QString QgsWmsServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, const QString& attributeVal )
 {
-  if ( QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( vl->editFormConfig()->widgetType( idx ) ) )
+  if ( QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( vl->editFormConfig().widgetType( idx ) ) )
   {
-    QgsEditorWidgetConfig cfg( vl->editFormConfig()->widgetConfig( idx ) );
+    QgsEditorWidgetConfig cfg( vl->editFormConfig().widgetConfig( idx ) );
     QString value( factory->representValue( vl, idx, cfg, QVariant(), attributeVal ) );
     if ( cfg.value( "AllowMulti" ).toBool() && value.startsWith( "{" ) && value.endsWith( "}" ) )
     {

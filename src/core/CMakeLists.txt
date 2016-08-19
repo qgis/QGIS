@@ -81,6 +81,7 @@ SET(QGIS_CORE_SRCS
   qgsactionmanager.cpp
   qgsaggregatecalculator.cpp
   qgsattributetableconfig.cpp
+  qgsattributeeditorelement.cpp
   qgsbrowsermodel.cpp
   qgscachedfeatureiterator.cpp
   qgscacheindex.cpp
@@ -453,7 +454,6 @@ SET(QGIS_CORE_MOC_HDRS
   qgsdataitem.h
   qgsdataprovider.h
   qgsdbfilterproxymodel.h
-  qgseditformconfig.h
   qgsfeedback.h
   qgsfield.h
   qgsgeometryvalidator.h
@@ -604,6 +604,7 @@ SET(QGIS_CORE_HDRS
   qgsannotation.h
   qgsattributetableconfig.h
   qgsattributeaction.h
+  qgsattributeeditorelement.h
   qgscachedfeatureiterator.h
   qgscacheindex.h
   qgscacheindexfeatureid.h
@@ -632,6 +633,7 @@ SET(QGIS_CORE_HDRS
   qgsdbfilterproxymodel.h
   qgsdiagramrenderer.h
   qgsdistancearea.h
+  qgseditformconfig.h
   qgseditorwidgetconfig.h
   qgsfeaturefilterprovider.h
   qgserror.h

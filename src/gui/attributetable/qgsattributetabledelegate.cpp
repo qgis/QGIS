@@ -67,15 +67,15 @@ QWidget* QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleO
 
   int fieldIdx = index.model()->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
 
-  QString widgetType = vl->editFormConfig()->widgetType( fieldIdx );
-  QgsEditorWidgetConfig cfg = vl->editFormConfig()->widgetConfig( fieldIdx );
+  QString widgetType = vl->editFormConfig().widgetType( fieldIdx );
+  QgsEditorWidgetConfig cfg = vl->editFormConfig().widgetConfig( fieldIdx );
   QgsAttributeEditorContext context( masterModel( index.model() )->editorContext(), QgsAttributeEditorContext::Popup );
   QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, vl, fieldIdx, cfg, nullptr, parent, context );
   QWidget* w = eww->widget();
 
   w->setAutoFillBackground( true );
 
-  eww->setEnabled( !vl->editFormConfig()->readOnly( fieldIdx ) );
+  eww->setEnabled( !vl->editFormConfig().readOnly( fieldIdx ) );
 
   return w;
 }

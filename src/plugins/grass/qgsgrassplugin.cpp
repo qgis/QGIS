@@ -397,7 +397,7 @@ void QgsGrassPlugin::onEditingStarted()
     return;
 
   mOldStyles[vectorLayer] = vectorLayer->styleManager()->currentStyle();
-  mFormSuppress[vectorLayer] = vectorLayer->editFormConfig()->suppress();
+  mFormSuppress[vectorLayer] = vectorLayer->editFormConfig().suppress();
 
   // Because the edit style may be stored to project:
   // - do not translate because it may be loaded in QGIS running with different language
@@ -515,7 +515,7 @@ void QgsGrassPlugin::addFeature()
     grassProvider->setNewFeatureType( GV_AREA );
     formSuppress = QgsEditFormConfig::SuppressOn;
   }
-  vectorLayer->editFormConfig()->setSuppress( formSuppress );
+  vectorLayer->editFormConfig().setSuppress( formSuppress );
 }
 
 void QgsGrassPlugin::onSplitFeaturesTriggered( bool checked )
