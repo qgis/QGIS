@@ -1641,6 +1641,14 @@ class QgsVectorLayer : QgsMapLayer
      * @Note added in QGIS 3.0
      */
     void editFormConfigChanged();
+
+    /**
+     * Emitted when the read only state of this layer is changed.
+     * Only applies to manually set readonly state, not to the edit mode.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void readOnlyChanged();
   protected:
     /** Set the extent */
     void setExtent( const QgsRectangle &rect );
