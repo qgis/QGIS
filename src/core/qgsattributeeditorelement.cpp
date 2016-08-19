@@ -16,20 +16,6 @@
 #include "qgsattributeeditorelement.h"
 #include "qgsrelationmanager.h"
 
-QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const
-{
-  QDomElement elem = doc.createElement( "attributeEditorContainer" );
-  elem.setAttribute( "name", mName );
-  elem.setAttribute( "columnCount", mColumnCount );
-  elem.setAttribute( "groupBox", mIsGroupBox ? 1 : 0 );
-
-  Q_FOREACH ( QgsAttributeEditorElement* child, mChildren )
-  {
-    elem.appendChild( child->toDomElement( doc ) );
-  }
-  return elem;
-}
-
 void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
 {
   mChildren.append( widget );
@@ -68,27 +54,11 @@ void QgsAttributeEditorContainer::clear()
   mChildren.clear();
 }
 
-QDomElement QgsAttributeEditorField::toDomElement( QDomDocument& doc ) const
-{
-  QDomElement elem = doc.createElement( "attributeEditorField" );
-  elem.setAttribute( "name", mName );
-  elem.setAttribute( "index", mIdx );
-  return elem;
-}
-
 QgsAttributeEditorElement* QgsAttributeEditorField::clone( QgsAttributeEditorElement* parent ) const
 {
   QgsAttributeEditorField* element = new QgsAttributeEditorField( name(), mIdx, parent );
 
   return element;
-}
-
-QDomElement QgsAttributeEditorRelation::toDomElement( QDomDocument& doc ) const
-{
-  QDomElement elem = doc.createElement( "attributeEditorRelation" );
-  elem.setAttribute( "name", mName );
-  elem.setAttribute( "relation", mRelation.id() );
-  return elem;
 }
 
 bool QgsAttributeEditorRelation::init( QgsRelationManager* relationManager )
@@ -103,4 +73,43 @@ QgsAttributeEditorElement* QgsAttributeEditorRelation::clone( QgsAttributeEditor
   element->mRelation = mRelation;
 
   return element;
+}
+void QgsAttributeEditorField::saveConfiguration( QDomElement &elem ) const
+{
+  elem.setAttribute( "index", mIdx );
+}
+
+QString QgsAttributeEditorField::typeIdentifier() const
+{
+  return "attributeEditorField";
+}
+
+QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument& doc ) const
+{
+  QDomElement elem = doc.createElement( typeIdentifier() );
+  elem.setAttribute( "name", mName );
+  elem.setAttribute( "showLabel", mShowLabel );
+
+  saveConfiguration( elem );
+  return elem;
+}
+
+bool QgsAttributeEditorElement::showLabel() const
+{
+  return mShowLabel;
+}
+
+void QgsAttributeEditorElement::setShowLabel( bool showLabel )
+{
+  mShowLabel = showLabel;
+}
+
+void QgsAttributeEditorRelation::saveConfiguration( QDomElement& elem ) const
+{
+  elem.setAttribute( "relation", mRelation.id() );
+}
+
+QString QgsAttributeEditorRelation::typeIdentifier() const
+{
+  return "attributeEditorRelation";
 }

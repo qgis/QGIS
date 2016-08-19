@@ -52,6 +52,7 @@ class CORE_EXPORT QgsAttributeEditorElement
         : mType( type )
         , mName( name )
         , mParent( parent )
+        , mShowLabel( true )
     {}
 
     //! Destructor
@@ -79,13 +80,13 @@ class CORE_EXPORT QgsAttributeEditorElement
     QgsAttributeEditorElement* parent() const { return mParent; }
 
     /**
-     * Is reimplemented in classes inheriting from this to serialize it.
+     * Get the XML Dom element to save this element.
      *
      * @param doc The QDomDocument which is used to create new XML elements
      *
-     * @return An DOM element which represents this element
+     * @return A DOM element to serialize this element
      */
-    virtual QDomElement toDomElement( QDomDocument& doc ) const = 0;
+    QDomElement toDomElement( QDomDocument& doc ) const;
 
     /**
      * Returns a clone of this element. To be implemented by subclasses.
@@ -94,10 +95,41 @@ class CORE_EXPORT QgsAttributeEditorElement
      */
     virtual QgsAttributeEditorElement* clone( QgsAttributeEditorElement* parent ) const = 0;
 
+    /**
+     * Controls if this element should be labeled with a title (field, relation or groupname).
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showLabel() const;
+
+    /**
+     * Controls if this element should be labeled with a title (field, relation or groupname).
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowLabel( bool showLabel );
+
   protected:
     AttributeEditorType mType;
     QString mName;
     QgsAttributeEditorElement* mParent;
+    bool mShowLabel;
+
+  private:
+    /**
+     * Should be implemented by subclasses to save type specific configuration.
+     *
+     * @note Added in QGIS 2.18
+     */
+    virtual void saveConfiguration( QDomElement& elem ) const = 0;
+
+    /**
+     * All subclasses need to overwrite this method and return a type specific identifier.
+     * Needs to be XML key compatible.
+     *
+     * @note Added in QGIS 2.18
+     */
+    virtual QString typeIdentifier() const = 0;
 };
 
 
@@ -122,15 +154,6 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 
     //! Destructor
     virtual ~QgsAttributeEditorContainer();
-
-    /**
-     * Will serialize this containers information into a QDomElement for saving it in an XML file.
-     *
-     * @param doc The QDomDocument used to generate the QDomElement
-     *
-     * @return The XML element
-     */
-    virtual QDomElement toDomElement( QDomDocument& doc ) const override;
 
     /**
      * Add a child element to this container. This may be another container, a field or a relation.
@@ -197,6 +220,9 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     virtual QgsAttributeEditorElement* clone( QgsAttributeEditorElement* parent ) const override;
 
   private:
+    void saveConfiguration( QDomElement& elem ) const override;
+    QString typeIdentifier() const override;
+
     bool mIsGroupBox;
     QList<QgsAttributeEditorElement*> mChildren;
     int mColumnCount;
@@ -224,15 +250,6 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
     virtual ~QgsAttributeEditorField() {}
 
     /**
-     * Will serialize this elements information into a QDomElement for saving it in an XML file.
-     *
-     * @param doc The QDomDocument used to generate the QDomElement
-     *
-     * @return The XML element
-     */
-    virtual QDomElement toDomElement( QDomDocument& doc ) const override;
-
-    /**
      * Return the index of the field
      * @return
      */
@@ -241,6 +258,8 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
     virtual QgsAttributeEditorElement* clone( QgsAttributeEditorElement* parent ) const override;
 
   private:
+    void saveConfiguration( QDomElement& elem ) const override;
+    QString typeIdentifier() const override;
     int mIdx;
 };
 
@@ -277,15 +296,6 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     virtual ~QgsAttributeEditorRelation() {}
 
     /**
-     * Will serialize this elements information into a QDomElement for saving it in an XML file.
-     *
-     * @param doc The QDomDocument used to generate the QDomElement
-     *
-     * @return The XML element
-     */
-    virtual QDomElement toDomElement( QDomDocument& doc ) const override;
-
-    /**
      * Get the id of the relation which shall be embedded
      *
      * @return the id
@@ -303,6 +313,8 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     virtual QgsAttributeEditorElement* clone( QgsAttributeEditorElement* parent ) const override;
 
   private:
+    void saveConfiguration( QDomElement& elem ) const override;
+    QString typeIdentifier() const override;
     QString mRelationId;
     QgsRelation mRelation;
 };

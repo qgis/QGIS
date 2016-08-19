@@ -160,16 +160,26 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
   switch ( widgetDef->type() )
   {
     case QgsAttributeEditorElement::AeTypeField:
-      newWidget = mDesignerTree->addItem( parent, DesignerTreeItemData( DesignerTreeItemData::Field, widgetDef->name() ) );
+    {
+      DesignerTreeItemData itemData = DesignerTreeItemData( DesignerTreeItemData::Field, widgetDef->name() );
+      itemData.setShowLabel( widgetDef->showLabel() );
+      newWidget = mDesignerTree->addItem( parent, itemData );
       break;
+    }
 
     case QgsAttributeEditorElement::AeTypeRelation:
-      newWidget = mDesignerTree->addItem( parent, DesignerTreeItemData( DesignerTreeItemData::Relation, widgetDef->name() ) );
+    {
+      DesignerTreeItemData itemData = DesignerTreeItemData( DesignerTreeItemData::Relation, widgetDef->name() );
+      itemData.setShowLabel( widgetDef->showLabel() );
+
+      newWidget = mDesignerTree->addItem( parent, itemData );
       break;
+    }
 
     case QgsAttributeEditorElement::AeTypeContainer:
     {
       DesignerTreeItemData itemData( DesignerTreeItemData::Container, widgetDef->name() );
+      itemData.setShowLabel( widgetDef->showLabel() );
 
       const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>( widgetDef );
       if ( !container )
@@ -864,6 +874,8 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
     }
   }
 
+  widgetDef->setShowLabel( itemData.showLabel() );
+
   return widgetDef;
 }
 
@@ -1234,12 +1246,23 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
   Q_UNUSED( column )
   QgsFieldsProperties::DesignerTreeItemData itemData = item->data( 0, QgsFieldsProperties::DesignerTreeRole ).value<QgsFieldsProperties::DesignerTreeItemData>();
 
+  QGroupBox* baseData = new QGroupBox( tr( "Base configuration" ) );
+
+  QFormLayout* baseLayout = new QFormLayout();
+  baseData->setLayout( baseLayout );
+  QCheckBox* showLabelCheckbox = new QCheckBox( "Show label" );
+  showLabelCheckbox->setChecked( itemData.showLabel() );
+  baseLayout->addWidget( showLabelCheckbox );
+  QWidget* baseWidget = new QWidget();
+  baseWidget->setLayout( baseLayout );
+
   if ( itemData.type() == QgsFieldsProperties::DesignerTreeItemData::Container )
   {
     QDialog dlg;
     dlg.setWindowTitle( tr( "Configure container" ) );
     QFormLayout* layout = new QFormLayout() ;
     dlg.setLayout( layout );
+    layout->addWidget( baseWidget );
 
     QCheckBox* showAsGroupBox = nullptr;
     QLineEdit* title = new QLineEdit( itemData.name() );
@@ -1270,8 +1293,32 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
       itemData.setColumnCount( columnCount->value() );
       itemData.setShowAsGroupBox( showAsGroupBox ? showAsGroupBox->isChecked() : true );
       itemData.setName( title->text() );
+      itemData.setShowLabel( showLabelCheckbox->isChecked() );
+
       item->setData( 0, QgsFieldsProperties::DesignerTreeRole, itemData.asQVariant() );
       item->setText( 0, title->text() );
+    }
+  }
+  else
+  {
+    QDialog dlg;
+    dlg.setWindowTitle( tr( "Configure container" ) );
+    dlg.setLayout( new QGridLayout() );
+    dlg.layout()->addWidget( baseWidget );
+
+    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
+        | QDialogButtonBox::Cancel );
+
+    connect( buttonBox, SIGNAL( accepted() ), &dlg, SLOT( accept() ) );
+    connect( buttonBox, SIGNAL( rejected() ), &dlg, SLOT( reject() ) );
+
+    dlg.layout()->addWidget( buttonBox );
+
+    if ( dlg.exec() )
+    {
+      itemData.setShowLabel( showLabelCheckbox->isChecked() );
+
+      item->setData( 0, QgsFieldsProperties::DesignerTreeRole, itemData.asQVariant() );
     }
   }
 }
@@ -1307,4 +1354,14 @@ bool QgsFieldsProperties::DesignerTreeItemData::showAsGroupBox() const
 void QgsFieldsProperties::DesignerTreeItemData::setShowAsGroupBox( bool showAsGroupBox )
 {
   mShowAsGroupBox = showAsGroupBox;
+}
+
+bool QgsFieldsProperties::DesignerTreeItemData::showLabel() const
+{
+  return mShowLabel;
+}
+
+void QgsFieldsProperties::DesignerTreeItemData::setShowLabel( bool showLabel )
+{
+  mShowLabel = showLabel;
 }

@@ -627,6 +627,12 @@ QgsAttributeEditorElement* QgsEditFormConfig::attributeEditorElementFromDomEleme
     QString name = elem.attribute( "name" );
     newElement = new QgsAttributeEditorRelation( name, elem.attribute( "relation", "[None]" ), parent );
   }
+
+  if ( elem.hasAttribute( "showLabel" ) )
+    newElement->setShowLabel( elem.attribute( "showLabel" ).toInt() );
+  else
+    newElement->setShowLabel( true );
+
   return newElement;
 }
 
@@ -652,4 +658,21 @@ QgsAttributeEditorElement* QgsAttributeEditorContainer::clone( QgsAttributeEdito
   element->mColumnCount = mColumnCount;
 
   return element;
+}
+
+void QgsAttributeEditorContainer::saveConfiguration( QDomElement& elem ) const
+{
+  elem.setAttribute( "columnCount", mColumnCount );
+  elem.setAttribute( "groupBox", mIsGroupBox ? 1 : 0 );
+
+  Q_FOREACH ( QgsAttributeEditorElement* child, mChildren )
+  {
+    QDomDocument doc = elem.ownerDocument();
+    elem.appendChild( child->toDomElement( doc ) );
+  }
+}
+
+QString QgsAttributeEditorContainer::typeIdentifier() const
+{
+  return "attributeEditorContainer";
 }
