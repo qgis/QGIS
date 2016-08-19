@@ -888,7 +888,7 @@ void QgsAttributeForm::onUpdatedFields()
 }
 
 void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint,
-    const QString &description, const QString& err, bool ok )
+    const QString& description, const QString& err, bool ok )
 {
   QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( sender() );
   Q_ASSERT( eww );
