@@ -17,5 +17,5 @@ echo $PATH
 
 export PATH=/usr/bin:${PATH}
 
-ctest -V -E 'qgis_openstreetmaptest|qgis_wcsprovidertest|PyQgsServer|ProcessingGdalAlgorithmsTest|PyQgsOfflineEditingWFS|ProcessingGrass7AlgorithmsImageryTest|ProcessingGrass7AlgorithmsRasterTest|qgis_composerhtmltest' -S ./qgis-test-travis.ctest --output-on-failure
+ctest -V -E 'qgis_openstreetmaptest|qgis_wcsprovidertest|PyQgsServer|ProcessingGdalAlgorithmsTest|PyQgsOfflineEditingWFS|ProcessingGrass7AlgorithmsImageryTest|ProcessingGrass7AlgorithmsRasterTest|qgis_composerhtmltest|PyQgsOfflineEditingWFS' -S ./qgis-test-travis.ctest --output-on-failure
 
