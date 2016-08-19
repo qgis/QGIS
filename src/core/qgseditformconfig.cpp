@@ -580,7 +580,7 @@ void QgsAttributeEditorRelation::saveConfiguration( QDomElement& elem ) const
 
 QString QgsAttributeEditorRelation::typeIdentifier() const
 {
-  return "attributeEditorField";
+  return "attributeEditorRelation";
 }
 
 bool QgsAttributeEditorRelation::init( QgsRelationManager* relationManager )
