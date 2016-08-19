@@ -616,15 +616,12 @@ SET(QGIS_CORE_HDRS
   qgscontexthelp.h
   qgsconditionalstyle.h
   qgscoordinatereferencesystem.h  
-  qgscoordinatereferencesystem_p.h
   qgscoordinatetransform.h
-  qgscoordinatetransform_p.h
   qgscoordinateutils.h
   qgscrscache.h
   qgscsexception.h
   qgsdartmeasurement.h
   qgsdatadefined.h
-  qgsdatadefined_p.h
   qgsdataitem.h
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
@@ -643,11 +640,9 @@ SET(QGIS_CORE_HDRS
   qgsexpressioncontext.h
   qgsexpressioncontextgenerator.h
   qgsexpressionfieldbuffer.h
-  qgsfeature_p.h
   qgsfeatureiterator.h
   qgsfeaturerequest.h
   qgsfeaturestore.h
-  qgsfield_p.h
   qgsfontutils.h
   qgsgeometrycache.h
   qgshistogram.h
