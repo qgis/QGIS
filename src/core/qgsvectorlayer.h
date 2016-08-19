@@ -1202,10 +1202,23 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     const QMap< QString, QString >& attributeAliases() const { return mAttributeAliasMap; }
 
+    /**
+     * A set of attributes that are not advertised in WMS requests with QGIS server.
+     */
     const QSet<QString>& excludeAttributesWms() const { return mExcludeAttributesWMS; }
+    /**
+     * A set of attributes that are not advertised in WMS requests with QGIS server.
+     */
     void setExcludeAttributesWms( const QSet<QString>& att ) { mExcludeAttributesWMS = att; }
 
+    /**
+     * A set of attributes that are not advertised in WFS requests with QGIS server.
+     */
     const QSet<QString>& excludeAttributesWfs() const { return mExcludeAttributesWFS; }
+
+    /**
+     * A set of attributes that are not advertised in WFS requests with QGIS server.
+     */
     void setExcludeAttributesWfs( const QSet<QString>& att ) { mExcludeAttributesWFS = att; }
 
     /** Delete an attribute field (but does not commit it) */
@@ -1746,17 +1759,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void displayExpressionChanged();
 
     /**
-     * Emitted when the read only status changes
-     *
-     * @note added in 3.0
-     */
-    void readOnlyChanged();
-
-    /**
      * Signals an error related to this vector layer.
      */
     void raiseError( const QString& msg );
 
+    /**
+     * Will be emitted whenever the edit form configuration of this layer changes.
+     */
     void editFormConfigChanged();
 
   private slots:

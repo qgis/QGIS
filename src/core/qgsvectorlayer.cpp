@@ -2615,7 +2615,6 @@ bool QgsVectorLayer::setReadOnly( bool readonly )
     return false;
 
   mReadOnly = readonly;
-  emit readOnlyChanged();
   return true;
 }
 

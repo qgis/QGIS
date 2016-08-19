@@ -1078,16 +1078,6 @@ class QgsVectorLayer : QgsMapLayer
     bool renameAttribute( int attIndex, const QString& newName );
 
     /**
-     * Get the configuration of the form used to represent this vector layer.
-     * This is a writable configuration that can directly be changed in place.
-     *
-     * @return The configuration of this layers' form
-     *
-     * @note Added in QGIS 2.14
-     */
-    QgsEditFormConfig editFormConfig() const;
-
-    /**
      * Returns the alias of an attribute name or a null string if there is no alias.
      *
      * @see {attributeDisplayName( int attributeIndex )} which returns the field name
@@ -1351,6 +1341,26 @@ class QgsVectorLayer : QgsMapLayer
     void setMapTipTemplate( const QString& mapTipTemplate );
 
     QgsExpressionContext createExpressionContext() const;
+
+    /**
+     * Get the configuration of the form used to represent this vector layer.
+     * This is a writable configuration that can directly be changed in place.
+     *
+     * @return The configuration of this layers' form
+     *
+     * @note Added in QGIS 2.14
+     */
+    QgsEditFormConfig editFormConfig() const;
+
+    /**
+     * Get the configuration of the form used to represent this vector layer.
+     * This is a writable configuration that can directly be changed in place.
+     *
+     * @return The configuration of this layers' form
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setEditFormConfig( const QgsEditFormConfig& editFormConfig );
 
   public slots:
     /**
@@ -1625,6 +1635,12 @@ class QgsVectorLayer : QgsMapLayer
      */
     void raiseError( const QString& msg );
 
+    /**
+     * Will be emitted whenever the edit form configuration of this layer changes.
+     *
+     * @Note added in QGIS 3.0
+     */
+    void editFormConfigChanged();
   protected:
     /** Set the extent */
     void setExtent( const QgsRectangle &rect );

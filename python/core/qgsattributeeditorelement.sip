@@ -95,6 +95,11 @@ switch( sipCpp->type() )
      */
     virtual QDomElement toDomElement( QDomDocument& doc ) const = 0;
 
+    /**
+     * Returns a clone of this element. To be implemented by subclasses.
+     *
+     * @note Added in QGIS 3.0
+     */
     virtual QgsAttributeEditorElement* clone( QgsAttributeEditorElement* parent ) const = 0 /Factory/;
 };
 

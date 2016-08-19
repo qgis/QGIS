@@ -21,6 +21,8 @@
 #include "qgsfield.h"
 #include "qgseditformconfig.h"
 
+/// @cond PRIVATE
+
 class QgsEditFormConfigPrivate : public QSharedData
 {
   public:
@@ -91,5 +93,7 @@ class QgsEditFormConfigPrivate : public QSharedData
     QMap<QString, QString> mAttributeAliasMap;
 
 };
+
+/// @endcond
 
 #endif // QGSEDITFORMCONFIG_P_H

@@ -88,6 +88,11 @@ class CORE_EXPORT QgsEditFormConfig
       CodeSourceEnvironment = 3       //!< Use the python code available in the python environment
     };
 
+    /**
+     * Copy constructor
+     *
+     * @note Added in QGIS 3.0
+     */
     QgsEditFormConfig( const QgsEditFormConfig& o );
 
     QgsEditFormConfig& operator=( const QgsEditFormConfig& o );
