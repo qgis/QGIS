@@ -1243,8 +1243,7 @@ bool QgsProject::writeEntry( const QString& scope, QString const& key, bool valu
   return addKey_( scope, key, &imp_->properties_, value );
 }
 
-bool QgsProject::writeEntry( const QString& scope, const QString& key,
-                             double value )
+bool QgsProject::writeEntry( const QString& scope, const QString& key, double value )
 {
   setDirty( true );
 
@@ -1258,16 +1257,14 @@ bool QgsProject::writeEntry( const QString& scope, QString const& key, int value
   return addKey_( scope, key, &imp_->properties_, value );
 }
 
-bool QgsProject::writeEntry( const QString& scope, const QString &key,
-                             const QString& value )
+bool QgsProject::writeEntry( const QString& scope, const QString& key, const QString& value )
 {
   setDirty( true );
 
   return addKey_( scope, key, &imp_->properties_, value );
 }
 
-bool QgsProject::writeEntry( const QString& scope, const QString& key,
-                             const QStringList& value )
+bool QgsProject::writeEntry( const QString& scope, const QString& key, const QStringList& value )
 {
   setDirty( true );
 
