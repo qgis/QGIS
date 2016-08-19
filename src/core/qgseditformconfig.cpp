@@ -452,6 +452,12 @@ QgsAttributeEditorElement* QgsEditFormConfig::attributeEditorElementFromDomEleme
     QString name = elem.attribute( "name" );
     newElement = new QgsAttributeEditorRelation( name, elem.attribute( "relation", "[None]" ), parent );
   }
+
+  if ( elem.hasAttribute( "showLabel" ) )
+    newElement->setShowLabel( elem.attribute( "showLabel" ).toInt() );
+  else
+    newElement->setShowLabel( true );
+
   return newElement;
 }
 
@@ -486,4 +492,99 @@ int QgsAttributeEditorContainer::columnCount() const
 void QgsAttributeEditorContainer::setColumnCount( int columnCount )
 {
   mColumnCount = columnCount;
+}
+
+void QgsAttributeEditorContainer::saveConfiguration( QDomElement& elem ) const
+{
+  elem.setAttribute( "columnCount", mColumnCount );
+  elem.setAttribute( "groupBox", mIsGroupBox ? 1 : 0 );
+
+  Q_FOREACH ( QgsAttributeEditorElement* child, mChildren )
+  {
+    QDomDocument doc = elem.ownerDocument();
+    elem.appendChild( child->toDomElement( doc ) );
+  }
+}
+
+QString QgsAttributeEditorContainer::typeIdentifier() const
+{
+  return "attributeEditorContainer";
+}
+
+void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
+{
+  mChildren.append( widget );
+}
+
+void QgsAttributeEditorContainer::setName( const QString& name )
+{
+  mName = name;
+}
+
+QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( QgsAttributeEditorElement::AttributeEditorType type ) const
+{
+  QList<QgsAttributeEditorElement*> results;
+
+  Q_FOREACH ( QgsAttributeEditorElement* elem, mChildren )
+  {
+    if ( elem->type() == type )
+    {
+      results.append( elem );
+    }
+
+    if ( elem->type() == AeTypeContainer )
+    {
+      QgsAttributeEditorContainer* cont = dynamic_cast<QgsAttributeEditorContainer*>( elem );
+      if ( cont )
+        results += cont->findElements( type );
+    }
+  }
+
+  return results;
+}
+
+void QgsAttributeEditorField::saveConfiguration( QDomElement &elem ) const
+{
+  elem.setAttribute( "index", mIdx );
+}
+
+QString QgsAttributeEditorField::typeIdentifier() const
+{
+  return "attributeEditorField";
+}
+
+QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument& doc ) const
+{
+  QDomElement elem = doc.createElement( typeIdentifier() );
+  elem.setAttribute( "name", mName );
+  elem.setAttribute( "showLabel", mShowLabel );
+
+  saveConfiguration( elem );
+  return elem;
+}
+
+bool QgsAttributeEditorElement::showLabel() const
+{
+  return mShowLabel;
+}
+
+void QgsAttributeEditorElement::setShowLabel( bool showLabel )
+{
+  mShowLabel = showLabel;
+}
+
+void QgsAttributeEditorRelation::saveConfiguration( QDomElement& elem ) const
+{
+  elem.setAttribute( "relation", mRelation.id() );
+}
+
+QString QgsAttributeEditorRelation::typeIdentifier() const
+{
+  return "attributeEditorField";
+}
+
+bool QgsAttributeEditorRelation::init( QgsRelationManager* relationManager )
+{
+  mRelation = relationManager->relation( mRelationId );
+  return mRelation.isValid();
 }

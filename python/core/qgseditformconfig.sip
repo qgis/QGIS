@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-class QgsAttributeEditorElement : QObject
+class QgsAttributeEditorElement : QObject /Abstract/
 {
 %TypeHeaderCode
 #include "qgsvectorlayer.h"
@@ -74,13 +74,28 @@ class QgsAttributeEditorElement : QObject
     AttributeEditorType type() const;
 
     /**
-     * Is reimplemented in classes inheriting from this to serialize it.
+     * Get the XML Dom element to save this element.
      *
      * @param doc The QDomDocument which is used to create new XML elements
      *
-     * @return An DOM element which represents this element
+     * @return A DOM element to serialize this element
      */
-    virtual QDomElement toDomElement( QDomDocument& doc ) const = 0;
+    QDomElement toDomElement( QDomDocument& doc ) const;
+
+    /**
+     * Controls if this element should be labeled with a title (field, relation or groupname).
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showLabel() const;
+
+    /**
+     * Controls if this element should be labeled with a title (field, relation or groupname).
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowLabel(bool showLabel);
+
 };
 
 class QgsAttributeEditorContainer : QgsAttributeEditorElement

@@ -4131,60 +4131,6 @@ QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx )
   return QgsProject::instance()->relationManager()->referencingRelations( this, idx );
 }
 
-QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const
-{
-  QDomElement elem = doc.createElement( "attributeEditorContainer" );
-  elem.setAttribute( "name", mName );
-  elem.setAttribute( "columnCount", mColumnCount );
-  elem.setAttribute( "groupBox", mIsGroupBox ? 1 : 0 );
-
-  Q_FOREACH ( QgsAttributeEditorElement* child, mChildren )
-  {
-    elem.appendChild( child->toDomElement( doc ) );
-  }
-  return elem;
-}
-
-void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
-{
-  mChildren.append( widget );
-}
-
-void QgsAttributeEditorContainer::setName( const QString& name )
-{
-  mName = name;
-}
-
-QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( QgsAttributeEditorElement::AttributeEditorType type ) const
-{
-  QList<QgsAttributeEditorElement*> results;
-
-  Q_FOREACH ( QgsAttributeEditorElement* elem, mChildren )
-  {
-    if ( elem->type() == type )
-    {
-      results.append( elem );
-    }
-
-    if ( elem->type() == AeTypeContainer )
-    {
-      QgsAttributeEditorContainer* cont = dynamic_cast<QgsAttributeEditorContainer*>( elem );
-      if ( cont )
-        results += cont->findElements( type );
-    }
-  }
-
-  return results;
-}
-
-QDomElement QgsAttributeEditorField::toDomElement( QDomDocument& doc ) const
-{
-  QDomElement elem = doc.createElement( "attributeEditorField" );
-  elem.setAttribute( "name", mName );
-  elem.setAttribute( "index", mIdx );
-  return elem;
-}
-
 int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )
 {
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
@@ -4309,21 +4255,6 @@ bool QgsVectorLayer::applyNamedStyle( const QString& namedStyle, QString& errorM
   myDocument.setContent( namedStyle );
 
   return importNamedStyle( myDocument, errorMsg );
-}
-
-
-QDomElement QgsAttributeEditorRelation::toDomElement( QDomDocument& doc ) const
-{
-  QDomElement elem = doc.createElement( "attributeEditorRelation" );
-  elem.setAttribute( "name", mName );
-  elem.setAttribute( "relation", mRelation.id() );
-  return elem;
-}
-
-bool QgsAttributeEditorRelation::init( QgsRelationManager* relationManager )
-{
-  mRelation = relationManager->relation( mRelationId );
-  return mRelation.isValid();
 }
 
 QSet<QString> QgsVectorLayer::layerDependencies() const

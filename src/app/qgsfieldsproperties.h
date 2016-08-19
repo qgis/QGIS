@@ -79,11 +79,15 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         bool showAsGroupBox() const;
         void setShowAsGroupBox( bool showAsGroupBox );
 
+        bool showLabel() const;
+        void setShowLabel( bool showLabel );
+
       private:
         Type mType;
         QString mName;
         int mColumnCount;
         bool mShowAsGroupBox;
+        bool mShowLabel;
     };
 
     /**
