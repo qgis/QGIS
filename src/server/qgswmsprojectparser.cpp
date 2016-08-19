@@ -2012,6 +2012,28 @@ bool QgsWMSProjectParser::featureInfoWithWktGeometry() const
   return ( wktElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
 }
 
+bool QgsWMSProjectParser::segmentizeFeatureInfoWktGeometry() const
+{
+  if ( !mProjectParser->xmlDocument() )
+  {
+    return false;
+  }
+
+  QDomElement propertiesElem = mProjectParser->propertiesElem();
+  if ( propertiesElem.isNull() )
+  {
+    return false;
+  }
+
+  QDomElement segmentizeElem = propertiesElem.firstChildElement( "WMSSegmentizeFeatureInfoGeometry" );
+  if ( segmentizeElem.isNull() )
+  {
+    return false;
+  }
+
+  return( segmentizeElem.text().compare( "true", Qt::CaseInsensitive ) == 0 );
+}
+
 QHash<QString, QString> QgsWMSProjectParser::featureInfoLayerAliasMap() const
 {
   QHash<QString, QString> aliasMap;
