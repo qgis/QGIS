@@ -142,7 +142,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
   {
     if ( !expression.isEmpty() )
     {
-      QString fieldName = ft.fields()->field( mFieldIdx ).name();
+      QString fieldName = layer()->attributeDisplayName( mFieldIdx );
       expression = "( " + expression + " ) AND ( " + fieldName + " IS NOT NULL)";
       description = "( " + description + " ) AND NotNull";
     }

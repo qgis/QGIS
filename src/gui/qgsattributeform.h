@@ -256,7 +256,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void onAttributeDeleted( int idx );
     void onUpdatedFields();
     void onConstraintStatusChanged( const QString& constraint,
-                                    const QString &description, const QString& err, bool ok );
+                                    const QString& description, const QString& err, bool ok );
     void preventFeatureRefresh();
     void synchronizeEnabledState();
     void layerSelectionChanged();
