@@ -22,6 +22,8 @@
 #include "qgsrasterlayer.h"
 #include "qgsmapserviceexception.h"
 #include "qgsmessagelog.h"
+#include "qgslogger.h"
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrol.h"
 #endif

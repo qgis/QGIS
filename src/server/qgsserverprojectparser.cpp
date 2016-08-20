@@ -26,6 +26,7 @@
 #include "qgsrasterlayer.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreegroup.h"
+#include "qgslogger.h"
 
 #include <QDomDocument>
 #include <QFileInfo>
