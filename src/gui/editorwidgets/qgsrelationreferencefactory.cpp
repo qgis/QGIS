@@ -23,6 +23,7 @@
 #include "qgsrelationreferenceconfigdlg.h"
 #include "qgsrelationreferencesearchwidgetwrapper.h"
 #include "qgsrelationreferencewidget.h"
+#include "qgslogger.h"
 
 QgsRelationReferenceFactory::QgsRelationReferenceFactory( const QString& name, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
     : QgsEditorWidgetFactory( name )

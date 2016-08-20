@@ -47,7 +47,6 @@ QWidget* QgsRangeWidgetWrapper::createWidget( QWidget* parent )
   }
   else
   {
-    QgsDebugMsg( QString( "%1" ).arg(( int )layer()->fields().at( fieldIdx() ).type() ) );
     switch ( layer()->fields().at( fieldIdx() ).type() )
     {
       case QVariant::Double:

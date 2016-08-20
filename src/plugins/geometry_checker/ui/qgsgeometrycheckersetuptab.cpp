@@ -87,22 +87,18 @@ void QgsGeometryCheckerSetupTab::updateLayers()
   QgsMapLayer* currentLayer = isVisible() ? 0 : mIface->mapCanvas()->currentLayer();
   int currIdx = -1;
   int idx = 0;
-  Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsVectorLayer* layer, QgsMapLayerRegistry::instance()->layers<QgsVectorLayer*>() )
   {
-    QgsDebugMsg( QString( "Adding layer, have %1 in list" ).arg( ui.comboBoxInputLayer->count() ) );
-    if ( qobject_cast<QgsVectorLayer*>( layer ) )
+    ui.comboBoxInputLayer->addItem( layer->name(), layer->id() );
+    if ( layer->name() == prevLayer )
     {
-      ui.comboBoxInputLayer->addItem( layer->name(), layer->id() );
-      if ( layer->name() == prevLayer )
-      {
-        currIdx = idx;
-      }
-      else if ( currIdx == -1 && layer == currentLayer )
-      {
-        currIdx = idx;
-      }
-      ++idx;
+      currIdx = idx;
     }
+    else if ( currIdx == -1 && layer == currentLayer )
+    {
+      currIdx = idx;
+    }
+    ++idx;
   }
   ui.comboBoxInputLayer->setCurrentIndex( qMax( 0, currIdx ) );
 }

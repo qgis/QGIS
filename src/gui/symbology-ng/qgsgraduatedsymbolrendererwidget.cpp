@@ -24,6 +24,7 @@
 
 #include "qgssymbolselectordialog.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgslogger.h"
 
 #include "qgsludialog.h"
 

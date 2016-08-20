@@ -24,6 +24,7 @@
 #include "qgswfsprovider.h"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
+#include "qgslogger.h"
 
 #include <QDir>
 #include <QProgressDialog>

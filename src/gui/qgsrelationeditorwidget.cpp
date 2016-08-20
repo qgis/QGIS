@@ -27,6 +27,7 @@
 #include "qgsvectorlayertools.h"
 #include "qgsproject.h"
 #include "qgstransactiongroup.h"
+#include "qgslogger.h"
 
 #include <QHBoxLayout>
 #include <QLabel>

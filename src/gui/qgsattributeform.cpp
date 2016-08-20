@@ -29,6 +29,7 @@
 #include "qgsmessagebaritem.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgsrelationmanager.h"
+#include "qgslogger.h"
 
 #include <QDir>
 #include <QTextStream>

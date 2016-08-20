@@ -19,7 +19,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-
+#include "qgslogger.h"
 
 QgsSnappingUtils::QgsSnappingUtils( QObject* parent )
     : QObject( parent )

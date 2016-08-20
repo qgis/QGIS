@@ -50,6 +50,22 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
   d = new QgsCoordinateTransformPrivate( source, destination );
 }
 
+QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform& o )
+{
+  d = o.d;
+}
+
+QgsCoordinateTransform& QgsCoordinateTransform::operator=( const QgsCoordinateTransform & o )
+{
+  d = o.d;
+  return *this;
+}
+
+QgsCoordinateTransform::~QgsCoordinateTransform()
+{
+
+}
+
 void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem& crs )
 {
   d.detach();

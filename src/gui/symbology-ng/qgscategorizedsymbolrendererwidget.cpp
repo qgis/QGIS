@@ -22,6 +22,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectorcolorramp.h"
 #include "qgsstyle.h"
+#include "qgslogger.h"
 
 #include "qgssymbolselectordialog.h"
 #include "qgsexpressionbuilderdialog.h"

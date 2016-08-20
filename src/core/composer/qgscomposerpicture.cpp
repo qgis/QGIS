@@ -28,6 +28,8 @@
 #include "qgsnetworkcontentfetcher.h"
 #include "qgssymbollayerutils.h"
 #include "qgssvgcache.h"
+#include "qgslogger.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFileInfo>

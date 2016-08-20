@@ -96,8 +96,6 @@ void QgsLabelingWidget::adaptToLayer()
   if ( !mLayer )
     return;
 
-  QgsDebugMsg( QString( "Setting up for layer %1" ).arg( mLayer->name() ) );
-
   mLabelModeComboBox->setCurrentIndex( -1 );
 
   // pick the right mode of the layer
