@@ -1273,7 +1273,9 @@ void QgisApp::dragEnterEvent( QDragEnterEvent *event )
 {
   if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( "application/x-vnd.qgis.qgis.uri" ) )
   {
-    event->acceptProposedAction();
+    // the mime data are coming from layer tree, so ignore that, do not import those layers again
+    if ( !event->mimeData()->hasFormat( "application/qgis.layertreemodeldata" ) )
+      event->acceptProposedAction();
   }
 }
 

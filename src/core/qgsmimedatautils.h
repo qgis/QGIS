@@ -19,6 +19,7 @@
 #include <QStringList>
 
 class QgsLayerItem;
+class QgsLayerTreeNode;
 
 /** \ingroup core
  * \class QgsMimeDataUtils
@@ -62,9 +63,16 @@ class CORE_EXPORT QgsMimeDataUtils
 
     static UriList decodeUriList( const QMimeData* data );
 
+    /**
+     * Returns encoded URI list from a list of layer tree nodes.
+     * @note added in QGIS 3.0
+     */
+    static QByteArray layerTreeNodesToUriList( const QList<QgsLayerTreeNode*>& nodes );
+
   private:
     static QString encode( const QStringList& items );
     static QStringList decode( const QString& encoded );
+    static QByteArray uriListToByteArray( const UriList& layers );
 
 };
 
