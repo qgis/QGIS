@@ -515,8 +515,21 @@ class CORE_EXPORT QgsGeometry
     /**
      * Return interpolated point on line at distance
      * @note added in 1.9
+     * @see lineLocatePoint()
      */
     QgsGeometry* interpolate( double distance ) const;
+
+    /** Returns a distance representing the location along this linestring of the closest point
+     * on this linestring geometry to the specified point. Ie, the returned value indicates
+     * how far along this linestring you need to traverse to get to the closest location
+     * where this linestring comes to the specified point.
+     * @param point point to seek proximity to
+     * @return distance along line, or -1 on error
+     * @note only valid for linestring geometries
+     * @see interpolate()
+     * @note added in QGIS 3.0
+     */
+    double lineLocatePoint( const QgsGeometry& point ) const;
 
     /** Returns a geometry representing the points shared by this geometry and other. */
     QgsGeometry* intersection( const QgsGeometry* geometry ) const;
