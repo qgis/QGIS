@@ -31,7 +31,6 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString& title, bool foldin
   if ( !parent && mWidgetTitle.isEmpty() )
   {
     setWindowTitle( "Text Editor" );
-    setMinimumSize( 800, 300 );
   }
   else
   {
