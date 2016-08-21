@@ -652,7 +652,7 @@ def create_xml_descriptors():
                         except:
                             logger.error("Unit test for command %s must be fixed: %s" % (available_app, traceback.format_exc()))
             else:
-                logger.warning("%s is not in white list." % available_app)
+                logger.warning("%s (custom app) is not in white list." % available_app)
 
         else:
             if available_app in white_list and available_app not in black_list:
@@ -666,7 +666,8 @@ def create_xml_descriptors():
                     get_automatic_ut_from_xml_description(the_root)
                 except:
                     logger.error("Unit test for command %s must be fixed: %s" % (available_app, traceback.format_exc()))
-
+            else:
+                logger.warning("%s (not custom app) is not in white list." % available_app)        
         # except Exception, e:
         #    logger.error(traceback.format_exc())
 
