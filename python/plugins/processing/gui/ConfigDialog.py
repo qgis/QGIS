@@ -190,7 +190,7 @@ class ConfigDialog(BASE, WIDGET):
         """
         Filter 'Menus' items
         """
-        menusItem = QStandardItem(self.tr('Menus (requires restart)'))
+        menusItem = QStandardItem(self.tr('Menus'))
         icon = QIcon(os.path.join(pluginPath, 'images', 'menu.png'))
         menusItem.setIcon(icon)
         menusItem.setEditable(False)
