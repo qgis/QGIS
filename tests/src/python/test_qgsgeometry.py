@@ -3430,5 +3430,27 @@ class TestQgsGeometry(unittest.TestCase):
         exp = 'MultiLineString((0 0, 10 10),(12 2, 14 4))'
         self.assertTrue(compareWkt(result, exp, 0.00001), "Merge lines: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
+    def testLineLocatePoint(self):
+        """ test QgsGeometry.lineLocatePoint() """
+
+        # not a linestring
+        point = QgsGeometry.fromWkt('Point(1 2)')
+        self.assertEqual(point.lineLocatePoint(point), -1)
+
+        # not a point
+        linestring = QgsGeometry.fromWkt('LineString(0 0, 10 0)')
+        self.assertEqual(linestring.lineLocatePoint(linestring), -1)
+
+        # valid
+        self.assertEqual(linestring.lineLocatePoint(point), 1)
+        point = QgsGeometry.fromWkt('Point(9 -2)')
+        self.assertEqual(linestring.lineLocatePoint(point), 9)
+
+        # circular string
+        geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
+        point = QgsGeometry.fromWkt('Point(9 -2)')
+        self.assertAlmostEqual(geom.lineLocatePoint(point), 7.372, places=3)
+
+
 if __name__ == '__main__':
     unittest.main()

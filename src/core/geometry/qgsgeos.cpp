@@ -1911,6 +1911,36 @@ QgsGeometry QgsGeos::shortestLine( const QgsGeometry& other, QString* errorMsg )
   return QgsGeometry( line );
 }
 
+double QgsGeos::lineLocatePoint( const QgsPointV2& point, QString* errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return -1;
+  }
+
+  GEOSGeomScopedPtr otherGeom( asGeos( &point, mPrecision ) );
+  if ( !otherGeom )
+  {
+    return -1;
+  }
+
+  double distance = -1;
+  try
+  {
+    distance = GEOSProject_r( geosinit.ctxt, mGeos, otherGeom.get() );
+  }
+  catch ( GEOSException &e )
+  {
+    if ( errorMsg )
+    {
+      *errorMsg = e.what();
+    }
+    return -1;
+  }
+
+  return distance;
+}
+
 
 /** Extract coordinates of linestring's endpoints. Returns false on error. */
 static bool _linestringEndpoints( const GEOSGeometry* linestring, double& x1, double& y1, double& x2, double& y2 )
