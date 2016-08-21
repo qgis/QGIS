@@ -467,7 +467,7 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
         break;
       default:
         QMessageBox::critical( this, tr( "SpatiaLite Error" ),
-                               tr( "Unexpected error when working with: %1\n\n%2" ).arg( mSqlitePath, errCause) );
+                               tr( "Unexpected error when working with: %1\n\n%2" ).arg( mSqlitePath, errCause ) );
     }
     mSqlitePath = QString();
     return;
