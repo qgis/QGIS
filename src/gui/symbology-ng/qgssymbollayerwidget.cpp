@@ -3346,23 +3346,20 @@ QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( co
     , mLayer( nullptr )
 {
   setupUi( this );
+  modificationExpressionSelector->setMultiLine( true );
   modificationExpressionSelector->setLayer( const_cast<QgsVectorLayer*>( vl ) );
-  modificationExpressionSelector->loadFieldNames();
-  modificationExpressionSelector->setExpressionContext( createExpressionContext() );
+  modificationExpressionSelector->registerExpressionContextGenerator( this );
   cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" ), tr( "Polygon / MultiPolygon" ), QgsSymbol::Fill );
   cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconLineLayer.svg" ), tr( "LineString / MultiLineString" ), QgsSymbol::Line );
   cbxGeometryType->addItem( QgsApplication::getThemeIcon( "/mIconPointLayer.svg" ), tr( "Point / MultiPoint" ), QgsSymbol::Marker );
-  connect( modificationExpressionSelector, SIGNAL( expressionParsed( bool ) ), this, SLOT( updateExpression() ) );
+  connect( modificationExpressionSelector, SIGNAL( expressionChanged( QString ) ), this, SLOT( updateExpression( QString ) ) );
   connect( cbxGeometryType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateSymbolType() ) );
 }
 
 void QgsGeometryGeneratorSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* l )
 {
   mLayer = static_cast<QgsGeometryGeneratorSymbolLayer*>( l );
-
-  if ( mPresetExpressionContext )
-    modificationExpressionSelector->setExpressionContext( *mPresetExpressionContext );
-  modificationExpressionSelector->setExpressionText( mLayer->geometryExpression() );
+  modificationExpressionSelector->setExpression( mLayer->geometryExpression() );
   cbxGeometryType->setCurrentIndex( cbxGeometryType->findData( mLayer->symbolType() ) );
 }
 
@@ -3371,9 +3368,9 @@ QgsSymbolLayer* QgsGeometryGeneratorSymbolLayerWidget::symbolLayer()
   return mLayer;
 }
 
-void QgsGeometryGeneratorSymbolLayerWidget::updateExpression()
+void QgsGeometryGeneratorSymbolLayerWidget::updateExpression( const QString& string )
 {
-  mLayer->setGeometryExpression( modificationExpressionSelector->expressionText() );
+  mLayer->setGeometryExpression( string );
 
   emit changed();
 }
