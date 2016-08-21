@@ -124,7 +124,7 @@ class TestQgsSymbol(unittest.TestCase):
             rendered_image = self.renderGeometry(geom_z)
             assert self.imageCheck(test['name'] + 'ZM', test['reference_image'], rendered_image)
 
-            #test with ZM
+            #test with M
             geom_m = QgsGeometry.fromWkt(test['wkt'])
             geom_m.geometry().addMValue(15)
             rendered_image = self.renderGeometry(geom_m)
@@ -152,24 +152,27 @@ class TestQgsSymbol(unittest.TestCase):
         context.setScaleFactor(96 / 25.4)  # 96 DPI
 
         painter.begin(image)
-        image.fill(QColor(0, 0, 0))
+        try:
+            image.fill(QColor(0, 0, 0))
 
-        if geom.type() == QgsWkbTypes.PolygonGeometry:
-            self.fill_symbol.startRender(context)
-            self.fill_symbol.renderFeature(f, context)
-            self.fill_symbol.stopRender(context)
+            if geom.type() == QgsWkbTypes.PolygonGeometry:
+                self.fill_symbol.startRender(context)
+                self.fill_symbol.renderFeature(f, context)
+                self.fill_symbol.stopRender(context)
 
-        elif geom.type() == QgsWkbTypes.LineGeometry:
-            self.line_symbol.startRender(context)
-            self.line_symbol.renderFeature(f, context)
-            self.line_symbol.stopRender(context)
+            elif geom.type() == QgsWkbTypes.LineGeometry:
+                self.line_symbol.startRender(context)
+                self.line_symbol.renderFeature(f, context)
+                self.line_symbol.stopRender(context)
 
-        elif geom.type() == QgsWkbTypes.PointGeometry:
-            self.marker_symbol.startRender(context)
-            self.marker_symbol.renderFeature(f, context)
-            self.marker_symbol.stopRender(context)
-
-        painter.end()
+            elif geom.type() == QgsWkbTypes.PointGeometry:
+                self.marker_symbol.startRender(context)
+                self.marker_symbol.renderFeature(f, context)
+                self.marker_symbol.stopRender(context)
+            else:
+                self.fail("Unknown type: " + geom.type())
+        finally:
+            painter.end()
         return image
 
     def imageCheck(self, name, reference_image, image):

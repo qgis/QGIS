@@ -21,20 +21,6 @@ class QgsLineString: public QgsCurve
      */
     QgsPointV2 pointN( int i ) const;
 
-    /** Returns the x-coordinate of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0
-     * @returns x-coordinate of node, or 0.0 if index is out of bounds
-     * @see setXAt()
-     */
-    double xAt( int index ) const;
-
-    /** Returns the y-coordinate of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0
-     * @returns y-coordinate of node, or 0.0 if index is out of bounds
-     * @see setYAt()
-     */
-    double yAt( int index ) const;
-
     /** Returns the z-coordinate of the specified node in the line string.
      * @param index index of node, where the first node in the line is 0
      * @returns z-coordinate of node, or 0.0 if index is out of bounds or the line
@@ -102,10 +88,6 @@ class QgsLineString: public QgsCurve
     /** Closes the line string by appending the first point to the end of the line, if it is not already closed.*/
     void close();
 
-    /** Returns a QPolygonF representing the line string.
-     */
-    QPolygonF asQPolygonF() const;
-
     /** Returns the geometry converted to the more generic curve type QgsCompoundCurve
         @return the converted geometry. Caller takes ownership*/
     QgsAbstractGeometry* toCurveType() const /Factory/;
@@ -169,6 +151,9 @@ class QgsLineString: public QgsCurve
     virtual bool dropMValue();
 
     virtual bool convertTo( QgsWkbTypes::Type type );
+
+    virtual double xAt( int index ) const;
+    virtual double yAt( int index ) const;
 
   protected:
 

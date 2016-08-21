@@ -2428,11 +2428,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
     QgsMapToPixelSimplifier::SimplifyAlgorithm simplifyAlgorithm = static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( simplifyMethod.simplifyAlgorithm() );
     QgsGeometry g = geom;
-
-    if ( QgsMapToPixelSimplifier::simplifyGeometry( &g, simplifyHints, simplifyMethod.tolerance(), simplifyAlgorithm ) )
-    {
-      geom = g;
-    }
+    QgsMapToPixelSimplifier simplifier( simplifyHints, simplifyMethod.tolerance(), simplifyAlgorithm );
+    geom = simplifier.simplify( geom );
   }
 
   // whether we're going to create a centroid for polygon
@@ -3019,12 +3016,8 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, QgsRenderConte
   {
     int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
     QgsMapToPixelSimplifier::SimplifyAlgorithm simplifyAlgorithm = static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( simplifyMethod.simplifyAlgorithm() );
-    QgsGeometry g = geom;
-
-    if ( QgsMapToPixelSimplifier::simplifyGeometry( &g, simplifyHints, simplifyMethod.tolerance(), simplifyAlgorithm ) )
-    {
-      geom = g;
-    }
+    QgsMapToPixelSimplifier simplifier( simplifyHints, simplifyMethod.tolerance(), simplifyAlgorithm );
+    geom = simplifier.simplify( geom );
   }
 
   const GEOSGeometry* geos_geom = nullptr;

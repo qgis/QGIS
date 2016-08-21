@@ -576,16 +576,6 @@ void QgsLineString::drawAsPolygon( QPainter& p ) const
   p.drawPolygon( asQPolygonF() );
 }
 
-QPolygonF QgsLineString::asQPolygonF() const
-{
-  QPolygonF points;
-  for ( int i = 0; i < mX.count(); ++i )
-  {
-    points << QPointF( mX.at( i ), mY.at( i ) );
-  }
-  return points;
-}
-
 QgsAbstractGeometry* QgsLineString::toCurveType() const
 {
   QgsCompoundCurve* compoundCurve = new QgsCompoundCurve();

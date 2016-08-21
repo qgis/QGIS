@@ -480,19 +480,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * Creates a point in screen coordinates from a wkb string in map
      * coordinates
      */
-    static QgsConstWkbPtr _getPoint( QPointF& pt, QgsRenderContext& context, QgsConstWkbPtr& wkb );
-
-    /**
-     * Creates a line string in screen coordinates from a wkb string in map
-     * coordinates
-     */
-    static QgsConstWkbPtr _getLineString( QPolygonF& pts, QgsRenderContext& context, QgsConstWkbPtr& wkb, bool clipToExtent = true );
-
-    /**
-     * Creates a polygon in screen coordinates from a wkb string in map
-     * coordinates
-     */
-    static QgsConstWkbPtr _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, QgsConstWkbPtr& wkb, bool clipToExtent = true );
+    static QPointF _getPoint( QgsRenderContext& context, const QgsPointV2& point );
 
     void setScaleMethodToSymbol( QgsSymbol* symbol, int scaleMethod );
 

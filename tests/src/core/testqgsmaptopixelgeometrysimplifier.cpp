@@ -73,6 +73,7 @@ class TestQgsMapToPixelGeometrySimplifier : public QObject
     void testLine1();
     void testIsGeneralizableByMapBoundingBox();
     void testWkbDimensionMismatch();
+    void testCircularString();
 
 };
 
@@ -108,10 +109,11 @@ void TestQgsMapToPixelGeometrySimplifier::cleanup()
 
 void TestQgsMapToPixelGeometrySimplifier::testDefaultGeometry()
 {
-  QScopedPointer< QgsGeometry > g( new QgsGeometry() );
+  QgsGeometry g;
   int fl = QgsMapToPixelSimplifier::SimplifyGeometry;
-  bool ret = QgsMapToPixelSimplifier::simplifyGeometry( g.data(), fl, 10.0 );
-  QVERIFY( ! ret ); // not simplifiable
+  QgsMapToPixelSimplifier simplifier( fl, 10.0 );
+  QgsGeometry ret = simplifier.simplify( g );
+  QVERIFY( ret.isEmpty() ); // not simplifiable
 }
 
 void TestQgsMapToPixelGeometrySimplifier::testLine1()
@@ -120,27 +122,28 @@ void TestQgsMapToPixelGeometrySimplifier::testLine1()
   //       reduced at all by the algorithm
   QgsGeometry g( QgsGeometry::fromWkt( "LINESTRING(0 0,1 1,2 0,3 1,4 0,20 1,20 0,10 0,5 0)" ) );
   int fl;
-  bool ret;
   QString wkt;
 
   fl = QgsMapToPixelSimplifier::SimplifyGeometry;
-  ret = QgsMapToPixelSimplifier::simplifyGeometry( &g, fl, 10.0 );
-  QVERIFY( ret );
-  wkt = g.exportToWkt();
-  // NOTE: I don't think vertex 1,1 should be in this result,
-  //       but that's what we get now
+  QgsMapToPixelSimplifier simplifier( fl, 10.0 );
+  QgsGeometry ret = simplifier.simplify( g );
+  wkt = ret.exportToWkt();
+  // NOTE: vertex 1,1 is in this result, because we keep the first two or last two vertices in a line
+  //       TO ensure that the angles at the line start and end are the same after simplification
+  //       compared to what we have before
   QCOMPARE( wkt, QString( "LineString (0 0, 1 1, 20 1, 10 0, 5 0)" ) );
 
-  fl = QgsMapToPixelSimplifier::SimplifyEnvelope;
-  ret = QgsMapToPixelSimplifier::simplifyGeometry( &g, fl, 20.0 );
-  QVERIFY( ret );
-  wkt = g.exportToWkt();
-  QCOMPARE( wkt, QString( "LineString (0 0, 1 1, 20 1, 10 0, 5 0)" ) );
+  simplifier.setSimplifyFlags( QgsMapToPixelSimplifier::SimplifyEnvelope );
+  simplifier.setTolerance( 20.0 );
+  ret = simplifier.simplify( g );
+  wkt = ret.exportToWkt();
+  // Cannot be simplified to its envelope since it's just at the setTollerance
+  QCOMPARE( wkt, QString( "LineString (0 0, 1 1, 2 0, 3 1, 4 0, 20 1, 20 0, 10 0, 5 0)" ) );
 
-  ret = QgsMapToPixelSimplifier::simplifyGeometry( &g, fl, 30.0 );
-  QVERIFY( ret );
-  wkt = g.exportToWkt();
-  // NOTE: I don't understand this result either
+  simplifier.setTolerance( 30.0 );
+  ret = simplifier.simplify( g );
+  wkt = ret.exportToWkt();
+  // Got simplified into a line going from one corner of the envelope to the other
   QCOMPARE( wkt, QString( "LineString (0 0, 20 1)" ) );
 }
 
@@ -177,8 +180,18 @@ void TestQgsMapToPixelGeometrySimplifier::testWkbDimensionMismatch()
   QCOMPARE( wkt, QString( "MultiLineStringZ ((0 0 0, 1 1 0, 2 0 0, 3 1 0, 10 0 -0.000001),(0 0 0, 0 0 0.000001))" ) );
 
   int fl = QgsMapToPixelSimplifier::SimplifyGeometry;
-  int ret = QgsMapToPixelSimplifier::simplifyGeometry( &g12416, fl, 20.0 );
-  QVERIFY( ret );
+  QgsMapToPixelSimplifier simplifier( fl, 20.0 );
+  QgsGeometry ret = simplifier.simplify( g12416 );
+  QVERIFY( !ret.equals( g12416 ) );
+}
+
+void TestQgsMapToPixelGeometrySimplifier::testCircularString()
+{
+  static const QString WKT( "MultiCurve (LineString (5 5, 3 5, 3 3, 0 3),CircularString (0 0, 2 1, 2 2))" );
+  const QgsGeometry g( QgsGeometry::fromWkt( WKT ) );
+
+  const QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, 0.1 );
+  QCOMPARE( simplifier.simplify( g ).exportToWkt(), WKT );
 }
 
 QTEST_MAIN( TestQgsMapToPixelGeometrySimplifier )

@@ -295,6 +295,12 @@ variant instead.</li>
 <li>GenericDataSourceURI has been renamed to GenericDataSourceUri</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsClipper QgsClipper
+
+<ul>
+<li>clippedLineWKB has been renamed to clippedLine and it's signature has been changed to return a QPolygonF</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsColorBrewerColorRampDialog QgsColorBrewerColorRampDialog
 
 <ul>
@@ -575,6 +581,12 @@ method to determine if a geometry is valid.</li>
 a QgsGeometry value rather than a pointer.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsGeometrySimplifier QgsGeometrySimplifier
+
+<ul>
+<li>simplifyGeometry() has been removed and simplify() must be used instead .</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsGradientColorRampDialog QgsGradientColorRampDialog
 
 <ul>
@@ -697,6 +709,14 @@ be returned instead of a null pointer if no transformation is required.</li>
 be used instead of a null pointer if no transformation is required.</li>
 <li>prepareJobs() and drawLabeling() (neither available in PyQGIS) do not take QgsPalLabeling parameter anymore. All drawing of labels is done by QgsLabelingEngineV2.</li>
 <li>drawOldLabeling(), drawNewLabeling() were removed. The method drawLabeling() should be used instead.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsMapToPixelGeometrySimplifier QgsMapToPixelGeometrySimplifier
+
+The whole class has been refactored to stop using WKB and to use QgsAbstractGeometry classes.
+<ul>
+<li>simplifyGeometry(), simplifyPoints(), isGeneralizableByMapBoundingBox(), _getLineString(), _getPolygon() methods have been removed.</li>
+<li>The signature of the static methods _getPoint(), _getLineString() and _getPolygon() have been changed.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsMapSettings QgsMapSettings

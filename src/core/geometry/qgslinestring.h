@@ -46,19 +46,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     QgsPointV2 pointN( int i ) const;
 
-    /** Returns the x-coordinate of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0
-     * @returns x-coordinate of node, or 0.0 if index is out of bounds
-     * @see setXAt()
-     */
-    double xAt( int index ) const;
-
-    /** Returns the y-coordinate of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0
-     * @returns y-coordinate of node, or 0.0 if index is out of bounds
-     * @see setYAt()
-     */
-    double yAt( int index ) const;
+    double xAt( int index ) const override;
+    double yAt( int index ) const override;
 
     /** Returns the z-coordinate of the specified node in the line string.
      * @param index index of node, where the first node in the line is 0
@@ -126,10 +115,6 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /** Closes the line string by appending the first point to the end of the line, if it is not already closed.*/
     void close();
-
-    /** Returns a QPolygonF representing the line string.
-     */
-    QPolygonF asQPolygonF() const;
 
     /** Returns the geometry converted to the more generic curve type QgsCompoundCurve
         @return the converted geometry. Caller takes ownership*/

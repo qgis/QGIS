@@ -43,27 +43,12 @@ class QgsMapToPixelSimplifier : QgsAbstractGeometrySimplifier
     //! Sets the local simplification algorithm of the vector layer managed
     void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm );
 
-    //! Returns a simplified version the specified geometry
-    virtual QgsGeometry simplify( const QgsGeometry& geometry ) const;
-    //! Simplifies the specified geometry
-    virtual bool simplifyGeometry( QgsGeometry* geometry ) const;
-
-    //! Simplifies the specified WKB-point array
-    virtual bool simplifyPoints( QgsWkbTypes::Type wkbType, QgsConstWkbPtr& sourceWkbPtr, QPolygonF& targetPoints ) const;
+    //! Sets the tolerance of the vector layer managed
+    void setTolerance( double value );
 
     // MapToPixel simplification helper methods
   public:
 
     //! Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
     static bool isGeneralizableByMapBoundingBox( const QgsRectangle& envelope, double map2pixelTol );
-
-    //! Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
-    bool isGeneralizableByMapBoundingBox( const QgsRectangle& envelope ) const;
-
-    //! Simplifies the geometry when is applied the specified map2pixel context
-    static bool simplifyGeometry( QgsGeometry* geometry, int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm = Distance );
-
-    //! Simplifies the WKB-point array when is applied the specified map2pixel context
-    static bool simplifyPoints( QgsWkbTypes::Type wkbType, QgsConstWkbPtr& sourceWkbPtr, QPolygonF& targetPoints, int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm = Distance );
-
 };

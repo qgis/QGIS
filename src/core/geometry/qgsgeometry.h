@@ -98,9 +98,9 @@ class CORE_EXPORT QgsGeometry
     ~QgsGeometry();
 
     /** Returns the underlying geometry store.
-     * @note added in QGIS 2.10
-     * @see setGeometry
-     */
+    * @note added in QGIS 2.10
+    * @see setGeometry
+    */
     QgsAbstractGeometry* geometry() const;
 
     /** Sets the underlying geometry store. Ownership of geometry is transferred.

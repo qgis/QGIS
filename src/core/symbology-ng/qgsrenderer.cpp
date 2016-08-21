@@ -40,21 +40,9 @@
 #include <QDomDocument>
 #include <QPolygonF>
 
-
-
-QgsConstWkbPtr QgsFeatureRenderer::_getPoint( QPointF& pt, QgsRenderContext& context, QgsConstWkbPtr& wkbPtr )
+QPointF QgsFeatureRenderer::_getPoint( QgsRenderContext& context, const QgsPointV2& point )
 {
-  return QgsSymbol::_getPoint( pt, context, wkbPtr );
-}
-
-QgsConstWkbPtr QgsFeatureRenderer::_getLineString( QPolygonF& pts, QgsRenderContext& context, QgsConstWkbPtr& wkbPtr, bool clipToExtent )
-{
-  return QgsSymbol::_getLineString( pts, context, wkbPtr, clipToExtent );
-}
-
-QgsConstWkbPtr QgsFeatureRenderer::_getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, QgsConstWkbPtr& wkbPtr, bool clipToExtent )
-{
-  return QgsSymbol::_getPolygon( pts, holes, context, wkbPtr, clipToExtent );
+  return QgsSymbol::_getPoint( context, point );
 }
 
 void QgsFeatureRenderer::setScaleMethodToSymbol( QgsSymbol* symbol, int scaleMethod )

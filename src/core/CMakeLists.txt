@@ -350,7 +350,6 @@ SET(QGIS_CORE_SRCS
   geometry/qgspolygon.cpp
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
-  geometry/qgswkbsimplifierptr.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
@@ -848,7 +847,6 @@ SET(QGIS_CORE_HDRS
   geometry/qgspolygon.h
   geometry/qgssurface.h
   geometry/qgswkbptr.h
-  geometry/qgswkbsimplifierptr.h
   geometry/qgswkbtypes.h
 )
 

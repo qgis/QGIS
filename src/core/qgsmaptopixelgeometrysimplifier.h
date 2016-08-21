@@ -21,6 +21,7 @@
 #include "qgsgeometrysimplifier.h"
 #include <QPolygonF>
 
+class QgsAbstractGeometry;
 class QgsWkbPtr;
 class QgsConstWkbPtr;
 
@@ -55,8 +56,8 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     };
 
   private:
-    //! Simplify the WKB-geometry using the specified tolerance
-    static bool simplifyWkbGeometry( int simplifyFlags, SimplifyAlgorithm simplifyAlgorithm, QgsWkbTypes::Type wkbType, QgsConstWkbPtr sourceWkbPtr, QgsWkbPtr targetWkbPtr, int &targetWkbSize, const QgsRectangle& envelope, double map2pixelTol, bool writeHeader = true, bool isaLinearRing = false );
+    //! Simplify the geometry using the specified tolerance
+    static QgsGeometry simplifyGeometry( int simplifyFlags, SimplifyAlgorithm simplifyAlgorithm, QgsWkbTypes::Type wkbType, const QgsAbstractGeometry& geometry, const QgsRectangle &envelope, double map2pixelTol, bool isaLinearRing );
 
   protected:
     //! Current simplification flags
@@ -87,11 +88,9 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 
     //! Returns a simplified version the specified geometry
     virtual QgsGeometry simplify( const QgsGeometry& geometry ) const override;
-    //! Simplifies the specified geometry
-    virtual bool simplifyGeometry( QgsGeometry* geometry ) const override;
 
-    //! Simplifies the specified WKB-point array
-    virtual bool simplifyPoints( QgsWkbTypes::Type wkbType, QgsConstWkbPtr& sourceWkbPtr, QPolygonF& targetPoints ) const;
+    //! Sets the tolerance of the vector layer managed
+    void setTolerance( double value ) { mTolerance = value; }
 
     // MapToPixel simplification helper methods
   public:
@@ -104,12 +103,6 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     {
       return isGeneralizableByMapBoundingBox( envelope, mTolerance );
     }
-
-    //! Simplifies the geometry when is applied the specified map2pixel context
-    static bool simplifyGeometry( QgsGeometry* geometry, int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm = Distance );
-
-    //! Simplifies the WKB-point array when is applied the specified map2pixel context
-    static bool simplifyPoints( QgsWkbTypes::Type wkbType, QgsConstWkbPtr& sourceWkbPtr, QPolygonF& targetPoints, int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm = Distance );
 };
 
 #endif // QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H

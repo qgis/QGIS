@@ -129,6 +129,9 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     virtual bool dropZValue() override;
     virtual bool dropMValue() override;
 
+    double xAt( int index ) const override;
+    double yAt( int index ) const override;
+
   protected:
 
     virtual QgsRectangle calculateBoundingBox() const override;

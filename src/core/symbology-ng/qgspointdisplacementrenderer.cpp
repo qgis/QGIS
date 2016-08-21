@@ -172,9 +172,7 @@ void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, Qg
   //calculate centroid of all points, this will be center of group
   QgsGeometry groupGeom( groupMultiPoint );
   QgsGeometry centroid = groupGeom.centroid();
-  QPointF pt;
-  QgsConstWkbPtr wkbPtr( centroid.asWkb(), centroid.wkbSize() );
-  _getPoint( pt, context, wkbPtr );
+  QPointF pt = _getPoint( context, *static_cast<QgsPointV2*>( centroid.geometry() ) );
 
   //calculate max diagonal size from all symbols in group
   double diagonal = 0;
