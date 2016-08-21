@@ -42,6 +42,7 @@ from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QHBoxLayout,
                                  QComboBox)
 from qgis.PyQt.QtGui import (QIcon,
+                             QPushButton,
                              QStandardItemModel,
                              QStandardItem)
 
@@ -55,7 +56,7 @@ from processing.core.ProcessingConfig import (ProcessingConfig,
                                               Setting)
 from processing.core.Processing import Processing
 from processing.gui.DirectorySelectorDialog import DirectorySelectorDialog
-from processing.gui.menus import updateMenus
+from processing.gui.menus import defaultMenuEntries, updateMenus
 from processing.gui.menus import menusSettingsGroup
 
 
@@ -198,6 +199,16 @@ class ConfigDialog(BASE, WIDGET):
 
         rootItem.insertRow(0, [menusItem, emptyItem])
 
+        button = QPushButton(self.tr('Reset to defaults'))
+        button.clicked.connect(self.resetMenusToDefaults)
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(button)
+        layout.addStretch()
+        widget = QWidget()
+        widget.setLayout(layout)
+        self.tree.setIndexWidget(emptyItem.index(), widget)
+
         providers = Processing.providers
         for provider in providers:
             providerDescription = provider.getDescription()
@@ -239,6 +250,15 @@ class ConfigDialog(BASE, WIDGET):
 
         self.tree.sortByColumn(0, Qt.AscendingOrder)
         self.adjustColumns()
+
+    def resetMenusToDefaults(self):
+        providers = Processing.providers
+        for provider in providers:
+            for alg in provider.algs:
+                d = defaultMenuEntries.get(alg.commandLineName(), "")
+                setting = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
+                item = self.items[setting]
+                item.setData(d, Qt.EditRole)
 
     def accept(self):
         for setting in self.items.keys():
