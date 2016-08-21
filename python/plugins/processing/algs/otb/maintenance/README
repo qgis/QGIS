@@ -18,9 +18,10 @@ export LD_LIBRARY_PATH=/path/to/OTB/install/lib/:$LD_LIBRARY_PATH
 
 Set QGIS environment
 ---------------------
+export QGIS_PREFIX_PATH=/path/to/QGIS/install
 export PYTHONPATH=:/usr/share/qgis/python/plugins:~/.qgis2/python/plugins:$PYTHONPATH
 # Set LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/path/to/QGIS/install/lib/:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$QGIS_PREFIX_PATH/lib/:$LD_LIBRARY_PATH
 # Add maintenance folder to python path
 export PYTHONPATH=/path/to/QGIS/src/python/plugins/processing/algs/otb/maintenance:$PYTHONPATH
 

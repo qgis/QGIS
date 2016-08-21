@@ -695,10 +695,10 @@ def create_html_description():
 if __name__ == "__main__":
     # Prepare the environment
     from qgis.core import QgsApplication
-    from qgis.PyQt.QtWidgets import QApplication
-    app = QApplication([])
-    QgsApplication.setPrefixPath("/usr", True)
+    
+    app = QgsApplication([], True)
     QgsApplication.initQgis()
+
     # Prepare processing framework
     from processing.core.Processing import Processing
     Processing.initialize()
@@ -719,4 +719,3 @@ if __name__ == "__main__":
 
     # Exit applications
     QgsApplication.exitQgis()
-    QApplication.exit()
