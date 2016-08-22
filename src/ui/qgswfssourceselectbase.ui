@@ -53,6 +53,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QPushButton" name="btnConnect">
+          <property name="toolTip">
+           <string>Connect to selected service</string>
+          </property>
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -63,6 +66,9 @@
         </item>
         <item>
          <widget class="QPushButton" name="btnNew">
+          <property name="toolTip">
+           <string>Create a new service connection</string>
+          </property>
           <property name="text">
            <string>&amp;New</string>
           </property>
@@ -70,6 +76,9 @@
         </item>
         <item>
          <widget class="QPushButton" name="btnEdit">
+          <property name="toolTip">
+           <string>Edit selected service connection</string>
+          </property>
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -80,11 +89,14 @@
         </item>
         <item>
          <widget class="QPushButton" name="btnDelete">
+          <property name="toolTip">
+           <string>Remove connection to selected service</string>
+          </property>
           <property name="enabled">
            <bool>false</bool>
           </property>
           <property name="text">
-           <string>Delete</string>
+           <string>Remove</string>
           </property>
          </widget>
         </item>
