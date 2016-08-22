@@ -523,10 +523,7 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
     return QgsAttributes();
   }
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mVectorLayer );
+  QgsExpressionContext context = mVectorLayer->createExpressionContext();
 
   int widgetIndex = 0;
   QgsAttributes results( mFields.count() );

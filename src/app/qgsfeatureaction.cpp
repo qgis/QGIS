@@ -145,10 +145,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
   bool reuseLastValues = settings.value( "/qgis/digitizing/reuseLastValues", false ).toBool();
   QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mLayer );
+  QgsExpressionContext context = mLayer->createExpressionContext();
 
   // add the fields to the QgsFeature
   const QgsFields& fields = mLayer->fields();
