@@ -692,9 +692,13 @@ bool QgsPGSchemaItem::handleDrop( const QMimeData * data, Qt::DropAction )
 {
   QgsPGConnectionItem *conn = qobject_cast<QgsPGConnectionItem *>( parent() );
   if ( !conn )
-    return 0;
+    return false;
 
-  return conn->handleDrop( data, mName );
+  bool result = conn->handleDrop( data, mName );
+  if ( result )
+    refresh();
+
+  return result;
 }
 
 // ---------------------------------------------------------------------------
