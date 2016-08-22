@@ -610,7 +610,7 @@ def list_reader(file_name, version):
 def get_otb_version():
     #TODO Find a way to retrieve installed otb version, force exception and parse otb-X.XX.X ?
     # return "3.18"
-    return "5.0"
+    return "5.6"
 
 
 def get_white_list():
@@ -717,6 +717,17 @@ if __name__ == "__main__":
 
     create_xml_descriptors()
     create_html_description()
+
+    #Check if some application are not listed in the white/black list
+    logger = get_OTB_log()
+    white_list = get_white_list()
+    black_list = get_black_list()
+    for available_app in otbApplication.Registry.GetAvailableApplications():
+        try:
+            if available_app not in white_list and available_app not in black_list:
+                logger.error("Application " + available_app + " is not listed in white_list.xml or black_list.xml. Need to be fix.")
+        except Exception:
+            logger.error(traceback.format_exc())
 
     # Exit applications
     QgsApplication.exitQgis()
