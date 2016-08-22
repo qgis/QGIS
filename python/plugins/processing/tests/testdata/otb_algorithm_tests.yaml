@@ -1,0 +1,18 @@
+# See ../README.md for a description of the file format
+
+tests:
+  - algorithm: otb:bandmath
+    name: Test (otb:bandmath)
+    params:
+      !!python/unicode '-exp': im1b1==826?255:0
+      !!python/unicode '-il':
+        params:
+        - name: raster.tif
+          type: raster
+        type: multi
+      !!python/unicode '-ram': 128
+    results:
+      !!python/unicode '-out':
+        hash: a8acb8da3cf40a156fe26f815588a7cbf8f3c8f6b3c226968b1eab1e
+        type: rasterhash
+  
