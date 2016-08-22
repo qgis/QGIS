@@ -36,6 +36,7 @@ typedef QHash<int, QString> QgsAttrPalIndexNameHash;
 
 class QgsFeatureIterator;
 class QgsTransaction;
+class QgsFeedback;
 
 #include "qgsfeaturerequest.h"
 
@@ -200,6 +201,18 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Default implementation simply iterates the features
      */
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const;
+
+    /**
+     * Returns unique string values of an attribute which contain a specified subset string. Subset
+     * matching is done in a case-insensitive manner.
+     * @param index the index of the attribute
+     * @param substring substring to match (case insensitive)
+     * @param limit maxmum number of the values to return, or -1 to return all unique values
+     * @param feedback optional feedback object for cancelling request
+     * @returns list of unique strings containg substring
+     */
+    virtual QStringList uniqueStringsMatching( int index, const QString& substring, int limit = -1,
+        QgsFeedback* feedback = nullptr ) const;
 
     /** Calculates an aggregated value from the layer's features. The base implementation does nothing,
      * but subclasses can override this method to handoff calculation of aggregates to the provider.

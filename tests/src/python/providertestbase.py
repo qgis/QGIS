@@ -566,6 +566,25 @@ class ProviderTestCase(object):
         self.provider.setSubsetString(None)
         self.assertEqual(set(values), set([200, 300]))
 
+    def testUniqueStringsMatching(self):
+        self.assertEqual(set(self.provider.uniqueStringsMatching(2, 'a')), set(['Pear', 'Orange', 'Apple']))
+        # test case insensitive
+        self.assertEqual(set(self.provider.uniqueStringsMatching(2, 'A')), set(['Pear', 'Orange', 'Apple']))
+        # test string ending in substring
+        self.assertEqual(set(self.provider.uniqueStringsMatching(2, 'ney')), set(['Honey']))
+        # test limit
+        result = set(self.provider.uniqueStringsMatching(2, 'a', 2))
+        self.assertEqual(len(result), 2)
+        self.assertTrue(result.issubset(set(['Pear', 'Orange', 'Apple'])))
+
+        assert set([u'Apple', u'Honey', u'Orange', u'Pear', NULL]) == set(self.provider.uniqueValues(2)), 'Got {}'.format(set(self.provider.uniqueValues(2)))
+
+        subset = self.getSubsetString2()
+        self.provider.setSubsetString(subset)
+        values = self.provider.uniqueStringsMatching(2, 'a')
+        self.provider.setSubsetString(None)
+        self.assertEqual(set(values), set(['Pear', 'Apple']))
+
     def testFeatureCount(self):
         assert self.provider.featureCount() == 5, 'Got {}'.format(self.provider.featureCount())
 

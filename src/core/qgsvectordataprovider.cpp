@@ -26,6 +26,7 @@
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
+#include "qgsfeedback.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgsgeometrycollection.h"
@@ -430,6 +431,37 @@ void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values, in
     if ( limit >= 0 && values.size() >= limit )
       break;
   }
+}
+
+QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QString& substring, int limit, QgsFeedback* feedback ) const
+{
+  QgsFeature f;
+  QgsAttributeList keys;
+  keys.append( index );
+
+  QgsFeatureRequest request;
+  request.setSubsetOfAttributes( keys );
+  request.setFlags( QgsFeatureRequest::NoGeometry );
+  QString fieldName = fields().at( index ).name();
+  request.setFilterExpression( QStringLiteral( "\"%1\" ILIKE '%%2%'" ).arg( fieldName, substring ) );
+  QgsFeatureIterator fi = getFeatures( request );
+
+  QSet<QString> set;
+  QStringList results;
+
+  while ( fi.nextFeature( f ) )
+  {
+    QString value = f.attribute( index ).toString();
+    if ( !set.contains( value ) )
+    {
+      results.append( value );
+      set.insert( value );
+    }
+
+    if (( limit >= 0 && results.size() >= limit ) || ( feedback && feedback->isCancelled() ) )
+      break;
+  }
+  return results;
 }
 
 QVariant QgsVectorDataProvider::aggregate( QgsAggregateCalculator::Aggregate aggregate, int index,

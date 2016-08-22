@@ -37,6 +37,7 @@
 #include "qgspostgresfeatureiterator.h"
 #include "qgspostgrestransaction.h"
 #include "qgslogger.h"
+#include "qgsfeedback.h"
 
 const QString POSTGRES_KEY = QStringLiteral( "postgres" );
 const QString POSTGRES_DESCRIPTION = QStringLiteral( "PostgreSQL/PostGIS data provider" );
@@ -1571,6 +1572,52 @@ void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues
   catch ( PGFieldNotFound )
   {
   }
+}
+
+QStringList QgsPostgresProvider::uniqueStringsMatching( int index, const QString& substring, int limit, QgsFeedback* feedback ) const
+{
+  QStringList results;
+
+  try
+  {
+    // get the field name
+    QgsField fld = field( index );
+    QString sql = QString( "SELECT DISTINCT %1 FROM %2 WHERE" )
+                  .arg( quotedIdentifier( fld.name() ),
+                        mQuery );
+
+    if ( !mSqlWhereClause.isEmpty() )
+    {
+      sql += QString( " ( %1 ) AND " ).arg( mSqlWhereClause );
+    }
+
+    sql += QString( " %1 ILIKE '%%2%'" ).arg( quotedIdentifier( fld.name() ), substring );
+
+
+    sql +=  QString( " ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) );
+
+    if ( limit >= 0 )
+    {
+      sql += QString( " LIMIT %1" ).arg( limit );
+    }
+
+    sql = QString( "SELECT %1 FROM (%2) foo" ).arg( connectionRO()->fieldExpression( fld ), sql );
+
+    QgsPostgresResult res( connectionRO()->PQexec( sql ) );
+    if ( res.PQresultStatus() == PGRES_TUPLES_OK )
+    {
+      for ( int i = 0; i < res.PQntuples(); i++ )
+      {
+        results << ( convertValue( fld.type(), fld.subType(), res.PQgetvalue( i, 0 ) ) ).toString();
+        if ( feedback && feedback->isCancelled() )
+          break;
+      }
+    }
+  }
+  catch ( PGFieldNotFound )
+  {
+  }
+  return results;
 }
 
 void QgsPostgresProvider::enumValues( int index, QStringList& enumList ) const

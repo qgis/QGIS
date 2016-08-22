@@ -131,6 +131,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QVariant maximumValue( int index ) const override;
     virtual void uniqueValues( int index, QList < QVariant > &uniqueValues, int limit = -1 ) const override;
 
+    virtual QStringList uniqueStringsMatching( int index, const QString& substring, int limit = -1,
+        QgsFeedback* feedback = nullptr ) const override;
+
     bool isValid() const override;
     virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
 
