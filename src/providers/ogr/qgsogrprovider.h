@@ -207,6 +207,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
 
+    virtual QStringList uniqueStringsMatching( int index, const QString& substring, int limit = -1,
+        QgsFeedback* feedback = nullptr ) const override;
+
     /** Return a provider name
      *
      * Essentially just returns the provider key.  Should be used to build file

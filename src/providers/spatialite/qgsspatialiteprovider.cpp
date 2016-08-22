@@ -29,6 +29,7 @@ email                : a.furieri@lqt.it
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnpool.h"
 #include "qgsspatialitefeatureiterator.h"
+#include "qgsfeedback.h"
 
 #include <qgsjsonutils.h>
 #include <qgsvectorlayer.h>
@@ -3700,6 +3701,79 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   sqlite3_finalize( stmt );
 
   return;
+}
+
+QStringList QgsSpatiaLiteProvider::uniqueStringsMatching( int index, const QString& substring, int limit, QgsFeedback* feedback ) const
+{
+  QStringList results;
+
+  sqlite3_stmt *stmt = nullptr;
+  QString sql;
+
+  // get the field name
+  if ( index < 0 || index >= mAttributeFields.count() )
+  {
+    return results; //invalid field
+  }
+  QgsField fld = mAttributeFields.at( index );
+
+  sql = QStringLiteral( "SELECT DISTINCT %1 FROM %2 " ).arg( quotedIdentifier( fld.name() ), mQuery );
+  sql += QStringLiteral( " WHERE " ) + quotedIdentifier( fld.name() ) + QStringLiteral( " LIKE '%" ) + substring + QStringLiteral( "%'" );
+
+  if ( !mSubsetString.isEmpty() )
+  {
+    sql += QStringLiteral( " AND ( " ) + mSubsetString + ')';
+  }
+
+  sql += QStringLiteral( " ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) );
+
+  if ( limit >= 0 )
+  {
+    sql += QStringLiteral( " LIMIT %1" ).arg( limit );
+  }
+
+  // SQLite prepared statement
+  if ( sqlite3_prepare_v2( mSqliteHandle, sql.toUtf8().constData(), -1, &stmt, nullptr ) != SQLITE_OK )
+  {
+    // some error occurred
+    QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( mSqliteHandle ) ), tr( "SpatiaLite" ) );
+    return results;
+  }
+
+  while (( limit < 0 || results.size() < limit ) && ( !feedback || !feedback->isCancelled() ) )
+  {
+    // this one is an infinitive loop, intended to fetch any row
+    int ret = sqlite3_step( stmt );
+
+    if ( ret == SQLITE_DONE )
+    {
+      // there are no more rows to fetch - we can stop looping
+      break;
+    }
+
+    if ( ret == SQLITE_ROW )
+    {
+      // fetching one column value
+      switch ( sqlite3_column_type( stmt, 0 ) )
+      {
+        case SQLITE_TEXT:
+          results.append( QString::fromUtf8(( const char * ) sqlite3_column_text( stmt, 0 ) ) );
+          break;
+        default:
+          break;
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( mSqliteHandle ) ), tr( "SpatiaLite" ) );
+      sqlite3_finalize( stmt );
+      return results;
+    }
+  }
+
+  sqlite3_finalize( stmt );
+
+  return results;
 }
 
 QString QgsSpatiaLiteProvider::geomParam() const

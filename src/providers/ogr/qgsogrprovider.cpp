@@ -20,6 +20,7 @@ email                : sherman at mrcc.com
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgslocalec.h"
+#include "qgsfeedback.h"
 
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>         // to collect version information
@@ -2921,6 +2922,59 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   }
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
+#endif
+}
+
+QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString& substring, int limit, QgsFeedback* feedback ) const
+{
+  QStringList results;
+
+  if ( !mValid || index < 0 || index >= mAttributeFields.count() )
+    return results;
+
+  QgsField fld = mAttributeFields.at( index );
+  if ( fld.name().isNull() )
+  {
+    return results; //not a provider field
+  }
+
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM < 1910
+  // avoid GDAL #4509
+  return QgsVectorDataProvider::uniqueStringsMatching( index, substring, limit, feedback );
+#else
+  QByteArray sql = "SELECT DISTINCT " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
+  sql += " FROM " + quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
+
+  sql += " WHERE " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) ) + " LIKE '%" +  textEncoding()->fromUnicode( substring ) + "%'";
+
+  if ( !mSubsetString.isEmpty() )
+  {
+    sql += " AND (" + textEncoding()->fromUnicode( mSubsetString ) + ')';
+  }
+
+  sql += " ORDER BY " + textEncoding()->fromUnicode( fld.name() ) + " ASC";  // quoting of fieldname produces a syntax error
+
+  QgsDebugMsg( QString( "SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ) );
+  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), nullptr, nullptr );
+  if ( !l )
+  {
+    QgsDebugMsg( "Failed to execute SQL" );
+    return QgsVectorDataProvider::uniqueStringsMatching( index, substring, limit, feedback );
+  }
+
+  OGRFeatureH f;
+  while (( f = OGR_L_GetNextFeature( l ) ) )
+  {
+    if ( OGR_F_IsFieldSet( f, 0 ) )
+      results << textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) );
+    OGR_F_Destroy( f );
+
+    if (( limit >= 0 && results.size() >= limit ) || ( feedback && feedback->isCancelled() ) )
+      break;
+  }
+
+  OGR_DS_ReleaseResultSet( ogrDataSource, l );
+  return results;
 #endif
 }
 
