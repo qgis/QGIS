@@ -37,6 +37,7 @@ from processing.core.GeoAlgorithmExecutionException import \
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputFile
 
@@ -56,8 +57,6 @@ class DropAnalysis(GeoAlgorithm):
     STEP_TYPE = 'STEP_TYPE'
 
     DROP_ANALYSIS_FILE = 'DROP_ANALYSIS_FILE'
-
-    STEPS = ['Logarithmic', 'Linear']
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
@@ -84,8 +83,8 @@ class DropAnalysis(GeoAlgorithm):
                                           self.tr('Maximum Threshold'), 0, None, 500))
         self.addParameter(ParameterNumber(self.TRESHOLD_NUM,
                                           self.tr('Number of Threshold Values'), 0, None, 10))
-        self.addParameter(ParameterSelection(self.STEP_TYPE,
-                                             self.tr('Spacing for Threshold Values'), self.STEPS, 0))
+        self.addParameter(ParameterBoolean(self.STEP_TYPE,
+                                             self.tr('Use logarithmic spacing for threshold values'), True))
         self.addOutput(OutputFile(self.DROP_ANALYSIS_FILE,
                                   self.tr('D-Infinity Drop to Stream Grid')))
 
@@ -116,7 +115,7 @@ class DropAnalysis(GeoAlgorithm):
         commands.append(unicode(self.getParameterValue(self.MIN_TRESHOLD)))
         commands.append(unicode(self.getParameterValue(self.MAX_THRESHOLD)))
         commands.append(unicode(self.getParameterValue(self.TRESHOLD_NUM)))
-        commands.append(unicode(self.getParameterValue(self.STEPS)))
+        commands.append(unicode(self.getParameterValue(self.STEP_TYPE)))
         commands.append('-drp')
         commands.append(self.getOutputValue(self.DROP_ANALYSIS_FILE))
 
