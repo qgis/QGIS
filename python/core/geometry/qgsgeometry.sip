@@ -80,6 +80,8 @@ class QgsGeometry
     static QgsGeometry fromMultiPolygon( const QgsMultiPolygon& multipoly );
     /** Creates a new geometry from a QgsRectangle */
     static QgsGeometry fromRect( const QgsRectangle& rect );
+    /** Creates a new multipart geometry from a list of QgsGeometry objects*/
+    static QgsGeometry collectGeometry( const QList< QgsGeometry >& geometries );
 
     /**
      * Set the geometry, feeding in a geometry in GEOS format.

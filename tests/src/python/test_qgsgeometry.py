@@ -1346,6 +1346,45 @@ class TestQgsGeometry(unittest.TestCase):
         line = QgsGeometry.fromPolyline(points)
         assert line.boundingBox().isNull()
 
+    def testCollectGeometry(self):
+        # collect points
+        geometries = [QgsGeometry.fromPoint(QgsPoint(0, 0)), QgsGeometry.fromPoint(QgsPoint(1, 1))]
+        geometry = QgsGeometry.collectGeometry(geometries)
+        expwkt = "MultiPoint ((0 0), (1 1))"
+        wkt = geometry.exportToWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        # collect lines
+        points = [
+            [QgsPoint(0, 0), QgsPoint(1, 0)],
+            [QgsPoint(2, 0), QgsPoint(3, 0)]
+        ]
+        geometries = [QgsGeometry.fromPolyline(points[0]), QgsGeometry.fromPolyline(points[1])]
+        geometry = QgsGeometry.collectGeometry(geometries)
+        expwkt = "MultiLineString ((0 0, 1 0), (2 0, 3 0))"
+        wkt = geometry.exportToWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        # collect polygons
+        points = [
+            [[QgsPoint(0, 0), QgsPoint(1, 0), QgsPoint(1, 1), QgsPoint(0, 1), QgsPoint(0, 0)]],
+            [[QgsPoint(2, 0), QgsPoint(3, 0), QgsPoint(3, 1), QgsPoint(2, 1), QgsPoint(2, 0)]]
+        ]
+        geometries = [QgsGeometry.fromPolygon(points[0]), QgsGeometry.fromPolygon(points[1])]
+        geometry = QgsGeometry.collectGeometry(geometries)
+        expwkt = "MultiPolygon (((0 0, 1 0, 1 1, 0 1, 0 0)),((2 0, 3 0, 3 1, 2 1, 2 0)))"
+        wkt = geometry.exportToWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        # test empty list
+        geometries = []
+        geometry = QgsGeometry.collectGeometry(geometries)
+        assert geometry.isEmpty(), "Expected geometry to be empty"
+
+        # check that the resulting geometry is multi
+        geometry = QgsGeometry.collectGeometry([QgsGeometry.fromWkt('Point (0 0)')])
+        assert geometry.isMultipart(), "Expected collected geometry to be multipart"
+
     def testAddPart(self):
         # add a part to a multipoint
         points = [QgsPoint(0, 0), QgsPoint(1, 0)]

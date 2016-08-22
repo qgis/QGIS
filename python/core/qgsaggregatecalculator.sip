@@ -38,6 +38,7 @@ class QgsAggregateCalculator
       StringMinimumLength, //!< Minimum length of string (string fields only)
       StringMaximumLength, //!< Maximum length of string (string fields only)
       StringConcatenate, //! Concatenate values with a joining string (string fields only). Specify the delimiter using setDelimiter().
+      GeometryCollect, //! Create a multipart geometry from aggregated geometries
     };
 
     //! A bundle of parameters controlling aggregate calculation

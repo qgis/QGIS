@@ -19,6 +19,7 @@
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfeatureiterator.h"
+#include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 
 
@@ -162,6 +163,8 @@ QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( con
     return StringMaximumLength;
   else if ( normalized == "concatenate" )
     return StringConcatenate;
+  else if ( normalized == "collect" )
+    return GeometryCollect;
 
   if ( ok )
     *ok = false;
@@ -204,6 +207,20 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
       if ( ok )
         *ok = true;
       return calculateDateTimeAggregate( fit, attr, expression, context, stat );
+    }
+
+    case QVariant::UserType:
+    {
+      if ( aggregate == GeometryCollect )
+      {
+        if ( ok )
+          *ok = true;
+        return calculateGeometryAggregate( fit, expression, context );
+      }
+      else
+      {
+        return QVariant();
+      }
     }
 
     default:
@@ -275,6 +292,7 @@ QgsStatisticalSummary::Statistic QgsAggregateCalculator::numericStatFromAggregat
     case StringMinimumLength:
     case StringMaximumLength:
     case StringConcatenate:
+    case GeometryCollect:
     {
       if ( ok )
         *ok = false;
@@ -321,6 +339,7 @@ QgsStringStatisticalSummary::Statistic QgsAggregateCalculator::stringStatFromAgg
     case ThirdQuartile:
     case InterQuartileRange:
     case StringConcatenate:
+    case GeometryCollect:
     {
       if ( ok )
         *ok = false;
@@ -366,6 +385,7 @@ QgsDateTimeStatisticalSummary::Statistic QgsAggregateCalculator::dateTimeStatFro
     case StringMinimumLength:
     case StringMaximumLength:
     case StringConcatenate:
+    case GeometryCollect:
     {
       if ( ok )
         *ok = false;
@@ -428,6 +448,26 @@ QVariant QgsAggregateCalculator::calculateStringAggregate( QgsFeatureIterator& f
   }
   s.finalize();
   return s.statistic( stat );
+}
+
+QVariant QgsAggregateCalculator::calculateGeometryAggregate( QgsFeatureIterator& fit, QgsExpression* expression, QgsExpressionContext* context )
+{
+  Q_ASSERT( expression );
+
+  QgsFeature f;
+  QList< QgsGeometry > geometries;
+  while ( fit.nextFeature( f ) )
+  {
+    Q_ASSERT( context );
+    context->setFeature( f );
+    QVariant v = expression->evaluate( context );
+    if ( v.canConvert<QgsGeometry>() )
+    {
+      geometries << v.value<QgsGeometry>();
+    }
+  }
+
+  return QVariant::fromValue( QgsGeometry::collectGeometry( geometries ) );
 }
 
 QVariant QgsAggregateCalculator::concatenateStrings( QgsFeatureIterator& fit, int attr, QgsExpression* expression,
