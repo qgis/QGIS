@@ -462,7 +462,7 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
                                tr( "Failure exploring tables from: %1\n\n%2" ).arg( mSqlitePath, errCause ) );
         break;
       case QgsSpatiaLiteConnection::FailedToCheckMetadata:
-        QMessageBox::critical( this, tr( "SpatiaLite metadata check failed"  ),
+        QMessageBox::critical( this, tr( "SpatiaLite metadata check failed" ),
                                tr( "Failure getting table metadata ... is this really a SpatialLite database? %1\n\n%2" ).arg( mSqlitePath, errCause ) );
         break;
       default:
