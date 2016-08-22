@@ -7345,6 +7345,11 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     remap.insert( idx, dst );
   }
 
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( pasteVectorLayer );
+
   int dstAttrCount = pasteVectorLayer->fields().count();
 
   QgsFeatureList::iterator featureIt = features.begin();
@@ -7356,8 +7361,18 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     // pre-initialized with default values
     for ( int dst = 0; dst < dstAttr.count(); ++dst )
     {
-      QVariant defVal( pasteVectorLayer->dataProvider()->defaultValue( dst ) );
-      if ( !defVal.isNull() )
+      QVariant defVal;
+      if ( !pasteVectorLayer->defaultValueExpression( dst ).isEmpty() )
+      {
+        // client side default expression set - use this in preference to provider default
+        defVal = pasteVectorLayer->defaultValue( dst, *featureIt, &context );
+      }
+      else
+      {
+        defVal = pasteVectorLayer->dataProvider()->defaultValue( dst );
+      }
+
+      if ( defVal.isValid() && !defVal.isNull() )
       {
         dstAttr[ dst ] = defVal;
       }
