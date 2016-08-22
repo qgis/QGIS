@@ -4,8 +4,8 @@
 ***************************************************************************
     ToolsTest
     ---------------------
-    Date                 : July 2017
-    Copyright            : (C) 2017 by Nyall Dawson
+    Date                 : July 2016
+    Copyright            : (C) 2016 by Nyall Dawson
     Email                : nyall dot dawson at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -25,8 +25,8 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
+import os
 from qgis.testing import start_app, unittest
-from processing.tests.TestData import points2
 from processing.tools import vector
 from qgis.core import (QgsVectorLayer, QgsFeatureRequest)
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -34,18 +34,22 @@ from processing.core.ProcessingConfig import ProcessingConfig
 start_app()
 
 
+def processingTestDataPath():
+    return os.path.join(os.path.dirname(__file__), 'testdata')
+
+
 class VectorTest(unittest.TestCase):
 
     def testFeatures(self):
         ProcessingConfig.initialize()
 
-        test_data = points2()
+        test_data = os.path.join(processingTestDataPath(), 'points.gml')
         test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
 
         # test with all features
         features = vector.features(test_layer)
-        self.assertEqual(len(features), 8)
-        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7]))
+        self.assertEqual(len(features), 9)
+        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
 
         # test with selected features
         previous_value = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
@@ -59,15 +63,15 @@ class VectorTest(unittest.TestCase):
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, False)
         test_layer.selectByIds([2, 4, 6])
         features = vector.features(test_layer)
-        self.assertEqual(len(features), 8)
-        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7]))
+        self.assertEqual(len(features), 9)
+        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
 
         # using selected features, but no selection
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
         test_layer.removeSelection()
         features = vector.features(test_layer)
-        self.assertEqual(len(features), 8)
-        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7]))
+        self.assertEqual(len(features), 9)
+        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
 
         # test that feature request is honored
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, False)

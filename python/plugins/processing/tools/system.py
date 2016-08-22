@@ -60,7 +60,7 @@ def isWindows():
 def isMac():
     return sys.platform == 'darwin'
 
-_tempFolderSuffix = unicode(uuid.uuid4()).replace('-', '')
+_tempFolderSuffix = uuid.uuid4().hex
 
 
 def tempFolder():
@@ -84,9 +84,11 @@ def getTempFilename(ext=None):
     if ext is None:
         filename = path + os.sep + unicode(time.time()) \
             + unicode(getNumExportedLayers())
+        #filename = os.tempnam(path)
     else:
         filename = path + os.sep + unicode(time.time()) \
             + unicode(getNumExportedLayers()) + '.' + ext
+        #filename = '{}.{}'.format(os.tempnam(path), ext)
     return filename
 
 
@@ -96,7 +98,7 @@ def getTempFilenameInTempFolder(basename):
     """
 
     path = tempFolder()
-    path = os.path.join(path, unicode(uuid.uuid4()).replace('-', ''))
+    path = os.path.join(path, uuid.uuid4().hex)
     mkdir(path)
     basename = removeInvalidChars(basename)
     filename = os.path.join(path, basename)
@@ -108,7 +110,7 @@ def getTempDirInTempFolder():
     """
 
     path = tempFolder()
-    path = os.path.join(path, unicode(uuid.uuid4()).replace('-', ''))
+    path = os.path.join(path, uuid.uuid4().hex)
     mkdir(path)
     return path
 
