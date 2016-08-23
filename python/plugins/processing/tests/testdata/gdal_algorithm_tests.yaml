@@ -28,7 +28,36 @@ tests:
 #        type: rasterhash
 
 
-  - name: GDAL ogrinfo
+  - algorithm: gdalorg:rasterinfo
+    name: GDAL Raster information
+    params:
+      INPUT:
+        name: raster.tif
+        type: raster
+      NOGCP: false
+      NOMETADATA: false
+    results:
+      OUTPUT:
+        name: expected/gdal/raster_info.html
+        type: regex
+        rules:
+          - 'Origin = \(270736.067325068172067,4459029.574521748349071\)'
+          - 'Band 1 Block=16x14 Type=Float32, ColorInterp=Gray'
+          - 'NoData Value=-32768'
+
+  - algorithm: gdalogr:polygonize
+    name: GDAL Polygonize
+    params:
+      FIELD: DN
+      INPUT:
+        name: raster.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/gdal/polygonized.gml
+        type: vector
+
+  - name: OGR Vector information
     algorithm: gdalogr:information
     params:
       INPUT:
@@ -37,9 +66,143 @@ tests:
       SUMMARY_ONLY: 'True'
     results:
       OUTPUT:
-        name: expected/gdal/layer_info.html
+        name: expected/gdal/vector_info.html
         type: regex
         rules:
           - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
           - 'Geometry: Line String'
           - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
+
+  - algorithm: gdalogr:singlesidedbuffersandoffsetlinesforlines
+    name: OGR Single-sided buffer for lines
+    params:
+      DISSOLVEALL: false
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      LEFTRIGHT: '0'
+      MULTI: false
+      OPERATION: '0'
+      OPTIONS: ''
+      RADIUS: '0.05'
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/single_sided_buffer.gml
+        type: vector
+
+  - algorithm: gdalogr:singlesidedbuffersandoffsetlinesforlines
+    name: OGR Offset curve for lines
+    params:
+      DISSOLVEALL: false
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      LEFTRIGHT: '0'
+      MULTI: false
+      OPERATION: '1'
+      OPTIONS: ''
+      RADIUS: '0.05'
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/offset_curve.gml
+        type: vector
+
+  - algorithm: gdalogr:createpointsalonglines
+    name: OGR Create points along lines
+    params:
+      DISTANCE: 0.25
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/points_along_lines.gml
+        type: vector
+
+  - algorithm: gdalogr:buffervectors
+    name: OGR Basic polygon buffer
+    params:
+      DISSOLVEALL: false
+      DISTANCE: '0.5'
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+      MULTI: false
+      OPTIONS: ''
+    results:
+      OUTPUT_LAYER:
+        name: expected/buffer_polys.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: gdalogr:buffervectors
+    name: OGR Polygon buffer with dissolve
+    params:
+      DISSOLVEALL: true
+      DISTANCE: '0.5'
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+      MULTI: false
+      OPTIONS: ''
+    results:
+      OUTPUT_LAYER:
+        name: expected/buffer_polys_dissolve.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: gdalogr:buffervectors
+    name: OGR Buffer lines
+    params:
+      DISSOLVEALL: false
+      DISTANCE: '1'
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      MULTI: false
+      OPTIONS: ''
+    results:
+      OUTPUT_LAYER:
+        name: expected/buffer_lines.gml
+        type: vector
+
+  - algorithm: gdalogr:clipvectorsbypolygon
+    name: OGR Clip points by polygons
+    params:
+      CLIP_LAYER:
+        name: polys.gml
+        type: vector
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT_LAYER:
+        name: expected/clip_points_by_polygons.gml
+        type: vector
+
+  - algorithm: gdalogr:clipvectorsbypolygon
+    name: OGR Clip points by multipolygons
+    params:
+      CLIP_LAYER:
+        name: multipolys.gml
+        type: vector
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT_LAYER:
+        name: expected/clip_points_by_multipolygons.gml
+        type: vector
