@@ -31,7 +31,7 @@ from inspect import isclass
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
     QComboBox,
-    )
+)
 
 DIALOG_STANDARD = 'standard'
 DIALOG_BATCH = 'batch'
