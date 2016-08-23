@@ -34,7 +34,6 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
 
 from .TauDEMAlgorithm import TauDEMAlgorithm
-from .TauDEMMultifileAlgorithm import TauDEMMultifileAlgorithm
 from .TauDEMUtils import TauDEMUtils
 
 from .peukerdouglas import PeukerDouglas
