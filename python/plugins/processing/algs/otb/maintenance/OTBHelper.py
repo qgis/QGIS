@@ -610,7 +610,7 @@ def list_reader(file_name, version):
 def get_otb_version():
     #TODO Find a way to retrieve installed otb version, force exception and parse otb-X.XX.X ?
     # return "3.18"
-    return "5.0"
+    return "5.6"
 
 
 def get_white_list():
@@ -652,7 +652,7 @@ def create_xml_descriptors():
                         except:
                             logger.error("Unit test for command %s must be fixed: %s" % (available_app, traceback.format_exc()))
             else:
-                logger.warning("%s is not in white list." % available_app)
+                logger.warning("%s (custom app) is not in white list." % available_app)
 
         else:
             if available_app in white_list and available_app not in black_list:
@@ -666,7 +666,8 @@ def create_xml_descriptors():
                     get_automatic_ut_from_xml_description(the_root)
                 except:
                     logger.error("Unit test for command %s must be fixed: %s" % (available_app, traceback.format_exc()))
-
+            else:
+                logger.warning("%s (not custom app) is not in white list." % available_app)
         # except Exception, e:
         #    logger.error(traceback.format_exc())
 
@@ -695,15 +696,15 @@ def create_html_description():
 if __name__ == "__main__":
     # Prepare the environment
     from qgis.core import QgsApplication
-    from qgis.PyQt.QtWidgets import QApplication
-    app = QApplication([])
-    QgsApplication.setPrefixPath("/usr", True)
+
+    app = QgsApplication([], True)
     QgsApplication.initQgis()
+
     # Prepare processing framework
     from processing.core.Processing import Processing
     Processing.initialize()
 
-#    import OTBSpecific_XMLcreation
+    import OTBSpecific_XMLcreation
 #     try:
 #         import processing
 #     except ImportError, e:
@@ -717,6 +718,16 @@ if __name__ == "__main__":
     create_xml_descriptors()
     create_html_description()
 
+    #Check if some application are not listed in the white/black list
+    logger = get_OTB_log()
+    white_list = get_white_list()
+    black_list = get_black_list()
+    for available_app in otbApplication.Registry.GetAvailableApplications():
+        try:
+            if available_app not in white_list and available_app not in black_list:
+                logger.error("Application " + available_app + " is not listed in white_list.xml or black_list.xml. Need to be fix.")
+        except Exception:
+            logger.error(traceback.format_exc())
+
     # Exit applications
     QgsApplication.exitQgis()
-    QApplication.exit()

@@ -481,6 +481,38 @@ def getTrainImagesClassifier(available_app, original_dom_document):
     return the_list
 
 
+def getTrainRegression(available_app, original_dom_document):
+    """
+    Split by  classifier (ann,  dt, gbt, knn, libsvm, rf)
+    Delete GEOID and DEM parameter as they are not updated at the creation of the otb algorithms when you launch QGIS.
+    The values are picked from the settings.
+    """
+    the_root = original_dom_document
+    deleteGeoidSrtm(the_root)
+    split = split_by_choice(the_root, 'classifier')
+    the_list = []
+    for key in split:
+        defaultWrite('%s-%s' % (available_app, key), split[key])
+        the_list.append(split[key])
+    return the_list
+
+
+def getTrainVectorClassifier(available_app, original_dom_document):
+    """
+    Split by  classifier (ann,  dt, gbt, knn, libsvm, rf)
+    Delete GEOID and DEM parameter as they are not updated at the creation of the otb algorithms when you launch QGIS.
+    The values are picked from the settings.
+    """
+    the_root = original_dom_document
+    deleteGeoidSrtm(the_root)
+    split = split_by_choice(the_root, 'classifier')
+    the_list = []
+    for key in split:
+        defaultWrite('%s-%s' % (available_app, key), split[key])
+        the_list.append(split[key])
+    return the_list
+
+
 def getLineSegmentDetection(available_app, original_dom_document):
     """
     Delete GEOID and DEM parameter as they are not updated at the creation of the otb algorithms when you launch QGIS.
