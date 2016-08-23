@@ -479,6 +479,28 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
      */
     static QList<double> prettyBreaks( double minimum, double maximum, int classes );
 
+    /** Rescales the given size based on the uomScale found in the props, if any is found, otherwise
+     *  returns the value un-modified
+     * @note added in 3.0
+     * @note not available in Python bindings
+     */
+    static double rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props );
+
+    /** Rescales the given point based on the uomScale found in the props, if any is found, otherwise
+     *  returns a copy of the original point
+     * @note added in 3.0
+     * @note not available in Python bindings
+     */
+    static QPointF rescaleUom( const QPointF& point, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props );
+
+    /** Rescales the given array based on the uomScale found in the props, if any is found, otherwise
+     *  returns a copy of the original point
+     * @note added in 3.0
+     * @note not available in Python bindings
+     */
+    static QVector<qreal> rescaleUom( const QVector<qreal>& array, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props );
+
+
 };
 
 class QPolygonF;
