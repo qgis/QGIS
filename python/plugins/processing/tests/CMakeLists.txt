@@ -12,6 +12,5 @@ IF(ENABLE_TESTS)
   ADD_PYTHON_TEST(ProcessingGdalAlgorithmsTest GdalAlgorithmsTest.py)
   ADD_PYTHON_TEST(ProcessingGrass7AlgorithmsImageryTest Grass7AlgorithmsImageryTest.py)
   ADD_PYTHON_TEST(ProcessingGrass7AlgorithmsRasterTest Grass7AlgorithmsRasterTest.py)
-  #TODO uncomment when OTB is installed on Travis CI instance
-  #ADD_PYTHON_TEST(ProcessingOTBAlgorithmsTest OTBAlgorithmsTest.py)
+  ADD_PYTHON_TEST(ProcessingOTBAlgorithmsTest OTBAlgorithmsTest.py)
 ENDIF(ENABLE_TESTS)
