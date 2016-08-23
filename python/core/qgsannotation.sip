@@ -27,8 +27,7 @@ class QgsAnnotation
      * @see mapPosition()
      * @see relativePositon()
      */
-    //TODO QGIS 3 - rename to hasFixedMapPosition()
-    virtual bool mapPositionFixed() const = 0;
+    virtual bool hasFixedMapPosition() const = 0;
 
     /** Returns the map position of the annotation, if it is attached to a fixed map
      * position.

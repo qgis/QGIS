@@ -32,7 +32,7 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * par
   {
     blockAllSignals( true );
 
-    if ( mItem->mapPositionFixed() )
+    if ( mItem->hasFixedMapPosition() )
     {
       mMapPositionFixedCheckBox->setCheckState( Qt::Checked );
     }

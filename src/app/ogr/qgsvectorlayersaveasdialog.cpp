@@ -628,11 +628,6 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
   return options + mOgrLayerOptions->toPlainText().split( '\n' );
 }
 
-bool QgsVectorLayerSaveAsDialog::attributeSelection() const
-{
-  return true;
-}
-
 QgsAttributeList QgsVectorLayerSaveAsDialog::selectedAttributes() const
 {
   QgsAttributeList attributes;

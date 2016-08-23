@@ -92,10 +92,6 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      */
     bool calculate( QMap<QString, QgsRasterBlock* >& rasterData, QgsRasterMatrix& result, int row = -1 ) const;
 
-    /** @deprecated use method which accepts QgsRasterBlocks instead
-     */
-    Q_DECL_DEPRECATED bool calculate( QMap<QString, QgsRasterMatrix*>& rasterData, QgsRasterMatrix& result ) const;
-
     static QgsRasterCalcNode* parseRasterCalcString( const QString& str, QString& parserErrorMsg );
 
   private:

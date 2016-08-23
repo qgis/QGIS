@@ -67,7 +67,7 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem, public QgsAnnotatio
 
     //setters and getters
     void setMapPositionFixed( bool fixed );
-    bool mapPositionFixed() const override { return mMapPositionFixed; }
+    bool hasFixedMapPosition() const override { return mMapPositionFixed; }
 
     virtual void setMapPosition( const QgsPoint& pos );
     QgsPoint mapPosition() const override { return mMapPosition; }
