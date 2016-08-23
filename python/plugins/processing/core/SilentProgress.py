@@ -37,16 +37,16 @@ class SilentProgress(object):
     def setPercentage(self, i):
         pass
 
-    def setInfo(self, _):
+    def setInfo(self, msg):
         pass
 
-    def setCommand(self, _):
+    def setCommand(self, msg):
         pass
 
-    def setDebugInfo(self, _):
+    def setDebugInfo(self, msg):
         pass
 
-    def setConsoleInfo(self, _):
+    def setConsoleInfo(self, msg):
         pass
 
     def close(self):
