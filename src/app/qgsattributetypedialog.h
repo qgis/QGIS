@@ -21,6 +21,7 @@
 
 #include "qgsvectorlayer.h"
 #include "qgseditorconfigwidget.h"
+#include "qgsfeature.h"
 
 class QDialog;
 class QLayout;
@@ -138,6 +139,8 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      */
     void on_selectionListWidget_currentRowChanged( int index );
 
+    void defaultExpressionChanged();
+
   private:
     QgsVectorLayer *mLayer;
     int mFieldIdx;
@@ -146,6 +149,8 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
 
     //! Cached configuration dialog (lazy loaded)
     QMap< QString, QgsEditorConfigWidget* > mEditorConfigWidgets;
+
+    QgsFeature mPreviewFeature;
 };
 
 #endif

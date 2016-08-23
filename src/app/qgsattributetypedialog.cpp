@@ -69,6 +69,8 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
     isFieldEditableCheckBox->setEnabled( false );
   }
 
+  connect( mExpressionWidget, SIGNAL( expressionChanged( QString ) ), this, SLOT( defaultExpressionChanged() ) );
+
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/QgsAttributeTypeDialog/geometry" ).toByteArray() );
 
@@ -158,6 +160,9 @@ void QgsAttributeTypeDialog::setWidgetV2Type( const QString& type )
       QgsDebugMsg( "Oops, couldn't create editor widget config dialog..." );
     }
   }
+
+  //update default expression preview
+  defaultExpressionChanged();
 }
 
 void QgsAttributeTypeDialog::setWidgetV2Config( const QgsEditorWidgetConfig& config )
@@ -230,4 +235,54 @@ void QgsAttributeTypeDialog::on_selectionListWidget_currentRowChanged( int index
   const QString editType = selectionListWidget->item( index )->data( Qt::UserRole ).toString();
 
   setWidgetV2Type( editType );
+}
+
+void QgsAttributeTypeDialog::defaultExpressionChanged()
+{
+  QString expression = mExpressionWidget->expression();
+  if ( expression.isEmpty() )
+  {
+    mDefaultPreviewLabel->setText( QString() );
+    return;
+  }
+
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()		
+  << QgsExpressionContextUtils::projectScope()		
+  << QgsExpressionContextUtils::layerScope( mLayer );
+
+  if ( !mPreviewFeature.isValid() )
+  {
+    // get first feature
+    QgsFeatureIterator it = mLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) );
+    it.nextFeature( mPreviewFeature );
+  }
+
+  context.setFeature( mPreviewFeature );
+
+  QgsExpression exp = QgsExpression( expression );
+  exp.prepare( &context );
+
+  if ( exp.hasParserError() )
+  {
+    mDefaultPreviewLabel->setText( "<i>" + exp.parserErrorString() + "</i>" );
+    return;
+  }
+
+  QVariant val = exp.evaluate( &context );
+  if ( exp.hasEvalError() )
+  {
+    mDefaultPreviewLabel->setText( "<i>" + exp.evalErrorString() + "</i>" );
+    return;
+  }
+
+  QString previewText = val.toString();
+
+  QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( editorWidgetV2Type() );
+  if ( factory )
+  {
+    previewText = factory->representValue( mLayer, mFieldIdx, editorWidgetV2Config(), QVariant(), val );
+  }
+
+  mDefaultPreviewLabel->setText( "<i>" + previewText + "</i>" );
 }
