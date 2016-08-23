@@ -26,6 +26,7 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
+import codecs
 
 from qgis.PyQt.QtGui import QIcon
 
