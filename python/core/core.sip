@@ -111,8 +111,6 @@
 %Include qgsproject.sip
 %Include qgsprojectproperty.sip
 %Include qgsprojectversion.sip
-%Include qgsprovidercountcalcevent.sip
-%Include qgsproviderextentcalcevent.sip
 %Include qgsprovidermetadata.sip
 %Include qgsproviderregistry.sip
 %Include qgspythonrunner.sip

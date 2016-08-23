@@ -182,6 +182,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 <li>QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.</li>
 <li>QgsRendererV2DataDefinedMenus was removed. Use QgsDataDefinedButton instead.</li>
 <li>QgsLegacyHelpers.</li>
+<li>QgsProviderCountCalcEvent and QgsProviderExtentCalcEvent. These classes were unused in QGIS core and unmaintained.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_global General changes

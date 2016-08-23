@@ -172,8 +172,6 @@ SET(QGIS_CORE_SRCS
   qgsprojectfiletransform.cpp
   qgsprojectproperty.cpp
   qgsprojectversion.cpp
-  qgsprovidercountcalcevent.cpp
-  qgsproviderextentcalcevent.cpp
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
   qgspythonrunner.cpp
@@ -677,8 +675,6 @@ SET(QGIS_CORE_HDRS
   qgsprojectfiletransform.h
   qgsprojectproperty.h
   qgsprojectversion.h
-  qgsprovidercountcalcevent.h
-  qgsproviderextentcalcevent.h
   qgsprovidermetadata.h
   qgsproviderregistry.h
   qgspythonrunner.h
