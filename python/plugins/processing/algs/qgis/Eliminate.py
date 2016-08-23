@@ -72,7 +72,7 @@ class Eliminate(GeoAlgorithm):
                       self.tr('Largest common boundary')]
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterBoolean(self.KEEPSELECTION,
                                            self.tr('Use current selection in input layer (works only if called from toolbox)'), False))
         self.addParameter(ParameterTableField(self.ATTRIBUTE,
@@ -94,7 +94,7 @@ class Eliminate(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.MODE,
                                              self.tr('Merge selection with the neighbouring polygon with the'),
                                              self.modes))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned'), datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, progress):
         inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))

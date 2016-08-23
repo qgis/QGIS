@@ -36,6 +36,8 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 
+from processing.tools import dataobjects
+
 
 class lasclip(LAStoolsAlgorithm):
 
@@ -51,7 +53,7 @@ class lasclip(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterVector(lasclip.POLYGON,
-                                          self.tr("Input polygon(s)"), ParameterVector.VECTOR_TYPE_POLYGON))
+                                          self.tr("Input polygon(s)"), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterBoolean(lasclip.INTERIOR,
                                            self.tr("interior"), False))
         self.addParameter(ParameterSelection(lasclip.OPERATION,

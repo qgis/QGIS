@@ -63,9 +63,9 @@ class Union(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Union')
         self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(Union.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterVector(Union.INPUT2,
-                                          self.tr('Input layer 2'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer 2')))
         self.addOutput(OutputVector(Union.OUTPUT, self.tr('Union')))
 
     def processAlgorithm(self, progress):

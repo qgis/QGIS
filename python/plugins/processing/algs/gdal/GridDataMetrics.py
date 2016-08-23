@@ -35,7 +35,9 @@ from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
+from processing.tools import dataobjects
 from processing.algs.gdal.GdalUtils import GdalUtils
+
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -68,7 +70,7 @@ class GridDataMetrics(GdalAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Grid (Data metrics)')
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.Z_FIELD,
                                               self.tr('Z field'), self.INPUT,
                                               ParameterTableField.DATA_TYPE_NUMBER, True))

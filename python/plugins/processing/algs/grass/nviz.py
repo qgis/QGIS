@@ -64,13 +64,13 @@ class nviz(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Visualization(NVIZ)')
         self.addParameter(ParameterMultipleInput(nviz.ELEVATION,
                                                  self.tr('Raster file(s) for elevation'),
-                                                 ParameterMultipleInput.TYPE_RASTER, True))
+                                                 dataobjects.TYPE_RASTER, True))
         self.addParameter(ParameterMultipleInput(nviz.VECTOR,
                                                  self.tr('Vector lines/areas overlay file(s)'),
-                                                 ParameterMultipleInput.TYPE_VECTOR_ANY, True))
+                                                 dataobjects.TYPE_VECTOR_ANY, True))
         self.addParameter(ParameterMultipleInput(nviz.COLOR,
                                                  self.tr('Raster file(s) for color'),
-                                                 ParameterMultipleInput.TYPE_RASTER, True))
+                                                 dataobjects.TYPE_RASTER, True))
         self.addParameter(ParameterExtent(nviz.GRASS_REGION_EXTENT_PARAMETER,
                                           self.tr('GRASS region extent')))
         self.addParameter(ParameterNumber(self.GRASS_REGION_CELLSIZE_PARAMETER,

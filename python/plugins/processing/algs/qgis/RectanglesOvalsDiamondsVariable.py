@@ -61,7 +61,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'),
-                                          [ParameterVector.VECTOR_TYPE_POINT]))
+                                          [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterSelection(self.SHAPE,
                                              self.tr('Buffer shape'), self.shapes))
         self.addParameter(ParameterTableField(self.WIDTH,
@@ -85,7 +85,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Output'),
-                                    datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
+                                    datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

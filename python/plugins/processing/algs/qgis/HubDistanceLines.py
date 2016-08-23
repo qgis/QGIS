@@ -64,15 +64,15 @@ class HubDistanceLines(GeoAlgorithm):
                       self.tr('Layer units')]
 
         self.addParameter(ParameterVector(self.POINTS,
-                                          self.tr('Source points layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Source points layer')))
         self.addParameter(ParameterVector(self.HUBS,
-                                          self.tr('Destination hubs layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Destination hubs layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Hub layer name attribute'), self.HUBS))
         self.addParameter(ParameterSelection(self.UNIT,
                                              self.tr('Measurement unit'), self.units))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance'), datatype=[OutputVector.VECTOR_TYPE_LINE]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, progress):
         layerPoints = dataobjects.getObjectFromUri(

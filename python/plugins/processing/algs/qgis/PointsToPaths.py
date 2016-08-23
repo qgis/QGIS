@@ -54,7 +54,7 @@ class PointsToPaths(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Points to path')
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterVector(self.VECTOR,
-                                          self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input point layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.GROUP_FIELD,
                                               self.tr('Group field'), self.VECTOR))
         self.addParameter(ParameterTableField(self.ORDER_FIELD,
@@ -64,7 +64,7 @@ class PointsToPaths(GeoAlgorithm):
         #self.addParameter(ParameterNumber(
         #    self.GAP_PERIOD,
         #    'Gap period (if order field is DateTime)', 0, 60, 0))
-        self.addOutput(OutputVector(self.OUTPUT_LINES, self.tr('Paths'), datatype=[OutputVector.VECTOR_TYPE_LINE]))
+        self.addOutput(OutputVector(self.OUTPUT_LINES, self.tr('Paths'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputDirectory(self.OUTPUT_TEXT, self.tr('Directory')))
 
     def processAlgorithm(self, progress):

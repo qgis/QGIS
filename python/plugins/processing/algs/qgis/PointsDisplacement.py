@@ -47,13 +47,13 @@ class PointsDisplacement(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterNumber(self.DISTANCE,
                                           self.tr('Displacement distance'),
                                           0.00001, 999999999.999990, 0.00015))
         self.addParameter(ParameterBoolean(self.HORIZONTAL,
                                            self.tr('Horizontal distribution for two point case')))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Displaced'), datatype=[OutputVector.VECTOR_TYPE_POINT]))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Displaced'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, progress):
         radius = self.getParameterValue(self.DISTANCE)

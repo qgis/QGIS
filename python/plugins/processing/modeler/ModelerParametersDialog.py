@@ -77,6 +77,7 @@ from processing.modeler.ModelerAlgorithm import (ValueFromInput,
                                                  Algorithm,
                                                  ModelerOutput)
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
+from processing.tools import dataobjects
 
 
 class ModelerParametersDialog(QDialog):
@@ -350,15 +351,15 @@ class ModelerParametersDialog(QDialog):
         elif isinstance(param, ParameterRange):
             item = RangePanel(param)
         elif isinstance(param, ParameterMultipleInput):
-            if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+            if param.datatype == dataobjects.TYPE_VECTOR_ANY:
                 options = self.getAvailableValuesOfType(ParameterVector, OutputVector)
-            elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_POINT:
-                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [OutputVector.TYPE_VECTOR_POINT, OutputVector.VECTOR_TYPE_ANY])
-            elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_LINE:
-                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [OutputVector.TYPE_VECTOR_LINE, OutputVector.VECTOR_TYPE_ANY])
-            elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_POLYGON:
-                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [OutputVector.TYPE_VECTOR_POLYGON, OutputVector.VECTOR_TYPE_ANY])
-            elif param.datatype == ParameterMultipleInput.TYPE_RASTER:
+            elif param.datatype == dataobjects.TYPE_VECTOR_POINT:
+                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_POINT, dataobjects.TYPE_VECTOR_ANY])
+            elif param.datatype == dataobjects.TYPE_VECTOR_LINE:
+                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_LINE, dataobjects.TYPE_VECTOR_ANY])
+            elif param.datatype == dataobjects.TYPE_VECTOR_POLYGON:
+                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_ANY])
+            elif param.datatype == dataobjects.TYPE_RASTER:
                 options = self.getAvailableValuesOfType(ParameterRaster, OutputRaster)
             else:
                 options = self.getAvailableValuesOfType(ParameterFile, OutputFile)
@@ -525,15 +526,15 @@ class ModelerParametersDialog(QDialog):
                 elif isinstance(param, ParameterFixedTable):
                     pass  # TODO!
                 elif isinstance(param, ParameterMultipleInput):
-                    if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                    if param.datatype == dataobjects.TYPE_VECTOR_ANY:
                         options = self.getAvailableValuesOfType(ParameterVector, OutputVector)
-                    elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_POINT:
-                        options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [OutputVector.TYPE_VECTOR_POINT, OutputVector.VECTOR_TYPE_ANY])
-                    elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_LINE:
-                        options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [OutputVector.TYPE_VECTOR_LINE, OutputVector.VECTOR_TYPE_ANY])
-                    elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_POLYGON:
-                        options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [OutputVector.TYPE_VECTOR_POLYGON, OutputVector.VECTOR_TYPE_ANY])
-                    elif param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                    elif param.datatype == dataobjects.TYPE_VECTOR_POINT:
+                        options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_POINT, dataobjects.TYPE_VECTOR_ANY])
+                    elif param.datatype == dataobjects.TYPE_VECTOR_LINE:
+                        options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_LINE, dataobjects.TYPE_VECTOR_ANY])
+                    elif param.datatype == dataobjects.TYPE_VECTOR_POLYGON:
+                        options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_ANY])
+                    elif param.datatype == dataobjects.TYPE_RASTER:
                         options = self.getAvailableValuesOfType(ParameterRaster, OutputRaster)
                     else:
                         options = self.getAvailableValuesOfType(ParameterFile, OutputFile)
@@ -760,15 +761,15 @@ class ModelerParametersDialog(QDialog):
                                 ParameterTableMultipleField)):
             return self.setParamTableFieldValue(alg, param, widget)
         elif isinstance(param, ParameterMultipleInput):
-            if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+            if param.datatype == dataobjects.TYPE_VECTOR_ANY:
                 options = self.getAvailableValuesOfType(ParameterVector, OutputVector)
-            elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_POINT:
-                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [OutputVector.TYPE_VECTOR_POINT, OutputVector.VECTOR_TYPE_ANY])
-            elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_LINE:
-                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [OutputVector.TYPE_VECTOR_LINE, OutputVector.VECTOR_TYPE_ANY])
-            elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_POLYGON:
-                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [OutputVector.TYPE_VECTOR_POLYGON, OutputVector.VECTOR_TYPE_ANY])
-            elif param.datatype == ParameterMultipleInput.TYPE_RASTER:
+            elif param.datatype == dataobjects.TYPE_VECTOR_POINT:
+                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_POINT, dataobjects.TYPE_VECTOR_ANY])
+            elif param.datatype == dataobjects.TYPE_VECTOR_LINE:
+                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_LINE, dataobjects.TYPE_VECTOR_ANY])
+            elif param.datatype == dataobjects.TYPE_VECTOR_POLYGON:
+                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_ANY])
+            elif param.datatype == dataobjects.TYPE_RASTER:
                 options = self.getAvailableValuesOfType(ParameterRaster, OutputRaster)
             else:
                 options = self.getAvailableValuesOfType(ParameterFile, OutputFile)

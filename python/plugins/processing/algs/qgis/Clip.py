@@ -54,9 +54,9 @@ class Clip(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Clip')
         self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(Clip.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterVector(Clip.OVERLAY,
-                                          self.tr('Clip layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Clip layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addOutput(OutputVector(Clip.OUTPUT, self.tr('Clipped')))
 
     def processAlgorithm(self, progress):

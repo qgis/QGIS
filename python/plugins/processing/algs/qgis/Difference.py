@@ -54,9 +54,9 @@ class Difference(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Difference')
         self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(Difference.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterVector(Difference.OVERLAY,
-                                          self.tr('Difference layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Difference layer')))
         self.addParameter(ParameterBoolean(Difference.IGNORE_INVALID,
                                            self.tr('Ignore invalid input features'), False, True))
         self.addOutput(OutputVector(Difference.OUTPUT, self.tr('Difference')))

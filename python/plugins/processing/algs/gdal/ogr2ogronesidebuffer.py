@@ -35,6 +35,7 @@ from processing.core.outputs import OutputVector
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools import dataobjects
 from processing.tools.system import isWindows
 from processing.tools.vector import ogrConnectionString, ogrLayerName
 
@@ -59,7 +60,7 @@ class Ogr2OgrOneSideBuffer(GdalAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[OGR] Geoprocessing')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE], False))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE], False))
         self.addParameter(ParameterSelection(self.OPERATION,
                                              self.tr('Operation'), self.OPERATIONLIST, 0))
         self.addParameter(ParameterString(self.GEOMETRY,

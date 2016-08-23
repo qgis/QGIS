@@ -102,7 +102,7 @@ class Ogr2Ogr(GdalAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[OGR] Conversion')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterSelection(self.FORMAT,
                                              self.tr('Destination Format'), FORMATS))
         self.addParameter(ParameterString(self.OPTIONS,

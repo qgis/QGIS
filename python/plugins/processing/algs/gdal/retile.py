@@ -34,6 +34,7 @@ from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputDirectory
 from processing.tools.system import isWindows
+from processing.tools import dataobjects
 from processing.algs.gdal.GdalUtils import GdalUtils
 import re
 
@@ -71,7 +72,7 @@ class retile(GdalAlgorithm):
         # Required parameters
         self.addParameter(ParameterMultipleInput(self.INPUT,
                                                  self.tr('Input layers'),
-                                                 ParameterMultipleInput.TYPE_RASTER))
+                                                 dataobjects.TYPE_RASTER))
         # Advanced parameters
         params = []
         params.append(ParameterString(self.PIXELSIZE,

@@ -60,7 +60,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.POINTS,
-                                          self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Points'), [dataobjects.TYPE_VECTOR_POINT]))
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Nearest neighbour')))
 

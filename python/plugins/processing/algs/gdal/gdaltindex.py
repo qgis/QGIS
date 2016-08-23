@@ -34,6 +34,7 @@ from processing.core.outputs import OutputVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterString
+from processing.tools import dataobjects
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -53,7 +54,7 @@ class gdaltindex(GdalAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Tile Index')
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
         self.addParameter(ParameterMultipleInput(self.INPUT,
-                                                 self.tr('Input layers'), ParameterMultipleInput.TYPE_RASTER))
+                                                 self.tr('Input layers'), dataobjects.TYPE_RASTER))
         self.addParameter(ParameterString(self.FIELD_NAME,
                                           self.tr('Tile index field'),
                                           'location', optional=True))

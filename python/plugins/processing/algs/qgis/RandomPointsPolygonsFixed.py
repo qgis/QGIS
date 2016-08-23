@@ -63,7 +63,7 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
                            self.tr('Points density')]
 
         self.addParameter(ParameterVector(self.VECTOR,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterSelection(self.STRATEGY,
                                              self.tr('Sampling strategy'), self.strategies, 0))
         self.addParameter(ParameterNumber(self.VALUE,
@@ -71,7 +71,7 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[OutputVector.VECTOR_TYPE_POINT]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

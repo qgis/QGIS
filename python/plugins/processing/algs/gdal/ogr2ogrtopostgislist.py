@@ -98,7 +98,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         self.addParameter(ParameterSelection(self.DATABASE,
                                              self.tr('Database (connection name)'), self.DB_CONNECTIONS))
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterString(self.SHAPE_ENCODING,
                                           self.tr('Shape encoding'), "", optional=True))
         self.addParameter(ParameterSelection(self.GTYPE,

@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 
 """
@@ -29,11 +28,9 @@ __revision__ = '$Format:%H$'
 import sys
 import os
 
-from processing.tools.vector import resolveFieldIndex
-from processing.tools.vector import features
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsRasterLayer
-from qgis.core import QgsVectorLayer
+from qgis.core import QgsRasterLayer, QgsVectorLayer
+from processing.tools.vector import resolveFieldIndex, features
 from processing.tools.system import isWindows
 from processing.tools import dataobjects
 
@@ -350,13 +347,6 @@ class ParameterMultipleInput(ParameterDataObject):
 
     exported = None
 
-    TYPE_VECTOR_ANY = -1
-    TYPE_VECTOR_POINT = 0
-    TYPE_VECTOR_LINE = 1
-    TYPE_VECTOR_POLYGON = 2
-    TYPE_RASTER = 3
-    TYPE_FILE = 4
-
     def __init__(self, name='', description='', datatype=-1, optional=False):
         ParameterDataObject.__init__(self, name, description, None, optional)
         self.datatype = int(float(datatype))
@@ -453,14 +443,14 @@ class ParameterMultipleInput(ParameterDataObject):
         layers = self.value.split(';')
         if layers is None or len(layers) == 0:
             return self.value
-        if self.datatype == ParameterMultipleInput.TYPE_RASTER:
+        if self.datatype == dataobjects.TYPE_RASTER:
             for layerfile in layers:
                 layer = dataobjects.getObjectFromUri(layerfile, False)
                 if layer:
                     filename = dataobjects.exportRasterLayer(layer)
                     self.exported = self.exported.replace(layerfile, filename)
             return self.exported
-        elif self.datatype == ParameterMultipleInput.TYPE_FILE:
+        elif self.datatype == dataobjects.TYPE_FILE:
             return self.value
         else:
             for layerfile in layers:
@@ -471,7 +461,7 @@ class ParameterMultipleInput(ParameterDataObject):
             return self.exported
 
     def getAsString(self, value):
-        if self.datatype == ParameterMultipleInput.TYPE_RASTER:
+        if self.datatype == dataobjects.TYPE_RASTER:
             if isinstance(value, QgsRasterLayer):
                 return unicode(value.dataProvider().dataSourceUri())
             else:
@@ -482,7 +472,7 @@ class ParameterMultipleInput(ParameterDataObject):
                         return unicode(layer.dataProvider().dataSourceUri())
                 return s
 
-        if self.datatype == ParameterMultipleInput.TYPE_FILE:
+        if self.datatype == dataobjects.TYPE_FILE:
             return unicode(value)
         else:
             if isinstance(value, QgsVectorLayer):
@@ -496,9 +486,9 @@ class ParameterMultipleInput(ParameterDataObject):
                 return s
 
     def getFileFilter(self):
-        if self.datatype == ParameterMultipleInput.TYPE_RASTER:
+        if self.datatype == dataobjects.TYPE_RASTER:
             exts = dataobjects.getSupportedOutputRasterLayerExtensions()
-        elif self.datatype == ParameterMultipleInput.TYPE_FILE:
+        elif self.datatype == dataobjects.TYPE_FILE:
             return self.tr('All files (*.*)', 'ParameterMultipleInput')
         else:
             exts = dataobjects.getSupportedOutputVectorLayerExtensions()
@@ -507,15 +497,15 @@ class ParameterMultipleInput(ParameterDataObject):
         return ';;'.join(exts)
 
     def dataType(self):
-        if self.datatype == self.TYPE_VECTOR_POINT:
+        if self.datatype == dataobjects.TYPE_VECTOR_POINT:
             return 'points'
-        elif self.datatype == self.TYPE_VECTOR_LINE:
+        elif self.datatype == dataobjects.TYPE_VECTOR_LINE:
             return 'lines'
-        elif self.datatype == self.TYPE_VECTOR_POLYGON:
+        elif self.datatype == dataobjects.TYPE_VECTOR_POLYGON:
             return 'polygons'
-        elif self.datatype == self.TYPE_RASTER:
+        elif self.datatype == dataobjects.TYPE_RASTER:
             return 'rasters'
-        elif self.datatype == self.TYPE_FILE:
+        elif self.datatype == dataobjects.TYPE_FILE:
             return 'files'
         else:
             return 'any vectors'
@@ -524,9 +514,9 @@ class ParameterMultipleInput(ParameterDataObject):
         param_type = ''
         if self.optional:
             param_type += 'optional '
-        if self.datatype == self.TYPE_RASTER:
+        if self.datatype == dataobjects.TYPE_RASTER:
             param_type += 'multiple raster'
-        if self.datatype == self.TYPE_FILE:
+        if self.datatype == dataobjects.TYPE_FILE:
             param_type += 'multiple file'
         else:
             param_type += 'multiple vector'
@@ -967,11 +957,6 @@ class ParameterTableMultipleField(Parameter):
 
 class ParameterVector(ParameterDataObject):
 
-    VECTOR_TYPE_POINT = 0
-    VECTOR_TYPE_LINE = 1
-    VECTOR_TYPE_POLYGON = 2
-    VECTOR_TYPE_ANY = -1
-
     def __init__(self, name='', description='', datatype=[-1],
                  optional=False):
         ParameterDataObject.__init__(self, name, description, None, optional)
@@ -1036,18 +1021,7 @@ class ParameterVector(ParameterDataObject):
         return ';;'.join(exts)
 
     def dataType(self):
-        types = ''
-        for t in self.datatype:
-            if t == self.VECTOR_TYPE_POINT:
-                types += 'point, '
-            elif t == self.VECTOR_TYPE_LINE:
-                types += 'line, '
-            elif t == self.VECTOR_TYPE_POLYGON:
-                types += 'polygon, '
-            else:
-                types += 'any, '
-
-        return types[:-2]
+        return dataobjects.vectorDataType(self)
 
     def getAsScriptCode(self):
         param_type = ''

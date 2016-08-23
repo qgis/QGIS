@@ -28,15 +28,35 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
-from qgis.core import Qgis, QgsProject, QgsVectorFileWriter, QgsMapLayer, QgsRasterLayer, QgsWkbTypes, QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenceSystem
-from qgis.gui import QgsSublayersDialog
+
 from qgis.PyQt.QtCore import QSettings
+from qgis.core import (Qgis,
+                       QgsProject,
+                       QgsVectorFileWriter,
+                       QgsMapLayer,
+                       QgsRasterLayer,
+                       QgsWkbTypes,
+                       QgsVectorLayer,
+                       QgsMapLayerRegistry,
+                       QgsCoordinateReferenceSystem)
+from qgis.gui import QgsSublayersDialog
 from qgis.utils import iface
+
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import getTempFilenameInTempFolder, getTempFilename, isWindows
+from processing.tools.system import (getTempFilenameInTempFolder,
+                                     getTempFilename,
+                                     isWindows)
 
 ALL_TYPES = [-1]
+
+TYPE_VECTOR_ANY = -1
+TYPE_VECTOR_POINT = 0
+TYPE_VECTOR_LINE = 1
+TYPE_VECTOR_POLYGON = 2
+TYPE_RASTER = 3
+TYPE_FILE = 4
+
 
 _loadedLayers = {}
 
@@ -426,3 +446,18 @@ def getRasterSublayer(path, param):
     except:
         # If the layer is not a raster layer, then just return the input path
         return path
+
+
+def vectorDataType(obj):
+    types = ''
+    for t in obj.datatype:
+        if t == dataobjects.TYPE_VECTOR_POINT:
+            types += 'point, '
+        elif t == dataobjects.TYPE_VECTOR_LINE:
+            types += 'line, '
+        elif t == dataobjects.TYPE_VECTOR_POLYGON:
+            types += 'polygon, '
+        else:
+            types += 'any, '
+
+    return types[:-2]

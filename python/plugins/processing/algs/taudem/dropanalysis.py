@@ -40,6 +40,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputFile
+from processing.tools import dataobjects
 
 from .TauDEMUtils import TauDEMUtils
 
@@ -76,7 +77,7 @@ class DropAnalysis(GeoAlgorithm):
                                           self.tr('Accumulated Stream Source Grid'), False))
         self.addParameter(ParameterVector(self.OUTLETS_SHAPE,
                                           self.tr('Outlets Shapefile'),
-                                          [ParameterVector.VECTOR_TYPE_POINT], False))
+                                          [dataobjects.TYPE_VECTOR_POINT], False))
         self.addParameter(ParameterNumber(self.MIN_TRESHOLD,
                                           self.tr('Minimum Threshold'), 0, None, 5))
         self.addParameter(ParameterNumber(self.MAX_THRESHOLD,
@@ -84,7 +85,7 @@ class DropAnalysis(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.TRESHOLD_NUM,
                                           self.tr('Number of Threshold Values'), 0, None, 10))
         self.addParameter(ParameterBoolean(self.STEP_TYPE,
-                                             self.tr('Use logarithmic spacing for threshold values'), True))
+                                           self.tr('Use logarithmic spacing for threshold values'), True))
         self.addOutput(OutputFile(self.DROP_ANALYSIS_FILE,
                                   self.tr('D-Infinity Drop to Stream Grid')))
 

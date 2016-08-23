@@ -49,7 +49,7 @@ class Ogr2OgrClipExtent(GdalAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('[OGR] Geoprocessing')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterExtent(self.CLIP_EXTENT,
                                           self.tr('Clip extent')))
         self.addParameter(ParameterString(self.OPTIONS,

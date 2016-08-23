@@ -64,7 +64,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
                         self.tr('Percentage of selected features')]
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('ID Field'), self.INPUT))
         self.addParameter(ParameterSelection(self.METHOD,

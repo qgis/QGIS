@@ -38,6 +38,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -63,7 +64,7 @@ class VectorGridLines(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.STEP_Y,
                                           self.tr('Y spacing'), 0.0, 1000000000.0, 0.0001))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[OutputVector.VECTOR_TYPE_LINE]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, progress):
         extent = self.getParameterValue(self.EXTENT).split(',')

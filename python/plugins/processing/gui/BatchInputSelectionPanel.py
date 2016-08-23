@@ -69,7 +69,7 @@ class BatchInputSelectionPanel(QWidget):
         popupmenu = QMenu()
 
         if not (isinstance(self.param, ParameterMultipleInput) and
-                self.param.datatype == ParameterMultipleInput.TYPE_FILE):
+                self.param.datatype == dataobjects.TYPE_FILE):
             selectLayerAction = QAction(
                 self.tr('Select from open layers'), self.pushButton)
             selectLayerAction.triggered.connect(self.showLayerSelectionDialog)
@@ -85,7 +85,7 @@ class BatchInputSelectionPanel(QWidget):
     def showLayerSelectionDialog(self):
         if (isinstance(self.param, ParameterRaster) or
                 (isinstance(self.param, ParameterMultipleInput) and
-                 self.param.datatype == ParameterMultipleInput.TYPE_RASTER)):
+                 self.param.datatype == dataobjects.TYPE_RASTER)):
             layers = dataobjects.getRasterLayers()
         elif isinstance(self.param, ParameterTable):
             layers = dataobjects.getTables()

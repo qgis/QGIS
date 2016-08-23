@@ -161,10 +161,10 @@ class ParametersPanel(BASE, WIDGET):
 
     def updateMultipleInputs(self):
         for param in self.alg.parameters:
-            if isinstance(param, ParameterMultipleInput) and param.datatype != ParameterMultipleInput.TYPE_FILE:
-                if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+            if isinstance(param, ParameterMultipleInput) and param.datatype != dataobjects.TYPE_FILE:
+                if param.datatype == dataobjects.TYPE_RASTER:
                     options = dataobjects.getRasterLayers(sorting=False)
-                elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                elif param.datatype == dataobjects.TYPE_VECTOR_ANY:
                     options = dataobjects.getVectorLayers(sorting=False)
                 else:
                     options = dataobjects.getVectorLayers([param.datatype], sorting=False)
@@ -380,12 +380,12 @@ class ParametersPanel(BASE, WIDGET):
         elif isinstance(param, ParameterFile):
             item = FileSelectionPanel(param.isFolder, param.ext)
         elif isinstance(param, ParameterMultipleInput):
-            if param.datatype == ParameterMultipleInput.TYPE_FILE:
-                item = MultipleInputPanel(datatype=ParameterMultipleInput.TYPE_FILE)
+            if param.datatype == dataobjects.TYPE_FILE:
+                item = MultipleInputPanel(datatype=dataobjects.TYPE_FILE)
             else:
-                if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                if param.datatype == dataobjects.TYPE_RASTER:
                     options = dataobjects.getRasterLayers(sorting=False)
-                elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                elif param.datatype == dataobjects.TYPE_VECTOR_ANY:
                     options = dataobjects.getVectorLayers(sorting=False)
                 else:
                     options = dataobjects.getVectorLayers([param.datatype], sorting=False)

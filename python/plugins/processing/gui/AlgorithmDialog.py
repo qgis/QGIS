@@ -161,12 +161,12 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 return param.setValue(None)
             return param.setValue(list(widget.get_selected_items()))
         elif isinstance(param, ParameterMultipleInput):
-            if param.datatype == ParameterMultipleInput.TYPE_FILE:
+            if param.datatype == dataobjects.TYPE_FILE:
                 return param.setValue(widget.selectedoptions)
             else:
-                if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                if param.datatype == dataobjects.TYPE_RASTER:
                     options = dataobjects.getRasterLayers(sorting=False)
-                elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                elif param.datatype == dataobjects.TYPE_VECTOR_ANY:
                     options = dataobjects.getVectorLayers(sorting=False)
                 else:
                     options = dataobjects.getVectorLayers([param.datatype], sorting=False)

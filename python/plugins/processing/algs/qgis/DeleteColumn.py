@@ -44,7 +44,7 @@ class DeleteColumn(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.COLUMN,
                                               self.tr('Field to delete'), self.INPUT))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Deleted column')))

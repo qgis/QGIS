@@ -36,6 +36,7 @@ from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -62,7 +63,7 @@ class GridLine(GeoAlgorithm):
                                           self.tr('Vertical spacing'), default=10.0))
         self.addParameter(ParameterCrs(self.CRS, 'Grid CRS'))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[OutputVector.VECTOR_TYPE_LINE]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, progress):
         extent = self.getParameterValue(self.EXTENT).split(',')
@@ -100,7 +101,7 @@ class GridLine(GeoAlgorithm):
                                                                      QgsWkbTypes.LineString, crs)
 
         self._rectangleGridLine(
-                writer, width, height, originX, originY, hSpacing, vSpacing)
+            writer, width, height, originX, originY, hSpacing, vSpacing)
 
     def _rectangleGridLine(self, writer, width, height, originX, originY,
                            hSpacing, vSpacing):

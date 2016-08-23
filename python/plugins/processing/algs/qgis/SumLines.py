@@ -56,15 +56,15 @@ class SumLines(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.LINES,
-                                          self.tr('Lines'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Lines'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.POLYGONS,
-                                          self.tr('Polygons'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Polygons'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterString(self.LEN_FIELD,
                                           self.tr('Lines length field name', 'LENGTH')))
         self.addParameter(ParameterString(self.COUNT_FIELD,
                                           self.tr('Lines count field name', 'COUNT')))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Line length'), datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Line length'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, progress):
         lineLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.LINES))

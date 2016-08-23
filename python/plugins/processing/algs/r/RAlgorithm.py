@@ -53,6 +53,7 @@ from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputFile
+from processing.tools import dataobjects
 from processing.tools.system import isWindows
 from processing.script.WrongScriptException import WrongScriptException
 from .RUtils import RUtils
@@ -191,25 +192,25 @@ class RAlgorithm(GeoAlgorithm):
             param = ParameterRaster(name, desc, False)
         elif token.lower().strip() == 'vector':
             param = ParameterVector(name, desc,
-                                    [ParameterVector.VECTOR_TYPE_ANY])
+                                    [dataobjects.TYPE_VECTOR_ANY])
         elif token.lower().strip() == 'vector point':
             param = ParameterVector(name, desc,
-                                    [ParameterVector.VECTOR_TYPE_POINT])
+                                    [dataobjects.TYPE_VECTOR_POINT])
         elif token.lower().strip() == 'vector line':
             param = ParameterVector(name, desc,
-                                    [ParameterVector.VECTOR_TYPE_LINE])
+                                    [dataobjects.TYPE_VECTOR_LINE])
         elif token.lower().strip() == 'vector polygon':
             param = ParameterVector(name, desc,
-                                    [ParameterVector.VECTOR_TYPE_POLYGON])
+                                    [dataobjects.TYPE_VECTOR_POLYGON])
         elif token.lower().strip() == 'table':
             param = ParameterTable(name, desc, False)
         elif token.lower().strip().startswith('multiple raster'):
             param = ParameterMultipleInput(name, desc,
-                                           ParameterMultipleInput.TYPE_RASTER)
+                                           dataobjects.TYPE_RASTER)
             param.optional = False
         elif token.lower().strip() == 'multiple vector':
             param = ParameterMultipleInput(name, desc,
-                                           ParameterMultipleInput.TYPE_VECTOR_ANY)
+                                           dataobjects.TYPE_VECTOR_ANY)
             param.optional = False
         elif token.lower().strip().startswith('selection'):
             options = token.strip()[len('selection'):].split(';')
@@ -444,7 +445,7 @@ class RAlgorithm(GeoAlgorithm):
                     commands.append(param.name + '=FALSE')
             elif isinstance(param, ParameterMultipleInput):
                 iLayer = 0
-                if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                if param.datatype == dataobjects.TYPE_RASTER:
                     layers = param.value.split(';')
                     for layer in layers:
                         layer = layer.replace('\\', '/')

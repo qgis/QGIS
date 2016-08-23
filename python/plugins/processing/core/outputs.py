@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 ***************************************************************************
     Output.py
@@ -25,11 +27,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import sys
+
 from qgis.PyQt.QtCore import QCoreApplication, QSettings
+
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, getTempFilenameInTempFolder
 from processing.tools.vector import VectorWriter, TableWriter
 from processing.tools import dataobjects
-from processing.core.ProcessingConfig import ProcessingConfig
 
 
 def getOutputFromString(s):
@@ -256,11 +260,6 @@ class OutputTable(Output):
 
 class OutputVector(Output):
 
-    VECTOR_TYPE_POINT = 0
-    VECTOR_TYPE_LINE = 1
-    VECTOR_TYPE_POLYGON = 2
-    VECTOR_TYPE_ANY = -1
-
     encoding = None
     compatible = None
 
@@ -348,15 +347,4 @@ class OutputVector(Output):
         return w
 
     def dataType(self):
-        types = ''
-        for t in self.datatype:
-            if t == self.VECTOR_TYPE_POINT:
-                types += 'point, '
-            elif t == self.VECTOR_TYPE_LINE:
-                types += 'line, '
-            elif t == self.VECTOR_TYPE_POLYGON:
-                types += 'polygon, '
-            else:
-                types += 'any, '
-
-        return types[:-2]
+        return dataobjects.vectorDataType(self)

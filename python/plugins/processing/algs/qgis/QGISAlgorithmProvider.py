@@ -190,7 +190,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         DeleteColumn(), DeleteDuplicateGeometries(), TextToFloat(),
                         ExtractByAttribute(), SelectByAttribute(), GridPolygon(),
                         GridLine(), Gridify(), HubDistancePoints(),
-                        HubDistanceLines(),HubLines(), Merge(),
+                        HubDistanceLines(), HubLines(), Merge(),
                         GeometryConvert(), AddTableField(), FieldsCalculator(),
                         SaveSelectedFeatures(), JoinAttributes(),
                         AutoincrementalField(), Explode(), FieldsPyculator(),

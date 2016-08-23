@@ -36,6 +36,7 @@ from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterSelection
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.system import tempFolder
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -57,7 +58,7 @@ class buildvrt(GdalAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Build Virtual Raster')
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
         self.addParameter(ParameterMultipleInput(self.INPUT,
-                                                 self.tr('Input layers'), ParameterMultipleInput.TYPE_RASTER))
+                                                 self.tr('Input layers'), dataobjects.TYPE_RASTER))
         self.addParameter(ParameterSelection(self.RESOLUTION,
                                              self.tr('Resolution'), self.RESOLUTION_OPTIONS, 0))
         self.addParameter(ParameterBoolean(self.SEPARATE,

@@ -57,9 +57,9 @@ class LinesIntersection(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
 
         self.addParameter(ParameterVector(self.INPUT_A,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.INPUT_B,
-                                          self.tr('Intersect layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Intersect layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterTableField(
             self.FIELD_A,
             self.tr('Input unique ID field'),
@@ -71,7 +71,7 @@ class LinesIntersection(GeoAlgorithm):
             self.INPUT_B,
             optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersections'), datatype=[OutputVector.VECTOR_TYPE_POINT]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersections'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, progress):
         layerA = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_A))

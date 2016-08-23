@@ -62,8 +62,7 @@ class CheckValidity(GeoAlgorithm):
 
         self.addParameter(ParameterVector(
             self.INPUT_LAYER,
-            self.tr('Input layer'),
-            [ParameterVector.VECTOR_TYPE_ANY]))
+            self.tr('Input layer')))
 
         self.addParameter(ParameterSelection(
             self.METHOD,

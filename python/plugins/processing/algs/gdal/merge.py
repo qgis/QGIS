@@ -35,6 +35,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterSelection
 from processing.tools.system import isWindows
+from processing.tools import dataobjects
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -57,7 +58,7 @@ class merge(GdalAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Merge')
         self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
         self.addParameter(ParameterMultipleInput(merge.INPUT,
-                                                 self.tr('Input layers'), ParameterMultipleInput.TYPE_RASTER))
+                                                 self.tr('Input layers'), dataobjects.TYPE_RASTER))
         self.addParameter(ParameterBoolean(merge.PCT,
                                            self.tr('Grab pseudocolor table from first layer'), False))
         self.addParameter(ParameterBoolean(merge.SEPARATE,

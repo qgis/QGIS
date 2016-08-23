@@ -37,6 +37,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -70,7 +71,7 @@ class GridPolygon(GeoAlgorithm):
                                           self.tr('Vertical spacing'), default=10.0))
         self.addParameter(ParameterCrs(self.CRS, 'Grid CRS'))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[OutputVector.VECTOR_TYPE_POLYGON]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, progress):
         idx = self.getParameterValue(self.TYPE)
@@ -121,7 +122,7 @@ class GridPolygon(GeoAlgorithm):
         del writer
 
     def _rectangleGrid(self, writer, width, height, originX, originY,
-                           hSpacing, vSpacing):
+                       hSpacing, vSpacing):
         ft = QgsFeature()
 
         columns = int(math.ceil(float(width) / hSpacing))
