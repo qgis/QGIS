@@ -410,14 +410,17 @@ void QgsSimpleLineSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
   symbolizerElem.appendChild( strokeElem );
 
   Qt::PenStyle penStyle = mUseCustomDashPattern ? Qt::CustomDashLine : mPenStyle;
-  QgsSymbolLayerV2Utils::lineToSld( doc, strokeElem, penStyle, mColor, mWidth,
-                                    &mPenJoinStyle, &mPenCapStyle, &mCustomDashVector );
+  double width = QgsSymbolLayerV2Utils::rescaleUom( mWidth, mWidthUnit, props );
+  QVector<qreal> customDashVector = QgsSymbolLayerV2Utils::rescaleUom( mCustomDashVector, mCustomDashPatternUnit, props );
+  QgsSymbolLayerV2Utils::lineToSld( doc, strokeElem, penStyle, mColor, width,
+                                    &mPenJoinStyle, &mPenCapStyle, &customDashVector );
 
   // <se:PerpendicularOffset>
   if ( !qgsDoubleNear( mOffset, 0.0 ) )
   {
     QDomElement perpOffsetElem = doc.createElement( "se:PerpendicularOffset" );
-    perpOffsetElem.appendChild( doc.createTextNode( qgsDoubleToString( mOffset ) ) );
+    double offset = QgsSymbolLayerV2Utils::rescaleUom( mOffset, mOffsetUnit, props );
+    perpOffsetElem.appendChild( doc.createTextNode( qgsDoubleToString( offset ) ) );
     symbolizerElem.appendChild( perpOffsetElem );
   }
 }
@@ -1413,7 +1416,8 @@ void QgsMarkerLineSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
         symbolizerElem.appendChild( QgsSymbolLayerV2Utils::createVendorOptionElement( doc, "placement", "points" ) );
         break;
       default:
-        gap = qgsDoubleToString( mInterval );
+        double interval = QgsSymbolLayerV2Utils::rescaleUom( mInterval, mIntervalUnit, props );
+        gap = qgsDoubleToString( interval );
         break;
     }
 
@@ -1453,7 +1457,8 @@ void QgsMarkerLineSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
     if ( !qgsDoubleNear( mOffset, 0.0 ) )
     {
       QDomElement perpOffsetElem = doc.createElement( "se:PerpendicularOffset" );
-      perpOffsetElem.appendChild( doc.createTextNode( qgsDoubleToString( mOffset ) ) );
+      double offset = QgsSymbolLayerV2Utils::rescaleUom( mOffset, mOffsetUnit, props );
+      perpOffsetElem.appendChild( doc.createTextNode( qgsDoubleToString( offset ) ) );
       symbolizerElem.appendChild( perpOffsetElem );
     }
   }
@@ -1554,6 +1559,7 @@ double QgsMarkerLineSymbolLayerV2::width() const
 void QgsMarkerLineSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
 {
   QgsLineSymbolLayerV2::setOutputUnit( unit );
+  mMarker->setOutputUnit( unit );
   mIntervalUnit = unit;
   mOffsetUnit = unit;
   mOffsetAlongLineUnit = unit;
