@@ -142,7 +142,7 @@ def getInstalledVersion(runOtb=False):
 
 
 def compatibleDescriptionPath(version):
-    supportedVersions = {"5.0.0": "5.0.0", "5.6.0": "5.6.0"}
+    supportedVersions = {"5.0.0": "5.0.0", "5.4.0": "5.4.0", "5.6.0": "5.6.0"}
     if version is None:
         return None
     if version not in supportedVersions:
