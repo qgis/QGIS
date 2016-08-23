@@ -148,7 +148,6 @@ void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
   {
     if ( nodeLayer->isVisible() )
     {
-      QgsDebugMsg( nodeLayer->layerId() );
       mSelectedLayerIds.append( nodeLayer->layerId() );
     }
   }

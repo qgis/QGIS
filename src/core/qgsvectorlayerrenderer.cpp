@@ -34,6 +34,7 @@
 #include "qgspainteffect.h"
 #include "qgsfeaturefilterprovider.h"
 #include "qgscsexception.h"
+#include "qgslogger.h"
 
 #include <QSettings>
 #include <QPicture>

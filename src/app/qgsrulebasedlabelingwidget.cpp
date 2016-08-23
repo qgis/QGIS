@@ -22,6 +22,7 @@
 #include "qgsrulebasedlabeling.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgslogger.h"
 
 #include <QClipboard>
 #include <QMessageBox>
@@ -153,10 +154,8 @@ void QgsRuleBasedLabelingWidget::editRule( const QModelIndex& index )
 void QgsRuleBasedLabelingWidget::removeRule()
 {
   QItemSelection sel = viewRules->selectionModel()->selection();
-  QgsDebugMsg( QString( "REMOVE RULES!!! ranges: %1" ).arg( sel.count() ) );
   Q_FOREACH ( const QItemSelectionRange& range, sel )
   {
-    QgsDebugMsg( QString( "RANGE: r %1 - %2" ).arg( range.top() ).arg( range.bottom() ) );
     if ( range.isValid() )
       mModel->removeRows( range.top(), range.bottom() - range.top() + 1, range.parent() );
   }
@@ -167,7 +166,6 @@ void QgsRuleBasedLabelingWidget::removeRule()
 void QgsRuleBasedLabelingWidget::copy()
 {
   QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
-  QgsDebugMsg( QString( "%1" ).arg( indexlist.count() ) );
 
   if ( indexlist.isEmpty() )
     return;

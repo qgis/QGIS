@@ -24,12 +24,13 @@ extern "C"
 
 #include <stdexcept>
 
-#include <qgsvirtuallayerprovider.h>
-#include <qgsvirtuallayerdefinition.h>
-#include <qgsvirtuallayerfeatureiterator.h>
-#include <qgsvectorlayer.h>
-#include <qgsmaplayerregistry.h>
-#include <qgsdatasourceuri.h>
+#include "qgsvirtuallayerprovider.h"
+#include "qgsvirtuallayerdefinition.h"
+#include "qgsvirtuallayerfeatureiterator.h"
+#include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsdatasourceuri.h"
+#include "qgslogger.h"
 
 #include "qgsvirtuallayerprovider.h"
 #include "qgsvirtuallayersqlitemodule.h"

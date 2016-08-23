@@ -65,4 +65,18 @@ class QgsRelationEditorWidget : QgsCollapsibleGroupBox
      * which are currently being edited.
      */
     QgsIFeatureSelectionManager* featureSelectionManager();
+
+    /**
+     * Defines if a title label should be shown for this widget.
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showLabel() const;
+
+    /**
+     * Defines if a title label should be shown for this widget.
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowLabel(bool showLabel);
 };

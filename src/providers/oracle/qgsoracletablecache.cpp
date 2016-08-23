@@ -303,10 +303,10 @@ void _testTableCache()
   // compare
 
   Q_FOREACH ( const QgsOracleLayerProperty& item, layers )
-    qDebug( "== %s %s", item.tableName.toAscii().data(), item.geometryColName.toAscii().data() );
+    qDebug( "== %s %s", item.tableName.toLatin1().data(), item.geometryColName.toLatin1().data() );
 
   Q_FOREACH ( const QgsOracleLayerProperty& item, layersLoaded )
-    qDebug( "++ %s %s", item.tableName.toAscii().data(), item.geometryColName.toAscii().data() );
+    qDebug( "++ %s %s", item.tableName.toLatin1().data(), item.geometryColName.toLatin1().data() );
 
   Q_ASSERT( layers == layersLoaded );
 }

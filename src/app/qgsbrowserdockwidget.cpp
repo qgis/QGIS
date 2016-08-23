@@ -767,6 +767,12 @@ QgsDockBrowserTreeView::QgsDockBrowserTreeView( QWidget* parent ) : QgsBrowserTr
 
 void QgsDockBrowserTreeView::dragEnterEvent( QDragEnterEvent* e )
 {
+  // if this mime data come from layer tree, the proposed action will be MoveAction
+  // but for browser we really need CopyAction
+  if ( e->mimeData()->hasFormat( "application/qgis.layertreemodeldata" ) &&
+       e->mimeData()->hasFormat( "application/x-vnd.qgis.qgis.uri" ) )
+    e->setDropAction( Qt::CopyAction );
+
   // accept drag enter so that our widget will not get ignored
   // and drag events will not get passed to QgisApp
   e->accept();
@@ -782,6 +788,12 @@ void QgsDockBrowserTreeView::dragMoveEvent( QDragMoveEvent* e )
         return;
       }*/
 
+  // if this mime data come from layer tree, the proposed action will be MoveAction
+  // but for browser we really need CopyAction
+  if ( e->mimeData()->hasFormat( "application/qgis.layertreemodeldata" ) &&
+       e->mimeData()->hasFormat( "application/x-vnd.qgis.qgis.uri" ) )
+    e->setDropAction( Qt::CopyAction );
+
   QTreeView::dragMoveEvent( e );
 
   if ( !e->mimeData()->hasFormat( "application/x-vnd.qgis.qgis.uri" ) )
@@ -789,6 +801,17 @@ void QgsDockBrowserTreeView::dragMoveEvent( QDragMoveEvent* e )
     e->ignore();
     return;
   }
+}
+
+void QgsDockBrowserTreeView::dropEvent( QDropEvent *e )
+{
+  // if this mime data come from layer tree, the proposed action will be MoveAction
+  // but for browser we really need CopyAction
+  if ( e->mimeData()->hasFormat( "application/qgis.layertreemodeldata" ) &&
+       e->mimeData()->hasFormat( "application/x-vnd.qgis.qgis.uri" ) )
+    e->setDropAction( Qt::CopyAction );
+
+  QTreeView::dropEvent( e );
 }
 
 

@@ -201,20 +201,57 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_DECL_DEPRECATED void clearProperties();
 
 
-    /* key value mutators
+    /**
+     * Write a boolean entry to the project file.
      *
-     * keys would be the familiar QSettings-like '/' delimited entries, implying
+     * Keys are '/'-delimited entries, implying
+     * a hierarchy of keys and corresponding values
+     *
+     * @note The key string must be valid xml tag names in order to be saved to the file.
+     * @note available in python bindings as writeEntryBool
+     */
+    bool writeEntry( const QString & scope, const QString & key, bool value );
+
+    /**
+     * Write a double entry to the project file.
+     *
+     * Keys are '/'-delimited entries, implying
+     * a hierarchy of keys and corresponding values
+     *
+     * @note The key string must be valid xml tag names in order to be saved to the file.
+     * @note available in python bindings as writeEntryDouble
+     */
+    bool writeEntry( const QString& scope, const QString& key, double value );
+
+    /**
+     * Write an integer entry to the project file.
+     *
+     * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
      * @note The key string must be valid xml tag names in order to be saved to the file.
      */
-    //! @note available in python bindings as writeEntryBool
-    bool writeEntry( const QString & scope, const QString & key, bool value );
-    //! @note available in python bindings as writeEntryDouble
-    bool writeEntry( const QString & scope, const QString & key, double value );
-    bool writeEntry( const QString & scope, const QString & key, int value );
-    bool writeEntry( const QString & scope, const QString & key, const QString & value );
-    bool writeEntry( const QString & scope, const QString & key, const QStringList & value );
+    bool writeEntry( const QString& scope, const QString& key, int value );
+
+    /**
+     * Write a string entry to the project file.
+     *
+     * Keys are '/'-delimited entries, implying
+     * a hierarchy of keys and corresponding values
+     *
+     * @note The key string must be valid xml tag names in order to be saved to the file.
+     */
+    bool writeEntry( const QString& scope, const QString& key, const QString& value );
+
+    /**
+     * Write a string list entry to the project file.
+     *
+     * Keys are '/'-delimited entries, implying
+     * a hierarchy of keys and corresponding values
+     *
+     * @note The key string must be valid xml tag names in order to be saved to the file.
+     */
+    bool writeEntry( const QString& scope, const QString& key, const QStringList& value );
 
     /** Key value accessors
      *

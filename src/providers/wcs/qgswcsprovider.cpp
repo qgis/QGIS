@@ -1795,7 +1795,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
         QgsMessageLog::logMessage( tr( "More than 2 parts (%1) received" ).arg( parser.parts() ), tr( "WCS" ) );
       }
 
-      QString transferEncoding = parser.rawHeader( 1, QString( "Content-Transfer-Encoding" ).toAscii() );
+      QString transferEncoding = parser.rawHeader( 1, QString( "Content-Transfer-Encoding" ).toLatin1() );
       QgsDebugMsg( "transferEncoding = " + transferEncoding );
 
       // It may happen (GeoServer) that in part header is for example

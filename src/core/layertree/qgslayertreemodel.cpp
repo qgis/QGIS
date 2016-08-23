@@ -1011,6 +1011,9 @@ QMimeData* QgsLayerTreeModel::mimeData( const QModelIndexList& indexes ) const
   QString txt = doc.toString();
 
   mimeData->setData( "application/qgis.layertreemodeldata", txt.toUtf8() );
+
+  mimeData->setData( "application/x-vnd.qgis.qgis.uri", QgsMimeDataUtils::layerTreeNodesToUriList( nodesFinal ) );
+
   return mimeData;
 }
 

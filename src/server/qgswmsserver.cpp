@@ -2107,7 +2107,7 @@ int QgsWmsServer::initializeSLDParser( QStringList& layersList, QStringList& sty
 
     if ( !theDocument->setContent( xml, true, &errorMsg, &errorLine, &errorColumn ) )
     {
-      //std::cout << xml.toAscii().data() << std::endl;
+      //std::cout << xml.toLatin1().data() << std::endl;
       QgsMessageLog::logMessage( "Error, could not create DomDocument from SLD" );
       QgsMessageLog::logMessage( QString( "The error message is: %1" ).arg( errorMsg ) );
       delete theDocument;
@@ -3319,9 +3319,9 @@ QDomElement QgsWmsServer::createFeatureGML(
 
 QString QgsWmsServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, const QString& attributeVal )
 {
-  if ( QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( vl->editFormConfig()->widgetType( idx ) ) )
+  if ( QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( vl->editFormConfig().widgetType( idx ) ) )
   {
-    QgsEditorWidgetConfig cfg( vl->editFormConfig()->widgetConfig( idx ) );
+    QgsEditorWidgetConfig cfg( vl->editFormConfig().widgetConfig( idx ) );
     QString value( factory->representValue( vl, idx, cfg, QVariant(), attributeVal ) );
     if ( cfg.value( "AllowMulti" ).toBool() && value.startsWith( "{" ) && value.endsWith( "}" ) )
     {

@@ -81,6 +81,7 @@ SET(QGIS_CORE_SRCS
   qgsactionmanager.cpp
   qgsaggregatecalculator.cpp
   qgsattributetableconfig.cpp
+  qgsattributeeditorelement.cpp
   qgsbrowsermodel.cpp
   qgscachedfeatureiterator.cpp
   qgscacheindex.cpp
@@ -453,7 +454,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsdataitem.h
   qgsdataprovider.h
   qgsdbfilterproxymodel.h
-  qgseditformconfig.h
+  qgsfeature.h
   qgsfeedback.h
   qgsfield.h
   qgsgeometryvalidator.h
@@ -604,6 +605,7 @@ SET(QGIS_CORE_HDRS
   qgsannotation.h
   qgsattributetableconfig.h
   qgsattributeaction.h
+  qgsattributeeditorelement.h
   qgscachedfeatureiterator.h
   qgscacheindex.h
   qgscacheindexfeatureid.h
@@ -614,15 +616,12 @@ SET(QGIS_CORE_HDRS
   qgscontexthelp.h
   qgsconditionalstyle.h
   qgscoordinatereferencesystem.h  
-  qgscoordinatereferencesystem_p.h
   qgscoordinatetransform.h
-  qgscoordinatetransform_p.h
   qgscoordinateutils.h
   qgscrscache.h
   qgscsexception.h
   qgsdartmeasurement.h
   qgsdatadefined.h
-  qgsdatadefined_p.h
   qgsdataitem.h
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
@@ -632,6 +631,7 @@ SET(QGIS_CORE_HDRS
   qgsdbfilterproxymodel.h
   qgsdiagramrenderer.h
   qgsdistancearea.h
+  qgseditformconfig.h
   qgseditorwidgetconfig.h
   qgsfeaturefilterprovider.h
   qgserror.h
@@ -640,12 +640,9 @@ SET(QGIS_CORE_HDRS
   qgsexpressioncontext.h
   qgsexpressioncontextgenerator.h
   qgsexpressionfieldbuffer.h
-  qgsfeature.h
-  qgsfeature_p.h
   qgsfeatureiterator.h
   qgsfeaturerequest.h
   qgsfeaturestore.h
-  qgsfield_p.h
   qgsfontutils.h
   qgsgeometrycache.h
   qgshistogram.h

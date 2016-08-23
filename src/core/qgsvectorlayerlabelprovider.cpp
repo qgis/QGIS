@@ -26,6 +26,7 @@
 #include "qgspolygon.h"
 #include "qgslinestring.h"
 #include "qgsmultipolygon.h"
+#include "qgslogger.h"
 
 #include "feature.h"
 #include "labelposition.h"

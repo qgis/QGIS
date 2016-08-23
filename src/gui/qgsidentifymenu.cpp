@@ -23,6 +23,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsactionmenu.h"
 #include "qgsvectorlayer.h"
+#include "qgslogger.h"
 
 /// @cond PRIVATE
 CustomActionRegistry::CustomActionRegistry( QObject* parent )

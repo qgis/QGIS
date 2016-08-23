@@ -21,6 +21,7 @@
 #include <qgsgeometry.h>
 #include <qgsgml.h>
 #include "qgsapplication.h"
+#include "qgslogger.h"
 
 /** \ingroup UnitTests
  * This is a unit test for GML parsing

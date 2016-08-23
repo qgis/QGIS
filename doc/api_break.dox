@@ -216,6 +216,12 @@ attributeIndexes(), pkAttributeIndexes(), isSaveAndLoadStyleToDBSupported()</li>
 </li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsEditFormConfig QgsEditFormConfig
+
+<ul>
+<li>Does no longer inherit QObject
+</ul>
+
 \subsection qgis_api_break_3_0_Qgis Qgis
 
 <ul>
@@ -867,6 +873,13 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.</li>
 <li>applyNamedStyle() replaced by applyNamedStyle()
 <li>isReadOnly() use readOnly()
 <li>Signal changeAttributeValue()
+<li>Deleted GroupData (Use QgsEditFormConfig::GroupData)
+<li>Deleted TabData (Use QgsEditFormConfig::TabData)
+<li>Deleted EditorLayout (Use QgsEditFormConfig::EditorLayout)
+<li>Deleted ValueRelationData (Use QgsEditFormConfig::editorWidgetConfig)
+<li>Deleted attributeEditorElementFromDomElement
+<li>editFormConfig() returns a copy instead of direct access (Use setEditFormConfig to update)
+<li>Removed valueRelation(), replaced with QgsEditFormConfig::editorWidgetConfig
 </ul>
 
 \subsection qgis_api_break_3_0_QgsVectorLayerEditBuffer QgsVectorLayerEditBuffer

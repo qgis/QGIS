@@ -35,6 +35,7 @@
 #include "qgsstyle.h"
 #include "qgsmapcanvas.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgslogger.h"
 
 #include <QList>
 #include <QMessageBox>

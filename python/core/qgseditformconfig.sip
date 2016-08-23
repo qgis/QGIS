@@ -15,249 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-class QgsAttributeEditorElement : QObject
-{
-%TypeHeaderCode
-#include "qgsvectorlayer.h"
-%End
-
-%ConvertToSubClassCode
-  QgsAttributeEditorElement* e = qobject_cast<QgsAttributeEditorElement*>( sipCpp );
-
-  sipType = 0;
-  if ( e )
-  {
-    switch ( e->type() )
-    {
-      case QgsAttributeEditorElement::AeTypeContainer: sipType = sipType_QgsAttributeEditorContainer; break;
-      case QgsAttributeEditorElement::AeTypeField:     sipType = sipType_QgsAttributeEditorField; break;
-      case QgsAttributeEditorElement::AeTypeRelation:  sipType = sipType_QgsAttributeEditorRelation; break;
-    }
-  }
-%End
-
-
-  public:
-
-    enum AttributeEditorType
-    {
-      AeTypeContainer,
-      AeTypeField,
-      AeTypeRelation,
-      AeTypeInvalid
-    };
-
-    /**
-     * Constructor
-     *
-     * @param type The type of the new element. Should never
-     * @param name
-     * @param parent
-     */
-    QgsAttributeEditorElement( AttributeEditorType type, const QString& name, QObject *parent /TransferThis/ = NULL );
-
-    //! Destructor
-    virtual ~QgsAttributeEditorElement();
-
-    /**
-     * Return the name of this element
-     *
-     * @return The name for this element
-     */
-    QString name() const;
-
-    /**
-     * The type of this element
-     *
-     * @return The type
-     */
-    AttributeEditorType type() const;
-
-    /**
-     * Is reimplemented in classes inheriting from this to serialize it.
-     *
-     * @param doc The QDomDocument which is used to create new XML elements
-     *
-     * @return An DOM element which represents this element
-     */
-    virtual QDomElement toDomElement( QDomDocument& doc ) const = 0;
-};
-
-class QgsAttributeEditorContainer : QgsAttributeEditorElement
-{
-%TypeHeaderCode
-#include "qgsvectorlayer.h"
-%End
-
-  public:
-    /**
-     * Creates a new attribute editor container
-     *
-     * @param name   The name to show as title
-     * @param parent The parent. May be another container.
-     */
-    QgsAttributeEditorContainer( const QString& name, QObject *parent  /TransferThis/ );
-
-    //! Destructor
-    ~QgsAttributeEditorContainer();
-
-    /**
-     * Will serialize this containers information into a QDomElement for saving it in an XML file.
-     *
-     * @param doc The QDomDocument used to generate the QDomElement
-     *
-     * @return The XML element
-     */
-    virtual QDomElement toDomElement( QDomDocument& doc ) const;
-
-    /**
-     * Add a child element to this container. This may be another container, a field or a relation.
-     *
-     * @param element The element to add as child
-     */
-    virtual void addChildElement( QgsAttributeEditorElement *widget );
-
-    /**
-     * Determines if this container is rendered as collapsible group box or tab in a tabwidget
-     *
-     * @param isGroupBox If true, this will be a group box
-     */
-    virtual void setIsGroupBox( bool isGroupBox );
-
-    /**
-     * Returns if this container is going to be rendered as a group box
-     *
-     * @return True if it will be a group box, false if it will be a tab
-     */
-    virtual bool isGroupBox() const;
-
-    /**
-     * Get a list of the children elements of this container
-     *
-     * @return A list of elements
-     */
-    QList<QgsAttributeEditorElement*> children() const;
-
-    /**
-     * Traverses the element tree to find any element of the specified type
-     *
-     * @param type The type which should be searched
-     *
-     * @return A list of elements of the type which has been searched for
-     */
-    virtual QList<QgsAttributeEditorElement*> findElements( AttributeEditorType type ) const;
-
-    /**
-     * Change the name of this container
-     *
-     * @param name
-     */
-    void setName( const QString& name );
-
-    /**
-     * Get the number of columns in this group
-     */
-    int columnCount() const;
-
-    /**
-     * Set the number of columns in this group
-     */
-    void setColumnCount( int columnCount );
-
-};
-
-/**
- * This element will load a field's widget onto the form.
- */
-class QgsAttributeEditorField : QgsAttributeEditorElement
-{
-%TypeHeaderCode
-#include "qgsvectorlayer.h"
-%End
-  public:
-    /**
-     * Creates a new attribute editor element which represents a field
-     *
-     * @param name   The name of the element
-     * @param idx    The index of the field which should be embedded
-     * @param parent The parent of this widget (used as container)
-     */
-    QgsAttributeEditorField( const QString& name, int idx, QObject *parent /TransferThis/ );
-
-    //! Destructor
-    ~QgsAttributeEditorField();
-
-    /**
-     * Will serialize this elements information into a QDomElement for saving it in an XML file.
-     *
-     * @param doc The QDomDocument used to generate the QDomElement
-     *
-     * @return The XML element
-     */
-    virtual QDomElement toDomElement( QDomDocument& doc ) const;
-
-    /**
-     * Return the index of the field
-     * @return
-     */
-    int idx() const;
-};
-
-/**
- * This element will load a relation editor onto the form.
- *
- * @note Added in 2.1
- */
-class QgsAttributeEditorRelation : QgsAttributeEditorElement
-{
-  public:
-    /**
-     * Creates a new element which embeds a relation.
-     *
-     * @param name         The name of this element
-     * @param relationId   The id of the relation to embed
-     * @param parent       The parent (used as container)
-     */
-    QgsAttributeEditorRelation( const QString& name, const QString &relationId, QObject *parent /TransferThis/ );
-
-    /**
-     * Creates a new element which embeds a relation.
-     *
-     * @param name         The name of this element
-     * @param relation     The relation to embed
-     * @param parent       The parent (used as container)
-     */
-    QgsAttributeEditorRelation( const QString& name, const QgsRelation& relation, QObject *parent /TransferThis/);
-
-    //! Destructor
-    ~QgsAttributeEditorRelation();
-
-    /**
-     * Will serialize this elements information into a QDomElement for saving it in an XML file.
-     *
-     * @param doc The QDomDocument used to generate the QDomElement
-     *
-     * @return The XML element
-     */
-    virtual QDomElement toDomElement( QDomDocument& doc ) const;
-
-    /**
-     * Get the id of the relation which shall be embedded
-     *
-     * @return the id
-     */
-    const QgsRelation& relation() const;
-
-    /**
-     * Initializes the relation from the id
-     *
-     * @param relManager The relation manager to use for the initialization
-     * @return true if the relation was found in the relationmanager
-     */
-    bool init( QgsRelationManager *relManager );
-};
-
-class QgsEditFormConfig : QObject
+class QgsEditFormConfig
 {
 %TypeHeaderCode
 #include <qgseditformconfig.h>
@@ -315,7 +73,7 @@ class QgsEditFormConfig : QObject
      *
      * Adds a new tab to the layout. Should be a QgsAttributeEditorContainer.
      */
-    void addTab( QgsAttributeEditorElement* data );
+    void addTab( QgsAttributeEditorElement* data /Transfer/ );
 
     /**
      * Returns a list of tabs for EditorLayout::TabLayout.
@@ -326,6 +84,13 @@ class QgsEditFormConfig : QObject
      * Clears all the tabs for the attribute editor form with EditorLayout::TabLayout.
      */
     void clearTabs();
+
+    /**
+     * Get the invisible root container for the drag and drop designer form (EditorLayout::TabLayout).
+     *
+     * @note Added in QGIS 3
+     */
+    QgsAttributeEditorContainer* invisibleRootContainer();
 
     /** Get the active layout style for the attribute editor for this layer */
     EditorLayout layout();
@@ -469,7 +234,7 @@ class QgsEditFormConfig : QObject
      * This returns true if the field is manually set to read only or if the field
      * does not support editing like joins or virtual fields.
      */
-    bool readOnly( int idx );
+    bool readOnly( int idx ) const;
 
     /**
      * If set to false, the widget at the given index will be read-only.
@@ -511,7 +276,7 @@ class QgsEditFormConfig : QObject
     /**
      * Returns if the field at fieldidx should be treated as NOT NULL value
      */
-    bool notNull( int fieldidx) const;
+    bool notNull( int fieldidx ) const;
     /**
      * Set if the field at fieldidx should be treated as NOT NULL value
      */
@@ -522,7 +287,7 @@ class QgsEditFormConfig : QObject
      * while if it returns false, the widget will receive its label on the left hand side.
      * Labeling on top leaves more horizontal space for the widget itself.
      **/
-    bool labelOnTop( int idx );
+    bool labelOnTop( int idx ) const;
 
     /**
      * If this is set to true, the widget at the given index will receive its label on
@@ -552,7 +317,7 @@ class QgsEditFormConfig : QObject
     void setInitFunction( const QString& function );
 
     /**
-     * Get python code for edit form initialization from the configuration dialog.
+     * Get python code for edit form initialization.
      */
     QString initCode() const;
 
@@ -581,8 +346,8 @@ class QgsEditFormConfig : QObject
      */
     PythonInitCodeSource initCodeSource() const;
 
-    /** Set if python code shall be used for edit form initialization */
-    void setInitCodeSource( const PythonInitCodeSource initCodeSource );
+    /** Set if python code shall be used for edit form initialization and its origin */
+    void setInitCodeSource( PythonInitCodeSource initCodeSource );
 
     /** Type of feature form pop-up suppression after feature creation (overrides app setting) */
     FeatureFormSuppress suppress() const;
@@ -606,5 +371,5 @@ class QgsEditFormConfig : QObject
     /**
      * Deserialize drag and drop designer elements.
      */
-    QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent );
+    QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement* parent );
 };

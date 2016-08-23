@@ -32,6 +32,22 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
   public:
     explicit QgsRelationWidgetWrapper( QgsVectorLayer* vl, const QgsRelation& relation, QWidget* editor = nullptr, QWidget* parent = nullptr );
 
+    /**
+     * Defines if a title lable should be shown for this widget.
+     * Only has an effect after widget() has been called at least once.
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showLabel() const;
+
+    /**
+     * Defines if a title lable should be shown for this widget.
+     * Only has an effect after widget() has been called at least once.
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowLabel( bool showLabel );
+
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;

@@ -23,6 +23,8 @@
 #include "qmath.h"
 #include "gdal.h"
 #include "cpl_string.h"
+#include "qgslogger.h"
+
 #include <QProgressDialog>
 #include <QFile>
 

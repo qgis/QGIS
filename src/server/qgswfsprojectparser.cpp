@@ -22,6 +22,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsmapserviceexception.h"
 #include "qgsaccesscontrol.h"
+#include "qgslogger.h"
 
 QgsWfsProjectParser::QgsWfsProjectParser(
   const QString& filePath

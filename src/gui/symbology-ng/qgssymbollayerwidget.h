@@ -29,7 +29,7 @@ class QgsMapCanvas;
 /** \ingroup gui
  * \class QgsSymbolLayerWidget
  */
-class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, private QgsExpressionContextGenerator
+class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -797,7 +797,7 @@ class GUI_EXPORT QgsGeometryGeneratorSymbolLayerWidget : public QgsSymbolLayerWi
     QgsGeometryGeneratorSymbolLayer* mLayer;
 
   private slots:
-    void updateExpression();
+    void updateExpression( const QString& string );
     void updateSymbolType();
 };
 

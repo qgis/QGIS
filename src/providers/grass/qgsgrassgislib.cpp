@@ -395,7 +395,7 @@ char GRASS_LIB_EXPORT *QgsGrassGisLib::G_find_cell2( const char * name, const ch
     return 0;
   }
   QString ms = "qgis";
-  return qstrdup( ms.toAscii() );  // memory lost
+  return qstrdup( ms.toLatin1() );  // memory lost
 }
 
 char GRASS_LIB_EXPORT *G__file_name( char *path, const char *element, const char *name, const char *mapset )
@@ -1333,7 +1333,7 @@ char GRASS_LIB_EXPORT *G_tempfile( void )
   QTemporaryFile file( "qgis-grass-temp.XXXXXX" );
   QString name = file.fileName();
   file.open();
-  return name.toAscii().data();
+  return name.toLatin1().data();
 }
 
 char GRASS_LIB_EXPORT *G_mapset( void )

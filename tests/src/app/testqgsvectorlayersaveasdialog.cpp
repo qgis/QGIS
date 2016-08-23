@@ -75,7 +75,7 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
   QVERIFY( tempLayer->isValid() );
 
   // Set a widget
-  tempLayer->editFormConfig()->setWidgetType( 0, "ValueRelation" );
+  tempLayer->editFormConfig().setWidgetType( 0, "ValueRelation" );
 
   QgsVectorLayerSaveAsDialog d( tempLayer.data() );
 

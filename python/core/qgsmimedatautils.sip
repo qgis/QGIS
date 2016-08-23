@@ -40,4 +40,10 @@ class QgsMimeDataUtils
 
     static UriList decodeUriList( const QMimeData* data );
 
+    /**
+     * Returns encoded URI list from a list of layer tree nodes.
+     * @note added in QGIS 3.0
+     */
+    static QByteArray layerTreeNodesToUriList( const QList<QgsLayerTreeNode*>& nodes );
+
 };

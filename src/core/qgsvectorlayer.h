@@ -412,46 +412,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     Q_PROPERTY( QString displayExpression READ displayExpression WRITE setDisplayExpression NOTIFY displayExpressionChanged )
     Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
+    Q_PROPERTY( QgsEditFormConfig editFormConfig READ editFormConfig WRITE setEditFormConfig NOTIFY editFormConfigChanged )
+    Q_PROPERTY( bool readOnly READ isReadOnly WRITE setReadOnly NOTIFY readOnlyChanged )
 
   public:
-
-    typedef QgsEditFormConfig::GroupData GroupData;
-    typedef QgsEditFormConfig::TabData TabData;
-
-    enum EditorLayout
-    {
-      GeneratedLayout = 0,
-      TabLayout = 1,
-      UiFileLayout = 2
-    };
-
-    struct ValueRelationData
-    {
-      ValueRelationData()
-          : mAllowNull( false )
-          , mOrderByValue( false )
-          , mAllowMulti( false )
-      {}
-      ValueRelationData( const QString& layer, const QString& key, const QString& value, bool allowNull, bool orderByValue,
-                         bool allowMulti = false,
-                         const QString& filterExpression = QString::null )
-          : mLayer( layer )
-          , mKey( key )
-          , mValue( value )
-          , mFilterExpression( filterExpression )
-          , mAllowNull( allowNull )
-          , mOrderByValue( orderByValue )
-          , mAllowMulti( allowMulti )
-      {}
-
-      QString mLayer;
-      QString mKey;
-      QString mValue;
-      QString mFilterExpression;
-      bool mAllowNull;
-      bool mOrderByValue;
-      bool mAllowMulti;  /* allow selection of multiple keys */
-    };
 
     //! Result of an edit operation
     enum EditResult
@@ -807,12 +771,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Retained for backward compatibility
      */
     virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag ) override;
-
-    /** Convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
-     * @param elem the DOM element
-     * @param parent the QObject which will own this object
-     */
-    QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent ) { return mEditFormConfig->attributeEditorElementFromDomElement( elem, parent ); }
 
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.
@@ -1233,21 +1191,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool renameAttribute( int attIndex, const QString& newName );
 
     /**
-     * Get the configuration of the form used to represent this vector layer.
-     * This is a writable configuration that can directly be changed in place.
-     *
-     * @return The configuration of this layers' form
-     *
-     * @note Added in QGIS 2.14
-     */
-    QgsEditFormConfig* editFormConfig() const { return mEditFormConfig; }
-
-    /**
-     * Clears all the tabs for the attribute editor form
-     */
-    void clearAttributeEditorWidgets() { mEditFormConfig->clearTabs(); }
-
-    /**
      * Returns the alias of an attribute name or a null string if there is no alias.
      *
      * @see {attributeDisplayName( int attributeIndex )} which returns the field name
@@ -1260,10 +1203,23 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     const QMap< QString, QString >& attributeAliases() const { return mAttributeAliasMap; }
 
+    /**
+     * A set of attributes that are not advertised in WMS requests with QGIS server.
+     */
     const QSet<QString>& excludeAttributesWms() const { return mExcludeAttributesWMS; }
+    /**
+     * A set of attributes that are not advertised in WMS requests with QGIS server.
+     */
     void setExcludeAttributesWms( const QSet<QString>& att ) { mExcludeAttributesWMS = att; }
 
+    /**
+     * A set of attributes that are not advertised in WFS requests with QGIS server.
+     */
     const QSet<QString>& excludeAttributesWfs() const { return mExcludeAttributesWFS; }
+
+    /**
+     * A set of attributes that are not advertised in WFS requests with QGIS server.
+     */
     void setExcludeAttributesWfs( const QSet<QString>& att ) { mExcludeAttributesWFS = att; }
 
     /** Delete an attribute field (but does not commit it) */
@@ -1327,9 +1283,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /** Set annotation form for layer */
     void setAnnotationForm( const QString& ui );
-
-    /** Access value relation widget data */
-    ValueRelationData valueRelation( int idx ) const;
 
     /**
      * Get relations, where the foreign key is on this layer
@@ -1517,6 +1470,26 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setMapTipTemplate( const QString& mapTipTemplate );
 
     QgsExpressionContext createExpressionContext() const override;
+
+    /**
+     * Get the configuration of the form used to represent this vector layer.
+     * This is a writable configuration that can directly be changed in place.
+     *
+     * @return The configuration of this layers' form
+     *
+     * @note Added in QGIS 2.14
+     */
+    QgsEditFormConfig editFormConfig() const;
+
+    /**
+     * Get the configuration of the form used to represent this vector layer.
+     * This is a writable configuration that can directly be changed in place.
+     *
+     * @return The configuration of this layers' form
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setEditFormConfig( const QgsEditFormConfig& editFormConfig );
 
   public slots:
     /**
@@ -1775,14 +1748,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Emitted when the map tip changes
      *
-     * @note added in 3.0
+     * @note added in QGIS 3.0
      */
     void mapTipTemplateChanged();
 
     /**
      * Emitted when the display expression changes
      *
-     * @note added in 3.0
+     * @note added in QGIS 3.0
      */
     void displayExpressionChanged();
 
@@ -1791,9 +1764,26 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void raiseError( const QString& msg );
 
+    /**
+     * Will be emitted whenever the edit form configuration of this layer changes.
+     *
+     * @note added in QGIS 3.0
+     */
+    void editFormConfigChanged();
+
+    /**
+     * Emitted when the read only state of this layer is changed.
+     * Only applies to manually set readonly state, not to the edit mode.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void readOnlyChanged();
+
+
   private slots:
     void onJoinedFieldsChanged();
     void onFeatureDeleted( QgsFeatureId fid );
+    void onRelationsLoaded();
 
   protected:
     /** Set the extent */
@@ -1876,7 +1866,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QMap< QString, QString > mAttributeAliasMap;
 
     /** Holds the configuration for the edit form */
-    QgsEditFormConfig* mEditFormConfig;
+    QgsEditFormConfig mEditFormConfig;
 
     /** Attributes which are not published in WMS*/
     QSet<QString> mExcludeAttributesWMS;

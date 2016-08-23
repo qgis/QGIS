@@ -26,6 +26,7 @@
 #include "qgsrasterlayer.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreegroup.h"
+#include "qgslogger.h"
 
 #include <QDomDocument>
 #include <QFileInfo>
@@ -198,7 +199,7 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
       QString absoluteFilePath = convertToAbsolutePath( filePath );
       if ( filePath != absoluteFilePath )
       {
-        QUrl destUrl = QUrl::fromEncoded( uri.toAscii() );
+        QUrl destUrl = QUrl::fromEncoded( uri.toLatin1() );
         destUrl.setScheme( "file" );
         destUrl.setPath( absoluteFilePath );
         absoluteUri = destUrl.toEncoded();
@@ -810,7 +811,7 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
       }
 
       //edit type to text
-      attributeElem.setAttribute( "editType", vLayer->editFormConfig()->widgetType( idx ) );
+      attributeElem.setAttribute( "editType", vLayer->editFormConfig().widgetType( idx ) );
       attributeElem.setAttribute( "comment", field.comment() );
       attributeElem.setAttribute( "length", field.length() );
       attributeElem.setAttribute( "precision", field.precision() );
@@ -1554,10 +1555,10 @@ void QgsServerProjectParser::addValueRelationLayersForLayer( const QgsVectorLaye
 
   for ( int idx = 0; idx < vl->pendingFields().size(); idx++ )
   {
-    if ( vl->editFormConfig()->widgetType( idx ) != "ValueRelation" )
+    if ( vl->editFormConfig().widgetType( idx ) != "ValueRelation" )
       continue;
 
-    QgsEditorWidgetConfig cfg( vl->editFormConfig()->widgetConfig( idx ) );
+    QgsEditorWidgetConfig cfg( vl->editFormConfig().widgetConfig( idx ) );
     if ( !cfg.contains( "Layer" ) )
       continue;
 

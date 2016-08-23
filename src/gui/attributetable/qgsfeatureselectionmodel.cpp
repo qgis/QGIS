@@ -17,7 +17,7 @@
 #include "qgsifeatureselectionmanager.h"
 #include "qgsfeatureselectionmodel.h"
 #include "qgsvectorlayer.h"
-#include <qdebug.h>
+#include "qgslogger.h"
 
 QgsFeatureSelectionModel::QgsFeatureSelectionModel( QAbstractItemModel* model, QgsFeatureModel* featureModel, QgsIFeatureSelectionManager* featureSelectionManager, QObject* parent )
     : QItemSelectionModel( model, parent )

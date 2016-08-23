@@ -107,7 +107,7 @@ bool QgsDelimitedTextFile::open()
       mStream = new QTextStream( mFile );
       if ( ! mEncoding.isEmpty() )
       {
-        QTextCodec *codec =  QTextCodec::codecForName( mEncoding.toAscii() );
+        QTextCodec *codec =  QTextCodec::codecForName( mEncoding.toLatin1() );
         mStream->setCodec( codec );
       }
       if ( mUseWatcher )
@@ -138,7 +138,7 @@ void QgsDelimitedTextFile::resetDefinition()
 // Extract the provider definition from the url
 bool QgsDelimitedTextFile::setFromUrl( const QString& url )
 {
-  QUrl qurl = QUrl::fromEncoded( url.toAscii() );
+  QUrl qurl = QUrl::fromEncoded( url.toLatin1() );
   return setFromUrl( qurl );
 }
 

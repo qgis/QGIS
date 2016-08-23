@@ -292,7 +292,7 @@ void QgsAttributeFormEditorWidget::updateWidgets()
 {
   //first update the tool buttons
   bool hasMultiEditButton = ( mEditPage->layout()->indexOf( mMultiEditButton ) >= 0 );
-  bool fieldReadOnly = layer()->editFormConfig()->readOnly( mWidget->fieldIdx() );
+  bool fieldReadOnly = layer()->editFormConfig().readOnly( mWidget->fieldIdx() );
 
   if ( hasMultiEditButton )
   {

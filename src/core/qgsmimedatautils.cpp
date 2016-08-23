@@ -17,7 +17,13 @@
 #include "qgsmimedatautils.h"
 
 #include "qgsdataitem.h"
+#include "qgslayertree.h"
 #include "qgslogger.h"
+#include "qgspluginlayer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 static const char* QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 
@@ -70,15 +76,8 @@ bool QgsMimeDataUtils::isUriList( const QMimeData* data )
 QMimeData* QgsMimeDataUtils::encodeUriList( const QgsMimeDataUtils::UriList& layers )
 {
   QMimeData *mimeData = new QMimeData();
-  QByteArray encodedData;
 
-  QDataStream stream( &encodedData, QIODevice::WriteOnly );
-  Q_FOREACH ( const Uri& u, layers )
-  {
-    stream << u.data();
-  }
-
-  mimeData->setData( QGIS_URILIST_MIMETYPE, encodedData );
+  mimeData->setData( QGIS_URILIST_MIMETYPE, uriListToByteArray( layers ) );
   return mimeData;
 }
 
@@ -96,6 +95,52 @@ QgsMimeDataUtils::UriList QgsMimeDataUtils::decodeUriList( const QMimeData* data
     list.append( Uri( xUri ) );
   }
   return list;
+}
+
+
+static void _addLayerTreeNodeToUriList( QgsLayerTreeNode* node, QgsMimeDataUtils::UriList& uris )
+{
+  if ( QgsLayerTree::isGroup( node ) )
+  {
+    Q_FOREACH ( QgsLayerTreeNode* child, QgsLayerTree::toGroup( node )->children() )
+      _addLayerTreeNodeToUriList( child, uris );
+  }
+  else if ( QgsLayerTree::isLayer( node ) )
+  {
+    QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
+    if ( !nodeLayer->layer() )
+      return;
+
+    QgsMimeDataUtils::Uri uri;
+    if ( QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( nodeLayer->layer() ) )
+    {
+      uri.layerType = "vector";
+      uri.name = vlayer->name();
+      uri.providerKey = vlayer->dataProvider()->name();
+      uri.uri = vlayer->dataProvider()->dataSourceUri();
+    }
+    else if ( QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer*>( nodeLayer->layer() ) )
+    {
+      uri.layerType = "raster";
+      uri.name = rlayer->name();
+      uri.providerKey = rlayer->dataProvider()->name();
+      uri.uri = rlayer->dataProvider()->dataSourceUri();
+    }
+    else
+    {
+      // plugin layers do not have a standard way of storing their URI...
+      return;
+    }
+    uris << uri;
+  }
+}
+
+QByteArray QgsMimeDataUtils::layerTreeNodesToUriList( const QList<QgsLayerTreeNode *>& nodes )
+{
+  UriList uris;
+  Q_FOREACH ( QgsLayerTreeNode* node, nodes )
+    _addLayerTreeNodeToUriList( node, uris );
+  return uriListToByteArray( uris );
 }
 
 QString QgsMimeDataUtils::encode( const QStringList& items )
@@ -141,3 +186,15 @@ QStringList QgsMimeDataUtils::decode( const QString& encoded )
   return items;
 }
 
+
+QByteArray QgsMimeDataUtils::uriListToByteArray( const QgsMimeDataUtils::UriList& layers )
+{
+  QByteArray encodedData;
+
+  QDataStream stream( &encodedData, QIODevice::WriteOnly );
+  Q_FOREACH ( const Uri& u, layers )
+  {
+    stream << u.data();
+  }
+  return encodedData;
+}

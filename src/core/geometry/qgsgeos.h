@@ -128,6 +128,17 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      */
     QgsGeometry shortestLine( const QgsGeometry& other, QString* errorMsg = nullptr ) const;
 
+    /** Returns a distance representing the location along this linestring of the closest point
+     * on this linestring geometry to the specified point. Ie, the returned value indicates
+     * how far along this linestring you need to traverse to get to the closest location
+     * where this linestring comes to the specified point.
+     * @param point point to seek proximity to
+     * @param errorMsg error messages emitted, if any
+     * @note only valid for linestring geometries
+     * @return distance along line, or -1 on error
+     */
+    double lineLocatePoint( const QgsPointV2& point, QString* errorMsg = nullptr ) const;
+
     /** Create a geometry from a GEOSGeometry
      * @param geos GEOSGeometry. Ownership is NOT transferred.
      */

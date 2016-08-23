@@ -471,12 +471,14 @@ void QgsRelationReferenceWidget::init()
         int idx = mReferencedLayer->fieldNameIndex( fieldName );
         QComboBox* cb = new QComboBox();
         cb->setProperty( "Field", fieldName );
+        cb->setProperty( "FieldAlias", mReferencedLayer->attributeDisplayName( idx ) );
         mFilterComboBoxes << cb;
         mReferencedLayer->uniqueValues( idx, uniqueValues );
-        cb->addItem( mReferencedLayer->attributeAlias( idx ).isEmpty() ? fieldName : mReferencedLayer->attributeAlias( idx ) );
+        cb->addItem( mReferencedLayer->attributeDisplayName( idx ) );
         QVariant nullValue = QSettings().value( "qgis/nullValue", "NULL" );
         cb->addItem( nullValue.toString(), QVariant( mReferencedLayer->fields().at( idx ).type() ) );
 
+        std::sort( uniqueValues.begin(), uniqueValues.end(), qgsVariantLessThan );
         Q_FOREACH ( const QVariant& v, uniqueValues )
         {
           cb->addItem( v.toString(), v );
@@ -500,8 +502,8 @@ void QgsRelationReferenceWidget::init()
         {
           for ( int i = 0; i < mFilterComboBoxes.count() - 1; ++i )
           {
-            QVariant cv = ft.attribute( mFilterFields[i] );
-            QVariant nv = ft.attribute( mFilterFields[i + 1] );
+            QVariant cv = ft.attribute( mFilterFields.at( i ) );
+            QVariant nv = ft.attribute( mFilterFields.at( i + 1 ) );
             QString cf = cv.isNull() ? nullValue.toString() : cv.toString();
             QString nf = nv.isNull() ? nullValue.toString() : nv.toString();
             mFilterCache[mFilterFields[i]][cf] << nf;
@@ -821,14 +823,17 @@ void QgsRelationReferenceWidget::filterChanged()
       {
         cb->blockSignals( true );
         cb->clear();
-        cb->addItem( cb->property( "Field" ).toString() );
+        cb->addItem( cb->property( "FieldAlias" ).toString() );
 
         // ccb = scb
         // cb = scb + 1
+        QStringList texts;
         Q_FOREACH ( const QString& txt, mFilterCache[ccb->property( "Field" ).toString()][ccb->currentText()] )
         {
-          cb->addItem( txt );
+          texts << txt;
         }
+        texts.sort();
+        cb->addItems( texts );
 
         cb->setEnabled( true );
         cb->blockSignals( false );

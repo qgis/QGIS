@@ -27,6 +27,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsproviderregistry.h"
 #include "qgsslconnect.h"
+#include "qgslogger.h"
 
 #include <cpl_vsi.h>
 #include <cpl_conv.h>

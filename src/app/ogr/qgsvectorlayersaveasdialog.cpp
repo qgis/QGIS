@@ -249,8 +249,8 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
     bool foundFieldThatCanBeExportedAsDisplayedValue = false;
     for ( int i = 0; i < mLayer->fields().size(); ++i )
     {
-      if ( mLayer->editFormConfig()->widgetType( i ) != "TextEdit" &&
-           QgsEditorWidgetRegistry::instance()->factory( mLayer->editFormConfig()->widgetType( i ) ) )
+      if ( mLayer->editFormConfig().widgetType( i ) != "TextEdit" &&
+           QgsEditorWidgetRegistry::instance()->factory( mLayer->editFormConfig().widgetType( i ) ) )
       {
         foundFieldThatCanBeExportedAsDisplayedValue = true;
         break;
@@ -287,8 +287,8 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
       {
         QgsEditorWidgetFactory *factory = nullptr;
         if ( flags == Qt::ItemIsEnabled &&
-             mLayer->editFormConfig()->widgetType( i ) != "TextEdit" &&
-             ( factory = QgsEditorWidgetRegistry::instance()->factory( mLayer->editFormConfig()->widgetType( i ) ) ) )
+             mLayer->editFormConfig().widgetType( i ) != "TextEdit" &&
+             ( factory = QgsEditorWidgetRegistry::instance()->factory( mLayer->editFormConfig().widgetType( i ) ) ) )
         {
           item = new QTableWidgetItem( tr( "Use %1" ).arg( factory->name() ) );
           item->setFlags(( selectAllFields ) ? ( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable ) : Qt::ItemIsUserCheckable );

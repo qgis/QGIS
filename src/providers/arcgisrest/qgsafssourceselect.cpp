@@ -21,6 +21,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsowsconnection.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgslogger.h"
 
 #include <QMessageBox>
 

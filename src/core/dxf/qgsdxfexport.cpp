@@ -39,6 +39,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsunittypes.h"
 #include "qgstextlabelfeature.h"
+#include "qgslogger.h"
 
 #include "qgswkbtypes.h"
 #include "qgspointv2.h"

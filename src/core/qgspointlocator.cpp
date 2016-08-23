@@ -20,6 +20,7 @@
 #include "qgsvectorlayer.h"
 #include "qgswkbptr.h"
 #include "qgis.h"
+#include "qgslogger.h"
 
 #include <SpatialIndex.h>
 

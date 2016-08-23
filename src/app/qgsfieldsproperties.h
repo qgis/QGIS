@@ -56,6 +56,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
             : mType( Field )
             , mColumnCount( 1 )
             , mShowAsGroupBox( false )
+            , mShowLabel( true )
         {}
 
         DesignerTreeItemData( Type type, const QString& name )
@@ -63,6 +64,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
             , mName( name )
             , mColumnCount( 1 )
             , mShowAsGroupBox( false )
+            , mShowLabel( true )
         {}
 
         QString name() const { return mName; }
@@ -79,11 +81,15 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         bool showAsGroupBox() const;
         void setShowAsGroupBox( bool showAsGroupBox );
 
+        bool showLabel() const;
+        void setShowLabel( bool showLabel );
+
       private:
         Type mType;
         QString mName;
         int mColumnCount;
         bool mShowAsGroupBox;
+        bool mShowLabel;
     };
 
     /**
@@ -119,7 +125,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     /** Creates the a proper item to save from the tree
      * @return A widget definition. Containing another container or the final field
      */
-    QgsAttributeEditorElement* createAttributeEditorWidget( QTreeWidgetItem* item, QObject *parent, bool forceGroup = true );
+    QgsAttributeEditorElement* createAttributeEditorWidget( QTreeWidgetItem* item, QgsAttributeEditorElement* parent, bool forceGroup = true );
 
     void init();
     void apply();

@@ -1471,6 +1471,24 @@ QgsGeometry QgsGeometry::interpolate( double distance ) const
   return QgsGeometry( result );
 }
 
+double QgsGeometry::lineLocatePoint( const QgsGeometry& point ) const
+{
+  if ( type() != QgsWkbTypes::LineGeometry )
+    return -1;
+
+  if ( QgsWkbTypes::flatType( point.wkbType() ) != QgsWkbTypes::Point )
+    return -1;
+
+  QgsGeometry segmentized = *this;
+  if ( QgsWkbTypes::isCurvedType( wkbType() ) )
+  {
+    segmentized = QgsGeometry( static_cast< QgsCurve* >( d->geometry )->segmentize() );
+  }
+
+  QgsGeos geos( d->geometry );
+  return geos.lineLocatePoint( *( static_cast< QgsPointV2* >( point.d->geometry ) ) );
+}
+
 QgsGeometry QgsGeometry::intersection( const QgsGeometry& geometry ) const
 {
   if ( !d->geometry || geometry.isEmpty() )

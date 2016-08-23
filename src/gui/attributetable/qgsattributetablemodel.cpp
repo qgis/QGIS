@@ -339,12 +339,12 @@ void QgsAttributeTableModel::loadAttributes()
 
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    const QString widgetType = layer()->editFormConfig()->widgetType( idx );
+    const QString widgetType = layer()->editFormConfig().widgetType( idx );
     QgsEditorWidgetFactory* widgetFactory = QgsEditorWidgetRegistry::instance()->factory( widgetType );
     if ( widgetFactory )
     {
       mWidgetFactories.append( widgetFactory );
-      mWidgetConfigs.append( layer()->editFormConfig()->widgetConfig( idx ) );
+      mWidgetConfigs.append( layer()->editFormConfig().widgetConfig( idx ) );
       mAttributeWidgetCaches.append( widgetFactory->createCache( layer(), idx, mWidgetConfigs.last() ) );
 
       attributes << idx;
@@ -727,7 +727,7 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
   if ( layer()->isEditable() &&
-       !layer()->editFormConfig()->readOnly( mAttributes[index.column()] ) &&
+       !layer()->editFormConfig().readOnly( mAttributes[index.column()] ) &&
        (( layer()->dataProvider() && layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) ||
         FID_IS_NEW( rowToId( index.row() ) ) ) )
     flags |= Qt::ItemIsEditable;

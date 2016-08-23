@@ -239,13 +239,19 @@ class QgsFeature
      * @returns feature ID
      * @see setFeatureId
      */
-    qint64 id() const;
+    QgsFeatureId id() const;
 
     /** Sets the feature ID for this feature.
      * @param id feature id
      * @see id
      */
-    void setFeatureId( qint64 id );
+    void setFeatureId( QgsFeatureId id );
+
+    /** Sets the feature ID for this feature.
+     * @param id feature id
+     * @see id
+     */
+    void setId( QgsFeatureId id );
 
     /** Returns the feature's attributes.
      * @link attributes @endlink method.

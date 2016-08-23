@@ -1094,7 +1094,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
     for ( int i = 0; i < list.size(); ++i )
     {
       QgsDebugMsg( QString( "i: %1; value: %2; type: %3" )
-                   .arg( i ).arg( list.at( i ).toString().toAscii().data() ).arg( list.at( i ).typeName() ) );
+                   .arg( i ).arg( list.at( i ).toString().toLatin1().data() ).arg( list.at( i ).typeName() ) );
     }
 #endif
     if ( !query.exec() )
@@ -1529,7 +1529,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
       for ( int i = 0; i < list.size(); ++i )
       {
         QgsDebugMsg( QString( "i: %1; value: %2; type: %3" )
-                     .arg( i ).arg( list.at( i ).toString().toAscii().data() ).arg( list.at( i ).typeName() ) );
+                     .arg( i ).arg( list.at( i ).toString().toLatin1().data() ).arg( list.at( i ).typeName() ) );
       }
 
     }

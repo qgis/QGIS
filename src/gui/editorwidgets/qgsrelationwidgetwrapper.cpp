@@ -46,6 +46,20 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
     mWidget->setVisible( visible );
 }
 
+bool QgsRelationWidgetWrapper::showLabel() const
+{
+  if ( mWidget )
+    return mWidget->showLabel();
+  else
+    return false;
+}
+
+void QgsRelationWidgetWrapper::setShowLabel( bool showLabel )
+{
+  if ( mWidget )
+    mWidget->setShowLabel( showLabel );
+}
+
 void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
 {
   QgsRelationEditorWidget* w = dynamic_cast<QgsRelationEditorWidget*>( editor );

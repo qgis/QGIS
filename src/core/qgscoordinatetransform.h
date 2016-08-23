@@ -19,7 +19,6 @@
 
 #include <QExplicitlySharedDataPointer>
 #include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransform_p.h"
 
 class QgsCoordinateTransformPrivate;
 class QgsPoint;
@@ -61,6 +60,18 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     QgsCoordinateTransform( const QgsCoordinateReferenceSystem& source,
                             const QgsCoordinateReferenceSystem& destination );
+
+    /**
+     * Copy constructor
+     */
+    QgsCoordinateTransform( const QgsCoordinateTransform& o );
+
+    /**
+     * Assignment operator
+     */
+    QgsCoordinateTransform& operator=( const QgsCoordinateTransform& o );
+
+    ~QgsCoordinateTransform();
 
     /*!
      * Returns true if the coordinate transform is valid, ie both the source and destination

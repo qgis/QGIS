@@ -196,7 +196,7 @@ QString QgsHandleBadLayers::filename( int row )
     }
     else if ( provider == "delimitedtext" )
     {
-      return QUrl::fromEncoded( datasource.toAscii() ).toLocalFile();
+      return QUrl::fromEncoded( datasource.toLatin1() ).toLocalFile();
     }
   }
   else
@@ -234,7 +234,7 @@ void QgsHandleBadLayers::setFilename( int row, const QString& filename )
     }
     else if ( provider == "delimitedtext" )
     {
-      QUrl uriSource = QUrl::fromEncoded( datasource.toAscii() );
+      QUrl uriSource = QUrl::fromEncoded( datasource.toLatin1() );
       QUrl uriDest = QUrl::fromLocalFile( filename );
       uriDest.setQueryItems( uriSource.queryItems() );
       datasource = QString::fromAscii( uriDest.toEncoded() );

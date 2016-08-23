@@ -218,7 +218,7 @@ bool QgsAuthCertInfo::populateCertChain()
     QSslCertificate qcert;
     if ( !cert.isNull() )
     {
-      qcert = QSslCertificate( cert.toPEM().toAscii() );
+      qcert = QSslCertificate( cert.toPEM().toLatin1() );
     }
     mQCertChain.append( qcert );
   }

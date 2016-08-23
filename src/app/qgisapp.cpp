@@ -1273,7 +1273,9 @@ void QgisApp::dragEnterEvent( QDragEnterEvent *event )
 {
   if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( "application/x-vnd.qgis.qgis.uri" ) )
   {
-    event->acceptProposedAction();
+    // the mime data are coming from layer tree, so ignore that, do not import those layers again
+    if ( !event->mimeData()->hasFormat( "application/qgis.layertreemodeldata" ) )
+      event->acceptProposedAction();
   }
 }
 
@@ -6147,10 +6149,10 @@ QVariant QgisAppFieldValueConverter::convert( int idx, const QVariant& value )
   {
     return value;
   }
-  QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( mLayer->editFormConfig()->widgetType( idx ) );
+  QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( mLayer->editFormConfig().widgetType( idx ) );
   if ( factory )
   {
-    QgsEditorWidgetConfig cfg( mLayer->editFormConfig()->widgetConfig( idx ) );
+    QgsEditorWidgetConfig cfg( mLayer->editFormConfig().widgetConfig( idx ) );
     return QVariant( factory->representValue( mLayer, idx, cfg, QVariant(), value ) );
   }
   return value;

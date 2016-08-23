@@ -334,7 +334,7 @@ QFunctionPointer QgsAuthMethodRegistry::function( QString const & authMethodKey,
 
   if ( myLib.load() )
   {
-    return myLib.resolve( functionName.toAscii().data() );
+    return myLib.resolve( functionName.toLatin1().data() );
   }
   else
   {
@@ -352,7 +352,7 @@ void *QgsAuthMethodRegistry::function( QString const & authMethodKey,
 
   if ( myLib.load() )
   {
-    return myLib.resolve( functionName.toAscii().data() );
+    return myLib.resolve( functionName.toLatin1().data() );
   }
   else
   {

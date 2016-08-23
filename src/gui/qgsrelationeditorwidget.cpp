@@ -27,6 +27,7 @@
 #include "qgsvectorlayertools.h"
 #include "qgsproject.h"
 #include "qgstransactiongroup.h"
+#include "qgslogger.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -34,6 +35,7 @@
 QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget* parent )
     : QgsCollapsibleGroupBox( parent )
     , mViewMode( QgsDualView::AttributeEditor )
+    , mShowLabel( true )
     , mVisible( false )
 {
   QVBoxLayout* topLayout = new QVBoxLayout( this );
@@ -152,7 +154,8 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation& relation, c
   connect( mRelation.referencingLayer(), SIGNAL( editingStarted() ), this, SLOT( updateButtons() ) );
   connect( mRelation.referencingLayer(), SIGNAL( editingStopped() ), this, SLOT( updateButtons() ) );
 
-  setTitle( relation.name() );
+  if ( mShowLabel )
+    setTitle( relation.name() );
 
   QgsVectorLayer* lyr = relation.referencingLayer();
 
@@ -542,4 +545,19 @@ void QgsRelationEditorWidget::updateUi()
       mDualView->init( mRelation.referencingLayer(), nullptr, myRequest, mEditorContext );
     }
   }
+}
+
+bool QgsRelationEditorWidget::showLabel() const
+{
+  return mShowLabel;
+}
+
+void QgsRelationEditorWidget::setShowLabel( bool showLabel )
+{
+  mShowLabel = showLabel;
+
+  if ( mShowLabel && mRelation.isValid() )
+    setTitle( mRelation.name() );
+  else
+    setTitle( QString() );
 }
