@@ -421,7 +421,7 @@ QString QgsSymbolLayerUtils::encodeSldUom( QgsUnitTypes::RenderUnit unit, double
       // pixel is the SLD default uom. The "standardized rendering pixel
       // size" is defined to be 0.28mm × 0.28mm (millimeters).
       if ( scaleFactor )
-        *scaleFactor = 0.28;  // from millimeters to pixels
+        *scaleFactor = 1 / 0.28;  // from millimeters to pixels
 
       // http://www.opengeospatial.org/sld/units/pixel
       return QString();
@@ -3922,4 +3922,81 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
   }
 
   return breaks;
+}
+
+double QgsSymbolLayerUtils::rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props )
+{
+  double scale = 1;
+  bool roundToUnit = false;
+  if ( unit == QgsUnitTypes::RenderUnknownUnit )
+  {
+    if ( props.contains( "uomScale" ) )
+    {
+      bool ok;
+      scale = props.value( "uomScale" ).toDouble( &ok );
+      if ( !ok )
+      {
+        return size;
+      }
+    }
+  }
+  else
+  {
+    if ( props.value( "uom" ) == "http://www.opengeospatial.org/se/units/metre" )
+    {
+      switch ( unit )
+      {
+        case QgsUnitTypes::RenderMillimeters:
+          scale = 0.001;
+          break;
+        case QgsUnitTypes::RenderPixels:
+          scale = 0.00028;
+          roundToUnit = true;
+          break;
+        default:
+          scale = 1;
+      }
+    }
+    else
+    {
+      // target is pixels
+      switch ( unit )
+      {
+        case QgsUnitTypes::RenderMillimeters:
+          scale = 1 / 0.28;
+          roundToUnit = true;
+          break;
+          // we don't have a good case for map units, as pixel values won't change based on zoom
+        default:
+          scale = 1;
+      }
+    }
+
+  }
+  double rescaled = size * scale;
+  // round to unit if the result is pixels to avoid a weird looking SLD (people often think
+  // of pixels as integers, even if SLD allows for float values in there
+  if ( roundToUnit )
+  {
+    rescaled = qRound( rescaled );
+  }
+  return rescaled;
+}
+
+QPointF QgsSymbolLayerUtils::rescaleUom( const QPointF& point, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props )
+{
+  double x = rescaleUom( point.x(), unit, props );
+  double y = rescaleUom( point.y(), unit, props );
+  return QPointF( x, y );
+}
+
+QVector<qreal> QgsSymbolLayerUtils::rescaleUom( const QVector<qreal>& array, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props )
+{
+  QVector<qreal> result;
+  QVector<qreal>::const_iterator it = array.constBegin();
+  for ( ; it != array.constEnd(); ++it )
+  {
+    result.append( rescaleUom( *it, unit, props ) );
+  }
+  return result;
 }
