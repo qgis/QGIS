@@ -44,7 +44,6 @@ from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterFixedTable
 from processing.core.parameters import ParameterRange
@@ -103,17 +102,15 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 continue
             if isinstance(param, ParameterExtent):
                 continue
-            if not self.setParamValue(
-                    param, self.mainWidget.valueItems[param.name]):
-                raise AlgorithmDialogBase.InvalidParameterValue(
-                    param, self.mainWidget.valueItems[param.name])
+            wrapper = self.mainWidget.widget_wrappers[param.name]
+            if not self.setParamValue(param, wrapper):
+                raise AlgorithmDialogBase.InvalidParameterValue(param, wrapper)
 
         for param in params:
             if isinstance(param, ParameterExtent):
-                if not self.setParamValue(
-                        param, self.mainWidget.valueItems[param.name]):
-                    raise AlgorithmDialogBase.InvalidParameterValue(
-                        param, self.mainWidget.valueItems[param.name])
+                wrapper = self.mainWidget.widget_wrappers[param.name]
+                if not self.setParamValue(param, wrapper):
+                    raise AlgorithmDialogBase.InvalidParameterValue(param, wrapper)
 
         for output in outputs:
             if output.hidden:
@@ -136,7 +133,11 @@ class AlgorithmDialog(AlgorithmDialogBase):
             raise ValueError(exp.evalErrorString())
         return result
 
-    def setParamValue(self, param, widget, alg=None):
+    def setParamValue(self, param, wrapper, alg=None):
+        if wrapper.implemented:
+            return param.setValue(wrapper.value())
+
+        widget = wrapper.widget
         if isinstance(param, ParameterRaster):
             return param.setValue(widget.getValue())
         elif isinstance(param, (ParameterVector, ParameterTable)):
@@ -144,8 +145,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 return param.setValue(widget.itemData(widget.currentIndex()))
             except:
                 return param.setValue(widget.getValue())
-        elif isinstance(param, ParameterBoolean):
-            return param.setValue(widget.isChecked())
         elif isinstance(param, ParameterSelection):
             return param.setValue(widget.currentIndex())
         elif isinstance(param, ParameterFixedTable):
