@@ -42,7 +42,7 @@ class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
       Date = 16, /*!< Date or datetime fields */
       Time = 32, /*!< Time fields */
       HideReadOnly = 64,  /*!< Hide read-only fields */
-      All = Numeric | Date | String | Time, /*!< All field types */ //TODO QGIS 3 - rename to AllTypes
+      AllTypes = Numeric | Date | String | Time, /*!< All field types */
     };
     Q_DECLARE_FLAGS( Filters, Filter )
 

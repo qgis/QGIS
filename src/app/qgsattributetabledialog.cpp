@@ -275,7 +275,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   }
 
   mUpdateExpressionText->registerExpressionContextGenerator( this );
-  mFieldCombo->setFilters( QgsFieldProxyModel::All | QgsFieldProxyModel::HideReadOnly );
+  mFieldCombo->setFilters( QgsFieldProxyModel::AllTypes | QgsFieldProxyModel::HideReadOnly );
   mFieldCombo->setLayer( mLayer );
 
   connect( mRunFieldCalc, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpression() ) );

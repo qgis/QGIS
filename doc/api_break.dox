@@ -526,6 +526,12 @@ None will need to be modified, as the method will return an empty geometry if th
 <li>registerGetExpressionContextCallback has been removed in favor of registerExpressionContextGenerator</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsFieldProxyModel QgsFieldProxyModel
+
+<ul>
+<li>In QgsFieldProxyModel::Filter, All has been renamed to AllTypes</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsGeometry QgsGeometry
 
 <ul>

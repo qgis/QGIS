@@ -19,7 +19,7 @@
 
 QgsFieldProxyModel::QgsFieldProxyModel( QObject *parent )
     : QSortFilterProxyModel( parent )
-    , mFilters( All )
+    , mFilters( AllTypes )
     , mModel( new QgsFieldModel( this ) )
 {
   setSourceModel( mModel );
@@ -65,7 +65,7 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   if ( mFilters.testFlag( HideReadOnly ) && isReadOnly( index ) )
     return false;
 
-  if ( mFilters.testFlag( All ) )
+  if ( mFilters.testFlag( AllTypes ) )
     return true;
 
   QVariant typeVar = sourceModel()->data( index, QgsFieldModel::FieldTypeRole );

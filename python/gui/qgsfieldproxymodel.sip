@@ -22,7 +22,7 @@ class QgsFieldProxyModel : QSortFilterProxyModel
       Date, /*!< Date or datetime fields */
       Time, /*!< Time fields */
       HideReadOnly,  /*!< Hide read-only fields */
-      All, /*!< All field types */
+      AllTypes, /*!< All field types */
     };
     typedef QFlags<QgsFieldProxyModel::Filter> Filters;
 
