@@ -27,6 +27,22 @@ tests:
 #        hash: f1fedeb6782f9389cf43590d4c85ada9155ab61fef6dc285aaeb54d6
 #        type: rasterhash
 
+  - algorithm: gdalorg:rasterinfo
+    name: GDAL gdalinfo
+    params:
+      INPUT:
+        name: raster.tif
+        type: raster
+      NOGCP: false
+      NOMETADATA: false
+    results:
+      OUTPUT:
+        name: expected/gdal/raster_info.html
+        type: regex
+        rules:
+          - 'Origin = \(270736.067325068172067,4459029.574521748349071\)'
+          - 'Band 1 Block=16x14 Type=Float32, ColorInterp=Gray'
+          - '  NoData Value=-32768'
 
   - name: GDAL ogrinfo
     algorithm: gdalogr:information
@@ -44,19 +60,18 @@ tests:
           - 'Geometry: Line String'
           - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
 
-  - algorithm: gdalorg:rasterinfo
-    name: GDAL gdalinfo
+  - algorithm: gdalogr:buffervectors
+    name: OGR Buffer lines
     params:
-      INPUT:
-        name: raster.tif
-        type: raster
-      NOGCP: false
-      NOMETADATA: false
+      DISSOLVEALL: false
+      DISTANCE: '1'
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      MULTI: false
+      OPTIONS: ''
     results:
-      OUTPUT:
-        name: expected/gdal/raster_info.html
-        type: regex
-        rules:
-          - 'Origin = \(270736.067325068172067,4459029.574521748349071\)'
-          - 'Band 1 Block=16x14 Type=Float32, ColorInterp=Gray'
-          - '  NoData Value=-32768'
+      OUTPUT_LAYER:
+        name: expected/buffer_lines.gml
+        type: vector
