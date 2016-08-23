@@ -129,8 +129,12 @@ class Parameter:
 
 class ParameterBoolean(Parameter):
 
-    def __init__(self, name='', description='', default=None, optional=False):
-        Parameter.__init__(self, name, description, parseBool(default), optional)
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.BooleanWidgetWrapper'
+    }
+
+    def __init__(self, name='', description='', default=None, optional=False, metadata={}):
+        Parameter.__init__(self, name, description, parseBool(default), optional, metadata)
 
     def setValue(self, value):
         if value is None:
