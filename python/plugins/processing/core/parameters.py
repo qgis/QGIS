@@ -55,7 +55,10 @@ class Parameter:
     take as input.
     """
 
-    def __init__(self, name='', description='', default=None, optional=False):
+    default_metadata = {}
+
+    def __init__(self, name='', description='', default=None, optional=False,
+                 metadata={}):
         self.name = name
         self.description = description
         self.default = default
@@ -69,6 +72,10 @@ class Parameter:
         self.hidden = False
 
         self.optional = parseBool(optional)
+
+        # TODO: make deep copy and deep update
+        self.metadata = self.default_metadata.copy()
+        self.metadata.update(metadata)
 
     def setValue(self, obj):
         """
