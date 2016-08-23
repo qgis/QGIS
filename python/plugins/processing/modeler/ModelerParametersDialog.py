@@ -38,6 +38,12 @@ from qgis.core import QgsNetworkAccessManager
 
 from qgis.gui import QgsMessageBar
 
+from processing.gui.wrappers import (
+    DIALOG_MODELER,
+    wrapper_from_param,
+    NotYetImplementedWidgetWrapper,
+    )
+
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
@@ -47,7 +53,6 @@ from processing.gui.GeometryPredicateSelectionPanel import \
 from processing.core.parameters import (ParameterExtent,
                                         ParameterRaster,
                                         ParameterVector,
-                                        ParameterBoolean,
                                         ParameterTable,
                                         ParameterFixedTable,
                                         ParameterMultipleInput,
@@ -105,6 +110,7 @@ class ModelerParametersDialog(QDialog):
         self.widgets = {}
         self.checkBoxes = {}
         self.showAdvanced = False
+        self.widget_wrappers = {}
         self.valueItems = {}
         self.dependentItems = {}
         self.resize(650, 450)
@@ -158,7 +164,9 @@ class ModelerParametersDialog(QDialog):
                 desc += self.tr('(x, y)')
             label = QLabel(desc)
             self.labels[param.name] = label
-            widget = self.getWidgetFromParameter(param)
+            wrapper = self.getWidgetWrapperFromParameter(param)
+            self.widget_wrappers[param.name] = wrapper
+            widget = wrapper.widget
             self.valueItems[param.name] = widget
             if param.name in tooltips.keys():
                 tooltip = tooltips[param.name]
@@ -306,6 +314,20 @@ class ModelerParametersDialog(QDialog):
             alg = self.model.algs[value.alg]
             return self.tr("'%s' from algorithm '%s'") % (alg.algorithm.getOutputFromName(value.output).description, alg.description)
 
+    def getWidgetWrapperFromParameter(self, param):
+        extra_values = []
+        values = self.getAvailableValuesOfType(param.__class__, None)
+        for value in values:
+            extra_values.append((self.resolveValueDescription(value), value))
+
+        wrapper = wrapper_from_param(param, DIALOG_MODELER, extra_values)
+        if wrapper is not None:
+            return wrapper
+
+        widget = self.getWidgetFromParameter(param)
+        wrapper = NotYetImplementedWidgetWrapper(param, widget)
+        return wrapper
+
     def getWidgetFromParameter(self, param):
         if isinstance(param, ParameterRaster):
             item = QComboBox()
@@ -331,17 +353,6 @@ class ModelerParametersDialog(QDialog):
                 item.addItem(self.resolveValueDescription(table), table)
             for layer in layers:
                 item.addItem(self.resolveValueDescription(layer), layer)
-        elif isinstance(param, ParameterBoolean):
-            item = QComboBox()
-            item.addItem('Yes')
-            item.addItem('No')
-            bools = self.getAvailableValuesOfType(ParameterBoolean, None)
-            for b in bools:
-                item.addItem(self.resolveValueDescription(b), b)
-            if param.default:
-                item.setCurrentIndex(0)
-            else:
-                item.setCurrentIndex(1)
         elif isinstance(param, ParameterSelection):
             item = QComboBox()
             item.addItems(param.options)
@@ -485,11 +496,6 @@ class ModelerParametersDialog(QDialog):
                 combo.setEditText(unicode(value))
         elif isinstance(param, ParameterSelection):
             combo.setCurrentIndex(int(value))
-        elif isinstance(param, ParameterBoolean):
-            if value:
-                combo.setCurrentIndex(0)
-            else:
-                combo.setCurrentIndex(1)
 
     def setPreviousValues(self):
         if self._algName is not None:
@@ -498,11 +504,16 @@ class ModelerParametersDialog(QDialog):
             for param in alg.algorithm.parameters:
                 if param.hidden:
                     continue
-                widget = self.valueItems[param.name]
                 if param.name in alg.params:
                     value = alg.params[param.name]
                 else:
                     value = param.default
+
+                wrapper = self.widget_wrappers[param.name]
+                if wrapper.implemented:
+                    wrapper.setValue(value)
+
+                widget = wrapper.widget
                 if isinstance(param, (
                         ParameterRaster,
                         ParameterVector,
@@ -510,7 +521,6 @@ class ModelerParametersDialog(QDialog):
                         ParameterTableField,
                         ParameterSelection,
                         ParameterNumber,
-                        ParameterBoolean,
                         ParameterExtent,
                         ParameterFile,
                         ParameterPoint,
@@ -565,7 +575,7 @@ class ModelerParametersDialog(QDialog):
         for param in params:
             if param.hidden:
                 continue
-            if not self.setParamValue(alg, param, self.valueItems[param.name]):
+            if not self.setParamValue(alg, param, self.widget_wrappers[param.name]):
                 self.bar.pushMessage("Error", "Wrong or missing value for parameter '%s'" % param.description,
                                      level=QgsMessageBar.WARNING)
                 return None
@@ -721,17 +731,15 @@ class ModelerParametersDialog(QDialog):
             alg.params[param.name] = value
             return True
 
-    def setParamValue(self, alg, param, widget):
+    def setParamValue(self, alg, param, wrapper):
+        if wrapper.implemented:
+            alg.params[param.name] = wrapper.value()
+            return True
+
+        widget = wrapper.widget
         if isinstance(param, (ParameterRaster, ParameterVector,
                               ParameterTable)):
             return self.setParamValueLayerOrTable(alg, param, widget)
-        elif isinstance(param, ParameterBoolean):
-            if widget.currentIndex() < 2:
-                value = widget.currentIndex() == 0
-            else:
-                value = widget.itemData(widget.currentIndex())
-            alg.params[param.name] = value
-            return True
         elif isinstance(param, ParameterString):
             return self.setParamStringValue(alg, param, widget)
         elif isinstance(param, ParameterNumber):
