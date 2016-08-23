@@ -390,7 +390,7 @@ void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values, in
   QgsFeature f;
   QgsAttributeList keys;
   keys.append( index );
-  QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setSubsetOfAttributes( keys ) );
+  QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setSubsetOfAttributes( keys ).setFlags( QgsFeatureRequest::NoGeometry ) );
 
   QSet<QString> set;
   values.clear();
@@ -458,7 +458,8 @@ void QgsVectorDataProvider::fillMinMaxCache() const
 
   QgsFeature f;
   QgsAttributeList keys = mCacheMinValues.keys();
-  QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setSubsetOfAttributes( keys ) );
+  QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setSubsetOfAttributes( keys )
+                                       .setFlags( QgsFeatureRequest::NoGeometry ) );
 
   while ( fi.nextFeature( f ) )
   {
