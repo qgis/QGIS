@@ -17,7 +17,7 @@
 
 
 #include "qgsfeature.h"
-
+#include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 
 class QgsGeometryCache;
@@ -65,64 +65,33 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * @param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
      * all intersecting features are tested and the ring is added to the first valid feature.
      * @param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
-     * @return
-     *   0 in case of success,
-     *   1 problem with feature type,
-     *   2 ring not closed,
-     *   3 ring not valid,
-     *   4 ring crosses existing rings,
-     *   5 no feature found where ring can be inserted
+     * @return AddRingResult result code: success or reason of failure
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr );
+    QgsGeometry::AddRingResult addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr );
 
     /** Adds a ring to polygon/multipolygon features
      * @param ring ring to add
      * @param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
      * all intersecting features are tested and the ring is added to the first valid feature.
      * @param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
-     * @return
-     *  0 in case of success,
-     *  1 problem with feature type,
-     *  2 ring not closed,
-     *  3 ring not valid,
-     *  4 ring crosses existing rings,
-     *  5 no feature found where ring can be inserted
+     * @return AddRingResult result code: success or reason of failure
      * @note available in python bindings as addCurvedRing
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( QgsCurve* ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr );
+    QgsGeometry::AddRingResult addRing( QgsCurve* ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr );
 
     /** Adds a new part polygon to a multipart feature
-     * @return
-     *  0 in case of success,
-     *  1 if selected feature is not multipart,
-     *  2 if ring is not a valid geometry,
-     *  3 if new polygon ring not disjoint with existing rings,
-     *  4 if no feature was selected,
-     *  5 if several features are selected,
-     *  6 if selected geometry not found
+     * @returns QgsGeometry::AddPartResult a result code: success or reason of failure
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QList<QgsPoint>& ring, QgsFeatureId featureId );
+    QgsGeometry::AddPartResult addPart( const QList<QgsPoint>& ring, QgsFeatureId featureId );
 
     /** Adds a new part polygon to a multipart feature
-     * @return
-     *  0 in case of success,
-     *  1 if selected feature is not multipart,
-     *  2 if ring is not a valid geometry,
-     *  3 if new polygon ring not disjoint with existing rings,
-     *  4 if no feature was selected,
-     *  5 if several features are selected,
-     *  6 if selected geometry not found
+     * @returns QgsGeometry::AddPartResult a result code: success or reason of failure
      * @note available in python bindings as addPartV2
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
+    QgsGeometry::AddPartResult addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
 
     // @note available in python bindings as addCurvedPart
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( QgsCurve* ring, QgsFeatureId featureId );
+    QgsGeometry::AddPartResult addPart( QgsCurve* ring, QgsFeatureId featureId );
 
     /** Translates feature by dx, dy
      * @param featureId id of the feature to translate

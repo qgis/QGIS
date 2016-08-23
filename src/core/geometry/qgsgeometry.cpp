@@ -607,7 +607,7 @@ double QgsGeometry::closestSegmentWithContext(
   return sqrDist;
 }
 
-int QgsGeometry::addRing( const QList<QgsPoint> &ring )
+QgsGeometry::AddRingResult QgsGeometry::addRing( const QList<QgsPoint> &ring )
 {
   detach( true );
 
@@ -619,12 +619,12 @@ int QgsGeometry::addRing( const QList<QgsPoint> &ring )
   return addRing( ringLine );
 }
 
-int QgsGeometry::addRing( QgsCurve* ring )
+QgsGeometry::AddRingResult QgsGeometry::addRing( QgsCurve* ring )
 {
   if ( !d->geometry )
   {
     delete ring;
-    return 1;
+    return WrongGeometryType;
   }
 
   detach( true );
@@ -633,14 +633,14 @@ int QgsGeometry::addRing( QgsCurve* ring )
   return QgsGeometryEditUtils::addRing( d->geometry, ring );
 }
 
-int QgsGeometry::addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType )
+QgsGeometry::AddPartResult QgsGeometry::addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType )
 {
   QgsPointSequence l;
   convertPointList( points, l );
   return addPart( l, geomType );
 }
 
-int QgsGeometry::addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType )
+QgsGeometry::AddPartResult QgsGeometry::addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType )
 {
   QgsAbstractGeometry* partGeom = nullptr;
   if ( points.size() == 1 )
@@ -656,7 +656,7 @@ int QgsGeometry::addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryT
   return addPart( partGeom, geomType );
 }
 
-int QgsGeometry::addPart( QgsAbstractGeometry* part, QgsWkbTypes::GeometryType geomType )
+QgsGeometry::AddPartResult QgsGeometry::addPart( QgsAbstractGeometry* part, QgsWkbTypes::GeometryType geomType )
 {
   if ( !d->geometry )
   {
@@ -673,7 +673,7 @@ int QgsGeometry::addPart( QgsAbstractGeometry* part, QgsWkbTypes::GeometryType g
         d->geometry = new QgsMultiPolygonV2();
         break;
       default:
-        return 1;
+        return QgsGeometry::NotMultiGeometry;
     }
   }
   else
@@ -686,21 +686,21 @@ int QgsGeometry::addPart( QgsAbstractGeometry* part, QgsWkbTypes::GeometryType g
   return QgsGeometryEditUtils::addPart( d->geometry, part );
 }
 
-int QgsGeometry::addPart( const QgsGeometry *newPart )
+QgsGeometry::AddPartResult QgsGeometry::addPart( const QgsGeometry *newPart )
 {
   if ( !d->geometry || !newPart || !newPart->d || !newPart->d->geometry )
   {
-    return 1;
+    return QgsGeometry::NotMultiGeometry;
   }
 
   return addPart( newPart->d->geometry->clone() );
 }
 
-int QgsGeometry::addPart( GEOSGeometry *newPart )
+QgsGeometry::AddPartResult QgsGeometry::addPart( GEOSGeometry *newPart )
 {
   if ( !d->geometry || !newPart )
   {
-    return 1;
+    return QgsGeometry::NotMultiGeometry;
   }
 
   detach( true );
@@ -714,7 +714,7 @@ int QgsGeometry::translate( double dx, double dy )
 {
   if ( !d->geometry )
   {
-    return 1;
+    return QgsGeometry::NotMultiGeometry;
   }
 
   detach( true );

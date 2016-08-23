@@ -22,6 +22,7 @@ class QgsGeometryEngine;
 class QgsVectorLayer;
 
 #include "qgsfeature.h"
+#include "qgsgeometry.h"
 #include <QMap>
 
 /** \ingroup core
@@ -34,17 +35,19 @@ class QgsVectorLayer;
 class QgsGeometryEditUtils
 {
   public:
-    /** Adds interior ring (taking ownership).
-    @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
-    3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    static int addRing( QgsAbstractGeometry* geom, QgsCurve* ring );
+    /**
+     * @param geom The geometry to add the ring to
+     * @param ring The ring. This will take ownership.
+     * @return The result of the operation: success or reason of failure.
+     */
+    static QgsGeometry::AddRingResult addRing( QgsAbstractGeometry* geom, QgsCurve* ring );
 
-    /** Adds part to multi type geometry (taking ownership)
-    @return 0 in case of success, 1 if not a multigeometry, 2 if part is not a valid geometry, 3 if new polygon ring
-    not disjoint with existing polygons of the feature*/
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    static int addPart( QgsAbstractGeometry* geom, QgsAbstractGeometry* part );
+    /**
+     * @param geom The geometry to add the ring to
+     * @param ring The ring. This will take ownership.
+     * @return The result of the operation: success or reason of failure.
+     */
+    static QgsGeometry::AddPartResult addPart( QgsAbstractGeometry* geom, QgsAbstractGeometry* part );
 
     /** Deletes a ring from a geometry.
      * @returns true if delete was successful
