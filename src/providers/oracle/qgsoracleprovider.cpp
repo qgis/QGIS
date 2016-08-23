@@ -25,9 +25,6 @@
 #include "qgsvectorlayerimport.h"
 #include "qgslogger.h"
 
-#include "qgsprovidercountcalcevent.h"
-#include "qgsproviderextentcalcevent.h"
-
 #include "qgsoracleprovider.h"
 #include "qgsoracletablemodel.h"
 #include "qgsoraclesourceselect.h"
