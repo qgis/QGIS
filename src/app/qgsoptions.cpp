@@ -507,7 +507,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mDecimalPlacesSpinBox->setValue( decimalPlaces );
 
   // set if base unit of measure tool should be changed
-  bool baseUnit = mSettings->value( "qgis/measure/keepbaseunit", false ).toBool();
+  bool baseUnit = mSettings->value( "qgis/measure/keepbaseunit", true ).toBool();
   if ( baseUnit )
   {
     mKeepBaseUnitCheckBox->setChecked( true );
