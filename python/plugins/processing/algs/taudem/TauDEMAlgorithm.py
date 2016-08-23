@@ -66,7 +66,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'taudem.svg'))
 
     def defineCharacteristicsFromFile(self):
-        with codecs.open(self.descriptionFile, 'utf-8') as f:
+        with codecs.open(self.descriptionFile, encoding='utf-8') as f:
             line = f.readline().strip('\n').strip()
             self.name = line
             self.i18n_name = self.tr(line)
