@@ -372,7 +372,6 @@ class TestQgsServer(unittest.TestCase):
         self.assertEquals(-1, h.find('Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
         self.assertNotEquals(-1, h.find('Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
 
-
     # The following code was used to test type conversion in python bindings
     # def test_qpair(self):
     #    """Test QPair bindings"""
