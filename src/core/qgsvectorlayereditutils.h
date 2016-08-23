@@ -65,33 +65,33 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * @param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
      * all intersecting features are tested and the ring is added to the first valid feature.
      * @param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
-     * @return AddRingResult result code: success or reason of failure
+     * @return OperationResult result code: success or reason of failure
      */
-    QgsGeometry::AddRingResult addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr );
+    QgsGeometry::OperationResult addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr );
 
     /** Adds a ring to polygon/multipolygon features
      * @param ring ring to add
      * @param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
      * all intersecting features are tested and the ring is added to the first valid feature.
      * @param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
-     * @return AddRingResult result code: success or reason of failure
+     * @return OperationResult result code: success or reason of failure
      * @note available in python bindings as addCurvedRing
      */
-    QgsGeometry::AddRingResult addRing( QgsCurve* ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr );
+    QgsGeometry::OperationResult addRing( QgsCurve* ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr );
 
     /** Adds a new part polygon to a multipart feature
-     * @returns QgsGeometry::AddPartResult a result code: success or reason of failure
+     * @returns QgsGeometry::OperationResult a result code: success or reason of failure
      */
-    QgsGeometry::AddPartResult addPart( const QList<QgsPoint>& ring, QgsFeatureId featureId );
+    QgsGeometry::OperationResult addPart( const QList<QgsPoint>& ring, QgsFeatureId featureId );
 
     /** Adds a new part polygon to a multipart feature
-     * @returns QgsGeometry::AddPartResult a result code: success or reason of failure
+     * @returns QgsGeometry::OperationResult a result code: success or reason of failure
      * @note available in python bindings as addPartV2
      */
-    QgsGeometry::AddPartResult addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
+    QgsGeometry::OperationResult addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
 
     // @note available in python bindings as addCurvedPart
-    QgsGeometry::AddPartResult addPart( QgsCurve* ring, QgsFeatureId featureId );
+    QgsGeometry::OperationResult addPart( QgsCurve* ring, QgsFeatureId featureId );
 
     /** Translates feature by dx, dy
      * @param featureId id of the feature to translate

@@ -29,25 +29,21 @@ class QgsGeometry
 #include <qgsgeometry.h>
 %End
   public:
-    enum AddRingResult
+    enum OperationResult
     {
-      AddRingSuccess,
-      WrongGeometryType,
-      RingNotClosed,
-      RingNotValid,
-      RingCrossesExistingRings,
-      RingNotInExistingFeature
-    };
-
-    enum AddPartResult
-    {
-      AddPartSuccess,
-      NotMultiGeometry,
-      PartInvalidGeometry,
-      PolygonRingCrossesExistingRings,
-      NoFeatureSelected,
-      SeveralFeaturesSelected,
-      SelectedGeometryNotFound
+      Success, /*!< Operation succeeded */
+      /* Source geometry or feature issues */
+      NoFeatureSelected, /*!< No feature is selected on the active layer */
+      SeveralFeaturesSelected, /*!< Several features are selected while only one should be */
+      SelectedGeometryNotFound, /*!< The selected geometry cannot be found */
+      NotMultiGeometry, /*!< The source geometry is not multi */
+      /* General input issues */
+      InvalidInputType, /*!< The input geometry (ring or part or ...) has not the correct geometry type */
+      /* Ring specific issues*/
+      RingNotClosed, /*!< The imput ring is not closed */
+      RingNotValid, /*!< The input ring is not valid */
+      RingCrossesExistingRings, /*!< The input ring crosses existing rings (it is not disjoint) */
+      RingNotInExistingFeature, /*!<  The input ring doesn't have any existing ring to fit into */
     };
 
 
@@ -319,56 +315,56 @@ class QgsGeometry
     /**
      * Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      * @param ring The ring to be added
-     * @returns AddRingResult a result code: success or reason of failure
+     * @returns OperationResult a result code: success or reason of failure
      */
-    AddRingResult addRing( const QList<QgsPoint>& ring );
+    OperationResult addRing( const QList<QgsPoint>& ring );
 
     /**
      * Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      * @param ring The ring to be added
-     * @returns AddRingResult a result code: success or reason of failure
+     * @returns OperationResult a result code: success or reason of failure
      */
-    AddRingResult addRing( QgsCurve* ring );
+    OperationResult addRing( QgsCurve* ring );
 
     /** Adds a new part to a the geometry.
      * @param points points describing part to add
      * @param geomType default geometry type to create if no existing geometry
-     * @returns AddPartResult a result code: success or reason of failure
+     * @returns OperationResult a result code: success or reason of failure
      */
 %If (!QT5_SUPPORT)
-    QgsGeometry::AddPartResult addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    QgsGeometry::OperationResult addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 %End
-    QgsGeometry::AddPartResult addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry )/PyName=addPoints/;
+    QgsGeometry::OperationResult addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry )/PyName=addPoints/;
 
     /** Adds a new part to a the geometry.
      * @param points points describing part to add
      * @param geomType default geometry type to create if no existing geometry
-     * @returns AddPartResult a result code: success or reason of failure
+     * @returns OperationResult a result code: success or reason of failure
      */
 %If (!QT5_SUPPORT)
-    QgsGeometry::AddPartResult addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    QgsGeometry::OperationResult addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 %End
-    QgsGeometry::AddPartResult addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry )/PyName=addPointsV2/;
+    QgsGeometry::OperationResult addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry )/PyName=addPointsV2/;
 
     /** Adds a new part to this geometry.
      * @param part part to add (ownership is transferred)
      * @param geomType default geometry type to create if no existing geometry
-     * @returns AddPartResult a result code: success or reason of failure
+     * @returns OperationResult a result code: success or reason of failure
      */
-    QgsGeometry::AddPartResult addPart( QgsAbstractGeometry* part, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    QgsGeometry::OperationResult addPart( QgsAbstractGeometry* part, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new island polygon to a multipolygon feature
      * @param newPart part to add. Ownership is NOT transferred.
-     * @returns AddPartResult a result code: success or reason of failure
+     * @returns OperationResult a result code: success or reason of failure
      * @note not available in python bindings
      */
-    // QgsGeometry::AddPartResult  addPart( GEOSGeometry *newPart );
+    // QgsGeometry::OperationResult  addPart( GEOSGeometry *newPart );
 
     /** Adds a new island polygon to a multipolygon feature
-     * @returns AddPartResult a result code: success or reason of failure
+     * @returns OperationResult a result code: success or reason of failure
      @note available in python bindings as addPartGeometry
      */
-    QgsGeometry::AddPartResult addPart( const QgsGeometry *newPart /Transfer/ ) /PyName=addPartGeometry/;
+    QgsGeometry::OperationResult addPart( const QgsGeometry *newPart /Transfer/ ) /PyName=addPartGeometry/;
 
     /** Translate this geometry by dx, dy
      @return 0 in case of success*/

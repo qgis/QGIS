@@ -27,11 +27,11 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsvectorlayer.h"
 #include <limits>
 
-QgsGeometry::AddRingResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry* geom, QgsCurve* ring )
+QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry* geom, QgsCurve* ring )
 {
   if ( !ring )
   {
-    return QgsGeometry::WrongGeometryType;
+    return QgsGeometry::InvalidInputType;
   }
 
   QList< QgsCurvePolygon* > polygonList;
@@ -52,7 +52,7 @@ QgsGeometry::AddRingResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry* g
   else
   {
     delete ring;
-    return QgsGeometry::WrongGeometryType; //not polygon / multipolygon;
+    return QgsGeometry::InvalidInputType; //not polygon / multipolygon;
   }
 
   //ring must be closed
@@ -94,14 +94,14 @@ QgsGeometry::AddRingResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry* g
         ring->addMValue( 0 );
 
       ( *polyIter )->addInteriorRing( ring );
-      return QgsGeometry::AddRingSuccess; //success
+      return QgsGeometry::Success; //success
     }
   }
   delete ring;
   return QgsGeometry::RingNotInExistingFeature; //not contained in any outer ring
 }
 
-QgsGeometry::AddPartResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry* geom, QgsAbstractGeometry* part )
+QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry* geom, QgsAbstractGeometry* part )
 {
   if ( !geom )
   {
@@ -110,7 +110,7 @@ QgsGeometry::AddPartResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry* g
 
   if ( !part )
   {
-    return QgsGeometry::PartInvalidGeometry;
+    return QgsGeometry::InvalidInputType;
   }
 
   //multitype?
@@ -158,7 +158,7 @@ QgsGeometry::AddPartResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry* g
         while ( geomCollection->numGeometries() > n )
           geomCollection->removeGeometry( n );
         delete part;
-        return QgsGeometry::PartInvalidGeometry;
+        return QgsGeometry::InvalidInputType;
       }
 
       delete part;
@@ -166,14 +166,14 @@ QgsGeometry::AddPartResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry* g
     else
     {
       delete part;
-      return QgsGeometry::PartInvalidGeometry;
+      return QgsGeometry::InvalidInputType;
     }
   }
   else
   {
     added = geomCollection->addGeometry( part );
   }
-  return added ? QgsGeometry::AddPartSuccess : QgsGeometry::PartInvalidGeometry;
+  return added ? QgsGeometry::Success : QgsGeometry::InvalidInputType;
 }
 
 bool QgsGeometryEditUtils::deleteRing( QgsAbstractGeometry* geom, int ringNum, int partNum )

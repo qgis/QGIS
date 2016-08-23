@@ -40,14 +40,14 @@ class QgsGeometryEditUtils
      * @param ring The ring. This will take ownership.
      * @return The result of the operation: success or reason of failure.
      */
-    static QgsGeometry::AddRingResult addRing( QgsAbstractGeometry* geom, QgsCurve* ring );
+    static QgsGeometry::OperationResult addRing( QgsAbstractGeometry* geom, QgsCurve* ring );
 
     /**
      * @param geom The geometry to add the ring to
      * @param ring The ring. This will take ownership.
      * @return The result of the operation: success or reason of failure.
      */
-    static QgsGeometry::AddPartResult addPart( QgsAbstractGeometry* geom, QgsAbstractGeometry* part );
+    static QgsGeometry::OperationResult addPart( QgsAbstractGeometry* geom, QgsAbstractGeometry* part );
 
     /** Deletes a ring from a geometry.
      * @returns true if delete was successful

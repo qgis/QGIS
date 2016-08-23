@@ -114,7 +114,7 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId f
   return !geometry.isEmpty() ? QgsVectorLayer::Success : QgsVectorLayer::EmptyGeometry;
 }
 
-QgsGeometry::AddRingResult QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds, QgsFeatureId* modifiedFeatureId )
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds, QgsFeatureId* modifiedFeatureId )
 {
   QgsLineString* ringLine = new QgsLineString();
   QgsPointSequence ringPoints;
@@ -127,7 +127,7 @@ QgsGeometry::AddRingResult QgsVectorLayerEditUtils::addRing( const QList<QgsPoin
   return addRing( ringLine, targetFeatureIds,  modifiedFeatureId );
 }
 
-QgsGeometry::AddRingResult QgsVectorLayerEditUtils::addRing( QgsCurve* ring, const QgsFeatureIds& targetFeatureIds, QgsFeatureId* modifiedFeatureId )
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::addRing( QgsCurve* ring, const QgsFeatureIds& targetFeatureIds, QgsFeatureId* modifiedFeatureId )
 {
   if ( !L->hasGeometryType() )
   {
@@ -135,7 +135,7 @@ QgsGeometry::AddRingResult QgsVectorLayerEditUtils::addRing( QgsCurve* ring, con
     return QgsGeometry::RingNotInExistingFeature;
   }
 
-  QgsGeometry::AddRingResult addRingReturnCode = QgsGeometry::RingNotInExistingFeature; //default: return code for 'ring not inserted'
+  QgsGeometry::OperationResult addRingReturnCode = QgsGeometry::RingNotInExistingFeature; //default: return code for 'ring not inserted'
   QgsFeature f;
 
   QgsFeatureIterator fit;
@@ -161,7 +161,7 @@ QgsGeometry::AddRingResult QgsVectorLayerEditUtils::addRing( QgsCurve* ring, con
     QgsGeometry g = f.geometry();
 
     addRingReturnCode = g.addRing( static_cast< QgsCurve* >( ring->clone() ) );
-    if ( addRingReturnCode == QgsGeometry::AddRingSuccess )
+    if ( addRingReturnCode == QgsGeometry::Success )
     {
       L->editBuffer()->changeGeometry( f.id(), g );
       if ( modifiedFeatureId )
@@ -176,7 +176,7 @@ QgsGeometry::AddRingResult QgsVectorLayerEditUtils::addRing( QgsCurve* ring, con
   return addRingReturnCode;
 }
 
-QgsGeometry::AddPartResult QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureId featureId )
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( const QList<QgsPoint> &points, QgsFeatureId featureId )
 {
   QgsPointSequence l;
   for ( QList<QgsPoint>::const_iterator it = points.constBegin(); it != points.constEnd(); ++it )
@@ -186,7 +186,7 @@ QgsGeometry::AddPartResult QgsVectorLayerEditUtils::addPart( const QList<QgsPoin
   return addPart( l, featureId );
 }
 
-QgsGeometry::AddPartResult QgsVectorLayerEditUtils::addPart( const QgsPointSequence &points, QgsFeatureId featureId )
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( const QgsPointSequence &points, QgsFeatureId featureId )
 {
   if ( !L->hasGeometryType() )
     return QgsGeometry::SelectedGeometryNotFound;
@@ -211,8 +211,8 @@ QgsGeometry::AddPartResult QgsVectorLayerEditUtils::addPart( const QgsPointSeque
     }
   }
 
-  QgsGeometry::AddPartResult errorCode = geometry.addPart( points,  L->geometryType() ) ;
-  if ( errorCode == QgsGeometry::AddPartSuccess )
+  QgsGeometry::OperationResult errorCode = geometry.addPart( points,  L->geometryType() ) ;
+  if ( errorCode == QgsGeometry::Success )
   {
     if ( firstPart && QgsWkbTypes::isSingleType( L->wkbType() )
          && L->dataProvider()->doesStrictFeatureTypeCheck() )
@@ -225,7 +225,7 @@ QgsGeometry::AddPartResult QgsVectorLayerEditUtils::addPart( const QgsPointSeque
   return errorCode;
 }
 
-QgsGeometry::AddPartResult QgsVectorLayerEditUtils::addPart( QgsCurve* ring, QgsFeatureId featureId )
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( QgsCurve* ring, QgsFeatureId featureId )
 {
   if ( !L->hasGeometryType() )
     return QgsGeometry::SelectedGeometryNotFound;
@@ -250,8 +250,8 @@ QgsGeometry::AddPartResult QgsVectorLayerEditUtils::addPart( QgsCurve* ring, Qgs
     }
   }
 
-  QgsGeometry::AddPartResult errorCode = geometry.addPart( ring, L->geometryType() ) ;
-  if ( errorCode == QgsGeometry::AddPartSuccess )
+  QgsGeometry::OperationResult errorCode = geometry.addPart( ring, L->geometryType() ) ;
+  if ( errorCode == QgsGeometry::Success )
   {
     if ( firstPart && QgsWkbTypes::isSingleType( L->wkbType() )
          && L->dataProvider()->doesStrictFeatureTypeCheck() )
