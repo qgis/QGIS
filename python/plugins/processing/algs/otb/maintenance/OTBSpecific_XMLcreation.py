@@ -480,6 +480,7 @@ def getTrainImagesClassifier(available_app, original_dom_document):
         the_list.append(split[key])
     return the_list
 
+
 def getTrainRegression(available_app, original_dom_document):
     """
     Split by  classifier (ann,  dt, gbt, knn, libsvm, rf)
@@ -494,6 +495,7 @@ def getTrainRegression(available_app, original_dom_document):
         defaultWrite('%s-%s' % (available_app, key), split[key])
         the_list.append(split[key])
     return the_list
+
 
 def getTrainVectorClassifier(available_app, original_dom_document):
     """

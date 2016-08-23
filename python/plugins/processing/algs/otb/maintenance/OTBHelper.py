@@ -667,7 +667,7 @@ def create_xml_descriptors():
                 except:
                     logger.error("Unit test for command %s must be fixed: %s" % (available_app, traceback.format_exc()))
             else:
-                logger.warning("%s (not custom app) is not in white list." % available_app)        
+                logger.warning("%s (not custom app) is not in white list." % available_app)
         # except Exception, e:
         #    logger.error(traceback.format_exc())
 
@@ -696,7 +696,7 @@ def create_html_description():
 if __name__ == "__main__":
     # Prepare the environment
     from qgis.core import QgsApplication
-    
+
     app = QgsApplication([], True)
     QgsApplication.initQgis()
 
