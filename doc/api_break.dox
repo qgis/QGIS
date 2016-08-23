@@ -218,12 +218,6 @@ attributeIndexes(), pkAttributeIndexes(), isSaveAndLoadStyleToDBSupported()</li>
 </li>
 </ul>
 
-\subsection qgis_api_break_3_0_QgsEditFormConfig QgsEditFormConfig
-
-<ul>
-<li>Does no longer inherit QObject
-</ul>
-
 \subsection qgis_api_break_3_0_Qgis Qgis
 
 <ul>
@@ -420,11 +414,6 @@ QgsExpressionContext variables should be used in their place.</li>
 <li>registerGetExpressionContextCallback has been removed in favor of registerExpressionContextGenerator</li>
 </ul>
 
-\subsection qgis_api_break_3_0_QgsFieldExpressionWidget QgsFieldExpressionWidget
-
-<ul>
-<li>registerGetExpressionContextCallback has been removed in favor of registerExpressionContextGenerator</li>
-</ul>
 
 \subsection qgis_api_break_3_0_QgsDataDefinedSymbolDialog QgsDataDefinedSymbolDialog
 
@@ -477,6 +466,12 @@ place of a null pointer.</li>
 <li>The ct member has been removed. Use coordinateTransform() and setCoordinateTransform() instead.
 </ul>
 
+\subsection qgis_api_break_3_0_QgsEditFormConfig QgsEditFormConfig
+
+<ul>
+<li>Does no longer inherit QObject
+</ul>
+
 \subsection qgis_api_break_3_0_QgsExpression QgsExpression
 
 <ul>
@@ -523,6 +518,12 @@ None will need to be modified, as the method will return an empty geometry if th
 
 <ul>
 <li>All const methods which return a field from QgsFields now return a QgsField value, not a reference.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsFieldExpressionWidget QgsFieldExpressionWidget
+
+<ul>
+<li>registerGetExpressionContextCallback has been removed in favor of registerExpressionContextGenerator</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsGeometry QgsGeometry
