@@ -42,6 +42,11 @@ from qgis.PyQt.QtGui import QIcon
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
+from processing.gui.wrappers import (
+    wrapper_from_param,
+    NotYetImplementedWidgetWrapper,
+    )
+
 from processing.gui.OutputSelectionPanel import OutputSelectionPanel
 from processing.gui.InputLayerSelectorPanel import InputLayerSelectorPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
@@ -59,7 +64,6 @@ from processing.gui.ListMultiselectWidget import ListMultiSelectWidget
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterTableMultipleField
 from processing.core.parameters import ParameterSelection
@@ -101,6 +105,7 @@ class ParametersPanel(BASE, WIDGET):
         self.parent = parent
         self.alg = alg
         self.valueItems = {}
+        self.widget_wrappers = {}
         self.labels = {}
         self.widgets = {}
         self.checkBoxes = {}
@@ -195,8 +200,10 @@ class ParametersPanel(BASE, WIDGET):
             except:
                 pass
 
-            widget = self.getWidgetFromParameter(param)
-            self.valueItems[param.name] = widget
+            wrapper = self.getWidgetWrapperFromParameter(param)
+            self.widget_wrappers[param.name] = wrapper
+            self.valueItems[param.name] = wrapper.widget
+            widget = wrapper.widget
 
             if isinstance(param, ParameterVector) and \
                     not self.alg.allowOnlyOpenedLayers:
@@ -218,7 +225,7 @@ class ParametersPanel(BASE, WIDGET):
             tooltips = self.alg.getParameterDescriptions()
             widget.setToolTip(tooltips.get(param.name, param.description))
 
-            if isinstance(param, ParameterBoolean):
+            if isinstance(widget, QCheckBox):
                 widget.setText(desc)
                 if param.isAdvanced:
                     self.layoutAdvanced.addWidget(widget)
@@ -255,6 +262,8 @@ class ParametersPanel(BASE, WIDGET):
                 self.layoutMain.insertWidget(self.layoutMain.count() - 1, check)
                 self.checkBoxes[output.name] = check
             self.valueItems[output.name] = widget
+            wrapper = NotYetImplementedWidgetWrapper(output, widget)
+            self.widget_wrappers[output.name] = wrapper
 
             if isinstance(output, OutputVector):
                 if output.base_input in self.dependentItems:
@@ -286,6 +295,15 @@ class ParametersPanel(BASE, WIDGET):
             return u'{} [{}]'.format(layer.name(), authid)
         else:
             return layer.name()
+
+    def getWidgetWrapperFromParameter(self, param):
+        wrapper = wrapper_from_param(param)
+        if wrapper is not None:
+            return wrapper
+
+        widget = self.getWidgetFromParameter(param)
+        wrapper = NotYetImplementedWidgetWrapper(param, widget)
+        return wrapper
 
     def getWidgetFromParameter(self, param):
         # TODO Create Parameter widget class that holds the logic
@@ -343,12 +361,6 @@ class ParametersPanel(BASE, WIDGET):
                     if layer and layer.source() == param.value:
                         items.insert(0, items.pop(i))
                 item = InputLayerSelectorPanel(items, param)
-        elif isinstance(param, ParameterBoolean):
-            item = QCheckBox()
-            if param.default:
-                item.setChecked(True)
-            else:
-                item.setChecked(False)
         elif isinstance(param, ParameterTableField) or isinstance(param, ParameterTableMultipleField):
             if isinstance(param, ParameterTableMultipleField):
                 item = ListMultiSelectWidget()
