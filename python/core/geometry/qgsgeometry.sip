@@ -44,6 +44,23 @@ class QgsGeometry
 #include "qgsgeometry.h"
 %End
   public:
+
+    enum OperationResult
+    {
+      Success,
+      NothingHappened,
+      InvalidBaseGeometry,
+      InvalidInput,
+      GeometryEngineError,
+      AddPartSelectedGeometryNotFound,
+      AddPartNotMultiGeometry,
+      AddRingNotClosed,
+      AddRingNotValid,
+      AddRingCrossesExistingRings,
+      AddRingNotInExistingFeature,
+      SplitCannotSplitPoint,
+    };
+
     QgsGeometry();
 %Docstring
 Constructor
@@ -380,63 +397,58 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: float
 %End
 
-    int addRing( const QList<QgsPointXY> &ring );
+    OperationResult addRing( const QList<QgsPointXY> &ring );
 %Docstring
  Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
-:return: 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
-3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*
- :rtype: int
+ \param ring The ring to be added
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int addRing( QgsCurve *ring /Transfer/ );
+    OperationResult addRing( QgsCurve *ring /Transfer/ );
 %Docstring
  Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
-:return: 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
-3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*
- :rtype: int
+ \param ring The ring to be added
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPoints/;
+    OperationResult addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPoints/;
 %Docstring
  Adds a new part to a the geometry.
  \param points points describing part to add
  \param geomType default geometry type to create if no existing geometry
- :return: 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
- not disjoint with existing polygons of the feature
- :rtype: int
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPointsV2/;
+    OperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPointsV2/;
 %Docstring
  Adds a new part to a the geometry.
  \param points points describing part to add
  \param geomType default geometry type to create if no existing geometry
- :return: 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
- not disjoint with existing polygons of the feature
- :rtype: int
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int addPart( QgsAbstractGeometry *part /Transfer/, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    OperationResult addPart( QgsAbstractGeometry *part /Transfer/, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 %Docstring
  Adds a new part to this geometry.
  \param part part to add (ownership is transferred)
  \param geomType default geometry type to create if no existing geometry
- :return: 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
- not disjoint with existing polygons of the feature
- :rtype: int
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
 
-    int addPart( const QgsGeometry &newPart ) /PyName=addPartGeometry/;
+    OperationResult addPart( const QgsGeometry &newPart ) /PyName=addPartGeometry/;
 %Docstring
  Adds a new island polygon to a multipolygon feature
-:return: 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-not disjoint with existing polygons of the feature
+ :return: OperationResult a result code: success or reason of failure
 .. note::
 
-   available in Python bindings as addPartGeometry
-.. versionadded:: 2.2
- :rtype: int
+   available in python bindings as addPartGeometry
+ :rtype: OperationResult
 %End
 
     QgsGeometry removeInteriorRings( double minimumAllowedArea = -1 ) const;
@@ -448,52 +460,52 @@ not disjoint with existing polygons of the feature
  :rtype: QgsGeometry
 %End
 
-    int translate( double dx, double dy );
+    OperationResult translate( double dx, double dy );
 %Docstring
  Translate this geometry by dx, dy
-:return: 0 in case of success*
- :rtype: int
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int transform( const QgsCoordinateTransform &ct );
+    OperationResult transform( const QgsCoordinateTransform &ct );
 %Docstring
  Transform this geometry as described by CoordinateTransform ct
-:return: 0 in case of success*
- :rtype: int
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int transform( const QTransform &ct );
+    OperationResult transform( const QTransform &ct );
 %Docstring
  Transform this geometry as described by QTransform ct
-.. versionadded:: 2.8
-:return: 0 in case of success*
- :rtype: int
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int rotate( double rotation, const QgsPointXY &center );
+    OperationResult rotate( double rotation, const QgsPointXY &center );
 %Docstring
  Rotate this geometry around the Z axis
-.. versionadded:: 2.8
-\param rotation clockwise rotation in degrees
-\param center rotation center
-:return: 0 in case of success*
- :rtype: int
+ \param rotation clockwise rotation in degrees
+ \param center rotation center
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int splitGeometry( const QList<QgsPointXY> &splitLine,
-                       QList<QgsGeometry> &newGeometries /Out/,
-                       bool topological,
-                       QList<QgsPointXY> &topologyTestPoints /Out/ );
+    OperationResult splitGeometry( const QList<QgsPointXY> &splitLine, QList<QgsGeometry> &newGeometries, bool topological, QList<QgsPointXY> &topologyTestPoints );
 %Docstring
- :rtype: int
+ Splits this geometry according to a given line.
+ \param splitLine the line that splits the geometry
+ \param[out] newGeometries list of new geometries that have been created with the split
+ \param topological true if topological editing is enabled
+ \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
-    int reshapeGeometry( const QgsLineString &reshapeLineString );
+    OperationResult reshapeGeometry( const QgsLineString &reshapeLineString );
 %Docstring
  Replaces a part of this geometry with another line
- :return: 0 in case of success
-.. versionadded:: 1.3
- :rtype: int
+ :return: OperationResult a result code: success or reason of failure
+ :rtype: OperationResult
 %End
 
 

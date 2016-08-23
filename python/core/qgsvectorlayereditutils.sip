@@ -63,29 +63,51 @@ class QgsVectorLayerEditUtils
  :rtype: QgsVectorLayer.EditResult
 %End
 
-    int addRing( const QList<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 );
+    QgsGeometry::OperationResult addRing( const QList<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 );
 %Docstring
- :rtype: int
+ Adds a ring to polygon/multipolygon features
+ @param ring ring to add
+ @param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
+ all intersecting features are tested and the ring is added to the first valid feature.
+ @param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
+ @return OperationResult result code: success or reason of failure
+ :rtype: QgsGeometry.OperationResult
 %End
 
-    int addRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 ) /PyName=addCurvedRing/;
+    QgsGeometry::OperationResult addRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 ) /PyName=addCurvedRing/;
 %Docstring
- :rtype: int
+ Adds a ring to polygon/multipolygon features
+ @param ring ring to add
+ @param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
+ all intersecting features are tested and the ring is added to the first valid feature.
+ @param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
+ @return OperationResult result code: success or reason of failure
+.. note::
+
+   available in python bindings as addCurvedRing
+ :rtype: QgsGeometry.OperationResult
 %End
 
-    int addPart( const QList<QgsPointXY> &ring, QgsFeatureId featureId );
+    QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring, QgsFeatureId featureId );
 %Docstring
- :rtype: int
+ Adds a new part polygon to a multipart feature
+ @returns QgsGeometry.OperationResult a result code: success or reason of failure
+ :rtype: QgsGeometry.OperationResult
 %End
 
-    int addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
+    QgsGeometry::OperationResult addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
 %Docstring
- :rtype: int
+ Adds a new part polygon to a multipart feature
+ @returns QgsGeometry.OperationResult a result code: success or reason of failure
+.. note::
+
+   available in python bindings as addPartV2
+ :rtype: QgsGeometry.OperationResult
 %End
 
-    int addPart( QgsCurve *ring, QgsFeatureId featureId ) /PyName=addCurvedPart/;
+    QgsGeometry::OperationResult addPart( QgsCurve *ring, QgsFeatureId featureId ) /PyName=addCurvedPart/;
 %Docstring
- :rtype: int
+ :rtype: QgsGeometry.OperationResult
 %End
 
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
@@ -98,14 +120,14 @@ class QgsVectorLayerEditUtils
  :rtype: int
 %End
 
-    int splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
 %Docstring
- :rtype: int
+ :rtype: QgsGeometry.OperationResult
 %End
 
-    int splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
 %Docstring
- :rtype: int
+ :rtype: QgsGeometry.OperationResult
 %End
 
     int addTopologicalPoints( const QgsGeometry &geom );
@@ -127,15 +149,6 @@ class QgsVectorLayerEditUtils
  editing.
  \param p position of the vertex
  :return: 0 in case of success
- :rtype: int
-%End
-
-  protected:
-
-    int boundingBoxFromPointList( const QList<QgsPointXY> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const;
-%Docstring
- Little helper function that gives bounding box from a list of points.
-:return: 0 in case of success *
  :rtype: int
 %End
 

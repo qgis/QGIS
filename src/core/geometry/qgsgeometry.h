@@ -96,6 +96,30 @@ struct QgsGeometryPrivate;
 class CORE_EXPORT QgsGeometry
 {
   public:
+
+    /**
+     * Success or failure of a geometry operation.
+     * This gived details about cause of failure.
+     */
+    enum OperationResult
+    {
+      Success = 0, //!< Operation succeeded
+      NothingHappened, //!< Nothing happened, without any error
+      InvalidBaseGeometry, //!< The base geometry on which the operation is done is invalid or empty
+      InvalidInput, //!< The input geometry (ring, part, split line, etc.) has not the correct geometry type
+      GeometryEngineError, //!< Geometry engine misses a method implemented or an error occured in the geometry engine
+      /* Add part issues */
+      AddPartSelectedGeometryNotFound, //!< The selected geometry cannot be found
+      AddPartNotMultiGeometry, //!< The source geometry is not multi
+      /* Add ring issues*/
+      AddRingNotClosed, //!< The imput ring is not closed
+      AddRingNotValid, //!< The input ring is not valid
+      AddRingCrossesExistingRings, //!< The input ring crosses existing rings (it is not disjoint)
+      AddRingNotInExistingFeature, //!< The input ring doesn't have any existing ring to fit into
+      /* Split features */
+      SplitCannotSplitPoint, //!< Cannot split points
+    };
+
     //! Constructor
     QgsGeometry();
 
@@ -390,62 +414,58 @@ class CORE_EXPORT QgsGeometry
     double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint SIP_OUT, int &afterVertex SIP_OUT ) const;
 #endif
 
-    /** Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
-     \returns 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
-     3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
-    int addRing( const QList<QgsPointXY> &ring );
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
+    /**
+     * Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
+     * \param ring The ring to be added
+     * \returns OperationResult a result code: success or reason of failure
+     */
+    OperationResult addRing( const QList<QgsPointXY> &ring );
 
-    /** Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
-     \returns 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
-     3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
-    int addRing( QgsCurve *ring SIP_TRANSFER );
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
+    /**
+     * Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
+     * \param ring The ring to be added
+     * \returns OperationResult a result code: success or reason of failure
+     */
+    OperationResult addRing( QgsCurve *ring SIP_TRANSFER );
 
-    /** Adds a new part to a the geometry.
+    /**
+     * Adds a new part to a the geometry.
      * \param points points describing part to add
      * \param geomType default geometry type to create if no existing geometry
-     * \returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-     * not disjoint with existing polygons of the feature
+     * \returns OperationResult a result code: success or reason of failure
      */
-    int addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPoints );
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
+    OperationResult addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPoints );
 
-    /** Adds a new part to a the geometry.
+    /**
+     * Adds a new part to a the geometry.
      * \param points points describing part to add
      * \param geomType default geometry type to create if no existing geometry
-     * \returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-     * not disjoint with existing polygons of the feature
+     * \returns OperationResult a result code: success or reason of failure
      */
-    int addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPointsV2 );
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
+    OperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPointsV2 );
 
-    /** Adds a new part to this geometry.
+    /**
+     * Adds a new part to this geometry.
      * \param part part to add (ownership is transferred)
      * \param geomType default geometry type to create if no existing geometry
-     * \returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-     * not disjoint with existing polygons of the feature
+     * \returns OperationResult a result code: success or reason of failure
      */
-    int addPart( QgsAbstractGeometry *part SIP_TRANSFER, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
+    OperationResult addPart( QgsAbstractGeometry *part SIP_TRANSFER, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
-    /** Adds a new island polygon to a multipolygon feature
+    /**
+     * Adds a new island polygon to a multipolygon feature
      * \param newPart part to add. Ownership is NOT transferred.
-     * \returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-     * not disjoint with existing polygons of the feature
-     * \note not available in Python bindings
+     * \returns OperationResult a result code: success or reason of failure
+     * \note not available in python bindings
      */
-    int addPart( GEOSGeometry *newPart ) SIP_SKIP;
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
+    OperationResult addPart( GEOSGeometry *newPart ) SIP_SKIP;
 
-    /** Adds a new island polygon to a multipolygon feature
-     \returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-     not disjoint with existing polygons of the feature
-     \note available in Python bindings as addPartGeometry
-     \since QGIS 2.2
+    /**
+     * Adds a new island polygon to a multipolygon feature
+     * \returns OperationResult a result code: success or reason of failure
+     * \note available in python bindings as addPartGeometry
      */
-    int addPart( const QgsGeometry &newPart ) SIP_PYNAME( addPartGeometry );
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
+    OperationResult addPart( const QgsGeometry &newPart ) SIP_PYNAME( addPartGeometry );
 
     /**
      * Removes the interior rings from a (multi)polygon geometry. If the minimumAllowedArea
@@ -455,52 +475,57 @@ class CORE_EXPORT QgsGeometry
      */
     QgsGeometry removeInteriorRings( double minimumAllowedArea = -1 ) const;
 
-    /** Translate this geometry by dx, dy
-     \returns 0 in case of success*/
-    int translate( double dx, double dy );
-
-    /** Transform this geometry as described by CoordinateTransform ct
-     \returns 0 in case of success*/
-    int transform( const QgsCoordinateTransform &ct );
-
-    /** Transform this geometry as described by QTransform ct
-     \since QGIS 2.8
-     \returns 0 in case of success*/
-    int transform( const QTransform &ct );
-
-    /** Rotate this geometry around the Z axis
-         \since QGIS 2.8
-         \param rotation clockwise rotation in degrees
-         \param center rotation center
-         \returns 0 in case of success*/
-    int rotate( double rotation, const QgsPointXY &center );
-
-    /** Splits this geometry according to a given line.
-    \param splitLine the line that splits the geometry
-    \param[out] newGeometries list of new geometries that have been created with the split
-    \param topological true if topological editing is enabled
-    \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-    \returns 0 in case of success, 1 if geometry has not been split, error else*/
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int splitGeometry( const QList<QgsPointXY> &splitLine,
-                       QList<QgsGeometry> &newGeometries SIP_OUT,
-                       bool topological,
-                       QList<QgsPointXY> &topologyTestPoints SIP_OUT );
-
-    /** Replaces a part of this geometry with another line
-     * \returns 0 in case of success
-     * \since QGIS 1.3
+    /**
+     * Translate this geometry by dx, dy
+     * \returns OperationResult a result code: success or reason of failure
      */
-    int reshapeGeometry( const QgsLineString &reshapeLineString );
+    OperationResult translate( double dx, double dy );
 
-    /** Changes this geometry such that it does not intersect the other geometry
+    /**
+     * Transform this geometry as described by CoordinateTransform ct
+     * \returns OperationResult a result code: success or reason of failure
+     */
+    OperationResult transform( const QgsCoordinateTransform &ct );
+
+    /**
+     * Transform this geometry as described by QTransform ct
+     * \returns OperationResult a result code: success or reason of failure
+     */
+    OperationResult transform( const QTransform &ct );
+
+    /**
+     * Rotate this geometry around the Z axis
+     * \param rotation clockwise rotation in degrees
+     * \param center rotation center
+     * \returns OperationResult a result code: success or reason of failure
+     */
+    OperationResult rotate( double rotation, const QgsPointXY &center );
+
+    /**
+     * Splits this geometry according to a given line.
+     * \param splitLine the line that splits the geometry
+     * \param[out] newGeometries list of new geometries that have been created with the split
+     * \param topological true if topological editing is enabled
+     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+     * \returns OperationResult a result code: success or reason of failure
+     */
+    OperationResult splitGeometry( const QList<QgsPointXY> &splitLine, QList<QgsGeometry> &newGeometries, bool topological, QList<QgsPointXY> &topologyTestPoints );
+
+    /**
+     * Replaces a part of this geometry with another line
+     * \returns OperationResult a result code: success or reason of failure
+     */
+    OperationResult reshapeGeometry( const QgsLineString &reshapeLineString );
+
+    /**
+     * Changes this geometry such that it does not intersect the other geometry
      * \param other geometry that should not be intersect
-     * \returns 0 in case of success
      * \note Not available in Python
      */
     int makeDifferenceInPlace( const QgsGeometry &other ) SIP_SKIP;
 
-    /** Returns the geometry formed by modifying this geometry such that it does not
+    /**
+     * Returns the geometry formed by modifying this geometry such that it does not
      * intersect the other geometry.
      * \param other geometry that should not be intersect
      * \returns difference geometry, or empty geometry if difference could not be calculated

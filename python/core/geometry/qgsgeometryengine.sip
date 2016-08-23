@@ -21,6 +21,19 @@ class QgsGeometryEngine
 #include "qgsgeometryengine.h"
 %End
   public:
+
+    enum EngineOperationResult
+    {
+      Success,
+      NothingHappened,
+      MethodNotImplemented,
+      EngineError,
+      NodedGeometryError,
+      InvalidBaseGeometry,
+      InvalidInput,
+      SplitCannotSplitPoint,
+    };
+
     virtual ~QgsGeometryEngine();
 
     virtual void geometryChanged() = 0;
@@ -230,12 +243,12 @@ class QgsGeometryEngine
  :rtype: bool
 %End
 
-    virtual int splitGeometry( const QgsLineString &splitLine,
-                               QList<QgsAbstractGeometry *> &newGeometries,
-                               bool topological,
-                               QgsPointSequence &topologyTestPoints, QString *errorMsg = 0 ) const;
+    virtual QgsGeometryEngine::EngineOperationResult splitGeometry( const QgsLineString &splitLine,
+        QList<QgsAbstractGeometry *> &newGeometries,
+        bool topological,
+        QgsPointSequence &topologyTestPoints, QString *errorMsg = 0 ) const;
 %Docstring
- :rtype: int
+ :rtype: QgsGeometryEngine.EngineOperationResult
 %End
 
     virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double miterLimit, QString *errorMsg = 0 ) const = 0 /Factory/;
