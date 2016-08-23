@@ -401,6 +401,11 @@ be returned in place of a null pointer.</li>
 <li>updateCRSCache() has been renamed to updateCrsCache</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsCursors QgsCursors
+
+<ul>
+<li>remove old bitmap cursors pan and pan_mask. Use window system curosrs instead.</li>
+
 \subsection qgis_api_break_3_0_QgsDataDefined QgsDataDefined
 
 <ul>
