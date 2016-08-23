@@ -27,8 +27,6 @@
 #include <QMessageBox>
 
 #include "qgsvectorlayerimport.h"
-#include "qgsprovidercountcalcevent.h"
-#include "qgsproviderextentcalcevent.h"
 #include "qgspostgresprovider.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
