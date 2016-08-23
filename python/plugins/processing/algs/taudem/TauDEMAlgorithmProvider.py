@@ -46,16 +46,6 @@ from .gridnet import GridNet
 from .dinftranslimaccum import DinfTransLimAccum
 from .dinftranslimaccum2 import DinfTransLimAccum2
 
-from .peukerdouglas_multi import PeukerDouglasMulti
-from .slopearea_multi import SlopeAreaMulti
-from .lengtharea_multi import LengthAreaMulti
-from .dropanalysis_multi import DropAnalysisMulti
-from .dinfdistdown_multi import DinfDistDownMulti
-from .dinfdistup_multi import DinfDistUpMulti
-from .gridnet_multi import GridNetMulti
-from .dinftranslimaccum_multi import DinfTransLimAccumMulti
-from .dinftranslimaccum2_multi import DinfTransLimAccum2Multi
-
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
