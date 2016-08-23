@@ -2372,7 +2372,7 @@ void QgsComposerMap::drawCanvasItem( const QgsAnnotation* annotation, QPainter* 
   double scaleFactor = annotation->scaleFactor();
 
   double itemX, itemY;
-  if ( annotation->mapPositionFixed() )
+  if ( annotation->hasFixedMapPosition() )
   {
     QPointF mapPos = composerMapPosForItem( annotation );
     itemX = mapPos.x();

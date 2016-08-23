@@ -132,17 +132,3 @@ QSizeF QgsDiagram::sizeForValue( double value, const QgsDiagramSettings &s, cons
 
   return size;
 }
-
-void QgsDiagram::renderDiagram( const QgsAttributes& attributes, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position )
-{
-  QgsFeature feature;
-  feature.setAttributes( attributes );
-  renderDiagram( feature, c, s, position );
-}
-
-QSizeF QgsDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
-{
-  QgsFeature feature;
-  feature.setAttributes( attributes );
-  return diagramSize( feature, c, s, is );
-}

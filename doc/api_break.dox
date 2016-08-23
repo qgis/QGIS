@@ -151,6 +151,7 @@ This page tries to maintain a list with incompatible changes that happened in pr
 <table>
 <caption id="renamed_methods">Renamed method names</caption>
 <tr><th>class</th><th>API 2.x<th>API 3.X
+<tr><td>QgsAnnotation<td>mapPositionFixed<td>hasFixedMapPosition
 <tr><td>QgsApplication<td>defaultStyleV2Path<td>defaultStylePath
 <tr><td>QgsApplication<td>userStyleV2Path<td>userStylePath
 <tr><td>QgsComposerShape<td>setUseSymbolV2<td>setUseSymbol
@@ -167,6 +168,7 @@ This page tries to maintain a list with incompatible changes that happened in pr
 \subsection qgis_api_break_3_0_removed_classes Removed Classes
 
 <ul>
+<li>QgsAttributeAction was removed, and replaced by QgsActionManager.</li>
 <li>QgsColorbutton was removed. QgsColorButtonV2 has now been renamed to QgsColorButton. Hence, QgsColorButtonV2 does not exist anymore.</li>
 <li>QgsColorDialog was removed, and QgsColorDialogV2 was renamed to QgsColorDialog. Hence, QgsColorButtonV2 does not exist anymore.
 All the functionality from the old QgsColorDialog has been moved to the new class.</li>
@@ -257,6 +259,13 @@ corresponding counterparts in QgsUnitTypes should be used instead.</li>
 <ul>
 <li>fileMenu() has been removed, use projectMenu() instead.
 </ul>
+
+\subsection qgis_api_break_3_0_QgsAnnotation QgsAnnotation
+
+<ul>
+<li> mapPositionFixed() has been renamed to hasFixedMapPosition()
+</ul>
+
 
 \subsection qgis_api_break_3_0_QgsActionManager QgsActionManager
 
@@ -452,6 +461,10 @@ be returned in place of a null pointer.</li>
 <ul>
 <li>The deprecated getExpression( const QString& expression, const QgsFields* fields ) method has been removed.
 Use the variant which accepts an expression context instead.</li>
+<li>The deprecated renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position ) method has been removed.
+Use renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position ) instead.
+<li>The deprecated  diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) method has been removed.
+Use diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) instead.
 </ul>
 
 \subsection qgis_api_break_3_0_QgsDiagramLayerSettings QgsDiagramLayerSettings
@@ -717,6 +730,12 @@ plugins calling this method will need to be updated.</li>
 
 <ul>
 <li>visibilityPresetCollection() has been renamed to mapThemeCollection()</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsRasterCalcNode QgsRasterCalcNode
+
+<ul>
+<li>QgsRasterCalcNode::calculate has been removed, use method with QgsRasterBlocks instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsRasterDataProvider QgsRasterDataProvider

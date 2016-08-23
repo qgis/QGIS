@@ -31,7 +31,6 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
-#include "qgsattributeaction.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsmessagebar.h"
 #include "qgsexpressionselectiondialog.h"

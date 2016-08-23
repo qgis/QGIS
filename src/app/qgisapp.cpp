@@ -6238,7 +6238,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
               dialog->onlySelected(),
               &errorMessage,
               datasourceOptions, dialog->layerOptions(),
-              dialog->attributeSelection() && dialog->selectedAttributes().isEmpty(),
+              dialog->selectedAttributes().isEmpty(),
               &newFilename,
               static_cast< QgsVectorFileWriter::SymbologyExport >( dialog->symbologyExport() ),
               dialog->scaleDenominator(),

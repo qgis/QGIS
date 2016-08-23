@@ -164,7 +164,7 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent* e )
     }
     else if ( mCurrentMoveAction == QgsAnnotationItem::MoveFramePosition )
     {
-      if ( sItem->mapPositionFixed() )
+      if ( sItem->hasFixedMapPosition() )
       {
         sItem->setOffsetFromReferencePoint( sItem->offsetFromReferencePoint() + ( e->posF() - mLastMousePosition ) );
       }

@@ -61,7 +61,7 @@ class QgsAnnotationItem: QgsMapCanvasItem, QgsAnnotation
 
     //setters and getters
     void setMapPositionFixed( bool fixed );
-    bool mapPositionFixed() const;
+    bool hasFixedMapPosition() const;
 
     virtual void setMapPosition( const QgsPoint& pos );
     QgsPoint mapPosition() const;

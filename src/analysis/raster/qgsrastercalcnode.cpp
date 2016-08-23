@@ -83,28 +83,6 @@ QgsRasterCalcNode::~QgsRasterCalcNode()
   }
 }
 
-bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, QgsRasterMatrix& result ) const
-{
-  //deprecated method
-  //convert QgsRasterMatrix to QgsRasterBlock and call replacement method
-  QMap<QString, QgsRasterBlock* > rasterBlockData;
-  QMap<QString, QgsRasterMatrix*>::const_iterator it = rasterData.constBegin();
-  for ( ; it != rasterData.constEnd(); ++it )
-  {
-    QgsRasterBlock* block = new QgsRasterBlock( Qgis::Float32, it.value()->nColumns(), it.value()->nRows(), it.value()->nodataValue() );
-    for ( int row = 0; row < it.value()->nRows(); ++row )
-    {
-      for ( int col = 0; col < it.value()->nColumns(); ++col )
-      {
-        block->setValue( row, col, it.value()->data()[ row * it.value()->nColumns() + col ] );
-      }
-    }
-    rasterBlockData.insert( it.key(), block );
-  }
-
-  return calculate( rasterBlockData, result );
-}
-
 bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock* >& rasterData, QgsRasterMatrix& result, int row ) const
 {
   //if type is raster ref: return a copy of the corresponding matrix
