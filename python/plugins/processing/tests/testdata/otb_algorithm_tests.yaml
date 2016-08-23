@@ -1,18 +1,20 @@
 # See ../README.md for a description of the file format
 
 tests:
-  - algorithm: otb:bandmath
-    name: Test (otb:bandmath)
+
+  - algorithm: otb:imageconversion
+    name: Test (otb:imageconversion)
     params:
-      !!python/unicode '-exp': im1b1==826?255:0
-      !!python/unicode '-il':
-        params:
-        - name: raster.tif
-          type: raster
-        type: multi
-      !!python/unicode '-ram': 128
+      -hcp.high: 2
+      -hcp.low: 2
+      -in:
+        name: raster.tif
+        type: raster
+      -ram: 128
+      -type: '1'
+      -type.linear.gamma: 1
     results:
-      !!python/unicode '-out':
-        hash: a8acb8da3cf40a156fe26f815588a7cbf8f3c8f6b3c226968b1eab1e
+      -out:
+        hash: b3657f4d848b64f688db41638ea6d86d9de1d0a169bc1bafef8af82a
         type: rasterhash
   
