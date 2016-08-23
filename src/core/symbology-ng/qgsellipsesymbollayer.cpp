@@ -409,12 +409,9 @@ void QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
   QDomElement graphicElem = doc.createElement( "se:Graphic" );
   element.appendChild( graphicElem );
 
-  QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, mSymbolName, mColor, mOutlineColor, mOutlineStyle, mOutlineWidth, mSymbolWidth );
-
-  // store w/h factor in a <VendorOption>
-  double widthHeightFactor = mSymbolWidth / mSymbolHeight;
-  QDomElement factorElem = QgsSymbolLayerUtils::createVendorOptionElement( doc, "widthHeightFactor", QString::number( widthHeightFactor ) );
-  graphicElem.appendChild( factorElem );
+  double outlineWidth = QgsSymbolLayerUtils::rescaleUom( mOutlineWidth, mOutlineWidthUnit, props );
+  double symbolWidth = QgsSymbolLayerUtils::rescaleUom( mSymbolWidth, mSymbolWidthUnit, props );
+  QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, mSymbolName, mColor, mOutlineColor, mOutlineStyle, outlineWidth, symbolWidth );
 
   // <Rotation>
   QgsDataDefined* ddRotation = getDataDefinedProperty( QgsSymbolLayer::EXPR_ROTATION );
@@ -452,6 +449,15 @@ void QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
     }
   }
   QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc );
+
+  // <Displacement>
+  QPointF offset = QgsSymbolLayerUtils::rescaleUom( mOffset, mOffsetUnit, props );
+  QgsSymbolLayerUtils::createDisplacementElement( doc, graphicElem, offset );
+
+  // store w/h factor in a <VendorOption>
+  double widthHeightFactor = mSymbolWidth / mSymbolHeight;
+  QDomElement factorElem = QgsSymbolLayerUtils::createVendorOptionElement( doc, "widthHeightFactor", QString::number( widthHeightFactor ) );
+  graphicElem.appendChild( factorElem );
 }
 
 QgsSymbolLayer* QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
