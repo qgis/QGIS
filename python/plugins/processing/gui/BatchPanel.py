@@ -170,10 +170,11 @@ class BatchPanel(BASE, WIDGET):
             self.tblParameters.setColumnWidth(col, width)
         else:
             item = QLineEdit()
-            try:
-                item.setText(unicode(param.default))
-            except:
-                pass
+            if param.default is not None:
+                try:
+                    item.setText(unicode(param.default))
+                except:
+                    pass
 
         return item
 
