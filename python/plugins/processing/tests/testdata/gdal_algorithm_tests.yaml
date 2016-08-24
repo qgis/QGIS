@@ -169,3 +169,21 @@ tests:
       OUTPUT_LAYER:
         name: expected/gdal/points_along_lines.gml
         type: vector
+
+  - algorithm: gdalogr:singlesidedbuffersandoffsetlinesforlines
+    name: Single-sided buffer
+    params:
+      DISSOLVEALL: false
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      LEFTRIGHT: '0'
+      MULTI: false
+      OPERATION: '0'
+      OPTIONS: ''
+      RADIUS: '0.05'
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/single_sided_buffer.gml
+        type: vector
