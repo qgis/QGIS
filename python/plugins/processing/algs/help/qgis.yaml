@@ -284,6 +284,11 @@ qgis:orientedminimumboundingbox: >
 
   As an alternative, the output layer can contain not just a single  rectangle, but one for each input feature, representing the minimum rectangle that covers each of them.
 
+qgis:pointsalonglines: >
+  Creates points at regular intervals along line or polygon geometries. Created points will have new attributes added for the distance along the geometry and the angle of the line at the point.
+
+  An optional start and end offset can be specified, which controls how far from the start and end of the geometry the points should be created.
+
 qgis:pointsdisplacement:
 
 
