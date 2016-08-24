@@ -155,3 +155,17 @@ tests:
       OUTPUT_LAYER:
         name: expected/clip_points_by_multipolygons.gml
         type: vector
+
+  - algorithm: gdalogr:createpointsalonglines
+    name: OGR Create points along lines
+    params:
+      DISTANCE: 0.25
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/points_along_lines.gml
+        type: vector
