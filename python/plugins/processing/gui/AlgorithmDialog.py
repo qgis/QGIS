@@ -53,7 +53,6 @@ from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterFile
-from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterPoint
 from processing.core.parameters import ParameterGeometryPredicate
 
@@ -170,7 +169,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 else:
                     options = dataobjects.getVectorLayers([param.datatype], sorting=False)
                 return param.setValue([options[i] for i in widget.selectedoptions])
-        elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs,
+        elif isinstance(param, (ParameterNumber, ParameterFile,
                                 ParameterExtent, ParameterPoint)):
             return param.setValue(widget.getValue())
         elif isinstance(param, ParameterString):

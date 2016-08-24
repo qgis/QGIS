@@ -159,12 +159,16 @@ class ParameterBoolean(Parameter):
 
 class ParameterCrs(Parameter):
 
-    def __init__(self, name='', description='', default=None, optional=False):
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.CrsWidgetWrapper'
+    }
+
+    def __init__(self, name='', description='', default=None, optional=False, metadata={}):
         '''The value is a string that uniquely identifies the
         coordinate reference system. Typically it is the auth id of the CRS
         (if the authority is EPSG) or proj4 string of the CRS (in case
         of other authorities or user defined projections).'''
-        Parameter.__init__(self, name, description, default, optional)
+        Parameter.__init__(self, name, description, default, optional, metadata)
 
     def setValue(self, value):
         if value is None or value.strip() == '':
