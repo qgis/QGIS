@@ -18,6 +18,7 @@
 #include "qgscolorramp.h"
 #include "qgssymbollayerutils.h"
 #include <QAbstractButton>
+#include <QDialogButtonBox>
 
 #if 0 // unused
 static void updateColorButton( QAbstractButton* button, QColor color )
@@ -31,8 +32,8 @@ static void updateColorButton( QAbstractButton* button, QColor color )
 /////////
 
 
-QgsColorBrewerColorRampDialog::QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp& ramp, QWidget* parent )
-    : QDialog( parent )
+QgsColorBrewerColorRampWidget::QgsColorBrewerColorRampWidget( const QgsColorBrewerColorRamp& ramp, QWidget* parent )
+    : QgsPanelWidget( parent )
     , mRamp( ramp )
 {
 
@@ -56,14 +57,14 @@ QgsColorBrewerColorRampDialog::QgsColorBrewerColorRampDialog( const QgsColorBrew
   connect( cboColors, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setColors() ) );
 }
 
-void QgsColorBrewerColorRampDialog::setRamp( const QgsColorBrewerColorRamp& ramp )
+void QgsColorBrewerColorRampWidget::setRamp( const QgsColorBrewerColorRamp& ramp )
 {
   mRamp = ramp;
   updateUi();
   emit changed();
 }
 
-void QgsColorBrewerColorRampDialog::populateVariants()
+void QgsColorBrewerColorRampWidget::populateVariants()
 {
   QString oldVariant = cboColors->currentText();
 
@@ -85,13 +86,13 @@ void QgsColorBrewerColorRampDialog::populateVariants()
   cboColors->setCurrentIndex( idx );
 }
 
-void QgsColorBrewerColorRampDialog::updatePreview()
+void QgsColorBrewerColorRampWidget::updatePreview()
 {
   QSize size( 300, 40 );
   lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( &mRamp, size ) );
 }
 
-void QgsColorBrewerColorRampDialog::updateUi()
+void QgsColorBrewerColorRampWidget::updateUi()
 {
   whileBlocking( cboSchemeName )->setCurrentIndex( cboSchemeName->findText( mRamp.schemeName() ) );
   populateVariants();
@@ -99,7 +100,7 @@ void QgsColorBrewerColorRampDialog::updateUi()
   updatePreview();
 }
 
-void QgsColorBrewerColorRampDialog::setSchemeName()
+void QgsColorBrewerColorRampWidget::setSchemeName()
 {
   // populate list of variants
   populateVariants();
@@ -109,10 +110,24 @@ void QgsColorBrewerColorRampDialog::setSchemeName()
   emit changed();
 }
 
-void QgsColorBrewerColorRampDialog::setColors()
+void QgsColorBrewerColorRampWidget::setColors()
 {
   int num = cboColors->currentText().toInt();
   mRamp.setColors( num );
   updatePreview();
   emit changed();
+}
+
+QgsColorBrewerColorRampDialog::QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp& ramp, QWidget* parent )
+    : QDialog( parent )
+{
+  QVBoxLayout* vLayout = new QVBoxLayout();
+  mWidget = new QgsColorBrewerColorRampWidget( ramp );
+  vLayout->addWidget( mWidget );
+  QDialogButtonBox* bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  connect( bbox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+  connect( bbox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  vLayout->addWidget( bbox );
+  setLayout( vLayout );
+  connect( mWidget, SIGNAL( changed() ), this, SIGNAL( changed() ) );
 }

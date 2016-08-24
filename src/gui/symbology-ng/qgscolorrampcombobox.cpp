@@ -135,6 +135,9 @@ void QgsColorRampComboBox::colorRampChanged( int index )
 
 void QgsColorRampComboBox::editSourceRamp()
 {
+  QgsPanelWidget* panel = QgsPanelWidget::findParentPanel( this );
+  bool panelMode = panel && panel->dockMode();
+
   QScopedPointer< QgsColorRamp > currentRamp( currentColorRamp() );
   if ( !currentRamp )
     return;
@@ -152,21 +155,41 @@ void QgsColorRampComboBox::editSourceRamp()
   else if ( currentRamp->type() == "random" )
   {
     QgsLimitedRandomColorRamp* randRamp = static_cast<QgsLimitedRandomColorRamp*>( currentRamp.data() );
-    QgsLimitedRandomColorRampDialog dlg( *randRamp, this );
-    if ( dlg.exec() )
+    if ( panelMode )
     {
-      setSourceColorRamp( dlg.ramp().clone() );
-      emit sourceRampEdited();
+      QgsLimitedRandomColorRampWidget* widget = new QgsLimitedRandomColorRampWidget( *randRamp, this );
+      widget->setPanelTitle( tr( "Edit ramp" ) );
+      connect( widget, SIGNAL( changed() ), this, SLOT( rampWidgetUpdated() ) );
+      panel->openPanel( widget );
+    }
+    else
+    {
+      QgsLimitedRandomColorRampDialog dlg( *randRamp, this );
+      if ( dlg.exec() )
+      {
+        setSourceColorRamp( dlg.ramp().clone() );
+        emit sourceRampEdited();
+      }
     }
   }
   else if ( currentRamp->type() == "colorbrewer" )
   {
     QgsColorBrewerColorRamp* brewerRamp = static_cast<QgsColorBrewerColorRamp*>( currentRamp.data() );
-    QgsColorBrewerColorRampDialog dlg( *brewerRamp, this );
-    if ( dlg.exec() )
+    if ( panelMode )
     {
-      setSourceColorRamp( dlg.ramp().clone() );
-      emit sourceRampEdited();
+      QgsColorBrewerColorRampWidget* widget = new QgsColorBrewerColorRampWidget( *brewerRamp, this );
+      widget->setPanelTitle( tr( "Edit ramp" ) );
+      connect( widget, SIGNAL( changed() ), this, SLOT( rampWidgetUpdated() ) );
+      panel->openPanel( widget );
+    }
+    else
+    {
+      QgsColorBrewerColorRampDialog dlg( *brewerRamp, this );
+      if ( dlg.exec() )
+      {
+        setSourceColorRamp( dlg.ramp().clone() );
+        emit sourceRampEdited();
+      }
     }
   }
   else if ( currentRamp->type() == "cpt-city" )
@@ -185,5 +208,23 @@ void QgsColorRampComboBox::editSourceRamp()
       }
       emit sourceRampEdited();
     }
+  }
+}
+
+void QgsColorRampComboBox::rampWidgetUpdated()
+{
+  QgsLimitedRandomColorRampWidget* limitedRampWidget = qobject_cast< QgsLimitedRandomColorRampWidget* >( sender() );
+  if ( limitedRampWidget )
+  {
+    setSourceColorRamp( limitedRampWidget->ramp().clone() );
+    emit sourceRampEdited();
+    return;
+  }
+  QgsColorBrewerColorRampWidget* colorBrewerRampWidget = qobject_cast< QgsColorBrewerColorRampWidget* >( sender() );
+  if ( colorBrewerRampWidget )
+  {
+    setSourceColorRamp( colorBrewerRampWidget->ramp().clone() );
+    emit sourceRampEdited();
+    return;
   }
 }

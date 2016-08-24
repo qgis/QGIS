@@ -19,10 +19,11 @@
 #include "qgscolorramp.h"
 
 #include <QColorDialog>
+#include <QDialogButtonBox>
 
 
-QgsLimitedRandomColorRampDialog::QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp& ramp, QWidget* parent )
-    : QDialog( parent )
+QgsLimitedRandomColorRampWidget::QgsLimitedRandomColorRampWidget( const QgsLimitedRandomColorRamp& ramp, QWidget* parent )
+    : QgsPanelWidget( parent )
     , mRamp( ramp )
 {
   setupUi( this );
@@ -38,14 +39,14 @@ QgsLimitedRandomColorRampDialog::QgsLimitedRandomColorRampDialog( const QgsLimit
   connect( spinVal2, SIGNAL( valueChanged( int ) ), this, SLOT( setVal2( int ) ) );
 }
 
-void QgsLimitedRandomColorRampDialog::setRamp( const QgsLimitedRandomColorRamp& ramp )
+void QgsLimitedRandomColorRampWidget::setRamp( const QgsLimitedRandomColorRamp& ramp )
 {
   mRamp = ramp;
   updateUi();
   emit changed();
 }
 
-void QgsLimitedRandomColorRampDialog::updatePreview()
+void QgsLimitedRandomColorRampWidget::updatePreview()
 {
   mRamp.updateColors();
 
@@ -53,7 +54,7 @@ void QgsLimitedRandomColorRampDialog::updatePreview()
   lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( &mRamp, size ) );
 }
 
-void QgsLimitedRandomColorRampDialog::updateUi()
+void QgsLimitedRandomColorRampWidget::updateUi()
 {
   spinCount->setValue( mRamp.count() );
   spinHue1->setValue( mRamp.hueMin() );
@@ -65,51 +66,65 @@ void QgsLimitedRandomColorRampDialog::updateUi()
   updatePreview();
 }
 
-void QgsLimitedRandomColorRampDialog::setCount( int val )
+void QgsLimitedRandomColorRampWidget::setCount( int val )
 {
   mRamp.setCount( val );
   updatePreview();
   emit changed();
 }
 
-void QgsLimitedRandomColorRampDialog::setHue1( int val )
+void QgsLimitedRandomColorRampWidget::setHue1( int val )
 {
   mRamp.setHueMin( val );
   updatePreview();
   emit changed();
 }
 
-void QgsLimitedRandomColorRampDialog::setHue2( int val )
+void QgsLimitedRandomColorRampWidget::setHue2( int val )
 {
   mRamp.setHueMax( val );
   updatePreview();
   emit changed();
 }
 
-void QgsLimitedRandomColorRampDialog::setSat1( int val )
+void QgsLimitedRandomColorRampWidget::setSat1( int val )
 {
   mRamp.setSatMin( val );
   updatePreview();
   emit changed();
 }
 
-void QgsLimitedRandomColorRampDialog::setSat2( int val )
+void QgsLimitedRandomColorRampWidget::setSat2( int val )
 {
   mRamp.setSatMax( val );
   updatePreview();
   emit changed();
 }
 
-void QgsLimitedRandomColorRampDialog::setVal1( int val )
+void QgsLimitedRandomColorRampWidget::setVal1( int val )
 {
   mRamp.setValMin( val );
   updatePreview();
   emit changed();
 }
 
-void QgsLimitedRandomColorRampDialog::setVal2( int val )
+void QgsLimitedRandomColorRampWidget::setVal2( int val )
 {
   mRamp.setValMax( val );
   updatePreview();
   emit changed();
+}
+
+QgsLimitedRandomColorRampDialog::QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp& ramp, QWidget* parent )
+    : QDialog( parent )
+{
+  QVBoxLayout* vLayout = new QVBoxLayout();
+  mWidget = new QgsLimitedRandomColorRampWidget( ramp );
+  vLayout->addWidget( mWidget );
+  QDialogButtonBox* bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  connect( bbox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+  connect( bbox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  vLayout->addWidget( bbox );
+  setLayout( vLayout );
+  connect( mWidget, SIGNAL( changed() ), this, SIGNAL( changed() ) );
 }

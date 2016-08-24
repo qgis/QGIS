@@ -83,6 +83,10 @@ class GUI_EXPORT QgsColorRampComboBox : public QComboBox
     QgsStyle* mStyle;
     QgsColorRamp* mSourceColorRamp; // owns the copy
 
+  private slots:
+
+    void rampWidgetUpdated();
+
   private:
     bool mShowGradientOnly;
 

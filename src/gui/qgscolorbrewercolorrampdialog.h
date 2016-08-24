@@ -17,29 +17,29 @@
 #define QGSCOLORBREWERCOLORRAMPDIALOG_H
 
 #include <QDialog>
-
+#include "qgspanelwidget.h"
 #include "qgscolorramp.h"
-#include "ui_qgscolorbrewercolorrampdialogbase.h"
+#include "ui_qgscolorbrewercolorrampwidgetbase.h"
 
 class QgsColorBrewerColorRamp;
 
 /** \ingroup gui
- * \class QgsColorBrewerColorRampDialog
- * A dialog which allows users to modify the properties of a QgsColorBrewerColorRamp.
+ * \class QgsColorBrewerColorRampWidget
+ * A widget which allows users to modify the properties of a QgsColorBrewerColorRamp.
  * \note added in QGIS 3.0
  */
-class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog, private Ui::QgsColorBrewerColorRampDialogBase
+class GUI_EXPORT QgsColorBrewerColorRampWidget : public QgsPanelWidget, private Ui::QgsColorBrewerColorRampWidgetBase
 {
     Q_OBJECT
     Q_PROPERTY( QgsColorBrewerColorRamp ramp READ ramp WRITE setRamp )
 
   public:
 
-    /** Constructor for QgsColorBrewerColorRampDialog.
+    /** Constructor for QgsColorBrewerColorRampWidget.
      * @param ramp initial ramp to show in dialog
      * @param parent parent widget
      */
-    QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp& ramp, QWidget* parent = nullptr );
+    QgsColorBrewerColorRampWidget( const QgsColorBrewerColorRamp& ramp, QWidget* parent = nullptr );
 
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()
@@ -68,6 +68,46 @@ class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog, private Ui::Qgs
     void updateUi();
 
     QgsColorBrewerColorRamp mRamp;
+};
+
+/** \ingroup gui
+ * \class QgsColorBrewerColorRampDialog
+ * A dialog which allows users to modify the properties of a QgsColorBrewerColorRamp.
+ * \note added in QGIS 3.0
+ */
+class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog
+{
+    Q_OBJECT
+    Q_PROPERTY( QgsColorBrewerColorRamp ramp READ ramp WRITE setRamp )
+
+  public:
+
+    /** Constructor for QgsColorBrewerColorRampDialog.
+     * @param ramp initial ramp to show in dialog
+     * @param parent parent widget
+     */
+    QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp& ramp, QWidget* parent = nullptr );
+
+    /** Returns a color ramp representing the current settings from the dialog.
+     * @see setRamp()
+     */
+    QgsColorBrewerColorRamp ramp() const { return mWidget->ramp(); }
+
+    /** Sets the color ramp to show in the dialog.
+     * @param ramp color ramp
+     * @see ramp()
+     */
+    void setRamp( const QgsColorBrewerColorRamp& ramp ) { mWidget->setRamp( ramp ); }
+
+  signals:
+
+    //! Emitted when the dialog settings change
+    void changed();
+
+  private:
+
+    QgsColorBrewerColorRampWidget* mWidget;
+
 };
 
 #endif
