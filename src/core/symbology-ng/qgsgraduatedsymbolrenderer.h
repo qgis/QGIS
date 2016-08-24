@@ -247,6 +247,17 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! @note Added in 2.6
     void calculateLabelPrecision( bool updateRanges = true );
 
+    /** Creates a new graduated renderer.
+     * @param vlayer vector layer
+     * @param attrName attribute to classify
+     * @param classes number of classes
+     * @param mode classification mode
+     * @param symbol base symbol
+     * @param ramp color ramp for classes
+     * @param inverted set to true to invert color ramp
+     * @param legendFormat
+     * @returns new QgsGraduatedSymbolRenderer object
+     */
     static QgsGraduatedSymbolRenderer* createRenderer(
       QgsVectorLayer* vlayer,
       const QString& attrName,

@@ -238,8 +238,19 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
     GradientColorType gradientColorType() const { return mGradientColorType; }
     void setGradientColorType( GradientColorType gradientColorType ) { mGradientColorType = gradientColorType; }
 
-    /** Color ramp used for the gradient fill, only used if the gradient color type is set to ColorRamp*/
+    /** Returns the color ramp used for the gradient fill. This is only
+     * used if the gradient color type is set to ColorRamp.
+     * @see setColorRamp()
+     * @see gradientColorType()
+     */
     QgsColorRamp* colorRamp() { return mGradientRamp; }
+
+    /** Sets the color ramp used for the gradient fill. This is only
+     * used if the gradient color type is set to ColorRamp.
+     * @param ramp color ramp. Ownership is transferred.
+     * @see colorRamp()
+     * @see setGradientColorType()
+     */
     void setColorRamp( QgsColorRamp* ramp );
 
     /** Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor*/
