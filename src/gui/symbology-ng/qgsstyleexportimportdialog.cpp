@@ -203,13 +203,12 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle* style )
   for ( int i = 0; i < styleNames.count(); ++i )
   {
     name = styleNames[i];
-    QgsColorRamp* ramp = style->colorRamp( name );
+    QScopedPointer< QgsColorRamp > ramp( style->colorRamp( name ) );
 
     QStandardItem* item = new QStandardItem( name );
-    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp, listItems->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), listItems->iconSize() );
     item->setIcon( icon );
     model->appendRow( item );
-    delete ramp;
   }
   return true;
 }

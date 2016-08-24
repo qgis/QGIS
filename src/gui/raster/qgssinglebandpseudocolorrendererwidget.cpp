@@ -515,7 +515,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColorRampComboBox_currentIndexC
   QSettings settings;
   settings.setValue( "/Raster/defaultPalette", mColorRampComboBox->currentText() );
 
-  QgsColorRamp* ramp = mColorRampComboBox->currentColorRamp();
+  QScopedPointer< QgsColorRamp > ramp( mColorRampComboBox->currentColorRamp() );
   if ( !ramp )
     return;
 

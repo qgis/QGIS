@@ -5,7 +5,9 @@ class QgsColorBrewerColorRampDialog : QDialog
 %End
 
   public:
-    QgsColorBrewerColorRampDialog( QgsColorBrewerColorRamp* ramp, QWidget* parent /TransferThis/ = NULL );
+    QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp& ramp, QWidget* parent /TransferThis/ = nullptr );
+
+    QgsColorBrewerColorRamp ramp() const;
 
   public slots:
     void setSchemeName();

@@ -295,6 +295,13 @@ variant instead.</li>
 <li>GenericDataSourceURI has been renamed to GenericDataSourceUri</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsColorBrewerColorRampDialog QgsColorBrewerColorRampDialog
+
+<ul>
+<li>The dialog no longer edits a color ramp in place. Instead, a copy of the ramp is edited
+and the new ramp can be retrieved after executing the dialog by calling ramp().</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsComposerLabel QgsComposerLabel
 
 <ul>
@@ -387,6 +394,13 @@ plugins calling these methods will need to be updated.</li>
 <ul>
 <li>transform() now returns a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
 be returned in place of a null pointer.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsCptCityColorRampDialog QgsCptCityColorRampDialog
+
+<ul>
+<li>The dialog no longer edits a color ramp in place. Instead, a copy of the ramp is edited
+and the new ramp can be retrieved after executing the dialog by calling ramp().</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsCptCitySelectionItem QgsCptCitySelectionItem
@@ -559,6 +573,13 @@ method to determine if a geometry is valid.</li>
 a QgsGeometry value rather than a pointer.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsGradientColorRampDialog QgsGradientColorRampDialog
+
+<ul>
+<li>The dialog no longer edits a color ramp in place. Instead, a copy of the ramp is edited
+and the new ramp can be retrieved after executing the dialog by calling ramp().</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsGraphBuilderInterface QgsGraphBuilderInterface
 
 <ul>
@@ -602,6 +623,13 @@ plugins calling this method will need to be updated.</li>
 <ul>
 <li>readCommonXML() has been renamed to readCommonXml()</li>
 <li>writeCommonXML() has been renamed to writeCommonXml()</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsLimitedRandomRampDialog QgsLimitedRandomColorRampDialog
+
+<ul>
+<li>The dialog no longer edits a color ramp in place. Instead, a copy of the ramp is edited
+and the new ramp can be retrieved after executing the dialog by calling ramp().</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsMapCanvas QgsMapCanvas

@@ -5,8 +5,12 @@ class QgsCptCityColorRampDialog : QDialog
 %End
 
   public:
-    QgsCptCityColorRampDialog( QgsCptCityColorRamp* ramp, QWidget* parent /TransferThis/ = NULL );
+
+    QgsCptCityColorRampDialog( const QgsCptCityColorRamp& ramp, QWidget* parent /TransferThis/ = nullptr );
     ~QgsCptCityColorRampDialog();
+
+    QgsCptCityColorRamp ramp() const;
+
 
     QString selectedName() const;
 

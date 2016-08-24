@@ -18,6 +18,7 @@
 
 #include <QDialog>
 
+#include "qgscolorramp.h"
 #include "ui_qgscolorbrewercolorrampdialogbase.h"
 
 class QgsColorBrewerColorRamp;
@@ -30,7 +31,9 @@ class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog, private Ui::Qgs
     Q_OBJECT
 
   public:
-    QgsColorBrewerColorRampDialog( QgsColorBrewerColorRamp* ramp, QWidget* parent = nullptr );
+    QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp& ramp, QWidget* parent = nullptr );
+
+    QgsColorBrewerColorRamp ramp() const { return mRamp; }
 
   public slots:
     void setSchemeName();
@@ -42,7 +45,7 @@ class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog, private Ui::Qgs
 
     void updatePreview();
 
-    QgsColorBrewerColorRamp* mRamp;
+    QgsColorBrewerColorRamp mRamp;
 };
 
 #endif

@@ -5,7 +5,9 @@ class QgsLimitedRandomColorRampDialog : QDialog
 %End
 
   public:
-    QgsLimitedRandomColorRampDialog( QgsLimitedRandomColorRamp* ramp, QWidget* parent /TransferThis/ = NULL );
+    QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp& ramp, QWidget* parent /TransferThis/ = nullptr );
+
+    QgsLimitedRandomColorRamp ramp() const;
 
   public slots:
     void setCount( int val );

@@ -51,15 +51,14 @@ void QgsColorRampComboBox::populate( QgsStyle* style )
   QStringList rampNames = mStyle->colorRampNames();
   for ( QStringList::iterator it = rampNames.begin(); it != rampNames.end(); ++it )
   {
-    QgsColorRamp* ramp = style->colorRamp( *it );
+    QScopedPointer< QgsColorRamp > ramp( style->colorRamp( *it ) );
 
     if ( !mShowGradientOnly || ramp->type() == "gradient" )
     {
-      QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp, rampIconSize );
+      QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), rampIconSize );
 
       addItem( icon, *it );
     }
-    delete ramp;
   }
 
   if ( !mShowGradientOnly )
@@ -68,7 +67,7 @@ void QgsColorRampComboBox::populate( QgsStyle* style )
   connect( this, SIGNAL( activated( int ) ), SLOT( colorRampChanged( int ) ) );
 }
 
-QgsColorRamp* QgsColorRampComboBox::currentColorRamp()
+QgsColorRamp* QgsColorRampComboBox::currentColorRamp() const
 {
   QString rampName = currentText();
 
@@ -120,14 +119,12 @@ void QgsColorRampComboBox::colorRampChanged( int index )
     return;
 
   // put newly added ramp into the combo
-  QgsColorRamp* ramp = mStyle->colorRamp( rampName );
-  QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp, rampIconSize );
+  QScopedPointer< QgsColorRamp > ramp( mStyle->colorRamp( rampName ) );
+  QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), rampIconSize );
 
   blockSignals( true ); // avoid calling this method again!
   insertItem( index, icon, rampName );
   blockSignals( false );
-
-  delete ramp;
 
   // ... and set it as active
   setCurrentIndex( index );
@@ -138,49 +135,54 @@ void QgsColorRampComboBox::colorRampChanged( int index )
 
 void QgsColorRampComboBox::editSourceRamp()
 {
-  QgsColorRamp* currentRamp = currentColorRamp();
+  QScopedPointer< QgsColorRamp > currentRamp( currentColorRamp() );
   if ( !currentRamp )
     return;
 
-  QScopedPointer<QgsColorRamp> newRamp( currentRamp->clone() );
-
-  if ( newRamp->type() == "gradient" )
+  if ( currentRamp->type() == "gradient" )
   {
-    QgsGradientColorRamp* gradRamp = static_cast<QgsGradientColorRamp*>( newRamp.data() );
-    QgsGradientColorRampDialog dlg( gradRamp, this );
-    if ( dlg.exec() && gradRamp )
-    {
-      setSourceColorRamp( gradRamp );
-      emit sourceRampEdited();
-    }
-  }
-  else if ( newRamp->type() == "random" )
-  {
-    QgsLimitedRandomColorRamp* randRamp = static_cast<QgsLimitedRandomColorRamp*>( newRamp.data() );
-    QgsLimitedRandomColorRampDialog dlg( randRamp, this );
+    QgsGradientColorRamp* gradRamp = static_cast<QgsGradientColorRamp*>( currentRamp.data() );
+    QgsGradientColorRampDialog dlg( *gradRamp, this );
     if ( dlg.exec() )
     {
-      setSourceColorRamp( randRamp );
+      setSourceColorRamp( dlg.ramp().clone() );
       emit sourceRampEdited();
     }
   }
-  else if ( newRamp->type() == "colorbrewer" )
+  else if ( currentRamp->type() == "random" )
   {
-    QgsColorBrewerColorRamp* brewerRamp = static_cast<QgsColorBrewerColorRamp*>( newRamp.data() );
-    QgsColorBrewerColorRampDialog dlg( brewerRamp, this );
+    QgsLimitedRandomColorRamp* randRamp = static_cast<QgsLimitedRandomColorRamp*>( currentRamp.data() );
+    QgsLimitedRandomColorRampDialog dlg( *randRamp, this );
     if ( dlg.exec() )
     {
-      setSourceColorRamp( brewerRamp );
+      setSourceColorRamp( dlg.ramp().clone() );
       emit sourceRampEdited();
     }
   }
-  else if ( newRamp->type() == "cpt-city" )
+  else if ( currentRamp->type() == "colorbrewer" )
   {
-    QgsCptCityColorRamp* cptCityRamp = static_cast<QgsCptCityColorRamp*>( newRamp.data() );
-    QgsCptCityColorRampDialog dlg( cptCityRamp, this );
-    if ( dlg.exec() && cptCityRamp )
+    QgsColorBrewerColorRamp* brewerRamp = static_cast<QgsColorBrewerColorRamp*>( currentRamp.data() );
+    QgsColorBrewerColorRampDialog dlg( *brewerRamp, this );
+    if ( dlg.exec() )
     {
-      setSourceColorRamp( cptCityRamp );
+      setSourceColorRamp( dlg.ramp().clone() );
+      emit sourceRampEdited();
+    }
+  }
+  else if ( currentRamp->type() == "cpt-city" )
+  {
+    QgsCptCityColorRamp* cptCityRamp = static_cast<QgsCptCityColorRamp*>( currentRamp.data() );
+    QgsCptCityColorRampDialog dlg( *cptCityRamp, this );
+    if ( dlg.exec() )
+    {
+      if ( dlg.saveAsGradientRamp() )
+      {
+        setSourceColorRamp( dlg.ramp().cloneGradientRamp() );
+      }
+      else
+      {
+        setSourceColorRamp( dlg.ramp().clone() );
+      }
       emit sourceRampEdited();
     }
   }

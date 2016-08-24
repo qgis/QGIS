@@ -764,8 +764,9 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   r->setScaleMethod( mRenderer->scaleMethod() );
   r->setSizeScaleField( mRenderer->sizeScaleField() );
   r->setInvertedColorRamp( cbxInvertedColorRamp->isChecked() );
-  QgsColorRamp* ramp = getColorRamp();
-  if ( ramp ) r->setSourceColorRamp( ramp->clone() );
+  QScopedPointer< QgsColorRamp > ramp( getColorRamp() );
+  if ( ramp )
+    r->setSourceColorRamp( ramp->clone() );
 
   if ( mModel )
   {
@@ -773,8 +774,8 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   }
   delete mRenderer;
   mRenderer = r;
-  if ( ! keepExistingColors && ramp ) applyColorRamp();
-  delete ramp;
+  if ( ! keepExistingColors && ramp )
+    applyColorRamp();
   emit widgetChanged();
 }
 

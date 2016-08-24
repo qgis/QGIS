@@ -40,7 +40,7 @@
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
 
-QgsGradientColorRampDialog::QgsGradientColorRampDialog( QgsGradientColorRamp* ramp, QWidget* parent )
+QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRamp& ramp, QWidget* parent )
     : QDialog( parent )
     , mRamp( ramp )
     , mCurrentPlotColorComponent( -1 )
@@ -70,16 +70,16 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( QgsGradientColorRamp* ra
   cboType->blockSignals( true );
   cboType->addItem( tr( "Discrete" ) );
   cboType->addItem( tr( "Continuous" ) );
-  if ( mRamp->isDiscrete() )
+  if ( mRamp.isDiscrete() )
     cboType->setCurrentIndex( 0 );
   else
     cboType->setCurrentIndex( 1 );
   cboType->blockSignals( false );
 
-  if ( mRamp->info().isEmpty() )
+  if ( mRamp.info().isEmpty() )
     btnInformation->setEnabled( false );
 
-  mStopEditor->setGradientRamp( *mRamp );
+  mStopEditor->setGradientRamp( mRamp );
   connect( mStopEditor, SIGNAL( changed() ), this, SLOT( updateRampFromStopEditor() ) );
 
   connect( mColorWidget, SIGNAL( currentColorChanged( QColor ) ), this, SLOT( colorWidgetChanged( QColor ) ) );
@@ -157,10 +157,10 @@ QgsGradientColorRampDialog::~QgsGradientColorRampDialog()
 
 void QgsGradientColorRampDialog::on_cboType_currentIndexChanged( int index )
 {
-  if (( index == 0 && mRamp->isDiscrete() ) ||
-      ( index == 1 && !mRamp->isDiscrete() ) )
+  if (( index == 0 && mRamp.isDiscrete() ) ||
+      ( index == 1 && !mRamp.isDiscrete() ) )
     return;
-  mRamp->convertToDiscrete( index == 0 );
+  mRamp.convertToDiscrete( index == 0 );
   updateColorButtons();
   updateStopEditor();
   updatePlot();
@@ -168,7 +168,7 @@ void QgsGradientColorRampDialog::on_cboType_currentIndexChanged( int index )
 
 void QgsGradientColorRampDialog::on_btnInformation_pressed()
 {
-  if ( mRamp->info().isEmpty() )
+  if ( mRamp.info().isEmpty() )
     return;
 
   QgsDialog *dlg = new QgsDialog( this );
@@ -178,10 +178,10 @@ void QgsGradientColorRampDialog::on_btnInformation_pressed()
   QTableWidget *tableInfo = new QTableWidget( dlg );
   tableInfo->verticalHeader()->hide();
   tableInfo->horizontalHeader()->hide();
-  tableInfo->setRowCount( mRamp->info().count() );
+  tableInfo->setRowCount( mRamp.info().count() );
   tableInfo->setColumnCount( 2 );
   int i = 0;
-  QgsStringMap rampInfo = mRamp->info();
+  QgsStringMap rampInfo = mRamp.info();
   for ( QgsStringMap::const_iterator it = rampInfo.constBegin();
         it != rampInfo.constEnd(); ++it )
   {
@@ -202,7 +202,7 @@ void QgsGradientColorRampDialog::on_btnInformation_pressed()
   dlg->layout()->addSpacing( 5 );
 
   // gradient file
-  QString gradientFile = mRamp->info().value( "cpt-city-gradient" );
+  QString gradientFile = mRamp.info().value( "cpt-city-gradient" );
   if ( ! gradientFile.isNull() )
   {
     QString fileName = gradientFile;
@@ -219,7 +219,7 @@ void QgsGradientColorRampDialog::on_btnInformation_pressed()
   }
 
   // license file
-  QString licenseFile = mRamp->info().value( "cpt-city-license" );
+  QString licenseFile = mRamp.info().value( "cpt-city-license" );
   if ( !licenseFile.isNull() )
   {
     QString fileName = licenseFile;
@@ -255,17 +255,17 @@ void QgsGradientColorRampDialog::on_btnInformation_pressed()
 void QgsGradientColorRampDialog::updateColorButtons()
 {
   btnColor1->blockSignals( true );
-  btnColor1->setColor( mRamp->color1() );
+  btnColor1->setColor( mRamp.color1() );
   btnColor1->blockSignals( false );
   btnColor2->blockSignals( true );
-  btnColor2->setColor( mRamp->color2() );
+  btnColor2->setColor( mRamp.color2() );
   btnColor2->blockSignals( false );
 }
 
 void QgsGradientColorRampDialog::updateStopEditor()
 {
   mStopEditor->blockSignals( true );
-  mStopEditor->setGradientRamp( *mRamp );
+  mStopEditor->setGradientRamp( mRamp );
   mStopEditor->blockSignals( false );
 }
 
@@ -278,7 +278,7 @@ void QgsGradientColorRampDialog::selectedStopChanged( const QgsGradientStop& sto
   mPositionSpinBox->setValue( stop.offset * 100 );
   mPositionSpinBox->blockSignals( false );
 
-  if (( stop.offset == 0 && stop.color == mRamp->color1() ) || ( stop.offset == 1.0 && stop.color == mRamp->color2() ) )
+  if (( stop.offset == 0 && stop.color == mRamp.color1() ) || ( stop.offset == 1.0 && stop.color == mRamp.color2() ) )
   {
     //first/last stop can't be repositioned
     mPositionSpinBox->setDisabled( true );
@@ -336,24 +336,24 @@ void QgsGradientColorRampDialog::plotMousePress( QPointF point )
   mCurrentPlotMarkerIndex = -1;
   // first color
 
-  for ( int i = 0; i < mRamp->count(); ++i )
+  for ( int i = 0; i < mRamp.count(); ++i )
   {
     QColor currentCol;
     double currentOff = 0.0;
     if ( i == 0 )
     {
       currentOff = 0.0;
-      currentCol = mRamp->color1();
+      currentCol = mRamp.color1();
     }
-    else if ( i == mRamp->count() - 1 )
+    else if ( i == mRamp.count() - 1 )
     {
       currentOff = 1.0;
-      currentCol = mRamp->color2();
+      currentCol = mRamp.color2();
     }
     else
     {
-      currentOff = mRamp->stops().at( i - 1 ).offset;
-      currentCol = mRamp->stops().at( i - 1 ).color;
+      currentOff = mRamp.stops().at( i - 1 ).offset;
+      currentCol = mRamp.stops().at( i - 1 ).color;
     }
 
     double currentDist;
@@ -476,14 +476,14 @@ void QgsGradientColorRampDialog::updatePlot()
   QPolygonF huePoints;
   QPolygonF saturationPoints;
   QPolygonF alphaPoints;
-  lightnessPoints << QPointF( 0.0, mRamp->color1().lightnessF() );
-  huePoints << QPointF( 0.0, mRamp->color1().hslHueF() );
-  saturationPoints << QPointF( 0.0, mRamp->color1().hslSaturationF() );
-  alphaPoints << QPointF( 0.0, mRamp->color1().alphaF() );
-  addMarkersForColor( 0, mRamp->color1(), mCurrentPlotMarkerIndex == 0 );
+  lightnessPoints << QPointF( 0.0, mRamp.color1().lightnessF() );
+  huePoints << QPointF( 0.0, mRamp.color1().hslHueF() );
+  saturationPoints << QPointF( 0.0, mRamp.color1().hslSaturationF() );
+  alphaPoints << QPointF( 0.0, mRamp.color1().alphaF() );
+  addMarkersForColor( 0, mRamp.color1(), mCurrentPlotMarkerIndex == 0 );
 
   int i = 1;
-  Q_FOREACH ( const QgsGradientStop& stop, mRamp->stops() )
+  Q_FOREACH ( const QgsGradientStop& stop, mRamp.stops() )
   {
     lightnessPoints << QPointF( stop.offset, stop.color.lightnessF() );
     huePoints << QPointF( stop.offset, stop.color.hslHueF() );
@@ -497,18 +497,18 @@ void QgsGradientColorRampDialog::updatePlot()
   //add extra intermediate points
   for ( double p = 0.001; p < 1.0; p += 0.001 )
   {
-    QColor c = mRamp->color( p );
+    QColor c = mRamp.color( p );
     lightnessPoints << QPointF( p, c.lightnessF() );
     huePoints << QPointF( p, c.hslHueF() );
     saturationPoints << QPointF( p, c.hslSaturationF() );
     alphaPoints << QPointF( p, c.alphaF() );
   }
 
-  lightnessPoints << QPointF( 1.0, mRamp->color2().lightnessF() );
-  huePoints << QPointF( 1.0, mRamp->color2().hslHueF() );
-  saturationPoints << QPointF( 1.0, mRamp->color2().hslSaturationF() );
-  alphaPoints << QPointF( 1.0, mRamp->color2().alphaF() );
-  addMarkersForColor( 1.0, mRamp->color2(), mCurrentPlotMarkerIndex == i );
+  lightnessPoints << QPointF( 1.0, mRamp.color2().lightnessF() );
+  huePoints << QPointF( 1.0, mRamp.color2().hslHueF() );
+  saturationPoints << QPointF( 1.0, mRamp.color2().hslSaturationF() );
+  alphaPoints << QPointF( 1.0, mRamp.color2().alphaF() );
+  addMarkersForColor( 1.0, mRamp.color2(), mCurrentPlotMarkerIndex == i );
 
   qSort( lightnessPoints.begin(), lightnessPoints.end(), byX );
   qSort( huePoints.begin(), huePoints.end(), byX );
@@ -531,7 +531,7 @@ void QgsGradientColorRampDialog::updatePlot()
 
 void QgsGradientColorRampDialog::updateRampFromStopEditor()
 {
-  *mRamp = mStopEditor->gradientRamp();
+  mRamp = mStopEditor->gradientRamp();
   mPositionSpinBox->blockSignals( true );
   mPositionSpinBox->setValue( mStopEditor->selectedStop().offset * 100 );
   mPositionSpinBox->blockSignals( false );

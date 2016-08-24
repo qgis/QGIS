@@ -5,7 +5,10 @@ class QgsGradientColorRampDialog : QDialog
 %End
 
   public:
-    QgsGradientColorRampDialog( QgsGradientColorRamp* ramp, QWidget* parent /TransferThis/ = NULL );
+    QgsGradientColorRampDialog( const QgsGradientColorRamp& ramp, QWidget* parent /TransferThis/ = nullptr );
+    ~QgsGradientColorRampDialog();
+
+    QgsGradientColorRamp ramp() const;
 
   public slots:
     void setColor1( const QColor& color );

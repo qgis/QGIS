@@ -39,11 +39,13 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     Q_OBJECT
 
   public:
-    QgsCptCityColorRampDialog( QgsCptCityColorRamp* ramp, QWidget* parent = nullptr );
+    QgsCptCityColorRampDialog( const QgsCptCityColorRamp& ramp, QWidget* parent = nullptr );
     ~QgsCptCityColorRampDialog();
 
+    QgsCptCityColorRamp ramp() const { return mRamp; }
+
     QString selectedName() const
-    { return mRamp ? QFileInfo( mRamp->schemeName() ).baseName() + mRamp->variantName() : QString(); }
+    { return QFileInfo( mRamp.schemeName() ).baseName() + mRamp.variantName(); }
 
     bool saveAsGradientRamp() const;
 
@@ -69,7 +71,7 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     void updateListWidget( QgsCptCityDataItem *item );
     bool eventFilter( QObject *obj, QEvent *event ) override;
 
-    QgsCptCityColorRamp* mRamp;
+    QgsCptCityColorRamp mRamp;
     QgsCptCityArchive* mArchive;
     QgsCptCityBrowserModel::ViewType mArchiveViewType;
 

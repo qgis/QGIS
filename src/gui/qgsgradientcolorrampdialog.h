@@ -34,8 +34,10 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     Q_OBJECT
 
   public:
-    QgsGradientColorRampDialog( QgsGradientColorRamp* ramp, QWidget* parent = nullptr );
+    QgsGradientColorRampDialog( const QgsGradientColorRamp& ramp, QWidget* parent = nullptr );
     ~QgsGradientColorRampDialog();
+
+    QgsGradientColorRamp ramp() const { return mRamp; }
 
   public slots:
     void setColor1( const QColor& color );
@@ -46,7 +48,7 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     void on_btnInformation_pressed();
 
   protected:
-    QgsGradientColorRamp* mRamp;
+    QgsGradientColorRamp mRamp;
 
   private slots:
 

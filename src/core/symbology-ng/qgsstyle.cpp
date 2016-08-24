@@ -254,7 +254,7 @@ bool QgsStyle::removeColorRamp( const QString& name )
   return true;
 }
 
-QgsColorRamp* QgsStyle::colorRamp( const QString& name )
+QgsColorRamp* QgsStyle::colorRamp( const QString& name ) const
 {
   const QgsColorRamp *ramp = colorRampRef( name );
   return ramp ? ramp->clone() : nullptr;
@@ -1536,7 +1536,8 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString& name )
       return false;
     }
 
-    symEl = QgsSymbolLayerUtils::saveColorRamp( name, colorRamp( name ), doc );
+    QScopedPointer< QgsColorRamp > ramp( colorRamp( name ) );
+    symEl = QgsSymbolLayerUtils::saveColorRamp( name, ramp.data(), doc );
     if ( symEl.isNull() )
     {
       QgsDebugMsg( "Couldn't convert color ramp to valid XML!" );

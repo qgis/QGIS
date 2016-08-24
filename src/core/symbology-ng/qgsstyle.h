@@ -82,11 +82,10 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     enum StyleEntity { SymbolEntity, GroupEntity, TagEntity, ColorrampEntity, SmartgroupEntity };
 
-    //! add color ramp to style. takes ramp's ownership
-    /*!
+    /** Adds a color ramp to the style. Calling this method takes the ramp's ownership.
      *  \note Adding a color ramp with the name of existing one replaces it.
      *  \param name is the name of the color ramp being added or updated
-     *  \param colorRamp is the Vector color ramp
+     *  \param colorRamp is the color ramp. Ownership is transferred.
      *  \param update set to true when the style DB has to be updated, by default it is false
      *  \return success status of the operation
      */
@@ -137,8 +136,10 @@ class CORE_EXPORT QgsStyle : public QObject
     //! remove all contents of the style
     void clear();
 
-    //! return a NEW copy of color ramp
-    QgsColorRamp* colorRamp( const QString& name );
+    /** Returns a new copy of the specified color ramp. The caller
+     * takes responsibility for deleting the returned object.
+     */
+    QgsColorRamp* colorRamp( const QString& name ) const;
 
     //! return count of color ramps
     int colorRampCount();

@@ -17,7 +17,7 @@
 #define QGsLIMITEDRANDOMCOLORRAMPDIALOG_H
 
 #include <QDialog>
-
+#include "qgscolorramp.h"
 #include "ui_qgslimitedrandomcolorrampdialogbase.h"
 
 class QgsLimitedRandomColorRamp;
@@ -30,7 +30,9 @@ class GUI_EXPORT QgsLimitedRandomColorRampDialog : public QDialog, private Ui::Q
     Q_OBJECT
 
   public:
-    QgsLimitedRandomColorRampDialog( QgsLimitedRandomColorRamp* ramp, QWidget* parent = nullptr );
+    QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp& ramp, QWidget* parent = nullptr );
+
+    QgsLimitedRandomColorRamp ramp() const { return mRamp; }
 
   public slots:
     void setCount( int val );
@@ -45,7 +47,7 @@ class GUI_EXPORT QgsLimitedRandomColorRampDialog : public QDialog, private Ui::Q
 
     void updatePreview();
 
-    QgsLimitedRandomColorRamp* mRamp;
+    QgsLimitedRandomColorRamp mRamp;
 };
 
 #endif

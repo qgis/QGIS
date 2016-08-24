@@ -21,19 +21,19 @@
 #include <QColorDialog>
 
 
-QgsLimitedRandomColorRampDialog::QgsLimitedRandomColorRampDialog( QgsLimitedRandomColorRamp* ramp, QWidget* parent )
+QgsLimitedRandomColorRampDialog::QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp& ramp, QWidget* parent )
     : QDialog( parent )
     , mRamp( ramp )
 {
   setupUi( this );
 
-  spinCount->setValue( ramp->count() );
-  spinHue1->setValue( ramp->hueMin() );
-  spinHue2->setValue( ramp->hueMax() );
-  spinSat1->setValue( ramp->satMin() );
-  spinSat2->setValue( ramp->satMax() );
-  spinVal1->setValue( ramp->valMin() );
-  spinVal2->setValue( ramp->valMax() );
+  spinCount->setValue( mRamp.count() );
+  spinHue1->setValue( mRamp.hueMin() );
+  spinHue2->setValue( mRamp.hueMax() );
+  spinSat1->setValue( mRamp.satMin() );
+  spinSat2->setValue( mRamp.satMax() );
+  spinVal1->setValue( mRamp.valMin() );
+  spinVal2->setValue( mRamp.valMax() );
 
   connect( spinCount, SIGNAL( valueChanged( int ) ), this, SLOT( setCount( int ) ) );
   connect( spinHue1, SIGNAL( valueChanged( int ) ), this, SLOT( setHue1( int ) ) );
@@ -48,50 +48,50 @@ QgsLimitedRandomColorRampDialog::QgsLimitedRandomColorRampDialog( QgsLimitedRand
 
 void QgsLimitedRandomColorRampDialog::updatePreview()
 {
-  mRamp->updateColors();
+  mRamp.updateColors();
 
   QSize size( 300, 40 );
-  lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( mRamp, size ) );
+  lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( &mRamp, size ) );
 }
 
 void QgsLimitedRandomColorRampDialog::setCount( int val )
 {
-  mRamp->setCount( val );
+  mRamp.setCount( val );
   updatePreview();
 }
 
 void QgsLimitedRandomColorRampDialog::setHue1( int val )
 {
-  mRamp->setHueMin( val );
+  mRamp.setHueMin( val );
   updatePreview();
 }
 
 void QgsLimitedRandomColorRampDialog::setHue2( int val )
 {
-  mRamp->setHueMax( val );
+  mRamp.setHueMax( val );
   updatePreview();
 }
 
 void QgsLimitedRandomColorRampDialog::setSat1( int val )
 {
-  mRamp->setSatMin( val );
+  mRamp.setSatMin( val );
   updatePreview();
 }
 
 void QgsLimitedRandomColorRampDialog::setSat2( int val )
 {
-  mRamp->setSatMax( val );
+  mRamp.setSatMax( val );
   updatePreview();
 }
 
 void QgsLimitedRandomColorRampDialog::setVal1( int val )
 {
-  mRamp->setValMin( val );
+  mRamp.setValMin( val );
   updatePreview();
 }
 
 void QgsLimitedRandomColorRampDialog::setVal2( int val )
 {
-  mRamp->setValMax( val );
+  mRamp.setValMax( val );
   updatePreview();
 }

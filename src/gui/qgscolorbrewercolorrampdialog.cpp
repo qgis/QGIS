@@ -31,7 +31,7 @@ static void updateColorButton( QAbstractButton* button, QColor color )
 /////////
 
 
-QgsColorBrewerColorRampDialog::QgsColorBrewerColorRampDialog( QgsColorBrewerColorRamp* ramp, QWidget* parent )
+QgsColorBrewerColorRampDialog::QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp& ramp, QWidget* parent )
     : QDialog( parent )
     , mRamp( ramp )
 {
@@ -51,9 +51,9 @@ QgsColorBrewerColorRampDialog::QgsColorBrewerColorRampDialog( QgsColorBrewerColo
     cboSchemeName->addItem( icon, schemeName );
   }
 
-  cboSchemeName->setCurrentIndex( cboSchemeName->findText( ramp->schemeName() ) );
+  cboSchemeName->setCurrentIndex( cboSchemeName->findText( mRamp.schemeName() ) );
   populateVariants();
-  cboColors->setCurrentIndex( cboColors->findText( QString::number( ramp->colors() ) ) );
+  cboColors->setCurrentIndex( cboColors->findText( QString::number( mRamp.colors() ) ) );
 
   connect( cboSchemeName, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setSchemeName() ) );
   connect( cboColors, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setColors() ) );
@@ -86,7 +86,7 @@ void QgsColorBrewerColorRampDialog::populateVariants()
 void QgsColorBrewerColorRampDialog::updatePreview()
 {
   QSize size( 300, 40 );
-  lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( mRamp, size ) );
+  lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( &mRamp, size ) );
 }
 
 void QgsColorBrewerColorRampDialog::setSchemeName()
@@ -94,13 +94,13 @@ void QgsColorBrewerColorRampDialog::setSchemeName()
   // populate list of variants
   populateVariants();
 
-  mRamp->setSchemeName( cboSchemeName->currentText() );
+  mRamp.setSchemeName( cboSchemeName->currentText() );
   updatePreview();
 }
 
 void QgsColorBrewerColorRampDialog::setColors()
 {
   int num = cboColors->currentText().toInt();
-  mRamp->setColors( num );
+  mRamp.setColors( num );
   updatePreview();
 }
