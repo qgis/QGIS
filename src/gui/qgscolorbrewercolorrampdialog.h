@@ -25,25 +25,47 @@ class QgsColorBrewerColorRamp;
 
 /** \ingroup gui
  * \class QgsColorBrewerColorRampDialog
+ * A dialog which allows users to modify the properties of a QgsColorBrewerColorRamp.
+ * \note added in QGIS 3.0
  */
 class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog, private Ui::QgsColorBrewerColorRampDialogBase
 {
     Q_OBJECT
+    Q_PROPERTY( QgsColorBrewerColorRamp ramp READ ramp WRITE setRamp )
 
   public:
+
+    /** Constructor for QgsColorBrewerColorRampDialog.
+     * @param ramp initial ramp to show in dialog
+     * @param parent parent widget
+     */
     QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp& ramp, QWidget* parent = nullptr );
 
+    /** Returns a color ramp representing the current settings from the dialog.
+     * @see setRamp()
+     */
     QgsColorBrewerColorRamp ramp() const { return mRamp; }
 
-  public slots:
+    /** Sets the color ramp to show in the dialog.
+     * @param ramp color ramp
+     * @see ramp()
+     */
+    void setRamp( const QgsColorBrewerColorRamp& ramp );
+
+  signals:
+
+    //! Emitted when the dialog settings change
+    void changed();
+
+  private slots:
     void setSchemeName();
     void setColors();
-
     void populateVariants();
 
-  protected:
+  private:
 
     void updatePreview();
+    void updateUi();
 
     QgsColorBrewerColorRamp mRamp;
 };

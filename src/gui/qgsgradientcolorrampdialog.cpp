@@ -155,6 +155,17 @@ QgsGradientColorRampDialog::~QgsGradientColorRampDialog()
 
 }
 
+void QgsGradientColorRampDialog::setRamp( const QgsGradientColorRamp& ramp )
+{
+  mRamp = ramp;
+
+  updateColorButtons();
+  updateStopEditor();
+  updatePlot();
+
+  emit changed();
+}
+
 void QgsGradientColorRampDialog::on_cboType_currentIndexChanged( int index )
 {
   if (( index == 0 && mRamp.isDiscrete() ) ||
@@ -164,6 +175,8 @@ void QgsGradientColorRampDialog::on_cboType_currentIndexChanged( int index )
   updateColorButtons();
   updateStopEditor();
   updatePlot();
+
+  emit changed();
 }
 
 void QgsGradientColorRampDialog::on_btnInformation_pressed()
@@ -541,6 +554,8 @@ void QgsGradientColorRampDialog::updateRampFromStopEditor()
 
   updateColorButtons();
   updatePlot();
+
+  emit changed();
 }
 
 void QgsGradientColorRampDialog::setColor1( const QColor& color )

@@ -300,6 +300,7 @@ variant instead.</li>
 <ul>
 <li>The dialog no longer edits a color ramp in place. Instead, a copy of the ramp is edited
 and the new ramp can be retrieved after executing the dialog by calling ramp().</li>
+<li>Some internal methods which were previously public or protected were made private.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsComposerLabel QgsComposerLabel
@@ -401,6 +402,7 @@ be returned in place of a null pointer.</li>
 <ul>
 <li>The dialog no longer edits a color ramp in place. Instead, a copy of the ramp is edited
 and the new ramp can be retrieved after executing the dialog by calling ramp().</li>
+<li>Some internal methods which were previously public or protected were made private.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsCptCitySelectionItem QgsCptCitySelectionItem
@@ -578,6 +580,7 @@ a QgsGeometry value rather than a pointer.</li>
 <ul>
 <li>The dialog no longer edits a color ramp in place. Instead, a copy of the ramp is edited
 and the new ramp can be retrieved after executing the dialog by calling ramp().</li>
+<li>Some internal methods which were previously public or protected were made private.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsGraphBuilderInterface QgsGraphBuilderInterface
@@ -630,6 +633,7 @@ plugins calling this method will need to be updated.</li>
 <ul>
 <li>The dialog no longer edits a color ramp in place. Instead, a copy of the ramp is edited
 and the new ramp can be retrieved after executing the dialog by calling ramp().</li>
+<li>Some internal methods which were previously public or protected were made private.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsMapCanvas QgsMapCanvas

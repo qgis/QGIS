@@ -113,30 +113,7 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp&
   cboVariantName->setIconSize( QSize( 100, 15 ) );
   lblPreview->installEventFilter( this ); // mouse click on preview label shows svg render
 
-  // look for item, if not found in selections archive, look for in authors
-  QgsDebugMsg( "looking for ramp " + mRamp.schemeName() );
-  if ( mRamp.schemeName() != "" )
-  {
-    bool found = updateRamp();
-    if ( ! found )
-    {
-      tabBar->setCurrentIndex( 1 );
-      setTreeModel( mAuthorsModel );
-      found = updateRamp();
-      // if not found, go back to selections model
-      if ( ! found )
-      {
-        tabBar->setCurrentIndex( 0 );
-        setTreeModel( mSelectionsModel );
-      }
-    }
-    if ( found )
-      buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
-  }
-  else
-  {
-    updateRamp();
-  }
+  updateUi();
 
   tabBar->blockSignals( false );
 
@@ -146,6 +123,12 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp&
 
 QgsCptCityColorRampDialog::~QgsCptCityColorRampDialog()
 {
+}
+
+void QgsCptCityColorRampDialog::setRamp( const QgsCptCityColorRamp& ramp )
+{
+  mRamp = ramp;
+  updateUi();
 }
 
 void QgsCptCityColorRampDialog::populateVariants()
@@ -459,6 +442,7 @@ void QgsCptCityColorRampDialog::on_cboVariantName_currentIndexChanged( int index
     mRamp.setVariantName( cboVariantName->itemData( cboVariantName->currentIndex(), Qt::UserRole ).toString() );
   QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
   updatePreview();
+  emit changed();
 }
 
 void QgsCptCityColorRampDialog::onFinished()
@@ -479,6 +463,34 @@ void QgsCptCityColorRampDialog::on_buttonBox_helpRequested()
   QMessageBox* msg = new QMessageBox( this );
   msg->setText( helpText );
   msg->exec();
+}
+
+void QgsCptCityColorRampDialog::updateUi()
+{
+  // look for item, if not found in selections archive, look for in authors
+  QgsDebugMsg( "looking for ramp " + mRamp.schemeName() );
+  if ( mRamp.schemeName() != "" )
+  {
+    bool found = updateRamp();
+    if ( ! found )
+    {
+      tabBar->setCurrentIndex( 1 );
+      setTreeModel( mAuthorsModel );
+      found = updateRamp();
+      // if not found, go back to selections model
+      if ( ! found )
+      {
+        tabBar->setCurrentIndex( 0 );
+        setTreeModel( mSelectionsModel );
+      }
+    }
+    if ( found )
+      buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+  }
+  else
+  {
+    updateRamp();
+  }
 }
 
 bool QgsCptCityColorRampDialog::saveAsGradientRamp() const
@@ -612,6 +624,7 @@ bool QgsCptCityColorRampDialog::updateRamp()
       mListWidget->scrollToItem( listItem, QAbstractItemView::EnsureVisible );
       // mListView->selectionModel()->select( childIndex, QItemSelectionModel::Select );
       buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+      emit changed();
       return true;
     }
   }

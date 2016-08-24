@@ -20,32 +20,62 @@
 #include "qgscolorramp.h"
 #include "ui_qgslimitedrandomcolorrampdialogbase.h"
 
-class QgsLimitedRandomColorRamp;
 
 /** \ingroup gui
  * \class QgsLimitedRandomColorRampDialog
+ * A dialog which allows users to modify the properties of a QgsLimitedRandomColorRamp.
+ * \note added in QGIS 3.0
  */
 class GUI_EXPORT QgsLimitedRandomColorRampDialog : public QDialog, private Ui::QgsLimitedRandomColorRampDialogBase
 {
     Q_OBJECT
+    Q_PROPERTY( QgsLimitedRandomColorRamp ramp READ ramp WRITE setRamp )
 
   public:
+
+    /** Constructor for QgsLimitedRandomColorRampDialog.
+     * @param ramp initial ramp to show in dialog
+     * @param parent parent widget
+     */
     QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp& ramp, QWidget* parent = nullptr );
 
+    /** Returns a color ramp representing the current settings from the dialog.
+     * @see setRamp()
+     */
     QgsLimitedRandomColorRamp ramp() const { return mRamp; }
 
+    /** Sets the color ramp to show in the dialog.
+     * @param ramp color ramp
+     * @see ramp()
+     */
+    void setRamp( const QgsLimitedRandomColorRamp& ramp );
+
+  signals:
+
+    //! Emitted when the dialog settings change
+    void changed();
+
   public slots:
+
+    //! Sets the number of colors to create in the ramp
     void setCount( int val );
+    //! Sets the minimum hue for colors in the ramp
     void setHue1( int val );
+    //! Sets the maximum hue for colors in the ramp
     void setHue2( int val );
+    //! Sets the minimum saturation for colors in the ramp
     void setSat1( int val );
+    //! Sets the maximum saturation for colors in the ramp
     void setSat2( int val );
+    //! Sets the minimum value for colors in the ramp
     void setVal1( int val );
+    //! Sets the maximum value for colors in the ramp
     void setVal2( int val );
 
-  protected:
+  private:
 
     void updatePreview();
+    void updateUi();
 
     QgsLimitedRandomColorRamp mRamp;
 };

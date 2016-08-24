@@ -51,14 +51,16 @@ QgsColorBrewerColorRampDialog::QgsColorBrewerColorRampDialog( const QgsColorBrew
     cboSchemeName->addItem( icon, schemeName );
   }
 
-  cboSchemeName->setCurrentIndex( cboSchemeName->findText( mRamp.schemeName() ) );
-  populateVariants();
-  cboColors->setCurrentIndex( cboColors->findText( QString::number( mRamp.colors() ) ) );
-
+  updateUi();
   connect( cboSchemeName, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setSchemeName() ) );
   connect( cboColors, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setColors() ) );
+}
 
-  updatePreview();
+void QgsColorBrewerColorRampDialog::setRamp( const QgsColorBrewerColorRamp& ramp )
+{
+  mRamp = ramp;
+  updateUi();
+  emit changed();
 }
 
 void QgsColorBrewerColorRampDialog::populateVariants()
@@ -89,6 +91,14 @@ void QgsColorBrewerColorRampDialog::updatePreview()
   lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( &mRamp, size ) );
 }
 
+void QgsColorBrewerColorRampDialog::updateUi()
+{
+  whileBlocking( cboSchemeName )->setCurrentIndex( cboSchemeName->findText( mRamp.schemeName() ) );
+  populateVariants();
+  whileBlocking( cboColors )->setCurrentIndex( cboColors->findText( QString::number( mRamp.colors() ) ) );
+  updatePreview();
+}
+
 void QgsColorBrewerColorRampDialog::setSchemeName()
 {
   // populate list of variants
@@ -96,6 +106,7 @@ void QgsColorBrewerColorRampDialog::setSchemeName()
 
   mRamp.setSchemeName( cboSchemeName->currentText() );
   updatePreview();
+  emit changed();
 }
 
 void QgsColorBrewerColorRampDialog::setColors()
@@ -103,4 +114,5 @@ void QgsColorBrewerColorRampDialog::setColors()
   int num = cboColors->currentText().toInt();
   mRamp.setColors( num );
   updatePreview();
+  emit changed();
 }
