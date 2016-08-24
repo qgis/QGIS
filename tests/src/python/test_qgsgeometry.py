@@ -14,6 +14,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import csv
+import math
 
 from qgis.core import (
     QgsGeometry,
@@ -3490,6 +3491,49 @@ class TestQgsGeometry(unittest.TestCase):
         point = QgsGeometry.fromWkt('Point(9 -2)')
         self.assertAlmostEqual(geom.lineLocatePoint(point), 7.372, places=3)
 
+    def testInterpolateAngle(self):
+        """ test QgsGeometry.interpolateAngle() """
+
+        empty = QgsGeometry()
+        # just test no crash
+        self.assertEqual(empty.interpolateAngle(5), 0)
+
+        # not a linestring
+        point = QgsGeometry.fromWkt('Point(1 2)')
+        # no meaning, just test no crash!
+        self.assertEqual(point.interpolateAngle(5), 0)
+
+        # linestring
+        linestring = QgsGeometry.fromWkt('LineString(0 0, 10 0, 20 10, 20 20, 10 20)')
+        self.assertAlmostEqual(linestring.interpolateAngle(0), math.radians(90), places=3)
+        self.assertAlmostEqual(linestring.interpolateAngle(5), math.radians(90), places=3)
+        self.assertAlmostEqual(linestring.interpolateAngle(10), math.radians(67.5), places=3)
+        self.assertAlmostEqual(linestring.interpolateAngle(15), math.radians(45), places=3)
+        self.assertAlmostEqual(linestring.interpolateAngle(25), math.radians(0), places=3)
+        self.assertAlmostEqual(linestring.interpolateAngle(35), math.radians(270), places=3)
+
+        # test first and last points in a linestring - angle should be angle of
+        # first/last segment
+        linestring = QgsGeometry.fromWkt('LineString(20 0, 10 0, 10 -10)')
+        self.assertAlmostEqual(linestring.interpolateAngle(0), math.radians(270), places=3)
+        self.assertAlmostEqual(linestring.interpolateAngle(20), math.radians(180), places=3)
+
+        # polygon
+        polygon = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 20 10, 20 20, 10 20, 0 0))')
+        self.assertAlmostEqual(polygon.interpolateAngle(5), math.radians(90), places=3)
+        self.assertAlmostEqual(polygon.interpolateAngle(10), math.radians(67.5), places=3)
+        self.assertAlmostEqual(polygon.interpolateAngle(15), math.radians(45), places=3)
+        self.assertAlmostEqual(polygon.interpolateAngle(25), math.radians(0), places=3)
+        self.assertAlmostEqual(polygon.interpolateAngle(35), math.radians(270), places=3)
+
+        # test first/last vertex in polygon
+        polygon = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0))')
+        self.assertAlmostEqual(polygon.interpolateAngle(0), math.radians(135), places=3)
+        self.assertAlmostEqual(polygon.interpolateAngle(40), math.radians(135), places=3)
+
+        # circular string
+        geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
+        self.assertAlmostEqual(geom.interpolateAngle(5), 1.69120, places=3)
 
 if __name__ == '__main__':
     unittest.main()

@@ -119,6 +119,51 @@ double QgsGeometryUtils::distanceToVertex( const QgsAbstractGeometry &geom, cons
   return -1;
 }
 
+bool QgsGeometryUtils::verticesAtDistance( const QgsAbstractGeometry& geometry, double distance, QgsVertexId& previousVertex, QgsVertexId& nextVertex )
+{
+  double currentDist = 0;
+  previousVertex = QgsVertexId();
+  nextVertex = QgsVertexId();
+
+  QgsPointV2 point;
+  QgsPointV2 previousPoint;
+
+  if ( qgsDoubleNear( distance, 0.0 ) )
+  {
+    geometry.nextVertex( previousVertex, point );
+    nextVertex = previousVertex;
+    return true;
+  }
+
+  bool first = true;
+  while ( currentDist < distance && geometry.nextVertex( nextVertex, point ) )
+  {
+    if ( !first )
+    {
+      currentDist += sqrt( QgsGeometryUtils::sqrDistance2D( previousPoint, point ) );
+    }
+
+    if ( qgsDoubleNear( currentDist, distance ) )
+    {
+      // exact hit!
+      previousVertex = nextVertex;
+      return true;
+    }
+
+    if ( currentDist > distance )
+    {
+      return true;
+    }
+
+    previousVertex = nextVertex;
+    previousPoint = point;
+    first = false;
+  }
+
+  //could not find target distance
+  return false;
+}
+
 void QgsGeometryUtils::adjacentVertices( const QgsAbstractGeometry& geom, QgsVertexId atVertex, QgsVertexId& beforeVertex, QgsVertexId& afterVertex )
 {
   bool polygonType = ( geom.dimension()  == 2 );
