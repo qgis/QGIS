@@ -85,8 +85,10 @@ class CORE_EXPORT QgsGeometry
     enum OperationResult
     {
       Success = 0, /*!< Operation succeeded */
+      NothingHappened, /*!< Nothing happened, without any error */
       InvalidBaseGeometry, /*!< The base geometry on which the operation is done is invalid or empty */
       InvalidInput, /*!< The input geometry (ring, part, split line, etc.) has not the correct geometry type */
+      GeometryEngineError, /*!< Geometry engine misses a method implemented or an error occured in the geometry engine */
       /* Add part issues */
       AddPartSelectedGeometryNotFound, /*!< The selected geometry cannot be found */
       AddPartNotMultiGeometry, /*!< The source geometry is not multi */
@@ -96,8 +98,6 @@ class CORE_EXPORT QgsGeometry
       AddRingCrossesExistingRings, /*!< The input ring crosses existing rings (it is not disjoint) */
       AddRingNotInExistingFeature, /*!<  The input ring doesn't have any existing ring to fit into */
       /* Split features */
-      SplitEngineError, /*!< Geometry engine has no split method implemented or an error occured in the geometry engine */
-      SplitNoSplit, /*!< No split occured, but no error */
       SplitCannotSplitPoint, /*!< cannot split points */
     };
 
@@ -445,10 +445,9 @@ class CORE_EXPORT QgsGeometry
                                    QList<QgsPoint> &topologyTestPoints );
 
     /** Replaces a part of this geometry with another line
-     * @return 0 in case of success
-     * @note: this function was added in version 1.3
+     * @returns OperationResult a result code: success or reason of failure
      */
-    int reshapeGeometry( const QList<QgsPoint>& reshapeWithLine );
+    QgsGeometry::OperationResult reshapeGeometry( const QList<QgsPoint>& reshapeWithLine );
 
     /** Changes this geometry such that it does not intersect the other geometry
      * @param other geometry that should not be intersect

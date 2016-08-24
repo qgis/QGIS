@@ -106,7 +106,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
                                             QString* errorMsg = nullptr ) const;
 
 
-    QgsAbstractGeometry* reshapeGeometry( const QgsLineString& reshapeWithLine, int* errorCode, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometry* reshapeGeometry( const QgsLineString& reshapeWithLine, EngineOperationResult* errorCode, QString* errorMsg = nullptr ) const;
 
     /** Merges any connected lines in a LineString/MultiLineString geometry and
      * converts them to single line strings.

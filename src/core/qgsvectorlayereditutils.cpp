@@ -409,7 +409,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QList
       }
       ++numberOfSplittedFeatures;
     }
-    else if ( splitFunctionReturn != QgsGeometry::Success && splitFunctionReturn != QgsGeometry::SplitNoSplit ) // i.e. no split but no error occurred
+    else if ( splitFunctionReturn != QgsGeometry::Success && splitFunctionReturn != QgsGeometry::NothingHappened ) // i.e. no split but no error occurred
     {
       returnCode = splitFunctionReturn;
     }
@@ -419,7 +419,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QList
   {
     //There is a selection but no feature has been split.
     //Maybe user forgot that only the selected features are split
-    returnCode = QgsGeometry::SplitNoSplit;
+    returnCode = QgsGeometry::NothingHappened;
   }
 
 
@@ -562,7 +562,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QList<Qg
   {
     //There is a selection but no feature has been split.
     //Maybe user forgot that only the selected features are split
-    returnCode = QgsGeometry::SplitNoSplit;
+    returnCode = QgsGeometry::NothingHappened;
   }
 
   return returnCode;

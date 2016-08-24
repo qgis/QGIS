@@ -599,7 +599,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitLinearGeometry( GEOSGeome
 
   //first test if linestring intersects geometry. If not, return straight away
   if ( !GEOSIntersects_r( geosinit.ctxt, splitLine, mGeos ) )
-    return SplitNoSplit;
+    return NothingHappened;
 
   //check that split line has no linear intersection
   int linearIntersect = GEOSRelatePattern_r( geosinit.ctxt, mGeos, splitLine, "1********" );
@@ -655,7 +655,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeom
 
   //first test if linestring intersects geometry. If not, return straight away
   if ( !GEOSIntersects_r( geosinit.ctxt, splitLine, mGeos ) )
-    return SplitNoSplit;
+    return NothingHappened;
 
   //first union all the polygon rings together (to get them noded, see JTS developer guide)
   GEOSGeometry *nodedGeometry = nodeGeometries( splitLine, mGeos );
@@ -723,7 +723,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeom
     {
       GEOSGeom_destroy_r( geosinit.ctxt, testedGeometries[i] );
     }
-    return SplitNoSplit;
+    return NothingHappened;
   }
 
   int i;
@@ -1709,11 +1709,17 @@ QgsAbstractGeometry* QgsGeos::singleSidedBuffer( double distance, int segments, 
   return fromGeos( geos.get() );
 }
 
-QgsAbstractGeometry* QgsGeos::reshapeGeometry( const QgsLineString& reshapeWithLine, int* errorCode, QString* errorMsg ) const
+QgsAbstractGeometry* QgsGeos::reshapeGeometry( const QgsLineString& reshapeWithLine, EngineOperationResult* errorCode, QString* errorMsg ) const
 {
-  if ( !mGeos || reshapeWithLine.numPoints() < 2 || mGeometry->dimension() == 0 )
+  if ( !mGeos || mGeometry->dimension() == 0 )
   {
-    if ( errorCode ) { *errorCode = 1; }
+    if ( errorCode ) { *errorCode = InvalidBaseGeometry; }
+    return nullptr;
+  }
+
+  if ( reshapeWithLine.numPoints() < 2 )
+  {
+    if ( errorCode ) { *errorCode = InvalidInput; }
     return nullptr;
   }
 
@@ -1723,7 +1729,7 @@ QgsAbstractGeometry* QgsGeos::reshapeGeometry( const QgsLineString& reshapeWithL
   int numGeoms = GEOSGetNumGeometries_r( geosinit.ctxt, mGeos );
   if ( numGeoms == -1 )
   {
-    if ( errorCode ) { *errorCode = 1; }
+    if ( errorCode ) { *errorCode = InvalidBaseGeometry; }
     GEOSGeom_destroy_r( geosinit.ctxt, reshapeLineGeos );
     return nullptr;
   }
@@ -1747,7 +1753,7 @@ QgsAbstractGeometry* QgsGeos::reshapeGeometry( const QgsLineString& reshapeWithL
       reshapedGeometry = reshapePolygon( mGeos, reshapeLineGeos, mPrecision );
     }
 
-    if ( errorCode ) { *errorCode = 0; }
+    if ( errorCode ) { *errorCode = Success; }
     QgsAbstractGeometry* reshapeResult = fromGeos( reshapedGeometry );
     GEOSGeom_destroy_r( geosinit.ctxt, reshapedGeometry );
     GEOSGeom_destroy_r( geosinit.ctxt, reshapeLineGeos );
@@ -1795,13 +1801,13 @@ QgsAbstractGeometry* QgsGeos::reshapeGeometry( const QgsLineString& reshapeWithL
       delete[] newGeoms;
       if ( !newMultiGeom )
       {
-        if ( errorCode ) { *errorCode = 3; }
+        if ( errorCode ) { *errorCode = EngineError; }
         return nullptr;
       }
 
       if ( reshapeTookPlace )
       {
-        if ( errorCode ) { *errorCode = 0; }
+        if ( errorCode ) { *errorCode = Success; }
         QgsAbstractGeometry* reshapedMultiGeom = fromGeos( newMultiGeom );
         GEOSGeom_destroy_r( geosinit.ctxt, newMultiGeom );
         return reshapedMultiGeom;
@@ -1809,7 +1815,7 @@ QgsAbstractGeometry* QgsGeos::reshapeGeometry( const QgsLineString& reshapeWithL
       else
       {
         GEOSGeom_destroy_r( geosinit.ctxt, newMultiGeom );
-        if ( errorCode ) { *errorCode = 1; }
+        if ( errorCode ) { *errorCode = NothingHappened; }
         return nullptr;
       }
     }

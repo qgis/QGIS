@@ -12,6 +12,7 @@ class QgsGeometryEngine
     enum EngineOperationResult
     {
       Success, /*!< Operation succeeded */
+      NothingHappened, /*!< Nothing happened, without any error */
       MethodNotImplemented, /*!< Method not implemented in geometry engine */
       EngineError, /*!< Error occured in the geometry engine */
       NodedGeometryError, /*!< Error occured while creating a noded geometry */
@@ -19,7 +20,6 @@ class QgsGeometryEngine
       InvalidInput, /*!< The input is not valid */
       /* split */
       SplitCannotSplitPoint, /*!< Points cannot be split */
-      SplitNoSplit, /*!< No split occured, but without any error */
     };
 
     QgsGeometryEngine( const QgsAbstractGeometry* geometry );

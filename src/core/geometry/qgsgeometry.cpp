@@ -788,28 +788,28 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QList<QgsPoint>& 
     case QgsGeometryEngine::MethodNotImplemented:
     case QgsGeometryEngine::EngineError:
     case QgsGeometryEngine::NodedGeometryError:
-      return QgsGeometry::SplitEngineError;
+      return QgsGeometry::GeometryEngineError;
     case QgsGeometryEngine::InvalidBaseGeometry:
       return QgsGeometry::InvalidBaseGeometry;
     case QgsGeometryEngine::InvalidInput:
       return QgsGeometry::InvalidInput;
     case QgsGeometryEngine::SplitCannotSplitPoint:
       return QgsGeometry::SplitCannotSplitPoint;
-    case QgsGeometryEngine::SplitNoSplit:
-      return QgsGeometry::SplitNoSplit;
+    case QgsGeometryEngine::NothingHappened:
+      return QgsGeometry::NothingHappened;
       //default: do not implement default to handle properly all cases
   }
 
   // this should never be reached
-  return QgsGeometry::SplitNoSplit;
+  return QgsGeometry::NothingHappened;
 }
 
 /** Replaces a part of this geometry with another line*/
-int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
+QgsGeometry::OperationResult QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
 {
   if ( !d->geometry )
   {
-    return 0;
+    return InvalidBaseGeometry;
   }
 
   QgsPointSequence reshapeLine;
@@ -818,17 +818,37 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
   reshapeLineString.setPoints( reshapeLine );
 
   QgsGeos geos( d->geometry );
-  int errorCode = 0;
+  QgsGeometryEngine::EngineOperationResult errorCode = QgsGeometryEngine::Success;
   QgsAbstractGeometry* geom = geos.reshapeGeometry( reshapeLineString, &errorCode );
-  if ( errorCode == 0 && geom )
+  if ( errorCode == QgsGeometryEngine::Success && geom )
   {
     detach( false );
     delete d->geometry;
     d->geometry = geom;
     removeWkbGeos();
-    return 0;
+    return Success;
   }
-  return errorCode;
+
+  switch ( errorCode )
+  {
+    case QgsGeometryEngine::Success:
+      return Success;
+    case QgsGeometryEngine::MethodNotImplemented:
+    case QgsGeometryEngine::EngineError:
+    case QgsGeometryEngine::NodedGeometryError:
+      return GeometryEngineError;
+    case QgsGeometryEngine::InvalidBaseGeometry:
+      return InvalidBaseGeometry;
+    case QgsGeometryEngine::InvalidInput:
+      return InvalidInput;
+    case QgsGeometryEngine::SplitCannotSplitPoint: // should not happen
+      return GeometryEngineError;
+    case QgsGeometryEngine::NothingHappened:
+      return NothingHappened;
+  }
+
+  // should not be reached
+  return GeometryEngineError;
 }
 
 int QgsGeometry::makeDifference( const QgsGeometry* other )
