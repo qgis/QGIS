@@ -3535,5 +3535,31 @@ class TestQgsGeometry(unittest.TestCase):
         geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
         self.assertAlmostEqual(geom.interpolateAngle(5), 1.69120, places=3)
 
+    def testInterpolate(self):
+        """ test QgsGeometry.interpolate() """
+
+        empty = QgsGeometry()
+        # just test no crash
+        self.assertFalse(empty.interpolate(5))
+
+        # not a linestring
+        point = QgsGeometry.fromWkt('Point(1 2)')
+        # no meaning, just test no crash!
+        self.assertFalse(empty.interpolate(5))
+
+        # linestring
+        linestring = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10)')
+        exp = 'Point(5 0)'
+        result = linestring.interpolate(5).exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001), "Interpolate: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+        # polygon
+        polygon = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 20 20, 10 20, 0 0))')
+        exp = 'Point(10 5)'
+        result = linestring.interpolate(15).exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "Interpolate: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+
 if __name__ == '__main__':
     unittest.main()
