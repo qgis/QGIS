@@ -39,14 +39,16 @@ WIDGET, BASE = uic.loadUiType(
 
 class CrsSelectionPanel(BASE, WIDGET):
 
-    def __init__(self, default):
+    def __init__(self, default='EPSG:4326'):
         super(CrsSelectionPanel, self).__init__(None)
         self.setupUi(self)
 
         self.leText.setEnabled(False)
 
         self.btnSelect.clicked.connect(self.browseCRS)
-        self.crs = QgsCoordinateReferenceSystem(default).authid()
+
+        # TODO: Default should be removed
+        self.crs = default
         self.updateText()
 
     def setAuthId(self, authid):

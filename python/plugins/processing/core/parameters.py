@@ -157,6 +157,10 @@ class ParameterBoolean(Parameter):
 
 class ParameterCrs(Parameter):
 
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.CrsWidgetWrapper'
+    }
+
     def __init__(self, name='', description='', default=None, optional=False):
         '''The value is a string that uniquely identifies the
         coordinate reference system. Typically it is the auth id of the CRS

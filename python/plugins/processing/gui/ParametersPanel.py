@@ -410,8 +410,6 @@ class ParametersPanel(BASE, WIDGET):
             item = ExtentSelectionPanel(self.parent, self.alg, param.default)
         elif isinstance(param, ParameterPoint):
             item = PointSelectionPanel(self.parent, param.default)
-        elif isinstance(param, ParameterCrs):
-            item = CrsSelectionPanel(param.default)
         elif isinstance(param, ParameterString):
             if param.multiline:
                 verticalLayout = QVBoxLayout()
