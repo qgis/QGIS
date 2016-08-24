@@ -132,10 +132,10 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::addRing( QgsCurve* ring, c
   if ( !L->hasGeometryType() )
   {
     delete ring;
-    return QgsGeometry::RingNotInExistingFeature;
+    return QgsGeometry::AddRingNotInExistingFeature;
   }
 
-  QgsGeometry::OperationResult addRingReturnCode = QgsGeometry::RingNotInExistingFeature; //default: return code for 'ring not inserted'
+  QgsGeometry::OperationResult addRingReturnCode = QgsGeometry::AddRingNotInExistingFeature; //default: return code for 'ring not inserted'
   QgsFeature f;
 
   QgsFeatureIterator fit;
@@ -189,7 +189,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( const QList<QgsPo
 QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( const QgsPointSequence &points, QgsFeatureId featureId )
 {
   if ( !L->hasGeometryType() )
-    return QgsGeometry::SelectedGeometryNotFound;
+    return QgsGeometry::AddPartSelectedGeometryNotFound;
 
   QgsGeometry geometry;
   bool firstPart = false;
@@ -198,7 +198,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( const QgsPointSeq
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
     if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
-      return QgsGeometry::SelectedGeometryNotFound; //not found
+      return QgsGeometry::AddPartSelectedGeometryNotFound; //not found
 
     if ( !f.hasGeometry() )
     {
@@ -228,7 +228,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( const QgsPointSeq
 QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( QgsCurve* ring, QgsFeatureId featureId )
 {
   if ( !L->hasGeometryType() )
-    return QgsGeometry::SelectedGeometryNotFound;
+    return QgsGeometry::AddPartSelectedGeometryNotFound;
 
   QgsGeometry geometry;
   bool firstPart = false;
@@ -237,7 +237,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( QgsCurve* ring, Q
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
     if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
-      return QgsGeometry::SelectedGeometryNotFound; //not found
+      return QgsGeometry::AddPartSelectedGeometryNotFound; //not found
 
     if ( !f.hasGeometry() )
     {

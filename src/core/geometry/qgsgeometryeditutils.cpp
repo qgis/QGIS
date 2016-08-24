@@ -59,12 +59,12 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry*
   if ( !ring->isClosed() )
   {
     delete ring;
-    return QgsGeometry::RingNotClosed;
+    return QgsGeometry::AddRingNotClosed;
   }
   else if ( !ring->isRing() )
   {
     delete ring;
-    return QgsGeometry::RingNotValid;
+    return QgsGeometry::AddRingNotValid;
   }
 
   QScopedPointer<QgsGeometryEngine> ringGeom( QgsGeometry::createGeometryEngine( ring ) );
@@ -83,7 +83,7 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry*
         if ( !ringGeom->disjoint( *( *polyIter )->interiorRing( i ) ) )
         {
           delete ring;
-          return QgsGeometry::RingCrossesExistingRings;
+          return QgsGeometry::AddRingCrossesExistingRings;
         }
       }
 
@@ -98,14 +98,14 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry*
     }
   }
   delete ring;
-  return QgsGeometry::RingNotInExistingFeature; //not contained in any outer ring
+  return QgsGeometry::AddRingNotInExistingFeature; //not contained in any outer ring
 }
 
 QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry* geom, QgsAbstractGeometry* part )
 {
   if ( !geom )
   {
-    return QgsGeometry::NotMultiGeometry;
+    return QgsGeometry::AddPartNotMultiGeometry;
   }
 
   if ( !part )
@@ -117,7 +117,7 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry*
   QgsGeometryCollection* geomCollection = dynamic_cast<QgsGeometryCollection*>( geom );
   if ( !geomCollection )
   {
-    return QgsGeometry::NotMultiGeometry;
+    return QgsGeometry::AddPartNotMultiGeometry;
   }
 
   bool added = false;

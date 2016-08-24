@@ -673,7 +673,7 @@ QgsGeometry::OperationResult QgsGeometry::addPart( QgsAbstractGeometry* part, Qg
         d->geometry = new QgsMultiPolygonV2();
         break;
       default:
-        return QgsGeometry::NotMultiGeometry;
+        return QgsGeometry::AddPartNotMultiGeometry;
     }
   }
   else
@@ -690,7 +690,7 @@ QgsGeometry::OperationResult QgsGeometry::addPart( const QgsGeometry *newPart )
 {
   if ( !d->geometry || !newPart || !newPart->d || !newPart->d->geometry )
   {
-    return QgsGeometry::NotMultiGeometry;
+    return QgsGeometry::AddPartNotMultiGeometry;
   }
 
   return addPart( newPart->d->geometry->clone() );
@@ -700,7 +700,7 @@ QgsGeometry::OperationResult QgsGeometry::addPart( GEOSGeometry *newPart )
 {
   if ( !d->geometry || !newPart )
   {
-    return QgsGeometry::NotMultiGeometry;
+    return QgsGeometry::AddPartNotMultiGeometry;
   }
 
   detach( true );
@@ -714,7 +714,7 @@ int QgsGeometry::translate( double dx, double dy )
 {
   if ( !d->geometry )
   {
-    return QgsGeometry::NotMultiGeometry;
+    return 1;
   }
 
   detach( true );

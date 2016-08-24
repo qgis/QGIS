@@ -44,7 +44,7 @@ class QgsGeometryEditUtils
 
     /**
      * @param geom The geometry to add the ring to
-     * @param ring The ring. This will take ownership.
+     * @param part The part. This will take ownership.
      * @return The result of the operation: success or reason of failure.
      */
     static QgsGeometry::OperationResult addPart( QgsAbstractGeometry* geom, QgsAbstractGeometry* part );

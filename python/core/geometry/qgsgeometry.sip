@@ -32,18 +32,15 @@ class QgsGeometry
     enum OperationResult
     {
       Success, /*!< Operation succeeded */
-      /* Source geometry or feature issues */
-      NoFeatureSelected, /*!< No feature is selected on the active layer */
-      SeveralFeaturesSelected, /*!< Several features are selected while only one should be */
-      SelectedGeometryNotFound, /*!< The selected geometry cannot be found */
-      NotMultiGeometry, /*!< The source geometry is not multi */
-      /* General input issues */
       InvalidInputType, /*!< The input geometry (ring or part or ...) has not the correct geometry type */
-      /* Ring specific issues*/
-      RingNotClosed, /*!< The imput ring is not closed */
-      RingNotValid, /*!< The input ring is not valid */
-      RingCrossesExistingRings, /*!< The input ring crosses existing rings (it is not disjoint) */
-      RingNotInExistingFeature, /*!<  The input ring doesn't have any existing ring to fit into */
+      /* Add part issues */
+      AddPartSelectedGeometryNotFound, /*!< The selected geometry cannot be found */
+      AddPartNotMultiGeometry, /*!< The source geometry is not multi */
+      /* Add ring issues*/
+      AddRingNotClosed, /*!< The imput ring is not closed */
+      AddRingNotValid, /*!< The input ring is not valid */
+      AddRingCrossesExistingRings, /*!< The input ring crosses existing rings (it is not disjoint) */
+      AddRingNotInExistingFeature, /*!<  The input ring doesn't have any existing ring to fit into */
     };
 
 
