@@ -1409,61 +1409,6 @@ double QgsGeometry::lineLocatePoint( const QgsGeometry& point ) const
   return geos.lineLocatePoint( *( static_cast< QgsPointV2* >( point.d->geometry ) ) );
 }
 
-double QgsGeometry::interpolateAngle( double distance ) const
-{
-  if ( !d->geometry )
-    return 0.0;
-
-  // always operate on segmentized geometries
-  QgsGeometry segmentized = *this;
-  if ( QgsWKBTypes::isCurvedType( d->geometry->wkbType() ) )
-  {
-    segmentized = QgsGeometry( static_cast< QgsCurveV2* >( d->geometry )->segmentize() );
-  }
-
-  QgsVertexId previous;
-  QgsVertexId next;
-  if ( !QgsGeometryUtils::verticesAtDistance( *segmentized.geometry(), distance, previous, next ) )
-    return 0.0;
-
-  if ( previous == next )
-  {
-    // distance coincided exactly with a vertex
-    QgsVertexId v2 = previous;
-    QgsVertexId v1;
-    QgsVertexId v3;
-    QgsGeometryUtils::adjacentVertices( *segmentized.geometry(), v2, v1, v3 );
-    if ( v1.isValid() && v3.isValid() )
-    {
-      QgsPointV2 p1 = segmentized.geometry()->vertexAt( v1 );
-      QgsPointV2 p2 = segmentized.geometry()->vertexAt( v2 );
-      QgsPointV2 p3 = segmentized.geometry()->vertexAt( v3 );
-      double angle1 = QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
-      double angle2 = QgsGeometryUtils::lineAngle( p2.x(), p2.y(), p3.x(), p3.y() );
-      return QgsGeometryUtils::averageAngle( angle1, angle2 );
-    }
-    else if ( v3.isValid() )
-    {
-      QgsPointV2 p1 = segmentized.geometry()->vertexAt( v2 );
-      QgsPointV2 p2 = segmentized.geometry()->vertexAt( v3 );
-      return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
-    }
-    else
-    {
-      QgsPointV2 p1 = segmentized.geometry()->vertexAt( v1 );
-      QgsPointV2 p2 = segmentized.geometry()->vertexAt( v2 );
-      return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
-    }
-  }
-  else
-  {
-    QgsPointV2 p1 = segmentized.geometry()->vertexAt( previous );
-    QgsPointV2 p2 = segmentized.geometry()->vertexAt( next );
-    return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
-  }
-}
-
-
 QgsGeometry* QgsGeometry::intersection( const QgsGeometry* geometry ) const
 {
   if ( !d->geometry || !geometry->d->geometry )

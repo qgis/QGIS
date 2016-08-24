@@ -49,6 +49,21 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static double distanceToVertex( const QgsAbstractGeometryV2& geom, const QgsVertexId& id );
 
+    /** Retrieves the vertices which are before and after the interpolated point at a specified distance along a linestring
+     * (or polygon boundary).
+     * @param geometry line or polygon geometry
+     * @param distance distance to traverse along geometry
+     * @param previousVertex will be set to previous vertex ID
+     * @param nextVertex will be set to next vertex ID
+     * @note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
+     * @returns true if vertices were successfully retrieved
+     * @note added in QGIS 3.0
+     */
+    static bool verticesAtDistance( const QgsAbstractGeometryV2& geometry,
+                                    double distance,
+                                    QgsVertexId& previousVertex,
+                                    QgsVertexId& nextVertex );
+
     /** Returns vertices adjacent to a specified vertex within a geometry.
      */
     static void adjacentVertices( const QgsAbstractGeometryV2& geom, QgsVertexId atVertex, QgsVertexId& beforeVertex, QgsVertexId& afterVertex );

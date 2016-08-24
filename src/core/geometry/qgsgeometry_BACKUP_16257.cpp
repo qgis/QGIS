@@ -1409,6 +1409,9 @@ double QgsGeometry::lineLocatePoint( const QgsGeometry& point ) const
   return geos.lineLocatePoint( *( static_cast< QgsPointV2* >( point.d->geometry ) ) );
 }
 
+<<<<<<< HEAD
+QgsGeometry* QgsGeometry::intersection( const QgsGeometry* geometry ) const
+=======
 double QgsGeometry::interpolateAngle( double distance ) const
 {
   if ( !d->geometry )
@@ -1416,9 +1419,9 @@ double QgsGeometry::interpolateAngle( double distance ) const
 
   // always operate on segmentized geometries
   QgsGeometry segmentized = *this;
-  if ( QgsWKBTypes::isCurvedType( d->geometry->wkbType() ) )
+  if ( QgsWkbTypes::isCurvedType( wkbType() ) )
   {
-    segmentized = QgsGeometry( static_cast< QgsCurveV2* >( d->geometry )->segmentize() );
+    segmentized = QgsGeometry( static_cast< QgsCurve* >( d->geometry )->segmentize() );
   }
 
   QgsVertexId previous;
@@ -1463,8 +1466,8 @@ double QgsGeometry::interpolateAngle( double distance ) const
   }
 }
 
-
-QgsGeometry* QgsGeometry::intersection( const QgsGeometry* geometry ) const
+QgsGeometry QgsGeometry::intersection( const QgsGeometry& geometry ) const
+>>>>>>> 93c7f5f... Add geometry methods for interpolating angle along geometry
 {
   if ( !d->geometry || !geometry->d->geometry )
   {

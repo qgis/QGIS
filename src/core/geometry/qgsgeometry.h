@@ -531,6 +531,15 @@ class CORE_EXPORT QgsGeometry
      */
     double lineLocatePoint( const QgsGeometry& point ) const;
 
+    /** Returns the angle parallel to the linestring or polygon boundary at the specified distance
+     * along the geometry. Angles are in radians, clockwise from north.
+     * If the distance coincides precisely at a node then the average angle from the segment either side
+     * of the node is returned.
+     * @param distance distance along geometry
+     * @note added in QGIS 3.0
+     */
+    double interpolateAngle( double distance ) const;
+
     /** Returns a geometry representing the points shared by this geometry and other. */
     QgsGeometry* intersection( const QgsGeometry* geometry ) const;
 
