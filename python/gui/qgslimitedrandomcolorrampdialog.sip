@@ -1,11 +1,11 @@
-class QgsVectorRandomColorRampDialog : QDialog
+class QgsLimitedRandomColorRampDialog : QDialog
 {
 %TypeHeaderCode
-#include <qgsvectorrandomcolorrampdialog.h>
+#include <qgslimitedrandomcolorrampdialog.h>
 %End
 
   public:
-    QgsVectorRandomColorRampDialog( QgsLimitedRandomColorRamp* ramp, QWidget* parent /TransferThis/ = NULL );
+    QgsLimitedRandomColorRampDialog( QgsLimitedRandomColorRamp* ramp, QWidget* parent /TransferThis/ = NULL );
 
   public slots:
     void setCount( int val );

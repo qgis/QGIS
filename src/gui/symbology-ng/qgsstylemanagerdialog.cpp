@@ -21,9 +21,9 @@
 #include "qgscolorramp.h"
 
 #include "qgssymbolselectordialog.h"
-#include "qgsvectorgradientcolorrampdialog.h"
-#include "qgsvectorrandomcolorrampdialog.h"
-#include "qgsvectorcolorbrewercolorrampdialog.h"
+#include "qgsgradientcolorrampdialog.h"
+#include "qgslimitedrandomcolorrampdialog.h"
+#include "qgscolorbrewercolorrampdialog.h"
 #include "qgscptcitycolorrampdialog.h"
 #include "qgsstyleexportimportdialog.h"
 #include "qgssmartgroupeditordialog.h"
@@ -458,7 +458,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget* parent, QgsStyle* st
   if ( rampType == tr( "Gradient" ) )
   {
     QgsGradientColorRamp* gradRamp = new QgsGradientColorRamp();
-    QgsVectorGradientColorRampDialog dlg( gradRamp, parent );
+    QgsGradientColorRampDialog dlg( gradRamp, parent );
     if ( !dlg.exec() )
     {
       delete gradRamp;
@@ -470,7 +470,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget* parent, QgsStyle* st
   else if ( rampType == tr( "Random" ) )
   {
     QgsLimitedRandomColorRamp* randRamp = new QgsLimitedRandomColorRamp();
-    QgsVectorRandomColorRampDialog dlg( randRamp, parent );
+    QgsLimitedRandomColorRampDialog dlg( randRamp, parent );
     if ( !dlg.exec() )
     {
       delete randRamp;
@@ -482,7 +482,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget* parent, QgsStyle* st
   else if ( rampType == tr( "ColorBrewer" ) )
   {
     QgsColorBrewerColorRamp* brewerRamp = new QgsColorBrewerColorRamp();
-    QgsVectorColorBrewerColorRampDialog dlg( brewerRamp, parent );
+    QgsColorBrewerColorRampDialog dlg( brewerRamp, parent );
     if ( !dlg.exec() )
     {
       delete brewerRamp;
@@ -638,7 +638,7 @@ bool QgsStyleManagerDialog::editColorRamp()
   if ( ramp->type() == "gradient" )
   {
     QgsGradientColorRamp* gradRamp = static_cast<QgsGradientColorRamp*>( ramp );
-    QgsVectorGradientColorRampDialog dlg( gradRamp, this );
+    QgsGradientColorRampDialog dlg( gradRamp, this );
     if ( !dlg.exec() )
     {
       delete ramp;
@@ -648,7 +648,7 @@ bool QgsStyleManagerDialog::editColorRamp()
   else if ( ramp->type() == "random" )
   {
     QgsLimitedRandomColorRamp* randRamp = static_cast<QgsLimitedRandomColorRamp*>( ramp );
-    QgsVectorRandomColorRampDialog dlg( randRamp, this );
+    QgsLimitedRandomColorRampDialog dlg( randRamp, this );
     if ( !dlg.exec() )
     {
       delete ramp;
@@ -658,7 +658,7 @@ bool QgsStyleManagerDialog::editColorRamp()
   else if ( ramp->type() == "colorbrewer" )
   {
     QgsColorBrewerColorRamp* brewerRamp = static_cast<QgsColorBrewerColorRamp*>( ramp );
-    QgsVectorColorBrewerColorRampDialog dlg( brewerRamp, this );
+    QgsColorBrewerColorRampDialog dlg( brewerRamp, this );
     if ( !dlg.exec() )
     {
       delete ramp;

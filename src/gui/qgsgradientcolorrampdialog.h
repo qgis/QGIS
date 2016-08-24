@@ -1,6 +1,6 @@
 /***************************************************************************
-    qgsvectorgradientcolorrampdialog.h
-    ---------------------
+    qgsgradientcolorrampdialog.h
+    ----------------------------
     begin                : December 2009
     copyright            : (C) 2009 by Martin Dobias
     email                : wonder dot sk at gmail dot com
@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSVECTORGRADIENTCOLORRAMPV2DIALOG_H
-#define QGSVECTORGRADIENTCOLORRAMPV2DIALOG_H
+#ifndef QGSGRADIENTCOLORRAMPDIALOG_H
+#define QGSGRADIENTCOLORRAMPDIALOG_H
 
 #include <QDialog>
 
-#include "ui_qgsvectorgradientcolorrampv2dialogbase.h"
+#include "ui_qgsgradientcolorrampdialogbase.h"
 
 class QgsGradientColorRamp;
 class QwtPlot;
@@ -27,15 +27,15 @@ class QwtPlotMarker;
 class QgsGradientPlotEventFilter;
 
 /** \ingroup gui
- * \class QgsVectorGradientColorRampDialog
+ * \class QgsGradientColorRampDialog
  */
-class GUI_EXPORT QgsVectorGradientColorRampDialog : public QDialog, private Ui::QgsVectorGradientColorRampDialogBase
+class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGradientColorRampDialogBase
 {
     Q_OBJECT
 
   public:
-    QgsVectorGradientColorRampDialog( QgsGradientColorRamp* ramp, QWidget* parent = nullptr );
-    ~QgsVectorGradientColorRampDialog();
+    QgsGradientColorRampDialog( QgsGradientColorRamp* ramp, QWidget* parent = nullptr );
+    ~QgsGradientColorRampDialog();
 
   public slots:
     void setColor1( const QColor& color );

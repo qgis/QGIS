@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsvectorcolorbrewercolorrampdialog.cpp
+    qgscolorbrewercolorrampdialog.cpp
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsvectorcolorbrewercolorrampdialog.h"
+#include "qgscolorbrewercolorrampdialog.h"
 
 #include "qgscolorramp.h"
 #include "qgssymbollayerutils.h"
@@ -31,7 +31,7 @@ static void updateColorButton( QAbstractButton* button, QColor color )
 /////////
 
 
-QgsVectorColorBrewerColorRampDialog::QgsVectorColorBrewerColorRampDialog( QgsColorBrewerColorRamp* ramp, QWidget* parent )
+QgsColorBrewerColorRampDialog::QgsColorBrewerColorRampDialog( QgsColorBrewerColorRamp* ramp, QWidget* parent )
     : QDialog( parent )
     , mRamp( ramp )
 {
@@ -61,7 +61,7 @@ QgsVectorColorBrewerColorRampDialog::QgsVectorColorBrewerColorRampDialog( QgsCol
   updatePreview();
 }
 
-void QgsVectorColorBrewerColorRampDialog::populateVariants()
+void QgsColorBrewerColorRampDialog::populateVariants()
 {
   QString oldVariant = cboColors->currentText();
 
@@ -83,13 +83,13 @@ void QgsVectorColorBrewerColorRampDialog::populateVariants()
   cboColors->setCurrentIndex( idx );
 }
 
-void QgsVectorColorBrewerColorRampDialog::updatePreview()
+void QgsColorBrewerColorRampDialog::updatePreview()
 {
   QSize size( 300, 40 );
   lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( mRamp, size ) );
 }
 
-void QgsVectorColorBrewerColorRampDialog::setSchemeName()
+void QgsColorBrewerColorRampDialog::setSchemeName()
 {
   // populate list of variants
   populateVariants();
@@ -98,7 +98,7 @@ void QgsVectorColorBrewerColorRampDialog::setSchemeName()
   updatePreview();
 }
 
-void QgsVectorColorBrewerColorRampDialog::setColors()
+void QgsColorBrewerColorRampDialog::setColors()
 {
   int num = cboColors->currentText().toInt();
   mRamp->setColors( num );

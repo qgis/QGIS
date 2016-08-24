@@ -42,10 +42,7 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgssymbollevelsdialog.cpp
   symbology-ng/qgssymbolslistwidget.cpp
   symbology-ng/qgssymbolselectordialog.cpp
-  symbology-ng/qgsvectorcolorbrewercolorrampdialog.cpp
   symbology-ng/qgsvectorfieldsymbollayerwidget.cpp
-  symbology-ng/qgsvectorgradientcolorrampdialog.cpp
-  symbology-ng/qgsvectorrandomcolorrampdialog.cpp
 
   effects/qgseffectdrawmodecombobox.cpp
   effects/qgseffectstackpropertieswidget.cpp
@@ -182,6 +179,7 @@ SET(QGIS_GUI_SRCS
   qgscodeeditorpython.cpp
   qgscodeeditorsql.cpp
   qgscollapsiblegroupbox.cpp
+  qgscolorbrewercolorrampdialog.cpp
   qgscolorbutton.cpp
   qgscolordialog.cpp
   qgscolorschemelist.cpp
@@ -225,6 +223,7 @@ SET(QGIS_GUI_SRCS
   qgsformannotationitem.cpp
   qgsgenericprojectionselector.cpp
   qgsgeometryrubberband.cpp
+  qgsgradientcolorrampdialog.cpp
   qgsgradientstopeditor.cpp
   qgsgroupwmsdatadialog.cpp
   qgshighlight.cpp
@@ -233,6 +232,7 @@ SET(QGIS_GUI_SRCS
   qgsidentifymenu.cpp
   qgslegendfilterbutton.cpp
   qgslegendinterface.cpp
+  qgslimitedrandomcolorrampdialog.cpp
   qgsludialog.cpp
   qgsmanageconnectionsdialog.cpp
   qgsmapcanvas.cpp
@@ -343,6 +343,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgscodeeditorpython.h
   qgscodeeditorsql.h
   qgscollapsiblegroupbox.h
+  qgscolorbrewercolorrampdialog.h
   qgscolorbutton.h
   qgscolordialog.h
   qgscolorschemelist.h
@@ -382,6 +383,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfocuswatcher.h
   qgsformannotationitem.h
   qgsgenericprojectionselector.h
+  qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
   qgsgroupwmsdatadialog.h
   qgshistogramwidget.h
@@ -389,6 +391,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsidentifymenu.h
   qgslegendfilterbutton.h
   qgslegendinterface.h
+  qgslimitedrandomcolorrampdialog.h
   qgslonglongvalidator.h
   qgsludialog.h
   qgsmanageconnectionsdialog.h
@@ -494,10 +497,7 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgssymbollevelsdialog.h
   symbology-ng/qgssymbolslistwidget.h
   symbology-ng/qgssymbolselectordialog.h
-  symbology-ng/qgsvectorcolorbrewercolorrampdialog.h
   symbology-ng/qgsvectorfieldsymbollayerwidget.h
-  symbology-ng/qgsvectorgradientcolorrampdialog.h
-  symbology-ng/qgsvectorrandomcolorrampdialog.h
 
   attributetable/qgsattributetabledelegate.h
   attributetable/qgsattributetablefiltermodel.h

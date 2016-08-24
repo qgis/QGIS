@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsvectorrandomcolorrampdialog.cpp
+    qgslimitedrandomcolorrampdialog.cpp
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsvectorrandomcolorrampdialog.h"
+#include "qgslimitedrandomcolorrampdialog.h"
 
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
@@ -21,7 +21,7 @@
 #include <QColorDialog>
 
 
-QgsVectorRandomColorRampDialog::QgsVectorRandomColorRampDialog( QgsLimitedRandomColorRamp* ramp, QWidget* parent )
+QgsLimitedRandomColorRampDialog::QgsLimitedRandomColorRampDialog( QgsLimitedRandomColorRamp* ramp, QWidget* parent )
     : QDialog( parent )
     , mRamp( ramp )
 {
@@ -46,7 +46,7 @@ QgsVectorRandomColorRampDialog::QgsVectorRandomColorRampDialog( QgsLimitedRandom
   updatePreview();
 }
 
-void QgsVectorRandomColorRampDialog::updatePreview()
+void QgsLimitedRandomColorRampDialog::updatePreview()
 {
   mRamp->updateColors();
 
@@ -54,43 +54,43 @@ void QgsVectorRandomColorRampDialog::updatePreview()
   lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( mRamp, size ) );
 }
 
-void QgsVectorRandomColorRampDialog::setCount( int val )
+void QgsLimitedRandomColorRampDialog::setCount( int val )
 {
   mRamp->setCount( val );
   updatePreview();
 }
 
-void QgsVectorRandomColorRampDialog::setHue1( int val )
+void QgsLimitedRandomColorRampDialog::setHue1( int val )
 {
   mRamp->setHueMin( val );
   updatePreview();
 }
 
-void QgsVectorRandomColorRampDialog::setHue2( int val )
+void QgsLimitedRandomColorRampDialog::setHue2( int val )
 {
   mRamp->setHueMax( val );
   updatePreview();
 }
 
-void QgsVectorRandomColorRampDialog::setSat1( int val )
+void QgsLimitedRandomColorRampDialog::setSat1( int val )
 {
   mRamp->setSatMin( val );
   updatePreview();
 }
 
-void QgsVectorRandomColorRampDialog::setSat2( int val )
+void QgsLimitedRandomColorRampDialog::setSat2( int val )
 {
   mRamp->setSatMax( val );
   updatePreview();
 }
 
-void QgsVectorRandomColorRampDialog::setVal1( int val )
+void QgsLimitedRandomColorRampDialog::setVal1( int val )
 {
   mRamp->setValMin( val );
   updatePreview();
 }
 
-void QgsVectorRandomColorRampDialog::setVal2( int val )
+void QgsLimitedRandomColorRampDialog::setVal2( int val )
 {
   mRamp->setValMax( val );
   updatePreview();

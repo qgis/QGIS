@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsVectorGradientColorRampDialogBase</class>
- <widget class="QDialog" name="QgsVectorGradientColorRampDialogBase">
+ <class>QgsGradientColorRampDialogBase</class>
+ <widget class="QDialog" name="QgsGradientColorRampDialogBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -331,6 +331,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
@@ -341,11 +346,6 @@
    <extends>QWidget</extends>
    <header>qgsgradientstopeditor.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCompoundColorWidget</class>
@@ -381,7 +381,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>QgsVectorGradientColorRampDialogBase</receiver>
+   <receiver>QgsGradientColorRampDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -397,7 +397,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>QgsVectorGradientColorRampDialogBase</receiver>
+   <receiver>QgsGradientColorRampDialogBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

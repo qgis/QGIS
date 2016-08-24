@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsvectorrandomcolorrampdialog.h
+    qgslimitedrandomcolorrampdialog.h
     ---------------------
     begin                : December 2009
     copyright            : (C) 2009 by Martin Dobias
@@ -13,24 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSVECTORRANDOMCOLORRAMPV2DIALOG_H
-#define QGSVECTORRANDOMCOLORRAMPV2DIALOG_H
+#ifndef QGsLIMITEDRANDOMCOLORRAMPDIALOG_H
+#define QGsLIMITEDRANDOMCOLORRAMPDIALOG_H
 
 #include <QDialog>
 
-#include "ui_qgsvectorrandomcolorrampv2dialogbase.h"
+#include "ui_qgslimitedrandomcolorrampdialogbase.h"
 
 class QgsLimitedRandomColorRamp;
 
 /** \ingroup gui
- * \class QgsVectorRandomColorRampDialog
+ * \class QgsLimitedRandomColorRampDialog
  */
-class GUI_EXPORT QgsVectorRandomColorRampDialog : public QDialog, private Ui::QgsVectorRandomColorRampDialogBase
+class GUI_EXPORT QgsLimitedRandomColorRampDialog : public QDialog, private Ui::QgsLimitedRandomColorRampDialogBase
 {
     Q_OBJECT
 
   public:
-    QgsVectorRandomColorRampDialog( QgsLimitedRandomColorRamp* ramp, QWidget* parent = nullptr );
+    QgsLimitedRandomColorRampDialog( QgsLimitedRandomColorRamp* ramp, QWidget* parent = nullptr );
 
   public slots:
     void setCount( int val );

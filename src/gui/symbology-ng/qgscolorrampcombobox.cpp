@@ -19,9 +19,9 @@
 #include "qgsstyle.h"
 #include "qgsstylemanagerdialog.h"
 
-#include "qgsvectorgradientcolorrampdialog.h"
-#include "qgsvectorrandomcolorrampdialog.h"
-#include "qgsvectorcolorbrewercolorrampdialog.h"
+#include "qgsgradientcolorrampdialog.h"
+#include "qgslimitedrandomcolorrampdialog.h"
+#include "qgscolorbrewercolorrampdialog.h"
 #include "qgscptcitycolorrampdialog.h"
 
 QSize QgsColorRampComboBox::rampIconSize( 50, 16 );
@@ -147,7 +147,7 @@ void QgsColorRampComboBox::editSourceRamp()
   if ( newRamp->type() == "gradient" )
   {
     QgsGradientColorRamp* gradRamp = static_cast<QgsGradientColorRamp*>( newRamp.data() );
-    QgsVectorGradientColorRampDialog dlg( gradRamp, this );
+    QgsGradientColorRampDialog dlg( gradRamp, this );
     if ( dlg.exec() && gradRamp )
     {
       setSourceColorRamp( gradRamp );
@@ -157,7 +157,7 @@ void QgsColorRampComboBox::editSourceRamp()
   else if ( newRamp->type() == "random" )
   {
     QgsLimitedRandomColorRamp* randRamp = static_cast<QgsLimitedRandomColorRamp*>( newRamp.data() );
-    QgsVectorRandomColorRampDialog dlg( randRamp, this );
+    QgsLimitedRandomColorRampDialog dlg( randRamp, this );
     if ( dlg.exec() )
     {
       setSourceColorRamp( randRamp );
@@ -167,7 +167,7 @@ void QgsColorRampComboBox::editSourceRamp()
   else if ( newRamp->type() == "colorbrewer" )
   {
     QgsColorBrewerColorRamp* brewerRamp = static_cast<QgsColorBrewerColorRamp*>( newRamp.data() );
-    QgsVectorColorBrewerColorRampDialog dlg( brewerRamp, this );
+    QgsColorBrewerColorRampDialog dlg( brewerRamp, this );
     if ( dlg.exec() )
     {
       setSourceColorRamp( brewerRamp );

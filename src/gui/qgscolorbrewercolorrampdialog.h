@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsvectorcolorbrewercolorrampdialog.h
+    qgscolorbrewercolorrampdialog.h
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
@@ -13,24 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSVECTORCOLORBREWERCOLORRAMPV2DIALOG_H
-#define QGSVECTORCOLORBREWERCOLORRAMPV2DIALOG_H
+#ifndef QGSCOLORBREWERCOLORRAMPDIALOG_H
+#define QGSCOLORBREWERCOLORRAMPDIALOG_H
 
 #include <QDialog>
 
-#include "ui_qgsvectorcolorbrewercolorrampv2dialogbase.h"
+#include "ui_qgscolorbrewercolorrampdialogbase.h"
 
 class QgsColorBrewerColorRamp;
 
 /** \ingroup gui
- * \class QgsVectorColorBrewerColorRampDialog
+ * \class QgsColorBrewerColorRampDialog
  */
-class GUI_EXPORT QgsVectorColorBrewerColorRampDialog : public QDialog, private Ui::QgsVectorColorBrewerColorRampDialogBase
+class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog, private Ui::QgsColorBrewerColorRampDialogBase
 {
     Q_OBJECT
 
   public:
-    QgsVectorColorBrewerColorRampDialog( QgsColorBrewerColorRamp* ramp, QWidget* parent = nullptr );
+    QgsColorBrewerColorRampDialog( QgsColorBrewerColorRamp* ramp, QWidget* parent = nullptr );
 
   public slots:
     void setSchemeName();

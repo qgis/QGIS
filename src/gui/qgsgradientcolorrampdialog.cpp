@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsvectorgradientcolorrampdialog.cpp
+    qgsgradientcolorrampdialog.cpp
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsvectorgradientcolorrampdialog.h"
+#include "qgsgradientcolorrampdialog.h"
 
 #include "qgscolorramp.h"
 #include "qgsdialog.h"
@@ -40,7 +40,7 @@
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
 
-QgsVectorGradientColorRampDialog::QgsVectorGradientColorRampDialog( QgsGradientColorRamp* ramp, QWidget* parent )
+QgsGradientColorRampDialog::QgsGradientColorRampDialog( QgsGradientColorRamp* ramp, QWidget* parent )
     : QDialog( parent )
     , mRamp( ramp )
     , mCurrentPlotColorComponent( -1 )
@@ -144,7 +144,7 @@ QgsVectorGradientColorRampDialog::QgsVectorGradientColorRampDialog( QgsGradientC
   mStopEditor->selectStop( 0 );
 }
 
-QgsVectorGradientColorRampDialog::~QgsVectorGradientColorRampDialog()
+QgsGradientColorRampDialog::~QgsGradientColorRampDialog()
 {
   QSettings settings;
   settings.setValue( "/Windows/GradientEditor/geometry", saveGeometry() );
@@ -155,7 +155,7 @@ QgsVectorGradientColorRampDialog::~QgsVectorGradientColorRampDialog()
 
 }
 
-void QgsVectorGradientColorRampDialog::on_cboType_currentIndexChanged( int index )
+void QgsGradientColorRampDialog::on_cboType_currentIndexChanged( int index )
 {
   if (( index == 0 && mRamp->isDiscrete() ) ||
       ( index == 1 && !mRamp->isDiscrete() ) )
@@ -166,7 +166,7 @@ void QgsVectorGradientColorRampDialog::on_cboType_currentIndexChanged( int index
   updatePlot();
 }
 
-void QgsVectorGradientColorRampDialog::on_btnInformation_pressed()
+void QgsGradientColorRampDialog::on_btnInformation_pressed()
 {
   if ( mRamp->info().isEmpty() )
     return;
@@ -252,7 +252,7 @@ void QgsVectorGradientColorRampDialog::on_btnInformation_pressed()
   dlg->show(); //non modal
 }
 
-void QgsVectorGradientColorRampDialog::updateColorButtons()
+void QgsGradientColorRampDialog::updateColorButtons()
 {
   btnColor1->blockSignals( true );
   btnColor1->setColor( mRamp->color1() );
@@ -262,14 +262,14 @@ void QgsVectorGradientColorRampDialog::updateColorButtons()
   btnColor2->blockSignals( false );
 }
 
-void QgsVectorGradientColorRampDialog::updateStopEditor()
+void QgsGradientColorRampDialog::updateStopEditor()
 {
   mStopEditor->blockSignals( true );
   mStopEditor->setGradientRamp( *mRamp );
   mStopEditor->blockSignals( false );
 }
 
-void QgsVectorGradientColorRampDialog::selectedStopChanged( const QgsGradientStop& stop )
+void QgsGradientColorRampDialog::selectedStopChanged( const QgsGradientStop& stop )
 {
   mColorWidget->blockSignals( true );
   mColorWidget->setColor( stop.color );
@@ -293,41 +293,41 @@ void QgsVectorGradientColorRampDialog::selectedStopChanged( const QgsGradientSto
   updatePlot();
 }
 
-void QgsVectorGradientColorRampDialog::colorWidgetChanged( const QColor &color )
+void QgsGradientColorRampDialog::colorWidgetChanged( const QColor &color )
 {
   mStopEditor->setSelectedStopColor( color );
 }
 
-void QgsVectorGradientColorRampDialog::on_mPositionSpinBox_valueChanged( double val )
+void QgsGradientColorRampDialog::on_mPositionSpinBox_valueChanged( double val )
 {
   mStopEditor->setSelectedStopOffset( val / 100.0 );
 }
 
-void QgsVectorGradientColorRampDialog::on_mPlotHueCheckbox_toggled( bool checked )
+void QgsGradientColorRampDialog::on_mPlotHueCheckbox_toggled( bool checked )
 {
   mHueCurve->setVisible( checked );
   updatePlot();
 }
 
-void QgsVectorGradientColorRampDialog::on_mPlotLightnessCheckbox_toggled( bool checked )
+void QgsGradientColorRampDialog::on_mPlotLightnessCheckbox_toggled( bool checked )
 {
   mLightnessCurve->setVisible( checked );
   updatePlot();
 }
 
-void QgsVectorGradientColorRampDialog::on_mPlotSaturationCheckbox_toggled( bool checked )
+void QgsGradientColorRampDialog::on_mPlotSaturationCheckbox_toggled( bool checked )
 {
   mSaturationCurve->setVisible( checked );
   updatePlot();
 }
 
-void QgsVectorGradientColorRampDialog::on_mPlotAlphaCheckbox_toggled( bool checked )
+void QgsGradientColorRampDialog::on_mPlotAlphaCheckbox_toggled( bool checked )
 {
   mAlphaCurve->setVisible( checked );
   updatePlot();
 }
 
-void QgsVectorGradientColorRampDialog::plotMousePress( QPointF point )
+void QgsGradientColorRampDialog::plotMousePress( QPointF point )
 {
   //find closest part
 
@@ -404,12 +404,12 @@ void QgsVectorGradientColorRampDialog::plotMousePress( QPointF point )
     mStopEditor->selectStop( mCurrentPlotMarkerIndex );
 }
 
-void QgsVectorGradientColorRampDialog::plotMouseRelease( QPointF )
+void QgsGradientColorRampDialog::plotMouseRelease( QPointF )
 {
   mCurrentPlotColorComponent = -1;
 }
 
-void QgsVectorGradientColorRampDialog::plotMouseMove( QPointF point )
+void QgsGradientColorRampDialog::plotMouseMove( QPointF point )
 {
   QColor newColor = mStopEditor->selectedStop().color;
 
@@ -430,7 +430,7 @@ bool byX( QPointF p1, QPointF p2 )
   return p1.x() < p2.x();
 }
 
-void QgsVectorGradientColorRampDialog::addPlotMarker( double x, double y, const QColor& color, bool isSelected )
+void QgsGradientColorRampDialog::addPlotMarker( double x, double y, const QColor& color, bool isSelected )
 {
   QColor borderColor = color.darker( 200 );
   borderColor.setAlpha( 255 );
@@ -450,7 +450,7 @@ void QgsVectorGradientColorRampDialog::addPlotMarker( double x, double y, const 
   mMarkers << marker;
 }
 
-void QgsVectorGradientColorRampDialog::addMarkersForColor( double x, const QColor& color, bool isSelected )
+void QgsGradientColorRampDialog::addMarkersForColor( double x, const QColor& color, bool isSelected )
 {
   if ( mPlotHueCheckbox->isChecked() )
     addPlotMarker( x, color.hslHueF(), color, isSelected && mCurrentPlotColorComponent == 0 );
@@ -462,7 +462,7 @@ void QgsVectorGradientColorRampDialog::addMarkersForColor( double x, const QColo
     addPlotMarker( x, color.alphaF(), color, isSelected && mCurrentPlotColorComponent == 3 );
 }
 
-void QgsVectorGradientColorRampDialog::updatePlot()
+void QgsGradientColorRampDialog::updatePlot()
 {
   // remove existing markers
   Q_FOREACH ( QwtPlotMarker* marker, mMarkers )
@@ -529,7 +529,7 @@ void QgsVectorGradientColorRampDialog::updatePlot()
   mPlot->replot();
 }
 
-void QgsVectorGradientColorRampDialog::updateRampFromStopEditor()
+void QgsGradientColorRampDialog::updateRampFromStopEditor()
 {
   *mRamp = mStopEditor->gradientRamp();
   mPositionSpinBox->blockSignals( true );
@@ -543,13 +543,13 @@ void QgsVectorGradientColorRampDialog::updateRampFromStopEditor()
   updatePlot();
 }
 
-void QgsVectorGradientColorRampDialog::setColor1( const QColor& color )
+void QgsGradientColorRampDialog::setColor1( const QColor& color )
 {
   mStopEditor->setColor1( color );
   updateColorButtons();
 }
 
-void QgsVectorGradientColorRampDialog::setColor2( const QColor& color )
+void QgsGradientColorRampDialog::setColor2( const QColor& color )
 {
   mStopEditor->setColor2( color );
   updateColorButtons();

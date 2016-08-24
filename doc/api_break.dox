@@ -126,18 +126,18 @@ This page tries to maintain a list with incompatible changes that happened in pr
 <tr><td>QgsSymbolV2SelectorWidget<td>QgsSymbolSelectorWidget
 <tr><td>QgsSymbologyV2Conversion<td>QgsSymbologyConversion
 <tr><td>QgsVectorColorBrewerColorRampV2<td>QgsColorBrewerColorRamp
-<tr><td>QgsVectorColorBrewerColorRampV2Dialog<td>QgsVectorColorBrewerColorRampDialog
-<tr><td>QgsVectorColorBrewerColorRampV2DialogBase<td>QgsVectorColorBrewerColorRampDialogBase
+<tr><td>QgsVectorColorBrewerColorRampV2Dialog<td>QgsColorBrewerColorRampDialog
+<tr><td>QgsVectorColorBrewerColorRampV2DialogBase<td>QgsColorBrewerColorRampDialogBase
 <tr><td>QgsVectorColorRampV2<td>QgsColorRamp
 <tr><td>QgsVectorColorRampV2Map<td>QgsVectorColorRampMap
 <tr><td>QgsVectorGradientColorRampV2<td>QgsGradientColorRamp
-<tr><td>QgsVectorGradientColorRampV2Dialog<td>QgsVectorGradientColorRampDialog
-<tr><td>QgsVectorGradientColorRampV2DialogBase<td>QgsVectorGradientColorRampDialogBase
+<tr><td>QgsVectorGradientColorRampV2Dialog<td>QgsGradientColorRampDialog
+<tr><td>QgsVectorGradientColorRampV2DialogBase<td>QgsGradientColorRampDialogBase
 <tr><td>QgsVectorGradientRampV2<td>QgsVectorGradientRamp
 <tr><td>QgsVectorLayersetRendererV2<td>QgsVectorLayersetRenderer
 <tr><td>QgsVectorRandomColorRampV2<td>QgsLimitedRandomColorRamp
-<tr><td>QgsVectorRandomColorRampV2Dialog<td>QgsVectorRandomColorRampDialog
-<tr><td>QgsVectorRandomColorRampV2DialogBase<td>QgsVectorRandomColorRampDialogBase
+<tr><td>QgsVectorRandomColorRampV2Dialog<td>QgsLimitedRandomColorRampDialog
+<tr><td>QgsVectorRandomColorRampV2DialogBase<td>QgsLimitedRandomColorRampDialogBase
 <tr><th>QgsSymbolV2<th>QgsSymbol
 </table>
 

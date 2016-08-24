@@ -28,7 +28,7 @@
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
-#include "qgsvectorgradientcolorrampdialog.h"
+#include "qgsgradientcolorrampdialog.h"
 #include "qgsdatadefined.h"
 #include "qgsstyle.h" //for symbol selector dialog
 #include "qgsmapcanvas.h"
