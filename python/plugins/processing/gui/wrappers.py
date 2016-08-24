@@ -28,10 +28,13 @@ __revision__ = '$Format:%H$'
 
 from inspect import isclass
 
+from qgis.core import QgsCoordinateReferenceSystem
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
     QComboBox,
 )
+
+from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 
 DIALOG_STANDARD = 'standard'
 DIALOG_BATCH = 'batch'
@@ -115,3 +118,19 @@ class BooleanWidgetWrapper(WidgetWrapper):
 
         if self.dialog in (DIALOG_BATCH, DIALOG_MODELER):
             return self.widget.itemData(self.widget.currentIndex())
+
+
+class CrsWidgetWrapper(WidgetWrapper):
+
+    def createWidget(self, extra_values=[]):
+        return CrsSelectionPanel()
+
+    def setValue(self, value):
+        if isinstance(value, basestring):  # authId
+            self.widget.crs = value
+        else:
+            self.widget.crs = QgsCoordinateReferenceSystem(value).authid()
+        self.widget.updateText()
+
+    def value(self):
+        return self.widget.getValue()
