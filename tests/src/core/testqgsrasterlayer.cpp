@@ -36,7 +36,7 @@
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
 #include <qgsmultibandcolorrenderer.h>
-#include <qgsvectorcolorramp.h>
+#include <qgscolorramp.h>
 #include <qgscptcityarchive.h>
 #include "qgscolorrampshader.h"
 #include "qgsrasterdataprovider.h"
@@ -96,9 +96,9 @@ class TestQgsRasterLayer : public QObject
     bool render( const QString& theFileName, int mismatchCount = 0 );
     bool setQml( const QString& theType, QString& msg );
     void populateColorRampShader( QgsColorRampShader* colorRampShader,
-                                  QgsVectorColorRamp* colorRamp,
+                                  QgsColorRamp* colorRamp,
                                   int numberOfEntries );
-    bool testColorRamp( const QString& name, QgsVectorColorRamp* colorRamp,
+    bool testColorRamp( const QString& name, QgsColorRamp* colorRamp,
                         QgsColorRampShader::ColorRamp_TYPE type, int numberOfEntries );
     QString mTestDataDir;
     QgsRasterLayer * mpRasterLayer;
@@ -250,7 +250,7 @@ void TestQgsRasterLayer::pseudoColor()
 }
 
 void TestQgsRasterLayer::populateColorRampShader( QgsColorRampShader* colorRampShader,
-    QgsVectorColorRamp* colorRamp,
+    QgsColorRamp* colorRamp,
     int numberOfEntries )
 
 {
@@ -294,7 +294,7 @@ void TestQgsRasterLayer::populateColorRampShader( QgsColorRampShader* colorRampS
   colorRampShader->setColorRampItemList( colorRampItems );
 }
 
-bool TestQgsRasterLayer::testColorRamp( const QString& name, QgsVectorColorRamp* colorRamp,
+bool TestQgsRasterLayer::testColorRamp( const QString& name, QgsColorRamp* colorRamp,
                                         QgsColorRampShader::ColorRamp_TYPE type, int numberOfEntries )
 {
   QgsRasterShader* rasterShader = new QgsRasterShader();
@@ -313,7 +313,7 @@ bool TestQgsRasterLayer::testColorRamp( const QString& name, QgsVectorColorRamp*
 void TestQgsRasterLayer::colorRamp1()
 {
   // gradient ramp
-  QgsVectorGradientColorRamp* colorRamp = new QgsVectorGradientColorRamp( QColor( Qt::red ), QColor( Qt::black ) );
+  QgsGradientColorRamp* colorRamp = new QgsGradientColorRamp( QColor( Qt::red ), QColor( Qt::black ) );
   QgsGradientStopsList stops;
   stops.append( QgsGradientStop( 0.5, QColor( Qt::white ) ) );
   colorRamp->setStops( stops );
@@ -325,7 +325,7 @@ void TestQgsRasterLayer::colorRamp1()
 
 void TestQgsRasterLayer::colorRamp2()
 {
-  QgsVectorColorBrewerColorRamp ramp( "BrBG", 10 );
+  QgsColorBrewerColorRamp ramp( "BrBG", 10 );
   // ColorBrewer ramp
   QVERIFY( testColorRamp( "raster_colorRamp2",
                           &ramp,

@@ -18,7 +18,7 @@
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorgradientcolorrampdialog.h"
@@ -292,7 +292,7 @@ void QgsStyleManagerDialog::populateColorRamps( const QStringList& colorRamps, b
   for ( int i = 0; i < colorRamps.count(); ++i )
   {
     QString name = colorRamps[i];
-    QgsVectorColorRamp* ramp = mStyle->colorRamp( name );
+    QgsColorRamp* ramp = mStyle->colorRamp( name );
 
     QStandardItem* item = new QStandardItem( name );
     QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp, listItems->iconSize() );
@@ -454,10 +454,10 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget* parent, QgsStyle* st
 
   QString name = tr( "new ramp" );
 
-  QgsVectorColorRamp *ramp = nullptr;
+  QgsColorRamp *ramp = nullptr;
   if ( rampType == tr( "Gradient" ) )
   {
-    QgsVectorGradientColorRamp* gradRamp = new QgsVectorGradientColorRamp();
+    QgsGradientColorRamp* gradRamp = new QgsGradientColorRamp();
     QgsVectorGradientColorRampDialog dlg( gradRamp, parent );
     if ( !dlg.exec() )
     {
@@ -469,7 +469,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget* parent, QgsStyle* st
   }
   else if ( rampType == tr( "Random" ) )
   {
-    QgsVectorRandomColorRamp* randRamp = new QgsVectorRandomColorRamp();
+    QgsLimitedRandomColorRamp* randRamp = new QgsLimitedRandomColorRamp();
     QgsVectorRandomColorRampDialog dlg( randRamp, parent );
     if ( !dlg.exec() )
     {
@@ -481,7 +481,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget* parent, QgsStyle* st
   }
   else if ( rampType == tr( "ColorBrewer" ) )
   {
-    QgsVectorColorBrewerColorRamp* brewerRamp = new QgsVectorColorBrewerColorRamp();
+    QgsColorBrewerColorRamp* brewerRamp = new QgsColorBrewerColorRamp();
     QgsVectorColorBrewerColorRampDialog dlg( brewerRamp, parent );
     if ( !dlg.exec() )
     {
@@ -633,11 +633,11 @@ bool QgsStyleManagerDialog::editColorRamp()
   if ( name.isEmpty() )
     return false;
 
-  QgsVectorColorRamp* ramp = mStyle->colorRamp( name );
+  QgsColorRamp* ramp = mStyle->colorRamp( name );
 
   if ( ramp->type() == "gradient" )
   {
-    QgsVectorGradientColorRamp* gradRamp = static_cast<QgsVectorGradientColorRamp*>( ramp );
+    QgsGradientColorRamp* gradRamp = static_cast<QgsGradientColorRamp*>( ramp );
     QgsVectorGradientColorRampDialog dlg( gradRamp, this );
     if ( !dlg.exec() )
     {
@@ -647,7 +647,7 @@ bool QgsStyleManagerDialog::editColorRamp()
   }
   else if ( ramp->type() == "random" )
   {
-    QgsVectorRandomColorRamp* randRamp = static_cast<QgsVectorRandomColorRamp*>( ramp );
+    QgsLimitedRandomColorRamp* randRamp = static_cast<QgsLimitedRandomColorRamp*>( ramp );
     QgsVectorRandomColorRampDialog dlg( randRamp, this );
     if ( !dlg.exec() )
     {
@@ -657,7 +657,7 @@ bool QgsStyleManagerDialog::editColorRamp()
   }
   else if ( ramp->type() == "colorbrewer" )
   {
-    QgsVectorColorBrewerColorRamp* brewerRamp = static_cast<QgsVectorColorBrewerColorRamp*>( ramp );
+    QgsColorBrewerColorRamp* brewerRamp = static_cast<QgsColorBrewerColorRamp*>( ramp );
     QgsVectorColorBrewerColorRampDialog dlg( brewerRamp, this );
     if ( !dlg.exec() )
     {

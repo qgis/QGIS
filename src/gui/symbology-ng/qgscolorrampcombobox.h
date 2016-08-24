@@ -18,7 +18,7 @@
 #include <QComboBox>
 
 class QgsStyle;
-class QgsVectorColorRamp;
+class QgsColorRamp;
 
 /** \ingroup gui
  * \class QgsColorRampComboBox
@@ -35,10 +35,10 @@ class GUI_EXPORT QgsColorRampComboBox : public QComboBox
     void populate( QgsStyle* style );
 
     //! add/select color ramp which was used previously by the renderer
-    void setSourceColorRamp( QgsVectorColorRamp* sourceRamp );
+    void setSourceColorRamp( QgsColorRamp* sourceRamp );
 
     //! return new instance of the current color ramp or NULL if there is no active color ramp
-    QgsVectorColorRamp* currentColorRamp();
+    QgsColorRamp* currentColorRamp();
 
     /** Returns true if the current selection in the combo box is the option for creating
      * a new color ramp
@@ -74,7 +74,7 @@ class GUI_EXPORT QgsColorRampComboBox : public QComboBox
 
   protected:
     QgsStyle* mStyle;
-    QgsVectorColorRamp* mSourceColorRamp; // owns the copy
+    QgsColorRamp* mSourceColorRamp; // owns the copy
 
   private:
     bool mShowGradientOnly;

@@ -165,7 +165,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     void applyDataDefinedSymbology( QgsSymbolRenderContext& context, QBrush& brush, QPen& pen, QPen& selPen );
 };
 
-class QgsVectorColorRamp;
+class QgsColorRamp;
 
 /** \ingroup core
  * \class QgsGradientFillSymbolLayer
@@ -239,8 +239,8 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
     void setGradientColorType( GradientColorType gradientColorType ) { mGradientColorType = gradientColorType; }
 
     /** Color ramp used for the gradient fill, only used if the gradient color type is set to ColorRamp*/
-    QgsVectorColorRamp* colorRamp() { return mGradientRamp; }
-    void setColorRamp( QgsVectorColorRamp* ramp );
+    QgsColorRamp* colorRamp() { return mGradientRamp; }
+    void setColorRamp( QgsColorRamp* ramp );
 
     /** Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor*/
     QColor color2() const { return mColor2; }
@@ -293,7 +293,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     GradientColorType mGradientColorType;
     QColor mColor2;
-    QgsVectorColorRamp* mGradientRamp;
+    QgsColorRamp* mGradientRamp;
     GradientType mGradientType;
     GradientCoordinateMode mCoordinateMode;
     GradientSpread mGradientSpread;
@@ -314,7 +314,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     /** Applies the gradient to a brush*/
     void applyGradient( const QgsSymbolRenderContext& context, QBrush& brush, const QColor& color, const QColor& color2,
-                        GradientColorType gradientColorType, QgsVectorColorRamp *gradientRamp, GradientType gradientType,
+                        GradientColorType gradientColorType, QgsColorRamp *gradientRamp, GradientType gradientType,
                         GradientCoordinateMode coordinateMode, GradientSpread gradientSpread,
                         QPointF referencePoint1, QPointF referencePoint2, const double angle );
 
@@ -425,7 +425,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     void setDistanceMapUnitScale( const QgsMapUnitScale& scale ) { mDistanceMapUnitScale = scale; }
     const QgsMapUnitScale& distanceMapUnitScale() const { return mDistanceMapUnitScale; }
 
-    /** Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsVectorColorRamp color ramp
+    /** Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
      * or by simply specificing a start and end color. setColorType is used to specify which mode to use for the fill.
      * @param colorType color type to use for shapeburst fill
      * @note added in 2.3
@@ -435,7 +435,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * @see setColorRamp
      */
     void setColorType( ShapeburstColorType colorType ) { mColorType = colorType; }
-    /** Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsVectorColorRamp color ramp
+    /** Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
      * or by simply specificing a start and end color.
      * @returns current color mode used for the shapeburst fill
      * @note added in 2.3
@@ -452,14 +452,14 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * @see setColorType
      * @see colorRamp
      */
-    void setColorRamp( QgsVectorColorRamp* ramp );
+    void setColorRamp( QgsColorRamp* ramp );
     /** Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType::ColorRamp
-     * @returns a QgsVectorColorRamp color ramp
+     * @returns a QgsColorRamp color ramp
      * @note added in 2.3
      * @see setColorRamp
      * @see colorType
      */
-    QgsVectorColorRamp* colorRamp() { return mGradientRamp; }
+    QgsColorRamp* colorRamp() { return mGradientRamp; }
 
     /** Sets the color for the endpoint of the shapeburst fill. This color is only used if setColorType is set ShapeburstColorType::SimpleTwoColor.
      * @param color2 QColor to use for endpoint of gradient
@@ -542,8 +542,8 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     ShapeburstColorType mColorType;
     QColor mColor2;
-    QgsVectorColorRamp* mGradientRamp;
-    QgsVectorColorRamp* mTwoColorGradientRamp;
+    QgsColorRamp* mGradientRamp;
+    QgsColorRamp* mTwoColorGradientRamp;
 
     bool mIgnoreRings;
 
@@ -565,7 +565,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     double * distanceTransform( QImage * im );
 
     /* fills a QImage with values from an array of doubles containing squared distance transform values */
-    void dtArrayToQImage( double * array, QImage *im, QgsVectorColorRamp* ramp, double layerAlpha = 1, bool useWholeShape = true, int maxPixelDistance = 0 );
+    void dtArrayToQImage( double * array, QImage *im, QgsColorRamp* ramp, double layerAlpha = 1, bool useWholeShape = true, int maxPixelDistance = 0 );
 };
 
 /** \ingroup core

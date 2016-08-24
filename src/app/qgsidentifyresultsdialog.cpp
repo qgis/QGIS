@@ -65,7 +65,7 @@
 #include <qwt_plot_curve.h>
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
-#include "qgsvectorcolorramp.h" // for random colors
+#include "qgscolorramp.h" // for random colors
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWebView( parent )
 {
@@ -609,7 +609,7 @@ QgsIdentifyPlotCurve::QgsIdentifyPlotCurve( const QMap<QString, QString> &attrib
 
   if ( color == QColor() )
   {
-    color = QgsVectorRandomColorRamp::randomColors( 1 ).at( 0 );
+    color = QgsLimitedRandomColorRamp::randomColors( 1 ).at( 0 );
   }
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   mPlotCurve->setSymbol( new QwtSymbol( QwtSymbol::Ellipse, QBrush( Qt::white ),

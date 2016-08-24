@@ -16,7 +16,7 @@
 #ifndef QGSGRADIENTSTOPEDITOR_H
 #define QGSGRADIENTSTOPEDITOR_H
 
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include <QWidget>
 
 
@@ -37,18 +37,18 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
      * @param parent parent widget
      * @param ramp optional initial gradient ramp
      */
-    QgsGradientStopEditor( QWidget* parent = nullptr, QgsVectorGradientColorRamp* ramp = nullptr );
+    QgsGradientStopEditor( QWidget* parent = nullptr, QgsGradientColorRamp* ramp = nullptr );
 
     /** Sets the current ramp shown in the editor.
      * @param ramp color ramp
      * @see gradientRamp()
      */
-    void setGradientRamp( const QgsVectorGradientColorRamp& ramp );
+    void setGradientRamp( const QgsGradientColorRamp& ramp );
 
     /** Returns the current ramp created by the editor.
      * @see setGradientRamp()
      */
-    QgsVectorGradientColorRamp gradientRamp() const { return mGradient; }
+    QgsGradientColorRamp gradientRamp() const { return mGradient; }
 
     /** Sets the currently selected stop.
      * @param index index of stop, where 0 corresponds to the first stop
@@ -160,7 +160,7 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     //! Returns the closest stop to a mouse x position, or -1 if no stops within tolerance
     int findClosestStop( int x, int threshold = -1 ) const;
 
-    QgsVectorGradientColorRamp mGradient;
+    QgsGradientColorRamp mGradient;
 
     //! We keep a separate, unordered copy of the gradient stops so that the selected stop is not changed.
     QgsGradientStopsList mStops;

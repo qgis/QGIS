@@ -25,7 +25,7 @@
 #include "qgsproject.h"
 #include "qgssvgcache.h"
 #include "qgslogger.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgsunittypes.h"
 
 #include <QPainter>
@@ -539,7 +539,7 @@ QgsSymbolLayer* QgsGradientFillSymbolLayer::create( const QgsStringMap& props )
     offset = QgsSymbolLayerUtils::decodePoint( props["offset"] );
 
   //attempt to create color ramp from props
-  QgsVectorColorRamp* gradientRamp = QgsVectorGradientColorRamp::create( props );
+  QgsColorRamp* gradientRamp = QgsGradientColorRamp::create( props );
 
   //create a new gradient fill layer with desired properties
   QgsGradientFillSymbolLayer* sl = new QgsGradientFillSymbolLayer( color, color2, colorType, type, coordinateMode, gradientSpread );
@@ -561,7 +561,7 @@ QgsSymbolLayer* QgsGradientFillSymbolLayer::create( const QgsStringMap& props )
   return sl;
 }
 
-void QgsGradientFillSymbolLayer::setColorRamp( QgsVectorColorRamp* ramp )
+void QgsGradientFillSymbolLayer::setColorRamp( QgsColorRamp* ramp )
 {
   delete mGradientRamp;
   mGradientRamp = ramp;
@@ -765,7 +765,7 @@ QPointF QgsGradientFillSymbolLayer::rotateReferencePoint( QPointF refPoint, doub
 
 void QgsGradientFillSymbolLayer::applyGradient( const QgsSymbolRenderContext &context, QBrush &brush,
     const QColor &color, const QColor &color2, GradientColorType gradientColorType,
-    QgsVectorColorRamp *gradientRamp, GradientType gradientType,
+    QgsColorRamp *gradientRamp, GradientType gradientType,
     GradientCoordinateMode coordinateMode, GradientSpread gradientSpread,
     QPointF referencePoint1, QPointF referencePoint2, const double angle )
 {
@@ -819,7 +819,7 @@ void QgsGradientFillSymbolLayer::applyGradient( const QgsSymbolRenderContext &co
   if ( gradientColorType == QgsGradientFillSymbolLayer::ColorRamp && gradientRamp && gradientRamp->type() == "gradient" )
   {
     //color ramp gradient
-    QgsVectorGradientColorRamp* gradRamp = static_cast<QgsVectorGradientColorRamp*>( gradientRamp );
+    QgsGradientColorRamp* gradRamp = static_cast<QgsGradientColorRamp*>( gradientRamp );
     gradRamp->addStopsToGradient( &gradient, context.alpha() );
   }
   else
@@ -1021,7 +1021,7 @@ QgsSymbolLayer* QgsShapeburstFillSymbolLayer::create( const QgsStringMap& props 
   }
 
   //attempt to create color ramp from props
-  QgsVectorColorRamp* gradientRamp = QgsVectorGradientColorRamp::create( props );
+  QgsColorRamp* gradientRamp = QgsGradientColorRamp::create( props );
 
   //create a new shapeburst fill layer with desired properties
   QgsShapeburstFillSymbolLayer* sl = new QgsShapeburstFillSymbolLayer( color, color2, colorType, blurRadius, useWholeShape, maxDistance );
@@ -1061,7 +1061,7 @@ QString QgsShapeburstFillSymbolLayer::layerType() const
   return "ShapeburstFill";
 }
 
-void QgsShapeburstFillSymbolLayer::setColorRamp( QgsVectorColorRamp* ramp )
+void QgsShapeburstFillSymbolLayer::setColorRamp( QgsColorRamp* ramp )
 {
   delete mGradientRamp;
   mGradientRamp = ramp;
@@ -1188,7 +1188,7 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF& points, QList
   //if we are using the two color mode, create a gradient ramp
   if ( mColorType == QgsShapeburstFillSymbolLayer::SimpleTwoColor )
   {
-    mTwoColorGradientRamp = new QgsVectorGradientColorRamp( color1, color2 );
+    mTwoColorGradientRamp = new QgsGradientColorRamp( color1, color2 );
   }
 
   //no border for shapeburst fills
@@ -1406,7 +1406,7 @@ double * QgsShapeburstFillSymbolLayer::distanceTransform( QImage *im )
   return dtArray;
 }
 
-void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double * array, QImage *im, QgsVectorColorRamp* ramp, double layerAlpha, bool useWholeShape, int maxPixelDistance )
+void QgsShapeburstFillSymbolLayer::dtArrayToQImage( double * array, QImage *im, QgsColorRamp* ramp, double layerAlpha, bool useWholeShape, int maxPixelDistance )
 {
   int width = im->width();
   int height = im->height();

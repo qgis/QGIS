@@ -27,7 +27,7 @@
 #include "qgssymbolselectordialog.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgsvectorgradientcolorrampdialog.h"
 #include "qgsdatadefined.h"
 #include "qgsstyle.h" //for symbol selector dialog
@@ -1233,7 +1233,7 @@ void QgsGradientFillSymbolLayerWidget::colorModeChanged()
 
 void QgsGradientFillSymbolLayerWidget::applyColorRamp()
 {
-  QgsVectorColorRamp* ramp = cboGradientColorRamp->currentColorRamp();
+  QgsColorRamp* ramp = cboGradientColorRamp->currentColorRamp();
   if ( !ramp )
     return;
 
@@ -1567,7 +1567,7 @@ void QgsShapeburstFillSymbolLayerWidget::on_mRadioUseWholeShape_toggled( bool va
 
 void QgsShapeburstFillSymbolLayerWidget::applyColorRamp()
 {
-  QgsVectorColorRamp* ramp = cboGradientColorRamp->currentColorRamp();
+  QgsColorRamp* ramp = cboGradientColorRamp->currentColorRamp();
   if ( !ramp )
     return;
 

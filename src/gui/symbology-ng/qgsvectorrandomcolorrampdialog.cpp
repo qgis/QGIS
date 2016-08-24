@@ -16,12 +16,12 @@
 #include "qgsvectorrandomcolorrampdialog.h"
 
 #include "qgssymbollayerutils.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 
 #include <QColorDialog>
 
 
-QgsVectorRandomColorRampDialog::QgsVectorRandomColorRampDialog( QgsVectorRandomColorRamp* ramp, QWidget* parent )
+QgsVectorRandomColorRampDialog::QgsVectorRandomColorRampDialog( QgsLimitedRandomColorRamp* ramp, QWidget* parent )
     : QDialog( parent )
     , mRamp( ramp )
 {

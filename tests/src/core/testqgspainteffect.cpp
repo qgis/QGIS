@@ -27,7 +27,7 @@
 #include "qgseffectstack.h"
 #include "qgsgloweffect.h"
 #include "qgspainteffectregistry.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmapsettings.h"
 #include "qgsvectorlayer.h"
@@ -540,7 +540,7 @@ void TestQgsPaintEffect::glow()
   effect->setSpreadMapUnitScale( QgsMapUnitScale( 1.0, 2.0 ) );
   QCOMPARE( effect->spreadMapUnitScale().minScale, 1.0 );
   QCOMPARE( effect->spreadMapUnitScale().maxScale, 2.0 );
-  effect->setRamp( new QgsVectorGradientColorRamp( QColor( 255, 0, 0 ), QColor( 0, 255, 0 ) ) );
+  effect->setRamp( new QgsGradientColorRamp( QColor( 255, 0, 0 ), QColor( 0, 255, 0 ) ) );
   QCOMPARE( effect->ramp()->color( 0 ), QColor( 255, 0, 0 ) );
   QCOMPARE( effect->ramp()->color( 1.0 ), QColor( 0, 255, 0 ) );
   effect->setColorType( QgsGlowEffect::ColorRamp );

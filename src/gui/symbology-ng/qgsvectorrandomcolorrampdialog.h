@@ -20,7 +20,7 @@
 
 #include "ui_qgsvectorrandomcolorrampv2dialogbase.h"
 
-class QgsVectorRandomColorRamp;
+class QgsLimitedRandomColorRamp;
 
 /** \ingroup gui
  * \class QgsVectorRandomColorRampDialog
@@ -30,7 +30,7 @@ class GUI_EXPORT QgsVectorRandomColorRampDialog : public QDialog, private Ui::Qg
     Q_OBJECT
 
   public:
-    QgsVectorRandomColorRampDialog( QgsVectorRandomColorRamp* ramp, QWidget* parent = nullptr );
+    QgsVectorRandomColorRampDialog( QgsLimitedRandomColorRamp* ramp, QWidget* parent = nullptr );
 
   public slots:
     void setCount( int val );
@@ -45,7 +45,7 @@ class GUI_EXPORT QgsVectorRandomColorRampDialog : public QDialog, private Ui::Qg
 
     void updatePreview();
 
-    QgsVectorRandomColorRamp* mRamp;
+    QgsLimitedRandomColorRamp* mRamp;
 };
 
 #endif

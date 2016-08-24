@@ -20,7 +20,7 @@
 
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgsstyle.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
@@ -142,7 +142,7 @@ void QgsHeatmapRendererWidget::applyColorRamp()
     return;
   }
 
-  QgsVectorColorRamp* ramp = mRampComboBox->currentColorRamp();
+  QgsColorRamp* ramp = mRampComboBox->currentColorRamp();
   if ( !ramp )
     return;
 

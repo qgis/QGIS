@@ -209,7 +209,7 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
       int classes,
       Mode mode,
       QgsSymbol* symbol /Transfer/,
-      QgsVectorColorRamp* ramp /Transfer/,
+      QgsColorRamp* ramp /Transfer/,
       bool inverted = false,
       const QgsRendererRangeLabelFormat& legendFormat = QgsRendererRangeLabelFormat()
     );
@@ -251,12 +251,12 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
      * @see setSourceColorRamp()
      * @see sourceSymbol()
      */
-    QgsVectorColorRamp* sourceColorRamp();
+    QgsColorRamp* sourceColorRamp();
 
     /** Sets the source color ramp.
      * @param ramp color ramp. Ownership is transferred to the renderer
      */
-    void setSourceColorRamp( QgsVectorColorRamp* ramp /Transfer/ );
+    void setSourceColorRamp( QgsColorRamp* ramp /Transfer/ );
 
     //! @note added in 2.1
     bool invertedColorRamp();
@@ -267,7 +267,7 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
      * @param ramp color ramp. Ownership is transferred to the renderer
      * @param inverted set to true to invert ramp colors
      */
-    void updateColorRamp( QgsVectorColorRamp* ramp /Transfer/ = 0, bool inverted = false );
+    void updateColorRamp( QgsColorRamp* ramp /Transfer/ = 0, bool inverted = false );
 
     /** Update all the symbols but leave breaks and colors. This method also sets the source
      * symbol for the renderer.

@@ -26,12 +26,12 @@
 
 class QgsSymbol;
 class QgsSymbolLayer;
-class QgsVectorColorRamp;
+class QgsColorRamp;
 
 class QDomDocument;
 class QDomElement;
 
-typedef QMap<QString, QgsVectorColorRamp* > QgsVectorColorRampMap;
+typedef QMap<QString, QgsColorRamp* > QgsVectorColorRampMap;
 typedef QMap<int, QString> QgsSymbolGroupMap;
 
 /** \ingroup core
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param update set to true when the style DB has to be updated, by default it is false
      *  \return success status of the operation
      */
-    bool addColorRamp( const QString& name, QgsVectorColorRamp* colorRamp, bool update = false );
+    bool addColorRamp( const QString& name, QgsColorRamp* colorRamp, bool update = false );
 
     //! adds a new group and returns the group's id
     /*!
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsStyle : public QObject
     void clear();
 
     //! return a NEW copy of color ramp
-    QgsVectorColorRamp* colorRamp( const QString& name );
+    QgsColorRamp* colorRamp( const QString& name );
 
     //! return count of color ramps
     int colorRampCount();
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsStyle : public QObject
     QStringList colorRampNames();
 
     //! return a const pointer to a symbol (doesn't create new instance)
-    const QgsVectorColorRamp* colorRampRef( const QString& name ) const;
+    const QgsColorRamp* colorRampRef( const QString& name ) const;
 
     //! return the id in the style database for the given colorramp name
     //! returns 0 if not found
@@ -265,12 +265,12 @@ class CORE_EXPORT QgsStyle : public QObject
     //! add the colorramp to the DB
     /*!
      *  \param name is the name of the colorramp as QString
-     *  \param ramp is the pointer to the new QgsVectorColorRamp being saved
+     *  \param ramp is the pointer to the new QgsColorRamp being saved
      *  \param groupid is the id of the group to which the Color Ramp belongs. Pass 0 if it doesn't belong to any group or not known.
      *  \param tags is a list of tags that are associated with the color ramp as a QStringList.
      *  \return returns the success state of the save operation
      */
-    bool saveColorRamp( const QString& name, QgsVectorColorRamp* ramp, int groupid, const QStringList& tags );
+    bool saveColorRamp( const QString& name, QgsColorRamp* ramp, int groupid, const QStringList& tags );
 
     //! remove color ramp from style (and delete it)
     bool removeColorRamp( const QString& name );

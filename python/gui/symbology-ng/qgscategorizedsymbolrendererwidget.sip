@@ -75,7 +75,7 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 
     void changeCategorySymbol();
 
-    QgsVectorColorRamp* getColorRamp();
+    QgsColorRamp* getColorRamp();
 
     QList<QgsSymbol*> selectedSymbols();
     QgsCategoryList selectedCategoryList();

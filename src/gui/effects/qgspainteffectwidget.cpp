@@ -23,7 +23,7 @@
 #include "qgstransformeffect.h"
 #include "qgscoloreffect.h"
 #include "qgsstyle.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 
 //
 // draw source
@@ -594,7 +594,7 @@ void QgsGlowWidget::applyColorRamp()
     return;
   }
 
-  QgsVectorColorRamp* ramp = mRampComboBox->currentColorRamp();
+  QgsColorRamp* ramp = mRampComboBox->currentColorRamp();
   if ( !ramp )
     return;
 

@@ -30,7 +30,7 @@
 #include <qgssymbol.h>
 #include <qgssinglesymbolrenderer.h>
 #include <qgsfillsymbollayer.h>
-#include <qgsvectorcolorramp.h>
+#include <qgscolorramp.h>
 //qgis test includes
 #include "qgsrenderchecker.h"
 
@@ -165,7 +165,7 @@ void TestQgsGradients::gradientSymbolColors()
 
 void TestQgsGradients::gradientSymbolRamp()
 {
-  QgsVectorGradientColorRamp* gradientRamp = new QgsVectorGradientColorRamp( QColor( Qt::red ), QColor( Qt::blue ) );
+  QgsGradientColorRamp* gradientRamp = new QgsGradientColorRamp( QColor( Qt::red ), QColor( Qt::blue ) );
   QgsGradientStopsList stops;
   stops.append( QgsGradientStop( 0.5, QColor( Qt::white ) ) );
   gradientRamp->setStops( stops );

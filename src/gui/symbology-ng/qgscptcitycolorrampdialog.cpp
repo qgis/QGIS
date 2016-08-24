@@ -16,7 +16,7 @@
 #include "qgscptcitycolorrampdialog.h"
 
 #include "qgscptcityarchive.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsdialog.h"

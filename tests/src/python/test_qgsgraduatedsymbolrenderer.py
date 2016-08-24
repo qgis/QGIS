@@ -19,7 +19,7 @@ from qgis.core import (QgsGraduatedSymbolRenderer,
                        QgsRendererRange,
                        QgsRendererRangeLabelFormat,
                        QgsMarkerSymbol,
-                       QgsVectorGradientColorRamp,
+                       QgsGradientColorRamp,
                        QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
@@ -67,7 +67,7 @@ def createMemoryLayer(values):
 
 
 def createColorRamp():
-    return QgsVectorGradientColorRamp(
+    return QgsGradientColorRamp(
         QColor(255, 0, 0),
         QColor(0, 0, 255)
     )

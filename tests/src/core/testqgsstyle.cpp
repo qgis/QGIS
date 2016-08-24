@@ -23,7 +23,7 @@
 #include <qgsapplication.h>
 #include "qgsconfig.h"
 #include "qgslogger.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgscptcityarchive.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
@@ -50,7 +50,7 @@ class TestStyle : public QObject
     QgsStyle *mStyle;
     QString mTestDataDir;
 
-    bool testValidColor( QgsVectorColorRamp *ramp, double value, const QColor& expected );
+    bool testValidColor( QgsColorRamp *ramp, double value, const QColor& expected );
     bool imageCheck( QgsMapSettings &ms, const QString &testName );
 
   private slots:
@@ -138,7 +138,7 @@ bool TestStyle::imageCheck( QgsMapSettings& ms, const QString& testName )
   return result;
 }
 
-bool TestStyle::testValidColor( QgsVectorColorRamp *ramp, double value, const QColor& expected )
+bool TestStyle::testValidColor( QgsColorRamp *ramp, double value, const QColor& expected )
 {
   QColor result = ramp->color( value );
   //use int color components when testing (builds some fuzziness into test)
@@ -155,20 +155,20 @@ bool TestStyle::testValidColor( QgsVectorColorRamp *ramp, double value, const QC
 void TestStyle::testCreateColorRamps()
 {
   // gradient ramp
-  QgsVectorGradientColorRamp* gradientRamp = new QgsVectorGradientColorRamp( QColor( Qt::red ), QColor( Qt::blue ) );
+  QgsGradientColorRamp* gradientRamp = new QgsGradientColorRamp( QColor( Qt::red ), QColor( Qt::blue ) );
   QgsGradientStopsList stops;
   stops.append( QgsGradientStop( 0.5, QColor( Qt::white ) ) );
   gradientRamp->setStops( stops );
   QVERIFY( mStyle->addColorRamp( "test_gradient", gradientRamp, true ) );
 
   // random ramp
-  QgsVectorRandomColorRamp* randomRamp = new QgsVectorRandomColorRamp();
+  QgsLimitedRandomColorRamp* randomRamp = new QgsLimitedRandomColorRamp();
   QVERIFY( mStyle->addColorRamp( "test_random", randomRamp, true ) );
 
   // color brewer ramp
-  QgsVectorColorBrewerColorRamp* cb1Ramp = new QgsVectorColorBrewerColorRamp();
+  QgsColorBrewerColorRamp* cb1Ramp = new QgsColorBrewerColorRamp();
   QVERIFY( mStyle->addColorRamp( "test_cb1", cb1Ramp, true ) );
-  QgsVectorColorBrewerColorRamp* cb2Ramp = new QgsVectorColorBrewerColorRamp( "RdYlGn", 6 );
+  QgsColorBrewerColorRamp* cb2Ramp = new QgsColorBrewerColorRamp( "RdYlGn", 6 );
   QVERIFY( mStyle->addColorRamp( "test_cb2", cb2Ramp, true ) );
 
   // discrete ramp with no variant
@@ -216,7 +216,7 @@ void TestStyle::testLoadColorRamps()
   {
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
-    QgsVectorColorRamp* ramp = mStyle->colorRamp( name );
+    QgsColorRamp* ramp = mStyle->colorRamp( name );
     QVERIFY( ramp != 0 );
     // test colors
     if ( colorTests.contains( name ) )
@@ -249,7 +249,7 @@ void TestStyle::testSaveLoad()
   {
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
-    QgsVectorColorRamp* ramp = mStyle->colorRamp( name );
+    QgsColorRamp* ramp = mStyle->colorRamp( name );
     QVERIFY( ramp != 0 );
     if ( ramp )
       delete ramp;

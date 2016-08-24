@@ -20,7 +20,7 @@
 
 #include "ui_qgsvectorgradientcolorrampv2dialogbase.h"
 
-class QgsVectorGradientColorRamp;
+class QgsGradientColorRamp;
 class QwtPlot;
 class QwtPlotCurve;
 class QwtPlotMarker;
@@ -34,7 +34,7 @@ class GUI_EXPORT QgsVectorGradientColorRampDialog : public QDialog, private Ui::
     Q_OBJECT
 
   public:
-    QgsVectorGradientColorRampDialog( QgsVectorGradientColorRamp* ramp, QWidget* parent = nullptr );
+    QgsVectorGradientColorRampDialog( QgsGradientColorRamp* ramp, QWidget* parent = nullptr );
     ~QgsVectorGradientColorRampDialog();
 
   public slots:
@@ -46,7 +46,7 @@ class GUI_EXPORT QgsVectorGradientColorRampDialog : public QDialog, private Ui::
     void on_btnInformation_pressed();
 
   protected:
-    QgsVectorGradientColorRamp* mRamp;
+    QgsGradientColorRamp* mRamp;
 
   private slots:
 

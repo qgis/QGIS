@@ -20,7 +20,7 @@
 
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgsstyle.h"
 #include "qgslogger.h"
 
@@ -630,9 +630,9 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
   }
 }
 
-QgsVectorColorRamp* QgsCategorizedSymbolRendererWidget::getColorRamp()
+QgsColorRamp* QgsCategorizedSymbolRendererWidget::getColorRamp()
 {
-  QgsVectorColorRamp* ramp = cboCategorizedColorRamp->currentColorRamp();
+  QgsColorRamp* ramp = cboCategorizedColorRamp->currentColorRamp();
   if ( !ramp )
   {
     if ( cboCategorizedColorRamp->count() == 0 )
@@ -764,7 +764,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   r->setScaleMethod( mRenderer->scaleMethod() );
   r->setSizeScaleField( mRenderer->sizeScaleField() );
   r->setInvertedColorRamp( cbxInvertedColorRamp->isChecked() );
-  QgsVectorColorRamp* ramp = getColorRamp();
+  QgsColorRamp* ramp = getColorRamp();
   if ( ramp ) r->setSourceColorRamp( ramp->clone() );
 
   if ( mModel )
@@ -785,7 +785,7 @@ void QgsCategorizedSymbolRendererWidget::applyColorRamp()
   else
     mButtonEditRamp->setEnabled( true );
 
-  QgsVectorColorRamp* ramp = getColorRamp();
+  QgsColorRamp* ramp = getColorRamp();
   if ( ramp )
   {
     mRenderer->updateColorRamp( ramp, cbxInvertedColorRamp->isChecked() );

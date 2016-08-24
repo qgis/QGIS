@@ -18,7 +18,7 @@
 #include "qgsgloweffect.h"
 #include "qgssymbollayerutils.h"
 #include "qgsimageoperation.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgsunittypes.h"
 
 QgsGlowEffect::QgsGlowEffect()
@@ -65,7 +65,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
 
   QImage im = sourceAsImage( context )->copy();
 
-  QgsVectorColorRamp* ramp = nullptr;
+  QgsColorRamp* ramp = nullptr;
   if ( mColorType == ColorRamp && mRamp )
   {
     ramp = mRamp;
@@ -75,7 +75,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
     //create a temporary ramp
     QColor transparentColor = mColor;
     transparentColor.setAlpha( 0 );
-    ramp = new QgsVectorGradientColorRamp( mColor, transparentColor );
+    ramp = new QgsGradientColorRamp( mColor, transparentColor );
   }
 
   QgsImageOperation::DistanceTransformProperties dtProps;
@@ -176,10 +176,10 @@ void QgsGlowEffect::readProperties( const QgsStringMap &props )
 
   //attempt to create color ramp from props
   delete mRamp;
-  mRamp = QgsVectorGradientColorRamp::create( props );
+  mRamp = QgsGradientColorRamp::create( props );
 }
 
-void QgsGlowEffect::setRamp( QgsVectorColorRamp *ramp )
+void QgsGlowEffect::setRamp( QgsColorRamp *ramp )
 {
   delete mRamp;
   mRamp = ramp;

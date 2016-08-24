@@ -148,14 +148,14 @@ class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
      * @see setSourceColorRamp()
      * @see sourceSymbol()
      */
-    QgsVectorColorRamp* sourceColorRamp();
+    QgsColorRamp* sourceColorRamp();
 
     /** Sets the source color ramp.
       * @param ramp color ramp. Ownership is transferred to the renderer
       * @see sourceColorRamp()
       * @see setSourceSymbol()
       */
-    void setSourceColorRamp( QgsVectorColorRamp* ramp /Transfer/ );
+    void setSourceColorRamp( QgsColorRamp* ramp /Transfer/ );
 
     //! @note added in 2.1
     bool invertedColorRamp();
@@ -166,7 +166,7 @@ class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
       * @param inverted set to true to invert ramp colors
       * @note added in 2.5
       */
-    void updateColorRamp( QgsVectorColorRamp* ramp /Transfer/, bool inverted = false );
+    void updateColorRamp( QgsColorRamp* ramp /Transfer/, bool inverted = false );
 
     void setRotationField( const QString& fieldOrExpression ) /Deprecated/;
     QString rotationField() const /Deprecated/;

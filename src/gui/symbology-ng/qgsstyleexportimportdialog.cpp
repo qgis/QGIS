@@ -20,7 +20,7 @@
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgslogger.h"
 #include "qgsstylegroupselectiondialog.h"
 
@@ -203,7 +203,7 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle* style )
   for ( int i = 0; i < styleNames.count(); ++i )
   {
     name = styleNames[i];
-    QgsVectorColorRamp* ramp = style->colorRamp( name );
+    QgsColorRamp* ramp = style->colorRamp( name );
 
     QStandardItem* item = new QStandardItem( name );
     QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp, listItems->iconSize() );
@@ -218,7 +218,7 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList* selection, QgsStyl
 {
   QString symbolName;
   QgsSymbol* symbol;
-  QgsVectorColorRamp *ramp = nullptr;
+  QgsColorRamp *ramp = nullptr;
   QModelIndex index;
   bool isSymbol = true;
   bool prompt = true;

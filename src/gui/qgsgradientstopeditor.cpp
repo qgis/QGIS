@@ -29,7 +29,7 @@
 #define FRAME_MARGIN 2
 #define CLICK_THRESHOLD ( MARKER_WIDTH / 2 + 3 )
 
-QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsVectorGradientColorRamp *ramp )
+QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsGradientColorRamp *ramp )
     : QWidget( parent )
     , mSelectedStop( 0 )
 {
@@ -58,7 +58,7 @@ QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsVectorGradient
   setAcceptDrops( true );
 }
 
-void QgsGradientStopEditor::setGradientRamp( const QgsVectorGradientColorRamp &ramp )
+void QgsGradientStopEditor::setGradientRamp( const QgsGradientColorRamp &ramp )
 {
   mGradient = ramp;
   mStops = mGradient.stops();

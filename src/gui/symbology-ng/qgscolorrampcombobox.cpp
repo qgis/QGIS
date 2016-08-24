@@ -15,7 +15,7 @@
 #include "qgscolorrampcombobox.h"
 
 #include "qgssymbollayerutils.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgsstyle.h"
 #include "qgsstylemanagerdialog.h"
 
@@ -51,7 +51,7 @@ void QgsColorRampComboBox::populate( QgsStyle* style )
   QStringList rampNames = mStyle->colorRampNames();
   for ( QStringList::iterator it = rampNames.begin(); it != rampNames.end(); ++it )
   {
-    QgsVectorColorRamp* ramp = style->colorRamp( *it );
+    QgsColorRamp* ramp = style->colorRamp( *it );
 
     if ( !mShowGradientOnly || ramp->type() == "gradient" )
     {
@@ -68,13 +68,13 @@ void QgsColorRampComboBox::populate( QgsStyle* style )
   connect( this, SIGNAL( activated( int ) ), SLOT( colorRampChanged( int ) ) );
 }
 
-QgsVectorColorRamp* QgsColorRampComboBox::currentColorRamp()
+QgsColorRamp* QgsColorRampComboBox::currentColorRamp()
 {
   QString rampName = currentText();
 
   if ( rampName == tr( "Random colors" ) )
   {
-    return new QgsRandomColors();
+    return new QgsRandomColorRamp();
   }
   else if ( rampName == "[source]" && mSourceColorRamp )
     return mSourceColorRamp->clone();
@@ -88,7 +88,7 @@ bool QgsColorRampComboBox::createNewColorRampSelected() const
   return index == count() - 1; //create new ramp is last item in combobox
 }
 
-void QgsColorRampComboBox::setSourceColorRamp( QgsVectorColorRamp* sourceRamp )
+void QgsColorRampComboBox::setSourceColorRamp( QgsColorRamp* sourceRamp )
 {
   delete mSourceColorRamp;
   mSourceColorRamp = sourceRamp->clone();
@@ -120,7 +120,7 @@ void QgsColorRampComboBox::colorRampChanged( int index )
     return;
 
   // put newly added ramp into the combo
-  QgsVectorColorRamp* ramp = mStyle->colorRamp( rampName );
+  QgsColorRamp* ramp = mStyle->colorRamp( rampName );
   QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp, rampIconSize );
 
   blockSignals( true ); // avoid calling this method again!
@@ -138,15 +138,15 @@ void QgsColorRampComboBox::colorRampChanged( int index )
 
 void QgsColorRampComboBox::editSourceRamp()
 {
-  QgsVectorColorRamp* currentRamp = currentColorRamp();
+  QgsColorRamp* currentRamp = currentColorRamp();
   if ( !currentRamp )
     return;
 
-  QScopedPointer<QgsVectorColorRamp> newRamp( currentRamp->clone() );
+  QScopedPointer<QgsColorRamp> newRamp( currentRamp->clone() );
 
   if ( newRamp->type() == "gradient" )
   {
-    QgsVectorGradientColorRamp* gradRamp = static_cast<QgsVectorGradientColorRamp*>( newRamp.data() );
+    QgsGradientColorRamp* gradRamp = static_cast<QgsGradientColorRamp*>( newRamp.data() );
     QgsVectorGradientColorRampDialog dlg( gradRamp, this );
     if ( dlg.exec() && gradRamp )
     {
@@ -156,7 +156,7 @@ void QgsColorRampComboBox::editSourceRamp()
   }
   else if ( newRamp->type() == "random" )
   {
-    QgsVectorRandomColorRamp* randRamp = static_cast<QgsVectorRandomColorRamp*>( newRamp.data() );
+    QgsLimitedRandomColorRamp* randRamp = static_cast<QgsLimitedRandomColorRamp*>( newRamp.data() );
     QgsVectorRandomColorRampDialog dlg( randRamp, this );
     if ( dlg.exec() )
     {
@@ -166,7 +166,7 @@ void QgsColorRampComboBox::editSourceRamp()
   }
   else if ( newRamp->type() == "colorbrewer" )
   {
-    QgsVectorColorBrewerColorRamp* brewerRamp = static_cast<QgsVectorColorBrewerColorRamp*>( newRamp.data() );
+    QgsColorBrewerColorRamp* brewerRamp = static_cast<QgsColorBrewerColorRamp*>( newRamp.data() );
     QgsVectorColorBrewerColorRampDialog dlg( brewerRamp, this );
     if ( dlg.exec() )
     {

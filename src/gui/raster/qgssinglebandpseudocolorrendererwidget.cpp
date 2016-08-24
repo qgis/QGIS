@@ -25,7 +25,7 @@
 
 // for color ramps - todo add rasterStyle and refactor raster vs. vector ramps
 #include "qgsstyle.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgscolordialog.h"
 
 #include <QFileDialog>
@@ -332,7 +332,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   double min = lineEditValue( mMinLineEdit );
   double max = lineEditValue( mMaxLineEdit );
 
-  QScopedPointer< QgsVectorColorRamp > colorRamp( mColorRampComboBox->currentColorRamp() );
+  QScopedPointer< QgsColorRamp > colorRamp( mColorRampComboBox->currentColorRamp() );
 
   if ( mClassificationModeComboBox->itemData( mClassificationModeComboBox->currentIndex() ).toInt() == Continuous )
   {
@@ -345,7 +345,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
         double intervalDiff = max - min;
 
         // remove last class when ColorRamp is gradient and discrete, as they are implemented with an extra stop
-        QgsVectorGradientColorRamp* colorGradientRamp = dynamic_cast<QgsVectorGradientColorRamp*>( colorRamp.data() );
+        QgsGradientColorRamp* colorGradientRamp = dynamic_cast<QgsGradientColorRamp*>( colorRamp.data() );
         if ( colorGradientRamp != NULL && colorGradientRamp->isDiscrete() )
         {
           numberOfEntries--;
@@ -515,7 +515,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColorRampComboBox_currentIndexC
   QSettings settings;
   settings.setValue( "/Raster/defaultPalette", mColorRampComboBox->currentText() );
 
-  QgsVectorColorRamp* ramp = mColorRampComboBox->currentColorRamp();
+  QgsColorRamp* ramp = mColorRampComboBox->currentColorRamp();
   if ( !ramp )
     return;
 

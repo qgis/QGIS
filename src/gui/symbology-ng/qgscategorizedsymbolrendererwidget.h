@@ -159,7 +159,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 
     void changeCategorySymbol();
 
-    QgsVectorColorRamp* getColorRamp();
+    QgsColorRamp* getColorRamp();
 
     QList<QgsSymbol*> selectedSymbols() override;
     QgsCategoryList selectedCategoryList();

@@ -18,7 +18,7 @@
 #include "qgssymbollayer.h"
 #include "qgssymbollayerregistry.h"
 #include "qgssymbol.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgsexpression.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
@@ -619,12 +619,12 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( QgsSymbolLayer* layer, QgsUni
   return QIcon( pixmap );
 }
 
-QIcon QgsSymbolLayerUtils::colorRampPreviewIcon( QgsVectorColorRamp* ramp, QSize size )
+QIcon QgsSymbolLayerUtils::colorRampPreviewIcon( QgsColorRamp* ramp, QSize size )
 {
   return QIcon( colorRampPreviewPixmap( ramp, size ) );
 }
 
-QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsVectorColorRamp* ramp, QSize size )
+QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsColorRamp* ramp, QSize size )
 {
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );
@@ -2665,7 +2665,7 @@ void QgsSymbolLayerUtils::clearSymbolMap( QgsSymbolMap& symbols )
 }
 
 
-QgsVectorColorRamp* QgsSymbolLayerUtils::loadColorRamp( QDomElement& element )
+QgsColorRamp* QgsSymbolLayerUtils::loadColorRamp( QDomElement& element )
 {
   QString rampType = element.attribute( "type" );
 
@@ -2673,11 +2673,11 @@ QgsVectorColorRamp* QgsSymbolLayerUtils::loadColorRamp( QDomElement& element )
   QgsStringMap props = QgsSymbolLayerUtils::parseProperties( element );
 
   if ( rampType == "gradient" )
-    return QgsVectorGradientColorRamp::create( props );
+    return QgsGradientColorRamp::create( props );
   else if ( rampType == "random" )
-    return QgsVectorRandomColorRamp::create( props );
+    return QgsLimitedRandomColorRamp::create( props );
   else if ( rampType == "colorbrewer" )
-    return QgsVectorColorBrewerColorRamp::create( props );
+    return QgsColorBrewerColorRamp::create( props );
   else if ( rampType == "cpt-city" )
     return QgsCptCityColorRamp::create( props );
   else
@@ -2688,7 +2688,7 @@ QgsVectorColorRamp* QgsSymbolLayerUtils::loadColorRamp( QDomElement& element )
 }
 
 
-QDomElement QgsSymbolLayerUtils::saveColorRamp( const QString& name, QgsVectorColorRamp* ramp, QDomDocument& doc )
+QDomElement QgsSymbolLayerUtils::saveColorRamp( const QString& name, QgsColorRamp* ramp, QDomDocument& doc )
 {
   QDomElement rampEl = doc.createElement( "colorramp" );
   rampEl.setAttribute( "type", ramp->type() );

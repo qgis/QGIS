@@ -17,7 +17,7 @@
 
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgsstyle.h"
 
 #include "qgsvectorlayer.h"
@@ -657,7 +657,7 @@ void QgsGraduatedSymbolRendererWidget::on_methodComboBox_currentIndexChanged( in
   if ( idx == 0 )
   {
     mRenderer->setGraduatedMethod( QgsGraduatedSymbolRenderer::GraduatedColor );
-    QgsVectorColorRamp* ramp = cboGraduatedColorRamp->currentColorRamp();
+    QgsColorRamp* ramp = cboGraduatedColorRamp->currentColorRamp();
 
     if ( !ramp )
     {
@@ -742,7 +742,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
   int nclasses = spinGraduatedClasses->value();
 
-  QSharedPointer<QgsVectorColorRamp> ramp( cboGraduatedColorRamp->currentColorRamp() );
+  QSharedPointer<QgsColorRamp> ramp( cboGraduatedColorRamp->currentColorRamp() );
   if ( !ramp )
   {
     if ( cboGraduatedColorRamp->count() == 0 )
@@ -779,7 +779,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
   if ( methodComboBox->currentIndex() == 0 )
   {
-    QgsVectorColorRamp* ramp = cboGraduatedColorRamp->currentColorRamp();
+    QgsColorRamp* ramp = cboGraduatedColorRamp->currentColorRamp();
 
     if ( !ramp )
     {
@@ -811,7 +811,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
 void QgsGraduatedSymbolRendererWidget::reapplyColorRamp()
 {
-  QgsVectorColorRamp* ramp = cboGraduatedColorRamp->currentColorRamp();
+  QgsColorRamp* ramp = cboGraduatedColorRamp->currentColorRamp();
   if ( !ramp )
     return;
 

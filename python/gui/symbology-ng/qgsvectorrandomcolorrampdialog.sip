@@ -5,7 +5,7 @@ class QgsVectorRandomColorRampDialog : QDialog
 %End
 
   public:
-    QgsVectorRandomColorRampDialog( QgsVectorRandomColorRamp* ramp, QWidget* parent /TransferThis/ = NULL );
+    QgsVectorRandomColorRampDialog( QgsLimitedRandomColorRamp* ramp, QWidget* parent /TransferThis/ = NULL );
 
   public slots:
     void setCount( int val );

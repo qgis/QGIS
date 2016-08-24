@@ -15,7 +15,7 @@
 
 #include "qgsvectorgradientcolorrampdialog.h"
 
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgsdialog.h"
 #include "qgscolordialog.h"
 #include "qgscptcityarchive.h"
@@ -40,7 +40,7 @@
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
 
-QgsVectorGradientColorRampDialog::QgsVectorGradientColorRampDialog( QgsVectorGradientColorRamp* ramp, QWidget* parent )
+QgsVectorGradientColorRampDialog::QgsVectorGradientColorRampDialog( QgsGradientColorRamp* ramp, QWidget* parent )
     : QDialog( parent )
     , mRamp( ramp )
     , mCurrentPlotColorComponent( -1 )

@@ -29,7 +29,7 @@
 
 class QgsExpression;
 class QgsSymbolLayer;
-class QgsVectorColorRamp;
+class QgsColorRamp;
 
 typedef QMap<QString, QString> QgsStringMap;
 typedef QMap<QString, QgsSymbol* > QgsSymbolMap;
@@ -138,13 +138,13 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayer* layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
-    static QIcon colorRampPreviewIcon( QgsVectorColorRamp* ramp, QSize size );
+    static QIcon colorRampPreviewIcon( QgsColorRamp* ramp, QSize size );
 
     static void drawStippledBackground( QPainter* painter, QRect rect );
 
     //! @note customContext parameter added in 2.6
     static QPixmap symbolPreviewPixmap( QgsSymbol* symbol, QSize size, QgsRenderContext* customContext = nullptr );
-    static QPixmap colorRampPreviewPixmap( QgsVectorColorRamp* ramp, QSize size );
+    static QPixmap colorRampPreviewPixmap( QgsColorRamp* ramp, QSize size );
 
     /** Returns the maximum estimated bleed for the symbol */
     static double estimateMaxSymbolBleed( QgsSymbol* symbol );
@@ -297,8 +297,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     static void clearSymbolMap( QgsSymbolMap& symbols );
 
-    static QgsVectorColorRamp* loadColorRamp( QDomElement& element );
-    static QDomElement saveColorRamp( const QString& name, QgsVectorColorRamp* ramp, QDomDocument& doc );
+    static QgsColorRamp* loadColorRamp( QDomElement& element );
+    static QDomElement saveColorRamp( const QString& name, QgsColorRamp* ramp, QDomDocument& doc );
 
     /**
      * Returns a friendly display name for a color
