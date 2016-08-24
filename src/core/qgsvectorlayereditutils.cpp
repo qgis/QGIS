@@ -290,16 +290,18 @@ int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx
 }
 
 
-int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing )
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing )
 {
   if ( !L->hasGeometryType() )
-    return 4;
+  {
+    return QgsGeometry::InvalidBaseGeometry;
+  }
 
   QgsFeatureList newFeatures; //store all the newly created features
   double xMin, yMin, xMax, yMax;
   QgsRectangle bBox; //bounding box of the split line
-  int returnCode = 0;
-  int splitFunctionReturn; //return code of QgsGeometry::splitGeometry
+  QgsGeometry::OperationResult returnCode = QgsGeometry::Success;
+  QgsGeometry::OperationResult splitFunctionReturn; //return code of QgsGeometry::splitGeometry
   int numberOfSplittedFeatures = 0;
 
   QgsFeatureIterator features;
@@ -320,7 +322,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
     }
     else
     {
-      return 1;
+      return QgsGeometry::InvalidInput;
     }
 
     if ( bBox.isEmpty() )
@@ -407,7 +409,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
       }
       ++numberOfSplittedFeatures;
     }
-    else if ( splitFunctionReturn > 1 ) //1 means no split but also no error
+    else if ( splitFunctionReturn != QgsGeometry::Success && splitFunctionReturn != QgsGeometry::SplitNoSplit ) // i.e. no split but no error occurred
     {
       returnCode = splitFunctionReturn;
     }
@@ -417,7 +419,7 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
   {
     //There is a selection but no feature has been split.
     //Maybe user forgot that only the selected features are split
-    returnCode = 4;
+    returnCode = QgsGeometry::SplitNoSplit;
   }
 
 
@@ -427,15 +429,17 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
   return returnCode;
 }
 
-int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool topologicalEditing )
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool topologicalEditing )
 {
   if ( !L->hasGeometryType() )
-    return 4;
+  {
+    return QgsGeometry::InvalidBaseGeometry;
+  }
 
   double xMin, yMin, xMax, yMax;
   QgsRectangle bBox; //bounding box of the split line
-  int returnCode = 0;
-  int splitFunctionReturn; //return code of QgsGeometry::splitGeometry
+  QgsGeometry::OperationResult returnCode = QgsGeometry::Success;
+  QgsGeometry::OperationResult splitFunctionReturn; //return code of QgsGeometry::splitGeometry
   int numberOfSplittedParts = 0;
 
   QgsFeatureIterator fit;
@@ -455,7 +459,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
     }
     else
     {
-      return 1;
+      return QgsGeometry::InvalidInput;
     }
 
     if ( bBox.isEmpty() )
@@ -554,11 +558,11 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
     qDeleteAll( newGeometries );
   }
 
-  if ( numberOfSplittedParts == 0 && L->selectedFeatureCount() > 0  && returnCode == 0 )
+  if ( numberOfSplittedParts == 0 && L->selectedFeatureCount() > 0  && returnCode == QgsGeometry::Success )
   {
     //There is a selection but no feature has been split.
     //Maybe user forgot that only the selected features are split
-    returnCode = 4;
+    returnCode = QgsGeometry::SplitNoSplit;
   }
 
   return returnCode;
@@ -757,11 +761,11 @@ int QgsVectorLayerEditUtils::insertSegmentVerticesForSnap( const QList<QgsSnappi
 
 
 
-int QgsVectorLayerEditUtils::boundingBoxFromPointList( const QList<QgsPoint>& list, double& xmin, double& ymin, double& xmax, double& ymax ) const
+bool QgsVectorLayerEditUtils::boundingBoxFromPointList( const QList<QgsPoint>& list, double& xmin, double& ymin, double& xmax, double& ymax ) const
 {
   if ( list.size() < 1 )
   {
-    return 1;
+    return false;
   }
 
   xmin = std::numeric_limits<double>::max();
@@ -789,5 +793,5 @@ int QgsVectorLayerEditUtils::boundingBoxFromPointList( const QList<QgsPoint>& li
     }
   }
 
-  return 0;
+  return true;
 }

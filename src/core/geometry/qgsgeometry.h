@@ -81,14 +81,12 @@ class CORE_EXPORT QgsGeometry
     /**
      * Success or failure of a geometry operation.
      * This gived details about cause of failure.
-     * Cause can be sperated:
-     *  - source geometry or feature on which the operation is trying to operate
-     *  - input geometry: such as ring or part
      */
     enum OperationResult
     {
       Success = 0, /*!< Operation succeeded */
-      InvalidInputType = 1, /*!< The input geometry (ring or part or ...) has not the correct geometry type */
+      InvalidBaseGeometry, /*!< The base geometry on which the operation is done is invalid or empty */
+      InvalidInput, /*!< The input geometry (ring, part, split line, etc.) has not the correct geometry type */
       /* Add part issues */
       AddPartSelectedGeometryNotFound, /*!< The selected geometry cannot be found */
       AddPartNotMultiGeometry, /*!< The source geometry is not multi */
@@ -97,6 +95,10 @@ class CORE_EXPORT QgsGeometry
       AddRingNotValid, /*!< The input ring is not valid */
       AddRingCrossesExistingRings, /*!< The input ring crosses existing rings (it is not disjoint) */
       AddRingNotInExistingFeature, /*!<  The input ring doesn't have any existing ring to fit into */
+      /* Split features */
+      SplitEngineError, /*!< Geometry engine has no split method implemented or an error occured in the geometry engine */
+      SplitNoSplit, /*!< No split occured, but no error */
+      SplitCannotSplitPoint, /*!< cannot split points */
     };
 
     //! Constructor
@@ -409,40 +411,38 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry::OperationResult addPart( const QgsGeometry *newPart );
 
     /** Translate this geometry by dx, dy
-     @return 0 in case of success*/
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int translate( double dx, double dy );
+     * @returns OperationResult a result code: success or reason of failure
+     */
+    QgsGeometry::OperationResult translate( double dx, double dy );
 
     /** Transform this geometry as described by CoordinateTransform ct
-     @return 0 in case of success*/
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int transform( const QgsCoordinateTransform& ct );
+     * @returns OperationResult a result code: success or reason of failure
+     */
+    QgsGeometry::OperationResult transform( const QgsCoordinateTransform& ct );
 
     /** Transform this geometry as described by QTransform ct
-     @note added in 2.8
-     @return 0 in case of success*/
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int transform( const QTransform& ct );
+     * @returns OperationResult a result code: success or reason of failure
+     */
+    OperationResult transform( const QTransform& ct );
 
     /** Rotate this geometry around the Z axis
-         @note added in 2.8
-         @param rotation clockwise rotation in degrees
-         @param center rotation center
-         @return 0 in case of success*/
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int rotate( double rotation, const QgsPoint& center );
+     * @param rotation clockwise rotation in degrees
+     * @param center rotation center
+     * @returns OperationResult a result code: success or reason of failure
+     */
+    OperationResult rotate( double rotation, const QgsPoint& center );
 
     /** Splits this geometry according to a given line.
-    @param splitLine the line that splits the geometry
-    @param[out] newGeometries list of new geometries that have been created with the split
-    @param topological true if topological editing is enabled
-    @param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-    @return 0 in case of success, 1 if geometry has not been split, error else*/
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int splitGeometry( const QList<QgsPoint>& splitLine,
-                       QList<QgsGeometry*>&newGeometries,
-                       bool topological,
-                       QList<QgsPoint> &topologyTestPoints );
+     * @param splitLine the line that splits the geometry
+     * @param[out] newGeometries list of new geometries that have been created with the split
+     * @param topological true if topological editing is enabled
+     * @param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+     * @returns OperationResult a result code: success or reason of failure
+     */
+    OperationResult splitGeometry( const QList<QgsPoint>& splitLine,
+                                   QList<QgsGeometry*>&newGeometries,
+                                   bool topological,
+                                   QList<QgsPoint> &topologyTestPoints );
 
     /** Replaces a part of this geometry with another line
      * @return 0 in case of success

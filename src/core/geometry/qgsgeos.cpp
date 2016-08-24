@@ -25,7 +25,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipolygon.h"
 #include "qgslogger.h"
 #include "qgspolygon.h"
-#include "qgsgeometry.h"
 #include <limits>
 #include <cstdio>
 #include <QtCore/qmath.h>
@@ -379,32 +378,34 @@ double QgsGeos::length( QString* errorMsg ) const
   return length;
 }
 
-int QgsGeos::splitGeometry( const QgsLineString& splitLine,
-                            QList<QgsAbstractGeometry*>&newGeometries,
-                            bool topological,
-                            QgsPointSequence &topologyTestPoints,
-                            QString* errorMsg ) const
+QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry( const QgsLineString& splitLine,
+    QList<QgsAbstractGeometry*>&newGeometries,
+    bool topological,
+    QgsPointSequence &topologyTestPoints,
+    QString* errorMsg ) const
 {
 
-  int returnCode = 0;
-  if ( !mGeometry || !mGeos )
+  EngineOperationResult returnCode = Success;
+  if ( !mGeos || !mGeometry )
   {
-    return 1;
+    return InvalidBaseGeometry;
   }
 
   //return if this type is point/multipoint
   if ( mGeometry->dimension() == 0 )
   {
-    return 1; //cannot split points
+    return SplitCannotSplitPoint; //cannot split points
   }
 
   if ( !GEOSisValid_r( geosinit.ctxt, mGeos ) )
-    return 7;
+    return InvalidBaseGeometry;
 
   //make sure splitLine is valid
   if (( mGeometry->dimension() == 1 && splitLine.numPoints() < 1 ) ||
       ( mGeometry->dimension() == 2 && splitLine.numPoints() < 2 ) )
-    return 1;
+  {
+    return InvalidInput;
+  }
 
   newGeometries.clear();
   GEOSGeometry* splitLineGeos = nullptr;
@@ -422,20 +423,22 @@ int QgsGeos::splitGeometry( const QgsLineString& splitLine,
     }
     else
     {
-      return 1;
+      return InvalidInput;
     }
 
     if ( !GEOSisValid_r( geosinit.ctxt, splitLineGeos ) || !GEOSisSimple_r( geosinit.ctxt, splitLineGeos ) )
     {
       GEOSGeom_destroy_r( geosinit.ctxt, splitLineGeos );
-      return 1;
+      return InvalidInput;
     }
 
     if ( topological )
     {
       //find out candidate points for topological corrections
-      if ( topologicalTestPointsSplit( splitLineGeos, topologyTestPoints ) != 0 )
-        return 1;
+      if ( !topologicalTestPointsSplit( splitLineGeos, topologyTestPoints ) )
+      {
+        return InvalidInput; // TODO: is it really an invalid input?
+      }
     }
 
     //call split function depending on geometry type
@@ -451,17 +454,17 @@ int QgsGeos::splitGeometry( const QgsLineString& splitLine,
     }
     else
     {
-      return 1;
+      return InvalidInput;
     }
   }
-  CATCH_GEOS_WITH_ERRMSG( 2 )
+  CATCH_GEOS_WITH_ERRMSG( EngineError )
 
   return returnCode;
 }
 
 
 
-int QgsGeos::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QgsPointSequence &testPoints, QString* errorMsg ) const
+bool QgsGeos::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QgsPointSequence &testPoints, QString* errorMsg ) const
 {
   //Find out the intersection points between splitLineGeos and this geometry.
   //These points need to be tested for topological correctness by the calling function
@@ -469,7 +472,7 @@ int QgsGeos::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QgsPoint
 
   if ( !mGeos )
   {
-    return 1;
+    return false;
   }
 
   try
@@ -477,7 +480,7 @@ int QgsGeos::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QgsPoint
     testPoints.clear();
     GEOSGeometry* intersectionGeom = GEOSIntersection_r( geosinit.ctxt, mGeos, splitLine );
     if ( !intersectionGeom )
-      return 1;
+      return false;
 
     bool simple = false;
     int nIntersectGeoms = 1;
@@ -517,7 +520,7 @@ int QgsGeos::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QgsPoint
   }
   CATCH_GEOS_WITH_ERRMSG( 1 )
 
-  return 0;
+  return true;
 }
 
 GEOSGeometry* QgsGeos::linePointDifference( GEOSGeometry* GEOSsplitPoint ) const
@@ -586,22 +589,22 @@ GEOSGeometry* QgsGeos::linePointDifference( GEOSGeometry* GEOSsplitPoint ) const
   return asGeos( &lines, mPrecision );
 }
 
-int QgsGeos::splitLinearGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometry*>& newGeometries ) const
+QgsGeometryEngine::EngineOperationResult QgsGeos::splitLinearGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometry*>& newGeometries ) const
 {
   if ( !splitLine )
-    return 2;
+    return InvalidInput;
 
   if ( !mGeos )
-    return 5;
+    return InvalidBaseGeometry;
 
   //first test if linestring intersects geometry. If not, return straight away
   if ( !GEOSIntersects_r( geosinit.ctxt, splitLine, mGeos ) )
-    return 1;
+    return SplitNoSplit;
 
   //check that split line has no linear intersection
   int linearIntersect = GEOSRelatePattern_r( geosinit.ctxt, mGeos, splitLine, "1********" );
   if ( linearIntersect > 0 )
-    return 3;
+    return InvalidInput;
 
   int splitGeomType = GEOSGeomTypeId_r( geosinit.ctxt, splitLine );
 
@@ -639,25 +642,25 @@ int QgsGeos::splitLinearGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeom
   }
 
   GEOSGeom_destroy_r( geosinit.ctxt, splitGeom );
-  return 0;
+  return Success;
 }
 
-int QgsGeos::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometry*>& newGeometries ) const
+QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometry*>& newGeometries ) const
 {
   if ( !splitLine )
-    return 2;
+    return InvalidInput;
 
   if ( !mGeos )
-    return 5;
+    return InvalidBaseGeometry;
 
   //first test if linestring intersects geometry. If not, return straight away
   if ( !GEOSIntersects_r( geosinit.ctxt, splitLine, mGeos ) )
-    return 1;
+    return SplitNoSplit;
 
   //first union all the polygon rings together (to get them noded, see JTS developer guide)
   GEOSGeometry *nodedGeometry = nodeGeometries( splitLine, mGeos );
   if ( !nodedGeometry )
-    return 2; //an error occurred during noding
+    return NodedGeometryError; //an error occurred during noding
 
   GEOSGeometry *polygons = GEOSPolygonize_r( geosinit.ctxt, &nodedGeometry, 1 );
   if ( !polygons || numberOfGeometries( polygons ) == 0 )
@@ -667,7 +670,7 @@ int QgsGeos::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeo
 
     GEOSGeom_destroy_r( geosinit.ctxt, nodedGeometry );
 
-    return 4;
+    return InvalidBaseGeometry;
   }
 
   GEOSGeom_destroy_r( geosinit.ctxt, nodedGeometry );
@@ -720,7 +723,7 @@ int QgsGeos::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeo
     {
       GEOSGeom_destroy_r( geosinit.ctxt, testedGeometries[i] );
     }
-    return 1;
+    return SplitNoSplit;
   }
 
   int i;
@@ -732,13 +735,13 @@ int QgsGeos::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeo
     for ( i = 0; i < testedGeometries.size(); ++i )
       GEOSGeom_destroy_r( geosinit.ctxt, testedGeometries[i] );
 
-    return 3;
+    return InvalidBaseGeometry;
   }
 
   for ( i = 0; i < testedGeometries.size(); ++i )
     newGeometries << fromGeos( testedGeometries[i] );
 
-  return 0;
+  return Success;
 }
 
 GEOSGeometry* QgsGeos::nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom )

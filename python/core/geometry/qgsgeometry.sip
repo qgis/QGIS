@@ -32,7 +32,8 @@ class QgsGeometry
     enum OperationResult
     {
       Success, /*!< Operation succeeded */
-      InvalidInputType, /*!< The input geometry (ring or part or ...) has not the correct geometry type */
+      InvalidBaseGeometry, /*!< The base geometry on which the operation is done is invalid or empty */
+      InvalidInput, /*!< The input geometry (ring, part, split line, etc.) has not the correct geometry type */
       /* Add part issues */
       AddPartSelectedGeometryNotFound, /*!< The selected geometry cannot be found */
       AddPartNotMultiGeometry, /*!< The source geometry is not multi */

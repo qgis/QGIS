@@ -109,7 +109,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *   4 if there is a selection but no feature split
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int splitParts( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitParts( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
     /** Splits features cut by the given line
      *  @param splitLine line that splits the layer features
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *   4 if there is a selection but no feature split
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
     /** Adds topological points for every vertex of the geometry.
      * @param geom the geometry where each vertex is added to segments of other features
@@ -147,8 +147,8 @@ class CORE_EXPORT QgsVectorLayerEditUtils
   protected:
 
     /** Little helper function that gives bounding box from a list of points.
-    @return 0 in case of success */
-    int boundingBoxFromPointList( const QList<QgsPoint>& list, double& xmin, double& ymin, double& xmax, double& ymax ) const;
+    @return true in case of success */
+    bool boundingBoxFromPointList( const QList<QgsPoint>& list, double& xmin, double& ymin, double& xmax, double& ymax ) const;
 
     QgsVectorLayer* L;
 };

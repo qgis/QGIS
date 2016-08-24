@@ -624,7 +624,7 @@ QgsGeometry::OperationResult QgsGeometry::addRing( QgsCurve* ring )
   if ( !d->geometry )
   {
     delete ring;
-    return InvalidInputType;
+    return InvalidInput;
   }
 
   detach( true );
@@ -688,7 +688,11 @@ QgsGeometry::OperationResult QgsGeometry::addPart( QgsAbstractGeometry* part, Qg
 
 QgsGeometry::OperationResult QgsGeometry::addPart( const QgsGeometry *newPart )
 {
-  if ( !d->geometry || !newPart || !newPart->d || !newPart->d->geometry )
+  if ( !d->geometry )
+  {
+    return QgsGeometry::InvalidBaseGeometry;
+  }
+  if ( !newPart || !newPart->d || !newPart->d->geometry )
   {
     return QgsGeometry::AddPartNotMultiGeometry;
   }
@@ -698,7 +702,11 @@ QgsGeometry::OperationResult QgsGeometry::addPart( const QgsGeometry *newPart )
 
 QgsGeometry::OperationResult QgsGeometry::addPart( GEOSGeometry *newPart )
 {
-  if ( !d->geometry || !newPart )
+  if ( !d->geometry )
+  {
+    return QgsGeometry::InvalidBaseGeometry;
+  }
+  if ( !newPart )
   {
     return QgsGeometry::AddPartNotMultiGeometry;
   }
@@ -710,25 +718,25 @@ QgsGeometry::OperationResult QgsGeometry::addPart( GEOSGeometry *newPart )
   return QgsGeometryEditUtils::addPart( d->geometry, geom );
 }
 
-int QgsGeometry::translate( double dx, double dy )
+QgsGeometry::OperationResult QgsGeometry::translate( double dx, double dy )
 {
   if ( !d->geometry )
   {
-    return 1;
+    return QgsGeometry::InvalidBaseGeometry;
   }
 
   detach( true );
 
   d->geometry->transform( QTransform::fromTranslate( dx, dy ) );
   removeWkbGeos();
-  return 0;
+  return QgsGeometry::Success;
 }
 
-int QgsGeometry::rotate( double rotation, const QgsPoint& center )
+QgsGeometry::OperationResult QgsGeometry::rotate( double rotation, const QgsPoint& center )
 {
   if ( !d->geometry )
   {
-    return 1;
+    return QgsGeometry::InvalidBaseGeometry;
   }
 
   detach( true );
@@ -738,14 +746,14 @@ int QgsGeometry::rotate( double rotation, const QgsPoint& center )
   t.translate( -center.x(), -center.y() );
   d->geometry->transform( t );
   removeWkbGeos();
-  return 0;
+  return QgsGeometry::Success;
 }
 
-int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries, bool topological, QList<QgsPoint> &topologyTestPoints )
+QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries, bool topological, QList<QgsPoint> &topologyTestPoints )
 {
   if ( !d->geometry )
   {
-    return 0;
+    return InvalidBaseGeometry;
   }
 
   QList<QgsAbstractGeometry*> newGeoms;
@@ -756,9 +764,9 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
   QgsPointSequence tp;
 
   QgsGeos geos( d->geometry );
-  int result = geos.splitGeometry( splitLineString, newGeoms, topological, tp );
+  QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( splitLineString, newGeoms, topological, tp );
 
-  if ( result == 0 )
+  if ( result == QgsGeometryEngine::Success )
   {
     detach( false );
     d->geometry = newGeoms.at( 0 );
@@ -772,7 +780,28 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
 
   convertPointList( tp, topologyTestPoints );
   removeWkbGeos();
-  return result;
+
+  switch ( result )
+  {
+    case QgsGeometryEngine::Success:
+      return QgsGeometry::Success;
+    case QgsGeometryEngine::MethodNotImplemented:
+    case QgsGeometryEngine::EngineError:
+    case QgsGeometryEngine::NodedGeometryError:
+      return QgsGeometry::SplitEngineError;
+    case QgsGeometryEngine::InvalidBaseGeometry:
+      return QgsGeometry::InvalidBaseGeometry;
+    case QgsGeometryEngine::InvalidInput:
+      return QgsGeometry::InvalidInput;
+    case QgsGeometryEngine::SplitCannotSplitPoint:
+      return QgsGeometry::SplitCannotSplitPoint;
+    case QgsGeometryEngine::SplitNoSplit:
+      return QgsGeometry::SplitNoSplit;
+      //default: do not implement default to handle properly all cases
+  }
+
+  // this should never be reached
+  return QgsGeometry::SplitNoSplit;
 }
 
 /** Replaces a part of this geometry with another line*/
@@ -1788,30 +1817,30 @@ bool QgsGeometry::requiresConversionToStraightSegments() const
   return d->geometry->hasCurvedSegments();
 }
 
-int QgsGeometry::transform( const QgsCoordinateTransform& ct )
+QgsGeometry::OperationResult QgsGeometry::transform( const QgsCoordinateTransform& ct )
 {
   if ( !d->geometry )
   {
-    return 1;
+    return QgsGeometry::InvalidBaseGeometry;
   }
 
   detach();
   d->geometry->transform( ct );
   removeWkbGeos();
-  return 0;
+  return QgsGeometry::Success;
 }
 
-int QgsGeometry::transform( const QTransform& ct )
+QgsGeometry::OperationResult QgsGeometry::transform( const QTransform& ct )
 {
   if ( !d->geometry )
   {
-    return 1;
+    return QgsGeometry::InvalidBaseGeometry;
   }
 
   detach();
   d->geometry->transform( ct );
   removeWkbGeos();
-  return 0;
+  return QgsGeometry::Success;
 }
 
 void QgsGeometry::mapToPixel( const QgsMapToPixel& mtp )

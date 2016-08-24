@@ -31,7 +31,7 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry*
 {
   if ( !ring )
   {
-    return QgsGeometry::InvalidInputType;
+    return QgsGeometry::InvalidInput;
   }
 
   QList< QgsCurvePolygon* > polygonList;
@@ -52,7 +52,7 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry*
   else
   {
     delete ring;
-    return QgsGeometry::InvalidInputType; //not polygon / multipolygon;
+    return QgsGeometry::InvalidInput; //not polygon / multipolygon;
   }
 
   //ring must be closed
@@ -110,7 +110,7 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry*
 
   if ( !part )
   {
-    return QgsGeometry::InvalidInputType;
+    return QgsGeometry::InvalidInput;
   }
 
   //multitype?
@@ -158,7 +158,7 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry*
         while ( geomCollection->numGeometries() > n )
           geomCollection->removeGeometry( n );
         delete part;
-        return QgsGeometry::InvalidInputType;
+        return QgsGeometry::InvalidInput;
       }
 
       delete part;
@@ -166,14 +166,14 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry*
     else
     {
       delete part;
-      return QgsGeometry::InvalidInputType;
+      return QgsGeometry::InvalidInput;
     }
   }
   else
   {
     added = geomCollection->addGeometry( part );
   }
-  return added ? QgsGeometry::Success : QgsGeometry::InvalidInputType;
+  return added ? QgsGeometry::Success : QgsGeometry::InvalidInput;
 }
 
 bool QgsGeometryEditUtils::deleteRing( QgsAbstractGeometry* geom, int ringNum, int partNum )

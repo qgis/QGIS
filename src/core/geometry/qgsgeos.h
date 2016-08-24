@@ -17,6 +17,7 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSGEOS_H
 
 #include "qgsgeometryengine.h"
+#include "qgsgeometry.h"
 #include <geos_c.h>
 
 class QgsLineString;
@@ -72,17 +73,18 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool isEmpty( QString* errorMsg = nullptr ) const override;
 
     /** Splits this geometry according to a given line.
-    @param splitLine the line that splits the geometry
-    @param[out] newGeometries list of new geometries that have been created with the split
-    @param topological true if topological editing is enabled
-    @param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-    @param[out] errorMsg error messages emitted, if any
-    @return 0 in case of success, 1 if geometry has not been split, error else*/
-    int splitGeometry( const QgsLineString& splitLine,
-                       QList<QgsAbstractGeometry*>& newGeometries,
-                       bool topological,
-                       QgsPointSequence &topologyTestPoints,
-                       QString* errorMsg = nullptr ) const override;
+     * @param splitLine the line that splits the geometry
+     * @param[out] newGeometries list of new geometries that have been created with the split
+     * @param topological true if topological editing is enabled
+     * @param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+     * @param[out] errorMsg error messages emitted, if any
+     * @returns OperationResult a result code: success or reason of failure
+     */
+    EngineOperationResult splitGeometry( const QgsLineString& splitLine,
+                                         QList<QgsAbstractGeometry*>& newGeometries,
+                                         bool topological,
+                                         QgsPointSequence &topologyTestPoints,
+                                         QString* errorMsg = nullptr ) const override;
 
     QgsAbstractGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const override;
 
@@ -192,10 +194,10 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static GEOSGeometry* createGeosPolygon( const QgsAbstractGeometry* poly, double precision );
 
     //utils for geometry split
-    int topologicalTestPointsSplit( const GEOSGeometry* splitLine, QgsPointSequence &testPoints, QString* errorMsg = nullptr ) const;
+    bool topologicalTestPointsSplit( const GEOSGeometry* splitLine, QgsPointSequence &testPoints, QString* errorMsg = nullptr ) const;
     GEOSGeometry* linePointDifference( GEOSGeometry* GEOSsplitPoint ) const;
-    int splitLinearGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometry*>& newGeometries ) const;
-    int splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometry*>& newGeometries ) const;
+    EngineOperationResult splitLinearGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometry*>& newGeometries ) const;
+    EngineOperationResult splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometry*>& newGeometries ) const;
 
     //utils for reshape
     static GEOSGeometry* reshapeLine( const GEOSGeometry* line, const GEOSGeometry* reshapeLineGeos, double precision );
