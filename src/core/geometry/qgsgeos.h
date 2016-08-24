@@ -105,7 +105,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
                                             int joinStyle, double mitreLimit,
                                             QString* errorMsg = nullptr ) const;
 
-
+    /**
+     * Reshapes the geometry using a line
+     * @param reshapeWithLine the line used to reshape lines or polygons
+     * @param errorCode if specified, provides result of operation (success or reason of failure)
+     * @param errorMsg if specified, provides more details about failure
+     * @return the reshaped geometry
+     */
     QgsAbstractGeometry* reshapeGeometry( const QgsLineString& reshapeWithLine, EngineOperationResult* errorCode, QString* errorMsg = nullptr ) const;
 
     /** Merges any connected lines in a LineString/MultiLineString geometry and
