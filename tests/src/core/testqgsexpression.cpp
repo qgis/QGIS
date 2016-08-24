@@ -116,26 +116,32 @@ class TestQgsExpression: public QObject
       mAggregatesLayer = new QgsVectorLayer( "Point?field=col1:integer&field=col2:string&field=col3:integer", "aggregate_layer", "memory" );
       QVERIFY( mAggregatesLayer->isValid() );
       QgsFeature af1( mAggregatesLayer->dataProvider()->fields(), 1 );
+      af1.setGeometry( QgsGeometry::fromPoint( QgsPoint( 0, 0 ) ) );
       af1.setAttribute( "col1", 4 );
       af1.setAttribute( "col2", "test" );
       af1.setAttribute( "col3", 2 );
       QgsFeature af2( mAggregatesLayer->dataProvider()->fields(), 2 );
+      af2.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1, 0 ) ) );
       af2.setAttribute( "col1", 2 );
       af2.setAttribute( "col2", QVariant( QVariant::String ) );
       af2.setAttribute( "col3", 1 );
       QgsFeature af3( mAggregatesLayer->dataProvider()->fields(), 3 );
+      af3.setGeometry( QgsGeometry::fromPoint( QgsPoint( 2, 0 ) ) );
       af3.setAttribute( "col1", 3 );
       af3.setAttribute( "col2", "test333" );
       af3.setAttribute( "col3", 2 );
       QgsFeature af4( mAggregatesLayer->dataProvider()->fields(), 4 );
+      af4.setGeometry( QgsGeometry::fromPoint( QgsPoint( 3, 0 ) ) );
       af4.setAttribute( "col1", 2 );
       af4.setAttribute( "col2", "test4" );
       af4.setAttribute( "col3", 2 );
       QgsFeature af5( mAggregatesLayer->dataProvider()->fields(), 5 );
+      af5.setGeometry( QgsGeometry::fromPoint( QgsPoint( 4, 0 ) ) );
       af5.setAttribute( "col1", 5 );
       af5.setAttribute( "col2", QVariant( QVariant::String ) );
       af5.setAttribute( "col3", 3 );
       QgsFeature af6( mAggregatesLayer->dataProvider()->fields(), 6 );
+      af6.setGeometry( QgsGeometry::fromPoint( QgsPoint( 5, 0 ) ) );
       af6.setAttribute( "col1", 8 );
       af6.setAttribute( "col2", "test4" );
       af6.setAttribute( "col3", 3 );
@@ -1213,6 +1219,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "string aggregate 2" ) << "aggregate('test','min_length',\"col2\")" << false << QVariant( 5 );
       QTest::newRow( "string concatenate" ) << "aggregate('test','concatenate',\"col2\",concatenator:=' , ')" << false << QVariant( "test1 , test2 , test3 , test4" );
 
+      QTest::newRow( "geometry collect" ) << "geom_to_wkt(aggregate('aggregate_layer','collect',$geometry))" << false << QVariant( QString( "MultiPoint ((0 0),(1 0),(2 0),(3 0),(4 0),(5 0))" ) );
+
       QTest::newRow( "sub expression" ) << "aggregate('test','sum',\"col1\" * 2)" << false << QVariant( 65 * 2 );
       QTest::newRow( "bad sub expression" ) << "aggregate('test','sum',\"xcvxcv\" * 2)" << true << QVariant();
 
@@ -1288,6 +1296,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "min_length" ) << "min_length(\"col2\")" << false << QVariant( 0 );
       QTest::newRow( "max_length" ) << "max_length(\"col2\")" << false << QVariant( 7 );
       QTest::newRow( "concatenate" ) << "concatenate(\"col2\",concatenator:=',')" << false << QVariant( "test,,test333,test4,,test4" );
+
+      QTest::newRow( "geometry collect" ) << "geom_to_wkt(collect($geometry))" << false << QVariant( QString( "MultiPoint ((0 0),(1 0),(2 0),(3 0),(4 0),(5 0))" ) );
 
       QTest::newRow( "bad expression" ) << "sum(\"xcvxcvcol1\")" << true << QVariant();
       QTest::newRow( "aggregate named" ) << "sum(expression:=\"col1\")" << false << QVariant( 24.0 );

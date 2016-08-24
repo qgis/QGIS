@@ -21,10 +21,15 @@ from qgis.core import (QgsAggregateCalculator,
                        QgsInterval,
                        QgsExpressionContext,
                        QgsExpressionContextScope,
+                       QgsGeometry,
                        NULL
                        )
 from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.testing import unittest, start_app
+
+from utilities import(
+    compareWkt
+)
 
 start_app()
 
@@ -54,6 +59,31 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         a.setParameters(params)
         self.assertEqual(a.filter(), 'string filter')
         self.assertEqual(a.delimiter(), 'delim')
+
+    def testGeometry(self):
+        """ Test calculation of aggregates on geometry expressions """
+
+        layer = QgsVectorLayer("Point?",
+                               "layer", "memory")
+        pr = layer.dataProvider()
+
+        # must be same length:
+        geometry_values = [QgsGeometry.fromWkt("Point ( 0 0 )"), QgsGeometry.fromWkt("Point ( 1 1 )"), QgsGeometry.fromWkt("Point ( 2 2 )")]
+
+        features = []
+        for i in range(len(geometry_values)):
+            f = QgsFeature()
+            f.setGeometry(geometry_values[i])
+            features.append(f)
+        self.assertTrue(pr.addFeatures(features))
+
+        agg = QgsAggregateCalculator(layer)
+
+        val, ok = agg.calculate(QgsAggregateCalculator.GeometryCollect, '$geometry')
+        self.assertTrue(ok)
+        expwkt = "MultiPoint ((0 0), (1 1), (2 2))"
+        wkt = val.exportToWkt()
+        self.assertTrue(compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt))
 
     def testNumeric(self):
         """ Test calculation of aggregates on numeric fields"""
@@ -324,6 +354,11 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertTrue(ok)
         self.assertEqual(val, '8 oranges')
 
+        # geometry
+        val, ok = agg.calculate(QgsAggregateCalculator.GeometryCollect, "make_point( coalesce(fldint,0), 2 )")
+        self.assertTrue(ok)
+        self.assertTrue(val.exportToWkt(), 'MultiPoint((4 2, 2 2, 3 2, 2 2,5 2, 0 2,8 2))')
+
         # try a bad expression
         val, ok = agg.calculate(QgsAggregateCalculator.Max, "not_a_field || ' oranges'")
         self.assertFalse(ok)
@@ -372,7 +407,8 @@ class TestQgsAggregateCalculator(unittest.TestCase):
                  [QgsAggregateCalculator.InterQuartileRange, 'iqr'],
                  [QgsAggregateCalculator.StringMinimumLength, 'min_length'],
                  [QgsAggregateCalculator.StringMaximumLength, 'max_length'],
-                 [QgsAggregateCalculator.StringConcatenate, 'concatenate']]
+                 [QgsAggregateCalculator.StringConcatenate, 'concatenate'],
+                 [QgsAggregateCalculator.GeometryCollect, 'collect']]
 
         for t in tests:
             agg, ok = QgsAggregateCalculator.stringToAggregate(t[1])

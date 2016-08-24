@@ -945,6 +945,11 @@ static QVariant fcnAggregateMaxLength( const QVariantList& values, const QgsExpr
   return fcnAggregateGeneric( QgsAggregateCalculator::StringMaximumLength, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
 }
 
+static QVariant fcnAggregateCollectGeometry( const QVariantList& values, const QgsExpressionContext* context, QgsExpression *parent )
+{
+  return fcnAggregateGeneric( QgsAggregateCalculator::GeometryCollect, values, QgsAggregateCalculator::AggregateParameters(), context, parent );
+}
+
 static QVariant fcnAggregateStringConcat( const QVariantList& values, const QgsExpressionContext* context, QgsExpression *parent )
 {
   QgsAggregateCalculator::AggregateParameters parameters;
@@ -3150,7 +3155,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "aggregate" << "relation_aggregate" << "count" << "count_distinct"
     << "count_missing" << "minimum" << "maximum" << "sum" << "mean"
     << "median" << "stdev" << "range" << "minority" << "majority"
-    << "q1" << "q3" << "iqr" << "min_length" << "max_length" << "concatenate"
+    << "q1" << "q3" << "iqr" << "min_length" << "max_length" << "collect" << "concatenate"
     << "attribute" << "var" << "layer_property"
     << "$id" << "$scale" << "_specialcol_";
   }
@@ -3214,7 +3219,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "coalesce", -1, fcnCoalesce, "Conditionals", QString(), false, QStringList(), false, QStringList(), true )
     << new StaticFunction( "if", 3, fcnIf, "Conditionals", QString(), False, QStringList(), true )
     << new StaticFunction( "aggregate", ParameterList() << Parameter( "layer" ) << Parameter( "aggregate" ) << Parameter( "expression" )
-                           << Parameter( "filter", true ) << Parameter( "concatenator", true ), fcnAggregate, "Aggregates", QString(), False, QStringList(), true )
+                           << Parameter( "filter", true ) << Parameter( "concatenator", true ), fcnAggregate, "Aggregates", QString(), false, QStringList(), true )
     << new StaticFunction( "relation_aggregate", ParameterList() << Parameter( "relation" ) << Parameter( "aggregate" ) << Parameter( "expression" ) << Parameter( "concatenator", true ),
                            fcnAggregateRelation, "Aggregates", QString(), False, QStringList( QgsFeatureRequest::AllAttributes ), true )
 
@@ -3235,6 +3240,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "iqr", aggParams, fcnAggregateIQR, "Aggregates", QString(), False, QStringList(), true )
     << new StaticFunction( "min_length", aggParams, fcnAggregateMinLength, "Aggregates", QString(), False, QStringList(), true )
     << new StaticFunction( "max_length", aggParams, fcnAggregateMaxLength, "Aggregates", QString(), False, QStringList(), true )
+    << new StaticFunction( "collect", aggParams, fcnAggregateCollectGeometry, "Aggregates", QString(), False, QStringList(), true )
     << new StaticFunction( "concatenate", aggParams << Parameter( "concatenator", true ), fcnAggregateStringConcat, "Aggregates", QString(), False, QStringList(), true )
 
     << new StaticFunction( "regexp_match", 2, fcnRegexpMatch, "Conditionals" )

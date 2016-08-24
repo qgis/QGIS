@@ -239,6 +239,27 @@ QgsGeometry QgsGeometry::fromRect( const QgsRectangle& rect )
   return fromPolygon( polygon );
 }
 
+QgsGeometry QgsGeometry::collectGeometry( const QList< QgsGeometry >& geometries )
+{
+  QgsGeometry collected;
+
+  QList< QgsGeometry >::const_iterator git = geometries.constBegin();
+  for ( ; git != geometries.constEnd(); ++git )
+  {
+    if ( collected.isEmpty() )
+    {
+      collected = QgsGeometry( *git );
+      collected.convertToMultiType();
+    }
+    else
+    {
+      QgsGeometry part = QgsGeometry( *git );
+      collected.addPart( &part );
+    }
+  }
+  return collected;
+}
+
 void QgsGeometry::fromWkb( unsigned char *wkb, int length )
 {
   detach( false );
