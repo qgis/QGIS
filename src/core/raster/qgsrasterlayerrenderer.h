@@ -27,6 +27,23 @@ class QgsRasterPipe;
 struct QgsRasterViewPort;
 class QgsRenderContext;
 
+class QgsRasterLayerRenderer;
+
+#include "qgsrasterinterface.h"
+
+class MyFeedback : public QgsRasterBlockFeedback
+{
+  public:
+    explicit MyFeedback( QgsRasterLayerRenderer* r );
+
+    virtual void onNewData() override;
+  private:
+    QgsRasterLayerRenderer* mR;
+    int mMinimalPreviewInterval;  //!< in miliseconds
+    QTime mLastPreview;
+};
+
+
 /** \ingroup core
  * Implementation of threaded rendering for raster layers.
  *
@@ -52,7 +69,9 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
     QgsRasterPipe* mPipe;
     QgsRenderContext& mContext;
 
-    QgsRasterBlockFeedback* mFeedback;
+    MyFeedback* mFeedback;
+    friend class MyFeedback;
 };
+
 
 #endif // QGSRASTERLAYERRENDERER_H

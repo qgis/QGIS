@@ -84,12 +84,7 @@ QgsWmsProvider::QgsWmsProvider( QString const& uri, const QgsWmsCapabilities* ca
     , mGetLegendGraphicImage()
     , mGetLegendGraphicScale( 0.0 )
     , mImageCrs( DEFAULT_LATLON_CRS )
-    , mCachedImage( nullptr )
     , mIdentifyReply( nullptr )
-    , mCachedViewExtent( 0 )
-    , mCachedViewWidth( 0 )
-    , mCachedViewHeight( 0 )
-    , mCoordinateTransform( nullptr )
     , mExtentDirty( true )
     , mTileReqNo( 0 )
     , mTileLayer( nullptr )
@@ -170,13 +165,6 @@ QString QgsWmsProvider::prepareUri( QString uri )
 QgsWmsProvider::~QgsWmsProvider()
 {
   QgsDebugMsg( "deconstructing." );
-
-  // Dispose of any cached image as created by draw()
-  if ( mCachedImage )
-  {
-    delete mCachedImage;
-    mCachedImage = nullptr;
-  }
 }
 
 QgsWmsProvider* QgsWmsProvider::clone() const
@@ -484,26 +472,13 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
   return draw( viewExtent, pixelWidth, pixelHeight, nullptr );
 }
 
+#include <QCache>
+static QCache<QUrl, QImage> sTileCache;
+static QMutex sTileCacheMutex;
+
 QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback* feedback )
 {
   QgsDebugMsg( "Entering." );
-
-  // Can we reuse the previously cached image?
-  if ( mCachedImage &&
-       mCachedViewExtent == viewExtent &&
-       mCachedViewWidth == pixelWidth &&
-       mCachedViewHeight == pixelHeight )
-  {
-    return mCachedImage;
-  }
-
-  // delete cached image and create network request(s) to fill it
-  if ( mCachedImage )
-  {
-    delete mCachedImage;
-    mCachedImage = nullptr;
-  }
-
 
   bool changeXY = mCaps.shouldInvertAxisOrientation( mImageCrs );
 
@@ -511,11 +486,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
 
   QString bbox = toParamValue( viewExtent, changeXY );
 
-  mCachedImage = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
-  mCachedImage->fill( 0 );
-  mCachedViewExtent = viewExtent;
-  mCachedViewWidth = pixelWidth;
-  mCachedViewHeight = pixelHeight;
+  QImage* image = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
+  image->fill( 0 );
 
   if ( !mSettings.mTiled && mSettings.mMaxWidth == 0 && mSettings.mMaxHeight == 0 )
   {
@@ -585,7 +557,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
 
     emit statusChanged( tr( "Getting map via WMS." ) );
 
-    QgsWmsImageDownloadHandler handler( dataSourceUri(), url, mSettings.authorization(), mCachedImage, feedback );
+    QgsWmsImageDownloadHandler handler( dataSourceUri(), url, mSettings.authorization(), image, feedback );
     handler.downloadBlocking();
   }
   else
@@ -642,7 +614,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
     else
     {
       QgsDebugMsg( "empty tile size" );
-      return mCachedImage;
+      return image;
     }
 
     QgsDebugMsg( QString( "layer extent: %1,%2 %3x%4" )
@@ -705,7 +677,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
     if ( n > 100 )
     {
       emit statusChanged( QString( "current view would need %1 tiles. tile request per draw limited to 100." ).arg( n ) );
-      return mCachedImage;
+      return image;
     }
 #endif
 
@@ -835,7 +807,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
               turl.replace( "{tilerow}", QString::number( row ), Qt::CaseInsensitive );
               turl.replace( "{tilecol}", QString::number( col ), Qt::CaseInsensitive );
 
-              QgsDebugMsg( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( row ).arg( col ).arg( turl ) );
+              if ( feedback && !feedback->preview_only )
+                QgsDebugMsg( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( row ).arg( col ).arg( turl ) );
               QRectF rect( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap );
               requests << QgsWmsTiledImageDownloadHandler::TileRequest( turl, rect, i );
             }
@@ -846,13 +819,78 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
 
       default:
         QgsDebugMsg( QString( "unexpected tile mode %1" ).arg( mTileLayer->tileMode ) );
-        return mCachedImage;
+        return image;
     }
 
     emit statusChanged( tr( "Getting tiles." ) );
 
-    QgsWmsTiledImageDownloadHandler handler( dataSourceUri(), mSettings.authorization(), mTileReqNo, requests, mCachedImage, mCachedViewExtent, mSettings.mSmoothPixmapTransform, feedback );
-    handler.downloadBlocking();
+    QTime t;
+    t.start();
+    int memCached = 0, diskCached = 0;
+    QList<QgsWmsTiledImageDownloadHandler::TileRequest> requestsFinal;
+    Q_FOREACH ( const QgsWmsTiledImageDownloadHandler::TileRequest& r, requests )
+    {
+      QImage localImage;
+
+      sTileCacheMutex.lock();
+      if ( QImage* i = sTileCache.object( r.url ) )
+      {
+        localImage = *i;
+        memCached++;
+      }
+      else if ( QgsNetworkAccessManager::instance()->cache()->metaData( r.url ).isValid() )
+      {
+        if ( QIODevice* data = QgsNetworkAccessManager::instance()->cache()->data( r.url ) )
+        {
+          QByteArray imageData = data->readAll();
+          delete data;
+
+          localImage = QImage::fromData( imageData );
+
+          // cache it as well (mutex is already locked)
+          sTileCache.insert( r.url, new QImage( localImage ) );
+
+          diskCached++;
+        }
+      }
+      sTileCacheMutex.unlock();
+
+      // draw the tile directly if possible
+      if ( !localImage.isNull() )
+      {
+        double cr = viewExtent.width() / image->width();
+
+        QRectF dst(( r.rect.left() - viewExtent.xMinimum() ) / cr,
+                   ( viewExtent.yMaximum() - r.rect.bottom() ) / cr,
+                   r.rect.width() / cr,
+                   r.rect.height() / cr );
+
+        QPainter p( image );
+        if ( mSettings.mSmoothPixmapTransform )
+          p.setRenderHint( QPainter::SmoothPixmapTransform, true );
+        p.drawImage( dst, localImage );
+      }
+      else
+      {
+        // need to make a request
+        requestsFinal << r;
+      }
+    }
+
+    if ( feedback && feedback->preview_only )
+    {
+      qDebug( "PREVIEW - MEM CACHED: %d / DISK CACHED: %d / MISSING: %d", memCached, diskCached, requests.count() - memCached - diskCached );
+      qDebug( "PREVIEW - SPENT IN WMTS PROVIDER: %d ms", t.elapsed() );
+    }
+    else if ( !requestsFinal.isEmpty() )
+    {
+      // let the feedback object know about the tiles we have already
+      if ( feedback && memCached + diskCached > 0 )
+        feedback->onNewData();
+
+      QgsWmsTiledImageDownloadHandler handler( dataSourceUri(), mSettings.authorization(), mTileReqNo, requestsFinal, image, viewExtent, mSettings.mSmoothPixmapTransform, feedback );
+      handler.downloadBlocking();
+    }
 
 
 #if 0
@@ -865,7 +903,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
 #endif
   }
 
-  return mCachedImage;
+  return image;
 }
 
 void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback* feedback )
@@ -885,6 +923,7 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   if ( myExpectedSize != myImageSize )   // should not happen
   {
     QgsMessageLog::logMessage( tr( "unexpected image size" ), tr( "WMS" ) );
+    delete image;
     return;
   }
 
@@ -894,8 +933,8 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
     // If image is too large, ptr can be NULL
     memcpy( block, ptr, myExpectedSize );
   }
-  // do not delete the image, it is handled by draw()
-  //delete image;
+
+  delete image;
 }
 
 
@@ -2894,8 +2933,6 @@ QString  QgsWmsProvider::description() const
 
 void QgsWmsProvider::reloadData()
 {
-  delete mCachedImage;
-  mCachedImage = nullptr;
 }
 
 
@@ -3375,14 +3412,15 @@ void QgsWmsImageDownloadHandler::cancelled()
 // ----------
 
 
-QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int tileReqNo, const QList<QgsWmsTiledImageDownloadHandler::TileRequest>& requests, QImage* cachedImage, const QgsRectangle& cachedViewExtent, bool smoothPixmapTransform, QgsRasterBlockFeedback* feedback )
+QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int tileReqNo, const QList<QgsWmsTiledImageDownloadHandler::TileRequest>& requests, QImage* image, const QgsRectangle& viewExtent, bool smoothPixmapTransform, QgsRasterBlockFeedback* feedback )
     : mProviderUri( providerUri )
     , mAuth( auth )
-    , mCachedImage( cachedImage )
-    , mCachedViewExtent( cachedViewExtent )
+    , mImage( image )
+    , mViewExtent( viewExtent )
     , mEventLoop( new QEventLoop )
     , mTileReqNo( tileReqNo )
     , mSmoothPixmapTransform( smoothPixmapTransform )
+    , mFeedback( feedback )
 {
   Q_FOREACH ( const TileRequest& r, requests )
   {
@@ -3561,10 +3599,10 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
     // only take results from current request number
     if ( mTileReqNo == tileReqNo )
     {
-      double cr = mCachedViewExtent.width() / mCachedImage->width();
+      double cr = mViewExtent.width() / mImage->width();
 
-      QRectF dst(( r.left() - mCachedViewExtent.xMinimum() ) / cr,
-                 ( mCachedViewExtent.yMaximum() - r.bottom() ) / cr,
+      QRectF dst(( r.left() - mViewExtent.xMinimum() ) / cr,
+                 ( mViewExtent.yMaximum() - r.bottom() ) / cr,
                  r.width() / cr,
                  r.height() / cr );
 
@@ -3574,7 +3612,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
 
       if ( !myLocalImage.isNull() )
       {
-        QPainter p( mCachedImage );
+        QPainter p( mImage );
         if ( mSmoothPixmapTransform )
           p.setRenderHint( QPainter::SmoothPixmapTransform, true );
         p.drawImage( dst, myLocalImage );
@@ -3587,6 +3625,13 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
                     .arg( r.right() ).arg( r.top() )
                     .arg( r.width() ).arg( r.height() ) );
 #endif
+
+        sTileCacheMutex.lock();
+        sTileCache.insert( reply->url(), new QImage( myLocalImage ) );
+        sTileCacheMutex.unlock();
+
+        if ( mFeedback )
+          mFeedback->onNewData();
       }
       else
       {
@@ -3610,13 +3655,16 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
   }
   else
   {
-    // report any errors except for the one we have caused by cancelling the request
-    if ( reply->error() != QNetworkReply::OperationCanceledError )
+    if ( !( mFeedback && mFeedback->preview_only ) )
     {
-      QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( mProviderUri );
-      stat.errors++;
+      // report any errors except for the one we have caused by cancelling the request
+      if ( reply->error() != QNetworkReply::OperationCanceledError )
+      {
+        QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( mProviderUri );
+        stat.errors++;
 
-      repeatTileRequest( reply->request() );
+        repeatTileRequest( reply->request() );
+      }
     }
 
     mReplies.removeOne( reply );

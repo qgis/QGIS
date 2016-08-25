@@ -499,13 +499,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString mImageCrs;
 
     /**
-     * The previously retrieved image from the WMS server.
-     * This can be reused if draw() is called consecutively
-     * with the same parameters.
-     */
-    QImage *mCachedImage;
-
-    /**
      * The reply to the capabilities request
      */
     QNetworkReply *mIdentifyReply;
@@ -521,13 +514,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString mIdentifyResultXsd;
 
     /**
-     * The previous parameters to draw().
-     */
-    QgsRectangle mCachedViewExtent;
-    int mCachedViewWidth;
-    int mCachedViewHeight;
-
-    /**
      * The error caption associated with the last WMS error.
      */
     QString mErrorCaption;
@@ -541,9 +527,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /** The mime type of the message
      */
     QString mErrorFormat;
-
-    //! A QgsCoordinateTransform is used for transformation of WMS layer extents
-    QgsCoordinateTransform *mCoordinateTransform;
 
     //! See if calculateExtents() needs to be called before extent() returns useful data
     bool mExtentDirty;
@@ -616,7 +599,7 @@ class QgsWmsTiledImageDownloadHandler : public QObject
       int index;
     };
 
-    QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int reqNo, const QList<TileRequest>& requests, QImage* cachedImage, const QgsRectangle& cachedViewExtent, bool smoothPixmapTransform, QgsRasterBlockFeedback* feedback );
+    QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int reqNo, const QList<TileRequest>& requests, QImage* image, const QgsRectangle& viewExtent, bool smoothPixmapTransform, QgsRasterBlockFeedback* feedback );
     ~QgsWmsTiledImageDownloadHandler();
 
     void downloadBlocking();
@@ -641,8 +624,8 @@ class QgsWmsTiledImageDownloadHandler : public QObject
 
     QgsWmsAuthorization mAuth;
 
-    QImage* mCachedImage;
-    QgsRectangle mCachedViewExtent;
+    QImage* mImage;
+    QgsRectangle mViewExtent;
 
     QEventLoop* mEventLoop;
 
@@ -651,6 +634,8 @@ class QgsWmsTiledImageDownloadHandler : public QObject
 
     //! Running tile requests
     QList<QNetworkReply*> mReplies;
+
+    QgsRasterBlockFeedback* mFeedback;
 };
 
 
