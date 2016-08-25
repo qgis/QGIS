@@ -72,7 +72,7 @@ This page tries to maintain a list with incompatible changes that happened in pr
 <tr><td>QgsMultiLineStringV2<td>QgsMultiLineString
 <tr><td>QgsMultiSurfaceV2<td>QgsMultiSurface
 <tr><td>QgsPointSequenceV2<td>QgsPointSequence
-<tr><td>QgsRandomColorsV2<td>QgsRandomColors
+<tr><td>QgsRandomColorsV2<td>QgsRandomColorRamp
 <tr><td>QgsRendererCategoryV2<td>QgsRendererCategory
 <tr><td>QgsRendererRangeV2<td>QgsRendererRange
 <tr><td>QgsRendererRangeV2LabelFomat<td>QgsRendererRangeLabelFomat
@@ -125,19 +125,19 @@ This page tries to maintain a list with incompatible changes that happened in pr
 <tr><td>QgsSymbolV2SelectorDialog<td>QgsSymbolSelectorDialog
 <tr><td>QgsSymbolV2SelectorWidget<td>QgsSymbolSelectorWidget
 <tr><td>QgsSymbologyV2Conversion<td>QgsSymbologyConversion
-<tr><td>QgsVectorColorBrewerColorRampV2<td>QgsVectorColorBrewerColorRamp
-<tr><td>QgsVectorColorBrewerColorRampV2Dialog<td>QgsVectorColorBrewerColorRampDialog
-<tr><td>QgsVectorColorBrewerColorRampV2DialogBase<td>QgsVectorColorBrewerColorRampDialogBase
-<tr><td>QgsVectorColorRampV2<td>QgsVectorColorRamp
+<tr><td>QgsVectorColorBrewerColorRampV2<td>QgsColorBrewerColorRamp
+<tr><td>QgsVectorColorBrewerColorRampV2Dialog<td>QgsColorBrewerColorRampDialog
+<tr><td>QgsVectorColorBrewerColorRampV2DialogBase<td>QgsColorBrewerColorRampDialogBase
+<tr><td>QgsVectorColorRampV2<td>QgsColorRamp
 <tr><td>QgsVectorColorRampV2Map<td>QgsVectorColorRampMap
-<tr><td>QgsVectorGradientColorRampV2<td>QgsVectorGradientColorRamp
-<tr><td>QgsVectorGradientColorRampV2Dialog<td>QgsVectorGradientColorRampDialog
-<tr><td>QgsVectorGradientColorRampV2DialogBase<td>QgsVectorGradientColorRampDialogBase
+<tr><td>QgsVectorGradientColorRampV2<td>QgsGradientColorRamp
+<tr><td>QgsVectorGradientColorRampV2Dialog<td>QgsGradientColorRampDialog
+<tr><td>QgsVectorGradientColorRampV2DialogBase<td>QgsGradientColorRampDialogBase
 <tr><td>QgsVectorGradientRampV2<td>QgsVectorGradientRamp
 <tr><td>QgsVectorLayersetRendererV2<td>QgsVectorLayersetRenderer
-<tr><td>QgsVectorRandomColorRampV2<td>QgsVectorRandomColorRamp
-<tr><td>QgsVectorRandomColorRampV2Dialog<td>QgsVectorRandomColorRampDialog
-<tr><td>QgsVectorRandomColorRampV2DialogBase<td>QgsVectorRandomColorRampDialogBase
+<tr><td>QgsVectorRandomColorRampV2<td>QgsLimitedRandomColorRamp
+<tr><td>QgsVectorRandomColorRampV2Dialog<td>QgsLimitedRandomColorRampDialog
+<tr><td>QgsVectorRandomColorRampV2DialogBase<td>QgsLimitedRandomColorRampDialogBase
 <tr><th>QgsSymbolV2<th>QgsSymbol
 </table>
 
@@ -295,6 +295,14 @@ variant instead.</li>
 <li>GenericDataSourceURI has been renamed to GenericDataSourceUri</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsColorBrewerColorRampDialog QgsColorBrewerColorRampDialog
+
+<ul>
+<li>The dialog no longer edits a color ramp in place. Instead, a copy of the ramp is edited
+and the new ramp can be retrieved after executing the dialog by calling ramp().</li>
+<li>Some internal methods which were previously public or protected were made private.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsComposerLabel QgsComposerLabel
 
 <ul>
@@ -387,6 +395,14 @@ plugins calling these methods will need to be updated.</li>
 <ul>
 <li>transform() now returns a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
 be returned in place of a null pointer.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsCptCityColorRampDialog QgsCptCityColorRampDialog
+
+<ul>
+<li>The dialog no longer edits a color ramp in place. Instead, a copy of the ramp is edited
+and the new ramp can be retrieved after executing the dialog by calling ramp().</li>
+<li>Some internal methods which were previously public or protected were made private.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsCptCitySelectionItem QgsCptCitySelectionItem
@@ -559,6 +575,14 @@ method to determine if a geometry is valid.</li>
 a QgsGeometry value rather than a pointer.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsGradientColorRampDialog QgsGradientColorRampDialog
+
+<ul>
+<li>The dialog no longer edits a color ramp in place. Instead, a copy of the ramp is edited
+and the new ramp can be retrieved after executing the dialog by calling ramp().</li>
+<li>Some internal methods which were previously public or protected were made private.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsGraphBuilderInterface QgsGraphBuilderInterface
 
 <ul>
@@ -602,6 +626,14 @@ plugins calling this method will need to be updated.</li>
 <ul>
 <li>readCommonXML() has been renamed to readCommonXml()</li>
 <li>writeCommonXML() has been renamed to writeCommonXml()</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsLimitedRandomRampDialog QgsLimitedRandomColorRampDialog
+
+<ul>
+<li>The dialog no longer edits a color ramp in place. Instead, a copy of the ramp is edited
+and the new ramp can be retrieved after executing the dialog by calling ramp().</li>
+<li>Some internal methods which were previously public or protected were made private.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsMapCanvas QgsMapCanvas

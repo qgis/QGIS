@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsvectorcolorbrewercolorrampdialog.cpp
+    qgscolorbrewercolorrampdialog.cpp
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
@@ -13,11 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsvectorcolorbrewercolorrampdialog.h"
+#include "qgscolorbrewercolorrampdialog.h"
 
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgssymbollayerutils.h"
 #include <QAbstractButton>
+#include <QDialogButtonBox>
 
 #if 0 // unused
 static void updateColorButton( QAbstractButton* button, QColor color )
@@ -31,8 +32,8 @@ static void updateColorButton( QAbstractButton* button, QColor color )
 /////////
 
 
-QgsVectorColorBrewerColorRampDialog::QgsVectorColorBrewerColorRampDialog( QgsVectorColorBrewerColorRamp* ramp, QWidget* parent )
-    : QDialog( parent )
+QgsColorBrewerColorRampWidget::QgsColorBrewerColorRampWidget( const QgsColorBrewerColorRamp& ramp, QWidget* parent )
+    : QgsPanelWidget( parent )
     , mRamp( ramp )
 {
 
@@ -41,33 +42,35 @@ QgsVectorColorBrewerColorRampDialog::QgsVectorColorBrewerColorRampDialog( QgsVec
   QSize iconSize( 50, 16 );
   cboSchemeName->setIconSize( iconSize );
 
-  QStringList schemes = QgsVectorColorBrewerColorRamp::listSchemeNames();
+  QStringList schemes = QgsColorBrewerColorRamp::listSchemeNames();
   Q_FOREACH ( const QString& schemeName, schemes )
   {
     // create a preview icon using five color variant
-    QgsVectorColorBrewerColorRamp* r = new QgsVectorColorBrewerColorRamp( schemeName, 5 );
+    QgsColorBrewerColorRamp* r = new QgsColorBrewerColorRamp( schemeName, 5 );
     QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( r, iconSize );
     delete r;
     cboSchemeName->addItem( icon, schemeName );
   }
 
-  cboSchemeName->setCurrentIndex( cboSchemeName->findText( ramp->schemeName() ) );
-  populateVariants();
-  cboColors->setCurrentIndex( cboColors->findText( QString::number( ramp->colors() ) ) );
-
+  updateUi();
   connect( cboSchemeName, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setSchemeName() ) );
   connect( cboColors, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setColors() ) );
-
-  updatePreview();
 }
 
-void QgsVectorColorBrewerColorRampDialog::populateVariants()
+void QgsColorBrewerColorRampWidget::setRamp( const QgsColorBrewerColorRamp& ramp )
+{
+  mRamp = ramp;
+  updateUi();
+  emit changed();
+}
+
+void QgsColorBrewerColorRampWidget::populateVariants()
 {
   QString oldVariant = cboColors->currentText();
 
   cboColors->clear();
   QString schemeName = cboSchemeName->currentText();
-  QList<int> variants = QgsVectorColorBrewerColorRamp::listSchemeVariants( schemeName );
+  QList<int> variants = QgsColorBrewerColorRamp::listSchemeVariants( schemeName );
   Q_FOREACH ( int variant, variants )
   {
     cboColors->addItem( QString::number( variant ) );
@@ -83,24 +86,48 @@ void QgsVectorColorBrewerColorRampDialog::populateVariants()
   cboColors->setCurrentIndex( idx );
 }
 
-void QgsVectorColorBrewerColorRampDialog::updatePreview()
+void QgsColorBrewerColorRampWidget::updatePreview()
 {
   QSize size( 300, 40 );
-  lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( mRamp, size ) );
+  lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( &mRamp, size ) );
 }
 
-void QgsVectorColorBrewerColorRampDialog::setSchemeName()
+void QgsColorBrewerColorRampWidget::updateUi()
+{
+  whileBlocking( cboSchemeName )->setCurrentIndex( cboSchemeName->findText( mRamp.schemeName() ) );
+  populateVariants();
+  whileBlocking( cboColors )->setCurrentIndex( cboColors->findText( QString::number( mRamp.colors() ) ) );
+  updatePreview();
+}
+
+void QgsColorBrewerColorRampWidget::setSchemeName()
 {
   // populate list of variants
   populateVariants();
 
-  mRamp->setSchemeName( cboSchemeName->currentText() );
+  mRamp.setSchemeName( cboSchemeName->currentText() );
   updatePreview();
+  emit changed();
 }
 
-void QgsVectorColorBrewerColorRampDialog::setColors()
+void QgsColorBrewerColorRampWidget::setColors()
 {
   int num = cboColors->currentText().toInt();
-  mRamp->setColors( num );
+  mRamp.setColors( num );
   updatePreview();
+  emit changed();
+}
+
+QgsColorBrewerColorRampDialog::QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp& ramp, QWidget* parent )
+    : QDialog( parent )
+{
+  QVBoxLayout* vLayout = new QVBoxLayout();
+  mWidget = new QgsColorBrewerColorRampWidget( ramp );
+  vLayout->addWidget( mWidget );
+  QDialogButtonBox* bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  connect( bbox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+  connect( bbox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  vLayout->addWidget( bbox );
+  setLayout( vLayout );
+  connect( mWidget, SIGNAL( changed() ), this, SIGNAL( changed() ) );
 }

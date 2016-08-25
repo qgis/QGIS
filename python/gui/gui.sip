@@ -45,6 +45,7 @@
 %Include qgscodeeditorcss.sip
 %End
 %Include qgscharacterselectdialog.sip
+%Include qgscolorbrewercolorrampdialog.sip
 %Include qgscolorbutton.sip
 %Include qgscolorbutton.sip
 %Include qgscolordialog.sip
@@ -87,6 +88,7 @@
 %Include qgsformannotationitem.sip
 %Include qgsgenericprojectionselector.sip
 %Include qgsgeometryrubberband.sip
+%Include qgsgradientcolorrampdialog.sip
 %Include qgsgradientstopeditor.sip
 %Include qgsgroupwmsdatadialog.sip
 %Include qgshighlight.sip
@@ -95,6 +97,7 @@
 %Include qgsidentifymenu.sip
 %Include qgslegendfilterbutton.sip
 %Include qgslegendinterface.sip
+%Include qgslimitedrandomcolorrampdialog.sip
 %Include qgslonglongvalidator.sip
 %Include qgsludialog.sip
 %Include qgsmanageconnectionsdialog.sip
@@ -249,10 +252,7 @@
 %Include symbology-ng/qgssymbollevelsdialog.sip
 %Include symbology-ng/qgssymbolslistwidget.sip
 %Include symbology-ng/qgssymbolselectordialog.sip
-%Include symbology-ng/qgsvectorcolorbrewercolorrampdialog.sip
 %Include symbology-ng/qgsvectorfieldsymbollayerwidget.sip
-%Include symbology-ng/qgsvectorgradientcolorrampdialog.sip
-%Include symbology-ng/qgsvectorrandomcolorrampdialog.sip
 
 %Include effects/qgseffectdrawmodecombobox.sip
 %Include effects/qgseffectstackpropertieswidget.sip

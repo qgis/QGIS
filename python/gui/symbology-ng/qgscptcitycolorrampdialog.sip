@@ -1,3 +1,8 @@
+/** \ingroup gui
+ * \class QgsCptCityColorRampDialog
+ * A dialog which allows users to modify the properties of a QgsCptCityColorRamp.
+ * \note added in QGIS 3.0
+ */
 class QgsCptCityColorRampDialog : QDialog
 {
 %TypeHeaderCode
@@ -5,37 +10,37 @@ class QgsCptCityColorRampDialog : QDialog
 %End
 
   public:
-    QgsCptCityColorRampDialog( QgsCptCityColorRamp* ramp, QWidget* parent /TransferThis/ = NULL );
+
+    /** Constructor for QgsCptCityColorRampDialog.
+     * @param ramp initial ramp to show in dialog
+     * @param parent parent widget
+     */
+    QgsCptCityColorRampDialog( const QgsCptCityColorRamp& ramp, QWidget* parent /TransferThis/ = nullptr );
     ~QgsCptCityColorRampDialog();
 
+    /** Returns a color ramp representing the current settings from the dialog.
+     * @see setRamp()
+     */
+    QgsCptCityColorRamp ramp() const;
+
+    /** Sets the color ramp to show in the dialog.
+     * @param ramp color ramp
+     * @see ramp()
+     */
+    void setRamp( const QgsCptCityColorRamp& ramp );
+
+    /** Returns the name of the ramp currently selected in the dialog.
+     */
     QString selectedName() const;
 
+    /** Returns true if the ramp should be converted to a QgsGradientColorRamp.
+     */
     bool saveAsGradientRamp() const;
 
-  public slots:
-    void populateVariants();
-
-    void on_mTreeView_clicked( const QModelIndex & );
-    void on_mListWidget_itemClicked( QListWidgetItem * item );
-    void on_mListWidget_itemSelectionChanged();
-    void on_tabBar_currentChanged( int index );
-    void on_pbtnLicenseDetails_pressed();
-    void on_cboVariantName_currentIndexChanged( int index );
-    void onFinished();
-    void on_buttonBox_helpRequested();
-    /* void refresh(); */
-
-  protected:
-
-    void updatePreview( bool clear = false );
-    void clearCopyingInfo();
-    void updateCopyingInfo( const QMap< QString, QString >& copyingMap );
-    void updateTreeView( QgsCptCityDataItem *item, bool resetRamp = true );
-    void updateListWidget( QgsCptCityDataItem *item );
     bool eventFilter( QObject *obj, QEvent *event );
 
-    /* void refreshModel( const QModelIndex& index ); */
-    bool updateRamp();
-    void showAll();
-    void setTreeModel( QgsCptCityBrowserModel* model );
+  signals:
+
+    //! Emitted when the dialog settings change
+    void changed();
 };

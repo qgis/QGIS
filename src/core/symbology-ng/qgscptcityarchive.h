@@ -17,7 +17,7 @@
 #ifndef QGSCPTCITYARCHIVE_H
 #define QGSCPTCITYARCHIVE_H
 
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 
 #include <QAbstractItemModel>
 #include <QIcon>

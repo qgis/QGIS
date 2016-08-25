@@ -33,21 +33,53 @@ class UngroupProxyModel;
 
 /** \ingroup gui
  * \class QgsCptCityColorRampDialog
+ * A dialog which allows users to modify the properties of a QgsCptCityColorRamp.
+ * \note added in QGIS 3.0
  */
 class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptCityColorRampDialogBase
 {
     Q_OBJECT
+    Q_PROPERTY( QgsCptCityColorRamp ramp READ ramp WRITE setRamp )
 
   public:
-    QgsCptCityColorRampDialog( QgsCptCityColorRamp* ramp, QWidget* parent = nullptr );
+
+    /** Constructor for QgsCptCityColorRampDialog.
+     * @param ramp initial ramp to show in dialog
+     * @param parent parent widget
+     */
+    QgsCptCityColorRampDialog( const QgsCptCityColorRamp& ramp, QWidget* parent = nullptr );
     ~QgsCptCityColorRampDialog();
 
-    QString selectedName() const
-    { return mRamp ? QFileInfo( mRamp->schemeName() ).baseName() + mRamp->variantName() : QString(); }
+    /** Returns a color ramp representing the current settings from the dialog.
+     * @see setRamp()
+     */
+    QgsCptCityColorRamp ramp() const { return mRamp; }
 
+    /** Sets the color ramp to show in the dialog.
+     * @param ramp color ramp
+     * @see ramp()
+     */
+    void setRamp( const QgsCptCityColorRamp& ramp );
+
+    /** Returns the name of the ramp currently selected in the dialog.
+     */
+    QString selectedName() const
+    {
+      return QFileInfo( mRamp.schemeName() ).baseName() + mRamp.variantName();
+    }
+
+    /** Returns true if the ramp should be converted to a QgsGradientColorRamp.
+     */
     bool saveAsGradientRamp() const;
 
-  public slots:
+    bool eventFilter( QObject *obj, QEvent *event ) override;
+
+  signals:
+
+    //! Emitted when the dialog settings change
+    void changed();
+
+  private slots:
     void populateVariants();
 
     void on_mTreeView_clicked( const QModelIndex & );
@@ -60,16 +92,16 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     void on_buttonBox_helpRequested();
     /* void refresh(); */
 
-  protected:
+  private:
 
+    void updateUi();
     void updatePreview( bool clear = false );
     void clearCopyingInfo();
     void updateCopyingInfo( const QMap< QString, QString >& copyingMap );
     void updateTreeView( QgsCptCityDataItem *item, bool resetRamp = true );
     void updateListWidget( QgsCptCityDataItem *item );
-    bool eventFilter( QObject *obj, QEvent *event ) override;
 
-    QgsCptCityColorRamp* mRamp;
+    QgsCptCityColorRamp mRamp;
     QgsCptCityArchive* mArchive;
     QgsCptCityBrowserModel::ViewType mArchiveViewType;
 

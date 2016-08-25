@@ -16,7 +16,7 @@
 #include "qgsstyle.h"
 
 #include "qgssymbol.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 
 #include "qgssymbollayerregistry.h"
 
@@ -183,7 +183,7 @@ QStringList QgsStyle::symbolNames()
 }
 
 
-bool QgsStyle::addColorRamp( const QString& name, QgsVectorColorRamp* colorRamp, bool update )
+bool QgsStyle::addColorRamp( const QString& name, QgsColorRamp* colorRamp, bool update )
 {
   if ( !colorRamp || name.isEmpty() )
     return false;
@@ -207,7 +207,7 @@ bool QgsStyle::addColorRamp( const QString& name, QgsVectorColorRamp* colorRamp,
   return true;
 }
 
-bool QgsStyle::saveColorRamp( const QString& name, QgsVectorColorRamp* ramp, int groupid, const QStringList& tags )
+bool QgsStyle::saveColorRamp( const QString& name, QgsColorRamp* ramp, int groupid, const QStringList& tags )
 {
   // insert it into the database
   QDomDocument doc( "dummy" );
@@ -238,7 +238,7 @@ bool QgsStyle::saveColorRamp( const QString& name, QgsVectorColorRamp* ramp, int
 
 bool QgsStyle::removeColorRamp( const QString& name )
 {
-  QgsVectorColorRamp *ramp = mColorRamps.take( name );
+  QgsColorRamp *ramp = mColorRamps.take( name );
   if ( !ramp )
     return false;
 
@@ -254,13 +254,13 @@ bool QgsStyle::removeColorRamp( const QString& name )
   return true;
 }
 
-QgsVectorColorRamp* QgsStyle::colorRamp( const QString& name )
+QgsColorRamp* QgsStyle::colorRamp( const QString& name ) const
 {
-  const QgsVectorColorRamp *ramp = colorRampRef( name );
+  const QgsColorRamp *ramp = colorRampRef( name );
   return ramp ? ramp->clone() : nullptr;
 }
 
-const QgsVectorColorRamp* QgsStyle::colorRampRef( const QString& name ) const
+const QgsColorRamp* QgsStyle::colorRampRef( const QString& name ) const
 {
   return mColorRamps.value( name );
 }
@@ -343,7 +343,7 @@ bool QgsStyle::load( const QString& filename )
       continue;
     }
     QDomElement rampElement = doc.documentElement();
-    QgsVectorColorRamp *ramp = QgsSymbolLayerUtils::loadColorRamp( rampElement );
+    QgsColorRamp *ramp = QgsSymbolLayerUtils::loadColorRamp( rampElement );
     if ( ramp )
       mColorRamps.insert( ramp_name, ramp );
   }
@@ -374,7 +374,7 @@ bool QgsStyle::save( QString filename )
   QDomElement rampsElem = doc.createElement( "colorramps" );
 
   // save color ramps
-  for ( QMap<QString, QgsVectorColorRamp*>::iterator itr = mColorRamps.begin(); itr != mColorRamps.end(); ++itr )
+  for ( QMap<QString, QgsColorRamp*>::iterator itr = mColorRamps.begin(); itr != mColorRamps.end(); ++itr )
   {
     QDomElement rampEl = QgsSymbolLayerUtils::saveColorRamp( itr.key(), itr.value(), doc );
     rampsElem.appendChild( rampEl );
@@ -440,7 +440,7 @@ bool QgsStyle::renameColorRamp( const QString& oldName, const QString& newName )
     return false;
   }
 
-  QgsVectorColorRamp *ramp = mColorRamps.take( oldName );
+  QgsColorRamp *ramp = mColorRamps.take( oldName );
   if ( !ramp )
     return false;
 
@@ -1377,7 +1377,7 @@ bool QgsStyle::exportXml( const QString& filename )
   QDomElement rampsElem = doc.createElement( "colorramps" );
 
   // save color ramps
-  for ( QMap<QString, QgsVectorColorRamp*>::const_iterator itr = mColorRamps.constBegin(); itr != mColorRamps.constEnd(); ++itr )
+  for ( QMap<QString, QgsColorRamp*>::const_iterator itr = mColorRamps.constBegin(); itr != mColorRamps.constEnd(); ++itr )
   {
     QDomElement rampEl = QgsSymbolLayerUtils::saveColorRamp( itr.key(), itr.value(), doc );
     rampsElem.appendChild( rampEl );
@@ -1482,7 +1482,7 @@ bool QgsStyle::importXml( const QString& filename )
   {
     if ( e.tagName() == "colorramp" )
     {
-      QgsVectorColorRamp* ramp = QgsSymbolLayerUtils::loadColorRamp( e );
+      QgsColorRamp* ramp = QgsSymbolLayerUtils::loadColorRamp( e );
       if ( ramp )
       {
         addColorRamp( e.attribute( "name" ), ramp );
@@ -1536,7 +1536,8 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString& name )
       return false;
     }
 
-    symEl = QgsSymbolLayerUtils::saveColorRamp( name, colorRamp( name ), doc );
+    QScopedPointer< QgsColorRamp > ramp( colorRamp( name ) );
+    symEl = QgsSymbolLayerUtils::saveColorRamp( name, ramp.data(), doc );
     if ( symEl.isNull() )
     {
       QgsDebugMsg( "Couldn't convert color ramp to valid XML!" );

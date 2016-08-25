@@ -16,7 +16,7 @@
 #include "qgscptcitycolorrampdialog.h"
 
 #include "qgscptcityarchive.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsdialog.h"
@@ -36,9 +36,9 @@
 // - fix crash on Diverging?
 
 
-QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( QgsCptCityColorRamp* ramp, QWidget* parent )
+QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp& ramp, QWidget* parent )
     : QDialog( parent )
-    , mRamp( nullptr )
+    , mRamp( ramp )
     , mArchiveViewType( QgsCptCityBrowserModel::Selections )
 {
   setupUi( this );
@@ -90,16 +90,7 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( QgsCptCityColorRamp* ramp,
     return;
   QgsDebugMsg( "archive: " + mArchive->archiveName() );
 
-  if ( ramp )
-  {
-    mRamp = ramp;
-  }
-  else
-  {
-    mRamp = new QgsCptCityColorRamp( "", "", false );
-    ramp = mRamp;
-  }
-  QgsDebugMsg( QString( "ramp name= %1 variant= %2 - %3 variants" ).arg( ramp->schemeName(), ramp->variantName() ).arg( ramp->variantList().count() ) );
+  QgsDebugMsg( QString( "ramp name= %1 variant= %2 - %3 variants" ).arg( mRamp.schemeName(), mRamp.variantName() ).arg( mRamp.variantList().count() ) );
 
   // model / view
   QgsDebugMsg( "loading model/view objects" );
@@ -122,30 +113,7 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( QgsCptCityColorRamp* ramp,
   cboVariantName->setIconSize( QSize( 100, 15 ) );
   lblPreview->installEventFilter( this ); // mouse click on preview label shows svg render
 
-  // look for item, if not found in selections archive, look for in authors
-  QgsDebugMsg( "looking for ramp " + mRamp->schemeName() );
-  if ( mRamp->schemeName() != "" )
-  {
-    bool found = updateRamp();
-    if ( ! found )
-    {
-      tabBar->setCurrentIndex( 1 );
-      setTreeModel( mAuthorsModel );
-      found = updateRamp();
-      // if not found, go back to selections model
-      if ( ! found )
-      {
-        tabBar->setCurrentIndex( 0 );
-        setTreeModel( mSelectionsModel );
-      }
-    }
-    if ( found )
-      buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
-  }
-  else
-  {
-    updateRamp();
-  }
+  updateUi();
 
   tabBar->blockSignals( false );
 
@@ -157,11 +125,17 @@ QgsCptCityColorRampDialog::~QgsCptCityColorRampDialog()
 {
 }
 
+void QgsCptCityColorRampDialog::setRamp( const QgsCptCityColorRamp& ramp )
+{
+  mRamp = ramp;
+  updateUi();
+}
+
 void QgsCptCityColorRampDialog::populateVariants()
 {
-  QStringList variantList = mRamp->variantList();
+  QStringList variantList = mRamp.variantList();
 
-  QgsDebugMsg( QString( "ramp %1%2 has %3 variants" ).arg( mRamp->schemeName(), mRamp->variantName() ).arg( variantList.count() ) );
+  QgsDebugMsg( QString( "ramp %1%2 has %3 variants" ).arg( mRamp.schemeName(), mRamp.variantName() ).arg( variantList.count() ) );
 
   cboVariantName->blockSignals( true );
   cboVariantName->clear();
@@ -176,7 +150,7 @@ void QgsCptCityColorRampDialog::populateVariants()
   {
     // populate variant combobox
     QString oldVariant = cboVariantName->currentText();
-    QgsCptCityColorRamp ramp( mRamp->schemeName(), mRamp->variantList(), QString() );
+    QgsCptCityColorRamp ramp( mRamp.schemeName(), mRamp.variantList(), QString() );
     QPixmap blankPixmap( cboVariantName->iconSize() );
     blankPixmap.fill( Qt::white );
     QIcon blankIcon( blankPixmap );
@@ -204,8 +178,8 @@ void QgsCptCityColorRampDialog::populateVariants()
 
     // try to set the original variant again (if exists)
     int idx = -1;
-    QString newVariant = mRamp->variantName();
-    QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp->variantName() ).arg( mRamp->variantList().count() ) );
+    QString newVariant = mRamp.variantName();
+    QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
     if ( newVariant != QString() )
     {
       if ( newVariant.startsWith( '-' ) || newVariant.startsWith( '_' ) )
@@ -252,8 +226,8 @@ void QgsCptCityColorRampDialog::updateTreeView( QgsCptCityDataItem *item, bool r
   {
     if ( resetRamp )
     {
-      mRamp->setName( "", "" );
-      QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp->variantName() ).arg( mRamp->variantList().count() ) );
+      mRamp.setName( "", "" );
+      QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
       lblSchemeName->setText( "" );
       populateVariants();
     }
@@ -289,8 +263,8 @@ void QgsCptCityColorRampDialog::on_mListWidget_itemClicked( QListWidgetItem * it
   {
     buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
     lblSchemeName->setText( QFileInfo( rampItem->name() ).fileName() );
-    mRamp->copy( &rampItem->ramp() );
-    QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp->variantName() ).arg( mRamp->variantList().count() ) );
+    mRamp.copy( &rampItem->ramp() );
+    QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
     populateVariants();
   }
   else
@@ -303,7 +277,7 @@ void QgsCptCityColorRampDialog::on_mListWidget_itemSelectionChanged()
 {
   if ( mListWidget->selectedItems().isEmpty() )
   {
-    mRamp->setName( "", "" );
+    mRamp.setName( "", "" );
   }
 }
 
@@ -406,7 +380,7 @@ void QgsCptCityColorRampDialog::updatePreview( bool clear )
 {
   QSize size = lblPreview->size();
 
-  if ( clear || mRamp->schemeName() == "" )
+  if ( clear || mRamp.schemeName() == "" )
   {
     lblSchemeName->setText( "" );
     lblSchemePath->setText( "" );
@@ -417,18 +391,18 @@ void QgsCptCityColorRampDialog::updatePreview( bool clear )
     return;
   }
 
-  mRamp->loadFile();
+  mRamp.loadFile();
 
-  lblSchemePath->setText( mRamp->schemeName() + mRamp->variantName() );
+  lblSchemePath->setText( mRamp.schemeName() + mRamp.variantName() );
 
   // update pixmap
   // TODO draw checker-board/transparent background
   // for transparent, add  [ pixmap.fill( Qt::transparent ); ] to QgsSymbolLayerUtils::colorRampPreviewPixmap
-  QPixmap pixmap = QgsSymbolLayerUtils::colorRampPreviewPixmap( mRamp, size );
+  QPixmap pixmap = QgsSymbolLayerUtils::colorRampPreviewPixmap( &mRamp, size );
   lblPreview->setPixmap( pixmap );
 
   // add copyright information from COPYING.xml file
-  updateCopyingInfo( mRamp->copyingInfo() );
+  updateCopyingInfo( mRamp.copyingInfo() );
 }
 
 void QgsCptCityColorRampDialog::clearCopyingInfo()
@@ -465,9 +439,10 @@ void QgsCptCityColorRampDialog::on_cboVariantName_currentIndexChanged( int index
 {
   Q_UNUSED( index );
   if ( cboVariantName->currentIndex() != -1 )
-    mRamp->setVariantName( cboVariantName->itemData( cboVariantName->currentIndex(), Qt::UserRole ).toString() );
-  QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp->variantName() ).arg( mRamp->variantList().count() ) );
+    mRamp.setVariantName( cboVariantName->itemData( cboVariantName->currentIndex(), Qt::UserRole ).toString() );
+  QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
   updatePreview();
+  emit changed();
 }
 
 void QgsCptCityColorRampDialog::onFinished()
@@ -488,6 +463,34 @@ void QgsCptCityColorRampDialog::on_buttonBox_helpRequested()
   QMessageBox* msg = new QMessageBox( this );
   msg->setText( helpText );
   msg->exec();
+}
+
+void QgsCptCityColorRampDialog::updateUi()
+{
+  // look for item, if not found in selections archive, look for in authors
+  QgsDebugMsg( "looking for ramp " + mRamp.schemeName() );
+  if ( mRamp.schemeName() != "" )
+  {
+    bool found = updateRamp();
+    if ( ! found )
+    {
+      tabBar->setCurrentIndex( 1 );
+      setTreeModel( mAuthorsModel );
+      found = updateRamp();
+      // if not found, go back to selections model
+      if ( ! found )
+      {
+        tabBar->setCurrentIndex( 0 );
+        setTreeModel( mSelectionsModel );
+      }
+    }
+    if ( found )
+      buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+  }
+  else
+  {
+    updateRamp();
+  }
 }
 
 bool QgsCptCityColorRampDialog::saveAsGradientRamp() const
@@ -542,7 +545,7 @@ bool QgsCptCityColorRampDialog::eventFilter( QObject *obj, QEvent *event )
   if ( event->type() == QEvent::MouseButtonPress )
   {
     // create preview from svg file if supported - depends on file versions
-    QPixmap pixmap( mRamp->fileName() );
+    QPixmap pixmap( mRamp.fileName() );
     if ( ! pixmap.isNull() )
       lblPreview->setPixmap( pixmap.scaled( size ) );
     return true;
@@ -550,7 +553,7 @@ bool QgsCptCityColorRampDialog::eventFilter( QObject *obj, QEvent *event )
   else if ( event->type() == QEvent::MouseButtonRelease )
   {
     // restore preview
-    QPixmap pixmap = QgsSymbolLayerUtils::colorRampPreviewPixmap( mRamp, size );
+    QPixmap pixmap = QgsSymbolLayerUtils::colorRampPreviewPixmap( &mRamp, size );
     lblPreview->setPixmap( pixmap );
     return true;
   }
@@ -572,15 +575,15 @@ bool QgsCptCityColorRampDialog::updateRamp()
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   updatePreview( true );
 
-  QgsDebugMsg( "schemeName= " + mRamp->schemeName() );
-  if ( mRamp->schemeName() == "" )
+  QgsDebugMsg( "schemeName= " + mRamp.schemeName() );
+  if ( mRamp.schemeName() == "" )
   {
     showAll();
     return false;
   }
 
   // search for item in model
-  QModelIndex modelIndex = mModel->findPath( mRamp->schemeName() );
+  QModelIndex modelIndex = mModel->findPath( mRamp.schemeName() );
   if ( modelIndex == QModelIndex() )
   {
     return false;
@@ -589,16 +592,16 @@ bool QgsCptCityColorRampDialog::updateRamp()
     dynamic_cast<QgsCptCityColorRampItem*>( mModel->dataItem( modelIndex ) );
   if ( ! childItem )
     return false;
-  if ( mRamp->schemeName() != childItem->ramp().schemeName() )
+  if ( mRamp.schemeName() != childItem->ramp().schemeName() )
     return false;
 
   // found child, set mRamp variantList
-  // mRamp->copy( &childItem->ramp() );
-  mRamp->setVariantList( childItem->ramp().variantList() );
+  // mRamp.copy( &childItem->ramp() );
+  mRamp.setVariantList( childItem->ramp().variantList() );
 
   // found child, update tree
-  QgsDebugMsg( QString( "found item %1" ).arg( mRamp->schemeName() ) );
-  lblSchemeName->setText( QFileInfo( mRamp->schemeName() ).fileName() );
+  QgsDebugMsg( QString( "found item %1" ).arg( mRamp.schemeName() ) );
+  lblSchemeName->setText( QFileInfo( mRamp.schemeName() ).fileName() );
   QModelIndex parentIndex = modelIndex.parent();
   QModelIndex selIndex = mTreeFilter->mapFromSource( parentIndex );
 
@@ -621,6 +624,7 @@ bool QgsCptCityColorRampDialog::updateRamp()
       mListWidget->scrollToItem( listItem, QAbstractItemView::EnsureVisible );
       // mListView->selectionModel()->select( childIndex, QItemSelectionModel::Select );
       buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+      emit changed();
       return true;
     }
   }

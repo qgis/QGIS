@@ -40,7 +40,7 @@
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgsstylemanagerdialog.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsrelationmanagerdialog.h"
 #include "qgsrelationmanager.h"
@@ -1713,10 +1713,9 @@ void QgsProjectProperties::populateStyles()
   for ( int i = 0; i < colorRamps.count(); ++i )
   {
     QString name = colorRamps[i];
-    QgsVectorColorRamp* ramp = mStyle->colorRamp( name );
-    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp, cboStyleColorRamp->iconSize() );
+    QScopedPointer< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
+    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.data(), cboStyleColorRamp->iconSize() );
     cboStyleColorRamp->addItem( icon, name );
-    delete ramp;
   }
 
   // set current index if found

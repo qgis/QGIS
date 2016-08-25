@@ -31,7 +31,7 @@
 #include <qgssymbol.h>
 #include <qgssinglesymbolrenderer.h>
 #include <qgsfillsymbollayer.h>
-#include <qgsvectorcolorramp.h>
+#include <qgscolorramp.h>
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
@@ -160,7 +160,7 @@ void TestQgsShapeburst::shapeburstSymbolRamp()
 {
   mReport += "<h2>Shapeburst symbol renderer ramp test</h2>\n";
 
-  QgsVectorGradientColorRamp* gradientRamp = new QgsVectorGradientColorRamp( QColor( Qt::yellow ), QColor( 255, 105, 180 ) );
+  QgsGradientColorRamp* gradientRamp = new QgsGradientColorRamp( QColor( Qt::yellow ), QColor( 255, 105, 180 ) );
   QgsGradientStopsList stops;
   stops.append( QgsGradientStop( 0.5, QColor( 255, 255, 255, 0 ) ) );
   gradientRamp->setStops( stops );

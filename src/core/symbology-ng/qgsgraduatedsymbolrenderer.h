@@ -123,7 +123,7 @@ class CORE_EXPORT QgsRendererRangeLabelFormat
 };
 
 class QgsVectorLayer;
-class QgsVectorColorRamp;
+class QgsColorRamp;
 
 Q_NOWARN_DEPRECATED_PUSH
 /** \ingroup core
@@ -247,13 +247,24 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! @note Added in 2.6
     void calculateLabelPrecision( bool updateRanges = true );
 
+    /** Creates a new graduated renderer.
+     * @param vlayer vector layer
+     * @param attrName attribute to classify
+     * @param classes number of classes
+     * @param mode classification mode
+     * @param symbol base symbol
+     * @param ramp color ramp for classes
+     * @param inverted set to true to invert color ramp
+     * @param legendFormat
+     * @returns new QgsGraduatedSymbolRenderer object
+     */
     static QgsGraduatedSymbolRenderer* createRenderer(
       QgsVectorLayer* vlayer,
       const QString& attrName,
       int classes,
       Mode mode,
       QgsSymbol* symbol,
-      QgsVectorColorRamp* ramp,
+      QgsColorRamp* ramp,
       bool inverted = false,
       const QgsRendererRangeLabelFormat& legendFormat = QgsRendererRangeLabelFormat()
     );
@@ -295,12 +306,12 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * @see setSourceColorRamp()
      * @see sourceSymbol()
      */
-    QgsVectorColorRamp* sourceColorRamp();
+    QgsColorRamp* sourceColorRamp();
 
     /** Sets the source color ramp.
      * @param ramp color ramp. Ownership is transferred to the renderer
      */
-    void setSourceColorRamp( QgsVectorColorRamp* ramp );
+    void setSourceColorRamp( QgsColorRamp* ramp );
 
     //! @note added in 2.1
     bool invertedColorRamp() { return mInvertedColorRamp; }
@@ -311,7 +322,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * @param ramp color ramp. Ownership is transferred to the renderer
      * @param inverted set to true to invert ramp colors
      */
-    void updateColorRamp( QgsVectorColorRamp* ramp = nullptr, bool inverted = false );
+    void updateColorRamp( QgsColorRamp* ramp = nullptr, bool inverted = false );
 
     /** Update all the symbols but leave breaks and colors. This method also sets the source
      * symbol for the renderer.
@@ -380,7 +391,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QgsRangeList mRanges;
     Mode mMode;
     QScopedPointer<QgsSymbol> mSourceSymbol;
-    QScopedPointer<QgsVectorColorRamp> mSourceColorRamp;
+    QScopedPointer<QgsColorRamp> mSourceColorRamp;
     bool mInvertedColorRamp;
     QgsRendererRangeLabelFormat mLabelFormat;
 

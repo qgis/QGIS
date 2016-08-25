@@ -23,7 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbollayer.h"
 #include "qgsogcutils.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgsrendercontext.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
@@ -45,7 +45,7 @@ QgsHeatmapRenderer::QgsHeatmapRenderer()
     , mRenderQuality( 3 )
     , mFeaturesRendered( 0 )
 {
-  mGradientRamp = new QgsVectorGradientColorRamp( QColor( 255, 255, 255 ), QColor( 0, 0, 0 ) );
+  mGradientRamp = new QgsGradientColorRamp( QColor( 255, 255, 255 ), QColor( 0, 0, 0 ) );
 
 }
 
@@ -413,7 +413,7 @@ QgsHeatmapRenderer* QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRen
   }
 }
 
-void QgsHeatmapRenderer::setColorRamp( QgsVectorColorRamp *ramp )
+void QgsHeatmapRenderer::setColorRamp( QgsColorRamp *ramp )
 {
   delete mGradientRamp;
   mGradientRamp = ramp;

@@ -17,7 +17,7 @@
 
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgsstyle.h"
 
 #include "qgsvectorlayer.h"
@@ -657,7 +657,7 @@ void QgsGraduatedSymbolRendererWidget::on_methodComboBox_currentIndexChanged( in
   if ( idx == 0 )
   {
     mRenderer->setGraduatedMethod( QgsGraduatedSymbolRenderer::GraduatedColor );
-    QgsVectorColorRamp* ramp = cboGraduatedColorRamp->currentColorRamp();
+    QgsColorRamp* ramp = cboGraduatedColorRamp->currentColorRamp();
 
     if ( !ramp )
     {
@@ -742,7 +742,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
   int nclasses = spinGraduatedClasses->value();
 
-  QSharedPointer<QgsVectorColorRamp> ramp( cboGraduatedColorRamp->currentColorRamp() );
+  QScopedPointer<QgsColorRamp> ramp( cboGraduatedColorRamp->currentColorRamp() );
   if ( !ramp )
   {
     if ( cboGraduatedColorRamp->count() == 0 )
@@ -779,8 +779,6 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
   if ( methodComboBox->currentIndex() == 0 )
   {
-    QgsVectorColorRamp* ramp = cboGraduatedColorRamp->currentColorRamp();
-
     if ( !ramp )
     {
       if ( cboGraduatedColorRamp->count() == 0 )
@@ -789,7 +787,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
         QMessageBox::critical( this, tr( "Error" ), tr( "The selected color ramp is not available." ) );
       return;
     }
-    mRenderer->setSourceColorRamp( ramp );
+    mRenderer->setSourceColorRamp( ramp.take() );
   }
   else
   {
@@ -811,11 +809,11 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
 void QgsGraduatedSymbolRendererWidget::reapplyColorRamp()
 {
-  QgsVectorColorRamp* ramp = cboGraduatedColorRamp->currentColorRamp();
+  QScopedPointer< QgsColorRamp > ramp( cboGraduatedColorRamp->currentColorRamp() );
   if ( !ramp )
     return;
 
-  mRenderer->updateColorRamp( ramp, cbxInvertedColorRamp->isChecked() );
+  mRenderer->updateColorRamp( ramp.take(), cbxInvertedColorRamp->isChecked() );
   mRenderer->updateSymbols( mGraduatedSymbol );
   refreshSymbolView();
 }

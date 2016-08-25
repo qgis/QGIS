@@ -18,7 +18,7 @@
 
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
@@ -900,24 +900,24 @@ void QgsCategorizedSymbolRenderer::setSourceSymbol( QgsSymbol* sym )
   mSourceSymbol.reset( sym );
 }
 
-QgsVectorColorRamp* QgsCategorizedSymbolRenderer::sourceColorRamp()
+QgsColorRamp* QgsCategorizedSymbolRenderer::sourceColorRamp()
 {
   return mSourceColorRamp.data();
 }
 
-void QgsCategorizedSymbolRenderer::setSourceColorRamp( QgsVectorColorRamp* ramp )
+void QgsCategorizedSymbolRenderer::setSourceColorRamp( QgsColorRamp* ramp )
 {
   mSourceColorRamp.reset( ramp );
 }
 
-void QgsCategorizedSymbolRenderer::updateColorRamp( QgsVectorColorRamp* ramp, bool inverted )
+void QgsCategorizedSymbolRenderer::updateColorRamp( QgsColorRamp* ramp, bool inverted )
 {
   setSourceColorRamp( ramp );
   setInvertedColorRamp( inverted );
   double num = mCategories.count() - 1;
   double count = 0;
 
-  QgsRandomColors* randomRamp = dynamic_cast<QgsRandomColors*>( ramp );
+  QgsRandomColorRamp* randomRamp = dynamic_cast<QgsRandomColorRamp*>( ramp );
   if ( randomRamp )
   {
     //ramp is a random colors ramp, so inform it of the total number of required colors

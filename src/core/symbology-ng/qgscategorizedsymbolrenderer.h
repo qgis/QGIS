@@ -22,7 +22,7 @@
 #include <QHash>
 #include <QScopedPointer>
 
-class QgsVectorColorRamp;
+class QgsColorRamp;
 class QgsVectorLayer;
 
 /** \ingroup core
@@ -182,14 +182,14 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      * @see setSourceColorRamp()
      * @see sourceSymbol()
      */
-    QgsVectorColorRamp* sourceColorRamp();
+    QgsColorRamp* sourceColorRamp();
 
     /** Sets the source color ramp.
       * @param ramp color ramp. Ownership is transferred to the renderer
       * @see sourceColorRamp()
       * @see setSourceSymbol()
       */
-    void setSourceColorRamp( QgsVectorColorRamp* ramp );
+    void setSourceColorRamp( QgsColorRamp* ramp );
 
     //! @note added in 2.1
     bool invertedColorRamp() { return mInvertedColorRamp; }
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
       * @param inverted set to true to invert ramp colors
       * @note added in 2.5
       */
-    void updateColorRamp( QgsVectorColorRamp* ramp, bool inverted = false );
+    void updateColorRamp( QgsColorRamp* ramp, bool inverted = false );
 
     Q_DECL_DEPRECATED void setRotationField( const QString& fieldOrExpression ) override;
     Q_DECL_DEPRECATED QString rotationField() const override;
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     QString mAttrName;
     QgsCategoryList mCategories;
     QScopedPointer<QgsSymbol> mSourceSymbol;
-    QScopedPointer<QgsVectorColorRamp> mSourceColorRamp;
+    QScopedPointer<QgsColorRamp> mSourceColorRamp;
     bool mInvertedColorRamp;
     QScopedPointer<QgsExpression> mRotation;
     QScopedPointer<QgsExpression> mSizeScale;

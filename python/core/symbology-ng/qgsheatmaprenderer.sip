@@ -33,12 +33,12 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
      * @returns color ramp for heatmap
      * @see setColorRamp
      */
-    QgsVectorColorRamp* colorRamp() const;
+    QgsColorRamp* colorRamp() const;
     /** Sets the color ramp to use for shading the heatmap.
      * @param ramp color ramp for heatmap. Ownership of ramp is transferred to the renderer.
      * @see colorRamp
      */
-    void setColorRamp( QgsVectorColorRamp* ramp /Transfer/ );
+    void setColorRamp( QgsColorRamp* ramp /Transfer/ );
 
     /** Returns whether the ramp is inverted
      * @returns true if color ramp is inverted

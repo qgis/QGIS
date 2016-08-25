@@ -42,7 +42,6 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgssymbollayerutils.cpp
   symbology-ng/qgssymbologyconversion.cpp
   symbology-ng/qgssymbol.cpp
-  symbology-ng/qgsvectorcolorramp.cpp
   symbology-ng/qgsvectorfieldsymbollayer.cpp
 
   diagram/qgsdiagram.cpp
@@ -87,6 +86,7 @@ SET(QGIS_CORE_SRCS
   qgscacheindex.cpp
   qgscacheindexfeatureid.cpp
   qgsclipper.cpp
+  qgscolorramp.cpp
   qgscolorscheme.cpp
   qgscolorschemeregistry.cpp
   qgsconditionalstyle.cpp
@@ -607,6 +607,7 @@ SET(QGIS_CORE_HDRS
   qgscacheindex.h
   qgscacheindexfeatureid.h
   qgsclipper.h
+  qgscolorramp.h
   qgscolorscheme.h
   qgscolorschemeregistry.h
   qgsconnectionpool.h
@@ -818,7 +819,6 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgssymbollayerutils.h
   symbology-ng/qgssymbologyconversion.h
   symbology-ng/qgssymbol.h
-  symbology-ng/qgsvectorcolorramp.h
   symbology-ng/qgsvectorfieldsymbollayer.h
   symbology-ng/qgsgeometrygeneratorsymbollayer.h
 

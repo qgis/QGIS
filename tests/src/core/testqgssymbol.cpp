@@ -23,7 +23,7 @@
 #include <qgsapplication.h>
 #include "qgsconfig.h"
 #include "qgslogger.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgscptcityarchive.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"

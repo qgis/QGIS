@@ -183,8 +183,8 @@ class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
     void setGradientColorType( GradientColorType gradientColorType );
 
     /** Color ramp used for the gradient fill, only used if the gradient color type is set to ColorRamp*/
-    QgsVectorColorRamp* colorRamp();
-    void setColorRamp( QgsVectorColorRamp* ramp );
+    QgsColorRamp* colorRamp();
+    void setColorRamp( QgsColorRamp* ramp );
 
     /** Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor*/
     QColor color2() const;
@@ -336,7 +336,7 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
     void setDistanceMapUnitScale( const QgsMapUnitScale& scale );
     const QgsMapUnitScale& distanceMapUnitScale() const;
 
-    /** Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsVectorColorRamp color ramp
+    /** Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
      * or by simply specificing a start and end color. setColorType is used to specify which mode to use for the fill.
      * @param colorType color type to use for shapeburst fill
      * @note added in 2.3
@@ -346,7 +346,7 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
      * @see setColorRamp
      */
     void setColorType( ShapeburstColorType colorType );
-    /** Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsVectorColorRamp color ramp
+    /** Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
      * or by simply specificing a start and end color.
      * @returns current color mode used for the shapeburst fill
      * @note added in 2.3
@@ -363,14 +363,14 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
      * @see setColorType
      * @see colorRamp
      */
-    void setColorRamp( QgsVectorColorRamp* ramp );
+    void setColorRamp( QgsColorRamp* ramp );
     /** Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType::ColorRamp
-     * @returns a QgsVectorColorRamp color ramp
+     * @returns a QgsColorRamp color ramp
      * @note added in 2.3
      * @see setColorRamp
      * @see colorType
      */
-    QgsVectorColorRamp* colorRamp();
+    QgsColorRamp* colorRamp();
 
     /** Sets the color for the endpoint of the shapeburst fill. This color is only used if setColorType is set ShapeburstColorType::SimpleTwoColor.
      * @param color2 QColor to use for endpoint of gradient

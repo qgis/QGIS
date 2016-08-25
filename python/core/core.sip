@@ -27,6 +27,7 @@
 %Include qgsattributeeditorelement.sip
 %Include qgsbrowsermodel.sip
 %Include qgsclipper.sip
+%Include qgscolorramp.sip
 %Include qgscolorscheme.sip
 %Include qgscolorschemeregistry.sip
 %Include qgsconditionalstyle.sip
@@ -290,7 +291,6 @@
 %Include symbology-ng/qgsstyle.sip
 %Include symbology-ng/qgssvgcache.sip
 %Include symbology-ng/qgssymbol.sip
-%Include symbology-ng/qgsvectorcolorramp.sip
 
 %Include symbology-ng/qgs25drenderer.sip
 %Include symbology-ng/qgscategorizedsymbolrenderer.sip

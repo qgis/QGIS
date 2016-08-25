@@ -35,7 +35,7 @@
 #include <qgsapplication.h>
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
-#include <qgsvectorcolorramp.h>
+#include <qgscolorramp.h>
 #include <qgscptcityarchive.h>
 
 //qgis unit test includes

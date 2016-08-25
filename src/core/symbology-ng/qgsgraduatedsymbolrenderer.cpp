@@ -17,7 +17,7 @@
 
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgsvectorcolorramp.h"
+#include "qgscolorramp.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
@@ -843,7 +843,7 @@ QgsGraduatedSymbolRenderer* QgsGraduatedSymbolRenderer::createRenderer(
   int classes,
   Mode mode,
   QgsSymbol* symbol,
-  QgsVectorColorRamp* ramp,
+  QgsColorRamp* ramp,
   bool inverted,
   const QgsRendererRangeLabelFormat& labelFormat
 )
@@ -1315,12 +1315,12 @@ void QgsGraduatedSymbolRenderer::setSourceSymbol( QgsSymbol* sym )
   mSourceSymbol.reset( sym );
 }
 
-QgsVectorColorRamp* QgsGraduatedSymbolRenderer::sourceColorRamp()
+QgsColorRamp* QgsGraduatedSymbolRenderer::sourceColorRamp()
 {
   return mSourceColorRamp.data();
 }
 
-void QgsGraduatedSymbolRenderer::setSourceColorRamp( QgsVectorColorRamp* ramp )
+void QgsGraduatedSymbolRenderer::setSourceColorRamp( QgsColorRamp* ramp )
 {
   mSourceColorRamp.reset( ramp );
 }
@@ -1371,7 +1371,7 @@ void QgsGraduatedSymbolRenderer::setSymbolSizes( double minSize, double maxSize 
   }
 }
 
-void QgsGraduatedSymbolRenderer::updateColorRamp( QgsVectorColorRamp *ramp, bool inverted )
+void QgsGraduatedSymbolRenderer::updateColorRamp( QgsColorRamp *ramp, bool inverted )
 {
   int i = 0;
   if ( ramp )

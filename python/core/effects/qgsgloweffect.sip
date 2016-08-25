@@ -129,7 +129,7 @@ class QgsGlowEffect : QgsPaintEffect
      * @see ramp
      * @see setColorType
      */
-    void setRamp( QgsVectorColorRamp* ramp /Transfer/ );
+    void setRamp( QgsColorRamp* ramp /Transfer/ );
 
     /** Returns the color ramp used for the glow. This only applies if the @link colorType @endlink
      * is set to ColorRamp. The glow will utilise colors from the ramp.
@@ -137,7 +137,7 @@ class QgsGlowEffect : QgsPaintEffect
      * @see setRamp
      * @see colorType
      */
-    QgsVectorColorRamp* ramp() const;
+    QgsColorRamp* ramp() const;
 
     /** Sets the blend mode for the effect
      * @param mode blend mode used for drawing the effect on to a destination
@@ -153,7 +153,7 @@ class QgsGlowEffect : QgsPaintEffect
      */
     QPainter::CompositionMode blendMode() const;
 
-    /** Sets the color mode to use for the glow. The glow can either be drawn using a QgsVectorColorRamp
+    /** Sets the color mode to use for the glow. The glow can either be drawn using a QgsColorRamp
      * color ramp or by simply specificing a single color. setColorType is used to specify which mode to use
      * for the glow.
      * @param colorType color type to use for glow
@@ -163,7 +163,7 @@ class QgsGlowEffect : QgsPaintEffect
      */
     void setColorType( GlowColorType colorType );
 
-    /** Returns the color mode used for the glow. The glow can either be drawn using a QgsVectorColorRamp
+    /** Returns the color mode used for the glow. The glow can either be drawn using a QgsColorRamp
      * color ramp or by specificing a single color.
      * @returns current color mode used for the glow
      * @see setColorType
