@@ -2177,8 +2177,11 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
 
   if ( hasGeometryType() )
   {
-    QDomElement rendererElement = mRendererV2->save( doc );
-    node.appendChild( rendererElement );
+    if ( mRendererV2 )
+    {
+      QDomElement rendererElement = mRendererV2->save( doc );
+      node.appendChild( rendererElement );
+    }
 
     if ( mLabeling )
     {
