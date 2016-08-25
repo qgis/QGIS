@@ -36,7 +36,16 @@
  */
 class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 {
-    // TODO: extend with preview functionality??
+  public:
+    QgsRasterBlockFeedback( QObject* parent = nullptr ) : QgsFeedback( parent ), preview_only( false ) {}
+
+    //! whether the raster provider should return only data that are already available
+    //! without waiting for full result
+    bool preview_only;
+
+    //! may be emitted by raster data provider to indicate that some partial data are available
+    //! and a new preview image may be produced
+    virtual void onNewData() {}
 };
 
 

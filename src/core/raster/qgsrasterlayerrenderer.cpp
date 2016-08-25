@@ -29,7 +29,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
     , mRasterViewPort( nullptr )
     , mPipe( nullptr )
     , mContext( rendererContext )
-    , mFeedback( new QgsRasterBlockFeedback() )
+    , mFeedback( new MyFeedback( this ) )
 {
   mPainter = rendererContext.painter();
   const QgsMapToPixel& theQgsMapToPixel = rendererContext.mapToPixel();
@@ -225,4 +225,31 @@ bool QgsRasterLayerRenderer::render()
 QgsFeedback* QgsRasterLayerRenderer::feedback() const
 {
   return mFeedback;
+}
+
+MyFeedback::MyFeedback( QgsRasterLayerRenderer *r )
+    : mR( r )
+    , mMinimalPreviewInterval( 250 )
+{
+}
+
+void MyFeedback::onNewData()
+{
+  qDebug( "\nGOT NEW DATA!\n" );
+
+  // update only once upon a time
+  // (preview itself takes some time)
+  if ( mLastPreview.msecsTo( QTime::currentTime() ) < mMinimalPreviewInterval )
+    return;
+
+  qDebug( "new raster preview! %d", mLastPreview.msecsTo( QTime::currentTime() ) );
+  QTime t;
+  t.start();
+  QgsRasterBlockFeedback feedback;
+  feedback.preview_only = true;
+  QgsRasterIterator iterator( mR->mPipe->last() );
+  QgsRasterDrawer drawer( &iterator );
+  drawer.draw( mR->mPainter, mR->mRasterViewPort, mR->mMapToPixel, &feedback );
+  qDebug( "PREVIEW TOOK %d ms", t.elapsed() );
+  mLastPreview = QTime::currentTime();
 }
