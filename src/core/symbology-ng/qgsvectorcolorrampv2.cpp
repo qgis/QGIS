@@ -313,8 +313,11 @@ double QgsVectorRandomColorRampV2::value( int index ) const
 
 QColor QgsVectorRandomColorRampV2::color( double value ) const
 {
+  if ( value < 0 || value > 1 )
+    return QColor();
+
   int colorCnt = mColors.count();
-  int colorIdx = static_cast< int >( value * ( colorCnt - 1 ) );
+  int colorIdx = qMin( static_cast< int >( value * colorCnt ), colorCnt - 1 );
 
   if ( colorIdx >= 0 && colorIdx < colorCnt )
     return mColors.at( colorIdx );
