@@ -1,0 +1,8 @@
+{
+  "name": "line_interpolate_angle",
+  "type": "function",
+  "description": "Returns the angle parallel to the geometry at a specified distance along a linestring geometry. Angles are in degrees clockwise from north.",
+  "arguments": [ {"arg":"geometry","description":"a linestring geometry"},
+                 {"arg":"distance","description":"distance along line to interpolate angle at"}],
+  "examples": [ { "expression":"line_interpolate_angle(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),distance:=5)", "returns":"90.0"}]
+}

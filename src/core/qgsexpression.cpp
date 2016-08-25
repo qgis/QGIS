@@ -2559,6 +2559,30 @@ static QVariant fcnLineInterpolatePoint( const QVariantList& values, const QgsEx
   return result;
 }
 
+static QVariant fcnLineInterpolateAngle( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry lineGeom = getGeometry( values.at( 0 ), parent );
+  double distance = getDoubleValue( values.at( 1 ), parent );
+
+  return lineGeom.interpolateAngle( distance ) * 180.0 / M_PI;
+}
+
+static QVariant fcnAngleAtVertex( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  int vertex = getIntValue( values.at( 1 ), parent );
+
+  return geom.angleAtVertex( vertex ) * 180.0 / M_PI;
+}
+
+static QVariant fcnDistanceToVertex( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  int vertex = getIntValue( values.at( 1 ), parent );
+
+  return geom.distanceToVertex( vertex );
+}
+
 static QVariant fcnLineLocatePoint( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QgsGeometry lineGeom = getGeometry( values.at( 0 ), parent );
@@ -3148,6 +3172,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "distance" << "intersection" << "sym_difference" << "combine"
     << "extrude" << "azimuth" <<  "project" << "closest_point" << "shortest_line"
     << "line_locate_point" << "line_interpolate_point"
+    << "line_interpolate_angle" << "angle_at_vertex" << "distance_to_vertex"
     << "union" << "geom_to_wkt" << "geomToWKT" << "geometry"
     << "transform" << "get_feature" << "getFeature"
     << "levenshtein" << "longest_common_substring" << "hamming_distance"
@@ -3375,8 +3400,14 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "shortest_line", 2, fcnShortestLine, "GeometryGroup" )
     << new StaticFunction( "line_interpolate_point", ParameterList() << Parameter( "geometry" )
                            << Parameter( "distance" ), fcnLineInterpolatePoint, "GeometryGroup" )
+    << new StaticFunction( "line_interpolate_angle", ParameterList() << Parameter( "geometry" )
+                           << Parameter( "distance" ), fcnLineInterpolateAngle, "GeometryGroup" )
     << new StaticFunction( "line_locate_point", ParameterList() << Parameter( "geometry" )
                            << Parameter( "point" ), fcnLineLocatePoint, "GeometryGroup" )
+    << new StaticFunction( "angle_at_vertex", ParameterList() << Parameter( "geometry" )
+                           << Parameter( "vertex" ), fcnAngleAtVertex, "GeometryGroup" )
+    << new StaticFunction( "distance_to_vertex", ParameterList() << Parameter( "geometry" )
+                           << Parameter( "vertex" ), fcnDistanceToVertex, "GeometryGroup" )
     << new StaticFunction( "$id", 0, fcnFeatureId, "Record" )
     << new StaticFunction( "$currentfeature", 0, fcnFeature, "Record" )
     << new StaticFunction( "uuid", 0, fcnUuid, "Record", QString(), false, QStringList(), false, QStringList() << "$uuid" )

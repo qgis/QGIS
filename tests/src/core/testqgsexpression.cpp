@@ -786,6 +786,18 @@ class TestQgsExpression: public QObject
       QTest::newRow( "line_locate_point null" ) << "line_locate_point(NULL, geom_from_wkt('Point 5 0'))" << false << QVariant();
       QTest::newRow( "line_locate_point point" ) << "line_locate_point(geom_from_wkt('POINT(1 2)'),geom_from_wkt('Point 5 0'))" << false << QVariant();
       QTest::newRow( "line_locate_point line" ) << "line_locate_point(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),point:=geom_from_wkt('Point(5 0)'))" << false << QVariant( 5.0 );
+      QTest::newRow( "line_interpolate_angle not geom" ) << "line_interpolate_angle('g', 5)" << true << QVariant();
+      QTest::newRow( "line_interpolate_angle null" ) << "line_interpolate_angle(NULL, 5)" << false << QVariant();
+      QTest::newRow( "line_interpolate_angle point" ) << "line_interpolate_angle(geom_from_wkt('POINT(1 2)'),5)" << false << QVariant( 0.0 );
+      QTest::newRow( "line_interpolate_angle line" ) << "line_interpolate_angle(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),distance:=5)" << false << QVariant( 90.0 );
+      QTest::newRow( "angle_at_vertex not geom" ) << "angle_at_vertex('g', 5)" << true << QVariant();
+      QTest::newRow( "angle_at_vertex null" ) << "angle_at_vertex(NULL, 0)" << false << QVariant();
+      QTest::newRow( "angle_at_vertex point" ) << "angle_at_vertex(geom_from_wkt('POINT(1 2)'),0)" << false << QVariant( 0.0 );
+      QTest::newRow( "angle_at_vertex line" ) << "angle_at_vertex(geometry:=geom_from_wkt('LineString(0 0, 10 0, 10 10)'),vertex:=1)" << false << QVariant( 45.0 );
+      QTest::newRow( "distance_to_vertex not geom" ) << "distance_to_vertex('g', 5)" << true << QVariant();
+      QTest::newRow( "distance_to_vertex null" ) << "distance_to_vertex(NULL, 0)" << false << QVariant();
+      QTest::newRow( "distance_to_vertex point" ) << "distance_to_vertex(geom_from_wkt('POINT(1 2)'),0)" << false << QVariant( 0.0 );
+      QTest::newRow( "distance_to_vertex line" ) << "distance_to_vertex(geometry:=geom_from_wkt('LineString(0 0, 10 0, 10 10)'),vertex:=1)" << false << QVariant( 10.0 );
 
       // string functions
       QTest::newRow( "lower" ) << "lower('HeLLo')" << false << QVariant( "hello" );
