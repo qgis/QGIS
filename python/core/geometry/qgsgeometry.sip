@@ -195,6 +195,15 @@ class QgsGeometry
     double distanceToVertex( int vertex ) const;
 
     /**
+     * Returns the bisector angle for this geometry at the specified vertex.
+     * @param vertex vertex index to calculate bisector angle at
+     * @returns bisector angle, in radians clockwise from north
+     * @note added in QGIS 3.0
+     * @see interpolateAngle()
+     */
+    double angleAtVertex( int vertex ) const;
+
+    /**
      * Returns the indexes of the vertices before and after the given vertex index.
      *
      * This function takes into account the following factors:
@@ -551,6 +560,7 @@ class QgsGeometry
      * of the node is returned.
      * @param distance distance along geometry
      * @note added in QGIS 3.0
+     * @see angleAtVertex()
      */
     double interpolateAngle( double distance ) const;
 
