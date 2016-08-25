@@ -166,6 +166,8 @@ qgis:extractbylocation: >
 qgis:extractnodes: >
   This algorithm takes a line or polygon layer and generates a point layer with points representing the nodes in the input lines or polygons. The attributes associated to each point are the same ones associated to the line or polygon that the point belongs to.
 
+  Additional fields are added to the nodes indicating the node index (beginning at 0), distance along original geometry and bisector angle of node for original geometry.
+
 qgis:fieldcalculator: >
   This algorithm computes a new vector layer with the same features of the input layer, but with an additional attribute. The values of this new attribute are computed from each feature using a mathematical formula, based on te properties and attributes of the feature.
 

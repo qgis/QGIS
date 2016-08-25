@@ -870,3 +870,49 @@ tests:
       OUTPUT_LAYER:
         name: expected/single_sided_buffer_multiline_bevel.gml
         type: vector
+
+
+  - algorithm: qgis:extractnodes
+    name: Test (qgis:extractnodes)
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_nodes_multipolys.gml
+        type: vector
+
+  - algorithm: qgis:extractnodes
+    name: Test (qgis:extractnodes)
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_nodes_polys.gml
+        type: vector
+
+  - algorithm: qgis:extractnodes
+    name: Test (qgis:extractnodes)
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_nodes_multilines.gml
+        type: vector
+
+  - algorithm: qgis:extractnodes
+    name: Test (qgis:extractnodes)
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_nodes_lines.gml
+        type: vector
+

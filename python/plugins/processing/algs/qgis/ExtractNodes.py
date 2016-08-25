@@ -26,10 +26,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import math
 
 from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsField
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -61,25 +63,34 @@ class ExtractNodes(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields().toList(), QgsWkbTypes.Point, layer.crs())
+        fields = layer.fields()
+        fields.append(QgsField('node_index', QVariant.Int))
+        fields.append(QgsField('distance', QVariant.Double))
+        fields.append(QgsField('angle', QVariant.Double))
 
-        outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        outGeom = QgsGeometry()
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
+            fields, QgsWkbTypes.Point, layer.crs())
 
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, f in enumerate(features):
-            inGeom = f.geometry()
-            attrs = f.attributes()
+            input_geometry = f.geometry()
+            if not input_geometry:
+                writer.addFeature(f)
+            else:
+                points = vector.extractPoints(input_geometry)
 
-            points = vector.extractPoints(inGeom)
-            outFeat.setAttributes(attrs)
-
-            for i in points:
-                outFeat.setGeometry(outGeom.fromPoint(i))
-                writer.addFeature(outFeat)
+                for i, point in enumerate(points):
+                    distance = input_geometry.distanceToVertex(i)
+                    angle = math.degrees(input_geometry.angleAtVertex(i))
+                    attrs = f.attributes()
+                    attrs.append(i)
+                    attrs.append(distance)
+                    attrs.append(angle)
+                    output_feature = QgsFeature()
+                    output_feature.setAttributes(attrs)
+                    output_feature.setGeometry(QgsGeometry.fromPoint(point))
+                    writer.addFeature(output_feature)
 
             progress.setPercentage(int(current * total))
 
