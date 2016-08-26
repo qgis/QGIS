@@ -10,6 +10,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/providers/wms
+  ${CMAKE_SOURCE_DIR}/src/providers/postgres
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
@@ -17,6 +18,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
+  ${POSTGRES_INCLUDE_DIR}
 )
 
 #############################################################
@@ -92,6 +94,12 @@ TARGET_LINK_LIBRARIES(qgis_wmscapabilititestest wmsprovider_a)
 ADD_QGIS_TEST(wmsprovidertest
               testqgswmsprovider.cpp)
 TARGET_LINK_LIBRARIES(qgis_wmsprovidertest wmsprovider_a)
+
+ADD_QGIS_TEST(postgresprovidertest testqgspostgresprovider.cpp)
+TARGET_LINK_LIBRARIES(qgis_postgresprovidertest postgresprovider_a)
+
+ADD_QGIS_TEST(postgresconntest testqgspostgresconn.cpp)
+TARGET_LINK_LIBRARIES(qgis_postgresconntest postgresprovider_a)
 
 #############################################################
 # WCS public servers test:

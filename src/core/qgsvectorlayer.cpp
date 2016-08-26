@@ -2233,7 +2233,10 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
 bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds& fids )
 {
   if ( !mEditBuffer )
+  {
+    QgsDebugMsg( "Cannot delete features (mEditBuffer==NULL)" );
     return false;
+  }
 
   bool res = mEditBuffer->deleteFeatures( fids );
 

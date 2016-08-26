@@ -249,6 +249,14 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     virtual QgsTransaction* transaction() const override;
 
+    /**
+     * Convert the postgres string representation into the given QVariant type.
+     * @param type the wanted type
+     * @param value the value to convert
+     * @return a QVariant of the given type or a null QVariant
+     */
+    static QVariant convertValue( QVariant::Type type, const QString& value );
+
   signals:
     /**
      *   This is emitted whenever the worker thread has fully calculated the

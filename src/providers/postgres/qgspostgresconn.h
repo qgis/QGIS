@@ -263,7 +263,7 @@ class QgsPostgresConn : public QObject
 
     /** Double quote a PostgreSQL identifier for placement in a SQL string.
      */
-    static QString quotedIdentifier( QString ident );
+    static QString quotedIdentifier( const QString& ident );
 
     /** Quote a value for placement in a SQL string.
      */

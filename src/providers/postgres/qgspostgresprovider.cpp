@@ -218,6 +218,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, -1, -1, -1, -1 )
   << QgsVectorDataProvider::NativeType( tr( "Time" ), "time", QVariant::Time, -1, -1, -1, -1 )
   << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "timestamp without time zone", QVariant::DateTime, -1, -1, -1, -1 )
+
+  // complex types
+  << QgsVectorDataProvider::NativeType( tr( "Map" ), "hstore", QVariant::Map, -1, -1, -1, -1 )
   ;
 
   QString key;
@@ -381,6 +384,9 @@ static bool operator<( const QVariant &a, const QVariant &b )
         else
           return al[i] < bl[i];
       }
+
+      case QVariant::Map:
+        return a.toMap() < b.toMap();
 
       case QVariant::Date:
         return a.toDate() < b.toDate();
@@ -966,7 +972,6 @@ bool QgsPostgresProvider::loadFields()
       else if ( fieldTypeName == "text" ||
                 fieldTypeName == "bool" ||
                 fieldTypeName == "geometry" ||
-                fieldTypeName == "hstore" ||
                 fieldTypeName == "inet" ||
                 fieldTypeName == "money" ||
                 fieldTypeName == "ltree" ||
@@ -1016,6 +1021,11 @@ bool QgsPostgresProvider::loadFields()
           fieldSize = -1;
           fieldPrec = -1;
         }
+      }
+      else if ( fieldTypeName == "hstore" )
+      {
+        fieldType = QVariant::Map;
+        fieldSize = -1;
       }
       else
       {
@@ -2149,7 +2159,10 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
   bool returnvalue = true;
 
   if ( mIsQuery )
+  {
+    QgsDebugMsg( "Cannot delete features (is a query)" );
     return false;
+  }
 
   QgsPostgresConn* conn = connectionRW();
   if ( !conn )
@@ -3467,6 +3480,11 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
       fieldPrec = 0;
       break;
 
+    case QVariant::Map:
+      fieldType = "hstore";
+      fieldPrec = -1;
+      break;
+
     case QVariant::Double:
       if ( fieldPrec > 0 )
       {
@@ -3828,6 +3846,44 @@ QString  QgsPostgresProvider::description() const
 
   return tr( "PostgreSQL/PostGIS provider\n%1\nPostGIS %2" ).arg( pgVersion, postgisVersion );
 } //  QgsPostgresProvider::description()
+
+
+static QVariant parseHstore( const QString& value )
+{
+  QRegExp recordSep( "\\s*,\\s*" );
+  QRegExp valueExtractor( "^(?:\"((?:\\.|.)*)\"|((?:\\.|.)*))\\s*=>\\s*(?:\"((?:\\.|.)*)\"|((?:\\.|.)*))$" );
+  QVariantMap result;
+  Q_FOREACH ( QString record, value.split( recordSep ) )
+  {
+    if ( valueExtractor.exactMatch( record ) )
+    {
+      QString key = valueExtractor.cap( 1 ) + valueExtractor.cap( 2 );
+      key.replace( "\\\"", "\"" ).replace( "\\\\", "\\" );
+      QString value = valueExtractor.cap( 3 ) + valueExtractor.cap( 4 );
+      value.replace( "\\\"", "\"" ).replace( "\\\\", "\\" );
+      result.insert( key, value );
+    }
+    else
+    {
+      QgsLogger::warning( "Error parsing hstore record: " + record );
+    }
+  }
+  return result;
+}
+
+QVariant QgsPostgresProvider::convertValue( QVariant::Type type, const QString& value )
+{
+  if ( type == QVariant::Map )
+  {
+    return parseHstore( value );
+  }
+  QVariant v( value );
+
+  if ( !v.convert( type ) || value.isNull() )
+    v = QVariant( type );
+
+  return v;
+}
 
 /**
  * Class factory to return a pointer to a newly created
