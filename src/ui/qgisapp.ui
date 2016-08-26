@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1018</width>
-     <height>25</height>
+     <height>19</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -562,6 +562,17 @@
    </property>
    <property name="toolTip">
     <string>Web Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="mSnappingToolBar">
+   <property name="windowTitle">
+    <string>Snapping toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>

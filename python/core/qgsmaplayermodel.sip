@@ -65,8 +65,6 @@ class QgsMapLayerModel : QAbstractItemModel
 
     /**
      * Returns strings for all roles supported by this model.
-     *
-     * @note Available only with Qt5 (python and c++)
      */
     QHash<int, QByteArray> roleNames() const;
 

@@ -40,49 +40,50 @@ class QValidator;
 class QgisAppInterface;
 class QgisAppStyleSheet;
 class QgsAnnotationItem;
+class QgsAuthManager;
+class QgsBookmarks;
 class QgsClipboard;
 class QgsComposer;
 class QgsComposerManager;
 class QgsComposerView;
-class QgsCustomDropHandler;
-class QgsStatusBarCoordinatesWidget;
-class QgsStatusBarMagnifierWidget;
-class QgsStatusBarScaleWidget;
 class QgsContrastEnhancement;
+class QgsCoordinateReferenceSystem;
+class QgsCustomDropHandler;
 class QgsCustomLayerOrderWidget;
 class QgsDockWidget;
 class QgsDoubleSpinBox;
 class QgsFeature;
+class QgsFeatureStore;
 class QgsGeometry;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapLayerConfigWidgetFactory;
+class QgsMapOverviewCanvas;
 class QgsMapTip;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
-class QgsMapOverviewCanvas;
 class QgsPluginLayer;
+class QgsPluginLayer;
+class QgsPluginManager;
 class QgsPoint;
 class QgsProviderRegistry;
 class QgsPythonUtils;
+class QgsRasterLayer;
 class QgsRectangle;
+class QgsRuntimeProfiler;
 class QgsSnappingUtils;
+class QgsSnappingWidget;
+class QgsStatusBarCoordinatesWidget;
+class QgsStatusBarMagnifierWidget;
+class QgsStatusBarScaleWidget;
 class QgsTransactionGroup;
 class QgsUndoWidget;
 class QgsUserInputDockWidget;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsWelcomePage;
-class QgsRasterLayer;
-class QgsPluginLayer;
-class QgsCoordinateReferenceSystem;
-class QgsFeatureStore;
-class QgsAuthManager;
-class QgsPluginManager;
-class QgsRuntimeProfiler;
-class QgsBookmarks;
 
 class QDomDocument;
 class QNetworkReply;
@@ -727,6 +728,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
   private slots:
     void onTransactionGroupsChanged();
+
+    void onSnappingConfigChanged();
 
     //! validate a SRS
     void validateCrs( QgsCoordinateReferenceSystem &crs );
@@ -1741,7 +1744,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsStatisticalSummaryDockWidget* mStatisticalSummaryDockWidget;
     QgsBookmarks* mBookMarksDockWidget;
 
-    QgsSnappingDialog *mSnappingDialog;
+    //! snapping widget
+    QgsSnappingWidget *mSnappingWidget;
+    QWidget *mSnappingDialogContainer;
+    QgsSnappingWidget *mSnappingDialogWidget;
 
     QgsPluginManager *mPluginManager;
     QgsDockWidget *mMapStylingDock;

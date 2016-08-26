@@ -21,6 +21,7 @@
 #include "qgsmessagebaritem.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
+#include "qgssnappingconfig.h"
 
 #include <QAction>
 
@@ -101,17 +102,17 @@ void QgsMapCanvasTracer::configure()
   QList<QgsVectorLayer*> layers;
   QStringList visibleLayerIds = mCanvas->mapSettings().layers();
 
-  switch ( mCanvas->snappingUtils()->snapToMapMode() )
+  switch ( mCanvas->snappingUtils()->config().mode() )
   {
     default:
-    case QgsSnappingUtils::SnapCurrentLayer:
+    case QgsSnappingConfig::ActiveLayer:
     {
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
       if ( vl && visibleLayerIds.contains( vl->id() ) )
         layers << vl;
     }
     break;
-    case QgsSnappingUtils::SnapAllLayers:
+    case QgsSnappingConfig::AllLayers:
       Q_FOREACH ( const QString& layerId, visibleLayerIds )
       {
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
@@ -119,7 +120,7 @@ void QgsMapCanvasTracer::configure()
           layers << vl;
       }
       break;
-    case QgsSnappingUtils::SnapAdvanced:
+    case QgsSnappingConfig::AdvancedConfiguration:
       Q_FOREACH ( const QgsSnappingUtils::LayerConfig& cfg, mCanvas->snappingUtils()->layers() )
       {
         if ( visibleLayerIds.contains( cfg.layer->id() ) )
@@ -134,6 +135,6 @@ void QgsMapCanvasTracer::configure()
 void QgsMapCanvasTracer::onCurrentLayerChanged()
 {
   // no need to bother if we are not snapping
-  if ( mCanvas->snappingUtils()->snapToMapMode() == QgsSnappingUtils::SnapCurrentLayer )
+  if ( mCanvas->snappingUtils()->config().mode() == QgsSnappingConfig::ActiveLayer )
     invalidateGraph();
 }

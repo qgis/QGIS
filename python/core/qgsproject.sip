@@ -274,14 +274,6 @@ class QgsProject : QObject
      */
     QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath, const QStringList &invisibleLayers );
 
-    /** Convenience function to set snap settings per layer */
-    void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance,
-                                  bool avoidIntersection );
-
-    /** Convenience function to query snap settings of a layer */
-    bool snapSettingsForLayer( const QString& layerId, bool& enabled /Out/, QgsSnapper::SnappingType& type /Out/, QgsTolerance::UnitType& units /Out/, double& tolerance /Out/,
-                               bool& avoidIntersection /Out/ ) const;
-
     /** Convenience function to set topological editing */
     void setTopologicalEditing( bool enabled );
 
@@ -389,27 +381,14 @@ class QgsProject : QObject
 
     QgsExpressionContext createExpressionContext() const;
 
-  protected:
-
-    /** Set error message from read/write operation
-     * @note not available in Python bindings
+    /**
+     * The snapping configuration for this project.
      */
-    //void setError( const QString& errorMessage );
-
-    /** Clear error message
-     * @note not available in Python bindings
+    QgsSnappingConfig snappingConfig() const;
+    /**
+     * The snapping configuration for this project.
      */
-    //void clearError();
-
-    //! Creates layer and adds it to maplayer registry
-    //! @note not available in python bindings
-    // bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
-
-    //! @note not available in python bindings
-    // void initializeEmbeddedSubtree( const QString& projectFilePath, QgsLayerTreeGroup* group );
-
-    //! @note not available in python bindings
-    // void loadEmbeddedNodes( QgsLayerTreeGroup* group );
+    void setSnappingConfig( const QgsSnappingConfig& snappingConfig );
 
   signals:
     //! emitted when project is being read
@@ -451,8 +430,6 @@ class QgsProject : QObject
 
     void loadingLayer( const QString& );
 
-    void snapSettingsChanged();
-
     //! Emitted when the list of layer which are excluded from map identification changes
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 
@@ -461,6 +438,9 @@ class QgsProject : QObject
 
     //! Emitted when the home path of the project changes
     void homePathChanged();
+
+    //! emitted whenever the configuration for snapping has changed
+    void snappingConfigChanged();
 
     /** Emitted whenever the expression variables stored in the project have been changed.
      * @note added in QGIS 3.0

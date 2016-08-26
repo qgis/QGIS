@@ -15,22 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssnappingdialog.h"
+#include "qgisapp.h"
+#include "qgsdockwidget.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
-#include "qgisapp.h"
 #include "qgsproject.h"
-#include "qgslogger.h"
-#include "qgsdockwidget.h"
+#include "qgssnappingdialog.h"
+#include "qgsvectorlayer.h"
+
 
 #include <QCheckBox>
-#include <QDoubleValidator>
 #include <QComboBox>
+#include <QDoubleSpinBox>
+#include <QDoubleValidator>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QDoubleSpinBox>
+
 
 QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas )
     : QDialog( parent )

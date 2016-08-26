@@ -625,7 +625,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   cbxShowTips->setChecked( mSettings->value( QString( "/qgis/showTips%1" ).arg( Qgis::QGIS_VERSION_INT / 100 ), true ).toBool() );
   cbxCheckVersion->setChecked( mSettings->value( "/qgis/checkVersion", true ).toBool() );
   cbxAttributeTableDocked->setChecked( mSettings->value( "/qgis/dockAttributeTable", false ).toBool() );
-  cbxSnappingOptionsDocked->setChecked( mSettings->value( "/qgis/dockSnapping", false ).toBool() );
   cbxAddPostgisDC->setChecked( mSettings->value( "/qgis/addPostgisDC", false ).toBool() );
   cbxAddOracleDC->setChecked( mSettings->value( "/qgis/addOracleDC", false ).toBool() );
   cbxCompileExpressions->setChecked( mSettings->value( "/qgis/compileExpressions", true ).toBool() );
@@ -912,6 +911,15 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   chkDisableAttributeValuesDlg->setChecked( mSettings->value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool() );
   mValidateGeometries->setCurrentIndex( mSettings->value( "/qgis/digitizing/validate_geometries", 1 ).toInt() );
 
+  mSnappingMainDialogComboBox->clear();
+  mSnappingMainDialogComboBox->addItem( tr( "dialog" ), "dialog" );
+  mSnappingMainDialogComboBox->addItem( tr( "dock" ), "dock" );
+  mSnappingMainDialogComboBox->setCurrentIndex( mSnappingMainDialogComboBox->findData( mSettings->value( "/qgis/mainSnappingWidgetMode", "dialog" ).toString() ) );
+  mSnappingSimplePanelComboBox->clear();
+  mSnappingSimplePanelComboBox->addItem( tr( "tool bar" ), "toolbar" );
+  mSnappingSimplePanelComboBox->addItem( tr( "status bar" ), "statusbar" );
+  mSnappingSimplePanelComboBox->setCurrentIndex( mSnappingSimplePanelComboBox->findData( mSettings->value( "/qgis/simpleSnappingWidgetMode", "toolbar" ).toString() ) );
+
   mOffsetJoinStyleComboBox->addItem( tr( "Round" ), 0 );
   mOffsetJoinStyleComboBox->addItem( tr( "Mitre" ), 1 );
   mOffsetJoinStyleComboBox->addItem( tr( "Bevel" ), 2 );
@@ -1182,7 +1190,9 @@ void QgsOptions::saveOptions()
   mSettings->setValue( "/qgis/scanZipInBrowser2",
                        cmbScanZipInBrowser->currentData().toString() );
   mSettings->setValue( "/qgis/ignoreShapeEncoding", cbxIgnoreShapeEncoding->isChecked() );
-  mSettings->setValue( "/qgis/dockSnapping", cbxSnappingOptionsDocked->isChecked() );
+  mSettings->setValue( "/qgis/mainSnappingWidgetMode", mSnappingMainDialogComboBox->currentData() );
+  mSettings->setValue( "/qgis/simpleSnappingWidgetMode", mSnappingSimplePanelComboBox->currentData() );
+
   mSettings->setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
   mSettings->setValue( "/qgis/addOracleDC", cbxAddOracleDC->isChecked() );
   mSettings->setValue( "/qgis/compileExpressions", cbxCompileExpressions->isChecked() );
