@@ -574,6 +574,15 @@
         <file>themes/default/mIconClearText.svg</file>
         <file>themes/default/mIconClearTextHover.svg</file>
         <file>themes/default/rendererPointClusterSymbol.svg</file>
+        <file>themes/default/mIconSnapping.svg</file>
+        <file>themes/default/mIconSnappingActiveLayer.svg</file>
+        <file>themes/default/mIconSnappingAdvanced.svg</file>
+        <file>themes/default/mIconSnappingAllLayers.svg</file>
+        <file>themes/default/mIconSnappingVertexAndSegment.svg</file>
+        <file>themes/default/mIconSnappingVertex.svg</file>
+        <file>themes/default/mIconSnappingSegment.svg</file>
+        <file>themes/default/mIconTopologicalEditing.svg</file>
+        <file>themes/default/mIconSnappingIntersection.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

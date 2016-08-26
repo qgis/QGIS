@@ -19,6 +19,7 @@ from qgis.core import (QgsMapLayerRegistry,
                        QgsVectorLayer,
                        QgsMapSettings,
                        QgsSnappingUtils,
+                       QgsSnappingConfig,
                        QgsPointLocator,
                        QgsTolerance,
                        QgsRectangle,
@@ -111,9 +112,12 @@ class TestLayerDependencies(unittest.TestCase):
 
         u = QgsSnappingUtils()
         u.setMapSettings(ms)
-        u.setSnapToMapMode(QgsSnappingUtils.SnapAdvanced)
-        layers = [QgsSnappingUtils.LayerConfig(self.pointsLayer, QgsPointLocator.Vertex, 20, QgsTolerance.Pixels)]
-        u.setLayers(layers)
+        cfg = u.config()
+        cfg.setMode(QgsSnappingConfig.AdvancedConfiguration)
+        cfg.setIndividualLayerSettings(self.pointsLayer,
+                                       QgsSnappingConfig.IndividualLayerSettings(True,
+                                                                                 QgsSnappingConfig.Vertex, 20, QgsTolerance.Pixels))
+        u.setConfig(cfg)
 
         m = u.snapToMap(QPoint(95, 100))
         self.assertTrue(m.isValid())
@@ -153,10 +157,10 @@ class TestLayerDependencies(unittest.TestCase):
         self.pointsLayer.setDependencies([])
 
         # test chained layer dependencies A -> B -> C
-        layers = [QgsSnappingUtils.LayerConfig(self.pointsLayer, QgsPointLocator.Vertex, 20, QgsTolerance.Pixels),
-                  QgsSnappingUtils.LayerConfig(self.pointsLayer2, QgsPointLocator.Vertex, 20, QgsTolerance.Pixels)
-                  ]
-        u.setLayers(layers)
+        cfg.setIndividualLayerSettings(self.pointsLayer2,
+                                       QgsSnappingConfig.IndividualLayerSettings(True,
+                                                                                 QgsSnappingConfig.Vertex, 20, QgsTolerance.Pixels))
+        u.setConfig(cfg)
         self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
         self.pointsLayer2.setDependencies([QgsMapLayerDependency(self.pointsLayer.id())])
         # add another line
@@ -230,11 +234,15 @@ class TestLayerDependencies(unittest.TestCase):
 
         u = QgsSnappingUtils()
         u.setMapSettings(ms)
-        u.setSnapToMapMode(QgsSnappingUtils.SnapAdvanced)
-        layers = [QgsSnappingUtils.LayerConfig(self.pointsLayer, QgsPointLocator.Vertex, 20, QgsTolerance.Pixels),
-                  QgsSnappingUtils.LayerConfig(self.pointsLayer2, QgsPointLocator.Vertex, 20, QgsTolerance.Pixels)
-                  ]
-        u.setLayers(layers)
+        cfg = u.config()
+        cfg.setMode(QgsSnappingConfig.AdvancedConfiguration)
+        cfg.setIndividualLayerSettings(self.pointsLayer,
+                                       QgsSnappingConfig.IndividualLayerSettings(True,
+                                                                                 QgsSnappingConfig.Vertex, 20, QgsTolerance.Pixels))
+        cfg.setIndividualLayerSettings(self.pointsLayer2,
+                                       QgsSnappingConfig.IndividualLayerSettings(True,
+                                                                                 QgsSnappingConfig.Vertex, 20, QgsTolerance.Pixels))
+        u.setConfig(cfg)
         # add another line
         f = QgsFeature(self.linesLayer.fields())
         f.setFeatureId(4)

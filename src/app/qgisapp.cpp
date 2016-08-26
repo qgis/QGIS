@@ -30,6 +30,7 @@
 #include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QDialog>
+#include <QDialogButtonBox>
 #include <QDir>
 #include <QEvent>
 #include <QFile>
@@ -215,6 +216,7 @@
 #include "qgsshortcutsmanager.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssnappingdialog.h"
+#include "qgssnappingwidget.h"
 #include "qgssourceselectdialog.h"
 #include "qgssponsors.h"
 #include "qgsstatisticalsummarydockwidget.h"
@@ -589,6 +591,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     , mInternalClipboard( nullptr )
     , mShowProjectionTab( false )
     , mPythonUtils( nullptr )
+    , mSnappingWidget( nullptr )
     , mMapStylingDock( nullptr )
     , mComposerManager( nullptr )
     , mpTileScaleWidget( nullptr )
@@ -758,8 +761,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   startProfile( "Snapping utils" );
   mSnappingUtils = new QgsMapCanvasSnappingUtils( mMapCanvas, this );
   mMapCanvas->setSnappingUtils( mSnappingUtils );
-  connect( QgsProject::instance(), SIGNAL( snapSettingsChanged() ), mSnappingUtils, SLOT( readConfigFromProject() ) );
-  connect( this, SIGNAL( projectRead() ), mSnappingUtils, SLOT( readConfigFromProject() ) );
+  connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, this, &QgisApp::onSnappingConfigChanged );
+
   endProfile();
 
   functionProfile( &QgisApp::createActions, this, "Create actions" );
@@ -807,8 +810,27 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   endProfile();
 
   startProfile( "Snapping dialog" );
-  mSnappingDialog = new QgsSnappingDialog( this, mMapCanvas );
-  mSnappingDialog->setObjectName( "SnappingOption" );
+  mSnappingDialogWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, this );
+  QString mainSnappingWidgetMode = QSettings().value( "/qgis/mainSnappingWidgetMode", "dialog" ).toString();
+  if ( mainSnappingWidgetMode == "dock" )
+  {
+    QgsSnappingDock* dock = new QgsSnappingDock( tr( "Snapping and Digitizing Options" ), QgisApp::instance() );
+    dock->setAllowedAreas( Qt::AllDockWidgetAreas );
+    dock->setWidget( mSnappingDialogWidget );
+    addDockWidget( Qt::LeftDockWidgetArea, dock );
+    mSnappingDialogContainer = dock;
+    dock->hide();
+  }
+  else
+  {
+    QDialog* dialog = new QDialog( this );
+    dialog->setWindowTitle( tr( "Project snapping settings" ) );
+    QVBoxLayout* layout = new QVBoxLayout( dialog );
+    QDialogButtonBox* button = new QDialogButtonBox( QDialogButtonBox::Close );
+    layout->addWidget( mSnappingDialogWidget );
+    layout->addWidget( button );
+    mSnappingDialogContainer = dialog;
+  }
   endProfile();
 
   mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser Panel" ), this );
@@ -1160,7 +1182,8 @@ QgisApp::QgisApp()
     , mAdvancedDigitizingDockWidget( nullptr )
     , mStatisticalSummaryDockWidget( nullptr )
     , mBookMarksDockWidget( nullptr )
-    , mSnappingDialog( nullptr )
+    , mSnappingWidget( nullptr )
+    , mSnappingDialogContainer( nullptr )
     , mPluginManager( nullptr )
     , mMapStylingDock( nullptr )
     , mMapStyleWidget( nullptr )
@@ -2048,6 +2071,18 @@ void QgisApp::createToolBars()
   << mWebToolBar
   << mLabelToolBar;
 
+
+  // snapping widget as tool bar
+  QString simpleSnappingWidgetMode = QSettings().value( "/qgis/simpleSnappingWidgetMode", "toolbar" ).toString();
+  if ( simpleSnappingWidgetMode != "statusbar" )
+  {
+    mSnappingWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, mSnappingToolBar );
+    mSnappingWidget->setObjectName( "mSnappingWidget" );
+    //mSnappingWidget->setFont( myFont );
+    connect( mSnappingWidget, SIGNAL( snapSettingsChanged() ), QgsProject::instance(), SIGNAL( snapSettingsChanged() ) );
+    mSnappingToolBar->addWidget( mSnappingWidget );
+  }
+
   QList<QAction*> toolbarMenuActions;
   // Set action names so that they can be used in customization
   Q_FOREACH ( QToolBar *toolBar, toolbarMenuToolBars )
@@ -2394,6 +2429,17 @@ void QgisApp::createStatusBar()
   mRotationLabel->setText( tr( "Rotation" ) );
   mRotationLabel->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
   statusBar()->addPermanentWidget( mRotationLabel, 0 );
+
+  // snapping widget
+  QString simpleSnappingWidgetMode = QSettings().value( "/qgis/simpleSnappingWidgetMode", "toolbar" ).toString();
+  if ( simpleSnappingWidgetMode == "statusbar" )
+  {
+    mSnappingWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, statusBar() );
+    mSnappingWidget->setObjectName( "mSnappingWidget" );
+    mSnappingWidget->setFont( myFont );
+    connect( mSnappingWidget, SIGNAL( snapSettingsChanged() ), QgsProject::instance(), SIGNAL( snapSettingsChanged() ) );
+    statusBar()->addPermanentWidget( mSnappingWidget, 0 );
+  }
 
   mRotationEdit = new QgsDoubleSpinBox( statusBar() );
   mRotationEdit->setObjectName( "mRotationEdit" );
@@ -7179,7 +7225,7 @@ void QgisApp::offsetPointSymbol()
 
 void QgisApp::snappingOptions()
 {
-  mSnappingDialog->show();
+  mSnappingDialogContainer->show();
 }
 
 void QgisApp::splitFeatures()
@@ -11209,6 +11255,11 @@ void QgisApp::onTransactionGroupsChanged()
   {
     connect( tg, SIGNAL( commitError( QString ) ), this, SLOT( displayMessage( QString, QString, QgsMessageBar::MessageLevel ) ), Qt::UniqueConnection );
   }
+}
+
+void QgisApp::onSnappingConfigChanged()
+{
+  mSnappingUtils->setConfig( QgsProject::instance()->snappingConfig() );
 }
 
 void QgisApp::startProfile( const QString& name )

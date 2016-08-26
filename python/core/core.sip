@@ -111,6 +111,7 @@
 %Include qgspointlocator.sip
 %Include qgsproject.sip
 %Include qgsprojectproperty.sip
+%Include qgssnappingconfig.sip
 %Include qgsprojectversion.sip
 %Include qgsprovidermetadata.sip
 %Include qgsproviderregistry.sip

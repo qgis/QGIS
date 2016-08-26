@@ -179,6 +179,7 @@ SET(QGIS_CORE_SRCS
   qgspointlocator.cpp
   qgsproject.cpp
   qgsprojectfiletransform.cpp
+  qgssnappingconfig.cpp
   qgsprojectproperty.cpp
   qgsprojectversion.cpp
   qgsprovidermetadata.cpp
@@ -678,6 +679,7 @@ SET(QGIS_CORE_HDRS
   qgsproject.h
   qgsprojectfiletransform.h
   qgsprojectproperty.h
+  qgssnappingconfig.h
   qgsprojectversion.h
   qgsprovidermetadata.h
   qgsproviderregistry.h
@@ -692,6 +694,7 @@ SET(QGIS_CORE_HDRS
   qgsscaleutils.h
   qgssimplifymethod.h
   qgssnapper.h
+  qgssnappingconfig.h
   qgssnappingutils.h
   qgsspatialindex.h
   qgssqlexpressioncompiler.h
