@@ -2307,7 +2307,7 @@ void QgsSymbolLayerV2Utils::createRotationElement( QDomDocument &doc, QDomElemen
   if ( !rotationFunc.isEmpty() )
   {
     QDomElement rotationElem = doc.createElement( "se:Rotation" );
-    createFunctionElement( doc, rotationElem, rotationFunc );
+    createExpressionElement( doc, rotationElem, rotationFunc );
     element.appendChild( rotationElem );
   }
 }
@@ -2328,7 +2328,7 @@ void QgsSymbolLayerV2Utils::createOpacityElement( QDomDocument &doc, QDomElement
   if ( !alphaFunc.isEmpty() )
   {
     QDomElement opacityElem = doc.createElement( "se:Opacity" );
-    createFunctionElement( doc, opacityElem, alphaFunc );
+    createExpressionElement( doc, opacityElem, alphaFunc );
     element.appendChild( opacityElem );
   }
 }
@@ -2532,7 +2532,7 @@ void QgsSymbolLayerV2Utils::createGeometryElement( QDomDocument &doc, QDomElemen
    * like offset, centroid, ...
    */
 
-  createFunctionElement( doc, geometryElem, geomFunc );
+  createExpressionElement( doc, geometryElem, geomFunc );
 }
 
 bool QgsSymbolLayerV2Utils::geometryFromSldElement( QDomElement &element, QString &geomFunc )
@@ -2544,7 +2544,7 @@ bool QgsSymbolLayerV2Utils::geometryFromSldElement( QDomElement &element, QStrin
   return functionFromSldElement( geometryElem, geomFunc );
 }
 
-bool QgsSymbolLayerV2Utils::createFunctionElement( QDomDocument &doc, QDomElement &element, const QString& function )
+bool QgsSymbolLayerV2Utils::createExpressionElement( QDomDocument &doc, QDomElement &element, const QString& function )
 {
   // let's use QgsExpression to generate the SLD for the function
   QgsExpression expr( function );
@@ -2554,6 +2554,21 @@ bool QgsSymbolLayerV2Utils::createFunctionElement( QDomDocument &doc, QDomElemen
     return false;
   }
   QDomElement filterElem = QgsOgcUtils::expressionToOgcExpression( expr, doc );
+  if ( !filterElem.isNull() )
+    element.appendChild( filterElem );
+  return true;
+}
+
+bool QgsSymbolLayerV2Utils::createFunctionElement( QDomDocument &doc, QDomElement &element, const QString& function )
+{
+  // let's use QgsExpression to generate the SLD for the function
+  QgsExpression expr( function );
+  if ( expr.hasParserError() )
+  {
+    element.appendChild( doc.createComment( "Parser Error: " + expr.parserErrorString() + " - Expression was: " + function ) );
+    return false;
+  }
+  QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( expr, doc );
   if ( !filterElem.isNull() )
     element.appendChild( filterElem );
   return true;
@@ -4104,4 +4119,44 @@ QVector<qreal> QgsSymbolLayerV2Utils::rescaleUom( const QVector<qreal>& array, Q
     result.append( rescaleUom( *it, unit, props ) );
   }
   return result;
+}
+
+void QgsSymbolLayerUtils::applyScaleDependency( QDomDocument& doc, QDomElement& ruleElem, QgsStringMap& props )
+{
+  if ( !props.value( "scaleMinDenom", "" ).isEmpty() )
+  {
+    QDomElement scaleMinDenomElem = doc.createElement( "se:MinScaleDenominator" );
+    scaleMinDenomElem.appendChild( doc.createTextNode( props.value( "scaleMinDenom", "" ) ) );
+    ruleElem.appendChild( scaleMinDenomElem );
+  }
+
+  if ( !props.value( "scaleMaxDenom", "" ).isEmpty() )
+  {
+    QDomElement scaleMaxDenomElem = doc.createElement( "se:MaxScaleDenominator" );
+    scaleMaxDenomElem.appendChild( doc.createTextNode( props.value( "scaleMaxDenom", "" ) ) );
+    ruleElem.appendChild( scaleMaxDenomElem );
+  }
+}
+
+void QgsSymbolLayerUtils::mergeScaleDependencies( int mScaleMinDenom, int mScaleMaxDenom, QgsStringMap& props )
+{
+  if ( mScaleMinDenom != 0 )
+  {
+    bool ok;
+    int parentScaleMinDenom = props.value( "scaleMinDenom", "0" ).toInt( &ok );
+    if ( !ok || parentScaleMinDenom <= 0 )
+      props[ "scaleMinDenom" ] = QString::number( mScaleMinDenom );
+    else
+      props[ "scaleMinDenom" ] = QString::number( qMax( parentScaleMinDenom, mScaleMinDenom ) );
+  }
+
+  if ( mScaleMaxDenom != 0 )
+  {
+    bool ok;
+    int parentScaleMaxDenom = props.value( "scaleMaxDenom", "0" ).toInt( &ok );
+    if ( !ok || parentScaleMaxDenom <= 0 )
+      props[ "scaleMaxDenom" ] = QString::number( mScaleMaxDenom );
+    else
+      props[ "scaleMaxDenom" ] = QString::number( qMin( parentScaleMaxDenom, mScaleMaxDenom ) );
+  }
 }

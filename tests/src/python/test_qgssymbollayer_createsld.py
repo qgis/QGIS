@@ -36,7 +36,7 @@ from qgis.core import (
     QgsSimpleMarkerSymbolLayer, QgsUnitTypes, QgsSvgMarkerSymbolLayer,
     QgsFontMarkerSymbolLayer, QgsEllipseSymbolLayer, QgsSimpleLineSymbolLayer,
     QgsMarkerLineSymbolLayer, QgsMarkerSymbol, QgsSimpleFillSymbolLayer, QgsSVGFillSymbolLayer,
-    QgsLinePatternFillSymbolLayer, QgsPointPatternFillSymbolLayer)
+    QgsLinePatternFillSymbolLayer, QgsPointPatternFillSymbolLayer, QgsVectorLayer)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -371,6 +371,113 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
         self.assertStaticSize(root, '2')
 
+    def testSingleSymbolNoScaleDependencies(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "singleSymbol"))
+        layer.loadNamedStyle(mFilePath)
+
+        dom, root = self.layerToSld(layer)
+        # print("No dep on single symbol:" + dom.toString())
+
+        self.assertScaleDenominator(root, None, None)
+
+    def testSingleSymbolScaleDependencies(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "singleSymbol"))
+        layer.loadNamedStyle(mFilePath)
+        layer.setMinimumScale(1000)
+        layer.setMaximumScale(500000)
+        layer.setScaleBasedVisibility(True)
+
+        dom, root = self.layerToSld(layer)
+        # print("Scale dep on single symbol:" + dom.toString())
+
+        self.assertScaleDenominator(root, '1000', '500000')
+
+    def testCategorizedNoScaleDependencies(self):
+        layer = QgsVectorLayer("Polygon", "addfeat", "memory")
+        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "categorized"))
+        layer.loadNamedStyle(mFilePath)
+
+        dom, root = self.layerToSld(layer)
+        # print("Categorized no scale deps:" + dom.toString())
+
+        ruleCount = root.elementsByTagName('se:Rule').size()
+        for i in range(0, ruleCount):
+            self.assertScaleDenominator(root, None, None, i)
+
+    def testCategorizedWithScaleDependencies(self):
+        layer = QgsVectorLayer("Polygon", "addfeat", "memory")
+        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "categorized"))
+        layer.loadNamedStyle(mFilePath)
+        layer.setMinimumScale(1000)
+        layer.setMaximumScale(500000)
+        layer.setScaleBasedVisibility(True)
+
+        dom, root = self.layerToSld(layer)
+        # print("Categorized with scale deps:" + dom.toString())
+
+        ruleCount = root.elementsByTagName('se:Rule').size()
+        for i in range(0, ruleCount):
+            self.assertScaleDenominator(root, '1000', '500000', i)
+
+    def testGraduatedNoScaleDependencies(self):
+        layer = QgsVectorLayer("Polygon", "addfeat", "memory")
+
+        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "graduated"))
+        status = layer.loadNamedStyle(mFilePath)
+
+        dom, root = self.layerToSld(layer)
+        # print("Graduated no scale deps:" + dom.toString())
+
+        ruleCount = root.elementsByTagName('se:Rule').size()
+        for i in range(0, ruleCount):
+            self.assertScaleDenominator(root, None, None, i)
+
+    def testRuleBasedNoRootScaleDependencies(self):
+        layer = QgsVectorLayer("Polygon", "addfeat", "memory")
+
+        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "ruleBased"))
+        status = layer.loadNamedStyle(mFilePath)
+
+        dom, root = self.layerToSld(layer)
+        print("Rule based, no root scale deps:" + dom.toString())
+
+        ruleCount = root.elementsByTagName('se:Rule').size()
+        self.assertScaleDenominator(root, '1000', '40000000', 0)
+        self.assertScaleDenominator(root, None, None, 1)
+
+    def testRuleBasedNoRootScaleDependencies(self):
+        layer = QgsVectorLayer("Polygon", "addfeat", "memory")
+
+        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "ruleBased"))
+        status = layer.loadNamedStyle(mFilePath)
+        layer.setMinimumScale(5000)
+        layer.setMaximumScale(50000000)
+        layer.setScaleBasedVisibility(True)
+
+        dom, root = self.layerToSld(layer)
+        # print("Rule based, with root scale deps:" + dom.toString())
+
+        ruleCount = root.elementsByTagName('se:Rule').size()
+        self.assertScaleDenominator(root, '5000', '40000000', 0)
+        self.assertScaleDenominator(root, '5000', '50000000', 1)
+
+    def assertScaleDenominator(self, root, expectedMinScale, expectedMaxScale, index=0):
+        rule = root.elementsByTagName('se:Rule').item(index).toElement()
+
+        if expectedMinScale:
+            minScale = rule.elementsByTagName('se:MinScaleDenominator').item(0)
+            self.assertEquals(expectedMinScale, minScale.firstChild().nodeValue())
+        else:
+            self.assertEquals(0, root.elementsByTagName('se:MinScaleDenominator').size())
+
+        if expectedMaxScale:
+            maxScale = rule.elementsByTagName('se:MaxScaleDenominator').item(0)
+            self.assertEquals(expectedMaxScale, maxScale.firstChild().nodeValue())
+        else:
+            self.assertEquals(0, root.elementsByTagName('se:MaxScaleDenominator').size())
+
     def assertDashPattern(self, root, svgParameterIdx, expectedPattern):
         strokeWidth = root.elementsByTagName(
             'se:SvgParameter').item(svgParameterIdx)
@@ -400,6 +507,15 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         dom.appendChild(root)
         symbolLayer.toSld(dom, root, {})
         return dom, root
+
+    def layerToSld(self, mapLayer):
+        dom = QDomDocument()
+        root = dom.createElement("FakeRoot")
+        dom.appendChild(root)
+        error = None
+        mapLayer.writeSld(root, dom, error, {})
+        return dom, root
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -559,9 +559,8 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::clone() const
   return r;
 }
 
-void QgsGraduatedSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element ) const
+void QgsGraduatedSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
 {
-  QgsStringMap props;
   props[ "attribute" ] = mAttrName;
   props[ "method" ] = graduatedMethodStr( mGraduatedMethod );
   if ( mRotation.data() )
