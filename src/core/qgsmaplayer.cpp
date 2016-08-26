@@ -1481,7 +1481,13 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg )
     return;
   }
 
-  if ( !vlayer->writeSld( namedLayerNode, myDocument, errorMsg ) )
+  QgsStringMap props;
+  if ( hasScaleBasedVisibility() )
+  {
+    props[ "scaleMinDenom" ] = QString::number( mMinScale );
+    props[ "scaleMaxDenom" ] = QString::number( mMaxScale );
+  }
+  if ( !vlayer->writeSld( namedLayerNode, myDocument, errorMsg, props ) )
   {
     errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
     return;

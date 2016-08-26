@@ -348,25 +348,7 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
     props[ "filter" ] += mFilterExp;
   }
 
-  if ( mScaleMinDenom != 0 )
-  {
-    bool ok;
-    int parentScaleMinDenom = props.value( "scaleMinDenom", "0" ).toInt( &ok );
-    if ( !ok || parentScaleMinDenom <= 0 )
-      props[ "scaleMinDenom" ] = QString::number( mScaleMinDenom );
-    else
-      props[ "scaleMinDenom" ] = QString::number( qMax( parentScaleMinDenom, mScaleMinDenom ) );
-  }
-
-  if ( mScaleMaxDenom != 0 )
-  {
-    bool ok;
-    int parentScaleMaxDenom = props.value( "scaleMaxDenom", "0" ).toInt( &ok );
-    if ( !ok || parentScaleMaxDenom <= 0 )
-      props[ "scaleMaxDenom" ] = QString::number( mScaleMaxDenom );
-    else
-      props[ "scaleMaxDenom" ] = QString::number( qMin( parentScaleMaxDenom, mScaleMaxDenom ) );
-  }
+  QgsSymbolLayerUtils::mergeScaleDependencies( mScaleMinDenom, mScaleMaxDenom, props );
 
   if ( mSymbol )
   {
@@ -402,19 +384,7 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
       QgsSymbolLayerV2Utils::createFunctionElement( doc, ruleElem, props.value( "filter", "" ) );
     }
 
-    if ( !props.value( "scaleMinDenom", "" ).isEmpty() )
-    {
-      QDomElement scaleMinDenomElem = doc.createElement( "se:MinScaleDenominator" );
-      scaleMinDenomElem.appendChild( doc.createTextNode( props.value( "scaleMinDenom", "" ) ) );
-      ruleElem.appendChild( scaleMinDenomElem );
-    }
-
-    if ( !props.value( "scaleMaxDenom", "" ).isEmpty() )
-    {
-      QDomElement scaleMaxDenomElem = doc.createElement( "se:MaxScaleDenominator" );
-      scaleMaxDenomElem.appendChild( doc.createTextNode( props.value( "scaleMaxDenom", "" ) ) );
-      ruleElem.appendChild( scaleMaxDenomElem );
-    }
+    QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, props );
 
     mSymbol->toSld( doc, ruleElem, props );
   }
@@ -977,9 +947,13 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::clone() const
   return r;
 }
 
+<<<<<<< HEAD:src/core/symbology-ng/qgsrulebasedrendererv2.cpp
 void QgsRuleBasedRendererV2::toSld( QDomDocument& doc, QDomElement &element ) const
+=======
+void QgsRuleBasedRenderer::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
+>>>>>>> a25b025... Export map level scale based dependencies in most vector symbology:src/core/symbology-ng/qgsrulebasedrenderer.cpp
 {
-  mRootRule->toSld( doc, element, QgsStringMap() );
+  mRootRule->toSld( doc, element, props );
 }
 
 // TODO: ideally this function should be removed in favor of legendSymbol(ogy)Items

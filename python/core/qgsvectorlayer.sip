@@ -564,7 +564,7 @@ class QgsVectorLayer : QgsMapLayer
      */
     bool writeStyle( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const;
 
-    bool writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const;
+    bool writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage, QgsStringMap& props ) const;
     bool readSld( const QDomNode& node, QString& errorMessage );
 
     /**
@@ -1749,4 +1749,3 @@ class QgsVectorLayer : QgsMapLayer
 
 
 };
-

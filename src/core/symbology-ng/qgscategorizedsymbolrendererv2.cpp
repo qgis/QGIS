@@ -141,6 +141,9 @@ void QgsRendererCategoryV2::toSld( QDomDocument &doc, QDomElement &element, QgsS
                              mValue.toString().replace( '\'', "''" ) );
   QgsSymbolLayerV2Utils::createFunctionElement( doc, ruleElem, filterFunc );
 
+  // add the mix/max scale denoms if we got any from the callers
+  QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, props );
+
   mSymbol->toSld( doc, ruleElem, props );
 }
 
@@ -517,9 +520,8 @@ QgsCategorizedSymbolRendererV2* QgsCategorizedSymbolRendererV2::clone() const
   return r;
 }
 
-void QgsCategorizedSymbolRendererV2::toSld( QDomDocument &doc, QDomElement &element ) const
+void QgsCategorizedSymbolRendererV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
 {
-  QgsStringMap props;
   props[ "attribute" ] = mAttrName;
   if ( mRotation.data() )
     props[ "angle" ] = mRotation->expression();
