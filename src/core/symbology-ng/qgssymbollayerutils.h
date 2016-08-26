@@ -291,6 +291,14 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static void createGeometryElement( QDomDocument &doc, QDomElement &element, const QString& geomFunc );
     static bool geometryFromSldElement( QDomElement &element, QString &geomFunc );
 
+    /**
+     * Creates a OGC Expression element based on the provided function expression
+     * @param doc The document owning the element
+     * @param element The element parent
+     * @param function The expression to be encoded
+     * @return
+     */
+    static bool createExpressionElement( QDomDocument &doc, QDomElement &element, const QString& function );
     static bool createFunctionElement( QDomDocument &doc, QDomElement &element, const QString& function );
     static bool functionFromSldElement( QDomElement &element, QString &function );
 
@@ -527,24 +535,32 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /** Rescales the given size based on the uomScale found in the props, if any is found, otherwise
      *  returns the value un-modified
      * @note added in 3.0
-     * @note not available in Python bindings
      */
     static double rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props );
 
     /** Rescales the given point based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
      * @note added in 3.0
-     * @note not available in Python bindings
      */
     static QPointF rescaleUom( const QPointF& point, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props );
 
     /** Rescales the given array based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
      * @note added in 3.0
-     * @note not available in Python bindings
      */
     static QVector<qreal> rescaleUom( const QVector<qreal>& array, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props );
 
+    /**
+     * Checks if the properties contain scaleMinDenom and scaleMaxDenom, if available, they are added into the SE Rule element
+     * @note added in 3.0
+     */
+    static void applyScaleDependency( QDomDocument& doc, QDomElement& ruleElem, QgsStringMap& props );
+
+    /**
+      * Merges the local scale limits, if any, with the ones already in the map, if any
+      * @note added in 3.0
+      */
+    static void mergeScaleDependencies( int mScaleMinDenom, int mScaleMaxDenom, QgsStringMap& props );
 
 };
 

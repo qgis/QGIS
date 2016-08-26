@@ -61,7 +61,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 
     virtual QgsSingleSymbolRenderer* clone() const override;
 
-    virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
+    virtual void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props = QgsStringMap() ) const override;
     static QgsFeatureRenderer* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
 
     //! returns bitwise OR-ed capabilities of the renderer

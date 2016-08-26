@@ -1450,7 +1450,7 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     if ( !gap.isEmpty() )
     {
       QDomElement gapElem = doc.createElement( "se:Gap" );
-      QgsSymbolLayerUtils::createFunctionElement( doc, gapElem, gap );
+      QgsSymbolLayerUtils::createExpressionElement( doc, gapElem, gap );
       graphicStrokeElem.appendChild( gapElem );
     }
 
