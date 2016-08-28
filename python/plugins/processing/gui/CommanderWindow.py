@@ -102,7 +102,7 @@ class CommanderWindow(QDialog):
         # Add algorithms
         for algs in algList.algs.values():
             for alg in algs:
-                self.combo.addItem('Processing algorithm: ' + alg.name)
+                self.combo.addItem('Processing algorithm: ' + alg)
 
         # Add functions
         for command in dir(self.commands):
