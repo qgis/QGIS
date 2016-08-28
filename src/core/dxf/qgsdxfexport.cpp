@@ -451,11 +451,12 @@ void QgsDxfExport::writeGroup( const QColor& color, int exactMatchCode, int rgbC
     minDist = dist;
   }
 
-  if ( minDist == 0 && color.alpha() == 255 && minDistAt != 7 )
+  if ( minDist == 0 && minDistAt != 7 )
   {
     // exact full opaque match, not black/white
     writeGroup( exactMatchCode, minDistAt );
-    return;
+    if ( color.alpha() == 255 )
+      return;
   }
 
   int c = ( color.red() & 0xff ) * 0x10000 + ( color.green() & 0xff ) * 0x100 + ( color.blue() & 0xff );
@@ -3437,21 +3438,24 @@ void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString& l
   else
   {
     writeGroup( 0, "POLYLINE" );
-    writeHandle();
-    writeGroup( 8, layer );
+    int plHandle = writeHandle();
+    writeGroup( 330, mBlockHandle );
     writeGroup( 100, "AcDbEntity" );
-    writeGroup( 100, "AcDb3dPolyline" );
+    writeGroup( 8, layer );
     writeGroup( 6, lineStyleName );
-    writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) );
     writeGroup( color );
+    writeGroup( 100, "AcDb3dPolyline" );
+    writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) );
     writeGroup( 70, 8 );
 
     for ( int i = 0; i < n; i++ )
     {
       writeGroup( 0, "VERTEX" );
       writeHandle();
-      writeGroup( 8, layer );
+      writeGroup( 330, plHandle );
       writeGroup( 100, "AcDbEntity" );
+      writeGroup( 8, layer );
+      writeGroup( color );
       writeGroup( 100, "AcDbVertex" );
       writeGroup( 100, "AcDb3dPolylineVertex" );
       writeGroup( 0, line[i] );
@@ -3460,8 +3464,10 @@ void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString& l
 
     writeGroup( 0, "SEQEND" );
     writeHandle();
-    writeGroup( 8, layer );
+    writeGroup( 330, plHandle );
     writeGroup( 100, "AcDbEntity" );
+    writeGroup( 8, layer );
+    writeGroup( color );
   }
 }
 
