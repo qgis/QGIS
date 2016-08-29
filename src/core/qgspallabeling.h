@@ -34,6 +34,7 @@
 #include "qgsfield.h"
 #include "qgspoint.h"
 #include "qgsmapunitscale.h"
+#include "qgsstringutils.h"
 
 namespace pal
 {
@@ -479,6 +480,11 @@ class CORE_EXPORT QgsPalLayerSettings
     int textTransp;
     QPainter::CompositionMode blendMode;
     QColor previewBkgrdColor;
+
+    //! Substitution collection for automatic text substitution with labels
+    QgsStringReplacementCollection substitutions;
+    //! True if substitutions should be applied
+    bool useSubstitutions;
 
     //-- text formatting
 
