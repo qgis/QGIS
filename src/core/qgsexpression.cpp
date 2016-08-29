@@ -2613,6 +2613,52 @@ static QVariant fcnShortestLine( const QVariantList& values, const QgsExpression
   return result;
 }
 
+static QVariant fcnLineInterpolatePoint( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry lineGeom = getGeometry( values.at( 0 ), parent );
+  double distance = getDoubleValue( values.at( 1 ), parent );
+
+  QgsGeometry* geom = lineGeom.interpolate( distance );
+
+  QVariant result = geom ? QVariant::fromValue( *geom ) : QVariant();
+  delete geom;
+  return result;
+}
+
+static QVariant fcnLineInterpolateAngle( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry lineGeom = getGeometry( values.at( 0 ), parent );
+  double distance = getDoubleValue( values.at( 1 ), parent );
+
+  return lineGeom.interpolateAngle( distance ) * 180.0 / M_PI;
+}
+
+static QVariant fcnAngleAtVertex( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  int vertex = getIntValue( values.at( 1 ), parent );
+
+  return geom.angleAtVertex( vertex ) * 180.0 / M_PI;
+}
+
+static QVariant fcnDistanceToVertex( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+  int vertex = getIntValue( values.at( 1 ), parent );
+
+  return geom.distanceToVertex( vertex );
+}
+
+static QVariant fcnLineLocatePoint( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry lineGeom = getGeometry( values.at( 0 ), parent );
+  QgsGeometry pointGeom = getGeometry( values.at( 1 ), parent );
+
+  double distance = lineGeom.lineLocatePoint( pointGeom );
+
+  return distance >= 0 ? distance : QVariant();
+}
+
 static QVariant fcnRound( const QVariantList& values, const QgsExpressionContext *, QgsExpression* parent )
 {
   if ( values.length() == 2 )
@@ -3204,6 +3250,8 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "bounds_width" << "bounds_height" << "is_closed" << "convex_hull" << "difference"
     << "distance" << "intersection" << "sym_difference" << "combine"
     << "extrude" << "azimuth" <<  "project" << "closest_point" << "shortest_line"
+    << "line_locate_point" << "line_interpolate_point"
+    << "line_interpolate_angle" << "angle_at_vertex" << "distance_to_vertex"
     << "union" << "geom_to_wkt" << "geomToWKT" << "geometry"
     << "transform" << "get_feature" << "getFeature"
     << "levenshtein" << "longest_common_substring" << "hamming_distance"
@@ -3416,6 +3464,16 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "order_parts", 3, fcnOrderParts, "GeometryGroup", QString() )
     << new StaticFunction( "closest_point", 2, fcnClosestPoint, "GeometryGroup" )
     << new StaticFunction( "shortest_line", 2, fcnShortestLine, "GeometryGroup" )
+    << new StaticFunction( "line_interpolate_point", ParameterList() << Parameter( "geometry" )
+                           << Parameter( "distance" ), fcnLineInterpolatePoint, "GeometryGroup" )
+    << new StaticFunction( "line_interpolate_angle", ParameterList() << Parameter( "geometry" )
+                           << Parameter( "distance" ), fcnLineInterpolateAngle, "GeometryGroup" )
+    << new StaticFunction( "line_locate_point", ParameterList() << Parameter( "geometry" )
+                           << Parameter( "point" ), fcnLineLocatePoint, "GeometryGroup" )
+    << new StaticFunction( "angle_at_vertex", ParameterList() << Parameter( "geometry" )
+                           << Parameter( "vertex" ), fcnAngleAtVertex, "GeometryGroup" )
+    << new StaticFunction( "distance_to_vertex", ParameterList() << Parameter( "geometry" )
+                           << Parameter( "vertex" ), fcnDistanceToVertex, "GeometryGroup" )
     << new StaticFunction( "$rownum", 0, fcnRowNumber, "deprecated" )
     << new StaticFunction( "$id", 0, fcnFeatureId, "Record" )
     << new StaticFunction( "$currentfeature", 0, fcnFeature, "Record" )
