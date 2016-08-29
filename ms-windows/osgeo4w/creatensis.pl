@@ -355,6 +355,9 @@ close F;
 
 $version = "$major.$minor.$patch" unless defined $version;
 
+my($pmajor,$pminor,$ppatch) = $version =~ /^(\d+)\.(\d+)\.(\d+)$/;
+die "Invalid version $version" unless defined $ppatch;
+
 unless( defined $binary ) {
 	if( -f "binary$archpostfix-$version" ) {
 		open P, "binary$archpostfix-$version";
@@ -440,8 +443,8 @@ $cmd .= " -V$verbose";
 $cmd .= " -DVERSION_NAME='$releasename'";
 $cmd .= " -DVERSION_NUMBER='$version'";
 $cmd .= " -DBINARY_REVISION=$binary";
-$cmd .= sprintf( " -DVERSION_INT='%d%02d%02d%02d'", $major, $minor, $patch, $binary );
-$cmd .= sprintf( " -DQGIS_BASE='$packagename %d.%d'", $major, $minor );
+$cmd .= sprintf( " -DVERSION_INT='%d%02d%02d%02d'", $pmajor, $pminor, $ppatch, $binary );
+$cmd .= sprintf( " -DQGIS_BASE='$packagename %d.%d'", $pmajor, $pminor );
 $cmd .= " -DINSTALLER_NAME='$packagename-OSGeo4W-$version-$binary-Setup$archpostfix.exe'";
 $cmd .= " -DDISPLAYED_NAME='$packagename \'$releasename\' ($version)'";
 $cmd .= " -DSHORTNAME='$shortname'";
