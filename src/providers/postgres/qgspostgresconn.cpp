@@ -1468,8 +1468,9 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
   }
 }
 
-void QgsPostgresConn::postgisWkbType( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim )
+void QgsPostgresConn::postgisWkbType( QgsWkbTypes::Type wkbType, QString& geometryType, int& dim )
 {
+  dim = 2;
   switch ( wkbType )
   {
     case QgsWkbTypes::Point25D:

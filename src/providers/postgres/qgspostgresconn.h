@@ -318,7 +318,7 @@ class QgsPostgresConn : public QObject
 
     static QString postgisWkbTypeName( QgsWkbTypes::Type wkbType );
     static int postgisWkbTypeDim( QgsWkbTypes::Type wkbType );
-    static void postgisWkbType( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
+    static void postgisWkbType( QgsWkbTypes::Type wkbType, QString& geometryType, int& dim );
 
     static QString postgisTypeFilter( QString geomCol, QgsWkbTypes::Type wkbType, bool castToGeometry );
 
