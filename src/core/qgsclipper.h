@@ -26,7 +26,7 @@
 #include <QVector>
 #include <QPolygonF>
 
-class QgsConstWkbPtr;
+class QgsCurve;
 
 /** \ingroup core
  * A class to trim lines and polygons to within a rectangular region.
@@ -84,11 +84,12 @@ class CORE_EXPORT QgsClipper
 
     static void trimPolygon( QPolygonF& pts, const QgsRectangle& clipRect );
 
-    /** Reads a polyline from WKB and clips it to clipExtent
-      @param wkb pointer to the start of the line wkb
-      @param clipExtent clipping bounds
-      @param line out: clipped line coordinates*/
-    static QgsConstWkbPtr clippedLineWKB( QgsConstWkbPtr& wkb, const QgsRectangle& clipExtent, QPolygonF& line );
+    /** Takes a linestring and clips it to clipExtent
+     * @param curve the linestring
+     * @param clipExtent clipping bounds
+     * @return clipped line coordinates
+     */
+    static QPolygonF clippedLine( const QgsCurve& curve, const QgsRectangle& clipExtent );
 
   private:
 

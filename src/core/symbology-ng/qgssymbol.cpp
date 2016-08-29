@@ -20,6 +20,7 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
 
 #include "qgslogger.h"
 #include "qgsrendercontext.h" // for bigSymbolPreview
@@ -34,9 +35,9 @@
 
 #include "qgsgeometry.h"
 #include "qgsmultipoint.h"
-#include "qgswkbptr.h"
-#include "qgswkbsimplifierptr.h"
 #include "qgsgeometrycollection.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
 #include "qgsclipper.h"
 
 #include <QColor>
@@ -108,56 +109,26 @@ QgsSymbol::QgsSymbol( SymbolType type, const QgsSymbolLayerList& layers )
   }
 }
 
-QgsConstWkbPtr QgsSymbol::_getPoint( QPointF& pt, QgsRenderContext& context, QgsConstWkbPtr& wkbPtr )
+QPolygonF QgsSymbol::_getLineString( QgsRenderContext& context, const QgsCurve& curve, bool clipToExtent )
 {
-  QgsWkbTypes::Type type = wkbPtr.readHeader();
-  wkbPtr >> pt.rx() >> pt.ry();
-  wkbPtr += ( QgsWkbTypes::coordDimensions( type ) - 2 ) * sizeof( double );
-
-  if ( context.coordinateTransform().isValid() )
-  {
-    double z = 0; // dummy variable for coordinate transform
-    context.coordinateTransform().transformInPlace( pt.rx(), pt.ry(), z );
-  }
-
-  context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
-
-  return wkbPtr;
-}
-
-QgsConstWkbPtr QgsSymbol::_getLineString( QPolygonF& pts, QgsRenderContext& context, QgsConstWkbPtr& wkbPtr, bool clipToExtent )
-{
-  QgsWkbTypes::Type wkbType = wkbPtr.readHeader();
-  unsigned int nPoints;
-  wkbPtr >> nPoints;
+  const unsigned int nPoints = curve.numPoints();
 
   QgsCoordinateTransform ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
+  QPolygonF pts;
 
   //apply clipping for large lines to achieve a better rendering performance
   if ( clipToExtent && nPoints > 1 )
   {
     const QgsRectangle& e = context.extent();
-    double cw = e.width() / 10;
-    double ch = e.height() / 10;
-    QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
-    wkbPtr -= 1 + 2 * sizeof( int );
-    wkbPtr = QgsClipper::clippedLineWKB( wkbPtr, clipRect, pts );
+    const double cw = e.width() / 10;
+    const double ch = e.height() / 10;
+    const QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
+    pts = QgsClipper::clippedLine( curve, clipRect );
   }
   else
   {
-    int skipZM = ( QgsWkbTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
-    Q_ASSERT( skipZM >= 0 );
-
-    if ( static_cast<int>( nPoints * ( 2 * sizeof( double ) + skipZM ) ) > wkbPtr.remaining() )
-    {
-      QgsDebugMsg( QString( "%1 points exceed wkb length (%2>%3)" ).arg( nPoints ).arg( nPoints * ( 2 * sizeof( double ) + skipZM ) ).arg( wkbPtr.remaining() ) );
-      return QgsConstWkbPtr( nullptr, 0 );
-    }
-
-    wkbPtr -= sizeof( unsigned int );
-    wkbPtr >> pts;
-    nPoints = pts.size();
+    pts = curve.asQPolygonF();
   }
 
   //transform the QPolygonF to screen coordinates
@@ -172,75 +143,55 @@ QgsConstWkbPtr QgsSymbol::_getLineString( QPolygonF& pts, QgsRenderContext& cont
     mtp.transformInPlace( ptr->rx(), ptr->ry() );
   }
 
-  return wkbPtr;
+  return pts;
 }
 
-QgsConstWkbPtr QgsSymbol::_getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, QgsConstWkbPtr& wkbPtr, bool clipToExtent )
+QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext& context, const QgsCurve& curve, bool clipToExtent )
 {
-  QgsWkbTypes::Type wkbType = wkbPtr.readHeader();
-  unsigned int numRings;
-  wkbPtr >> numRings;
-
-  if ( numRings == 0 )  // sanity check for zero rings in polygon
-    return wkbPtr;
-
-  holes.clear();
-
-  QgsCoordinateTransform ct = context.coordinateTransform();
+  const QgsCoordinateTransform ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
   const QgsRectangle& e = context.extent();
-  double cw = e.width() / 10;
-  double ch = e.height() / 10;
+  const double cw = e.width() / 10;
+  const double ch = e.height() / 10;
   QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
 
-  int skipZM = ( QgsWkbTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
-  Q_ASSERT( skipZM >= 0 );
+  QPolygonF poly = curve.asQPolygonF();
 
-  for ( unsigned int idx = 0; idx < numRings; idx++ )
+  if ( curve.numPoints() < 1 )
+    return QPolygonF();
+
+  //clip close to view extent, if needed
+  const QRectF ptsRect = poly.boundingRect();
+  if ( clipToExtent && !context.extent().contains( ptsRect ) )
   {
-    unsigned int nPoints;
-    wkbPtr >> nPoints;
-
-    if ( static_cast<int>( nPoints * ( 2 * sizeof( double ) + skipZM ) ) > wkbPtr.remaining() )
-    {
-      QgsDebugMsg( QString( "%1 points exceed wkb length (%2>%3)" ).arg( nPoints ).arg( nPoints * ( 2 * sizeof( double ) + skipZM ) ).arg( wkbPtr.remaining() ) );
-      return QgsConstWkbPtr( nullptr, 0 );
-    }
-
-    QPolygonF poly;
-    wkbPtr -= sizeof( unsigned int );
-    wkbPtr >> poly;
-    nPoints = poly.size();
-
-    if ( nPoints < 1 )
-      continue;
-
-    //clip close to view extent, if needed
-    QRectF ptsRect = poly.boundingRect();
-    if ( clipToExtent && !context.extent().contains( ptsRect ) )
-    {
-      QgsClipper::trimPolygon( poly, clipRect );
-    }
-
-    //transform the QPolygonF to screen coordinates
-    if ( ct.isValid() )
-    {
-      ct.transformPolygon( poly );
-    }
-
-    QPointF *ptr = poly.data();
-    for ( int i = 0; i < poly.size(); ++i, ++ptr )
-    {
-      mtp.transformInPlace( ptr->rx(), ptr->ry() );
-    }
-
-    if ( idx == 0 )
-      pts = poly;
-    else
-      holes.append( poly );
+    QgsClipper::trimPolygon( poly, clipRect );
   }
 
-  return wkbPtr;
+  //transform the QPolygonF to screen coordinates
+  if ( ct.isValid() )
+  {
+    ct.transformPolygon( poly );
+  }
+
+  QPointF *ptr = poly.data();
+  for ( int i = 0; i < poly.size(); ++i, ++ptr )
+  {
+    mtp.transformInPlace( ptr->rx(), ptr->ry() );
+  }
+
+  return poly;
+}
+
+void QgsSymbol::_getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext &context, const QgsPolygonV2& polygon, bool clipToExtent )
+{
+  holes.clear();
+
+  pts = _getPolygonRing( context, *polygon.exteriorRing(), clipToExtent );
+  for ( int idx = 0; idx < polygon.numInteriorRings(); idx++ )
+  {
+    const QPolygonF hole = _getPolygonRing( context, *( polygon.interiorRing( idx ) ), clipToExtent );
+    if ( !hole.isEmpty() ) holes.append( hole );
+  }
 }
 
 QgsSymbol::~QgsSymbol()
@@ -739,11 +690,19 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
   // Collection of markers to paint, only used for no curve types.
   QPolygonF markers;
 
+  // Simplify the geometry, if needed.
+  if ( context.vectorSimplifyMethod().forceLocalOptimization() )
+  {
+    const int simplifyHints = context.vectorSimplifyMethod().simplifyHints();
+    const QgsMapToPixelSimplifier simplifier( simplifyHints, context.vectorSimplifyMethod().tolerance(),
+        static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( context.vectorSimplifyMethod().simplifyAlgorithm() ) );
+    segmentizedGeometry = simplifier.simplify( segmentizedGeometry );
+  }
+
   switch ( QgsWkbTypes::flatType( segmentizedGeometry.geometry()->wkbType() ) )
   {
     case QgsWkbTypes::Point:
     {
-      QPointF pt;
       if ( mType != QgsSymbol::Marker )
       {
         QgsDebugMsg( "point can be drawn only with marker symbol!" );
@@ -751,7 +710,7 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
       }
 
       const QgsPointV2* point = static_cast< const QgsPointV2* >( segmentizedGeometry.geometry() );
-      _getPoint( pt, context, point );
+      const QPointF pt = _getPoint( context, *point );
       static_cast<QgsMarkerSymbol*>( this )->renderPoint( pt, &feature, context, layer, selected );
 
       if ( context.testFlag( QgsRenderContext::DrawSymbolBounds ) )
@@ -770,14 +729,13 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
     break;
     case QgsWkbTypes::LineString:
     {
-      QPolygonF pts;
       if ( mType != QgsSymbol::Line )
       {
         QgsDebugMsg( "linestring can be drawn only with line symbol!" );
         break;
       }
-      QgsConstWkbSimplifierPtr wkbPtr( segmentizedGeometry.asWkb(), segmentizedGeometry.wkbSize(), context.vectorSimplifyMethod() );
-      _getLineString( pts, context, wkbPtr, !tileMapRendering && clipFeaturesToExtent() );
+      const QgsCurve& curve = dynamic_cast<const QgsCurve&>( *segmentizedGeometry.geometry() );
+      const QPolygonF pts = _getLineString( context, curve, !tileMapRendering && clipFeaturesToExtent() );
       static_cast<QgsLineSymbol*>( this )->renderPolyline( pts, &feature, context, layer, selected );
 
       if ( drawVertexMarker && !usingSegmentizedGeometry )
@@ -795,8 +753,8 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
         QgsDebugMsg( "polygon can be drawn only with fill symbol!" );
         break;
       }
-      QgsConstWkbSimplifierPtr wkbPtr( segmentizedGeometry.asWkb(), segmentizedGeometry.wkbSize(), context.vectorSimplifyMethod() );
-      _getPolygon( pts, holes, context, wkbPtr, !tileMapRendering && clipFeaturesToExtent() );
+      const QgsPolygonV2& polygon = dynamic_cast<const QgsPolygonV2&>( *segmentizedGeometry.geometry() );
+      _getPolygon( pts, holes, context, polygon, !tileMapRendering && clipFeaturesToExtent() );
       static_cast<QgsFillSymbol*>( this )->renderPolygon( pts, ( !holes.isEmpty() ? &holes : nullptr ), &feature, context, layer, selected );
 
       if ( drawVertexMarker && !usingSegmentizedGeometry )
@@ -813,28 +771,26 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
 
     case QgsWkbTypes::MultiPoint:
     {
-      QPointF pt;
-
       if ( mType != QgsSymbol::Marker )
       {
         QgsDebugMsg( "multi-point can be drawn only with marker symbol!" );
         break;
       }
 
-      QgsMultiPointV2* mp = static_cast< QgsMultiPointV2* >( segmentizedGeometry.geometry() );
+      const QgsMultiPointV2& mp = static_cast< const QgsMultiPointV2& >( *segmentizedGeometry.geometry() );
 
       if ( drawVertexMarker && !usingSegmentizedGeometry )
       {
-        markers.reserve( mp->numGeometries() );
+        markers.reserve( mp.numGeometries() );
       }
 
-      for ( int i = 0; i < mp->numGeometries(); ++i )
+      for ( int i = 0; i < mp.numGeometries(); ++i )
       {
         mSymbolRenderContext->setGeometryPartNum( i + 1 );
         mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1 );
 
-        const QgsPointV2* point = static_cast< const QgsPointV2* >( mp->geometryN( i ) );
-        _getPoint( pt, context, point );
+        const QgsPointV2& point = static_cast< const QgsPointV2& >( *mp.geometryN( i ) );
+        const QPointF pt = _getPoint( context, point );
         static_cast<QgsMarkerSymbol*>( this )->renderPoint( pt, &feature, context, layer, selected );
 
         if ( drawVertexMarker && !usingSegmentizedGeometry )
@@ -848,35 +804,23 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
     case QgsWkbTypes::MultiCurve:
     case QgsWkbTypes::MultiLineString:
     {
-      QPolygonF pts;
-
       if ( mType != QgsSymbol::Line )
       {
         QgsDebugMsg( "multi-linestring can be drawn only with line symbol!" );
         break;
       }
 
-      QgsConstWkbSimplifierPtr wkbPtr( segmentizedGeometry.asWkb(), segmentizedGeometry.wkbSize(), context.vectorSimplifyMethod() );
-      wkbPtr.readHeader();
+      const QgsGeometryCollection& geomCollection = dynamic_cast<const QgsGeometryCollection&>( *segmentizedGeometry.geometry() );
 
-      unsigned int num;
-      wkbPtr >> num;
-
-      const QgsGeometryCollection* geomCollection = dynamic_cast<const QgsGeometryCollection*>( geom.geometry() );
-
-      for ( unsigned int i = 0; i < num && wkbPtr; ++i )
+      const unsigned int num = geomCollection.numGeometries();
+      for ( unsigned int i = 0; i < num; ++i )
       {
         mSymbolRenderContext->setGeometryPartNum( i + 1 );
         mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1 );
 
-        if ( geomCollection )
-        {
-          context.setGeometry( geomCollection->geometryN( i ) );
-        }
-        if ( _getLineString( pts, context, wkbPtr, !tileMapRendering && clipFeaturesToExtent() ) == nullptr )
-        {
-          break;
-        }
+        context.setGeometry( geomCollection.geometryN( i ) );
+        const QgsCurve& curve = dynamic_cast<const QgsCurve&>( *geomCollection.geometryN( i ) );
+        const QPolygonF pts =  _getLineString( context, curve, !tileMapRendering && clipFeaturesToExtent() );
         static_cast<QgsLineSymbol*>( this )->renderPolyline( pts, &feature, context, layer, selected );
 
         if ( drawVertexMarker && !usingSegmentizedGeometry )
@@ -903,30 +847,20 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
         break;
       }
 
-      QgsConstWkbSimplifierPtr wkbPtr( segmentizedGeometry.asWkb(), segmentizedGeometry.wkbSize(), context.vectorSimplifyMethod() );
-      wkbPtr.readHeader();
-
-      unsigned int num;
-      wkbPtr >> num;
-
       QPolygonF pts;
       QList<QPolygonF> holes;
 
-      const QgsGeometryCollection* geomCollection = dynamic_cast<const QgsGeometryCollection*>( geom.geometry() );
+      const QgsGeometryCollection& geomCollection = dynamic_cast<const QgsGeometryCollection&>( *segmentizedGeometry.geometry() );
+      const unsigned int num = geomCollection.numGeometries();
 
-      for ( unsigned int i = 0; i < num && wkbPtr; ++i )
+      for ( unsigned int i = 0; i < num; ++i )
       {
         mSymbolRenderContext->setGeometryPartNum( i + 1 );
         mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1 );
 
-        if ( geomCollection )
-        {
-          context.setGeometry( geomCollection->geometryN( i ) );
-        }
-        if ( _getPolygon( pts, holes, context, wkbPtr, !tileMapRendering && clipFeaturesToExtent() ) == nullptr )
-        {
-          break;
-        }
+        context.setGeometry( geomCollection.geometryN( i ) );
+        const QgsPolygonV2& polygon = dynamic_cast<const QgsPolygonV2&>( *geomCollection.geometryN( i ) );
+        _getPolygon( pts, holes, context, polygon, !tileMapRendering && clipFeaturesToExtent() );
         static_cast<QgsFillSymbol*>( this )->renderPolygon( pts, ( !holes.isEmpty() ? &holes : nullptr ), &feature, context, layer, selected );
 
         if ( drawVertexMarker && !usingSegmentizedGeometry )
@@ -950,13 +884,8 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
     }
     case QgsWkbTypes::GeometryCollection:
     {
-      QgsConstWkbPtr wkbPtr( segmentizedGeometry.asWkb(), segmentizedGeometry.wkbSize() );
-      wkbPtr.readHeader();
-
-      int nGeometries;
-      wkbPtr >> nGeometries;
-
-      if ( nGeometries == 0 )
+      const QgsGeometryCollection& geomCollection = dynamic_cast<const QgsGeometryCollection&>( *segmentizedGeometry.geometry() );
+      if ( geomCollection.numGeometries() == 0 )
       {
         // skip noise from empty geometry collections from simplification
         break;

@@ -24,14 +24,15 @@
 
 #include "effectivearea.h"
 
-EFFECTIVE_AREAS* initiate_effectivearea( const POINTARRAY *inpts )
+EFFECTIVE_AREAS* initiate_effectivearea( const QgsCurve& inpts )
 {
   //LWDEBUG( 2, "Entered  initiate_effectivearea" );
   EFFECTIVE_AREAS *ea;
   ea = ( EFFECTIVE_AREAS* )lwalloc( sizeof( EFFECTIVE_AREAS ) );
-  ea->initial_arealist = ( areanode* )lwalloc( inpts->npoints * sizeof( areanode ) );
-  ea->res_arealist = ( double* )lwalloc( inpts->npoints * sizeof( double ) );
-  ea->inpts = inpts;
+  inpts.points( ea->inpts );
+  ea->is3d = inpts.is3D();
+  ea->initial_arealist = ( areanode* )lwalloc( ea->inpts.size() * sizeof( areanode ) );
+  ea->res_arealist = ( double* )lwalloc( ea->inpts.size() * sizeof( double ) );
   return ea;
 }
 
@@ -59,25 +60,25 @@ static void destroy_minheap( MINHEAP tree )
 /**
  * Calculate the area of a triangle in 2d
  */
-static double triarea2d( const double *P1, const double *P2, const double *P3 )
+static double triarea2d( const QgsPointV2 &P1, const QgsPointV2 &P2, const QgsPointV2 &P3 )
 {
-  return qAbs( 0.5 * (( P1[0] - P2[0] ) * ( P3[1] - P2[1] ) - ( P1[1] - P2[1] ) * ( P3[0] - P2[0] ) ) );
+  return qAbs( 0.5 * (( P1.x() - P2.x() ) * ( P3.y() - P2.y() ) - ( P1.y() - P2.y() ) * ( P3.x() - P2.x() ) ) );
 }
 
 /**
  * Calculate the area of a triangle in 3d space
  */
-static double triarea3d( const double *P1, const double *P2, const double *P3 )
+static double triarea3d( const QgsPointV2 &P1, const QgsPointV2 &P2, const QgsPointV2 &P3 )
 {
   //LWDEBUG( 2, "Entered  triarea3d" );
   double ax, bx, ay, by, az, bz, cx, cy, cz, area;
 
-  ax = P1[0] - P2[0];
-  bx = P3[0] - P2[0];
-  ay = P1[1] - P2[1];
-  by = P3[1] - P2[1];
-  az = P1[2] - P2[2];
-  bz = P3[2] - P2[2];
+  ax = P1.x() - P2.x();
+  bx = P3.x() - P2.x();
+  ay = P1.y() - P2.y();
+  by = P3.y() - P2.y();
+  az = P1.z() - P2.z();
+  bz = P3.z() - P2.z();
 
   cx = ay * bz - az * by;
   cy = az * bx - ax * bz;
@@ -209,20 +210,18 @@ static void minheap_update( MINHEAP *tree, areanode *arealist, int idx )
 static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double trshld )
 {
   //LWDEBUG( 2, "Entered  tune_areas" );
-  const double *P1;
-  const double *P2;
-  const double *P3;
+  QgsPointV2 P1;
+  QgsPointV2 P2;
+  QgsPointV2 P3;
   double area;
   int go_on = 1;
   double check_order_min_area = 0;
 
-  int npoints = ea->inpts->npoints;
+  int npoints = ea->inpts.size();
   int i;
   int current, before_current, after_current;
 
   MINHEAP tree = initiate_minheap( npoints );
-
-  int is3d = FLAGS_GET_Z( ea->inpts->flags );
 
   // Add all keys (index in initial_arealist) into minheap array
   for ( i = 0; i < npoints; i++ )
@@ -266,15 +265,15 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
     before_current = ea->initial_arealist[current].prev;
     after_current  = ea->initial_arealist[current].next;
 
-    P2 = ( double* )getPoint_internal( ea->inpts, before_current );
-    P3 = ( double* )getPoint_internal( ea->inpts, after_current );
+    P2 = ea->inpts.at( before_current );
+    P3 = ea->inpts.at( after_current );
 
     // Check if point before current point is the first in the point array.
     if ( before_current > 0 )
     {
-      P1 = ( double* )getPoint_internal( ea->inpts, ea->initial_arealist[before_current].prev );
+      P1 = ea->inpts.at( ea->initial_arealist[before_current].prev );
 
-      if ( is3d )
+      if ( ea->is3d )
         area = triarea3d( P1, P2, P3 );
       else
         area = triarea2d( P1, P2, P3 );
@@ -286,9 +285,9 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
     {
       P1 = P2;
       P2 = P3;
-      P3 = ( double* )getPoint_internal( ea->inpts, ea->initial_arealist[after_current].next );
+      P3 = ea->inpts.at( ea->initial_arealist[after_current].next );
 
-      if ( is3d )
+      if ( ea->is3d )
         area = triarea3d( P1, P2, P3 );
       else
         area = triarea2d( P1, P2, P3 );
@@ -317,15 +316,14 @@ void ptarray_calc_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, d
 {
   //LWDEBUG( 2, "Entered  ptarray_calc_areas" );
   int i;
-  int npoints = ea->inpts->npoints;
-  int is3d = FLAGS_GET_Z( ea->inpts->flags );
+  int npoints = ea->inpts.size();
   double area;
 
-  const double *P1;
-  const double *P2;
-  const double *P3;
-  P1 = ( double* )getPoint_internal( ea->inpts, 0 );
-  P2 = ( double* )getPoint_internal( ea->inpts, 1 );
+  QgsPointV2 P1;
+  QgsPointV2 P2;
+  QgsPointV2 P3;
+  P1 = ea->inpts.at( 0 );
+  P2 = ea->inpts.at( 1 );
 
   // The first and last point shall always have the maximum effective area. We use float max to not make trouble for bbox
   ea->initial_arealist[0].area = ea->initial_arealist[npoints - 1].area = FLT_MAX;
@@ -338,9 +336,9 @@ void ptarray_calc_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, d
   {
     ea->initial_arealist[i].next = i + 1;
     ea->initial_arealist[i].prev = i - 1;
-    P3 = ( double* )getPoint_internal( ea->inpts, i + 1 );
+    P3 = ea->inpts.at( i + 1 );
 
-    if ( is3d )
+    if ( ea->is3d )
       area = triarea3d( P1, P2, P3 );
     else
       area = triarea2d( P1, P2, P3 );

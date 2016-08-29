@@ -46,6 +46,8 @@ class QgsFillSymbolLayer;
 class QgsDataDefined;
 class QgsSymbolRenderContext;
 class QgsFeatureRenderer;
+class QgsCurve;
+class QgsPolygonV2;
 
 typedef QList<QgsSymbolLayer*> QgsSymbolLayerList;
 
@@ -276,40 +278,39 @@ class CORE_EXPORT QgsSymbol
     /**
      * Creates a point in screen coordinates from a QgsPointV2 in map coordinates
      */
-    static inline void _getPoint( QPointF& pt, QgsRenderContext& context, const QgsPointV2* point )
+    static inline QPointF _getPoint( QgsRenderContext& context, const QgsPointV2& point )
     {
+      QPointF pt;
       if ( context.coordinateTransform().isValid() )
       {
-        double x = point->x();
-        double y = point->y();
+        double x = point.x();
+        double y = point.y();
         double z = 0.0;
         context.coordinateTransform().transformInPlace( x, y, z );
         pt = QPointF( x, y );
 
       }
       else
-        pt = point->toQPointF();
+        pt = point.toQPointF();
 
       context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
+      return pt;
     }
 
     /**
-     * Creates a point in screen coordinates from a wkb string in map
-     * coordinates
+     * Creates a line string in screen coordinates from a QgsCurve in map coordinates
      */
-    static QgsConstWkbPtr _getPoint( QPointF& pt, QgsRenderContext& context, QgsConstWkbPtr& wkb );
+    static QPolygonF _getLineString( QgsRenderContext& context, const QgsCurve& curve, bool clipToExtent = true );
 
     /**
-     * Creates a line string in screen coordinates from a wkb string in map
-     * coordinates
+     * Creates a polygon ring in screen coordinates from a QgsCurve in map coordinates
      */
-    static QgsConstWkbPtr _getLineString( QPolygonF& pts, QgsRenderContext& context, QgsConstWkbPtr& wkb, bool clipToExtent = true );
+    static QPolygonF _getPolygonRing( QgsRenderContext& context, const QgsCurve& curve, bool clipToExtent );
 
     /**
-     * Creates a polygon in screen coordinates from a wkb string in map
-     * coordinates
+     * Creates a polygon in screen coordinates from a QgsPolygon in map coordinates
      */
-    static QgsConstWkbPtr _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, QgsConstWkbPtr& wkb, bool clipToExtent = true );
+    static void _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const QgsPolygonV2& polygon, bool clipToExtent = true );
 
     /**
      * Retrieve a cloned list of all layers that make up this symbol.

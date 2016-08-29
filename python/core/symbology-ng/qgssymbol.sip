@@ -237,25 +237,25 @@ class QgsSymbol
     /**
      * Creates a point in screen coordinates from a QgsPointV2 in map coordinates
      */
-    static void _getPoint( QPointF& pt /Out/, QgsRenderContext& context, const QgsPointV2* point );
+    static QPointF _getPoint( QgsRenderContext& context, const QgsPointV2& point );
 
     /**
-     * Creates a point in screen coordinates from a wkb string in map
+     * Creates a line string in screen coordinates from a QgsCurve in map
      * coordinates
      */
-    static QgsConstWkbPtr _getPoint( QPointF& pt, QgsRenderContext& context, QgsConstWkbPtr& wkb );
+    static QPolygonF _getLineString( QgsRenderContext& context, const QgsCurve& curve, bool clipToExtent = true );
 
     /**
-     * Creates a line string in screen coordinates from a wkb string in map
+     * Creates a polygon ring in screen coordinates from a QgsCurve in map
      * coordinates
      */
-    static QgsConstWkbPtr _getLineString( QPolygonF& pts, QgsRenderContext& context, QgsConstWkbPtr& wkb, bool clipToExtent = true );
+    static QPolygonF _getPolygonRing( QgsRenderContext& context, const QgsCurve& curve, bool clipToExtent );
 
     /**
-     * Creates a polygon in screen coordinates from a wkb string in map
+     * Creates a polygon in screen coordinates from a QgsPolygonV2 in map
      * coordinates
      */
-    static QgsConstWkbPtr _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, QgsConstWkbPtr& wkb, bool clipToExtent = true );
+    static void _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const QgsPolygonV2& polygon, bool clipToExtent = true );
 
     /**
      * Retrieve a cloned list of all layers that make up this symbol.

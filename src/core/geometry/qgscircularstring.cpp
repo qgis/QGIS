@@ -408,6 +408,22 @@ QgsPointV2 QgsCircularString::pointN( int i ) const
   return QgsPointV2( t, x, y, z, m );
 }
 
+double QgsCircularString::xAt( int index ) const
+{
+  if ( index >= 0 && index < mX.size() )
+    return mX.at( index );
+  else
+    return 0.0;
+}
+
+double QgsCircularString::yAt( int index ) const
+{
+  if ( index >= 0 && index < mY.size() )
+    return mY.at( index );
+  else
+    return 0.0;
+}
+
 void QgsCircularString::points( QgsPointSequence &pts ) const
 {
   pts.clear();

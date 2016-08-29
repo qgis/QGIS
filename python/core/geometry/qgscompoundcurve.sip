@@ -95,6 +95,9 @@ class QgsCompoundCurve: public QgsCurve
     virtual bool dropZValue();
     virtual bool dropMValue();
 
+    virtual double xAt( int index ) const;
+    virtual double yAt( int index ) const;
+
   protected:
 
     virtual QgsRectangle calculateBoundingBox() const;

@@ -116,6 +116,25 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 
     virtual QgsRectangle boundingBox() const override;
 
+    /** Returns the x-coordinate of the specified node in the line string.
+    * @param index index of node, where the first node in the line is 0
+    * @returns x-coordinate of node, or 0.0 if index is out of bounds
+    * @see setXAt()
+    */
+    virtual double xAt( int index ) const = 0;
+
+    /** Returns the y-coordinate of the specified node in the line string.
+     * @param index index of node, where the first node in the line is 0
+     * @returns y-coordinate of node, or 0.0 if index is out of bounds
+     * @see setYAt()
+     */
+    virtual double yAt( int index ) const = 0;
+
+    /** Returns a QPolygonF representing the points.
+     */
+    QPolygonF asQPolygonF() const;
+
+
   protected:
 
     virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometry::clearCache(); }

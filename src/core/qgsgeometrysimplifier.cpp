@@ -59,15 +59,3 @@ QgsGeometry QgsTopologyPreservingSimplifier::simplify( const QgsGeometry& geomet
   return geometry.simplify( mTolerance );
 }
 
-//! Simplifies the specified geometry
-bool QgsTopologyPreservingSimplifier::simplifyGeometry( QgsGeometry* geometry ) const
-{
-  QgsGeometry g = geometry->simplify( mTolerance );
-
-  if ( !g.isEmpty() )
-  {
-    *geometry = g;
-    return true;
-  }
-  return false;
-}

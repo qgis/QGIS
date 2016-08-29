@@ -13,8 +13,6 @@ class QgsAbstractGeometrySimplifier
 
     //! Returns a simplified version the specified geometry
     virtual QgsGeometry simplify( const QgsGeometry& geometry ) const = 0;
-    //! Simplifies the specified geometry
-    virtual bool simplifyGeometry( QgsGeometry* geometry ) const = 0;
 
     // MapToPixel simplification helper methods
   public:
@@ -42,6 +40,4 @@ class QgsTopologyPreservingSimplifier : QgsAbstractGeometrySimplifier
 
     //! Returns a simplified version the specified geometry
     virtual QgsGeometry simplify( const QgsGeometry& geometry ) const;
-    //! Simplifies the specified geometry
-    virtual bool simplifyGeometry( QgsGeometry* geometry ) const;
 };

@@ -18,7 +18,7 @@
 
 #include "qgsclipper.h"
 #include "qgsgeometry.h"
-#include "qgswkbptr.h"
+#include "qgscurve.h"
 #include "qgslogger.h"
 
 // Where has all the code gone?
@@ -38,41 +38,23 @@ const double QgsClipper::MIN_Y = -16000;
 
 const double QgsClipper::SMALL_NUM = 1e-12;
 
-QgsConstWkbPtr QgsClipper::clippedLineWKB( QgsConstWkbPtr& wkbPtr, const QgsRectangle& clipExtent, QPolygonF& line )
+QPolygonF QgsClipper::clippedLine( const QgsCurve& curve, const QgsRectangle& clipExtent )
 {
-  QgsWkbTypes::Type wkbType = wkbPtr.readHeader();
-
-  int nPoints;
-  wkbPtr >> nPoints;
-
-  int skipZM = ( QgsWkbTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
-
-  if ( static_cast<int>( nPoints * ( 2 * sizeof( double ) + skipZM ) ) > wkbPtr.remaining() )
-  {
-    QgsDebugMsg( QString( "%1 points exceed wkb length (%2>%3)" ).arg( nPoints ).arg( nPoints * ( 2 * sizeof( double ) + skipZM ) ).arg( wkbPtr.remaining() ) );
-    return QgsConstWkbPtr( nullptr, 0 );
-  }
+  const int nPoints = curve.numPoints();
 
   double p0x, p0y, p1x = 0.0, p1y = 0.0; //original coordinates
   double p1x_c, p1y_c; //clipped end coordinates
   double lastClipX = 0.0, lastClipY = 0.0; //last successfully clipped coords
 
-  QPolygonF pts;
-  wkbPtr -= sizeof( unsigned int );
-  wkbPtr >> pts;
-  nPoints = pts.size();
-
-  line.clear();
+  QPolygonF line;
   line.reserve( nPoints + 1 );
 
-  QPointF *ptr = pts.data();
-
-  for ( int i = 0; i < nPoints; ++i, ++ptr )
+  for ( int i = 0; i < nPoints; ++i )
   {
     if ( i == 0 )
     {
-      p1x = ptr->rx();
-      p1y = ptr->ry();
+      p1x = curve.xAt( i );
+      p1y = curve.yAt( i );
       continue;
     }
     else
@@ -80,8 +62,8 @@ QgsConstWkbPtr QgsClipper::clippedLineWKB( QgsConstWkbPtr& wkbPtr, const QgsRect
       p0x = p1x;
       p0y = p1y;
 
-      p1x = ptr->rx();
-      p1y = ptr->ry();
+      p1x = curve.xAt( i );
+      p1y = curve.yAt( i );
 
       p1x_c = p1x;
       p1y_c = p1y;
@@ -107,7 +89,7 @@ QgsConstWkbPtr QgsClipper::clippedLineWKB( QgsConstWkbPtr& wkbPtr, const QgsRect
       }
     }
   }
-  return wkbPtr;
+  return line;
 }
 
 void QgsClipper::connectSeparatedLines( double x0, double y0, double x1, double y1,

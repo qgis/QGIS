@@ -26,19 +26,6 @@
 #define _EFFECTIVEAREA_H 1
 
 /**
- * Structure to hold the info of a POINT array.
- * This structure accommodates the original PostGIS POINTARRAY declaration
- * to use from a QGis WKB-stream.
- */
-typedef struct
-{
-  double *pointlist;
-  int dimension;
-  int flags;
-  int npoints;
-} POINTARRAY;
-
-/**
  * This structure is placed in an array with one member per point.
  * It has links into the minheap rtee and kepps track of eliminated points.
  */
@@ -68,17 +55,16 @@ typedef struct
  */
 typedef struct
 {
-  const POINTARRAY *inpts;
+  bool is3d;
+  QgsPointSequence inpts;
   areanode *initial_arealist;
   double *res_arealist;
 } EFFECTIVE_AREAS;
 
-EFFECTIVE_AREAS* initiate_effectivearea( const POINTARRAY *inpts );
+EFFECTIVE_AREAS* initiate_effectivearea( const QgsCurve &inpts );
 
 void destroy_effectivearea( EFFECTIVE_AREAS *ea );
 
 void ptarray_calc_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double trshld );
-
-double* getPoint_internal( const POINTARRAY* inpts, int pointIndex );
 
 #endif /* _EFFECTIVEAREA_H */

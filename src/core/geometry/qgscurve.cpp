@@ -117,3 +117,15 @@ QgsRectangle QgsCurve::boundingBox() const
   return mBoundingBox;
 }
 
+QPolygonF QgsCurve::asQPolygonF() const
+{
+  const int nb = numPoints();
+  QPolygonF points;
+  points.reserve( nb );
+  for ( int i = 0; i < nb; ++i )
+  {
+    points << QPointF( xAt( i ), yAt( i ) );
+  }
+  return points;
+}
+

@@ -679,6 +679,36 @@ bool QgsCompoundCurve::pointAt( int node, QgsPointV2& point, QgsVertexId::Vertex
   return false;
 }
 
+double QgsCompoundCurve::xAt( int index ) const
+{
+  int currentVertexId = 0;
+  for ( int j = 0; j < mCurves.size(); ++j )
+  {
+    int nCurvePoints = mCurves.at( j )->numPoints();
+    if (( index - currentVertexId ) < nCurvePoints )
+    {
+      return mCurves.at( j )->xAt( index - currentVertexId );
+    }
+    currentVertexId += ( nCurvePoints - 1 );
+  }
+  return 0.0;
+}
+
+double QgsCompoundCurve::yAt( int index ) const
+{
+  int currentVertexId = 0;
+  for ( int j = 0; j < mCurves.size(); ++j )
+  {
+    int nCurvePoints = mCurves.at( j )->numPoints();
+    if (( index - currentVertexId ) < nCurvePoints )
+    {
+      return mCurves.at( j )->yAt( index - currentVertexId );
+    }
+    currentVertexId += ( nCurvePoints - 1 );
+  }
+  return 0.0;
+}
+
 void QgsCompoundCurve::sumUpArea( double& sum ) const
 {
   QList< QgsCurve* >::const_iterator curveIt = mCurves.constBegin();
