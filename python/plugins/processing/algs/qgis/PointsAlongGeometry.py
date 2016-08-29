@@ -2,11 +2,11 @@
 
 """
 ***************************************************************************
-    ExtractNodes.py
+    PointsAlongGeometry.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    Date                 : August 2016
+    Copyright            : (C) 2016 by Nyall Dawson
+    Email                : nyall dot dawson at gmail dot com
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'Nyall Dawson'
+__date__ = 'August 2016'
+__copyright__ = '(C) 2016, Nyall Dawson'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
@@ -28,43 +28,53 @@ __revision__ = '$Format:%H$'
 import os
 import math
 
-from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsField
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterVector, ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ExtractNodes(GeoAlgorithm):
+class PointsAlongGeometry(GeoAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
+    DISTANCE = 'DISTANCE'
+    START_OFFSET = 'START_OFFSET'
+    END_OFFSET = 'END_OFFSET'
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'extract_nodes.png'))
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Extract nodes')
+        self.name, self.i18n_name = self.trAlgorithm('Points along lines')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
                                           [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
-
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Nodes')))
+        self.addParameter(ParameterNumber(self.DISTANCE,
+                                          self.tr('Distance'), default=1.0))
+        self.addParameter(ParameterNumber(self.START_OFFSET,
+                                          self.tr('Start offset'), default=0.0))
+        self.addParameter(ParameterNumber(self.END_OFFSET,
+                                          self.tr('End offset'), default=0.0))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Points')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
+        distance = self.getParameterValue(self.DISTANCE)
+        start_offset = self.getParameterValue(self.START_OFFSET)
+        end_offset = self.getParameterValue(self.END_OFFSET)
 
         fields = layer.fields()
-        fields.append(QgsField('node_index', QVariant.Int))
         fields.append(QgsField('distance', QVariant.Double))
         fields.append(QgsField('angle', QVariant.Double))
 
@@ -73,24 +83,30 @@ class ExtractNodes(GeoAlgorithm):
 
         features = vector.features(layer)
         total = 100.0 / len(features)
-        for current, f in enumerate(features):
-            input_geometry = f.geometry()
+        for current, input_feature in enumerate(features):
+            input_geometry = input_feature.geometry()
             if not input_geometry:
-                writer.addFeature(f)
+                writer.addFeature(input_feature)
             else:
-                points = vector.extractPoints(input_geometry)
+                if input_geometry.type == QgsWkbTypes.PolygonGeometry:
+                    length = input_geometry.geometry().perimeter()
+                else:
+                    length = input_geometry.length() - end_offset
+                current_distance = start_offset
 
-                for i, point in enumerate(points):
-                    distance = input_geometry.distanceToVertex(i)
-                    angle = math.degrees(input_geometry.angleAtVertex(i))
-                    attrs = f.attributes()
-                    attrs.append(i)
-                    attrs.append(distance)
-                    attrs.append(angle)
+                while current_distance <= length:
+                    point = input_geometry.interpolate(current_distance)
+                    angle = math.degrees(input_geometry.interpolateAngle(current_distance))
+
                     output_feature = QgsFeature()
+                    output_feature.setGeometry(point)
+                    attrs = input_feature.attributes()
+                    attrs.append(current_distance)
+                    attrs.append(angle)
                     output_feature.setAttributes(attrs)
-                    output_feature.setGeometry(QgsGeometry.fromPoint(point))
                     writer.addFeature(output_feature)
+
+                    current_distance += distance
 
             progress.setPercentage(int(current * total))
 

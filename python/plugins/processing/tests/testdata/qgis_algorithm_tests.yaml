@@ -23,7 +23,7 @@ tests:
       OUTPUT:
         name: expected/polys_deleteholes.gml
         type: vector
-        
+
   - algorithm: qgis:clip
     name: Clip lines by polygons
     params:
@@ -37,8 +37,8 @@ tests:
       OUTPUT:
         name: expected/clip_lines_by_polygon.gml
         type: vector
-          
-        
+
+
   - algorithm: qgis:clip
     name: Clip lines by multipolygon
     params:
@@ -52,7 +52,7 @@ tests:
       OUTPUT:
         name: expected/clip_lines_by_multipolygon.gml
         type: vector
-          
+
   - algorithm: qgis:clip
     name: Clip polygons by multipolygons
     params:
@@ -66,7 +66,7 @@ tests:
       OUTPUT:
         name: expected/clip_polys_by_multipolygon.gml
         type: vector
-        
+
   - algorithm: qgis:clip
     name: Clip multipolygons by polygons
     params:
@@ -80,7 +80,7 @@ tests:
       OUTPUT:
         name: expected/clip_multipolygons_by_polygons.gml
         type: vector
-          
+
   - algorithm: qgis:clip
     name: Clip points by polygons
     params:
@@ -94,7 +94,7 @@ tests:
       OUTPUT:
         name: expected/clip_points_by_polygons.gml
         type: vector
-    
+
   - algorithm: qgis:clip
     name: Clip points by multipolygons
     params:
@@ -108,8 +108,8 @@ tests:
       OUTPUT:
         name: expected/clip_points_by_multipolygons.gml
         type: vector
-  
-            
+
+
   # These datasets should produce a geometry collection and not a polygon only
   # dataset. If the algorithm is fixed, a new test should be introduced to
   # check this behavior.
@@ -439,7 +439,7 @@ tests:
       OUTPUT:
         name: expected/multi_to_single.gml
         type: vector
-  
+
   - algorithm: qgis:boundingboxes
     name: Bounding boxes for lines
     params:
@@ -808,7 +808,7 @@ tests:
       OUTPUT_LAYER:
         name: expected/centroid_polys.gml
         type: vector
-  
+
   - algorithm: qgis:translategeometry
     name: Lines translated
     params:
@@ -822,7 +822,7 @@ tests:
         name: expected/lines_translated.gml
         type: vector
 
-  
+
   - algorithm: qgis:singlesidedbuffer
     name: Single sided buffer lines (left, round)
     params:
@@ -870,3 +870,49 @@ tests:
       OUTPUT_LAYER:
         name: expected/single_sided_buffer_multiline_bevel.gml
         type: vector
+
+
+  - algorithm: qgis:extractnodes
+    name: Test (qgis:extractnodes)
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_nodes_multipolys.gml
+        type: vector
+
+  - algorithm: qgis:extractnodes
+    name: Test (qgis:extractnodes)
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_nodes_polys.gml
+        type: vector
+
+  - algorithm: qgis:extractnodes
+    name: Test (qgis:extractnodes)
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_nodes_multilines.gml
+        type: vector
+
+  - algorithm: qgis:extractnodes
+    name: Test (qgis:extractnodes)
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_nodes_lines.gml
+        type: vector
+

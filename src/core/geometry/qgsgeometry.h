@@ -238,6 +238,15 @@ class CORE_EXPORT QgsGeometry
     double distanceToVertex( int vertex ) const;
 
     /**
+     * Returns the bisector angle for this geometry at the specified vertex.
+     * @param vertex vertex index to calculate bisector angle at
+     * @returns bisector angle, in radians clockwise from north
+     * @note added in QGIS 3.0
+     * @see interpolateAngle()
+     */
+    double angleAtVertex( int vertex ) const;
+
+    /**
      * Returns the indexes of the vertices before and after the given vertex index.
      *
      * This function takes into account the following factors:
@@ -581,6 +590,16 @@ class CORE_EXPORT QgsGeometry
      * @note added in QGIS 3.0
      */
     double lineLocatePoint( const QgsGeometry& point ) const;
+
+    /** Returns the angle parallel to the linestring or polygon boundary at the specified distance
+     * along the geometry. Angles are in radians, clockwise from north.
+     * If the distance coincides precisely at a node then the average angle from the segment either side
+     * of the node is returned.
+     * @param distance distance along geometry
+     * @note added in QGIS 3.0
+     * @see angleAtVertex()
+     */
+    double interpolateAngle( double distance ) const;
 
     /** Returns a geometry representing the points shared by this geometry and other. */
     QgsGeometry intersection( const QgsGeometry& geometry ) const;

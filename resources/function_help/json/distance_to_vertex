@@ -1,0 +1,8 @@
+{
+  "name": "distance_to_vertex",
+  "type": "function",
+  "description": "Returns the distance along the geometry to a specified vertex.",
+  "arguments": [ {"arg":"geometry","description":"a linestring geometry"},
+                 {"arg":"vertex","description":"vertex index, starting from 0"}],
+  "examples": [ { "expression":"distance_to_vertex(geometry:=geom_from_wkt('LineString(0 0, 10 0, 10 10)'),vertex:=1)", "returns":"10.0"}]
+}
