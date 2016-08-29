@@ -103,7 +103,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
       //no matching features
       if ( ok )
         *ok = true;
-      return QVariant();
+      return defaultValue( aggregate );
     }
 
     if ( context )
@@ -456,6 +456,41 @@ QVariant QgsAggregateCalculator::concatenateStrings( QgsFeatureIterator& fit, in
     }
   }
   return result;
+}
+
+QVariant QgsAggregateCalculator::defaultValue( QgsAggregateCalculator::Aggregate aggregate ) const
+{
+  // value to return when NO features are aggregated:
+  switch ( aggregate )
+  {
+      // sensible values:
+    case Count:
+    case CountDistinct:
+    case CountMissing:
+      return 0;
+
+    case StringConcatenate:
+      return ""; // zero length string - not null!
+
+      // undefined - nothing makes sense here
+    case Sum:
+    case Min:
+    case Max:
+    case Mean:
+    case Median:
+    case StDev:
+    case StDevSample:
+    case Range:
+    case Minority:
+    case Majority:
+    case FirstQuartile:
+    case ThirdQuartile:
+    case InterQuartileRange:
+    case StringMinimumLength:
+    case StringMaximumLength:
+      return QVariant();
+  }
+  return QVariant();
 }
 
 QVariant QgsAggregateCalculator::calculateDateTimeAggregate( QgsFeatureIterator& fit, int attr, QgsExpression* expression,
