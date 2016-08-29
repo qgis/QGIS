@@ -388,6 +388,11 @@ class QgsPalLayerSettings
     QPainter::CompositionMode blendMode;
     QColor previewBkgrdColor;
 
+    //! Substitution collection for automatic text substitution with labels
+    QgsStringReplacementCollection substitutions;
+    //! True if substitutions should be applied
+    bool useSubstitutions;
+
     //-- text formatting
 
     QString wrapChar;

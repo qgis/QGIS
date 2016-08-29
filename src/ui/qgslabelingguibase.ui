@@ -1334,6 +1334,29 @@ font-style: italic;</string>
                            </layout>
                           </widget>
                          </item>
+<item row="13" column="0" colspan="2">
+                          <widget class="QCheckBox" name="mCheckBoxSubstituteText">
+                           <property name="toolTip">
+                            <string>If enabled, the label text will automatically be modified using a preset list of substitutes</string>
+                           </property>
+                           <property name="text">
+                            <string>Apply label text substitutes</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="13" column="2">
+                          <widget class="QToolButton" name="mToolButtonConfigureSubstitutes">
+                           <property name="enabled">
+                            <bool>false</bool>
+                           </property>
+                           <property name="toolTip">
+                            <string>Configure substitutes</string>
+                           </property>
+                           <property name="text">
+                            <string>...</string>
+                           </property>
+                          </widget>
+                         </item>
                          <item row="1" column="1">
                           <widget class="QFontComboBox" name="mFontFamilyCmbBx">
                            <property name="editable">

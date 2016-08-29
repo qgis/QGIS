@@ -43,6 +43,7 @@ class TestQgsLabelingEngineV2 : public QObject
     void testRuleBased();
     void zOrder(); //test that labels are stacked correctly
     void testEncodeDecodePositionOrder();
+    void testSubstitutions();
 
   private:
     QgsVectorLayer* vl;
@@ -411,6 +412,46 @@ void TestQgsLabelingEngineV2::testEncodeDecodePositionOrder()
   expected << QgsPalLayerSettings::TopRight << QgsPalLayerSettings::BottomSlightlyRight
   << QgsPalLayerSettings::MiddleLeft << QgsPalLayerSettings::TopMiddle;
   QCOMPARE( decoded, expected );
+}
+
+void TestQgsLabelingEngineV2::testSubstitutions()
+{
+  QgsPalLayerSettings settings;
+  settings.useSubstitutions = false;
+  QgsStringReplacementCollection collection( QList< QgsStringReplacement >() << QgsStringReplacement( "aa", "bb" ) );
+  settings.substitutions = collection;
+  settings.fieldName = QString( "'aa label'" );
+  settings.isExpression = true;
+
+  QgsVectorLayerLabelProvider* provider = new QgsVectorLayerLabelProvider( vl, "test", true, &settings );
+  QgsFeature f( vl->fields(), 1 );
+  f.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1, 2 ) ) );
+
+  // make a fake render context
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QStringList() << vl->id() );
+  mapSettings.setOutputDpi( 96 );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  QStringList attributes;
+  QgsLabelingEngineV2 engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( provider );
+  provider->prepare( context, attributes );
+
+  provider->registerFeature( f, context );
+  QCOMPARE( provider->mLabels.at( 0 )->labelText(), QString( "aa label" ) );
+
+  //with substitution
+  settings.useSubstitutions = true;
+  QgsVectorLayerLabelProvider* provider2 = new QgsVectorLayerLabelProvider( vl, "test2", true, &settings );
+  engine.addProvider( provider2 );
+  provider2->prepare( context, attributes );
+
+  provider2->registerFeature( f, context );
+  QCOMPARE( provider2->mLabels.at( 0 )->labelText(), QString( "bb label" ) );
 }
 
 bool TestQgsLabelingEngineV2::imageCheck( const QString& testName, QImage &image, int mismatchCount )

@@ -129,6 +129,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   // font processing info
   mTextFontFound = true;
   mTextFontFamily = QApplication::font().family();
+  useSubstitutions = false;
 
   // text formatting
   wrapChar = "";
@@ -389,6 +390,8 @@ QgsPalLayerSettings& QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   // font processing info
   mTextFontFound = s.mTextFontFound;
   mTextFontFamily = s.mTextFontFamily;
+  substitutions = s.substitutions;
+  useSubstitutions = s.useSubstitutions;
 
   // text formatting
   wrapChar = s.wrapChar;
@@ -851,7 +854,11 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   blendMode = QgsMapRenderer::getCompositionMode(
                 static_cast< QgsMapRenderer::BlendMode >( layer->customProperty( "labeling/blendMode", QVariant( QgsMapRenderer::BlendNormal ) ).toUInt() ) );
   previewBkgrdColor = QColor( layer->customProperty( "labeling/previewBkgrdColor", QVariant( "#ffffff" ) ).toString() );
-
+  QDomDocument doc( "substitutions" );
+  doc.setContent( layer->customProperty( "labeling/substitutions" ).toString() );
+  QDomElement replacementElem = doc.firstChildElement( "substitutions" );
+  substitutions.readXml( replacementElem );
+  useSubstitutions = layer->customProperty( "labeling/useSubstitutions" ).toBool();
 
   // text formatting
   wrapChar = layer->customProperty( "labeling/wrapChar" ).toString();
@@ -1131,6 +1138,14 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/textTransp", textTransp );
   layer->setCustomProperty( "labeling/blendMode", QgsMapRenderer::getBlendModeEnum( blendMode ) );
   layer->setCustomProperty( "labeling/previewBkgrdColor", previewBkgrdColor.name() );
+  QDomDocument doc( "substitutions" );
+  QDomElement replacementElem = doc.createElement( "substitutions" );
+  substitutions.writeXml( replacementElem, doc );
+  QString replacementProps;
+  QTextStream stream( &replacementProps );
+  replacementElem.save( stream, -1 );
+  layer->setCustomProperty( "labeling/substitutions", replacementProps );
+  layer->setCustomProperty( "labeling/useSubstitutions", useSubstitutions );
 
   // text formatting
   layer->setCustomProperty( "labeling/wrapChar", wrapChar );
@@ -1302,7 +1317,8 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   blendMode = QgsMapRenderer::getCompositionMode(
                 static_cast< QgsMapRenderer::BlendMode >( textStyleElem.attribute( "blendMode", QString::number( QgsMapRenderer::BlendNormal ) ).toUInt() ) );
   previewBkgrdColor = QColor( textStyleElem.attribute( "previewBkgrdColor", "#ffffff" ) );
-
+  substitutions.readXml( textStyleElem.firstChildElement( "substitutions" ) );
+  useSubstitutions = textStyleElem.attribute( "useSubstitutions" ).toInt();
 
   // text formatting
   QDomElement textFormatElem = elem.firstChildElement( "text-format" );
@@ -1568,6 +1584,10 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument& doc )
   textStyleElem.setAttribute( "textTransp", textTransp );
   textStyleElem.setAttribute( "blendMode", QgsMapRenderer::getBlendModeEnum( blendMode ) );
   textStyleElem.setAttribute( "previewBkgrdColor", previewBkgrdColor.name() );
+  QDomElement replacementElem = doc.createElement( "substitutions" );
+  substitutions.writeXml( replacementElem, doc );
+  textStyleElem.appendChild( replacementElem );
+  textStyleElem.setAttribute( "useSubstitutions", useSubstitutions );
 
   // text formatting
   QDomElement textFormatElem = doc.createElement( "text-format" );
@@ -2317,6 +2337,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   {
     const QVariant &v = f.attribute( fieldIndex );
     labelText = v.isNull() ? "" : v.toString();
+  }
+
+  // apply text replacements
+  if ( useSubstitutions )
+  {
+    labelText = substitutions.process( labelText );
   }
 
   // data defined format numbers?

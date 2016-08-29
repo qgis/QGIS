@@ -1,3 +1,115 @@
+
+
+/** \ingroup core
+ * \class QgsStringReplacement
+ * \brief A representation of a single string replacement.
+ * \note Added in version 3.0
+ */
+
+class QgsStringReplacement
+{
+%TypeHeaderCode
+#include <qgsstringutils.h>
+%End
+  public:
+
+    /** Constructor for QgsStringReplacement.
+     * @param match string to match
+     * @param replacement string to replace match with
+     * @param caseSensitive set to true for a case sensitive match
+     * @param wholeWordOnly set to true to match complete words only, or false to allow partial word matches
+     */
+    QgsStringReplacement( const QString& match,
+                          const QString& replacement,
+                          bool caseSensitive = false,
+                          bool wholeWordOnly = false );
+
+    //! Returns the string matched by this object
+    QString match() const;
+
+    //! Returns the string to replace matches with
+    QString replacement() const;
+
+    //! Returns true if match is case sensitive
+    bool caseSensitive() const;
+
+    //! Returns true if match only applies to whole words, or false if partial word matches are permitted
+    bool wholeWordOnly() const;
+
+    /** Processes a given input string, applying any valid replacements which should be made.
+     * @param input input string
+     * @returns input string with any matches replaced by replacement string
+     */
+    QString process( const QString& input ) const;
+
+    bool operator==( const QgsStringReplacement& other );
+
+    /** Returns a map of the replacement properties.
+     * @see fromProperties()
+     */
+    QgsStringMap properties() const;
+
+    /** Creates a new QgsStringReplacement from an encoded properties map.
+     * @see properties()
+     */
+    static QgsStringReplacement fromProperties( const QgsStringMap& properties );
+
+};
+
+
+/** \ingroup core
+ * \class QgsStringReplacementCollection
+ * \brief A collection of string replacements (specified using QgsStringReplacement objects).
+ * \note Added in version 3.0
+ */
+
+class QgsStringReplacementCollection
+{
+%TypeHeaderCode
+#include <qgsstringutils.h>
+%End
+  public:
+
+    /** Constructor for QgsStringReplacementCollection
+     * @param replacements initial list of string replacements
+     */
+    QgsStringReplacementCollection( const QList< QgsStringReplacement >& replacements = QList< QgsStringReplacement >() );
+
+    /** Returns the list of string replacements in this collection.
+     * @see setReplacements()
+     */
+    QList< QgsStringReplacement > replacements() const;
+
+    /** Sets the list of string replacements in this collection.
+     * @param replacements list of string replacements to apply. Replacements are applied in the
+     * order they are specified here.
+     * @see replacements()
+     */
+    void setReplacements( const QList< QgsStringReplacement >& replacements );
+
+    /** Processes a given input string, applying any valid replacements which should be made
+     * using QgsStringReplacement objects contained by this collection. Replacements
+     * are made in order of the QgsStringReplacement objects contained in the collection.
+     * @param input input string
+     * @returns input string with any matches replaced by replacement string
+     */
+    QString process( const QString& input ) const;
+
+    /** Writes the collection state to an XML element.
+     * @param elem target DOM element
+     * @param doc DOM document
+     * @see readXml()
+     */
+    void writeXml( QDomElement& elem, QDomDocument& doc ) const;
+
+    /** Reads the collection state from an XML element.
+     * @param elem DOM element
+     * @see writeXml()
+     */
+    void readXml( const QDomElement& elem );
+};
+
+
 /** \ingroup core
  * \class QgsStringUtils
  * \brief Utility functions for working with strings.
