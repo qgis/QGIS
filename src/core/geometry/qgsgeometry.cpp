@@ -1382,7 +1382,12 @@ QgsGeometry* QgsGeometry::interpolate( double distance ) const
   {
     return nullptr;
   }
-  QgsGeos geos( d->geometry );
+
+  QgsGeometry line = *this;
+  if ( type() == QGis::Polygon )
+    line = QgsGeometry( d->geometry->boundary() );
+
+  QgsGeos geos( line.geometry() );
   QgsAbstractGeometryV2* result = geos.interpolate( distance );
   if ( !result )
   {
