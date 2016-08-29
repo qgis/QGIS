@@ -396,7 +396,7 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         agg = QgsAggregateCalculator(layer)
         val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint * 2')
         self.assertTrue(ok)
-        self.assertEqual(val, 0)
+        self.assertEqual(val, None)
 
         # count
         agg = QgsAggregateCalculator(layer)

@@ -506,13 +506,13 @@ QVariant QgsAggregateCalculator::defaultValue( QgsAggregateCalculator::Aggregate
     case Count:
     case CountDistinct:
     case CountMissing:
-    case Sum:
       return 0;
 
     case StringConcatenate:
       return ""; // zero length string - not null!
 
       // undefined - nothing makes sense here
+    case Sum:
     case Min:
     case Max:
     case Mean:
