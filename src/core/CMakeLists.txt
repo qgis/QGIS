@@ -138,6 +138,8 @@ SET(QGIS_CORE_SRCS
   qgsmaphittest.cpp
   qgsmaplayer.cpp
   qgsmaplayerlegend.cpp
+  qgsmaplayermodel.cpp
+  qgsmaplayerproxymodel.cpp
   qgsmaplayerregistry.cpp
   qgsmaplayerstylemanager.cpp
   qgsmaprenderercache.cpp
@@ -459,6 +461,8 @@ SET(QGIS_CORE_MOC_HDRS
   qgsgmlschema.h
   qgsmaplayer.h
   qgsmaplayerlegend.h
+  qgsmaplayermodel.h
+  qgsmaplayerproxymodel.h
   qgsmaplayerregistry.h
   qgsmaplayerstylemanager.h
   qgsmaprenderercache.h

@@ -61,4 +61,3 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
 };
 
 QFlags<QgsMapLayerProxyModel::Filter> operator|(QgsMapLayerProxyModel::Filter f1, QFlags<QgsMapLayerProxyModel::Filter> f2);
-

@@ -18,6 +18,15 @@ This page tries to maintain a list with incompatible changes that happened in pr
 
 \section qgis_api_break_3_0 QGIS 3.0
 
+\subsection qgis_api_break_3_0_moved_classes Moved Classes
+
+<table>
+<caption id="renamed_classes">Renamed classes</caption>
+<tr><th>class<th>Module 2.X<th>Module 3.x
+<tr><td>QgsMapLayerModel<td>gui<td>core
+<tr><td>QgsMapLayerProxyModel<td>gui<td>core
+</table>
+
 \subsection qgis_api_break_3_0_renamed_classes Renamed Classes
 
 <table>

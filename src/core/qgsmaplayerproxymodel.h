@@ -22,11 +22,11 @@
 class QgsMapLayerModel;
 class QgsMapLayer;
 
-/** \ingroup gui
+/** \ingroup core
  * @brief The QgsMapLayerProxyModel class provides an easy to use model to display the list of layers in widgets.
  * @note added in 2.3
  */
-class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
+class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
     Q_FLAGS( Filters )

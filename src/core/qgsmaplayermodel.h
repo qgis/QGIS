@@ -23,14 +23,13 @@
 class QgsMapLayer;
 
 
-/** \ingroup gui
+/** \ingroup core
  * @brief The QgsMapLayerModel class is a model to display layers in widgets.
  * @see QgsMapLayerProxyModel to sort and/filter the layers
  * @see QgsFieldModel to combine in with a field selector.
  * @note added in 2.3
  */
-// TODO QGIS3: move to core
-class GUI_EXPORT QgsMapLayerModel : public QAbstractItemModel
+class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
 {
     Q_OBJECT
   public:

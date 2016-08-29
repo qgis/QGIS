@@ -108,10 +108,8 @@
 %Include qgsmapcanvastracer.sip
 %Include qgsmaplayeractionregistry.sip
 %Include qgsmaplayercombobox.sip
-%Include qgsmaplayermodel.sip
 %Include qgsmaplayerconfigwidget.sip
 %Include qgsmaplayerconfigwidgetfactory.sip
-%Include qgsmaplayerproxymodel.sip
 %Include qgsmapmouseevent.sip
 %Include qgsmapoverviewcanvas.sip
 %Include qgsmaptip.sip

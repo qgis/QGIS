@@ -81,6 +81,8 @@
 %Include qgsmaphittest.sip
 %Include qgsmaplayer.sip
 %Include qgsmaplayerlegend.sip
+%Include qgsmaplayermodel.sip
+%Include qgsmaplayerproxymodel.sip
 %Include qgsmaplayerregistry.sip
 %Include qgsmaplayerrenderer.sip
 %Include qgsmaplayerstylemanager.sip
