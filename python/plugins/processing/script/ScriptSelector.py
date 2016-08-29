@@ -34,7 +34,7 @@ from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'DlgConfig.ui'))
+    os.path.join(pluginPath, 'ui', 'scriptselector.ui'))
 
 
 class ScriptSelector(BASE, WIDGET):
