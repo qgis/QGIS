@@ -114,6 +114,7 @@ SET(QGIS_APP_SRCS
   qgsrelationadddlg.cpp
   qgsselectbyformdialog.cpp
   qgsstatisticalsummarydockwidget.cpp
+  qgssubstitutionlistwidget.cpp
   qgstextannotationdialog.cpp
   qgssnappingdialog.cpp
   qgssvgannotationdialog.cpp
@@ -290,6 +291,7 @@ SET (QGIS_APP_MOC_HDRS
   qgssnappingdialog.h
   qgssponsors.h
   qgsstatisticalsummarydockwidget.h
+  qgssubstitutionlistwidget.h
   qgssvgannotationdialog.h
   qgstextannotationdialog.h
   qgstipgui.h
