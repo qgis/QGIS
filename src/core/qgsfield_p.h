@@ -93,6 +93,8 @@ class QgsFieldPrivate : public QSharedData
 
     //! Comment
     QString comment;
+
+    QgsEditorWidgetSetup editorWidgetSetup;
 };
 
 

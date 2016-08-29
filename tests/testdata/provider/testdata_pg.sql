@@ -434,3 +434,27 @@ CREATE TABLE qgis_test.rename_table
 );
 
 INSERT INTO qgis_test.rename_table (field1,field2) VALUES ('a','b');
+
+
+--------------------------------------
+-- Table for editor widget types
+--
+
+CREATE TABLE qgis_editor_widget_styles
+(
+  schema_name TEXT NOT NULL,
+  table_name TEXT NOT NULL,
+  field_name TEXT NOT NULL,
+  type TEXT NOT NULL,
+  config TEXT,
+  PRIMARY KEY(table_name, field_name)
+);
+
+CREATE TABLE qgis_test.widget_styles(
+       id int PRIMARY KEY,
+       fld1 TEXT,
+       fld2 TEXT
+);
+
+INSERT INTO qgis_editor_widget_styles VALUES
+('qgis_test', 'widget_styles', 'fld1', 'FooEdit', '<config><option key="param1" value="value1"/><option key="param2" value="2"/></config>');

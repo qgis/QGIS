@@ -42,6 +42,7 @@ class GUI_EXPORT QgsDateTimeEditFactory : public QgsEditorWidgetFactory
     QString representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const override;
     Qt::AlignmentFlag alignmentFlag( QgsVectorLayer *vl, int fieldIdx, const QgsEditorWidgetConfig &config ) const override;
     virtual QMap<const char*, int> supportedWidgetTypes() override;
+    unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const override;
 };
 
 #endif // QGSDATETIMEEDITFACTORY_H

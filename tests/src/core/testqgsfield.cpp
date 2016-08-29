@@ -40,6 +40,7 @@ class TestQgsField: public QObject
     void displayString();
     void convertCompatible();
     void dataStream();
+    void editorWidgetSetup();
 
   private:
 };
@@ -370,6 +371,18 @@ void TestQgsField::dataStream()
   QCOMPARE( result, original );
   QCOMPARE( result.typeName(), original.typeName() ); //typename is NOT required for equality
   QCOMPARE( result.comment(), original.comment() ); //comment is NOT required for equality
+}
+
+void TestQgsField::editorWidgetSetup()
+{
+  QgsField field;
+  QgsEditorWidgetConfig config;
+  config.insert( "a", "value_a" );
+  const QgsEditorWidgetSetup setup( "test", config );
+  field.setEditorWidgetSetup( setup );
+
+  QCOMPARE( field.editorWidgetSetup().type(), setup.type() );
+  QCOMPARE( field.editorWidgetSetup().config(), setup.config() );
 }
 
 QTEST_MAIN( TestQgsField )
