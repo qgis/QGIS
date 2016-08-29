@@ -92,6 +92,8 @@ void QgsValueMapConfigDlg::vCellChanged( int row, int column )
   {
     tableWidget->insertRow( row + 1 );
   } //else check type
+
+  emit changed();
 }
 
 void QgsValueMapConfigDlg::removeSelectedButtonPushed()
@@ -116,6 +118,7 @@ void QgsValueMapConfigDlg::removeSelectedButtonPushed()
     tableWidget->removeRow( rowsToRemove.values().at( i ) - removed );
     removed++;
   }
+  emit changed();
 }
 
 void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool insertNull )

@@ -76,6 +76,13 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
      */
     virtual ~QgsEditorConfigWidget() {}
 
+  signals:
+
+    /** Emitted when the configuration of the widget is changed.
+     * @note added in QGIS 3.0
+     */
+    void changed();
+
   private:
     QgsVectorLayer* mLayer;
     int mField;

@@ -26,6 +26,15 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer* vl, int fi
   connect( mLayerName, SIGNAL( layerChanged( QgsMapLayer* ) ), mKeyColumn, SLOT( setLayer( QgsMapLayer* ) ) );
   connect( mLayerName, SIGNAL( layerChanged( QgsMapLayer* ) ), mValueColumn, SLOT( setLayer( QgsMapLayer* ) ) );
   connect( mEditExpression, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
+
+  connect( mLayerName, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SIGNAL( changed() ) );
+  connect( mKeyColumn, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( changed() ) );
+  connect( mValueColumn, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( changed() ) );
+  connect( mAllowMulti, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mAllowNull, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mOrderByValue, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mFilterExpression, SIGNAL( textChanged() ), this, SIGNAL( changed() ) );
+  connect( mUseCompleter, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
 }
 
 QgsEditorWidgetConfig QgsValueRelationConfigDlg::config()
