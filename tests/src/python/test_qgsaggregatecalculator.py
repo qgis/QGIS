@@ -351,6 +351,36 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertTrue(ok)
         self.assertEqual(val, 5)
 
+    def testExpressionNoMatch(self):
+        """ test aggregate calculation using an expression with no features """
+
+        # no features
+        layer = QgsVectorLayer("Point?field=fldint:integer", "layer", "memory")
+
+        # sum
+        agg = QgsAggregateCalculator(layer)
+        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint * 2')
+        self.assertTrue(ok)
+        self.assertEqual(val, None)
+
+        # count
+        agg = QgsAggregateCalculator(layer)
+        val, ok = agg.calculate(QgsAggregateCalculator.Count, 'fldint * 2')
+        self.assertTrue(ok)
+        self.assertEqual(val, 0)
+
+        # count distinct
+        agg = QgsAggregateCalculator(layer)
+        val, ok = agg.calculate(QgsAggregateCalculator.CountDistinct, 'fldint * 2')
+        self.assertTrue(ok)
+        self.assertEqual(val, 0)
+
+        # count missing
+        agg = QgsAggregateCalculator(layer)
+        val, ok = agg.calculate(QgsAggregateCalculator.CountMissing, 'fldint * 2')
+        self.assertTrue(ok)
+        self.assertEqual(val, 0)
+
     def testStringToAggregate(self):
         """ test converting strings to aggregate types """
 
