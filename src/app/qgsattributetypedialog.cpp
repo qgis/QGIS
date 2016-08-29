@@ -154,6 +154,7 @@ void QgsAttributeTypeDialog::setWidgetType( const QString& type )
       stackedWidget->addWidget( cfgWdg );
       stackedWidget->setCurrentWidget( cfgWdg );
       mEditorConfigWidgets.insert( type, cfgWdg );
+      connect( cfgWdg, SIGNAL( changed() ), this, SLOT( defaultExpressionChanged() ) );
     }
     else
     {

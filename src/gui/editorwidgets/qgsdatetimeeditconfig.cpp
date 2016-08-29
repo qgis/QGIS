@@ -33,6 +33,11 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, 
   connect( mFieldHelpToolButton, SIGNAL( clicked( bool ) ), this, SLOT( showHelp( bool ) ) );
   connect( mDisplayHelpToolButton, SIGNAL( clicked( bool ) ), this, SLOT( showHelp( bool ) ) );
 
+  connect( mFieldFormatEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( changed() ) );
+  connect( mDisplayFormatEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( changed() ) );
+  connect( mCalendarPopupCheckBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mAllowNullCheckBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+
   // initialize
   updateFieldFormat( mFieldFormatComboBox->currentIndex() );
   displayFormatChanged( mDisplayFormatComboBox->currentIndex() );

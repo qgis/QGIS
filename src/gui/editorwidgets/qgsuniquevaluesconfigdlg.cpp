@@ -19,6 +19,7 @@ QgsUniqueValuesConfigDlg::QgsUniqueValuesConfigDlg( QgsVectorLayer* vl, int fiel
     : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
+  connect( editableUniqueValues, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
 }
 
 
