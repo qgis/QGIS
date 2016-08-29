@@ -392,9 +392,9 @@ void QgsFieldsProperties::loadRelations()
       if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
         nmCombo->addItem( QString( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
 
-      const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, relation.id() );
+      QgsEditorWidgetConfig cfg = mLayer->editFormConfig().widgetConfig( relation.id() );
 
-      const QVariant nmrelcfg = setup.config().value( "nm-rel" );
+      QVariant nmrelcfg = cfg.value( "nm-rel" );
 
       int idx =  nmCombo->findData( nmrelcfg.toString() );
 
@@ -1028,9 +1028,8 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
   mNotNull = layer->editFormConfig().notNull( idx );
   mConstraint = layer->editFormConfig().expression( idx );
   mConstraintDescription = layer->editFormConfig().expressionDescription( idx );
-  const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( layer, layer->fields().field( idx ).name() );
-  mEditorWidgetType = setup.type();
-  mEditorWidgetConfig = setup.config();
+  mEditorWidgetType = layer->editFormConfig().widgetType( idx );
+  mEditorWidgetConfig = layer->editFormConfig().widgetConfig( idx );
 }
 
 /*

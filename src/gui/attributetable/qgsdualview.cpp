@@ -26,7 +26,6 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayercache.h"
 #include "qgsorganizetablecolumnsdialog.h"
-#include "qgseditorwidgetregistry.h"
 
 #include <QClipboard>
 #include <QDialog>
@@ -142,7 +141,7 @@ void QgsDualView::columnBoxInit()
     if ( fieldIndex == -1 )
       continue;
 
-    if ( QgsEditorWidgetRegistry::instance()->findBest( mLayerCache->layer(), field.name() ).type() != "Hidden" )
+    if ( mLayerCache->layer()->editFormConfig().widgetType( fieldIndex ) != "Hidden" )
     {
       QIcon icon = mLayerCache->layer()->fields().iconForField( fieldIndex );
       QString text = field.name();

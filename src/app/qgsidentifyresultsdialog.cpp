@@ -479,8 +479,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     if ( i >= fields.count() )
       break;
 
-    const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( vlayer, fields[i].name() );
-    if ( setup.type() == "Hidden" )
+    if ( vlayer->editFormConfig().widgetType( i ) == "Hidden" )
     {
       continue;
     }
@@ -499,7 +498,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
     attrItem->setData( 1, Qt::UserRole, value );
 
-    value = representValue( vlayer, setup, fields.at( i ).name(), attrs.at( i ) );
+    value = representValue( vlayer, fields.at( i ).name(), attrs.at( i ) );
     attrItem->setSortData( 1, value );
     bool foundLinks = false;
     QString links = QgsStringUtils::insertLinks( value, &foundLinks );
@@ -544,8 +543,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       continue;
 
     QString value = fields.at( i ).displayString( attrs.at( i ) );
-    const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( vlayer, fields.at( i ).name() );
-    QString value2 = representValue( vlayer, setup, fields.at( i ).name(), value );
+    QString value2 = representValue( vlayer, fields.at( i ).name(), value );
 
     tblResults->setRowCount( j + 1 );
 
@@ -666,12 +664,13 @@ QgsIdentifyPlotCurve::~QgsIdentifyPlotCurve()
   }
 }
 
-QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer* vlayer, const QgsEditorWidgetSetup& setup, const QString& fieldName, const QVariant& value )
+QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer* vlayer, const QString& fieldName, const QVariant& value )
 {
   QVariant cache;
   QMap<QString, QVariant>& layerCaches = mWidgetCaches[vlayer->id()];
 
-  QgsEditorWidgetFactory* factory = QgsEditorWidgetRegistry::instance()->factory( setup.type() );
+  QString widgetType = vlayer->editFormConfig().widgetType( fieldName );
+  QgsEditorWidgetFactory* factory = QgsEditorWidgetRegistry::instance()->factory( widgetType );
 
   int idx = vlayer->fieldNameIndex( fieldName );
 
@@ -684,11 +683,11 @@ QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer* vlayer, const 
   }
   else
   {
-    cache = factory->createCache( vlayer, idx, setup.config() );
+    cache = factory->createCache( vlayer, idx, vlayer->editFormConfig().widgetConfig( fieldName ) );
     layerCaches.insert( fieldName, cache );
   }
 
-  return factory->representValue( vlayer, idx, setup.config(), cache, value );
+  return factory->representValue( vlayer, idx, vlayer->editFormConfig().widgetConfig( fieldName ), cache, value );
 }
 
 void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
@@ -1503,8 +1502,7 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
 
         if ( item->data( 0, Qt::UserRole + 1 ).toInt() == idx )
         {
-          const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( vlayer, fld.name() );
-          value = representValue( vlayer, setup, fld.name(), val );
+          value = representValue( vlayer, fld.name(), val );
 
           QgsTreeWidgetItem* treeItem = static_cast< QgsTreeWidgetItem* >( item );
           treeItem->setSortData( 1, value );

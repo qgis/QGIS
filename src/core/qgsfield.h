@@ -33,42 +33,6 @@ class QgsFieldsPrivate;
  * See details in QEP #17
  ****************************************************************************/
 
-#include "qgseditorwidgetconfig.h"
-
-/** \ingroup core
- * Holder for the widget type and its configuration for a field.
- *
- * @note added in QGIS 3.0
- */
-class GUI_EXPORT QgsEditorWidgetSetup
-{
-  public:
-    /**
-     * Constructor
-     */
-    QgsEditorWidgetSetup( const QString& type, const QgsEditorWidgetConfig& config ) : mType( type ), mConfig( config ) {}
-    QgsEditorWidgetSetup() {}
-
-    /**
-     * @return the widget type to use
-     */
-    QString type() const { return mType; }
-
-    /**
-     * @return the widget configuration to used
-     */
-    QgsEditorWidgetConfig config() const { return mConfig; }
-
-    /**
-     * @return true if there is no widget configured.
-     */
-    bool isNull() const { return mType.isEmpty(); }
-  private:
-    QString mType;
-    QgsEditorWidgetConfig mConfig;
-};
-
-
 /** \class QgsField
   * \ingroup core
   * Encapsulate a field in an attribute table or data source.
@@ -210,20 +174,6 @@ class CORE_EXPORT QgsField
     {
       return QVariant::fromValue( *this );
     }
-
-    /**
-     * Set the editor widget setup for the field.
-     *
-     * @param v  The value to set
-     */
-    void setEditorWidgetSetup( const QgsEditorWidgetSetup& v );
-
-    /**
-     * Get the editor widget setup for the field.
-     *
-     * @return the value
-     */
-    const QgsEditorWidgetSetup& editorWidgetSetup() const;
 
   private:
 

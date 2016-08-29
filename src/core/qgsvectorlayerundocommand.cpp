@@ -344,7 +344,7 @@ QgsVectorLayerUndoCommandDeleteAttribute::QgsVectorLayerUndoCommandDeleteAttribu
   QgsFields::FieldOrigin origin = fields.fieldOrigin( mFieldIndex );
   mOriginIndex = fields.fieldOriginIndex( mFieldIndex );
   mProviderField = ( origin == QgsFields::OriginProvider );
-  mOldEditorWidgetConfig = mBuffer->L->editFormConfig().widgetConfig( fields.field( mFieldIndex ).name() );
+  mOldEditorWidgetConfig = mBuffer->L->editFormConfig().widgetConfig( mFieldIndex );
 
   if ( !mProviderField )
   {

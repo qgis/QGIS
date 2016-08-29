@@ -27,7 +27,6 @@
 #include "qgsvectordataprovider.h"
 #include "qgsattributeeditor.h"
 #include "qgsstatisticalsummary.h"
-#include "qgseditorwidgetregistry.h"
 
 #include <limits>
 #include <QComboBox>
@@ -117,8 +116,8 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   mHiddenAttributes.clear();
   for ( int idx = 0; idx < mFields.count(); ++idx )
   {
-    const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mVectorLayer, mFields.at( idx ).name() );
-    if ( setup.type() == "Hidden" || setup.type() == "Immutable" )
+    if ( mVectorLayer->editFormConfig().widgetType( idx ) == "Hidden" ||
+         mVectorLayer->editFormConfig().widgetType( idx ) == "Immutable" )
     {
       mHiddenAttributes.insert( idx );
       continue;
@@ -126,7 +125,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
 
     mTableWidget->setColumnCount( col + 1 );
 
-    QComboBox *cb = createMergeComboBox( mFields.at( idx ).type() );
+    QComboBox *cb = createMergeComboBox( mFields.at( idx ) .type() );
     if ( pkAttrList.contains( idx ) )
     {
       cb->setCurrentIndex( cb->findData( "skip" ) );

@@ -1216,16 +1216,17 @@ void QgsAttributeForm::init()
       //show attribute alias if available
       QString fieldName = mLayer->attributeDisplayName( idx );
 
-      const QgsEditorWidgetSetup widgetSetup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, field.name() );
+      const QString widgetType = mLayer->editFormConfig().widgetType( idx );
 
-      if ( widgetSetup.type() == "Hidden" )
+      if ( widgetType == "Hidden" )
         continue;
 
+      const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig().widgetConfig( idx );
       bool labelOnTop = mLayer->editFormConfig().labelOnTop( idx );
 
       // This will also create the widget
       QLabel *l = new QLabel( fieldName );
-      QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetSetup.type(), mLayer, idx, widgetSetup.config(), nullptr, this, mContext );
+      QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, idx, widgetConfig, nullptr, this, mContext );
 
       QWidget* w = nullptr;
       if ( eww )
@@ -1233,13 +1234,13 @@ void QgsAttributeForm::init()
         QgsAttributeFormEditorWidget* formWidget = new QgsAttributeFormEditorWidget( eww, this );
         w = formWidget;
         mFormEditorWidgets.insert( idx, formWidget );
-        formWidget->createSearchWidgetWrappers( widgetSetup.type(), idx, widgetSetup.config(), mContext );
+        formWidget->createSearchWidgetWrappers( widgetType, idx, widgetConfig, mContext );
 
         l->setBuddy( eww->widget() );
       }
       else
       {
-        w = new QLabel( QString( "<p style=\"color: red; font-style: italic;\">Failed to create widget with type '%1'</p>" ).arg( widgetSetup.type() ) );
+        w = new QLabel( QString( "<p style=\"color: red; font-style: italic;\">Failed to create widget with type '%1'</p>" ).arg( widgetType ) );
       }
 
 
@@ -1264,8 +1265,8 @@ void QgsAttributeForm::init()
     Q_FOREACH ( const QgsRelation& rel, QgsProject::instance()->relationManager()->referencedRelations( mLayer ) )
     {
       QgsRelationWidgetWrapper* rww = new QgsRelationWidgetWrapper( mLayer, rel, nullptr, this );
-      const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, rel.id() );
-      rww->setConfig( setup.config() );
+      QgsEditorWidgetConfig cfg = mLayer->editFormConfig().widgetConfig( rel.id() );
+      rww->setConfig( cfg );
       rww->setContext( mContext );
       gridLayout->addWidget( rww->widget(), row++, 0, 1, 2 );
       mWidgets.append( rww );
@@ -1505,13 +1506,14 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       int fldIdx = vl->fieldNameIndex( fieldDef->name() );
       if ( fldIdx < vl->fields().count() && fldIdx >= 0 )
       {
-        const QgsEditorWidgetSetup widgetSetup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, fieldDef->name() );
+        const QString widgetType = mLayer->editFormConfig().widgetType( fldIdx );
+        const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig().widgetConfig( fldIdx );
 
-        QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetSetup.type(), mLayer, fldIdx, widgetSetup.config(), nullptr, this, mContext );
+        QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, fldIdx, widgetConfig, nullptr, this, mContext );
         QgsAttributeFormEditorWidget* w = new QgsAttributeFormEditorWidget( eww, this );
         mFormEditorWidgets.insert( fldIdx, w );
 
-        w->createSearchWidgetWrappers( widgetSetup.type(), fldIdx, widgetSetup.config(), mContext );
+        w->createSearchWidgetWrappers( widgetType, fldIdx, widgetConfig, mContext );
 
         newWidgetInfo.widget = w;
         addWidgetWrapper( eww );
@@ -1531,8 +1533,8 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       const QgsAttributeEditorRelation* relDef = dynamic_cast<const QgsAttributeEditorRelation*>( widgetDef );
 
       QgsRelationWidgetWrapper* rww = new QgsRelationWidgetWrapper( mLayer, relDef->relation(), nullptr, this );
-      const QgsEditorWidgetSetup widgetSetup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, relDef->relation().id() );
-      rww->setConfig( widgetSetup.config() );
+      QgsEditorWidgetConfig cfg = mLayer->editFormConfig().widgetConfig( relDef->relation().id() );
+      rww->setConfig( cfg );
       rww->setContext( context );
       newWidgetInfo.widget = rww->widget();
       rww->setShowLabel( relDef->showLabel() );
@@ -1686,8 +1688,7 @@ void QgsAttributeForm::createWrappers()
       if ( relation.isValid() )
       {
         QgsRelationWidgetWrapper* rww = new QgsRelationWidgetWrapper( mLayer, relation, myWidget, this );
-        const QgsEditorWidgetSetup widgetSetup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, relation.id() );
-        rww->setConfig( widgetSetup.config() );
+        rww->setConfig( mLayer->editFormConfig().widgetConfig( relation.id() ) );
         rww->setContext( mContext );
         rww->widget(); // Will initialize the widget
         mWidgets.append( rww );
@@ -1699,9 +1700,11 @@ void QgsAttributeForm::createWrappers()
       {
         if ( field.name() == myWidget->objectName() )
         {
+          const QString widgetType = mLayer->editFormConfig().widgetType( field.name() );
+          const QgsEditorWidgetConfig widgetConfig = mLayer->editFormConfig().widgetConfig( field.name() );
           int idx = mLayer->fieldNameIndex( field.name() );
 
-          QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( mLayer, idx, myWidget, this, mContext );
+          QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, idx, widgetConfig, myWidget, this, mContext );
           addWidgetWrapper( eww );
         }
       }

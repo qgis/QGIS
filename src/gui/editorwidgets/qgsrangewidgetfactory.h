@@ -37,7 +37,7 @@ class GUI_EXPORT QgsRangeWidgetFactory : public QgsEditorWidgetFactory
     virtual QMap<const char*, int> supportedWidgetTypes() override;
 
   private:
-    virtual unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
+    virtual bool isFieldSupported( QgsVectorLayer *vl, int fieldIdx ) override;
 };
 
 #endif // QGSRANGEWIDGETFACTORY_H

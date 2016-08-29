@@ -24,7 +24,6 @@ from qgis.core import (
     QgsTransactionGroup,
     NULL
 )
-from qgis.gui import QgsEditorWidgetRegistry
 from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -49,7 +48,6 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         cls.poly_vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
         assert cls.poly_vl.isValid()
         cls.poly_provider = cls.poly_vl.dataProvider()
-        QgsEditorWidgetRegistry.instance().initEditors()
 
     @classmethod
     def tearDownClass(cls):
@@ -313,27 +311,6 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         fet = next(vl.getFeatures())
         self.assertEqual(fet.fields()[1].name(), 'newname2')
         self.assertEqual(fet.fields()[2].name(), 'another')
-
-    def testEditorWidgetTypes(self):
-        """Test that editor widget types can be fetched from the qgis_editor_widget_styles table"""
-
-        vl = QgsVectorLayer('%s table="qgis_test"."widget_styles" sql=' % (self.dbconn), "widget_styles", "postgres")
-        self.assertTrue(vl.isValid())
-        fields = vl.dataProvider().fields()
-
-        setup1 = fields.field("fld1").editorWidgetSetup()
-        self.assertFalse(setup1.isNull())
-        self.assertEqual(setup1.type(), "FooEdit")
-        self.assertEqual(setup1.config(), {"param1": "value1", "param2": "2"})
-
-        best1 = QgsEditorWidgetRegistry.instance().findBest(vl, "fld1")
-        self.assertEqual(best1.type(), "FooEdit")
-        self.assertEqual(best1.config(), setup1.config())
-
-        self.assertTrue(fields.field("fld2").editorWidgetSetup().isNull())
-
-        best2 = QgsEditorWidgetRegistry.instance().findBest(vl, "fld2")
-        self.assertEqual(best2.type(), "TextEdit")
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):

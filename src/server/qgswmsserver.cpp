@@ -3334,11 +3334,11 @@ QDomElement QgsWmsServer::createFeatureGML(
 
 QString QgsWmsServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, const QString& attributeVal )
 {
-  const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( vl, vl->fields().field( idx ).name() );
-  if ( QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( setup.type() ) )
+  if ( QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( vl->editFormConfig().widgetType( idx ) ) )
   {
-    QString value( factory->representValue( vl, idx, setup.config(), QVariant(), attributeVal ) );
-    if ( setup.config().value( "AllowMulti" ).toBool() && value.startsWith( "{" ) && value.endsWith( "}" ) )
+    QgsEditorWidgetConfig cfg( vl->editFormConfig().widgetConfig( idx ) );
+    QString value( factory->representValue( vl, idx, cfg, QVariant(), attributeVal ) );
+    if ( cfg.value( "AllowMulti" ).toBool() && value.startsWith( "{" ) && value.endsWith( "}" ) )
     {
       value = value.mid( 1, value.size() - 2 );
     }

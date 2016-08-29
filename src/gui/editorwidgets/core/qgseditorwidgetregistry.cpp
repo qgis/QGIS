@@ -54,7 +54,6 @@ QgsEditorWidgetRegistry* QgsEditorWidgetRegistry::instance()
 void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBar *messageBar )
 {
   QgsEditorWidgetRegistry *reg = instance();
-  reg->registerWidget( "TextEdit", new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
   reg->registerWidget( "Classification", new QgsClassificationWidgetWrapperFactory( tr( "Classification" ) ) );
   reg->registerWidget( "Range", new QgsRangeWidgetFactory( tr( "Range" ) ) );
   reg->registerWidget( "UniqueValues", new QgsUniqueValueWidgetFactory( tr( "Unique Values" ) ) );
@@ -63,6 +62,7 @@ void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBa
   reg->registerWidget( "Enumeration", new QgsEnumerationWidgetFactory( tr( "Enumeration" ) ) );
   reg->registerWidget( "Hidden", new QgsHiddenWidgetFactory( tr( "Hidden" ) ) );
   reg->registerWidget( "CheckBox", new QgsCheckboxWidgetFactory( tr( "Check Box" ) ) );
+  reg->registerWidget( "TextEdit", new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
   reg->registerWidget( "ValueRelation", new QgsValueRelationWidgetFactory( tr( "Value Relation" ) ) );
   reg->registerWidget( "UuidGenerator", new QgsUuidWidgetFactory( tr( "Uuid Generator" ) ) );
   reg->registerWidget( "Photo", new QgsPhotoWidgetFactory( tr( "Photo" ) ) );
@@ -87,23 +87,6 @@ QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
 QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
 {
   qDeleteAll( mWidgetFactories );
-}
-
-QgsEditorWidgetSetup QgsEditorWidgetRegistry::findBest( const QgsVectorLayer* vl, const QString& fieldName ) const
-{
-  const QString fromConfig = vl->editFormConfig().widgetType( fieldName );
-  if ( !fromConfig.isNull() )
-  {
-    return QgsEditorWidgetSetup( fromConfig, vl->editFormConfig().widgetConfig( fieldName ) );
-  }
-  return autoConf.editorWidgetSetup( vl, fieldName );
-}
-
-QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent, const QgsAttributeEditorContext &context )
-{
-  const QString fieldName = vl->fields().field( fieldIdx ).name();
-  const QgsEditorWidgetSetup setup = findBest( vl, fieldName );
-  return create( setup.type(), vl, fieldIdx, setup.config(), editor, parent, context );
 }
 
 QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* editor, QWidget* parent, const QgsAttributeEditorContext &context )
@@ -288,13 +271,8 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
   QgsFields fields = vectorLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    const QgsField field = fields.at( idx );
-    const QString& widgetType = vectorLayer->editFormConfig().widgetType( field.name() );
-    if ( widgetType.isNull() )
-    {
-      // Don't save widget config if it is not manually edited
-      continue;
-    }
+    QgsField field = fields.at( idx );
+    const QString& widgetType = vectorLayer->editFormConfig().widgetType( idx );
     if ( !mWidgetFactories.contains( widgetType ) )
     {
       QgsMessageLog::logMessage( tr( "Could not save unknown editor widget type '%1'." ).arg( widgetType ) );
@@ -315,7 +293,7 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
       ewv2CfgElem.setAttribute( "constraint", vectorLayer->editFormConfig().expression( idx ) );
       ewv2CfgElem.setAttribute( "constraintDescription", vectorLayer->editFormConfig().expressionDescription( idx ) );
 
-      mWidgetFactories[widgetType]->writeConfig( vectorLayer->editFormConfig().widgetConfig( field.name() ), ewv2CfgElem, doc, vectorLayer, idx );
+      mWidgetFactories[widgetType]->writeConfig( vectorLayer->editFormConfig().widgetConfig( idx ), ewv2CfgElem, doc, vectorLayer, idx );
 
       editTypeElement.appendChild( ewv2CfgElem );
     }

@@ -114,18 +114,3 @@ QMap<const char*, int> QgsDateTimeEditFactory::supportedWidgetTypes()
   map.insert( QgsDateTimeEdit::staticMetaObject.className(), 10 );
   return map;
 }
-
-unsigned int QgsDateTimeEditFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
-{
-  const QgsField field = vl->fields().field( fieldIdx );
-  const QVariant::Type type = field.type();
-  const QgsEditorWidgetConfig config = vl->editFormConfig().widgetConfig( field.name() );
-  if ( type == QVariant::DateTime || config.contains( "field_format" ) )
-  {
-    return 20;
-  }
-  else
-  {
-    return 5;
-  }
-}

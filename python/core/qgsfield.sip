@@ -1,35 +1,3 @@
-/** \ingroup core
- * Holder for the widget type and its configuration for a field.
- */
-class QgsEditorWidgetSetup
-{
-%TypeHeaderCode
-#include <qgsfield.h>
-%End
-  public:
-    /**
-     * Constructor
-     */
-    QgsEditorWidgetSetup( const QString& type, const QgsEditorWidgetConfig& config );
-    QgsEditorWidgetSetup();
-
-    /**
-     * @return the widget type to use
-     */
-    QString type() const;
-
-    /**
-     * @return the widget configuration to used
-     */
-    QgsEditorWidgetConfig config() const;
-
-    /**
-     * @return true if there is no widget configured.
-     */
-    bool isNull() const;
-};
-
-
 /** \class QgsField
   * \ingroup core
   * Encapsulate a field in an attribute table or data source.
@@ -211,19 +179,6 @@ class QgsField
     //! Allows direct construction of QVariants from fields.
     operator QVariant() const;
 
-    /**
-     * Set the editor widget setup for the field.
-     *
-     * @param v  The value to set
-     */
-    void setEditorWidgetSetup( const QgsEditorWidgetSetup& v );
-
-    /**
-     * Get the editor widget setup for the field.
-     *
-     * @return the value
-     */
-    const QgsEditorWidgetSetup& editorWidgetSetup() const;
 }; // class QgsField
 
 

@@ -6149,11 +6149,11 @@ QVariant QgisAppFieldValueConverter::convert( int idx, const QVariant& value )
   {
     return value;
   }
-  const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, mLayer->fields().field( idx ).name() );
-  QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( setup.type() );
+  QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( mLayer->editFormConfig().widgetType( idx ) );
   if ( factory )
   {
-    return QVariant( factory->representValue( mLayer, idx, setup.config(), QVariant(), value ) );
+    QgsEditorWidgetConfig cfg( mLayer->editFormConfig().widgetConfig( idx ) );
+    return QVariant( factory->representValue( mLayer, idx, cfg, QVariant(), value ) );
   }
   return value;
 }

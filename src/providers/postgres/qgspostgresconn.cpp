@@ -1287,7 +1287,6 @@ QString QgsPostgresConn::fieldExpression( const QgsField &fld, QString expr )
   }
   else if ( type.startsWith( '_' ) )
   {
-    //TODO: add native support for arrays
     return QString( "array_out(%1)::text" ).arg( expr );
   }
   else if ( type == "bool" )
@@ -1304,7 +1303,6 @@ QString QgsPostgresConn::fieldExpression( const QgsField &fld, QString expr )
   {
     return QString( "st_astext(%1)" ).arg( expr );
   }
-  //TODO: add support for hstore
   else
   {
     return expr + "::text";

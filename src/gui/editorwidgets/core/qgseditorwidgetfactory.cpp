@@ -116,10 +116,10 @@ QgsEditorWidgetConfig QgsEditorWidgetFactory::readConfig( const QDomElement& con
   return QgsEditorWidgetConfig();
 }
 
-unsigned int QgsEditorWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
+bool QgsEditorWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fieldIdx )
 {
   Q_UNUSED( vl )
   Q_UNUSED( fieldIdx )
-  return 5;
+  return true;
 }
 

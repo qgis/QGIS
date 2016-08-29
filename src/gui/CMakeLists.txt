@@ -84,7 +84,6 @@ SET(QGIS_GUI_SRCS
   auth/qgsauthtrustedcasdialog.cpp
 
   editorwidgets/core/qgseditorconfigwidget.cpp
-  editorwidgets/core/qgseditorwidgetautoconf.cpp
   editorwidgets/core/qgseditorwidgetfactory.cpp
   editorwidgets/core/qgseditorwidgetregistry.cpp
   editorwidgets/core/qgseditorwidgetwrapper.cpp

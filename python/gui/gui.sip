@@ -258,7 +258,6 @@
 %Include effects/qgspainteffectwidget.sip
 
 %Include editorwidgets/core/qgseditorconfigwidget.sip
-%Include editorwidgets/core/qgseditorwidgetautoconf.sip
 %Include editorwidgets/core/qgseditorwidgetfactory.sip
 %Include editorwidgets/core/qgseditorwidgetregistry.sip
 %Include editorwidgets/core/qgseditorwidgetwrapper.sip
