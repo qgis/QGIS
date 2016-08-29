@@ -201,9 +201,16 @@ void QgsGeometryUtils::adjacentVertices( const QgsAbstractGeometryV2& geom, QgsV
   }
   else if ( atVertex.vertex == 0 )
   {
-    afterVertex.part = atVertex.part;
-    afterVertex.ring = atVertex.ring;
-    afterVertex.vertex = atVertex.vertex + 1;
+    if ( ring.size() > 1 )
+    {
+      afterVertex.part = atVertex.part;
+      afterVertex.ring = atVertex.ring;
+      afterVertex.vertex = atVertex.vertex + 1;
+    }
+    else
+    {
+      afterVertex = QgsVertexId(); //after vertex invalid
+    }
     if ( polygonType && ring.size() > 3 )
     {
       beforeVertex.part = atVertex.part;

@@ -350,6 +350,12 @@ void TestQgsGeometryUtils::testAdjacentVertices()
   QgsGeometryUtils::adjacentVertices( polygon1, QgsVertexId( 0, 0, 0 ), previous, next );
   QCOMPARE( previous, QgsVertexId( 0, 0, 3 ) );
   QCOMPARE( next, QgsVertexId( 0, 0, 1 ) );
+
+  // test point - both vertices should be invalid
+  QgsPointV2 point( 1, 2 );
+  QgsGeometryUtils::adjacentVertices( point, QgsVertexId( 0, 0, 0 ), previous, next );
+  QVERIFY( !previous.isValid() );
+  QVERIFY( !next.isValid() );
 }
 
 void TestQgsGeometryUtils::testDistanceToVertex()
