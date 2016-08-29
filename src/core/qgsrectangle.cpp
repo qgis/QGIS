@@ -196,24 +196,31 @@ bool QgsRectangle::contains( const QgsPoint &p ) const
 
 void QgsRectangle::combineExtentWith( const QgsRectangle &rect )
 {
+  if ( isNull() )
+    *this = rect;
+  else
+  {
+    xmin = (( xmin < rect.xMinimum() ) ? xmin : rect.xMinimum() );
+    xmax = (( xmax > rect.xMaximum() ) ? xmax : rect.xMaximum() );
 
-  xmin = (( xmin < rect.xMinimum() ) ? xmin : rect.xMinimum() );
-  xmax = (( xmax > rect.xMaximum() ) ? xmax : rect.xMaximum() );
-
-  ymin = (( ymin < rect.yMinimum() ) ? ymin : rect.yMinimum() );
-  ymax = (( ymax > rect.yMaximum() ) ? ymax : rect.yMaximum() );
+    ymin = (( ymin < rect.yMinimum() ) ? ymin : rect.yMinimum() );
+    ymax = (( ymax > rect.yMaximum() ) ? ymax : rect.yMaximum() );
+  }
 
 }
 
 void QgsRectangle::combineExtentWith( double x, double y )
 {
+  if ( isNull() )
+    *this = QgsRectangle( x, y, x, y );
+  else
+  {
+    xmin = (( xmin < x ) ? xmin : x );
+    xmax = (( xmax > x ) ? xmax : x );
 
-  xmin = (( xmin < x ) ? xmin : x );
-  xmax = (( xmax > x ) ? xmax : x );
-
-  ymin = (( ymin < y ) ? ymin : y );
-  ymax = (( ymax > y ) ? ymax : y );
-
+    ymin = (( ymin < y ) ? ymin : y );
+    ymax = (( ymax > y ) ? ymax : y );
+  }
 }
 
 bool QgsRectangle::isEmpty() const
