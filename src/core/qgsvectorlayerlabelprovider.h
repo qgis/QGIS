@@ -114,6 +114,8 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
 
     //! List of generated
     QList<QgsLabelFeature*> mLabels;
+
+    friend class TestQgsLabelingEngineV2;
 };
 
 #endif // QGSVECTORLAYERLABELPROVIDER_H

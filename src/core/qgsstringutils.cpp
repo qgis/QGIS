@@ -15,6 +15,56 @@
 
 #include "qgsstringutils.h"
 #include <QVector>
+#include <QRegExp>
+#include <QStringList>
+#include <QTextBoundaryFinder>
+
+QString QgsStringUtils::capitalize( const QString& string, QgsStringUtils::Capitalization capitalization )
+{
+  if ( string.isEmpty() )
+    return QString();
+
+  switch ( capitalization )
+  {
+    case MixedCase:
+      return string;
+
+    case AllUppercase:
+      return string.toUpper();
+
+    case AllLowercase:
+      return string.toLower();
+
+    case ForceFirstLetterToCapital:
+    {
+      QString temp = string;
+
+      QTextBoundaryFinder wordSplitter( QTextBoundaryFinder::Word, string.constData(), string.length(), 0, 0 );
+      QTextBoundaryFinder letterSplitter( QTextBoundaryFinder::Grapheme, string.constData(), string.length(), 0, 0 );
+
+      wordSplitter.setPosition( 0 );
+      bool first = true;
+#if QT_VERSION >= 0x050000
+      while (( first && wordSplitter.boundaryReasons() & QTextBoundaryFinder::StartOfItem )
+             || wordSplitter.toNextBoundary() >= 0 )
+#else
+      while (( first && wordSplitter.boundaryReasons() & QTextBoundaryFinder::StartWord )
+             || wordSplitter.toNextBoundary() >= 0 )
+#endif
+      {
+        first = false;
+        letterSplitter.setPosition( wordSplitter.position() );
+        letterSplitter.toNextBoundary();
+        QString substr = string.mid( wordSplitter.position(), letterSplitter.position() - wordSplitter.position() );
+        temp.replace( wordSplitter.position(), substr.length(), substr.toUpper() );
+      }
+      return temp;
+    }
+
+  }
+  // no warnings
+  return string;
+}
 
 int QgsStringUtils::levenshteinDistance( const QString& string1, const QString& string2, bool caseSensitive )
 {
