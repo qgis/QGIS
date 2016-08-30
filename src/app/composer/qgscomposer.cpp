@@ -3479,15 +3479,6 @@ void QgsComposer::writeXml( QDomNode& parentNode, QDomDocument& doc )
   }
   mMapsToRestore.clear();
 
-  //store if composer is open or closed
-  if ( isVisible() )
-  {
-    composerElem.setAttribute( "visible", 1 );
-  }
-  else
-  {
-    composerElem.setAttribute( "visible", 0 );
-  }
   parentNode.appendChild( composerElem );
 
   //store composition
