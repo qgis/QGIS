@@ -72,7 +72,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/QgsAttributeTypeDialog/geometry" ).toByteArray() );
 
-  constraintExpression->setLayer( vl );
+  constraintExpressionWidget->setLayer( vl );
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
@@ -180,14 +180,14 @@ bool QgsAttributeTypeDialog::labelOnTop() const
   return labelOnTopCheckBox->isChecked();
 }
 
-void QgsAttributeTypeDialog::setExpressionDescription( const QString &desc )
+void QgsAttributeTypeDialog::setConstraintExpressionDescription( const QString &desc )
 {
-  constraintExpressionDescription->setText( desc );
+  leConstraintExpressionDescription->setText( desc );
 }
 
-QString QgsAttributeTypeDialog::expressionDescription()
+QString QgsAttributeTypeDialog::constraintExpressionDescription()
 {
-  return constraintExpressionDescription->text();
+  return leConstraintExpressionDescription->text();
 }
 
 bool QgsAttributeTypeDialog::notNull() const
@@ -195,14 +195,24 @@ bool QgsAttributeTypeDialog::notNull() const
   return notNullCheckBox->isChecked();
 }
 
-void QgsAttributeTypeDialog::setExpression( const QString &str )
+void QgsAttributeTypeDialog::setConstraintExpression( const QString &str )
 {
-  constraintExpression->setField( str );
+  constraintExpressionWidget->setField( str );
 }
 
-QString QgsAttributeTypeDialog::expression() const
+QString QgsAttributeTypeDialog::defaultValueExpression() const
 {
-  return constraintExpression->asExpression();
+  return mExpressionWidget->expression();
+}
+
+void QgsAttributeTypeDialog::setDefaultValueExpression( const QString& expression )
+{
+  mExpressionWidget->setExpression( expression );
+}
+
+QString QgsAttributeTypeDialog::constraintExpression() const
+{
+  return constraintExpressionWidget->asExpression();
 }
 
 void QgsAttributeTypeDialog::setFieldEditable( bool editable )

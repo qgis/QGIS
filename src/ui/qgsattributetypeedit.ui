@@ -51,6 +51,30 @@
     <widget class="QStackedWidget" name="stackedWidget"/>
    </item>
    <item row="2" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Default value</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsExpressionLineEdit" name="mExpressionWidget" native="true">
+       <property name="maximumSize">
+        <size>
+         <width>500</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="1">
     <widget class="QCheckBox" name="notNullCheckBox">
      <property name="text">
       <string>Not null</string>
@@ -70,7 +94,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsFieldExpressionWidget" name="constraintExpression" native="true"/>
+      <widget class="QgsFieldExpressionWidget" name="constraintExpressionWidget" native="true"/>
      </item>
     </layout>
    </item>
@@ -87,13 +111,19 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="constraintExpressionDescription"/>
+      <widget class="QLineEdit" name="leConstraintExpressionDescription"/>
      </item>
     </layout>
    </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsExpressionLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgsexpressionlineedit.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>

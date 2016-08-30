@@ -143,6 +143,11 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
   bool reuseLastValues = settings.value( "/qgis/digitizing/reuseLastValues", false ).toBool();
   QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
 
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+
   // add the fields to the QgsFeature
   const QgsFields& fields = mLayer->fields();
   mFeature->initAttributes( fields.count() );
@@ -153,6 +158,11 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
     if ( defaultAttributes.contains( idx ) )
     {
       v = defaultAttributes.value( idx );
+    }
+    else if ( !mLayer->defaultValueExpression( idx ).isEmpty() )
+    {
+      // client side default expression set - use this in preference to reusing last value
+      v = mLayer->defaultValue( idx, *mFeature, &context );
     }
     else if ( reuseLastValues && sLastUsedValues.contains( mLayer ) && sLastUsedValues[ mLayer ].contains( idx ) && !pkAttrList.contains( idx ) )
     {
