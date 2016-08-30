@@ -94,14 +94,14 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      */
     bool notNull() const;
 
-    /*
+    /**
      * Setter for constraint expression description
      * @param desc the expression description
      * @note added in QGIS 2.16
      **/
     void setExpressionDescription( const QString &desc );
 
-    /*
+    /**
      * Getter for constraint expression description
      * @return the expression description
      * @note added in QGIS 2.16
