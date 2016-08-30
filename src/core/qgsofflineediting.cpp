@@ -735,14 +735,9 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
   QString sql = QString( "SELECT \"fid\" FROM 'log_added_features' WHERE \"layer_id\" = %1" ).arg( layerId );
   QList<int> newFeatureIds = sqlQueryInts( db, sql );
 
-  // get default value for each field
-  const QgsFields& remoteFlds = remoteLayer->fields();
-  QVector<QVariant> defaultValues( remoteFlds.count() );
-  for ( int i = 0; i < remoteFlds.count(); ++i )
-  {
-    if ( remoteFlds.fieldOrigin( i ) == QgsFields::OriginProvider )
-      defaultValues[i] = remoteLayer->dataProvider()->defaultValue( remoteFlds.fieldOriginIndex( i ) );
-  }
+  QgsFields remoteFlds = remoteLayer->fields();
+
+  QgsExpressionContext context = remoteLayer->createExpressionContext();
 
   // get new features from offline layer
   QgsFeatureList features;
@@ -778,8 +773,13 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
     // (important especially e.g. for postgis primary key generated from a sequence)
     for ( int k = 0; k < newAttrs.count(); ++k )
     {
-      if ( newAttrs.at( k ).isNull() && !defaultValues.at( k ).isNull() )
-        newAttrs[k] = defaultValues.at( k );
+      if ( !newAttrs.at( k ).isNull() )
+        continue;
+
+      if ( !remoteLayer->defaultValueExpression( k ).isEmpty() )
+        newAttrs[k] = remoteLayer->defaultValue( k, f, &context );
+      else if ( remoteFlds.fieldOrigin( k ) == QgsFields::OriginProvider )
+        newAttrs[k] = remoteLayer->dataProvider()->defaultValue( remoteFlds.fieldOriginIndex( k ) );
     }
 
     f.setAttributes( newAttrs );

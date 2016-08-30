@@ -18,6 +18,7 @@ import os
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QPainter
+from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
 
 from qgis.core import (Qgis,
                        QgsWkbTypes,
@@ -36,7 +37,11 @@ from qgis.core import (Qgis,
                        QgsCoordinateReferenceSystem,
                        QgsProject,
                        QgsUnitTypes,
-                       QgsAggregateCalculator)
+                       QgsAggregateCalculator,
+                       QgsPointV2,
+                       QgsExpressionContext,
+                       QgsExpressionContextScope,
+                       QgsExpressionContextUtils)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 start_app()
@@ -1601,6 +1606,163 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.setRenderer(r)
         self.assertTrue(self.rendererChanged)
         self.assertEqual(layer.renderer(), r)
+
+    def testGetSetAliases(self):
+        """ test getting and setting aliases """
+        layer = createLayerWithOnePoint()
+
+        self.assertFalse(layer.attributeAlias(0))
+        self.assertFalse(layer.attributeAlias(1))
+        self.assertFalse(layer.attributeAlias(2))
+
+        layer.addAttributeAlias(0, "test")
+        self.assertEqual(layer.attributeAlias(0), "test")
+        self.assertFalse(layer.attributeAlias(1))
+        self.assertFalse(layer.attributeAlias(2))
+        self.assertEqual(layer.fields().at(0).alias(), "test")
+
+        layer.addAttributeAlias(1, "test2")
+        self.assertEqual(layer.attributeAlias(0), "test")
+        self.assertEqual(layer.attributeAlias(1), "test2")
+        self.assertFalse(layer.attributeAlias(2))
+        self.assertEqual(layer.fields().at(0).alias(), "test")
+        self.assertEqual(layer.fields().at(1).alias(), "test2")
+
+        layer.addAttributeAlias(1, None)
+        self.assertEqual(layer.attributeAlias(0), "test")
+        self.assertFalse(layer.attributeAlias(1))
+        self.assertFalse(layer.attributeAlias(2))
+        self.assertEqual(layer.fields().at(0).alias(), "test")
+        self.assertFalse(layer.fields().at(1).alias())
+
+        layer.remAttributeAlias(0)
+        self.assertFalse(layer.attributeAlias(0))
+        self.assertFalse(layer.attributeAlias(1))
+        self.assertFalse(layer.attributeAlias(2))
+        self.assertFalse(layer.fields().at(0).alias())
+        self.assertFalse(layer.fields().at(1).alias())
+
+    def testSaveRestoreAliases(self):
+        """ test saving and restoring aliases from xml"""
+        layer = createLayerWithOnePoint()
+
+        # no default expressions
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("maplayer")
+        self.assertTrue(layer.writeXml(elem, doc))
+
+        layer2 = createLayerWithOnePoint()
+        self.assertTrue(layer2.readXml(elem))
+        self.assertFalse(layer2.attributeAlias(0))
+        self.assertFalse(layer2.attributeAlias(1))
+
+        # set some aliases
+        layer.addAttributeAlias(0, "test")
+        layer.addAttributeAlias(1, "test2")
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("maplayer")
+        self.assertTrue(layer.writeXml(elem, doc))
+
+        layer3 = createLayerWithOnePoint()
+        self.assertTrue(layer3.readXml(elem))
+        self.assertEqual(layer3.attributeAlias(0), "test")
+        self.assertEqual(layer3.attributeAlias(1), "test2")
+        self.assertEqual(layer3.fields().at(0).alias(), "test")
+        self.assertEqual(layer3.fields().at(1).alias(), "test2")
+
+    def testGetSetDefaults(self):
+        """ test getting and setting default expressions """
+        layer = createLayerWithOnePoint()
+
+        self.assertFalse(layer.defaultValueExpression(0))
+        self.assertFalse(layer.defaultValueExpression(1))
+        self.assertFalse(layer.defaultValueExpression(2))
+
+        layer.setDefaultValueExpression(0, "'test'")
+        self.assertEqual(layer.defaultValueExpression(0), "'test'")
+        self.assertFalse(layer.defaultValueExpression(1))
+        self.assertFalse(layer.defaultValueExpression(2))
+        self.assertEqual(layer.fields().at(0).defaultValueExpression(), "'test'")
+
+        layer.setDefaultValueExpression(1, "2+2")
+        self.assertEqual(layer.defaultValueExpression(0), "'test'")
+        self.assertEqual(layer.defaultValueExpression(1), "2+2")
+        self.assertFalse(layer.defaultValueExpression(2))
+        self.assertEqual(layer.fields().at(0).defaultValueExpression(), "'test'")
+        self.assertEqual(layer.fields().at(1).defaultValueExpression(), "2+2")
+
+    def testSaveRestoreDefaults(self):
+        """ test saving and restoring default expressions from xml"""
+        layer = createLayerWithOnePoint()
+
+        # no default expressions
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("maplayer")
+        self.assertTrue(layer.writeXml(elem, doc))
+
+        layer2 = createLayerWithOnePoint()
+        self.assertTrue(layer2.readXml(elem))
+        self.assertFalse(layer2.defaultValueExpression(0))
+        self.assertFalse(layer2.defaultValueExpression(1))
+
+        # set some default expressions
+        layer.setDefaultValueExpression(0, "'test'")
+        layer.setDefaultValueExpression(1, "2+2")
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("maplayer")
+        self.assertTrue(layer.writeXml(elem, doc))
+
+        layer3 = createLayerWithOnePoint()
+        self.assertTrue(layer3.readXml(elem))
+        self.assertEqual(layer3.defaultValueExpression(0), "'test'")
+        self.assertEqual(layer3.defaultValueExpression(1), "2+2")
+        self.assertEqual(layer3.fields().at(0).defaultValueExpression(), "'test'")
+        self.assertEqual(layer3.fields().at(1).defaultValueExpression(), "2+2")
+
+    def testEvaluatingDefaultExpressions(self):
+        """ tests calculation of default values"""
+        layer = createLayerWithOnePoint()
+        layer.setDefaultValueExpression(0, "'test'")
+        layer.setDefaultValueExpression(1, "2+2")
+        self.assertEqual(layer.defaultValue(0), 'test')
+        self.assertEqual(layer.defaultValue(1), 4)
+
+        # using feature
+        layer.setDefaultValueExpression(1, '$id * 2')
+        feature = QgsFeature(4)
+        feature.setValid(True)
+        feature.setFields(layer.fields())
+        # no feature:
+        self.assertFalse(layer.defaultValue(1))
+        # with feature:
+        self.assertEqual(layer.defaultValue(0, feature), 'test')
+        self.assertEqual(layer.defaultValue(1, feature), 8)
+
+        # using feature geometry
+        layer.setDefaultValueExpression(1, '$x * 2')
+        feature.setGeometry(QgsGeometry(QgsPointV2(6, 7)))
+        self.assertEqual(layer.defaultValue(1, feature), 12)
+
+        # using contexts
+        scope = QgsExpressionContextScope()
+        scope.setVariable('var1', 16)
+        context = QgsExpressionContext()
+        context.appendScope(scope)
+        layer.setDefaultValueExpression(1, '$id + @var1')
+        self.assertEqual(layer.defaultValue(1, feature, context), 20)
+
+        # if no scope passed, should use a default constructed one including layer variables
+        QgsExpressionContextUtils.setLayerVariable(layer, 'var2', 4)
+        QgsExpressionContextUtils.setProjectVariable('var3', 8)
+        layer.setDefaultValueExpression(1, 'to_int(@var2) + to_int(@var3) + $id')
+        self.assertEqual(layer.defaultValue(1, feature), 16)
+
+        # bad expression
+        layer.setDefaultValueExpression(1, 'not a valid expression')
+        self.assertFalse(layer.defaultValue(1))
+
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect

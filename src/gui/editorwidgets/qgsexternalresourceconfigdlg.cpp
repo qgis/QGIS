@@ -57,6 +57,20 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer* vl, 
 
   mDocumentViewerContentComboBox->addItem( tr( "Image" ), QgsExternalResourceWidget::Image );
   mDocumentViewerContentComboBox->addItem( tr( "Web view" ), QgsExternalResourceWidget::Web );
+
+
+  connect( mFileWidgetGroupBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mFileWidgetButtonGroupBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mFileWidgetFilterLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( changed() ) );
+  connect( mUseLink, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mFullUrl, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mRootPath, SIGNAL( textChanged( QString ) ), this, SIGNAL( changed() ) );
+  connect( mStorageButtonGroup, SIGNAL( buttonClicked( int ) ), this, SIGNAL( changed() ) );
+  connect( mRelativeGroupBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mDocumentViewerGroupBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mDocumentViewerContentComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( changed() ) );
+  connect( mDocumentViewerHeight, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );
+  connect( mDocumentViewerWidth, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );
 }
 
 void QgsExternalResourceConfigDlg::chooseDefaultPath()

@@ -19,6 +19,9 @@ QgsCheckBoxConfigDlg::QgsCheckBoxConfigDlg( QgsVectorLayer* vl, int fieldIdx, QW
     : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
+
+  connect( leCheckedState, SIGNAL( textEdited( QString ) ), this, SIGNAL( changed() ) );
+  connect( leUncheckedState, SIGNAL( textEdited( QString ) ), this, SIGNAL( changed() ) );
 }
 
 QgsEditorWidgetConfig QgsCheckBoxConfigDlg::config()

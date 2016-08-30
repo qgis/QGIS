@@ -417,7 +417,7 @@ class CORE_EXPORT QgsEditFormConfig
      * Used internally to set the fields when they change.
      * This should only be called from QgsVectorLayer for synchronization reasons
      */
-    void setFields( const QgsFields& fields, const QMap<QString, QString>& attributeAliasMap );
+    void setFields( const QgsFields& fields );
 
     /**
      * Will be called by friend class QgsVectorLayer

@@ -1201,7 +1201,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /** Convenience function that returns the attribute alias if defined or the field name else */
     QString attributeDisplayName( int attributeIndex ) const;
 
-    const QMap< QString, QString >& attributeAliases() const { return mAttributeAliasMap; }
+    //! Returns a map of field name to attribute alias
+    QgsStringMap attributeAliases() const;
 
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
@@ -1330,6 +1331,42 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /** Caches joined attributes if required (and not already done) */
     // marked as const as these are just caches, and need to be created from const accessors
     void createJoinCaches() const;
+
+    /** Returns the calculated default value for the specified field index. The default
+     * value may be taken from a client side default value expression (see setDefaultValueExpression())
+     * or taken from the underlying data provider.
+     * @param index field index
+     * @param feature optional feature to use for default value evaluation. If passed,
+     * then properties from the feature (such as geometry) can be used when calculating
+     * the default value.
+     * @param context optional expression context to evaluate expressions again. If not
+     * specified, a default context will be created
+     * @return calculated default value
+     * @note added in QGIS 3.0
+     * @see setDefaultValueExpression()
+     */
+    QVariant defaultValue( int index, const QgsFeature& feature = QgsFeature(),
+                           QgsExpressionContext* context = nullptr ) const;
+
+    /** Sets an expression to use when calculating the default value for a field.
+     * @param index field index
+     * @param expression expression to evaluate when calculating default values for field. Pass
+     * an empty expression to clear the default.
+     * @note added in QGIS 3.0
+     * @see defaultValue()
+     * @see defaultValueExpression()
+     */
+    void setDefaultValueExpression( int index, const QString& expression );
+
+    /** Returns the expression used when calculating the default value for a field.
+     * @param index field index
+     * @returns expression evaluated when calculating default values for field, or an
+     * empty string if no default is set
+     * @note added in QGIS 3.0
+     * @see defaultValue()
+     * @see setDefaultValueExpression()
+     */
+    QString defaultValueExpression( int index ) const;
 
     /** Calculates a list of unique values contained within an attribute in the layer. Note that
      * in some circumstances when unsaved changes are present for the layer then the returned list
@@ -1863,7 +1900,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsFields mUpdatedFields;
 
     /** Map that stores the aliases for attributes. Key is the attribute name and value the alias for that attribute*/
-    QMap< QString, QString > mAttributeAliasMap;
+    QgsStringMap mAttributeAliasMap;
+
+    //! Map which stores default value expressions for fields
+    QgsStringMap mDefaultExpressionMap;
 
     /** Holds the configuration for the edit form */
     QgsEditFormConfig mEditFormConfig;

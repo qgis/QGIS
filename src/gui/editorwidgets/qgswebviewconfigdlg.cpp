@@ -19,6 +19,8 @@ QgsWebViewWidgetConfigDlg::QgsWebViewWidgetConfigDlg( QgsVectorLayer* vl, int fi
     :  QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
+  connect( sbWidgetHeight, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );
+  connect( sbWidgetWidth, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );
 }
 
 QgsEditorWidgetConfig QgsWebViewWidgetConfigDlg::config()

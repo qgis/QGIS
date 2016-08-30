@@ -40,6 +40,7 @@ class TestQgsField: public QObject
     void displayString();
     void convertCompatible();
     void dataStream();
+    void displayName();
 
   private:
 };
@@ -116,6 +117,10 @@ void TestQgsField::gettersSetters()
   QCOMPARE( field.precision(), 2 );
   field.setComment( "comment" );
   QCOMPARE( field.comment(), QString( "comment" ) );
+  field.setAlias( "alias" );
+  QCOMPARE( field.alias(), QString( "alias" ) );
+  field.setDefaultValueExpression( "1+2" );
+  QCOMPARE( field.defaultValueExpression(), QString( "1+2" ) );
 }
 
 void TestQgsField::isNumeric()
@@ -177,6 +182,14 @@ void TestQgsField::equality()
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
   field2.setPrecision( 2 );
+  field2.setAlias( "alias " );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
+  field2.setAlias( QString() );
+  field2.setDefaultValueExpression( "1+2" );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
+  field2.setDefaultValueExpression( QString() );
 }
 
 void TestQgsField::asVariant()
@@ -358,6 +371,8 @@ void TestQgsField::dataStream()
   original.setPrecision( 2 );
   original.setTypeName( "typename1" );
   original.setComment( "comment1" );
+  original.setAlias( "alias" );
+  original.setDefaultValueExpression( "default" );
 
   QByteArray ba;
   QDataStream ds( &ba, QIODevice::ReadWrite );
@@ -370,6 +385,17 @@ void TestQgsField::dataStream()
   QCOMPARE( result, original );
   QCOMPARE( result.typeName(), original.typeName() ); //typename is NOT required for equality
   QCOMPARE( result.comment(), original.comment() ); //comment is NOT required for equality
+}
+
+void TestQgsField::displayName()
+{
+  QgsField field;
+  field.setName( "name" );
+  QCOMPARE( field.displayName(), QString( "name" ) );
+  field.setAlias( "alias" );
+  QCOMPARE( field.displayName(), QString( "alias" ) );
+  field.setAlias( QString() );
+  QCOMPARE( field.displayName(), QString( "name" ) );
 }
 
 QTEST_MAIN( TestQgsField )

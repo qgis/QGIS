@@ -484,8 +484,8 @@ int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format 
 
         //is there alias info for this vector layer?
         QMap< int, QString > layerAliasInfo;
-        const QMap< QString, QString >& aliasMap = layer->attributeAliases();
-        QMap< QString, QString >::const_iterator aliasIt = aliasMap.constBegin();
+        QgsStringMap aliasMap = layer->attributeAliases();
+        QgsStringMap::const_iterator aliasIt = aliasMap.constBegin();
         for ( ; aliasIt != aliasMap.constEnd(); ++aliasIt )
         {
           int attrIndex = layer->fieldNameIndex( aliasIt.key() );
@@ -870,8 +870,8 @@ int QgsWfsServer::getFeature( QgsRequestHandler& request, const QString& format 
 
       //is there alias info for this vector layer?
       QMap< int, QString > layerAliasInfo;
-      const QMap< QString, QString >& aliasMap = layer->attributeAliases();
-      QMap< QString, QString >::const_iterator aliasIt = aliasMap.constBegin();
+      QgsStringMap aliasMap = layer->attributeAliases();
+      QgsStringMap::const_iterator aliasIt = aliasMap.constBegin();
       for ( ; aliasIt != aliasMap.constEnd(); ++aliasIt )
       {
         int attrIndex = layer->fieldNameIndex( aliasIt.key() );

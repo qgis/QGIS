@@ -69,10 +69,12 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
     isFieldEditableCheckBox->setEnabled( false );
   }
 
+  connect( mExpressionWidget, SIGNAL( expressionChanged( QString ) ), this, SLOT( defaultExpressionChanged() ) );
+
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/QgsAttributeTypeDialog/geometry" ).toByteArray() );
 
-  constraintExpression->setLayer( vl );
+  constraintExpressionWidget->setLayer( vl );
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
@@ -152,12 +154,16 @@ void QgsAttributeTypeDialog::setWidgetType( const QString& type )
       stackedWidget->addWidget( cfgWdg );
       stackedWidget->setCurrentWidget( cfgWdg );
       mEditorConfigWidgets.insert( type, cfgWdg );
+      connect( cfgWdg, SIGNAL( changed() ), this, SLOT( defaultExpressionChanged() ) );
     }
     else
     {
       QgsDebugMsg( "Oops, couldn't create editor widget config dialog..." );
     }
   }
+
+  //update default expression preview
+  defaultExpressionChanged();
 }
 
 void QgsAttributeTypeDialog::setWidgetConfig( const QgsEditorWidgetConfig& config )
@@ -180,14 +186,14 @@ bool QgsAttributeTypeDialog::labelOnTop() const
   return labelOnTopCheckBox->isChecked();
 }
 
-void QgsAttributeTypeDialog::setExpressionDescription( const QString &desc )
+void QgsAttributeTypeDialog::setConstraintExpressionDescription( const QString &desc )
 {
-  constraintExpressionDescription->setText( desc );
+  leConstraintExpressionDescription->setText( desc );
 }
 
-QString QgsAttributeTypeDialog::expressionDescription()
+QString QgsAttributeTypeDialog::constraintExpressionDescription()
 {
-  return constraintExpressionDescription->text();
+  return leConstraintExpressionDescription->text();
 }
 
 bool QgsAttributeTypeDialog::notNull() const
@@ -195,14 +201,24 @@ bool QgsAttributeTypeDialog::notNull() const
   return notNullCheckBox->isChecked();
 }
 
-void QgsAttributeTypeDialog::setExpression( const QString &str )
+void QgsAttributeTypeDialog::setConstraintExpression( const QString &str )
 {
-  constraintExpression->setField( str );
+  constraintExpressionWidget->setField( str );
 }
 
-QString QgsAttributeTypeDialog::expression() const
+QString QgsAttributeTypeDialog::defaultValueExpression() const
 {
-  return constraintExpression->asExpression();
+  return mExpressionWidget->expression();
+}
+
+void QgsAttributeTypeDialog::setDefaultValueExpression( const QString& expression )
+{
+  mExpressionWidget->setExpression( expression );
+}
+
+QString QgsAttributeTypeDialog::constraintExpression() const
+{
+  return constraintExpressionWidget->asExpression();
 }
 
 void QgsAttributeTypeDialog::setFieldEditable( bool editable )
@@ -220,4 +236,51 @@ void QgsAttributeTypeDialog::on_selectionListWidget_currentRowChanged( int index
   const QString editType = selectionListWidget->item( index )->data( Qt::UserRole ).toString();
 
   setWidgetType( editType );
+}
+
+void QgsAttributeTypeDialog::defaultExpressionChanged()
+{
+  QString expression = mExpressionWidget->expression();
+  if ( expression.isEmpty() )
+  {
+    mDefaultPreviewLabel->setText( QString() );
+    return;
+  }
+
+  QgsExpressionContext context = mLayer->createExpressionContext();
+
+  if ( !mPreviewFeature.isValid() )
+  {
+    // get first feature
+    QgsFeatureIterator it = mLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) );
+    it.nextFeature( mPreviewFeature );
+  }
+
+  context.setFeature( mPreviewFeature );
+
+  QgsExpression exp = QgsExpression( expression );
+  exp.prepare( &context );
+
+  if ( exp.hasParserError() )
+  {
+    mDefaultPreviewLabel->setText( "<i>" + exp.parserErrorString() + "</i>" );
+    return;
+  }
+
+  QVariant val = exp.evaluate( &context );
+  if ( exp.hasEvalError() )
+  {
+    mDefaultPreviewLabel->setText( "<i>" + exp.evalErrorString() + "</i>" );
+    return;
+  }
+
+  QString previewText = val.toString();
+
+  QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( editorWidgetType() );
+  if ( factory )
+  {
+    previewText = factory->representValue( mLayer, mFieldIdx, editorWidgetConfig(), QVariant(), val );
+  }
+
+  mDefaultPreviewLabel->setText( "<i>" + previewText + "</i>" );
 }

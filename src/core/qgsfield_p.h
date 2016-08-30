@@ -65,6 +65,8 @@ class QgsFieldPrivate : public QSharedData
         , length( other.length )
         , precision( other.precision )
         , comment( other.comment )
+        , alias( other.alias )
+        , defaultValueExpression( other.defaultValueExpression )
     {
     }
 
@@ -73,7 +75,8 @@ class QgsFieldPrivate : public QSharedData
     bool operator==( const QgsFieldPrivate& other ) const
     {
       return (( name == other.name ) && ( type == other.type )
-              && ( length == other.length ) && ( precision == other.precision ) );
+              && ( length == other.length ) && ( precision == other.precision )
+              && ( alias == other.alias ) && ( defaultValueExpression == other.defaultValueExpression ) );
     }
 
     //! Name
@@ -93,6 +96,12 @@ class QgsFieldPrivate : public QSharedData
 
     //! Comment
     QString comment;
+
+    //! Alias for field name (friendly name shown to users)
+    QString alias;
+
+    //! Default value expression
+    QString defaultValueExpression;
 };
 
 

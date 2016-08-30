@@ -53,18 +53,18 @@ QgsEditorWidgetConfig QgsEditFormConfig::widgetConfig( const QString& widgetName
   return d->mWidgetConfigs.value( widgetName );
 }
 
-void QgsEditFormConfig::setFields( const QgsFields& fields, const QMap<QString, QString>& attributeAliasMap )
+void QgsEditFormConfig::setFields( const QgsFields& fields )
 {
   d.detach();
   d->mFields = fields;
-  d->mAttributeAliasMap = attributeAliasMap;
 
   if ( !d->mConfiguredRootContainer )
   {
     d->mInvisibleRootContainer->clear();
     for ( int i = 0; i < d->mFields.size(); ++i )
     {
-      QgsAttributeEditorField* field = new QgsAttributeEditorField( d->mAttributeAliasMap.value( d->mFields.at( i ).name(), d->mFields.at( i ).name() ), i, d->mInvisibleRootContainer );
+      QgsAttributeEditorField* field = new QgsAttributeEditorField( !d->mFields.at( i ).alias().isEmpty() ? d->mFields.at( i ).alias()
+          : d->mFields.at( i ).name(), i, d->mInvisibleRootContainer );
       d->mInvisibleRootContainer->addChildElement( field );
     }
   }

@@ -20,6 +20,7 @@
 #include "ui_qgsattributetypeedit.h"
 
 #include "qgseditorconfigwidget.h"
+#include "qgsfeature.h"
 
 class QDialog;
 
@@ -78,31 +79,42 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      */
     bool notNull() const;
 
-    /*
+    /**
      * Setter for constraint expression description
      * @param desc the expression description
      * @note added in QGIS 2.16
      **/
-    void setExpressionDescription( const QString &desc );
+    void setConstraintExpressionDescription( const QString &desc );
 
-    /*
+    /**
      * Getter for constraint expression description
      * @return the expression description
      * @note added in QGIS 2.16
      **/
-    QString expressionDescription();
+    QString constraintExpressionDescription();
 
     /**
      * Getter for the constraint expression
      * @note added in QGIS 2.16
      */
-    QString expression() const;
+    QString constraintExpression() const;
 
     /**
      * Setter for the constraint expression
      * @note added in QGIS 2.16
      */
-    void setExpression( const QString &str );
+    void setConstraintExpression( const QString &str );
+
+    /**
+     * Returns the expression used for the field's default value, or
+     * an empty string if no default value expression is set.
+     */
+    QString defaultValueExpression() const;
+
+    /**
+     * Sets the expression used for the field's default value
+     */
+    void setDefaultValueExpression( const QString& expression );
 
   private slots:
     /**
@@ -110,6 +122,8 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      * @param index index of value in combobox
      */
     void on_selectionListWidget_currentRowChanged( int index );
+
+    void defaultExpressionChanged();
 
   private:
     QgsVectorLayer *mLayer;
@@ -119,6 +133,8 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
 
     //! Cached configuration dialog (lazy loaded)
     QMap< QString, QgsEditorConfigWidget* > mEditorConfigWidgets;
+
+    QgsFeature mPreviewFeature;
 };
 
 #endif

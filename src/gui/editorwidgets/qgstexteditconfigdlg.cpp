@@ -20,6 +20,8 @@ QgsTextEditConfigDlg::QgsTextEditConfigDlg( QgsVectorLayer* vl, int fieldIdx, QW
     : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
+  connect( mIsMultiline, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mUseHtml, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
 }
 
 

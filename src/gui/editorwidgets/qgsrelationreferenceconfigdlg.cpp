@@ -40,6 +40,18 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer* vl
       mExpressionWidget->setField( relation.referencedLayer()->displayExpression() );
     }
   }
+
+  connect( mCbxAllowNull, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mCbxOrderByValue, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mCbxShowForm, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mCbxMapIdentification, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mCbxReadOnly, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mComboRelation, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( changed() ) );
+  connect( mCbxAllowAddFeatures, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mFilterGroupBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mFilterFieldsList, SIGNAL( itemChanged( QListWidgetItem* ) ), this, SIGNAL( changed() ) );
+  connect( mCbxChainFilters, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SIGNAL( changed() ) );
 }
 
 void QgsRelationReferenceConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
@@ -166,7 +178,7 @@ void QgsRelationReferenceConfigDlg::loadFields()
     const QgsFields& flds = l->fields();
     for ( int i = 0; i < flds.count(); i++ )
     {
-      mAvailableFieldsList->addItem( l->attributeAlias( i ).isEmpty() ? flds.at( i ).name() : l->attributeAlias( i ) );
+      mAvailableFieldsList->addItem( flds.at( i ).displayName() );
       mAvailableFieldsList->item( mAvailableFieldsList->count() - 1 )->setData( Qt::UserRole, flds.at( i ).name() );
     }
   }
