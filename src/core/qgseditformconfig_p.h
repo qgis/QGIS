@@ -90,8 +90,6 @@ class QgsEditFormConfigPrivate : public QSharedData
     QgsEditFormConfig::FeatureFormSuppress mSuppressForm;
 
     QgsFields mFields;
-    QMap<QString, QString> mAttributeAliasMap;
-
 };
 
 /// @endcond

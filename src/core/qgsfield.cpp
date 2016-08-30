@@ -86,6 +86,14 @@ QString QgsField::name() const
   return d->name;
 }
 
+QString QgsField::displayName() const
+{
+  if ( !d->alias.isEmpty() )
+    return d->alias;
+  else
+    return d->name;
+}
+
 QVariant::Type QgsField::type() const
 {
   return d->type;
@@ -149,6 +157,26 @@ void QgsField::setPrecision( int precision )
 void QgsField::setComment( const QString& comment )
 {
   d->comment = comment;
+}
+
+QString QgsField::defaultValueExpression() const
+{
+  return d->defaultValueExpression;
+}
+
+void QgsField::setDefaultValueExpression( const QString& expression )
+{
+  d->defaultValueExpression = expression;
+}
+
+QString QgsField::alias() const
+{
+  return d->alias;
+}
+
+void QgsField::setAlias( const QString& alias )
+{
+  d->alias = alias;
 }
 
 /***************************************************************************
@@ -252,20 +280,24 @@ QDataStream& operator<<( QDataStream& out, const QgsField& field )
   out << field.length();
   out << field.precision();
   out << field.comment();
+  out << field.alias();
+  out << field.defaultValueExpression();
   return out;
 }
 
 QDataStream& operator>>( QDataStream& in, QgsField& field )
 {
   quint32 type, length, precision;
-  QString name, typeName, comment;
-  in >> name >> type >> typeName >> length >> precision >> comment;
+  QString name, typeName, comment, alias, defaultValueExpression;
+  in >> name >> type >> typeName >> length >> precision >> comment >> alias >> defaultValueExpression;
   field.setName( name );
   field.setType( static_cast< QVariant::Type >( type ) );
   field.setTypeName( typeName );
   field.setLength( static_cast< int >( length ) );
   field.setPrecision( static_cast< int >( precision ) );
   field.setComment( comment );
+  field.setAlias( alias );
+  field.setDefaultValueExpression( defaultValueExpression );
   return in;
 }
 
