@@ -38,11 +38,14 @@
 class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 {
   public:
-    QgsRasterBlockFeedback( QObject* parent = nullptr ) : QgsFeedback( parent ), preview_only( false ) {}
+    QgsRasterBlockFeedback( QObject* parent = nullptr ) : QgsFeedback( parent ), preview_only( false ), render_partial_output( false ) {}
 
     //! whether the raster provider should return only data that are already available
     //! without waiting for full result
     bool preview_only;
+
+    //! whether our painter is drawing to a temporary image used just by this layer
+    bool render_partial_output;
 
     //! may be emitted by raster data provider to indicate that some partial data are available
     //! and a new preview image may be produced

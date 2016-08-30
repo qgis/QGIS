@@ -411,6 +411,12 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer* ml )
       return true;
     }
   }
+  else if ( ml->type() == QgsMapLayer::RasterLayer )
+  {
+    // preview of intermediate raster rendering results requires a temporary output image
+    if ( mSettings.testFlag( QgsMapSettings::RenderPartialOutput ) )
+      return true;
+  }
 
   return false;
 }

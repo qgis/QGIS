@@ -65,6 +65,7 @@ class CORE_EXPORT QgsRenderContext
       DrawSymbolBounds         = 0x20,  //!< Draw bounds of symbols (for debugging/testing)
       RenderMapTile            = 0x40,  //!< Draw map such that there are no problems between adjacent tiles
       Antialiasing             = 0x80,  //!< Use antialiasing while drawing
+      RenderPartialOutput      = 0x100, //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
