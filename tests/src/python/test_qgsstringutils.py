@@ -133,5 +133,49 @@ class PyQgsStringReplacementCollection(unittest.TestCase):
         self.assertEqual(c2.replacements(), c.replacements())
 
 
+class PyQgsStringUtils(unittest.TestCase):
+
+    def testMixed(self):
+        """ test mixed capitalization - ie, no change! """
+        self.assertFalse(QgsStringUtils.capitalize(None, QgsStringUtils.MixedCase))
+        self.assertEqual(QgsStringUtils.capitalize('', QgsStringUtils.MixedCase), '')
+        self.assertEqual(QgsStringUtils.capitalize('testing 123', QgsStringUtils.MixedCase), 'testing 123')
+        self.assertEqual(QgsStringUtils.capitalize('    tESTinG 123    ', QgsStringUtils.MixedCase), '    tESTinG 123    ')
+        self.assertEqual(QgsStringUtils.capitalize('    TESTING ABC', QgsStringUtils.MixedCase), '    TESTING ABC')
+
+    def testUpperCase(self):
+        """ test uppercase """
+        self.assertFalse(QgsStringUtils.capitalize(None, QgsStringUtils.AllUppercase))
+        self.assertEqual(QgsStringUtils.capitalize('', QgsStringUtils.AllUppercase), '')
+        self.assertEqual(QgsStringUtils.capitalize('testing 123', QgsStringUtils.AllUppercase), 'TESTING 123')
+        self.assertEqual(QgsStringUtils.capitalize('    tESTinG abc    ', QgsStringUtils.AllUppercase), '    TESTING ABC    ')
+        self.assertEqual(QgsStringUtils.capitalize('    TESTING ABC', QgsStringUtils.AllUppercase), '    TESTING ABC')
+
+    def testLowerCase(self):
+        """ test lowercase """
+        self.assertFalse(QgsStringUtils.capitalize(None, QgsStringUtils.AllLowercase))
+        self.assertEqual(QgsStringUtils.capitalize('', QgsStringUtils.AllLowercase), '')
+        self.assertEqual(QgsStringUtils.capitalize('testing 123', QgsStringUtils.AllLowercase), 'testing 123')
+        self.assertEqual(QgsStringUtils.capitalize('    tESTinG abc    ', QgsStringUtils.AllLowercase),
+                         '    testing abc    ')
+        self.assertEqual(QgsStringUtils.capitalize('    TESTING ABC', QgsStringUtils.AllLowercase), '    testing abc')
+
+    def testCapitalizeFirst(self):
+        """ test capitalize first """
+        self.assertFalse(QgsStringUtils.capitalize(None, QgsStringUtils.ForceFirstLetterToCapital))
+        self.assertEqual(QgsStringUtils.capitalize('', QgsStringUtils.ForceFirstLetterToCapital), '')
+        self.assertEqual(QgsStringUtils.capitalize('testing 123', QgsStringUtils.ForceFirstLetterToCapital), 'Testing 123')
+        self.assertEqual(QgsStringUtils.capitalize('testing', QgsStringUtils.ForceFirstLetterToCapital),
+                         'Testing')
+        self.assertEqual(QgsStringUtils.capitalize('Testing', QgsStringUtils.ForceFirstLetterToCapital),
+                         'Testing')
+        self.assertEqual(QgsStringUtils.capitalize('TESTING', QgsStringUtils.ForceFirstLetterToCapital),
+                         'TESTING')
+        self.assertEqual(QgsStringUtils.capitalize('    tESTinG abc    ', QgsStringUtils.ForceFirstLetterToCapital),
+                         '    TESTinG Abc    ')
+        self.assertEqual(QgsStringUtils.capitalize('    TESTING ABC', QgsStringUtils.ForceFirstLetterToCapital), '    TESTING ABC')
+        self.assertEqual(QgsStringUtils.capitalize('    testing abc', QgsStringUtils.ForceFirstLetterToCapital),
+                         '    Testing Abc')
+
 if __name__ == '__main__':
     unittest.main()
