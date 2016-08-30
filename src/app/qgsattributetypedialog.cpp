@@ -248,8 +248,8 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
   }
 
   QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()		
-  << QgsExpressionContextUtils::projectScope()		
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( mLayer );
 
   if ( !mPreviewFeature.isValid() )
