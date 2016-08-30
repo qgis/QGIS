@@ -10,6 +10,25 @@ class QgsStringUtils
 #include <qgsstringutils.h>
 %End
   public:
+
+
+    //! Capitalization options
+    enum Capitalization
+    {
+      MixedCase, //!< Mixed case, ie no change
+      AllUppercase, //!< Convert all characters to uppercase
+      AllLowercase,  //!< Convert all characters to lowercase
+      ForceFirstLetterToCapital, //!< Convert just the first letter of each word to uppercase, leave the rest untouched
+    };
+
+    /** Converts a string by applying capitalization rules to the string.
+     * @param string input string
+     * @param capitalization capitalization type to apply
+     * @return capitalized string
+     * @note added in QGIS 3.0
+     */
+    static QString capitalize( const QString& string, Capitalization capitalization );
+
     /** Returns the Levenshtein edit distance between two strings. This equates to the minimum
      * number of character edits (insertions, deletions or substitutions) required to change
      * one string to another.

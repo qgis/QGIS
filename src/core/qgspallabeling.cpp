@@ -18,6 +18,7 @@
 #include "qgspallabeling.h"
 #include "qgstextlabelfeature.h"
 #include "qgsunittypes.h"
+#include "qgsstringutils.h"
 
 #include <list>
 
@@ -2283,6 +2284,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
 
   // calculate rest of font attributes and store any data defined values
   // this is done here for later use in making label backgrounds part of collision management (when implemented)
+  labelFont.setCapitalization( QFont::MixedCase ); // reset this - we don't use QFont's handling as it breaks with curved labels
   parseTextStyle( labelFont, fontunits, context );
   parseTextFormatting( context );
   parseTextBuffer( context );
@@ -2315,6 +2317,41 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     const QVariant &v = f.attribute( fieldIndex );
     labelText = v.isNull() ? "" : v.toString();
   }
+
+  // apply capitalization
+  QgsStringUtils::Capitalization capitalization = QgsStringUtils::MixedCase;
+  // maintain API - capitalization may have been set in textFont
+  if ( textFont.capitalization() != QFont::MixedCase )
+  {
+    capitalization = static_cast< QgsStringUtils::Capitalization >( textFont.capitalization() );
+  }
+  // data defined font capitalization?
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::FontCase, exprVal, &context.expressionContext() ) )
+  {
+    QString fcase = exprVal.toString().trimmed();
+    QgsDebugMsgLevel( QString( "exprVal FontCase:%1" ).arg( fcase ), 4 );
+
+    if ( !fcase.isEmpty() )
+    {
+      if ( fcase.compare( "NoChange", Qt::CaseInsensitive ) == 0 )
+      {
+        capitalization = QgsStringUtils::MixedCase;
+      }
+      else if ( fcase.compare( "Upper", Qt::CaseInsensitive ) == 0 )
+      {
+        capitalization = QgsStringUtils::AllUppercase;
+      }
+      else if ( fcase.compare( "Lower", Qt::CaseInsensitive ) == 0 )
+      {
+        capitalization = QgsStringUtils::AllLowercase;
+      }
+      else if ( fcase.compare( "Capitalize", Qt::CaseInsensitive ) == 0 )
+      {
+        capitalization = QgsStringUtils::ForceFirstLetterToCapital;
+      }
+    }
+  }
+  labelText = QgsStringUtils::capitalize( labelText, capitalization );
 
   // data defined format numbers?
   bool formatnum = formatNumbers;
@@ -3356,7 +3393,6 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
     // copy over existing font settings
     //newFont = newFont.resolve( labelFont ); // should work, but let's be sure what's being copied
     newFont.setPixelSize( labelFont.pixelSize() );
-    newFont.setCapitalization( labelFont.capitalization() );
     newFont.setUnderline( labelFont.underline() );
     newFont.setStrikeOut( labelFont.strikeOut() );
     newFont.setWordSpacing( labelFont.wordSpacing() );
@@ -3392,39 +3428,6 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
     }
   }
   labelFont.setLetterSpacing( QFont::AbsoluteSpacing, scaleToPixelContext( letterspace, context, fontunits, false, fontSizeMapUnitScale ) );
-
-  // data defined font capitalization?
-  QFont::Capitalization fontcaps = labelFont.capitalization();
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::FontCase, exprVal, &context.expressionContext() ) )
-  {
-    QString fcase = exprVal.toString().trimmed();
-    QgsDebugMsgLevel( QString( "exprVal FontCase:%1" ).arg( fcase ), 4 );
-
-    if ( !fcase.isEmpty() )
-    {
-      if ( fcase.compare( "NoChange", Qt::CaseInsensitive ) == 0 )
-      {
-        fontcaps = QFont::MixedCase;
-      }
-      else if ( fcase.compare( "Upper", Qt::CaseInsensitive ) == 0 )
-      {
-        fontcaps = QFont::AllUppercase;
-      }
-      else if ( fcase.compare( "Lower", Qt::CaseInsensitive ) == 0 )
-      {
-        fontcaps = QFont::AllLowercase;
-      }
-      else if ( fcase.compare( "Capitalize", Qt::CaseInsensitive ) == 0 )
-      {
-        fontcaps = QFont::Capitalize;
-      }
-
-      if ( fontcaps != labelFont.capitalization() )
-      {
-        labelFont.setCapitalization( fontcaps );
-      }
-    }
-  }
 
   // data defined strikeout font style?
   if ( dataDefinedEvaluate( QgsPalLayerSettings::Strikeout, exprVal, &context.expressionContext(), labelFont.strikeOut() ) )
