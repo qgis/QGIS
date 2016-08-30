@@ -78,7 +78,7 @@ class DBManagerPlugin:
             self.dlg.close()
 
     def onLayerWasAdded(self, aMapLayer):
-        if aMapLayer.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
+        if hasattr(aMapLayer, 'dataProvider') and aMapLayer.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
             uri = QgsDataSourceURI(aMapLayer.source())
             if re.search('^\(SELECT .+ FROM .+\)$', uri.table(), re.S):
                 self.iface.legendInterface().addLegendLayerActionForLayer(self.layerAction, aMapLayer)
