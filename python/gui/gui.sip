@@ -69,6 +69,7 @@
 %Include qgsexpressionbuilderdialog.sip
 %Include qgsexpressionbuilderwidget.sip
 %Include qgsexpressionhighlighter.sip
+%Include qgsexpressionlineedit.sip
 %Include qgsexpressionselectiondialog.sip
 %Include qgsextentgroupbox.sip
 %Include qgsexternalresourcewidget.sip
