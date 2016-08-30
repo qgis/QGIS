@@ -184,6 +184,8 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem& );
  */
 class CORE_EXPORT QgsCoordinateReferenceSystem
 {
+    Q_GADGET
+
   public:
 
     //! Enumeration of types of IDs accepted in createFromId() method
@@ -246,7 +248,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @returns matching CRS, or an invalid CRS if string could not be matched
      * @note added in QGIS 3.0
     */
-    static QgsCoordinateReferenceSystem fromEpsgId( long epsg );
+    Q_INVOKABLE static QgsCoordinateReferenceSystem fromEpsgId( long epsg );
 
     /** Creates a CRS from a proj4 style formatted string.
      * @param proj4 proj4 format string
