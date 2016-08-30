@@ -540,12 +540,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     }
     else if ( section >= 0 && section < mFieldCount )
     {
-      QString attributeName = layer()->attributeAlias( mAttributes.at( section ) );
-      if ( attributeName.isEmpty() )
-      {
-        QgsField field = layer()->fields().at( mAttributes.at( section ) );
-        attributeName = field.name();
-      }
+      QString attributeName = layer()->fields().at( mAttributes.at( section ) ).displayName();
       return QVariant( attributeName );
     }
     else

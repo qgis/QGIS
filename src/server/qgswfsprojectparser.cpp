@@ -485,7 +485,7 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
 
           sequenceElem.appendChild( attElem );
 
-          QString alias = layer->attributeAlias( idx );
+          QString alias = fields.at( idx ).alias();
           if ( !alias.isEmpty() )
           {
             attElem.setAttribute( "alias", alias );

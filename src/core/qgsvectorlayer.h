@@ -1422,7 +1422,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Convenience function that returns the attribute alias if defined or the field name else */
     QString attributeDisplayName( int attributeIndex ) const;
 
-    const QMap< QString, QString >& attributeAliases() const { return mAttributeAliasMap; }
+    //! Returns a map of field name to attribute alias
+    QgsStringMap attributeAliases() const;
 
     const QSet<QString>& excludeAttributesWMS() const { return mExcludeAttributesWMS; }
     void setExcludeAttributesWMS( const QSet<QString>& att ) { mExcludeAttributesWMS = att; }
@@ -2207,10 +2208,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsFields mUpdatedFields;
 
     /** Map that stores the aliases for attributes. Key is the attribute name and value the alias for that attribute*/
-    QMap< QString, QString > mAttributeAliasMap;
+    QgsStringMap mAttributeAliasMap;
 
     //! Map which stores default value expressions for fields
-    QMap< int, QString > mDefaultExpressionMap;
+    QgsStringMap mDefaultExpressionMap;
 
     /** Holds the configuration for the edit form */
     QgsEditFormConfig* mEditFormConfig;

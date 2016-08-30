@@ -42,8 +42,19 @@ class QgsField
     bool operator==( const QgsField& other ) const;
     bool operator!=( const QgsField& other ) const;
 
-    //! Gets the name of the field
+    /** Returns the name of the field.
+     * @see setName()
+     * @see displayName()
+     */
     QString name() const;
+
+    /** Returns the name to use when displaying this field. This will be the
+     * field alias if set, otherwise the field name.
+     * @see name()
+     * @see alias()
+     * @note added in QGIS 3.0
+     */
+    QString displayName() const;
 
     //! Gets variant type of the field as it will be retrieved from data source
     QVariant::Type type() const;
@@ -114,6 +125,36 @@ class QgsField
      * Set the field comment
      */
     void setComment( const QString& comment );
+
+    /** Returns the expression used when calculating the default value for the field.
+     * @returns expression evaluated when calculating default values for field, or an
+     * empty string if no default is set
+     * @note added in QGIS 3.0
+     * @see setDefaultValueExpression()
+     */
+    QString defaultValueExpression() const;
+
+    /** Sets an expression to use when calculating the default value for the field.
+     * @param expression expression to evaluate when calculating default values for field. Pass
+     * an empty expression to clear the default.
+     * @note added in QGIS 3.0
+     * @see defaultValueExpression()
+     */
+    void setDefaultValueExpression( const QString& expression );
+
+    /** Returns the alias for the field (the friendly displayed name of the field ),
+     * or an empty string if there is no alias.
+     * @see setAlias()
+     * @note added in QGIS 3.0
+     */
+    QString alias() const;
+
+    /** Sets the alias for the field (the friendly displayed name of the field ).
+     * @param alias field alias, or empty string to remove an existing alias
+     * @see alias()
+     * @note added in QGIS 3.0
+     */
+    void setAlias( const QString& alias );
 
     /** Formats string for display*/
     QString displayString( const QVariant& v ) const;

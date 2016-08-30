@@ -797,7 +797,7 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
       attributeElem.setAttribute( "name", field.name() );
       attributeElem.setAttribute( "type", QVariant::typeToName( field.type() ) );
       attributeElem.setAttribute( "typeName", field.typeName() );
-      QString alias = vLayer->attributeAlias( idx );
+      QString alias = field.alias();
       if ( !alias.isEmpty() )
       {
         attributeElem.setAttribute( "alias", alias );
