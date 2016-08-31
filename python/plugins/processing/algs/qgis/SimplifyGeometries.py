@@ -77,9 +77,9 @@ class SimplifyGeometries(GeoAlgorithm):
         for current, f in enumerate(features):
             featGeometry = f.geometry()
             attrs = f.attributes()
-            pointsBefore += self.geomVertexCount(featGeometry)
+            pointsBefore += featGeometry.geometry().nCoordinates()
             newGeometry = featGeometry.simplify(tolerance)
-            pointsAfter += self.geomVertexCount(newGeometry)
+            pointsAfter += newGeometry.geometry().nCoordinates()
             feature = QgsFeature()
             feature.setGeometry(newGeometry)
             feature.setAttributes(attrs)
@@ -90,28 +90,3 @@ class SimplifyGeometries(GeoAlgorithm):
 
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
                                self.tr('Simplify: Input geometries have been simplified from %s to %s points' % (pointsBefore, pointsAfter)))
-
-    def geomVertexCount(self, geometry):
-        geomType = geometry.type()
-
-        if geomType == QgsWkbTypes.LineGeometry:
-            if geometry.isMultipart():
-                pointsList = geometry.asMultiPolyline()
-                points = sum(pointsList, [])
-            else:
-                points = geometry.asPolyline()
-            return len(points)
-        elif geomType == QgsWkbTypes.PolygonGeometry:
-            if geometry.isMultipart():
-                polylinesList = geometry.asMultiPolygon()
-                polylines = sum(polylinesList, [])
-            else:
-                polylines = geometry.asPolygon()
-
-            points = []
-            for l in polylines:
-                points.extend(l)
-
-            return len(points)
-        else:
-            return None
