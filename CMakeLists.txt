@@ -391,12 +391,13 @@ ELSE()
 ENDIF()
 
 #allow override keyword if available
-IF (NOT USE_CXX_11)
+IF(NOT USE_CXX_11)
   ADD_DEFINITIONS("-Doverride=")
   ADD_DEFINITIONS("-Dnoexcept=")
   ADD_DEFINITIONS("-Dnullptr=0")
+ELSE()
+  ADD_DEFINITIONS("-DHAS_MOVE_SEMANTICS")
 ENDIF()
-
 
 #############################################################
 # enable warnings
