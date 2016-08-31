@@ -11,6 +11,7 @@ SET (WMS_SRCS
   qgswmsdataitems.cpp
   qgstilescalewidget.cpp
   qgswmtsdimensions.cpp
+  qgsxyzconnection.cpp
 )
 SET (WMS_MOC_HDRS
   qgswmscapabilities.h
