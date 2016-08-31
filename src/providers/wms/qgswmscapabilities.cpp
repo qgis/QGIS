@@ -1259,6 +1259,7 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
     m.matrixWidth  = ceil( l.boundingBoxes.at( 0 ).box.width() / m.tileWidth / r );
     m.matrixHeight = ceil( l.boundingBoxes.at( 0 ).box.height() / m.tileHeight / r );
     m.topLeft = QgsPoint( l.boundingBoxes.at( 0 ).box.xMinimum(), l.boundingBoxes.at( 0 ).box.yMinimum() + m.matrixHeight * m.tileHeight * r );
+    m.tres = r;
     ms.tileMatrices.insert( r, m );
     i++;
   }
@@ -1341,17 +1342,19 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
       m.matrixWidth  = e1.firstChildElement( "MatrixWidth" ).text().toInt();
       m.matrixHeight = e1.firstChildElement( "MatrixHeight" ).text().toInt();
 
-      double res = m.scaleDenom * 0.00028 / metersPerUnit;
+      // the magic number below is "standardized rendering pixel size" defined
+      // in WMTS (and WMS 1.3) standard, being 0.28 pixel
+      m.tres = m.scaleDenom * 0.00028 / metersPerUnit;
 
       QgsDebugMsg( QString( " %1: scale=%2 res=%3 tile=%4x%5 matrix=%6x%7 topLeft=%8" )
                    .arg( m.identifier )
-                   .arg( m.scaleDenom ).arg( res )
+                   .arg( m.scaleDenom ).arg( m.tres )
                    .arg( m.tileWidth ).arg( m.tileHeight )
                    .arg( m.matrixWidth ).arg( m.matrixHeight )
                    .arg( m.topLeft.toString() )
                  );
 
-      s.tileMatrices.insert( res, m );
+      s.tileMatrices.insert( m.tres, m );
     }
 
     mTileMatrixSets.insert( s.identifier, s );
@@ -1798,6 +1801,8 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer& l )
 
   const QgsWmtsTileMatrix& tm = *tmIt;
   double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QGis::Meters );
+  // the magic number below is "standardized rendering pixel size" defined
+  // in WMTS (and WMS 1.3) standard, being 0.28 pixel
   double res = tm.scaleDenom * 0.00028 / metersPerUnit;
   QgsPoint bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
                         tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
@@ -2049,4 +2054,70 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
   }
 
   emit downloadFinished();
+}
+
+QRectF QgsWmtsTileMatrix::tileRect( int col, int row ) const
+{
+  double twMap = tileWidth * tres;
+  double thMap = tileHeight * tres;
+  return QRectF( topLeft.x() + col * twMap, topLeft.y() - ( row + 1 ) * thMap, twMap, thMap );
+}
+
+QgsRectangle QgsWmtsTileMatrix::tileBBox( int col, int row ) const
+{
+  double twMap = tileWidth * tres;
+  double thMap = tileHeight * tres;
+  return QgsRectangle(
+           topLeft.x() +         col * twMap,
+           topLeft.y() - ( row + 1 ) * thMap,
+           topLeft.x() + ( col + 1 ) * twMap,
+           topLeft.y() -         row * thMap );
+}
+
+void QgsWmtsTileMatrix::viewExtentIntersection( const QgsRectangle &viewExtent, const QgsWmtsTileMatrixLimits* tml, int &col0, int &row0, int &col1, int &row1 ) const
+{
+  double twMap = tileWidth * tres;
+  double thMap = tileHeight * tres;
+
+  int minTileCol = 0;
+  int maxTileCol = matrixWidth - 1;
+  int minTileRow = 0;
+  int maxTileRow = matrixHeight - 1;
+
+  if ( tml )
+  {
+    minTileCol = tml->minTileCol;
+    maxTileCol = tml->maxTileCol;
+    minTileRow = tml->minTileRow;
+    maxTileRow = tml->maxTileRow;
+    //QgsDebugMsg( QString( "%1 %2: TileMatrixLimits col %3-%4 row %5-%6" )
+    //             .arg( tileMatrixSet->identifier, identifier )
+    //             .arg( minTileCol ).arg( maxTileCol )
+    //             .arg( minTileRow ).arg( maxTileRow ) );
+  }
+
+  col0 = qBound( minTileCol, ( int ) floor(( viewExtent.xMinimum() - topLeft.x() ) / twMap ), maxTileCol );
+  row0 = qBound( minTileRow, ( int ) floor(( topLeft.y() - viewExtent.yMaximum() ) / thMap ), maxTileRow );
+  col1 = qBound( minTileCol, ( int ) floor(( viewExtent.xMaximum() - topLeft.x() ) / twMap ), maxTileCol );
+  row1 = qBound( minTileRow, ( int ) floor(( topLeft.y() - viewExtent.yMinimum() ) / thMap ), maxTileRow );
+}
+
+const QgsWmtsTileMatrix* QgsWmtsTileMatrixSet::findNearestResolution( double vres ) const
+{
+  QMap<double, QgsWmtsTileMatrix>::const_iterator prev, it = tileMatrices.constBegin();
+  while ( it != tileMatrices.constEnd() && it.key() < vres )
+  {
+    //QgsDebugMsg( QString( "res:%1 >= %2" ).arg( it.key() ).arg( vres ) );
+    prev = it;
+    ++it;
+  }
+
+  if ( it == tileMatrices.constEnd() ||
+       ( it != tileMatrices.constBegin() && vres - prev.key() < it.key() - vres ) )
+  {
+    //QgsDebugMsg( "back to previous res" );
+    it = prev;
+  }
+
+  return &it.value();
 }

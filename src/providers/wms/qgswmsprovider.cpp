@@ -565,9 +565,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
     mTileReqNo++;
 
     double vres = viewExtent.width() / pixelWidth;
-    double tres = vres;
 
     const QgsWmtsTileMatrix *tm = nullptr;
+    QScopedPointer<QgsWmtsTileMatrix> tempTm;
     enum QgsTileMode tileMode;
 
     if ( mSettings.mTiled )
@@ -576,38 +576,22 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
       Q_ASSERT( mTileMatrixSet );
       Q_ASSERT( !mTileMatrixSet->tileMatrices.isEmpty() );
 
-      QMap<double, QgsWmtsTileMatrix> &m =  mTileMatrixSet->tileMatrices;
-
       // find nearest resolution
-      QMap<double, QgsWmtsTileMatrix>::const_iterator prev, it = m.constBegin();
-      while ( it != m.constEnd() && it.key() < vres )
-      {
-        QgsDebugMsg( QString( "res:%1 >= %2" ).arg( it.key() ).arg( vres ) );
-        prev = it;
-        ++it;
-      }
-
-      if ( it == m.constEnd() ||
-           ( it != m.constBegin() && vres - prev.key() < it.key() - vres ) )
-      {
-        QgsDebugMsg( "back to previous res" );
-        it = prev;
-      }
-
-      tres = it.key();
-      tm = &it.value();
+      tm = mTileMatrixSet->findNearestResolution( vres );
+      Q_ASSERT( tm );
 
       tileMode = mTileLayer->tileMode;
     }
     else if ( mSettings.mMaxWidth != 0 && mSettings.mMaxHeight != 0 )
     {
-      static QgsWmtsTileMatrix tempTm;
-      tempTm.topLeft      = QgsPoint( mLayerExtent.xMinimum(), mLayerExtent.yMaximum() );
-      tempTm.tileWidth    = mSettings.mMaxWidth;
-      tempTm.tileHeight   = mSettings.mMaxHeight;
-      tempTm.matrixWidth  = ceil( mLayerExtent.width() / mSettings.mMaxWidth / vres );
-      tempTm.matrixHeight = ceil( mLayerExtent.height() / mSettings.mMaxHeight / vres );
-      tm = &tempTm;
+      tempTm.reset( new QgsWmtsTileMatrix );
+      tempTm->topLeft      = QgsPoint( mLayerExtent.xMinimum(), mLayerExtent.yMaximum() );
+      tempTm->tileWidth    = mSettings.mMaxWidth;
+      tempTm->tileHeight   = mSettings.mMaxHeight;
+      tempTm->matrixWidth  = ceil( mLayerExtent.width() / mSettings.mMaxWidth / vres );
+      tempTm->matrixHeight = ceil( mLayerExtent.height() / mSettings.mMaxHeight / vres );
+      tempTm->tres = vres;
+      tm = tempTm.data();
 
       tileMode = WMSC;
     }
@@ -633,43 +617,24 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
                );
 
     QgsDebugMsg( QString( "tile matrix %1,%2 res:%3 tilesize:%4x%5 matrixsize:%6x%7 id:%8" )
-                 .arg( tm->topLeft.x() ).arg( tm->topLeft.y() ).arg( tres )
+                 .arg( tm->topLeft.x() ).arg( tm->topLeft.y() ).arg( tm->tres )
                  .arg( tm->tileWidth ).arg( tm->tileHeight )
                  .arg( tm->matrixWidth ).arg( tm->matrixHeight )
                  .arg( tm->identifier )
                );
 
-    // calculate tile coordinates
-    double twMap = tm->tileWidth * tres;
-    double thMap = tm->tileHeight * tres;
-    QgsDebugMsg( QString( "tile map size: %1,%2" ).arg( qgsDoubleToString( twMap ), qgsDoubleToString( thMap ) ) );
-
-    int minTileCol = 0;
-    int maxTileCol = tm->matrixWidth - 1;
-    int minTileRow = 0;
-    int maxTileRow = tm->matrixHeight - 1;
-
+    const QgsWmtsTileMatrixLimits *tml = nullptr;
 
     if ( mTileLayer &&
          mTileLayer->setLinks.contains( mTileMatrixSet->identifier ) &&
          mTileLayer->setLinks[ mTileMatrixSet->identifier ].limits.contains( tm->identifier ) )
     {
-      const QgsWmtsTileMatrixLimits &tml = mTileLayer->setLinks[ mTileMatrixSet->identifier ].limits[ tm->identifier ];
-      minTileCol = tml.minTileCol;
-      maxTileCol = tml.maxTileCol;
-      minTileRow = tml.minTileRow;
-      maxTileRow = tml.maxTileRow;
-      QgsDebugMsg( QString( "%1 %2: TileMatrixLimits col %3-%4 row %5-%6" )
-                   .arg( mTileMatrixSet->identifier,
-                         tm->identifier )
-                   .arg( minTileCol ).arg( maxTileCol )
-                   .arg( minTileRow ).arg( maxTileRow ) );
+      tml = &mTileLayer->setLinks[ mTileMatrixSet->identifier ].limits[ tm->identifier ];
     }
 
-    int col0 = qBound( minTileCol, ( int ) floor(( viewExtent.xMinimum() - tm->topLeft.x() ) / twMap ), maxTileCol );
-    int row0 = qBound( minTileRow, ( int ) floor(( tm->topLeft.y() - viewExtent.yMaximum() ) / thMap ), maxTileRow );
-    int col1 = qBound( minTileCol, ( int ) floor(( viewExtent.xMaximum() - tm->topLeft.x() ) / twMap ), maxTileCol );
-    int row1 = qBound( minTileRow, ( int ) floor(( tm->topLeft.y() - viewExtent.yMinimum() ) / thMap ), maxTileRow );
+    // calculate tile coordinates
+    int col0, col1, row0, row1;
+    tm->viewExtentIntersection( viewExtent, tml, col0, row0, col1, row1 );
 
 #if QGISDEBUG
     int n = ( col1 - col0 + 1 ) * ( row1 - row0 + 1 );
@@ -727,17 +692,17 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
         {
           for ( int col = col0; col <= col1; col++ )
           {
+            QgsRectangle bbox( tm->tileBBox( col, row ) );
             QString turl;
             turl += url.toString();
             turl += QString( changeXY ? "&BBOX=%2,%1,%4,%3" : "&BBOX=%1,%2,%3,%4" )
-                    .arg( qgsDoubleToString( tm->topLeft.x() +         col * twMap /* + twMap * 0.001 */ ),
-                          qgsDoubleToString( tm->topLeft.y() - ( row + 1 ) * thMap /* - thMap * 0.001 */ ),
-                          qgsDoubleToString( tm->topLeft.x() + ( col + 1 ) * twMap /* - twMap * 0.001 */ ),
-                          qgsDoubleToString( tm->topLeft.y() -         row * thMap /* + thMap * 0.001 */ ) );
+                    .arg( qgsDoubleToString( bbox.xMinimum() ),
+                          qgsDoubleToString( bbox.yMinimum() ),
+                          qgsDoubleToString( bbox.xMaximum() ),
+                          qgsDoubleToString( bbox.yMaximum() ) );
 
             QgsDebugMsg( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( row ).arg( col ).arg( turl ) );
-            QRectF rect( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap );
-            requests << QgsWmsTiledImageDownloadHandler::TileRequest( turl, rect, i );
+            requests << QgsWmsTiledImageDownloadHandler::TileRequest( turl, tm->tileRect( col, row ), i );
           }
         }
       }
@@ -778,8 +743,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
               turl += QString( "&TILEROW=%1&TILECOL=%2" ).arg( row ).arg( col );
 
               QgsDebugMsg( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( row ).arg( col ).arg( turl ) );
-              QRectF rect( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap );
-              requests << QgsWmsTiledImageDownloadHandler::TileRequest( turl, rect, i );
+              requests << QgsWmsTiledImageDownloadHandler::TileRequest( turl, tm->tileRect( col, row ), i );
             }
           }
         }
@@ -809,8 +773,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
 
               if ( feedback && !feedback->preview_only )
                 QgsDebugMsg( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( row ).arg( col ).arg( turl ) );
-              QRectF rect( tm->topLeft.x() + col * twMap, tm->topLeft.y() - ( row + 1 ) * thMap, twMap, thMap );
-              requests << QgsWmsTiledImageDownloadHandler::TileRequest( turl, rect, i );
+              requests << QgsWmsTiledImageDownloadHandler::TileRequest( turl, tm->tileRect( col, row ), i );
             }
           }
         }
