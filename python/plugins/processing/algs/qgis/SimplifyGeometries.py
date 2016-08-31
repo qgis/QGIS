@@ -74,16 +74,15 @@ class SimplifyGeometries(GeoAlgorithm):
 
         features = vector.features(layer)
         total = 100.0 / len(features)
-        for current, f in enumerate(features):
-            featGeometry = f.geometry()
-            attrs = f.attributes()
-            pointsBefore += featGeometry.geometry().nCoordinates()
-            newGeometry = featGeometry.simplify(tolerance)
-            pointsAfter += newGeometry.geometry().nCoordinates()
-            feature = QgsFeature()
-            feature.setGeometry(newGeometry)
-            feature.setAttributes(attrs)
-            writer.addFeature(feature)
+        for current, input_feature in enumerate(features):
+            out_feature = input_feature
+            if input_feature.geometry():
+                input_geometry = input_feature.geometry()
+                pointsBefore += input_geometry.geometry().nCoordinates()
+                output_geometry = input_geometry.simplify(tolerance)
+                pointsAfter += output_geometry.geometry().nCoordinates()
+                out_feature.setGeometry(output_geometry)
+            writer.addFeature(out_feature)
             progress.setPercentage(int(current * total))
 
         del writer
