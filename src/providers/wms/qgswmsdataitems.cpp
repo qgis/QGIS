@@ -421,10 +421,6 @@ void QgsWMSRootItem::newConnection()
 QGISEXTERN void registerGui( QMainWindow *mainWindow )
 {
   QgsTileScaleWidget::showTileScale( mainWindow );
-
-  // with dataItem(...) at provider level we can only have one root item,
-  // so we have a data item provider for XYZ tile layers
-  QgsDataItemProviderRegistry::instance()->addProvider( new QgsXyzTileDataItemProvider );
 }
 
 QGISEXTERN QgsWMSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
@@ -432,12 +428,8 @@ QGISEXTERN QgsWMSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags 
   return new QgsWMSSourceSelect( parent, fl );
 }
 
-QGISEXTERN int dataCapabilities()
-{
-  return  QgsDataProvider::Net;
-}
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QgsDataItem* QgsWmsDataItemProvider::createDataItem( const QString& thePath, QgsDataItem *parentItem )
 {
   QgsDebugMsg( "thePath = " + thePath );
   if ( thePath.isEmpty() )
@@ -459,6 +451,12 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   return nullptr;
 }
 
+QGISEXTERN QList<QgsDataItemProvider*> dataItemProviders()
+{
+  return QList<QgsDataItemProvider*>()
+         << new QgsWmsDataItemProvider
+         << new QgsXyzTileDataItemProvider;
+}
 
 // ---------------------------------------------------------------------------
 
