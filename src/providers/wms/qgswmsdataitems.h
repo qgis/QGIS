@@ -106,6 +106,19 @@ class QgsWMSRootItem : public QgsDataCollectionItem
     void newConnection();
 };
 
+
+//! Provider for WMS root data item
+class QgsWmsDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    virtual QString name() override { return "WMS"; }
+
+    virtual int capabilities() override { return QgsDataProvider::Net; }
+
+    virtual QgsDataItem* createDataItem( const QString& path, QgsDataItem* parentItem ) override;
+};
+
+
 //! Root item for XYZ tile layers
 class QgsXyzTileRootItem : public QgsDataCollectionItem
 {
