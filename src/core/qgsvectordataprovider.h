@@ -27,6 +27,7 @@ class QTextCodec;
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 #include "qgsaggregatecalculator.h"
+#include "qgsmaplayerdependency.h"
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -428,7 +429,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * Get the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
      */
-    virtual QSet<QString> layerDependencies() const;
+    virtual QSet<QgsMapLayerDependency> dependencies() const;
 
   signals:
     /** Signals an error in this provider */

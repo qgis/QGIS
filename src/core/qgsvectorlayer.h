@@ -515,9 +515,23 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     const QList<QgsVectorJoinInfo> vectorJoins() const;
 
     /**
-     * Get the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
+     * Sets the list of layers that may modify data/geometries of this layer when modified.
+     * This is meant mainly to declare database triggers between layers.
+     * When one of these layers is modified (feature added/deleted or geometry changed),
+     * dataChanged() will be emitted, allowing users of this layer to refresh / update it.
+     *
+     * @param layersIds IDs of the layers that this layer depends on
+     * @returns false if a dependency cycle has been detected (the change dependency set is not changed in that case)
      */
-    virtual QSet<QString> layerDependencies() const;
+    bool setDataDependencies( const QSet<QString>& layersIds ) override;
+
+    /**
+     * Gets the list of dependencies. This includes data dependencies set by the user (@see setDataDependencies)
+     * as well as dependencies given by the provider
+     *
+     * @returns a set of QgsMapLayerDependency
+     */
+    virtual QSet<QgsMapLayerDependency> dependencies() const override;
 
     /**
      * Add a new field which is calculated by the expression specified

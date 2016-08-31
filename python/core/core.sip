@@ -80,6 +80,7 @@
 %Include qgslogger.sip
 %Include qgsmaphittest.sip
 %Include qgsmaplayer.sip
+%Include qgsmaplayerdependency.sip
 %Include qgsmaplayerlegend.sip
 %Include qgsmaplayermodel.sip
 %Include qgsmaplayerproxymodel.sip

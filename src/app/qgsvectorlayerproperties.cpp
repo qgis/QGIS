@@ -52,6 +52,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsrenderer.h"
 #include "qgsexpressioncontext.h"
+#include "layertree/qgslayertreelayer.h"
 
 #include <QMessageBox>
 #include <QDir>
@@ -291,6 +292,27 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   QString title = QString( tr( "Layer Properties - %1" ) ).arg( mLayer->name() );
   restoreOptionsBaseUi( title );
+
+  mLayersDependenciesTreeGroup.reset( QgsProject::instance()->layerTreeRoot()->clone() );
+  QgsLayerTreeLayer* layer = mLayersDependenciesTreeGroup->findLayer( mLayer->id() );
+  layer->parent()->takeChild( layer );
+  mLayersDependenciesTreeModel.reset( new QgsLayerTreeModel( mLayersDependenciesTreeGroup.data() ) );
+  // use visibility as selection
+  mLayersDependenciesTreeModel->setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
+
+  mLayersDependenciesTreeGroup->setVisible( Qt::Unchecked );
+
+  QSet<QString> dependencySources;
+  Q_FOREACH ( const QgsMapLayerDependency& dep, mLayer->dependencies() )
+  {
+    dependencySources << dep.layerId();
+  }
+  Q_FOREACH ( QgsLayerTreeLayer* layer, mLayersDependenciesTreeGroup->findLayers() )
+  {
+    layer->setVisible( dependencySources.contains( layer->layerId() ) ? Qt::Checked : Qt::Unchecked );
+  }
+
+  mLayersDependenciesTreeView->setModel( mLayersDependenciesTreeModel.data() );
 } // QgsVectorLayerProperties ctor
 
 
@@ -557,6 +579,18 @@ void QgsVectorLayerProperties::apply()
   //save variables
   QgsExpressionContextUtils::setLayerVariables( mLayer, mVariableEditor->variablesInActiveScope() );
   updateVariableEditor();
+
+  // save layer dependencies
+  QSet<QString> deps;
+  Q_FOREACH ( const QgsLayerTreeLayer* layer, mLayersDependenciesTreeGroup->findLayers() )
+  {
+    if ( layer->isVisible() )
+      deps << layer->layerId();
+  }
+  if ( ! mLayer->setDataDependencies( deps ) )
+  {
+    QMessageBox::warning( nullptr, tr( "Dependency cycle" ), tr( "This configuration introduces a cycle in data dependencies and will be ignored" ) );
+  }
 
   // update symbology
   emit refreshLegend( mLayer->id() );

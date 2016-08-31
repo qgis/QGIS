@@ -613,9 +613,9 @@ void QgsVectorDataProvider::pushError( const QString& msg )
   emit raiseError( msg );
 }
 
-QSet<QString> QgsVectorDataProvider::layerDependencies() const
+QSet<QgsMapLayerDependency> QgsVectorDataProvider::dependencies() const
 {
-  return QSet<QString>();
+  return QSet<QgsMapLayerDependency>();
 }
 
 QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry& geom ) const

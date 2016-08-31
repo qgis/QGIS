@@ -79,7 +79,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     QgsAttributeList pkAttributeIndexes() const override;
 
     /** Get the list of layer ids on which this layer depends */
-    QSet<QString> layerDependencies() const override;
+    QSet<QgsMapLayerDependency> dependencies() const override;
 
   private:
 

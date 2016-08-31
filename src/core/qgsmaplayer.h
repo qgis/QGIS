@@ -32,6 +32,7 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrendercontext.h"
+#include "qgsmaplayerdependency.h"
 
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
@@ -698,6 +699,32 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void emitStyleChanged();
 
+    /**
+     * Sets the list of layers that may modify data/geometries of this layer when modified.
+     * @see dependencies()
+     *
+     * @param layersIds IDs of the layers that this layer depends on
+     * @returns false if a dependency cycle has been detected (the change dependency set is not changed in that case)
+     */
+    virtual bool setDataDependencies( const QSet<QString>& layersIds );
+
+    /**
+     * Sets the list of layers that may modify data/geometries of this layer when modified.
+     * @see dependencies()
+     *
+     * @param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
+     * @returns false if a dependency cycle has been detected (the change dependency set is not changed in that case)
+     */
+    bool setDataDependencies( const QSet<QgsMapLayerDependency>& layers );
+
+    /**
+     * Gets the list of dependencies. This includes data dependencies set by the user (@see setDataDependencies)
+     * as well as dependencies given by the provider
+     *
+     * @returns a set of QgsMapLayerDependency
+     */
+    virtual QSet<QgsMapLayerDependency> dependencies() const;
+
   signals:
 
     /** Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar) */
@@ -835,6 +862,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** \brief Error */
     QgsError mError;
+
+    //! List of layers that may modify this layer on modification
+    QSet<QgsMapLayerDependency> mDataDependencies;
+
+    //! Checks whether a new set of data dependencies will introduce a cycle
+    bool hasDataDependencyCycle( const QSet<QgsMapLayerDependency>& layers ) const;
 
   private:
     /**

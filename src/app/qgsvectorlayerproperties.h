@@ -25,6 +25,8 @@
 #include "qgscontexthelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayer.h"
+#include "layertree/qgslayertreemodel.h"
+#include "layertree/qgslayertreegroup.h"
 
 class QgsMapLayer;
 
@@ -192,6 +194,9 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QgsExpressionContext mContext;
 
     QgsExpressionContext createExpressionContext() const override;
+
+    QScopedPointer<QgsLayerTreeGroup> mLayersDependenciesTreeGroup;
+    QScopedPointer<QgsLayerTreeModel> mLayersDependenciesTreeModel;
 
   private slots:
     void openPanel( QgsPanelWidget* panel );

@@ -889,6 +889,12 @@ bool QgsProject::read()
   mVisibilityPresetCollection.reset( new QgsMapThemeCollection() );
   mVisibilityPresetCollection->readXml( *doc );
 
+  // reassign change dependencies now that all layers are loaded
+  QMap<QString, QgsMapLayer*> existingMaps = QgsMapLayerRegistry::instance()->mapLayers();
+  for ( QMap<QString, QgsMapLayer*>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
+  {
+    it.value()->setDataDependencies( it.value()->dependencies() );
+  }
 
   // read the project: used by map canvas and legend
   emit readProject( *doc );
@@ -957,6 +963,8 @@ QgsExpressionContext QgsProject::createExpressionContext() const
 
 void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
 {
+  QMap<QString, QgsMapLayer*> existingMaps = QgsMapLayerRegistry::instance()->mapLayers();
+
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
@@ -985,6 +993,17 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
     }
 
     connect( layer, SIGNAL( configChanged() ), this, SLOT( setDirty() ) );
+
+    // check if we have to update connections for layers with dependencies
+    for ( QMap<QString, QgsMapLayer*>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
+    {
+      QSet<QgsMapLayerDependency> deps = it.value()->dependencies();
+      if ( deps.contains( layer->id() ) )
+      {
+        // reconnect to change signals
+        it.value()->setDataDependencies( deps );
+      }
+    }
   }
 }
 

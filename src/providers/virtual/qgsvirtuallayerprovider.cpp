@@ -601,13 +601,13 @@ QgsAttributeList QgsVirtualLayerProvider::pkAttributeIndexes() const
   return QgsAttributeList();
 }
 
-QSet<QString> QgsVirtualLayerProvider::layerDependencies() const
+QSet<QgsMapLayerDependency> QgsVirtualLayerProvider::dependencies() const
 {
-  QSet<QString> deps;
+  QSet<QgsMapLayerDependency> deps;
   Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer& l, mDefinition.sourceLayers() )
   {
     if ( l.isReferenced() )
-      deps << l.reference();
+      deps << QgsMapLayerDependency( l.reference(), QgsMapLayerDependency::PresenceDependency, QgsMapLayerDependency::FromProvider );
   }
   return deps;
 }
