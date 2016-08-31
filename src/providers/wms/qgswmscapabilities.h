@@ -308,17 +308,33 @@ struct QgsWmtsTheme
   ~QgsWmtsTheme() { delete subTheme; }
 };
 
+struct QgsWmtsTileMatrixLimits;
+
 struct QgsWmtsTileMatrix
 {
   QString identifier;
   QString title, abstract;
   QStringList keywords;
   double scaleDenom;
-  QgsPoint topLeft;
-  int tileWidth;
-  int tileHeight;
-  int matrixWidth;
-  int matrixHeight;
+  QgsPoint topLeft;  //!< top-left corner of the tile matrix in map units
+  int tileWidth;     //!< width of a tile in pixels
+  int tileHeight;    //!< height of a tile in pixels
+  int matrixWidth;   //!< number of tiles horizontally
+  int matrixHeight;  //!< number of tiles vertically
+  double tres;       //!< pixel span in map units
+
+  //! Returns extent of a tile in map coordinates.
+  //! (same function as tileBBox() but returns QRectF instead of QgsRectangle)
+  QRectF tileRect( int col, int row ) const;
+
+  //! Returns extent of a tile in map coordinates
+  //! (same function as tileRect() but returns QgsRectangle instead of QRectF)
+  QgsRectangle tileBBox( int col, int row ) const;
+
+  //! Returns range of tiles that intersects with the view extent
+  //! (tml may be null)
+  void viewExtentIntersection( const QgsRectangle& viewExtent, const QgsWmtsTileMatrixLimits* tml, int& col0, int& row0, int& col1, int& row1 ) const;
+
 };
 
 struct QgsWmtsTileMatrixSet
@@ -329,6 +345,9 @@ struct QgsWmtsTileMatrixSet
   QString crs;
   QString wkScaleSet;
   QMap<double, QgsWmtsTileMatrix> tileMatrices;
+
+  //! Returns closest tile resolution to the requested one. (resolution = width [map units] / with [pixels])
+  const QgsWmtsTileMatrix* findNearestResolution( double vres ) const;
 };
 
 enum QgsTileMode { WMTS, WMSC };
