@@ -41,6 +41,37 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
   QgsDataSourceURI uri;
   uri.setEncodedUri( uriString );
 
+  mXyz = false;  // assume WMS / WMTS
+
+  if ( uri.param( "type" ) == "xyz" )
+  {
+    // for XYZ tiles most of the things do not apply
+    mTiled = true;
+    mXyz = true;
+    mTileDimensionValues.clear();
+    mTileMatrixSetId = "tms0";
+    mMaxWidth = 0;
+    mMaxHeight = 0;
+    mHttpUri = uri.param( "url" );
+    mBaseUrl = mHttpUri;
+    mAuth.mUserName.clear();
+    mAuth.mPassword.clear();
+    mAuth.mReferer.clear();
+    mAuth.mAuthCfg.clear();
+    mIgnoreGetMapUrl = false;
+    mIgnoreGetFeatureInfoUrl = false;
+    mSmoothPixmapTransform = false;
+    mDpiMode = dpiNone; // does not matter what we set here
+    mActiveSubLayers = QStringList( "xyz" );  // just a placeholder to have one sub-layer
+    mActiveSubStyles = QStringList( "xyz" );  // just a placeholder to have one sub-style
+    mActiveSubLayerVisibility.clear();
+    mFeatureCount = 0;
+    mImageMimeType.clear();
+    mCrsId = "EPSG:3857";
+    mEnableContextualLegend = false;
+    return true;
+  }
+
   mTiled = false;
   mTileDimensionValues.clear();
 

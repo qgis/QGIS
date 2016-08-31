@@ -373,6 +373,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
   private:
 
+    //! In case of XYZ tile layer, setup capabilities from its URI
+    void setupXyzCapabilities( const QString& uri );
+
     QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback* feedback );
 
     /**
