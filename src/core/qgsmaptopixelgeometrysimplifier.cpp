@@ -70,17 +70,7 @@ bool QgsMapToPixelSimplifier::equalSnapToGrid( double x1, double y1, double x2, 
 // https://github.com/postgis/postgis/blob/svn-trunk/liblwgeom/effectivearea.h
 // https://github.com/postgis/postgis/blob/svn-trunk/liblwgeom/effectivearea.c
 
-#define LWDEBUG //
-#define LWDEBUGF //
-#define FP_MAX qMax
-#define FLAGS_GET_Z( flags ) ( ( flags ) & 0x01 )
-#define LW_MSG_MAXLEN 256
-#define lwalloc qgsMalloc
-#define lwfree qgsFree
-#define lwerror qWarning
-
 #include "simplify/effectivearea.h"
-#include "simplify/effectivearea.c"
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -175,75 +165,80 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
     }
 
     // Process each vertex...
-    if ( simplifyAlgorithm == SnapToGrid )
+    switch ( simplifyAlgorithm )
     {
-      double gridOriginX = envelope.xMinimum();
-      double gridOriginY = envelope.yMinimum();
-
-      // Use a factor for the maximum displacement distance for simplification, similar as GeoServer does
-      float gridInverseSizeXY = map2pixelTol != 0 ? ( float )( 1.0f / ( 0.8 * map2pixelTol ) ) : 0.0f;
-
-      for ( int i = 0; i < numPoints; ++i )
+      case SnapToGrid:
       {
-        x = srcCurve.xAt( i );
-        y = srcCurve.yAt( i );
+        double gridOriginX = envelope.xMinimum();
+        double gridOriginY = envelope.yMinimum();
 
-        if ( i == 0 ||
-             !isGeneralizable ||
-             !equalSnapToGrid( x, y, lastX, lastY, gridOriginX, gridOriginY, gridInverseSizeXY ) ||
-             ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
+        // Use a factor for the maximum displacement distance for simplification, similar as GeoServer does
+        float gridInverseSizeXY = map2pixelTol != 0 ? ( float )( 1.0f / ( 0.8 * map2pixelTol ) ) : 0.0f;
+
+        for ( int i = 0; i < numPoints; ++i )
         {
-          output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPointV2( x, y ) );
-          lastX = x;
-          lastY = y;
-        }
+          x = srcCurve.xAt( i );
+          y = srcCurve.yAt( i );
 
-        r.combineExtentWith( x, y );
+          if ( i == 0 ||
+               !isGeneralizable ||
+               !equalSnapToGrid( x, y, lastX, lastY, gridOriginX, gridOriginY, gridInverseSizeXY ) ||
+               ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
+          {
+            output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPointV2( x, y ) );
+            lastX = x;
+            lastY = y;
+          }
+
+          r.combineExtentWith( x, y );
+        }
+        break;
       }
-    }
-    else if ( simplifyAlgorithm == Visvalingam )
-    {
-      map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'Area' calculations.
 
-      EFFECTIVE_AREAS* ea;
-      ea = initiate_effectivearea( srcCurve );
-
-      int set_area = 0;
-      ptarray_calc_areas( ea, isaLinearRing ? 4 : 2, set_area, map2pixelTol );
-
-      for ( int i = 0; i < numPoints; ++i )
+      case Visvalingam:
       {
-        if ( ea->res_arealist[ i ] > map2pixelTol )
+        map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'Area' calculations.
+
+        EFFECTIVE_AREAS ea( srcCurve );
+
+        int set_area = 0;
+        ptarray_calc_areas( &ea, isaLinearRing ? 4 : 2, set_area, map2pixelTol );
+
+        for ( int i = 0; i < numPoints; ++i )
         {
-          output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), ea->inpts.at( i ) );
+          if ( ea.res_arealist[ i ] > map2pixelTol )
+          {
+            output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), ea.inpts.at( i ) );
+          }
         }
+        break;
       }
-      destroy_effectivearea( ea );
-    }
-    else
-    {
-      map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'LengthSquare' calculations.
 
-      for ( int i = 0; i < numPoints; ++i )
+      case Distance:
       {
-        x = srcCurve.xAt( i );
-        y = srcCurve.yAt( i );
+        map2pixelTol *= map2pixelTol; //-> Use mappixelTol for 'LengthSquare' calculations.
 
-        isLongSegment = false;
-
-        if ( i == 0 ||
-             !isGeneralizable ||
-             ( isLongSegment = ( calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol ) ) ||
-             ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
+        for ( int i = 0; i < numPoints; ++i )
         {
-          output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPointV2( x, y ) );
-          lastX = x;
-          lastY = y;
+          x = srcCurve.xAt( i );
+          y = srcCurve.yAt( i );
 
-          hasLongSegments |= isLongSegment;
+          isLongSegment = false;
+
+          if ( i == 0 ||
+               !isGeneralizable ||
+               ( isLongSegment = ( calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol ) ) ||
+               ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
+          {
+            output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPointV2( x, y ) );
+            lastX = x;
+            lastY = y;
+
+            hasLongSegments |= isLongSegment;
+          }
+
+          r.combineExtentWith( x, y );
         }
-
-        r.combineExtentWith( x, y );
       }
     }
 

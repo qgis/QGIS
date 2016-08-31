@@ -22,20 +22,35 @@
  *
  **********************************************************************/
 
+#include "qgsabstractgeometry.h"
+#include "qgscurve.h"
+#include "qgspointv2.h"
+
 #ifndef _EFFECTIVEAREA_H
 #define _EFFECTIVEAREA_H 1
+
+
+#define LWDEBUG //
+#define LWDEBUGF //
+#define FP_MAX qMax
+#define FLAGS_GET_Z( flags ) ( ( flags ) & 0x01 )
+#define LW_MSG_MAXLEN 256
+#define lwalloc qgsMalloc
+#define lwfree qgsFree
+#define lwerror qWarning
+
 
 /**
  * This structure is placed in an array with one member per point.
  * It has links into the minheap rtee and kepps track of eliminated points.
  */
-typedef struct
+struct areanode
 {
   double area;
   int treeindex;
   int prev;
   int next;
-} areanode;
+};
 
 /**
  * This structure holds a minheap tree that is used to keep track of what points
@@ -43,27 +58,39 @@ typedef struct
  * When elliminating points the neighbor points has its effective area affected
  * and the minheap helps to resort efficient.
  */
-typedef struct
+struct MINHEAP
 {
   int maxSize;
   int usedSize;
   areanode **key_array;
-} MINHEAP;
+};
 
 /**
  * Structure to hold pointarray and it's arealist.
  */
-typedef struct
+struct EFFECTIVE_AREAS
 {
+  EFFECTIVE_AREAS( const QgsCurve& curve )
+      : is3d( curve.is3D() )
+      , initial_arealist( nullptr )
+      , res_arealist( nullptr )
+  {
+    curve.points( inpts );
+    initial_arealist = new areanode[ inpts.size()];
+    res_arealist = new double[ inpts.size()];
+  }
+
+  ~EFFECTIVE_AREAS()
+  {
+    delete [] initial_arealist;
+    delete [] res_arealist;
+  }
+
   bool is3d;
   QgsPointSequence inpts;
   areanode *initial_arealist;
   double *res_arealist;
-} EFFECTIVE_AREAS;
-
-EFFECTIVE_AREAS* initiate_effectivearea( const QgsCurve &inpts );
-
-void destroy_effectivearea( EFFECTIVE_AREAS *ea );
+};
 
 void ptarray_calc_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double trshld );
 

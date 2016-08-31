@@ -24,25 +24,6 @@
 
 #include "effectivearea.h"
 
-EFFECTIVE_AREAS* initiate_effectivearea( const QgsCurve& inpts )
-{
-  //LWDEBUG( 2, "Entered  initiate_effectivearea" );
-  EFFECTIVE_AREAS *ea;
-  ea = ( EFFECTIVE_AREAS* )lwalloc( sizeof( EFFECTIVE_AREAS ) );
-  inpts.points( ea->inpts );
-  ea->is3d = inpts.is3D();
-  ea->initial_arealist = ( areanode* )lwalloc( ea->inpts.size() * sizeof( areanode ) );
-  ea->res_arealist = ( double* )lwalloc( ea->inpts.size() * sizeof( double ) );
-  return ea;
-}
-
-void destroy_effectivearea( EFFECTIVE_AREAS *ea )
-{
-  lwfree( ea->initial_arealist );
-  lwfree( ea->res_arealist );
-  lwfree( ea );
-}
-
 static MINHEAP initiate_minheap( int npoints )
 {
   MINHEAP tree;

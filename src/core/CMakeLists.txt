@@ -44,6 +44,8 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgssymbol.cpp
   symbology-ng/qgsvectorfieldsymbollayer.cpp
 
+  simplify/effectivearea.cpp
+
   diagram/qgsdiagram.cpp
   diagram/qgshistogramdiagram.cpp
   diagram/qgspiediagram.cpp
