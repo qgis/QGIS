@@ -60,9 +60,6 @@ class QgsEditFormConfigPrivate : public QSharedData
     /** This flag is set if the root container was configured by the user */
     bool mConfiguredRootContainer;
 
-    /** Map that stores the tab for attributes in the edit form. Key is the tab order and value the tab name*/
-    QList< QgsEditFormConfig::TabData > mTabs;
-
     QMap< QString, QString> mConstraints;
     QMap< QString, QString> mConstraintsDescription;
     QMap< QString, bool> mFieldEditables;

@@ -935,19 +935,21 @@ void QgsFieldsProperties::apply()
 {
   QSet<QString> excludeAttributesWMS, excludeAttributesWFS;
 
+  QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
+
   for ( int i = 0; i < mFieldsList->rowCount(); i++ )
   {
     int idx = mFieldsList->item( i, attrIdCol )->text().toInt();
     FieldConfig cfg = configForRow( i );
 
-    mLayer->editFormConfig().setReadOnly( i, !cfg.mEditable );
-    mLayer->editFormConfig().setLabelOnTop( i, cfg.mLabelOnTop );
-    mLayer->editFormConfig().setNotNull( i, cfg.mNotNull );
-    mLayer->editFormConfig().setExpressionDescription( i, cfg.mConstraintDescription );
-    mLayer->editFormConfig().setExpression( i, cfg.mConstraint );
+    editFormConfig.setReadOnly( i, !cfg.mEditable );
+    editFormConfig.setLabelOnTop( i, cfg.mLabelOnTop );
+    editFormConfig.setNotNull( i, cfg.mNotNull );
+    editFormConfig.setExpressionDescription( i, cfg.mConstraintDescription );
+    editFormConfig.setExpression( i, cfg.mConstraint );
 
-    mLayer->editFormConfig().setWidgetType( idx, cfg.mEditorWidgetType );
-    mLayer->editFormConfig().setWidgetConfig( idx, cfg.mEditorWidgetConfig );
+    editFormConfig.setWidgetType( idx, cfg.mEditorWidgetType );
+    editFormConfig.setWidgetConfig( idx, cfg.mEditorWidgetConfig );
 
     if ( mFieldsList->item( i, attrWMSCol )->checkState() == Qt::Unchecked )
     {
@@ -960,7 +962,6 @@ void QgsFieldsProperties::apply()
   }
 
   // tabs and groups
-  QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
   editFormConfig.clearTabs();
   for ( int t = 0; t < mDesignerTree->invisibleRootItem()->childCount(); t++ )
   {
@@ -969,9 +970,8 @@ void QgsFieldsProperties::apply()
     editFormConfig.addTab( createAttributeEditorWidget( tabItem, nullptr, false ) );
   }
 
+  editFormConfig.setUiForm( mEditFormLineEdit->text() );
   editFormConfig.setLayout(( QgsEditFormConfig::EditorLayout ) mEditorLayoutComboBox->currentIndex() );
-  if ( mEditorLayoutComboBox->currentIndex() == QgsEditFormConfig::UiFileLayout )
-    editFormConfig.setUiForm( mEditFormLineEdit->text() );
 
   // Init function configuration
   editFormConfig.setInitFunction( mInitFunctionLineEdit->text() );

@@ -172,6 +172,9 @@ void QgsEditFormConfig::setLayout( QgsEditFormConfig::EditorLayout editorLayout 
 {
   d.detach();
   d->mEditorLayout = editorLayout;
+
+  if ( editorLayout == TabLayout )
+    d->mConfiguredRootContainer = true;
 }
 
 QString QgsEditFormConfig::uiForm() const
@@ -536,9 +539,9 @@ void QgsEditFormConfig::writeXml( QDomNode& node ) const
     QDomElement rootElem = d->mInvisibleRootContainer->toDomElement( doc );
     QDomNodeList elemList = rootElem.childNodes();
 
-    for ( int i = 0; i < elemList.size(); ++i )
+    while ( !elemList.isEmpty() )
     {
-      tabsElem.appendChild( elemList.at( i ) );
+      tabsElem.appendChild( elemList.at( 0 ) );
     }
 
     node.appendChild( tabsElem );
