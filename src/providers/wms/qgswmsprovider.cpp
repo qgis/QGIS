@@ -79,6 +79,7 @@ static QString DEFAULT_LATLON_CRS = "CRS:84";
 
 QMap<QString, QgsWmsStatistics::Stat> QgsWmsStatistics::sData;
 
+
 QgsWmsProvider::QgsWmsProvider( QString const& uri, const QgsWmsCapabilities* capabilities )
     : QgsRasterDataProvider( uri )
     , mHttpGetLegendGraphicResponse( nullptr )
@@ -110,14 +111,26 @@ QgsWmsProvider::QgsWmsProvider( QString const& uri, const QgsWmsCapabilities* ca
   if ( !addLayers() )
     return;
 
-  // if there are already parsed capabilities, use them!
-  if ( capabilities )
-    mCaps = *capabilities;
-
-  // Make sure we have capabilities - other functions here may need them
-  if ( !retrieveServerCapabilities() )
+  if ( mSettings.mXyz )
   {
-    return;
+    // we are working with XYZ tiles
+    // no need to get capabilities, the whole definition is in URI
+    // so we just generate a dummy WMTS definition
+    setupXyzCapabilities( uri );
+  }
+  else
+  {
+    // we are working with WMS / WMTS server
+
+    // if there are already parsed capabilities, use them!
+    if ( capabilities )
+      mCaps = *capabilities;
+
+    // Make sure we have capabilities - other functions here may need them
+    if ( !retrieveServerCapabilities() )
+    {
+      return;
+    }
   }
 
   // setImageCrs is using mTiled !!!
@@ -781,6 +794,28 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
       }
       break;
 
+      case XYZ:
+      {
+        QString url = mSettings.mBaseUrl;
+        int z = tm->identifier.toInt();
+        int i = 0;
+        for ( int row = row0; row <= row1; row++ )
+        {
+          for ( int col = col0; col <= col1; col++ )
+          {
+            QString turl( url );
+            turl.replace( "{x}", QString::number( col ), Qt::CaseInsensitive );
+            turl.replace( "{y}", QString::number( row ), Qt::CaseInsensitive );
+            turl.replace( "{z}", QString::number( z ), Qt::CaseInsensitive );
+
+            if ( feedback && !feedback->preview_only )
+              QgsDebugMsg( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( row ).arg( col ).arg( turl ) );
+            requests << QgsWmsTiledImageDownloadHandler::TileRequest( turl, tm->tileRect( col, row ), i );
+          }
+        }
+      }
+      break;
+
       default:
         QgsDebugMsg( QString( "unexpected tile mode %1" ).arg( mTileLayer->tileMode ) );
         return image;
@@ -932,6 +967,60 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
   QgsDebugMsg( "exiting." );
 
   return true;
+}
+
+
+void QgsWmsProvider::setupXyzCapabilities( const QString &uri )
+{
+  QgsDataSourceUri parsedUri;
+  parsedUri.setEncodedUri( uri );
+
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( "EPSG:4326" ), QgsCoordinateReferenceSystem( mSettings.mCrsId ) );
+  // the whole world is projected to a square:
+  // X going from 180 W to 180 E
+  // Y going from ~85 N to ~85 S  (=atan(sinh(pi)) ... to get a square)
+  QgsPoint topLeftLonLat( -180, 180.0 / M_PI * atan( sinh( M_PI ) ) );
+  QgsPoint bottomRightLonLat( 180, 180.0 / M_PI * atan( sinh( -M_PI ) ) );
+  QgsPoint topLeft = ct.transform( topLeftLonLat );
+  QgsPoint bottomRight = ct.transform( bottomRightLonLat );
+  double xspan = ( bottomRight.x() - topLeft.x() );
+
+  QgsWmsBoundingBoxProperty bbox;
+  bbox.crs = mSettings.mCrsId;
+  bbox.box = QgsRectangle( topLeft.x(), bottomRight.y(), bottomRight.x(), topLeft.y() );
+
+  QgsWmtsTileLayer tl;
+  tl.tileMode = XYZ;
+  tl.identifier = "xyz";  // as set in parseUri
+  tl.boundingBoxes << bbox;
+  mCaps.mTileLayersSupported.append( tl );
+
+  QgsWmtsTileMatrixSet tms;
+  tms.identifier = "tms0";  // as set in parseUri
+  tms.crs = mSettings.mCrsId;
+  mCaps.mTileMatrixSets[tms.identifier] = tms;
+
+  int minZoom = 0;
+  int maxZoom = 18;
+  if ( parsedUri.hasParam( "zmin" ) )
+    minZoom = parsedUri.param( "zmin" ).toInt();
+  if ( parsedUri.hasParam( "zmax" ) )
+    maxZoom = parsedUri.param( "zmax" ).toInt();
+
+  // zoom 0 is one tile for the whole world
+  for ( int zoom = minZoom; zoom <= maxZoom; ++zoom )
+  {
+    QgsWmtsTileMatrix tm;
+    tm.identifier = QString::number( zoom );
+    tm.topLeft = topLeft;
+    tm.tileWidth = 256;
+    tm.tileHeight = 256;
+    tm.matrixWidth = pow( 2, zoom );
+    tm.matrixHeight = pow( 2, zoom );
+    tm.tres = xspan / ( tm.tileWidth * tm.matrixWidth );
+
+    mCaps.mTileMatrixSets[tms.identifier].tileMatrices[tm.tres] = tm;
+  }
 }
 
 
@@ -1834,6 +1923,10 @@ QString QgsWmsProvider::metadata()
       else if ( l.tileMode == WMSC )
       {
         metadata += tr( "WMS-C" );
+      }
+      else if ( l.tileMode == XYZ )
+      {
+        metadata += tr( "XYZ" );
       }
       else
       {
