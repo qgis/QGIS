@@ -422,12 +422,6 @@ class QgsVectorLayer : QgsMapLayer
     const QList<QgsVectorJoinInfo> vectorJoins() const;
 
     /**
-     * Gets the list of layer ids on which this layer depends, as returned by the provider.
-     * This in particular determines the order of layer loading.
-     */
-    virtual QSet<QString> layerDependencies() const;
-
-    /**
      * Sets the list of layers that may modify data/geometries of this layer when modified.
      * This is meant mainly to declare database triggers between layers.
      * When one of these layers is modified (feature added/deleted or geometry changed),
@@ -439,12 +433,12 @@ class QgsVectorLayer : QgsMapLayer
     bool setDataDependencies( const QSet<QString>& layersIds );
 
     /**
-     * Gets the list of layers that may modify data/geometries of this layer when modified.
-     * @see setDataDependencies
+     * Gets the list of dependencies. This includes data dependencies set by the user (@see setDataDependencies)
+     * as well as dependencies given by the provider
      *
-     * @returns IDs of the layers that this layer depends on
+     * @returns a set of QgsMapLayerDependency
      */
-    QSet<QString> dataDependencies() const;
+    virtual QSet<QgsMapLayerDependency> dependencies() const;
 
     /**
      * Add a new field which is calculated by the expression specified

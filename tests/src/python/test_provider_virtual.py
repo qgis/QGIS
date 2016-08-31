@@ -677,18 +677,18 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(l2.isValid(), True)
         QgsMapLayerRegistry.instance().addMapLayer(l2)
 
-        self.assertEqual(len(l2.layerDependencies()), 1)
-        self.assertEqual(l2.layerDependencies()[0].startswith('france_parts'), True)
+        self.assertEqual(len(l2.dependencies()), 1)
+        self.assertEqual(l2.dependencies()[0].layerId().startswith('france_parts'), True)
 
         query = QUrl.toPercentEncoding("SELECT t1.objectid, t2.name_0 FROM france_parts as t1, aa as t2")
         l3 = QgsVectorLayer("?query=%s" % query, "bb", "virtual", False)
         self.assertEqual(l3.isValid(), True)
         QgsMapLayerRegistry.instance().addMapLayer(l3)
 
-        self.assertEqual(len(l2.layerDependencies()), 1)
-        self.assertEqual(l2.layerDependencies()[0].startswith('france_parts'), True)
+        self.assertEqual(len(l2.dependencies()), 1)
+        self.assertEqual(l2.dependencies()[0].layerId().startswith('france_parts'), True)
 
-        self.assertEqual(len(l3.layerDependencies()), 2)
+        self.assertEqual(len(l3.dependencies()), 2)
 
         temp = os.path.join(tempfile.gettempdir(), "qgstestproject.qgs")
 

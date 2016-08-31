@@ -1681,38 +1681,38 @@ void QgsMapLayer::setExtent( const QgsRectangle &r )
   mExtent = r;
 }
 
-static QList<const QgsMapLayer*> _depOutEdges( const QgsMapLayer* vl, const QgsMapLayer* that, const QSet<QString>& layersIds )
+static QList<const QgsMapLayer*> _depOutEdges( const QgsMapLayer* vl, const QgsMapLayer* that, const QSet<QgsMapLayerDependency>& layers )
 {
   QList<const QgsMapLayer*> lst;
   if ( vl == that )
   {
-    Q_FOREACH ( QString layerId, layersIds )
+    Q_FOREACH ( const QgsMapLayerDependency& dep, layers )
     {
-      if ( const QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( layerId ) )
+      if ( const QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( dep.layerId() ) )
         lst << l;
     }
   }
   else
   {
-    Q_FOREACH ( QString layerId, vl->dataDependencies() )
+    Q_FOREACH ( const QgsMapLayerDependency& dep, vl->dependencies() )
     {
-      if ( const QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( layerId ) )
+      if ( const QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( dep.layerId() ) )
         lst << l;
     }
   }
   return lst;
 }
 
-static bool _depHasCycleDFS( const QgsMapLayer* n, QHash<const QgsMapLayer*, int>& mark, const QgsMapLayer* that, const QSet<QString>& layersIds )
+static bool _depHasCycleDFS( const QgsMapLayer* n, QHash<const QgsMapLayer*, int>& mark, const QgsMapLayer* that, const QSet<QgsMapLayerDependency>& layers )
 {
   if ( mark.value( n ) == 1 ) // temporary
     return true;
   if ( mark.value( n ) == 0 ) // not visited
   {
     mark[n] = 1; // temporary
-    Q_FOREACH ( const QgsMapLayer* m, _depOutEdges( n, that, layersIds ) )
+    Q_FOREACH ( const QgsMapLayer* m, _depOutEdges( n, that, layers ) )
     {
-      if ( _depHasCycleDFS( m, mark, that, layersIds ) )
+      if ( _depHasCycleDFS( m, mark, that, layers ) )
         return true;
     }
     mark[n] = 2; // permanent
@@ -1720,22 +1720,38 @@ static bool _depHasCycleDFS( const QgsMapLayer* n, QHash<const QgsMapLayer*, int
   return false;
 }
 
-bool QgsMapLayer::hasDataDependencyCycle( const QSet<QString>& layersIds ) const
+bool QgsMapLayer::hasDataDependencyCycle( const QSet<QgsMapLayerDependency>& layers ) const
 {
   QHash<const QgsMapLayer*, int> marks;
-  return _depHasCycleDFS( this, marks, this, layersIds );
+  return _depHasCycleDFS( this, marks, this, layers );
+}
+
+QSet<QgsMapLayerDependency> QgsMapLayer::dependencies() const
+{
+  return mDataDependencies;
 }
 
 bool QgsMapLayer::setDataDependencies( const QSet<QString>& layersIds )
 {
-  if ( hasDataDependencyCycle( layersIds ) )
+  QSet<QgsMapLayerDependency> deps;
+  Q_FOREACH ( QString layerId, layersIds )
+  {
+    deps << QgsMapLayerDependency( layerId );
+  }
+  if ( hasDataDependencyCycle( deps ) )
     return false;
 
-  mDataDependencies = layersIds;
+  mDataDependencies = deps;
   return true;
 }
 
-QSet<QString> QgsMapLayer::dataDependencies() const
+bool QgsMapLayer::setDataDependencies( const QSet<QgsMapLayerDependency>& layers )
 {
-  return mDataDependencies;
+  QSet<QString> deps;
+  Q_FOREACH ( const QgsMapLayerDependency& dep, layers )
+  {
+    if ( dep.origin() == QgsMapLayerDependency::FromUser && dep.type() == QgsMapLayerDependency::DataDependency )
+      deps << dep.layerId();
+  }
+  return setDataDependencies( deps );
 }

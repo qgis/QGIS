@@ -135,6 +135,7 @@ class TestLayerDependencies(unittest.TestCase):
         self.assertEqual(l1, 4)
         m = u.snapToMap(QPoint(95, 0))
         # snapping not updated
+        self.pointsLayer.setDataDependencies([])
         self.assertEqual(m.isValid(), False)
 
         # set layer dependencies
@@ -204,7 +205,7 @@ class TestLayerDependencies(unittest.TestCase):
                 newLinesLayer = l.layer()
         self.assertFalse(newPointsLayer is None)
         self.assertFalse(newLinesLayer is None)
-        self.assertTrue(newLinesLayer.id() in newPointsLayer.dataDependencies())
+        self.assertTrue(newLinesLayer.id() in [dep.layerId() for dep in newPointsLayer.dependencies()])
 
         self.pointsLayer.setDataDependencies([])
 

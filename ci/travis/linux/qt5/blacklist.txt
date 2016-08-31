@@ -9,6 +9,7 @@ PyQgsSipCoverage
 PyQgsSpatialiteProvider
 PyQgsVirtualLayerDefinition
 PyQgsVirtualLayerProvider
+PyQgsLayerDependencies
 qgis_composermapgridtest
 qgis_composerutils
 ProcessingGrass7AlgorithmsImageryTest

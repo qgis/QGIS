@@ -302,7 +302,11 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   mLayersDependenciesTreeGroup->setVisible( Qt::Unchecked );
 
-  QSet<QString> dependencySources = mLayer->dataDependencies();
+  QSet<QString> dependencySources;
+  Q_FOREACH ( const QgsMapLayerDependency& dep, mLayer->dependencies() )
+  {
+    dependencySources << dep.layerId();
+  }
   Q_FOREACH ( QgsLayerTreeLayer* layer, mLayersDependenciesTreeGroup->findLayers() )
   {
     layer->setVisible( dependencySources.contains( layer->layerId() ) ? Qt::Checked : Qt::Unchecked );

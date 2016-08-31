@@ -678,7 +678,7 @@ class QgsMapLayer : QObject
 
     /**
      * Sets the list of layers that may modify data/geometries of this layer when modified.
-     * @see dataDependencies
+     * @see dependencies()
      *
      * @param layersIds IDs of the layers that this layer depends on
      * @returns false if a dependency cycle has been detected (the change dependency set is not changed in that case)
@@ -686,12 +686,21 @@ class QgsMapLayer : QObject
     virtual bool setDataDependencies( const QSet<QString>& layersIds );
 
     /**
-     * Gets the list of layers that may modify data/geometries of this layer when modified.
-     * @see setDataDependencies
+     * Sets the list of layers that may modify data/geometries of this layer when modified.
+     * @see dependencies()
      *
-     * @returns IDs of the layers that this layer depends on
+     * @param set of QgsMapLayerDependency. Only user-defined dependencies will be added
+     * @returns false if a dependency cycle has been detected (the change dependency set is not changed in that case)
      */
-    virtual QSet<QString> dataDependencies() const;
+    bool setDataDependencies( const QSet<QgsMapLayerDependency>& layers );
+
+    /**
+     * Gets the list of dependencies. This includes data dependencies set by the user (@see setDataDependencies)
+     * as well as dependencies given by the provider
+     *
+     * @returns a set of QgsMapLayerDependency
+     */
+    virtual QSet<QgsMapLayerDependency> dependencies() const;
 
   signals:
 
@@ -785,5 +794,5 @@ class QgsMapLayer : QObject
     void setError( const QgsError &error );
 
     //! Checks if new change dependency candidates introduce a cycle
-    bool hasDataDependencyCycle( const QSet<QString>& layersIds ) const;
+    bool hasDataDependencyCycle( const QSet<QgsMapLayerDependency>& layersIds ) const;
 };

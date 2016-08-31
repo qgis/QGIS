@@ -893,7 +893,7 @@ bool QgsProject::read()
   QMap<QString, QgsMapLayer*> existingMaps = QgsMapLayerRegistry::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
   {
-    it.value()->setDataDependencies( it.value()->dataDependencies() );
+    it.value()->setDataDependencies( it.value()->dependencies() );
   }
 
   // read the project: used by map canvas and legend
@@ -997,7 +997,7 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
     // check if we have to update connections for layers with dependencies
     for ( QMap<QString, QgsMapLayer*>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
     {
-      QSet<QString> deps = it.value()->dataDependencies();
+      QSet<QgsMapLayerDependency> deps = it.value()->dependencies();
       if ( deps.contains( layer->id() ) )
       {
         // reconnect to change signals
