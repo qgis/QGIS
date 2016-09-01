@@ -733,6 +733,21 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         ids = [f.id() for f in vl2.getFeatures()]
         self.assertEqual(ids, [])
 
+    def test_layer_with_accents(self):
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), u"françéà", "ogr", False)
+        self.assertEqual(l1.isValid(), True)
+        QgsMapLayerRegistry.instance().addMapLayer(l1)
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery(u'select * from "françéà"')
+
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual(vl.isValid(), True)
+        ids = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(len(ids), 4)
+
+        QgsMapLayerRegistry.instance().removeMapLayer(l1.id())
+
     def test_joined_layers_conversion(self):
         v1 = QgsVectorLayer("Point?field=id:integer&field=b_id:integer&field=c_id:integer&field=name:string", "A", "memory")
         self.assertEqual(v1.isValid(), True)
