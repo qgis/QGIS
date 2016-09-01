@@ -328,11 +328,11 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
   Q_UNUSED( isCreated );
 
 #define RETURN_CSTR_ERROR(err) if (outErr) {size_t s = strlen(err); *outErr=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( s ) +1)); strncpy(*outErr, err, s);}
-#define RETURN_CPPSTR_ERROR(err) if (outErr) {*outErr=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( err.size() )+1)); strncpy(*outErr, err.c_str(), err.size());}
+#define RETURN_CPPSTR_ERROR(err) if (outErr) {*outErr=reinterpret_cast<char*>(sqlite3_malloc( static_cast<int>( err.toUtf8().size() )+1)); strncpy(*outErr, err.toUtf8().constData(), err.toUtf8().size());}
 
   if ( argc < 4 )
   {
-    std::string err( "Missing arguments: layer_id | provider, source" );
+    QString err( "Missing arguments: layer_id | provider, source" );
     RETURN_CPPSTR_ERROR( err );
     return SQLITE_ERROR;
   }
@@ -345,7 +345,7 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
     // CREATE VIRTUAL TABLE vtab USING QgsVLayer(layer_id)
     // vtab = argv[2]
     // layer_id = argv[3]
-    QString layerid( argv[3] );
+    QString layerid = QString::fromUtf8( argv[3] );
     if ( layerid.size() >= 1 && layerid[0] == '\'' )
     {
       layerid = layerid.mid( 1, layerid.size() - 2 );
@@ -355,8 +355,8 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
     {
       if ( outErr )
       {
-        std::string err( "Cannot find layer " );
-        err += argv[3];
+        QString err( "Cannot find layer " );
+        err += QString::fromUtf8( argv[3] );
         RETURN_CPPSTR_ERROR( err );
       }
       return SQLITE_ERROR;
@@ -372,7 +372,7 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
     // source = argv[4]
     // encoding = argv[5]
     QString provider = argv[3];
-    QString source = argv[4];
+    QString source = QString::fromUtf8( argv[4] );
     QString encoding = "UTF-8";
     if ( argc == 6 )
     {
@@ -390,17 +390,16 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
     }
     try
     {
-      newVtab.reset( new VTable( sql, provider, source, argv[2], encoding ) );
+      newVtab.reset( new VTable( sql, provider, source, QString::fromUtf8( argv[2] ), encoding ) );
     }
     catch ( std::runtime_error& e )
     {
-      std::string err( e.what() );
-      RETURN_CPPSTR_ERROR( err );
+      RETURN_CSTR_ERROR( e.what() );
       return SQLITE_ERROR;
     }
   }
 
-  r = sqlite3_declare_vtab( sql, newVtab->creationString().toLocal8Bit().constData() );
+  r = sqlite3_declare_vtab( sql, newVtab->creationString().toUtf8().constData() );
   if ( r )
   {
     RETURN_CSTR_ERROR( sqlite3_errmsg( sql ) );
