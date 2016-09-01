@@ -5,7 +5,6 @@ PyQgsPalLabelingServer
 PyQgsServer
 PyQgsServerAccessControl
 PyQgsSipCoverage
-PyQgsSpatialiteProvider
 PyQgsVirtualLayerDefinition
 PyQgsVirtualLayerProvider
 PyQgsLayerDependencies
