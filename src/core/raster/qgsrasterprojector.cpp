@@ -22,7 +22,6 @@
 #include "qgsrasterprojector.h"
 #include "qgscoordinatetransform.h"
 
-
 QgsRasterProjector::QgsRasterProjector()
     : QgsRasterInterface( nullptr )
     , mSrcDatumTransform( -1 )
@@ -341,7 +340,6 @@ void ProjectorData::calcSrcRowsCols()
   else
   {
     // take highest from corners, points in in the middle of corners and center (3 x 3 )
-    const QgsCoordinateTransform* inverseCt = QgsCoordinateTransformCache::instance()->transform( mDestCRS.authid(), mSrcCRS.authid(), mDestDatumTransform, mSrcDatumTransform );
     //double
     QgsRectangle srcExtent;
     int srcXSize, srcYSize;
