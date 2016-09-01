@@ -256,5 +256,10 @@ class QgsRasterInterface
                          int theStats = QgsRasterBandStats::All,
                          const QgsRectangle & theExtent = QgsRectangle(),
                          int theBinCount = 0 );
+
+  private:
+    QgsRasterInterface(const QgsRasterInterface &);
+    QgsRasterInterface &operator=(const QgsRasterInterface &);
+
 };
 

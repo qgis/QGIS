@@ -270,6 +270,9 @@ class CORE_EXPORT QgsRasterInterface
                          int theStats = QgsRasterBandStats::All,
                          const QgsRectangle & theExtent = QgsRectangle(),
                          int theBinCount = 0 );
+
+  private:
+    Q_DISABLE_COPY( QgsRasterInterface )   // there is clone() for copying
 };
 
 #endif
