@@ -677,28 +677,21 @@ class QgsMapLayer : QObject
     void emitStyleChanged();
 
     /**
-     * Sets the list of layers that may modify data/geometries of this layer when modified.
+     * Sets the list of dependencies.
      * @see dependencies()
      *
-     * @param layersIds IDs of the layers that this layer depends on
-     * @returns false if a dependency cycle has been detected (the change dependency set is not changed in that case)
+     * @param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
+     * @returns false if a dependency cycle has been detected
+     * @note added in QGIS 3.0
      */
-    virtual bool setDataDependencies( const QSet<QString>& layersIds );
-
-    /**
-     * Sets the list of layers that may modify data/geometries of this layer when modified.
-     * @see dependencies()
-     *
-     * @param set of QgsMapLayerDependency. Only user-defined dependencies will be added
-     * @returns false if a dependency cycle has been detected (the change dependency set is not changed in that case)
-     */
-    bool setDataDependencies( const QSet<QgsMapLayerDependency>& layers );
+    virtual bool setDependencies( const QSet<QgsMapLayerDependency>& layers );
 
     /**
      * Gets the list of dependencies. This includes data dependencies set by the user (@see setDataDependencies)
      * as well as dependencies given by the provider
      *
      * @returns a set of QgsMapLayerDependency
+     * @note added in QGIS 3.0
      */
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 
@@ -756,6 +749,11 @@ class QgsMapLayer : QObject
      */
     void configChanged();
 
+    /**
+     * Emitted when dependencies are changed.
+     */
+    void dependenciesChanged();
+
   protected:
     /** Set the extent */
     virtual void setExtent( const QgsRectangle &rect );
@@ -794,5 +792,5 @@ class QgsMapLayer : QObject
     void setError( const QgsError &error );
 
     //! Checks if new change dependency candidates introduce a cycle
-    bool hasDataDependencyCycle( const QSet<QgsMapLayerDependency>& layersIds ) const;
+    bool hasDependencyCycle( const QSet<QgsMapLayerDependency>& layersIds ) const;
 };

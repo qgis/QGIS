@@ -580,14 +580,14 @@ void QgsVectorLayerProperties::apply()
   QgsExpressionContextUtils::setLayerVariables( mLayer, mVariableEditor->variablesInActiveScope() );
   updateVariableEditor();
 
-  // save layer dependencies
-  QSet<QString> deps;
+  // save dependencies
+  QSet<QgsMapLayerDependency> deps;
   Q_FOREACH ( const QgsLayerTreeLayer* layer, mLayersDependenciesTreeGroup->findLayers() )
   {
     if ( layer->isVisible() )
-      deps << layer->layerId();
+      deps << QgsMapLayerDependency( layer->layerId() );
   }
-  if ( ! mLayer->setDataDependencies( deps ) )
+  if ( ! mLayer->setDependencies( deps ) )
   {
     QMessageBox::warning( nullptr, tr( "Dependency cycle" ), tr( "This configuration introduces a cycle in data dependencies and will be ignored" ) );
   }

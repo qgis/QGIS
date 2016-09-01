@@ -422,21 +422,21 @@ class QgsVectorLayer : QgsMapLayer
     const QList<QgsVectorJoinInfo> vectorJoins() const;
 
     /**
-     * Sets the list of layers that may modify data/geometries of this layer when modified.
-     * This is meant mainly to declare database triggers between layers.
-     * When one of these layers is modified (feature added/deleted or geometry changed),
-     * dataChanged() will be emitted, allowing users of this layer to refresh / update it.
+     * Sets the list of dependencies.
+     * @see dependencies()
      *
-     * @param layersIds IDs of the layers that this layer depends on
-     * @returns false if a dependency cycle has been detected (the change dependency set is not changed in that case)
+     * @param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
+     * @returns false if a dependency cycle has been detected
+     * @note added in QGIS 3.0
      */
-    bool setDataDependencies( const QSet<QString>& layersIds );
+    virtual bool setDependencies( const QSet<QgsMapLayerDependency>& layers );
 
     /**
      * Gets the list of dependencies. This includes data dependencies set by the user (@see setDataDependencies)
      * as well as dependencies given by the provider
      *
      * @returns a set of QgsMapLayerDependency
+     * @note added in QGIS 3.0
      */
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 

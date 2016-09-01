@@ -1720,7 +1720,7 @@ static bool _depHasCycleDFS( const QgsMapLayer* n, QHash<const QgsMapLayer*, int
   return false;
 }
 
-bool QgsMapLayer::hasDataDependencyCycle( const QSet<QgsMapLayerDependency>& layers ) const
+bool QgsMapLayer::hasDependencyCycle( const QSet<QgsMapLayerDependency>& layers ) const
 {
   QHash<const QgsMapLayer*, int> marks;
   return _depHasCycleDFS( this, marks, this, layers );
@@ -1728,30 +1728,21 @@ bool QgsMapLayer::hasDataDependencyCycle( const QSet<QgsMapLayerDependency>& lay
 
 QSet<QgsMapLayerDependency> QgsMapLayer::dependencies() const
 {
-  return mDataDependencies;
+  return mDependencies;
 }
 
-bool QgsMapLayer::setDataDependencies( const QSet<QString>& layersIds )
+bool QgsMapLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
 {
   QSet<QgsMapLayerDependency> deps;
-  Q_FOREACH ( QString layerId, layersIds )
+  Q_FOREACH ( const QgsMapLayerDependency& dep, oDeps )
   {
-    deps << QgsMapLayerDependency( layerId );
+    if ( dep.origin() == QgsMapLayerDependency::FromUser )
+      deps << dep;
   }
-  if ( hasDataDependencyCycle( deps ) )
+  if ( hasDependencyCycle( deps ) )
     return false;
 
-  mDataDependencies = deps;
+  mDependencies = deps;
+  emit dependenciesChanged();
   return true;
-}
-
-bool QgsMapLayer::setDataDependencies( const QSet<QgsMapLayerDependency>& layers )
-{
-  QSet<QString> deps;
-  Q_FOREACH ( const QgsMapLayerDependency& dep, layers )
-  {
-    if ( dep.origin() == QgsMapLayerDependency::FromUser && dep.type() == QgsMapLayerDependency::DataDependency )
-      deps << dep.layerId();
-  }
-  return setDataDependencies( deps );
 }
