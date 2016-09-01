@@ -1458,14 +1458,14 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
 
   QDomNode depsNode = layer_node.namedItem( "dataDependencies" );
   QDomNodeList depsNodes = depsNode.childNodes();
-  QSet<QString> sources;
+  QSet<QgsMapLayerDependency> sources;
   for ( int i = 0; i < depsNodes.count(); i++ )
   {
     QDomNode node = depsNodes.at( i );
     QString source = depsNodes.at( i ).toElement().attribute( "id" );
-    sources << source;
+    sources << QgsMapLayerDependency( source );
   }
-  setDataDependencies( sources );
+  setDependencies( sources );
 
   setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
@@ -4092,25 +4092,25 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFl
 QSet<QgsMapLayerDependency> QgsVectorLayer::dependencies() const
 {
   if ( mDataProvider )
-    return mDataProvider->dependencies() + mDataDependencies;
-  return mDataDependencies;
+    return mDataProvider->dependencies() + mDependencies;
+  return mDependencies;
 }
 
-bool QgsVectorLayer::setDataDependencies( const QSet<QString>& layersIds )
+bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
 {
   QSet<QgsMapLayerDependency> deps;
-  Q_FOREACH ( QString layerId, layersIds )
+  Q_FOREACH ( const QgsMapLayerDependency& dep, oDeps )
   {
-    deps << QgsMapLayerDependency( layerId );
+    if ( dep.origin() == QgsMapLayerDependency::FromUser )
+      deps << dep;
   }
-
-  if ( hasDataDependencyCycle( deps ) )
+  if ( hasDependencyCycle( deps ) )
     return false;
 
   QSet<QgsMapLayerDependency> toAdd = deps - dependencies();
 
   // disconnect layers that are not present in the list of dependencies anymore
-  Q_FOREACH ( const QgsMapLayerDependency& dep, mDataDependencies )
+  Q_FOREACH ( const QgsMapLayerDependency& dep, mDependencies )
   {
     QgsVectorLayer* lyr = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( dep.layerId() ) );
     if ( lyr == nullptr )
@@ -4123,12 +4123,13 @@ bool QgsVectorLayer::setDataDependencies( const QSet<QString>& layersIds )
 
   // assign new dependencies
   if ( mDataProvider )
-    mDataDependencies = mDataProvider->dependencies() + deps;
+    mDependencies = mDataProvider->dependencies() + deps;
   else
-    mDataDependencies = deps;
+    mDependencies = deps;
+  emit dependenciesChanged();
 
   // connect to new layers
-  Q_FOREACH ( const QgsMapLayerDependency& dep, mDataDependencies )
+  Q_FOREACH ( const QgsMapLayerDependency& dep, mDependencies )
   {
     QgsVectorLayer* lyr = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( dep.layerId() ) );
     if ( lyr == nullptr )

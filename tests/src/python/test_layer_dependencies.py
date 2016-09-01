@@ -26,7 +26,8 @@ from qgis.core import (QgsMapLayerRegistry,
                        QgsFeature,
                        QgsGeometry,
                        QgsProject,
-                       QgsLayerDefinition
+                       QgsLayerDefinition,
+                       QgsMapLayerDependency
                        )
 
 from qgis.testing import start_app, unittest
@@ -103,9 +104,9 @@ class TestLayerDependencies(unittest.TestCase):
         pass
 
     def test_resetSnappingIndex(self):
-        self.pointsLayer.setDataDependencies([])
-        self.linesLayer.setDataDependencies([])
-        self.pointsLayer2.setDataDependencies([])
+        self.pointsLayer.setDependencies([])
+        self.linesLayer.setDependencies([])
+        self.pointsLayer2.setDependencies([])
 
         ms = QgsMapSettings()
         ms.setOutputSize(QSize(100, 100))
@@ -135,11 +136,11 @@ class TestLayerDependencies(unittest.TestCase):
         self.assertEqual(l1, 4)
         m = u.snapToMap(QPoint(95, 0))
         # snapping not updated
-        self.pointsLayer.setDataDependencies([])
+        self.pointsLayer.setDependencies([])
         self.assertEqual(m.isValid(), False)
 
         # set layer dependencies
-        self.pointsLayer.setDataDependencies([self.linesLayer.id()])
+        self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
         # add another line
         f = QgsFeature(self.linesLayer.fields())
         f.setFeatureId(2)
@@ -153,15 +154,15 @@ class TestLayerDependencies(unittest.TestCase):
         self.assertTrue(m.isValid())
         self.assertTrue(m.hasVertex())
         self.assertEqual(m.point(), QgsPoint(0.5, 0.5))
-        self.pointsLayer.setDataDependencies([])
+        self.pointsLayer.setDependencies([])
 
         # test chained layer dependencies A -> B -> C
         layers = [QgsSnappingUtils.LayerConfig(self.pointsLayer, QgsPointLocator.Vertex, 20, QgsTolerance.Pixels),
                   QgsSnappingUtils.LayerConfig(self.pointsLayer2, QgsPointLocator.Vertex, 20, QgsTolerance.Pixels)
                   ]
         u.setLayers(layers)
-        self.pointsLayer.setDataDependencies([self.linesLayer.id()])
-        self.pointsLayer2.setDataDependencies([self.pointsLayer.id()])
+        self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
+        self.pointsLayer2.setDependencies([QgsMapLayerDependency(self.pointsLayer.id())])
         # add another line
         f = QgsFeature(self.linesLayer.fields())
         f.setFeatureId(3)
@@ -175,21 +176,21 @@ class TestLayerDependencies(unittest.TestCase):
         self.assertTrue(m.isValid())
         self.assertTrue(m.hasVertex())
         self.assertEqual(m.point(), QgsPoint(0.7, 0.8))
-        self.pointsLayer.setDataDependencies([])
-        self.pointsLayer2.setDataDependencies([])
+        self.pointsLayer.setDependencies([])
+        self.pointsLayer2.setDependencies([])
 
     def test_cycleDetection(self):
-        self.assertTrue(self.pointsLayer.setDataDependencies([self.linesLayer.id()]))
-        self.assertFalse(self.linesLayer.setDataDependencies([self.pointsLayer.id()]))
-        self.pointsLayer.setDataDependencies([])
-        self.linesLayer.setDataDependencies([])
+        self.assertTrue(self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())]))
+        self.assertFalse(self.linesLayer.setDependencies([QgsMapLayerDependency(self.pointsLayer.id())]))
+        self.pointsLayer.setDependencies([])
+        self.linesLayer.setDependencies([])
 
     def test_layerDefinitionRewriteId(self):
         tmpfile = os.path.join(tempfile.tempdir, "test.qlr")
 
         ltr = QgsProject.instance().layerTreeRoot()
 
-        self.pointsLayer.setDataDependencies([self.linesLayer.id()])
+        self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
 
         QgsLayerDefinition.exportLayerDefinition(tmpfile, [ltr])
 
@@ -207,7 +208,7 @@ class TestLayerDependencies(unittest.TestCase):
         self.assertFalse(newLinesLayer is None)
         self.assertTrue(newLinesLayer.id() in [dep.layerId() for dep in newPointsLayer.dependencies()])
 
-        self.pointsLayer.setDataDependencies([])
+        self.pointsLayer.setDependencies([])
 
     def test_signalConnection(self):
         # remove all layers
@@ -219,8 +220,8 @@ class TestLayerDependencies(unittest.TestCase):
         assert (self.linesLayer.isValid())
         self.pointsLayer2 = QgsVectorLayer("dbname='%s' table=\"node2\" (geom) sql=" % self.fn, "_points2", "spatialite")
         assert (self.pointsLayer2.isValid())
-        self.pointsLayer.setDataDependencies([self.linesLayer.id()])
-        self.pointsLayer2.setDataDependencies([self.pointsLayer.id()])
+        self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
+        self.pointsLayer2.setDependencies([QgsMapLayerDependency(self.pointsLayer.id())])
         # this should update connections between layers
         QgsMapLayerRegistry.instance().addMapLayers([self.pointsLayer])
         QgsMapLayerRegistry.instance().addMapLayers([self.linesLayer])
@@ -252,8 +253,8 @@ class TestLayerDependencies(unittest.TestCase):
         self.assertTrue(m.hasVertex())
         self.assertEqual(m.point(), QgsPoint(0.8, 0.0))
 
-        self.pointsLayer.setDataDependencies([])
-        self.pointsLayer2.setDataDependencies([])
+        self.pointsLayer.setDependencies([])
+        self.pointsLayer2.setDependencies([])
 
 
 if __name__ == '__main__':
