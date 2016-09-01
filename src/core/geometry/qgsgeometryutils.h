@@ -198,6 +198,19 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static double lineAngle( double x1, double y1, double x2, double y2 );
 
+    /** Calculates the angle between the lines AB and BC, where AB and BC described
+     * by points a, b and b, c.
+     * @param x1 x-coordinate of point a
+     * @param y1 y-coordinate of point a
+     * @param x2 x-coordinate of point b
+     * @param y2 y-coordinate of point b
+     * @param x3 x-coordinate of point c
+     * @param y3 y-coordinate of point c
+     * @returns angle between lines in radians. Returned value is undefined if two or more points are equal.
+     */
+    static double angleBetweenThreePoints( double x1, double y1, double x2, double y2,
+                                           double x3, double y3 );
+
     /** Calculates the perpendicular angle to a line joining two points. Returned angle is in radians,
      * clockwise from the north direction.
      * @param x1 x-coordinate of line start

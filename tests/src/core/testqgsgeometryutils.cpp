@@ -50,6 +50,7 @@ class TestQgsGeometryUtils: public QObject
     void testCircleCenterRadius_data();
     void testCircleCenterRadius();
     void testSqrDistToLine();
+    void testAngleThreePoints();
 };
 
 
@@ -517,6 +518,26 @@ void TestQgsGeometryUtils::testSqrDistToLine()
                    rx, ry, epsilon );
   QGSCOMPARENEAR( sqrDist, 11.83, 0.01 );
 }
+
+void TestQgsGeometryUtils::testAngleThreePoints()
+{
+  QgsPoint p1( 0, 0 );
+  QgsPoint p2( 1, 0 );
+  QgsPoint p3( 1, 1 );
+  QGSCOMPARENEAR( QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ), M_PI / 2.0, 0.00000001 );
+  p3 = QgsPoint( 1, -1 );
+  QGSCOMPARENEAR( QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ), 3 * M_PI / 2.0, 0.00000001 );
+  p3 = QgsPoint( 2, 0 );
+  QGSCOMPARENEAR( QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ), M_PI, 0.00000001 );
+  p3 = QgsPoint( 0, 0 );
+  QGSCOMPARENEAR( QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ), 0.0, 0.00000001 );
+  p3 = QgsPoint( 1, 0 );
+  //undefined, but want no crash
+  ( void )QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() );
+  p2 = QgsPoint( 0, 0 );
+  ( void )QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() );
+}
+
 
 
 QTEST_MAIN( TestQgsGeometryUtils )

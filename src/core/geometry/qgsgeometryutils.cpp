@@ -824,6 +824,13 @@ double QgsGeometryUtils::lineAngle( double x1, double y1, double x2, double y2 )
   return normalizedAngle( a );
 }
 
+double QgsGeometryUtils::angleBetweenThreePoints( double x1, double y1, double x2, double y2, double x3, double y3 )
+{
+  double angle1 = atan2( y1 - y2, x1 - x2 );
+  double angle2 = atan2( y3 - y2, x3 - x2 );
+  return normalizedAngle( angle1 - angle2 );
+}
+
 double QgsGeometryUtils::linePerpendicularAngle( double x1, double y1, double x2, double y2 )
 {
   double a = lineAngle( x1, y1, x2, y2 );

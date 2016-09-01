@@ -38,6 +38,7 @@ class Smooth(GeoAlgorithm):
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     ITERATIONS = 'ITERATIONS'
+    MAX_ANGLE = 'MAX_ANGLE'
     OFFSET = 'OFFSET'
 
     def defineCharacteristics(self):
@@ -50,6 +51,8 @@ class Smooth(GeoAlgorithm):
                                           self.tr('Iterations'), default=1, minValue=1, maxValue=10))
         self.addParameter(ParameterNumber(self.OFFSET,
                                           self.tr('Offset'), default=0.25, minValue=0.0, maxValue=0.5))
+        self.addParameter(ParameterNumber(self.MAX_ANGLE,
+                                          self.tr('Maximum node angle to smooth'), default=180.0, minValue=0.0, maxValue=180.0))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Smoothed')))
 
     def processAlgorithm(self, progress):
@@ -57,6 +60,7 @@ class Smooth(GeoAlgorithm):
             self.getParameterValue(self.INPUT_LAYER))
         iterations = self.getParameterValue(self.ITERATIONS)
         offset = self.getParameterValue(self.OFFSET)
+        max_angle = self.getParameterValue(self.MAX_ANGLE)
 
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(
@@ -64,23 +68,20 @@ class Smooth(GeoAlgorithm):
                 layer.wkbType(),
                 layer.crs())
 
-        outFeat = QgsFeature()
-
         features = vector.features(layer)
         total = 100.0 / len(features)
 
-        for current, inFeat in enumerate(features):
-            inGeom = inFeat.geometry()
-            attrs = inFeat.attributes()
+        for current, input_feature in enumerate(features):
+            output_feature = input_feature
+            if input_feature.geometry():
+                output_geometry = input_feature.geometry().smooth(iterations, offset, -1, max_angle)
+                if not output_geometry:
+                    raise GeoAlgorithmExecutionException(
+                        self.tr('Error smoothing geometry'))
 
-            outGeom = inGeom.smooth(iterations, offset)
-            if not outGeom:
-                raise GeoAlgorithmExecutionException(
-                    self.tr('Error smoothing geometry'))
+                output_feature.setGeometry(output_geometry)
 
-            outFeat.setGeometry(outGeom)
-            outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+            writer.addFeature(output_feature)
             progress.setPercentage(int(current * total))
 
         del writer
