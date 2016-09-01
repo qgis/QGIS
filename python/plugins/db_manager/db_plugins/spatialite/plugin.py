@@ -99,7 +99,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
         uri = QgsDataSourceURI()
         uri.setDatabase(filename)
         self.addConnection(conn_name, uri)
-        index.internalPointer().itemChanged.emit()
+        index.internalPointer().itemChanged()
 
 
 class SLDatabase(Database):
