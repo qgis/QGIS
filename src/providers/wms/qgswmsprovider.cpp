@@ -3337,7 +3337,18 @@ QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString& providerU
     : mProviderUri( providerUri )
     , mCachedImage( image )
     , mEventLoop( new QEventLoop )
+    , mFeedback( feedback )
 {
+  if ( feedback )
+  {
+    connect( feedback, SIGNAL( cancelled() ), this, SLOT( cancelled() ), Qt::QueuedConnection );
+
+    // rendering could have been cancelled before we started to listen to cancelled() signal
+    // so let's check before doing the download and maybe quit prematurely
+    if ( feedback->isCancelled() )
+      return;
+  }
+
   QNetworkRequest request( url );
   auth.setAuthorization( request );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
@@ -3346,9 +3357,6 @@ QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString& providerU
   connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
 
   Q_ASSERT( mCacheReply->thread() == QThread::currentThread() );
-
-  if ( feedback )
-    connect( feedback, SIGNAL( cancelled() ), this, SLOT( cancelled() ), Qt::QueuedConnection );
 }
 
 QgsWmsImageDownloadHandler::~QgsWmsImageDownloadHandler()
@@ -3358,6 +3366,9 @@ QgsWmsImageDownloadHandler::~QgsWmsImageDownloadHandler()
 
 void QgsWmsImageDownloadHandler::downloadBlocking()
 {
+  if ( mFeedback && mFeedback->isCancelled() )
+    return; // nothing to do
+
   mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
 
   Q_ASSERT( !mCacheReply );
@@ -3497,6 +3508,16 @@ QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString&
     , mSmoothPixmapTransform( smoothPixmapTransform )
     , mFeedback( feedback )
 {
+  if ( feedback )
+  {
+    connect( feedback, SIGNAL( cancelled() ), this, SLOT( cancelled() ), Qt::QueuedConnection );
+
+    // rendering could have been cancelled before we started to listen to cancelled() signal
+    // so let's check before doing the download and maybe quit prematurely
+    if ( feedback->isCancelled() )
+      return;
+  }
+
   Q_FOREACH ( const TileRequest& r, requests )
   {
     QNetworkRequest request( r.url );
@@ -3513,9 +3534,6 @@ QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString&
 
     mReplies << reply;
   }
-
-  if ( feedback )
-    connect( feedback, SIGNAL( cancelled() ), this, SLOT( cancelled() ), Qt::QueuedConnection );
 }
 
 QgsWmsTiledImageDownloadHandler::~QgsWmsTiledImageDownloadHandler()
@@ -3525,6 +3543,9 @@ QgsWmsTiledImageDownloadHandler::~QgsWmsTiledImageDownloadHandler()
 
 void QgsWmsTiledImageDownloadHandler::downloadBlocking()
 {
+  if ( mFeedback && mFeedback->isCancelled() )
+    return; // nothing to do
+
   mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
 
   Q_ASSERT( mReplies.isEmpty() );

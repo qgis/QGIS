@@ -571,6 +571,8 @@ class QgsWmsImageDownloadHandler : public QObject
     QImage* mCachedImage;
 
     QEventLoop* mEventLoop;
+
+    QgsRasterBlockFeedback* mFeedback;
 };
 
 
