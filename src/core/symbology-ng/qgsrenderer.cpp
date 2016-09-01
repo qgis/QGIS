@@ -328,10 +328,11 @@ QgsFeatureRenderer* QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
 
 QDomElement QgsFeatureRenderer::writeSld( QDomDocument& doc, const QgsVectorLayer &layer ) const
 {
-  return writeSld( doc, layer.name() );
+  QgsStringMap props;
+  return writeSld( doc, layer.name(), props );
 }
 
-QDomElement QgsFeatureRenderer::writeSld( QDomDocument& doc, const QString& styleName ) const
+QDomElement QgsFeatureRenderer::writeSld( QDomDocument& doc, const QString& styleName, QgsStringMap props ) const
 {
   QDomElement userStyleElem = doc.createElement( "UserStyle" );
 
@@ -340,7 +341,7 @@ QDomElement QgsFeatureRenderer::writeSld( QDomDocument& doc, const QString& styl
   userStyleElem.appendChild( nameElem );
 
   QDomElement featureTypeStyleElem = doc.createElement( "se:FeatureTypeStyle" );
-  toSld( doc, featureTypeStyleElem );
+  toSld( doc, featureTypeStyleElem, props );
   userStyleElem.appendChild( featureTypeStyleElem );
 
   return userStyleElem;

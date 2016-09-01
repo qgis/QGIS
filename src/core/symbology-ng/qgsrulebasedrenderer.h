@@ -441,7 +441,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     virtual QgsRuleBasedRenderer* clone() const override;
 
-    virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
+    virtual void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props = QgsStringMap() ) const override;
 
     static QgsFeatureRenderer* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
 

@@ -2042,8 +2042,12 @@ bool QgsVectorLayer::readSld( const QDomNode& node, QString& errorMessage )
   return true;
 }
 
-
 bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
+{
+  return writeSld( node, doc, errorMessage, QgsStringMap() );
+}
+
+bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage, QgsStringMap props ) const
 {
   Q_UNUSED( errorMessage );
 
@@ -2052,9 +2056,15 @@ bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& error
   nameNode.appendChild( doc.createTextNode( name() ) );
   node.appendChild( nameNode );
 
+  QgsStringMap localProps = QgsStringMap( props );
+  if ( hasScaleBasedVisibility() )
+  {
+    QgsSymbolLayerUtils::mergeScaleDependencies( minimumScale(), maximumScale(), localProps );
+  }
+
   if ( hasGeometryType() )
   {
-    node.appendChild( mRenderer->writeSld( doc, name() ) );
+    node.appendChild( mRenderer->writeSld( doc, name(), localProps ) );
   }
   return true;
 }

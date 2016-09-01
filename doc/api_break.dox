@@ -1028,6 +1028,15 @@ in code which previously passed a null pointer to QgsVectorFileWriter.</li>
 <li>QgsWMSLegendNode has been renamed to QgsWmsLegendNode</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsRenderer QgsRenderer
+
+<ul>
+<li>New virtual method <code>bool writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage, QgsStringMap props = QgsStringMap() )</code> accepts an
+optional property map passing down layer level properties to the SLD encoders. If scale based visibility is enabled, it will contain the
+<code>scaleMinDenom</code> and <code>scaleMaxDenom</code> properties.
+</ul>
+
+
 
 \section qgis_api_break_2_4 QGIS 2.4
 

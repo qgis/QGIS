@@ -99,7 +99,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     virtual QgsCategorizedSymbolRenderer* clone() const override;
 
-    virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
+    virtual void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props = QgsStringMap() ) const override;
 
     //! returns bitwise OR-ed capabilities of the renderer
     virtual Capabilities capabilities() override { return SymbolLevels | RotationField | Filter; }
