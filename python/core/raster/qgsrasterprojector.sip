@@ -43,9 +43,6 @@ class QgsRasterProjector : QgsRasterInterface
     /** \brief Get destination CRS */
     QgsCoordinateReferenceSystem destCrs() const;
 
-    /** \brief set maximum source resolution */
-    void setMaxSrcRes( double theMaxSrcXRes, double theMaxSrcYRes );
-
     Precision precision() const;
     void setPrecision( Precision precision );
     // Translated precision mode, for use in ComboBox etc.
