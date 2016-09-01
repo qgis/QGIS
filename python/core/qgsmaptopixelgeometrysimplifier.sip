@@ -43,6 +43,9 @@ class QgsMapToPixelSimplifier : QgsAbstractGeometrySimplifier
     //! Sets the local simplification algorithm of the vector layer managed
     void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm );
 
+    //! Returns a simplified version the specified geometry
+    virtual QgsGeometry simplify( const QgsGeometry& geometry ) const;
+
     //! Sets the tolerance of the vector layer managed
     void setTolerance( double value );
 

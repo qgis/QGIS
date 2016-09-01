@@ -916,3 +916,52 @@ tests:
         name: expected/extract_nodes_lines.gml
         type: vector
 
+  - algorithm: qgis:simplifygeometries
+    name: Simplify (lines)
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/simplify_lines.gml
+        type: vector
+
+  - algorithm: qgis:simplifygeometries
+    name: Simplify (multilines)
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/simplify_multilines.gml
+        type: vector
+
+  - algorithm: qgis:simplifygeometries
+    name: Simplify (visval)
+    params:
+      INPUT:
+        name: simplify_lines.gml
+        type: vector
+      METHOD: '2'
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/simplify_vis_lines.gml
+        type: vector
+
+  - algorithm: qgis:simplifygeometries
+    name: Simplify (grid)
+    params:
+      INPUT:
+        name: simplify_lines.gml
+        type: vector
+      METHOD: '1'
+      TOLERANCE: 5.0
+    results:
+      OUTPUT:
+        name: expected/simplify_grid_lines.gml
+        type: vector

@@ -74,6 +74,7 @@ class TestQgsMapToPixelGeometrySimplifier : public QObject
     void testIsGeneralizableByMapBoundingBox();
     void testWkbDimensionMismatch();
     void testCircularString();
+    void testVisvalingam();
 
 };
 
@@ -192,6 +193,17 @@ void TestQgsMapToPixelGeometrySimplifier::testCircularString()
 
   const QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, 0.1 );
   QCOMPARE( simplifier.simplify( g ).exportToWkt(), WKT );
+}
+
+void TestQgsMapToPixelGeometrySimplifier::testVisvalingam()
+{
+  QString wkt( "LineString (0 0, 30 0, 31 30, 32 0, 40 0, 41 100, 42 0, 50 0)" );
+  QgsGeometry g = QgsGeometry::fromWkt( wkt );
+
+  const QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, 7, QgsMapToPixelSimplifier::Visvalingam );
+  QString expectedWkt( "LineString (0 0, 40 0, 41 100, 42 0, 50 0)" );
+
+  QCOMPARE( simplifier.simplify( g ).exportToWkt(), expectedWkt );
 }
 
 QTEST_MAIN( TestQgsMapToPixelGeometrySimplifier )
