@@ -1365,8 +1365,8 @@ bool QgsAuthManager::updateNetworkRequest( QNetworkRequest &request, const QStri
   {
     if ( !( authmethod->supportedExpansions() & QgsAuthMethod::NetworkRequest ) )
     {
-      QgsDebugMsg( QString( "Data source URI updating not supported by authcfg: %1" ).arg( authcfg ) );
-      return false;
+      QgsDebugMsg( QString( "Network request updating not supported by authcfg: %1" ).arg( authcfg ) );
+      return true;
     }
 
     if ( !authmethod->updateNetworkRequest( request, authcfg, dataprovider.toLower() ) )
@@ -1392,7 +1392,7 @@ bool QgsAuthManager::updateNetworkReply( QNetworkReply *reply, const QString& au
     if ( !( authmethod->supportedExpansions() & QgsAuthMethod::NetworkReply ) )
     {
       QgsDebugMsg( QString( "Network reply updating not supported by authcfg: %1" ).arg( authcfg ) );
-      return false;
+      return true;
     }
 
     if ( !authmethod->updateNetworkReply( reply, authcfg, dataprovider.toLower() ) )
@@ -1418,7 +1418,7 @@ bool QgsAuthManager::updateDataSourceUriItems( QStringList &connectionItems, con
     if ( !( authmethod->supportedExpansions() & QgsAuthMethod::DataSourceURI ) )
     {
       QgsDebugMsg( QString( "Data source URI updating not supported by authcfg: %1" ).arg( authcfg ) );
-      return false;
+      return true;
     }
 
     if ( !authmethod->updateDataSourceUriItems( connectionItems, authcfg, dataprovider.toLower() ) )
