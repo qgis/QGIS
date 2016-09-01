@@ -36,11 +36,7 @@ from qgis.PyQt.QtCore import QSize, QPoint
 
 import tempfile
 
-try:
-    from pyspatialite import dbapi2 as sqlite3
-except ImportError:
-    print("You should install pyspatialite to run the tests")
-    raise ImportError
+from qgis.utils import spatialite_connect
 
 # Convenience instances in case you may need them
 start_app()
@@ -57,7 +53,7 @@ class TestLayerDependencies(unittest.TestCase):
         fn = fo.name
         fo.close()
         cls.fn = fn
-        con = sqlite3.connect(fn)
+        con = spatialite_connect(fn)
         cur = con.cursor()
         cur.execute("SELECT InitSpatialMetadata(1)")
         cur.execute("create table node(id integer primary key autoincrement);")

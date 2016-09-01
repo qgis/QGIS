@@ -34,11 +34,7 @@ from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
 from qgis.PyQt.QtCore import QUrl, QVariant
 
-try:
-    from pyspatialite import dbapi2 as sqlite3
-except ImportError:
-    print("You should install pyspatialite to run the tests")
-    raise ImportError
+from qgis.utils import spatialite_connect
 
 import tempfile
 
@@ -108,7 +104,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         def create_test_db(dbfile):
             if os.path.exists(dbfile):
                 os.remove(dbfile)
-            con = sqlite3.connect(dbfile)
+            con = spatialite_connect(dbfile)
             cur = con.cursor()
             cur.execute("SELECT InitSpatialMetadata(1)")
             cur.execute("CREATE TABLE test (id INTEGER, name TEXT)")

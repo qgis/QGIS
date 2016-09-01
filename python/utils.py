@@ -585,6 +585,28 @@ def startServerPlugin(packageName):
     return True
 
 
+def spatialite_connect(*args, **kwargs):
+    """returns a dbapi2.Connection to a spatialite db
+either using pyspatialite if it is present
+or using the "mod_spatialite" extension (python3)"""
+    try:
+        from pyspatialite import dbapi2
+    except ImportError:
+        import sqlite3
+        con = sqlite3.dbapi2.connect(*args, **kwargs)
+        con.enable_load_extension(True)
+        cur = con.cursor()
+        try:
+            # spatialite >= 4.2
+            cur.execute("select load_extension('mod_spatialite')")
+        except sqlite3.OperationalError:
+            cur.execute("select load_extension('libspatialite.so')")
+            # FIXME Windows and OSX ?
+        cur.close()
+        con.enable_load_extension(False)
+        return con
+    return dbapi2.connect(*args, **kwargs)
+
 #######################
 # IMPORT wrapper
 

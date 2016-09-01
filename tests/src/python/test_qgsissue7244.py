@@ -20,7 +20,7 @@ from qgis.core import QgsPoint, QgsVectorLayer
 
 from qgis.testing import start_app, unittest
 
-from pyspatialite import dbapi2 as sqlite3
+from qgis.utils import spatialite_connect
 
 # Convenience instances in case you may need them
 start_app()
@@ -38,7 +38,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase):
         # create test db
         if os.path.exists("test.sqlite"):
             os.remove("test.sqlite")
-        con = sqlite3.connect("test.sqlite", isolation_level=None)
+        con = spatialite_connect("test.sqlite", isolation_level=None)
         cur = con.cursor()
         cur.execute("BEGIN")
         sql = "SELECT InitSpatialMetadata()"

@@ -26,7 +26,7 @@ from qgis.PyQt.QtWidgets import QApplication
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
 
-from pyspatialite import dbapi2 as sqlite
+from qgis.utils import spatialite_connect
 
 
 def classFactory():
@@ -43,7 +43,7 @@ class SpatiaLiteDBConnector(DBConnector):
             raise ConnectionError(QApplication.translate("DBManagerPlugin", '"{0}" not found').format(self.dbname))
 
         try:
-            self.connection = sqlite.connect(self._connectionInfo())
+            self.connection = spatialite_connect(self._connectionInfo())
 
         except self.connection_error_types() as e:
             raise ConnectionError(e)
@@ -60,7 +60,7 @@ class SpatiaLiteDBConnector(DBConnector):
         if not QFile.exists(path):
             return False
         try:
-            conn = sqlite.connect(path)
+            conn = spatialite_connect(path)
         except self.connection_error_types():
             return False
 
