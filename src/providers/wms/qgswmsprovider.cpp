@@ -78,6 +78,18 @@ static QString DEFAULT_LATLON_CRS = "CRS:84";
 
 QMap<QString, QgsWmsStatistics::Stat> QgsWmsStatistics::sData;
 
+//! a helper class for ordering tile requests according to the distance from view center
+struct LessThanTileRequest
+{
+  QgsPoint center;
+  bool operator()( const QgsWmsTiledImageDownloadHandler::TileRequest &req1, const QgsWmsTiledImageDownloadHandler::TileRequest &req2 )
+  {
+    QPointF p1 = req1.rect.center();
+    QPointF p2 = req2.rect.center();
+    return center.distance( p1.x(), p1.y() ) < center.distance( p2.x(), p2.y() );
+  }
+};
+
 
 QgsWmsProvider::QgsWmsProvider( QString const& uri, const QgsWmsCapabilities* capabilities )
     : QgsRasterDataProvider( uri )
@@ -885,6 +897,11 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
       // let the feedback object know about the tiles we have already
       if ( feedback && memCached + diskCached > 0 )
         feedback->onNewData();
+
+      // order tile requests according to the distance from view center
+      LessThanTileRequest cmp;
+      cmp.center = viewExtent.center();
+      qSort( requestsFinal.begin(), requestsFinal.end(), cmp );
 
       QgsWmsTiledImageDownloadHandler handler( dataSourceUri(), mSettings.authorization(), mTileReqNo, requestsFinal, image, viewExtent, mSettings.mSmoothPixmapTransform, feedback );
       handler.downloadBlocking();
