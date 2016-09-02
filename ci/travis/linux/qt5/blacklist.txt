@@ -6,8 +6,6 @@ PyQgsPalLabelingServer
 PyQgsServer
 PyQgsServerAccessControl
 PyQgsSipCoverage
-PyQgsVirtualLayerDefinition
-PyQgsVirtualLayerProvider
 qgis_composermapgridtest
 qgis_composerutils
 ProcessingGrass7AlgorithmsImageryTest
