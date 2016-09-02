@@ -117,3 +117,13 @@ bool QgsMultiPolygonV2::addGeometry( QgsAbstractGeometryV2* g )
   setZMTypeFromSubGeometry( g, QgsWKBTypes::MultiPolygon );
   return QgsGeometryCollectionV2::addGeometry( g );
 }
+
+QgsAbstractGeometryV2* QgsMultiPolygonV2::toCurveType() const
+{
+  QgsMultiSurfaceV2* multiSurface = new QgsMultiSurfaceV2();
+  for ( int i = 0; i < mGeometries.size(); ++i )
+  {
+    multiSurface->addGeometry( mGeometries.at( i )->clone() );
+  }
+  return multiSurface;
+}

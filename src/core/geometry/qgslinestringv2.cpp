@@ -17,6 +17,7 @@
 
 #include "qgslinestringv2.h"
 #include "qgsapplication.h"
+#include "qgscompoundcurvev2.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometryutils.h"
 #include "qgsmaptopixel.h"
@@ -581,6 +582,13 @@ QPolygonF QgsLineStringV2::asQPolygonF() const
     points << QPointF( mX.at( i ), mY.at( i ) );
   }
   return points;
+}
+
+QgsAbstractGeometryV2* QgsLineStringV2::toCurveType() const
+{
+  QgsCompoundCurveV2* compoundCurve = new QgsCompoundCurveV2();
+  compoundCurve->addCurve( clone() );
+  return compoundCurve;
 }
 
 /***************************************************************************

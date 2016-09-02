@@ -306,6 +306,12 @@ class QgsAbstractGeometryV2
      */
     virtual QgsAbstractGeometryV2* segmentize() const /Factory/;
 
+    /** Returns the geometry converted to the more generic curve type.
+        E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
+        QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
+        @return the converted geometry. Caller takes ownership*/
+    virtual QgsAbstractGeometry* toCurveType() const /Factory/;
+
     /** Returns approximate angle at a vertex. This is usually the average angle between adjacent
      * segments, and can be pictured as the orientation of a line following the curvature of the
      * geometry at the specified vertex.
