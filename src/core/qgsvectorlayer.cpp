@@ -4138,7 +4138,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
       continue;
     disconnect( lyr, SIGNAL( featureAdded( QgsFeatureId ) ), this, SIGNAL( dataChanged() ) );
     disconnect( lyr, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SIGNAL( dataChanged() ) );
-    disconnect( lyr, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SIGNAL( dataChanged() ) );
+    disconnect( lyr, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SIGNAL( dataChanged() ) );
     disconnect( lyr, SIGNAL( dataChanged() ), this, SIGNAL( dataChanged() ) );
   }
 
@@ -4157,7 +4157,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
       continue;
     connect( lyr, SIGNAL( featureAdded( QgsFeatureId ) ), this, SIGNAL( dataChanged() ) );
     connect( lyr, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SIGNAL( dataChanged() ) );
-    connect( lyr, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SIGNAL( dataChanged() ) );
+    connect( lyr, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SIGNAL( dataChanged() ) );
     connect( lyr, SIGNAL( dataChanged() ), this, SIGNAL( dataChanged() ) );
   }
 
