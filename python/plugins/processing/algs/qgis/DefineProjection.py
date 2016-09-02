@@ -55,8 +55,7 @@ class DefineProjection(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input Layer'),
-                                          [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input Layer')))
         self.addParameter(ParameterCrs(self.CRS, 'Output CRS'))
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Layer with projection'), True))

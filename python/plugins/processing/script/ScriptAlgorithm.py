@@ -57,8 +57,10 @@ from processing.core.outputs import OutputFile
 from processing.core.outputs import OutputDirectory
 from processing.core.outputs import getOutputFromString
 from processing.core.ProcessingLog import ProcessingLog
-from processing.script.WrongScriptException import WrongScriptException
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.script.WrongScriptException import WrongScriptException
+
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -197,25 +199,25 @@ class ScriptAlgorithm(GeoAlgorithm):
             param = ParameterRaster(name, descName, False)
         elif token.lower().strip() == 'vector':
             param = ParameterVector(name, descName,
-                                    [ParameterVector.VECTOR_TYPE_ANY])
+                                    [dataobjects.TYPE_VECTOR_ANY])
         elif token.lower().strip() == 'vector point':
             param = ParameterVector(name, descName,
-                                    [ParameterVector.VECTOR_TYPE_POINT])
+                                    [dataobjects.TYPE_VECTOR_POINT])
         elif token.lower().strip() == 'vector line':
             param = ParameterVector(name, descName,
-                                    [ParameterVector.VECTOR_TYPE_LINE])
+                                    [dataobjects.TYPE_VECTOR_LINE])
         elif token.lower().strip() == 'vector polygon':
             param = ParameterVector(name, descName,
-                                    [ParameterVector.VECTOR_TYPE_POLYGON])
+                                    [dataobjects.TYPE_VECTOR_POLYGON])
         elif token.lower().strip() == 'table':
             param = ParameterTable(name, descName, False)
         elif token.lower().strip() == 'multiple raster':
             param = ParameterMultipleInput(name, descName,
-                                           ParameterMultipleInput.TYPE_RASTER)
+                                           dataobjects.TYPE_RASTER)
             param.optional = False
         elif token.lower().strip() == 'multiple vector':
             param = ParameterMultipleInput(name, descName,
-                                           ParameterMultipleInput.TYPE_VECTOR_ANY)
+                                           dataobjects.TYPE_VECTOR_ANY)
             param.optional = False
         elif token.lower().strip().startswith('selectionfromfile'):
             options = token.strip()[len('selectionfromfile '):].split(';')
@@ -313,8 +315,14 @@ class ScriptAlgorithm(GeoAlgorithm):
 
         if token.lower().strip().startswith('raster'):
             out = OutputRaster()
-        elif token.lower().strip().startswith('vector'):
+        elif token.lower().strip() == 'vector':
             out = OutputVector()
+        elif token.lower().strip() == 'vector point':
+            out = OutputVector(datatype=[dataobjects.TYPE_VECTOR_POINT])
+        elif token.lower().strip() == 'vector line':
+            out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_LINE])
+        elif token.lower().strip() == 'vector polygon':
+            out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_POLYGON])
         elif token.lower().strip().startswith('table'):
             out = OutputTable()
         elif token.lower().strip().startswith('html'):

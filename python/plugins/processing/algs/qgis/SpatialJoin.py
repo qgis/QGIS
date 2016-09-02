@@ -72,11 +72,9 @@ class SpatialJoin(GeoAlgorithm):
         ]
 
         self.addParameter(ParameterVector(self.TARGET,
-                                          self.tr('Target vector layer'),
-                                          [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Target vector layer')))
         self.addParameter(ParameterVector(self.JOIN,
-                                          self.tr('Join vector layer'),
-                                          [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Join vector layer')))
         predicates = list(ParameterGeometryPredicate.predicates)
         predicates.remove('disjoint')
         self.addParameter(ParameterGeometryPredicate(self.PREDICATE,

@@ -51,7 +51,7 @@ class JoinAttributes(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Join attributes table')
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterTable(self.INPUT_LAYER_2,
                                          self.tr('Input layer 2'), False))
         self.addParameter(ParameterTableField(self.TABLE_FIELD,

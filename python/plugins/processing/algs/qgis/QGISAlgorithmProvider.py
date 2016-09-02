@@ -51,7 +51,8 @@ from processing.script.ScriptUtils import ScriptUtils
 from .RegularPoints import RegularPoints
 from .SymmetricalDifference import SymmetricalDifference
 from .VectorSplit import VectorSplit
-from .VectorGrid import VectorGrid
+from .VectorGridLines import VectorGridLines
+from .VectorGridPolygons import VectorGridPolygons
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .ExtractByLocation import ExtractByLocation
@@ -99,9 +100,11 @@ from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from .TextToFloat import TextToFloat
 from .ExtractByAttribute import ExtractByAttribute
 from .SelectByAttribute import SelectByAttribute
-from .Grid import Grid
+from .GridPolygon import GridPolygon
+from .GridLine import GridLine
 from .Gridify import Gridify
-from .HubDistance import HubDistance
+from .HubDistancePoints import HubDistancePoints
+from .HubDistanceLines import HubDistanceLines
 from .HubLines import HubLines
 from .Merge import Merge
 from .GeometryConvert import GeometryConvert
@@ -183,10 +186,11 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SelectByLocation(), RandomExtract(), DeleteHoles(),
                         RandomExtractWithinSubsets(), ExtractByLocation(),
                         SpatialJoin(), RegularPoints(), SymmetricalDifference(),
-                        VectorSplit(), VectorGrid(), DeleteColumn(),
-                        DeleteDuplicateGeometries(), TextToFloat(),
-                        ExtractByAttribute(), SelectByAttribute(), Grid(),
-                        Gridify(), HubDistance(), HubLines(), Merge(),
+                        VectorSplit(), VectorGridLines(), VectorGridPolygons(),
+                        DeleteColumn(), DeleteDuplicateGeometries(), TextToFloat(),
+                        ExtractByAttribute(), SelectByAttribute(), GridPolygon(),
+                        GridLine(), Gridify(), HubDistancePoints(),
+                        HubDistanceLines(), HubLines(), Merge(),
                         GeometryConvert(), AddTableField(), FieldsCalculator(),
                         SaveSelectedFeatures(), JoinAttributes(),
                         AutoincrementalField(), Explode(), FieldsPyculator(),

@@ -59,7 +59,7 @@ class VariableDistanceBuffer(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Distance field'), self.INPUT))
         self.addParameter(ParameterNumber(self.SEGMENTS,
@@ -67,7 +67,7 @@ class VariableDistanceBuffer(GeoAlgorithm):
         self.addParameter(ParameterBoolean(self.DISSOLVE,
                                            self.tr('Dissolve result'), False))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))

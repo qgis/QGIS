@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    Gridify.py
+    HubDistanceLines.py
     ---------------------
     Date                 : May 2010
     Copyright            : (C) 2010 by Michael Minn
@@ -39,17 +39,12 @@ from processing.tools import dataobjects, vector
 from math import sqrt
 
 
-class HubDistance(GeoAlgorithm):
+class HubDistanceLines(GeoAlgorithm):
     POINTS = 'POINTS'
     HUBS = 'HUBS'
     FIELD = 'FIELD'
-    GEOMETRY = 'GEOMETRY'
     UNIT = 'UNIT'
     OUTPUT = 'OUTPUT'
-
-    GEOMETRIES = ['Point',
-                  'Line to hub'
-                  ]
 
     UNITS = ['Meters',
              'Feet',
@@ -59,7 +54,7 @@ class HubDistance(GeoAlgorithm):
              ]
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Distance to nearest hub')
+        self.name, self.i18n_name = self.trAlgorithm('Distance to nearest hub (line to hub)')
         self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.units = [self.tr('Meters'),
@@ -69,17 +64,15 @@ class HubDistance(GeoAlgorithm):
                       self.tr('Layer units')]
 
         self.addParameter(ParameterVector(self.POINTS,
-                                          self.tr('Source points layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Source points layer')))
         self.addParameter(ParameterVector(self.HUBS,
-                                          self.tr('Destination hubs layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Destination hubs layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Hub layer name attribute'), self.HUBS))
-        self.addParameter(ParameterSelection(self.GEOMETRY,
-                                             self.tr('Output shape type'), self.GEOMETRIES))
         self.addParameter(ParameterSelection(self.UNIT,
                                              self.tr('Measurement unit'), self.units))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, progress):
         layerPoints = dataobjects.getObjectFromUri(
@@ -95,16 +88,12 @@ class HubDistance(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Same layer given for both hubs and spokes'))
 
-        geomType = QgsWkbTypes.Point
-        if addLines:
-            geomType = QgsWkbTypes.LineString
-
         fields = layerPoints.fields()
         fields.append(QgsField('HubName', QVariant.String))
         fields.append(QgsField('HubDist', QVariant.Double))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, geomType, layerPoints.crs())
+            fields, QgsWkbTypes.LineString, layerPoints.crs())
 
         index = vector.spatialindex(layerHubs)
 
@@ -141,10 +130,7 @@ class HubDistance(GeoAlgorithm):
             feat = QgsFeature()
             feat.setAttributes(attributes)
 
-            if geomType == QgsWkbTypes.Point:
-                feat.setGeometry(QgsGeometry.fromPoint(src))
-            else:
-                feat.setGeometry(QgsGeometry.fromPolyline([src, closest]))
+            feat.setGeometry(QgsGeometry.fromPolyline([src, closest]))
 
             writer.addFeature(feat)
             progress.setPercentage(int(current * total))

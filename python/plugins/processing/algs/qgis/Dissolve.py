@@ -59,7 +59,7 @@ class Dissolve(GeoAlgorithm):
         self.group = 'Vector geometry tools'
         self.addParameter(ParameterVector(Dissolve.INPUT,
                                           self.tr('Input layer'),
-                                          [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+                                          [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterBoolean(Dissolve.DISSOLVE_ALL,
                                            self.tr('Dissolve all (do not use fields)'), True))
         self.addParameter(ParameterTableMultipleField(Dissolve.FIELD,

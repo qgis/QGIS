@@ -65,12 +65,12 @@ class PointDistance(GeoAlgorithm):
                           self.tr('Summary distance matrix (mean, std. dev., min, max)')]
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input point layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.INPUT_FIELD,
                                               self.tr('Input unique ID field'), self.INPUT_LAYER,
                                               ParameterTableField.DATA_TYPE_ANY))
         self.addParameter(ParameterVector(self.TARGET_LAYER,
-                                          self.tr('Target point layer'), ParameterVector.VECTOR_TYPE_POINT))
+                                          self.tr('Target point layer'), dataobjects.TYPE_VECTOR_POINT))
         self.addParameter(ParameterTableField(self.TARGET_FIELD,
                                               self.tr('Target unique ID field'), self.TARGET_LAYER,
                                               ParameterTableField.DATA_TYPE_ANY))

@@ -34,9 +34,10 @@ from qgis.core import Qgis, QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.tools import dataobjects, vector
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
+from processing.tools import dataobjects, vector
+
 from . import voronoi
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -55,10 +56,11 @@ class Delaunay(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
 
         self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Delaunay triangulation')))
+                                    self.tr('Delaunay triangulation'),
+                                    datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

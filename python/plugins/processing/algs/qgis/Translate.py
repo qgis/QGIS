@@ -52,7 +52,7 @@ class Translate(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.DELTA_X,
                                           self.tr('Offset distance (x-axis)'), default=1.0))
         self.addParameter(ParameterNumber(self.DELTA_Y,

@@ -59,7 +59,6 @@ class ExecuteSQL(GeoAlgorithm):
 
         self.addParameter(ParameterMultipleInput(name=self.INPUT_DATASOURCES,
                                                  description=self.tr('Additional input datasources (called input1, .., inputN in the query)'),
-                                                 datatype=ParameterMultipleInput.TYPE_VECTOR_ANY,
                                                  optional=True))
 
         self.addParameter(ParameterString(name=self.INPUT_QUERY,

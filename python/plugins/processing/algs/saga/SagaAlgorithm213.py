@@ -102,7 +102,7 @@ class SagaAlgorithm213(SagaAlgorithm212):
                 layers = param.value.split(';')
                 if layers is None or len(layers) == 0:
                     continue
-                if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                if param.datatype == dataobjects.TYPE_RASTER:
                     for i, layerfile in enumerate(layers):
                         if layerfile.endswith('sdat'):
                             layerfile = param.value[:-4] + "sgrd"
@@ -112,10 +112,10 @@ class SagaAlgorithm213(SagaAlgorithm212):
                             if exportCommand is not None:
                                 commands.append(exportCommand)
                         param.value = ";".join(layers)
-                elif param.datatype in [ParameterMultipleInput.TYPE_VECTOR_ANY,
-                                        ParameterMultipleInput.TYPE_VECTOR_LINE,
-                                        ParameterMultipleInput.TYPE_VECTOR_POLYGON,
-                                        ParameterMultipleInput.TYPE_VECTOR_POINT]:
+                elif param.datatype in [dataobjects.TYPE_VECTOR_ANY,
+                                        dataobjects.TYPE_VECTOR_LINE,
+                                        dataobjects.TYPE_VECTOR_POLYGON,
+                                        dataobjects.TYPE_VECTOR_POINT]:
                     for layerfile in layers:
                         layer = dataobjects.getObjectFromUri(layerfile, False)
                         if layer:

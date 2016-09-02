@@ -49,7 +49,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
-                                          [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+                                          [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.INTERVAL,
                                           self.tr('Interval between vertices to add'), 0.0, 10000000.0, 1.0))
 

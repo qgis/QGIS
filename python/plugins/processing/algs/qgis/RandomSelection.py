@@ -60,7 +60,7 @@ class RandomSelection(GeoAlgorithm):
                         self.tr('Percentage of selected features')]
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterSelection(self.METHOD,
                                              self.tr('Method'), self.methods, 0))
         self.addParameter(ParameterNumber(self.NUMBER,

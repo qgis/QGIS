@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 ***************************************************************************
     Output.py
@@ -25,11 +27,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import sys
+
 from qgis.PyQt.QtCore import QCoreApplication, QSettings
+
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, getTempFilenameInTempFolder
 from processing.tools.vector import VectorWriter, TableWriter
 from processing.tools import dataobjects
-from processing.core.ProcessingConfig import ProcessingConfig
 
 
 def getOutputFromString(s):
@@ -259,10 +263,15 @@ class OutputVector(Output):
     encoding = None
     compatible = None
 
-    def __init__(self, name='', description='', hidden=False, base_input=None):
+    def __init__(self, name='', description='', hidden=False, base_input=None, datatype=[-1]):
         Output.__init__(self, name, description, hidden)
         self.base_input = base_input
         self.base_layer = None
+        if isinstance(datatype, int):
+            datatype = [datatype]
+        elif isinstance(datatype, basestring):
+            datatype = [int(t) for t in datatype.split(',')]
+        self.datatype = datatype
 
     def hasGeometry(self):
         if self.base_layer is None:
@@ -336,3 +345,6 @@ class OutputVector(Output):
         self.layer = w.layer
         self.value = w.destination
         return w
+
+    def dataType(self):
+        return dataobjects.vectorDataType(self)

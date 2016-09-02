@@ -63,7 +63,7 @@ class FixedDistanceBuffer(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Fixed distance buffer')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.DISTANCE,
                                           self.tr('Distance'), default=10.0))
         self.addParameter(ParameterNumber(self.SEGMENTS,
@@ -87,7 +87,7 @@ class FixedDistanceBuffer(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.MITRE_LIMIT,
                                           self.tr('Mitre limit'), 1, default=2))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))

@@ -48,11 +48,11 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterBoolean(self.BY_FEATURE,
                                            self.tr('Calculate OMBB for each feature separately'), True))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Oriented_MBBox')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Oriented_MBBox'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

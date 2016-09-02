@@ -41,6 +41,7 @@ from processing.core.parameters import (Parameter,
                                         ParameterVector,
                                         ParameterTableField,
                                         ParameterTableMultipleField)
+from processing.tools import dataobjects
 from processing.tests.TestData import points2
 
 from qgis.core import (QgsRasterLayer,
@@ -317,7 +318,7 @@ class ParameterMultipleInputTest(unittest.TestCase):
         self.assertFalse(parameter.setValue(['myLayerFile.shp', 'myLayerFile2.shp']))
 
     def testGetAsStringWhenRaster(self):
-        parameter = ParameterMultipleInput('myName', 'myDesc', datatype=ParameterMultipleInput.TYPE_RASTER)
+        parameter = ParameterMultipleInput('myName', 'myDesc', datatype=dataobjects.TYPE_RASTER)
 
         # With Path
         self.assertEqual(parameter.getAsString('/some/path'), '/some/path')
@@ -329,11 +330,11 @@ class ParameterMultipleInputTest(unittest.TestCase):
         # TODO With Layer Name, instead of Layer object
 
     def testGetAsStringWhenFile(self):
-        parameter = ParameterMultipleInput('myName', 'myDesc', datatype=ParameterMultipleInput.TYPE_FILE)
+        parameter = ParameterMultipleInput('myName', 'myDesc', datatype=dataobjects.TYPE_FILE)
         self.assertEqual(parameter.getAsString('/some/path'), '/some/path')
 
     def testGetAsStringWhenVector(self):
-        parameter = ParameterMultipleInput('myName', 'myDesc', datatype=ParameterMultipleInput.TYPE_VECTOR_ANY)
+        parameter = ParameterMultipleInput('myName', 'myDesc', datatype=dataobjects.TYPE_VECTOR_ANY)
 
         # With Path
         self.assertEqual(parameter.getAsString('/some/path'), '/some/path')

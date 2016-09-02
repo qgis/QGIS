@@ -359,17 +359,17 @@ class Grass7Algorithm(GeoAlgorithm):
                 layers = param.value.split(';')
                 if layers is None or len(layers) == 0:
                     continue
-                if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                if param.datatype == dataobjects.TYPE_RASTER:
                     for layer in layers:
                         if layer in self.exportedLayers.keys():
                             continue
                         else:
                             self.setSessionProjectionFromLayer(layer, self.commands)
                             self.commands.append(self.exportRasterLayer(layer))
-                elif param.datatype in [ParameterMultipleInput.TYPE_VECTOR_ANY,
-                                        ParameterMultipleInput.TYPE_VECTOR_LINE,
-                                        ParameterMultipleInput.TYPE_VECTOR_POLYGON,
-                                        ParameterMultipleInput.TYPE_VECTOR_POINT]:
+                elif param.datatype in [dataobjects.TYPE_VECTOR_ANY,
+                                        dataobjects.TYPE_VECTOR_LINE,
+                                        dataobjects.TYPE_VECTOR_POLYGON,
+                                        dataobjects.TYPE_VECTOR_POINT]:
                     for layer in layers:
                         if layer in self.exportedLayers.keys():
                             continue

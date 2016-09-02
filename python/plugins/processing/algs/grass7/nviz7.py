@@ -65,15 +65,15 @@ class nviz7(GeoAlgorithm):
         self.addParameter(ParameterMultipleInput(
             nviz7.ELEVATION,
             self.tr('Raster file(s) for elevation'),
-            ParameterMultipleInput.TYPE_RASTER, True))
+            dataobjects.TYPE_RASTER, True))
         self.addParameter(ParameterMultipleInput(
             nviz7.VECTOR,
             self.tr('Vector lines/areas overlay file(s)'),
-            ParameterMultipleInput.TYPE_VECTOR_ANY, True))
+            dataobjects.TYPE_VECTOR_ANY, True))
         self.addParameter(ParameterMultipleInput(
             nviz7.COLOR,
             self.tr('Raster file(s) for color'),
-            ParameterMultipleInput.TYPE_RASTER, True))
+            dataobjects.TYPE_RASTER, True))
         self.addParameter(ParameterExtent(
             nviz7.GRASS_REGION_EXTENT_PARAMETER,
             self.tr('GRASS region extent')))

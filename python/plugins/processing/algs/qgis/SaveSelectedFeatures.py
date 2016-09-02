@@ -41,7 +41,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer')))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Selection')))

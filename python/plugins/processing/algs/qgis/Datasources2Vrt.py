@@ -51,8 +51,7 @@ class Datasources2Vrt(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterMultipleInput(self.DATASOURCES,
-                                                 self.tr('Input datasources'),
-                                                 ParameterMultipleInput.TYPE_VECTOR_ANY))
+                                                 self.tr('Input datasources')))
         self.addParameter(ParameterBoolean(self.UNIONED,
                                            self.tr('Create "unioned" VRT'),
                                            default=False))

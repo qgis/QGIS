@@ -64,7 +64,7 @@ class FieldsCalculator(GeoAlgorithm):
                            self.tr('Date')]
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterString(self.FIELD_NAME,
                                           self.tr('Result field name')))
         self.addParameter(ParameterSelection(self.FIELD_TYPE,

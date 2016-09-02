@@ -60,7 +60,7 @@ class ExportGeometryInfo(GeoAlgorithm):
                              self.tr('Ellipsoidal')]
 
         self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterSelection(self.METHOD,
                                              self.tr('Calculate using'), self.calc_methods, 0))
 

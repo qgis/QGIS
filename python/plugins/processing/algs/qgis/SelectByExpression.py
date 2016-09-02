@@ -24,7 +24,6 @@ __copyright__ = '(C) 2014, Michael Douchin'
 
 __revision__ = '$Format:%H$'
 
-import processing
 from qgis.core import QgsExpression, QgsVectorLayer
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -32,6 +31,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterString
+from processing.tools import dataobjects
 
 
 class SelectByExpression(GeoAlgorithm):
@@ -51,7 +51,7 @@ class SelectByExpression(GeoAlgorithm):
                         self.tr('selecting within current selection')]
 
         self.addParameter(ParameterVector(self.LAYERNAME,
-                                          self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input Layer')))
         self.addParameter(ParameterString(self.EXPRESSION,
                                           self.tr("Expression")))
         self.addParameter(ParameterSelection(self.METHOD,
@@ -60,7 +60,7 @@ class SelectByExpression(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.LAYERNAME)
-        layer = processing.getObject(filename)
+        layer = dataobjects.getObjectFromUri(filename)
         oldSelection = set(layer.selectedFeaturesIds())
         method = self.getParameterValue(self.METHOD)
 
