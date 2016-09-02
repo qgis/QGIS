@@ -1,4 +1,5 @@
 import os
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QMenu
 from PyQt4.QtGui import QIcon
 from processing.core.alglist import algList
@@ -127,6 +128,7 @@ def initializeMenus():
 
 def updateMenus():
     removeMenus()
+    QCoreApplication.processEvents()
     createMenus()
 
 
