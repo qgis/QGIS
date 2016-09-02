@@ -26,7 +26,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
     , mRasterViewPort( nullptr )
     , mPipe( nullptr )
     , mContext( rendererContext )
-    , mFeedback( new MyFeedback( this ) )
+    , mFeedback( new Feedback( this ) )
 {
   mPainter = rendererContext.painter();
   const QgsMapToPixel& theQgsMapToPixel = rendererContext.mapToPixel();
@@ -224,14 +224,14 @@ QgsFeedback* QgsRasterLayerRenderer::feedback() const
   return mFeedback;
 }
 
-MyFeedback::MyFeedback( QgsRasterLayerRenderer *r )
+QgsRasterLayerRenderer::Feedback::Feedback( QgsRasterLayerRenderer *r )
     : mR( r )
     , mMinimalPreviewInterval( 250 )
 {
   render_partial_output = r->mContext.testFlag( QgsRenderContext::RenderPartialOutput );
 }
 
-void MyFeedback::onNewData()
+void QgsRasterLayerRenderer::Feedback::onNewData()
 {
   qDebug( "\nGOT NEW DATA!\n" );
 
