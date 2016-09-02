@@ -2138,55 +2138,56 @@ bool QgsGeometry::compare( const QgsMultiPolygon &p1, const QgsMultiPolygon &p2,
   return true;
 }
 
-QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double offset ) const
+QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double offset, double minimumDistance, double maxAngle ) const
 {
-  switch ( wkbType() )
+  if ( d->geometry->isEmpty() )
+    return QgsGeometry();
+
+  QgsGeometry geom = *this;
+  if ( QgsWkbTypes::isCurvedType( wkbType() ) )
+    geom = QgsGeometry( d->geometry->segmentize() );
+
+  switch ( QgsWkbTypes::flatType( geom.wkbType() ) )
   {
     case QgsWkbTypes::Point:
-    case QgsWkbTypes::Point25D:
     case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiPoint25D:
       //can't smooth a point based geometry
-      return QgsGeometry( *this );
+      return geom;
 
     case QgsWkbTypes::LineString:
-    case QgsWkbTypes::LineString25D:
     {
-      QgsPolyline line = asPolyline();
-      return QgsGeometry::fromPolyline( smoothLine( line, iterations, offset ) );
+      QgsLineString* lineString = static_cast< QgsLineString* >( d->geometry );
+      return QgsGeometry( smoothLine( *lineString, iterations, offset, minimumDistance, maxAngle ) );
     }
 
     case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiLineString25D:
     {
-      QgsMultiPolyline multiline = asMultiPolyline();
-      QgsMultiPolyline resultMultiline;
-      QgsMultiPolyline::const_iterator lineIt = multiline.constBegin();
-      for ( ; lineIt != multiline.constEnd(); ++lineIt )
+      QgsMultiLineString* multiLine = static_cast< QgsMultiLineString* >( d->geometry );
+
+      QgsMultiLineString* resultMultiline = new QgsMultiLineString();
+      for ( int i = 0; i < multiLine->numGeometries(); ++i )
       {
-        resultMultiline << smoothLine( *lineIt, iterations, offset );
+        resultMultiline->addGeometry( smoothLine( *( static_cast< QgsLineString* >( multiLine->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ) );
       }
-      return QgsGeometry::fromMultiPolyline( resultMultiline );
+      return QgsGeometry( resultMultiline );
     }
 
     case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::Polygon25D:
     {
-      QgsPolygon poly = asPolygon();
-      return QgsGeometry::fromPolygon( smoothPolygon( poly, iterations, offset ) );
+      QgsPolygonV2* poly = static_cast< QgsPolygonV2* >( d->geometry );
+      return QgsGeometry( smoothPolygon( *poly, iterations, offset, minimumDistance, maxAngle ) );
     }
 
     case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::MultiPolygon25D:
     {
-      QgsMultiPolygon multipoly = asMultiPolygon();
-      QgsMultiPolygon resultMultipoly;
-      QgsMultiPolygon::const_iterator polyIt = multipoly.constBegin();
-      for ( ; polyIt != multipoly.constEnd(); ++polyIt )
+      QgsMultiPolygonV2* multiPoly = static_cast< QgsMultiPolygonV2* >( d->geometry );
+
+      QgsMultiPolygonV2* resultMultiPoly = new QgsMultiPolygonV2();
+      for ( int i = 0; i < multiPoly->numGeometries(); ++i )
       {
-        resultMultipoly << smoothPolygon( *polyIt, iterations, offset );
+        resultMultiPoly->addGeometry( smoothPolygon( *( static_cast< QgsPolygonV2* >( multiPoly->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ) );
       }
-      return QgsGeometry::fromMultiPolygon( resultMultipoly );
+      return QgsGeometry( resultMultiPoly );
     }
 
     case QgsWkbTypes::Unknown:
@@ -2195,58 +2196,120 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
   }
 }
 
-inline QgsPoint interpolatePointOnLine( const QgsPoint& p1, const QgsPoint& p2, const double offset )
+inline QgsPointV2 interpolatePointOnLine( const QgsPointV2& p1, const QgsPointV2& p2, const double offset )
 {
   double deltaX = p2.x() - p1.x();
   double deltaY = p2.y() - p1.y();
-  return QgsPoint( p1.x() + deltaX * offset, p1.y() + deltaY * offset );
+  return QgsPointV2( p1.x() + deltaX * offset, p1.y() + deltaY * offset );
 }
 
-QgsPolyline QgsGeometry::smoothLine( const QgsPolyline& polyline, const unsigned int iterations, const double offset ) const
+QgsLineString* smoothCurve( const QgsLineString& line, const unsigned int iterations,
+                            const double offset, double squareDistThreshold, double maxAngleRads,
+                            bool isRing )
 {
-  QgsPolyline result = polyline;
+  QScopedPointer< QgsLineString > result( new QgsLineString( line ) );
   for ( unsigned int iteration = 0; iteration < iterations; ++iteration )
   {
-    QgsPolyline outputLine = QgsPolyline();
-    outputLine.reserve( 2 * ( result.count() - 1 ) );
-    for ( int i = 0; i < result.count() - 1; i++ )
+    QgsPointSequence outputLine;
+    outputLine.reserve( 2 * ( result->numPoints() - 1 ) );
+    bool skipFirst = false;
+    bool skipLast = false;
+    if ( isRing )
     {
-      const QgsPoint& p1 = result.at( i );
-      const QgsPoint& p2 = result.at( i + 1 );
-      outputLine << ( i == 0 ? result.at( i ) : interpolatePointOnLine( p1, p2, offset ) );
-      outputLine << ( i == result.count() - 2 ? result.at( i + 1 ) : interpolatePointOnLine( p1, p2, 1.0 - offset ) );
+      QgsPointV2 p1 = result->pointN( result->numPoints() - 2 );
+      QgsPointV2 p2 = result->pointN( 0 );
+      QgsPointV2 p3 = result->pointN( 1 );
+      double angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
+                     p3.x(), p3.y() );
+      angle = qAbs( M_PI - angle );
+      skipFirst = angle > maxAngleRads;
     }
-    result = outputLine;
+    for ( int i = 0; i < result->numPoints() - 1; i++ )
+    {
+      QgsPointV2 p1 = result->pointN( i );
+      QgsPointV2 p2 = result->pointN( i + 1 );
+
+      double angle = M_PI;
+      if ( i == 0 && isRing )
+      {
+        QgsPointV2 p3 = result->pointN( result->numPoints() - 2 );
+        angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
+                p3.x(), p3.y() );
+      }
+      else if ( i < result->numPoints() - 2 )
+      {
+        QgsPointV2 p3 = result->pointN( i + 2 );
+        angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
+                p3.x(), p3.y() );
+      }
+      else if ( i == result->numPoints() - 2 && isRing )
+      {
+        QgsPointV2 p3 = result->pointN( 1 );
+        angle = QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
+                p3.x(), p3.y() );
+      }
+
+      skipLast = angle < M_PI - maxAngleRads || angle > M_PI + maxAngleRads;
+
+      // don't apply distance threshold to first or last segment
+      if ( i == 0 || i >= result->numPoints() - 2
+           || QgsGeometryUtils::sqrDistance2D( p1, p2 ) > squareDistThreshold )
+      {
+        if ( !isRing )
+        {
+          if ( !skipFirst )
+            outputLine << ( i == 0 ? result->pointN( i ) : interpolatePointOnLine( p1, p2, offset ) );
+          if ( !skipLast )
+            outputLine << ( i == result->numPoints() - 2 ? result->pointN( i + 1 ) : interpolatePointOnLine( p1, p2, 1.0 - offset ) );
+          else
+            outputLine << p2;
+        }
+        else
+        {
+          // ring
+          if ( !skipFirst )
+            outputLine << interpolatePointOnLine( p1, p2, offset );
+          else if ( i == 0 )
+            outputLine << p1;
+          if ( !skipLast )
+            outputLine << interpolatePointOnLine( p1, p2, 1.0 - offset );
+          else
+            outputLine << p2;
+        }
+      }
+      skipFirst = skipLast;
+    }
+
+    if ( isRing && outputLine.at( 0 ) != outputLine.at( outputLine.count() - 1 ) )
+      outputLine << outputLine.at( 0 );
+
+    result->setPoints( outputLine );
   }
-  return result;
+  return result.take();
 }
 
-QgsPolygon QgsGeometry::smoothPolygon( const QgsPolygon& polygon, const unsigned int iterations, const double offset ) const
+QgsLineString* QgsGeometry::smoothLine( const QgsLineString& line, const unsigned int iterations, const double offset, double minimumDistance, double maxAngle ) const
 {
-  QgsPolygon resultPoly;
-  QgsPolygon::const_iterator ringIt = polygon.constBegin();
-  for ( ; ringIt != polygon.constEnd(); ++ringIt )
-  {
-    QgsPolyline resultRing = *ringIt;
-    for ( unsigned int iteration = 0; iteration < iterations; ++iteration )
-    {
-      QgsPolyline outputRing = QgsPolyline();
-      outputRing.reserve( 2 * ( resultRing.count() - 1 ) + 1 );
-      for ( int i = 0; i < resultRing.count() - 1; ++i )
-      {
-        const QgsPoint& p1 = resultRing.at( i );
-        const QgsPoint& p2 = resultRing.at( i + 1 );
-        outputRing << interpolatePointOnLine( p1, p2, offset );
-        outputRing << interpolatePointOnLine( p1, p2, 1.0 - offset );
-      }
-      //close polygon
-      outputRing << outputRing.at( 0 );
+  double maxAngleRads = maxAngle * M_PI / 180.0;
+  double squareDistThreshold = minimumDistance > 0 ? minimumDistance * minimumDistance : -1;
+  return smoothCurve( line, iterations, offset, squareDistThreshold, maxAngleRads, false );
+}
 
-      resultRing = outputRing;
-    }
-    resultPoly << resultRing;
+QgsPolygonV2* QgsGeometry::smoothPolygon( const QgsPolygonV2& polygon, const unsigned int iterations, const double offset, double minimumDistance, double maxAngle ) const
+{
+  double maxAngleRads = maxAngle * M_PI / 180.0;
+  double squareDistThreshold = minimumDistance > 0 ? minimumDistance * minimumDistance : -1;
+  QScopedPointer< QgsPolygonV2 > resultPoly( new QgsPolygonV2 );
+
+  resultPoly->setExteriorRing( smoothCurve( *( static_cast< const QgsLineString*>( polygon.exteriorRing() ) ), iterations, offset,
+                               squareDistThreshold, maxAngleRads, true ) );
+
+  for ( int i = 0; i < polygon.numInteriorRings(); ++i )
+  {
+    resultPoly->addInteriorRing( smoothCurve( *( static_cast< const QgsLineString*>( polygon.interiorRing( i ) ) ), iterations, offset,
+                                 squareDistThreshold, maxAngleRads, true ) );
   }
-  return resultPoly;
+  return resultPoly.take();
 }
 
 QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const

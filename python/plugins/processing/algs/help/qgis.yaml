@@ -444,6 +444,15 @@ qgis:singlesidedbuffer: >
 
   The mitre limit parameter is only applicable for mitre join styles, and controls the maximum distance from the buffer to use when creating a mitred join.
 
+qgis:smoothgeometry: >
+  This algorithm smooths the geometries in a line or polygon layer. It creates a new layer with the same features as the ones in the input layer, but with geometries containing a higher number of vertices and corners in the geometries smoothed out.
+
+  The iterations parameter dictates how many smoothing iterations will be applied to each geometry. A higher number of iterations results in smoother geometries with the cost of greater number of nodes in the geometries.
+
+  The offset parameter controls how "tightly" the smoothed geometries follow the original geometries. Smaller values results in a tighter fit, and larger values will create a looser fit.
+
+  The maximum angle parameter can be used to prevent smoothing of nodes with large angles. Any node where the angle of the segments to either side is larger then this will not be smoothed. Eg setting the maximum angle to 90 degrees or lower would preserve right angles in the geometry.
+
 qgis:snappointstogrid: >
   This algorithm modifies the position of points in a vector layer, so they fall in the coordinates of a grid.
 

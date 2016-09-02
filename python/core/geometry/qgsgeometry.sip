@@ -849,14 +849,12 @@ class QgsGeometry
      * @param offset fraction of line to create new vertices along, between 0 and 1.0
      * eg the default value of 0.25 will create new vertices 25% and 75% along each line segment
      * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
+     * @param minimumDistance minimum segment length to apply smoothing to
+     * @param maxAngle maximum angle at node (0-180) at which smoothing will be applied
      * @note added in 2.9
      */
-    QgsGeometry smooth( const unsigned int iterations, const double offset ) const;
-
-    /** Smooths a polygon using the Chaikin algorithm*/
-    QgsPolygon smoothPolygon( const QgsPolygon &polygon, const unsigned int iterations = 1, const double offset = 0.25 ) const;
-    /** Smooths a polyline using the Chaikin algorithm*/
-    QgsPolyline smoothLine( const QgsPolyline &polyline, const unsigned int iterations = 1, const double offset = 0.25 ) const;
+    QgsGeometry smooth( const unsigned int iterations = 1, const double offset = 0.25,
+                        double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
 
     /** Creates and returns a new geometry engine
      */

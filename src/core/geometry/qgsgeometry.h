@@ -43,6 +43,7 @@ class QgsVectorLayer;
 class QgsMapToPixel;
 class QPainter;
 class QgsPolygonV2;
+class QgsLineString;
 
 /** Polyline is represented as a vector of points */
 typedef QVector<QgsPoint> QgsPolyline;
@@ -888,14 +889,12 @@ class CORE_EXPORT QgsGeometry
      * @param offset fraction of line to create new vertices along, between 0 and 1.0
      * eg the default value of 0.25 will create new vertices 25% and 75% along each line segment
      * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
+     * @param minimumDistance minimum segment length to apply smoothing to
+     * @param maxAngle maximum angle at node (0-180) at which smoothing will be applied
      * @note added in 2.9
      */
-    QgsGeometry smooth( const unsigned int iterations = 1, const double offset = 0.25 ) const;
-
-    /** Smooths a polygon using the Chaikin algorithm*/
-    QgsPolygon smoothPolygon( const QgsPolygon &polygon, const unsigned int iterations = 1, const double offset = 0.25 ) const;
-    /** Smooths a polyline using the Chaikin algorithm*/
-    QgsPolyline smoothLine( const QgsPolyline &polyline, const unsigned int iterations = 1, const double offset = 0.25 ) const;
+    QgsGeometry smooth( const unsigned int iterations = 1, const double offset = 0.25,
+                        double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
 
     /** Creates and returns a new geometry engine
      */
@@ -941,6 +940,34 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry convertToLine( bool destMultipart ) const;
     /** Try to convert the geometry to a polygon */
     QgsGeometry convertToPolygon( bool destMultipart ) const;
+
+    /** Smooths a polyline using the Chaikin algorithm
+     * @param line line to smooth
+     * @param iterations number of smoothing iterations to run. More iterations results
+     * in a smoother geometry
+     * @param offset fraction of line to create new vertices along, between 0 and 1.0
+     * eg the default value of 0.25 will create new vertices 25% and 75% along each line segment
+     * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
+     * @param minimumDistance minimum segment length to apply smoothing to
+     * @param maxAngle maximum angle at node (0-180) at which smoothing will be applied
+    */
+    QgsLineString* smoothLine( const QgsLineString & line, const unsigned int iterations = 1, const double offset = 0.25,
+                               double minimumDistance = -1, double maxAngle = 180.0 ) const;
+
+    /** Smooths a polygon using the Chaikin algorithm
+     * @param polygon polygon to smooth
+     * @param iterations number of smoothing iterations to run. More iterations results
+     * in a smoother geometry
+     * @param offset fraction of segment to create new vertices along, between 0 and 1.0
+     * eg the default value of 0.25 will create new vertices 25% and 75% along each line segment
+     * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
+     * @param minimumDistance minimum segment length to apply smoothing to
+     * @param maxAngle maximum angle at node (0-180) at which smoothing will be applied
+    */
+    QgsPolygonV2* smoothPolygon( const QgsPolygonV2 &polygon, const unsigned int iterations = 1, const double offset = 0.25,
+                                 double minimumDistance = -1, double maxAngle = 180.0 ) const;
+
+
 }; // class QgsGeometry
 
 Q_DECLARE_METATYPE( QgsGeometry )

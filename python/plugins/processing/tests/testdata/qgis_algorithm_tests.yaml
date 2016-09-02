@@ -965,3 +965,31 @@ tests:
       OUTPUT:
         name: expected/simplify_grid_lines.gml
         type: vector
+
+  - algorithm: qgis:smoothgeometry
+    name: Smooth (lines)
+    params:
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      ITERATIONS: 1
+      MAX_ANGLE: 180.0
+      OFFSET: 0.25
+    results:
+      OUTPUT_LAYER:
+        name: expected/smoothed_lines.gml
+        type: vector
+
+  - algorithm: qgis:smoothgeometry
+    name: Smooth (lines, with max angle)
+    params:
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      ITERATIONS: 1
+      MAX_ANGLE: 60.0
+      OFFSET: 0.25
+    results:
+      OUTPUT_LAYER:
+        name: expected/smoothed_lines_max_angle.gml
+        type: vector

@@ -3539,6 +3539,45 @@ void TestQgsGeometry::smoothCheck()
   << QgsPoint( 10.0, 7.5 ) << QgsPoint( 12.5, 10.0 ) << QgsPoint( 20.0, 10.0 );
   QVERIFY( QgsGeometry::compare( line, expectedLine ) );
 
+  //linestring, with min distance
+  wkt = "LineString(0 0, 10 0, 10 10, 15 10, 15 20)";
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 1, 0.25, 6 );
+  line = result.asPolyline();
+  expectedLine.clear();
+  expectedLine << QgsPoint( 0, 0 ) << QgsPoint( 7.5, 0 ) << QgsPoint( 10.0, 2.5 )
+  << QgsPoint( 10.0, 7.5 ) << QgsPoint( 15, 12.5 ) << QgsPoint( 15.0, 20.0 );
+  QVERIFY( QgsGeometry::compare( line, expectedLine ) );
+
+  //linestring, with max angle
+  wkt = "LineString(0 0, 10 0, 15 5, 25 -5, 30 -5 )";
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 1, 0.25, 0, 50 );
+  line = result.asPolyline();
+  expectedLine.clear();
+  expectedLine << QgsPoint( 0, 0 ) << QgsPoint( 7.5, 0 ) << QgsPoint( 11.25, 1.25 )
+  << QgsPoint( 15.0, 5.0 ) << QgsPoint( 22.5, -2.5 ) << QgsPoint( 26.25, -5 ) << QgsPoint( 30, -5 );
+  QVERIFY( QgsGeometry::compare( line, expectedLine ) );
+
+  //linestring, with max angle, other direction
+  wkt = "LineString( 30 -5, 25 -5, 15 5, 10 0, 0 0 )";
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 1, 0.25, 0, 50 );
+  line = result.asPolyline();
+  expectedLine.clear();
+  expectedLine << QgsPoint( 30, -5 ) << QgsPoint( 26.25, -5 ) << QgsPoint( 22.5, -2.5 )
+  << QgsPoint( 15.0, 5.0 ) << QgsPoint( 11.25, 1.25 ) << QgsPoint( 7.5, 0 ) << QgsPoint( 0, 0 );
+  QVERIFY( QgsGeometry::compare( line, expectedLine ) );
+
+  //linestring, max angle, first corner sharp
+  wkt = "LineString(0 0, 10 0, 10 10 )";
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 1, 0.25, 0, 50 );
+  line = result.asPolyline();
+  expectedLine.clear();
+  expectedLine << QgsPoint( 0, 0 ) << QgsPoint( 10, 0 ) << QgsPoint( 10, 10 );
+  QVERIFY( QgsGeometry::compare( line, expectedLine ) );
+
   wkt = "MultiLineString ((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))";
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.25 );
@@ -3564,7 +3603,17 @@ void TestQgsGeometry::smoothCheck()
        << QgsPoint( 2.0, 3.5 ) << QgsPoint( 2.0, 2.5 ) << QgsPoint( 2.5, 2.0 ) );
   QVERIFY( QgsGeometry::compare( poly, expectedPolygon ) );
 
-  //multipolygon
+  //polygon with max angle - should be unchanged
+  wkt = "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0))";
+  geom = QgsGeometry::fromWkt( wkt );
+  result = geom.smooth( 1, 0.25, -1, 50 );
+  poly = result.asPolygon();
+  expectedPolygon.clear();
+  expectedPolygon << ( QgsPolyline() << QgsPoint( 0, 0 ) << QgsPoint( 10, 0 ) << QgsPoint( 10.0, 10 )
+                       <<  QgsPoint( 0, 10 ) << QgsPoint( 0, 0 ) );
+  QVERIFY( QgsGeometry::compare( poly, expectedPolygon ) );
+
+  //multipolygon)
   wkt = "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0 )),((2 2, 4 2, 4 4, 2 4, 2 2)))";
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.1 );
