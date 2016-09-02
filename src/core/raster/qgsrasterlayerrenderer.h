@@ -31,18 +31,6 @@ class QgsRasterLayerRenderer;
 
 #include "qgsrasterinterface.h"
 
-class MyFeedback : public QgsRasterBlockFeedback
-{
-  public:
-    explicit MyFeedback( QgsRasterLayerRenderer* r );
-
-    virtual void onNewData() override;
-  private:
-    QgsRasterLayerRenderer* mR;
-    int mMinimalPreviewInterval;  //!< in miliseconds
-    QTime mLastPreview;
-};
-
 
 /** \ingroup core
  * Implementation of threaded rendering for raster layers.
@@ -69,8 +57,22 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
     QgsRasterPipe* mPipe;
     QgsRenderContext& mContext;
 
-    MyFeedback* mFeedback;
-    friend class MyFeedback;
+    //! Specific feedback class to provide preview of raster layer rendering.
+    class Feedback : public QgsRasterBlockFeedback
+    {
+      public:
+        explicit Feedback( QgsRasterLayerRenderer* r );
+
+        //! when notified of new data in data provider it launches a preview draw of the raster
+        virtual void onNewData() override;
+      private:
+        QgsRasterLayerRenderer* mR;   //!< parent renderer instance
+        int mMinimalPreviewInterval;  //!< in miliseconds
+        QTime mLastPreview;           //!< when last preview has been generated
+    };
+
+    //! feedback class for cancellation and preview generation
+    Feedback* mFeedback;
 };
 
 

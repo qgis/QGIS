@@ -9,7 +9,21 @@ class QgsRasterBlockFeedback : QgsFeedback
 %TypeHeaderCode
 #include <qgsrasterinterface.h>
 %End
-    // TODO: extend with preview functionality??
+
+  public:
+    //! construct a new raster block feedback object
+    QgsRasterBlockFeedback( QObject* parent = nullptr );
+
+    //! whether the raster provider should return only data that are already available
+    //! without waiting for full result
+    bool preview_only;
+
+    //! whether our painter is drawing to a temporary image used just by this layer
+    bool render_partial_output;
+
+    //! may be emitted by raster data provider to indicate that some partial data are available
+    //! and a new preview image may be produced
+    virtual void onNewData();
 };
 
 
