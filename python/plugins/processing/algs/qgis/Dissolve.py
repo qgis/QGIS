@@ -85,7 +85,7 @@ class Dissolve(GeoAlgorithm):
                 progress.setPercentage(int(current * total))
                 if first:
                     attrs = inFeat.attributes()
-                    tmpInGeom = QgsGeometry(inFeat.geometry())
+                    tmpInGeom = inFeat.geometry()
                     if tmpInGeom.isGeosEmpty():
                         continue
                     errors = tmpInGeom.validateGeometry()
@@ -101,9 +101,10 @@ class Dissolve(GeoAlgorithm):
                     outFeat.setGeometry(tmpInGeom)
                     first = False
                 else:
-                    tmpInGeom = QgsGeometry(inFeat.geometry())
-                    if tmpInGeom.isGeosEmpty():
-                        continue
+                    tmpInGeom = inFeat.geometry()
+                    if tmpInGeom is None or tmpInGeom.isGeosEmpty():
+                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                                self.tr('Skipped feature %i, which has a null geometry' % current))
                     tmpOutGeom = QgsGeometry(outFeat.geometry())
                     errors = tmpInGeom.validateGeometry()
                     if len(errors) != 0:
@@ -116,11 +117,27 @@ class Dissolve(GeoAlgorithm):
                                                    + error.what())
                         continue
                     try:
-                        tmpOutGeom = QgsGeometry(tmpOutGeom.combine(tmpInGeom))
+                        tmpOutGeom = tmpOutGeom.combine(tmpInGeom)
+                        if tmpOutGeom is None or tmpOutGeom.isGeosEmpty():
+                            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                                   self.tr('Skipped feature %i. Dissolve resulted in null geometry' % current))
+                            continue
+                        errors = tmpOutGeom.validateGeometry()
+                        if errors:
+                            for error in errors:
+                                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                                   self.tr('ValidateGeometry()'
+                                                           'error:One or more input'
+                                                           'features have invalid '
+                                                           'geometry: ')
+                                                   + error.what())
+                            continue
                         outFeat.setGeometry(tmpOutGeom)
                     except:
+                        raise
                         raise GeoAlgorithmExecutionException(
                             self.tr('Geometry exception while dissolving'))
+            print outFeat.geometry().exportToWkt()
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
         else:
@@ -135,12 +152,13 @@ class Dissolve(GeoAlgorithm):
 
             unique = None
 
-            for inFeat in features:
+            for current, inFeat in enumerate(features):
                 attrs = inFeat.attributes()
                 tempItem = attrs[fieldIdx]
-                tmpInGeom = QgsGeometry(inFeat.geometry())
-                if tmpInGeom.isGeosEmpty():
-                    continue
+                tmpInGeom = inFeat.geometry()
+                if tmpInGeom is None or tmpInGeom.isGeosEmpty():
+                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                           self.tr('Skipped feature %i, which has a null geometry' % current))
                 errors = tmpInGeom.validateGeometry()
                 if len(errors) != 0:
                     for error in errors:
