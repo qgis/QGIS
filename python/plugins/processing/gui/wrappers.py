@@ -41,7 +41,7 @@ DIALOG_BATCH = 'batch'
 DIALOG_MODELER = 'modeler'
 
 
-def wrapper_from_param(param, dialog=DIALOG_STANDARD, extra_values=[]):
+def wrapper_from_param(param, dialog=DIALOG_STANDARD):
     wrapper = param.metadata.get('widget_wrapper', None)
     # wrapper metadata should be a class path
     if isinstance(wrapper, basestring):
@@ -50,7 +50,7 @@ def wrapper_from_param(param, dialog=DIALOG_STANDARD, extra_values=[]):
         wrapper = getattr(mod, tokens[-1])
     # or directly a class object
     if isclass(wrapper):
-        wrapper = wrapper(param=param, dialog=dialog, extra_values=extra_values)
+        wrapper = wrapper(param=param, dialog=dialog)
     # or a wrapper instance
     return wrapper
 
@@ -69,17 +69,28 @@ class WidgetWrapper():
 
     implemented = True  # TODO: Should be removed at the end
 
-    def __init__(self, param, dialog=DIALOG_STANDARD, extra_values=[]):
+    def __init__(self, param, dialog=DIALOG_STANDARD):
         self.param = param
         self.dialog = dialog
-        self.widget = self.createWidget(extra_values)
+        self.widget = self.createWidget()
         self.setValue(param.default)
 
-    def createWidget(self, extra_values=[]):
+    def comboValue(self):
+        return self.widget.itemData(self.widget.currentIndex())
+
+    def createWidget(self):
         pass
 
     def setValue(self, value):
         pass
+
+    def setComboValue(self, value):
+        values = [self.widget.itemData(i) for i in range(self.widget.count())]
+        try:
+            idx = values.index(value)
+            self.widget.setCurrentIndex(idx)
+        except ValueError:
+            pass
 
     def value(self):
         pass
@@ -87,7 +98,7 @@ class WidgetWrapper():
 
 class BooleanWidgetWrapper(WidgetWrapper):
 
-    def createWidget(self, extra_values=[]):
+    def createWidget(self):
         if self.dialog == DIALOG_STANDARD:
             return QCheckBox()
 
@@ -95,8 +106,6 @@ class BooleanWidgetWrapper(WidgetWrapper):
             widget = QComboBox()
             widget.addItem(widget.tr('Yes'), True)
             widget.addItem(widget.tr('No'), False)
-            for text, value in extra_values:
-                widget.addItem(text, value)
             return widget
 
     def setValue(self, value):
@@ -104,24 +113,19 @@ class BooleanWidgetWrapper(WidgetWrapper):
             self.widget.setChecked(value)
 
         if self.dialog in (DIALOG_BATCH, DIALOG_MODELER):
-            values = [self.widget.itemData(i) for i in range(self.widget.count())]
-            try:
-                idx = values.index(value)
-                self.widget.setCurrentIndex(idx)
-            except ValueError:
-                pass
+            self.setComboValue(value)
 
     def value(self):
         if self.dialog == DIALOG_STANDARD:
             return self.widget.isChecked()
 
         if self.dialog in (DIALOG_BATCH, DIALOG_MODELER):
-            return self.widget.itemData(self.widget.currentIndex())
+            return self.comboValue()
 
 
 class CrsWidgetWrapper(WidgetWrapper):
 
-    def createWidget(self, extra_values=[]):
+    def createWidget(self):
         return CrsSelectionPanel()
 
     def setValue(self, value):
