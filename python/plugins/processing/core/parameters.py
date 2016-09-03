@@ -120,7 +120,9 @@ class Parameter(object):
         return self.__class__.__name__.replace('Parameter', '').lower()
 
     def todict(self):
-        return self.__dict__
+        o = self.__dict__
+        del o['metadata']
+        return o
 
     def tr(self, string, context=''):
         if context == '':
