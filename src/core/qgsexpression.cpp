@@ -51,6 +51,7 @@
 #include "qgscurvepolygon.h"
 #include "qgsexpressionprivate.h"
 #include "qgsexpressionsorter.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
 
 #if QT_VERSION < 0x050000
 #include <qtextdocument.h>
@@ -1767,6 +1768,59 @@ static QVariant fcnLineMerge( const QVariantList& values, const QgsExpressionCon
   return QVariant::fromValue( merged );
 }
 
+static QVariant fcnSimplify( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isEmpty() )
+    return QVariant();
+
+  double tolerance = getDoubleValue( values.at( 1 ), parent );
+
+  QgsGeometry simplified = geom.simplify( tolerance );
+  if ( simplified.isEmpty() )
+    return QVariant();
+
+  return simplified;
+}
+
+static QVariant fcnSimplifyVW( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isEmpty() )
+    return QVariant();
+
+  double tolerance = getDoubleValue( values.at( 1 ), parent );
+
+  QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, QgsMapToPixelSimplifier::Visvalingam );
+
+  QgsGeometry simplified = simplifier.simplify( geom );
+  if ( simplified.isEmpty() )
+    return QVariant();
+
+  return simplified;
+}
+
+static QVariant fcnSmooth( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QgsGeometry geom = getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isEmpty() )
+    return QVariant();
+
+  int iterations = qMin( getIntValue( values.at( 1 ), parent ), 10 );
+  double offset = qBound( 0.0, getDoubleValue( values.at( 2 ), parent ), 0.5 );
+  double minLength = getDoubleValue( values.at( 3 ), parent );
+  double maxAngle = qBound( 0.0, getDoubleValue( values.at( 4 ), parent ), 180.0 );
+
+  QgsGeometry smoothed = geom.smooth( iterations, offset, minLength, maxAngle );
+  if ( smoothed.isEmpty() )
+    return QVariant();
+
+  return smoothed;
+}
+
 static QVariant fcnMakePoint( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   if ( values.count() < 2 || values.count() > 4 )
@@ -3166,6 +3220,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "disjoint" << "intersects" << "touches" << "crosses" << "contains"
     << "relate"
     << "overlaps" << "within" << "buffer" << "offset_curve" << "single_sided_buffer"
+    << "simplify" << "simplify_vw" << "smooth"
     << "centroid" << "bounds" << "reverse" << "exterior_ring"
     << "boundary" << "line_merge"
     << "bounds_width" << "bounds_height" << "is_closed" << "convex_hull" << "difference"
@@ -3377,6 +3432,12 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "boundary", ParameterList() << Parameter( "geometry" ), fcnBoundary, "GeometryGroup" )
     << new StaticFunction( "line_merge", ParameterList() << Parameter( "geometry" ), fcnLineMerge, "GeometryGroup" )
     << new StaticFunction( "bounds", 1, fcnBounds, "GeometryGroup" )
+    << new StaticFunction( "simplify", ParameterList() << Parameter( "geometry" ) << Parameter( "tolerance" ), fcnSimplify, "GeometryGroup" )
+    << new StaticFunction( "simplify_vw", ParameterList() << Parameter( "geometry" ) << Parameter( "tolerance" ), fcnSimplifyVW, "GeometryGroup" )
+    << new StaticFunction( "smooth", ParameterList() << Parameter( "geometry" ) << Parameter( "iterations", true, 1 )
+                           << Parameter( "offset", true, 0.25 )
+                           << Parameter( "min_length", true, -1 )
+                           << Parameter( "max_angle", true, 180 ), fcnSmooth, "GeometryGroup" )
     << new StaticFunction( "num_points", 1, fcnGeomNumPoints, "GeometryGroup" )
     << new StaticFunction( "num_interior_rings", 1, fcnGeomNumInteriorRings, "GeometryGroup" )
     << new StaticFunction( "num_rings", 1, fcnGeomNumRings, "GeometryGroup" )
