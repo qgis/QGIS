@@ -1,7 +1,7 @@
 import os
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QMenu
-from PyQt4.QtGui import QIcon
+from PyQt4.QtGui import QIcon, QApplication
 from processing.core.alglist import algList
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.MessageDialog import MessageDialog
@@ -16,7 +16,7 @@ algorithmsToolbar = None
 menusSettingsGroup = 'Menus'
 
 defaultMenuEntries = {}
-vectorMenu = Processing.tr('Vect&or')
+vectorMenu = QApplication.translate('MainWindow', 'Vect&or')
 analysisToolsMenu = vectorMenu + "/" + Processing.tr('&Analysis Tools')
 defaultMenuEntries.update({'qgis:distancematrix': analysisToolsMenu,
                            'qgis:sumlinelengths': analysisToolsMenu,
