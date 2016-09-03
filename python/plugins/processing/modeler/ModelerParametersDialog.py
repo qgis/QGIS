@@ -84,6 +84,77 @@ from processing.modeler.ModelerAlgorithm import (ValueFromInput,
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
 from processing.tools import dataobjects
 
+from qgis.core import QgsApplication
+from qgis.PyQt.QtGui import QToolButton, QMenu, QAction
+
+
+class ModelerWidgetWrapper(QWidget):
+
+    def __init__(self, wrapper, model_values):
+        super(ModelerWidgetWrapper, self).__init__()
+
+        self.wrapper = wrapper
+        self.widget = wrapper.widget
+        self.implemented = wrapper.implemented
+        self.model_values = model_values
+
+        menu = QMenu()
+        fixed_value_action = QAction(self.tr('Fixed value'), menu)
+        fixed_value_action.triggered.connect(self.on_fixedValue)
+        menu.addAction(fixed_value_action)
+        menu.addSeparator()
+        for text, value in model_values:
+            model_value_action = QAction(text, menu)
+            model_value_action.setData(value)
+            model_value_action.triggered.connect(self.on_modelValue)
+            menu.addAction(model_value_action)
+
+        self.mIconDataDefine = QgsApplication.getThemeIcon("/mIconDataDefine.svg")
+        self.mIconDataDefineOn = QgsApplication.getThemeIcon("/mIconDataDefineOn.svg")
+
+        button = QToolButton()
+        button.setIcon(self.mIconDataDefine)
+        button.setPopupMode(QToolButton.InstantPopup)
+        button.setMenu(menu)
+        self.button = button
+
+        label = QLabel()
+        label.hide()
+        self.label = label
+
+        layout = QHBoxLayout()
+        layout.addWidget(button, 0)
+        layout.addWidget(label, 1)
+        layout.addWidget(wrapper.widget, 1)
+        self.setLayout(layout)
+
+    def on_fixedValue(self):
+        self.button.setIcon(self.mIconDataDefine)
+        self.label.hide()
+        self.wrapper.widget.show()
+
+    def on_modelValue(self):
+        action = self.sender()
+        self.setValue(action.data())
+
+    def setValue(self, value):
+        for text, val in self.model_values:
+            if val == value:
+                self.model_value = value
+                self.button.setIcon(self.mIconDataDefineOn)
+                self.label.setText(text)
+                self.label.show()
+                self.wrapper.widget.hide()
+                return
+        self.wrapper.setValue(value)
+        self.on_fixedValue()
+
+    def value(self):
+        if self.label.isVisible():
+            return self.model_value
+        else:
+            return self.wrapper.value()
+
 
 class ModelerParametersDialog(QDialog):
 
@@ -164,8 +235,10 @@ class ModelerParametersDialog(QDialog):
                 desc += self.tr('(x, y)')
             label = QLabel(desc)
             self.labels[param.name] = label
+
             wrapper = self.getWidgetWrapperFromParameter(param)
             self.widget_wrappers[param.name] = wrapper
+
             widget = wrapper.widget
             self.valueItems[param.name] = widget
             if param.name in tooltips.keys():
@@ -176,10 +249,11 @@ class ModelerParametersDialog(QDialog):
             widget.setToolTip(tooltip)
             if param.isAdvanced:
                 label.setVisible(self.showAdvanced)
-                widget.setVisible(self.showAdvanced)
+                wrapper.setVisible(self.showAdvanced)
                 self.widgets[param.name] = widget
+
             self.verticalLayout.addWidget(label)
-            self.verticalLayout.addWidget(widget)
+            self.verticalLayout.addWidget(wrapper)
 
         for output in self._alg.outputs:
             if output.hidden:
@@ -280,6 +354,12 @@ class ModelerParametersDialog(QDialog):
                 self.labels[param.name].setVisible(self.showAdvanced)
                 self.widgets[param.name].setVisible(self.showAdvanced)
 
+    def getAvailableValuesForParam(self, param):
+        outputType = None
+        if isinstance(param, ParameterCrs):
+            outputType = OutputCrs
+        return self.getAvailableValuesOfType(param.__class__, outputType)
+
     def getAvailableValuesOfType(self, paramType, outType=None, dataType=None):
         values = []
         inputs = self.model.inputs
@@ -315,18 +395,19 @@ class ModelerParametersDialog(QDialog):
             return self.tr("'%s' from algorithm '%s'") % (alg.algorithm.getOutputFromName(value.output).description, alg.description)
 
     def getWidgetWrapperFromParameter(self, param):
-        extra_values = []
-        values = self.getAvailableValuesOfType(param.__class__, None)
+        wrapper = wrapper_from_param(param, DIALOG_MODELER)
+        if wrapper is None:
+            widget = self.getWidgetFromParameter(param)
+            wrapper = NotYetImplementedWidgetWrapper(param, widget)
+
+        model_values = []
+        values = self.getAvailableValuesForParam(param)
         for value in values:
-            extra_values.append((self.resolveValueDescription(value), value))
+            model_values.append((self.resolveValueDescription(value), value))
 
-        wrapper = wrapper_from_param(param, DIALOG_MODELER, extra_values)
-        if wrapper is not None:
-            return wrapper
+        input_wrapper = ModelerWidgetWrapper(wrapper, model_values)
+        return input_wrapper
 
-        widget = self.getWidgetFromParameter(param)
-        wrapper = NotYetImplementedWidgetWrapper(param, widget)
-        return wrapper
 
     def getWidgetFromParameter(self, param):
         if isinstance(param, ParameterRaster):
@@ -409,11 +490,6 @@ class ModelerParametersDialog(QDialog):
             for n in numbers:
                 item.addItem(self.resolveValueDescription(n), n)
             item.setEditText(unicode(param.default))
-        elif isinstance(param, ParameterCrs):
-            item = QComboBox()
-            values = self.getAvailableValuesOfType(ParameterCrs, OutputCrs)
-            for v in values:
-                item.addItem(self.resolveValueDescription(v), v)
         elif isinstance(param, ParameterExtent):
             item = QComboBox()
             item.setEditable(True)
@@ -512,6 +588,7 @@ class ModelerParametersDialog(QDialog):
                 wrapper = self.widget_wrappers[param.name]
                 if wrapper.implemented:
                     wrapper.setValue(value)
+                    continue
 
                 widget = wrapper.widget
                 if isinstance(param, (
@@ -531,8 +608,6 @@ class ModelerParametersDialog(QDialog):
                         widget.setValue(value)
                     else:
                         self.setComboBoxValue(widget, value, param)
-                elif isinstance(param, ParameterCrs):
-                    widget.setAuthId(value)
                 elif isinstance(param, ParameterFixedTable):
                     pass  # TODO!
                 elif isinstance(param, ParameterMultipleInput):
@@ -723,15 +798,6 @@ class ModelerParametersDialog(QDialog):
             alg.params[param.name] = value
         return True
 
-    def setParamCrsValue(self, alg, param, widget):
-        idx = widget.currentIndex()
-        if idx < 0:
-            return False
-        else:
-            value = widget.itemData(widget.currentIndex())
-            alg.params[param.name] = value
-            return True
-
     def setParamValue(self, alg, param, wrapper):
         if wrapper.implemented:
             alg.params[param.name] = wrapper.value()
@@ -757,8 +823,6 @@ class ModelerParametersDialog(QDialog):
         elif isinstance(param, ParameterRange):
             alg.params[param.name] = widget.getValue()
             return True
-        elif isinstance(param, ParameterCrs):
-            return self.setParamCrsValue(alg, param, widget)
         elif isinstance(param, ParameterFixedTable):
             table = widget.table
             if not bool(table) and not param.optional:
