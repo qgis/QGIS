@@ -1741,7 +1741,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
       QString sql = QString( "UPDATE %1 SET " ).arg( mQuery );
 
       bool pkChanged = false;
-      QList<int> geometryParams;
+      QList<int> params;
 
       // cycle through the changed attributes of the feature
       QString delim;
@@ -1762,9 +1762,14 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
               sql += QString( "SDO_UTIL.FROM_WKTGEOMETRY(%1)" ).arg( quotedValue( siter->toString() ) );
             else
             {
-              geometryParams << siter.key();
+              params << siter.key();
               sql += "?";
             }
+          }
+          else if ( fld.typeName().endsWith( "LOB" ) )
+          {
+            params << siter.key();
+            sql += "?";
           }
           else
           {
@@ -1784,15 +1789,24 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
         throw OracleException( tr( "Could not prepare update statement." ), qry );
       }
 
-      Q_FOREACH ( int idx, geometryParams )
+      Q_FOREACH ( int idx, params )
       {
-        QgsGeometry g;
-        if ( !attrs[idx].isNull() )
-        {
-          g = QgsGeometry::fromWkt( attrs[ idx ].toString() );
-        }
+        const QgsField &fld = field( idx );
 
-        appendGeomParam( g, qry );
+        if ( fld.typeName().endsWith( ".SDO_GEOMETRY" ) )
+        {
+
+          QgsGeometry g;
+          if ( !attrs[idx].isNull() )
+          {
+            g = QgsGeometry::fromWkt( attrs[ idx ].toString() );
+          }
+          appendGeomParam( g, qry );
+        }
+        else if ( fld.typeName().endsWith( "LOB" ) )
+        {
+          qry.addBindValue( attrs[ idx ] );
+        }
       }
 
       if ( !qry.exec() )
