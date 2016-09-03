@@ -104,7 +104,8 @@ class Dissolve(GeoAlgorithm):
                     tmpInGeom = inFeat.geometry()
                     if tmpInGeom is None or tmpInGeom.isGeosEmpty():
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                                self.tr('Skipped feature %i, which has a null geometry' % current))
+                                               self.tr('Skipped feature %i, which has a null geometry' % current))
+                        continue
                     tmpOutGeom = QgsGeometry(outFeat.geometry())
                     errors = tmpInGeom.validateGeometry()
                     if len(errors) != 0:
@@ -126,11 +127,11 @@ class Dissolve(GeoAlgorithm):
                         if errors:
                             for error in errors:
                                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                                   self.tr('ValidateGeometry()'
-                                                           'error:One or more input'
-                                                           'features have invalid '
-                                                           'geometry: ')
-                                                   + error.what())
+                                                       self.tr('ValidateGeometry()'
+                                                               'error:One or more input'
+                                                               'features have invalid '
+                                                               'geometry: ')
+                                                       + error.what())
                             continue
                         outFeat.setGeometry(tmpOutGeom)
                     except:
