@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>904</width>
+    <width>825</width>
     <height>588</height>
    </rect>
   </property>
@@ -46,7 +46,16 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -224,7 +233,7 @@
          </item>
          <item>
           <property name="text">
-           <string>Data dependencies</string>
+           <string>Dependencies</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -249,7 +258,16 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -261,11 +279,20 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>5</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_General">
           <layout class="QVBoxLayout" name="verticalLayout_14">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -281,12 +308,21 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>303</width>
-                <height>443</height>
+                <width>651</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
-               <property name="margin">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
                 <number>0</number>
                </property>
                <item>
@@ -308,7 +344,16 @@
                   <item row="5" column="0">
                    <widget class="QFrame" name="mDataSourceEncodingFrame">
                     <layout class="QHBoxLayout" name="horizontalLayout_4">
-                     <property name="margin">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
                       <number>0</number>
                      </property>
                     </layout>
@@ -536,7 +581,16 @@
          </widget>
          <widget class="QWidget" name="mOptsPage_Style">
           <layout class="QVBoxLayout" name="verticalLayout_11">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -552,12 +606,21 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>730</width>
-                <height>537</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
-               <property name="margin">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
                 <number>0</number>
                </property>
                <item>
@@ -587,7 +650,16 @@
          </widget>
          <widget class="QWidget" name="mOptsPage_Labels">
           <layout class="QVBoxLayout" name="verticalLayout_12">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -610,7 +682,16 @@
          </widget>
          <widget class="QWidget" name="mOptsPage_Fields">
           <layout class="QVBoxLayout" name="verticalLayout_15">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -626,12 +707,21 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>730</width>
-                <height>537</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
-               <property name="margin">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
                 <number>0</number>
                </property>
                <item>
@@ -652,7 +742,16 @@
          </widget>
          <widget class="QWidget" name="mOptsPage_Rendering">
           <layout class="QVBoxLayout" name="verticalLayout_19">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -668,8 +767,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>709</width>
-                <height>250</height>
+                <width>721</width>
+                <height>232</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -818,7 +917,16 @@
          </widget>
          <widget class="QWidget" name="mOptsPage_Display">
           <layout class="QVBoxLayout" name="verticalLayout_25">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -866,7 +974,7 @@
                   </widget>
                  </item>
                  <item row="0" column="0" colspan="3">
-                  <widget class="QgsCodeEditorHTML" name="mMapTipWidget">
+                  <widget class="QgsCodeEditorHTML" name="mMapTipWidget" native="true">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
                      <horstretch>0</horstretch>
@@ -878,12 +986,6 @@
                      <width>0</width>
                      <height>100</height>
                     </size>
-                   </property>
-                   <property name="frameShape">
-                    <enum>QFrame::StyledPanel</enum>
-                   </property>
-                   <property name="frameShadow">
-                    <enum>QFrame::Raised</enum>
                    </property>
                   </widget>
                  </item>
@@ -904,7 +1006,16 @@
          </widget>
          <widget class="QWidget" name="mOptsPage_Actions">
           <layout class="QVBoxLayout" name="verticalLayout_16">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -925,7 +1036,16 @@
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
-               <property name="margin">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
                 <number>0</number>
                </property>
                <item>
@@ -952,7 +1072,16 @@
          </widget>
          <widget class="QWidget" name="mOptsPage_Joins">
           <layout class="QVBoxLayout" name="verticalLayout_17">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -968,12 +1097,21 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>152</width>
-                <height>115</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
-               <property name="margin">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
                 <number>0</number>
                </property>
                <item>
@@ -1071,7 +1209,16 @@
          </widget>
          <widget class="QWidget" name="mOptsPage_Diagrams">
           <layout class="QVBoxLayout" name="verticalLayout_10">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -1094,7 +1241,16 @@
          </widget>
          <widget class="QWidget" name="mOptsPage_Metadata">
           <layout class="QVBoxLayout" name="verticalLayout_7">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -1110,8 +1266,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>351</width>
-                <height>681</height>
+                <width>714</width>
+                <height>641</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_3">
@@ -1552,21 +1708,34 @@
          <widget class="QWidget" name="mOptsPage_DataDependencies">
           <layout class="QVBoxLayout" name="verticalLayout_29">
            <item>
-            <widget class="QgsCollapsibleGroupBox" name="groupBox_5">
+            <widget class="QGroupBox" name="groupBox_5">
              <property name="title">
               <string>Data dependencies</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_24">
               <item>
-               <widget class="QLabel" name="label">
+               <widget class="QLabel" name="label1">
                 <property name="text">
-                 <string>Data of this layer may be updated by data change on one of these layers :</string>
+                 <string>Features in this layer may be updated when the layers selected below are changed</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QgsLayerTreeView" name="mLayersDependenciesTreeView">
                 <property name="enabled">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>Selected dependent layers should include any layers which may externally alter the data in this layer. For instance, layers with database triggers or custom PyQGIS scripting which alter this layer should be selected. Correctly specifying dependent layers allows QGIS to invalidate caches for this layer when the dependent layers are altered.</string>
+                </property>
+                <property name="wordWrap">
                  <bool>true</bool>
                 </property>
                </widget>
@@ -1610,7 +1779,16 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout_btnbox">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item row="2" column="1" colspan="4">
@@ -1669,13 +1847,15 @@
    <header>qgsfieldexpressionwidget.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCodeEditorHTML</class>
-   <extends>QFrame</extends>
-   <header>qgscodeeditorhtml.h</header>
-   <container>1</container>
    <class>QgsLayerTreeView</class>
    <extends>QTreeView</extends>
    <header>qgslayertreeview.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorHTML</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorhtml.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
