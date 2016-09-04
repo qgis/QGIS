@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import sys
 import os
 
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QObject
 from qgis.core import QgsRasterLayer, QgsVectorLayer
 from processing.tools.vector import resolveFieldIndex, features
 from processing.tools.system import isWindows
@@ -48,7 +48,7 @@ def parseBool(s):
     return unicode(s).lower() == unicode(True).lower()
 
 
-class Parameter:
+class Parameter(QObject):
 
     """
     Base class for all parameters that a geoalgorithm might
@@ -56,6 +56,8 @@ class Parameter:
     """
 
     def __init__(self, name='', description='', default=None, optional=False):
+        super(Parameter, self).__init__()
+
         self.name = name
         self.description = description
         self.default = default

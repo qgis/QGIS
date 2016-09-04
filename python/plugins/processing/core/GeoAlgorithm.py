@@ -32,7 +32,7 @@ import subprocess
 import copy
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QCoreApplication, QSettings
+from qgis.PyQt.QtCore import QCoreApplication, QObject, QSettings
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -46,9 +46,11 @@ from processing.tools.system import setTempOutput
 from processing.algs.help import shortHelp
 
 
-class GeoAlgorithm:
+class GeoAlgorithm(QObject):
 
     def __init__(self):
+        super(GeoAlgorithm, self).__init__()
+
         self._icon = QIcon(os.path.dirname(__file__) + '/../images/alg.png')
         # Parameters needed by the algorithm
         self.parameters = list()
@@ -88,12 +90,10 @@ class GeoAlgorithm:
         self.defineCharacteristics()
 
     def getCopy(self):
-        """Returns a new instance of this algorithm, ready to be used
-        for being executed.
+        """Returns a new fresh algorithm instance of the same type with default values.
         """
-        newone = copy.copy(self)
-        newone.parameters = copy.deepcopy(self.parameters)
-        newone.outputs = copy.deepcopy(self.outputs)
+        newone = self.__class__()
+        newone.provider = self.provider
         return newone
 
     # methods to overwrite when creating a custom geoalgorithm
@@ -434,6 +434,7 @@ class GeoAlgorithm:
     def addParameter(self, param):
         # TODO: check that name does not exist
         if isinstance(param, Parameter):
+            param.setParent(self)
             self.parameters.append(param)
 
     def setParameterValue(self, paramName, value):
