@@ -12,7 +12,7 @@
     Have a look at the `DelphiLexer` to get an idea of how to use
     this scanner.
 
-    :copyright: Copyright 2006-2013 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2015 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 import re

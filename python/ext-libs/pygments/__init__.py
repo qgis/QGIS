@@ -22,11 +22,11 @@
     .. _Pygments tip:
        http://bitbucket.org/birkenfeld/pygments-main/get/tip.zip#egg=Pygments-dev
 
-    :copyright: Copyright 2006-2013 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2015 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
-__version__ = '1.6'
+__version__ = '2.1.3'
 __docformat__ = 'restructuredtext'
 
 __all__ = ['lex', 'format', 'highlight']
@@ -43,15 +43,16 @@ def lex(code, lexer):
     """
     try:
         return lexer.get_tokens(code)
-    except TypeError, err:
+    except TypeError as err:
         if isinstance(err.args[0], str) and \
-           'unbound method get_tokens' in err.args[0]:
+           ('unbound method get_tokens' in err.args[0] or
+            'missing 1 required positional argument' in err.args[0]):
             raise TypeError('lex() argument must be a lexer instance, '
                             'not a class')
         raise
 
 
-def format(tokens, formatter, outfile=None):
+def format(tokens, formatter, outfile=None):  # pylint: disable=redefined-builtin
     """
     Format a tokenlist ``tokens`` with the formatter ``formatter``.
 
@@ -61,15 +62,15 @@ def format(tokens, formatter, outfile=None):
     """
     try:
         if not outfile:
-            #print formatter, 'using', formatter.encoding
-            realoutfile = formatter.encoding and BytesIO() or StringIO()
+            realoutfile = getattr(formatter, 'encoding', None) and BytesIO() or StringIO()
             formatter.format(tokens, realoutfile)
             return realoutfile.getvalue()
         else:
             formatter.format(tokens, outfile)
-    except TypeError, err:
+    except TypeError as err:
         if isinstance(err.args[0], str) and \
-           'unbound method format' in err.args[0]:
+           ('unbound method format' in err.args[0] or
+            'missing 1 required positional argument' in err.args[0]):
             raise TypeError('format() argument must be a formatter instance, '
                             'not a class')
         raise
@@ -86,6 +87,6 @@ def highlight(code, lexer, formatter, outfile=None):
     return format(lex(code, lexer), formatter, outfile)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     from pygments.cmdline import main
     sys.exit(main(sys.argv))
