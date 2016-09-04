@@ -408,7 +408,7 @@ class ModelerParametersDialog(QDialog):
             item.setEditable(True)
             extents = self.getAvailableValuesOfType(ParameterExtent, OutputExtent)
             if self.canUseAutoExtent():
-                item.addItem(self.USE_MIN_COVERING_EXTENT, None)
+                item.addItem(self.USE_MIN_COVERING_EXTENT, '')
             for ex in extents:
                 item.addItem(self.resolveValueDescription(ex), ex)
             if not self.canUseAutoExtent():
