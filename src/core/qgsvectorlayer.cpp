@@ -1786,6 +1786,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
 bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
 {
+  bool result = true;
   emit readCustomSymbology( node.toElement(), errorMessage );
 
   if ( hasGeometryType() )
@@ -1795,18 +1796,28 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
     if ( !rendererElement.isNull() )
     {
       QgsFeatureRenderer* r = QgsFeatureRenderer::load( rendererElement );
-      if ( !r )
-        return false;
-
-      setRenderer( r );
+      if ( r )
+      {
+        setRenderer( r );
+      }
+      else
+      {
+        result = false;
+      }
     }
     else
     {
       QgsFeatureRenderer* r = QgsSymbologyConversion::readOldRenderer( node, geometryType() );
-      if ( !r )
-        r = QgsFeatureRenderer::defaultRenderer( geometryType() );
+      if ( r )
+      {
+        setRenderer( r );
+      }
+    }
 
-      setRenderer( r );
+    // make sure layer has a renderer - if none exists, fallback to a default renderer
+    if ( !renderer() )
+    {
+      setRenderer( QgsFeatureRenderer::defaultRenderer( geometryType() ) );
     }
 
     QDomElement labelingElement = node.firstChildElement( "labeling" );
@@ -1879,7 +1890,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
       }
     }
   }
-  return true;
+  return result;
 }
 
 bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
