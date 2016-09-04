@@ -101,19 +101,10 @@ class AlgorithmDialog(AlgorithmDialogBase):
         for param in params:
             if param.hidden:
                 continue
-            if isinstance(param, ParameterExtent):
-                continue
             if not self.setParamValue(
                     param, self.mainWidget.valueItems[param.name]):
                 raise AlgorithmDialogBase.InvalidParameterValue(
                     param, self.mainWidget.valueItems[param.name])
-
-        for param in params:
-            if isinstance(param, ParameterExtent):
-                if not self.setParamValue(
-                        param, self.mainWidget.valueItems[param.name]):
-                    raise AlgorithmDialogBase.InvalidParameterValue(
-                        param, self.mainWidget.valueItems[param.name])
 
         for output in outputs:
             if output.hidden:

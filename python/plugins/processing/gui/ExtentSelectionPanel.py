@@ -54,8 +54,8 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.setupUi(self)
 
         self.dialog = dialog
-        self.params = alg.parameters
-        if self.canUseAutoExtent():
+        self.alg = alg
+        if alg.canUseAutoExtent():
             if hasattr(self.leText, 'setPlaceholderText'):
                 self.leText.setPlaceholderText(
                     self.tr('[Leave blank to use min covering extent]'))
@@ -78,15 +78,6 @@ class ExtentSelectionPanel(BASE, WIDGET):
                     self.leText.setText(unicode(default))
                 except:
                     pass
-
-    def canUseAutoExtent(self):
-        for param in self.params:
-            if isinstance(param, (ParameterRaster, ParameterVector)):
-                return True
-            if isinstance(param, ParameterMultipleInput):
-                return True
-
-        return False
 
     def selectExtent(self):
         popupmenu = QMenu()
@@ -113,50 +104,6 @@ class ExtentSelectionPanel(BASE, WIDGET):
 
     def useMinCoveringExtent(self):
         self.leText.setText('')
-
-    def getMinCoveringExtent(self):
-        first = True
-        found = False
-        for param in self.params:
-            if param.value:
-                if isinstance(param, (ParameterRaster, ParameterVector)):
-                    if isinstance(param.value, (QgsRasterLayer,
-                                                QgsVectorLayer)):
-                        layer = param.value
-                    else:
-                        layer = dataobjects.getObject(param.value)
-                    if layer:
-                        found = True
-                        self.addToRegion(layer, first)
-                        first = False
-                elif isinstance(param, ParameterMultipleInput):
-                    layers = param.value.split(';')
-                    for layername in layers:
-                        layer = dataobjects.getObject(layername)
-                        if layer:
-                            found = True
-                            self.addToRegion(layer, first)
-                            first = False
-        if found:
-            return '{},{},{},{}'.format(
-                self.xmin, self.xmax, self.ymin, self.ymax)
-        else:
-            return None
-
-    def useNewAlg(self, alg):
-        self.params = alg.parameters
-
-    def addToRegion(self, layer, first):
-        if first:
-            self.xmin = layer.extent().xMinimum()
-            self.xmax = layer.extent().xMaximum()
-            self.ymin = layer.extent().yMinimum()
-            self.ymax = layer.extent().yMaximum()
-        else:
-            self.xmin = min(self.xmin, layer.extent().xMinimum())
-            self.xmax = max(self.xmax, layer.extent().xMaximum())
-            self.ymin = min(self.ymin, layer.extent().yMinimum())
-            self.ymax = max(self.ymax, layer.extent().yMaximum())
 
     def useLayerExtent(self):
         CANVAS_KEY = 'Use canvas extent'
@@ -205,10 +152,9 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.dialog.activateWindow()
 
     def getValue(self):
-        if unicode(self.leText.text()).strip() != '':
-            return unicode(self.leText.text())
-        else:
-            return self.getMinCoveringExtent()
+        if unicode(self.leText.text()).strip() == '':
+            return None
+        return unicode(self.leText.text())
 
     def setExtentFromString(self, s):
         self.leText.setText(s)

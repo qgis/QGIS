@@ -392,8 +392,6 @@ class ModelerAlgorithm(GeoAlgorithm):
                                                        self.tr("Parameter %s in algorithm %s in the model is run with default value! Edit the model to make sure that this is correct.") % (param.name, alg.name),
                                                        QgsMessageBar.WARNING, 4)
                     value = param.default
-                if value is None and isinstance(param, ParameterExtent):
-                    value = self.getMinCoveringExtent()
                 # We allow unexistent filepaths, since that allows
                 # algorithms to skip some conversion routines
                 if not param.setValue(value) and not isinstance(param,
@@ -441,43 +439,6 @@ class ModelerAlgorithm(GeoAlgorithm):
             return self.algs[value.alg].algorithm.getOutputFromName(value.output).value
         else:
             return value
-
-    def getMinCoveringExtent(self):
-        first = True
-        found = False
-        for param in self.parameters:
-            if param.value:
-                if isinstance(param, (ParameterRaster, ParameterVector)):
-                    found = True
-                    if isinstance(param.value, (QgsRasterLayer, QgsVectorLayer)):
-                        layer = param.value
-                    else:
-                        layer = dataobjects.getObjectFromUri(param.value)
-                    self.addToRegion(layer, first)
-                    first = False
-                elif isinstance(param, ParameterMultipleInput):
-                    found = True
-                    layers = param.value.split(';')
-                    for layername in layers:
-                        layer = dataobjects.getObjectFromUri(layername)
-                        self.addToRegion(layer, first)
-                        first = False
-        if found:
-            return ','.join([unicode(v) for v in [self.xmin, self.xmax, self.ymin, self.ymax]])
-        else:
-            return None
-
-    def addToRegion(self, layer, first):
-        if first:
-            self.xmin = layer.extent().xMinimum()
-            self.xmax = layer.extent().xMaximum()
-            self.ymin = layer.extent().yMinimum()
-            self.ymax = layer.extent().yMaximum()
-        else:
-            self.xmin = min(self.xmin, layer.extent().xMinimum())
-            self.xmax = max(self.xmax, layer.extent().xMaximum())
-            self.ymin = min(self.ymin, layer.extent().yMinimum())
-            self.ymax = max(self.ymax, layer.extent().yMaximum())
 
     def processAlgorithm(self, progress):
         executed = []
