@@ -513,7 +513,8 @@ class ModelerParametersDialog(QDialog):
                         ParameterBoolean,
                         ParameterExtent,
                         ParameterFile,
-                        ParameterPoint
+                        ParameterPoint,
+                        ParameterCrs
                 )):
                     self.setComboBoxValue(widget, value, param)
                 elif isinstance(param, ParameterString):
@@ -521,8 +522,6 @@ class ModelerParametersDialog(QDialog):
                         widget.setValue(value)
                     else:
                         self.setComboBoxValue(widget, value, param)
-                elif isinstance(param, ParameterCrs):
-                    widget.setAuthId(value)
                 elif isinstance(param, ParameterFixedTable):
                     pass  # TODO!
                 elif isinstance(param, ParameterMultipleInput):
