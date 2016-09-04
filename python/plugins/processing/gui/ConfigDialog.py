@@ -40,9 +40,9 @@ from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QWidget,
                                  QToolButton,
                                  QHBoxLayout,
-                                 QComboBox)
+                                 QComboBox,
+                                 QPushButton)
 from qgis.PyQt.QtGui import (QIcon,
-                             QPushButton,
                              QStandardItemModel,
                              QStandardItem)
 
