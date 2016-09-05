@@ -594,7 +594,7 @@ class Editor(QsciScintilla):
                 tmpFile = self.createTempFile()
                 filename = tmpFile
 
-            self.parent.pc.shell.runCommand(u"execfile(u'{0}'.encode('{1}'))"
+            self.parent.pc.shell.runCommand(u"exec(open(u'{0}'.encode('{1}')).read())"
                                             .format(filename.replace("\\", "/"), sys.getfilesystemencoding()))
 
     def runSelectedCode(self):
