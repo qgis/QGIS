@@ -62,7 +62,10 @@ QGis::DataType QgsRasterProjector::dataType( int bandNo ) const
   return QGis::UnknownDataType;
 }
 
-void QgsRasterProjector::setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS, int srcDatumTransform, int destDatumTransform )
+/// @cond PRIVATE
+
+
+void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS, int srcDatumTransform, int destDatumTransform )
 {
   mSrcCRS = theSrcCRS;
   mDestCRS = theDestCRS;
@@ -723,6 +726,9 @@ bool ProjectorData::checkRows( const QgsCoordinateTransform& ct )
   }
   return true;
 }
+
+/// @endcond
+
 
 QString QgsRasterProjector::precisionLabel( Precision precision )
 {
