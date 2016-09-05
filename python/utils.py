@@ -596,12 +596,21 @@ or using the "mod_spatialite" extension (python3)"""
         con = sqlite3.dbapi2.connect(*args, **kwargs)
         con.enable_load_extension(True)
         cur = con.cursor()
-        try:
-            # spatialite >= 4.2
-            cur.execute("select load_extension('mod_spatialite')")
-        except sqlite3.OperationalError:
-            cur.execute("select load_extension('libspatialite.so')")
-            # FIXME Windows and OSX ?
+        libs = [("mod_spatialite.so", "sqlite3_modspatialite_init"),
+                ("libspatialite.so", "sqlite3_extension_init") # for spatialite < 4.2
+                # FIXME Windows and OSX ?
+                ]
+        found = False
+        for lib, entry_point in libs:
+            try:
+                cur.execute("select load_extension('{}', '{}')".format(lib, entry_point))
+            except sqlite3.OperationalError:
+                continue
+            else:
+                found = True
+                break
+        if not found:
+            raise RuntimeError("Cannot find any suitable spatialite module")
         cur.close()
         con.enable_load_extension(False)
         return con
