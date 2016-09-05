@@ -37,6 +37,7 @@
 #include "qgsrendererv2.h"
 #include "qgsrendererv2registry.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerstylemanagerwidget.h"
@@ -170,10 +171,14 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     transparencyItem->setToolTip( tr( "Transparency" ) );
     transparencyItem->setData( Qt::UserRole, RasterTransparency );
     mOptionsListWidget->addItem( transparencyItem );
-    QListWidgetItem* histogramItem = new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/histogram.png" ), QString() );
-    histogramItem->setData( Qt::UserRole, RasterHistogram );
-    mOptionsListWidget->addItem( histogramItem );
-    histogramItem->setToolTip( tr( "Histogram" ) );
+
+    if ( static_cast<QgsRasterLayer*>( layer )->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
+    {
+      QListWidgetItem* histogramItem = new QListWidgetItem( QgsApplication::getThemeIcon( "propertyicons/histogram.png" ), QString() );
+      histogramItem->setData( Qt::UserRole, RasterHistogram );
+      mOptionsListWidget->addItem( histogramItem );
+      histogramItem->setToolTip( tr( "Histogram" ) );
+    }
   }
 
   Q_FOREACH ( QgsMapLayerConfigWidgetFactory* factory, mPageFactories )
@@ -391,21 +396,24 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       }
       case 2: // Histogram
       {
-        if ( mRasterStyleWidget )
+        if ( rlayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
         {
-          mRasterStyleWidget->deleteLater();
-          delete mRasterStyleWidget;
+          if ( mRasterStyleWidget )
+          {
+            mRasterStyleWidget->deleteLater();
+            delete mRasterStyleWidget;
+          }
+          mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetStack );
+          mRasterStyleWidget->syncToLayer( rlayer );
+          connect( mRasterStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
+
+          QgsRasterHistogramWidget* widget = new QgsRasterHistogramWidget( rlayer, mWidgetStack );
+          connect( widget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
+          QString name = mRasterStyleWidget->currentRenderWidget()->renderer()->type();
+          widget->setRendererWidget( name, mRasterStyleWidget->currentRenderWidget() );
+
+          mWidgetStack->addMainPanel( widget );
         }
-        mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetStack );
-        mRasterStyleWidget->syncToLayer( rlayer );
-        connect( mRasterStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
-
-        QgsRasterHistogramWidget* widget = new QgsRasterHistogramWidget( rlayer, mWidgetStack );
-        connect( widget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
-        QString name = mRasterStyleWidget->currentRenderWidget()->renderer()->type();
-        widget->setRendererWidget( name, mRasterStyleWidget->currentRenderWidget() );
-
-        mWidgetStack->addMainPanel( widget );
         break;
       }
       default:
