@@ -22,7 +22,7 @@ class QgsMultiLineStringV2: public QgsMultiCurveV2
 
     /** Returns the geometry converted to the more generic curve type QgsMultiCurve
         @return the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry* toCurveType() const /Factory/;
+    QgsAbstractGeometryV2* toCurveType() const /Factory/;
 
   protected:
 

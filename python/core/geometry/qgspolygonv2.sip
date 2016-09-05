@@ -28,7 +28,7 @@ class QgsPolygonV2: public QgsCurvePolygonV2
 
     /** Returns the geometry converted to the more generic curve type QgsCurvePolygon
          @return the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry* toCurveType() const /Factory/;
+    QgsAbstractGeometryV2* toCurveType() const /Factory/;
 
     void addInteriorRing( QgsCurveV2* ring /Transfer/ );
     //overridden to handle LineString25D rings

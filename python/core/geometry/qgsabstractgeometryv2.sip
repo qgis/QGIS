@@ -310,7 +310,7 @@ class QgsAbstractGeometryV2
         E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
         QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
         @return the converted geometry. Caller takes ownership*/
-    virtual QgsAbstractGeometry* toCurveType() const /Factory/;
+    virtual QgsAbstractGeometryV2* toCurveType() const /Factory/;
 
     /** Returns approximate angle at a vertex. This is usually the average angle between adjacent
      * segments, and can be pictured as the orientation of a line following the curvature of the

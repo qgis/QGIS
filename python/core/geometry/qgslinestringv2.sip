@@ -104,7 +104,7 @@ class QgsLineStringV2: public QgsCurveV2
 
     /** Returns the geometry converted to the more generic curve type QgsCompoundCurve
     @return the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry* toCurveType() const /Factory/;
+    QgsAbstractGeometryV2* toCurveType() const /Factory/;
 
     /** Returns a QPolygonF representing the line string.
      */
