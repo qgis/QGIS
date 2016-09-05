@@ -100,7 +100,7 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   if ( !feature->layer()->isCurved() &&
        this->alpha > M_PI / 2 && this->alpha <= 3*M_PI / 2 )
   {
-    if ( feature->isUprightLabel() )
+    if ( feature->showUprightLabels() )
     {
       // Turn label upsidedown by inverting boundary points
       double tx, ty;
