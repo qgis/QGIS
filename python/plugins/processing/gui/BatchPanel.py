@@ -156,7 +156,7 @@ class BatchPanel(BASE, WIDGET):
         elif isinstance(param, ParameterFixedTable):
             item = FixedTablePanel(param)
         elif isinstance(param, ParameterExtent):
-            item = ExtentSelectionPanel(self.parent, self.alg, param.default)
+            item = ExtentSelectionPanel(self.parent, param.default)
         elif isinstance(param, ParameterPoint):
             item = PointSelectionPanel(self.parent, param.default)
         elif isinstance(param, ParameterCrs):
@@ -247,27 +247,12 @@ class BatchPanel(BASE, WIDGET):
             for param in alg.parameters:
                 if param.hidden:
                     continue
-                if isinstance(param, ParameterExtent):
-                    col += 1
-                    continue
                 widget = self.tblParameters.cellWidget(row, col)
                 if not self.setParamValue(param, widget, alg):
                     self.parent.lblProgress.setText(
                         self.tr('<b>Missing parameter value: %s (row %d)</b>') % (param.description, row + 1))
                     return
                 algParams[param.name] = param.getValueAsCommandLineParameter()
-                col += 1
-            col = 0
-            for param in alg.parameters:
-                if param.hidden:
-                    continue
-                if isinstance(param, ParameterExtent):
-                    widget = self.tblParameters.cellWidget(row, col)
-                    if not self.setParamValue(param, widget, alg):
-                        self.parent.lblProgress.setText(
-                            self.tr('<b>Missing parameter value: %s (row %d)</b>') % (param.description, row + 1))
-                        return
-                    algParams[param.name] = unicode(param.value())
                 col += 1
             for out in alg.outputs:
                 if out.hidden:

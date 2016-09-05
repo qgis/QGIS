@@ -71,27 +71,12 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
             for param in alg.parameters:
                 if param.hidden:
                     continue
-                if isinstance(param, ParameterExtent):
-                    col += 1
-                    continue
                 widget = self.mainWidget.tblParameters.cellWidget(row, col)
                 if not self.mainWidget.setParamValue(param, widget, alg):
                     self.lblProgress.setText(
                         self.tr('<b>Missing parameter value: %s (row %d)</b>') % (param.description, row + 1))
                     self.algs = None
                     return
-                col += 1
-            col = 0
-            for param in alg.parameters:
-                if param.hidden:
-                    continue
-                if isinstance(param, ParameterExtent):
-                    widget = self.mainWidget.tblParameters.cellWidget(row, col)
-                    if not self.mainWidget.setParamValue(param, widget, alg):
-                        self.lblProgress.setText(
-                            self.tr('<b>Missing parameter value: %s (row %d)</b>') % (param.description, row + 1))
-                        self.algs = None
-                        return
                 col += 1
             for out in alg.outputs:
                 if out.hidden:

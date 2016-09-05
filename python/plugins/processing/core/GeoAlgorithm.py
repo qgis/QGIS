@@ -34,10 +34,13 @@ import copy
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication, QSettings
 
+from qgis.core import QgsVectorLayer, QgsRasterLayer
+
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.SilentProgress import SilentProgress
+from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -198,6 +201,7 @@ class GeoAlgorithm:
             self.setOutputCRS()
             self.resolveTemporaryOutputs()
             self.resolveDataObjects()
+            self.resolveMinCoveringExtent()
             self.checkOutputFileExtensions()
             self.runPreExecutionScript(progress)
             self.processAlgorithm(progress)
@@ -407,6 +411,61 @@ class GeoAlgorithm:
                                 inputlayers[i] = layer.source()
                                 break
                     param.setValue(";".join(inputlayers))
+
+    def canUseAutoExtent(self):
+        for param in self.parameters:
+            if isinstance(param, (ParameterRaster, ParameterVector)):
+                return True
+            if isinstance(param, ParameterMultipleInput):
+                return True
+        return False
+
+    def resolveMinCoveringExtent(self):
+        for param in self.parameters:
+            if isinstance(param, ParameterExtent):
+                if param.value is None:
+                    param.value = self.getMinCoveringExtent()
+
+    def getMinCoveringExtent(self):
+        first = True
+        found = False
+        for param in self.parameters:
+            if param.value:
+                if isinstance(param, (ParameterRaster, ParameterVector)):
+                    if isinstance(param.value, (QgsRasterLayer,
+                                                QgsVectorLayer)):
+                        layer = param.value
+                    else:
+                        layer = dataobjects.getObject(param.value)
+                    if layer:
+                        found = True
+                        self.addToRegion(layer, first)
+                        first = False
+                elif isinstance(param, ParameterMultipleInput):
+                    layers = param.value.split(';')
+                    for layername in layers:
+                        layer = dataobjects.getObject(layername)
+                        if layer:
+                            found = True
+                            self.addToRegion(layer, first)
+                            first = False
+        if found:
+            return '{},{},{},{}'.format(
+                self.xmin, self.xmax, self.ymin, self.ymax)
+        else:
+            return None
+
+    def addToRegion(self, layer, first):
+        if first:
+            self.xmin = layer.extent().xMinimum()
+            self.xmax = layer.extent().xMaximum()
+            self.ymin = layer.extent().yMinimum()
+            self.ymax = layer.extent().yMaximum()
+        else:
+            self.xmin = min(self.xmin, layer.extent().xMinimum())
+            self.xmax = max(self.xmax, layer.extent().xMaximum())
+            self.ymin = min(self.ymin, layer.extent().yMinimum())
+            self.ymax = max(self.ymax, layer.extent().yMaximum())
 
     def checkInputCRS(self):
         """It checks that all input layers use the same CRS. If so,
