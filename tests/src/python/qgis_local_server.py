@@ -26,7 +26,8 @@ import tempfile
 from utilities import (
     unitTestDataPath,
     getExecutablePath,
-    openInBrowserTab
+    openInBrowserTab,
+    getTempfilePath
 )
 
 # allow import error to be raised if qgis is not on sys.path
@@ -422,10 +423,10 @@ class QgisLocalServer(object):
         res = urllib.urlopen(url)
         xml = res.read()
         if browser:
-            tmp = tempfile.NamedTemporaryFile(suffix=".html", delete=False)
-            tmp.write(xml)
-            url = tmp.name
-            tmp.close()
+            tmp_name = getTempfilePath('html')
+            with open(tmp_name, 'wt') as temp_html:
+                temp_html.write(xml)
+            url = tmp_name
             openInBrowserTab(url)
             return False, ''
 
@@ -513,10 +514,9 @@ class QgisLocalServer(object):
                 and tmp_png.info().getmaintype() == 'image'
                 and tmp_png.info().getheader('Content-Type') == 'image/png'):
 
-            tmp = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
-            filepath = tmp.name
-            tmp.write(tmp_png.read())
-            tmp.close()
+            filepath = getTempfilePath('png')
+            with open(filepath, 'wb') as temp_image:
+                temp_image.write(tmp_png.read())
             success = True
         else:
             raise ServerProcessError(

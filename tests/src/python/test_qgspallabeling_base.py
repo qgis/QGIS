@@ -469,10 +469,10 @@ def runSuite(module, tests):
             report += '\n<h3>{0}</h3>\n{1}'.format(k, v)
         report += '</body></html>'
 
-        tmp = tempfile.NamedTemporaryFile(suffix=".html", delete=False)
-        tmp.write(report)
-        tmp.close()
-        openInBrowserTab('file://' + tmp.name)
+        tmp_name = getTempfilePath('html')
+        with open(tmp_name, 'wt') as report_file:
+            report_file.write(report)
+        openInBrowserTab('file://' + tmp_name)
 
     return res
 
