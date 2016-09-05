@@ -55,7 +55,10 @@ class Parameter:
     take as input.
     """
 
-    def __init__(self, name='', description='', default=None, optional=False):
+    default_metadata = {}
+
+    def __init__(self, name='', description='', default=None, optional=False,
+                 metadata={}):
         self.name = name
         self.description = description
         self.default = default
@@ -69,6 +72,10 @@ class Parameter:
         self.hidden = False
 
         self.optional = parseBool(optional)
+
+        # TODO: make deep copy and deep update
+        self.metadata = self.default_metadata.copy()
+        self.metadata.update(metadata)
 
     def setValue(self, obj):
         """
@@ -120,8 +127,12 @@ class Parameter:
 
 class ParameterBoolean(Parameter):
 
-    def __init__(self, name='', description='', default=None, optional=False):
-        Parameter.__init__(self, name, description, parseBool(default), optional)
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.BooleanWidgetWrapper'
+    }
+
+    def __init__(self, name='', description='', default=None, optional=False, metadata={}):
+        Parameter.__init__(self, name, description, parseBool(default), optional, metadata)
 
     def setValue(self, value):
         if value is None:
@@ -145,6 +156,10 @@ class ParameterBoolean(Parameter):
 
 
 class ParameterCrs(Parameter):
+
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.CrsWidgetWrapper'
+    }
 
     def __init__(self, name='', description='', default=None, optional=False):
         '''The value is a string that uniquely identifies the
