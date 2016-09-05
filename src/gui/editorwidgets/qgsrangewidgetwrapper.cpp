@@ -74,7 +74,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget* editor )
   mQgsDial = qobject_cast<QgsDial*>( editor );
   mQgsSlider = qobject_cast<QgsSlider*>( editor );
 
-  bool allowNull = config( "AllowNull" ).toBool();
+  bool allowNull = config( "AllowNull", true ).toBool();
 
   QVariant min( config( "Min" ) );
   QVariant max( config( "Max" ) );

@@ -121,43 +121,29 @@ QgsEditorWidgetConfig QgsDateTimeEditConfig::config()
 
 void QgsDateTimeEditConfig::setConfig( const QgsEditorWidgetConfig &config )
 {
-  if ( config.contains( "field_format" ) )
-  {
-    const QString fieldFormat = config[ "field_format" ].toString();
-    mFieldFormatEdit->setText( fieldFormat );
+  const QString fieldFormat = config.value( "field_format", QGSDATETIMEEDIT_DATEFORMAT ).toString();
+  mFieldFormatEdit->setText( fieldFormat );
 
-    if ( fieldFormat == QGSDATETIMEEDIT_DATEFORMAT )
-      mFieldFormatComboBox->setCurrentIndex( 0 );
-    else if ( fieldFormat == QGSDATETIMEEDIT_TIMEFORMAT )
-      mFieldFormatComboBox->setCurrentIndex( 1 );
-    else if ( fieldFormat == QGSDATETIMEEDIT_DATETIMEFORMAT )
-      mFieldFormatComboBox->setCurrentIndex( 2 );
-    else
-      mFieldFormatComboBox->setCurrentIndex( 3 );
+  if ( fieldFormat == QGSDATETIMEEDIT_DATEFORMAT )
+    mFieldFormatComboBox->setCurrentIndex( 0 );
+  else if ( fieldFormat == QGSDATETIMEEDIT_TIMEFORMAT )
+    mFieldFormatComboBox->setCurrentIndex( 1 );
+  else if ( fieldFormat == QGSDATETIMEEDIT_DATETIMEFORMAT )
+    mFieldFormatComboBox->setCurrentIndex( 2 );
+  else
+    mFieldFormatComboBox->setCurrentIndex( 3 );
+
+  QString displayFormat = config.value( "display_format", QGSDATETIMEEDIT_DATEFORMAT ).toString();
+  mDisplayFormatEdit->setText( displayFormat );
+  if ( displayFormat == mFieldFormatEdit->text() )
+  {
+    mDisplayFormatComboBox->setCurrentIndex( 0 );
+  }
+  else
+  {
+    mDisplayFormatComboBox->setCurrentIndex( 1 );
   }
 
-  if ( config.contains( "display_format" ) )
-  {
-    const QString displayFormat = config[ "display_format" ].toString();
-    mDisplayFormatEdit->setText( displayFormat );
-    if ( displayFormat == mFieldFormatEdit->text() )
-    {
-      mDisplayFormatComboBox->setCurrentIndex( 0 );
-    }
-    else
-    {
-      mDisplayFormatComboBox->setCurrentIndex( 1 );
-    }
-  }
-
-  if ( config.contains( "calendar_popup" ) )
-  {
-    mCalendarPopupCheckBox->setChecked( config[ "calendar_popup" ].toBool() );
-  }
-
-  if ( config.contains( "allow_null" ) )
-  {
-    mAllowNullCheckBox->setChecked( config[ "allow_null" ].toBool() );
-  }
-
+  mCalendarPopupCheckBox->setChecked( config.value( "calendar_popup" , false ).toBool() );
+  mAllowNullCheckBox->setChecked( config.value( "allow_null", true ).toBool() );
 }

@@ -56,20 +56,9 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer* vl
 
 void QgsRelationReferenceConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
 {
-  if ( config.contains( "AllowNULL" ) )
-  {
-    mCbxAllowNull->setChecked( config.value( "AllowNULL" ).toBool() );
-  }
-
-  if ( config.contains( "OrderByValue" ) )
-  {
-    mCbxOrderByValue->setChecked( config.value( "OrderByValue" ).toBool() );
-  }
-
-  if ( config.contains( "ShowForm" ) )
-  {
-    mCbxShowForm->setChecked( config.value( "ShowForm" ).toBool() );
-  }
+  mCbxAllowNull->setChecked( config.value( "AllowNULL", false ).toBool() );
+  mCbxOrderByValue->setChecked( config.value( "OrderByValue", false ).toBool() );
+  mCbxShowForm->setChecked( config.value( "ShowForm", true ).toBool() );
 
   if ( config.contains( "Relation" ) )
   {
@@ -77,18 +66,9 @@ void QgsRelationReferenceConfigDlg::setConfig( const QgsEditorWidgetConfig& conf
     relationChanged( mComboRelation->currentIndex() );
   }
 
-  if ( config.contains( "MapIdentification" ) )
-  {
-    mCbxMapIdentification->setChecked( config.value( "MapIdentification" ).toBool() );
-  }
-
-  if ( config.contains( "AllowAddFeatures" ) )
-    mCbxAllowAddFeatures->setChecked( config.value( "AllowAddFeatures" ).toBool() );
-
-  if ( config.contains( "ReadOnly" ) )
-  {
-    mCbxReadOnly->setChecked( config.value( "ReadOnly" ).toBool() );
-  }
+  mCbxMapIdentification->setChecked( config.value( "MapIdentification", false ).toBool() );
+  mCbxAllowAddFeatures->setChecked( config.value( "AllowAddFeatures", false ).toBool() );
+  mCbxReadOnly->setChecked( config.value( "ReadOnly", false ).toBool() );
 
   if ( config.contains( "FilterFields" ) )
   {
