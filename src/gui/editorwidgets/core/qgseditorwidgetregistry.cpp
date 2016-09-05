@@ -214,6 +214,8 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
 
   QDomNodeList editTypeNodes = layerElem.namedItem( "edittypes" ).childNodes();
 
+  QgsEditFormConfig formConfig = vectorLayer->editFormConfig();
+
   for ( int i = 0; i < editTypeNodes.size(); i++ )
   {
     QDomNode editTypeNode = editTypeNodes.at( i );
@@ -230,7 +232,7 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
 
     if ( mWidgetFactories.contains( ewv2Type ) )
     {
-      vectorLayer->editFormConfig().setWidgetType( idx, ewv2Type );
+      formConfig.setWidgetType( idx, ewv2Type );
       QDomElement ewv2CfgElem = editTypeElement.namedItem( "widgetv2config" ).toElement();
 
       if ( !ewv2CfgElem.isNull() )
@@ -238,19 +240,21 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
         cfg = mWidgetFactories[ewv2Type]->readEditorConfig( ewv2CfgElem, vectorLayer, idx );
       }
 
-      vectorLayer->editFormConfig().setReadOnly( idx, ewv2CfgElem.attribute( "fieldEditable", "1" ) != "1" );
-      vectorLayer->editFormConfig().setLabelOnTop( idx, ewv2CfgElem.attribute( "labelOnTop", "0" ) == "1" );
-      vectorLayer->editFormConfig().setNotNull( idx, ewv2CfgElem.attribute( "notNull", "0" ) == "1" );
-      vectorLayer->editFormConfig().setExpression( idx, ewv2CfgElem.attribute( "constraint", QString() ) );
-      vectorLayer->editFormConfig().setExpressionDescription( idx, ewv2CfgElem.attribute( "constraintDescription", QString() ) );
+      formConfig.setReadOnly( idx, ewv2CfgElem.attribute( "fieldEditable", "1" ) != "1" );
+      formConfig.setLabelOnTop( idx, ewv2CfgElem.attribute( "labelOnTop", "0" ) == "1" );
+      formConfig.setNotNull( idx, ewv2CfgElem.attribute( "notNull", "0" ) == "1" );
+      formConfig.setExpression( idx, ewv2CfgElem.attribute( "constraint", QString() ) );
+      formConfig.setExpressionDescription( idx, ewv2CfgElem.attribute( "constraintDescription", QString() ) );
 
-      vectorLayer->editFormConfig().setWidgetConfig( idx, cfg );
+      formConfig.setWidgetConfig( idx, cfg );
     }
     else
     {
       QgsMessageLog::logMessage( tr( "Unknown attribute editor widget '%1'" ).arg( ewv2Type ) );
     }
   }
+
+  vectorLayer->setEditFormConfig( formConfig );
 }
 
 void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement& layerElem, QDomDocument& doc ) const
