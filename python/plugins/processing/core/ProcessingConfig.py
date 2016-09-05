@@ -50,6 +50,7 @@ class ProcessingConfig:
     VECTOR_POLYGON_STYLE = 'VECTOR_POLYGON_STYLE'
     SHOW_RECENT_ALGORITHMS = 'SHOW_RECENT_ALGORITHMS'
     USE_SELECTED = 'USE_SELECTED'
+    IGNORE_NULL_GEOMS = 'IGNORE_NULL_GEOMS'
     USE_FILENAME_AS_LAYER_NAME = 'USE_FILENAME_AS_LAYER_NAME'
     KEEP_DIALOG_OPEN = 'KEEP_DIALOG_OPEN'
     SHOW_DEBUG_IN_DIALOG = 'SHOW_DEBUG_IN_DIALOG'
@@ -81,6 +82,10 @@ class ProcessingConfig:
             ProcessingConfig.tr('General'),
             ProcessingConfig.USE_SELECTED,
             ProcessingConfig.tr('Use only selected features'), True))
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.IGNORE_NULL_GEOMS,
+            ProcessingConfig.tr('Ignore features with null geometries'), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.USE_FILENAME_AS_LAYER_NAME,

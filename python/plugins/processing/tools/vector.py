@@ -18,6 +18,7 @@
 """
 from __future__ import print_function
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
@@ -32,6 +33,7 @@ import csv
 import uuid
 import codecs
 import cStringIO
+import itertools
 
 import psycopg2
 
@@ -88,11 +90,16 @@ TYPE_MAP_SPATIALITE_LAYER = {
 }
 
 
-def features(layer, request=QgsFeatureRequest()):
+def features(layer, request=QgsFeatureRequest(), includeNullGeoms=False):
     """This returns an iterator over features in a vector layer,
     considering the selection that might exist in the layer, and the
     configuration that indicates whether to use only selected feature
     or all of them.
+
+    if the Processing configuration is set to ignore features with null
+    geometries, those wont be returned by the iterator. To return them
+    regardless of the configuratin (for algorithms that deal with those
+    features themselves in a particular way), use includeNullGeoms=True
 
     This should be used by algorithms instead of calling the Qgis API
     directly, to ensure a consistent behaviour across algorithms.
@@ -108,6 +115,8 @@ def features(layer, request=QgsFeatureRequest()):
                 self.selection = True
             else:
                 self.iter = layer.getFeatures(request)
+            if ProcessingConfig.getSetting(ProcessingConfig.IGNORE_NULL_GEOMS) and not includeNullGeoms:
+                self.iter = itertools.ifilter(lambda f: f.geometry() is not None, self.iter)
 
         def __iter__(self):
             return self.iter
