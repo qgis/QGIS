@@ -2893,7 +2893,7 @@ void QgisApp::createOverview()
 
   mMapCanvas->setCachingEnabled( mySettings.value( "/qgis/enable_render_caching", true ).toBool() );
 
-  mMapCanvas->setParallelRenderingEnabled( mySettings.value( "/qgis/parallel_rendering", false ).toBool() );
+  mMapCanvas->setParallelRenderingEnabled( mySettings.value( "/qgis/parallel_rendering", true ).toBool() );
 
   mMapCanvas->setMapUpdateInterval( mySettings.value( "/qgis/map_update_interval", 250 ).toInt() );
 }
@@ -8867,7 +8867,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString& currentPage )
 
     mMapCanvas->setCachingEnabled( mySettings.value( "/qgis/enable_render_caching", true ).toBool() );
 
-    mMapCanvas->setParallelRenderingEnabled( mySettings.value( "/qgis/parallel_rendering", false ).toBool() );
+    mMapCanvas->setParallelRenderingEnabled( mySettings.value( "/qgis/parallel_rendering", true ).toBool() );
 
     mMapCanvas->setMapUpdateInterval( mySettings.value( "/qgis/map_update_interval", 250 ).toInt() );
 
