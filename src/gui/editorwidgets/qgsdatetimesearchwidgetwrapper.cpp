@@ -156,7 +156,7 @@ void QgsDateTimeSearchWidgetWrapper::initWidget( QWidget* editor )
 
     const bool calendar = config( "calendar_popup", false ).toBool();
     mDateTimeEdit->setCalendarPopup( calendar );
-    if ( calendar )
+    if ( calendar && mDateTimeEdit->calendarWidget() )
     {
       // highlight today's date
       QTextCharFormat todayFormat;
