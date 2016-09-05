@@ -666,6 +666,7 @@ SET(QGIS_GUI_HDRS
   auth/qgsauthtrustedcasdialog.h
 
   editorwidgets/core/qgseditorwidgetfactory.h
+  editorwidgets/core/qgseditorwidgetautoconf.h
 
   editorwidgets/qgscheckboxwidgetfactory.h
   editorwidgets/qgsclassificationwidgetwrapperfactory.h
