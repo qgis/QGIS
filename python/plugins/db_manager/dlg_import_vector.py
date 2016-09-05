@@ -130,8 +130,8 @@ class DlgImportVector(QDialog, Ui_Dialog):
         lastDir = settings.value("/db_manager/lastUsedDir", "")
         lastVectorFormat = settings.value("/UI/lastVectorFileFilter", "")
         # ask for a filename
-        (filename, lastVectorFormat) = QFileDialog.getOpenFileNameAndFilter(self, self.tr("Choose the file to import"),
-                                                                            lastDir, vectorFormats, lastVectorFormat)
+        filename, lastVectorFormat = QFileDialog.getOpenFileName(self, self.tr("Choose the file to import"),
+                                                                 lastDir, vectorFormats, lastVectorFormat)
         if filename == "":
             return
         # store the last used dir and format

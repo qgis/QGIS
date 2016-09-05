@@ -75,8 +75,8 @@ class DlgExportVector(QDialog, Ui_Dialog):
         selectedFilter = self.cboFileFormat.itemData(self.cboFileFormat.currentIndex())
 
         # ask for a filename
-        filename = QFileDialog.getSaveFileName(self, self.tr("Choose where to save the file"), lastUsedDir,
-                                               selectedFilter)
+        filename, filter = QFileDialog.getSaveFileName(self, self.tr("Choose where to save the file"), lastUsedDir,
+                                                       selectedFilter)
         if filename == "":
             return
 

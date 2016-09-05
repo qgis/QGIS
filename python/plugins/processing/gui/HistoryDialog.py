@@ -84,8 +84,8 @@ class HistoryDialog(BASE, WIDGET):
             self.fillTree()
 
     def saveLog(self):
-        fileName = QFileDialog.getSaveFileName(self,
-                                               self.tr('Save file'), '.', self.tr('Log files (*.log *.LOG)'))
+        fileName, filter = QFileDialog.getSaveFileName(self,
+                                                       self.tr('Save file'), '.', self.tr('Log files (*.log *.LOG)'))
 
         if fileName == '':
             return

@@ -623,7 +623,7 @@ class PythonConsoleWidget(QWidget):
     def openScriptFile(self):
         lastDirPath = self.settings.value("pythonConsole/lastDirPath", QDir.homePath())
         openFileTr = QCoreApplication.translate("PythonConsole", "Open File")
-        fileList = QFileDialog.getOpenFileNames(
+        fileList, selected_filter = QFileDialog.getOpenFileNames(
             self, openFileTr, lastDirPath, "Script file (*.py)")
         if fileList:
             for pyFile in fileList:
@@ -663,9 +663,9 @@ class PythonConsoleWidget(QWidget):
             pathFileName = tabWidget.path
             fileNone = False
         saveAsFileTr = QCoreApplication.translate("PythonConsole", "Save File As")
-        filename = QFileDialog.getSaveFileName(self,
-                                               saveAsFileTr,
-                                               pathFileName, "Script file (*.py)")
+        filename, filter = QFileDialog.getSaveFileName(self,
+                                                       saveAsFileTr,
+                                                       pathFileName, "Script file (*.py)")
         if filename:
             try:
                 tabWidget.save(filename)

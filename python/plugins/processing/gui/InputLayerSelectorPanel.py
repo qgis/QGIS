@@ -67,8 +67,8 @@ class InputLayerSelectorPanel(BASE, WIDGET):
         else:
             path = ''
 
-        filename = QFileDialog.getOpenFileName(self, self.tr('Select file'),
-                                               path, self.tr('All files (*.*);;') + self.param.getFileFilter())
+        filename, selected_filter = QFileDialog.getOpenFileName(self, self.tr('Select file'),
+                                                                path, self.tr('All files (*.*);;') + self.param.getFileFilter())
         if filename:
             settings.setValue('/Processing/LastInputPath',
                               os.path.dirname(unicode(filename)))

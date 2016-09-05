@@ -255,9 +255,9 @@ class ModelerDialog(BASE, WIDGET):
         self.saveModel(True)
 
     def exportAsImage(self):
-        filename = unicode(QFileDialog.getSaveFileName(self,
+        filename, filter = QFileDialog.getSaveFileName(self,
                                                        self.tr('Save Model As Image'), '',
-                                                       self.tr('PNG files (*.png *.PNG)')))
+                                                       self.tr('PNG files (*.png *.PNG)'))
         if not filename:
             return
 
@@ -281,9 +281,9 @@ class ModelerDialog(BASE, WIDGET):
         img.save(filename)
 
     def exportAsPython(self):
-        filename = unicode(QFileDialog.getSaveFileName(self,
+        filename, filter = QFileDialog.getSaveFileName(self,
                                                        self.tr('Save Model As Python Script'), '',
-                                                       self.tr('Python files (*.py *.PY)')))
+                                                       self.tr('Python files (*.py *.PY)'))
         if not filename:
             return
 
@@ -308,10 +308,10 @@ class ModelerDialog(BASE, WIDGET):
         if self.alg.descriptionFile is not None and not saveAs:
             filename = self.alg.descriptionFile
         else:
-            filename = unicode(QFileDialog.getSaveFileName(self,
+            filename, filter = QFileDialog.getSaveFileName(self,
                                                            self.tr('Save Model'),
                                                            ModelerUtils.modelsFolders()[0],
-                                                           self.tr('Processing models (*.model)')))
+                                                           self.tr('Processing models (*.model)'))
             if filename:
                 if not filename.endswith('.model'):
                     filename += '.model'
@@ -340,9 +340,9 @@ class ModelerDialog(BASE, WIDGET):
             self.hasChanged = False
 
     def openModel(self):
-        filename = unicode(QFileDialog.getOpenFileName(self,
-                                                       self.tr('Open Model'), ModelerUtils.modelsFolders()[0],
-                                                       self.tr('Processing models (*.model *.MODEL)')))
+        filename, selected_filter = unicode(QFileDialog.getOpenFileName(self,
+                                                                        self.tr('Open Model'), ModelerUtils.modelsFolders()[0],
+                                                                        self.tr('Processing models (*.model *.MODEL)')))
         if filename:
             try:
                 alg = ModelerAlgorithm.fromFile(filename)

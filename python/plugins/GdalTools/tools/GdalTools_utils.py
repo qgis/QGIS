@@ -447,7 +447,7 @@ class FileDialog:
     def getOpenFileNames(self, parent=None, caption='', filter='', selectedFilter=None, useEncoding=False):
         if useEncoding:
             return self.getDialog(parent, caption, QFileDialog.AcceptOpen, QFileDialog.ExistingFiles, filter, selectedFilter, useEncoding)
-        res = QFileDialog.getOpenFileNames(parent, caption, getLastUsedDir(), filter)
+        res, selected_filter = QFileDialog.getOpenFileNames(parent, caption, getLastUsedDir(), filter)
         if len(res) > 0:
             setLastUsedDir(res[-1])
         return res
@@ -456,7 +456,7 @@ class FileDialog:
     def getOpenFileName(self, parent=None, caption='', filter='', selectedFilter=None, useEncoding=False):
         if useEncoding:
             return self.getDialog(parent, caption, QFileDialog.AcceptOpen, QFileDialog.ExistingFile, filter, selectedFilter, useEncoding)
-        res = QFileDialog.getOpenFileName(parent, caption, getLastUsedDir(), filter)
+        res, selected_filter = QFileDialog.getOpenFileName(parent, caption, getLastUsedDir(), filter)
         if res:
             setLastUsedDir(res)
         return res
@@ -465,7 +465,7 @@ class FileDialog:
     def getSaveFileName(self, parent=None, caption='', filter='', selectedFilter=None, useEncoding=False):
         if useEncoding:
             return self.getDialog(parent, caption, QFileDialog.AcceptSave, QFileDialog.AnyFile, filter, selectedFilter, useEncoding)
-        res = QFileDialog.getSaveFileName(parent, caption, getLastUsedDir(), filter)
+        res, filter = QFileDialog.getSaveFileName(parent, caption, getLastUsedDir(), filter)
         if res:
             setLastUsedDir(res)
         return res

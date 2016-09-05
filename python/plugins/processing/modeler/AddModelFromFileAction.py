@@ -51,9 +51,9 @@ class AddModelFromFileAction(ToolboxAction):
     def execute(self):
         settings = QSettings()
         lastDir = settings.value('Processing/lastModelsDir', '')
-        filename = QFileDialog.getOpenFileName(self.toolbox,
-                                               self.tr('Open model', 'AddModelFromFileAction'), lastDir,
-                                               self.tr('Processing model files (*.model *.MODEL)', 'AddModelFromFileAction'))
+        filename, selected_filter = QFileDialog.getOpenFileName(self.toolbox,
+                                                                self.tr('Open model', 'AddModelFromFileAction'), lastDir,
+                                                                self.tr('Processing model files (*.model *.MODEL)', 'AddModelFromFileAction'))
         if filename:
             try:
                 settings.setValue('Processing/lastModelsDir',

@@ -179,9 +179,9 @@ class BatchPanel(BASE, WIDGET):
         return item
 
     def load(self):
-        filename = unicode(QFileDialog.getOpenFileName(self,
-                                                       self.tr('Open batch'), None,
-                                                       self.tr('JSON files (*.json)')))
+        filename, selected_filter = unicode(QFileDialog.getOpenFileName(self,
+                                                                        self.tr('Open batch'), None,
+                                                                        self.tr('JSON files (*.json)')))
         if filename:
             with open(filename) as f:
                 values = json.load(f)
@@ -283,10 +283,10 @@ class BatchPanel(BASE, WIDGET):
                     return
             toSave.append({self.PARAMETERS: algParams, self.OUTPUTS: algOutputs})
 
-        filename = unicode(QFileDialog.getSaveFileName(self,
+        filename, filter = QFileDialog.getSaveFileName(self,
                                                        self.tr('Save batch'),
                                                        None,
-                                                       self.tr('JSON files (*.json)')))
+                                                       self.tr('JSON files (*.json)'))
         if filename:
             if not filename.endswith('.json'):
                 filename += '.json'

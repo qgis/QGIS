@@ -802,10 +802,10 @@ class EditorTab(QWidget):
         if self.path is None:
             saveTr = QCoreApplication.translate('PythonConsole',
                                                 'Python Console: Save file')
-            self.path = QFileDialog().getSaveFileName(self,
-                                                      saveTr,
-                                                      self.tw.tabText(index) + '.py',
-                                                      "Script file (*.py)")
+            self.path, filter = QFileDialog().getSaveFileName(self,
+                                                              saveTr,
+                                                              self.tw.tabText(index) + '.py',
+                                                              "Script file (*.py)")
             # If the user didn't select a file, abort the save operation
             if len(self.path) == 0:
                 self.path = None

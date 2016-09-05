@@ -52,9 +52,9 @@ class AddScriptFromFileAction(ToolboxAction):
     def execute(self):
         settings = QSettings()
         lastDir = settings.value('Processing/lastScriptsDir', '')
-        filename = QFileDialog.getOpenFileName(self.toolbox,
-                                               self.tr('Script files', 'AddScriptFromFileAction'), lastDir,
-                                               self.tr('Script files (*.py *.PY)', 'AddScriptFromFileAction'))
+        filename, selected_filter = QFileDialog.getOpenFileName(self.toolbox,
+                                                                self.tr('Script files', 'AddScriptFromFileAction'), lastDir,
+                                                                self.tr('Script files (*.py *.PY)', 'AddScriptFromFileAction'))
         if filename:
             try:
                 settings.setValue('Processing/lastScriptsDir',

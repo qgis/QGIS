@@ -92,8 +92,8 @@ class MultipleFileInputDialog(BASE, WIDGET):
         else:
             path = ''
 
-        files = QFileDialog.getOpenFileNames(self,
-                                             self.tr('Select file(s)'), path, self.tr('All files (*.*)'))
+        files, selected_filter = QFileDialog.getOpenFileNames(self,
+                                                              self.tr('Select file(s)'), path, self.tr('All files (*.*)'))
 
         if len(files) == 0:
             return

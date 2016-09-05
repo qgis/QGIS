@@ -400,9 +400,9 @@ class FileDirectorySelector(QWidget):
                                                             self.tr('Select directory'), lastDir,
                                                             QFileDialog.ShowDirsOnly)
         else:
-            selectedPath = QFileDialog.getOpenFileName(None,
-                                                       self.tr('Select file'), lastDir, self.tr('All files (*.*)')
-                                                       )
+            selectedPath, selected_filter = QFileDialog.getOpenFileName(None,
+                                                                        self.tr('Select file'), lastDir, self.tr('All files (*.*)')
+                                                                        )
 
         if not selectedPath:
             return
