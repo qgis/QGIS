@@ -5,16 +5,16 @@
 
     Other formatters: NullFormatter, RawTokenFormatter.
 
-    :copyright: Copyright 2006-2013 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2015 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 from pygments.formatter import Formatter
-from pygments.util import OptionError, get_choice_opt, b
+from pygments.util import OptionError, get_choice_opt
 from pygments.token import Token
 from pygments.console import colorize
 
-__all__ = ['NullFormatter', 'RawTokenFormatter']
+__all__ = ['NullFormatter', 'RawTokenFormatter', 'TestcaseFormatter']
 
 
 class NullFormatter(Formatter):
@@ -40,7 +40,7 @@ class RawTokenFormatter(Formatter):
 
     The format is ``tokentype<TAB>repr(tokenstring)\n``. The output can later
     be converted to a token stream with the `RawTokenLexer`, described in the
-    `lexer list <lexers.txt>`_.
+    :doc:`lexer list <lexers>`.
 
     Only two options are accepted:
 
@@ -50,7 +50,8 @@ class RawTokenFormatter(Formatter):
     `error_color`
         If set to a color name, highlight error tokens using that color.  If
         set but with no value, defaults to ``'red'``.
-        *New in Pygments 0.11.*
+
+        .. versionadded:: 0.11
 
     """
     name = 'Raw tokens'
@@ -61,9 +62,9 @@ class RawTokenFormatter(Formatter):
 
     def __init__(self, **options):
         Formatter.__init__(self, **options)
-        if self.encoding:
-            raise OptionError('the raw formatter does not support the '
-                              'encoding option')
+        # We ignore self.encoding if it is set, since it gets set for lexer
+        # and formatter if given with -Oencoding on the command line.
+        # The RawTokenFormatter outputs only ASCII. Override here.
         self.encoding = 'ascii'  # let pygments.format() do the right thing
         self.compress = get_choice_opt(options, 'compress',
                                        ['', 'none', 'gz', 'bz2'], '')
@@ -79,7 +80,7 @@ class RawTokenFormatter(Formatter):
 
     def format(self, tokensource, outfile):
         try:
-            outfile.write(b(''))
+            outfile.write(b'')
         except TypeError:
             raise TypeError('The raw tokens formatter needs a binary '
                             'output file')
@@ -113,3 +114,47 @@ class RawTokenFormatter(Formatter):
             for ttype, value in tokensource:
                 write("%s\t%r\n" % (ttype, value))
         flush()
+
+TESTCASE_BEFORE = u'''\
+    def testNeedsName(self):
+        fragment = %r
+        tokens = [
+'''
+TESTCASE_AFTER = u'''\
+        ]
+        self.assertEqual(tokens, list(self.lexer.get_tokens(fragment)))
+'''
+
+
+class TestcaseFormatter(Formatter):
+    """
+    Format tokens as appropriate for a new testcase.
+
+    .. versionadded:: 2.0
+    """
+    name = 'Testcase'
+    aliases = ['testcase']
+
+    def __init__(self, **options):
+        Formatter.__init__(self, **options)
+        if self.encoding is not None and self.encoding != 'utf-8':
+            raise ValueError("Only None and utf-8 are allowed encodings.")
+
+    def format(self, tokensource, outfile):
+        indentation = ' ' * 12
+        rawbuf = []
+        outbuf = []
+        for ttype, value in tokensource:
+            rawbuf.append(value)
+            outbuf.append('%s(%s, %r),\n' % (indentation, ttype, value))
+
+        before = TESTCASE_BEFORE % (u''.join(rawbuf),)
+        during = u''.join(outbuf)
+        after = TESTCASE_AFTER
+        if self.encoding is None:
+            outfile.write(before + during + after)
+        else:
+            outfile.write(before.encode('utf-8'))
+            outfile.write(during.encode('utf-8'))
+            outfile.write(after.encode('utf-8'))
+        outfile.flush()

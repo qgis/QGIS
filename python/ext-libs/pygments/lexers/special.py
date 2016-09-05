@@ -5,16 +5,15 @@
 
     Special lexers.
 
-    :copyright: Copyright 2006-2013 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2015 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
-import cStringIO
 
 from pygments.lexer import Lexer
 from pygments.token import Token, Error, Text
-from pygments.util import get_choice_opt, b
+from pygments.util import get_choice_opt, text_type, BytesIO
 
 
 __all__ = ['TextLexer', 'RawTokenLexer']
@@ -35,7 +34,8 @@ class TextLexer(Lexer):
 
 _ttype_cache = {}
 
-line_re = re.compile(b('.*?\n'))
+line_re = re.compile(b'.*?\n')
+
 
 class RawTokenLexer(Lexer):
     """
@@ -60,12 +60,12 @@ class RawTokenLexer(Lexer):
         Lexer.__init__(self, **options)
 
     def get_tokens(self, text):
-        if isinstance(text, unicode):
+        if isinstance(text, text_type):
             # raw token stream never has any non-ASCII characters
             text = text.encode('ascii')
         if self.compress == 'gz':
             import gzip
-            gzipfile = gzip.GzipFile('', 'rb', 9, cStringIO.StringIO(text))
+            gzipfile = gzip.GzipFile('', 'rb', 9, BytesIO(text))
             text = gzipfile.read()
         elif self.compress == 'bz2':
             import bz2
@@ -73,7 +73,7 @@ class RawTokenLexer(Lexer):
 
         # do not call Lexer.get_tokens() because we do not want Unicode
         # decoding to occur, and stripping is not optional.
-        text = text.strip(b('\n')) + b('\n')
+        text = text.strip(b'\n') + b'\n'
         for i, t, v in self.get_tokens_unprocessed(text):
             yield t, v
 
@@ -81,9 +81,9 @@ class RawTokenLexer(Lexer):
         length = 0
         for match in line_re.finditer(text):
             try:
-                ttypestr, val = match.group().split(b('\t'), 1)
+                ttypestr, val = match.group().split(b'\t', 1)
             except ValueError:
-                val = match.group().decode(self.encoding)
+                val = match.group().decode('ascii', 'replace')
                 ttype = Error
             else:
                 ttype = _ttype_cache.get(ttypestr)

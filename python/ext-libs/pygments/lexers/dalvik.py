@@ -5,13 +5,15 @@
 
     Pygments lexers for Dalvik VM-related languages.
 
-    :copyright: Copyright 2006-2013 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2015 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
+import re
+
 from pygments.lexer import RegexLexer, include, bygroups
 from pygments.token import Keyword, Text, Comment, Name, String, Number, \
-                           Punctuation
+    Punctuation
 
 __all__ = ['SmaliLexer']
 
@@ -21,7 +23,7 @@ class SmaliLexer(RegexLexer):
     For `Smali <http://code.google.com/p/smali/>`_ (Android/Dalvik) assembly
     code.
 
-    *New in Pygments 1.6.*
+    .. versionadded:: 1.6
     """
     name = 'Smali'
     aliases = ['smali']
@@ -63,8 +65,8 @@ class SmaliLexer(RegexLexer):
             (r'\s+', Text),
         ],
         'instruction': [
-            (r'\b[vp]\d+\b', Name.Builtin), # registers
-            (r'\b[a-z][A-Za-z0-9/-]+\s+', Text), # instructions
+            (r'\b[vp]\d+\b', Name.Builtin),  # registers
+            (r'\b[a-z][A-Za-z0-9/-]+\s+', Text),  # instructions
         ],
         'literal': [
             (r'".*"', String),
@@ -73,27 +75,27 @@ class SmaliLexer(RegexLexer):
             (r'[0-9]+L?', Number.Integer),
         ],
         'field': [
-            (r'(\$?\b)([A-Za-z0-9_$]*)(:)',
+            (r'(\$?\b)([\w$]*)(:)',
              bygroups(Punctuation, Name.Variable, Punctuation)),
         ],
         'method': [
-            (r'<(?:cl)?init>', Name.Function), # constructor
-            (r'(\$?\b)([A-Za-z0-9_$]*)(\()',
+            (r'<(?:cl)?init>', Name.Function),  # constructor
+            (r'(\$?\b)([\w$]*)(\()',
              bygroups(Punctuation, Name.Function, Punctuation)),
         ],
         'label': [
-            (r':[A-Za-z0-9_]+', Name.Label),
+            (r':\w+', Name.Label),
         ],
         'class': [
             # class names in the form Lcom/namespace/ClassName;
             # I only want to color the ClassName part, so the namespace part is
             # treated as 'Text'
-            (r'(L)((?:[A-Za-z0-9_$]+/)*)([A-Za-z0-9_$]+)(;)',
+            (r'(L)((?:[\w$]+/)*)([\w$]+)(;)',
                 bygroups(Keyword.Type, Text, Name.Class, Text)),
         ],
         'punctuation': [
             (r'->', Punctuation),
-            (r'[{},\(\):=\.-]', Punctuation),
+            (r'[{},():=.-]', Punctuation),
         ],
         'type': [
             (r'[ZBSCIJFDV\[]+', Keyword.Type),
@@ -102,3 +104,22 @@ class SmaliLexer(RegexLexer):
             (r'#.*?\n', Comment),
         ],
     }
+
+    def analyse_text(text):
+        score = 0
+        if re.search(r'^\s*\.class\s', text, re.MULTILINE):
+            score += 0.5
+            if re.search(r'\b((check-cast|instance-of|throw-verification-error'
+                         r')\b|(-to|add|[ais]get|[ais]put|and|cmpl|const|div|'
+                         r'if|invoke|move|mul|neg|not|or|rem|return|rsub|shl|'
+                         r'shr|sub|ushr)[-/])|{|}', text, re.MULTILINE):
+                score += 0.3
+        if re.search(r'(\.(catchall|epilogue|restart local|prologue)|'
+                     r'\b(array-data|class-change-error|declared-synchronized|'
+                     r'(field|inline|vtable)@0x[0-9a-fA-F]|generic-error|'
+                     r'illegal-class-access|illegal-field-access|'
+                     r'illegal-method-access|instantiation-error|no-error|'
+                     r'no-such-class|no-such-field|no-such-method|'
+                     r'packed-switch|sparse-switch))\b', text, re.MULTILINE):
+            score += 0.6
+        return score

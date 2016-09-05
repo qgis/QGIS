@@ -5,7 +5,7 @@
 
     Basic token types and the standard tokens.
 
-    :copyright: Copyright 2006-2013 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2015 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
@@ -43,12 +43,21 @@ class _TokenType(tuple):
     def __repr__(self):
         return 'Token' + (self and '.' or '') + '.'.join(self)
 
+    def __copy__(self):
+        # These instances are supposed to be singletons
+        return self
+
+    def __deepcopy__(self, memo):
+        # These instances are supposed to be singletons
+        return self
+
 
 Token       = _TokenType()
 
 # Special token types
 Text        = Token.Text
 Whitespace  = Text.Whitespace
+Escape      = Token.Escape
 Error       = Token.Error
 # Text that doesn't belong to this lexer (e.g. HTML in PHP)
 Other       = Token.Other
@@ -116,6 +125,7 @@ STANDARD_TYPES = {
 
     Text:                          '',
     Whitespace:                    'w',
+    Escape:                        'esc',
     Error:                         'err',
     Other:                         'x',
 
@@ -164,6 +174,7 @@ STANDARD_TYPES = {
     String.Symbol:                 'ss',
 
     Number:                        'm',
+    Number.Bin:                    'mb',
     Number.Float:                  'mf',
     Number.Hex:                    'mh',
     Number.Integer:                'mi',
@@ -176,8 +187,10 @@ STANDARD_TYPES = {
     Punctuation:                   'p',
 
     Comment:                       'c',
+    Comment.Hashbang:              'ch',
     Comment.Multiline:             'cm',
     Comment.Preproc:               'cp',
+    Comment.PreprocFile:           'cpf',
     Comment.Single:                'c1',
     Comment.Special:               'cs',
 

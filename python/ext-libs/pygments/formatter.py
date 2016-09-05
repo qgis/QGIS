@@ -5,20 +5,20 @@
 
     Base formatter class.
 
-    :copyright: Copyright 2006-2013 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2015 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import codecs
 
-from pygments.util import get_bool_opt
+from pygments.util import get_bool_opt, string_types
 from pygments.styles import get_style_by_name
 
 __all__ = ['Formatter']
 
 
 def _lookup_style(style):
-    if isinstance(style, basestring):
+    if isinstance(style, string_types):
         return get_style_by_name(style)
     return style
 
@@ -68,7 +68,10 @@ class Formatter(object):
         self.full  = get_bool_opt(options, 'full', False)
         self.title = options.get('title', '')
         self.encoding = options.get('encoding', None) or None
-        self.encoding = options.get('outencoding', None) or self.encoding
+        if self.encoding in ('guess', 'chardet'):
+            # can happen for e.g. pygmentize -O encoding=guess
+            self.encoding = 'utf-8'
+        self.encoding = options.get('outencoding') or self.encoding
         self.options = options
 
     def get_style_defs(self, arg=''):
