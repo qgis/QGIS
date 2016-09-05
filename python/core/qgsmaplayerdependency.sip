@@ -30,7 +30,14 @@ class QgsMapLayerDependency
   //! Return the ID of the layer this dependency depends on
   QString layerId() const;
 
+  //! Comparison operator
   bool operator==( const QgsMapLayerDependency& other ) const;
+
+  //! hash operator
+  long __hash__() const;
+%MethodCode
+  sipRes = qHash( *sipCpp );
+%End
 };
 
 

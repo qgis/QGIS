@@ -26,11 +26,7 @@ from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
 from qgis.PyQt.QtCore import QSettings
 
-try:
-    from pyspatialite import dbapi2 as sqlite3
-except ImportError:
-    print("You should install pyspatialite to run the tests")
-    raise ImportError
+from qgis.utils import spatialite_connect
 
 # Pass no_exit=True: for some reason this crashes on exit on Travis MacOSX
 start_app(sys.platform != 'darwin')
@@ -70,7 +66,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         cls.dbname = os.path.join(tempfile.gettempdir(), "test.sqlite")
         if os.path.exists(cls.dbname):
             os.remove(cls.dbname)
-        con = sqlite3.connect(cls.dbname, isolation_level=None)
+        con = spatialite_connect(cls.dbname, isolation_level=None)
         cur = con.cursor()
         cur.execute("BEGIN")
         sql = "SELECT InitSpatialMetadata()"
@@ -227,7 +223,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         shutil.copy(self.dbname, corrupt_dbname)
         layer = QgsVectorLayer("dbname=%s table=test_pg (geometry)" % corrupt_dbname, "test_pg", "spatialite")
         # Corrupt the database
-        open(corrupt_dbname, 'wb').write('')
+        open(corrupt_dbname, 'wb').write(b'')
         layer.getFeatures()
         layer = None
         os.unlink(corrupt_dbname)

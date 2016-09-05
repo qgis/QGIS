@@ -25,10 +25,7 @@ __copyright__ = '(C) 2015, René-Luc Dhont'
 
 __revision__ = '$Format:%H$'
 
-try:
-    from pyspatialite import dbapi2 as sqlite
-except:
-    pass
+from qgis.utils import spatialite_connect
 
 
 class DbError(Exception):
@@ -49,7 +46,7 @@ class GeoDB:
         self.dbname = uri.database()
 
         try:
-            self.con = sqlite.connect(self.con_info())
+            self.con = spatialite_connect(self.con_info())
 
         except (sqlite.InterfaceError, sqlite.OperationalError) as e:
             raise DbError(unicode(e))
@@ -84,7 +81,7 @@ class GeoDB:
             self.con.close()
 
         try:
-            self.con = sqlite.connect(self.con_info())
+            self.con = spatialite_connect(self.con_info())
 
         except (sqlite.InterfaceError, sqlite.OperationalError) as e:
             raise DbError(unicode(e))
