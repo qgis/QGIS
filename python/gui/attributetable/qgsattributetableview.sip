@@ -14,7 +14,7 @@ class QgsAttributeTableView : QTableView
      * @brief setFeatureSelectionManager
      * @param featureSelectionManager We will take ownership
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager /Transfer/ );
 
     /**
      * This event filter is installed on the verticalHeader to intercept mouse press and release

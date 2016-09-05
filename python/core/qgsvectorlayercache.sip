@@ -76,7 +76,7 @@ class QgsVectorLayerCache : QObject
      *
      * @param cacheIndex  The cache index to add.
      */
-    void addCacheIndex( QgsAbstractCacheIndex *cacheIndex );
+    void addCacheIndex( QgsAbstractCacheIndex *cacheIndex /Transfer/ );
 
     /**
      * Query this VectorLayerCache for features.

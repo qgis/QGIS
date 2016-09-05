@@ -18,7 +18,7 @@ class QgsMultiSurface: public QgsGeometryCollection
 
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
-    virtual bool addGeometry( QgsAbstractGeometry* g );
+    virtual bool addGeometry( QgsAbstractGeometry* g /Transfer/ );
 
     virtual QgsAbstractGeometry* boundary() const /Factory/;
 
