@@ -102,6 +102,10 @@ class QgsLineStringV2: public QgsCurveV2
     /** Closes the line string by appending the first point to the end of the line, if it is not already closed.*/
     void close();
 
+    /** Returns the geometry converted to the more generic curve type QgsCompoundCurve
+    @return the converted geometry. Caller takes ownership*/
+    QgsAbstractGeometry* toCurveType() const /Factory/;
+
     /** Returns a QPolygonF representing the line string.
      */
     QPolygonF asQPolygonF() const;

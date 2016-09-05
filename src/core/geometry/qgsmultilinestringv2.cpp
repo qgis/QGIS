@@ -20,6 +20,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgscompoundcurvev2.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestringv2.h"
+#include "qgsmulticurvev2.h"
 
 QgsMultiLineStringV2* QgsMultiLineStringV2::clone() const
 {
@@ -100,4 +101,14 @@ bool QgsMultiLineStringV2::addGeometry( QgsAbstractGeometryV2* g )
 
   setZMTypeFromSubGeometry( g, QgsWKBTypes::MultiLineString );
   return QgsGeometryCollectionV2::addGeometry( g );
+}
+
+QgsAbstractGeometryV2* QgsMultiLineStringV2::toCurveType() const
+{
+  QgsMultiCurveV2* multiCurve = new QgsMultiCurveV2();
+  for ( int i = 0; i < mGeometries.size(); ++i )
+  {
+    multiCurve->addGeometry( mGeometries.at( i )->clone() );
+  }
+  return multiCurve;
 }

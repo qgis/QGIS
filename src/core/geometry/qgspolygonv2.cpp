@@ -240,3 +240,15 @@ QgsPolygonV2* QgsPolygonV2::surfaceToPolygon() const
 {
   return clone();
 }
+
+QgsAbstractGeometryV2* QgsPolygonV2::toCurveType() const
+{
+  QgsCurvePolygonV2* curvePolygon = new QgsCurvePolygonV2();
+  curvePolygon->setExteriorRing( mExteriorRing->clone() );
+  int nInteriorRings = mInteriorRings.size();
+  for ( int i = 0; i < nInteriorRings; ++i )
+  {
+    curvePolygon->addInteriorRing( mInteriorRings.at( i )->clone() );
+  }
+  return curvePolygon;
+}

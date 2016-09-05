@@ -361,4 +361,8 @@ class QgsVectorDataProvider : QgsDataProvider
     void fillMinMaxCache();
 
     void pushError( const QString& msg );
+
+    /** Converts the geometry to the provider type if possible / necessary
+    @return the converted geometry or nullptr if no conversion was necessary or possible*/
+    QgsGeometry* convertToProviderType( const QgsGeometry& geom ) const /Factory/;
 };

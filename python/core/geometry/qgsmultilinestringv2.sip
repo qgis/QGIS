@@ -20,6 +20,10 @@ class QgsMultiLineStringV2: public QgsMultiCurveV2
     /** Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g );
 
+    /** Returns the geometry converted to the more generic curve type QgsMultiCurve
+        @return the converted geometry. Caller takes ownership*/
+    QgsAbstractGeometry* toCurveType() const /Factory/;
+
   protected:
 
     virtual bool wktOmitChildType() const;

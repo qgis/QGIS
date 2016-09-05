@@ -132,6 +132,9 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
      */
     QPolygonF asQPolygonF() const;
 
+    /** Returns the geometry converted to QgsCompoundCurveV2*/
+    QgsAbstractGeometryV2* toCurveType() const override;
+
     //reimplemented methods
 
     virtual QString geometryType() const override { return "LineString"; }

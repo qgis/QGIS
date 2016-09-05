@@ -50,6 +50,9 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygonV2
 
     QgsPolygonV2* surfaceToPolygon() const override;
 
+    /** Returns the geometry converted to QgsCurvePolygonV2*/
+    QgsAbstractGeometryV2* toCurveType() const override;
+
     void addInteriorRing( QgsCurveV2* ring ) override;
     //overridden to handle LineString25D rings
     virtual void setExteriorRing( QgsCurveV2* ring ) override;
