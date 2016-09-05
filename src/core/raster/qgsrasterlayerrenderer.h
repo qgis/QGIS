@@ -57,10 +57,15 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
     QgsRasterPipe* mPipe;
     QgsRenderContext& mContext;
 
-    //! Specific feedback class to provide preview of raster layer rendering.
+    /** \ingroup core
+     * Specific internal feedback class to provide preview of raster layer rendering.
+     * @note added in 3.0
+     * @note not available in Python bindings
+     */
     class Feedback : public QgsRasterBlockFeedback
     {
       public:
+        //! Create feedback object based on our layer renderer
         explicit Feedback( QgsRasterLayerRenderer* r );
 
         //! when notified of new data in data provider it launches a preview draw of the raster
