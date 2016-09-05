@@ -145,12 +145,6 @@ class ScriptAlgorithm(GeoAlgorithm):
         out = None
         line = line.replace('#', '')
 
-        # If the line is in the format of the text description files for
-        # normal algorithms, then process it using parameter and output
-        # factories
-        if '|' in line:
-            self.processDescriptionParameterLine(line)
-            return
         if line == "nomodeler":
             self.showInModeler = False
             return
@@ -169,15 +163,8 @@ class ScriptAlgorithm(GeoAlgorithm):
         if tokens[1].lower().strip().startswith('output'):
             outToken = tokens[1].strip()[len('output') + 1:]
             out = self.processOutputParameterToken(outToken)
-
-        elif tokens[1].lower().strip().startswith('optional'):
-            optToken = tokens[1].strip()[len('optional') + 1:]
-            param = self.processInputParameterToken(optToken, tokens[0])
-            if param:
-                param.optional = True
-
         else:
-            param = self.processInputParameterToken(tokens[1], tokens[0])
+            param = getParameterFromString(line)
 
         if param is not None:
             self.addParameter(param)
@@ -190,125 +177,11 @@ class ScriptAlgorithm(GeoAlgorithm):
                 self.tr('Could not load script: %s.\n'
                         'Problem with line "%s"', 'ScriptAlgorithm') % (self.descriptionFile or '', line))
 
-    def processInputParameterToken(self, token, name):
-        param = None
-
-        descName = self.createDescriptiveName(name)
-
-        if token.lower().strip() == 'raster':
-            param = ParameterRaster(name, descName, False)
-        elif token.lower().strip() == 'vector':
-            param = ParameterVector(name, descName,
-                                    [dataobjects.TYPE_VECTOR_ANY])
-        elif token.lower().strip() == 'vector point':
-            param = ParameterVector(name, descName,
-                                    [dataobjects.TYPE_VECTOR_POINT])
-        elif token.lower().strip() == 'vector line':
-            param = ParameterVector(name, descName,
-                                    [dataobjects.TYPE_VECTOR_LINE])
-        elif token.lower().strip() == 'vector polygon':
-            param = ParameterVector(name, descName,
-                                    [dataobjects.TYPE_VECTOR_POLYGON])
-        elif token.lower().strip() == 'table':
-            param = ParameterTable(name, descName, False)
-        elif token.lower().strip() == 'multiple raster':
-            param = ParameterMultipleInput(name, descName,
-                                           dataobjects.TYPE_RASTER)
-            param.optional = False
-        elif token.lower().strip() == 'multiple vector':
-            param = ParameterMultipleInput(name, descName,
-                                           dataobjects.TYPE_VECTOR_ANY)
-            param.optional = False
-        elif token.lower().strip().startswith('selectionfromfile'):
-            options = token.strip()[len('selectionfromfile '):].split(';')
-            param = ParameterSelection(name, descName, options, isSource=True)
-        elif token.lower().strip().startswith('selection'):
-            options = token.strip()[len('selection '):].split(';')
-            param = ParameterSelection(name, descName, options)
-        elif token.lower().strip().startswith('boolean'):
-            default = token.strip()[len('boolean') + 1:]
-            if default:
-                param = ParameterBoolean(name, descName, default)
-            else:
-                param = ParameterBoolean(name, descName)
-        elif token.lower().strip() == 'extent':
-            param = ParameterExtent(name, descName)
-        elif token.lower().strip() == 'point':
-            param = ParameterPoint(name, descName)
-        elif token.lower().strip() == 'file':
-            param = ParameterFile(name, descName, False)
-        elif token.lower().strip() == 'folder':
-            param = ParameterFile(name, descName, True)
-        elif token.lower().strip().startswith('number'):
-            default = token.strip()[len('number') + 1:]
-            if default:
-                param = ParameterNumber(name, descName, default=default)
-            else:
-                param = ParameterNumber(name, descName)
-        elif token.lower().strip().startswith('field'):
-            if token.lower().strip().startswith('field number'):
-                field = token.strip()[len('field number') + 1:]
-                datatype = ParameterTableField.DATA_TYPE_NUMBER
-            elif token.lower().strip().startswith('field string'):
-                field = token.strip()[len('field string') + 1:]
-                datatype = ParameterTableField.DATA_TYPE_STRING
-            else:
-                field = token.strip()[len('field') + 1:]
-                datatype = ParameterTableField.DATA_TYPE_ANY
-            found = False
-            for p in self.parameters:
-                if p.name == field:
-                    found = True
-                    break
-            if found:
-                param = ParameterTableField(
-                    name=name,
-                    description=descName,
-                    parent=field,
-                    datatype=datatype
-                )
-        elif token.lower().strip().startswith('multiple field'):
-            if token.lower().strip().startswith('multiple field number'):
-                field = token.strip()[len('multiple field number') + 1:]
-                datatype = ParameterTableMultipleField.DATA_TYPE_NUMBER
-            elif token.lower().strip().startswith('multiple field string'):
-                field = token.strip()[len('multiple field string') + 1:]
-                datatype = ParameterTableMultipleField.DATA_TYPE_STRING
-            else:
-                field = token.strip()[len('multiple field') + 1:]
-                datatype = ParameterTableMultipleField.DATA_TYPE_ANY
-            found = False
-            for p in self.parameters:
-                if p.name == field:
-                    found = True
-                    break
-            if found:
-                param = ParameterTableMultipleField(
-                    name=name,
-                    description=descName,
-                    parent=field,
-                    datatype=datatype
-                )
-        elif token.lower().strip().startswith('string'):
-            default = token.strip()[len('string') + 1:]
-            if default:
-                param = ParameterString(name, descName, default)
-            else:
-                param = ParameterString(name, descName)
-        elif token.lower().strip().startswith('longstring'):
-            default = token.strip()[len('longstring') + 1:]
-            if default:
-                param = ParameterString(name, descName, default, multiline=True)
-            else:
-                param = ParameterString(name, descName, multiline=True)
-        elif token.lower().strip().startswith('crs'):
-            default = token.strip()[len('crs') + 1:]
-            if default:
-                param = ParameterCrs(name, descName, default)
-            else:
-                param = ParameterCrs(name, descName)
-
-        return param
+    def processInputParameterLine(self, line):
+        for paramClass in paramClasses:
+            param  = paramClass.fromScriptCode(line)
+            if param is not None:
+                return param
 
     def processOutputParameterToken(self, token):
         out = None

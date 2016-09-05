@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import sys
 import os
+import inspect
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsRasterLayer, QgsVectorLayer
@@ -34,19 +35,23 @@ from processing.tools.vector import resolveFieldIndex, features
 from processing.tools.system import isWindows
 from processing.tools import dataobjects
 
-
-def getParameterFromString(s):
-    tokens = s.split("|")
-    params = [t if unicode(t) != unicode(None) else None for t in tokens[1:]]
-    clazz = getattr(sys.modules[__name__], tokens[0])
-    return clazz(*params)
-
-
 def parseBool(s):
     if s is None or s == unicode(None).lower():
         return None
     return unicode(s).lower() == unicode(True).lower()
 
+def _splitParameterOptions(line):
+    tokens = line.split('=', 1)
+    if tokens[1].lower().strip().startswith('optional'):
+        isOptional = True
+        definition = tokens[1].strip()[len('optional') + 1:]
+    else:
+        isOptional = False
+        definition = tokens[1]
+    return isOptional, tokens[0], definition
+        
+def _createDescriptiveName(s):
+    return s.replace('_', ' ')
 
 class Parameter:
 
@@ -125,8 +130,7 @@ class Parameter:
         if context == '':
             context = 'Parameter'
         return QCoreApplication.translate(context, string)
-
-
+            
 class ParameterBoolean(Parameter):
 
     default_metadata = {
@@ -155,6 +159,20 @@ class ParameterBoolean(Parameter):
             param_type += 'optional '
         param_type += 'boolean '
         return '##' + self.name + '=' + param_type + str(self.default)
+    
+    @classmethod
+    def fromScriptCode(self, line):
+        isOptional, name, definition = _splitParameterOptions(line)
+        if definition.startswith("boolean"):
+            descName = _createDescriptiveName(name)
+            default = definition.strip()[len('boolean') + 1:]
+            if default:
+                param = ParameterBoolean(name, descName, default)
+            else:
+                param = ParameterBoolean(name, descName)
+            param.optional = isOptional
+            return param
+        
 
 
 class ParameterCrs(Parameter):
@@ -191,6 +209,16 @@ class ParameterCrs(Parameter):
         param_type += 'crs '
         return '##' + self.name + '=' + param_type + str(self.default)
 
+    @classmethod
+    def fromScriptCode(self, line):
+        isOptional, name, definition = _splitParameterOptions(line)
+        if definition.startswith("crs"):
+            descName = _createDescriptiveName(name)
+            default = definition.strip()[len('crs') + 1:]
+            if default:
+                return ParameterCrs(name, descName, default, isOptional)
+            else:
+                return ParameterCrs(name, descName, None, isOptional)
 
 class ParameterDataObject(Parameter):
 
@@ -240,6 +268,14 @@ class ParameterExtent(Parameter):
             param_type += 'optional '
         param_type += 'extent'
         return '##' + self.name + '=' + param_type
+    
+    @classmethod
+    def fromScriptCode(self, line):
+        isOptional, name, definition = _splitParameterOptions(line)
+        if definition.startswith("extent"):
+            descName = _createDescriptiveName(name)
+            default = definition.strip()[len('extent') + 1:] or None
+            return ParameterExtent(name, descName, default, isOptional)
 
 
 class ParameterPoint(Parameter):
@@ -275,6 +311,14 @@ class ParameterPoint(Parameter):
             param_type += 'optional '
         param_type += 'point'
         return '##' + self.name + '=' + param_type
+
+    @classmethod
+    def fromScriptCode(self, line):
+        isOptional, name, definition = _splitParameterOptions(line)
+        if definition.startswith("point"):
+            descName = _createDescriptiveName(name)
+            default = definition.strip()[len('point') + 1:] or None
+            return ParameterPoint(name, descName, default, isOptional)
 
 
 class ParameterFile(Parameter):
@@ -315,6 +359,13 @@ class ParameterFile(Parameter):
             param_type += 'file'
         return '##' + self.name + '=' + param_type
 
+    @classmethod
+    def fromScriptCode(self, line):
+        isOptional, name, definition = _splitParameterOptions(line)
+        if definition.startswith("file") or definition.startswith("folder"):
+            descName = _createDescriptiveName(name)
+            return ParameterFile(name, descName, definition.startswith("folder"), isOptional)
+
 
 class ParameterFixedTable(Parameter):
 
@@ -352,6 +403,14 @@ class ParameterFixedTable(Parameter):
                 tablestring = tablestring + table[i][j] + ','
         tablestring = tablestring[:-1]
         return tablestring
+
+    @classmethod
+    def fromScriptCode(self, line):
+        isOptional, name, definition = _splitParameterOptions(line)
+        if definition.startswith("point"):
+            descName = _createDescriptiveName(name)
+            default = definition.strip()[len('point') + 1:] or None
+            return ParameterPoint(name, descName, default, isOptional)
 
 
 class ParameterMultipleInput(ParameterDataObject):
@@ -539,6 +598,17 @@ class ParameterMultipleInput(ParameterDataObject):
             param_type += 'multiple vector'
         return '##' + self.name + '=' + param_type
 
+    @classmethod
+    def fromScriptCode(self, line):
+        isOptional, name, definition = _splitParameterOptions(line)
+        descName = _createDescriptiveName(name)
+        if definition.lower().strip() == 'multiple raster':
+            return ParameterMultipleInput(name, descName,
+                                           dataobjects.TYPE_RASTER, isOptional)            
+        elif definition.lower().strip() == 'multiple vector':
+            return ParameterMultipleInput(name, definition,
+                                           dataobjects.TYPE_VECTOR_ANY, isOptional)
+            
 
 class ParameterNumber(Parameter):
 
@@ -596,6 +666,13 @@ class ParameterNumber(Parameter):
         param_type += 'number'
         return '##' + self.name + '=' + param_type + str(self.default)
 
+    @classmethod
+    def fromScriptCode(self, line):
+        isOptional, name, definition = _splitParameterOptions(line)
+        descName = _createDescriptiveName(name)
+        if definition.lower().strip().startswith('number'):
+            default = definition.strip()[len('number') + 1:] or None
+            return ParameterNumber(name, descName, default=default, optional=isOptional)
 
 class ParameterRange(Parameter):
 
@@ -698,6 +775,13 @@ class ParameterRaster(ParameterDataObject):
         param_type += 'raster'
         return '##' + self.name + '=' + param_type
 
+    @classmethod
+    def fromScriptCode(self, line):
+        isOptional, name, definition = _splitParameterOptions(line)
+        descName = _createDescriptiveName(name)
+        print isOptional, name, definition
+        if definition.lower().strip().startswith('raster'):
+            return ParameterRaster(name, descName, optional=isOptional)
 
 class ParameterSelection(Parameter):
 
@@ -741,7 +825,18 @@ class ParameterSelection(Parameter):
         except:
             return False
 
-
+    @classmethod
+    def fromScriptCode(self, line):
+        isOptional, name, definition = _splitParameterOptions(line)
+        descName = _createDescriptiveName(name)
+        if definition.lower().strip().startswith('selectionfromfile'):
+            options = definition.strip()[len('selectionfromfile '):].split(';')
+            return ParameterSelection(name, descName, options, isSource=True, optional=isOptional)
+        elif definition.lower().strip().startswith('selection'):
+            options = definition.strip()[len('selection '):].split(';')
+            return ParameterSelection(name, descName, options, optional=isOptional)
+        
+        
 class ParameterString(Parameter):
 
     NEWLINE = '\n'
@@ -778,6 +873,22 @@ class ParameterString(Parameter):
         param_type += 'string'
         return '##' + self.name + '=' + param_type + self.default
 
+    @classmethod
+    def fromScriptCode(self, line):
+        isOptional, name, definition = _splitParameterOptions(line)
+        descName = _createDescriptiveName(name)
+        if definition.lower().strip().startswith('string'):
+            default = definition.strip()[len('string') + 1:]
+            if default:
+                return ParameterString(name, descName, default, optional=isOptional)
+            else:
+                return ParameterString(name, descName, optional=isOptional)
+        elif definition.lower().strip().startswith('longstring'):
+            default = definition.strip()[len('longstring') + 1:]
+            if default:
+                return ParameterString(name, descName, default, multiline=True, optional=isOptional)
+            else:
+                return ParameterString(name, descName, multiline=True, optional=isOptional)
 
 class ParameterTable(ParameterDataObject):
 
@@ -850,6 +961,13 @@ class ParameterTable(ParameterDataObject):
         param_type += 'table'
         return '##' + self.name + '=' + param_type
 
+    @classmethod
+    def fromScriptCode(self, line):
+        isOptional, name, definition = _splitParameterOptions(line)
+        descName = _createDescriptiveName(name)
+        if definition.lower().strip().startswith('table'):
+            return ParameterTable(name, descName, isOptional)
+
 
 class ParameterTableField(Parameter):
 
@@ -905,6 +1023,24 @@ class ParameterTableField(Parameter):
         return '##' + self.name + '=' + param_type + self.parent
 
 
+    @classmethod
+    def fromScriptCode(self, line):
+        isOptional, name, definition = _splitParameterOptions(line)
+        descName = _createDescriptiveName(name)
+        if definition.lower().strip().startswith('field'):
+            if definition.lower().strip().startswith('field number'):
+                parent = definition.strip()[len('field number') + 1:]
+                datatype = ParameterTableField.DATA_TYPE_NUMBER
+            elif definition.lower().strip().startswith('field string'):
+                parent = definition.strip()[len('field string') + 1:]
+                datatype = ParameterTableField.DATA_TYPE_STRING
+            else:
+                parent = definition.strip()[len('field') + 1:]
+                datatype = ParameterTableField.DATA_TYPE_ANY
+            
+            return ParameterTableField(name, descName, parent, datatype, isOptional)
+        
+        
 class ParameterTableMultipleField(Parameter):
 
     """A parameter representing several table fields.
@@ -970,6 +1106,23 @@ class ParameterTableMultipleField(Parameter):
             param_type += 'optional '
         param_type += 'multiple field '
         return '##' + self.name + '=' + param_type + self.parent
+
+    @classmethod
+    def fromScriptCode(self, line):
+        isOptional, name, definition = _splitParameterOptions(line)
+        if definition.lower().strip().startswith('multiple field'):
+            descName = _createDescriptiveName(name)
+            if definition.lower().strip().startswith('multiple field number'):
+                field = definition.strip()[len('multiple field number') + 1:]
+                datatype = ParameterTableMultipleField.DATA_TYPE_NUMBER
+            elif definition.lower().strip().startswith('multiple field string'):
+                field = definition.strip()[len('multiple field string') + 1:]
+                datatype = ParameterTableMultipleField.DATA_TYPE_STRING
+            else:
+                field = definition.strip()[len('multiple field') + 1:]
+                datatype = ParameterTableMultipleField.DATA_TYPE_ANY
+
+            return ParameterTableMultipleField(name, descName, field, datatype, isOptional)
 
 
 class ParameterVector(ParameterDataObject):
@@ -1047,6 +1200,22 @@ class ParameterVector(ParameterDataObject):
         param_type += 'vector'
         return '##' + self.name + '=' + param_type
 
+    @classmethod
+    def fromScriptCode(self, line):
+        isOptional, name, definition = _splitParameterOptions(line)
+        descName = _createDescriptiveName(name)
+        if definition.lower().strip() == 'vector':
+            return ParameterVector(name, descName,
+                                    [dataobjects.TYPE_VECTOR_ANY], isOptional)
+        elif definition.lower().strip() == 'vector point':
+            return ParameterVector(name, descName,
+                                    [dataobjects.TYPE_VECTOR_POINT], isOptional)
+        elif definition.lower().strip() == 'vector line':
+            return ParameterVector(name, descName,
+                                    [dataobjects.TYPE_VECTOR_LINE], isOptional)
+        elif definition.lower().strip() == 'vector polygon':
+            return ParameterVector(name, descName,
+                                    [dataobjects.TYPE_VECTOR_POLYGON], isOptional)
 
 class ParameterGeometryPredicate(Parameter):
 
@@ -1086,3 +1255,23 @@ class ParameterGeometryPredicate(Parameter):
         else:
             self.value = value
         return True
+
+
+paramClasses = [c for c in sys.modules[__name__].__dict__.values() if inspect.isclass(c) and issubclass(c, Parameter)]
+
+def getParameterFromString(s):
+    print s
+    #Try the parameter definitions used in description files
+    if '|' in s:
+        tokens = s.split("|")
+        params = [t if unicode(t) != unicode(None) else None for t in tokens[1:]]
+        clazz = getattr(sys.modules[__name__], tokens[0])
+        return clazz(*params)
+    else: #try script syntax
+        for paramClass in paramClasses:
+            try:
+                param  = paramClass.fromScriptCode(s)
+                if param is not None:
+                    return param
+            except AttributeError:
+                pass
