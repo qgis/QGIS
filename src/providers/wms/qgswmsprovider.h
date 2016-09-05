@@ -348,6 +348,20 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     static QString prepareUri( QString uri );
 
+    //! Helper struct for tile requests
+    struct TileRequest
+    {
+      TileRequest( const QUrl& u, const QRectF& r, int i )
+          : url( u )
+          , rect( r )
+          , index( i )
+      {}
+      QUrl url;
+      QRectF rect;
+      int index;
+    };
+    typedef QList<TileRequest> TileRequests;
+
   signals:
 
     /** \brief emit a signal to notify of a progress event */
@@ -426,6 +440,20 @@ class QgsWmsProvider : public QgsRasterDataProvider
     void setSRSQueryItem( QUrl& url );
 
   private:
+
+    //! Tile identifier within a tile source
+    typedef struct TilePosition
+    {
+      TilePosition( int r, int c ): row( r ), col( c ) {}
+      int row;
+      int col;
+    } TilePosition;
+    typedef QList<TilePosition> TilePositions;
+
+    QUrl createRequestUrlWMS( const QgsRectangle& viewExtent, int pixelWidth, int pixelHeight );
+    void createTileRequestsWMSC( const QgsWmtsTileMatrix* tm, const QgsWmsProvider::TilePositions& tiles, QgsWmsProvider::TileRequests& requests );
+    void createTileRequestsWMTS( const QgsWmtsTileMatrix* tm, const QgsWmsProvider::TilePositions& tiles, QgsWmsProvider::TileRequests& requests );
+    void createTileRequestsXYZ( const QgsWmtsTileMatrix* tm, const QgsWmsProvider::TilePositions& tiles, QgsWmsProvider::TileRequests& requests );
 
     /** Return the full url to request legend graphic
      * The visibleExtent isi only used if provider supports contextual
@@ -582,19 +610,7 @@ class QgsWmsTiledImageDownloadHandler : public QObject
     Q_OBJECT
   public:
 
-    struct TileRequest
-    {
-      TileRequest( const QUrl& u, const QRectF& r, int i )
-          : url( u )
-          , rect( r )
-          , index( i )
-      {}
-      QUrl url;
-      QRectF rect;
-      int index;
-    };
-
-    QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int reqNo, const QList<TileRequest>& requests, QImage* image, const QgsRectangle& viewExtent, bool smoothPixmapTransform, QgsRasterBlockFeedback* feedback );
+    QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int reqNo, const QgsWmsProvider::TileRequests& requests, QImage* image, const QgsRectangle& viewExtent, bool smoothPixmapTransform, QgsRasterBlockFeedback* feedback );
     ~QgsWmsTiledImageDownloadHandler();
 
     void downloadBlocking();
