@@ -271,7 +271,7 @@ namespace pal
       bool showUprightLabels() const;
 
       //! Returns true if the next char position is found. The referenced parameters are updated.
-      bool nextCharPosition( int charWidth, double segment_length, PointSet* path_positions, int& index, double& distance,
+      bool nextCharPosition( double charWidth, double segment_length, PointSet* path_positions, int& index, double& distance,
                              double& start_x, double& start_y, double& end_x, double& end_y ) const;
 
     protected:

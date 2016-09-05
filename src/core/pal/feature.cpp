@@ -1170,6 +1170,19 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
     return 0;
   }
 
+  //calculate overall angle of line
+  double lineAngle;
+  double bx = mapShape->x[0];
+  double by = mapShape->y[0];
+  double ex = mapShape->x[ mapShape->nbPoints - 1 ];
+  double ey = mapShape->y[ mapShape->nbPoints - 1 ];
+  if ( qgsDoubleNear( ey, by ) && qgsDoubleNear( ex, bx ) )
+  {
+    lineAngle = 0.0;
+  }
+  else
+    lineAngle = atan2( ey - by, ex - bx );
+
   QLinkedList<LabelPosition*> positions;
   double delta = qMax( li->label_height, total_distance / mLF->layer()->pal->line_p );
 
@@ -1178,7 +1191,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
     flags = FLAG_ON_LINE; // default flag
 
   // generate curved labels
-  for ( int i = 0; i * delta < total_distance; i++ )
+  for ( double i = 0; i < total_distance; i += delta )
   {
     bool flip = false;
     // placements may need to be reversed if using map orientation and the line has right-to-left direction
@@ -1193,7 +1206,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
       orientation = 1;
     }
 
-    LabelPosition* slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i * delta, reversed, flip );
+    LabelPosition* slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i, reversed, flip );
     if ( slp == nullptr )
       continue;
 
@@ -1205,7 +1218,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
       {
         delete slp;
         orientation = -orientation;
-        slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i * delta, reversed, flip );
+        slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i, reversed, flip );
       }
     }
     if ( slp == nullptr )
@@ -1236,7 +1249,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
     if ( cost < 0.0001 ) cost = 0.0001;
 
     // penalize positions which are further from the line's midpoint
-    double labelCenter = ( i * delta ) + getLabelWidth() / 2;
+    double labelCenter = i + getLabelWidth() / 2;
     double costCenter = qAbs( total_distance / 2 - labelCenter ) / total_distance; // <0, 0.5>
     cost += costCenter / 1000;  // < 0, 0.0005 >
     slp->setCost( cost );
@@ -1753,7 +1766,7 @@ bool FeaturePart::showUprightLabels() const
   return uprightLabel;
 }
 
-bool FeaturePart::nextCharPosition( int charWidth, double segment_length, PointSet* path_positions, int& index, double& distance,
+bool FeaturePart::nextCharPosition( double charWidth, double segment_length, PointSet* path_positions, int& index, double& distance,
                                     double& start_x, double& start_y, double& end_x, double& end_y ) const
 {
   // Coordinates this character will start at
