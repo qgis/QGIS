@@ -1,7 +1,6 @@
 PyQgsComposerPicture
 PyQgsJSONUtils
 PyQgsLocalServer
-PyQgsMapUnitScale
 PyQgsPalLabelingServer
 PyQgsServer
 PyQgsServerAccessControl

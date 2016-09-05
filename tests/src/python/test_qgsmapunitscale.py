@@ -78,6 +78,7 @@ class PyQgsMapUnitScale(unittest.TestCase):
         ms = QgsMapSettings()
         ms.setExtent(QgsRectangle(0, 0, 100, 100))
         ms.setOutputSize(QSize(100, 50))
+        ms.setOutputDpi(75)
         r = QgsRenderContext.fromMapSettings(ms)
 
         # renderer scale should be about 1:291937841
