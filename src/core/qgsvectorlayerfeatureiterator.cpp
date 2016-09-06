@@ -614,7 +614,7 @@ void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
     if ( !targetFieldValue.isValid() )
     {
       //try later. Maybe the join depends on other joins
-      if ( f.fields()->fieldOrigin( info.targetField ) != QgsFields::OriginProvider )
+      if ( f.fields().fieldOrigin( info.targetField ) != QgsFields::OriginProvider )
       {
         joinList.push_back( info );
       }
