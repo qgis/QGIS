@@ -143,7 +143,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         layer = QgsVectorLayer("Point", "test", "memory")
         provider = layer.dataProvider()
 
-        res = provider.addAttributes([QgsField("name", QVariant.String, ),
+        res = provider.addAttributes([QgsField("name", QVariant.String),
                                       QgsField("age", QVariant.Int),
                                       QgsField("size", QVariant.Double)])
         assert res, "Failed to add attributes"
@@ -193,7 +193,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         layer = QgsVectorLayer("Point", "test", "memory")
         provider = layer.dataProvider()
 
-        provider.addAttributes([QgsField("name", QVariant.String, ),
+        provider.addAttributes([QgsField("name", QVariant.String),
                                 QgsField("age", QVariant.Int),
                                 QgsField("size", QVariant.Double)])
         myMessage = ('Expected: %s\nGot: %s\n' %
@@ -267,7 +267,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         layer = QgsVectorLayer("Point", "test", "memory")
         provider = layer.dataProvider()
 
-        res = provider.addAttributes([QgsField("name", QVariant.String, ),
+        res = provider.addAttributes([QgsField("name", QVariant.String),
                                       QgsField("age", QVariant.Int),
                                       QgsField("size", QVariant.Double)])
         layer.updateFields()

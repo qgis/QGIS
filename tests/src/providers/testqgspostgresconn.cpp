@@ -24,6 +24,22 @@ class TestQgsPostgresConn: public QObject
       QCOMPARE( QgsPostgresConn::quotedValue( "b \"c' \\x" ), QString( "E'b \"c'' \\\\x'" ) );
     }
 
+    void quotedValueStringArray()
+    {
+      QStringList list;
+      list << "a" << "b \"c' \\x";
+      const QString actual = QgsPostgresConn::quotedValue( list );
+      QCOMPARE( actual, QString( "E'{\"a\",\"b \\\\\"c\\' \\\\\\\\x\"}'" ) );
+    }
+
+    void quotedValueIntArray()
+    {
+      QVariantList list;
+      list << 1 << -5;
+      const QString actual = QgsPostgresConn::quotedValue( list );
+      QCOMPARE( actual, QString( "E'{\"1\",\"-5\"}'" ) );
+    }
+
 };
 
 QTEST_MAIN( TestQgsPostgresConn )

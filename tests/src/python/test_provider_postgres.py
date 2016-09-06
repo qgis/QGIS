@@ -350,7 +350,6 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         new_f = QgsFeature(vl.fields())
         new_f['pk'] = NULL
-        #new_f['value'] = {'x': 'a\'s "y" \\', 'z': 'end'}
         new_f['value'] = {'simple': '1', 'doubleQuote': '"y"', 'quote': "'q'", 'backslash': '\\'}
         r, fs = vl.dataProvider().addFeatures([new_f])
         self.assertTrue(r)
@@ -365,6 +364,65 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             self.assertTrue(vl.startEditing())
             self.assertTrue(vl.deleteFeatures([new_pk]))
             self.assertTrue(vl.commitChanges())
+
+    def testStringArray(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."string_array" sql=' % (self.dbconn), "teststringarray", "postgres")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName('value')).type(), QVariant.StringList)
+        self.assertEqual(fields.at(fields.indexFromName('value')).subType(), QVariant.String)
+
+        f = next(vl.getFeatures(QgsFeatureRequest()))
+
+        value_idx = vl.fieldNameIndex('value')
+        self.assertTrue(isinstance(f.attributes()[value_idx], list))
+        self.assertEqual(f.attributes()[value_idx], ['a', 'b', 'c'])
+
+        new_f = QgsFeature(vl.fields())
+        new_f['pk'] = NULL
+        new_f['value'] = ['simple', '"doubleQuote"', "'quote'", 'back\\slash']
+        r, fs = vl.dataProvider().addFeatures([new_f])
+        self.assertTrue(r)
+        new_pk = fs[0]['pk']
+        self.assertNotEqual(new_pk, NULL, fs[0].attributes())
+
+        try:
+            read_back = vl.getFeature(new_pk)
+            self.assertEqual(read_back['pk'], new_pk)
+            self.assertEqual(read_back['value'], new_f['value'])
+        finally:
+            self.assertTrue(vl.startEditing())
+            self.assertTrue(vl.deleteFeatures([new_pk]))
+            self.assertTrue(vl.commitChanges())
+
+    def testIntArray(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."int_array" sql=' % (self.dbconn), "testintarray", "postgres")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName('value')).type(), QVariant.List)
+        self.assertEqual(fields.at(fields.indexFromName('value')).subType(), QVariant.Int)
+
+        f = next(vl.getFeatures(QgsFeatureRequest()))
+
+        value_idx = vl.fieldNameIndex('value')
+        self.assertTrue(isinstance(f.attributes()[value_idx], list))
+        self.assertEqual(f.attributes()[value_idx], [1, 2, -5])
+
+    def testDoubleArray(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."double_array" sql=' % (self.dbconn), "testdoublearray", "postgres")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName('value')).type(), QVariant.List)
+        self.assertEqual(fields.at(fields.indexFromName('value')).subType(), QVariant.Double)
+
+        f = next(vl.getFeatures(QgsFeatureRequest()))
+
+        value_idx = vl.fieldNameIndex('value')
+        self.assertTrue(isinstance(f.attributes()[value_idx], list))
+        self.assertEqual(f.attributes()[value_idx], [1.1, 2, -5.12345])
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):

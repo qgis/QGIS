@@ -739,7 +739,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       {
         QgsField fld = mSource->mFields.at( idx );
 
-        QVariant v = QgsPostgresProvider::convertValue( fld.type(), queryResult.PQgetvalue( row, col ) );
+        QVariant v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ) );
         primaryKeyVals << v;
 
         if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )
@@ -781,7 +781,8 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
   if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
     return;
 
-  QVariant v = QgsPostgresProvider::convertValue( mSource->mFields.at( idx ).type(), queryResult.PQgetvalue( row, col ) );
+  const QgsField fld = mSource->mFields.at( idx );
+  QVariant v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ) );
   feature.setAttribute( idx, v );
 
   col++;

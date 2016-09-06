@@ -42,6 +42,7 @@ class TestQgsField: public QObject
     void dataStream();
     void displayName();
     void editorWidgetSetup();
+    void collection();
 
   private:
 };
@@ -409,6 +410,17 @@ void TestQgsField::editorWidgetSetup()
 
   QCOMPARE( field.editorWidgetSetup().type(), setup.type() );
   QCOMPARE( field.editorWidgetSetup().config(), setup.config() );
+}
+
+void TestQgsField::collection()
+{
+  QgsField field( "collection", QVariant::List, "_int32", 0, 0, QString(), QVariant::Int );
+  QCOMPARE( field.subType(), QVariant::Int );
+  field.setSubType( QVariant::Double );
+  QCOMPARE( field.subType(), QVariant::Double );
+
+  QVariant str( "hello" );
+  QVERIFY( !field.convertCompatible( str ) );
 }
 
 QTEST_MAIN( TestQgsField )

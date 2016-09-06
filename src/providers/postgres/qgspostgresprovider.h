@@ -252,10 +252,11 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Convert the postgres string representation into the given QVariant type.
      * @param type the wanted type
+     * @param subType if type is a collection, the wanted element type
      * @param value the value to convert
      * @return a QVariant of the given type or a null QVariant
      */
-    static QVariant convertValue( QVariant::Type type, const QString& value );
+    static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString& value );
 
   signals:
     /**

@@ -5,6 +5,7 @@ SCRIPTS="
   tests/testdata/provider/testdata_pg_reltests.sql
   tests/testdata/provider/testdata_pg_vectorjoin.sql
   tests/testdata/provider/testdata_pg_hstore.sql
+  tests/testdata/provider/testdata_pg_array.sql
 "
 
 dropdb qgis_test 2> /dev/null || true

@@ -44,9 +44,10 @@ QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
 }
 #endif
 QgsField::QgsField( const QString& name, QVariant::Type type,
-                    const QString& typeName, int len, int prec, const QString& comment )
+                    const QString& typeName, int len, int prec, const QString& comment,
+                    QVariant::Type subType )
 {
-  d = new QgsFieldPrivate( name, type, typeName, len, prec, comment );
+  d = new QgsFieldPrivate( name, type, subType, typeName, len, prec, comment );
 }
 
 QgsField::QgsField( const QgsField &other )
@@ -99,6 +100,11 @@ QVariant::Type QgsField::type() const
   return d->type;
 }
 
+QVariant::Type QgsField::subType() const
+{
+  return d->subType;
+}
+
 QString QgsField::typeName() const
 {
   return d->typeName;
@@ -138,6 +144,11 @@ void QgsField::setName( const QString& name )
 void QgsField::setType( QVariant::Type type )
 {
   d->type = type;
+}
+
+void QgsField::setSubType( QVariant::Type subType )
+{
+  d->subType = subType;
 }
 
 void QgsField::setTypeName( const QString& typeName )
@@ -292,14 +303,15 @@ QDataStream& operator<<( QDataStream& out, const QgsField& field )
   out << field.comment();
   out << field.alias();
   out << field.defaultValueExpression();
+  out << static_cast< quint32 >( field.subType() );
   return out;
 }
 
 QDataStream& operator>>( QDataStream& in, QgsField& field )
 {
-  quint32 type, length, precision;
+  quint32 type, subType, length, precision;
   QString name, typeName, comment, alias, defaultValueExpression;
-  in >> name >> type >> typeName >> length >> precision >> comment >> alias >> defaultValueExpression;
+  in >> name >> type >> typeName >> length >> precision >> comment >> alias >> defaultValueExpression >> subType;
   field.setName( name );
   field.setType( static_cast< QVariant::Type >( type ) );
   field.setTypeName( typeName );
@@ -308,6 +320,7 @@ QDataStream& operator>>( QDataStream& in, QgsField& field )
   field.setComment( comment );
   field.setAlias( alias );
   field.setDefaultValueExpression( defaultValueExpression );
+  field.setSubType( static_cast< QVariant::Type >( subType ) );
   return in;
 }
 
