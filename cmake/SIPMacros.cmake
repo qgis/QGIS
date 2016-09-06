@@ -141,9 +141,6 @@ MACRO(BUILD_SIP_PYTHON_MODULE MODULE_NAME SIP_FILES EXTRA_OBJECTS)
 
   IF (WIN32)
     SET_TARGET_PROPERTIES(${_logical_name} PROPERTIES SUFFIX ".pyd")
-  ENDIF (WIN32)
-
-  IF(WIN32)
     GET_TARGET_PROPERTY(_runtime_output ${_logical_name} RUNTIME_OUTPUT_DIRECTORY)
     ADD_CUSTOM_COMMAND(TARGET ${_logical_name} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E echo "Copying extension ${_child_module_name}"

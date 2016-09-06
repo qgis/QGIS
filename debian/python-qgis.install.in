@@ -9,3 +9,4 @@ usr/lib/python*/*-packages/qgis/server/*
 usr/lib/python*/*-packages/qgis/testing/*
 #precise#usr/lib/python*/*-packages/pyspatialite/*.py
 #precise#usr/lib/python*/*-packages/pyspatialite/*.so
+#sid stretch#usr/lib/python*/*-packages/PyQt4/*.so

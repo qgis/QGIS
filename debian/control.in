@@ -26,7 +26,7 @@ Build-Depends:
  libqt4-opengl-dev,
  libqca2-dev,
  libqca2-plugin-ossl,
-#jessie precise trusty xenial# libqtwebkit-dev,
+ libqtwebkit-dev,
 #stretch jessie# libqwt-dev,
 #precise trusty xenial sid# libqwt5-qt4-dev,
 #sid stretch jessie trusty xenial# libqjson-dev,
