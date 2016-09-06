@@ -100,12 +100,12 @@ QgsEditorWidgetConfig QgsRangeConfigDlg::config()
 
 void QgsRangeConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
 {
-  minimumDoubleSpinBox->setValue( config.value( "Min", 0.0 ).toDouble() );
-  maximumDoubleSpinBox->setValue( config.value( "Max", 5.0 ).toDouble() );
+  minimumDoubleSpinBox->setValue( config.value( "Min", -std::numeric_limits<double>::max() ).toDouble() );
+  maximumDoubleSpinBox->setValue( config.value( "Max", std::numeric_limits<double>::max() ).toDouble() );
   stepDoubleSpinBox->setValue( config.value( "Step", 1.0 ).toDouble() );
 
-  minimumSpinBox->setValue( config.value( "Min", 0 ).toInt() );
-  maximumSpinBox->setValue( config.value( "Max", 5 ).toInt() );
+  minimumSpinBox->setValue( config.value( "Min", std::numeric_limits<int>::min() ).toInt() );
+  maximumSpinBox->setValue( config.value( "Max", std::numeric_limits<int>::max() ).toInt() );
   stepSpinBox->setValue( config.value( "Step", 1 ).toInt() );
 
   rangeWidget->setCurrentIndex( rangeWidget->findData( config.value( "Style", "SpinBox" ) ) );

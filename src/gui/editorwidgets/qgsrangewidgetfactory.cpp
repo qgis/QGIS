@@ -73,7 +73,10 @@ void QgsRangeWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QD
 
 unsigned int QgsRangeWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
 {
-  return vl->fields().at( fieldIdx ).isNumeric() ? 20 : 0;
+  const QgsField field = vl->fields().at( fieldIdx );
+  if ( field.type() == QVariant::Int || field.type() == QVariant::Double ) return 20;
+  if ( field.isNumeric() ) return 5; // widgets used support only signed 32bits (int) and double
+  return 0;
 }
 
 QMap<const char*, int> QgsRangeWidgetFactory::supportedWidgetTypes()

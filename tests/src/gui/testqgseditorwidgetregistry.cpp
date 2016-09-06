@@ -68,6 +68,11 @@ class TestQgsEditorWidgetRegistry: public QObject
       checkSimple( "integer", "Range" );
     }
 
+    void longLongType()
+    {
+      checkSimple( "int8", "TextEdit" ); // no current widget supports 64 bit integers => default to TextEdit
+    }
+
     void doubleType()
     {
       checkSimple( "double", "Range" );
