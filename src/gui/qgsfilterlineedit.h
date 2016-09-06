@@ -70,10 +70,10 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
   protected:
     void mousePressEvent( QMouseEvent* e ) override;
+    void mouseMoveEvent( QMouseEvent* e ) override;
     void focusInEvent( QFocusEvent* e ) override;
-    void resizeEvent( QResizeEvent* e ) override;
-    void changeEvent( QEvent* e ) override;
     void paintEvent( QPaintEvent* e ) override;
+    void leaveEvent( QEvent* e ) override;
 
   private slots:
     void clear();
@@ -81,9 +81,18 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
   private:
     QString mNullValue;
-    QToolButton *btnClear;
     QString mStyleSheet;
     bool mFocusInEvent;
+    bool mClearHover;
+
+    QSize mClearIconSize;
+    QPixmap mClearIconPixmap;
+    QPixmap mClearHoverPixmap;
+
+    //! Returns true if clear button should be shown
+    bool shouldShowClear() const;
+
+    QRect clearRect() const;
 };
 
 #endif // QGSFILTERLINEEDIT_H

@@ -21,31 +21,30 @@
 #include <QToolButton>
 #include <QStyle>
 #include <QFocusEvent>
+#include <QPainter>
 
 QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue )
     : QLineEdit( parent )
     , mNullValue( nullValue )
     , mFocusInEvent( false )
+    , mClearHover( false )
 {
-  btnClear = new QToolButton( this );
-  btnClear->setIcon( QgsApplication::getThemeIcon( "/mIconClear.svg" ) );
-  btnClear->setCursor( Qt::ArrowCursor );
-  btnClear->setFocusPolicy( Qt::NoFocus );
-  btnClear->setStyleSheet( "QToolButton { border: none; padding: 0px; }" );
-  btnClear->hide();
+  // need mouse tracking to handle cursor changes
+  setMouseTracking( true );
 
-  connect( btnClear, SIGNAL( clicked() ), this, SLOT( clear() ) );
-  connect( btnClear, SIGNAL( clicked() ), this, SIGNAL( cleared() ) );
+  QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
+  mClearIconSize = QSize( 16, 16 );
+  mClearIconPixmap = clearIcon.pixmap( mClearIconSize );
+  QIcon hoverIcon = QgsApplication::getThemeIcon( "/mIconClearTextHover.svg" );
+  mClearHoverPixmap = hoverIcon.pixmap( mClearIconSize );
+
   connect( this, SIGNAL( textChanged( const QString& ) ), this,
            SLOT( onTextChanged( const QString& ) ) );
 
   int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
-  mStyleSheet = QString( "QLineEdit { padding-right: %1px; } " )
-                .arg( btnClear->sizeHint().width() + frameWidth + 1 );
-
   QSize msz = minimumSizeHint();
-  setMinimumSize( qMax( msz.width(), btnClear->sizeHint().height() + frameWidth * 2 + 2 ),
-                  qMax( msz.height(), btnClear->sizeHint().height() + frameWidth * 2 + 2 ) );
+  setMinimumSize( qMax( msz.width(), mClearIconSize.width() + frameWidth * 2 + 2 ),
+                  qMax( msz.height(), mClearIconSize.height() + frameWidth * 2 + 2 ) );
 }
 
 void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
@@ -54,6 +53,32 @@ void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
     QLineEdit::mousePressEvent( e );
   else
     mFocusInEvent = false;
+
+  if ( shouldShowClear() && clearRect().contains( e->pos() ) )
+  {
+    clear();
+    emit cleared();
+  }
+}
+
+void QgsFilterLineEdit::mouseMoveEvent( QMouseEvent* e )
+{
+  QLineEdit::mouseMoveEvent( e );
+  if ( shouldShowClear() && clearRect().contains( e->pos() ) )
+  {
+    if ( !mClearHover )
+    {
+      setCursor( Qt::ArrowCursor );
+      mClearHover = true;
+      update();
+    }
+  }
+  else if ( mClearHover )
+  {
+    setCursor( Qt::IBeamCursor );
+    mClearHover = false;
+    update();
+  }
 }
 
 void QgsFilterLineEdit::focusInEvent( QFocusEvent* e )
@@ -66,37 +91,39 @@ void QgsFilterLineEdit::focusInEvent( QFocusEvent* e )
   }
 }
 
-void QgsFilterLineEdit::resizeEvent( QResizeEvent * )
-{
-  QSize sz = btnClear->sizeHint();
-  int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
-  btnClear->move( rect().right() - frameWidth - sz.width(),
-                  ( rect().bottom() + 1 - sz.height() ) / 2 );
-}
-
 void QgsFilterLineEdit::clear()
 {
   setText( mNullValue );
   setModified( true );
 }
 
-void QgsFilterLineEdit::changeEvent( QEvent *e )
-{
-  QLineEdit::changeEvent( e );
-  btnClear->setVisible( isEnabled() && !isReadOnly() && !isNull() );
-}
-
 void QgsFilterLineEdit::paintEvent( QPaintEvent* e )
 {
   QLineEdit::paintEvent( e );
-  btnClear->setVisible( isEnabled() && !isReadOnly() && !isNull() );
+  if ( shouldShowClear() )
+  {
+    QRect r = clearRect();
+    QPainter p( this );
+    if ( mClearHover )
+      p.drawPixmap( r.left() , r.top() , mClearHoverPixmap );
+    else
+      p.drawPixmap( r.left() , r.top() , mClearIconPixmap );
+  }
 }
 
+void QgsFilterLineEdit::leaveEvent( QEvent* e )
+{
+  if ( mClearHover )
+  {
+    mClearHover = false;
+    update();
+  }
+
+  QLineEdit::leaveEvent( e );
+}
 
 void QgsFilterLineEdit::onTextChanged( const QString &text )
 {
-  btnClear->setVisible( isEnabled() && !isReadOnly() && !isNull() );
-
   if ( isNull() )
   {
     setStyleSheet( QString( "QLineEdit { font: italic; color: gray; } %1" ).arg( mStyleSheet ) );
@@ -107,4 +134,18 @@ void QgsFilterLineEdit::onTextChanged( const QString &text )
     setStyleSheet( mStyleSheet );
     emit valueChanged( text );
   }
+}
+
+bool QgsFilterLineEdit::shouldShowClear() const
+{
+  return isEnabled() && !isReadOnly() && !isNull();
+}
+
+QRect QgsFilterLineEdit::clearRect() const
+{
+  int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
+  return QRect( rect().right() - frameWidth * 2 - mClearIconSize.width(),
+                ( rect().bottom() + 1 - mClearIconSize.height() ) / 2,
+                mClearIconSize.width(),
+                mClearIconSize.height() );
 }
