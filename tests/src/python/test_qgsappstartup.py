@@ -51,7 +51,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
     # TODO: refactor parameters to **kwargs to handle all startup combinations
     def doTestStartup(self, option='', testDir='', testFile='',
                       loadPlugins=False, customization=False,
-                      timeOut=270, env=None, additionalArguments=[]):
+                      timeOut=360, env=None, additionalArguments=[]):
         """Run QGIS with the given option. Wait for testFile to be created.
         If time runs out, fail.
         """
@@ -106,14 +106,14 @@ class TestPyQgsAppStartup(unittest.TestCase):
             self.doTestStartup(option="--optionspath",
                                testDir=os.path.join(self.TMP_DIR, p),
                                testFile=ini,
-                               timeOut=270)
+                               timeOut=360)
 
     def testConfigPath(self):
         for p in ['test_config', 'test config', u'test_configé€']:
             self.doTestStartup(option="--configpath",
                                testDir=os.path.join(self.TMP_DIR, p),
                                testFile="qgis.db",
-                               timeOut=270)
+                               timeOut=360)
 
     def testPluginPath(self):
         for t in ['test_plugins', 'test plugins', u'test_pluginsé€']:
@@ -138,7 +138,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
                 option="--optionspath",
                 testDir=testDir,
                 testFile="plugin_started.txt",
-                timeOut=270,
+                timeOut=360,
                 loadPlugins=True,
                 env={'QGIS_PLUGINPATH': testDir})
 
@@ -158,7 +158,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
         f.close()
         self.doTestStartup(
             testFile=testfilepath,
-            timeOut=270,
+            timeOut=360,
             env={'PYQGIS_STARTUP': testmod})
 
     def testOptionsAsFiles(self):
@@ -169,12 +169,12 @@ class TestPyQgsAppStartup(unittest.TestCase):
             self.doTestStartup(option="--configpath",
                                testDir=os.path.join(self.TMP_DIR, 'test_optionsAsFiles'),
                                testFile="qgis.db",
-                               timeOut=270,
+                               timeOut=360,
                                additionalArguments=['--help'])
         self.doTestStartup(option="--configpath",
                            testDir=os.path.join(self.TMP_DIR, 'test_optionsAsFiles'),
                            testFile="qgis.db",
-                           timeOut=270,
+                           timeOut=360,
                            additionalArguments=['--', '--help'])
 
 

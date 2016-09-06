@@ -203,7 +203,7 @@ class TestQgsActionManager(unittest.TestCase):
 
         c = QgsExpressionContext()
         self.manager.doAction(0, f, c)
-        time.sleep(0.05)
+        time.sleep(0.5)
 
         self.assertEqual(self.check_action_result(temp_file), 'test output')
 
@@ -211,7 +211,7 @@ class TestQgsActionManager(unittest.TestCase):
         temp_file = self.get_temp_filename()
         self.manager.addAction(QgsAction.Unix, 'test_action', self.create_action(temp_file, 'test [% $id %] output [% @layer_name %]'))
         self.manager.doAction(1, f, c)
-        time.sleep(0.05)
+        time.sleep(0.5)
 
         self.assertEqual(self.check_action_result(temp_file), 'test 1 output test_layer')
 
@@ -219,10 +219,10 @@ class TestQgsActionManager(unittest.TestCase):
         temp_file = self.get_temp_filename()
         self.manager.addAction(QgsAction.Unix, 'test_action', self.create_action(temp_file, 'test [% @current_field %]'))
         self.manager.doActionFeature(2, f, 0)
-        time.sleep(0.05)
+        time.sleep(0.5)
         self.assertEqual(self.check_action_result(temp_file), 'test 5')
         self.manager.doActionFeature(2, f, 1)
-        time.sleep(0.05)
+        time.sleep(0.5)
         self.assertEqual(self.check_action_result(temp_file), 'test val')
 
 if __name__ == '__main__':
