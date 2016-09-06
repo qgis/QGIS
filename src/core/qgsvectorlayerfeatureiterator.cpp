@@ -602,21 +602,39 @@ void QgsVectorLayerFeatureIterator::prepareField( int fieldIdx )
 
 void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
 {
-  QMap<const QgsVectorJoinInfo*, FetchJoinInfo>::const_iterator joinIt = mFetchJoinInfo.constBegin();
-  for ( ; joinIt != mFetchJoinInfo.constEnd(); ++joinIt )
-  {
-    const FetchJoinInfo& info = joinIt.value();
-    Q_ASSERT( joinIt.key() );
+  QList< FetchJoinInfo > joinList = mFetchJoinInfo.values();
 
+  int maxLoopCount = joinList.size() * ( joinList.size() + 1 ) / 2;
+  int currentLoopCount = 0;
+
+  while ( !joinList.isEmpty() )
+  {
+    const FetchJoinInfo& info = joinList.at( 0 );
     QVariant targetFieldValue = f.attribute( info.targetField );
     if ( !targetFieldValue.isValid() )
-      continue;
-
-    const QHash< QString, QgsAttributes>& memoryCache = info.joinInfo->cachedAttributes;
-    if ( memoryCache.isEmpty() )
-      info.addJoinedAttributesDirect( f, targetFieldValue );
+    {
+      //try later. Maybe the join depends on other joins
+      if ( f.fields()->fieldOrigin( info.targetField ) != QgsFields::OriginProvider )
+      {
+        joinList.push_back( info );
+      }
+    }
     else
-      info.addJoinedAttributesCached( f, targetFieldValue );
+    {
+      const QHash< QString, QgsAttributes>& memoryCache = info.joinInfo->cachedAttributes;
+      if ( memoryCache.isEmpty() )
+        info.addJoinedAttributesDirect( f, targetFieldValue );
+      else
+        info.addJoinedAttributesCached( f, targetFieldValue );
+    }
+    joinList.removeAt( 0 );
+
+    //prevent endless loop if field value is really not there
+    ++currentLoopCount;
+    if ( currentLoopCount >= maxLoopCount )
+    {
+      break;
+    }
   }
 }
 
