@@ -81,8 +81,9 @@ QString QgsDateTimeEditFactory::representValue( QgsVectorLayer* vl, int fieldIdx
     return settings.value( "qgis/nullValue", "NULL" ).toString();
   }
 
-  const QString displayFormat = config.value( "display_format", QGSDATETIMEEDIT_DATEFORMAT ).toString();
-  const QString fieldFormat = config.value( "field_format", QGSDATETIMEEDIT_DATEFORMAT ).toString();
+  const QgsField field = vl->fields().at( fieldIdx );
+  const QString displayFormat = config.value( "display_format", QgsDateTimeEditConfig::defaultFormat( field.type() ) ).toString();
+  const QString fieldFormat = config.value( "field_format", QgsDateTimeEditConfig::defaultFormat( field.type() ) ).toString();
 
   QDateTime date = QDateTime::fromString( value.toString(), fieldFormat );
 
@@ -120,7 +121,7 @@ unsigned int QgsDateTimeEditFactory::fieldScore( const QgsVectorLayer* vl, int f
   const QgsField field = vl->fields().field( fieldIdx );
   const QVariant::Type type = field.type();
   const QgsEditorWidgetConfig config = vl->editFormConfig().widgetConfig( field.name() );
-  if ( type == QVariant::DateTime || config.contains( "field_format" ) )
+  if ( type == QVariant::DateTime || type == QVariant::Date || type == QVariant::Time || config.contains( "field_format" ) )
   {
     return 20;
   }

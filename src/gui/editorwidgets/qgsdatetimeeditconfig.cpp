@@ -15,6 +15,7 @@
 
 #include "qgsdatetimeeditconfig.h"
 #include "qgsdatetimeeditfactory.h"
+#include "qgsvectorlayer.h"
 
 QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
     : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -119,9 +120,26 @@ QgsEditorWidgetConfig QgsDateTimeEditConfig::config()
 }
 
 
+QString QgsDateTimeEditConfig::defaultFormat( const QVariant::Type type )
+{
+  switch ( type )
+  {
+    case QVariant::DateTime:
+      return QGSDATETIMEEDIT_DATETIMEFORMAT;
+      break;
+    case QVariant::Time:
+      return QGSDATETIMEEDIT_TIMEFORMAT;
+      break;
+    default:
+      return QGSDATETIMEEDIT_DATEFORMAT;
+  }
+}
+
+
 void QgsDateTimeEditConfig::setConfig( const QgsEditorWidgetConfig &config )
 {
-  const QString fieldFormat = config.value( "field_format", QGSDATETIMEEDIT_DATEFORMAT ).toString();
+  const QgsField fieldDef = layer()->fields().at( field() );
+  const QString fieldFormat = config.value( "field_format", defaultFormat( fieldDef.type() ) ).toString();
   mFieldFormatEdit->setText( fieldFormat );
 
   if ( fieldFormat == QGSDATETIMEEDIT_DATEFORMAT )
@@ -133,7 +151,7 @@ void QgsDateTimeEditConfig::setConfig( const QgsEditorWidgetConfig &config )
   else
     mFieldFormatComboBox->setCurrentIndex( 3 );
 
-  QString displayFormat = config.value( "display_format", QGSDATETIMEEDIT_DATEFORMAT ).toString();
+  QString displayFormat = config.value( "display_format", defaultFormat( fieldDef.type() ) ).toString();
   mDisplayFormatEdit->setText( displayFormat );
   if ( displayFormat == mFieldFormatEdit->text() )
   {
