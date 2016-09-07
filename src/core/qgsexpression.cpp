@@ -3502,6 +3502,14 @@ bool QgsExpression::isValid( const QString &text, const QgsExpressionContext *co
   return !exp.hasParserError();
 }
 
+void QgsExpression::setExpression( const QString& expression )
+{
+  detach();
+  d->mRootNode = ::parseExpression( expression, d->mParserErrorString );
+  d->mEvalErrorString = QString();
+  d->mExp = expression;
+}
+
 QString QgsExpression::expression() const
 {
   if ( !d->mExp.isNull() )
@@ -3609,6 +3617,13 @@ QgsExpression::~QgsExpression()
   Q_ASSERT( d );
   if ( !d->ref.deref() )
     delete d;
+}
+
+bool QgsExpression::operator==( const QgsExpression& other ) const
+{
+  if ( d == other.d || d->mExp == other.d->mExp )
+    return true;
+  return false;
 }
 
 bool QgsExpression::hasParserError() const { return !d->mParserErrorString.isNull(); }
@@ -3740,7 +3755,7 @@ void QgsExpression::setEvalErrorString( const QString& str )
 QString QgsExpression::dump() const
 {
   if ( !d->mRootNode )
-    return tr( "(no root)" );
+    return QString();
 
   return d->mRootNode->dump();
 }
