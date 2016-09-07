@@ -65,10 +65,21 @@ QWidget* QgsRangeWidgetWrapper::createWidget( QWidget* parent )
   return editor;
 }
 
+template<class T>
+static void setupIntEditor( const QVariant& min, const QVariant& max, const QVariant& step, T* slider, QgsRangeWidgetWrapper* wrapper )
+{
+  // must use a template function because those methods are overloaded and not inherited by some classes
+  slider->setMinimum( min.isValid() ? min.toInt() : std::numeric_limits<int>::min() );
+  slider->setMaximum( max.isValid() ? max.toInt() : std::numeric_limits<int>::max() );
+  slider->setSingleStep( step.isValid() ? step.toInt() : 1 );
+  QObject::connect( slider, SIGNAL( valueChanged( int ) ), wrapper, SLOT( valueChanged( int ) ) );
+}
+
 void QgsRangeWidgetWrapper::initWidget( QWidget* editor )
 {
   mDoubleSpinBox = qobject_cast<QDoubleSpinBox*>( editor );
   mIntSpinBox = qobject_cast<QSpinBox*>( editor );
+
   mDial = qobject_cast<QDial*>( editor );
   mSlider = qobject_cast<QSlider*>( editor );
   mQgsDial = qobject_cast<QgsDial*>( editor );
@@ -107,90 +118,40 @@ void QgsRangeWidgetWrapper::initWidget( QWidget* editor )
       mDoubleSpinBox->setValue( minval );
       mDoubleSpinBox->setSpecialValueText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
     }
-    if ( min.isValid() )
-      mDoubleSpinBox->setMinimum( min.toDouble() );
-    if ( max.isValid() )
-      mDoubleSpinBox->setMaximum( max.toDouble() );
-    if ( step.isValid() )
-      mDoubleSpinBox->setSingleStep( step.toDouble() );
+    mDoubleSpinBox->setMinimum( min.isValid() ? min.toDouble() : std::numeric_limits<double>::min() );
+    mDoubleSpinBox->setMaximum( max.isValid() ? max.toDouble() : std::numeric_limits<double>::max() );
+    mDoubleSpinBox->setSingleStep( step.isValid() ? step.toDouble() : 1.0 );
     if ( config( "Suffix" ).isValid() )
       mDoubleSpinBox->setSuffix( config( "Suffix" ).toString() );
 
     connect( mDoubleSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( valueChanged( double ) ) );
   }
-
-  if ( mIntSpinBox )
+  else if ( mIntSpinBox )
   {
-    int minval = min.toInt();
-    int stepval = step.toInt();
     QgsSpinBox* qgsWidget = dynamic_cast<QgsSpinBox*>( mIntSpinBox );
     if ( qgsWidget )
       qgsWidget->setShowClearButton( allowNull );
     if ( allowNull )
     {
+      int minval = min.toInt();
+      int stepval = step.toInt();
       minval -= stepval;
       mIntSpinBox->setValue( minval );
       mIntSpinBox->setSpecialValueText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
     }
-    if ( min.isValid() )
-      mIntSpinBox->setMinimum( min.toInt() );
-    if ( max.isValid() )
-      mIntSpinBox->setMaximum( max.toInt() );
-    if ( step.isValid() )
-      mIntSpinBox->setSingleStep( step.toInt() );
+    setupIntEditor( min, max, step, mIntSpinBox, this );
     if ( config( "Suffix" ).isValid() )
       mIntSpinBox->setSuffix( config( "Suffix" ).toString() );
-    connect( mIntSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( valueChanged( int ) ) );
   }
-
-
-  if ( mQgsDial || mQgsSlider )
+  else
   {
     field().convertCompatible( min );
     field().convertCompatible( max );
     field().convertCompatible( step );
-
-    if ( mQgsSlider )
-    {
-      if ( min.isValid() )
-        mQgsSlider->setMinimum( min );
-      if ( max.isValid() )
-        mQgsSlider->setMaximum( max );
-      if ( step.isValid() )
-        mQgsSlider->setSingleStep( step );
-    }
-
-    if ( mQgsDial )
-    {
-      if ( min.isValid() )
-        mQgsDial->setMinimum( min );
-      if ( max.isValid() )
-        mQgsDial->setMaximum( max );
-      if ( step.isValid() )
-        mQgsDial->setSingleStep( step );
-    }
-
-    connect( editor, SIGNAL( valueChanged( QVariant ) ), this, SLOT( valueChangedVariant( QVariant ) ) );
-  }
-  else if ( mDial )
-  {
-    if ( min.isValid() )
-      mDial->setMinimum( min.toInt() );
-    if ( max.isValid() )
-      mDial->setMaximum( max.toInt() );
-    if ( step.isValid() )
-      mDial->setSingleStep( step.toInt() );
-    connect( mDial, SIGNAL( valueChanged( int ) ), this, SLOT( valueChanged( int ) ) );
-  }
-  else if ( mSlider )
-  {
-    if ( min.isValid() )
-      mSlider->setMinimum( min.toInt() );
-    if ( max.isValid() )
-      mSlider->setMaximum( max.toInt() );
-    if ( step.isValid() )
-      mSlider->setSingleStep( step.toInt() );
-    connect( mSlider, SIGNAL( valueChanged( int ) ), this, SLOT( valueChanged( int ) ) );
+    if ( mQgsDial ) setupIntEditor( min, max, step, mQgsDial, this );
+    else if ( mQgsSlider ) setupIntEditor( min, max, step, mQgsSlider, this );
+    else if ( mDial ) setupIntEditor( min, max, step, mDial, this );
+    else if ( mSlider ) setupIntEditor( min, max, step, mSlider, this );
   }
 }
 

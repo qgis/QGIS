@@ -21,6 +21,7 @@
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 
+class QAbstractSlider;
 class QSlider;
 class QDial;
 class QgsSlider;
