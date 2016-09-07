@@ -187,5 +187,13 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
             result = exp.evaluate()
             self.assertEqual(exp_res, result)
 
+    def testValid(self):
+        e = QgsExpression()
+        self.assertFalse(e.isValid())
+        e.setExpression('asdf||#@¼')
+        self.assertFalse(e.isValid())
+        e.setExpression('1')
+        self.assertTrue(e.isValid())
+
 if __name__ == "__main__":
     unittest.main()

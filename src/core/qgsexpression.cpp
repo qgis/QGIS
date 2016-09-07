@@ -3696,6 +3696,18 @@ QgsExpression::~QgsExpression()
     delete d;
 }
 
+bool QgsExpression::operator==( const QgsExpression& other ) const
+{
+  if ( d == other.d || d->mExp == other.d->mExp )
+    return true;
+  return false;
+}
+
+bool QgsExpression::isValid() const
+{
+  return d->mRootNode;
+}
+
 bool QgsExpression::hasParserError() const { return !d->mParserErrorString.isNull(); }
 
 QString QgsExpression::parserErrorString() const { return d->mParserErrorString; }
@@ -3874,7 +3886,7 @@ int QgsExpression::currentRowNumber() { return d->mRowNumber; }
 QString QgsExpression::dump() const
 {
   if ( !d->mRootNode )
-    return tr( "(no root)" );
+    return QString();
 
   return d->mRootNode->dump();
 }
