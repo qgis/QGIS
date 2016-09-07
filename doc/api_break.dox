@@ -531,6 +531,7 @@ version instead.</li>
 <li>QgsExpression::Interval has been removed. Use QgsInterval instead.</li>
 <li>replaceExpressionText() no longer accepts a substitution map parameter. Use expression context variables instead.</li>
 <li>helptext() has been renamed to helpText()</li>
+<li>isValid() has been renamed to checkExpression()</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsFeature QgsFeature

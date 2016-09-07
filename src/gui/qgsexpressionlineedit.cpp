@@ -129,7 +129,7 @@ QString QgsExpressionLineEdit::expression() const
 bool QgsExpressionLineEdit::isValidExpression( QString *expressionError ) const
 {
   QString temp;
-  return QgsExpression::isValid( expression(), &mExpressionContext, expressionError ? *expressionError : temp );
+  return QgsExpression::checkExpression( expression(), &mExpressionContext, expressionError ? *expressionError : temp );
 }
 
 void QgsExpressionLineEdit::registerExpressionContextGenerator( const QgsExpressionContextGenerator* generator )

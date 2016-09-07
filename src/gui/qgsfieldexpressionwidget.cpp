@@ -113,7 +113,7 @@ QString QgsFieldExpressionWidget::asExpression() const
 bool QgsFieldExpressionWidget::isValidExpression( QString *expressionError ) const
 {
   QString temp;
-  return QgsExpression::isValid( currentText(), &mExpressionContext, expressionError ? *expressionError : temp );
+  return QgsExpression::checkExpression( currentText(), &mExpressionContext, expressionError ? *expressionError : temp );
 }
 
 bool QgsFieldExpressionWidget::isExpression() const

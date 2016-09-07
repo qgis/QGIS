@@ -14,6 +14,14 @@ class QgsExpression
     QgsExpression( const QString& expr );
     ~QgsExpression();
 
+    /**
+     * Checks if this expression is valid.
+     * A valid expression could be parsed but does not necessarily evaluate properly.
+     *
+     * @note Added in QGIS 3.0
+     */
+    bool isValid() const;
+
     //! Returns true if an error occurred when parsing the input expression
     bool hasParserError() const;
     //! Returns parser error
@@ -73,9 +81,9 @@ class QgsExpression
      * @param context optional expression context
      * @param errorMessage will be filled with any error message from the validation
      * @returns true if string is a valid expression
-     * @note added in QGIS 2.12
+     * @note added in QGIS 3.0
      */
-    static bool isValid( const QString& text, const QgsExpressionContext* context, QString &errorMessage );
+    static bool checkExpression( const QString& text, const QgsExpressionContext* context, QString &errorMessage );
 
     //! Return the original, unmodified expression string.
     //! If there was none supplied because it was constructed by sole
