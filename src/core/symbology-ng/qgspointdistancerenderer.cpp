@@ -114,6 +114,11 @@ bool QgsPointDistanceRenderer::renderFeature( QgsFeature& feature, QgsRenderCont
     int groupIdx = mGroupIndex[ minDistFeatureId ];
     ClusteredGroup& group = mClusteredGroups[groupIdx];
 
+    // calculate new centroid of group
+    QgsPoint oldCenter = mGroupLocations.value( minDistFeatureId );
+    mGroupLocations[ minDistFeatureId ] = QgsPoint(( oldCenter.x() * group.size() + point.x() ) / ( group.size() + 1.0 ),
+                                          ( oldCenter.y() * group.size() + point.y() ) / ( group.size() + 1.0 ) );
+
     // add to a group
     group << GroupedFeature( feature, symbol, selected, label );
     // add to group index
