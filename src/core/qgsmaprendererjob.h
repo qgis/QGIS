@@ -140,6 +140,14 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     const QgsMapSettings& mapSettings() const;
 
   signals:
+    /**
+     * Emitted when the layers are rendered.
+     * Rendering labels is not yet done. If the fully rendered layer including labels is reuquired use
+     * finished() instead.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void renderingLayersFinished();
 
     //! emitted when asynchronous rendering is finished (or canceled).
     void finished();

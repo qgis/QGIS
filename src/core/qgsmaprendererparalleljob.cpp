@@ -196,6 +196,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
     // now start rendering of labeling!
     mLabelingFuture = QtConcurrent::run( renderLabelsStatic, this );
     mLabelingFutureWatcher.setFuture( mLabelingFuture );
+    emit renderingLayersFinished();
   }
   else
   {
