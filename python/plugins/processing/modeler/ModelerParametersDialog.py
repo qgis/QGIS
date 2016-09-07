@@ -38,12 +38,7 @@ from qgis.core import QgsNetworkAccessManager
 
 from qgis.gui import QgsMessageBar
 
-from processing.gui.wrappers import (
-    DIALOG_MODELER,
-    wrapper_from_param,
-    NotYetImplementedWidgetWrapper,
-    )
-
+from processing.gui.wrappers import NotYetImplementedWidgetWrapper, InvalidParameterValue
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
@@ -181,7 +176,7 @@ class ModelerParametersDialog(QDialog):
         self.widgets = {}
         self.checkBoxes = {}
         self.showAdvanced = False
-        self.widget_wrappers = {}
+        self.wrappers = {}
         self.valueItems = {}
         self.dependentItems = {}
         self.resize(650, 450)
@@ -236,8 +231,8 @@ class ModelerParametersDialog(QDialog):
             label = QLabel(desc)
             self.labels[param.name] = label
 
-            wrapper = self.getWidgetWrapperFromParameter(param)
-            self.widget_wrappers[param.name] = wrapper
+            wrapper = param.wrapper(self)
+            self.wrappers[param.name] = wrapper
 
             widget = wrapper.widget
             self.valueItems[param.name] = widget
@@ -253,7 +248,7 @@ class ModelerParametersDialog(QDialog):
                 self.widgets[param.name] = widget
 
             self.verticalLayout.addWidget(label)
-            self.verticalLayout.addWidget(wrapper)
+            self.verticalLayout.addWidget(wrapper.widget)
 
         for output in self._alg.outputs:
             if output.hidden:
@@ -394,135 +389,6 @@ class ModelerParametersDialog(QDialog):
             alg = self.model.algs[value.alg]
             return self.tr("'%s' from algorithm '%s'") % (alg.algorithm.getOutputFromName(value.output).description, alg.description)
 
-    def getWidgetWrapperFromParameter(self, param):
-        wrapper = wrapper_from_param(param, DIALOG_MODELER)
-        if wrapper is None:
-            widget = self.getWidgetFromParameter(param)
-            wrapper = NotYetImplementedWidgetWrapper(param, widget)
-
-        model_values = []
-        values = self.getAvailableValuesForParam(param)
-        for value in values:
-            model_values.append((self.resolveValueDescription(value), value))
-
-        input_wrapper = ModelerWidgetWrapper(wrapper, model_values)
-        return input_wrapper
-
-
-    def getWidgetFromParameter(self, param):
-        if isinstance(param, ParameterRaster):
-            item = QComboBox()
-            layers = self.getAvailableValuesOfType(ParameterRaster, OutputRaster)
-            if param.optional:
-                item.addItem(self.NOT_SELECTED, None)
-            for layer in layers:
-                item.addItem(self.resolveValueDescription(layer), layer)
-        elif isinstance(param, ParameterVector):
-            item = QComboBox()
-            layers = self.getAvailableValuesOfType(ParameterVector, OutputVector)
-            if param.optional:
-                item.addItem(self.NOT_SELECTED, None)
-            for layer in layers:
-                item.addItem(self.resolveValueDescription(layer), layer)
-        elif isinstance(param, ParameterTable):
-            item = QComboBox()
-            tables = self.getAvailableValuesOfType(ParameterTable, OutputTable)
-            layers = self.getAvailableValuesOfType(ParameterVector, OutputVector)
-            if param.optional:
-                item.addItem(self.NOT_SELECTED, None)
-            for table in tables:
-                item.addItem(self.resolveValueDescription(table), table)
-            for layer in layers:
-                item.addItem(self.resolveValueDescription(layer), layer)
-        elif isinstance(param, ParameterSelection):
-            item = QComboBox()
-            item.addItems(param.options)
-            item.setCurrentIndex(param.default or 0)
-        elif isinstance(param, ParameterFixedTable):
-            item = FixedTablePanel(param)
-        elif isinstance(param, ParameterRange):
-            item = RangePanel(param)
-        elif isinstance(param, ParameterMultipleInput):
-            if param.datatype == dataobjects.TYPE_VECTOR_ANY:
-                options = self.getAvailableValuesOfType(ParameterVector, OutputVector)
-            elif param.datatype == dataobjects.TYPE_VECTOR_POINT:
-                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_POINT, dataobjects.TYPE_VECTOR_ANY])
-            elif param.datatype == dataobjects.TYPE_VECTOR_LINE:
-                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_LINE, dataobjects.TYPE_VECTOR_ANY])
-            elif param.datatype == dataobjects.TYPE_VECTOR_POLYGON:
-                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_ANY])
-            elif param.datatype == dataobjects.TYPE_RASTER:
-                options = self.getAvailableValuesOfType(ParameterRaster, OutputRaster)
-            else:
-                options = self.getAvailableValuesOfType(ParameterFile, OutputFile)
-            opts = []
-            for opt in options:
-                opts.append(self.resolveValueDescription(opt))
-            item = MultipleInputPanel(opts)
-        elif isinstance(param, ParameterString):
-            strings = self.getAvailableValuesOfType(ParameterString, OutputString)
-            options = [(self.resolveValueDescription(s), s) for s in strings]
-            if param.multiline:
-                item = MultilineTextPanel(options)
-                item.setText(unicode(param.default or ""))
-            else:
-                item = QComboBox()
-                item.setEditable(True)
-                for desc, val in options:
-                    item.addItem(desc, val)
-                item.setEditText(unicode(param.default or ""))
-        elif isinstance(param, ParameterTableField):
-            item = QComboBox()
-            item.setEditable(True)
-            fields = self.getAvailableValuesOfType(ParameterTableField, None)
-            for f in fields:
-                item.addItem(self.resolveValueDescription(f), f)
-        elif isinstance(param, ParameterTableMultipleField):
-            item = QComboBox()
-            item.setEditable(True)
-            fields = self.getAvailableValuesOfType(ParameterTableMultipleField, None)
-            for f in fields:
-                item.addItem(self.resolveValueDescription(f), f)
-        elif isinstance(param, ParameterNumber):
-            item = QComboBox()
-            item.setEditable(True)
-            numbers = self.getAvailableValuesOfType(ParameterNumber, OutputNumber)
-            for n in numbers:
-                item.addItem(self.resolveValueDescription(n), n)
-            item.setEditText(unicode(param.default))
-        elif isinstance(param, ParameterExtent):
-            item = QComboBox()
-            item.setEditable(True)
-            extents = self.getAvailableValuesOfType(ParameterExtent, OutputExtent)
-            if self.canUseAutoExtent():
-                item.addItem(self.USE_MIN_COVERING_EXTENT, None)
-            for ex in extents:
-                item.addItem(self.resolveValueDescription(ex), ex)
-            if not self.canUseAutoExtent():
-                item.setEditText(unicode(param.default))
-        elif isinstance(param, ParameterPoint):
-            item = QComboBox()
-            item.setEditable(True)
-            points = self.getAvailableValuesOfType(ParameterPoint)
-            for p in points:
-                item.addItem(self.resolveValueDescription(p), p)
-            item.setEditText(unicode(param.default))
-        elif isinstance(param, ParameterFile):
-            item = QComboBox()
-            item.setEditable(True)
-            files = self.getAvailableValuesOfType(ParameterFile, OutputFile)
-            for f in files:
-                item.addItem(self.resolveValueDescription(f), f)
-        elif isinstance(param, ParameterGeometryPredicate):
-            item = GeometryPredicateSelectionPanel(param.enabledPredicates)
-        else:
-            item = QLineEdit()
-            try:
-                item.setText(unicode(param.default))
-            except:
-                pass
-        return item
-
     def canUseAutoExtent(self):
         for param in self._alg.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
@@ -557,22 +423,6 @@ class ModelerParametersDialog(QDialog):
             self.tableWidget.setCellWidget(i, 1, item)
             self.tableWidget.setRowHeight(i, 22)
 
-    def setComboBoxValue(self, combo, value, param):
-        if isinstance(value, list):
-            value = value[0]
-        items = [combo.itemData(i) for i in range(combo.count())]
-        try:
-            idx = items.index(value)
-            combo.setCurrentIndex(idx)
-            return
-        except ValueError:
-            pass
-        if combo.isEditable():
-            if value is not None:
-                combo.setEditText(unicode(value))
-        elif isinstance(param, ParameterSelection):
-            combo.setCurrentIndex(int(value))
-
     def setPreviousValues(self):
         if self._algName is not None:
             alg = self.model.algs[self._algName]
@@ -585,52 +435,8 @@ class ModelerParametersDialog(QDialog):
                 else:
                     value = param.default
 
-                wrapper = self.widget_wrappers[param.name]
-                if wrapper.implemented:
-                    wrapper.setValue(value)
-                    continue
-
-                widget = wrapper.widget
-                if isinstance(param, (
-                        ParameterRaster,
-                        ParameterVector,
-                        ParameterTable,
-                        ParameterTableField,
-                        ParameterSelection,
-                        ParameterNumber,
-                        ParameterExtent,
-                        ParameterFile,
-                        ParameterPoint,
-                        ParameterCrs
-                )):
-                    self.setComboBoxValue(widget, value, param)
-                elif isinstance(param, ParameterString):
-                    if param.multiline:
-                        widget.setValue(value)
-                    else:
-                        self.setComboBoxValue(widget, value, param)
-                elif isinstance(param, ParameterFixedTable):
-                    pass  # TODO!
-                elif isinstance(param, ParameterMultipleInput):
-                    if param.datatype == dataobjects.TYPE_VECTOR_ANY:
-                        options = self.getAvailableValuesOfType(ParameterVector, OutputVector)
-                    elif param.datatype == dataobjects.TYPE_VECTOR_POINT:
-                        options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_POINT, dataobjects.TYPE_VECTOR_ANY])
-                    elif param.datatype == dataobjects.TYPE_VECTOR_LINE:
-                        options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_LINE, dataobjects.TYPE_VECTOR_ANY])
-                    elif param.datatype == dataobjects.TYPE_VECTOR_POLYGON:
-                        options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_ANY])
-                    elif param.datatype == dataobjects.TYPE_RASTER:
-                        options = self.getAvailableValuesOfType(ParameterRaster, OutputRaster)
-                    else:
-                        options = self.getAvailableValuesOfType(ParameterFile, OutputFile)
-                    selected = []
-                    for i, opt in enumerate(options):
-                        if opt in value:
-                            selected.append(i)
-                    widget.setSelectedItems(selected)
-                elif isinstance(param, ParameterGeometryPredicate):
-                    widget.setValue(value)
+                wrapper = self.wrappers[param.name]
+                wrapper.setValue(value)
 
             for name, out in alg.outputs.iteritems():
                 widget = self.valueItems[name].setText(out.description)
@@ -652,7 +458,7 @@ class ModelerParametersDialog(QDialog):
         for param in params:
             if param.hidden:
                 continue
-            if not self.setParamValue(alg, param, self.widget_wrappers[param.name]):
+            if not self.setParamValue(alg, param, self.wrappers[param.name]):
                 self.bar.pushMessage("Error", "Wrong or missing value for parameter '%s'" % param.description,
                                      level=QgsMessageBar.WARNING)
                 return None
@@ -669,194 +475,13 @@ class ModelerParametersDialog(QDialog):
 
         return alg
 
-    def setParamValueLayerOrTable(self, alg, param, widget):
-        idx = widget.currentIndex()
-        if idx < 0:
-            return False
-        else:
-            value = widget.itemData(widget.currentIndex())
-            alg.params[param.name] = value
-            return True
-
-    def setParamTableFieldValue(self, alg, param, widget):
-        idx = widget.findText(widget.currentText())
-        if idx < 0:
-            s = unicode(widget.currentText()).strip()
-            if s == '':
-                if param.optional:
-                    alg.params[param.name] = None
-                    return True
-                else:
-                    return False
-            else:
-                alg.params[param.name] = s
-                return True
-        else:
-            alg.params[param.name] = widget.itemData(widget.currentIndex())
-        return True
-
-    def setParamStringValue(self, alg, param, widget):
-        if param.multiline:
-            value = widget.getValue()
-            option = widget.getOption()
-            if option == MultilineTextPanel.USE_TEXT:
-                if value == '':
-                    if param.optional:
-                        alg.params[param.name] = None
-                        return True
-                    else:
-                        return False
-                else:
-                    alg.params[param.name] = value
-            else:
-                alg.params[param.name] = value
-        else:
-            idx = widget.findText(widget.currentText())
-            if idx < 0:
-                value = widget.currentText().strip()
-                if value == '':
-                    if param.optional:
-                        alg.params[param.name] = None
-                        return True
-                    else:
-                        return False
-                else:
-                    alg.params[param.name] = value
-            else:
-                alg.params[param.name] = widget.itemData(widget.currentIndex())
-        return True
-
-    def setParamFileValue(self, alg, param, widget):
-        idx = widget.findText(widget.currentText())
-        if idx < 0:
-            value = widget.currentText()
-        else:
-            value = widget.itemData(widget.currentIndex())
-        alg.params[param.name] = value
-        return True
-
-    def setParamNumberValue(self, alg, param, widget):
-        idx = widget.findText(widget.currentText())
-        if idx < 0:
-            s = widget.currentText().strip()
-            if s:
-                try:
-                    value = float(s)
-                except:
-                    return False
-            elif param.optional:
-                value = None
-            else:
-                return False
-        else:
-            value = widget.itemData(widget.currentIndex())
-        alg.params[param.name] = value
-        return True
-
-    def setParamExtentValue(self, alg, param, widget):
-        idx = widget.findText(widget.currentText())
-        if idx < 0:
-            s = unicode(widget.currentText()).strip()
-            if s:
-                try:
-                    tokens = s.split(',')
-                    if len(tokens) != 4:
-                        return False
-                    for token in tokens:
-                        float(token)
-                except:
-                    return False
-            elif param.optional:
-                s = None
-            else:
-                return False
-            alg.params[param.name] = [s]
-        else:
-            value = widget.itemData(widget.currentIndex())
-            alg.params[param.name] = value
-        return True
-
-    def setParamPointValue(self, alg, param, widget):
-        idx = widget.findText(widget.currentText())
-        if idx < 0:
-            s = unicode(widget.currentText()).strip()
-            if s:
-                try:
-                    tokens = s.split(',')
-                    if len(tokens) != 2:
-                        return False
-                    for token in tokens:
-                        float(token)
-                except:
-                    return False
-            elif param.optional:
-                s = None
-            else:
-                return False
-            alg.params[param.name] = [s]
-        else:
-            value = widget.itemData(widget.currentIndex())
-            alg.params[param.name] = value
-        return True
-
     def setParamValue(self, alg, param, wrapper):
-        if wrapper.implemented:
-            alg.params[param.name] = wrapper.value()
+        try:
+            value = wrapper.value()
+            alg.params[param.name] = value
             return True
-
-        widget = wrapper.widget
-        if isinstance(param, (ParameterRaster, ParameterVector,
-                              ParameterTable)):
-            return self.setParamValueLayerOrTable(alg, param, widget)
-        elif isinstance(param, ParameterString):
-            return self.setParamStringValue(alg, param, widget)
-        elif isinstance(param, ParameterNumber):
-            return self.setParamNumberValue(alg, param, widget)
-        elif isinstance(param, ParameterExtent):
-            return self.setParamExtentValue(alg, param, widget)
-        elif isinstance(param, ParameterPoint):
-            return self.setParamPointValue(alg, param, widget)
-        elif isinstance(param, ParameterFile):
-            return self.setParamFileValue(alg, param, widget)
-        elif isinstance(param, ParameterSelection):
-            alg.params[param.name] = widget.currentIndex()
-            return True
-        elif isinstance(param, ParameterRange):
-            alg.params[param.name] = widget.getValue()
-            return True
-        elif isinstance(param, ParameterFixedTable):
-            table = widget.table
-            if not bool(table) and not param.optional:
-                return False
-            alg.params[param.name] = ParameterFixedTable.tableToString(table)
-            return True
-        elif isinstance(param, (ParameterTableField,
-                                ParameterTableMultipleField)):
-            return self.setParamTableFieldValue(alg, param, widget)
-        elif isinstance(param, ParameterMultipleInput):
-            if param.datatype == dataobjects.TYPE_VECTOR_ANY:
-                options = self.getAvailableValuesOfType(ParameterVector, OutputVector)
-            elif param.datatype == dataobjects.TYPE_VECTOR_POINT:
-                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_POINT, dataobjects.TYPE_VECTOR_ANY])
-            elif param.datatype == dataobjects.TYPE_VECTOR_LINE:
-                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_LINE, dataobjects.TYPE_VECTOR_ANY])
-            elif param.datatype == dataobjects.TYPE_VECTOR_POLYGON:
-                options = self.getAvailableValuesOfType(ParameterVector, OutputVector, [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_ANY])
-            elif param.datatype == dataobjects.TYPE_RASTER:
-                options = self.getAvailableValuesOfType(ParameterRaster, OutputRaster)
-            else:
-                options = self.getAvailableValuesOfType(ParameterFile, OutputFile)
-            values = [options[i] for i in widget.selectedoptions]
-            if len(values) == 0 and not param.optional:
-                return False
-            alg.params[param.name] = values
-            return True
-        elif isinstance(param, ParameterGeometryPredicate):
-            alg.params[param.name] = widget.value()
-            return True
-        else:
-            alg.params[param.name] = unicode(widget.text())
-            return True
+        except InvalidParameterValue:
+            return False
 
     def okPressed(self):
         self.alg = self.createAlgorithm()

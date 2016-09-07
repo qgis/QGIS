@@ -40,8 +40,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.SilentProgress import SilentProgress
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
+from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter, ParameterExtent
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools import dataobjects, vector
@@ -361,56 +360,6 @@ class GeoAlgorithm:
                     if ext not in exts + ['dbf']:
                         out.value = out.value + '.' + exts[0]
 
-    def resolveTemporaryOutputs(self):
-        """Sets temporary outputs (output.value = None) with a
-        temporary file instead.
-        """
-        for out in self.outputs:
-            if not out.hidden and out.value is None:
-                setTempOutput(out, self)
-
-    def setOutputCRS(self):
-        layers = dataobjects.getAllLayers()
-        for param in self.parameters:
-            if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
-                if param.value:
-                    if isinstance(param, ParameterMultipleInput):
-                        inputlayers = param.value.split(';')
-                    else:
-                        inputlayers = [param.value]
-                    for inputlayer in inputlayers:
-                        for layer in layers:
-                            if layer.source() == inputlayer:
-                                self.crs = layer.crs()
-                                return
-                        p = dataobjects.getObjectFromUri(inputlayer)
-                        if p is not None:
-                            self.crs = p.crs()
-                            p = None
-                            return
-        try:
-            from qgis.utils import iface
-            if iface is not None:
-                self.crs = iface.mapCanvas().mapSettings().destinationCrs()
-        except:
-            pass
-
-    def resolveDataObjects(self):
-        layers = dataobjects.getAllLayers()
-        for param in self.parameters:
-            if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable,
-                                  ParameterMultipleInput)):
-                if param.value:
-                    if isinstance(param, ParameterMultipleInput):
-                        inputlayers = param.value.split(';')
-                    else:
-                        inputlayers = [param.value]
-                    for i, inputlayer in enumerate(inputlayers):
-                        for layer in layers:
-                            if layer.name() == inputlayer:
-                                inputlayers[i] = layer.source()
-                                break
-                    param.setValue(";".join(inputlayers))
 
     def canUseAutoExtent(self):
         for param in self.parameters:
@@ -466,6 +415,57 @@ class GeoAlgorithm:
             self.xmax = max(self.xmax, layer.extent().xMaximum())
             self.ymin = min(self.ymin, layer.extent().yMinimum())
             self.ymax = max(self.ymax, layer.extent().yMaximum())
+            
+    def resolveTemporaryOutputs(self):
+        """Sets temporary outputs (output.value = None) with a
+        temporary file instead.
+        """
+        for out in self.outputs:
+            if not out.hidden and out.value is None:
+                setTempOutput(out, self)
+
+    def setOutputCRS(self):
+        layers = dataobjects.getAllLayers()
+        for param in self.parameters:
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
+                if param.value:
+                    if isinstance(param, ParameterMultipleInput):
+                        inputlayers = param.value.split(';')
+                    else:
+                        inputlayers = [param.value]
+                    for inputlayer in inputlayers:
+                        for layer in layers:
+                            if layer.source() == inputlayer:
+                                self.crs = layer.crs()
+                                return
+                        p = dataobjects.getObjectFromUri(inputlayer)
+                        if p is not None:
+                            self.crs = p.crs()
+                            p = None
+                            return
+        try:
+            from qgis.utils import iface
+            if iface is not None:
+                self.crs = iface.mapCanvas().mapSettings().destinationCrs()
+        except:
+            pass
+
+    def resolveDataObjects(self):
+        layers = dataobjects.getAllLayers()
+        for param in self.parameters:
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable,
+                                  ParameterMultipleInput)):
+                if param.value:
+                    if isinstance(param, ParameterMultipleInput):
+                        inputlayers = param.value.split(';')
+                    else:
+                        inputlayers = [param.value]
+                    for i, inputlayer in enumerate(inputlayers):
+                        for layer in layers:
+                            if layer.name() == inputlayer:
+                                inputlayers[i] = layer.source()
+                                break
+                    param.setValue(";".join(inputlayers))
 
     def checkInputCRS(self):
         """It checks that all input layers use the same CRS. If so,

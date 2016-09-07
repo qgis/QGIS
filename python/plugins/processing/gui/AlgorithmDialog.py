@@ -83,8 +83,8 @@ class AlgorithmDialog(AlgorithmDialogBase):
         self.cornerWidget.setLayout(layout)
         self.tabWidget.setCornerWidget(self.cornerWidget)
 
-        QgsMapLayerRegistry.instance().layerWasAdded.connect(self.mainWidget.layerAdded)
-        QgsMapLayerRegistry.instance().layersWillBeRemoved.connect(self.mainWidget.layersWillBeRemoved)
+        QgsMapLayerRegistry.instance().layerWasAdded.connect(self.mainWidget.layerRegistryChanged)
+        QgsMapLayerRegistry.instance().layersWillBeRemoved.connect(self.mainWidget.layerRegistryChanged)
 
     def runAsBatch(self):
         self.close()
@@ -99,17 +99,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
         for param in params:
             if param.hidden:
                 continue
-            if isinstance(param, ParameterExtent):
-                continue
-            wrapper = self.mainWidget.widget_wrappers[param.name]
+            wrapper = self.mainWidget.wrappers[param.name]
             if not self.setParamValue(param, wrapper):
-                raise AlgorithmDialogBase.InvalidParameterValue(param, wrapper)
-
-        for param in params:
-            if isinstance(param, ParameterExtent):
-                wrapper = self.mainWidget.widget_wrappers[param.name]
-                if not self.setParamValue(param, wrapper):
-                    raise AlgorithmDialogBase.InvalidParameterValue(param, wrapper)
+                raise AlgorithmDialogBase.InvalidParameterValue(param, wrapper.widget)
 
         for output in outputs:
             if output.hidden:
@@ -133,61 +125,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
         return result
 
     def setParamValue(self, param, wrapper, alg=None):
-        if wrapper.implemented:
-            return param.setValue(wrapper.value())
-
-        widget = wrapper.widget
-        if isinstance(param, ParameterRaster):
-            return param.setValue(widget.getValue())
-        elif isinstance(param, (ParameterVector, ParameterTable)):
-            try:
-                return param.setValue(widget.itemData(widget.currentIndex()))
-            except:
-                return param.setValue(widget.getValue())
-        elif isinstance(param, ParameterSelection):
-            return param.setValue(widget.currentIndex())
-        elif isinstance(param, ParameterFixedTable):
-            return param.setValue(widget.table)
-        elif isinstance(param, ParameterRange):
-            return param.setValue(widget.getValue())
-        elif isinstance(param, ParameterTableField):
-            if param.optional and widget.currentIndex() == 0:
-                return param.setValue(None)
-            return param.setValue(widget.currentText())
-        elif isinstance(param, ParameterTableMultipleField):
-            if param.optional and len(list(widget.get_selected_items())) == 0:
-                return param.setValue(None)
-            return param.setValue(list(widget.get_selected_items()))
-        elif isinstance(param, ParameterMultipleInput):
-            if param.datatype == dataobjects.TYPE_FILE:
-                return param.setValue(widget.selectedoptions)
-            else:
-                if param.datatype == dataobjects.TYPE_RASTER:
-                    options = dataobjects.getRasterLayers(sorting=False)
-                elif param.datatype == dataobjects.TYPE_VECTOR_ANY:
-                    options = dataobjects.getVectorLayers(sorting=False)
-                else:
-                    options = dataobjects.getVectorLayers([param.datatype], sorting=False)
-                return param.setValue([options[i] for i in widget.selectedoptions])
-        elif isinstance(param, (ParameterNumber, ParameterFile,
-                                ParameterExtent, ParameterPoint)):
-            return param.setValue(widget.getValue())
-        elif isinstance(param, ParameterString):
-            if param.multiline:
-                text = unicode(widget.toPlainText())
-            else:
-                text = widget.text()
-
-            if param.evaluateExpressions:
-                try:
-                    text = self.evaluateExpression(text)
-                except:
-                    pass
-            return param.setValue(text)
-        elif isinstance(param, ParameterGeometryPredicate):
-            return param.setValue(widget.value())
-        else:
-            return param.setValue(unicode(widget.text()))
+        return param.setValue(wrapper.value())
 
     def accept(self):
         self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
@@ -287,6 +225,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
                             '\nOpen the results dialog to check it.'))
 
     def closeEvent(self, evt):
-        QgsMapLayerRegistry.instance().layerWasAdded.disconnect(self.mainWidget.layerAdded)
-        QgsMapLayerRegistry.instance().layersWillBeRemoved.disconnect(self.mainWidget.layersWillBeRemoved)
+        QgsMapLayerRegistry.instance().layerWasAdded.disconnect(self.mainWidget.layerRegistryChanged)
+        QgsMapLayerRegistry.instance().layersWillBeRemoved.disconnect(self.mainWidget.layerRegistryChanged)
         super(AlgorithmDialog, self).closeEvent(evt)

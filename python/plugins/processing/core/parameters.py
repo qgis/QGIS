@@ -27,7 +27,9 @@ __revision__ = '$Format:%H$'
 
 import sys
 import os
-import inspect
+from inspect import isclass
+from copy import deepcopy
+
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsRasterLayer, QgsVectorLayer
@@ -49,7 +51,7 @@ def _splitParameterOptions(line):
         isOptional = False
         definition = tokens[1]
     return isOptional, tokens[0], definition
-        
+
 def _createDescriptiveName(s):
     return s.replace('_', ' ')
 
@@ -79,8 +81,8 @@ class Parameter:
         self.optional = parseBool(optional)
 
         # TODO: make deep copy and deep update
-        self.metadata = self.default_metadata.copy()
-        self.metadata.update(metadata)
+        self.metadata = deepcopy(self.default_metadata)
+        self.metadata.update(deepcopy(metadata))
 
     def setValue(self, obj):
         """
@@ -130,7 +132,20 @@ class Parameter:
         if context == '':
             context = 'Parameter'
         return QCoreApplication.translate(context, string)
-            
+
+    def wrapper(self, dialog, row=0, col=0):
+        wrapper = self.metadata.get('widget_wrapper', None)
+        # wrapper metadata should be a class path
+        if isinstance(wrapper, basestring):
+            tokens = wrapper.split('.')
+            mod = __import__('.'.join(tokens[:-1]), fromlist=[tokens[-1]])
+            wrapper = getattr(mod, tokens[-1])
+        # or directly a class object
+        if isclass(wrapper):
+            wrapper = wrapper(self, dialog, row, col)
+        # or a wrapper instance
+        return wrapper
+
 class ParameterBoolean(Parameter):
 
     default_metadata = {
@@ -159,7 +174,7 @@ class ParameterBoolean(Parameter):
             param_type += 'optional '
         param_type += 'boolean '
         return '##' + self.name + '=' + param_type + str(self.default)
-    
+
     @classmethod
     def fromScriptCode(self, line):
         isOptional, name, definition = _splitParameterOptions(line)
@@ -172,7 +187,7 @@ class ParameterBoolean(Parameter):
                 param = ParameterBoolean(name, descName)
             param.optional = isOptional
             return param
-        
+
 
 
 class ParameterCrs(Parameter):
@@ -233,9 +248,13 @@ class ParameterDataObject(Parameter):
 
 class ParameterExtent(Parameter):
 
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.ExtentWidgetWrapper'
+    }
+    
     USE_MIN_COVERING_EXTENT = 'USE_MIN_COVERING_EXTENT'
 
-    def __init__(self, name='', description='', default=None, optional=False):
+    def __init__(self, name='', description='', default=None, optional=True):
         Parameter.__init__(self, name, description, default, optional)
         # The value is a string in the form "xmin, xmax, ymin, ymax"
 
@@ -268,7 +287,7 @@ class ParameterExtent(Parameter):
             param_type += 'optional '
         param_type += 'extent'
         return '##' + self.name + '=' + param_type
-    
+
     @classmethod
     def fromScriptCode(self, line):
         isOptional, name, definition = _splitParameterOptions(line)
@@ -279,6 +298,10 @@ class ParameterExtent(Parameter):
 
 
 class ParameterPoint(Parameter):
+
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.PointWidgetWrapper'
+    }
 
     def __init__(self, name='', description='', default=None, optional=False):
         Parameter.__init__(self, name, description, default, optional)
@@ -322,6 +345,10 @@ class ParameterPoint(Parameter):
 
 
 class ParameterFile(Parameter):
+
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.FileWidgetWrapper'
+    }
 
     def __init__(self, name='', description='', isFolder=False, optional=True, ext=None):
         Parameter.__init__(self, name, description, None, parseBool(optional))
@@ -368,6 +395,7 @@ class ParameterFile(Parameter):
 
 
 class ParameterFixedTable(Parameter):
+    
 
     def __init__(self, name='', description='', numRows=3,
                  cols=['value'], fixedNumOfRows=False, optional=False):
@@ -420,6 +448,11 @@ class ParameterMultipleInput(ParameterDataObject):
     Its value is a string with substrings separated by semicolons,
     each of which represents the data source location of each element.
     """
+    
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.MultipleInputWidgetWrapper'
+    }
+
 
     exported = None
 
@@ -604,13 +637,18 @@ class ParameterMultipleInput(ParameterDataObject):
         descName = _createDescriptiveName(name)
         if definition.lower().strip() == 'multiple raster':
             return ParameterMultipleInput(name, descName,
-                                           dataobjects.TYPE_RASTER, isOptional)            
+                                           dataobjects.TYPE_RASTER, isOptional)
         elif definition.lower().strip() == 'multiple vector':
             return ParameterMultipleInput(name, definition,
                                            dataobjects.TYPE_VECTOR_ANY, isOptional)
-            
+
 
 class ParameterNumber(Parameter):
+    
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.NumberWidgetWrapper'
+    }
+
 
     def __init__(self, name='', description='', minValue=None, maxValue=None,
                  default=None, optional=False):
@@ -713,6 +751,11 @@ class ParameterRange(Parameter):
 
 
 class ParameterRaster(ParameterDataObject):
+    
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.RasterWidgetWrapper'
+    }
+
 
     def __init__(self, name='', description='', optional=False, showSublayersDialog=True):
         ParameterDataObject.__init__(self, name, description, None, optional)
@@ -784,6 +827,11 @@ class ParameterRaster(ParameterDataObject):
             return ParameterRaster(name, descName, optional=isOptional)
 
 class ParameterSelection(Parameter):
+    
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.SelectionWidgetWrapper'
+    }
+
 
     def __init__(self, name='', description='', options=[], default=None, isSource=False,
                  optional=False):
@@ -835,9 +883,14 @@ class ParameterSelection(Parameter):
         elif definition.lower().strip().startswith('selection'):
             options = definition.strip()[len('selection '):].split(';')
             return ParameterSelection(name, descName, options, optional=isOptional)
-        
-        
+
+
 class ParameterString(Parameter):
+    
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.StringWidgetWrapper'
+    }
+
 
     NEWLINE = '\n'
     ESCAPED_NEWLINE = '\\n'
@@ -891,6 +944,11 @@ class ParameterString(Parameter):
                 return ParameterString(name, descName, multiline=True, optional=isOptional)
 
 class ParameterTable(ParameterDataObject):
+    
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.TableWidgetWrapper'
+    }
+
 
     def __init__(self, name='', description='', optional=False):
         ParameterDataObject.__init__(self, name, description, None, optional)
@@ -973,10 +1031,12 @@ class ParameterTableField(Parameter):
 
     """A parameter representing a table field.
     Its value is a string that represents the name of the field.
-
-    In a script you can use it with
-    ##Field=[optional] field [number|string] Parentinput
     """
+
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.TableFieldWidgetWrapper'
+    }
+
 
     DATA_TYPE_NUMBER = 0
     DATA_TYPE_STRING = 1
@@ -1037,10 +1097,10 @@ class ParameterTableField(Parameter):
             else:
                 parent = definition.strip()[len('field') + 1:]
                 datatype = ParameterTableField.DATA_TYPE_ANY
-            
+
             return ParameterTableField(name, descName, parent, datatype, isOptional)
-        
-        
+
+
 class ParameterTableMultipleField(Parameter):
 
     """A parameter representing several table fields.
@@ -1126,6 +1186,11 @@ class ParameterTableMultipleField(Parameter):
 
 
 class ParameterVector(ParameterDataObject):
+    
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.VectorWidgetWrapper'
+    }
+
 
     def __init__(self, name='', description='', datatype=[-1],
                  optional=False):
@@ -1136,6 +1201,7 @@ class ParameterVector(ParameterDataObject):
             datatype = [int(t) for t in datatype.split(',')]
         self.datatype = datatype
         self.exported = None
+        self.allowOnlyOpenedLayers = False
 
     def setValue(self, obj):
         self.exported = None
@@ -1257,20 +1323,20 @@ class ParameterGeometryPredicate(Parameter):
         return True
 
 
-paramClasses = [c for c in sys.modules[__name__].__dict__.values() if inspect.isclass(c) and issubclass(c, Parameter)]
+paramClasses = [c for c in sys.modules[__name__].__dict__.values() if isclass(c) and issubclass(c, Parameter)]
 
 def getParameterFromString(s):
     print s
-    #Try the parameter definitions used in description files
+    # Try the parameter definitions used in description files
     if '|' in s:
         tokens = s.split("|")
         params = [t if unicode(t) != unicode(None) else None for t in tokens[1:]]
         clazz = getattr(sys.modules[__name__], tokens[0])
         return clazz(*params)
-    else: #try script syntax
+    else:  # try script syntax
         for paramClass in paramClasses:
             try:
-                param  = paramClass.fromScriptCode(s)
+                param = paramClass.fromScriptCode(s)
                 if param is not None:
                     return param
             except AttributeError:

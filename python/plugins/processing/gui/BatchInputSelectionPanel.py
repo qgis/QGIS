@@ -43,11 +43,10 @@ from processing.tools import dataobjects
 
 class BatchInputSelectionPanel(QWidget):
 
-    def __init__(self, param, row, col, panel):
+    def __init__(self, param, row, col, dialog):
         super(BatchInputSelectionPanel, self).__init__(None)
         self.param = param
-        self.panel = panel
-        self.table = self.panel.tblParameters
+        self.dialog = dialog
         self.row = row
         self.col = col
         self.horizontalLayout = QHBoxLayout(self)
@@ -64,6 +63,12 @@ class BatchInputSelectionPanel(QWidget):
         self.pushButton.clicked.connect(self.showPopupMenu)
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)
+
+    def _panel(self):
+        return self.dialog.mainDialog()
+
+    def _table(self):
+        return self._panel().tblParameters
 
     def showPopupMenu(self):
         popupmenu = QMenu()
@@ -106,11 +111,11 @@ class BatchInputSelectionPanel(QWidget):
                 if isinstance(self.param, ParameterMultipleInput):
                     self.text.setText(';'.join(layers[idx].name() for idx in selected))
                 else:
-                    rowdif = len(selected) - (self.table.rowCount() - self.row)
+                    rowdif = len(selected) - (self._table().rowCount() - self.row)
                     for i in range(rowdif):
-                        self.panel.addRow()
+                        self._panel().addRow()
                     for i, layeridx in enumerate(selected):
-                        self.table.cellWidget(i + self.row,
+                        self._table().cellWidget(i + self.row,
                                               self.col).setText(layers[layeridx].name())
 
     def showFileSelectionDialog(self):
@@ -139,11 +144,11 @@ class BatchInputSelectionPanel(QWidget):
                 if isinstance(self.param, ParameterMultipleInput):
                     self.text.setText(';'.join(unicode(f) for f in files))
                 else:
-                    rowdif = len(files) - (self.table.rowCount() - self.row)
+                    rowdif = len(files) - (self._table().rowCount() - self.row)
                     for i in range(rowdif):
-                        self.panel.addRow()
+                        self._panel().addRow()
                     for i, f in enumerate(files):
-                        self.table.cellWidget(i + self.row,
+                        self._table().cellWidget(i + self.row,
                                               self.col).setText(f)
 
     def setText(self, text):

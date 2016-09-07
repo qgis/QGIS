@@ -34,11 +34,7 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QLineEdit, QHeaderV
 
 from qgis.core import QgsApplication
 
-from processing.gui.wrappers import (
-    DIALOG_BATCH,
-    wrapper_from_param,
-    NotYetImplementedWidgetWrapper,
-)
+from processing.gui.wrappers import NotYetImplementedWidgetWrapper
 
 from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
@@ -75,7 +71,7 @@ class BatchPanel(BASE, WIDGET):
         super(BatchPanel, self).__init__(None)
         self.setupUi(self)
 
-        self.widget_wrappers = []
+        self.wrappers = []
 
         self.btnAdvanced.hide()
 
@@ -146,45 +142,15 @@ class BatchPanel(BASE, WIDGET):
         self.tblParameters.horizontalHeader().setStretchLastSection(True)
 
     def getWidgetWrapperFromParameter(self, param, row, col):
-        wrapper = wrapper_from_param(param)  # , DIALOG_BATCH)
-        if wrapper is not None:
-            return wrapper
+        return param.wrapper(self.parent, row, col)
 
-        widget = self.getWidgetFromParameter(param, row, col)
-        wrapper = NotYetImplementedWidgetWrapper(param, widget)
-        return wrapper
 
     def getWidgetFromParameter(self, param, row, col):
-        if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable,
-                              ParameterMultipleInput)):
-            item = BatchInputSelectionPanel(param, row, col, self)
-        elif isinstance(param, ParameterSelection):
-            item = QComboBox()
-            item.addItems(param.options)
-        elif isinstance(param, ParameterFixedTable):
-            item = FixedTablePanel(param)
-        elif isinstance(param, ParameterExtent):
-            item = ExtentSelectionPanel(self.parent, self.alg, param.default)
-        elif isinstance(param, ParameterPoint):
-            item = PointSelectionPanel(self.parent, param.default)
-        elif isinstance(param, ParameterCrs):
-            item = CrsSelectionPanel(param.default)
-        elif isinstance(param, ParameterFile):
-            item = FileSelectionPanel(param.isFolder)
-        elif isinstance(param, ParameterGeometryPredicate):
+        if isinstance(param, ParameterGeometryPredicate):
             item = GeometryPredicateSelectionPanel(param.enabledPredicates, rows=1)
             width = max(self.tblParameters.columnWidth(col),
                         item.sizeHint().width())
             self.tblParameters.setColumnWidth(col, width)
-        else:
-            item = QLineEdit()
-            if param.default is not None:
-                try:
-                    item.setText(unicode(param.default))
-                except:
-                    pass
-
-        return item
 
     def load(self):
         filename = unicode(QFileDialog.getOpenFileName(self,
@@ -209,8 +175,8 @@ class BatchPanel(BASE, WIDGET):
                         continue
                     if param.name in params:
                         value = params[param.name]
-                        wrapper = self.widget_wrappers[row][column]
-                        self.setValueInWidgetWrapper(wrapper, value)
+                        wrapper = self.wrappers[row][column]
+                        wrapper.setValue(value)
                     column += 1
 
                 for out in self.alg.outputs:
@@ -219,7 +185,7 @@ class BatchPanel(BASE, WIDGET):
                     if out.name in outputs:
                         value = outputs[out.name]
                         widget = self.tblParameters.cellWidget(row, column)
-                        self.setValueInWidget(widget, value)
+                        widget.setValue(value)
                     column += 1
         except TypeError:
             QMessageBox.critical(
@@ -233,22 +199,16 @@ class BatchPanel(BASE, WIDGET):
         self.setValueInWidget(wrapper.widget, value)
 
     def setValueInWidget(self, widget, value):
-        if isinstance(widget, (BatchInputSelectionPanel, QLineEdit, FileSelectionPanel)):
-            widget.setText(unicode(value))
-        elif isinstance(widget, (BatchOutputSelectionPanel, GeometryPredicateSelectionPanel)):
+
+        if isinstance(widget, (BatchOutputSelectionPanel, GeometryPredicateSelectionPanel)):
             widget.setValue(unicode(value))
 
-        elif isinstance(widget, QComboBox):
-            idx = widget.findText(unicode(value))
-            if idx != -1:
-                widget.setCurrentIndex(idx)
         elif isinstance(widget, ExtentSelectionPanel):
             if value is not None:
                 widget.setExtentFromString(value)
             else:
                 widget.setExtentFromString('')
-        elif isinstance(widget, CrsSelectionPanel):
-            widget.setAuthId(value)
+
 
     def save(self):
         toSave = []
@@ -263,7 +223,7 @@ class BatchPanel(BASE, WIDGET):
                 if isinstance(param, ParameterExtent):
                     col += 1
                     continue
-                wrapper = self.widget_wrappers[row][col]
+                wrapper = self.wrappers[row][col]
                 if not self.setParamValue(param, wrapper, alg):
                     self.parent.lblProgress.setText(
                         self.tr('<b>Missing parameter value: %s (row %d)</b>') % (param.description, row + 1))
@@ -275,7 +235,7 @@ class BatchPanel(BASE, WIDGET):
                 if param.hidden:
                     continue
                 if isinstance(param, ParameterExtent):
-                    wrapper = self.widget_wrappers[row][col]
+                    wrapper = self.wrappers[row][col]
                     if not self.setParamValue(param, wrapper, alg):
                         self.parent.lblProgress.setText(
                             self.tr('<b>Missing parameter value: %s (row %d)</b>') % (param.description, row + 1))
@@ -311,21 +271,9 @@ class BatchPanel(BASE, WIDGET):
             return param.setValue(wrapper.value())
 
         widget = wrapper.widget
-        if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable,
-                              ParameterMultipleInput)):
-            value = widget.getText()
-            if unicode(value).strip() == '':
-                value = None
-            return param.setValue(value)
-        elif isinstance(param, ParameterSelection):
-            return param.setValue(widget.currentIndex())
-        elif isinstance(param, ParameterFixedTable):
-            return param.setValue(widget.table)
-        elif isinstance(param, ParameterExtent):
+        if isinstance(param, ParameterExtent):
             if alg is not None:
                 widget.useNewAlg(alg)
-            return param.setValue(widget.getValue())
-        elif isinstance(param, (ParameterCrs, ParameterFile)):
             return param.setValue(widget.getValue())
         elif isinstance(param, ParameterGeometryPredicate):
             return param.setValue(widget.value())
@@ -333,7 +281,7 @@ class BatchPanel(BASE, WIDGET):
             return param.setValue(widget.text())
 
     def setCellWrapper(self, row, column, wrapper):
-        self.widget_wrappers[row][column] = wrapper
+        self.wrappers[row][column] = wrapper
         self.tblParameters.setCellWidget(row, column, wrapper.widget)
 
     def addRow(self):
@@ -367,12 +315,12 @@ class BatchPanel(BASE, WIDGET):
             self.tblParameters.setCellWidget(row, column, item)
 
     def removeRows(self):
-        #~ self.tblParameters.setUpdatesEnabled(False)
-        #~ indexes = self.tblParameters.selectionModel().selectedIndexes()
-        #~ indexes.sort()
-        #~ for i in reversed(indexes):
-            #~ self.tblParameters.model().removeRow(i.row())
-        #~ self.tblParameters.setUpdatesEnabled(True)
+        # ~ self.tblParameters.setUpdatesEnabled(False)
+        # ~ indexes = self.tblParameters.selectionModel().selectedIndexes()
+        # ~ indexes.sort()
+        # ~ for i in reversed(indexes):
+            # ~ self.tblParameters.model().removeRow(i.row())
+        # ~ self.tblParameters.setUpdatesEnabled(True)
         if self.tblParameters.rowCount() > 2:
             self.widget_wrappers.pop()
             self.tblParameters.setRowCount(self.tblParameters.rowCount() - 1)

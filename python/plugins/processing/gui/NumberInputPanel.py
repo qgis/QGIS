@@ -61,7 +61,7 @@ class NumberInputPanel(BASE, WIDGET):
         if self.isInteger:
             self.spnValue.setDecimals(0)
         else:
-            #Guess reasonable step value
+            # Guess reasonable step value
             if (maximum == 0 or maximum) and (minimum == 0 or minimum):
                 self.spnValue.setSingleStep(self.calculateStep(minimum, maximum))
 
@@ -74,7 +74,7 @@ class NumberInputPanel(BASE, WIDGET):
         else:
             self.spnValue.setMinimum(-99999999)
 
-        #Set default value
+        # Set default value
         if number == 0 or number:
             self.spnValue.setValue(float(number))
             self.spnValue.setClearValue(float(number))
@@ -147,6 +147,9 @@ class NumberInputPanel(BASE, WIDGET):
 
     def getValue(self):
         return self.spnValue.value()
+
+    def setValue(self, value):
+        self.spnValue.setValue(value)
 
     def calculateStep(self, minimum, maximum):
         valueRange = maximum - minimum
