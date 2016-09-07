@@ -34,16 +34,38 @@ class QToolButton;
 class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 {
     Q_OBJECT
+    Q_ENUMS( ClearMode )
+    Q_PROPERTY( ClearMode clearMode READ clearMode WRITE setClearMode )
     Q_PROPERTY( QString nullValue READ nullValue WRITE setNullValue )
+    Q_PROPERTY( QString defaultValue READ defaultValue WRITE setDefaultValue )
     Q_PROPERTY( QString value READ value WRITE setValue NOTIFY valueChanged )
 
   public:
+
+    //! Behaviour when clearing value of widget
+    enum ClearMode
+    {
+      ClearToNull = 0, //!< Reset value to null
+      ClearToDefault, //!< Reset value to default value (see defaultValue() )
+    };
 
     /** Constructor for QgsFilterLineEdit.
      * @param parent parent widget
      * @param nullValue string for representing null values
      */
     QgsFilterLineEdit( QWidget* parent = nullptr, const QString& nullValue = QString::null );
+
+    /** Returns the clear mode for the widget. The clear mode defines the behaviour of the
+     * widget when its value is cleared. This defaults to ClearToNull.
+     * @see setClearMode()
+     */
+    ClearMode clearMode() const { return mClearMode; }
+
+    /** Sets the clear mode for the widget. The clear mode defines the behaviour of the
+     * widget when its value is cleared. This defaults to ClearToNull.
+     * @see clearMode()
+     */
+    void setClearMode( ClearMode mode ) { mClearMode = mode; }
 
     /** Sets the string representation for null values in the widget. This does not
      * affect the values returned for null values by value(), rather it only affects
@@ -58,6 +80,23 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @see isNull()
      */
     QString nullValue() const { return mNullValue; }
+
+    /** Sets the default value for the widget. The default value is a value
+     * which the widget will be reset to if it is cleared and the clearMode()
+     * is equal to ClearToDefault.
+     * @param defaultValue default value
+     * @see defaultValue()
+     * @see clearMode()
+     */
+    void setDefaultValue( const QString& defaultValue ) { mDefaultValue = defaultValue; }
+
+    /** Returns the default value for the widget. The default value is a value
+     * which the widget will be reset to if it is cleared and the clearMode()
+     * is equal to ClearToDefault.
+     * @see setDefaultValue()
+     * @see clearMode()
+     */
+    QString defaultValue() const { return mDefaultValue; }
 
     /**
      * Sets the current text for the widget with support for handling null values.
@@ -118,7 +157,11 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     void onTextChanged( const QString &text );
 
   private:
+
+    ClearMode mClearMode;
+
     QString mNullValue;
+    QString mDefaultValue;
     QString mStyleSheet;
     bool mFocusInEvent;
     bool mClearHover;

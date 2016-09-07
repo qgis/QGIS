@@ -14,11 +14,30 @@ class QgsFilterLineEdit : QLineEdit
 %End
   public:
 
+    //! Behaviour when clearing value of widget
+    enum ClearMode
+    {
+      ClearToNull, //!< Reset value to null
+      ClearToDefault, //!< Reset value to default value (see defaultValue() )
+    };
+
     /** Constructor for QgsFilterLineEdit.
      * @param parent parent widget
      * @param nullValue string for representing null values
      */
     QgsFilterLineEdit( QWidget* parent /TransferThis/ = 0, const QString& nullValue = QString::null );
+
+    /** Returns the clear mode for the widget. The clear mode defines the behaviour of the
+     * widget when its value is cleared. This defaults to ClearToNull.
+     * @see setClearMode()
+     */
+    ClearMode clearMode() const;
+
+    /** Sets the clear mode for the widget. The clear mode defines the behaviour of the
+     * widget when its value is cleared. This defaults to ClearToNull.
+     * @see clearMode()
+     */
+    void setClearMode( ClearMode mode );
 
     /** Sets the string representation for null values in the widget. This does not
      * affect the values returned for null values by value(), rather it only affects
@@ -33,6 +52,23 @@ class QgsFilterLineEdit : QLineEdit
      * @see isNull()
      */
     QString nullValue() const;
+
+    /** Sets the default value for the widget. The default value is a value
+     * which the widget will be reset to if it is cleared and the clearMode()
+     * is equal to ClearToDefault.
+     * @param defaultValue default value
+     * @see defaultValue()
+     * @see clearMode()
+     */
+    void setDefaultValue( const QString& defaultValue );
+
+    /** Returns the default value for the widget. The default value is a value
+     * which the widget will be reset to if it is cleared and the clearMode()
+     * is equal to ClearToDefault.
+     * @see setDefaultValue()
+     * @see clearMode()
+     */
+    QString defaultValue() const;
 
     /**
      * Sets the current text for the widget with support for handling null values.
