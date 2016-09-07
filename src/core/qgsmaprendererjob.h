@@ -142,7 +142,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
   signals:
     /**
      * Emitted when the layers are rendered.
-     * Rendering labels is not yet done. If the fully rendered layer including labels is reuquired use
+     * Rendering labels is not yet done. If the fully rendered layer including labels is required use
      * finished() instead.
      *
      * @note Added in QGIS 3.0
