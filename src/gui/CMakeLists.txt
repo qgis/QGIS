@@ -118,6 +118,8 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgshiddenwidgetfactory.cpp
   editorwidgets/qgskeyvaluewidgetfactory.cpp
   editorwidgets/qgskeyvaluewidgetwrapper.cpp
+  editorwidgets/qgslistwidgetfactory.cpp
+  editorwidgets/qgslistwidgetwrapper.cpp
   editorwidgets/qgsmultiedittoolbutton.cpp
   editorwidgets/qgsphotoconfigdlg.cpp
   editorwidgets/qgsphotowidgetwrapper.cpp
@@ -234,6 +236,7 @@ SET(QGIS_GUI_SRCS
   qgshtmlannotationitem.cpp
   qgsidentifymenu.cpp
   qgskeyvaluewidget.cpp
+  qgslistwidget.cpp
   qgslegendfilterbutton.cpp
   qgslegendinterface.cpp
   qgslimitedrandomcolorrampdialog.cpp
@@ -299,6 +302,7 @@ SET(QGIS_GUI_SRCS
   qgssublayersdialog.cpp
   qgssqlcomposerdialog.cpp
   qgssvgannotationitem.cpp
+  qgstablewidgetbase.cpp
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
   qgstextannotationitem.cpp
@@ -393,6 +397,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgshtmlannotationitem.h
   qgsidentifymenu.h
   qgskeyvaluewidget.h
+  qgslistwidget.h
   qgslegendfilterbutton.h
   qgslegendinterface.h
   qgslimitedrandomcolorrampdialog.h
@@ -452,6 +457,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsslider.h
   qgssqlcomposerdialog.h
   qgssublayersdialog.h
+  qgstablewidgetbase.h
   qgstabwidget.h
   qgstreewidgetitem.h
   qgsunitselectionwidget.h
@@ -568,6 +574,7 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsfilenamewidgetwrapper.h
   editorwidgets/qgshiddenwidgetwrapper.h
   editorwidgets/qgskeyvaluewidgetwrapper.h
+  editorwidgets/qgslistwidgetwrapper.h
   editorwidgets/qgsmultiedittoolbutton.h
   editorwidgets/qgsphotoconfigdlg.h
   editorwidgets/qgsphotowidgetwrapper.h
@@ -684,6 +691,7 @@ SET(QGIS_GUI_HDRS
   editorwidgets/qgsfilenamewidgetfactory.h
   editorwidgets/qgshiddenwidgetfactory.h
   editorwidgets/qgskeyvaluewidgetfactory.h
+  editorwidgets/qgslistwidgetfactory.h
   editorwidgets/qgsphotowidgetfactory.h
   editorwidgets/qgsrangewidgetfactory.h
   editorwidgets/qgsrelationreferencefactory.h
@@ -739,7 +747,6 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilder.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionselectiondialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgskeyvaluewidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
@@ -747,6 +754,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstablewidgetbase.h
 )
 
 IF(ENABLE_MODELTEST)

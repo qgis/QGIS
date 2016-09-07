@@ -142,4 +142,4 @@ ADD_QGIS_TEST(spinbox testqgsspinbox.cpp)
 ADD_QGIS_TEST(sqlcomposerdialog testqgssqlcomposerdialog.cpp)
 ADD_QGIS_TEST(editorwidgetregistrytest testqgseditorwidgetregistry.cpp)
 ADD_QGIS_TEST(keyvaluewidgettest testqgskeyvaluewidget.cpp)
-
+ADD_QGIS_TEST(listwidgettest testqgslistwidget.cpp)

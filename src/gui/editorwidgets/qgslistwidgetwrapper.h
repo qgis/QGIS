@@ -1,7 +1,7 @@
 /***************************************************************************
-    qgskeyvaluewidgetwrapper.h
+    qgslistwidgetwrapper.h
      --------------------------------------
-    Date                 : 08.2016
+    Date                 : 09.2016
     Copyright            : (C) 2016 Patrick Valsecchi
     Email                : patrick.valsecchi@camptocamp.com
  ***************************************************************************
@@ -13,26 +13,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSKEYVALUEWIDGETWRAPPER_H
-#define QGSKEYVALUEWIDGETWRAPPER_H
+#ifndef QGSLISTWIDGETWRAPPER_H
+#define QGSLISTWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
 
-class QgsKeyValueWidget;
+class QgsListWidget;
 
 /** @ingroup gui
- * Wraps a key/value widget.
+ * Wraps a list widget.
  * @note added in QGIS 3.0
  * @note not available in Python bindings
  */
-class GUI_EXPORT QgsKeyValueWidgetWrapper : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsListWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
     /**
      * Constructor.
      */
-    explicit QgsKeyValueWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
+    explicit QgsListWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsKeyValueWidgetWrapper : public QgsEditorWidgetWrapper
   private:
     void updateConstraintWidgetStatus( bool constraintValid ) override;
 
-    QgsKeyValueWidget* mWidget;
+    QgsListWidget* mWidget;
 };
 
-#endif // QGSKEYVALUEWIDGETWRAPPER_H
+#endif // QGSLISTWIDGETWRAPPER_H

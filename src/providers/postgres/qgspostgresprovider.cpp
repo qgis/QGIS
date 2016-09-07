@@ -220,7 +220,11 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "timestamp without time zone", QVariant::DateTime, -1, -1, -1, -1 )
 
   // complex types
-  << QgsVectorDataProvider::NativeType( tr( "Map" ), "hstore", QVariant::Map, -1, -1, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Map" ), "hstore", QVariant::Map, -1, -1, -1, -1, QVariant::String )
+  << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 32bit)" ), "int4[]", QVariant::List, -1, -1, -1, -1, QVariant::Int )
+  << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 64bit)" ), "int8[]", QVariant::List, -1, -1, -1, -1, QVariant::LongLong )
+  << QgsVectorDataProvider::NativeType( tr( "Array of number (double)" ), "double precision[]", QVariant::List, -1, -1, -1, -1, QVariant::Double )
+  << QgsVectorDataProvider::NativeType( tr( "Array of text" ), "text[]", QVariant::StringList, -1, -1, -1, -1, QVariant::String )
   ;
 
   QString key;

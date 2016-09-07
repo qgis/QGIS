@@ -96,6 +96,7 @@
 %Include qgshtmlannotationitem.sip
 %Include qgsidentifymenu.sip
 %Include qgskeyvaluewidget.sip
+%Include qgslistwidget.sip
 %Include qgslegendfilterbutton.sip
 %Include qgslegendinterface.sip
 %Include qgslimitedrandomcolorrampdialog.sip
@@ -161,6 +162,7 @@
 %Include qgssourceselectdialog.sip
 %Include qgssublayersdialog.sip
 %Include qgssvgannotationitem.sip
+%Include qgstablewidgetbase.sip
 %Include qgstabwidget.sip
 %Include qgstablewidgetitem.sip
 %Include qgstextannotationitem.sip

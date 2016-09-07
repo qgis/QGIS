@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgskeyvaluewidget.h
+    qgslistwidget.h
      --------------------------------------
     Date                 : 08.2016
     Copyright            : (C) 2016 Patrick Valsecchi
@@ -13,27 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSKEYVALUEWIDGET_H
-#define QGSKEYVALUEWIDGET_H
+#ifndef QGSLISTWIDGET_H
+#define QGSLISTWIDGET_H
 
 #include "qgstablewidgetbase.h"
 #include <QAbstractTableModel>
-#include <QMap>
+#include <QVariant>
 
 ///@cond PRIVATE
 /** @ingroup gui
- * Table model to edit a QVariantMap.
+ * Table model to edit a QVariantList.
  * @note added in QGIS 3.0
  * @note not available in Python bindings
  */
-class GUI_EXPORT QgsKeyValueModel : public QAbstractTableModel
+class GUI_EXPORT QgsListModel : public QAbstractTableModel
 {
     Q_OBJECT
   public:
 
-    explicit QgsKeyValueModel( QObject *parent = 0 );
-    void setMap( const QVariantMap& map );
-    QVariantMap map() const;
+    explicit QgsListModel( QVariant::Type subType, QObject *parent = 0 );
+    void setList( const QVariantList& list );
+    QVariantList list() const;
+    bool valid() const;
 
     int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex& parent = QModelIndex() ) const override;
@@ -44,41 +45,47 @@ class GUI_EXPORT QgsKeyValueModel : public QAbstractTableModel
     bool insertRows( int position, int rows, const QModelIndex & parent =  QModelIndex() ) override;
     bool removeRows( int position, int rows, const QModelIndex &parent =  QModelIndex() ) override;
 
-    typedef QPair<QString, QVariant> Line;
-
   private:
-    QVector<Line> mLines;
+    QVariantList mLines;
+    QVariant::Type mSubType;
 };
 ///@endcond
 
 
 /** \ingroup gui
- * Widget allowing to edit a QVariantMap, using a table.
+ * Widget allowing to edit a QVariantList, using a table.
  * @note added in QGIS 3.0
  */
-class GUI_EXPORT QgsKeyValueWidget: public QgsTableWidgetBase
+class GUI_EXPORT QgsListWidget: public QgsTableWidgetBase
 {
     Q_OBJECT
-    Q_PROPERTY( QVariantMap map READ map WRITE setMap )
+    Q_PROPERTY( QVariantList list READ list WRITE setList )
   public:
     /**
      * Constructor.
      */
-    explicit QgsKeyValueWidget( QWidget* parent = nullptr );
+    explicit QgsListWidget( QVariant::Type subType, QWidget* parent = nullptr );
 
     /**
      * Set the initial value of the widget.
      */
-    void setMap( const QVariantMap& map );
+    void setList( const QVariantList& list );
 
     /**
      * Get the edit value.
-     * @return the QVariantMap
+     * @return the QVariantList
      */
-    QVariantMap map() const { return mModel.map(); }
+    QVariantList list() const { return mModel.list(); }
+
+    /**
+     * Check the content is valid
+     * @return true if valid
+     */
+    bool valid() const { return mModel.valid(); }
 
   private:
-    QgsKeyValueModel mModel;
+    QgsListModel mModel;
+    QVariant::Type mSubType;
 };
 
 

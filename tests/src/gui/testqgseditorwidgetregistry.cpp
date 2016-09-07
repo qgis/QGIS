@@ -78,6 +78,13 @@ class TestQgsEditorWidgetRegistry: public QObject
       checkSimple( "double", "Range" );
     }
 
+    void arrayType()
+    {
+      checkSimple( "double[]", "List" );
+      checkSimple( "int[]", "List" );
+      checkSimple( "string[]", "List" );
+    }
+
     void configuredType()
     {
       QgsVectorLayer vl( "LineString?crs=epsg:3111&field=pk:int&field=col1:string", "vl", "memory" );

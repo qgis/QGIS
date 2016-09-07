@@ -110,14 +110,15 @@ QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
     QRegExp reFieldDef( "\\:"
                         "(int|integer|long|int8|real|double|string|date|time|datetime)" // type
                         "(?:\\((\\-?\\d+)"                // length
-                        "(?:\\,(\\d+))?"                // precision
-                        "\\))?"
+                        "(?:\\,(\\d+))?"                  // precision
+                        "\\))?(\\[\\])?"                  // array
                         "$", Qt::CaseInsensitive );
     QStringList fields = url.allQueryItemValues( "field" );
     for ( int i = 0; i < fields.size(); i++ )
     {
       QString name = fields.at( i );
       QVariant::Type type = QVariant::String;
+      QVariant::Type subType = QVariant::Invalid;
       QString typeName( "string" );
       int length = 255;
       int precision = 0;
@@ -173,9 +174,14 @@ QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
         {
           precision = reFieldDef.cap( 3 ).toInt();
         }
+        if ( reFieldDef.cap( 4 ) != "" )
+        {  //array
+          subType = type;
+          type = ( subType == QVariant::String ? QVariant::StringList : QVariant::List );
+        }
       }
       if ( name != "" )
-        attributes.append( QgsField( name, type, typeName, length, precision ) );
+        attributes.append( QgsField( name, type, typeName, length, precision, "", subType ) );
     }
     addAttributes( attributes );
   }
@@ -384,6 +390,8 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
       case QVariant::Time:
       case QVariant::DateTime:
       case QVariant::LongLong:
+      case QVariant::StringList:
+      case QVariant::List:
         break;
       default:
         QgsDebugMsg( "Field type not supported: " + it->typeName() );

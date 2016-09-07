@@ -352,7 +352,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     struct NativeType
     {
-      NativeType( const QString& typeDesc, const QString& typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0 )
+      NativeType( const QString& typeDesc, const QString& typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QVariant::Type subType = QVariant::Invalid )
           : mTypeDesc( typeDesc )
           , mTypeName( typeName )
           , mType( type )
@@ -360,6 +360,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
           , mMaxLen( maxLen )
           , mMinPrec( minPrec )
           , mMaxPrec( maxPrec )
+          , mSubType( subType )
       {}
 
       QString mTypeDesc;
@@ -369,6 +370,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       int mMaxLen;
       int mMinPrec;
       int mMaxPrec;
+      QVariant::Type mSubType;
     };
 
     /**

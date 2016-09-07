@@ -2,7 +2,7 @@
  * Widget allowing to edit a QVariantMap, using a table.
  * @note added in QGIS 3.0
  */
-class QgsKeyValueWidget : public QWidget
+class QgsKeyValueWidget : public QgsTableWidgetBase
 {
 %TypeHeaderCode
 #include "qgskeyvaluewidget.h"

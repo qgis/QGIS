@@ -33,6 +33,7 @@
 #include "qgsfilenamewidgetfactory.h"
 #include "qgshiddenwidgetfactory.h"
 #include "qgskeyvaluewidgetfactory.h"
+#include "qgslistwidgetfactory.h"
 #include "qgsphotowidgetfactory.h"
 #include "qgsrangewidgetfactory.h"
 #include "qgsrelationreferencefactory.h"
@@ -75,6 +76,7 @@ void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBa
   reg->registerWidget( "DateTime", new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
   reg->registerWidget( "ExternalResource", new QgsExternalResourceWidgetFactory( tr( "External Resource" ) ) );
   reg->registerWidget( "KeyValue", new QgsKeyValueWidgetFactory( tr( "Key/Value" ) ) );
+  reg->registerWidget( "List", new QgsListWidgetFactory( tr( "List" ) ) );
 }
 
 QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
