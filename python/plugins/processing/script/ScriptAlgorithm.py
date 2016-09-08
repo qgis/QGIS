@@ -32,20 +32,10 @@ from qgis.core import QgsExpressionContextUtils, QgsExpressionContext
 from qgis.PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import getHtmlFromHelpFile
-from processing.core.parameters import getParameterFromString, paramClasses
-from processing.core.outputs import OutputTable
-from processing.core.outputs import OutputVector
-from processing.core.outputs import OutputRaster
-from processing.core.outputs import OutputNumber
-from processing.core.outputs import OutputString
-from processing.core.outputs import OutputHTML
-from processing.core.outputs import OutputFile
-from processing.core.outputs import OutputDirectory
+from processing.core.parameters import getParameterFromString
 from processing.core.outputs import getOutputFromString
 from processing.core.ProcessingLog import ProcessingLog
 from processing.script.WrongScriptException import WrongScriptException
-
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -127,7 +117,6 @@ class ScriptAlgorithm(GeoAlgorithm):
 
     def processParameterLine(self, line):
         param = None
-        out = None
         line = line.replace('#', '')
 
         if line == "nomodeler":
@@ -145,10 +134,8 @@ class ScriptAlgorithm(GeoAlgorithm):
             self.name = self.i18n_name = tokens[0]
             return
 
-        if tokens[1].lower().strip().startswith('output'):
-            outToken = tokens[1].strip()[len('output') + 1:]
-            out = self.processOutputParameterToken(outToken)
-        else:
+        out = getOutputFromString(line)
+        if out is None:
             param = getParameterFromString(line)
 
         if param is not None:
@@ -161,60 +148,6 @@ class ScriptAlgorithm(GeoAlgorithm):
             raise WrongScriptException(
                 self.tr('Could not load script: %s.\n'
                         'Problem with line "%s"', 'ScriptAlgorithm') % (self.descriptionFile or '', line))
-
-    def processInputParameterLine(self, line):
-        for paramClass in paramClasses:
-            param  = paramClass.fromScriptCode(line)
-            if param is not None:
-                return param
-
-    def processOutputParameterToken(self, token):
-        out = None
-
-        if token.lower().strip().startswith('raster'):
-            out = OutputRaster()
-        elif token.lower().strip() == 'vector':
-            out = OutputVector()
-        elif token.lower().strip() == 'vector point':
-            out = OutputVector(datatype=[dataobjects.TYPE_VECTOR_POINT])
-        elif token.lower().strip() == 'vector line':
-            out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_LINE])
-        elif token.lower().strip() == 'vector polygon':
-            out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_POLYGON])
-        elif token.lower().strip().startswith('table'):
-            out = OutputTable()
-        elif token.lower().strip().startswith('html'):
-            out = OutputHTML()
-        elif token.lower().strip().startswith('file'):
-            out = OutputFile()
-            subtokens = token.split(' ')
-            if len(subtokens) > 2:
-                out.ext = subtokens[2]
-        elif token.lower().strip().startswith('directory'):
-            out = OutputDirectory()
-        elif token.lower().strip().startswith('number'):
-            out = OutputNumber()
-        elif token.lower().strip().startswith('string'):
-            out = OutputString()
-        elif token.lower().strip().startswith('extent'):
-            out = OutputExtent()
-
-        return out
-
-    def processDescriptionParameterLine(self, line):
-        try:
-            if line.startswith('Parameter'):
-                self.addParameter(getParameterFromString(line))
-            elif line.startswith('*Parameter'):
-                param = getParameterFromString(line[1:])
-                param.isAdvanced = True
-                self.addParameter(param)
-            else:
-                self.addOutput(getOutputFromString(line))
-        except Exception:
-            raise WrongScriptException(
-                self.tr('Could not load script: %s.\n'
-                        'Problem with line %d', 'ScriptAlgorithm') % (self.descriptionFile or '', line))
 
     def processAlgorithm(self, progress):
         ns = {}

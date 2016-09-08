@@ -36,13 +36,6 @@ from processing.tools.vector import VectorWriter, TableWriter
 from processing.tools import dataobjects
 
 
-def getOutputFromString(s):
-    tokens = s.split("|")
-    params = [t if unicode(t) != "None" else None for t in tokens[1:]]
-    clazz = getattr(sys.modules[__name__], tokens[0])
-    return clazz(*params)
-
-
 class Output(object):
 
     def __init__(self, name='', description='', hidden=False):
@@ -348,3 +341,49 @@ class OutputVector(Output):
 
     def dataType(self):
         return dataobjects.vectorDataType(self)
+
+
+
+def getOutputFromString(s):
+    try:
+        if "|" in s:
+            tokens = s.split("|")
+            params = [t if unicode(t) != "None" else None for t in tokens[1:]]
+            clazz = getattr(sys.modules[__name__], tokens[0])
+            return clazz(*params)
+        else:
+            tokens = s.split("=")
+            token = tokens[1].strip()[len('output') + 1:]
+            out = None
+    
+            if token.lower().strip().startswith('raster'):
+                out = OutputRaster()
+            elif token.lower().strip() == 'vector':
+                out = OutputVector()
+            elif token.lower().strip() == 'vector point':
+                out = OutputVector(datatype=[dataobjects.TYPE_VECTOR_POINT])
+            elif token.lower().strip() == 'vector line':
+                out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_LINE])
+            elif token.lower().strip() == 'vector polygon':
+                out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_POLYGON])
+            elif token.lower().strip().startswith('table'):
+                out = OutputTable()
+            elif token.lower().strip().startswith('html'):
+                out = OutputHTML()
+            elif token.lower().strip().startswith('file'):
+                out = OutputFile()
+                subtokens = token.split(' ')
+                if len(subtokens) > 2:
+                    out.ext = subtokens[2]
+            elif token.lower().strip().startswith('directory'):
+                out = OutputDirectory()
+            elif token.lower().strip().startswith('number'):
+                out = OutputNumber()
+            elif token.lower().strip().startswith('string'):
+                out = OutputString()
+            elif token.lower().strip().startswith('extent'):
+                out = OutputExtent()
+    
+            return out
+    except:
+        return None

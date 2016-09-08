@@ -1357,13 +1357,17 @@ class ParameterGeometryPredicate(Parameter):
 paramClasses = [c for c in sys.modules[__name__].__dict__.values() if isclass(c) and issubclass(c, Parameter)]
 
 def getParameterFromString(s):
-    print s
     # Try the parameter definitions used in description files
     if '|' in s:
+        isAdvanced = False
+        if s.startswith("*"):
+            s = s[1:]
+            isAdvanced = True
         tokens = s.split("|")
         params = [t if unicode(t) != unicode(None) else None for t in tokens[1:]]
         clazz = getattr(sys.modules[__name__], tokens[0])
-        return clazz(*params)
+        param = clazz(*params)
+        param.isAdvanced = isAdvanced
     else:  # try script syntax
         for paramClass in paramClasses:
             try:
