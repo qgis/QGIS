@@ -25,6 +25,8 @@
 
 QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue )
     : QLineEdit( parent )
+    , mClearButtonVisible( true )
+    , mClearMode( ClearToNull )
     , mNullValue( nullValue )
     , mFocusInEvent( false )
     , mClearHover( false )
@@ -40,11 +42,15 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue 
 
   connect( this, SIGNAL( textChanged( const QString& ) ), this,
            SLOT( onTextChanged( const QString& ) ) );
+}
 
-  int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
-  QSize msz = minimumSizeHint();
-  setMinimumSize( qMax( msz.width(), mClearIconSize.width() + frameWidth * 2 + 2 ),
-                  qMax( msz.height(), mClearIconSize.height() + frameWidth * 2 + 2 ) );
+void QgsFilterLineEdit::setShowClearButton( bool visible )
+{
+  mClearButtonVisible = visible;
+  if ( !visible )
+    mClearHover = false;
+
+  update();
 }
 
 void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
@@ -56,8 +62,7 @@ void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
 
   if ( shouldShowClear() && clearRect().contains( e->pos() ) )
   {
-    clear();
-    emit cleared();
+    clearValue();
   }
 }
 
@@ -91,10 +96,27 @@ void QgsFilterLineEdit::focusInEvent( QFocusEvent* e )
   }
 }
 
-void QgsFilterLineEdit::clear()
+void QgsFilterLineEdit::clearValue()
 {
-  setText( mNullValue );
+  switch ( mClearMode )
+  {
+    case ClearToNull:
+      setText( mNullValue );
+      break;
+
+    case ClearToDefault:
+      setText( mDefaultValue );
+      break;
+  }
+
+  if ( mClearHover )
+  {
+    setCursor( Qt::IBeamCursor );
+    mClearHover = false;
+  }
+
   setModified( true );
+  emit cleared();
 }
 
 void QgsFilterLineEdit::paintEvent( QPaintEvent* e )
@@ -134,11 +156,28 @@ void QgsFilterLineEdit::onTextChanged( const QString &text )
     setStyleSheet( mStyleSheet );
     emit valueChanged( text );
   }
+
+  if ( mClearHover && !shouldShowClear() )
+  {
+    setCursor( Qt::IBeamCursor );
+    mClearHover = false;
+  }
 }
 
 bool QgsFilterLineEdit::shouldShowClear() const
 {
-  return isEnabled() && !isReadOnly() && !isNull();
+  if ( !isEnabled() || isReadOnly() || !mClearButtonVisible )
+    return false;
+
+  switch ( mClearMode )
+  {
+    case ClearToNull:
+      return !isNull();
+
+    case ClearToDefault:
+      return value() != mDefaultValue;
+  }
+  return false; //avoid warnings
 }
 
 QRect QgsFilterLineEdit::clearRect() const
