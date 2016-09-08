@@ -71,6 +71,14 @@ class CORE_EXPORT QgsOptional
     }
 
     /**
+     * Boolean operator. Will return true if this optional is enabled.
+     */
+    operator bool() const
+    {
+      return mEnabled;
+    }
+
+    /**
      * Check if this optional is enabled
      *
      * @note Added in QGIS 3.0
