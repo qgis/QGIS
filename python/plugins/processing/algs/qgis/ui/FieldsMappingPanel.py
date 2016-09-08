@@ -35,7 +35,7 @@ from qgis.PyQt.QtGui import QBrush, QIcon, QSpacerItem
 from qgis.PyQt.QtWidgets import QComboBox, QHeaderView, QLineEdit, QMessageBox, QSpinBox, QStyledItemDelegate
 from qgis.PyQt.QtCore import QItemSelectionModel, QAbstractTableModel, QModelIndex, QVariant, Qt, pyqtSlot
 
-from qgis.core import QgsExpression, QgsExpressionContextUtils, QgsApplication, QgsFeature
+from qgis.core import QgsExpression, QgsProject, QgsApplication
 from qgis.gui import QgsFieldExpressionWidget
 
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_MODELER
@@ -87,20 +87,29 @@ class FieldsMappingModel(QAbstractTableModel):
     def testExpression(self, row):
         self._errors[row] = None
         field = self._mapping[row]
+        exp_context = self.contextGenerator().createExpressionContext()
+
         expression = QgsExpression(field['expression'])
+        expression.prepare(exp_context)
         if expression.hasParserError():
             self._errors[row] = expression.parserErrorString()
             return
+
+        # test evaluation on the first feature
         if self._layer is None:
             return
-        context = QgsExpressionContextUtils.createFeatureBasedContext(QgsFeature(), self._layer.fields())
         for feature in self._layer.getFeatures():
-            context.setFeature(feature)
-            expression.evaluate(context)
+            exp_context.setFeature(feature)
+            exp_context.lastScope().setVariable("row_number", 1)
+            expression.evaluate(exp_context)
             if expression.hasEvalError():
                 self._errors[row] = expression.evalErrorString()
-                return
             break
+
+    def contextGenerator(self):
+        if self._layer:
+            return self._layer
+        return QgsProject.instance()
 
     def layer(self):
         return self._layer
@@ -254,6 +263,7 @@ class FieldDelegate(QStyledItemDelegate):
         elif fieldType == QgsExpression:
             editor = QgsFieldExpressionWidget(parent)
             editor.setLayer(index.model().layer())
+            editor.registerExpressionContextGenerator(index.model().contextGenerator())
             editor.fieldChanged.connect(self.on_expression_fieldChange)
 
         else:
