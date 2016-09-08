@@ -75,6 +75,9 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     //! \brief Get the color ramp type as a string
     QString colorRampTypeAsQString();
 
+    //! \brief Get the original color ramp name
+    QString colorRampName() const {return mColorRampName;}
+
     //! \brief Set custom colormap
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ); //TODO: sort on set
 
@@ -83,6 +86,9 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     //! \brief Set the color ramp type
     void setColorRampType( const QString& theType );
+
+    //! \brief Set the source color ramp name
+    void setColorRampName( const QString& theName );
 
     //! \brief Generates and new RGB value based on one input value
     bool shade( double, int*, int*, int*, int* ) override;
@@ -120,6 +126,9 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     double mLUTOffset;
     double mLUTFactor;
     bool mLUTInitialized;
+
+    /** Colorramp name*/
+    QString mColorRampName;
 
     //! Do not render values out of range
     bool mClip;

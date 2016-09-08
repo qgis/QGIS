@@ -143,7 +143,8 @@ void QgsRasterShader::writeXml( QDomDocument& doc, QDomElement& parent ) const
   if ( colorRampShader )
   {
     QDomElement colorRampShaderElem = doc.createElement( QStringLiteral( "colorrampshader" ) );
-    colorRampShaderElem.setAttribute( QStringLiteral( "colorRampType" ), colorRampShader->colorRampTypeAsQString() );
+    colorRampShaderElem.setAttribute( "colorRampName", colorRampShader->colorRampName() );
+    colorRampShaderElem.setAttribute( "colorRampType", colorRampShader->colorRampTypeAsQString() );
     colorRampShaderElem.setAttribute( QStringLiteral( "clip" ), colorRampShader->clip() );
     //items
     QList<QgsColorRampShader::ColorRampItem> itemList = colorRampShader->colorRampItemList();
@@ -169,6 +170,7 @@ void QgsRasterShader::readXml( const QDomElement& elem )
   if ( !colorRampShaderElem.isNull() )
   {
     QgsColorRampShader* colorRampShader = new QgsColorRampShader();
+    colorRampShader->setColorRampName( colorRampShaderElem.attribute( "colorRampName", "" ) );
     colorRampShader->setColorRampType( colorRampShaderElem.attribute( QStringLiteral( "colorRampType" ), QStringLiteral( "INTERPOLATED" ) ) );
     colorRampShader->setClip( colorRampShaderElem.attribute( QStringLiteral( "clip" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) );
 
