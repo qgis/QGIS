@@ -51,8 +51,7 @@ void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
 
   if ( shouldShowClear() && clearRect().contains( e->pos() ) )
   {
-    clear();
-    emit cleared();
+    clearValue();
   }
 }
 
@@ -86,10 +85,11 @@ void QgsFilterLineEdit::focusInEvent( QFocusEvent* e )
   }
 }
 
-void QgsFilterLineEdit::clear()
+void QgsFilterLineEdit::clearValue()
 {
   setText( mNullValue );
   setModified( true );
+  emit cleared();
 }
 
 void QgsFilterLineEdit::paintEvent( QPaintEvent* e )
