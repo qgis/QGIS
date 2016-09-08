@@ -22,6 +22,7 @@
 
 #include "qgseditorwidgetconfig.h"
 #include "qgsrelationmanager.h"
+#include "qgsoptionalexpression.h"
 
 /** \ingroup core
  * This is an abstract base class for any elements of a drag and drop form.
@@ -198,6 +199,20 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      */
     void setColumnCount( int columnCount );
 
+    /**
+     * An expression that controls the visibility of this container.
+     *
+     * @note Added in QGIS 2.18
+     */
+    QgsOptionalExpression visibilityExpression() const;
+
+    /**
+     * An expression that controls the visibility of this container.
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setVisibilityExpression( const QgsOptionalExpression& visibilityExpression );
+
   private:
     virtual void saveConfiguration( QDomElement& elem ) const override;
     virtual QString typeIdentifier() const override;
@@ -205,6 +220,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     bool mIsGroupBox;
     QList<QgsAttributeEditorElement*> mChildren;
     int mColumnCount;
+    QgsOptionalExpression mVisibilityExpression;
 };
 
 /** \ingroup core

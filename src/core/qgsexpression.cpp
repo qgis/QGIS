@@ -3571,6 +3571,14 @@ bool QgsExpression::isValid( const QString &text, const QgsExpressionContext *co
   return !exp.hasParserError();
 }
 
+void QgsExpression::setExpression( const QString& expression )
+{
+  detach();
+  d->mRootNode = ::parseExpression( expression, d->mParserErrorString );
+  d->mEvalErrorString = QString();
+  d->mExp = expression;
+}
+
 void QgsExpression::setScale( double scale ) { d->mScale = scale; }
 
 double QgsExpression::scale() { return d->mScale; }
