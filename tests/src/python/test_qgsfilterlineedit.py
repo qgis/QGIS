@@ -42,6 +42,10 @@ class TestQgsFilterLineEdit(unittest.TestCase):
         self.assertEqual(w.defaultValue(), 'default')
         w.setClearMode(QgsFilterLineEdit.ClearToDefault)
         self.assertEqual(w.clearMode(), QgsFilterLineEdit.ClearToDefault)
+        w.setShowClearButton(False)
+        self.assertFalse(w.showClearButton())
+        w.setShowClearButton(True)
+        self.assertTrue(w.showClearButton())
 
     def testNullValueHandling(self):
         """ test widget handling of null values """

@@ -25,6 +25,7 @@
 
 QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue )
     : QLineEdit( parent )
+    , mClearButtonVisible( true )
     , mClearMode( ClearToNull )
     , mNullValue( nullValue )
     , mFocusInEvent( false )
@@ -41,6 +42,15 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue 
 
   connect( this, SIGNAL( textChanged( const QString& ) ), this,
            SLOT( onTextChanged( const QString& ) ) );
+}
+
+void QgsFilterLineEdit::setShowClearButton( bool visible )
+{
+  mClearButtonVisible = visible;
+  if ( !visible )
+    mClearHover = false;
+
+  update();
 }
 
 void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
@@ -145,7 +155,7 @@ void QgsFilterLineEdit::onTextChanged( const QString &text )
 
 bool QgsFilterLineEdit::shouldShowClear() const
 {
-  if ( !isEnabled() || isReadOnly() )
+  if ( !isEnabled() || isReadOnly() || !mClearButtonVisible )
     return false;
 
   switch ( mClearMode )
