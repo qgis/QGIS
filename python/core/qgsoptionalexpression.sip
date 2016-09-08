@@ -35,12 +35,12 @@ class QgsOptionalExpression
     /**
      * A QgsOptionalExpression is enabled by default if constructed with an expression.
      */
-    QgsOptional( const QgsExpression& data );
+    QgsOptionalExpression( const QgsExpression& data );
 
     /**
      * A QgsOptionalExptression constructed with enabled status and data
      */
-    QgsOptional( const QgsExpression& data, bool enabled );
+    QgsOptionalExpression( const QgsExpression& data, bool enabled );
 
     /**
      * Compare this QgsOptionalExptression to another one.
@@ -50,7 +50,8 @@ class QgsOptionalExpression
      *
      * @note Added in QGIS 3.0
      */
-    bool operator== ( const QgsOptional<QgsExpression>& other ) const;
+    bool operator== ( const QgsOptionalExpression& other ) const;
+    operator bool () const;
 
     /**
      * Check if this optional is enabled
@@ -65,13 +66,6 @@ class QgsOptionalExpression
      * @note Added in QGIS 3.0
      */
     void setEnabled( bool enabled );
-
-    /**
-     * Access the payload data
-     *
-     * @note Added in QGIS 3.0
-     */
-    const QgsExpression* operator->() const;
 
     /**
      * Access the payload data
