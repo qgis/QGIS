@@ -316,7 +316,7 @@ struct QgsVectorJoinInfo
  */
 
 
-class QgsVectorLayer : QgsMapLayer
+class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
 {
 %TypeHeaderCode
 #include "qgsvectorlayer.h"
