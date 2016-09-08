@@ -26,6 +26,19 @@ void QgsAttributeEditorContainer::setName( const QString& name )
   mName = name;
 }
 
+QgsOptionalExpression QgsAttributeEditorContainer::visibilityExpression() const
+{
+  return mVisibilityExpression;
+}
+
+void QgsAttributeEditorContainer::setVisibilityExpression( const QgsOptionalExpression& visibilityExpression )
+{
+  if ( visibilityExpression == mVisibilityExpression )
+    return;
+
+  mVisibilityExpression = visibilityExpression;
+}
+
 QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( QgsAttributeEditorElement::AttributeEditorType type ) const
 {
   QList<QgsAttributeEditorElement*> results;

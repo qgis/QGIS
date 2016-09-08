@@ -84,12 +84,16 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         bool showLabel() const;
         void setShowLabel( bool showLabel );
 
+        QgsOptionalExpression visibilityExpression() const;
+        void setVisibilityExpression( const QgsOptionalExpression& visibilityExpression );
+
       private:
         Type mType;
         QString mName;
         int mColumnCount;
         bool mShowAsGroupBox;
         bool mShowLabel;
+        QgsOptionalExpression mVisibilityExpression;
     };
 
     /**
@@ -265,7 +269,7 @@ class DesignerTree : public QTreeWidget
     Q_OBJECT
 
   public:
-    explicit DesignerTree( QWidget* parent = nullptr );
+    explicit DesignerTree( QgsVectorLayer* layer, QWidget* parent = nullptr );
     QTreeWidgetItem* addItem( QTreeWidgetItem* parent, QgsFieldsProperties::DesignerTreeItemData data );
     QTreeWidgetItem* addContainer( QTreeWidgetItem* parent, const QString& title , int columnCount );
 
@@ -282,6 +286,9 @@ class DesignerTree : public QTreeWidget
 
   private slots:
     void onItemDoubleClicked( QTreeWidgetItem* item, int column );
+
+  private:
+    QgsVectorLayer* mLayer;
 };
 
 Q_DECLARE_METATYPE( QgsFieldsProperties::FieldConfig )

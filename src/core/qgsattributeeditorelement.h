@@ -17,6 +17,7 @@
 #define QGSATTRIBUTEEDITORELEMENT_H
 
 #include "qgsrelation.h"
+#include "qgsoptionalexpression.h"
 
 class QgsRelationManager;
 
@@ -219,6 +220,9 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      */
     virtual QgsAttributeEditorElement* clone( QgsAttributeEditorElement* parent ) const override;
 
+    QgsOptionalExpression visibilityExpression() const;
+    void setVisibilityExpression( const QgsOptionalExpression& visibilityExpression );
+
   private:
     void saveConfiguration( QDomElement& elem ) const override;
     QString typeIdentifier() const override;
@@ -226,6 +230,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     bool mIsGroupBox;
     QList<QgsAttributeEditorElement*> mChildren;
     int mColumnCount;
+    QgsOptionalExpression mVisibilityExpression;
 };
 
 /** \ingroup core

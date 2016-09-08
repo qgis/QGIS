@@ -16,6 +16,7 @@
 #include "qgseditformconfig.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
+
 //#include "qgseditorwidgetregistry.h"
 
 QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
@@ -573,6 +574,15 @@ QgsAttributeEditorElement* QgsEditFormConfig::attributeEditorElementFromDomEleme
     else
       container->setIsGroupBox( parent );
 
+    bool visibilityExpressionEnabled = elem.attribute( "visibilityExpressionEnabled" ).toInt( &ok );
+    QgsOptionalExpression visibilityExpression;
+    if ( ok )
+    {
+      visibilityExpression.setEnabled( visibilityExpressionEnabled );
+      visibilityExpression.setData( QgsExpression( elem.attribute( "visibilityExpression" ) ) );
+    }
+    container->setVisibilityExpression( visibilityExpression );
+
     QDomNodeList childNodeList = elem.childNodes();
 
     for ( int i = 0; i < childNodeList.size(); i++ )
@@ -627,6 +637,7 @@ QgsAttributeEditorElement* QgsAttributeEditorContainer::clone( QgsAttributeEdito
   }
   element->mIsGroupBox = mIsGroupBox;
   element->mColumnCount = mColumnCount;
+  element->mVisibilityExpression = mVisibilityExpression;
 
   return element;
 }
@@ -635,6 +646,8 @@ void QgsAttributeEditorContainer::saveConfiguration( QDomElement& elem ) const
 {
   elem.setAttribute( "columnCount", mColumnCount );
   elem.setAttribute( "groupBox", mIsGroupBox ? 1 : 0 );
+  elem.setAttribute( "visibilityExpressionEnabled", mVisibilityExpression.enabled() ? 1 : 0 );
+  elem.setAttribute( "visibilityExpression", mVisibilityExpression->expression() );
 
   Q_FOREACH ( QgsAttributeEditorElement* child, mChildren )
   {
