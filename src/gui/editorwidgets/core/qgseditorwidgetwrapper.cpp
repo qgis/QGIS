@@ -117,11 +117,9 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
   {
     description = layer()->editFormConfig().expressionDescription( mFieldIdx );
 
-    QgsExpressionContext context =
-      QgsExpressionContextUtils::createFeatureBasedContext( ft, ft.fields() );
-    context << QgsExpressionContextUtils::layerScope( layer() );
-
+    QgsExpressionContext context = layer()->createExpressionContext();
     context.setFeature( ft );
+
     QgsExpression expr( expression );
 
     mValidConstraint = expr.evaluate( &context ).toBool();
