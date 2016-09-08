@@ -46,8 +46,8 @@ class QgsFilterLineEdit : QLineEdit
 
   protected:
     void mousePressEvent( QMouseEvent* e );
+    void mouseMoveEvent( QMouseEvent* e );
     void focusInEvent( QFocusEvent* e );
-    void resizeEvent( QResizeEvent* e );
-    void changeEvent( QEvent* e );
     void paintEvent( QPaintEvent* e );
+    void leaveEvent( QEvent* e );
 };

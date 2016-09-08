@@ -665,6 +665,8 @@
         <file>themes/default/mActionAddAfsLayer.svg</file>
         <file>themes/default/mIconFormSelect.svg</file>
         <file>themes/default/mActionMultiEdit.svg</file>
+        <file>themes/default/mIconClearText.svg</file>
+        <file>themes/default/mIconClearTextHover.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
