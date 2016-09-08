@@ -588,9 +588,9 @@ void QgsVectorLayerFeatureIterator::prepareFields()
 void QgsVectorLayerFeatureIterator::createOrderedJoinList()
 {
   mOrderedJoinInfoList = mFetchJoinInfo.values();
-  if( mOrderedJoinInfoList.size() < 2 )
+  if ( mOrderedJoinInfoList.size() < 2 )
   {
-      return;
+    return;
   }
 
   QSet<int> resolvedFields; //todo: get provider / virtual fields without joins
