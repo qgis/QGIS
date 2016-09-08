@@ -25,6 +25,7 @@
 
 QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue )
     : QLineEdit( parent )
+    , mClearMode( ClearToNull )
     , mNullValue( nullValue )
     , mFocusInEvent( false )
     , mClearHover( false )
@@ -87,7 +88,18 @@ void QgsFilterLineEdit::focusInEvent( QFocusEvent* e )
 
 void QgsFilterLineEdit::clearValue()
 {
-  setText( mNullValue );
+  switch ( mClearMode )
+  {
+    case ClearToNull:
+      setText( mNullValue );
+      break;
+
+    case ClearToDefault:
+      setText( mDefaultValue );
+      break;
+
+  }
+
   setModified( true );
   emit cleared();
 }
@@ -133,7 +145,18 @@ void QgsFilterLineEdit::onTextChanged( const QString &text )
 
 bool QgsFilterLineEdit::shouldShowClear() const
 {
-  return isEnabled() && !isReadOnly() && !isNull();
+  if ( !isEnabled() || isReadOnly() )
+    return false;
+
+  switch ( mClearMode )
+  {
+    case ClearToNull:
+      return !isNull();
+
+    case ClearToDefault:
+      return value() != mDefaultValue;
+  }
+  return false; //avoid warnings
 }
 
 QRect QgsFilterLineEdit::clearRect() const

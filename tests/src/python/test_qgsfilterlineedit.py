@@ -38,6 +38,10 @@ class TestQgsFilterLineEdit(unittest.TestCase):
         w.setValue('value')
         self.assertEqual(w.value(), 'value')
         self.assertEqual(w.text(), 'value')
+        w.setDefaultValue('default')
+        self.assertEqual(w.defaultValue(), 'default')
+        w.setClearMode(QgsFilterLineEdit.ClearToDefault)
+        self.assertEqual(w.clearMode(), QgsFilterLineEdit.ClearToDefault)
 
     def testNullValueHandling(self):
         """ test widget handling of null values """
@@ -70,7 +74,7 @@ class TestQgsFilterLineEdit(unittest.TestCase):
         self.assertTrue(w.isNull())
         self.assertFalse(w.value())
 
-    def testClear(self):
+    def testClearToNull(self):
         """ test clearing widget """
         w = qgis.gui.QgsFilterLineEdit()
 
@@ -89,6 +93,27 @@ class TestQgsFilterLineEdit(unittest.TestCase):
         self.assertEqual(w.text(), 'def')
         self.assertTrue(w.isNull())
         self.assertFalse(w.value())
+
+    def testClearToDefault(self):
+        # test clearing to default value
+        w = qgis.gui.QgsFilterLineEdit()
+        w.setClearMode(QgsFilterLineEdit.ClearToDefault)
+
+        w.setValue('abc')
+        w.clearValue()
+        self.assertTrue(w.isNull())
+        self.assertFalse(w.value())
+        w.clearValue()
+        self.assertTrue(w.isNull())
+        self.assertFalse(w.value())
+
+        w.setDefaultValue('def')
+        w.setValue('abc')
+        self.assertFalse(w.isNull())
+        w.clearValue()
+        self.assertEqual(w.value(), 'def')
+        self.assertEqual(w.text(), 'def')
+        self.assertFalse(w.isNull())
 
     @unittest.skipIf(not use_signal_spy, "No QSignalSpy available")
     def test_ChangedSignals(self):
