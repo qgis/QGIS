@@ -885,7 +885,7 @@ class ParameterGeometryPredicate(Parameter):
             self.enabledPredicates = self.predicates
 
     def getValueAsCommandLineParameter(self):
-        return '"' + unicode(self.value) + '"'
+        return unicode(self.value)
 
     def setValue(self, value):
         if value is None:
