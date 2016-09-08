@@ -309,3 +309,82 @@ QString QgsJSONUtils::exportAttributes( const QgsFeature& feature )
   return attrs.prepend( '{' ).append( '}' );
 }
 
+
+namespace  //TODO: remove when we switch off Qt4
+{
+  void jumpSpace( const QString& txt, int& i )
+  {
+    while ( i < txt.length() && txt.at( i ).isSpace() ) ++i;
+  }
+
+  static QString getNextString( const QString& txt, int& i )
+  {
+    jumpSpace( txt, i );
+    QString cur = txt.mid( i );
+    if ( cur.startsWith( '"' ) )
+    { //quoted element
+      QRegExp stringRe( "^\"((?:\\\\.|[^\"\\\\])*)\".*" );
+      if ( !stringRe.exactMatch( cur ) )
+      {
+        return QString::null;
+      }
+      i += stringRe.cap( 1 ).length() + 2;
+      jumpSpace( txt, i );
+      if ( !txt.mid( i ).startsWith( ',' ) && !txt.mid( i ).startsWith( ']' ) && i < txt.length() )
+      {
+        return QString::null;
+      }
+      i += 1;  // jump the separator
+
+      return stringRe.cap( 1 )
+             .replace( "\\\"", "\"" )
+             .replace( "\\r", "\r" )
+             .replace( "\\b", "\b" )
+             .replace( "\\t", "\t" )
+             .replace( "\\/", "/" )
+             .replace( "\\n", "\n" )
+             .replace( "\\\\", "\\" );
+    }
+    else
+    { //unquoted element
+      QString ret;
+      int sepPos = cur.indexOf( ',' );
+      if ( sepPos < 0 ) sepPos = cur.indexOf( ']' );
+      if ( sepPos < 0 )
+      {
+        i += cur.length();
+        return cur.trimmed();
+      }
+      i += sepPos + 1;
+      return cur.left( sepPos ).trimmed();
+    }
+  }
+}
+
+QVariantList QgsJSONUtils::parseArray( const QString& json, QVariant::Type type )
+{
+  // TODO: switch to the Qt parser when we switch off Qt4
+  QVariantList result;
+  int i = 0;
+  jumpSpace( json, i );
+  if ( json.at( i++ ) != '[' )
+  {
+    return result;
+  }
+  while ( i < json.length() )
+  {
+    jumpSpace( json, i );
+    if ( json.at( i ) == ']' )
+    {
+      return result;
+    }
+    const QString value = getNextString( json, i );
+    if ( value.isNull() )
+    {
+      break;
+    }
+    QVariant variant( value );
+    if ( variant.convert( type ) ) result.append( variant );
+  }
+  return result;
+}
