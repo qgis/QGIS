@@ -17,12 +17,14 @@
 #include <QMouseEvent>
 #include <QSettings>
 #include <QStyle>
-#include <QToolButton>
 
 #include "qgsdoublespinbox.h"
 #include "qgsexpression.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsfilterlineedit.h"
+
+#define CLEAR_ICON_SIZE 16
 
 QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
     : QDoubleSpinBox( parent )
@@ -31,25 +33,22 @@ QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
     , mCustomClearValue( 0.0 )
     , mExpressionsEnabled( true )
 {
-  mClearButton = new QToolButton( this );
-  mClearButton->setIcon( QgsApplication::getThemeIcon( "/mIconClear.svg" ) );
-  mClearButton->setCursor( Qt::ArrowCursor );
-  mClearButton->setStyleSheet( "position: absolute; border: none; padding: 0px;" );
-  connect( mClearButton, SIGNAL( clicked() ), this, SLOT( clear() ) );
+  mLineEdit = new QgsSpinBoxLineEdit();
 
-  setStyleSheet( QString( "padding-right: %1px;" ).arg( mClearButton->sizeHint().width() + 18 + frameWidth() + 1 ) );
+  setLineEdit( mLineEdit );
 
   QSize msz = minimumSizeHint();
-  setMinimumSize( qMax( msz.width(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ),
-                  qMax( msz.height(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ) );
+  setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2,
+                  qMax( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
 
+  connect( mLineEdit, SIGNAL( cleared() ), this, SLOT( clear() ) );
   connect( this, SIGNAL( valueChanged( double ) ), this, SLOT( changed( double ) ) );
 }
 
 void QgsDoubleSpinBox::setShowClearButton( const bool showClearButton )
 {
   mShowClearButton = showClearButton;
-  mClearButton->setVisible( shouldShowClearForValue( value() ) );
+  mLineEdit->setShowClearButton( showClearButton );
 }
 
 void QgsDoubleSpinBox::setExpressionsEnabled( const bool enabled )
@@ -60,18 +59,18 @@ void QgsDoubleSpinBox::setExpressionsEnabled( const bool enabled )
 void QgsDoubleSpinBox::changeEvent( QEvent *event )
 {
   QDoubleSpinBox::changeEvent( event );
-  mClearButton->setVisible( shouldShowClearForValue( value() ) );
+  mLineEdit->setShowClearButton( shouldShowClearForValue( value() ) );
 }
 
 void QgsDoubleSpinBox::paintEvent( QPaintEvent *event )
 {
-  mClearButton->setVisible( shouldShowClearForValue( value() ) );
+  mLineEdit->setShowClearButton( shouldShowClearForValue( value() ) );
   QDoubleSpinBox::paintEvent( event );
 }
 
 void QgsDoubleSpinBox::changed( double value )
 {
-  mClearButton->setVisible( shouldShowClearForValue( value ) );
+  mLineEdit->setShowClearButton( shouldShowClearForValue( value ) );
 }
 
 void QgsDoubleSpinBox::clear()
@@ -186,15 +185,4 @@ bool QgsDoubleSpinBox::shouldShowClearForValue( const double value ) const
     return false;
   }
   return value != clearValue();
-}
-
-void QgsDoubleSpinBox::resizeEvent( QResizeEvent * event )
-{
-  QDoubleSpinBox::resizeEvent( event );
-
-  QSize sz = mClearButton->sizeHint();
-
-  mClearButton->move( rect().right() - frameWidth() - 18 - sz.width(),
-                      ( rect().bottom() + 1 - sz.height() ) / 2 );
-
 }
