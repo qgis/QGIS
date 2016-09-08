@@ -39,6 +39,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     Q_PROPERTY( QString nullValue READ nullValue WRITE setNullValue )
     Q_PROPERTY( QString defaultValue READ defaultValue WRITE setDefaultValue )
     Q_PROPERTY( QString value READ value WRITE setValue NOTIFY valueChanged )
+    Q_PROPERTY( bool showClearButton READ showClearButton WRITE setShowClearButton )
 
   public:
 
@@ -55,15 +56,30 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     QgsFilterLineEdit( QWidget* parent = nullptr, const QString& nullValue = QString::null );
 
+    /** Returns true if the widget's clear button is visible.
+     * @see setShowClearButton()
+     * @note added in QGIS 3.0
+     */
+    bool showClearButton() const { return mClearButtonVisible; }
+
+    /** Sets whether the widget's clear button is visible.
+     * @param visible set to false to hide the clear button
+     * @see showClearButton()
+     * @note added in QGIS 3.0
+     */
+    void setShowClearButton( bool visible );
+
     /** Returns the clear mode for the widget. The clear mode defines the behaviour of the
      * widget when its value is cleared. This defaults to ClearToNull.
      * @see setClearMode()
+     * @note added in QGIS 3.0
      */
     ClearMode clearMode() const { return mClearMode; }
 
     /** Sets the clear mode for the widget. The clear mode defines the behaviour of the
      * widget when its value is cleared. This defaults to ClearToNull.
      * @see clearMode()
+     * @note added in QGIS 3.0
      */
     void setClearMode( ClearMode mode ) { mClearMode = mode; }
 
@@ -87,6 +103,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @param defaultValue default value
      * @see defaultValue()
      * @see clearMode()
+     * @note added in QGIS 3.0
      */
     void setDefaultValue( const QString& defaultValue ) { mDefaultValue = defaultValue; }
 
@@ -95,6 +112,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * is equal to ClearToDefault.
      * @see setDefaultValue()
      * @see clearMode()
+     * @note added in QGIS 3.0
      */
     QString defaultValue() const { return mDefaultValue; }
 
@@ -129,6 +147,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
     /** Clears the widget and resets it to the null value.
      * @see nullValue()
+     * @note added in QGIS 3.0
      */
     virtual void clearValue();
 
@@ -157,6 +176,8 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     void onTextChanged( const QString &text );
 
   private:
+
+    bool mClearButtonVisible;
 
     ClearMode mClearMode;
 
