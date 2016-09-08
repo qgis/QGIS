@@ -107,7 +107,12 @@ void QgsFilterLineEdit::clearValue()
     case ClearToDefault:
       setText( mDefaultValue );
       break;
+  }
 
+  if ( mClearHover )
+  {
+    setCursor( Qt::IBeamCursor );
+    mClearHover = false;
   }
 
   setModified( true );
@@ -150,6 +155,12 @@ void QgsFilterLineEdit::onTextChanged( const QString &text )
   {
     setStyleSheet( mStyleSheet );
     emit valueChanged( text );
+  }
+
+  if ( mClearHover && !shouldShowClear() )
+  {
+    setCursor( Qt::IBeamCursor );
+    mClearHover = false;
   }
 }
 
