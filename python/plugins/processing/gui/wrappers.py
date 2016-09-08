@@ -40,7 +40,7 @@ from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.PointSelectionPanel import PointSelectionPanel
 from processing.core.parameters import (ParameterBoolean, ParameterPoint, ParameterFile,
     ParameterRaster, ParameterVector, ParameterNumber, ParameterString, ParameterTable,
-    ParameterTableField, ParameterExtent, ParameterFixedTable)
+    ParameterTableField, ParameterExtent, ParameterFixedTable, ParameterCrs)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.core.outputs import (OutputFile, OutputRaster, OutputVector, OutputNumber, 
@@ -59,15 +59,6 @@ DIALOG_MODELER = 'modeler'
 class InvalidParameterValue(Exception):
     pass
 
-class NotYetImplementedWidgetWrapper():
-
-    """Temporary substitute class for not yet implemented wrappers"""
-
-    implemented = False
-
-    def __init__(self, param, widget):
-        self.param = param
-        self.widget = widget
 
 dialogTypes = {"AlgorithmDialog":DIALOG_STANDARD,
                "ModelerParametersDialog":DIALOG_MODELER,
@@ -82,8 +73,6 @@ def getExtendedLayerName(layer):
 
 class WidgetWrapper(QObject):
 
-    implemented = True  # TODO: Should be removed at the end
-    
     widgetValueHasChanged = pyqtSignal(object)
 
     def __init__(self, param, dialog, row=0, col=0):
@@ -120,11 +109,14 @@ class WidgetWrapper(QObject):
         try:
             idx = values.index(value)
             self.widget.setCurrentIndex(idx)
+            return
         except ValueError:
             pass
         if self.widget.isEditable():
             if value is not None:
                 self.widget.setEditText(unicode(value))
+        else:
+            self.widget.setCurrentIndex(0)
 
     def value(self):
         pass
@@ -175,6 +167,8 @@ class BooleanWidgetWrapper(WidgetWrapper):
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
             return self.widget.isChecked()
+        elif self.dialogType == DIALOG_BATCH:
+            return self.widget.currentIndex == 0
         else:
             return self.comboValue()
 
@@ -182,31 +176,61 @@ class BooleanWidgetWrapper(WidgetWrapper):
 class CrsWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
-        return CrsSelectionPanel()
+        if self.dialogType == DIALOG_MODELER:
+            widget = QComboBox()
+            widget.setEditable(True)
+            crss = self.dialog.getAvailableValuesOfType(ParameterCrs)
+            for crs in crss:
+                widget.addItem(self.dialog.resolveValueDescription(crs), crs)
+            raster = self.dialog.getAvailableValuesOfType(ParameterRaster, OutputRaster)
+            vector = self.dialog.getAvailableValuesOfType(ParameterVector, OutputVector)
+            for r in raster:
+                widget.addItem("Crs of layer " + self.dialog.resolveValueDescription(r), r)
+            for v in vector:
+                widget.addItem("Crs of layer " + self.dialog.resolveValueDescription(v), v)                
+            if not self.param.default:
+                widget.setEditText(self.param.default)
+            return widget
+        else:
+            return CrsSelectionPanel()
 
     def setValue(self, value):
-        if isinstance(value, basestring):  # authId
-            self.widget.crs = value
+        if self.dialogType == DIALOG_MODELER:
+            self.setComboValue(value)
         else:
-            self.widget.crs = QgsCoordinateReferenceSystem(value).authid()
-        self.widget.updateText()
+            if isinstance(value, basestring):  # authId
+                self.widget.crs = value
+            else:
+                self.widget.crs = QgsCoordinateReferenceSystem(value).authid()
+            self.widget.updateText()
 
     def value(self):
-        return self.widget.getValue()
+        if self.dialogType == DIALOG_MODELER:
+            return self.comboValue()
+        else:
+            return self.widget.getValue()
 
 class ExtentWidgetWrapper(WidgetWrapper):
 
+    USE_MIN_COVERING_EXTENT = "[Use min covering extent]"
+    
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             return ExtentSelectionPanel(self.dialog, self.param)
         else:
             widget = QComboBox()
             widget.setEditable(True)
-            extents = self.getAvailableValuesOfType(ParameterExtent, OutputExtent)
+            extents = self.dialog.getAvailableValuesOfType(ParameterExtent, OutputExtent)
             if self.param.optional:
                 widget.addItem(self.USE_MIN_COVERING_EXTENT, None)
+            raster = self.dialog.getAvailableValuesOfType(ParameterRaster, OutputRaster)
+            vector = self.dialog.getAvailableValuesOfType(ParameterVector, OutputVector)
             for ex in extents:
                 widget.addItem(self.dialog.resolveValueDescription(ex), ex)
+            for r in raster:
+                widget.addItem("Extent of " + self.dialog.resolveValueDescription(r), r)
+            for v in vector:
+                widget.addItem("Extent of " + self.dialog.resolveValueDescription(v), v)
             if not self.param.default:
                 widget.setEditText(self.param.default)
             return widget
@@ -674,8 +698,8 @@ class TableWidgetWrapper(WidgetWrapper):
             return BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
         else:
             widget = QComboBox()
-            tables = self.getAvailableValuesOfType(ParameterTable, OutputTable)
-            layers = self.getAvailableValuesOfType(ParameterVector, OutputVector)
+            tables = self.dialog.getAvailableValuesOfType(ParameterTable, OutputTable)
+            layers = self.dialog.getAvailableValuesOfType(ParameterVector, OutputVector)
             if self.param.optional:
                 widget.addItem(self.NOT_SELECTED, None)
             for table in tables:
@@ -720,11 +744,11 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         else:
             widget = QComboBox()
             widget.setEditable(True)
-            fields = self.getAvailableValuesOfType(ParameterTableField, None)
+            fields = self.dialog.getAvailableValuesOfType(ParameterTableField, None)
             if self.param.optional:
-                widget.addItem(self.NOT_SELECTED, None)
+                widget.addItem(self.NOT_SET, None)
             for f in fields:
-                widget.addItem(self.resolveValueDescription(f), f)
+                widget.addItem(self.dialog.resolveValueDescription(f), f)
             return widget
 
     def postInitialize(self, wrappers):

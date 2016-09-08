@@ -72,10 +72,7 @@ class GeoAlgorithm(object):
         # appear in the toolbox or modeler
         self.showInToolbox = True
         self.showInModeler = True
-        # if true, will show only loaded layers in parameters dialog.
-        # Also, if True, the algorithm does not run on the modeler
-        # or batch ptocessing interface
-        self.allowOnlyOpenedLayers = False
+
 
         # False if it should not be run a a batch process
         self.canRunInBatchMode = True

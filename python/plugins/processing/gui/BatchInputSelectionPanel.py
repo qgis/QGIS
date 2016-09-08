@@ -67,7 +67,7 @@ class BatchInputSelectionPanel(QWidget):
         self.setLayout(self.horizontalLayout)
 
     def _panel(self):
-        return self.dialog.mainDialog()
+        return self.dialog.mainWidget()
 
     def _table(self):
         return self._panel().tblParameters
