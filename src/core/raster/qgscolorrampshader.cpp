@@ -35,6 +35,7 @@ QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximu
     , mLUTFactor( 1.0 )
     , mLUTInitialized( false )
     , mClip( false )
+    , mColorRampName( "" )
 {
   QgsDebugMsgLevel( "called.", 4 );
 }
@@ -81,6 +82,12 @@ void QgsColorRampShader::setColorRampType( const QString& theType )
     mColorRampType = EXACT;
   }
 }
+
+void QgsColorRampShader::setColorRampName( const QString& theName )
+{
+  mColorRampName = theName;
+}
+
 
 bool QgsColorRampShader::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int *theReturnAlphaValue )
 {
