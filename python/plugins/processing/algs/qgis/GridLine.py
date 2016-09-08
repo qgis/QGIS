@@ -56,7 +56,7 @@ class GridLine(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
 
         self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Grid extent')))
+                                          self.tr('Grid extent'), optional=False))
         self.addParameter(ParameterNumber(self.HSPACING,
                                           self.tr('Horizontal spacing'), default=10.0))
         self.addParameter(ParameterNumber(self.VSPACING,

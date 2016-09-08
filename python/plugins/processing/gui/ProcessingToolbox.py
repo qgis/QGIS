@@ -186,7 +186,7 @@ class ProcessingToolbox(BASE, WIDGET):
             executeAction = QAction(self.tr('Execute'), self.algorithmTree)
             executeAction.triggered.connect(self.executeAlgorithm)
             popupmenu.addAction(executeAction)
-            if alg.canRunInBatchMode and not alg.allowOnlyOpenedLayers:
+            if alg.canRunInBatchMode:
                 executeBatchAction = QAction(
                     self.tr('Execute as batch process'),
                     self.algorithmTree)

@@ -49,7 +49,7 @@ class ClipData(FusionAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input LAS layer')))
-        self.addParameter(ParameterExtent(self.EXTENT, self.tr('Extent')))
+        self.addParameter(ParameterExtent(self.EXTENT, self.tr('Extent'), optional=False))
         self.addParameter(ParameterSelection(
             self.SHAPE, self.tr('Shape'), ['Rectangle', 'Circle']))
         self.addOutput(OutputFile(

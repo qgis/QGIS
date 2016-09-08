@@ -52,7 +52,6 @@ class RandomSelection(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_selection.png'))
 
     def defineCharacteristics(self):
-        self.allowOnlyOpenedLayers = True
         self.name, self.i18n_name = self.trAlgorithm('Random selection')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 

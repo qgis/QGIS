@@ -29,10 +29,6 @@ import os.path
 from qgis.PyQt.QtGui import QIcon
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.modeler.CalculatorModelerAlgorithm import CalculatorModelerAlgorithm
-from processing.modeler.RasterLayerBoundsAlgorithm import RasterLayerBoundsAlgorithm
-from processing.modeler.VectorLayerBoundsAlgorithm import VectorLayerBoundsAlgorithm
-from processing.modeler.RasterLayerCrsAlgorithm import RasterLayerCrsAlgorithm
-from processing.modeler.VectorLayerCrsAlgorithm import VectorLayerCrsAlgorithm
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -52,10 +48,6 @@ class ModelerOnlyAlgorithmProvider(AlgorithmProvider):
         return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
 
     def _loadAlgorithms(self):
-        self.algs = [CalculatorModelerAlgorithm(),
-                     RasterLayerBoundsAlgorithm(),
-                     VectorLayerBoundsAlgorithm(),
-                     RasterLayerCrsAlgorithm(),
-                     VectorLayerCrsAlgorithm()]
+        self.algs = [CalculatorModelerAlgorithm()]
         for alg in self.algs:
             alg.provider = self

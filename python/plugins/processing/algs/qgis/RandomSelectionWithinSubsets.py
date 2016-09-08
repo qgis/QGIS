@@ -56,7 +56,6 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sub_selection.png'))
 
     def defineCharacteristics(self):
-        self.allowOnlyOpenedLayers = True
         self.name, self.i18n_name = self.trAlgorithm('Random selection within subsets')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 

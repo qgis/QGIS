@@ -32,21 +32,7 @@ from qgis.core import QgsExpressionContextUtils, QgsExpressionContext
 from qgis.PyQt.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import getHtmlFromHelpFile
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterMultipleInput
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterCrs
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterTableMultipleField
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterFile
-from processing.core.parameters import ParameterPoint
-from processing.core.parameters import getParameterFromString
+from processing.core.parameters import getParameterFromString, paramClasses
 from processing.core.outputs import OutputTable
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputRaster
@@ -57,7 +43,6 @@ from processing.core.outputs import OutputFile
 from processing.core.outputs import OutputDirectory
 from processing.core.outputs import getOutputFromString
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.script.WrongScriptException import WrongScriptException
 
 from processing.tools import dataobjects

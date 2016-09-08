@@ -62,7 +62,7 @@ class RegularPoints(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
 
         self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Input extent')))
+                                          self.tr('Input extent'), optional=False))
         self.addParameter(ParameterNumber(self.SPACING,
                                           self.tr('Point spacing/count'), 0.0001, 999999999.999999999, 0.0001))
         self.addParameter(ParameterNumber(self.INSET,

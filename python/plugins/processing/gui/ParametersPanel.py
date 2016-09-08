@@ -36,27 +36,15 @@ from qgis.core import QgsMapLayerRegistry, QgsMapLayer
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
-from qgis.PyQt.QtWidgets import QWidget, QLayout, QVBoxLayout, QHBoxLayout, QToolButton, QLabel, QCheckBox, QComboBox, QLineEdit, QPlainTextEdit
+from qgis.PyQt.QtWidgets import (QWidget, QLayout, QVBoxLayout, QHBoxLayout, QToolButton,                                  
+                                 QLabel, QCheckBox, QComboBox, QLineEdit, QPlainTextEdit)
 from qgis.PyQt.QtGui import QIcon
 
-from processing.core.ProcessingConfig import ProcessingConfig
-
-from processing.gui.wrappers import NotYetImplementedWidgetWrapper
-
 from processing.gui.OutputSelectionPanel import OutputSelectionPanel
-from processing.gui.InputLayerSelectorPanel import InputLayerSelectorPanel
-from processing.gui.FixedTablePanel import FixedTablePanel
-from processing.gui.RangePanel import RangePanel
-from processing.gui.MultipleInputPanel import MultipleInputPanel
-from processing.gui.NumberInputPanel import NumberInputPanel
-from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
-from processing.gui.FileSelectionPanel import FileSelectionPanel
-from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.PointSelectionPanel import PointSelectionPanel
 from processing.gui.GeometryPredicateSelectionPanel import \
     GeometryPredicateSelectionPanel
 from processing.gui.ListMultiselectWidget import ListMultiSelectWidget
-
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTable

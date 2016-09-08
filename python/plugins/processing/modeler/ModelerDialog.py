@@ -479,7 +479,7 @@ class ModelerDialog(BASE, WIDGET):
 
             # Add algorithms
             for alg in algs:
-                if not alg.showInModeler or alg.allowOnlyOpenedLayers:
+                if not alg.showInModeler:
                     continue
                 if alg.commandLineName() == self.alg.commandLineName():
                     continue

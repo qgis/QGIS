@@ -32,7 +32,7 @@ from copy import deepcopy
 
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsRasterLayer, QgsVectorLayer
+from qgis.core import QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinateReferenceSystem
 from processing.tools.vector import resolveFieldIndex, features
 from processing.tools.system import isWindows
 from processing.tools import dataobjects
@@ -204,14 +204,29 @@ class ParameterCrs(Parameter):
         Parameter.__init__(self, name, description, default, optional, metadata)
 
     def setValue(self, value):
-        if value is None or value.strip() == '':
+        if not bool(value):
             if not self.optional:
                 return False
-            self.value = None if value is None else value.strip()
+            self.value = None
             return True
 
+        if isinstance(value, QgsCoordinateReferenceSystem):
+            self.value = value.authid()
+            return True
+        if isinstance(value, QgsMapLayer):
+            self.value = value.crs().authid()
+            return True
+        try:
+            layer = dataobjects.getObjectFromUri(value)
+            if layer is not None:
+                self.value = layer.crs().authid()
+                return True
+        except:
+            pass
+        
+        
         # TODO: check it is a valid authid
-        self.value = unicode(value)
+        self.value = value
         return True
 
     def getValueAsCommandLineParameter(self):
@@ -258,14 +273,30 @@ class ParameterExtent(Parameter):
         Parameter.__init__(self, name, description, default, optional)
         # The value is a string in the form "xmin, xmax, ymin, ymax"
 
-    def setValue(self, text):
-        if text is None:
+    def setValue(self, value):
+        if value is None:
             if not self.optional:
                 return False
             self.value = None
             return True
 
-        tokens = unicode(text).split(',')
+        if isinstance(value, QgsMapLayer):
+            rect = value.extent()
+            self.value = '{},{},{},{}'.format(
+                rect.xMinimum(), rect.xMaximum(), rect.yMinimum(), rect.yMaximum())
+            return True
+        
+        try:
+            layer = dataobjects.getObjectFromUri(value)
+            if layer is not None:
+                rect = layer.extent()
+                self.value = '{},{},{},{}'.format(
+                    rect.xMinimum(), rect.xMaximum(), rect.yMinimum(), rect.yMaximum())
+                return True
+        except:
+            pass
+        
+        tokens = unicode(value).split(',')
         if len(tokens) != 4:
             return False
         try:
@@ -273,7 +304,7 @@ class ParameterExtent(Parameter):
             float(tokens[1])
             float(tokens[2])
             float(tokens[3])
-            self.value = text
+            self.value = value
             return True
         except:
             return False
