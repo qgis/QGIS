@@ -105,6 +105,7 @@
 %Include qgsobjectcustomproperties.sip
 %Include qgsofflineediting.sip
 %Include qgsogcutils.sip
+%Include qgsoptionalexpression.sip
 %Include qgsowsconnection.sip
 %Include qgspaintenginehack.sip
 %Include qgspainting.sip
