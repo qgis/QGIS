@@ -13,11 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSPPINBOX_H
-#define QGSSPPINBOX_H
+#ifndef QGSSPINBOX_H
+#define QGSSPINBOX_H
 
 #include <QSpinBox>
-#include <QToolButton>
+
+class QgsSpinBoxLineEdit;
 
 /** \ingroup gui
  * @brief The QgsSpinBox is a spin box with a clear button that will set the value to the defined clear value.
@@ -28,20 +29,34 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
 {
     Q_OBJECT
     Q_PROPERTY( bool showClearButton READ showClearButton WRITE setShowClearButton )
+    Q_PROPERTY( bool clearValue READ clearValue WRITE setClearValue )
+    Q_PROPERTY( bool expressionsEnabled READ expressionsEnabled WRITE setExpressionsEnabled )
 
   public:
+
+    //! Behaviour when widget is cleared.
     enum ClearValueMode
     {
-      MinimumValue,
-      MaximumValue,
-      CustomValue
+      MinimumValue, //!< Reset value to minimum()
+      MaximumValue, //!< Reset value to maximum()
+      CustomValue, //!< Reset value to custom value (see setClearValue() )
     };
 
+    /** Constructor for QgsSpinBox.
+     * @param parent parent widget
+     */
     explicit QgsSpinBox( QWidget *parent = nullptr );
 
-    //! determines if the widget will show a clear button
-    //! @note the clear button will set the widget to its minimum value
+    /** Sets whether the widget will show a clear button. The clear button
+     * allows users to reset the widget to a default or empty state.
+     * @param showClearButton set to true to show the clear button, or false to hide it
+     * @see showClearButton()
+     */
     void setShowClearButton( const bool showClearButton );
+
+    /** Returns whether the widget is showing a clear button.
+     * @see setShowClearButton()
+     */
     bool showClearButton() const {return mShowClearButton;}
 
     /** Sets if the widget will allow entry of simple expressions, which are
@@ -50,6 +65,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      * @note added in QGIS 2.7
      */
     void setExpressionsEnabled( const bool enabled );
+
     /** Returns whether the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
      * @returns true if spin box allows expression entry
@@ -61,26 +77,30 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     virtual void clear() override;
 
     /**
-     * @brief setClearValue defines the clear value for the widget and will automatically set the clear value mode to CustomValue
+     * Defines the clear value as a custom value and will automatically set the clear value mode to CustomValue.
      * @param customValue defines the numerical value used as the clear value
      * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
+     * @see setClearValue()
      */
     void setClearValue( int customValue, const QString& clearValueText = QString() );
+
     /**
-     * @brief setClearValueMode defines if the clear value should be the minimum or maximum values of the widget or a custom value
+     * Defines if the clear value should be the minimum or maximum values of the widget or a custom value.
      * @param mode mode to user for clear value
      * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
      */
     void setClearValueMode( ClearValueMode mode, const QString& clearValueText = QString() );
 
-    //! returns the value used when clear() is called.
+    /** Returns the value used when clear() is called.
+     * @see setClearValue()
+     */
     int clearValue() const;
 
     virtual int valueFromText( const QString & text ) const override;
     virtual QValidator::State validate( QString & input, int & pos ) const override;
 
   protected:
-    virtual void resizeEvent( QResizeEvent* event ) override;
+
     virtual void changeEvent( QEvent* event ) override;
     virtual void paintEvent( QPaintEvent* event ) override;
 
@@ -91,14 +111,15 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     int frameWidth() const;
     bool shouldShowClearForValue( const int value ) const;
 
+    QgsSpinBoxLineEdit* mLineEdit;
+
     bool mShowClearButton;
     ClearValueMode mClearValueMode;
     int mCustomClearValue;
 
     bool mExpressionsEnabled;
 
-    QToolButton* mClearButton;
     QString stripped( const QString &originalText ) const;
 };
 
-#endif // QGSSPPINBOX_H
+#endif // QGSSPINBOX_H

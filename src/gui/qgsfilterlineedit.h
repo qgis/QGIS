@@ -197,4 +197,33 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     QRect clearRect() const;
 };
 
+/// @cond PRIVATE
+
+/** Private QgsFilterLineEdit subclass for use as a line edit in QgsSpinBox/QgsDoubleSpinBox
+ * we let QgsFilterLineEdit handle display of the clear button and detection
+ * of clicks, but override clearValue() and let Qgs(Double)SpinBox handle the clearing
+ * themselves.
+ */
+class QgsSpinBoxLineEdit : public QgsFilterLineEdit
+{
+    Q_OBJECT
+
+  public:
+
+    QgsSpinBoxLineEdit( QWidget* parent = nullptr )
+        : QgsFilterLineEdit( parent )
+    {}
+
+  public slots:
+
+    virtual void clearValue() override
+    {
+      // don't change the value - let spin boxes handle that by detecting cleared() signal
+      setCursor( Qt::IBeamCursor );
+      setModified( true );
+      emit cleared();
+    }
+};
+/// @endcond
+
 #endif // QGSFILTERLINEEDIT_H
