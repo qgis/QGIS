@@ -12,6 +12,13 @@ class QgsExpression
      * loop in which this expression is used.
      */
     QgsExpression( const QString& expr );
+    /**
+     * Create an empty expression.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QgsExpression();
+
     ~QgsExpression();
 
     /**
@@ -142,6 +149,20 @@ class QgsExpression
     void setScale( double scale );
 
     double scale();
+
+    /**
+     * Set the expression string, will reset the whole internal structure.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setExpression( const QString& expression );
+
+    /**
+     * Set the expression string, will reset the whole internal structure.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setExpression( const QString& expression );
 
     //! Return the original, unmodified expression string.
     //! If there was none supplied because it was constructed by sole
