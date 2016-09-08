@@ -123,6 +123,7 @@ class CORE_EXPORT QgsExpression
      * it does not need to be re-parsed.
      */
     QgsExpression( const QgsExpression& other );
+
     /**
      * Create a copy of this expression. This is preferred
      * over recreating an expression from a string since
@@ -131,7 +132,9 @@ class CORE_EXPORT QgsExpression
     QgsExpression& operator=( const QgsExpression& other );
 
     /**
-     * Create an empty expression
+     * Create an empty expression.
+     *
+     * @note Added in QGIS 3.0
      */
     QgsExpression();
 
@@ -144,6 +147,14 @@ class CORE_EXPORT QgsExpression
      * @note Added in QGIS 3.0
      */
     bool operator==( const QgsExpression& other ) const;
+
+    /**
+     * Checks if this expression is valid.
+     * A valid expression could be parsed but does not necessarily evaluate properly.
+     *
+     * @note Added in QGIS 3.0
+     */
+    bool valid() const;
 
     //! Returns true if an error occurred when parsing the input expression
     bool hasParserError() const;
@@ -163,7 +174,8 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Get list of columns referenced by the expression.
-     * @note if the returned list contains the QgsFeatureRequest::AllAttributes constant then
+     *
+     * @note If the returned list contains the QgsFeatureRequest::AllAttributes constant then
      * all attributes from the layer are required for evaluation of the expression.
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
      *

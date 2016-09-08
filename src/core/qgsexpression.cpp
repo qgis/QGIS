@@ -3626,6 +3626,11 @@ bool QgsExpression::operator==( const QgsExpression& other ) const
   return false;
 }
 
+bool QgsExpression::valid() const
+{
+  return d->mRootNode;
+}
+
 bool QgsExpression::hasParserError() const { return !d->mParserErrorString.isNull(); }
 
 QString QgsExpression::parserErrorString() const { return d->mParserErrorString; }
