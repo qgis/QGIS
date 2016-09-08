@@ -335,6 +335,37 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         best2 = QgsEditorWidgetRegistry.instance().findBest(vl, "fld2")
         self.assertEqual(best2.type(), "TextEdit")
 
+    def testHstore(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."dict" sql=' % (self.dbconn), "testhstore", "postgres")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName('value')).type(), QVariant.Map)
+
+        f = next(vl.getFeatures(QgsFeatureRequest()))
+
+        value_idx = vl.fieldNameIndex('value')
+        self.assertTrue(isinstance(f.attributes()[value_idx], dict))
+        self.assertEqual(f.attributes()[value_idx], {'a': 'b', '1': '2'})
+
+        new_f = QgsFeature(vl.fields())
+        new_f['pk'] = NULL
+        #new_f['value'] = {'x': 'a\'s "y" \\', 'z': 'end'}
+        new_f['value'] = {'simple': '1', 'doubleQuote': '"y"', 'quote': "'q'", 'backslash': '\\'}
+        r, fs = vl.dataProvider().addFeatures([new_f])
+        self.assertTrue(r)
+        new_pk = fs[0]['pk']
+        self.assertNotEqual(new_pk, NULL, fs[0].attributes())
+
+        try:
+            read_back = vl.getFeature(new_pk)
+            self.assertEqual(read_back['pk'], new_pk)
+            self.assertEqual(read_back['value'], new_f['value'])
+        finally:
+            self.assertTrue(vl.startEditing())
+            self.assertTrue(vl.deleteFeatures([new_pk]))
+            self.assertTrue(vl.commitChanges())
+
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
 
@@ -364,6 +395,7 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
 
     def partiallyCompiledFilters(self):
         return set([])
+
 
 if __name__ == '__main__':
     unittest.main()

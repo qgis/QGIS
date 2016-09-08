@@ -72,6 +72,7 @@ QWidget* QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleO
   QWidget* w = eww->widget();
 
   w->setAutoFillBackground( true );
+  w->setFocusPolicy( Qt::StrongFocus ); // to make sure QMouseEvents are propagated to the editor widget
 
   eww->setEnabled( !vl->editFormConfig().readOnly( fieldIdx ) );
 

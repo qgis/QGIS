@@ -56,8 +56,14 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
 )
 
+ADD_LIBRARY (postgresprovider_a STATIC ${PG_SRCS} ${PG_HDRS} ${PG_MOC_SRCS})
 ADD_LIBRARY (postgresprovider MODULE ${PG_SRCS} ${PG_HDRS} ${PG_MOC_SRCS})
 
+TARGET_LINK_LIBRARIES (postgresprovider_a
+  ${POSTGRES_LIBRARY}
+  qgis_core
+  qgis_gui
+)
 TARGET_LINK_LIBRARIES (postgresprovider
   ${POSTGRES_LIBRARY}
   qgis_core
