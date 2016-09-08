@@ -81,7 +81,7 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &featur
   connect( vl, SIGNAL( selectionChanged() ), this, SLOT( layerSelectionChanged() ) );
 
   // constraints management
-  updateAllConstaints();
+  updateAllConstraints();
 }
 
 QgsAttributeForm::~QgsAttributeForm()
@@ -720,7 +720,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
   emit attributeChanged( eww->field().name(), value );
 }
 
-void QgsAttributeForm::updateAllConstaints()
+void QgsAttributeForm::updateAllConstraints()
 {
   Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
   {
@@ -740,8 +740,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
     eww->updateConstraint( ft );
 
     // update eww dependencies constraint
-    QList<QgsEditorWidgetWrapper*> deps;
-    constraintDependencies( eww, deps );
+    QList<QgsEditorWidgetWrapper*> deps = constraintDependencies( eww );
 
     Q_FOREACH ( QgsEditorWidgetWrapper* depsEww, deps )
       depsEww->updateConstraint( ft );
@@ -925,9 +924,9 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString& constraint,
   }
 }
 
-void QgsAttributeForm::constraintDependencies( QgsEditorWidgetWrapper* w,
-    QList<QgsEditorWidgetWrapper*>& wDeps )
+QList<QgsEditorWidgetWrapper*> QgsAttributeForm::constraintDependencies( QgsEditorWidgetWrapper* w )
 {
+  QList<QgsEditorWidgetWrapper*> wDeps;
   QString name =  w->field().name();
 
   // for each widget in the current form
@@ -955,6 +954,8 @@ void QgsAttributeForm::constraintDependencies( QgsEditorWidgetWrapper* w,
       }
     }
   }
+
+  return wDeps;
 }
 
 void QgsAttributeForm::preventFeatureRefresh()

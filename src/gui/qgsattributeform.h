@@ -321,11 +321,11 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QString createFilterExpression() const;
 
     //! constraints management
-    void updateAllConstaints();
+    void updateAllConstraints();
     void updateConstraints( QgsEditorWidgetWrapper* w );
     bool currentFormFeature( QgsFeature& feature );
     bool currentFormValidConstraints( QStringList& invalidFields, QStringList& descriptions );
-    void constraintDependencies( QgsEditorWidgetWrapper* w, QList<QgsEditorWidgetWrapper*>& wDeps );
+    QList<QgsEditorWidgetWrapper*> constraintDependencies( QgsEditorWidgetWrapper* w );
     void clearInvalidConstraintsMessage();
     void displayInvalidConstraintMessage( const QStringList& invalidFields,
                                           const QStringList& description );
