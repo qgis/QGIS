@@ -40,11 +40,6 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue 
 
   connect( this, SIGNAL( textChanged( const QString& ) ), this,
            SLOT( onTextChanged( const QString& ) ) );
-
-  int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
-  QSize msz = minimumSizeHint();
-  setMinimumSize( qMax( msz.width(), mClearIconSize.width() + frameWidth * 2 + 2 ),
-                  qMax( msz.height(), mClearIconSize.height() + frameWidth * 2 + 2 ) );
 }
 
 void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
