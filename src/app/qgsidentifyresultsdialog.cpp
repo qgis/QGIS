@@ -494,6 +494,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     featItem->addChild( attrItem );
 
     attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
+    attrItem->setToolTip( 0, vlayer->attributeDisplayName( i ) );
     attrItem->setData( 0, Qt::UserRole, fields.at( i ).name() );
     attrItem->setData( 0, Qt::UserRole + 1, i );
 
@@ -501,6 +502,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
     value = representValue( vlayer, setup, fields.at( i ).name(), attrs.at( i ) );
     attrItem->setSortData( 1, value );
+    attrItem->setToolTip( 1, value );
     bool foundLinks = false;
     QString links = QgsStringUtils::insertLinks( value, &foundLinks );
     if ( foundLinks )
@@ -519,7 +521,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     if ( fields.at( i ).name() == vlayer->displayField() )
     {
       featItem->setText( 0, attrItem->text( 0 ) );
+      featItem->setToolTip( 0, attrItem->text( 0 ) );
       featItem->setText( 1, attrItem->text( 1 ) );
+      featItem->setToolTip( 1, attrItem->text( 1 ) );
       featureLabeled = true;
     }
   }
@@ -533,7 +537,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     << QgsExpressionContextUtils::layerScope( vlayer );
     context.setFeature( f );
 
-    featItem->setText( 1, QgsExpression( vlayer->displayExpression() ).evaluate( &context ).toString() );
+    QString value = QgsExpression( vlayer->displayExpression() ).evaluate( &context ).toString();
+    featItem->setText( 1, value );
+    featItem->setToolTip( 1, value );
   }
 
   // table
@@ -1508,6 +1514,7 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
 
           QgsTreeWidgetItem* treeItem = static_cast< QgsTreeWidgetItem* >( item );
           treeItem->setSortData( 1, value );
+          treeItem->setToolTip( 1, value );
 
           bool foundLinks = false;
           QString links = QgsStringUtils::insertLinks( value, &foundLinks );
