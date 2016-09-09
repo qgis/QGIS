@@ -30,8 +30,9 @@ class QTimer;
 /** \ingroup core
  * HTTP request/response manager that is redirect-aware.
  * This class extends the Qt QHttp concept by being able to recognise
- *  and respond to redirection responses (e.g. HTTP code 302)
-*/
+ * and respond to redirection responses (e.g. HTTP code 302)
+ * @Note not available in python bindings
+ */
 
 class CORE_EXPORT QgsHttpTransaction : public QObject
 {
