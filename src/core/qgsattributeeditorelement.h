@@ -220,7 +220,22 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      */
     virtual QgsAttributeEditorElement* clone( QgsAttributeEditorElement* parent ) const override;
 
+    /**
+     * The visibility expression is used in the attribute form to
+     * show or hide this container based on an expression incorporating
+     * the field value controlled by editor widgets.
+     *
+     * @note Added in QGIS 3.0
+     */
     QgsOptionalExpression visibilityExpression() const;
+
+    /**
+     * The visibility expression is used in the attribute form to
+     * show or hide this container based on an expression incorporating
+     * the field value controlled by editor widgets.
+     *
+     * @note Added in QGIS 3.0
+     */
     void setVisibilityExpression( const QgsOptionalExpression& visibilityExpression );
 
   private:

@@ -66,8 +66,23 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
      */
     int realTabIndex( QWidget* widget );
 
-    virtual void tabInserted( int index );
-    virtual void tabRemoved( int index );
+    /**
+     * Is called internally whenever a new tab has been inserted.
+     *
+     * Is used to keep track of currently available and visible tabs.
+     *
+     * @note Added in QGIS 3.0
+     */
+    virtual void tabInserted( int index ) override;
+
+    /**
+     * Is called internally whenever a tab has been removed.
+     *
+     * Is used to keep track of currently available and visible tabs.
+     *
+     * @note Added in QGIS 3.0
+     */
+    virtual void tabRemoved( int index ) override;
 
   private:
     void synchronizeIndexes();
