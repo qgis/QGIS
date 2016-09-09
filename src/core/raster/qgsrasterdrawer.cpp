@@ -88,7 +88,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
       }
     }
 
-    if ( feedback && feedback->render_partial_output )
+    if ( feedback && feedback->renderPartialOutput() )
     {
       // there could have been partial preview written before
       // so overwrite anything with the resulting image.

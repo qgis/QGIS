@@ -780,7 +780,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
 
     // draw other res tiles if preview
     QPainter p( image );
-    if ( feedback && feedback->preview_only && missing.count() > 0 )
+    if ( feedback && feedback->isPreviewOnly() && missing.count() > 0 )
     {
       // some tiles are still missing, so let's see if we have any cached tiles
       // from lower or higher resolution available to give the user a bit of context
@@ -825,14 +825,14 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
         p.setRenderHint( QPainter::SmoothPixmapTransform, true );
       p.drawImage( ti.rect, ti.img );
 
-      if ( feedback && feedback->preview_only )
+      if ( feedback && feedback->isPreviewOnly() )
         _drawDebugRect( p, ti.rect, Qt::green );
     }
     p.end();
 
     int t2 = t.elapsed() - t1;
 
-    if ( feedback && feedback->preview_only )
+    if ( feedback && feedback->isPreviewOnly() )
     {
       qDebug( "PREVIEW - CACHED: %d / MISSING: %d", tileImages.count(), requests.count() - tileImages.count() );
       qDebug( "PREVIEW - TIME: this res %d ms | other res %d ms | TOTAL %d ms", t0 + t2, t1, t0 + t1 + t2 );
@@ -840,7 +840,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
     else if ( !requestsFinal.isEmpty() )
     {
       // let the feedback object know about the tiles we have already
-      if ( feedback && feedback->render_partial_output )
+      if ( feedback && feedback->renderPartialOutput() )
         feedback->onNewData();
 
       // order tile requests according to the distance from view center
@@ -3908,7 +3908,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
   }
   else
   {
-    if ( !( mFeedback && mFeedback->preview_only ) )
+    if ( !( mFeedback && mFeedback->isPreviewOnly() ) )
     {
       // report any errors except for the one we have caused by cancelling the request
       if ( reply->error() != QNetworkReply::OperationCanceledError )
