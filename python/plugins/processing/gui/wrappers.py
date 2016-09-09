@@ -17,7 +17,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from gui.GeometryPredicateSelectionPanel import GeometryPredicateSelectionPanel
 
 __author__ = 'Arnaud Morvan'
 __date__ = 'May 2016'
@@ -52,6 +51,7 @@ from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from processing.gui.StringInputPanel import StringInputPanel
+from processing.gui.GeometryPredicateSelectionPanel import GeometryPredicateSelectionPanel
 
 
 DIALOG_STANDARD = 'standard'
@@ -440,7 +440,7 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
                     options = dataobjects.getVectorLayers(sorting=False)
                 else:
                     options = dataobjects.getVectorLayers([self.param.datatype], sorting=False)
-                return self.param.setValue([options[i] for i in self.widget.selectedoptions])
+                return [options[i] for i in self.widget.selectedoptions]
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.getText()
         else:
@@ -734,32 +734,42 @@ class TableFieldWidgetWrapper(WidgetWrapper):
     NOT_SET = '[Not set]'
 
     def createWidget(self):
-        if self.dialogType == DIALOG_STANDARD:
-            widget = QComboBox()
-            return widget
-        elif self.dialogType == DIALOG_BATCH:
-            item = QLineEdit()
-            if self.param.default is not None:
-                item.setText(self.param.default)
-        else:
-            widget = QComboBox()
-            widget.setEditable(True)
-            fields = self.dialog.getAvailableValuesOfType(ParameterTableField, None)
-            if self.param.optional:
-                widget.addItem(self.NOT_SET, None)
-            for f in fields:
-                widget.addItem(self.dialog.resolveValueDescription(f), f)
-            return widget
+        if self.param.multiple:
+            if self.dialogType == DIALOG_STANDARD:
+                    return MultipleInputPanel(options=[])
+            else:
+                return QLineEdit()   
+        else:            
+            if self.dialogType == DIALOG_STANDARD:
+                widget = QComboBox()
+                return widget
+            elif self.dialogType == DIALOG_BATCH:
+                item = QLineEdit()
+                if self.param.default is not None:
+                    item.setText(self.param.default)
+            else:
+                widget = QComboBox()
+                widget.setEditable(True)
+                fields = self.dialog.getAvailableValuesOfType(ParameterTableField, None)
+                if self.param.optional:
+                    widget.addItem(self.NOT_SET, None)
+                for f in fields:
+                    widget.addItem(self.dialog.resolveValueDescription(f), f)
+                return widget
 
     def postInitialize(self, wrappers):
         for wrapper in wrappers:
             if wrapper.param.name == self.param.parent:
                 layer = wrapper.widget.itemData(wrapper.widget.currentIndex())
                 if layer is not None:
-                    self.widget.clear()
-                    if self.param.optional:
-                        self.widget.addItem(self.tr(self.NOT_SET))
-                    self.widget.addItems(self.getFields(layer, wrapper.param.datatype))
+                    fields = self.getFields(layer, wrapper.param.datatype)
+                    if self.param.multiple:
+                        self.widget.updateForOptions(fields)
+                    else: 
+                        self.widget.clear()
+                        if self.param.optional:
+                            self.widget.addItem(self.tr(self.NOT_SET))
+                        self.widget.addItems(fields)
                 break
     
     def getFields(self, layer, datatype):
@@ -777,33 +787,59 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         return sorted(list(fieldNames), cmp=locale.strcoll)
             
     def setValue(self, value):
-        if self.dialogType == DIALOG_STANDARD:
-            pass  # TODO
-        elif self.dialogType == DIALOG_BATCH:
-            return self.widget.setText(value)
-        else:
-            self.setComboValue(value)
+        if self.param.multiple:
+            if self.dialogType == DIALOG_STANDARD:
+                options = self.widget.options
+                selected = []
+                for i, opt in enumerate(options):
+                    if opt in value:
+                        selected.append(i)
+                self.widget.setSelectedItems(selected)
+            else:
+                self.widget.setText(value)
+        else: 
+            if self.dialogType == DIALOG_STANDARD:
+                pass  # TODO
+            elif self.dialogType == DIALOG_BATCH:
+                return self.widget.setText(value)
+            else:
+                self.setComboValue(value)
 
 
     def value(self):
-        if self.dialogType == DIALOG_STANDARD:
-            if self.param.optional and self.widget.currentIndex() == 0:
-                return None
-            return self.widget.currentText()
-        elif self.dialogType == DIALOG_BATCH:
-            return self.widget.text()
-        else:
-            return self.comboValue()
+        if self.param.multiple:
+            if self.dialogType == DIALOG_STANDARD:
+                return  [self.widget.options[i] for i in self.widget.selectedoptions]
+            elif self.dialogType == DIALOG_BATCH:
+                return self.widget.text()
+            else:
+                text =  self.widget.text()
+                if not bool(text) and not self.param.optional:
+                    raise InvalidParameterValue()
+                return text
+        else:    
+            if self.dialogType == DIALOG_STANDARD:
+                if self.param.optional and self.widget.currentIndex() == 0:
+                    return None
+                return self.widget.currentText()
+            elif self.dialogType == DIALOG_BATCH:
+                return self.widget.text()
+            else:
+                return self.comboValue()
         
     def anotherParameterWidgetHasChanged(self,wrapper):
         if wrapper.param.name == self.param.parent:
             layer = wrapper.value()
             if layer is not None:
-                self.widget.clear()
-                if self.param.optional:
-                    self.widget.addItem(self.tr(self.NOT_SET))
-                self.widget.addItems(self.getFields(layer, wrapper.param.datatype))
-                
+                fields = self.getFields(layer, wrapper.param.datatype)
+                if self.param.multiple:
+                    self.widget.updateForOptions(fields)
+                else:
+                    self.widget.clear()
+                    if self.param.optional:
+                        self.widget.addItem(self.tr(self.NOT_SET))
+                    self.widget.addItems(fields)
+                    
 
 def GeometryPredicateWidgetWrapper(WidgetWrapper):
     

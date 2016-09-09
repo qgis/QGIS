@@ -37,7 +37,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterTableMultipleField
+from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 from processing.tools import vector, dataobjects
 
@@ -62,8 +62,8 @@ class Dissolve(GeoAlgorithm):
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterBoolean(Dissolve.DISSOLVE_ALL,
                                            self.tr('Dissolve all (do not use fields)'), True))
-        self.addParameter(ParameterTableMultipleField(Dissolve.FIELD,
-                                                      self.tr('Unique ID fields'), Dissolve.INPUT, optional=True))
+        self.addParameter(ParameterTableField(Dissolve.FIELD,
+                                                      self.tr('Unique ID fields'), Dissolve.INPUT, optional=True, multiple=True))
         self.addOutput(OutputVector(Dissolve.OUTPUT, self.tr('Dissolved')))
 
     def processAlgorithm(self, progress):
