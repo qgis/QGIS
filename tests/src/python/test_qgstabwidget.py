@@ -19,7 +19,7 @@ import qgis  # NOQA
 
 from qgis.testing import unittest, start_app
 from qgis.gui import QgsTabWidget
-from qgis.PyQt.QtGui import QApplication, QWidget
+from qgis.PyQt.QtGui import QWidget
 
 start_app()
 
