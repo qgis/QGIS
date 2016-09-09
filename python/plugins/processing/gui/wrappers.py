@@ -17,6 +17,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from gui.GeometryPredicateSelectionPanel import GeometryPredicateSelectionPanel
 
 __author__ = 'Arnaud Morvan'
 __date__ = 'May 2016'
@@ -130,6 +131,17 @@ class WidgetWrapper(QObject):
     
     def refresh(self):
         pass
+
+class BasicWidgetWrapper(WidgetWrapper):
+
+    def createWidget(self):
+        return QLineEdit()
+    
+    def setValue(self, value):
+        self.widget.setText(value)
+
+    def value(self):
+        return self.widget.text()
 
 
 class BooleanWidgetWrapper(WidgetWrapper):
@@ -792,3 +804,14 @@ class TableFieldWidgetWrapper(WidgetWrapper):
                     self.widget.addItem(self.tr(self.NOT_SET))
                 self.widget.addItems(self.getFields(layer, wrapper.param.datatype))
                 
+
+def GeometryPredicateWidgetWrapper(WidgetWrapper):
+    
+    def createWidget(self):
+        return GeometryPredicateSelectionPanel()
+    
+    def setValue(self, value):
+        self.widget.setValue(value)
+        
+    def value(self):
+        return self.widget.value()
