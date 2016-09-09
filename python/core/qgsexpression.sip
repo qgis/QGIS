@@ -90,7 +90,7 @@ class QgsExpression
      * @returns true if string is a valid expression
      * @note added in QGIS 3.0
      */
-    static bool checkExpression( const QString& text, const QgsExpressionContext* context, QString &errorMessage );
+    static bool checkExpression( const QString& text, const QgsExpressionContext* context, QString &errorMessage /Out/ );
 
     /**
      * Set the expression string, will reset the whole internal structure.
