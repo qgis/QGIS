@@ -40,6 +40,7 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkreplyparser.h"
+#include "qgstilecache.h"
 #include "qgsgml.h"
 #include "qgsgmlschema.h"
 #include "qgswmscapabilities.h"
@@ -501,35 +502,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
   return draw( viewExtent, pixelWidth, pixelHeight, nullptr );
 }
 
-#include <QCache>
-static QCache<QUrl, QImage> sTileCache( 256 );
-static QMutex sTileCacheMutex;
-
-static bool _fetchCachedTileImage( const QUrl& url, QImage& localImage )
-{
-  QMutexLocker locker( &sTileCacheMutex );
-  if ( QImage* i = sTileCache.object( url ) )
-  {
-    localImage = *i;
-    return true;
-  }
-  else if ( QgsNetworkAccessManager::instance()->cache()->metaData( url ).isValid() )
-  {
-    if ( QIODevice* data = QgsNetworkAccessManager::instance()->cache()->data( url ) )
-    {
-      QByteArray imageData = data->readAll();
-      delete data;
-
-      localImage = QImage::fromData( imageData );
-
-      // cache it as well (mutex is already locked)
-      sTileCache.insert( url, new QImage( localImage ) );
-
-      return true;
-    }
-  }
-  return false;
-}
 
 static bool _fuzzyContainsRect( const QRectF& r1, const QRectF& r2 )
 {
@@ -581,7 +553,7 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangl
   Q_FOREACH ( const TileRequest& r, requests )
   {
     QImage localImage;
-    if ( !_fetchCachedTileImage( r.url, localImage ) )
+    if ( ! QgsTileCache::tile( r.url, localImage ) )
       continue;
 
     double cr = viewExtent.width() / imageWidth;
@@ -785,7 +757,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
     Q_FOREACH ( const TileRequest& r, requests )
     {
       QImage localImage;
-      if ( _fetchCachedTileImage( r.url, localImage ) )
+      if ( QgsTileCache::tile( r.url, localImage ) )
       {
         double cr = viewExtent.width() / image->width();
 
@@ -880,7 +852,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
       handler.downloadBlocking();
     }
 
-    qDebug( "TILE CACHE total: %d / %d ", sTileCache.totalCost(), sTileCache.maxCost() );
+    qDebug( "TILE CACHE total: %d / %d ", QgsTileCache::totalCost(), QgsTileCache::maxCost() );
 
 #if 0
     const QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( dataSourceUri() );
@@ -3909,9 +3881,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
                     .arg( r.width() ).arg( r.height() ) );
 #endif
 
-        sTileCacheMutex.lock();
-        sTileCache.insert( reply->url(), new QImage( myLocalImage ) );
-        sTileCacheMutex.unlock();
+        QgsTileCache::insertTile( reply->url(), myLocalImage );
 
         if ( mFeedback )
           mFeedback->onNewData();
