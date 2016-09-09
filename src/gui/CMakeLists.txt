@@ -299,6 +299,7 @@ SET(QGIS_GUI_SRCS
   qgssublayersdialog.cpp
   qgssqlcomposerdialog.cpp
   qgssvgannotationitem.cpp
+  qgstabwidget.cpp
   qgstablewidgetitem.cpp
   qgstextannotationitem.cpp
   qgstrackedvectorlayertools.cpp
@@ -451,6 +452,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsslider.h
   qgssqlcomposerdialog.h
   qgssublayersdialog.h
+  qgstabwidget.h
   qgstreewidgetitem.h
   qgsunitselectionwidget.h
   qgsuserinputdockwidget.h
