@@ -112,7 +112,7 @@ class CORE_EXPORT QgsExpression
     /**
      * Creates a new expression based on the provided string.
      * The string will immediately be parsed. For optimization
-     * {@link prepare()} should alwys be called before every
+     * {@link prepare()} should always be called before every
      * loop in which this expression is used.
      */
     QgsExpression( const QString& expr );
@@ -123,13 +123,38 @@ class CORE_EXPORT QgsExpression
      * it does not need to be re-parsed.
      */
     QgsExpression( const QgsExpression& other );
+
     /**
      * Create a copy of this expression. This is preferred
      * over recreating an expression from a string since
      * it does not need to be re-parsed.
      */
     QgsExpression& operator=( const QgsExpression& other );
+
+    /**
+     * Create an empty expression.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QgsExpression();
+
     ~QgsExpression();
+
+    /**
+     * Compares two expressions. The operator returns true
+     * if the expression string is equal.
+     *
+     * @note Added in QGIS 3.0
+     */
+    bool operator==( const QgsExpression& other ) const;
+
+    /**
+     * Checks if this expression is valid.
+     * A valid expression could be parsed but does not necessarily evaluate properly.
+     *
+     * @note Added in QGIS 3.0
+     */
+    bool valid() const;
 
     //! Returns true if an error occurred when parsing the input expression
     bool hasParserError() const;
@@ -149,7 +174,8 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Get list of columns referenced by the expression.
-     * @note if the returned list contains the QgsFeatureRequest::AllAttributes constant then
+     *
+     * @note If the returned list contains the QgsFeatureRequest::AllAttributes constant then
      * all attributes from the layer are required for evaluation of the expression.
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
      *
@@ -195,6 +221,13 @@ class CORE_EXPORT QgsExpression
      * @note added in QGIS 2.12
      */
     static bool isValid( const QString& text, const QgsExpressionContext* context, QString &errorMessage );
+
+    /**
+     * Set the expression string, will reset the whole internal structure.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setExpression( const QString& expression );
 
     //! Return the original, unmodified expression string.
     //! If there was none supplied because it was constructed by sole
@@ -1238,11 +1271,6 @@ class CORE_EXPORT QgsExpression
     static QString formatPreviewString( const QVariant& value );
 
   protected:
-    /**
-     * Used by QgsOgcUtils to create an empty
-     */
-    QgsExpression();
-
     void initGeomCalculator();
 
     static QMap<QString, QVariant> gmSpecialColumns;
