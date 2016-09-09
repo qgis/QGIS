@@ -197,7 +197,7 @@ class GeoAlgorithm:
             self.setOutputCRS()
             self.resolveTemporaryOutputs()
             self.resolveDataObjects()
-            self.resolveMinCoveringExtent()
+            self.evaluateParameterValues()
             self.checkOutputFileExtensions()
             self.runPreExecutionScript(progress)
             self.processAlgorithm(progress)
@@ -205,7 +205,7 @@ class GeoAlgorithm:
             self.convertUnsupportedFormats(progress)
             self.runPostExecutionScript(progress)
         except GeoAlgorithmExecutionException as gaee:
-            lines = [self.tr('Uncaught error while executing algorithm')]
+            lines = [self.tr('Error while executing algorithm')]
             lines.append(traceback.format_exc())
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, gaee.msg)
             raise GeoAlgorithmExecutionException(gaee.msg, lines, gaee)
@@ -338,11 +338,9 @@ class GeoAlgorithm:
                 if not os.path.isabs(out.value):
                     continue
                 if isinstance(out, OutputRaster):
-                    exts = \
-                        dataobjects.getSupportedOutputRasterLayerExtensions()
+                    exts = dataobjects.getSupportedOutputRasterLayerExtensions()
                 elif isinstance(out, OutputVector):
-                    exts = \
-                        dataobjects.getSupportedOutputVectorLayerExtensions()
+                    exts = dataobjects.getSupportedOutputVectorLayerExtensions()
                 elif isinstance(out, OutputTable):
                     exts = dataobjects.getSupportedOutputTableExtensions()
                 elif isinstance(out, OutputHTML):
@@ -358,60 +356,12 @@ class GeoAlgorithm:
                         out.value = out.value + '.' + exts[0]
 
 
-    def canUseAutoExtent(self):
+    def evaluateParameterValues(self):
         for param in self.parameters:
-            if isinstance(param, (ParameterRaster, ParameterVector)):
-                return True
-            if isinstance(param, ParameterMultipleInput):
-                return True
-        return False
-
-    def resolveMinCoveringExtent(self):
-        for param in self.parameters:
-            if isinstance(param, ParameterExtent):
-                if param.value is None:
-                    param.value = self.getMinCoveringExtent()
-
-    def getMinCoveringExtent(self):
-        first = True
-        found = False
-        for param in self.parameters:
-            if param.value:
-                if isinstance(param, (ParameterRaster, ParameterVector)):
-                    if isinstance(param.value, (QgsRasterLayer,
-                                                QgsVectorLayer)):
-                        layer = param.value
-                    else:
-                        layer = dataobjects.getObject(param.value)
-                    if layer:
-                        found = True
-                        self.addToRegion(layer, first)
-                        first = False
-                elif isinstance(param, ParameterMultipleInput):
-                    layers = param.value.split(';')
-                    for layername in layers:
-                        layer = dataobjects.getObject(layername)
-                        if layer:
-                            found = True
-                            self.addToRegion(layer, first)
-                            first = False
-        if found:
-            return '{},{},{},{}'.format(
-                self.xmin, self.xmax, self.ymin, self.ymax)
-        else:
-            return None
-
-    def addToRegion(self, layer, first):
-        if first:
-            self.xmin = layer.extent().xMinimum()
-            self.xmax = layer.extent().xMaximum()
-            self.ymin = layer.extent().yMinimum()
-            self.ymax = layer.extent().yMaximum()
-        else:
-            self.xmin = min(self.xmin, layer.extent().xMinimum())
-            self.xmax = max(self.xmax, layer.extent().xMaximum())
-            self.ymin = min(self.ymin, layer.extent().yMinimum())
-            self.ymax = max(self.ymax, layer.extent().yMaximum())
+            try:
+                param.evaluate(self)
+            except ValueError, e:
+                raise GeoAlgorithmExecutionException(str(e))
             
     def resolveTemporaryOutputs(self):
         """Sets temporary outputs (output.value = None) with a

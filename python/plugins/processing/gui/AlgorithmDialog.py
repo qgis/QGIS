@@ -29,7 +29,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget, QVBoxLayout
 from qgis.PyQt.QtGui import QCursor, QColor, QPalette
 
-from qgis.core import QgsMapLayerRegistry, QgsExpressionContext, QgsExpressionContextUtils, QgsExpression
+from qgis.core import QgsMapLayerRegistry
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -59,8 +59,6 @@ from processing.core.parameters import ParameterGeometryPredicate
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputTable
-
-from processing.tools import dataobjects
 
 
 class AlgorithmDialog(AlgorithmDialogBase):
@@ -111,18 +109,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 output.open = self.mainWidget.checkBoxes[output.name].isChecked()
 
         return True
-
-    def evaluateExpression(self, text):
-        context = QgsExpressionContext()
-        context.appendScope(QgsExpressionContextUtils.globalScope())
-        context.appendScope(QgsExpressionContextUtils.projectScope())
-        exp = QgsExpression(text)
-        if exp.hasParserError():
-            raise Exception(exp.parserErrorString())
-        result = exp.evaluate(context)
-        if exp.hasEvalError():
-            raise ValueError(exp.evalErrorString())
-        return result
 
     def setParamValue(self, param, wrapper, alg=None):
         return param.setValue(wrapper.value())

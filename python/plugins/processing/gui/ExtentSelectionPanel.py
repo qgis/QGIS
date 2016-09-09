@@ -68,14 +68,14 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.tool.rectangleCreated.connect(self.updateExtent)
 
         if param.default:
-            tokens = default.split(',')
+            tokens = param.default.split(',')
             if len(tokens) == 4:
                 try:
                     float(tokens[0])
                     float(tokens[1])
                     float(tokens[2])
                     float(tokens[3])
-                    self.leText.setText(paramdefault)
+                    self.leText.setText(param.default)
                 except:
                     pass
 

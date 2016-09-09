@@ -30,11 +30,12 @@ import os
 from inspect import isclass
 from copy import deepcopy
 
-
+from qgis.utils import iface
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinateReferenceSystem
+from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinateReferenceSystem, 
+                       QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope)
+
 from processing.tools.vector import resolveFieldIndex, features
-from processing.tools.system import isWindows
 from processing.tools import dataobjects
 
 def parseBool(s):
@@ -54,6 +55,46 @@ def _splitParameterOptions(line):
 
 def _createDescriptiveName(s):
     return s.replace('_', ' ')
+
+def _expressionContext():
+    context = QgsExpressionContext()
+    context.appendScope(QgsExpressionContextUtils.globalScope())
+    context.appendScope(QgsExpressionContextUtils.projectScope())
+    processingScope = QgsExpressionContextScope()
+    layers = dataobjects.getAllLayers()
+    for layer in layers:
+        name = layer.name()
+        processingScope.setVariable('%s_minx' % name, layer.extent().xMinimum())
+        processingScope.setVariable('%s_miny' % name, layer.extent().yMinimum())
+        processingScope.setVariable('%s_maxx' % name, layer.extent().xMaximum())
+        processingScope.setVariable('%s_maxy' % name, layer.extent().yMaximum())
+        if isinstance(layer, QgsRasterLayer):
+            cellsize = (layer.extent().xMaximum()
+                        - layer.extent().xMinimum()) / layer.width()
+            processingScope.setVariable('%s_cellsize' % name, cellsize)
+    
+    layers = dataobjects.getRasterLayers()
+    for layer in layers:
+        for i in range(layer.bandCount()):
+            stats = layer.dataProvider().bandStatistics(i + 1)
+            processingScope.setVariable('%s_band%i_avg' % (name, i + 1), stats.mean)
+            processingScope.setVariable('%s_band%i_stddev' % (name, i + 1), stats.stdDev)
+            processingScope.setVariable('%s_band%i_min' % (name, i + 1), stats.minimumValue)
+            processingScope.setVariable('%s_band%i_max' % (name, i + 1), stats.maximumValue)
+    
+    extent = iface.mapCanvas().extent()
+    processingScope.setVariable('canvasextent_minx', extent.xMinimum())
+    processingScope.setVariable('canvasextent_miny', extent.yMinimum())
+    processingScope.setVariable('canvasextent_maxx', extent.xMaximum())
+    processingScope.setVariable('canvasextent_maxy', extent.yMaximum())
+    
+    extent = iface.mapCanvas().fullExtent()
+    processingScope.setVariable('fullextent_minx', extent.xMinimum())
+    processingScope.setVariable('fullextent_miny', extent.yMinimum())
+    processingScope.setVariable('fullextent_maxx', extent.xMaximum())
+    processingScope.setVariable('fullextent_maxy', extent.yMaximum())
+    context.appendScope(processingScope)
+    return context
 
 class Parameter:
 
@@ -145,6 +186,9 @@ class Parameter:
             wrapper = wrapper(self, dialog, row, col)
         # or a wrapper instance
         return wrapper
+    
+    def evaluate(self, alg):
+        pass
 
 class ParameterBoolean(Parameter):
 
@@ -327,6 +371,51 @@ class ParameterExtent(Parameter):
             default = definition.strip()[len('extent') + 1:] or None
             return ParameterExtent(name, descName, default, isOptional)
 
+    def evaluate(self, alg):
+        if self.optional and not bool(self.value):
+            self.value = self.getMinCoveringExtent()
+
+    def getMinCoveringExtent(self, alg):
+        first = True
+        found = False
+        for param in alg.parameters:
+            if param.value:
+                if isinstance(param, (ParameterRaster, ParameterVector)):
+                    if isinstance(param.value, (QgsRasterLayer,
+                                                QgsVectorLayer)):
+                        layer = param.value
+                    else:
+                        layer = dataobjects.getObject(param.value)
+                    if layer:
+                        found = True
+                        self.addToRegion(layer, first)
+                        first = False
+                elif isinstance(param, ParameterMultipleInput):
+                    layers = param.value.split(';')
+                    for layername in layers:
+                        layer = dataobjects.getObject(layername)
+                        if layer:
+                            found = True
+                            self.addToRegion(layer, first)
+                            first = False
+        if found:
+            return '{},{},{},{}'.format(
+                self.xmin, self.xmax, self.ymin, self.ymax)
+        else:
+            return None
+
+    def addToRegion(self, layer, first):
+        if first:
+            self.xmin = layer.extent().xMinimum()
+            self.xmax = layer.extent().xMaximum()
+            self.ymin = layer.extent().yMinimum()
+            self.ymax = layer.extent().yMaximum()
+        else:
+            self.xmin = min(self.xmin, layer.extent().xMinimum())
+            self.xmax = max(self.xmax, layer.extent().xMaximum())
+            self.ymin = min(self.ymin, layer.extent().yMinimum())
+            self.ymax = max(self.ymax, layer.extent().yMaximum())
+            
 
 class ParameterPoint(Parameter):
 
@@ -712,21 +801,30 @@ class ParameterNumber(Parameter):
             self.value = None
             return True
 
-        try:
-            if float(n) - int(float(n)) == 0:
-                value = int(float(n))
-            else:
-                value = float(n)
-            if self.min is not None:
-                if value < self.min:
-                    return False
-            if self.max is not None:
-                if value > self.max:
-                    return False
-            self.value = value
-            return True
-        except:
-            return False
+        if isinstance(n, basestring):
+            try:
+                v = self._evaluate(n)
+                float(v)
+                self.value = n
+                return True
+            except:
+                return False
+        else:    
+            try:
+                if float(n) - int(float(n)) == 0:
+                    value = int(float(n))
+                else:
+                    value = float(n)
+                if self.min is not None:
+                    if value < self.min:
+                        return False
+                if self.max is not None:
+                    if value > self.max:
+                        return False
+                self.value = value
+                return True
+            except:
+                return False
 
     def getAsScriptCode(self):
         param_type = ''
@@ -742,6 +840,31 @@ class ParameterNumber(Parameter):
         if definition.lower().strip().startswith('number'):
             default = definition.strip()[len('number') + 1:] or None
             return ParameterNumber(name, descName, default=default, optional=isOptional)
+    
+    def _evaluate(self, v):
+        exp = QgsExpression(v)
+        if exp.hasParserError():
+            raise ValueError(self.tr("Error in parameter expression: ") + exp.parserErrorString())
+        result = exp.evaluate(_expressionContext())
+        if exp.hasEvalError():
+            raise ValueError("Error evaluating parameter expression: " + exp.evalErrorString())
+        return result
+        
+    def evaluate(self, alg):
+        if isinstance(self.value, basestring):
+            self.value = self._evaluate(self.value)
+    
+    def expressionContext(self):
+        return _expressionContext()
+    
+    def getValueAsCommandLineParameter(self):
+        if self.value is None:
+            return str(None)
+        if isinstance(self.value, basestring):
+            return '"%s"' % self.value
+        return str(self.value)
+
+
 
 class ParameterRange(Parameter):
 
@@ -916,6 +1039,13 @@ class ParameterSelection(Parameter):
             return ParameterSelection(name, descName, options, optional=isOptional)
 
 
+class ParameterEvaluationException(Exception):
+    
+    def __init__(self, param, msg):
+        Exception.__init__(msg)
+        self.param = param
+
+
 class ParameterString(Parameter):
     
     default_metadata = {
@@ -973,6 +1103,18 @@ class ParameterString(Parameter):
                 return ParameterString(name, descName, default, multiline=True, optional=isOptional)
             else:
                 return ParameterString(name, descName, multiline=True, optional=isOptional)
+            
+    def evaluate(self, alg):
+        exp = QgsExpression(self.value)
+        if exp.hasParserError():
+            raise ValueError(self.tr("Error in parameter expression: ") + exp.parserErrorString())
+        result = exp.evaluate(_expressionContext())
+        if exp.hasEvalError():
+            raise ValueError("Error evaluating parameter expression: " + exp.evalErrorString())
+        self.value = result
+        
+    def expressionContext(self):
+        return _expressionContext()
 
 class ParameterTable(ParameterDataObject):
     

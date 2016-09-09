@@ -4,8 +4,8 @@
 ***************************************************************************
     NumberInputPanel.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
+    Date                 : August 2016
+    Copyright            : (C) 2016 by Victor Olaya
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__date__ = 'August 2016'
+__copyright__ = '(C) 2016, Victor Olaya'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
@@ -43,12 +43,12 @@ WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
 
-class NumberInputPanel(BASE, WIDGET):
+class StringInputPanel(BASE, WIDGET):
 
     hasChanged = pyqtSignal()
 
     def __init__(self, param):
-        super(NumberInputPanel, self).__init__(None)
+        super(StringInputPanel, self).__init__(None)
         self.setupUi(self)
 
         self.param = param
