@@ -350,6 +350,9 @@ struct QgsWmtsTileMatrixSet
 
   //! Returns closest tile resolution to the requested one. (resolution = width [map units] / with [pixels])
   const QgsWmtsTileMatrix* findNearestResolution( double vres ) const;
+
+  //! Return tile matrix for other near resolution from given tres (positive offset = lower resolution tiles)
+  const QgsWmtsTileMatrix* findOtherResolution( double tres, int offset ) const;
 };
 
 enum QgsTileMode { WMTS, WMSC, XYZ };

@@ -502,8 +502,142 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
 }
 
 #include <QCache>
-static QCache<QUrl, QImage> sTileCache;
+static QCache<QUrl, QImage> sTileCache( 256 );
 static QMutex sTileCacheMutex;
+
+static bool _fetchCachedTileImage( const QUrl& url, QImage& localImage )
+{
+  QMutexLocker locker( &sTileCacheMutex );
+  if ( QImage* i = sTileCache.object( url ) )
+  {
+    localImage = *i;
+    return true;
+  }
+  else if ( QgsNetworkAccessManager::instance()->cache()->metaData( url ).isValid() )
+  {
+    if ( QIODevice* data = QgsNetworkAccessManager::instance()->cache()->data( url ) )
+    {
+      QByteArray imageData = data->readAll();
+      delete data;
+
+      localImage = QImage::fromData( imageData );
+
+      // cache it as well (mutex is already locked)
+      sTileCache.insert( url, new QImage( localImage ) );
+
+      return true;
+    }
+  }
+  return false;
+}
+
+static bool _fuzzyContainsRect( const QRectF& r1, const QRectF& r2 )
+{
+  double significantDigits = log10( qMax( r1.width(), r1.height() ) );
+  double epsilon = exp10( significantDigits - 5 ); // floats have 6-9 significant digits
+  return r1.contains( r2.adjusted( epsilon, epsilon, -epsilon, -epsilon ) );
+}
+
+void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangle& viewExtent, int imageWidth, QList<QRectF>& missingRects, double tres, int resOffset, QList<TileImage>& otherResTiles )
+{
+  const QgsWmtsTileMatrix* tmOther = mTileMatrixSet->findOtherResolution( tres, resOffset );
+  if ( !tmOther )
+    return;
+
+  QSet<TilePosition> tilesSet;
+  Q_FOREACH ( const QRectF& missingTileRect, missingRects )
+  {
+    int c0, r0, c1, r1;
+    tmOther->viewExtentIntersection( QgsRectangle( missingTileRect ), nullptr, c0, r0, c1, r1 );
+
+    for ( int row = r0; row <= r1; row++ )
+    {
+      for ( int col = c0; col <= c1; col++ )
+      {
+        tilesSet << TilePosition( row, col );
+      }
+    }
+  }
+
+  // get URLs of tiles because their URLs are used as keys in the tile cache
+  TilePositions tiles = tilesSet.toList();
+  TileRequests requests;
+  switch ( tileMode )
+  {
+    case WMSC:
+      createTileRequestsWMSC( tmOther, tiles, requests );
+      break;
+
+    case WMTS:
+      createTileRequestsWMTS( tmOther, tiles, requests );
+      break;
+
+    case XYZ:
+      createTileRequestsXYZ( tmOther, tiles, requests );
+      break;
+  }
+
+  QList<QRectF> missingRectsToDelete;
+  Q_FOREACH ( const TileRequest& r, requests )
+  {
+    QImage localImage;
+    if ( !_fetchCachedTileImage( r.url, localImage ) )
+      continue;
+
+    double cr = viewExtent.width() / imageWidth;
+    QRectF dst(( r.rect.left() - viewExtent.xMinimum() ) / cr,
+               ( viewExtent.yMaximum() - r.rect.bottom() ) / cr,
+               r.rect.width() / cr,
+               r.rect.height() / cr );
+    otherResTiles << TileImage( dst, localImage );
+
+    // see if there are any missing rects that are completely covered by this tile
+    Q_FOREACH ( const QRectF& missingRect, missingRects )
+    {
+      // we need to do a fuzzy "contains" check because the coordinates may not align perfectly
+      // due to numerical errors and/or transform of coords from double to floats
+      if ( _fuzzyContainsRect( r.rect, missingRect ) )
+      {
+        missingRectsToDelete << missingRect;
+      }
+    }
+  }
+
+  // remove all the rectangles we have completely covered by tiles from this resolution
+  // so we will not use tiles from multiple resolutions for one missing tile (to save time)
+  Q_FOREACH ( const QRectF& rectToDelete, missingRectsToDelete )
+  {
+    missingRects.removeOne( rectToDelete );
+  }
+
+  QgsDebugMsg( QString( "Other resolution tiles: offset %1, res %2, missing rects %3, remaining rects %4, added tiles %5" )
+               .arg( resOffset )
+               .arg( tmOther->tres )
+               .arg( missingRects.count() + missingRectsToDelete.count() )
+               .arg( missingRects.count() )
+               .arg( otherResTiles.count() ) );
+}
+
+uint qHash( const QgsWmsProvider::TilePosition& tp )
+{
+  return ( uint ) tp.col + (( uint ) tp.row << 16 );
+}
+
+static void _drawDebugRect( QPainter& p, const QRectF& rect, const QColor& color )
+{
+#if 0  // good for debugging how tiles from various resolutions are used
+  QPainter::CompositionMode oldMode = p.compositionMode();
+  p.setCompositionMode( QPainter::CompositionMode_SourceOver );
+  QColor c = color;
+  c.setAlpha( 100 );
+  p.fillRect( rect, QBrush( c, Qt::DiagCrossPattern ) );
+  p.setCompositionMode( oldMode );
+#else
+  Q_UNUSED( p );
+  Q_UNUSED( rect );
+  Q_UNUSED( color );
+#endif
+}
 
 QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback* feedback )
 {
@@ -642,39 +776,16 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
 
     emit statusChanged( tr( "Getting tiles." ) );
 
+    QList<TileImage> tileImages;  // in the correct resolution
+    QList<QRectF> missing;  // rectangles (in map coords) of missing tiles for this view
+
     QTime t;
     t.start();
-    int memCached = 0, diskCached = 0;
     TileRequests requestsFinal;
     Q_FOREACH ( const TileRequest& r, requests )
     {
       QImage localImage;
-
-      sTileCacheMutex.lock();
-      if ( QImage* i = sTileCache.object( r.url ) )
-      {
-        localImage = *i;
-        memCached++;
-      }
-      else if ( QgsNetworkAccessManager::instance()->cache()->metaData( r.url ).isValid() )
-      {
-        if ( QIODevice* data = QgsNetworkAccessManager::instance()->cache()->data( r.url ) )
-        {
-          QByteArray imageData = data->readAll();
-          delete data;
-
-          localImage = QImage::fromData( imageData );
-
-          // cache it as well (mutex is already locked)
-          sTileCache.insert( r.url, new QImage( localImage ) );
-
-          diskCached++;
-        }
-      }
-      sTileCacheMutex.unlock();
-
-      // draw the tile directly if possible
-      if ( !localImage.isNull() )
+      if ( _fetchCachedTileImage( r.url, localImage ) )
       {
         double cr = viewExtent.width() / image->width();
 
@@ -682,28 +793,82 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
                    ( viewExtent.yMaximum() - r.rect.bottom() ) / cr,
                    r.rect.width() / cr,
                    r.rect.height() / cr );
-
-        QPainter p( image );
-        if ( mSettings.mSmoothPixmapTransform )
-          p.setRenderHint( QPainter::SmoothPixmapTransform, true );
-        p.drawImage( dst, localImage );
+        tileImages << TileImage( dst, localImage );
       }
       else
       {
+        missing << r.rect;
+
         // need to make a request
         requestsFinal << r;
       }
     }
+    int t0 = t.elapsed();
+
+
+    // draw other res tiles if preview
+    QPainter p( image );
+    if ( feedback && feedback->preview_only && missing.count() > 0 )
+    {
+      // some tiles are still missing, so let's see if we have any cached tiles
+      // from lower or higher resolution available to give the user a bit of context
+      // while loading the right resolution
+
+      p.setCompositionMode( QPainter::CompositionMode_Source );
+      p.fillRect( image->rect(), QBrush( Qt::lightGray, Qt::CrossPattern ) );
+      p.setRenderHint( QPainter::SmoothPixmapTransform, false );  // let's not waste time with bilinear filtering
+
+      QList<TileImage> lowerResTiles, lowerResTiles2, higherResTiles;
+      // first we check lower resolution tiles: one level back, then two levels back (if there is still some are not covered),
+      // finally (in the worst case we use one level higher resolution tiles). This heuristic should give
+      // good overviews while not spending too much time drawing cached tiles from resolutions far away.
+      fetchOtherResTiles( tileMode, viewExtent, image->width(), missing, tm->tres, 1, lowerResTiles );
+      fetchOtherResTiles( tileMode, viewExtent, image->width(), missing, tm->tres, 2, lowerResTiles2 );
+      fetchOtherResTiles( tileMode, viewExtent, image->width(), missing, tm->tres, -1, higherResTiles );
+
+      // draw the cached tiles lowest to highest resolution
+      Q_FOREACH ( const TileImage& ti, lowerResTiles2 )
+      {
+        p.drawImage( ti.rect, ti.img );
+        _drawDebugRect( p, ti.rect, Qt::blue );
+      }
+      Q_FOREACH ( const TileImage& ti, lowerResTiles )
+      {
+        p.drawImage( ti.rect, ti.img );
+        _drawDebugRect( p, ti.rect, Qt::yellow );
+      }
+      Q_FOREACH ( const TileImage& ti, higherResTiles )
+      {
+        p.drawImage( ti.rect, ti.img );
+        _drawDebugRect( p, ti.rect, Qt::red );
+      }
+    }
+
+    int t1 = t.elapsed() - t0;
+
+    // draw composite in this resolution
+    Q_FOREACH ( const TileImage& ti, tileImages )
+    {
+      if ( mSettings.mSmoothPixmapTransform )
+        p.setRenderHint( QPainter::SmoothPixmapTransform, true );
+      p.drawImage( ti.rect, ti.img );
+
+      if ( feedback && feedback->preview_only )
+        _drawDebugRect( p, ti.rect, Qt::green );
+    }
+    p.end();
+
+    int t2 = t.elapsed() - t1;
 
     if ( feedback && feedback->preview_only )
     {
-      qDebug( "PREVIEW - MEM CACHED: %d / DISK CACHED: %d / MISSING: %d", memCached, diskCached, requests.count() - memCached - diskCached );
-      qDebug( "PREVIEW - SPENT IN WMTS PROVIDER: %d ms", t.elapsed() );
+      qDebug( "PREVIEW - CACHED: %d / MISSING: %d", tileImages.count(), requests.count() - tileImages.count() );
+      qDebug( "PREVIEW - TIME: this res %d ms | other res %d ms | TOTAL %d ms", t0 + t2, t1, t0 + t1 + t2 );
     }
     else if ( !requestsFinal.isEmpty() )
     {
       // let the feedback object know about the tiles we have already
-      if ( feedback && memCached + diskCached > 0 )
+      if ( feedback && feedback->render_partial_output )
         feedback->onNewData();
 
       // order tile requests according to the distance from view center
@@ -715,6 +880,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
       handler.downloadBlocking();
     }
 
+    qDebug( "TILE CACHE total: %d / %d ", sTileCache.totalCost(), sTileCache.maxCost() );
 
 #if 0
     const QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( dataSourceUri() );

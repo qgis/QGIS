@@ -2151,3 +2151,15 @@ const QgsWmtsTileMatrix* QgsWmtsTileMatrixSet::findNearestResolution( double vre
 
   return &it.value();
 }
+
+const QgsWmtsTileMatrix *QgsWmtsTileMatrixSet::findOtherResolution( double tres, int offset ) const
+{
+  QMap<double, QgsWmtsTileMatrix>::const_iterator it = tileMatrices.constFind( tres );
+  if ( it == tileMatrices.constEnd() )
+    return nullptr;
+  it += offset;
+  if ( it == tileMatrices.constEnd() )
+    return nullptr;
+
+  return &it.value();
+}
