@@ -372,6 +372,16 @@ class QgsWmsProvider : public QgsRasterDataProvider
     };
     typedef QList<TileRequest> TileRequests;
 
+    //! Tile identifier within a tile source
+    typedef struct TilePosition
+    {
+      TilePosition( int r, int c ): row( r ), col( c ) {}
+      bool operator==( const TilePosition& other ) const { return row == other.row && col == other.col; }
+      int row;
+      int col;
+    } TilePosition;
+    typedef QList<TilePosition> TilePositions;
+
   signals:
 
     /** \brief emit a signal to notify of a progress event */
@@ -451,19 +461,20 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
   private:
 
-    //! Tile identifier within a tile source
-    typedef struct TilePosition
-    {
-      TilePosition( int r, int c ): row( r ), col( c ) {}
-      int row;
-      int col;
-    } TilePosition;
-    typedef QList<TilePosition> TilePositions;
-
     QUrl createRequestUrlWMS( const QgsRectangle& viewExtent, int pixelWidth, int pixelHeight );
     void createTileRequestsWMSC( const QgsWmtsTileMatrix* tm, const QgsWmsProvider::TilePositions& tiles, QgsWmsProvider::TileRequests& requests );
     void createTileRequestsWMTS( const QgsWmtsTileMatrix* tm, const QgsWmsProvider::TilePositions& tiles, QgsWmsProvider::TileRequests& requests );
     void createTileRequestsXYZ( const QgsWmtsTileMatrix* tm, const QgsWmsProvider::TilePositions& tiles, QgsWmsProvider::TileRequests& requests );
+
+    //! Helper structure to store a cached tile image with its rectangle
+    typedef struct TileImage
+    {
+      TileImage( QRectF r, QImage i ): rect( r ), img( i ) {}
+      QRectF rect; //!< destination rectangle for a tile (in screen coordinates)
+      QImage img;  //!< cached tile to be drawn
+    } TileImage;
+    //! Get tiles from a different resolution to cover the missing areas
+    void fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangle& viewExtent, int imageWidth, QList<QRectF>& missing, double tres, int resOffset, QList<TileImage> &otherResTiles );
 
     /** Return the full url to request legend graphic
      * The visibleExtent isi only used if provider supports contextual
