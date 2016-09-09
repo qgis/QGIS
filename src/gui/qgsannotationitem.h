@@ -103,10 +103,28 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem, public QgsAnnotatio
     void setFrameBackgroundColor( const QColor& c ) { mFrameBackgroundColor = c; }
     QColor frameBackgroundColor() const { return mFrameBackgroundColor; }
 
+    /**
+     * Serialize to XML. The doc is used to generate new nodes.
+     * Needs to be reimplemented by subclasses.
+     */
     virtual void writeXml( QDomDocument& doc ) const = 0;
+
+    /**
+     * Deserialize from XML. The itemElem is used as source for the information.
+     * Needs to be reimplemented by subclasses
+     */
     virtual void readXml( const QDomDocument& doc, const QDomElement& itemElem ) = 0;
 
+    /**
+     * Serialize to XML. The doc is used to generate new nodes.
+     * Should be called by subclasses in their writeXml method.
+     */
     void _writeXml( QDomDocument& doc, QDomElement& itemElem ) const;
+
+    /**
+     * Deserialize from XML. The itemElem is used as source for the information.
+     * Should be called from subclasses in their readXml method.
+     */
     void _readXml( const QDomDocument& doc, const QDomElement& annotationElem );
 
     virtual void setItemData( int role, const QVariant& value ) override;

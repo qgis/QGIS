@@ -328,7 +328,14 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual double vertexAngle( QgsVertexId vertex ) const = 0;
 
+    /**
+     * Returns the number of vertexes of which this geometry is built.
+     */
     virtual int vertexCount( int part = 0, int ring = 0 ) const = 0;
+
+    /**
+     * Returns the number of rings of which this geometry is built.
+     */
     virtual int ringCount( int part = 0 ) const = 0;
 
     /** Returns count of parts contained in the geometry.

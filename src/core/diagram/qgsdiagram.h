@@ -51,6 +51,10 @@ class CORE_EXPORT QgsDiagram
 
     /** Draws the diagram at the given position (in pixel coordinates)*/
     virtual void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position ) = 0;
+
+    /**
+     * Get a descriptive name for this diagram type.
+     */
     virtual QString diagramName() const = 0;
     /** Returns the size in map units the diagram will use to render.*/
     virtual QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s ) = 0;

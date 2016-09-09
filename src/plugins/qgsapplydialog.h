@@ -30,6 +30,11 @@ class QgsApplyDialog: public QDialog
   public:
     QgsApplyDialog(): QDialog() {}
     ~QgsApplyDialog() {}
+
+    /**
+     * This method is called when changes should be applied.
+     * It needs to be implemented by subclasses.
+     */
     virtual void apply() const = 0;
 };
 

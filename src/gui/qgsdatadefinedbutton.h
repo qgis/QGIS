@@ -41,6 +41,10 @@ class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
   public:
     QgsDataDefinedAssistant() : mMapCanvas( nullptr ) {}
 
+    /**
+     * Get the data defined which was defined by this assistant.
+     * Needs to be reimplemented by subclasses.
+     */
     virtual QgsDataDefined dataDefined() const = 0;
 
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current

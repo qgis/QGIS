@@ -190,6 +190,11 @@ class CORE_EXPORT QgsSymbol
 
     QString dump() const;
 
+    /**
+     * Get a deep copy of this symbol.
+     * Needs to be reimplemented by subclasses.
+     * Ownership is transferred to the caller.
+     */
     virtual QgsSymbol* clone() const = 0;
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;

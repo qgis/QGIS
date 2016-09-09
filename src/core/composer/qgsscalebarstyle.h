@@ -39,7 +39,11 @@ class CORE_EXPORT QgsScaleBarStyle
     virtual void draw( QPainter* p, double xOffset = 0 ) const = 0; //to do by every subclass
     virtual void drawLabels( QPainter* p ) const; //default implementation provided
     virtual QRectF calculateBoxSize() const; //default implementation provided
-    virtual QString name() const = 0; //return name of the style
+    /**
+     * Get a name for this style.
+     * Needs to be remiplmeented by subclasses.
+     */
+    virtual QString name() const = 0;
 
   private:
     QgsScaleBarStyle(); //default constructor forbidden

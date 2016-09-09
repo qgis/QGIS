@@ -30,6 +30,10 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
 {
   public:
 
+    /**
+     * Get a polygon representation of this surface.
+     * Ownership is transferred to the caller.
+     */
     virtual QgsPolygonV2* surfaceToPolygon() const = 0;
 
     /** Returns the minimal bounding box for the geometry
