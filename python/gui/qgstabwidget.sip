@@ -18,7 +18,7 @@
  * The QgsTabWidget class is the same as the QTabWidget but with additional methods to
  * temporarily hide/show tabs.
  *
- * @note Added in QGIS 3.0
+ * @note Added in QGIS 2.18
  */
 class QgsTabWidget : QTabWidget
 {
@@ -30,28 +30,28 @@ class QgsTabWidget : QTabWidget
     /**
      * Create a new QgsTabWidget with the optionally provided parent.
      *
-     * @note Added in QGIS 3.0
+     * @note Added in QGIS 2.18
      */
     QgsTabWidget( QWidget *parent = nullptr );
 
     /**
      * Hides the tab with the given widget
      *
-     * @note Added in QGIS 3.0
+     * @note Added in QGIS 2.18
      */
     void hideTab( QWidget* tab );
 
     /**
      * Shows the tab with the given widget
      *
-     * @note Added in QGIS 3.0
+     * @note Added in QGIS 2.18
      */
     void showTab( QWidget* tab );
 
     /**
      * Control the visibility for the tab with the given widget.
      *
-     * @note Added in QGIS 3.0
+     * @note Added in QGIS 2.18
      */
     void setTabVisible( QWidget* tab, bool visible );
 
@@ -60,10 +60,25 @@ class QgsTabWidget : QTabWidget
      * This index is not the same as the one provided to insertTab and removeTab
      * since these methods are not aware of hidden tabs.
      *
-     * @note Added in QGIS 3.0
+     * @note Added in QGIS 2.18
      */
     int realTabIndex( QWidget* widget );
 
+    /**
+     * Is called internally whenever a new tab has been inserted.
+     *
+     * Is used to keep track of currently available and visible tabs.
+     *
+     * @note Added in QGIS 2.18
+     */
     virtual void tabInserted( int index );
+
+    /**
+     * Is called internally whenever a tab has been removed.
+     *
+     * Is used to keep track of currently available and visible tabs.
+     *
+     * @note Added in QGIS 2.18
+     */
     virtual void tabRemoved( int index );
 };

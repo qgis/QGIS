@@ -17,16 +17,14 @@ test_qgstabwidget.py
 
 import qgis  # NOQA
 
-from qgis.testing import unittest
+from qgis.testing import unittest, start_app
 from qgis.gui import QgsTabWidget
-from qgis.PyQt.QtGui import QApplication, QWidget
+from qgis.PyQt.QtWidgets import QWidget
+
+start_app()
 
 
 class TestQgsTabWidget(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        cls.app = QApplication([])
 
     def setUp(self):
         """Run before each test."""
