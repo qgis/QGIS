@@ -23,6 +23,7 @@ class QgsRenderContext
       DrawSymbolBounds,         //!< Draw bounds of symbols (for debugging/testing)
       RenderMapTile,            //!< Draw map such that there are no problems between adjacent tiles
       Antialiasing,             //!< Use antialiasing while drawing
+      RenderPartialOutput,      //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
     };
     typedef QFlags<QgsRenderContext::Flag> Flags;
 
