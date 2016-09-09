@@ -50,6 +50,7 @@ from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
+from processing.gui.StringInputPanel import StringInputPanel
 
 
 DIALOG_STANDARD = 'standard'
@@ -442,8 +443,7 @@ class NumberWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-            return NumberInputPanel(self.param.default, self.param.min, self.param.max,
-                                    self.param.isInteger)
+            return NumberInputPanel(self.param)
         else:
             widget = QComboBox()
             widget.setEditable(True)
@@ -605,9 +605,9 @@ class StringWidgetWrapper(WidgetWrapper):
                 if self.param.default:
                     widget.setPlainText(self.param.default)
             else:
-                widget = QLineEdit()
+                widget = StringInputPanel(self.param)
                 if self.param.default:
-                    widget.setText(self.param.default)
+                    widget.setValue(self.param.default)
         elif self.dialogType == DIALOG_BATCH:
                 widget = QLineEdit()
                 if self.param.default:
@@ -642,22 +642,10 @@ class StringWidgetWrapper(WidgetWrapper):
             if self.param.multiline:
                 text = self.widget.toPlainText()
             else:
-                text = self.widget.text()
-
-            if self.param.evaluateExpressions:
-                try:
-                    text = self.evaluateExpression(text)
-                except:
-                    pass
+                text = self.widget.getValue()
             return text
         if self.dialogType == DIALOG_BATCH:
             text = self.widget.text()
-            if self.param.evaluateExpressions:
-                try:
-                    text = self.evaluateExpression(text)
-                except:
-                    pass
-            return text
         else:
             if self.param.multiline:
                 value = self.widget.getValue()
