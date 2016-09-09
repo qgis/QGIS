@@ -26,10 +26,6 @@ start_app()
 
 class TestQgsTabWidget(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        cls.app = QApplication([])
-
     def setUp(self):
         """Run before each test."""
         pass
