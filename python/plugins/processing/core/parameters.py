@@ -103,8 +103,10 @@ class Parameter:
     take as input.
     """
 
-    default_metadata = {}
-
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.BasicWidgetWrapper'
+    }
+    
     def __init__(self, name='', description='', default=None, optional=False,
                  metadata={}):
         self.name = name
@@ -867,6 +869,11 @@ class ParameterNumber(Parameter):
 
 
 class ParameterRange(Parameter):
+    
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.BasicWidgetWrapper'
+    }
+
 
     def __init__(self, name='', description='', default=None, optional=False):
         Parameter.__init__(self, name, description, default, optional)
@@ -1457,6 +1464,10 @@ class ParameterVector(ParameterDataObject):
                                     [dataobjects.TYPE_VECTOR_POLYGON], isOptional)
 
 class ParameterGeometryPredicate(Parameter):
+
+    default_metadata = {
+        'widget_wrapper': 'processing.gui.wrappers.BasicWidgetWrapper'
+    }
 
     predicates = ('intersects',
                   'contains',
