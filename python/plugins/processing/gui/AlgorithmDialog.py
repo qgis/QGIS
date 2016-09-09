@@ -48,7 +48,6 @@ from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterFixedTable
 from processing.core.parameters import ParameterRange
 from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterTableMultipleField
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber

@@ -41,27 +41,7 @@ from qgis.PyQt.QtWidgets import (QWidget, QLayout, QVBoxLayout, QHBoxLayout, QTo
 from qgis.PyQt.QtGui import QIcon
 
 from processing.gui.OutputSelectionPanel import OutputSelectionPanel
-from processing.gui.PointSelectionPanel import PointSelectionPanel
-from processing.gui.GeometryPredicateSelectionPanel import \
-    GeometryPredicateSelectionPanel
-from processing.gui.ListMultiselectWidget import ListMultiSelectWidget
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterTableMultipleField
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterFixedTable
-from processing.core.parameters import ParameterRange
-from processing.core.parameters import ParameterMultipleInput
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterFile
-from processing.core.parameters import ParameterCrs
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterPoint
-from processing.core.parameters import ParameterGeometryPredicate
-
+from processing.core.parameters import ParameterVector, ParameterExtent, ParameterPoint
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputTable
 from processing.core.outputs import OutputVector

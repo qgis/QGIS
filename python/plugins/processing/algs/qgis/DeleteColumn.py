@@ -36,7 +36,7 @@ from processing.tools import dataobjects, vector
 class DeleteColumn(GeoAlgorithm):
 
     INPUT = 'INPUT'
-    COLUMN = 'COLUMN'
+    COLUMNS = 'COLUMN'
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
@@ -45,17 +45,20 @@ class DeleteColumn(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.COLUMN,
-                                              self.tr('Field to delete'), self.INPUT))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Deleted column')))
+        self.addParameter(ParameterTableField(self.COLUMNS,
+                                              self.tr('Fields to delete'), self.INPUT, multiple=True))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
-        idx = layer.fieldNameIndex(self.getParameterValue(self.COLUMN))
-
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        
+        toDelete = self.getParameterValue(self.COLUMNS)
         fields = layer.fields()
-        fields.remove(idx)
+        idxs = []
+        for f in toDelete:
+            idx = layer.fieldNameIndex()
+            fields.remove(idx)
+            idxs.append[idx]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                                                                      layer.wkbType(), layer.crs())
@@ -67,7 +70,8 @@ class DeleteColumn(GeoAlgorithm):
         for current, f in enumerate(features):
             feat.setGeometry(f.geometry())
             attributes = f.attributes()
-            del attributes[idx]
+            for idx in idxs:
+                del attributes[idx]
             feat.setAttributes(attributes)
             writer.addFeature(feat)
 

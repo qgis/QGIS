@@ -50,8 +50,7 @@ from processing.core.parameters import (Parameter,
                                         ParameterExtent,
                                         ParameterFile,
                                         ParameterPoint,
-                                        ParameterCrs,
-                                        ParameterTableMultipleField)
+                                        ParameterCrs)
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 
 
@@ -64,7 +63,6 @@ class ModelerParameterDefinitionDialog(QDialog):
     PARAMETER_STRING = 'String'
     PARAMETER_BOOLEAN = 'Boolean'
     PARAMETER_TABLE_FIELD = 'Table field'
-    PARAMETER_TABLE_MULTIPLE_FIELD = 'Table multiple field'
     PARAMETER_EXTENT = 'Extent'
     PARAMETER_FILE = 'File'
     PARAMETER_POINT = 'Point'
@@ -83,7 +81,6 @@ class ModelerParameterDefinitionDialog(QDialog):
         PARAMETER_STRING,
         PARAMETER_TABLE,
         PARAMETER_TABLE_FIELD,
-        PARAMETER_TABLE_MULTIPLE_FIELD,
         PARAMETER_VECTOR,
         PARAMETER_POINT,
         PARAMETER_CRS,
@@ -131,7 +128,7 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.nameTextBox.setText(self.param.description)
 
         if self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN or \
-           isinstance(self.param, ParameterBoolean):
+                isinstance(self.param, ParameterBoolean):
             self.state = QCheckBox()
             self.state.setText(self.tr('Checked'))
             self.state.setChecked(False)
@@ -139,11 +136,8 @@ class ModelerParameterDefinitionDialog(QDialog):
                 self.state.setChecked(True if self.param.value else False)
             self.horizontalLayoutParent.addWidget(self.state)
             self.verticalLayout.addLayout(self.horizontalLayoutParent)
-        elif self.paramType in (
-            ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD,
-            ModelerParameterDefinitionDialog.PARAMETER_TABLE_MULTIPLE_FIELD)\
-            or isinstance(self.param, (ParameterTableField,
-                                       ParameterTableMultipleField)):
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD or \
+                isinstance(self.param, ParameterTableField):
             self.horizontalLayoutParent.addWidget(QLabel(self.tr('Parent layer')))
             self.parentCombo = QComboBox()
             idx = 0
@@ -299,27 +293,15 @@ class ModelerParameterDefinitionDialog(QDialog):
                 or isinstance(self.param, ParameterBoolean):
             self.param = ParameterBoolean(name, description,
                                           self.state.isChecked())
-        elif self.paramType in (
-                ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD,
-                ModelerParameterDefinitionDialog.PARAMETER_TABLE_MULTIPLE_FIELD)\
-            or isinstance(self.param, (ParameterTableField,
-                                       ParameterTableMultipleField)):
+        elif self.paramType in ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD \
+                or isinstance(self.param, ParameterTableField):
             if self.parentCombo.currentIndex() < 0:
                 QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                     self.tr('Wrong or missing parameter values'))
                 return
             parent = self.parentCombo.itemData(self.parentCombo.currentIndex())
-            datatype = self.datatypeCombo.itemData(
-                self.datatypeCombo.currentIndex())
-
-            if (self.paramType ==
-                    ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD or
-                    isinstance(self.param, ParameterTableField)):
-                self.param = ParameterTableField(
-                    name, description, parent, datatype)
-            else:
-                self.param = ParameterTableMultipleField(
-                    name, description, parent, datatype)
+            datatype = self.datatypeCombo.itemData(self.datatypeCombo.currentIndex())
+            self.param = ParameterTableField(name, description, parent, datatype)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_RASTER or \
                 isinstance(self.param, ParameterRaster):
             self.param = ParameterRaster(

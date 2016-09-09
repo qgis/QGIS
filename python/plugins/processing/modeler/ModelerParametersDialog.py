@@ -40,24 +40,6 @@ from qgis.gui import QgsMessageBar
 
 from processing.gui.wrappers import InvalidParameterValue
 from processing.gui.MultipleInputPanel import MultipleInputPanel
-from processing.gui.GeometryPredicateSelectionPanel import \
-    GeometryPredicateSelectionPanel
-from processing.core.parameters import (ParameterExtent,
-                                        ParameterRaster,
-                                        ParameterVector,
-                                        ParameterTable,
-                                        ParameterFixedTable,
-                                        ParameterMultipleInput,
-                                        ParameterSelection,
-                                        ParameterRange,
-                                        ParameterNumber,
-                                        ParameterString,
-                                        ParameterCrs,
-                                        ParameterTableField,
-                                        ParameterTableMultipleField,
-                                        ParameterFile,
-                                        ParameterPoint,
-                                        ParameterGeometryPredicate)
 from processing.core.outputs import (OutputRaster,
                                      OutputVector,
                                      OutputTable,
@@ -73,8 +55,7 @@ from processing.modeler.ModelerAlgorithm import (ValueFromInput,
                                                  ValueFromOutput,
                                                  Algorithm,
                                                  ModelerOutput)
-from processing.modeler.MultilineTextPanel import MultilineTextPanel
-from processing.tools import dataobjects
+
 
 from qgis.core import QgsApplication
 from qgis.PyQt.QtGui import QToolButton, QMenu, QAction

@@ -43,7 +43,6 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterTableMultipleField
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterFile
@@ -319,8 +318,7 @@ class RAlgorithm(GeoAlgorithm):
                     commands.append(param.name + '= NULL')
                 else:
                     commands.append(param.name + ' = "' + param.value + '"')
-            elif isinstance(param, (ParameterTableField, ParameterTableMultipleField, ParameterString,
-                                    ParameterFile)):
+            elif isinstance(param, (ParameterTableField, ParameterString, ParameterFile)):
                 if param.value is None:
                     commands.append(param.name + '= NULL')
                 else:

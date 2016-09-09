@@ -103,10 +103,8 @@ class Parameter:
     take as input.
     """
 
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.BasicWidgetWrapper'
-    }
-    
+    default_metadata = {}
+
     def __init__(self, name='', description='', default=None, optional=False,
                  metadata={}):
         self.name = name
@@ -806,8 +804,7 @@ class ParameterNumber(Parameter):
         if isinstance(n, basestring):
             try:
                 v = self._evaluate(n)
-                float(v)
-                self.value = n
+                self.value = float(v)
                 return True
             except:
                 return False
@@ -843,8 +840,8 @@ class ParameterNumber(Parameter):
             default = definition.strip()[len('number') + 1:] or None
             return ParameterNumber(name, descName, default=default, optional=isOptional)
     
-    def _evaluate(self, v):
-        exp = QgsExpression(v)
+    def _evaluate(self):
+        exp = QgsExpression(self.value)
         if exp.hasParserError():
             raise ValueError(self.tr("Error in parameter expression: ") + exp.parserErrorString())
         result = exp.evaluate(_expressionContext())
@@ -853,8 +850,7 @@ class ParameterNumber(Parameter):
         return result
         
     def evaluate(self, alg):
-        if isinstance(self.value, basestring):
-            self.value = self._evaluate(self.value)
+        self.value = self._evaluate(self.value)
     
     def expressionContext(self):
         return _expressionContext()
@@ -863,17 +859,12 @@ class ParameterNumber(Parameter):
         if self.value is None:
             return str(None)
         if isinstance(self.value, basestring):
-            return '"%s"' % self.value
+            return '"%s"' + self.value
         return str(self.value)
 
 
 
 class ParameterRange(Parameter):
-    
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.BasicWidgetWrapper'
-    }
-
 
     def __init__(self, name='', description='', default=None, optional=False):
         Parameter.__init__(self, name, description, default, optional)
@@ -1223,24 +1214,29 @@ class ParameterTableField(Parameter):
     DATA_TYPE_ANY = -1
 
     def __init__(self, name='', description='', parent=None, datatype=-1,
-                 optional=False):
+                 optional=False, multiple = False):
         Parameter.__init__(self, name, description, None, optional)
         self.parent = parent
+        self.multiple = True
         self.datatype = int(datatype)
 
     def getValueAsCommandLineParameter(self):
         return '"' + unicode(self.value) + '"' if self.value is not None else unicode(None)
 
     def setValue(self, value):
-        if value is None:
+        if not bool(value):
             if not self.optional:
                 return False
             self.value = None
             return True
-
-        elif len(value) == 0 and not self.optional:
-            return False
-        self.value = unicode(value)
+        
+        if isinstance(value, list):
+            if not self.multiple and len(value) > 1:
+                return False
+            self.value = ";".join(value)
+            return True
+        else:
+            self.value = unicode(value)
         return True
 
     def __str__(self):
@@ -1281,96 +1277,11 @@ class ParameterTableField(Parameter):
             return ParameterTableField(name, descName, parent, datatype, isOptional)
 
 
-class ParameterTableMultipleField(Parameter):
-
-    """A parameter representing several table fields.
-        Its value is a string with items separated by semicolons, each of
-        which represents the name of each field.
-
-        In a script you can use it with
-        ##Fields=[optional] multiple field [number|string] Parentinput
-
-        In the batch runner simply use a string with items separated by
-        semicolons, each of which represents the name of each field.
-
-        see algs.qgis.DeleteColumn.py for an usage example
-    """
-
-    DATA_TYPE_NUMBER = 0
-    DATA_TYPE_STRING = 1
-    DATA_TYPE_ANY = -1
-
-    def __init__(self, name='', description='', parent=None, datatype=-1,
-                 optional=False):
-        Parameter.__init__(self, name, description, None, optional)
-        self.parent = parent
-        self.datatype = int(datatype)
-
-    def getValueAsCommandLineParameter(self):
-        return '"' + unicode(self.value) + '"' if self.value is not None else unicode(None)
-
-    def setValue(self, obj):
-        if obj is None:
-            if self.optional:
-                self.value = None
-                return True
-            return False
-
-        if isinstance(obj, list):
-            if len(obj) == 0:
-                if self.optional:
-                    self.value = None
-                    return True
-                return False
-            self.value = ";".join(obj)
-            return True
-        else:
-            self.value = unicode(obj)
-            return True
-
-    def __str__(self):
-        return self.name + ' <' + self.__module__.split('.')[-1] + ' from ' \
-            + self.parent + '>'
-
-    def dataType(self):
-        if self.datatype == self.DATA_TYPE_NUMBER:
-            return 'numeric'
-        elif self.datatype == self.DATA_TYPE_STRING:
-            return 'string'
-        else:
-            return 'any'
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.optional:
-            param_type += 'optional '
-        param_type += 'multiple field '
-        return '##' + self.name + '=' + param_type + self.parent
-
-    @classmethod
-    def fromScriptCode(self, line):
-        isOptional, name, definition = _splitParameterOptions(line)
-        if definition.lower().strip().startswith('multiple field'):
-            descName = _createDescriptiveName(name)
-            if definition.lower().strip().startswith('multiple field number'):
-                field = definition.strip()[len('multiple field number') + 1:]
-                datatype = ParameterTableMultipleField.DATA_TYPE_NUMBER
-            elif definition.lower().strip().startswith('multiple field string'):
-                field = definition.strip()[len('multiple field string') + 1:]
-                datatype = ParameterTableMultipleField.DATA_TYPE_STRING
-            else:
-                field = definition.strip()[len('multiple field') + 1:]
-                datatype = ParameterTableMultipleField.DATA_TYPE_ANY
-
-            return ParameterTableMultipleField(name, descName, field, datatype, isOptional)
-
-
 class ParameterVector(ParameterDataObject):
     
     default_metadata = {
         'widget_wrapper': 'processing.gui.wrappers.VectorWidgetWrapper'
     }
-
 
     def __init__(self, name='', description='', datatype=[-1],
                  optional=False):
@@ -1464,10 +1375,6 @@ class ParameterVector(ParameterDataObject):
                                     [dataobjects.TYPE_VECTOR_POLYGON], isOptional)
 
 class ParameterGeometryPredicate(Parameter):
-
-    default_metadata = {
-        'widget_wrapper': 'processing.gui.wrappers.BasicWidgetWrapper'
-    }
 
     predicates = ('intersects',
                   'contains',
