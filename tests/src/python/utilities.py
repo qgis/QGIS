@@ -538,9 +538,7 @@ class DoxygenParser():
         d = e.find('briefdescription')
         has_brief_description = False
         if d:
-            p = d.find('para')
-            if p.text and len(p.text) > 0:
-                has_brief_description = True
+            has_brief_description = True
 
         # test for "added in QGIS xxx" string
         d = e.find('detaileddescription')
