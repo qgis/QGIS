@@ -228,14 +228,14 @@ QgsRasterLayerRenderer::Feedback::Feedback( QgsRasterLayerRenderer *r )
     : mR( r )
     , mMinimalPreviewInterval( 250 )
 {
-  render_partial_output = r->mContext.testFlag( QgsRenderContext::RenderPartialOutput );
+  setRenderPartialOutput( r->mContext.testFlag( QgsRenderContext::RenderPartialOutput ) );
 }
 
 void QgsRasterLayerRenderer::Feedback::onNewData()
 {
   qDebug( "\nGOT NEW DATA!\n" );
 
-  if ( !render_partial_output )
+  if ( !renderPartialOutput() )
     return;  // we were not asked for partial renders and we may not have a temporary image for overwriting...
 
   // update only once upon a time
@@ -249,8 +249,8 @@ void QgsRasterLayerRenderer::Feedback::onNewData()
   QTime t;
   t.start();
   QgsRasterBlockFeedback feedback;
-  feedback.preview_only = true;
-  feedback.render_partial_output = true;
+  feedback.setPreviewOnly( true );
+  feedback.setRenderPartialOutput( true );
   QgsRasterIterator iterator( mR->mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( mR->mPainter, mR->mRasterViewPort, mR->mMapToPixel, &feedback );

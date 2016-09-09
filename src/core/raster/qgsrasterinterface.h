@@ -38,19 +38,35 @@
 class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 {
   public:
-    //! construct a new raster block feedback object
-    QgsRasterBlockFeedback( QObject* parent = nullptr ) : QgsFeedback( parent ), preview_only( false ), render_partial_output( false ) {}
+    //! Construct a new raster block feedback object
+    QgsRasterBlockFeedback( QObject* parent = nullptr ) : QgsFeedback( parent ), mPreviewOnly( false ), mRenderPartialOutput( false ) {}
 
-    //! whether the raster provider should return only data that are already available
-    //! without waiting for full result
-    bool preview_only;
-
-    //! whether our painter is drawing to a temporary image used just by this layer
-    bool render_partial_output;
-
-    //! may be emitted by raster data provider to indicate that some partial data are available
+    //! May be emitted by raster data provider to indicate that some partial data are available
     //! and a new preview image may be produced
     virtual void onNewData() {}
+
+    //! Whether the raster provider should return only data that are already available
+    //! without waiting for full result. By default this flag is not enabled.
+    //! @see setPreviewOnly()
+    bool isPreviewOnly() const { return mPreviewOnly; }
+    //! set flag whether the block request is for preview purposes only
+    //! @see isPreviewOnly()
+    void setPreviewOnly( bool preview ) { mPreviewOnly = preview; }
+
+    //! Whether our painter is drawing to a temporary image used just by this layer
+    //! @see setRenderPartialOutput()
+    bool renderPartialOutput() const { return mRenderPartialOutput; }
+    //! Set whether our painter is drawing to a temporary image used just by this layer
+    //! @see renderPartialOutput()
+    void setRenderPartialOutput( bool enable ) { mRenderPartialOutput = enable; }
+
+  private:
+    //! Whether the raster provider should return only data that are already available
+    //! without waiting for full result
+    bool mPreviewOnly;
+
+    //! Whether our painter is drawing to a temporary image used just by this layer
+    bool mRenderPartialOutput;
 };
 
 
