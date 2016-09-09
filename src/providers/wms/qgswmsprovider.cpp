@@ -831,6 +831,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
     p.end();
 
     int t2 = t.elapsed() - t1;
+    Q_UNUSED( t2 ); // only used in debug build
 
     if ( feedback && feedback->isPreviewOnly() )
     {
