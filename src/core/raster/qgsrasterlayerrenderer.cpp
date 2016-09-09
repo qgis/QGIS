@@ -233,8 +233,6 @@ QgsRasterLayerRenderer::Feedback::Feedback( QgsRasterLayerRenderer *r )
 
 void QgsRasterLayerRenderer::Feedback::onNewData()
 {
-  qDebug( "\nGOT NEW DATA!\n" );
-
   if ( !renderPartialOutput() )
     return;  // we were not asked for partial renders and we may not have a temporary image for overwriting...
 
@@ -245,7 +243,7 @@ void QgsRasterLayerRenderer::Feedback::onNewData()
 
   // TODO: update only the area that got new data
 
-  qDebug( "new raster preview! %d", mLastPreview.msecsTo( QTime::currentTime() ) );
+  QgsDebugMsg( QString( "new raster preview! %1" ).arg( mLastPreview.msecsTo( QTime::currentTime() ) ) );
   QTime t;
   t.start();
   QgsRasterBlockFeedback feedback;
@@ -254,6 +252,6 @@ void QgsRasterLayerRenderer::Feedback::onNewData()
   QgsRasterIterator iterator( mR->mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( mR->mPainter, mR->mRasterViewPort, mR->mMapToPixel, &feedback );
-  qDebug( "PREVIEW TOOK %d ms", t.elapsed() );
+  QgsDebugMsg( QString( "total raster preview time: %1 ms" ).arg( t.elapsed() ) );
   mLastPreview = QTime::currentTime();
 }

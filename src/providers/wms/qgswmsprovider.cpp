@@ -833,8 +833,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
 
     if ( feedback && feedback->isPreviewOnly() )
     {
-      qDebug( "PREVIEW - CACHED: %d / MISSING: %d", tileImages.count(), requests.count() - tileImages.count() );
-      qDebug( "PREVIEW - TIME: this res %d ms | other res %d ms | TOTAL %d ms", t0 + t2, t1, t0 + t1 + t2 );
+      QgsDebugMsg( QString( "PREVIEW - CACHED: %1 / MISSING: %2" ).arg( tileImages.count() ).arg( requests.count() - tileImages.count() ) );
+      QgsDebugMsg( QString( "PREVIEW - TIME: this res %1 ms | other res %2 ms | TOTAL %3 ms" ).arg( t0 + t2 ).arg( t1 ).arg( t0 + t1 + t2 ) );
     }
     else if ( !requestsFinal.isEmpty() )
     {
@@ -851,7 +851,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
       handler.downloadBlocking();
     }
 
-    qDebug( "TILE CACHE total: %d / %d ", QgsTileCache::totalCost(), QgsTileCache::maxCost() );
+    QgsDebugMsg( QString( "TILE CACHE total: %1 / %2" ).arg( QgsTileCache::totalCost() ).arg( QgsTileCache::maxCost() ) );
 
 #if 0
     const QgsWmsStatistics::Stat& stat = QgsWmsStatistics::statForUri( dataSourceUri() );
