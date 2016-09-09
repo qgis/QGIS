@@ -33,7 +33,7 @@ QgsVectorLayerUndoCommandAddFeature::QgsVectorLayerUndoCommandAddFeature( QgsVec
   //assign a temporary id to the feature (use negative numbers)
   addedIdLowWaterMark--;
 
-  QgsDebugMsg( "Assigned feature id " + QString::number( addedIdLowWaterMark ) );
+  QgsDebugMsgLevel( "Assigned feature id " + QString::number( addedIdLowWaterMark ), 4 );
 
   // Force a feature ID (to keep other functions in QGIS happy,
   // providers will use their own new feature ID when we commit the new feature)

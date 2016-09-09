@@ -85,12 +85,12 @@ void QgsUndoWidget::indexChanged( int curIndx )
 
   if ( offset != 0 )
   {
-    QgsDebugMsg( QString( "curIndx : %1" ).arg( curIndx ) );
-    QgsDebugMsg( QString( "offset  : %1" ).arg( offset ) );
-    QgsDebugMsg( QString( "curCount: %1" ).arg( curCount ) );
+    QgsDebugMsgLevel( QString( "curIndx : %1" ).arg( curIndx ), 4 );
+    QgsDebugMsgLevel( QString( "offset  : %1" ).arg( offset ), 4 );
+    QgsDebugMsgLevel( QString( "curCount: %1" ).arg( curCount ), 4 );
     if ( lastRedo )
     {
-      QgsDebugMsg( QString( "lastRedo: true" ) );
+      QgsDebugMsgLevel( QString( "lastRedo: true" ), 4 );
     }
   }
 
@@ -100,7 +100,6 @@ void QgsUndoWidget::indexChanged( int curIndx )
   {
     if ( mMapCanvas )
     {
-      QgsDebugMsg( QString( "trigger redraw" ) );
       mMapCanvas->refresh();
     }
   }
