@@ -265,17 +265,12 @@ void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
 
   // Divide atoms to columns
   double totalHeight = 0;
-  // bool first = true;
   qreal maxAtomHeight = 0;
   Q_FOREACH ( const Atom& atom, atomList )
   {
-    //if ( !first )
-    //{
     totalHeight += spaceAboveAtom( atom );
-    //}
     totalHeight += atom.size.height();
     maxAtomHeight = qMax( atom.size.height(), maxAtomHeight );
-    // first  = false;
   }
 
   // We know height of each atom and we have to split them into columns
@@ -283,22 +278,21 @@ void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
   // We are using simple heuristic, brute fore appeared to be to slow,
   // the number of combinations is N = n!/(k!*(n-k)!) where n = atomsCount-1
   // and k = columnsCount-1
-
-  double avgColumnHeight = totalHeight / mSettings.columnCount();
+  double maxColumnHeight = 0;
   int currentColumn = 0;
   int currentColumnAtomCount = 0; // number of atoms in current column
   double currentColumnHeight = 0;
-  double maxColumnHeight = 0;
   double closedColumnsHeight = 0;
-  // first = true; // first in column
+
   for ( int i = 0; i < atomList.size(); i++ )
   {
-    Atom atom = atomList[i];
+    // Recalc average height for remaining columns including current
+    double avgColumnHeight = ( totalHeight - closedColumnsHeight ) / ( mSettings.columnCount() - currentColumn );
+
+    Atom atom = atomList.at( i );
     double currentHeight = currentColumnHeight;
-    //if ( !first )
-    //{
-    currentHeight += spaceAboveAtom( atom );
-    //}
+    if ( currentColumnAtomCount > 0 )
+      currentHeight += spaceAboveAtom( atom );
     currentHeight += atom.size.height();
 
     // Recalc average height for remaining columns including current
@@ -322,11 +316,9 @@ void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
     atomList[i].column = currentColumn;
     currentColumnAtomCount++;
     maxColumnHeight = qMax( currentColumnHeight, maxColumnHeight );
-
-    // first  = false;
   }
 
-  // Alling labels of symbols for each layr/column to the same labelXOffset
+  // Align labels of symbols for each layr/column to the same labelXOffset
   QMap<QString, qreal> maxSymbolWidth;
   for ( int i = 0; i < atomList.size(); i++ )
   {
