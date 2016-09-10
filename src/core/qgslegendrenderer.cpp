@@ -295,13 +295,19 @@ void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
       currentHeight += spaceAboveAtom( atom );
     currentHeight += atom.size.height();
 
-    // Recalc average height for remaining columns including current
-    avgColumnHeight = ( totalHeight - closedColumnsHeight ) / ( mSettings.columnCount() - currentColumn );
-    if (( currentHeight - avgColumnHeight ) > atom.size.height() / 2 // center of current atom is over average height
-        && currentColumnAtomCount > 0 // do not leave empty column
-        && currentHeight > maxAtomHeight  // no sense to make smaller columns than max atom height
-        && currentHeight > maxColumnHeight  // no sense to make smaller columns than max column already created
-        && currentColumn < mSettings.columnCount() - 1 ) // must not exceed max number of columns
+    bool canCreateNewColumn = ( currentColumnAtomCount > 0 )  // do not leave empty column
+                              && ( currentColumn < mSettings.columnCount() - 1 ); // must not exceed max number of columns
+
+    bool shouldCreateNewColumn = ( currentHeight - avgColumnHeight ) > atom.size.height() / 2  // center of current atom is over average height
+                                 && currentColumnAtomCount > 0 // do not leave empty column
+                                 && currentHeight > maxAtomHeight  // no sense to make smaller columns than max atom height
+                                 && currentHeight > maxColumnHeight; // no sense to make smaller columns than max column already created
+
+    // also should create a new column if the number of items left < number of columns left
+    // in this case we should spread the remaining items out over the remaining columns
+    shouldCreateNewColumn |= ( atomList.size() - i < mSettings.columnCount() - currentColumn );
+
+    if ( canCreateNewColumn && shouldCreateNewColumn )
     {
       // New column
       currentColumn++;
