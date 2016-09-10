@@ -118,6 +118,8 @@ class TestQgsLegendRenderer : public QObject
     void testThreeColumns();
     void testFilterByMap();
     void testFilterByMapSameSymbol();
+    void testColumns_data();
+    void testColumns();
     void testRasterBorder();
     void testFilterByPolygon();
     void testFilterByExpression();
@@ -131,6 +133,7 @@ class TestQgsLegendRenderer : public QObject
     QgsVectorLayer* mVL3; // point
     QgsRasterLayer* mRL;
     QString mReport;
+    bool _testLegendColumns( int itemCount, int columnCount, const QString& testName );
 };
 
 
@@ -457,6 +460,65 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
   QVERIFY( _verifyImage( testName, mReport ) );
 
   QgsMapLayerRegistry::instance()->removeMapLayer( vl4 );
+}
+
+bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, const QString& testName )
+{
+  QgsFillSymbol* sym = new QgsFillSymbol();
+  sym->setColor( Qt::cyan );
+
+  QgsLayerTreeGroup* root = new QgsLayerTreeGroup();
+
+  QList< QgsVectorLayer* > layers;
+  for ( int i = 1; i <= itemCount; ++i )
+  {
+    QgsVectorLayer* vl = new QgsVectorLayer( "Polygon", QString( "Layer %1" ).arg( i ), "memory" );
+    QgsMapLayerRegistry::instance()->addMapLayer( vl );
+    vl->setRenderer( new QgsSingleSymbolRenderer( sym->clone() ) );
+    root->addLayer( vl );
+    layers << vl;
+  }
+  delete sym;
+
+  QgsLayerTreeModel legendModel( root );
+  QgsLegendSettings settings;
+  settings.setColumnCount( columnCount );
+  _setStandardTestFont( settings, "Bold" );
+  _renderLegend( testName, &legendModel, settings );
+  bool result = _verifyImage( testName, mReport );
+
+  Q_FOREACH ( QgsVectorLayer* l, layers )
+  {
+    QgsMapLayerRegistry::instance()->removeMapLayer( l );
+  }
+  return result;
+}
+
+void TestQgsLegendRenderer::testColumns_data()
+{
+  QTest::addColumn<QString>( "testName" );
+  QTest::addColumn<int>( "items" );
+  QTest::addColumn<int>( "columns" );
+
+  QTest::newRow( "2 items, 2 columns" ) << "legend_2_by_2" << 2 << 2;
+  QTest::newRow( "3 items, 2 columns" ) << "legend_3_by_2" << 3 << 2;
+  QTest::newRow( "4 items, 2 columns" ) << "legend_4_by_2" << 4 << 2;
+  QTest::newRow( "5 items, 2 columns" ) << "legend_5_by_2" << 5 << 2;
+  QTest::newRow( "3 items, 3 columns" ) << "legend_3_by_3" << 3 << 3;
+  QTest::newRow( "4 items, 3 columns" ) << "legend_4_by_3" << 4 << 3;
+  QTest::newRow( "5 items, 3 columns" ) << "legend_5_by_3" << 5 << 3;
+  QTest::newRow( "6 items, 3 columns" ) << "legend_6_by_3" << 6 << 3;
+  QTest::newRow( "7 items, 3 columns" ) << "legend_7_by_3" << 7 << 3;
+}
+
+void TestQgsLegendRenderer::testColumns()
+{
+  //test rendering legend with different combinations of columns and items
+
+  QFETCH( QString, testName );
+  QFETCH( int, items );
+  QFETCH( int, columns );
+  QVERIFY( _testLegendColumns( items, columns, testName ) );
 }
 
 void TestQgsLegendRenderer::testRasterBorder()
