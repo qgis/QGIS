@@ -138,7 +138,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
         item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
 
         if ( item == schemaNameItem )
-          item->setData( QgsApplication::getThemeIcon( "/mIconWarn.png" ), Qt::DecorationRole );
+          item->setData( QgsApplication::getThemeIcon( "/mIconWarning.svg" ), Qt::DecorationRole );
 
         if ( item == schemaNameItem || item == tableItem || item == geomItem )
         {
@@ -300,7 +300,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
         item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
 
         if ( i == dbtmSchema )
-          item->setData( QgsApplication::getThemeIcon( "/mIconWarn.png" ), Qt::DecorationRole );
+          item->setData( QgsApplication::getThemeIcon( "/mIconWarning.svg" ), Qt::DecorationRole );
 
         if ( i == dbtmSchema || i == dbtmTable || i == dbtmGeomCol )
         {

@@ -193,7 +193,7 @@ void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool theFlag )
   if ( theFlag )
   {
     //extents view mode!
-    mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( "extents.png" ) );
+    mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( "extents.svg" ) );
     mLineEdit->setToolTip( tr( "Map coordinates for the current view extents" ) );
     mLineEdit->setReadOnly( true );
     showExtent();
@@ -201,7 +201,7 @@ void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool theFlag )
   else
   {
     //mouse cursor pos view mode!
-    mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( "tracking.png" ) );
+    mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( "tracking.svg" ) );
     mLineEdit->setToolTip( tr( "Map coordinates at mouse cursor position" ) );
     mLineEdit->setReadOnly( false );
     mLabel->setText( tr( "Coordinate:" ) );

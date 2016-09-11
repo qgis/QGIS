@@ -315,7 +315,7 @@ QIcon QgsDb2TableModel::iconForWkbType( QGis::WkbType type )
     case QGis::WKBMultiPolygon25D:
       return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
     case QGis::WKBNoGeometry:
-      return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
+      return QgsApplication::getThemeIcon( "/mIconTableLayer.svg" );
     case QGis::WKBUnknown:
       break;
   }

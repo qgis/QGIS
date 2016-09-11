@@ -98,7 +98,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
 
   // open form button
   mOpenFormButton = new QToolButton();
-  mOpenFormButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ) );
+  mOpenFormButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.svg" ) );
   mOpenFormButton->setText( tr( "Open related feature form" ) );
   editLayout->addWidget( mOpenFormButton );
 

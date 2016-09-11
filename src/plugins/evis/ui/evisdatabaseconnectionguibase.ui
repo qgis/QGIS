@@ -72,7 +72,7 @@
          </property>
          <property name="icon" >
           <iconset>
-           <normaloff>../../../images/themes/default/mActionFolder.png</normaloff>../../../images/themes/default/mActionFolder.png</iconset>
+           <normaloff>../../../images/themes/default/mActionFolder.svg</normaloff>../../../images/themes/default/mActionFolder.svg</iconset>
          </property>
         </widget>
        </item>
@@ -331,7 +331,7 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="icon" >
           <iconset>
-           <normaloff>../../../images/themes/default/mActionFolder.png</normaloff>../../../images/themes/default/mActionFolder.png</iconset>
+           <normaloff>../../../images/themes/default/mActionFolder.svg</normaloff>../../../images/themes/default/mActionFolder.svg</iconset>
          </property>
         </widget>
        </item>

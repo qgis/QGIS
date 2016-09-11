@@ -967,7 +967,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
     if ( vlayer )
     {
       mActionPopup->addAction(
-        QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ),
+        QgsApplication::getThemeIcon( "/mActionPropertyItem.svg" ),
         vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ),
         this, SLOT( featureForm() ) );
     }

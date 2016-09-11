@@ -117,7 +117,7 @@ QMenu::item:selected {  background-color: gray; } */
          </property>
          <property name="icon">
           <iconset resource="../../images/images.qrc">
-           <normaloff>:/images/themes/default/mActionChangeLabelProperties.png</normaloff>:/images/themes/default/mActionChangeLabelProperties.png</iconset>
+           <normaloff>:/images/themes/default/mActionChangeLabelProperties.svg</normaloff>:/images/themes/default/mActionChangeLabelProperties.svg</iconset>
          </property>
          <property name="autoDefault">
           <bool>false</bool>
@@ -426,7 +426,7 @@ QMenu::item:selected {  background-color: gray; } */
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+     <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
    </property>
    <property name="text">
     <string>Remove item(s)</string>
@@ -469,7 +469,7 @@ QMenu::item:selected {  background-color: gray; } */
   <action name="actnAddGroup">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
+     <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
    </property>
    <property name="text">
     <string>Add group</string>
@@ -478,7 +478,7 @@ QMenu::item:selected {  background-color: gray; } */
   <action name="actnRemoveGroup">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+     <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
    </property>
    <property name="text">
     <string>Remove group</string>

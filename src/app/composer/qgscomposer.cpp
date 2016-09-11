@@ -385,7 +385,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   layoutMenu->addAction( mActionAddNewLegend );
   layoutMenu->addAction( mActionAddImage );
   QMenu *shapeMenu = layoutMenu->addMenu( "Add Shape" );
-  shapeMenu->setIcon( QgsApplication::getThemeIcon( "/mActionAddBasicShape.png" ) );
+  shapeMenu->setIcon( QgsApplication::getThemeIcon( "/mActionAddBasicShape.svg" ) );
   shapeMenu->addAction( mActionAddRectangle );
   shapeMenu->addAction( mActionAddTriangle );
   shapeMenu->addAction( mActionAddEllipse );

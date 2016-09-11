@@ -32,10 +32,9 @@ from collections import OrderedDict
 from qgis.PyQt import uic
 from qgis.PyQt.QtGui import QBrush, QIcon
 from qgis.PyQt.QtWidgets import QComboBox, QHeaderView, QLineEdit, QMessageBox, QSpinBox, QStyledItemDelegate
-from qgis.PyQt.QtCore import QItemSelectionModel
-from qgis.PyQt.QtCore import QAbstractTableModel, QModelIndex, QVariant, Qt, pyqtSlot
+from qgis.PyQt.QtCore import QItemSelectionModel, QAbstractTableModel, QModelIndex, QVariant, Qt, pyqtSlot
 
-from qgis.core import QgsExpression
+from qgis.core import QgsExpression, QgsApplication
 from qgis.gui import QgsFieldExpressionWidget
 
 from processing.tools import dataobjects
@@ -313,16 +312,11 @@ class FieldsMappingPanel(BASE, WIDGET):
         super(FieldsMappingPanel, self).__init__(parent)
         self.setupUi(self)
 
-        self.addButton.setIcon(
-            QIcon(':/images/themes/default/mActionNewAttribute.png'))
-        self.deleteButton.setIcon(
-            QIcon(':/images/themes/default/mActionDeleteAttribute.svg'))
-        self.upButton.setIcon(
-            QIcon(':/images/themes/default/mActionArrowUp.png'))
-        self.downButton.setIcon(
-            QIcon(':/images/themes/default/mActionArrowDown.png'))
-        self.resetButton.setIcon(
-            QIcon(':/images/themes/default/mIconClear.png'))
+        self.addButton.setIcon(QgsApplication.getThemeIcon("/mActionNewAttribute.svg"))
+        self.deleteButton.setIcon(QgsApplication.getThemeIcon('/mActionDeleteAttribute.svg'))
+        self.upButton.setIcon(QgsApplication.getThemeIcon('/mActionArrowUp.png'))
+        self.downButton.setIcon(QgsApplication.getThemeIcon('/mActionArrowDown.png'))
+        self.resetButton.setIcon(QgsApplication.getThemeIcon('/mIconClear.svg'))
 
         self.model = FieldsMappingModel()
         self.fieldsView.setModel(self.model)
@@ -340,8 +334,8 @@ class FieldsMappingPanel(BASE, WIDGET):
             dlg = QMessageBox(self)
             dlg.setText("Do you want to reset the field mapping?")
             dlg.setStandardButtons(
-                QMessageBox.StandardButtons(QMessageBox.Yes
-                                            + QMessageBox.No))
+                QMessageBox.StandardButtons(QMessageBox.Yes |
+                                            QMessageBox.No))
             dlg.setDefaultButton(QMessageBox.No)
             if dlg.exec_() == QMessageBox.Yes:
                 self.on_resetButton_clicked()
@@ -358,10 +352,10 @@ class FieldsMappingPanel(BASE, WIDGET):
         self.model.insertRows(rowCount, 1)
         index = self.model.index(rowCount, 0)
         self.fieldsView.selectionModel().select(index,
-                                                QItemSelectionModel.SelectionFlags(QItemSelectionModel.Clear
-                                                                                   + QItemSelectionModel.Select
-                                                                                   + QItemSelectionModel.Current
-                                                                                   + QItemSelectionModel.Rows))
+                                                QItemSelectionModel.SelectionFlags(QItemSelectionModel.Clear |
+                                                                                   QItemSelectionModel.Select |
+                                                                                   QItemSelectionModel.Current |
+                                                                                   QItemSelectionModel.Rows))
         self.fieldsView.scrollTo(index)
         self.fieldsView.scrollTo(index)
 
@@ -396,10 +390,10 @@ class FieldsMappingPanel(BASE, WIDGET):
         self.model.removeRows(row + 1, 1)
 
         sel.select(self.model.index(row - 1, 0),
-                   QItemSelectionModel.SelectionFlags(QItemSelectionModel.Clear
-                                                      + QItemSelectionModel.Select
-                                                      + QItemSelectionModel.Current
-                                                      + QItemSelectionModel.Rows))
+                   QItemSelectionModel.SelectionFlags(QItemSelectionModel.Clear |
+                                                      QItemSelectionModel.Select |
+                                                      QItemSelectionModel.Current |
+                                                      QItemSelectionModel.Rows))
 
     @pyqtSlot(bool, name='on_downButton_clicked')
     def on_downButton_clicked(self, checked=False):
@@ -422,10 +416,10 @@ class FieldsMappingPanel(BASE, WIDGET):
         self.model.removeRows(row, 1)
 
         sel.select(self.model.index(row + 1, 0),
-                   QItemSelectionModel.SelectionFlags(QItemSelectionModel.Clear
-                                                      + QItemSelectionModel.Select
-                                                      + QItemSelectionModel.Current
-                                                      + QItemSelectionModel.Rows))
+                   QItemSelectionModel.SelectionFlags(QItemSelectionModel.Clear |
+                                                      QItemSelectionModel.Select |
+                                                      QItemSelectionModel.Current |
+                                                      QItemSelectionModel.Rows))
 
     @pyqtSlot(bool, name='on_resetButton_clicked')
     def on_resetButton_clicked(self, checked=False):

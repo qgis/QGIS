@@ -469,7 +469,7 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
           QStandardItem *item = new QStandardItem( label );
           item->setData( label, Qt::UserRole + Label );
           item->setData( label, Qt::UserRole + Search );
-          item->setData( QgsApplication::getThemeIcon( "mIconWarn.png" ), Qt::DecorationRole );
+          item->setData( QgsApplication::getThemeIcon( "mIconWarning.svg" ), Qt::DecorationRole );
           appendItem( treeModel, parent, item );
         }
         n = n.nextSibling();
@@ -739,7 +739,7 @@ int QgsGrassTools::debug( QStandardItem *item )
     if ( errors > 0 )
     {
       label += " ( " + tr( "%1 errors" ).arg( errors ) + " )";
-      item->setIcon( QgsApplication::getThemeIcon( "mIconWarn.png" ) );
+      item->setIcon( QgsApplication::getThemeIcon( "mIconWarning.svg" ) );
     }
     else
     {

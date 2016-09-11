@@ -53,7 +53,7 @@
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
+         <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
        </property>
        <property name="popupMode">
         <enum>QToolButton::MenuButtonPopup</enum>
@@ -261,7 +261,7 @@
   <action name="mActionAdvancedFilter">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
+     <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
    </property>
    <property name="text">
     <string>Advanced Filter (Expression)</string>
@@ -273,7 +273,7 @@
   <action name="mActionShowAllFilter">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
+     <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
    </property>
    <property name="text">
     <string>Show All Features</string>
@@ -282,7 +282,7 @@
   <action name="mActionSelectedFilter">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
+     <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
    </property>
    <property name="text">
     <string>Show Selected Features</string>
@@ -291,7 +291,7 @@
   <action name="mActionVisibleFilter">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
+     <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
    </property>
    <property name="text">
     <string>Show Features Visible On Map</string>
@@ -305,7 +305,7 @@
   <action name="mActionEditedFilter">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
+     <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
    </property>
    <property name="text">
     <string>Show Edited and New Features</string>

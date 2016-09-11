@@ -109,7 +109,7 @@ void QgsMessageBarItem::writeContent()
         msgIcon = QString( "/mIconCritical.png" );
         break;
       case QgsMessageBar::WARNING:
-        msgIcon = QString( "/mIconWarn.png" );
+        msgIcon = QString( "/mIconWarning.svg" );
         break;
       case QgsMessageBar::SUCCESS:
         msgIcon = QString( "/mIconSuccess.png" );

@@ -797,7 +797,7 @@ void QgsAttributeForm::displayInvalidConstraintMessage( const QStringList& f,
   for ( int i = 0; i < size; i++ )
     descriptions += QString( "<li>%1: <i>%2</i></li>" ).arg( f[i] ).arg( d[i] );
 
-  QString icPath = QgsApplication::iconPath( "/mIconWarn.png" );
+  QString icPath = QgsApplication::iconPath( "/mIconWarning.svg" );
 
   QString title = QString( "<img src=\"%1\">     <b>%2:" ).arg( icPath ).arg( tr( "Invalid fields" ) );
   QString msg = QString( "%1</b><ul>%2</ul>" ).arg( title ).arg( descriptions ) ;

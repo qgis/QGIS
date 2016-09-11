@@ -195,8 +195,8 @@ bool eVisGenericEventBrowserGui::initBrowser()
   chkboxSaveUseOnlyFilenameData->setChecked( false );
 
   //Set up Configure External Application buttons
-  pbtnAddFileType->setIcon( QIcon( QPixmap( myThemePath + "/mActionNewAttribute.png" ) ) );
-  pbtnDeleteFileType->setIcon( QIcon( QPixmap( myThemePath + "/mActionDeleteAttribute.png" ) ) );
+  pbtnAddFileType->setIcon( QIcon( QPixmap( myThemePath + "/mActionNewAttribute.svg" ) ) );
+  pbtnDeleteFileType->setIcon( QIcon( QPixmap( myThemePath + "/mActionDeleteAttribute.svg" ) ) );
 
   //Check to for interface, not null when launched from plugin toolbar, otherwise expect map canvas
   if ( mInterface )

@@ -158,7 +158,7 @@ class ModelerDialog(BASE, WIDGET):
         self.btnOpen.setIcon(QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
         self.btnSave.setIcon(QgsApplication.getThemeIcon('/mActionFileSave.svg'))
         self.btnSaveAs.setIcon(QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
-        self.btnExportImage.setIcon(QgsApplication.getThemeIcon('/mActionSaveMapAsImage.png'))
+        self.btnExportImage.setIcon(QgsApplication.getThemeIcon('/mActionSaveMapAsImage.svg'))
         self.btnExportPython.setIcon(QgsApplication.getThemeIcon('/console/iconSaveAsConsole.png'))
         self.btnEditHelp.setIcon(QIcon(os.path.join(pluginPath, 'images', 'edithelp.png')))
         self.btnRun.setIcon(QIcon(os.path.join(pluginPath, 'images', 'runalgorithm.png')))

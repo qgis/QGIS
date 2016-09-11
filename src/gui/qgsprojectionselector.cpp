@@ -474,7 +474,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   fontTemp.setItalic( true );
   fontTemp.setBold( true );
   mUserProjList->setFont( 0, fontTemp );
-  mUserProjList->setIcon( 0, QIcon( QgsApplication::activeThemePath() + "user.png" ) );
+  mUserProjList->setIcon( 0, QgsApplication::getThemeIcon( "/user.png" ) );
 
   //determine where the user proj database lives for this user. If none is found an empty
   //now only will be shown
@@ -550,7 +550,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
   fontTemp.setItalic( true );
   fontTemp.setBold( true );
   mGeoList->setFont( 0, fontTemp );
-  mGeoList->setIcon( 0, QIcon( QgsApplication::activeThemePath() + "geographic.png" ) );
+  mGeoList->setIcon( 0, QgsApplication::getThemeIcon( "/geographic.png" ) );
 
   // Projected coordinate system node
   mProjList = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "Projected Coordinate Systems" ) ) );
@@ -559,7 +559,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
   fontTemp.setItalic( true );
   fontTemp.setBold( true );
   mProjList->setFont( 0, fontTemp );
-  mProjList->setIcon( 0, QIcon( QgsApplication::activeThemePath() + "transformed.png" ) );
+  mProjList->setIcon( 0, QgsApplication::getThemeIcon( "/transformed.svg" ) );
 
   //bail out in case the projections db does not exist
   //this is necessary in case the pc is running linux with a

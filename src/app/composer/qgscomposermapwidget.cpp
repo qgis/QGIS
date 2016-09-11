@@ -135,7 +135,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
   // keep layers from preset button
   QMenu* menuKeepLayers = new QMenu( this );
   mLayerListFromPresetButton->setMenu( menuKeepLayers );
-  mLayerListFromPresetButton->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
+  mLayerListFromPresetButton->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" ) );
   mLayerListFromPresetButton->setToolTip( tr( "Set layer list from a visibility preset" ) );
   connect( menuKeepLayers, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowKeepLayersVisibilityPresetsMenu() ) );
 
