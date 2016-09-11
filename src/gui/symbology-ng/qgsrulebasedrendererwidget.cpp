@@ -260,7 +260,6 @@ void QgsRuleBasedRendererWidget::refineRuleCategoriesGui( const QModelIndexList&
   QgsCategorizedSymbolRendererWidget* w = new QgsCategorizedSymbolRendererWidget( mLayer, mStyle, nullptr );
   w->setPanelTitle( tr( "Add categories to rules" ) );
   connect( w, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( refineRuleCategoriesAccepted( QgsPanelWidget* ) ) );
-  w->setDockMode( this->dockMode() );
   w->setMapCanvas( mMapCanvas );
   openPanel( w );
 }
@@ -271,7 +270,6 @@ void QgsRuleBasedRendererWidget::refineRuleRangesGui( const QModelIndexList& )
   w->setPanelTitle( tr( "Add ranges to rules" ) );
   connect( w, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( refineRuleRangesAccepted( QgsPanelWidget* ) ) );
   w->setMapCanvas( mMapCanvas );
-  w->setDockMode( this->dockMode() );
   openPanel( w );
 }
 

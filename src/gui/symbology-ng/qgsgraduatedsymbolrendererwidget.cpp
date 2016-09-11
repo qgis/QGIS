@@ -907,7 +907,6 @@ void QgsGraduatedSymbolRendererWidget::changeRangeSymbol( int rangeIdx )
 {
   QgsSymbol* newSymbol = mRenderer->ranges()[rangeIdx].symbol()->clone();
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
-  dlg->setDockMode( this->dockMode() );
   dlg->setMapCanvas( mMapCanvas );
 
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );

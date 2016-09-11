@@ -549,7 +549,6 @@ void QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol()
 {
   QgsSymbol* newSymbol = mCategorizedSymbol->clone();
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
-  dlg->setDockMode( this->dockMode() );
   dlg->setMapCanvas( mMapCanvas );
 
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
@@ -594,7 +593,6 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
   }
 
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( symbol, mStyle, mLayer, nullptr );
-  dlg->setDockMode( this->dockMode() );
   dlg->setMapCanvas( mMapCanvas );
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
   connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );

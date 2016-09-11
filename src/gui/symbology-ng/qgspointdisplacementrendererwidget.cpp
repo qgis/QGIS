@@ -215,7 +215,6 @@ void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
     QgsRendererWidget* w = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
     w->setMapCanvas( mMapCanvas );
     connect( w, SIGNAL( widgetChanged() ), this, SLOT( updateRendererFromWidget() ) );
-    w->setDockMode( this->dockMode() );
     openPanel( w );
   }
 }
@@ -351,7 +350,6 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
   }
   QgsMarkerSymbol* markerSymbol = mRenderer->centerSymbol()->clone();
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( markerSymbol, QgsStyle::defaultStyle(), mLayer, this );
-  dlg->setDockMode( this->dockMode() );
   dlg->setMapCanvas( mMapCanvas );
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateCenterSymbolFromWidget() ) );
   connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
