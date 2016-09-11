@@ -196,7 +196,7 @@ void QgsIdentifyMenu::addRasterLayer( QgsMapLayer* layer )
   }
 
   // add layer action to the top menu
-  layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconRasterLayer.png" ) );
+  layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconRasterLayer.svg" ) );
   layerAction->setData( QVariant::fromValue<ActionData>( ActionData( layer ) ) );
   connect( layerAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
   addAction( layerAction );
@@ -314,13 +314,13 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     switch ( layer->geometryType() )
     {
       case QgsWkbTypes::PointGeometry:
-        layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPointLayer.png" ) );
+        layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPointLayer.svg" ) );
         break;
       case QgsWkbTypes::LineGeometry:
-        layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconLineLayer.png" ) );
+        layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconLineLayer.svg" ) );
         break;
       case QgsWkbTypes::PolygonGeometry:
-        layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPolygonLayer.png" ) );
+        layerAction->setIcon( QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" ) );
         break;
       default:
         break;

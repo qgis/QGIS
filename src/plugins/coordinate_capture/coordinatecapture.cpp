@@ -286,10 +286,10 @@ void CoordinateCapture::setCurrentTheme( const QString& theThemeName )
     mQActionPointer->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );
   if ( mpDockWidget )
   {
-    mpTrackMouseButton->setIcon( QIcon( getIconPath( "tracking.png" ) ) );
+    mpTrackMouseButton->setIcon( QIcon( getIconPath( "tracking.svg" ) ) );
     mpCaptureButton->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );
     mypUserCrsToolButton->setIcon( QIcon( getIconPath( "geographic.png" ) ) );
-    mypCRSLabel->setPixmap( QPixmap( getIconPath( "transformed.png" ) ) );
+    mypCRSLabel->setPixmap( QPixmap( getIconPath( "transformed.svg" ) ) );
   }
 }
 

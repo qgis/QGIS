@@ -1104,7 +1104,7 @@ const QIcon& QgsLayerTreeModel::iconGroup()
   static QIcon icon;
 
   if ( icon.isNull() )
-    icon = QgsApplication::getThemeIcon( "/mActionFolder.png" );
+    icon = QgsApplication::getThemeIcon( "/mActionFolder.svg" );
 
   return icon;
 }

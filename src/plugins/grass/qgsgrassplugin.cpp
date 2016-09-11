@@ -203,11 +203,11 @@ void QgsGrassPlugin::initGui()
   mToolBarPointer->addAction( mRegionAction );
 
   // Editing
-  mAddPointAction = new QAction( QgsApplication::getThemeIcon( "/mActionCapturePoint.png" ), tr( "Add Point" ), this );
+  mAddPointAction = new QAction( QgsApplication::getThemeIcon( "/mActionCapturePoint.svg" ), tr( "Add Point" ), this );
   mAddPointAction->setObjectName( "mAddPointAction" );
   mAddPointAction->setCheckable( true );
 
-  mAddLineAction = new QAction( QgsApplication::getThemeIcon( "/mActionCaptureLine.png" ), tr( "Add Line" ), this );
+  mAddLineAction = new QAction( QgsApplication::getThemeIcon( "/mActionCaptureLine.svg" ), tr( "Add Line" ), this );
   mAddLineAction->setObjectName( "mAddLineAction" );
   mAddLineAction->setCheckable( true );
 
@@ -219,7 +219,7 @@ void QgsGrassPlugin::initGui()
   mAddCentroidAction->setObjectName( "mAddCentroidAction" );
   mAddCentroidAction->setCheckable( true );
 
-  mAddAreaAction = new QAction( QgsApplication::getThemeIcon( "/mActionCapturePolygon.png" ), tr( "Add Closed Boundary" ), this );
+  mAddAreaAction = new QAction( QgsApplication::getThemeIcon( "/mActionCapturePolygon.svg" ), tr( "Add Closed Boundary" ), this );
   mAddAreaAction->setObjectName( "mAddAreaAction" );
   mAddAreaAction->setCheckable( true );
 

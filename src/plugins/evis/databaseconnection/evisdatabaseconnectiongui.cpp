@@ -78,9 +78,9 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* th
 
   //set icons
   QString myThemePath = QgsApplication::activeThemePath();
-  pbtnOpenFile->setIcon( QIcon( QPixmap( myThemePath + "/mActionFolder.png" ) ) );
+  pbtnOpenFile->setIcon( QIcon( QPixmap( myThemePath + "/mActionFolder.svg" ) ) );
   pbtnOpenFile->setToolTip( tr( "Open File" ) );
-  pbtnLoadPredefinedQueries->setIcon( QIcon( QPixmap( myThemePath + "/mActionFolder.png" ) ) );
+  pbtnLoadPredefinedQueries->setIcon( QIcon( QPixmap( myThemePath + "/mActionFolder.svg" ) ) );
   pbtnLoadPredefinedQueries->setToolTip( tr( "Open File" ) );
 }
 

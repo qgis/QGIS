@@ -311,7 +311,7 @@ QIcon QgsMssqlTableModel::iconForWkbType( QgsWkbTypes::Type type )
       return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
       break;
     case QgsWkbTypes::NullGeometry:
-      return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
+      return QgsApplication::getThemeIcon( "/mIconTableLayer.svg" );
       break;
     case QgsWkbTypes::UnknownGeometry:
       break;

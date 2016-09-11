@@ -2,7 +2,7 @@
     <qresource prefix="/coordinate_capture/" >
         <file>coordinate_capture.png</file>
         <file>geographic.png</file>
-        <file>transformed.png</file>
-        <file>tracking.png</file>
+        <file>transformed.svg</file>
+        <file>tracking.svg</file>
     </qresource>
 </RCC>

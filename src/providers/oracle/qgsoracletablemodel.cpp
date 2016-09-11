@@ -242,7 +242,8 @@ QIcon QgsOracleTableModel::iconForWkbType( QgsWkbTypes::Type type )
       return QgsApplication::getThemeIcon( "/mIconLayer.png" );
 
     case QgsWkbTypes::NullGeometry:
-      return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
+      return QgsApplication::getThemeIcon( "/mIconTableLayer.svg" );
+
   }
   return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
 }

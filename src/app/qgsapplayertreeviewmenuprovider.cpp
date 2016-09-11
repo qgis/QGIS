@@ -282,9 +282,9 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       // symbology item
       if ( symbolNode->flags() & Qt::ItemIsUserCheckable )
       {
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ), tr( "&Show All Items" ),
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" ), tr( "&Show All Items" ),
                          symbolNode, SLOT( checkAllItems() ) );
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionHideAllLayers.png" ), tr( "&Hide All Items" ),
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionHideAllLayers.svg" ), tr( "&Hide All Items" ),
                          symbolNode, SLOT( uncheckAllItems() ) );
         menu->addSeparator();
       }

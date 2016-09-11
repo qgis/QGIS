@@ -95,7 +95,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget* parent )
   mFormViewButton = new QToolButton( this );
   mFormViewButton->setText( tr( "Form view" ) );
   mFormViewButton->setToolTip( tr( "Switch to form view" ) );
-  mFormViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ) );
+  mFormViewButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.svg" ) );
   mFormViewButton->setCheckable( true );
   mFormViewButton->setChecked( mViewMode == QgsDualView::AttributeEditor );
   buttonLayout->addWidget( mFormViewButton );

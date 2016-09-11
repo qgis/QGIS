@@ -156,7 +156,7 @@
    <action name="mActionExpressionPreview">
     <property name="icon">
      <iconset resource="../../images/images.qrc">
-      <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
+      <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
     </property>
     <property name="text">
      <string>Expression</string>

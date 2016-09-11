@@ -131,7 +131,7 @@ const QIcon &QgsLayerItem::iconTable()
   static QIcon icon;
 
   if ( icon.isNull() )
-    icon = QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
+    icon = QgsApplication::getThemeIcon( "/mIconTableLayer.svg" );
 
   return icon;
 }
@@ -659,7 +659,7 @@ QgsLayerItem::QgsLayerItem( QgsDataItem* parent, const QString& name, const QStr
       mIconName = "/mIconPolygonLayer.svg";
       break;
     case TableLayer:
-      mIconName = "/mIconTableLayer.png";
+      mIconName = "/mIconTableLayer.svg";
       break;
     case Raster:
       mIconName = "/mIconRaster.svg";

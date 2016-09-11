@@ -233,7 +233,7 @@ QVariant QgsComposerModel::headerData( int section, Qt::Orientation orientation,
     lockIcon = QgsApplication::getThemeIcon( "/locked.svg" );
   static QIcon showIcon;
   if ( showIcon.isNull() )
-    showIcon = QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" );
+    showIcon = QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" );
 
   switch ( role )
   {

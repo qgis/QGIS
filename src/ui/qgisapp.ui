@@ -1394,7 +1394,7 @@
   <action name="mActionOpenTable">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionOpenTable.png</normaloff>:/images/themes/default/mActionOpenTable.png</iconset>
+     <normaloff>:/images/themes/default/mActionOpenTable.svg</normaloff>:/images/themes/default/mActionOpenTable.svg</iconset>
    </property>
    <property name="text">
     <string>Open &amp;Attribute Table</string>
@@ -1503,7 +1503,7 @@
   <action name="mActionShowAllLayers">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionShowAllLayers.png</normaloff>:/images/themes/default/mActionShowAllLayers.png</iconset>
+     <normaloff>:/images/themes/default/mActionShowAllLayers.svg</normaloff>:/images/themes/default/mActionShowAllLayers.svg</iconset>
    </property>
    <property name="text">
     <string>Show All Layers</string>
@@ -1515,7 +1515,7 @@
   <action name="mActionHideAllLayers">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionHideAllLayers.png</normaloff>:/images/themes/default/mActionHideAllLayers.png</iconset>
+     <normaloff>:/images/themes/default/mActionHideAllLayers.svg</normaloff>:/images/themes/default/mActionHideAllLayers.svg</iconset>
    </property>
    <property name="text">
     <string>Hide All Layers</string>
@@ -1681,7 +1681,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionRotateLabel.png</normaloff>:/images/themes/default/mActionRotateLabel.png</iconset>
+     <normaloff>:/images/themes/default/mActionRotateLabel.svg</normaloff>:/images/themes/default/mActionRotateLabel.svg</iconset>
    </property>
    <property name="text">
     <string>Rotate Label</string>
@@ -1910,7 +1910,7 @@ Ctl (Cmd) increments by 15 deg.</string>
   <action name="mActionDecorationGrid">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/transformed.png</normaloff>:/images/themes/default/transformed.png</iconset>
+     <normaloff>:/images/themes/default/transformed.svg</normaloff>:/images/themes/default/transformed.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Grid</string>

@@ -104,7 +104,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
-            <normaloff>:/images/themes/default/mIconClose.png</normaloff>:/images/themes/default/mIconClose.png</iconset>
+            <normaloff>:/images/themes/default/mIconClose.svg</normaloff>:/images/themes/default/mIconClose.svg</iconset>
           </property>
           <property name="iconSize">
            <size>
