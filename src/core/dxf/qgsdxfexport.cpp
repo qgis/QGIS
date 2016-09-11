@@ -3778,110 +3778,125 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
 
   if ( penStyle != Qt::NoPen )
   {
-    // single line
-    if ( QgsWKBTypes::flatType( geometryType ) == QgsWKBTypes::LineString )
+    const QgsAbstractGeometryV2 *tempGeom = geom;
+
+    switch ( QgsWKBTypes::flatType( geometryType ) )
     {
-      const QgsAbstractGeometryV2 *offsetGeom = geom;
-      if ( !qgsDoubleNear( offset, 0.0 ) )
+      case QgsWKBTypes::CircularString:
+      case QgsWKBTypes::CompoundCurve:
+        tempGeom = geom->segmentize();
+        FALLTHROUGH;
+      case QgsWKBTypes::LineString:
+        if ( !qgsDoubleNear( offset, 0.0 ) )
+        {
+          QgsGeos geos( tempGeom );
+          if ( tempGeom != geom )
+            delete tempGeom;
+          tempGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
+          if ( !tempGeom )
+            tempGeom = geom;
+        }
+
+        writePolyline( tempGeom->coordinateSequence().at( 0 ).at( 0 ), layer, lineStyleName, penColor, width );
+
+        break;
+
+      case QgsWKBTypes::MultiCurve:
+        tempGeom = geom->segmentize();
+        FALLTHROUGH;
+      case QgsWKBTypes::MultiLineString:
       {
-        QgsGeos geos( geom );
-        offsetGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
-        if ( !offsetGeom )
-          offsetGeom = geom;
+        if ( !qgsDoubleNear( offset, 0.0 ) )
+        {
+          QgsGeos geos( tempGeom );
+          if ( tempGeom != geom )
+            delete tempGeom;
+          tempGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
+          if ( !tempGeom )
+            tempGeom = geom;
+        }
+
+        const QgsCoordinateSequenceV2 &cs = tempGeom->coordinateSequence();
+        for ( int i = 0; i < cs.size(); i++ )
+        {
+          writePolyline( cs.at( i ).at( 0 ), layer, lineStyleName, penColor, width );
+        }
+
+        break;
       }
 
-      writePolyline( offsetGeom->coordinateSequence().at( 0 ).at( 0 ), layer, lineStyleName, penColor, width );
+      case QgsWKBTypes::CurvePolygon:
+        tempGeom = geom->segmentize();
+        FALLTHROUGH;
+      case QgsWKBTypes::Polygon:
+      {
+        if ( !qgsDoubleNear( offset, 0.0 ) )
+        {
+          QgsGeos geos( tempGeom );
+          if ( tempGeom != geom )
+            delete tempGeom;
+          tempGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
+          if ( !tempGeom )
+            tempGeom = geom;
+        }
 
-      if ( offsetGeom != geom )
-        delete offsetGeom;
+        const QgsCoordinateSequenceV2 &cs = tempGeom->coordinateSequence();
+        for ( int i = 0; i < cs.at( 0 ).size(); i++ )
+        {
+          writePolyline( cs.at( 0 ).at( i ), layer, lineStyleName, penColor, width );
+        }
+
+        break;
+      }
+
+      case QgsWKBTypes::MultiPolygon:
+      {
+        if ( !qgsDoubleNear( offset, 0.0 ) )
+        {
+          QgsGeos geos( tempGeom );
+          if ( tempGeom != geom )
+            delete tempGeom;
+          tempGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
+          if ( !tempGeom )
+            tempGeom = geom;
+        }
+
+        const QgsCoordinateSequenceV2 &cs = tempGeom->coordinateSequence();
+        for ( int i = 0; i < cs.size(); i++ )
+          for ( int j = 0; j < cs.at( i ).size(); j++ )
+            writePolyline( cs.at( i ).at( j ), layer, lineStyleName, penColor, width );
+
+        break;
+      }
     }
 
-    // multiline
-    if ( QgsWKBTypes::flatType( geometryType ) == QgsWKBTypes::MultiLineString )
-    {
-      const QgsAbstractGeometryV2 *offsetGeom = geom;
-
-      if ( !qgsDoubleNear( offset, 0.0 ) )
-      {
-        QgsGeos geos( geom );
-        offsetGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
-        if ( !offsetGeom )
-          offsetGeom = geom;
-      }
-
-      const QgsCoordinateSequenceV2 &cs = offsetGeom->coordinateSequence();
-      for ( int i = 0; i < cs.size(); i++ )
-      {
-        writePolyline( cs.at( i ).at( 0 ), layer, lineStyleName, penColor, width );
-      }
-
-      if ( offsetGeom != geom )
-        delete offsetGeom;
-    }
-
-    // polygon
-    if ( QgsWKBTypes::flatType( geometryType ) == QgsWKBTypes::Polygon )
-    {
-      const QgsAbstractGeometryV2 *bufferGeom = geom;
-
-      if ( !qgsDoubleNear( offset, 0.0 ) )
-      {
-        QgsGeos geos( geom );
-        bufferGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
-        if ( !bufferGeom )
-          bufferGeom = geom;
-      }
-
-      const QgsCoordinateSequenceV2 &cs = bufferGeom->coordinateSequence();
-      for ( int i = 0; i < cs.at( 0 ).size(); i++ )
-      {
-        writePolyline( cs.at( 0 ).at( i ), layer, lineStyleName, penColor, width );
-      }
-
-      if ( bufferGeom != geom )
-        delete bufferGeom;
-    }
-
-    // multipolygon or polygon
-    if ( QgsWKBTypes::flatType( geometryType ) == QgsWKBTypes::MultiPolygon )
-    {
-      const QgsAbstractGeometryV2 *bufferGeom = geom;
-
-      if ( !qgsDoubleNear( offset, 0.0 ) )
-      {
-        QgsGeos geos( geom );
-        bufferGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
-        if ( !bufferGeom )
-          bufferGeom = geom;
-      }
-
-      const QgsCoordinateSequenceV2 &cs = bufferGeom->coordinateSequence();
-      for ( int i = 0; i < cs.size(); i++ )
-        for ( int j = 0; j < cs.at( i ).size(); j++ )
-          writePolyline( cs.at( i ).at( j ), layer, lineStyleName, penColor, width );
-
-      if ( bufferGeom != geom )
-        delete bufferGeom;
-    }
+    if ( tempGeom != geom )
+      delete tempGeom;
   }
 
   if ( brushStyle != Qt::NoBrush )
   {
-    // polygon
-    if ( QgsWKBTypes::flatType( geometryType ) == QgsWKBTypes::Polygon )
+    const QgsAbstractGeometryV2 *tempGeom = geom;
+
+    switch ( QgsWKBTypes::flatType( geometryType ) )
     {
-      writePolygon( geom->coordinateSequence().at( 0 ), layer, "SOLID", brushColor );
+      case QgsWKBTypes::CurvePolygon:
+        tempGeom = tempGeom->segmentize();
+        FALLTHROUGH;
+      case QgsWKBTypes::Polygon:
+        writePolygon( tempGeom->coordinateSequence().at( 0 ), layer, "SOLID", brushColor );
+        break;
+
+      case QgsWKBTypes::MultiPolygon:
+        const QgsCoordinateSequenceV2 &cs = geom->coordinateSequence();
+        for ( int i = 0; i < cs.size(); i++ )
+        {
+          writePolygon( cs.at( i ), layer, "SOLID", brushColor );
+        }
     }
 
-    // multipolygon or polygon
-    if ( QgsWKBTypes::flatType( geometryType ) == QgsWKBTypes::MultiPolygon )
-    {
-      const QgsCoordinateSequenceV2 &cs = geom->coordinateSequence();
-      for ( int i = 0; i < cs.size(); i++ )
-      {
-        writePolygon( cs.at( i ), layer, "SOLID", brushColor );
-      }
-    }
+    if ( tempGeom != geom )
+      delete tempGeom;
   }
 }
 
