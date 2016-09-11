@@ -62,6 +62,9 @@ QgsPanelWidget*QgsPanelWidget::findParentPanel( QWidget* widget )
 
 void QgsPanelWidget::openPanel( QgsPanelWidget* panel )
 {
+  //panel dock mode inherits from this panel
+  panel->setDockMode( dockMode() );
+
   if ( mDockMode )
   {
     emit showPanel( panel );
