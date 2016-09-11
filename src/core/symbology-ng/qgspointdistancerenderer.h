@@ -94,6 +94,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     bool legendSymbolItemsCheckable() const override;
     bool legendSymbolItemChecked( const QString& key ) override;
     void checkLegendSymbolItem( const QString& key, bool state ) override;
+    virtual QString filter( const QgsFields& fields = QgsFields() ) override;
 
     /** Sets the attribute name for labeling points.
      * @param name attribute name, or empty string to avoid labeling features by the renderer

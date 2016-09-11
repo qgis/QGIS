@@ -68,6 +68,7 @@ class QgsPointDistanceRenderer : QgsFeatureRenderer
     bool legendSymbolItemsCheckable() const;
     bool legendSymbolItemChecked( const QString& key );
     void checkLegendSymbolItem( const QString& key, bool state );
+    virtual QString filter( const QgsFields& fields = QgsFields() );
 
     /** Sets the attribute name for labeling points.
      * @param name attribute name, or empty string to avoid labeling features by the renderer

@@ -185,6 +185,14 @@ void QgsPointDistanceRenderer::checkLegendSymbolItem( const QString& key, bool s
   return mRenderer->checkLegendSymbolItem( key, state );
 }
 
+QString QgsPointDistanceRenderer::filter( const QgsFields& fields )
+{
+  if ( !mRenderer )
+    return QgsFeatureRenderer::filter( fields );
+  else
+    return mRenderer->filter( fields );
+}
+
 QList<QString> QgsPointDistanceRenderer::usedAttributes()
 {
   QList<QString> attributeList;
