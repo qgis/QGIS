@@ -30,6 +30,8 @@ QgsPointClusterRenderer::QgsPointClusterRenderer()
     : QgsPointDistanceRenderer( "pointCluster" )
 {
   mClusterSymbol.reset( new QgsMarkerSymbol() );
+  mClusterSymbol->setSize( 4 );
+  mClusterSymbol->setColor( QColor( 245, 75, 80 ) );
 }
 
 QgsPointClusterRenderer* QgsPointClusterRenderer::clone() const
