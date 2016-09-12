@@ -582,11 +582,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QChar character() const { return mChr; }
     void setCharacter( QChar ch ) { mChr = ch; }
 
-    /** Get outline color.
-     * @note added in 2.16 */
     QColor outlineColor() const override { return mOutlineColor; }
-    /** Set outline color.
-     * @note added in 2.16 */
     void setOutlineColor( const QColor& color ) override { mOutlineColor = color; }
 
     /** Get outline width.

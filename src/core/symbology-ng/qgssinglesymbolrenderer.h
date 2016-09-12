@@ -32,16 +32,10 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 
     virtual ~QgsSingleSymbolRenderer();
 
-    //! @note available in python as symbolForFeature2
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
-
-    //! @note available in python as originalSymbolForFeature2
     virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
-
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
-
     virtual void stopRender( QgsRenderContext& context ) override;
-
     virtual QList<QString> usedAttributes() override;
 
     QgsSymbol* symbol() const;
@@ -60,31 +54,14 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     virtual void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props = QgsStringMap() ) const override;
     static QgsFeatureRenderer* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
 
-    //! returns bitwise OR-ed capabilities of the renderer
     virtual Capabilities capabilities() override { return SymbolLevels | RotationField; }
-
-    //! @note available in python as symbol2
     virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
-
-    //! create renderer from XML element
     static QgsFeatureRenderer* create( QDomElement& element );
-
-    //! store renderer info to XML element
     virtual QDomElement save( QDomDocument& doc ) override;
-
-    //! return a list of symbology items for the legend
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
-
-    //! return a list of item text / symbol
-    //! @note not available in python bindings
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = QString() ) override;
-
-    //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
-    //! @note added in 2.6
     virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
-
     virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
-
     virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol ) override;
 
     //! creates a QgsSingleSymbolRenderer from an existing renderer.

@@ -136,27 +136,15 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     virtual ~QgsGraduatedSymbolRenderer();
 
-    //! @note labelForLowerUpper in python bindings
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext &context ) override;
-    //! @note originalSymbolForFeature2 in python bindings
     virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context ) override;
-
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
-
     virtual void stopRender( QgsRenderContext& context ) override;
-
     virtual QList<QString> usedAttributes() override;
-
     virtual QString dump() const override;
-
     virtual QgsGraduatedSymbolRenderer* clone() const override;
-
     virtual void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props = QgsStringMap() ) const override;
-
-    //! returns bitwise OR-ed capabilities of the renderer
     virtual Capabilities capabilities() override { return SymbolLevels | RotationField | Filter; }
-
-    //! @note symbol2 in python bindings
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     QString classAttribute() const { return mAttrName; }
@@ -265,19 +253,10 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! create renderer from XML element
     static QgsFeatureRenderer* create( QDomElement& element );
 
-    //! store renderer info to XML element
     virtual QDomElement save( QDomDocument& doc ) override;
-
-    //! return a list of symbology items for the legend
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
-
-    //! return a list of item text / symbol
-    //! @note not available in python bindings
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = QString() ) override;
-
-    //! @note added in 2.10
     QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
-
     virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
     /** Returns the renderer's source symbol, which is the base symbol used for the each classes' symbol before applying
@@ -353,22 +332,10 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
     QgsSymbol::ScaleMethod scaleMethod() const { return mScaleMethod; }
 
-    //! items of symbology items in legend should be checkable
-    //! @note added in 2.5
     virtual bool legendSymbolItemsCheckable() const override;
-
-    //! item in symbology was checked
-    //! @note added in 2.6
     virtual bool legendSymbolItemChecked( const QString& key ) override;
-
-    //! item in symbology was checked
-    //! @note added in 2.6
     virtual void checkLegendSymbolItem( const QString& key, bool state = true ) override;
-
     virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol ) override;
-
-    //! If supported by the renderer, return classification attribute for the use in legend
-    //! @note added in 2.6
     virtual QString legendClassificationAttribute() const override { return classAttribute(); }
 
     //! creates a QgsGraduatedSymbolRenderer from an existing renderer.
