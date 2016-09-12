@@ -206,6 +206,9 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QList< int > mPreparedFields;
     QList< int > mFieldsToPrepare;
 
+    /** Join list sorted by dependency*/
+    QList< FetchJoinInfo > mOrderedJoinInfoList;
+
     /**
      * Will always return true. We assume that ordering has been done on provider level already.
      *
@@ -214,6 +217,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     //! returns whether the iterator supports simplify geometries on provider side
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
+
+    void createOrderedJoinList();
 };
 
 #endif // QGSVECTORLAYERFEATUREITERATOR_H
