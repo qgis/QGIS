@@ -155,11 +155,11 @@ class ModelerParametersDialog(QDialog):
             widget.setToolTip(tooltip)
             if param.isAdvanced:
                 label.setVisible(self.showAdvanced)
-                wrapper.setVisible(self.showAdvanced)
+                widget.setVisible(self.showAdvanced)
                 self.widgets[param.name] = widget
 
             self.verticalLayout.addWidget(label)
-            self.verticalLayout.addWidget(wrapper.widget)
+            self.verticalLayout.addWidget(widget)
 
         for output in self._alg.outputs:
             if output.hidden:
