@@ -172,18 +172,14 @@ class Grass7Algorithm(GeoAlgorithm):
                 line = line.strip('\n').strip()
                 if line.startswith('Hardcoded'):
                     self.hardcodedStrings.append(line[len('Hardcoded|'):])
-                elif line.startswith('Parameter'):
-                    parameter = getParameterFromString(line)
+                parameter = getParameterFromString(line)
+                if parameter is not None:
                     self.addParameter(parameter)
                     if isinstance(parameter, ParameterVector):
                         hasVectorInput = True
                     if isinstance(parameter, ParameterMultipleInput) \
                        and parameter.datatype < 3:
                         hasVectorInput = True
-                elif line.startswith('*Parameter'):
-                    param = getParameterFromString(line[1:])
-                    param.isAdvanced = True
-                    self.addParameter(param)
                 else:
                     output = getOutputFromString(line)
                     self.addOutput(output)
