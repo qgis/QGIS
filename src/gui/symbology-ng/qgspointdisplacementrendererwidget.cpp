@@ -213,6 +213,7 @@ void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
   if ( m )
   {
     QgsRendererWidget* w = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
+    w->setPanelTitle( tr( "Renderer settings" ) );
     w->setMapCanvas( mMapCanvas );
     QgsExpressionContextScope scope;
     scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "" );
@@ -357,6 +358,7 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
   QgsMarkerSymbol* markerSymbol = mRenderer->centerSymbol()->clone();
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( markerSymbol, QgsStyle::defaultStyle(), mLayer, this );
   dlg->setMapCanvas( mMapCanvas );
+  dlg->setPanelTitle( tr( "Center symbol" ) );
 
   QgsExpressionContextScope scope;
   scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "" );

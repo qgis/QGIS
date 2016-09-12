@@ -134,6 +134,7 @@ void QgsPointClusterRendererWidget::on_mRendererSettingsButton_clicked()
   if ( m )
   {
     QgsRendererWidget* w = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
+    w->setPanelTitle( tr( "Renderer settings" ) );
     w->setMapCanvas( mMapCanvas );
     QgsExpressionContextScope scope;
     scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "" );
@@ -182,6 +183,7 @@ void QgsPointClusterRendererWidget::on_mCenterSymbolPushButton_clicked()
   }
   QgsMarkerSymbol* markerSymbol = mRenderer->clusterSymbol()->clone();
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( markerSymbol, QgsStyle::defaultStyle(), mLayer, this );
+  dlg->setPanelTitle( tr( "Cluster symbol" ) );
   dlg->setDockMode( this->dockMode() );
   dlg->setMapCanvas( mMapCanvas );
   QgsExpressionContextScope scope;
