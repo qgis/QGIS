@@ -858,12 +858,6 @@ QgsGraduatedSymbolRenderer* QgsGraduatedSymbolRenderer::createRenderer(
   return r;
 }
 
-QList<double> QgsGraduatedSymbolRenderer::getDataValues( QgsVectorLayer *vlayer )
-{
-  bool ok;
-  return vlayer->getDoubleValues( mAttrName, ok );
-}
-
 void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses )
 {
   if ( mAttrName.isEmpty() )

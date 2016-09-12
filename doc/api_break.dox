@@ -619,6 +619,12 @@ and the new ramp can be retrieved after executing the dialog by calling ramp().<
 <li>Some internal methods which were previously public or protected were made private.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsGraduatedSymbolRenderer QgsGraduatedSymbolRenderer
+
+<ul>
+<li>getDataValues() has been removed - use QgsVectorLayer::getDoubleValues() instead</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsGraphBuilderInterface QgsGraphBuilderInterface
 
 <ul>
