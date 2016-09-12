@@ -22,6 +22,7 @@
 
 #include "qgsdatadefined.h"
 #include "qgspanelwidget.h"
+#include "qgssymbolwidgetcontext.h"
 
 #include <QStandardItemModel>
 #include <QScopedPointer>
@@ -98,37 +99,18 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu* advancedMenu();
 
-    /** Sets the optional expression context used for the widget. This expression context is used for
-     * evaluating data defined symbol properties and for populating based expression widgets in
-     * the layer widget.
-     * @param context expression context pointer. Ownership is transferred to the dialog.
-     * @note added in QGIS 2.12
-     * @see expressionContext()
-     * @see setAdditionalExpressionContextScopes()
-     */
-    void setExpressionContext( QgsExpressionContext* context );
-
-    /** Returns the expression context used for the dialog, if set. This expression context is used for
-     * evaluating data defined symbol properties and for populating based expression widgets in
-     * the dialog.
-     * @note added in QGIS 2.12
-     * @see setExpressionContext()
-     */
-    QgsExpressionContext* expressionContext() const { return mPresetExpressionContext.data(); }
-
-    /** Sets a list of additional expression context scopes to show as available for the symbol.
-     * @param scopes list of additional scopes which will be added in order to the end of the default expression context
+    /** Sets the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+     * @param context symbol widget context
+     * @see context()
      * @note added in QGIS 3.0
-     * @see setExpressionContext()
      */
-    void setAdditionalExpressionContextScopes( const QList< QgsExpressionContextScope >& scopes );
+    void setContext( const QgsSymbolWidgetContext& context );
 
-    /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
-     * map scale and other properties from the canvas.
-     * @param canvas map canvas
-     * @note added in QGIS 2.12
+    /** Returns the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+     * @see setContext()
+     * @note added in QGIS 3.0
      */
-    void setMapCanvas( QgsMapCanvas* canvas );
+    QgsSymbolWidgetContext context() const;
 
     /**
      * @brief Return the symbol that is currently active in the widget. Can be null.
@@ -252,10 +234,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
 
   private:
     QScopedPointer<DataDefinedRestorer> mDataDefineRestorer;
-    QScopedPointer< QgsExpressionContext > mPresetExpressionContext;
-    QList< QgsExpressionContextScope > mAdditionalScopes;
-
-    QgsMapCanvas* mMapCanvas;
+    QgsSymbolWidgetContext mContext;
 };
 
 /** \ingroup gui
@@ -272,37 +251,18 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu* advancedMenu();
 
-    /** Sets the optional expression context used for the widget. This expression context is used for
-     * evaluating data defined symbol properties and for populating based expression widgets in
-     * the layer widget.
-     * @param context expression context pointer. Ownership is transferred to the dialog.
-     * @note added in QGIS 2.12
-     * @see expressionContext()
-     * @see setAdditionalExpressionContextScopes()
-     */
-    void setExpressionContext( QgsExpressionContext* context );
-
-    /** Sets a list of additional expression context scopes to show as available within the symbol.
-     * @param scopes list of additional scopes which will be added in order to the end of the default expression context
+    /** Sets the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+     * @param context symbol widget context
+     * @see context()
      * @note added in QGIS 3.0
-     * @see setExpressionContext()
      */
-    void setAdditionalExpressionContextScopes( const QList< QgsExpressionContextScope >& scopes );
+    void setContext( const QgsSymbolWidgetContext& context );
 
-    /** Returns the expression context used for the dialog, if set. This expression context is used for
-     * evaluating data defined symbol properties and for populating based expression widgets in
-     * the dialog.
-     * @note added in QGIS 2.12
-     * @see setExpressionContext()
+    /** Returns the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+     * @see setContext()
+     * @note added in QGIS 3.0
      */
-    QgsExpressionContext* expressionContext() const;
-
-    /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
-     * map scale and other properties from the canvas.
-     * @param canvas map canvas
-     * @note added in QGIS 2.12
-     */
-    void setMapCanvas( QgsMapCanvas* canvas );
+    QgsSymbolWidgetContext context() const;
 
     /**
      * @brief Return the symbol that is currently active in the widget. Can be null.
@@ -360,6 +320,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
   private:
     QgsSymbolSelectorWidget* mSelectorWidget;
     QDialogButtonBox* mButtonBox;
+    QgsSymbolWidgetContext mContext;
 };
 
 #endif

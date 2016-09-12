@@ -850,6 +850,12 @@ plugins calling this method will need to be updated.</li>
 <li>labelsWithinRect() was removed. Use takeResults() and methods of QgsLabelingResults.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsLayerPropertiesWidget QgsLayerPropertiesWidget
+
+<ul>
+<li>expressionContext(), setExpressionContext(), setMapCanvas() and mapCanvas() have been removed in favor of setContext()/context()</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsLayerTreeGroup QgsLayerTreeGroup
 
 <ul>
@@ -1176,6 +1182,20 @@ be returned instead of a null pointer if no transformation is required.</li>
 <li>setCoordinateTransform() now takes a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should be used instead of a null pointer if no transformation is required.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsRendererWidget QgsRendererWidget
+
+<ul>
+<li>expressionContext(), setExpressionContext(), setMapCanvas() and mapCanvas() have been removed in favor of setContext()/context()</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsRendererRulePropsWidget QgsRendererRulePropsWidget
+
+<ul>
+<li>expressionContext(), setExpressionContext(), setMapCanvas() and mapCanvas() have been removed in favor of setContext()/context()</li>
+</ul>
+
+
+
 \subsection qgis_api_break_3_0_QgsRubberBand QgsRubberBand
 
 <ul>
@@ -1263,6 +1283,13 @@ the variant which takes QgsSymbolRenderContext instead.</li>
 <li>expression() was removed. Use getDataDefinedProperty or evaluateDataDefinedProperty instead.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsSymbolLayerWidget QgsSymbolLayerWidget
+
+<ul>
+<li>expressionContext(), setExpressionContext(), setMapCanvas() and mapCanvas() have been removed in favor of setContext()/context()</li>
+</ul>
+
+
 \subsection qgis_api_break_3_0_QgsSymbolRenderContext QgsSymbolRenderContext (renamed from QgsSymbolV2RenderContext)
 
 <ul>
@@ -1290,6 +1317,20 @@ than an integer value</li>
 <ul>
 <li>saveSymbol() was removed.</li>
 </ul>
+
+\subsection qgis_api_break_3_0_QgsSymbolSelectorDialog QgsSymbolSelectorDialog
+
+<ul>
+<li>expressionContext(), setExpressionContext(), setMapCanvas() and mapCanvas() have been removed in favor of setContext()/context()</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsSymbolsListWidget QgsSymbolsListWidget
+
+<ul>
+<li>expressionContext(), setExpressionContext(), setMapCanvas() and mapCanvas() have been removed in favor of setContext()/context()</li>
+</ul>
+
+
 
 \subsection qgis_api_break_3_0_QgsTolerance QgsTolerance
 

@@ -64,7 +64,9 @@ void QgsComposerPolygonWidget::on_mPolygonStyleButton_clicked()
   QgsExpressionContext context = mComposerPolygon->createExpressionContext();
   QgsSymbolSelectorDialog d( newSymbol.data(), QgsStyle::defaultStyle(),
                              coverageLayer, this );
-  d.setExpressionContext( &context );
+  QgsSymbolWidgetContext symbolContext;
+  symbolContext.setExpressionContext( &context );
+  d.setContext( symbolContext );
 
   if ( d.exec() == QDialog::Accepted )
   {

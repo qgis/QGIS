@@ -573,7 +573,9 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
   }
   QgsExpressionContext context = mComposition->createExpressionContext();
   QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), coverageLayer, this );
-  d.setExpressionContext( &context );
+  QgsSymbolWidgetContext symbolContext;
+  symbolContext.setExpressionContext( &context );
+  d.setContext( symbolContext );
 
   if ( d.exec() == QDialog::Accepted )
   {

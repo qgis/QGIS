@@ -32,7 +32,7 @@ class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, privat
     ~QgsPointClusterRendererWidget();
 
     QgsFeatureRenderer* renderer() override;
-    void setMapCanvas( QgsMapCanvas* canvas ) override;
+    void setContext( const QgsSymbolWidgetContext& context ) override;
 
   private:
     QgsPointClusterRenderer* mRenderer;

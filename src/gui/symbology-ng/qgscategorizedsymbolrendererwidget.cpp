@@ -527,8 +527,7 @@ void QgsCategorizedSymbolRendererWidget::changeSelectedSymbols()
   {
     QgsSymbol* newSymbol = mCategorizedSymbol->clone();
     QgsSymbolSelectorDialog dlg( newSymbol, mStyle, mLayer, this );
-    dlg.setMapCanvas( mMapCanvas );
-    dlg.setAdditionalExpressionContextScopes( mAdditionalScopes );
+    dlg.setContext( context() );
     if ( !dlg.exec() )
     {
       delete newSymbol;
@@ -550,8 +549,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol()
 {
   QgsSymbol* newSymbol = mCategorizedSymbol->clone();
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
-  dlg->setMapCanvas( mMapCanvas );
-  dlg->setAdditionalExpressionContextScopes( mAdditionalScopes );
+  dlg->setContext( mContext );
 
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
   connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
@@ -595,8 +593,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
   }
 
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( symbol, mStyle, mLayer, nullptr );
-  dlg->setMapCanvas( mMapCanvas );
-  dlg->setAdditionalExpressionContextScopes( mAdditionalScopes );
+  dlg->setContext( mContext );
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
   connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
   openPanel( dlg );
@@ -1045,10 +1042,10 @@ QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::atlasScope( nullptr );
 
-  if ( mapCanvas() )
+  if ( mContext.mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mapCanvas()->expressionContextScope() );
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
   }
   else
   {
@@ -1057,6 +1054,12 @@ QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext
 
   if ( vectorLayer() )
     expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
+
+  // additional scopes
+  Q_FOREACH ( const QgsExpressionContextScope& scope, mContext.additionalExpressionContextScopes() )
+  {
+    expContext.appendScope( new QgsExpressionContextScope( scope ) );
+  }
 
   return expContext;
 }

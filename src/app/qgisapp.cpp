@@ -449,7 +449,9 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
           QScopedPointer< QgsSymbol > symbol( originalSymbol->clone() );
           QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() );
           QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyle::defaultStyle(), vlayer, this );
-          dlg.setMapCanvas( mMapCanvas );
+          QgsSymbolWidgetContext context;
+          context.setMapCanvas( mMapCanvas );
+          dlg.setContext( context );
           if ( dlg.exec() )
           {
             node->setSymbol( symbol.take() );

@@ -158,11 +158,11 @@ QgsFeatureRenderer* QgsPointDisplacementRendererWidget::renderer()
   return mRenderer;
 }
 
-void QgsPointDisplacementRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
+void QgsPointDisplacementRendererWidget::setContext( const QgsSymbolWidgetContext& context )
 {
-  QgsRendererWidget::setMapCanvas( canvas );
+  QgsRendererWidget::setContext( context );
   if ( mDistanceUnitWidget )
-    mDistanceUnitWidget->setMapCanvas( canvas );
+    mDistanceUnitWidget->setMapCanvas( context.mapCanvas() );
 }
 
 void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChanged( const QString& text )
@@ -214,13 +214,17 @@ void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
   {
     QgsRendererWidget* w = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
     w->setPanelTitle( tr( "Renderer settings" ) );
-    w->setMapCanvas( mMapCanvas );
+
+    QgsSymbolWidgetContext context = mContext;
+
     QgsExpressionContextScope scope;
     scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "" );
     scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0 );
-    QList< QgsExpressionContextScope > scopes = mAdditionalScopes;
+    QList< QgsExpressionContextScope > scopes = context.additionalExpressionContextScopes();
     scopes << scope;
-    w->setAdditionalExpressionContextScopes( scopes );
+    context.setAdditionalExpressionContextScopes( scopes );
+    w->setContext( context );
+
     connect( w, SIGNAL( widgetChanged() ), this, SLOT( updateRendererFromWidget() ) );
     openPanel( w );
   }
@@ -357,15 +361,18 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
   }
   QgsMarkerSymbol* markerSymbol = mRenderer->centerSymbol()->clone();
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( markerSymbol, QgsStyle::defaultStyle(), mLayer, this );
-  dlg->setMapCanvas( mMapCanvas );
   dlg->setPanelTitle( tr( "Center symbol" ) );
+
+  QgsSymbolWidgetContext context = mContext;
 
   QgsExpressionContextScope scope;
   scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "" );
   scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0 );
-  QList< QgsExpressionContextScope > scopes = mAdditionalScopes;
+  QList< QgsExpressionContextScope > scopes = context.additionalExpressionContextScopes();
   scopes << scope;
-  dlg->setAdditionalExpressionContextScopes( scopes );
+  context.setAdditionalExpressionContextScopes( scopes );
+  dlg->setContext( context );
+
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateCenterSymbolFromWidget() ) );
   connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
   openPanel( dlg );

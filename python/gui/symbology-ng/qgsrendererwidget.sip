@@ -15,25 +15,18 @@ class QgsRendererWidget : QgsPanelWidget
     //! show a dialog with renderer's symbol level settings
     void showSymbolLevelsDialog( QgsFeatureRenderer* r );
 
-    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
-     * map scale and other properties from the canvas.
-     * @param canvas map canvas
-     * @see mapCanvas()
-     * @note added in QGIS 2.12
-     */
-    virtual void setMapCanvas( QgsMapCanvas* canvas );
-
-    /** Returns the map canvas associated with the widget.
-     * @see setMapCanvas
-     * @note added in QGIS 2.12
-     */
-    const QgsMapCanvas* mapCanvas() const;
-
-    /** Sets a list of additional expression context scopes to show as available within the renderer.
-     * @param scopes list of additional scopes which will be added in order to the end of the default expression context
+    /** Sets the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+     * @param context symbol widget context
+     * @see context()
      * @note added in QGIS 3.0
      */
-    void setAdditionalExpressionContextScopes( const QList< QgsExpressionContextScope >& scopes );
+    void setContext( const QgsSymbolWidgetContext& context );
+
+    /** Returns the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+     * @see setContext()
+     * @note added in QGIS 3.0
+     */
+    QgsSymbolWidgetContext context() const;
 
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
@@ -105,30 +98,23 @@ class QgsDataDefinedValueDialog : QDialog
     QgsDataDefinedValueDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer, const QString & label );
     virtual ~QgsDataDefinedValueDialog();
 
-    /** Sets the map canvas associated with the dialog. This allows the dialog to retrieve the current
-     * map scale and other properties from the canvas.
-     * @param canvas map canvas
-     * @see mapCanvas()
-     * @note added in QGIS 2.12
+    /** Sets the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+     * @param context symbol widget context
+     * @see context()
+     * @note added in QGIS 3.0
      */
-    virtual void setMapCanvas( QgsMapCanvas* canvas );
+    void setContext( const QgsSymbolWidgetContext& context );
 
-    /** Returns the map canvas associated with the widget.
-     * @see setMapCanvas
-     * @note added in QGIS 2.12
+    /** Returns the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+     * @see setContext()
+     * @note added in QGIS 3.0
      */
-    const QgsMapCanvas* mapCanvas() const;
+    QgsSymbolWidgetContext context() const;
 
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
     const QgsVectorLayer* vectorLayer() const;
-
-    /** Sets a list of additional expression context scopes to show as available for the symbol.
-     * @param scopes list of additional scopes which will be added in order to the end of the default expression context
-     * @note added in QGIS 3.0
-     */
-    void setAdditionalExpressionContextScopes( const QList< QgsExpressionContextScope >& scopes );
 
   public slots:
     void dataDefinedChanged();

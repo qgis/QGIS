@@ -249,6 +249,7 @@
 %Include symbology-ng/qgssymbollevelsdialog.sip
 %Include symbology-ng/qgssymbolslistwidget.sip
 %Include symbology-ng/qgssymbolselectordialog.sip
+%Include symbology-ng/qgssymbolwidgetcontext.sip
 %Include symbology-ng/qgsvectorfieldsymbollayerwidget.sip
 
 %Include effects/qgseffectdrawmodecombobox.sip

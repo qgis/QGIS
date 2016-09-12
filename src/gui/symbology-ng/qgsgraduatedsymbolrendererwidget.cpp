@@ -396,10 +396,10 @@ QgsExpressionContext QgsGraduatedSymbolRendererWidget::createExpressionContext()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::atlasScope( nullptr );
 
-  if ( mapCanvas() )
+  if ( mContext.mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mapCanvas()->expressionContextScope() );
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
   }
   else
   {
@@ -408,6 +408,12 @@ QgsExpressionContext QgsGraduatedSymbolRendererWidget::createExpressionContext()
 
   if ( vectorLayer() )
     expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
+
+  // additional scopes
+  Q_FOREACH ( const QgsExpressionContextScope& scope, mContext.additionalExpressionContextScopes() )
+  {
+    expContext.appendScope( new QgsExpressionContextScope( scope ) );
+  }
 
   return expContext;
 }
@@ -829,8 +835,7 @@ void QgsGraduatedSymbolRendererWidget::changeGraduatedSymbol()
 {
   QgsSymbol* newSymbol = mGraduatedSymbol->clone();
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
-  dlg->setMapCanvas( mMapCanvas );
-  dlg->setAdditionalExpressionContextScopes( mAdditionalScopes );
+  dlg->setContext( mContext );
 
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
   connect( dlg, SIGNAL( accepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
@@ -908,8 +913,7 @@ void QgsGraduatedSymbolRendererWidget::changeRangeSymbol( int rangeIdx )
 {
   QgsSymbol* newSymbol = mRenderer->ranges()[rangeIdx].symbol()->clone();
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
-  dlg->setMapCanvas( mMapCanvas );
-  dlg->setAdditionalExpressionContextScopes( mAdditionalScopes );
+  dlg->setContext( mContext );
 
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
   connect( dlg, SIGNAL( accepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );

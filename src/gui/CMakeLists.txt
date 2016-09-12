@@ -43,6 +43,7 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgssymbollevelsdialog.cpp
   symbology-ng/qgssymbolslistwidget.cpp
   symbology-ng/qgssymbolselectordialog.cpp
+  symbology-ng/qgssymbolwidgetcontext.cpp
   symbology-ng/qgsvectorfieldsymbollayerwidget.cpp
 
   effects/qgseffectdrawmodecombobox.cpp
@@ -707,6 +708,8 @@ SET(QGIS_GUI_HDRS
   layertree/qgslayertreeembeddedwidgetregistry.h
 
   raster/qgsrasterrendererwidget.h
+  
+  symbology-ng/qgssymbolwidgetcontext.h
 )
 
 IF (WITH_QTWEBKIT)

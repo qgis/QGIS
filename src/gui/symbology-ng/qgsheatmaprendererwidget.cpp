@@ -39,10 +39,10 @@ QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::atlasScope( nullptr );
 
-  if ( mapCanvas() )
+  if ( mContext.mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mapCanvas()->expressionContextScope() );
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
   }
   else
   {
@@ -51,6 +51,12 @@ QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
 
   if ( vectorLayer() )
     expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
+
+  // additional scopes
+  Q_FOREACH ( const QgsExpressionContextScope& scope, mContext.additionalExpressionContextScopes() )
+  {
+    expContext.appendScope( new QgsExpressionContextScope( scope ) );
+  }
 
   return expContext;
 }
@@ -128,11 +134,11 @@ QgsFeatureRenderer* QgsHeatmapRendererWidget::renderer()
   return mRenderer;
 }
 
-void QgsHeatmapRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
+void QgsHeatmapRendererWidget::setContext( const QgsSymbolWidgetContext& context )
 {
-  QgsRendererWidget::setMapCanvas( canvas );
-  if ( mRadiusUnitWidget )
-    mRadiusUnitWidget->setMapCanvas( canvas );
+  QgsRendererWidget::setContext( context );
+  if ( context.mapCanvas() )
+    mRadiusUnitWidget->setMapCanvas( context.mapCanvas() );
 }
 
 void QgsHeatmapRendererWidget::applyColorRamp()

@@ -189,9 +189,9 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
        * @param layer The layer used to pull layer related information.
        * @param style The active QGIS style.
        * @param parent The parent widget.
-       * @param mapCanvas The map canvas object.
+       * @param context the symbol widget context
        */
-    QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
+    QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent = nullptr, const QgsSymbolWidgetContext& context = QgsSymbolWidgetContext() );
     ~QgsRendererRulePropsWidget();
 
     /**
@@ -229,7 +229,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
     QgsSymbolSelectorWidget* mSymbolSelector;
     QgsSymbol* mSymbol; // a clone of original symbol
 
-    QgsMapCanvas* mMapCanvas;
+    QgsSymbolWidgetContext mContext;
 };
 
 /** \ingroup gui
@@ -240,7 +240,7 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
     Q_OBJECT
 
   public:
-    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
+    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent = nullptr, const QgsSymbolWidgetContext& context = QgsSymbolWidgetContext() );
     ~QgsRendererRulePropsDialog();
 
     QgsRuleBasedRenderer::Rule* rule() { return mPropsWidget->rule(); }

@@ -191,7 +191,11 @@ void QgsRendererPropertiesDialog::setMapCanvas( QgsMapCanvas* canvas )
 {
   mMapCanvas = canvas;
   if ( mActiveWidget )
-    mActiveWidget->setMapCanvas( mMapCanvas );
+  {
+    QgsSymbolWidgetContext context;
+    context.setMapCanvas( mMapCanvas );
+    mActiveWidget->setContext( context );
+  }
 }
 
 void QgsRendererPropertiesDialog::setDockMode( bool dockMode )
@@ -248,7 +252,11 @@ void QgsRendererPropertiesDialog::rendererChanged()
     if ( mActiveWidget->renderer() )
     {
       if ( mMapCanvas )
-        mActiveWidget->setMapCanvas( mMapCanvas );
+      {
+        QgsSymbolWidgetContext context;
+        context.setMapCanvas( mMapCanvas );
+        mActiveWidget->setContext( context );
+      }
       changeOrderBy( mActiveWidget->renderer()->orderBy(), mActiveWidget->renderer()->orderByEnabled() );
       connect( mActiveWidget, SIGNAL( layerVariablesChanged() ), this, SIGNAL( layerVariablesChanged() ) );
     }

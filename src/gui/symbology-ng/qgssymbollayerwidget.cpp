@@ -51,18 +51,18 @@
 
 QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
 {
-  if ( expressionContext() )
-    return *expressionContext();
+  if ( mContext.expressionContext() )
+    return *mContext.expressionContext();
 
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::atlasScope( nullptr );
 
-  if ( mapCanvas() )
+  if ( mContext.mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mapCanvas()->expressionContextScope() );
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
   }
   else
   {
@@ -85,7 +85,7 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1, true ) );
 
   // additional scopes
-  Q_FOREACH ( const QgsExpressionContextScope& scope, mAdditionalScopes )
+  Q_FOREACH ( const QgsExpressionContextScope& scope, mContext.additionalExpressionContextScopes() )
   {
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }
@@ -101,28 +101,23 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
   return expContext;
 }
 
-void QgsSymbolLayerWidget::setAdditionalExpressionContextScopes( const QList<QgsExpressionContextScope>& scopes )
+void QgsSymbolLayerWidget::setContext( const QgsSymbolWidgetContext& context )
 {
-  mAdditionalScopes = scopes;
-}
-
-void QgsSymbolLayerWidget::setMapCanvas( QgsMapCanvas *canvas )
-{
-  mMapCanvas = canvas;
+  mContext = context;
   Q_FOREACH ( QgsUnitSelectionWidget* unitWidget, findChildren<QgsUnitSelectionWidget*>() )
   {
-    unitWidget->setMapCanvas( mMapCanvas );
+    unitWidget->setMapCanvas( mContext.mapCanvas() );
   }
   Q_FOREACH ( QgsDataDefinedButton* ddButton, findChildren<QgsDataDefinedButton*>() )
   {
     if ( ddButton->assistant() )
-      ddButton->assistant()->setMapCanvas( mMapCanvas );
+      ddButton->assistant()->setMapCanvas( mContext.mapCanvas() );
   }
 }
 
-const QgsMapCanvas* QgsSymbolLayerWidget::mapCanvas() const
+QgsSymbolWidgetContext QgsSymbolLayerWidget::context() const
 {
-  return mMapCanvas;
+  return mContext;
 }
 
 void QgsSymbolLayerWidget::registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description )
