@@ -501,7 +501,7 @@ class RasterWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_STANDARD:
             pass  # TODO
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.setText(value)
+            self.widget.setText(value)
         else:
             self.setComboValue(value)
 
@@ -511,7 +511,9 @@ class RasterWidgetWrapper(WidgetWrapper):
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.getText()
         else:
-            return self.comboValue()
+            def validator(v):
+                return bool(v) or self.param.optional
+            return self.comboValue(validator)
 
 
 class SelectionWidgetWrapper(WidgetWrapper):
@@ -568,7 +570,7 @@ class VectorWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_STANDARD:
             pass  # TODO
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.setText(value)
+            self.widget.setText(value)
         else:
             self.setComboValue(value)
 
@@ -582,7 +584,9 @@ class VectorWidgetWrapper(WidgetWrapper):
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.getText()
         else:
-            return self.comboValue()
+            def validator(v):
+                return bool(v) or self.param.optional
+            return self.comboValue(validator)
 
 class StringWidgetWrapper(WidgetWrapper):
 
@@ -702,9 +706,10 @@ class TableWidgetWrapper(WidgetWrapper):
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.getText()
         else:
-            return self.comboValue()
-        
-        
+            def validator(v):
+                return bool(v) or self.param.optional
+            return self.comboValue(validator)
+
 class TableFieldWidgetWrapper(WidgetWrapper):
 
     NOT_SET = '[Not set]'
@@ -801,8 +806,10 @@ class TableFieldWidgetWrapper(WidgetWrapper):
             elif self.dialogType == DIALOG_BATCH:
                 return self.widget.text()
             else:
-                return self.comboValue()
-        
+                def validator(v):
+                    return bool(v) or self.param.optional
+                return self.comboValue(validator)                
+            
     def anotherParameterWidgetHasChanged(self,wrapper):
         if wrapper.param.name == self.param.parent:
             layer = wrapper.value()
