@@ -30,7 +30,7 @@ from qgis.PyQt.QtCore import QPointF, Qt
 from qgis.PyQt.QtWidgets import QGraphicsItem, QGraphicsScene
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerArrowItem import ModelerArrowItem
-from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput
+from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput, CompoundValue
 
 
 class ModelerScene(QGraphicsScene):
@@ -64,6 +64,9 @@ class ModelerScene(QGraphicsScene):
         items = []
         if isinstance(value, list):
             for v in value:
+                items.extend(self.getItemsFromParamValue(v))
+        elif isinstance(value, CompoundValue):
+            for v in value.values:
                 items.extend(self.getItemsFromParamValue(v))
         elif isinstance(value, ValueFromInput):
             items.append((self.paramItems[value.name], 0))

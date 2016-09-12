@@ -52,6 +52,7 @@ from processing.core.outputs import (OutputRaster,
                                      OutputString,
                                      OutputExtent,
                                      OutputCrs)
+from processing.core.parameters import ParameterPoint, ParameterExtent
 
 from processing.modeler.ModelerAlgorithm import (ValueFromInput,
                                                  ValueFromOutput,
@@ -261,20 +262,15 @@ class ModelerParametersDialog(QDialog):
                 self.labels[param.name].setVisible(self.showAdvanced)
                 self.widgets[param.name].setVisible(self.showAdvanced)
 
-    def getAvailableValuesForParam(self, param):
-        outputType = None
-        if isinstance(param, ParameterCrs):
-            outputType = OutputCrs
-        return self.getAvailableValuesOfType(param.__class__, outputType)
-
     def getAvailableValuesOfType(self, paramType, outType=None, dataType=None):
         values = []
         inputs = self.model.inputs
         for i in list(inputs.values()):
             param = i.param
             if isinstance(param, paramType):
-                if dataType is not None and param.datatype in dataType:
-                    values.append(ValueFromInput(param.name))
+                if dataType is not None:
+                    if param.datatype in dataType:
+                        values.append(ValueFromInput(param.name))
                 else:
                     values.append(ValueFromInput(param.name))
         if outType is None:
@@ -340,12 +336,9 @@ class ModelerParametersDialog(QDialog):
                     value = alg.params[param.name]
                 else:
                     value = param.default
-
-                wrapper = self.wrappers[param.name]
-                wrapper.setValue(value)
-
+                self.wrappers[param.name].setValue(value)
             for name, out in alg.outputs.items():
-                widget = self.valueItems[name].setText(out.description)
+                self.valueItems[name].setText(out.description)
 
             selected = []
             dependencies = self.getAvailableDependencies()

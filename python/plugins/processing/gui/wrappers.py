@@ -455,39 +455,15 @@ class NumberWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-            return NumberInputPanel(self.param)
+            return NumberInputPanel(self.param, None)
         else:
-            widget = QComboBox()
-            widget.setEditable(True)
-            files = self.dialog.getAvailableValuesOfType(ParameterNumber, OutputNumber)
-            for f in files:
-                widget.addItem(self.dialog.resolveValueDescription(f), f)
-            return widget
+            return NumberInputPanel(self.param, self.dialog)
 
     def setValue(self, value):
-        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-            self.widget.setValue(value)
-        else:
-            self.setComboValue(value)
-
+        self.widget.setValue(value)
+        
     def value(self):
-        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-            return self.widget.getValue()
-        else:
-            def validator(v):
-                if str(v).strip():
-                    try:
-                        if self.param.isInteger:
-                            int(v)
-                        else:
-                            float(v)
-                        return True
-                    except:
-                        return False
-                else:
-                    return self.param.optional
-            return self.comboValue(validator)
-
+        return self.widget.getValue()
 
 class RasterWidgetWrapper(WidgetWrapper):
 
