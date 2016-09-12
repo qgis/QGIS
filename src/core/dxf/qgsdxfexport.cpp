@@ -3781,12 +3781,12 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer
 
   if ( penStyle != Qt::NoPen )
   {
-    const QgsAbstractGeometryV2 *tempGeom = geom;
+    const QgsAbstractGeometry *tempGeom = geom;
 
     switch ( QgsWkbTypes::flatType( geometryType ) )
     {
       case QgsWkbTypes::CircularString:
-      case QgsWkbypes::CompoundCurve:
+      case QgsWkbTypes::CompoundCurve:
         tempGeom = geom->segmentize();
         FALLTHROUGH;
       case QgsWkbTypes::LineString:
@@ -3819,7 +3819,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer
             tempGeom = geom;
         }
 
-        const QgsCoordinateSequenceV2 &cs = tempGeom->coordinateSequence();
+        const QgsCoordinateSequence &cs = tempGeom->coordinateSequence();
         for ( int i = 0; i < cs.size(); i++ )
         {
           writePolyline( cs.at( i ).at( 0 ), layer, lineStyleName, penColor, width );
@@ -3843,7 +3843,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer
             tempGeom = geom;
         }
 
-        const QgsCoordinateSequenceV2 &cs = tempGeom->coordinateSequence();
+        const QgsCoordinateSequence &cs = tempGeom->coordinateSequence();
         for ( int i = 0; i < cs.at( 0 ).size(); i++ )
         {
           writePolyline( cs.at( 0 ).at( i ), layer, lineStyleName, penColor, width );
@@ -3864,7 +3864,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer
             tempGeom = geom;
         }
 
-        const QgsCoordinateSequenceV2 &cs = tempGeom->coordinateSequence();
+        const QgsCoordinateSequence &cs = tempGeom->coordinateSequence();
         for ( int i = 0; i < cs.size(); i++ )
           for ( int j = 0; j < cs.at( i ).size(); j++ )
             writePolyline( cs.at( i ).at( j ), layer, lineStyleName, penColor, width );
@@ -3882,7 +3882,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer
 
   if ( brushStyle != Qt::NoBrush )
   {
-    const QgsAbstractGeometryV2 *tempGeom = geom;
+    const QgsAbstractGeometry *tempGeom = geom;
 
     switch ( QgsWkbTypes::flatType( geometryType ) )
     {
@@ -3893,12 +3893,15 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QString& layer
         writePolygon( tempGeom->coordinateSequence().at( 0 ), layer, "SOLID", brushColor );
         break;
 
-      case QgsWKBTypes::MultiPolygon:
-        const QgsCoordinateSequenceV2 &cs = geom->coordinateSequence();
+      case QgsWkbTypes::MultiPolygon:
+      {
+        const QgsCoordinateSequence &cs = geom->coordinateSequence();
         for ( int i = 0; i < cs.size(); i++ )
         {
           writePolygon( cs.at( i ), layer, "SOLID", brushColor );
         }
+        break;
+      }
 
       default:
         break;
