@@ -241,7 +241,7 @@ void QgsRasterLayerRenderer::Feedback::onNewData()
 
   // update only once upon a time
   // (preview itself takes some time)
-  if ( mLastPreview.msecsTo( QTime::currentTime() ) < mMinimalPreviewInterval )
+  if ( mLastPreview.isValid() && mLastPreview.msecsTo( QTime::currentTime() ) < mMinimalPreviewInterval )
     return;
 
   // TODO: update only the area that got new data
