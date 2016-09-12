@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspointclusterrenderer.h"
+#include "qgspointdisplacementrenderer.h"
 #include "qgssymbollayerutils.h"
 #include "qgspainteffectregistry.h"
 #include "qgspainteffect.h"
@@ -189,15 +190,30 @@ QgsPointClusterRenderer* QgsPointClusterRenderer::convertFromRenderer( const Qgs
   {
     return dynamic_cast<QgsPointClusterRenderer*>( renderer->clone() );
   }
-
-  if ( renderer->type() == "singleSymbol" ||
-       renderer->type() == "categorizedSymbol" ||
-       renderer->type() == "graduatedSymbol" ||
-       renderer->type() == "RuleRenderer" )
+  else if ( renderer->type() == "singleSymbol" ||
+            renderer->type() == "categorizedSymbol" ||
+            renderer->type() == "graduatedSymbol" ||
+            renderer->type() == "RuleRenderer" )
   {
     QgsPointClusterRenderer* pointRenderer = new QgsPointClusterRenderer();
     pointRenderer->setEmbeddedRenderer( renderer->clone() );
     return pointRenderer;
   }
-  return nullptr;
+  else if ( renderer->type() == "pointDisplacement" )
+  {
+    QgsPointClusterRenderer* pointRenderer = new QgsPointClusterRenderer();
+    const QgsPointDisplacementRenderer* displacementRenderer = static_cast< const QgsPointDisplacementRenderer* >( renderer );
+    if ( displacementRenderer->embeddedRenderer() )
+      pointRenderer->setEmbeddedRenderer( displacementRenderer->embeddedRenderer()->clone() );
+    pointRenderer->setTolerance( displacementRenderer->tolerance() );
+    pointRenderer->setToleranceUnit( displacementRenderer->toleranceUnit() );
+    pointRenderer->setToleranceMapUnitScale( displacementRenderer->toleranceMapUnitScale() );
+    if ( const_cast< QgsPointDisplacementRenderer* >( displacementRenderer )->centerSymbol() )
+      pointRenderer->setClusterSymbol( const_cast< QgsPointDisplacementRenderer* >( displacementRenderer )->centerSymbol()->clone() );
+    return pointRenderer;
+  }
+  else
+  {
+    return nullptr;
+  }
 }
