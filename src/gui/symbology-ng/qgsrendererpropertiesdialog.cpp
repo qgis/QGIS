@@ -74,7 +74,7 @@ static void _initRendererWidgetFunctions()
   _initRenderer( "graduatedSymbol", QgsGraduatedSymbolRendererWidget::create, "rendererGraduatedSymbol.svg" );
   _initRenderer( "RuleRenderer", QgsRuleBasedRendererWidget::create, "rendererRuleBasedSymbol.svg" );
   _initRenderer( "pointDisplacement", QgsPointDisplacementRendererWidget::create, "rendererPointDisplacementSymbol.svg" );
-  _initRenderer( "pointCluster", QgsPointClusterRendererWidget::create, "rendererPointDisplacementSymbol.svg" );
+  _initRenderer( "pointCluster", QgsPointClusterRendererWidget::create, "rendererPointClusterSymbol.svg" );
   _initRenderer( "invertedPolygonRenderer", QgsInvertedPolygonRendererWidget::create, "rendererInvertedSymbol.svg" );
   _initRenderer( "heatmapRenderer", QgsHeatmapRendererWidget::create, "rendererHeatmapSymbol.svg" );
   _initRenderer( "25dRenderer", Qgs25DRendererWidget::create, "renderer25dSymbol.svg" );
