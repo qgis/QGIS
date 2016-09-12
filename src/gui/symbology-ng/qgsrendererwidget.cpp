@@ -172,6 +172,7 @@ void QgsRendererWidget::changeSymbolWidth()
 
   QgsDataDefinedWidthDialog dlg( symbolList, mLayer );
   dlg.setMapCanvas( mMapCanvas );
+  dlg.setAdditionalExpressionContextScopes( mAdditionalScopes );
 
   if ( QDialog::Accepted == dlg.exec() )
   {
@@ -200,6 +201,7 @@ void QgsRendererWidget::changeSymbolSize()
 
   QgsDataDefinedSizeDialog dlg( symbolList, mLayer );
   dlg.setMapCanvas( mMapCanvas );
+  dlg.setAdditionalExpressionContextScopes( mAdditionalScopes );
 
   if ( QDialog::Accepted == dlg.exec() )
   {
@@ -228,6 +230,7 @@ void QgsRendererWidget::changeSymbolAngle()
 
   QgsDataDefinedRotationDialog dlg( symbolList, mLayer );
   dlg.setMapCanvas( mMapCanvas );
+  dlg.setAdditionalExpressionContextScopes( mAdditionalScopes );
 
   if ( QDialog::Accepted == dlg.exec() )
   {
@@ -267,6 +270,11 @@ void QgsRendererWidget::setMapCanvas( QgsMapCanvas *canvas )
 const QgsMapCanvas* QgsRendererWidget::mapCanvas() const
 {
   return mMapCanvas;
+}
+
+void QgsRendererWidget::setAdditionalExpressionContextScopes( const QList<QgsExpressionContextScope>& scopes )
+{
+  mAdditionalScopes = scopes;
 }
 
 void QgsRendererWidget::applyChanges()
@@ -324,6 +332,12 @@ QgsExpressionContext QgsDataDefinedValueDialog::createExpressionContext() const
 
   if ( vectorLayer() )
     expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
+
+  // additional scopes
+  Q_FOREACH ( const QgsExpressionContextScope& scope, mAdditionalScopes )
+  {
+    expContext.appendScope( new QgsExpressionContextScope( scope ) );
+  }
 
   return expContext;
 }

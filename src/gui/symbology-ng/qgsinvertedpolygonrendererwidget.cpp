@@ -126,6 +126,7 @@ void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged(
     mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRenderer*>( mRenderer->embeddedRenderer() )->clone() ) );
     connect( mEmbeddedRendererWidget.data(), SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
     mEmbeddedRendererWidget->setMapCanvas( mMapCanvas );
+    mEmbeddedRendererWidget->setAdditionalExpressionContextScopes( mAdditionalScopes );
 
     if ( layout()->count() > 2 )
     {

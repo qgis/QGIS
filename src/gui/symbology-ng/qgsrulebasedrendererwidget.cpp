@@ -261,6 +261,7 @@ void QgsRuleBasedRendererWidget::refineRuleCategoriesGui()
   w->setPanelTitle( tr( "Add categories to rules" ) );
   connect( w, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( refineRuleCategoriesAccepted( QgsPanelWidget* ) ) );
   w->setMapCanvas( mMapCanvas );
+  w->setAdditionalExpressionContextScopes( mAdditionalScopes );
   openPanel( w );
 }
 
@@ -270,6 +271,7 @@ void QgsRuleBasedRendererWidget::refineRuleRangesGui()
   w->setPanelTitle( tr( "Add ranges to rules" ) );
   connect( w, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( refineRuleRangesAccepted( QgsPanelWidget* ) ) );
   w->setMapCanvas( mMapCanvas );
+  w->setAdditionalExpressionContextScopes( mAdditionalScopes );
   openPanel( w );
 }
 

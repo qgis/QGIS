@@ -65,6 +65,12 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
      */
     const QgsMapCanvas* mapCanvas() const;
 
+    /** Sets a list of additional expression context scopes to show as available within the renderer.
+     * @param scopes list of additional scopes which will be added in order to the end of the default expression context
+     * @note added in QGIS 3.0
+     */
+    void setAdditionalExpressionContextScopes( const QList< QgsExpressionContextScope >& scopes );
+
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
@@ -90,6 +96,9 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     QAction* mCopyAction;
     QAction* mPasteAction;
     QgsMapCanvas* mMapCanvas;
+
+    //! List of additional expression context scopes to add to default expression context
+    QList< QgsExpressionContextScope > mAdditionalScopes;
 
     /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
       and by connecting the slot contextMenuViewCategories(const QPoint&)*/
@@ -120,6 +129,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
      * This can be overwritten in subclasses.
      */
     virtual void apply();
+
 
 };
 
@@ -170,6 +180,12 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
      */
     const QgsVectorLayer* vectorLayer() const { return mLayer; }
 
+    /** Sets a list of additional expression context scopes to show as available for the symbol.
+     * @param scopes list of additional scopes which will be added in order to the end of the default expression context
+     * @note added in QGIS 3.0
+     */
+    void setAdditionalExpressionContextScopes( const QList< QgsExpressionContextScope >& scopes ) { mAdditionalScopes = scopes; }
+
   public slots:
     void dataDefinedChanged();
 
@@ -180,6 +196,9 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
      * @note May be missing Python bindings depending on the platform.
      */
     void init( const QString& description ); // needed in children ctor to call virtual
+
+    //! List of additional scopes to add to default expression context
+    QList< QgsExpressionContextScope > mAdditionalScopes;
 
   private:
     QgsDataDefined symbolDataDefined() const;

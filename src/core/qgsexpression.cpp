@@ -5094,6 +5094,10 @@ void QgsExpression::initVariableHelp()
 
   gVariableHelpTexts.insert( "symbol_color", QCoreApplication::translate( "symbol_color", "Color of symbol used to render the feature." ) );
   gVariableHelpTexts.insert( "symbol_angle", QCoreApplication::translate( "symbol_angle", "Angle of symbol used to render the feature (valid for marker symbols only)." ) );
+
+  //cluster variables
+  gVariableHelpTexts.insert( "cluster_color", QCoreApplication::translate( "cluster_color", "Color of symbols within a cluster, or NULL if symbols have mixed colors." ) );
+  gVariableHelpTexts.insert( "cluster_size", QCoreApplication::translate( "cluster_size", "Number of symbols contained within a cluster." ) );
 }
 
 QString QgsExpression::variableHelpText( const QString &variableName, bool showValue, const QVariant &value )

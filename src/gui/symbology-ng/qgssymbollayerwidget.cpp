@@ -84,13 +84,26 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1, true ) );
 
+  // additional scopes
+  Q_FOREACH ( const QgsExpressionContextScope& scope, mAdditionalScopes )
+  {
+    expContext.appendScope( new QgsExpressionContextScope( scope ) );
+  }
+
   //TODO - show actual value
   expContext.setOriginalValueVariable( QVariant() );
+
   expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR
                                       << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
-                                      << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM );
+                                      << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
+                                      << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE );
 
   return expContext;
+}
+
+void QgsSymbolLayerWidget::setAdditionalExpressionContextScopes( const QList<QgsExpressionContextScope>& scopes )
+{
+  mAdditionalScopes = scopes;
 }
 
 void QgsSymbolLayerWidget::setMapCanvas( QgsMapCanvas *canvas )

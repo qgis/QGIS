@@ -528,6 +528,7 @@ void QgsCategorizedSymbolRendererWidget::changeSelectedSymbols()
     QgsSymbol* newSymbol = mCategorizedSymbol->clone();
     QgsSymbolSelectorDialog dlg( newSymbol, mStyle, mLayer, this );
     dlg.setMapCanvas( mMapCanvas );
+    dlg.setAdditionalExpressionContextScopes( mAdditionalScopes );
     if ( !dlg.exec() )
     {
       delete newSymbol;
@@ -550,6 +551,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol()
   QgsSymbol* newSymbol = mCategorizedSymbol->clone();
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
   dlg->setMapCanvas( mMapCanvas );
+  dlg->setAdditionalExpressionContextScopes( mAdditionalScopes );
 
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
   connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
@@ -594,6 +596,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
 
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( symbol, mStyle, mLayer, nullptr );
   dlg->setMapCanvas( mMapCanvas );
+  dlg->setAdditionalExpressionContextScopes( mAdditionalScopes );
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
   connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
   openPanel( dlg );

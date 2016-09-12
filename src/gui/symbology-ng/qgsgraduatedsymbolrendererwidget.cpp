@@ -830,6 +830,7 @@ void QgsGraduatedSymbolRendererWidget::changeGraduatedSymbol()
   QgsSymbol* newSymbol = mGraduatedSymbol->clone();
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
   dlg->setMapCanvas( mMapCanvas );
+  dlg->setAdditionalExpressionContextScopes( mAdditionalScopes );
 
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
   connect( dlg, SIGNAL( accepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
@@ -908,6 +909,7 @@ void QgsGraduatedSymbolRendererWidget::changeRangeSymbol( int rangeIdx )
   QgsSymbol* newSymbol = mRenderer->ranges()[rangeIdx].symbol()->clone();
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
   dlg->setMapCanvas( mMapCanvas );
+  dlg->setAdditionalExpressionContextScopes( mAdditionalScopes );
 
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
   connect( dlg, SIGNAL( accepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );

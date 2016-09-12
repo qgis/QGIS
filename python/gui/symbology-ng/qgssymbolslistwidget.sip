@@ -14,6 +14,12 @@ class QgsSymbolsListWidget : QWidget
      */
     QgsExpressionContext* expressionContext() const;
 
+    /** Sets a list of additional expression context scopes to show as available within the symbol.
+     * @param scopes list of additional scopes which will be added in order to the end of the default expression context
+     * @note added in QGIS 3.0
+     */
+    void setAdditionalExpressionContextScopes( const QList< QgsExpressionContextScope >& scopes );
+
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
      * @param canvas map canvas

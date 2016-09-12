@@ -126,6 +126,15 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const
   mEffectWidget->setPaintEffect( mLayer->paintEffect() );
 }
 
+void QgsLayerPropertiesWidget::setAdditionalExpressionContextScopes( const QList<QgsExpressionContextScope>& scopes )
+{
+  mAdditionalScopes = scopes;
+
+  QgsSymbolLayerWidget* w = dynamic_cast< QgsSymbolLayerWidget* >( stackedWidget->currentWidget() );
+  if ( w )
+    w->setAdditionalExpressionContextScopes( mAdditionalScopes );
+}
+
 void QgsLayerPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;
@@ -191,6 +200,7 @@ void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayer* layer )
     if ( w )
     {
       w->setExpressionContext( mPresetExpressionContext );
+      w->setAdditionalExpressionContextScopes( mAdditionalScopes );
       if ( mMapCanvas )
         w->setMapCanvas( mMapCanvas );
       w->setSymbolLayer( layer );

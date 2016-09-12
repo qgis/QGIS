@@ -19,6 +19,13 @@ class QgsSymbolLayerWidget : QWidget
      */
     QgsExpressionContext* expressionContext() const;
 
+    /** Sets a list of additional expression context scopes to show as available within the layer.
+     * @param scopes list of additional scopes which will be added in order to the end of the default expression context
+     * @note added in QGIS 3.0
+     * @see setExpressionContext()
+     */
+    void setAdditionalExpressionContextScopes( const QList< QgsExpressionContextScope >& scopes );
+
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
      * @param canvas map canvas
@@ -47,6 +54,7 @@ class QgsSymbolLayerWidget : QWidget
      * be kept alive for the lifetime of the layer widget.
      * @note added in QGIS 2.12
      * @see expressionContext()
+     * @see setAdditionalExpressionContextScopes()
      */
     void setExpressionContext( QgsExpressionContext* context );
 

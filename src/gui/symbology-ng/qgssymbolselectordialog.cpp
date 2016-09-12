@@ -286,6 +286,11 @@ void QgsSymbolSelectorWidget::setExpressionContext( QgsExpressionContext *contex
   updatePreview();
 }
 
+void QgsSymbolSelectorWidget::setAdditionalExpressionContextScopes( const QList<QgsExpressionContextScope>& scopes )
+{
+  mAdditionalScopes = scopes;
+}
+
 void QgsSymbolSelectorWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;
@@ -416,6 +421,7 @@ void QgsSymbolSelectorWidget::layerChanged()
     QgsLayerPropertiesWidget *layerProp = new QgsLayerPropertiesWidget( currentItem->layer(), parent->symbol(), mVectorLayer );
     layerProp->setDockMode( this->dockMode() );
     layerProp->setExpressionContext( mPresetExpressionContext.data() );
+    layerProp->setAdditionalExpressionContextScopes( mAdditionalScopes );
     layerProp->setMapCanvas( mMapCanvas );
     setWidget( layerProp );
     connect( layerProp, SIGNAL( changed() ), mDataDefineRestorer.data(), SLOT( restore() ) );
@@ -433,6 +439,7 @@ void QgsSymbolSelectorWidget::layerChanged()
     // Now populate symbols of that type using the symbols list widget:
     QgsSymbolsListWidget *symbolsList = new QgsSymbolsListWidget( currentItem->symbol(), mStyle, mAdvancedMenu, this, mVectorLayer );
     symbolsList->setExpressionContext( mPresetExpressionContext.data() );
+    symbolsList->setAdditionalExpressionContextScopes( mAdditionalScopes );
     symbolsList->setMapCanvas( mMapCanvas );
 
     setWidget( symbolsList );
@@ -709,6 +716,11 @@ QMenu *QgsSymbolSelectorDialog::advancedMenu()
 void QgsSymbolSelectorDialog::setExpressionContext( QgsExpressionContext *context )
 {
   mSelectorWidget->setExpressionContext( context );
+}
+
+void QgsSymbolSelectorDialog::setAdditionalExpressionContextScopes( const QList<QgsExpressionContextScope>& scopes )
+{
+  mSelectorWidget->setAdditionalExpressionContextScopes( scopes );
 }
 
 QgsExpressionContext *QgsSymbolSelectorDialog::expressionContext() const

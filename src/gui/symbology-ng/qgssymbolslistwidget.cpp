@@ -130,6 +130,11 @@ QgsSymbolsListWidget::~QgsSymbolsListWidget()
   btnAdvanced->menu()->removeAction( mClipFeaturesAction );
 }
 
+void QgsSymbolsListWidget::setAdditionalExpressionContextScopes( const QList<QgsExpressionContextScope>& scopes )
+{
+  mAdditionalScopes = scopes;
+}
+
 void QgsSymbolsListWidget::setMapCanvas( QgsMapCanvas* canvas )
 {
   mMapCanvas = canvas;
@@ -447,6 +452,12 @@ QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
   }
 
   expContext << QgsExpressionContextUtils::layerScope( layer() );
+
+  // additional scopes
+  Q_FOREACH ( const QgsExpressionContextScope& scope, mAdditionalScopes )
+  {
+    expContext.appendScope( new QgsExpressionContextScope( scope ) );
+  }
 
   return expContext;
 }

@@ -214,6 +214,12 @@ void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
   {
     QgsRendererWidget* w = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
     w->setMapCanvas( mMapCanvas );
+    QgsExpressionContextScope scope;
+    scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "" );
+    scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0 );
+    QList< QgsExpressionContextScope > scopes = mAdditionalScopes;
+    scopes << scope;
+    w->setAdditionalExpressionContextScopes( scopes );
     connect( w, SIGNAL( widgetChanged() ), this, SLOT( updateRendererFromWidget() ) );
     openPanel( w );
   }
@@ -351,6 +357,13 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
   QgsMarkerSymbol* markerSymbol = mRenderer->centerSymbol()->clone();
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( markerSymbol, QgsStyle::defaultStyle(), mLayer, this );
   dlg->setMapCanvas( mMapCanvas );
+
+  QgsExpressionContextScope scope;
+  scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "" );
+  scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0 );
+  QList< QgsExpressionContextScope > scopes = mAdditionalScopes;
+  scopes << scope;
+  dlg->setAdditionalExpressionContextScopes( scopes );
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateCenterSymbolFromWidget() ) );
   connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
   openPanel( dlg );

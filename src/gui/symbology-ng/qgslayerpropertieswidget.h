@@ -17,6 +17,7 @@
 #define QGSLAYERPROPERTIESWIDGET_H
 
 #include "ui_widget_layerproperties.h"
+#include "qgsexpressioncontext.h"
 
 class QgsSymbol;
 class QgsSymbolLayer;
@@ -24,7 +25,6 @@ class QgsSymbolLayerWidget;
 class QgsVectorLayer;
 class QgsMapCanvas;
 class QgsPanelWidget;
-class QgsExpressionContext;
 
 class SymbolLayerItem;
 
@@ -48,6 +48,13 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, private Ui::L
      * @see setExpressionContext()
      */
     QgsExpressionContext* expressionContext() const { return mPresetExpressionContext; }
+
+    /** Sets a list of additional expression context scopes to show as available within the layer.
+     * @param scopes list of additional scopes which will be added in order to the end of the default expression context
+     * @note added in QGIS 3.0
+     * @see setExpressionContext()
+     */
+    void setAdditionalExpressionContextScopes( const QList< QgsExpressionContextScope >& scopes );
 
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
@@ -74,6 +81,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, private Ui::L
      * be kept alive for the lifetime of the properties widget.
      * @note added in QGIS 2.12
      * @see expressionContext()
+     * @see setAdditionalExpressionContextScopes()
      */
     void setExpressionContext( QgsExpressionContext* context );
 
@@ -96,6 +104,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, private Ui::L
 
   private:
     QgsExpressionContext* mPresetExpressionContext;
+    QList< QgsExpressionContextScope > mAdditionalScopes;
     QgsMapCanvas* mMapCanvas;
 
 };

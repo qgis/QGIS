@@ -438,15 +438,15 @@ QgsExpressionContextScope* QgsPointDistanceRenderer::createGroupScope( const Clu
 
     if ( groupColor.isValid() )
     {
-      clusterScope->setVariable( "cluster_color", QgsSymbolLayerUtils::encodeColor( groupColor ) );
+      clusterScope->setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, QgsSymbolLayerUtils::encodeColor( groupColor ) );
     }
     else
     {
       //mixed colors
-      clusterScope->setVariable( "cluster_color", "" );
+      clusterScope->setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "" );
     }
 
-    clusterScope->setVariable( "cluster_size", group.size() );
+    clusterScope->setVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, group.size() );
   }
   return clusterScope;
 }
