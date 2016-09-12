@@ -206,11 +206,6 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      */
     void lockLayer();
 
-    /**
-     * Save the current active symbol layer into the users saved styles.
-     */
-    Q_DECL_DEPRECATED void saveSymbol();
-
     //! Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
     //! @note added in QGIS 2.14
     void duplicateLayer();
@@ -329,8 +324,6 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     void removeLayer();
 
     void lockLayer();
-
-    Q_DECL_DEPRECATED void saveSymbol();
 
     //! Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
     //! @note added in QGIS 2.14

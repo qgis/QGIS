@@ -97,13 +97,6 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
 
     QgsMapCanvas* mMapCanvas;
 
-    /** Get label for data defined entry.
-     * Implemented only for 'size' of marker symbols
-     * @note added in 2.1
-     * @deprecated no longer used
-     */
-    Q_DECL_DEPRECATED virtual QString dataDefinedPropertyLabel( const QString &entryName );
-
   signals:
     /**
      * Should be emitted whenever configuration changes happened on this symbol layer configuration.

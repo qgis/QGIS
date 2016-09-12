@@ -72,8 +72,6 @@ class QgsSymbolSelectorWidget : QgsPanelWidget
 
     void lockLayer();
 
-    void saveSymbol() /Deprecated/;
-
     //! Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
     //! @note added in QGIS 2.14
     void duplicateLayer();
@@ -158,8 +156,6 @@ class QgsSymbolSelectorDialog : QDialog
     void removeLayer();
 
     void lockLayer();
-
-    void saveSymbol() /Deprecated/;
 
     //! Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
     //! @note added in QGIS 2.14

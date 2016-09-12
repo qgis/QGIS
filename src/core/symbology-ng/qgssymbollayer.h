@@ -154,21 +154,6 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual QSet<QString> usedAttributes() const;
 
-    /** Returns a data defined expression for a property, if set
-     * @deprecated use getDataDefinedProperty instead
-     */
-    Q_DECL_DEPRECATED virtual const QgsExpression* dataDefinedProperty( const QString& property ) const;
-
-    /** Returns a data defined expression for a property, if set
-     * @deprecated use getDataDefinedProperty instead
-     */
-    Q_DECL_DEPRECATED virtual QString dataDefinedPropertyString( const QString& property ) const;
-
-    /** Sets a data defined expression for a property
-     * @deprecated use setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined ) instead
-     */
-    Q_DECL_DEPRECATED virtual void setDataDefinedProperty( const QString& property, const QString& expressionString );
-
     /** Returns the data defined property corresponding to the specified property key
      * @param property property key
      * @returns matching data defined property if it exists
@@ -220,23 +205,6 @@ class CORE_EXPORT QgsSymbolLayer
      * @note added in QGIS 2.9
      */
     virtual bool hasDataDefinedProperty( const QString& property ) const;
-
-    /** Evaluates the matching data defined property and returns the calculated
-     * value. Prior to evaluation the data defined property must be prepared
-     * by calling @link prepareExpressions @endlink.
-     * @param property property key
-     * @param feature pointer to the feature to use during expression or field
-     * evaluation
-     * @param defaultVal default value to return if evaluation was not successful
-     * @param ok if specified, will be set to true if evaluation was successful
-     * @returns calculated value for data defined property, or default value
-     * if property does not exist or is deactived.
-     * @see hasDataDefinedProperty
-     * @see getDataDefinedProperty
-     * @note added in QGIS 2.9
-     * @deprecated use variant which takes QgsSymbolRenderContext instead
-     */
-    Q_DECL_DEPRECATED virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsFeature* feature, const QVariant& defaultVal = QVariant(), bool *ok = nullptr ) const;
 
     /** Evaluates the matching data defined property and returns the calculated
      * value. Prior to evaluation the data defined property must be prepared
@@ -317,11 +285,6 @@ class CORE_EXPORT QgsSymbolLayer
      * @note added in QGIS 2.12
      */
     virtual void prepareExpressions( const QgsSymbolRenderContext& context );
-
-    /** Returns the data defined expression associated with a property
-     * @deprecated use getDataDefinedProperty or evaluateDataDefinedProperty instead
-     */
-    Q_DECL_DEPRECATED virtual QgsExpression* expression( const QString& property ) const;
 
     /** Saves all data defined properties to a string map.
      * @param stringMap destination string map

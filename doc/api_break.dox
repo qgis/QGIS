@@ -941,6 +941,10 @@ parameters or QgsSymbol::OutputUnitList parameters now take QgsUnitTypes::Render
 <ul>
 <li>The deprecated prepareExpressions( const QgsFields* fields, double scale = -1.0 ) method has been removed. Use
 the variant which takes QgsSymbolRenderContext instead.</li>
+<li>The deprecated methods dataDefinedProperty( const QString& property ) and dataDefinedPropertyString() were removed. Use getDataDefinedProperty() instead.</li>
+<li>setDataDefinedProperty( const QString& property, const QString& expressionString ) was removed. Use setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined ) instead.</li>
+<li>evaluateDataDefinedProperty( const QString& property, const QgsFeature* feature ) was removed. Use the variant which takes QgsSymbolRenderContext instead.</li>
+<li>expression() was removed. Use getDataDefinedProperty or evaluateDataDefinedProperty instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsSymbolRenderContext QgsSymbolRenderContext (renamed from QgsSymbolV2RenderContext)
@@ -955,6 +959,18 @@ the variant which takes QgsSymbolRenderContext instead.</li>
 <ul>
 <li>encodeOutputUnit() and decodeOutputUnit() were removed. QgsUnitTypes::encodeUnit() and QgsUnitTypes::decodeRenderUnit() should be used instead.</li>
 <li>The signatures for wellKnownMarkerToSld() and wellKnownMarkerFromSld() were changed.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsSymbolSelectorDialog QgsSymbolSelectorDialog
+
+<ul>
+<li>saveSymbol() was removed.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsSymbolSelectorWidget QgsSymbolSelectorWidget
+
+<ul>
+<li>saveSymbol() was removed.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsTolerance QgsTolerance
