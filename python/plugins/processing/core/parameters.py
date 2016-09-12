@@ -29,6 +29,7 @@ import sys
 import os
 from inspect import isclass
 from copy import deepcopy
+import numbers
 
 from qgis.utils import iface
 from qgis.PyQt.QtCore import QCoreApplication
@@ -37,6 +38,7 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinat
 
 from processing.tools.vector import resolveFieldIndex, features
 from processing.tools import dataobjects
+from processing.core.outputs import OutputNumber
 
 def parseBool(s):
     if s is None or s == unicode(None).lower():
@@ -189,6 +191,9 @@ class Parameter:
     
     def evaluate(self, alg):
         pass
+    
+    def evaluateForModeler(self, value, model):
+        return value
 
 class ParameterBoolean(Parameter):
 
@@ -807,6 +812,7 @@ class ParameterNumber(Parameter):
                 self.value = float(v)
                 return True
             except:
+                raise
                 return False
         else:    
             try:
@@ -823,6 +829,7 @@ class ParameterNumber(Parameter):
                 self.value = value
                 return True
             except:
+                raise
                 return False
 
     def getAsScriptCode(self):
@@ -840,8 +847,8 @@ class ParameterNumber(Parameter):
             default = definition.strip()[len('number') + 1:] or None
             return ParameterNumber(name, descName, default=default, optional=isOptional)
     
-    def _evaluate(self):
-        exp = QgsExpression(self.value)
+    def _evaluate(self, value):
+        exp = QgsExpression(value)
         if exp.hasParserError():
             raise ValueError(self.tr("Error in parameter expression: ") + exp.parserErrorString())
         result = exp.evaluate(_expressionContext())
@@ -850,7 +857,26 @@ class ParameterNumber(Parameter):
         return result
         
     def evaluate(self, alg):
-        self.value = self._evaluate(self.value)
+        if isinstance(self.value, basestring):
+            self.value = self._evaluate(self.value)
+        
+    def evaluateForModeler(self, value, model):
+        if isinstance(value, numbers.Number):
+            return value
+        variables = {}
+        for param in model.parameters:
+            if isinstance(param, ParameterNumber):
+                variables["@" + param.name] = param.value
+        for alg in model.algs.values():
+            for out in alg.algorithm.outputs:
+                if isinstance(out, OutputNumber):
+                    variables["@%s_%s" % (alg.name, out.name)] = out.value
+        for k,v in variables.iteritems():
+            print k,v
+            value = value.replace(k,unicode(v))
+        
+        print value
+        return value
     
     def expressionContext(self):
         return _expressionContext()
@@ -1425,9 +1451,12 @@ def getParameterFromString(s):
             isAdvanced = True
         tokens = s.split("|")
         params = [t if unicode(t) != unicode(None) else None for t in tokens[1:]]
-        clazz = getattr(sys.modules[__name__], tokens[0])
-        param = clazz(*params)
-        param.isAdvanced = isAdvanced
+        try:
+            clazz = getattr(sys.modules[__name__], tokens[0])
+            param = clazz(*params)
+            param.isAdvanced = isAdvanced
+        except:
+            return None
     else:  # try script syntax
         for paramClass in paramClasses:
             try:

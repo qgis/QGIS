@@ -211,7 +211,8 @@ class ModelerParameterDefinitionDialog(QDialog):
                 default = self.param.default
                 if self.param.isInteger:
                     default = int(math.floor(default))
-                self.defaultTextBox.setText(unicode(default))
+                if default:
+                    self.defaultTextBox.setText(unicode(default))
             self.horizontalLayoutDefault.addWidget(self.defaultTextBox)
             self.verticalLayout.addLayout(self.horizontalLayoutDefault)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_STRING or \
@@ -293,7 +294,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 or isinstance(self.param, ParameterBoolean):
             self.param = ParameterBoolean(name, description,
                                           self.state.isChecked())
-        elif self.paramType in ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD \
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD \
                 or isinstance(self.param, ParameterTableField):
             if self.parentCombo.currentIndex() < 0:
                 QMessageBox.warning(self, self.tr('Unable to define parameter'),

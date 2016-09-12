@@ -54,7 +54,7 @@ from processing.core.parameters import (getParameterFromString,
                                         ParameterCrs,
                                         ParameterDataObject,
                                         ParameterMultipleInput)
-from processing.tools import dataobjects
+
 from processing.gui.Help2Html import getHtmlFromDescriptionsDict
 from processing.core.alglist import algList
 
@@ -202,6 +202,27 @@ class ValueFromOutput():
     def asPythonParameter(self):
         return "outputs_%s['%s']" % (self.alg, self.output)
 
+class CompoundValue():
+
+    def __init__(self, values = [], definition=""):
+        self.values = values
+        self.definition = definition
+
+    def todict(self):
+        return self.__dict__
+
+    def __eq__(self, other):
+        try:
+            return self.values == other.values and self.definition == other.definition
+        except:
+            return False
+
+    def __str__(self):
+        return self.definition
+
+    def asPythonParameter(self):
+        return "" #TODO
+
 
 class ModelerAlgorithm(GeoAlgorithm):
 
@@ -341,6 +362,12 @@ class ModelerAlgorithm(GeoAlgorithm):
         for value in alg.params.values():
             if value is None:
                 continue
+            if isinstance(value, CompoundValue):
+                print value
+                for v in value.values:
+                    if isinstance(v, ValueFromOutput):
+                        algs.add(v.alg)
+                        algs.update(self.getDependsOnAlgorithms(v.alg)) 
             if isinstance(value, list):
                 for v in value:
                     if isinstance(v, ValueFromOutput):
@@ -385,7 +412,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         for param in algInstance.parameters:
             if not param.hidden:
                 if param.name in alg.params:
-                    value = self.resolveValue(alg.params[param.name])
+                    value = self.resolveValue(alg.params[param.name], param)
                 else:
                     if iface is not None:
                         iface.messageBar().pushMessage(self.tr("Warning"),
@@ -428,17 +455,20 @@ class ModelerAlgorithm(GeoAlgorithm):
     def getSafeNameForOutput(self, algName, outName):
         return outName + '_ALG' + algName
 
-    def resolveValue(self, value):
+    def resolveValue(self, value, param):
         if value is None:
-            return None
+            v = None
         if isinstance(value, list):
-            return ";".join([self.resolveValue(v) for v in value])
-        if isinstance(value, ValueFromInput):
-            return self.getParameterFromName(value.name).value
+            v = ";".join([self.resolveValue(v, param) for v in value])
+        elif isinstance(value, CompoundValue):
+            v = self.resolveValue(value.definition, param)
+        elif isinstance(value, ValueFromInput):
+            v = self.getParameterFromName(value.name).value
         elif isinstance(value, ValueFromOutput):
-            return self.algs[value.alg].algorithm.getOutputFromName(value.output).value
+            v = self.algs[value.alg].algorithm.getOutputFromName(value.output).value
         else:
-            return value
+            v = value
+        return param.evaluateForModeler(v, self)
 
     def processAlgorithm(self, progress):
         executed = []
@@ -569,127 +599,12 @@ class ModelerAlgorithm(GeoAlgorithm):
         return model
 
     @staticmethod
-    def fromJsonFile(filename):
+    def fromFile(filename):
         with open(filename) as f:
             s = f.read()
         alg = ModelerAlgorithm.fromJson(s)
         alg.descriptionFile = filename
         return alg
-
-    ############LEGACY METHOD TO SUPPORT OLD FORMAT###########
-
-    LINE_BREAK_STRING = '%%%'
-
-    @staticmethod
-    def fromFile(filename):
-        try:
-            alg = ModelerAlgorithm.fromJsonFile(filename)
-            return alg
-        except WrongModelException:
-            alg = ModelerAlgorithm.fromOldFormatFile(filename)
-            return alg
-
-    @staticmethod
-    def fromOldFormatFile(filename):
-        def _tr(s):
-            return QCoreApplication.translate('ModelerAlgorithm', s)
-        hardcodedValues = {}
-        modelParameters = []
-        modelAlgs = []
-        model = ModelerAlgorithm()
-        model.descriptionFile = filename
-        lines = codecs.open(filename, 'r', encoding='utf-8')
-        line = lines.readline().strip('\n').strip('\r')
-        try:
-            while line != '':
-                if line.startswith('PARAMETER:'):
-                    paramLine = line[len('PARAMETER:'):]
-                    param = getParameterFromString(paramLine)
-                    if param:
-                        pass
-                    else:
-                        raise WrongModelException(
-                            _tr('Error in parameter line: %s', 'ModelerAlgorithm') % line)
-                    line = lines.readline().strip('\n')
-                    tokens = line.split(',')
-                    model.addParameter(ModelerParameter(param,
-                                                        QPointF(float(tokens[0]), float(tokens[1]))))
-                    modelParameters.append(param.name)
-                elif line.startswith('VALUE:'):
-                    valueLine = line[len('VALUE:'):]
-                    tokens = valueLine.split('===')
-                    name = tokens[0]
-                    value = tokens[1].replace(ModelerAlgorithm.LINE_BREAK_STRING, '\n')
-                    hardcodedValues[name] = value
-                elif line.startswith('NAME:'):
-                    model.name = line[len('NAME:'):]
-                elif line.startswith('GROUP:'):
-                    model.group = line[len('GROUP:'):]
-                elif line.startswith('ALGORITHM:'):
-                    algLine = line[len('ALGORITHM:'):]
-                    alg = algList.getAlgorithm(algLine)
-                    if alg is not None:
-                        modelAlg = Algorithm(alg.commandLineName())
-                        modelAlg.description = alg.name
-                        posline = lines.readline().strip('\n').strip('\r')
-                        tokens = posline.split(',')
-                        modelAlg.pos = QPointF(float(tokens[0]), float(tokens[1]))
-                        # dependenceline = lines.readline().strip('\n').strip('\r')
-                        for param in alg.parameters:
-                            if not param.hidden:
-                                line = lines.readline().strip('\n').strip('\r')
-                                if line == unicode(None):
-                                    modelAlg.params[param.name] = None
-                                else:
-                                    tokens = line.split('|')
-                                    try:
-                                        algIdx = int(tokens[0])
-                                    except:
-                                        raise WrongModelException(
-                                            _tr('Number of parameters in the '
-                                                '{} algorithm does not match '
-                                                'current Processing '
-                                                'implementation'.format(alg.name)))
-                                    if algIdx == -1:
-                                        if tokens[1] in modelParameters:
-                                            modelAlg.params[param.name] = ValueFromInput(tokens[1])
-                                        else:
-                                            modelAlg.params[param.name] = hardcodedValues[tokens[1]]
-                                    else:
-                                        modelAlg.params[param.name] = ValueFromOutput(algIdx, tokens[1])
-
-                        for out in alg.outputs:
-                            if not out.hidden:
-                                line = lines.readline().strip('\n').strip('\r')
-                                if unicode(None) != line:
-                                    if '|' in line:
-                                        tokens = line.split('|')
-                                        name = tokens[0]
-                                        tokens = tokens[1].split(',')
-                                        pos = QPointF(float(tokens[0]), float(tokens[1]))
-                                    else:
-                                        name = line
-                                        pos = None
-                                    modelerOutput = ModelerOutput(name)
-                                    modelerOutput.pos = pos
-                                    modelAlg.outputs[out.name] = modelerOutput
-
-                        model.addAlgorithm(modelAlg)
-                        modelAlgs.append(modelAlg.name)
-                    else:
-                        raise WrongModelException(
-                            _tr('Error in algorithm name: %s',) % algLine)
-                line = lines.readline().strip('\n').strip('\r')
-            for modelAlg in model.algs.values():
-                for name, value in modelAlg.params.iteritems():
-                    if isinstance(value, ValueFromOutput):
-                        value.alg = modelAlgs[value.alg]
-            return model
-        except Exception as e:
-            if isinstance(e, WrongModelException):
-                raise e
-            else:
-                raise WrongModelException(_tr('Error in model definition line: ') + '%s\n%s' % (line.strip(), traceback.format_exc()))
 
     def toPython(self):
         s = ['##%s=name' % self.name]
