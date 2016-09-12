@@ -555,6 +555,7 @@ void QgsVectorLayerFeatureIterator::prepareFields()
   mPreparedFields.clear();
   mFieldsToPrepare.clear();
   mFetchJoinInfo.clear();
+  mOrderedJoinInfoList.clear();
 
   mExpressionContext.reset( new QgsExpressionContext() );
   mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
@@ -571,6 +572,70 @@ void QgsVectorLayerFeatureIterator::prepareFields()
 
     mPreparedFields << fieldIdx;
     prepareField( fieldIdx );
+  }
+
+  //sort joins by dependency
+  if ( mFetchJoinInfo.size() > 0 )
+  {
+    createOrderedJoinList();
+  }
+}
+
+void QgsVectorLayerFeatureIterator::createOrderedJoinList()
+{
+  mOrderedJoinInfoList = mFetchJoinInfo.values();
+  if ( mOrderedJoinInfoList.size() < 2 )
+  {
+    return;
+  }
+
+  QSet<int> resolvedFields; //todo: get provider / virtual fields without joins
+
+  //add all provider fields without joins as resolved fields
+  QList< int >::const_iterator prepFieldIt = mPreparedFields.constBegin();
+  for ( ; prepFieldIt != mPreparedFields.constEnd(); ++prepFieldIt )
+  {
+    if ( mSource->mFields.fieldOrigin( *prepFieldIt ) != QgsFields::OriginJoin )
+    {
+      resolvedFields.insert( *prepFieldIt );
+    }
+  }
+
+  //iterate through the joins. If target field is not yet covered, move the entry to the end of the list
+
+  //some join combinations might not have a resolution at all
+  int maxIterations = ( mOrderedJoinInfoList.size() + 1 ) * mOrderedJoinInfoList.size() / 2.0;
+  int currentIteration = 0;
+
+  for ( int i = 0; i < mOrderedJoinInfoList.size() - 1; ++i )
+  {
+    if ( !resolvedFields.contains( mOrderedJoinInfoList.at( i ).targetField ) )
+    {
+      mOrderedJoinInfoList.append( mOrderedJoinInfoList.at( i ) );
+      mOrderedJoinInfoList.removeAt( i );
+      --i;
+    }
+    else
+    {
+      int offset = mOrderedJoinInfoList.at( i ).indexOffset;
+      int joinField = mOrderedJoinInfoList.at( i ).joinField;
+
+      QgsAttributeList attributes = mOrderedJoinInfoList.at( i ).attributes;
+      QgsAttributeList::const_iterator attIt = attributes.constBegin();
+      for ( ; attIt != attributes.constEnd(); ++attIt )
+      {
+        if ( *attIt != joinField )
+        {
+          resolvedFields.insert( joinField < *attIt ? *attIt + offset - 1 : *attIt + offset );
+        }
+      }
+    }
+
+    ++currentIteration;
+    if ( currentIteration >= maxIterations )
+    {
+      break;
+    }
   }
 }
 
@@ -598,21 +663,19 @@ void QgsVectorLayerFeatureIterator::prepareField( int fieldIdx )
 
 void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
 {
-  QMap<const QgsVectorJoinInfo*, FetchJoinInfo>::const_iterator joinIt = mFetchJoinInfo.constBegin();
-  for ( ; joinIt != mFetchJoinInfo.constEnd(); ++joinIt )
+  QList< FetchJoinInfo >::const_iterator joinIt = mOrderedJoinInfoList.constBegin();
+  for ( ; joinIt != mOrderedJoinInfoList.constEnd(); ++joinIt )
   {
-    const FetchJoinInfo& info = joinIt.value();
-    Q_ASSERT( joinIt.key() );
+    QVariant targetFieldValue = f.attribute( joinIt->targetField );
 
-    QVariant targetFieldValue = f.attribute( info.targetField );
     if ( !targetFieldValue.isValid() )
       continue;
 
-    const QHash< QString, QgsAttributes>& memoryCache = info.joinInfo->cachedAttributes;
+    const QHash< QString, QgsAttributes>& memoryCache = joinIt->joinInfo->cachedAttributes;
     if ( memoryCache.isEmpty() )
-      info.addJoinedAttributesDirect( f, targetFieldValue );
+      joinIt->addJoinedAttributesDirect( f, targetFieldValue );
     else
-      info.addJoinedAttributesCached( f, targetFieldValue );
+      joinIt->addJoinedAttributesCached( f, targetFieldValue );
   }
 }
 
