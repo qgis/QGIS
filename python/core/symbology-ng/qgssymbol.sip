@@ -274,11 +274,6 @@ class QgsSymbol
      */
     void renderUsingLayer( QgsSymbolLayer* layer, QgsSymbolRenderContext& context );
 
-    //! check whether a symbol layer type can be used within the symbol
-    //! (marker-marker, line-line, fill-fill/line)
-    //! @deprecated since 2.14, use QgsSymbolLayer::isCompatibleWithSymbol instead
-    bool isSymbolLayerCompatible( SymbolType layerType );
-
     //! Render editing vertex marker at specified point
     //! @note added in QGIS 2.16
     void renderVertexMarker( QPointF pt, QgsRenderContext& context, int currentVertexMarkerType, int currentVertexMarkerSize );

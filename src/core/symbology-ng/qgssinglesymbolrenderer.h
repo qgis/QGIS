@@ -21,7 +21,6 @@
 #include "qgsexpression.h"
 #include <QScopedPointer>
 
-Q_NOWARN_DEPRECATED_PUSH
 /** \ingroup core
  * \class QgsSingleSymbolRenderer
  */
@@ -103,7 +102,6 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     QScopedPointer<QgsSymbol> mTempSymbol;
     double mOrigSize;
 };
-Q_NOWARN_DEPRECATED_POP
 
 
 #endif // QGSSINGLESYMBOLRENDERERV2_H

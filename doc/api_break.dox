@@ -920,6 +920,12 @@ be returned instead of a null pointer if no transformation is required.</li>
 <li>Constructor variant with QgsMapRenderer has been removed. Use the variant with QgsMapSettings.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsSvgCache QgsSvgCache
+
+<ul>
+<li>containsParamsV2() was removed. Use containsParamsV3() instead.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsSymbol QgsSymbol (renamed from QgsSymbolV2)
 
 <ul>
@@ -927,6 +933,7 @@ be returned instead of a null pointer if no transformation is required.</li>
 and renamed to RenderUnit. QgsSymbol::OutputUnitList was renamed to QgsUnitTypes::RenderUnitList. All methods which previously accepted QgsSymbol::OutputUnit
 parameters or QgsSymbol::OutputUnitList parameters now take QgsUnitTypes::RenderUnit or QgsUnitTypes::RenderUnitList parameters respectively.</li>
 <li>startRender() now accepts a QgsFields reference, not a pointer.</li>
+<li>isSymbolLayerCompatible() was removed. Use QgsSymbolLayer::isCompatibleWithSymbol() instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsSymbolLayer QgsSymbolLayer (renamed from QgsSymbolLayerV2)
@@ -947,6 +954,7 @@ the variant which takes QgsSymbolRenderContext instead.</li>
 
 <ul>
 <li>encodeOutputUnit() and decodeOutputUnit() were removed. QgsUnitTypes::encodeUnit() and QgsUnitTypes::decodeRenderUnit() should be used instead.</li>
+<li>The signatures for wellKnownMarkerToSld() and wellKnownMarkerFromSld() were changed.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsTolerance QgsTolerance

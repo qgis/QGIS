@@ -71,7 +71,6 @@ class CORE_EXPORT QgsRendererCategory
 
 typedef QList<QgsRendererCategory> QgsCategoryList;
 
-Q_NOWARN_DEPRECATED_PUSH
 /** \ingroup core
  * \class QgsCategorizedSymbolRenderer
  */
@@ -264,7 +263,5 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     QVariant valueForFeature( QgsFeature& feature, QgsRenderContext &context ) const;
 
 };
-Q_NOWARN_DEPRECATED_POP
-
 
 #endif // QGSCATEGORIZEDSYMBOLRENDERERV2_H

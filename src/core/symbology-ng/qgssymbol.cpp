@@ -324,17 +324,6 @@ QgsSymbolLayer* QgsSymbol::symbolLayer( int layer )
   return mLayers.value( layer );
 }
 
-
-bool QgsSymbol::isSymbolLayerCompatible( SymbolType layerType )
-{
-  // fill symbol can contain also line symbol layers for drawing of outlines
-  if ( mType == Fill && layerType == Line )
-    return true;
-
-  return mType == layerType;
-}
-
-
 bool QgsSymbol::insertSymbolLayer( int index, QgsSymbolLayer* layer )
 {
   if ( index < 0 || index > mLayers.count() ) // can be added also after the last index

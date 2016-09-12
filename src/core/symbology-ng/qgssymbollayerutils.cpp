@@ -769,22 +769,6 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
   return resultLine;
 }
 
-QList<QPolygonF> offsetLine( const QPolygonF& polyline, double dist )
-{
-  QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::PointGeometry;
-  int pointCount = polyline.count();
-
-  if ( pointCount > 3 && qgsDoubleNear( polyline[ 0 ].x(), polyline[ pointCount - 1 ].x() ) && qgsDoubleNear( polyline[ 0 ].y(), polyline[ pointCount - 1 ].y() ) )
-  {
-    geometryType = QgsWkbTypes::PolygonGeometry;
-  }
-  else if ( pointCount > 1 )
-  {
-    geometryType = QgsWkbTypes::LineGeometry;
-  }
-  return offsetLine( polyline, dist, geometryType );
-}
-
 /////
 
 
@@ -2051,13 +2035,6 @@ bool QgsSymbolLayerUtils::externalMarkerFromSld( QDomElement &element,
 }
 
 void QgsSymbolLayerUtils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
-    const QString& name, const QColor& color, const QColor& borderColor,
-    double borderWidth, double size )
-{
-  wellKnownMarkerToSld( doc, element, name, color, borderColor, Qt::SolidLine, borderWidth, size );
-}
-
-void QgsSymbolLayerUtils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
     const QString& name, const QColor& color, const QColor& borderColor, Qt::PenStyle borderStyle,
     double borderWidth, double size )
 {
@@ -2091,14 +2068,6 @@ void QgsSymbolLayerUtils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement &
     sizeElem.appendChild( doc.createTextNode( qgsDoubleToString( size ) ) );
     element.appendChild( sizeElem );
   }
-}
-
-bool QgsSymbolLayerUtils::wellKnownMarkerFromSld( QDomElement &element,
-    QString &name, QColor &color, QColor &borderColor,
-    double &borderWidth, double &size )
-{
-  Qt::PenStyle borderStyle;
-  return wellKnownMarkerFromSld( element, name, color, borderColor, borderStyle, borderWidth, size );
 }
 
 bool QgsSymbolLayerUtils::wellKnownMarkerFromSld( QDomElement &element,

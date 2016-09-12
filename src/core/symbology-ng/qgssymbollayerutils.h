@@ -238,17 +238,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
                                         QString &path, QString &mime,
                                         QColor &color, double &size );
 
-    /** @deprecated Use wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element, QString name, QColor color, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth, double size ) instead */
-    Q_DECL_DEPRECATED static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
-        const QString& name, const QColor& color, const QColor& borderColor = QColor(),
-        double borderWidth = -1, double size = -1 );
     static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
                                       const QString& name, const QColor& color, const QColor& borderColor, Qt::PenStyle borderStyle,
                                       double borderWidth = -1, double size = -1 );
-    /** @deprecated Use wellKnownMarkerFromSld( QDomElement &element, QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle, double &borderWidth, double &size ) instead */
-    Q_DECL_DEPRECATED static bool wellKnownMarkerFromSld( QDomElement &element,
-        QString &name, QColor &color, QColor &borderColor,
-        double &borderWidth, double &size );
 
     //! @note available in python as wellKnownMarkerFromSld2
     static bool wellKnownMarkerFromSld( QDomElement &element,
@@ -566,8 +558,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
 class QPolygonF;
 
-//! @deprecated since 2.4 - calculate line shifted by a specified distance
-QList<QPolygonF> offsetLine( const QPolygonF& polyline, double dist );
 //! calculate geometry shifted by a specified distance
 QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::GeometryType geometryType );
 

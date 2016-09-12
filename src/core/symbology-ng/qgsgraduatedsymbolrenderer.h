@@ -125,7 +125,6 @@ class CORE_EXPORT QgsRendererRangeLabelFormat
 class QgsVectorLayer;
 class QgsColorRamp;
 
-Q_NOWARN_DEPRECATED_PUSH
 /** \ingroup core
  * \class QgsGraduatedSymbolRenderer
  */
@@ -414,6 +413,5 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QVariant valueForFeature( QgsFeature& feature, QgsRenderContext &context ) const;
 
 };
-Q_NOWARN_DEPRECATED_POP
 
 #endif // QGSGRADUATEDSYMBOLRENDERERV2_H
