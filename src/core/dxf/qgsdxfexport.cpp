@@ -3868,6 +3868,9 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
 
         break;
       }
+
+      default:
+        break;
     }
 
     if ( tempGeom != geom )
@@ -3893,6 +3896,10 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
         {
           writePolygon( cs.at( i ), layer, "SOLID", brushColor );
         }
+
+      default:
+        break;
+
     }
 
     if ( tempGeom != geom )
