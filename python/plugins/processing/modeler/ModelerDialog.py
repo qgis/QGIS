@@ -32,8 +32,9 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, QByteArray
 from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem
-from qgis.PyQt.QtGui import QIcon, QImage, QPainter
+from qgis.PyQt.QtGui import QIcon, QImage, QPainter, QSizePolicy
 from qgis.core import QgsApplication
+from qgis.gui import QgsMessageBar
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
@@ -58,6 +59,10 @@ class ModelerDialog(BASE, WIDGET):
     def __init__(self, alg=None):
         super(ModelerDialog, self).__init__(None)
         self.setupUi(self)
+
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().insertWidget(1, self.bar)
 
         self.zoom = 1
 
@@ -334,9 +339,8 @@ class ModelerDialog(BASE, WIDGET):
             fout.write(text)
             fout.close()
             self.update = True
-            QMessageBox.information(self, self.tr('Model saved'),
-                                    self.tr('Model was correctly saved.'))
-
+            self.bar.pushMessage("", "Model was correctly saved", level = QgsMessageBar.SUCCESS, duration = 5)
+            
             self.hasChanged = False
 
     def openModel(self):
