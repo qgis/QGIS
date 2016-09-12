@@ -3891,15 +3891,17 @@ void QgsDxfExport::addFeature( QgsSymbolV2RenderContext& ctx, const QString& lay
         break;
 
       case QgsWKBTypes::MultiPolygon:
+      {
         const QgsCoordinateSequenceV2 &cs = geom->coordinateSequence();
         for ( int i = 0; i < cs.size(); i++ )
         {
           writePolygon( cs.at( i ), layer, "SOLID", brushColor );
         }
+        break;
+      }
 
       default:
         break;
-
     }
 
     if ( tempGeom != geom )
