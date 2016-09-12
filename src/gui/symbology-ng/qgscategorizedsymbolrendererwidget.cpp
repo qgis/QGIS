@@ -839,18 +839,6 @@ void QgsCategorizedSymbolRendererWidget::addCategory()
   emit widgetChanged();
 }
 
-void QgsCategorizedSymbolRendererWidget::sizeScaleFieldChanged( const QString& fldName )
-{
-  mRenderer->setSizeScaleField( fldName );
-  emit widgetChanged();
-}
-
-void QgsCategorizedSymbolRendererWidget::scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod )
-{
-  mRenderer->setScaleMethod( scaleMethod );
-  emit widgetChanged();
-}
-
 QList<QgsSymbol*> QgsCategorizedSymbolRendererWidget::selectedSymbols()
 {
   QList<QgsSymbol*> selectedSymbols;

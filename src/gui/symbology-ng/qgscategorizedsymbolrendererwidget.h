@@ -111,9 +111,6 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void deleteCategories();
     void deleteAllCategories();
 
-    void sizeScaleFieldChanged( const QString& fldName );
-    void scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod );
-
     void showSymbolLevels();
 
     void rowsMoved();

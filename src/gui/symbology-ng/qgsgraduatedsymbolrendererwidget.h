@@ -109,8 +109,6 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     /** Toggle the link between classes boundaries */
     void toggleBoundariesLink( bool linked );
 
-    void sizeScaleFieldChanged( const QString& fldName );
-    void scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod );
     void labelFormatChanged();
 
     void showSymbolLevels();

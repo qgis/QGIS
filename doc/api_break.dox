@@ -304,6 +304,11 @@ variant instead.</li>
 <li>GenericDataSourceURI has been renamed to GenericDataSourceUri</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsCategorizedSymbolRendererWidget QgsCategorizedSymbolRendererWidget
+<ul>
+<li>sizeScaleFieldChanged() and scaleMethodChanged() were removed. These settings are no longer exposed in the widget's GUI.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsClipper QgsClipper
 
 <ul>
@@ -625,6 +630,12 @@ and the new ramp can be retrieved after executing the dialog by calling ramp().<
 <li>getDataValues() has been removed - use QgsVectorLayer::getDoubleValues() instead</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsGraduatedSymbolRendererWidget QgsGraduatedSymbolRenderer
+<ul>
+<li>sizeScaleFieldChanged() and scaleMethodChanged() were removed. These settings are no longer exposed in the widget's GUI.</li>
+</ul>
+
+
 \subsection qgis_api_break_3_0_QgsGraphBuilderInterface QgsGraphBuilderInterface
 
 <ul>
@@ -912,6 +923,11 @@ be returned instead of a null pointer if no transformation is required.</li>
 <li>The constructor variant with a string for the shape name has been removed. Use the variant which accepts a QgsSimpleMarkerSymbolLayerBase.Shape enum instead.</li>
 <li>name() and setName() have been removed. Use shape() and setShape() instead.</li>
 <li>prepareShape() and preparePath() were removed. Calling these methods manually should no longer be required.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsSingleSymbolRendererWidget QgsSingleSymbolRendererWidget
+<ul>
+<li>sizeScaleFieldChanged() and scaleMethodChanged() were removed. These settings are no longer exposed in the widget's GUI.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsSnapper QgsSnapper
