@@ -365,6 +365,32 @@ static TVL getTVLValue( const QVariant& value, QgsExpression* parent )
   return !qgsDoubleNear( x, 0.0 ) ? True : False;
 }
 
+static QVariantList getListValue( const QVariant& value, QgsExpression* parent )
+{
+  if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
+  {
+    return value.toList();
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to array" ).arg( value.toString() ) );
+    return QVariantList();
+  }
+}
+
+static QVariantMap getMapValue( const QVariant& value, QgsExpression* parent )
+{
+  if ( value.type() == QVariant::Map )
+  {
+    return value.toMap();
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to map" ).arg( value.toString() ) );
+    return QVariantMap();
+  }
+}
+
 //////
 
 static QVariant fcnGetVariable( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent )
@@ -3156,6 +3182,150 @@ static QVariant fcnGetLayerProperty( const QVariantList& values, const QgsExpres
   return QVariant();
 }
 
+static QVariant fcnArray( const QVariantList& values, const QgsExpressionContext*, QgsExpression* )
+{
+  return values;
+}
+
+static QVariant fcnArrayLength( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  return getListValue( values.at( 0 ), parent ).length();
+}
+
+static QVariant fcnArrayContains( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  return QVariant( getListValue( values.at( 0 ), parent ).contains( values.at( 1 ) ) );
+}
+
+static QVariant fcnArrayFind( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  return getListValue( values.at( 0 ), parent ).indexOf( values.at( 1 ) );
+}
+
+static QVariant fcnArrayGet( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  const QVariantList list = getListValue( values.at( 0 ), parent );
+  const int pos = getIntValue( values.at( 1 ), parent );
+  if ( pos < 0 || pos >= list.length() ) return QVariant();
+  return list.at( pos );
+}
+
+static QVariant convertToSameType( const QVariant& value, QVariant::Type type )
+{
+  QVariant result = value;
+  result.convert( type );
+  return result;
+}
+
+static QVariant fcnArrayAppend( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QVariantList list = getListValue( values.at( 0 ), parent );
+  list.append( values.at( 1 ) );
+  return convertToSameType( list , values.at( 0 ).type() );
+}
+
+static QVariant fcnArrayPrepend( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QVariantList list = getListValue( values.at( 0 ), parent );
+  list.prepend( values.at( 1 ) );
+  return convertToSameType( list , values.at( 0 ).type() );
+}
+
+static QVariant fcnArrayInsert( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QVariantList list = getListValue( values.at( 0 ), parent );
+  list.insert( getIntValue( values.at( 1 ), parent ), values.at( 2 ) );
+  return convertToSameType( list , values.at( 0 ).type() );
+}
+
+static QVariant fcnArrayRemoveAt( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QVariantList list = getListValue( values.at( 0 ), parent );
+  list.removeAt( getIntValue( values.at( 1 ), parent ) );
+  return convertToSameType( list , values.at( 0 ).type() );
+}
+
+static QVariant fcnArrayRemoveAll( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QVariantList list = getListValue( values.at( 0 ), parent );
+  list.removeAll( values.at( 1 ) );
+  return convertToSameType( list , values.at( 0 ).type() );
+}
+
+static QVariant fcnArrayCat( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QVariantList list;
+  Q_FOREACH ( QVariant cur, values )
+  {
+    list += getListValue( cur, parent );
+  }
+  return convertToSameType( list , values.at( 0 ).type() );
+}
+
+static QVariant fcnArrayIntersect( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  const QVariantList array1 = getListValue( values.at( 0 ), parent );
+  Q_FOREACH ( QVariant cur, getListValue( values.at( 1 ), parent ) ) if ( array1.contains( cur ) ) return QVariant( true );
+  return QVariant( false );
+}
+
+static QVariant fcnMap( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QVariantMap result;
+  for ( int i = 0; i + 1 < values.length(); i += 2 )
+  {
+    result.insert( getStringValue( values.at( i ), parent ), values.at( i + 1 ) );
+  }
+  return result;
+}
+
+static QVariant fcnMapGet( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  return getMapValue( values.at( 0 ), parent ).value( values.at( 1 ).toString() );
+}
+
+static QVariant fcnMapExist( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  return getMapValue( values.at( 0 ), parent ).contains( values.at( 1 ).toString() );
+}
+
+static QVariant fcnMapDelete( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QVariantMap map = getMapValue( values.at( 0 ), parent );
+  map.remove( values.at( 1 ).toString() );
+  return map;
+}
+
+static QVariant fcnMapInsert( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QVariantMap map = getMapValue( values.at( 0 ), parent );
+  map.insert( values.at( 1 ).toString(),  values.at( 2 ) );
+  return map;
+}
+
+static QVariant fcnMapConcat( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  QVariantMap result;
+  Q_FOREACH ( QVariant cur, values )
+  {
+    const QVariantMap curMap = getMapValue( cur, parent );
+    for ( QVariantMap::const_iterator it = curMap.constBegin(); it != curMap.constEnd(); ++it )
+      result.insert( it.key(), it.value() );
+  }
+  return result;
+}
+
+static QVariant fcnMapAKeys( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  return QStringList( getMapValue( values.at( 0 ), parent ).keys() );
+}
+
+static QVariant fcnMapAVals( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+{
+  return getMapValue( values.at( 0 ), parent ).values();
+}
+
+
 bool QgsExpression::registerFunction( QgsExpression::Function* function, bool transferOwnership )
 {
   int fnIdx = functionIndex( function->name() );
@@ -3491,6 +3661,30 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     // feature request
     << new StaticFunction( "eval", 1, fcnEval, "General", QString(), true, QStringList( QgsFeatureRequest::AllAttributes ) )
     << new StaticFunction( "attribute", 2, fcnAttribute, "Record", QString(), false, QStringList( QgsFeatureRequest::AllAttributes ) )
+
+    // functions for arrays
+    << new StaticFunction( "array", -1, fcnArray, "Arrays" )
+    << new StaticFunction( "array_length", 1, fcnArrayLength, "Arrays" )
+    << new StaticFunction( "array_contains", ParameterList() << Parameter( "array" ) << Parameter( "value" ), fcnArrayContains, "Arrays" )
+    << new StaticFunction( "array_find", ParameterList() << Parameter( "array" ) << Parameter( "value" ), fcnArrayFind, "Arrays" )
+    << new StaticFunction( "array_get", ParameterList() << Parameter( "array" ) << Parameter( "pos" ), fcnArrayGet, "Arrays" )
+    << new StaticFunction( "array_append", ParameterList() << Parameter( "array" ) << Parameter( "value" ), fcnArrayAppend, "Arrays" )
+    << new StaticFunction( "array_prepend", ParameterList() << Parameter( "array" ) << Parameter( "value" ), fcnArrayPrepend, "Arrays" )
+    << new StaticFunction( "array_insert", ParameterList() << Parameter( "array" ) << Parameter( "pos" ) << Parameter( "value" ), fcnArrayInsert, "Arrays" )
+    << new StaticFunction( "array_remove_at", ParameterList() << Parameter( "array" ) << Parameter( "pos" ), fcnArrayRemoveAt, "Arrays" )
+    << new StaticFunction( "array_remove_all", ParameterList() << Parameter( "array" ) << Parameter( "value" ), fcnArrayRemoveAll, "Arrays" )
+    << new StaticFunction( "array_cat", -1, fcnArrayCat, "Arrays" )
+    << new StaticFunction( "array_intersect", ParameterList() << Parameter( "array1" ) << Parameter( "array2" ), fcnArrayIntersect, "Arrays" )
+
+    //functions for maps
+    << new StaticFunction( "map", -1, fcnMap, "Maps" )
+    << new StaticFunction( "map_get", ParameterList() << Parameter( "map" ) << Parameter( "key" ), fcnMapGet, "Maps" )
+    << new StaticFunction( "map_exist", ParameterList() << Parameter( "map" ) << Parameter( "key" ), fcnMapExist, "Maps" )
+    << new StaticFunction( "map_delete", ParameterList() << Parameter( "map" ) << Parameter( "key" ), fcnMapDelete, "Maps" )
+    << new StaticFunction( "map_insert", ParameterList() << Parameter( "map" ) << Parameter( "key" ) << Parameter( "value" ), fcnMapInsert, "Maps" )
+    << new StaticFunction( "map_concat", -1, fcnMapConcat, "Maps" )
+    << new StaticFunction( "map_akeys", ParameterList() << Parameter( "map" ), fcnMapAKeys, "Maps" )
+    << new StaticFunction( "map_avals", ParameterList() << Parameter( "map" ), fcnMapAVals, "Maps" )
     ;
 
     QgsExpressionContextUtils::registerContextFunctions();
@@ -5088,7 +5282,7 @@ QString QgsExpression::formatPreviewString( const QVariant& value )
         break;
       }
     }
-    return tr( "<i>&lt;list: %1&gt;</i>" ).arg( listStr );
+    return tr( "<i>&lt;array: %1&gt;</i>" ).arg( listStr );
   }
   else
   {

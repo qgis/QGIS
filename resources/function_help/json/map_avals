@@ -1,0 +1,7 @@
+{
+  "name": "map_avals",
+  "type": "function",
+  "description": "Returns all the values of a map as an array.",
+  "arguments": [ {"arg":"map","description":"a map"}],
+  "examples": [ { "expression":"map_avals(map('1','one','2','two'))", "returns":"array: 'one', 'two'"}]
+}
