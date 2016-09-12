@@ -179,6 +179,14 @@ QDomElement QgsPointClusterRenderer::save( QDomDocument& doc )
   return rendererElement;
 }
 
+QList<QString> QgsPointClusterRenderer::usedAttributes()
+{
+  QList<QString> attr = QgsPointDistanceRenderer::usedAttributes();
+  if ( mClusterSymbol )
+    attr.append( mClusterSymbol->usedAttributes().toList() );
+  return attr;
+}
+
 void QgsPointClusterRenderer::setClusterSymbol( QgsMarkerSymbol* symbol )
 {
   mClusterSymbol.reset( symbol );

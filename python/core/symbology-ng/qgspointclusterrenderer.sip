@@ -16,6 +16,7 @@ class QgsPointClusterRenderer : QgsPointDistanceRenderer
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
     void stopRender( QgsRenderContext& context );
     QDomElement save( QDomDocument& doc );
+    virtual QList<QString> usedAttributes();
 
     //! Create a renderer from XML element
     static QgsFeatureRenderer* create( QDomElement& symbologyElem ) /Factory/;
