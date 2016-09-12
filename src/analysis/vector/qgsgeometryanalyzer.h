@@ -100,7 +100,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
                    int uniqueIdField = -1, QProgressDialog* p = nullptr );
 
     /** Creates an event layer (multipoint or multiline) by locating features from a (non-spatial) event table along the features of a line layer.
-     * Note that currently (until QgsGeometry supports m-values) the z-coordinate of the line layer is used for linear referencing
+     * Note that this function only supports linestring / multilinestring 25D/Z/M/ZM types as input
      * @param lineLayer layer with the line geometry
      * @param eventLayer layer with features and location field
      * @param lineField join index in line layer
@@ -120,10 +120,10 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
                      const QString& outputFormat, int locationField1, int locationField2 = -1, int offsetField = -1, double offsetScale = 1.0,
                      bool forceSingleGeometry = false, QgsVectorDataProvider* memoryProvider = nullptr, QProgressDialog* p = nullptr );
 
-    /** Returns linear reference geometry as a multiline (or 0 if no match). Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
+    /** Returns linear reference geometry as a multiline (or 0 if no match). This function only supports linestring/multilinestring 25D/Z/M/ZM types*/
     QgsGeometry* locateBetweenMeasures( double fromMeasure, double toMeasure, const QgsGeometry *lineGeom );
     /** Returns linear reference geometry. Unlike the PostGIS function, this method always returns multipoint or 0 if no match (not geometry collection).
-     * Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)
+     * Note that this function only supports linestring / multilinestring 25D/Z/M/ZM types as input
      */
     QgsGeometry* locateAlongMeasure( double measure, const QgsGeometry* lineGeom );
 
@@ -152,8 +152,8 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
         @param offset the offset value in layer unit. Negative values mean offset towards left, positive values offset to the right side*/
     bool createOffsetGeometry( QgsGeometry* geom, QgsGeometry* lineGeom, double offset );
     QgsPoint createPointOffset( double x, double y, double dist, QgsGeometry* lineGeom ) const;
-    QgsConstWkbPtr locateBetweenWkbString( QgsConstWkbPtr ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure );
-    QgsConstWkbPtr locateAlongWkbString( QgsConstWkbPtr ptr, QgsMultiPoint& result, double measure );
+    QgsConstWkbPtr locateBetweenWkbString( QgsConstWkbPtr ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure, bool zm );
+    QgsConstWkbPtr locateAlongWkbString( QgsConstWkbPtr ptr, QgsMultiPoint& result, double measure, bool zm );
     static bool clipSegmentByRange( double x1, double y1, double m1, double x2, double y2, double m2, double range1, double range2, QgsPoint& pt1, QgsPoint& pt2, bool& secondPointClipped );
     static void locateAlongSegment( double x1, double y1, double m1, double x2, double y2, double m2, double measure, bool& pt1Ok, QgsPoint& pt1, bool& pt2Ok, QgsPoint& pt2 );
 };
