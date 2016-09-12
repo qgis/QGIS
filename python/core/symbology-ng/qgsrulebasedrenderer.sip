@@ -88,7 +88,7 @@ class QgsRuleBasedRenderer : QgsFeatureRenderer
         bool needsGeometry() const;
 
 	//! @note available in python bindings as symbol2
-        QgsSymbolList symbols( const QgsRenderContext& context = QgsRenderContext() ) /PyName=symbols2/;
+        QgsSymbolList symbols( const QgsRenderContext& context = QgsRenderContext() );
 
         //! @note not available in python bindings
         // QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" ) const;

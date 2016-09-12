@@ -354,9 +354,6 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! @note added in 2.10
     void setGraduatedMethod( GraduatedMethod method ) { mGraduatedMethod = method; }
 
-    Q_DECL_DEPRECATED void setRotationField( const QString& fieldOrExpression ) override;
-    Q_DECL_DEPRECATED QString rotationField() const override;
-
     void setSizeScaleField( const QString& fieldOrExpression );
     QString sizeScaleField() const;
 

@@ -94,9 +94,9 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
     virtual ~QgsGraduatedSymbolRenderer();
 
     //! @note labelForLowerUpper in python bindings
-    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
     //! @note originalSymbolForFeature2 in python bindings
-    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
+    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
@@ -114,7 +114,7 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
     virtual QgsFeatureRenderer::Capabilities capabilities();
 
     //! @note symbol2 in python bindings
-    virtual QgsSymbolList symbols( QgsRenderContext& context ) /PyName=symbols2/;
+    virtual QgsSymbolList symbols( QgsRenderContext& context );
 
     QString classAttribute() const;
     void setClassAttribute( const QString& attr );
@@ -298,9 +298,6 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
     //! set the method used for graduation (either size or color)
     //! @note added in 2.10
     void setGraduatedMethod( GraduatedMethod method );
-
-    void setRotationField( const QString& fieldOrExpression ) /Deprecated/;
-    QString rotationField() const /Deprecated/;
 
     void setSizeScaleField( const QString& fieldOrExpression );
     QString sizeScaleField() const;

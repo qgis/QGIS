@@ -10,10 +10,10 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
     virtual ~QgsSingleSymbolRenderer();
 
     //! @note available in python as symbolForFeature2
-    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     //! @note available in python as originalSymbolForFeature2
-    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
+    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
@@ -23,9 +23,6 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
 
     QgsSymbol* symbol() const;
     void setSymbol( QgsSymbol* s /Transfer/ );
-
-    void setRotationField( const QString& fieldOrExpression ) /Deprecated/;
-    QString rotationField() const /Deprecated/;
 
     void setSizeScaleField( const QString& fieldOrExpression );
     QString sizeScaleField() const;
@@ -44,7 +41,7 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
     virtual QgsFeatureRenderer::Capabilities capabilities();
 
     //! @note available in python as symbol2
-    virtual QgsSymbolList symbols( QgsRenderContext& context ) /PyName=symbols2/;
+    virtual QgsSymbolList symbols( QgsRenderContext& context );
 
     //! create renderer from XML element
     static QgsFeatureRenderer* create( QDomElement& element ) /Factory/;

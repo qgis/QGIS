@@ -144,7 +144,6 @@ def dumpGraduatedRenderer(r):
     rstr = rstr + dumpColorRamp(r.sourceColorRamp())
     rstr = rstr + str(r.invertedColorRamp()) + ':'
     rstr = rstr + dumpRangeList(r.ranges())
-    rstr = rstr + r.rotationField() + ':'
     rstr = rstr + r.sizeScaleField() + ':'
     rstr = rstr + str(r.scaleMethod()) + ':'
     return rstr
@@ -315,13 +314,6 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         self.assertFalse(renderer.invertedColorRamp(),
                          "Get/set renderer inverted color ramp")
 
-        value = '"value"*2'
-        exp = QgsSymbolLayerUtils.fieldOrExpressionToExpression(value)
-        valuestr = QgsSymbolLayerUtils.fieldOrExpressionFromExpression(exp)
-        renderer.setRotationField(value)
-        self.assertEqual(valuestr, renderer.rotationField(),
-                         "Get/set renderer rotation field")
-
         value = '"value"*3'
         exp = QgsSymbolLayerUtils.fieldOrExpressionToExpression(value)
         valuestr = QgsSymbolLayerUtils.fieldOrExpressionFromExpression(exp)
@@ -353,7 +345,7 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         self.assertEqual(renderer.minSymbolSize(), 2)
         refSizes = [2, (13 + 2) * .5, 13]
         ctx = QgsRenderContext()
-        for idx, symbol in enumerate(renderer.symbols2(ctx)):
+        for idx, symbol in enumerate(renderer.symbols(ctx)):
             self.assertEqual(symbol.size(), refSizes[idx])
 
     def testQgsGraduatedSymbolRenderer_2(self):
@@ -462,18 +454,6 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
 
         # Test retrieving data values from a layer
         ml = createMemoryLayer((1.2, 0.5, 5.0, 1.0, 1.0, 1.2))
-        # ... by attribute
-        renderer.setClassAttribute("value")
-        self.assertEqual(renderer.classAttribute(), "value", "Error in set/get classAttribute")
-        data = renderer.getDataValues(ml)
-        datastr = ':'.join([str(x) for x in data])
-        self.assertEqual(datastr, '1.2:0.5:5.0:1.0:1.0:1.2', "Error returning field data")
-        # ... by expression
-        renderer.setClassAttribute('"value"*"value"')
-        self.assertEqual(renderer.classAttribute(), '"value"*"value"', "Error in set/get classAttribute")
-        data = renderer.getDataValues(ml)
-        datastr = ':'.join([str(x) for x in data])
-        self.assertEqual(datastr, '1.44:0.25:25.0:1.0:1.0:1.44', "Error returning field expression")
 
         renderer.setClassAttribute("value")
         # Equal interval calculations

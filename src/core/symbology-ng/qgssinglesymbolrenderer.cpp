@@ -154,27 +154,6 @@ void QgsSingleSymbolRenderer::setSymbol( QgsSymbol* s )
   mSymbol.reset( s );
 }
 
-void QgsSingleSymbolRenderer::setRotationField( const QString& fieldOrExpression )
-{
-  if ( mSymbol->type() == QgsSymbol::Marker )
-  {
-    QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( mSymbol.data() );
-    s->setDataDefinedAngle( QgsDataDefined( fieldOrExpression ) );
-  }
-}
-
-QString QgsSingleSymbolRenderer::rotationField() const
-{
-  if ( mSymbol->type() == QgsSymbol::Marker )
-  {
-    QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( mSymbol.data() );
-    QgsDataDefined ddAngle = s->dataDefinedAngle();
-    return ddAngle.useExpression() ? ddAngle.expressionString() : ddAngle.field();
-  }
-
-  return QString();
-}
-
 void QgsSingleSymbolRenderer::setSizeScaleField( const QString& fieldOrExpression )
 {
   mSizeScale.reset( QgsSymbolLayerUtils::fieldOrExpressionToExpression( fieldOrExpression ) );

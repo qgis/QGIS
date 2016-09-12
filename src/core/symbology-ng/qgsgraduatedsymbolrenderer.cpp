@@ -1428,28 +1428,6 @@ void QgsGraduatedSymbolRenderer::updateSymbols( QgsSymbol *sym )
   setSourceSymbol( sym->clone() );
 }
 
-void QgsGraduatedSymbolRenderer::setRotationField( const QString& fieldOrExpression )
-{
-  if ( mSourceSymbol->type() == QgsSymbol::Marker )
-  {
-    QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( mSourceSymbol.data() );
-    s->setDataDefinedAngle( QgsDataDefined( fieldOrExpression ) );
-  }
-
-}
-
-QString QgsGraduatedSymbolRenderer::rotationField() const
-{
-  if ( mSourceSymbol->type() == QgsSymbol::Marker )
-  {
-    QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( mSourceSymbol.data() );
-    QgsDataDefined ddAngle = s->dataDefinedAngle();
-    return ddAngle.useExpression() ? ddAngle.expressionString() : ddAngle.field();
-  }
-
-  return QString();
-}
-
 void QgsGraduatedSymbolRenderer::setSizeScaleField( const QString& fieldOrExpression )
 {
   mSizeScale.reset( QgsSymbolLayerUtils::fieldOrExpressionToExpression( fieldOrExpression ) );

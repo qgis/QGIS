@@ -202,9 +202,6 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
       */
     void updateColorRamp( QgsColorRamp* ramp, bool inverted = false );
 
-    Q_DECL_DEPRECATED void setRotationField( const QString& fieldOrExpression ) override;
-    Q_DECL_DEPRECATED QString rotationField() const override;
-
     void setSizeScaleField( const QString& fieldOrExpression );
     QString sizeScaleField() const;
 

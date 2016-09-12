@@ -50,10 +50,10 @@ class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
     virtual ~QgsCategorizedSymbolRenderer();
 
     //! @note available in python as symbolForFeature2
-    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     //! @note available in python as originalSymbolForFeature2
-    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
+    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
@@ -73,7 +73,7 @@ class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
     virtual QString filter( const QgsFields& fields = QgsFields() );
 
     //! @note available in python as symbols2
-    virtual QgsSymbolList symbols( QgsRenderContext& context ) /PyName=symbols2/;
+    virtual QgsSymbolList symbols( QgsRenderContext& context );
 
     /** Update all the symbols but leave categories and colors. This method also sets the source
      * symbol for the renderer.
@@ -167,9 +167,6 @@ class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
       * @note added in 2.5
       */
     void updateColorRamp( QgsColorRamp* ramp /Transfer/, bool inverted = false );
-
-    void setRotationField( const QString& fieldOrExpression ) /Deprecated/;
-    QString rotationField() const /Deprecated/;
 
     void setSizeScaleField( const QString& fieldOrExpression );
     QString sizeScaleField() const;

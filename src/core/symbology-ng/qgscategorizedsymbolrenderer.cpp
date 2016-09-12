@@ -936,27 +936,6 @@ void QgsCategorizedSymbolRenderer::updateColorRamp( QgsColorRamp* ramp, bool inv
   }
 }
 
-void QgsCategorizedSymbolRenderer::setRotationField( const QString& fieldOrExpression )
-{
-  if ( mSourceSymbol && mSourceSymbol->type() == QgsSymbol::Marker )
-  {
-    QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( mSourceSymbol.data() );
-    s->setDataDefinedAngle( QgsDataDefined( fieldOrExpression ) );
-  }
-}
-
-QString QgsCategorizedSymbolRenderer::rotationField() const
-{
-  if ( mSourceSymbol && mSourceSymbol->type() == QgsSymbol::Marker )
-  {
-    QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( mSourceSymbol.data() );
-    QgsDataDefined ddAngle = s->dataDefinedAngle();
-    return ddAngle.useExpression() ? ddAngle.expressionString() : ddAngle.field();
-  }
-
-  return QString();
-}
-
 void QgsCategorizedSymbolRenderer::setSizeScaleField( const QString& fieldOrExpression )
 {
   mSizeScale.reset( QgsSymbolLayerUtils::fieldOrExpressionToExpression( fieldOrExpression ) );
