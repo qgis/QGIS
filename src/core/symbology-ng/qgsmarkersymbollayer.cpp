@@ -682,20 +682,6 @@ void QgsSimpleMarkerSymbolLayerBase::calculateOffsetAndRotation( QgsSymbolRender
 // QgsSimpleMarkerSymbolLayer
 //
 
-QgsSimpleMarkerSymbolLayer::QgsSimpleMarkerSymbolLayer( const QString& name, const QColor& color, const QColor& borderColor, double size, double angle, QgsSymbol::ScaleMethod scaleMethod,
-    Qt::PenJoinStyle penJoinStyle )
-    : QgsSimpleMarkerSymbolLayerBase( decodeShape( name ), size, angle, scaleMethod )
-    , mBorderColor( borderColor )
-    , mOutlineStyle( Qt::SolidLine )
-    , mOutlineWidth( 0 )
-    , mOutlineWidthUnit( QgsUnitTypes::RenderMillimeters )
-    , mPenJoinStyle( penJoinStyle )
-    , mName( name )
-    , mUsingCache( false )
-{
-  mColor = color;
-}
-
 QgsSimpleMarkerSymbolLayer::QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape, double size, double angle, QgsSymbol::ScaleMethod scaleMethod, const QColor& color, const QColor& borderColor, Qt::PenJoinStyle penJoinStyle )
     : QgsSimpleMarkerSymbolLayerBase( shape, size, angle, scaleMethod )
     , mBorderColor( borderColor )
@@ -942,21 +928,6 @@ bool QgsSimpleMarkerSymbolLayer::prepareCache( QgsSymbolRenderContext& context )
   }
 
   return true;
-}
-
-bool QgsSimpleMarkerSymbolLayer::prepareShape( const QString& name )
-{
-  return shapeToPolygon( name.isNull() ? mShape : decodeShape( name ), mPolygon );
-}
-
-bool QgsSimpleMarkerSymbolLayer::prepareShape( const QString& name, QPolygonF &polygon ) const
-{
-  return shapeToPolygon( decodeShape( name ), polygon );
-}
-
-bool QgsSimpleMarkerSymbolLayer::preparePath( QString name )
-{
-  return prepareMarkerPath( decodeShape( name ) );
 }
 
 void QgsSimpleMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path )

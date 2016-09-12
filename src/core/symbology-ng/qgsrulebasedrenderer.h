@@ -192,10 +192,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         QString description() const { return mDescription; }
 
-        //! @note added in 2.6
-        //! @deprecated use active instead
-        Q_DECL_DEPRECATED bool checkState() const { return mIsActive; }
-
         /**
          * Returns if this rule is active
          *
@@ -244,10 +240,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         void setDescription( const QString& description ) { mDescription = description; }
 
-        //! @note added in 2.6
-        //! @deprecated use setActive instead
-        Q_DECL_DEPRECATED void setCheckState( bool state ) { mIsActive = state; }
-
         /**
          * Sets if this rule is active
          * @param state Determines if the rule should be activated or deactivated
@@ -265,11 +257,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         static Rule* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
 
         QDomElement save( QDomDocument& doc, QgsSymbolMap& symbolMap ) const;
-
-        /** Prepare the rule for rendering and its children (build active children array)
-         * @deprecated use startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter ) instead
-         */
-        Q_DECL_DEPRECATED bool startRender( QgsRenderContext& context, const QgsFields& fields );
 
         //! prepare the rule for rendering and its children (build active children array)
         bool startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter );

@@ -396,12 +396,6 @@ void QgsRuleBasedRenderer::Rule::toSld( QDomDocument& doc, QDomElement &element,
   }
 }
 
-bool QgsRuleBasedRenderer::Rule::startRender( QgsRenderContext& context, const QgsFields& fields )
-{
-  QString filter;
-  return startRender( context, fields, filter );
-}
-
 bool QgsRuleBasedRenderer::Rule::startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter )
 {
   mActiveChildren.clear();

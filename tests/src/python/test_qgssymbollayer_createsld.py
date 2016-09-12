@@ -33,7 +33,7 @@ from qgis.PyQt.QtXml import (
 from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (
-    QgsSimpleMarkerSymbolLayer, QgsUnitTypes, QgsSvgMarkerSymbolLayer,
+    QgsSimpleMarkerSymbolLayer, QgsSimpleMarkerSymbolLayerBase, QgsUnitTypes, QgsSvgMarkerSymbolLayer,
     QgsFontMarkerSymbolLayer, QgsEllipseSymbolLayer, QgsSimpleLineSymbolLayer,
     QgsMarkerLineSymbolLayer, QgsMarkerSymbol, QgsSimpleFillSymbolLayer, QgsSVGFillSymbolLayer,
     QgsLinePatternFillSymbolLayer, QgsPointPatternFillSymbolLayer, QgsVectorLayer)
@@ -53,7 +53,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testSimpleMarkerRotation(self):
         symbol = QgsSimpleMarkerSymbolLayer(
-            'star', QColor(255, 0, 0), QColor(0, 255, 0), 10)
+            QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 0, 0), borderColor=QColor(0, 255, 0), size=10)
         symbol.setAngle(50)
         dom, root = self.symbolToSld(symbol)
         # print( "Simple marker rotation: " + root.ownerDocument().toString())
@@ -88,7 +88,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testSimpleMarkerUnitDefault(self):
         symbol = QgsSimpleMarkerSymbolLayer(
-            'star', QColor(255, 0, 0), QColor(0, 255, 0), 10)
+            QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 0, 0), borderColor=QColor(0, 255, 0), size=10)
         symbol.setOutlineWidth(3)
         symbol.setOffset(QPointF(5, 10))
         dom, root = self.symbolToSld(symbol)
@@ -111,7 +111,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testSimpleMarkerUnitPixels(self):
         symbol = QgsSimpleMarkerSymbolLayer(
-            'star', QColor(255, 0, 0), QColor(0, 255, 0), 10)
+            QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 0, 0), borderColor=QColor(0, 255, 0), size=10)
         symbol.setOutlineWidth(3)
         symbol.setOffset(QPointF(5, 10))
         symbol.setOutputUnit(QgsUnitTypes.RenderPixels)

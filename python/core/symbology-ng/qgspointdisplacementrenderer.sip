@@ -77,10 +77,6 @@ class QgsPointDisplacementRenderer : QgsFeatureRenderer
     virtual bool legendSymbolItemChecked( const QString& key );
     virtual void checkLegendSymbolItem( const QString& key, bool state = true );
 
-    //! not available in python bindings
-    //! @deprecated since 2.4
-    // void setDisplacementGroups( const QList<QMap<QgsFeatureId, QgsFeature> >& list );
-
     void setLabelFont( const QFont& f );
     QFont labelFont() const;
 
