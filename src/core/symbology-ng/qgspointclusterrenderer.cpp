@@ -55,40 +55,6 @@ void QgsPointClusterRenderer::drawGroup( QPointF centerPoint, QgsRenderContext& 
 {
   if ( group.size() > 1 )
   {
-    //scan through symbols to check color, eg if all clustered symbols are same color
-    QColor groupColor;
-    ClusteredGroup::const_iterator groupIt = group.constBegin();
-    for ( ; groupIt != group.constEnd(); ++groupIt )
-    {
-      if ( !groupIt->symbol )
-        continue;
-
-      if ( !groupColor.isValid() )
-      {
-        groupColor = groupIt->symbol->color();
-      }
-      else
-      {
-        if ( groupColor != groupIt->symbol->color() )
-        {
-          groupColor = QColor();
-          break;
-        }
-      }
-    }
-
-    if ( groupColor.isValid() )
-    {
-      context.expressionContext().lastScope()->setVariable( "cluster_color", QgsSymbolLayerUtils::encodeColor( groupColor ) );
-    }
-    else
-    {
-      //mixed colors
-      context.expressionContext().lastScope()->setVariable( "cluster_color", "" );
-    }
-
-    //multiple clustered symbols, so draw just the cluster symbol
-    context.expressionContext().lastScope()->setVariable( "cluster_size", group.size() );
     mClusterSymbol->renderPoint( centerPoint, &( group.at( 0 ).feature ), context, -1, false );
   }
   else

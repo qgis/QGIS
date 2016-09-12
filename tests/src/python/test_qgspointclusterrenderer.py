@@ -40,7 +40,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsMarkerSymbol,
                        QgsSingleSymbolRenderer,
                        QgsPointDisplacementRenderer,
-                       QgsMapSettings
+                       QgsMapSettings,
+                       QgsDataDefined
                        )
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
@@ -161,6 +162,24 @@ class TestQgsPointClusterRenderer(unittest.TestCase):
         renderchecker.setControlPathPrefix('cluster_renderer')
         renderchecker.setControlName('expected_cluster_cluster')
         self.assertTrue(renderchecker.runTest('expected_cluster_cluster'))
+
+    def testRenderVariables(self):
+        """ test rendering with expression variables in marker """
+        self.layer.renderer().setTolerance(10)
+
+        old_marker = self.layer.renderer().clusterSymbol().clone()
+
+        new_marker = QgsMarkerSymbol.createSimple({'color': '#ffff00', 'size': '3', 'outline_style': 'no'})
+        new_marker.symbolLayer(0).setDataDefinedProperty('color', QgsDataDefined('@cluster_color'))
+        new_marker.symbolLayer(0).setDataDefinedProperty('size', QgsDataDefined('@cluster_size*2'))
+        self.layer.renderer().setClusterSymbol(new_marker)
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlPathPrefix('cluster_renderer')
+        renderchecker.setControlName('expected_cluster_variables')
+        result = renderchecker.runTest('expected_cluster_variables')
+        self.layer.renderer().setClusterSymbol(old_marker)
+        self.assertTrue(result)
 
 
 if __name__ == '__main__':

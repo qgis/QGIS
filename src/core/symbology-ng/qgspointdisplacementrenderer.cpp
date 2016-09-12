@@ -64,6 +64,7 @@ QgsPointDisplacementRenderer* QgsPointDisplacementRenderer::clone() const
 
 void QgsPointDisplacementRenderer::drawGroup( QPointF centerPoint, QgsRenderContext& context, const ClusteredGroup& group )
 {
+
   //calculate max diagonal size from all symbols in group
   double diagonal = 0;
 
@@ -88,9 +89,9 @@ void QgsPointDisplacementRenderer::drawGroup( QPointF centerPoint, QgsRenderCont
   if ( circleRadius > 0 )
     drawCircle( circleRadius, symbolContext, centerPoint, group.size() );
 
-  //draw mid point
   if ( group.size() > 1 )
   {
+    //draw mid point
     QgsFeature firstFeature = group.at( 0 ).feature;
     if ( mCenterSymbol )
     {

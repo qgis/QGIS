@@ -276,6 +276,12 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     */
     QgsMarkerSymbol* firstSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
+    /** Creates an expression context scope for a clustered group, with variables reflecting the group's properties.
+     * @param group clustered group
+     * @returns new expression context scope
+     */
+    QgsExpressionContextScope* createGroupScope( const ClusteredGroup& group ) const;
+
 };
 
 #endif // QGSPOINTDISTANCERENDERER_H

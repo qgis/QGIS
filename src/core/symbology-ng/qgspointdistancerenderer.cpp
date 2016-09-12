@@ -140,7 +140,9 @@ void QgsPointDistanceRenderer::drawGroup( const ClusteredGroup& group, QgsRender
   QgsGeometry centroid = groupGeom.centroid();
   QPointF pt = _getPoint( context, *static_cast<QgsPointV2*>( centroid.geometry() ) );
 
+  context.expressionContext().appendScope( createGroupScope( group ) );
   drawGroup( pt, context, group );
+  delete context.expressionContext().popScope();
 }
 
 void QgsPointDistanceRenderer::setEmbeddedRenderer( QgsFeatureRenderer* r )
@@ -405,6 +407,48 @@ void QgsPointDistanceRenderer::drawLabels( QPointF centerPoint, QgsSymbolRenderC
     p->drawText( QPointF( 0, 0 ), groupIt->label );
     p->restore();
   }
+}
+
+QgsExpressionContextScope* QgsPointDistanceRenderer::createGroupScope( const ClusteredGroup& group ) const
+{
+  QgsExpressionContextScope* clusterScope = new QgsExpressionContextScope();
+  if ( group.size() > 1 )
+  {
+    //scan through symbols to check color, eg if all clustered symbols are same color
+    QColor groupColor;
+    ClusteredGroup::const_iterator groupIt = group.constBegin();
+    for ( ; groupIt != group.constEnd(); ++groupIt )
+    {
+      if ( !groupIt->symbol )
+        continue;
+
+      if ( !groupColor.isValid() )
+      {
+        groupColor = groupIt->symbol->color();
+      }
+      else
+      {
+        if ( groupColor != groupIt->symbol->color() )
+        {
+          groupColor = QColor();
+          break;
+        }
+      }
+    }
+
+    if ( groupColor.isValid() )
+    {
+      clusterScope->setVariable( "cluster_color", QgsSymbolLayerUtils::encodeColor( groupColor ) );
+    }
+    else
+    {
+      //mixed colors
+      clusterScope->setVariable( "cluster_color", "" );
+    }
+
+    clusterScope->setVariable( "cluster_size", group.size() );
+  }
+  return clusterScope;
 }
 
 QgsMarkerSymbol* QgsPointDistanceRenderer::firstSymbolForFeature( QgsFeature& feature, QgsRenderContext &context )
