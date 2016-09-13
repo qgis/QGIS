@@ -172,9 +172,6 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.setInfo(text, False)
         QCoreApplication.processEvents()
 
-    def error(self, msg):
-        self.setInfo(msg, error=True)
-
     def setParamValues(self):
         pass
 
