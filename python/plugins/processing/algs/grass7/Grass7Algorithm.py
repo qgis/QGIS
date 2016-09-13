@@ -65,6 +65,7 @@ from processing.tools import dataobjects, system
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
+_icon = QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
 
 class Grass7Algorithm(GeoAlgorithm):
 
@@ -98,8 +99,8 @@ class Grass7Algorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
-
+        return _icon
+    
     def help(self):
         localDoc = None
         html = self.grass7Name + '.html'

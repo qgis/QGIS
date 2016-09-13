@@ -51,6 +51,7 @@ import traceback
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
+_icon = QIcon(os.path.join(pluginPath, 'images', 'otb.png'))
 
 class OTBAlgorithm(GeoAlgorithm):
 
@@ -73,7 +74,7 @@ class OTBAlgorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'otb.png'))
+        return _icon
 
     def help(self):
         version = OTBUtils.getInstalledVersion()
