@@ -551,7 +551,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             points = bbox_to_polygon(record.bbox)
             if points is not None:
                 src = QgsCoordinateReferenceSystem(4326)
-                dst = self.map.mapRenderer().destinationCrs()
+                dst = self.map.mapSettings().destinationCrs()
                 geom = QgsGeometry.fromPolygon(points)
                 if src.postgisSrid() != dst.postgisSrid():
                     ctr = QgsCoordinateTransform(src, dst)
