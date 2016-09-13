@@ -4097,11 +4097,11 @@ QList<double> QgsSymbolLayerV2Utils::prettyBreaks( double minimum, double maximu
   return breaks;
 }
 
-double QgsSymbolLayerV2Utils::rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props )
+double QgsSymbolLayerV2Utils::rescaleUom( double size, QgsSymbolV2::OutputUnit unit, const QgsStringMap& props )
 {
   double scale = 1;
   bool roundToUnit = false;
-  if ( unit == QgsUnitTypes::RenderUnknownUnit )
+  if ( unit == QgsSymbolV2::Mixed )
   {
     if ( props.contains( "uomScale" ) )
     {
@@ -4119,10 +4119,10 @@ double QgsSymbolLayerV2Utils::rescaleUom( double size, QgsUnitTypes::RenderUnit 
     {
       switch ( unit )
       {
-        case QgsUnitTypes::RenderMillimeters:
+        case QgsSymbolV2::MM:
           scale = 0.001;
           break;
-        case QgsUnitTypes::RenderPixels:
+        case QgsSymbolV2::Pixel:
           scale = 0.00028;
           roundToUnit = true;
           break;
@@ -4135,7 +4135,7 @@ double QgsSymbolLayerV2Utils::rescaleUom( double size, QgsUnitTypes::RenderUnit 
       // target is pixels
       switch ( unit )
       {
-        case QgsUnitTypes::RenderMillimeters:
+        case QgsSymbolV2::MM:
           scale = 1 / 0.28;
           roundToUnit = true;
           break;
@@ -4156,14 +4156,14 @@ double QgsSymbolLayerV2Utils::rescaleUom( double size, QgsUnitTypes::RenderUnit 
   return rescaled;
 }
 
-QPointF QgsSymbolLayerV2Utils::rescaleUom( const QPointF& point, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props )
+QPointF QgsSymbolLayerV2Utils::rescaleUom( const QPointF& point, QgsSymbolV2::OutputUnit unit, const QgsStringMap& props )
 {
   double x = rescaleUom( point.x(), unit, props );
   double y = rescaleUom( point.y(), unit, props );
   return QPointF( x, y );
 }
 
-QVector<qreal> QgsSymbolLayerV2Utils::rescaleUom( const QVector<qreal>& array, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props )
+QVector<qreal> QgsSymbolLayerV2Utils::rescaleUom( const QVector<qreal>& array, QgsSymbolV2::OutputUnit unit, const QgsStringMap& props )
 {
   QVector<qreal> result;
   QVector<qreal>::const_iterator it = array.constBegin();
@@ -4174,7 +4174,7 @@ QVector<qreal> QgsSymbolLayerV2Utils::rescaleUom( const QVector<qreal>& array, Q
   return result;
 }
 
-void QgsSymbolLayerUtils::applyScaleDependency( QDomDocument& doc, QDomElement& ruleElem, QgsStringMap& props )
+void QgsSymbolLayerV2Utils::applyScaleDependency( QDomDocument& doc, QDomElement& ruleElem, QgsStringMap& props )
 {
   if ( !props.value( "scaleMinDenom", "" ).isEmpty() )
   {
@@ -4191,7 +4191,7 @@ void QgsSymbolLayerUtils::applyScaleDependency( QDomDocument& doc, QDomElement& 
   }
 }
 
-void QgsSymbolLayerUtils::mergeScaleDependencies( int mScaleMinDenom, int mScaleMaxDenom, QgsStringMap& props )
+void QgsSymbolLayerV2Utils::mergeScaleDependencies( int mScaleMinDenom, int mScaleMaxDenom, QgsStringMap& props )
 {
   if ( mScaleMinDenom != 0 )
   {
