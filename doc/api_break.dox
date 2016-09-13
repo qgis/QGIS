@@ -181,6 +181,11 @@ This page tries to maintain a list with incompatible changes that happened in pr
 <li>QgsColorbutton was removed. QgsColorButtonV2 has now been renamed to QgsColorButton. Hence, QgsColorButtonV2 does not exist anymore.</li>
 <li>QgsColorDialog was removed, and QgsColorDialogV2 was renamed to QgsColorDialog. Hence, QgsColorButtonV2 does not exist anymore.
 All the functionality from the old QgsColorDialog has been moved to the new class.</li>
+<li>QgsComposerAttributeTable and associated classes (eg QgsComposerAttributeTableCompare,
+QgsComposerAttributeTableColumnModel, QgsComposerTableSortColumnsProxyModel) were removed.
+Use QgsComposerAttributeTableV2 instead.</li>
+<li>QgsComposerTable was removed. Use QgsComposerAttributeTableV2 instead.</li> 
+<li>ComposerTextTable was removed. Use ComposerTextTableV2 instead.</li>
 <li>QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,
 so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).</li>
@@ -290,6 +295,15 @@ variant instead.</li>
 
 <ul>
 <li>readXMLMapSettings() has been renamed to readXmlMapSettings()</li>
+<li>composerMap() and setComposerMap() were removed. Use QgsComposerMap::atlasDriven() and setAtlasDriven()
+instead</li>
+<li>fixedScale() and setFixedScale() were removed. Use QgsComposerMap::atlasScalingMode() and setAtlasScalingMode()
+instead</li>
+<li>margin() and setMargin() were removed. Use QgsComposerMap::atlasMargin() and setAtlasMargin()
+instead</li>
+<li>setSortKeyAttributeIndex() and sortKeyAttributeIndex() were removed. Use sortKeyAttributeName()
+and setSortKeyAttributeName() instead.</li>
+<li>currentFeature() was removed. Use feature() instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsAuthConfigUriEdit QgsAuthConfigUriEdit
@@ -323,6 +337,36 @@ and the new ramp can be retrieved after executing the dialog by calling ramp().<
 <li>Some internal methods which were previously public or protected were made private.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsComposerArrow QgsComposerArrow
+
+<ul>
+<li>setOutlineWidth(), outlineWidth(), arrowColor() and setArrowColor() were removed.
+Use setArrowHeadOutlineWidth(), arrowHeadOutlineWidth(), arrowHeadOutlineColor(),
+setArrowHeadOutlineColor(), arrowHeadFillColor(), setArrowHeadFillColor(),
+setLineSymbol() or lineSymbol() instead.</li>  
+</ul>
+
+\subsection qgis_api_break_3_0_QgsComposerAttributeTableV2 QgsComposerAttributeTableV2
+
+<ul>
+<li>setDisplayAttributes() was removed. Use setDisplayedFields() instead.</li>  
+</ul>
+
+\subsection qgis_api_break_3_0_QgsComposerItem QgsComposerItem
+
+<ul>
+<li>zoomContent( int delta, double x, double y ) was removed. Use zoomContent( double, QPointF, ZoomMode )
+instead.</li>
+<li>drawText(), textWidthMillimeters(), fontHeightCharacterMM(), fontAscentMillimeters(),
+fontDescentMillimeters(), fontHeightMillimeters(), pixelFontSize(), scaledFontPixelSize(),
+drawArrowHead(), angle(), largestRotatedRectWithinBounds(), and rotate() were removed.
+Use the corresponding methods in QgsComposerUtils instead.</li>
+<li>rotation() and setRotation() were removed. Use itemRotation() and setItemRotation()
+instead.</li>
+<li>lockSymbolSize(), imageSizeConsideringRotation(), cornerPointOnRotatedAndScaledRect(),
+sizeChangedByRotation() were removed. No replacement is offered for these methods.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsComposerLabel QgsComposerLabel
 
 <ul>
@@ -330,6 +374,7 @@ and the new ramp can be retrieved after executing the dialog by calling ramp().<
 expression variables in the composer label item instead.</li>
 <li>setSubstitutions has been removed. Use expression context variables in the composer
 label item instead.</li>
+<li>margin() was removed. Use marginX() and marginY() instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsComposerLegend QgsComposerLegend
@@ -350,6 +395,34 @@ label item instead.</li>
 <ul>
 <li>containsWMSLayer() has been renamed to containsWmsLayer()</li>
 <li>mapRenderer() has been removed. Use mapSettings() instead.</li>
+<li>All grid style and format enums were moved to QgsComposerMapGrid.</li>
+<li>All grid property getters and setters were moved to QgsComposerMapGrid,
+and should be accessed using QgsComposerMap::grid() or QgsComposerMap::grids().</li>
+<li>All overview property getters and setters were moved to QgsComposerMapOverview,
+and should be accessed using QgsComposerMap::overview() or QgsComposerMap::overviews().</li>
+<li>overviewExtentChanged() was moved to QgsComposerMapOverview.</li>
+<li>toggleAtlasPreview(), connectMapOverviewSignals() were no longer required and are removed.</li>
+<li>setRotation() and rotation() were removed. Use setMapRotation() and mapRotation()
+instead.</li>
+<li>atlasFixedScale() and setAtlasFixedScale() were removed. Use atlasScalingMode()
+and setAtlasScalingMode() instead.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsComposerMapGrid QgsComposerMapGrid
+
+<ul>
+<li>The annotation position Disabled was removed. QgsComposerMapGrid::HideAll
+should be used instead.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsComposerMultiFrame QgsComposerMultiFrame
+
+<ul>
+<li>render( QPainter* p, const QRectF& renderExtent ) was removed. Use
+render( QPainter* painter, const QRectF& renderExtent, const int frameIndex )
+instead.</li>
+<li>render( QPainter* painter, const QRectF& renderExtent, const int frameIndex )
+was made pure virtual.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsComposerNodesItem QgsComposerNodesItem
@@ -359,6 +432,20 @@ label item instead.</li>
 <li>_writeXMLStyle() has been renamed to _writeXMLStyle()</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsComposerPicture QgsComposerPicture
+
+<ul>
+<li>setPictureFile() and pictureFile() were removed. Use setPicturePath()
+and picturePath() instead.</li>
+<li>rotation() and setRotation() were removed. Use pictureRotation()
+and setPictureRotation() instead.</li>
+<li>usePictureExpression() and pictureExpression() were removed. Use
+QgsComposerObject::dataDefinedProperty instead.</li>
+<li>setUsePictureExpression() was removed. Use
+QgsComposerObject::setDataDefinedProperty() instead.</li>
+<li>updatePictureExpression() was removed.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsComposerTable QgsComposerTable
 
 <ul>
@@ -366,6 +453,12 @@ label item instead.</li>
 <li>tableReadXML() has been renamed to tableReadXml()</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsComposerTableV2 QgsComposerTableV2
+
+<ul>
+<li>rowsVisible(), rowRange(), drawHorizontalGridLines() and
+ drawVerticalGridLines() were removed.</li>
+</ul>   
 
 \subsection qgis_api_break_3_0_QgsComposition QgsComposition
 
@@ -373,6 +466,12 @@ label item instead.</li>
 <li>addItemsFromXML() has been renamed to addItemsFromXml()</li>
 <li>Constructor with QgsMapRenderer parameter has been removed. Use the variant with QgsMapSettings parameter.</li>
 <li>mapRenderer() has been removed. Use mapSettings() instead.</li>
+<li>setSnapGridTolerance(), setAlignmentSnapTolerance(), alignmentSnapTolerance() and snapGridTolerance()
+were removed. Use setSnapTolerance() and snapTolerance() instead.</li>
+<li>getComposerHtmlByItem() was removed. Use QgsComposerFrame::multiFrame() instead.</li>
+<li>pixelFontSize(), pointFontSize(), relativeResizeRect(), relativePosition() were removed. Use the corresponding methods in QgsComposerUtils instead.</li>
+<li>sortZList() was removed. Use refreshZList() instead.</li>
+<li>addComposerTable(), composerTableAdded() were removed.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem
