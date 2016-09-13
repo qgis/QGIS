@@ -550,11 +550,7 @@ QSizeF QgsEllipseSymbolLayer::calculateSize( QgsSymbolRenderContext& context, do
     context.setOriginalValueVariable( mSymbolWidth );
     width = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_WIDTH, context, mSymbolWidth ).toDouble();
   }
-  else if ( context.renderHints() & QgsSymbol::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
-  {
-    width = mSize;
-  }
-  else //3. priority: global width setting
+  else //2. priority: global width setting
   {
     width = mSymbolWidth;
   }
@@ -570,11 +566,7 @@ QSizeF QgsEllipseSymbolLayer::calculateSize( QgsSymbolRenderContext& context, do
     context.setOriginalValueVariable( mSymbolHeight );
     height = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_HEIGHT, context, mSymbolHeight ).toDouble();
   }
-  else if ( context.renderHints() & QgsSymbol::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
-  {
-    height = mSize;
-  }
-  else //3. priority: global height setting
+  else //2. priority: global height setting
   {
     height = mSymbolHeight;
   }
@@ -745,10 +737,6 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFact
     context.setOriginalValueVariable( mSymbolWidth );
     symbolWidth = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_WIDTH, context, mSymbolWidth ).toDouble();
   }
-  else if ( context.renderHints() & QgsSymbol::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
-  {
-    symbolWidth = mSize;
-  }
   if ( mSymbolWidthUnit == QgsUnitTypes::RenderMillimeters )
   {
     symbolWidth *= mmMapUnitScaleFactor;
@@ -760,10 +748,6 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFact
   {
     context.setOriginalValueVariable( mSymbolHeight );
     symbolHeight = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_HEIGHT, context, mSymbolHeight ).toDouble();
-  }
-  else if ( context.renderHints() & QgsSymbol::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
-  {
-    symbolHeight = mSize;
   }
   if ( mSymbolHeightUnit == QgsUnitTypes::RenderMillimeters )
   {

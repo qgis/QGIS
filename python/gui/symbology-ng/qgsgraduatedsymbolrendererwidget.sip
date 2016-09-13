@@ -30,8 +30,6 @@ class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
     /** Toggle the link between classes boundaries */
     void toggleBoundariesLink( bool linked );
 
-    void sizeScaleFieldChanged( const QString& fldName );
-    void scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod );
     void labelFormatChanged();
 
     void showSymbolLevels();

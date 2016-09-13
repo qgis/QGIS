@@ -18,8 +18,5 @@ class QgsSingleSymbolRendererWidget : QgsRendererWidget
   public slots:
     void changeSingleSymbol();
 
-    void sizeScaleFieldChanged( const QString& fldName );
-    void scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod );
-
     void showSymbolLevels();
 };

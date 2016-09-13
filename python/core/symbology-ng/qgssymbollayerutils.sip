@@ -171,17 +171,9 @@ class QgsSymbolLayerUtils
                                         QString &path, QString &mime,
                                         QColor &color, double &size );
 
-    /** @deprecated Use wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element, QString name, QColor color, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth, double size ) instead */
-    static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
-        const QString& name, const QColor& color, const QColor& borderColor = QColor(),
-        double borderWidth = -1, double size = -1 ) /Deprecated/;
     static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
                                       const QString& name, const QColor& color, const QColor& borderColor, Qt::PenStyle borderStyle,
                                       double borderWidth = -1, double size = -1 );
-    /** @deprecated Use wellKnownMarkerFromSld( QDomElement &element, QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle, double &borderWidth, double &size ) instead */
-    static bool wellKnownMarkerFromSld( QDomElement &element,
-        QString &name, QColor &color, QColor &borderColor,
-        double &borderWidth, double &size ) /Deprecated/;
 
     //! @note available in python as wellKnownMarkerFromSld2
     static bool wellKnownMarkerFromSld( QDomElement &element,

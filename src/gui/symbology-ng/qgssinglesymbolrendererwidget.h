@@ -49,9 +49,6 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
   public slots:
     void changeSingleSymbol();
 
-    void sizeScaleFieldChanged( const QString& fldName );
-    void scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod );
-
     void showSymbolLevels();
 
   protected:

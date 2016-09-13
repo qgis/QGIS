@@ -761,8 +761,6 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   // recreate renderer
   QgsCategorizedSymbolRenderer *r = new QgsCategorizedSymbolRenderer( attrName, cats );
   r->setSourceSymbol( mCategorizedSymbol->clone() );
-  r->setScaleMethod( mRenderer->scaleMethod() );
-  r->setSizeScaleField( mRenderer->sizeScaleField() );
   r->setInvertedColorRamp( cbxInvertedColorRamp->isChecked() );
   QScopedPointer< QgsColorRamp > ramp( getColorRamp() );
   if ( ramp )
@@ -836,18 +834,6 @@ void QgsCategorizedSymbolRendererWidget::addCategory()
   QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
   QgsRendererCategory cat( QString(), symbol, QString(), true );
   mModel->addCategory( cat );
-  emit widgetChanged();
-}
-
-void QgsCategorizedSymbolRendererWidget::sizeScaleFieldChanged( const QString& fldName )
-{
-  mRenderer->setSizeScaleField( fldName );
-  emit widgetChanged();
-}
-
-void QgsCategorizedSymbolRendererWidget::scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod )
-{
-  mRenderer->setScaleMethod( scaleMethod );
   emit widgetChanged();
 }
 

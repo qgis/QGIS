@@ -46,6 +46,7 @@ from qgis.core import (QgsCentroidFillSymbolLayer,
                        QgsSimpleFillSymbolLayer,
                        QgsSimpleLineSymbolLayer,
                        QgsSimpleMarkerSymbolLayer,
+                       QgsSimpleMarkerSymbolLayerBase,
                        QgsSVGFillSymbolLayer,
                        QgsSvgMarkerSymbolLayer,
                        QgsSymbolLayer,
@@ -410,8 +411,8 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'star'
-        mValue = mSymbolLayer.subSymbol().symbolLayer(0).name()
+        mExpectedValue = QgsSimpleMarkerSymbolLayerBase.Star
+        mValue = mSymbolLayer.subSymbol().symbolLayer(0).shape()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
@@ -504,8 +505,8 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'triangle'
-        mValue = mSymbolLayer.subSymbol().symbolLayer(0).name()
+        mExpectedValue = QgsSimpleMarkerSymbolLayerBase.Triangle
+        mValue = mSymbolLayer.subSymbol().symbolLayer(0).shape()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
@@ -598,8 +599,8 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'circle'
-        mValue = mSymbolLayer.subSymbol().symbolLayer(0).name()
+        mExpectedValue = QgsSimpleMarkerSymbolLayerBase.Circle
+        mValue = mSymbolLayer.subSymbol().symbolLayer(0).shape()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 

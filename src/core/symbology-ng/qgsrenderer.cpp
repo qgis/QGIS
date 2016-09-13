@@ -45,21 +45,6 @@ QPointF QgsFeatureRenderer::_getPoint( QgsRenderContext& context, const QgsPoint
   return QgsSymbol::_getPoint( context, point );
 }
 
-void QgsFeatureRenderer::setScaleMethodToSymbol( QgsSymbol* symbol, int scaleMethod )
-{
-  if ( symbol )
-  {
-    if ( symbol->type() == QgsSymbol::Marker )
-    {
-      QgsMarkerSymbol* ms = static_cast<QgsMarkerSymbol*>( symbol );
-      if ( ms )
-      {
-        ms->setScaleMethod( static_cast< QgsSymbol::ScaleMethod >( scaleMethod ) );
-      }
-    }
-  }
-}
-
 void QgsFeatureRenderer::copyRendererData( QgsFeatureRenderer* destRenderer ) const
 {
   if ( !destRenderer || !mPaintEffect )
@@ -68,14 +53,6 @@ void QgsFeatureRenderer::copyRendererData( QgsFeatureRenderer* destRenderer ) co
   destRenderer->setPaintEffect( mPaintEffect->clone() );
   destRenderer->mOrderBy = mOrderBy;
   destRenderer->mOrderByEnabled = mOrderByEnabled;
-}
-
-void QgsFeatureRenderer::copyPaintEffect( QgsFeatureRenderer *destRenderer ) const
-{
-  if ( !destRenderer || !mPaintEffect )
-    return;
-
-  destRenderer->setPaintEffect( mPaintEffect->clone() );
 }
 
 QgsFeatureRenderer::QgsFeatureRenderer( const QString& type )
@@ -101,30 +78,7 @@ QgsFeatureRenderer* QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::GeometryTy
   return new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( geomType ) );
 }
 
-QgsSymbol* QgsFeatureRenderer::symbolForFeature( QgsFeature& feature )
-{
-  QgsRenderContext context;
-  context.setExpressionContext( QgsExpressionContextUtils::createFeatureBasedContext( feature, QgsFields() ) );
-  return symbolForFeature( feature, context );
-}
-
-QgsSymbol* QgsFeatureRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context )
-{
-  Q_UNUSED( context );
-  // base method calls deprecated symbolForFeature to maintain API
-  Q_NOWARN_DEPRECATED_PUSH
-  return symbolForFeature( feature );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-QgsSymbol *QgsFeatureRenderer::originalSymbolForFeature( QgsFeature &feature )
-{
-  Q_NOWARN_DEPRECATED_PUSH
-  return symbolForFeature( feature );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-QgsSymbol *QgsFeatureRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol* QgsFeatureRenderer::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   return symbolForFeature( feature, context );
 }
@@ -134,11 +88,6 @@ QSet< QString > QgsFeatureRenderer::legendKeysForFeature( QgsFeature& feature, Q
   Q_UNUSED( feature );
   Q_UNUSED( context );
   return QSet< QString >();
-}
-
-void QgsFeatureRenderer::startRender( QgsRenderContext& context, const QgsVectorLayer* vlayer )
-{
-  startRender( context, vlayer->fields() );
 }
 
 bool QgsFeatureRenderer::filterNeedsGeometry() const
@@ -165,23 +114,6 @@ QString QgsFeatureRenderer::dump() const
 {
   return "UNKNOWN RENDERER\n";
 }
-
-QgsSymbolList QgsFeatureRenderer::symbols()
-{
-  QgsRenderContext context;
-  return symbols( context );
-}
-
-QgsSymbolList QgsFeatureRenderer::symbols( QgsRenderContext &context )
-{
-  Q_UNUSED( context );
-
-  //base implementation calls deprecated method to maintain API
-  Q_NOWARN_DEPRECATED_PUSH
-  return symbols();
-  Q_NOWARN_DEPRECATED_POP
-}
-
 
 QgsFeatureRenderer* QgsFeatureRenderer::load( QDomElement& element )
 {
@@ -326,12 +258,6 @@ QgsFeatureRenderer* QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
   return r;
 }
 
-QDomElement QgsFeatureRenderer::writeSld( QDomDocument& doc, const QgsVectorLayer &layer ) const
-{
-  QgsStringMap props;
-  return writeSld( doc, layer.name(), props );
-}
-
 QDomElement QgsFeatureRenderer::writeSld( QDomDocument& doc, const QString& styleName, QgsStringMap props ) const
 {
   QDomElement userStyleElem = doc.createElement( "UserStyle" );
@@ -402,13 +328,6 @@ void QgsFeatureRenderer::setVertexMarkerAppearance( int type, int size )
   mCurrentVertexMarkerSize = size;
 }
 
-bool QgsFeatureRenderer::willRenderFeature( QgsFeature &feat )
-{
-  Q_NOWARN_DEPRECATED_PUSH
-  return nullptr != symbolForFeature( feat );
-  Q_NOWARN_DEPRECATED_POP
-}
-
 bool QgsFeatureRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )
 {
   return nullptr != symbolForFeature( feat, context );
@@ -442,30 +361,10 @@ void QgsFeatureRenderer::renderVertexMarkerPolygon( QPolygonF& pts, QList<QPolyg
   }
 }
 
-QgsSymbolList QgsFeatureRenderer::symbolsForFeature( QgsFeature& feat )
-{
-  QgsSymbolList lst;
-  Q_NOWARN_DEPRECATED_PUSH
-  QgsSymbol* s = symbolForFeature( feat );
-  Q_NOWARN_DEPRECATED_POP
-  if ( s ) lst.append( s );
-  return lst;
-}
-
 QgsSymbolList QgsFeatureRenderer::symbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
 {
   QgsSymbolList lst;
   QgsSymbol* s = symbolForFeature( feat, context );
-  if ( s ) lst.append( s );
-  return lst;
-}
-
-QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( QgsFeature& feat )
-{
-  QgsSymbolList lst;
-  Q_NOWARN_DEPRECATED_PUSH
-  QgsSymbol* s = originalSymbolForFeature( feat );
-  Q_NOWARN_DEPRECATED_POP
   if ( s ) lst.append( s );
   return lst;
 }

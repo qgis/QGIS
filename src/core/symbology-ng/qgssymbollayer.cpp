@@ -90,13 +90,6 @@ const QString QgsSymbolLayer::EXPR_OFFSET_ALONG_LINE( "offset_along_line" );
 const QString QgsSymbolLayer::EXPR_HORIZONTAL_ANCHOR_POINT( "horizontal_anchor_point" );
 const QString QgsSymbolLayer::EXPR_VERTICAL_ANCHOR_POINT( "vertical_anchor_point" );
 
-const QgsExpression* QgsSymbolLayer::dataDefinedProperty( const QString& property ) const
-{
-  Q_NOWARN_DEPRECATED_PUSH
-  return expression( property );
-  Q_NOWARN_DEPRECATED_POP
-}
-
 QgsDataDefined *QgsSymbolLayer::getDataDefinedProperty( const QString &property ) const
 {
   if ( mDataDefinedProperties.isEmpty() )
@@ -108,23 +101,6 @@ QgsDataDefined *QgsSymbolLayer::getDataDefinedProperty( const QString &property 
     return it.value();
   }
   return nullptr;
-}
-
-QgsExpression* QgsSymbolLayer::expression( const QString& property ) const
-{
-  QgsDataDefined* dd = getDataDefinedProperty( property );
-  return dd ? dd->expression() : nullptr;
-}
-
-QString QgsSymbolLayer::dataDefinedPropertyString( const QString& property ) const
-{
-  const QgsDataDefined* dd = getDataDefinedProperty( property );
-  return dd ? dd->expressionString() : QString();
-}
-
-void QgsSymbolLayer::setDataDefinedProperty( const QString& property, const QString& expressionString )
-{
-  setDataDefinedProperty( property, new QgsDataDefined( expressionString ) );
 }
 
 void QgsSymbolLayer::setDataDefinedProperty( const QString &property, QgsDataDefined *dataDefined )
@@ -171,48 +147,6 @@ bool QgsSymbolLayer::hasDataDefinedProperty( const QString& property ) const
 
   QgsDataDefined* dd = getDataDefinedProperty( property );
   return dd && dd->isActive();
-}
-
-QVariant QgsSymbolLayer::evaluateDataDefinedProperty( const QString &property, const QgsFeature* feature, const QVariant& defaultVal, bool *ok ) const
-{
-  if ( ok )
-    *ok = false;
-
-  QgsDataDefined* dd = getDataDefinedProperty( property );
-  if ( !dd || !dd->isActive() )
-    return defaultVal;
-
-  if ( dd->useExpression() )
-  {
-    if ( dd->expression() )
-    {
-      QgsExpressionContext context = feature ? QgsExpressionContextUtils::createFeatureBasedContext( *feature, QgsFields() ) : QgsExpressionContext();
-      QVariant result = dd->expression()->evaluate( &context );
-      if ( result.isValid() )
-      {
-        if ( ok )
-          *ok = true;
-        return result;
-      }
-      else
-        return defaultVal;
-    }
-    else
-    {
-      return defaultVal;
-    }
-  }
-  else if ( feature && !dd->field().isEmpty() && !mFields.isEmpty() )
-  {
-    int attributeIndex = mFields.fieldNameIndex( dd->field() );
-    if ( attributeIndex >= 0 )
-    {
-      if ( ok )
-        *ok = true;
-      return feature->attribute( attributeIndex );
-    }
-  }
-  return defaultVal;
 }
 
 QVariant QgsSymbolLayer::evaluateDataDefinedProperty( const QString& property, const QgsSymbolRenderContext& context, const QVariant& defaultVal, bool* ok ) const

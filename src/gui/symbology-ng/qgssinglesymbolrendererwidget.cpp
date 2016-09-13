@@ -101,22 +101,6 @@ void QgsSingleSymbolRendererWidget::changeSingleSymbol()
   emit widgetChanged();
 }
 
-void QgsSingleSymbolRendererWidget::sizeScaleFieldChanged( const QString& fldName )
-{
-  mRenderer->setSizeScaleField( fldName );
-}
-
-void QgsSingleSymbolRendererWidget::scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod )
-{
-  mRenderer->setScaleMethod( scaleMethod );
-  // Set also on the symbol clone
-  QgsMarkerSymbol *markerSymbol = dynamic_cast<QgsMarkerSymbol *>( mSingleSymbol );
-  if ( markerSymbol )
-  {
-    markerSymbol->setScaleMethod( scaleMethod );
-  }
-}
-
 void QgsSingleSymbolRendererWidget::showSymbolLevels()
 {
   showSymbolLevelsDialog( mRenderer );

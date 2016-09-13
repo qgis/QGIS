@@ -82,7 +82,6 @@ class CORE_EXPORT QgsSymbol
 
     enum RenderHint
     {
-      DataDefinedSizeScale = 1,
       DataDefinedRotation = 2
     };
 
@@ -333,11 +332,6 @@ class CORE_EXPORT QgsSymbol
      * information in the rendering context.
      */
     void renderUsingLayer( QgsSymbolLayer* layer, QgsSymbolRenderContext& context );
-
-    //! check whether a symbol layer type can be used within the symbol
-    //! (marker-marker, line-line, fill-fill/line)
-    //! @deprecated since 2.14, use QgsSymbolLayer::isCompatibleWithSymbol instead
-    Q_DECL_DEPRECATED bool isSymbolLayerCompatible( SymbolType layerType );
 
     //! Render editing vertex marker at specified point
     //! @note added in QGIS 2.16

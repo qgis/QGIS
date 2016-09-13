@@ -304,6 +304,11 @@ variant instead.</li>
 <li>GenericDataSourceURI has been renamed to GenericDataSourceUri</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsCategorizedSymbolRendererWidget QgsCategorizedSymbolRendererWidget
+<ul>
+<li>sizeScaleFieldChanged() and scaleMethodChanged() were removed. These settings are no longer exposed in the widget's GUI.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsClipper QgsClipper
 
 <ul>
@@ -552,7 +557,17 @@ None will need to be modified, as the method will return an empty geometry if th
 \subsection qgis_api_break_3_0_QgsFeatureRendererV2 QgsFeatureRendererV2
 
 <ul>
-<li>The method capabilities() returns QgsFeatureRendererV2::Capabilities flags instead of an integer. The two are binary compatible.
+<li>The method capabilities() returns QgsFeatureRendererV2::Capabilities flags instead of an integer. The two are binary compatible.</li>
+<li>symbolForFeature( QgsFeature& feature ) has been removed. The symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) method should be used instead (previously available as symbolForFeature2 in PyQGIS bindings). symbolForFeature has been made pure virtual.</li>
+<li>originalSymbolForFeature( QgsFeature& feature ) has been removed. The symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) method should be used instead (previously available as originalSymbolForFeature2 in PyQGIS bindings).</li>
+<li>startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer ) was removed. This function has had no effect since QGIS 2.4</li>
+<li>symbols() has been removed. The symbols( QgsRenderContext& context ) method should be used instead (previously available as symbols2 in PyQGIS bindings).</li>
+<li>writeSld( QDomDocument& doc, const QgsVectorLayer &layer ) was removed. writeSld( QDomDocument& doc, const QgsVectorLayer &layer ) should be used instead.</li>
+<li>rotationField() and setRotationField() were removed. Data defined properties for QgsSymbolLayer should be used instead.</li>
+<li>willRenderFeature( QgsFeature& feat ) has been removed. The willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) method should be used instead (previously available as willRenderFeature2 in PyQGIS bindings).</li>
+<li>symbolsForFeature( QgsFeature& feat ) has been removed. The symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) method should be used instead (previously available as symbolsForFeature2 in PyQGIS bindings).</li>
+<li>originalSymbolsForFeature( QgsFeature& feat ) has been removed. The originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) method should be used instead (previously available as originalSymbolsForFeature2 in PyQGIS bindings).</li>
+<li>copyPaintEffect() was removed. copyRendererData() should be used instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsFields QgsFields
@@ -608,6 +623,18 @@ a QgsGeometry value rather than a pointer.</li>
 and the new ramp can be retrieved after executing the dialog by calling ramp().</li>
 <li>Some internal methods which were previously public or protected were made private.</li>
 </ul>
+
+\subsection qgis_api_break_3_0_QgsGraduatedSymbolRenderer QgsGraduatedSymbolRenderer
+
+<ul>
+<li>getDataValues() has been removed - use QgsVectorLayer::getDoubleValues() instead</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsGraduatedSymbolRendererWidget QgsGraduatedSymbolRenderer
+<ul>
+<li>sizeScaleFieldChanged() and scaleMethodChanged() were removed. These settings are no longer exposed in the widget's GUI.</li>
+</ul>
+
 
 \subsection qgis_api_break_3_0_QgsGraphBuilderInterface QgsGraphBuilderInterface
 
@@ -883,11 +910,36 @@ be returned instead of a null pointer if no transformation is required.</li>
 <li>QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon ) constructor and reset( bool isPolygon) have been removed, use constructor and function with Qgis::GeometryType as argument instead.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsRuleBasedRenderer QgsRuleBasedRenderer
+
+<ul>
+<li>QgsRuleBasedRenderer.Rule checkState() and setCheckState() were removed. Use active() and setActive() instead.</li>
+<li>startRender( QgsRenderContext& context, const QgsFields& fields ) was removed. Use startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter ) instead.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsSimpleMarkerSymbolLayer QgsSimpleMarkerSymbolLayer
+
+<ul>
+<li>The constructor variant with a string for the shape name has been removed. Use the variant which accepts a QgsSimpleMarkerSymbolLayerBase.Shape enum instead.</li>
+<li>name() and setName() have been removed. Use shape() and setShape() instead.</li>
+<li>prepareShape() and preparePath() were removed. Calling these methods manually should no longer be required.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsSingleSymbolRendererWidget QgsSingleSymbolRendererWidget
+<ul>
+<li>sizeScaleFieldChanged() and scaleMethodChanged() were removed. These settings are no longer exposed in the widget's GUI.</li>
+</ul>
 
 \subsection qgis_api_break_3_0_QgsSnapper QgsSnapper
 
 <ul>
 <li>Constructor variant with QgsMapRenderer has been removed. Use the variant with QgsMapSettings.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsSvgCache QgsSvgCache
+
+<ul>
+<li>containsParamsV2() was removed. Use containsParamsV3() instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsSymbol QgsSymbol (renamed from QgsSymbolV2)
@@ -897,6 +949,8 @@ be returned instead of a null pointer if no transformation is required.</li>
 and renamed to RenderUnit. QgsSymbol::OutputUnitList was renamed to QgsUnitTypes::RenderUnitList. All methods which previously accepted QgsSymbol::OutputUnit
 parameters or QgsSymbol::OutputUnitList parameters now take QgsUnitTypes::RenderUnit or QgsUnitTypes::RenderUnitList parameters respectively.</li>
 <li>startRender() now accepts a QgsFields reference, not a pointer.</li>
+<li>isSymbolLayerCompatible() was removed. Use QgsSymbolLayer::isCompatibleWithSymbol() instead.</li>
+<li>The DataDefinedSizeScale flag has been removed. This is no longer used and data defined scaling on a symbol layer level should be used instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsSymbolLayer QgsSymbolLayer (renamed from QgsSymbolLayerV2)
@@ -904,6 +958,10 @@ parameters or QgsSymbol::OutputUnitList parameters now take QgsUnitTypes::Render
 <ul>
 <li>The deprecated prepareExpressions( const QgsFields* fields, double scale = -1.0 ) method has been removed. Use
 the variant which takes QgsSymbolRenderContext instead.</li>
+<li>The deprecated methods dataDefinedProperty( const QString& property ) and dataDefinedPropertyString() were removed. Use getDataDefinedProperty() instead.</li>
+<li>setDataDefinedProperty( const QString& property, const QString& expressionString ) was removed. Use setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined ) instead.</li>
+<li>evaluateDataDefinedProperty( const QString& property, const QgsFeature* feature ) was removed. Use the variant which takes QgsSymbolRenderContext instead.</li>
+<li>expression() was removed. Use getDataDefinedProperty or evaluateDataDefinedProperty instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsSymbolRenderContext QgsSymbolRenderContext (renamed from QgsSymbolV2RenderContext)
@@ -917,6 +975,19 @@ the variant which takes QgsSymbolRenderContext instead.</li>
 
 <ul>
 <li>encodeOutputUnit() and decodeOutputUnit() were removed. QgsUnitTypes::encodeUnit() and QgsUnitTypes::decodeRenderUnit() should be used instead.</li>
+<li>The signatures for wellKnownMarkerToSld() and wellKnownMarkerFromSld() were changed.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsSymbolSelectorDialog QgsSymbolSelectorDialog
+
+<ul>
+<li>saveSymbol() was removed.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsSymbolSelectorWidget QgsSymbolSelectorWidget
+
+<ul>
+<li>saveSymbol() was removed.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsTolerance QgsTolerance
@@ -1053,7 +1124,9 @@ in code which previously passed a null pointer to QgsVectorFileWriter.</li>
 <ul>
 <li>New virtual method <code>bool writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage, QgsStringMap props = QgsStringMap() )</code> accepts an
 optional property map passing down layer level properties to the SLD encoders. If scale based visibility is enabled, it will contain the
-<code>scaleMinDenom</code> and <code>scaleMaxDenom</code> properties.
+<code>scaleMinDenom</code> and <code>scaleMaxDenom</code> properties.</li>
+<li>The RotationField capabitity was removed. This is now handled using data defined rotation at a symbol layer level</li>
+<li>setScaleMethodToSymbol was removed. This is now handled using data defined scaling at a symbol layer level</li>
 </ul>
 
 

@@ -192,10 +192,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         QString description() const { return mDescription; }
 
-        //! @note added in 2.6
-        //! @deprecated use active instead
-        Q_DECL_DEPRECATED bool checkState() const { return mIsActive; }
-
         /**
          * Returns if this rule is active
          *
@@ -244,10 +240,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         void setDescription( const QString& description ) { mDescription = description; }
 
-        //! @note added in 2.6
-        //! @deprecated use setActive instead
-        Q_DECL_DEPRECATED void setCheckState( bool state ) { mIsActive = state; }
-
         /**
          * Sets if this rule is active
          * @param state Determines if the rule should be activated or deactivated
@@ -265,11 +257,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         static Rule* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
 
         QDomElement save( QDomDocument& doc, QgsSymbolMap& symbolMap ) const;
-
-        /** Prepare the rule for rendering and its children (build active children array)
-         * @deprecated use startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter ) instead
-         */
-        Q_DECL_DEPRECATED bool startRender( QgsRenderContext& context, const QgsFields& fields );
 
         //! prepare the rule for rendering and its children (build active children array)
         bool startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter );
@@ -447,52 +434,20 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
 
-    //! store renderer info to XML element
     virtual QDomElement save( QDomDocument& doc ) override;
-
-    //! return a list of symbology items for the legend
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
-
-    //! items of symbology items in legend should be checkable
-    //! @note added in 2.5
     virtual bool legendSymbolItemsCheckable() const override;
-
-    //! items of symbology items in legend is checked
-    //! @note added in 2.5
     virtual bool legendSymbolItemChecked( const QString& key ) override;
-
-    //! item in symbology was checked
-    //! @note added in 2.5
     virtual void checkLegendSymbolItem( const QString& key, bool state = true ) override;
 
     virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol ) override;
-
-    //! return a list of item text / symbol
-    //! @note not available in python bindings
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" ) override;
-
-    //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
-    //! Default fallback implementation just uses legendSymbolItems() implementation
-    //! @note added in 2.6
     virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
-
-    //! for debugging
     virtual QString dump() const override;
-
-    //! return whether the renderer will render a feature or not.
-    //! Must be called between startRender() and stopRender() calls.
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) override;
-
-    //! return list of symbols used for rendering the feature.
-    //! For renderers that do not support MoreSymbolsPerFeature it is more efficient
-    //! to use symbolForFeature()
     virtual QgsSymbolList symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
-
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
-
     virtual QSet<QString> legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
-
-    //! returns bitwise OR-ed capabilities of the renderer
     virtual Capabilities capabilities() override { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
 
     /////

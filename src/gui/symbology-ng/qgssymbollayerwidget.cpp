@@ -139,29 +139,6 @@ void QgsSymbolLayerWidget::updateDataDefinedProperty()
   emit changed();
 }
 
-QString QgsSymbolLayerWidget::dataDefinedPropertyLabel( const QString &entryName )
-{
-  QString label = entryName;
-  if ( entryName == "size" )
-  {
-    label = tr( "Size" );
-    QgsMarkerSymbolLayer * layer = dynamic_cast<QgsMarkerSymbolLayer *>( symbolLayer() );
-    if ( layer )
-    {
-      switch ( layer->scaleMethod() )
-      {
-        case QgsSymbol::ScaleArea:
-          label += " (" + tr( "area" ) + ')';
-          break;
-        case QgsSymbol::ScaleDiameter:
-          label += " (" + tr( "diameter" ) + ')';
-          break;
-      }
-    }
-  }
-  return label;
-}
-
 QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerWidget( parent, vl )
 {

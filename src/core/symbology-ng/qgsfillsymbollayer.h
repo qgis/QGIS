@@ -73,18 +73,9 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     QColor borderColor() const { return mBorderColor; }
     void setBorderColor( const QColor& borderColor ) { mBorderColor = borderColor; }
 
-    /** Get outline color.
-     * @note added in 2.1 */
     QColor outlineColor() const override { return borderColor(); }
-    /** Set outline color.
-     * @note added in 2.1 */
     void setOutlineColor( const QColor& color ) override { setBorderColor( color ); }
-
-    /** Get fill color.
-     * @note added in 2.1 */
     QColor fillColor() const override { return color(); }
-    /** Set fill color.
-     * @note added in 2.1 */
     void setFillColor( const QColor& color ) override { setColor( color ); }
 
     Qt::PenStyle borderStyle() const { return mBorderStyle; }

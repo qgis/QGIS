@@ -4168,8 +4168,7 @@ bool QgsDxfExport::hasDataDefinedProperties( const QgsSymbolLayer* sl, const Qgs
     return false;
   }
 
-  if ( symbol->renderHints() & QgsSymbol::DataDefinedSizeScale ||
-       symbol->renderHints() & QgsSymbol::DataDefinedRotation )
+  if ( symbol->renderHints() & QgsSymbol::DataDefinedRotation )
   {
     return true;
   }

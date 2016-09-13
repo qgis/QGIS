@@ -249,26 +249,6 @@ void QgsSvgCache::containsParams( const QString& path, bool& hasFillParam, QColo
                   hasOutlineOpacityParam, hasDefaultOutlineOpacity, defaultOutlineOpacity );
 }
 
-
-void QgsSvgCache::containsParams( const QString& path,
-                                  bool& hasFillParam, bool& hasDefaultFillParam, QColor& defaultFillColor,
-                                  bool& hasOutlineParam, bool& hasDefaultOutlineColor, QColor& defaultOutlineColor,
-                                  bool& hasOutlineWidthParam, bool& hasDefaultOutlineWidth, double& defaultOutlineWidth ) const
-{
-  bool hasFillOpacityParam = false;
-  bool hasDefaultFillOpacity = false;
-  double defaultFillOpacity = 1.0;
-  bool hasOutlineOpacityParam = false;
-  bool hasDefaultOutlineOpacity = false;
-  double defaultOutlineOpacity = 1.0;
-
-  containsParams( path, hasFillParam, hasDefaultFillParam, defaultFillColor,
-                  hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
-                  hasOutlineParam, hasDefaultOutlineColor, defaultOutlineColor,
-                  hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth,
-                  hasOutlineOpacityParam, hasDefaultOutlineOpacity, defaultOutlineOpacity );
-}
-
 void QgsSvgCache::containsParams( const QString& path,
                                   bool& hasFillParam, bool& hasDefaultFillParam, QColor& defaultFillColor,
                                   bool& hasFillOpacityParam, bool& hasDefaultFillOpacity, double& defaultFillOpacity,

@@ -293,12 +293,6 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbo
     return;
   }
 
-  //size scaling by field
-  if ( context.renderHints() & QgsSymbol::DataDefinedSizeScale )
-  {
-    applySizeScale( context, mPen, mSelPen );
-  }
-
   double offset = mOffset;
   applyDataDefinedSymbology( context, mPen, mSelPen, offset );
 
@@ -480,13 +474,6 @@ QgsSymbolLayer* QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
   return l;
 }
 
-void QgsSimpleLineSymbolLayer::applySizeScale( QgsSymbolRenderContext& context, QPen& pen, QPen& selPen )
-{
-  double scaledWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mWidth, mWidthUnit, mWidthMapUnitScale );
-  pen.setWidthF( scaledWidth );
-  selPen.setWidthF( scaledWidth );
-}
-
 void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext& context, QPen& pen, QPen& selPen, double& offset )
 {
   if ( !hasDataDefinedProperties() )
@@ -616,10 +603,6 @@ double QgsSimpleLineSymbolLayer::dxfWidth( const QgsDxfExport& e, QgsSymbolRende
   {
     context.setOriginalValueVariable( mWidth );
     width = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_WIDTH, context, mWidth ).toDouble() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
-  }
-  else if ( context.renderHints() & QgsSymbol::DataDefinedSizeScale )
-  {
-    width = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mWidth, mWidthUnit, mWidthMapUnitScale );
   }
 
   return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
@@ -829,8 +812,6 @@ void QgsMarkerLineSymbolLayer::startRender( QgsSymbolRenderContext& context )
   int hints = 0;
   if ( mRotateMarker )
     hints |= QgsSymbol::DataDefinedRotation;
-  if ( context.renderHints() & QgsSymbol::DataDefinedSizeScale )
-    hints |= QgsSymbol::DataDefinedSizeScale;
   mMarker->setRenderHints( hints );
 
   mMarker->startRender( context.renderContext(), context.fields() );

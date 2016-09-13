@@ -1026,16 +1026,6 @@ void QgsGraduatedSymbolRendererWidget::changeCurrentValue( QStandardItem * item 
   }
 }
 
-void QgsGraduatedSymbolRendererWidget::sizeScaleFieldChanged( const QString& fldName )
-{
-  mRenderer->setSizeScaleField( fldName );
-}
-
-void QgsGraduatedSymbolRendererWidget::scaleMethodChanged( QgsSymbol::ScaleMethod scaleMethod )
-{
-  mRenderer->setScaleMethod( scaleMethod );
-}
-
 void QgsGraduatedSymbolRendererWidget::labelFormatChanged()
 {
   QgsRendererRangeLabelFormat labelFormat = QgsRendererRangeLabelFormat(

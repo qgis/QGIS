@@ -40,16 +40,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
      */
     static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
 
-    /** Virtual constructor */
     virtual QgsArrowSymbolLayer* clone() const override;
-
-    /** Get the sub symbol used for filling */
     virtual QgsSymbol* subSymbol() override { return mSymbol.data(); }
-
-    /** Set the sub symbol used for filling. Takes ownership. */
     virtual bool setSubSymbol( QgsSymbol* symbol ) override;
-
-    /** Return a list of attributes required to render this feature */
     virtual QSet<QString> usedAttributes() const override;
 
     /** Get current arrow width */
@@ -140,28 +133,11 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     /** Set the arrow type */
     void setArrowType( ArrowType type ) { mArrowType = type; }
 
-    /**
-     * Should be reimplemented by subclasses to return a string map that
-     * contains the configuration information for the symbol layer. This
-     * is used to serialize a symbol layer perstistently.
-     */
     QgsStringMap properties() const override;
-
-    /**
-     * Returns a string that represents this layer type. Used for serialization.
-     * Should match with the string used to register this symbol layer in the registry.
-     */
     QString layerType() const override;
-
-    /** Prepare the rendering */
     void startRender( QgsSymbolRenderContext& context ) override;
-
-    /** End of the rendering */
     void stopRender( QgsSymbolRenderContext& context ) override;
-
-    /** Main drawing method */
     void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context ) override;
-
     void setColor( const QColor& c ) override;
     virtual QColor color() const override;
 

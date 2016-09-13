@@ -94,9 +94,9 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
     virtual ~QgsGraduatedSymbolRenderer();
 
     //! @note labelForLowerUpper in python bindings
-    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=symbolForFeature2/;
+    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
     //! @note originalSymbolForFeature2 in python bindings
-    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) /PyName=originalSymbolForFeature2/;
+    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
@@ -114,7 +114,7 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
     virtual QgsFeatureRenderer::Capabilities capabilities();
 
     //! @note symbol2 in python bindings
-    virtual QgsSymbolList symbols( QgsRenderContext& context ) /PyName=symbols2/;
+    virtual QgsSymbolList symbols( QgsRenderContext& context );
 
     QString classAttribute() const;
     void setClassAttribute( const QString& attr );
@@ -182,12 +182,6 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
     //! @param nclasses The number of classes to calculate (approximate for some modes)
     //! @note Added in 2.6
     void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
-
-    //! Evaluates the data expression and returns the list of values from the layer
-    //! @param vlayer  The layer for which to evaluate the expression
-    //! @note Added in 2.6
-    //! @deprecated use QgsVectorLayer::getDoubleValues instead
-    QList<double> getDataValues( QgsVectorLayer *vlayer ) /Deprecated/;
 
     //! Return the label format used to generate default classification labels
     //! @note Added in 2.6
@@ -298,15 +292,6 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
     //! set the method used for graduation (either size or color)
     //! @note added in 2.10
     void setGraduatedMethod( GraduatedMethod method );
-
-    void setRotationField( const QString& fieldOrExpression ) /Deprecated/;
-    QString rotationField() const /Deprecated/;
-
-    void setSizeScaleField( const QString& fieldOrExpression );
-    QString sizeScaleField() const;
-
-    void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
-    QgsSymbol::ScaleMethod scaleMethod() const;
 
     //! items of symbology items in legend should be checkable
     //! @note added in 2.5

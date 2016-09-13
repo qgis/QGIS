@@ -148,28 +148,6 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 
   public:
 
-/** Constructor for QgsSimpleMarkerSymbolLayer.
-    * @param name symbol name, should be one of "square", "rectangle", "diamond",
-    * "pentagon", "hexagon", "triangle", "equilateral_triangle", "star", "arrow",
-    * "circle", "cross", "cross_fill", "cross2", "line", "x", "arrowhead", "filled_arrowhead",
-    * "semi_circle", "third_circle", "quarter_circle", "quarter_square", "half_square",
-    * "diagonal_half_square", "right_half_triangle", "left_half_triangle"
-    * @param color fill color for symbol
-    * @param borderColor border color for symbol
-    * @param size symbol size (in mm)
-    * @param angle symbol rotation angle
-    * @param scaleMethod scaling method for data defined scaling
-    * @param penJoinStyle join style for outline pen
-    * @deprecated use variant which accepts QgsSimpleMarkerSymbolLayerBase::Shape instead
-    */
-    QgsSimpleMarkerSymbolLayer( const QString& name,
-        const QColor& color = DEFAULT_SIMPLEMARKER_COLOR,
-        const QColor& borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
-        double size = DEFAULT_SIMPLEMARKER_SIZE,
-        double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-        QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
-        Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE ) /Deprecated/;
-
     /** Constructor for QgsSimpleMarkerSymbolLayer.
     * @param shape symbol shape
     * @param size symbol size (in mm)
@@ -224,12 +202,6 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
     virtual QColor color() const;
 
     // new methods
-
-    //! @deprecated use shape() instead
-    QString name() const /Deprecated/;
-
-    //! @deprecated use setShape() instead
-    void setName( const QString& name ) /Deprecated/;
 
     /** Returns the marker's border color.
      * @see setBorderColor()
@@ -333,13 +305,6 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
      * @note this method does not handle setting the painter pen or brush to match the symbol's fill or outline
      */
     void drawMarker( QPainter* p, QgsSymbolRenderContext& context );
-
-    //! @deprecated will be removed in QGIS 3.0
-    bool prepareShape( const QString& name = QString() ) /Deprecated/;
-    //! @deprecated will be removed in QGIS 3.0
-    bool prepareShape( const QString& name, QPolygonF &polygon ) const /Deprecated/;
-    //! @deprecated will be removed in QGIS 3.0
-    bool preparePath( QString name = QString() ) /Deprecated/;
 
     /** Prepares cache image
      * @returns true in case of success, false if cache image size too large

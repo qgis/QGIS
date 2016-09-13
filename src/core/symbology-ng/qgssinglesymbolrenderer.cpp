@@ -36,8 +36,6 @@
 QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( QgsSymbol* symbol )
     : QgsFeatureRenderer( "singleSymbol" )
     , mSymbol( symbol )
-    , mScaleMethod( DEFAULT_SCALE_METHOD )
-    , mOrigSize( 0.0 )
 {
   Q_ASSERT( symbol );
 }
@@ -46,33 +44,9 @@ QgsSingleSymbolRenderer::~QgsSingleSymbolRenderer()
 {
 }
 
-QgsSymbol* QgsSingleSymbolRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext &context )
+QgsSymbol* QgsSingleSymbolRenderer::symbolForFeature( QgsFeature&, QgsRenderContext & )
 {
-  context.expressionContext().setFeature( feature );
-  if ( !mRotation.data() && !mSizeScale.data() ) return mSymbol.data();
-
-  const double rotation = mRotation.data() ? mRotation->evaluate( &context.expressionContext() ).toDouble() : 0;
-  const double sizeScale = mSizeScale.data() ? mSizeScale->evaluate( &context.expressionContext() ).toDouble() : 1.;
-
-  if ( mTempSymbol->type() == QgsSymbol::Marker )
-  {
-    QgsMarkerSymbol* markerSymbol = static_cast<QgsMarkerSymbol*>( mTempSymbol.data() );
-    if ( mRotation.data() ) markerSymbol->setAngle( rotation );
-    markerSymbol->setSize( sizeScale * mOrigSize );
-    markerSymbol->setScaleMethod( mScaleMethod );
-  }
-  else if ( mTempSymbol->type() == QgsSymbol::Line )
-  {
-    QgsLineSymbol* lineSymbol = static_cast<QgsLineSymbol*>( mTempSymbol.data() );
-    lineSymbol->setWidth( sizeScale * mOrigSize );
-  }
-  else if ( mTempSymbol->type() == QgsSymbol::Fill )
-  {
-    QgsFillSymbol* fillSymbol = static_cast<QgsFillSymbol*>( mTempSymbol.data() );
-    if ( mRotation.data() ) fillSymbol->setAngle( rotation );
-  }
-
-  return mTempSymbol.data();
+  return mSymbol.data();
 }
 
 QgsSymbol* QgsSingleSymbolRenderer::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context )
@@ -88,58 +62,20 @@ void QgsSingleSymbolRenderer::startRender( QgsRenderContext& context, const QgsF
     return;
 
   mSymbol->startRender( context, fields );
-
-  if ( mRotation.data() || mSizeScale.data() )
-  {
-    // we are going to need a temporary symbol
-    mTempSymbol.reset( mSymbol->clone() );
-
-    int hints = 0;
-    if ( mRotation.data() )
-      hints |= QgsSymbol::DataDefinedRotation;
-    if ( mSizeScale.data() )
-      hints |= QgsSymbol::DataDefinedSizeScale;
-    mTempSymbol->setRenderHints( hints );
-
-    mTempSymbol->startRender( context, fields );
-
-    if ( mSymbol->type() == QgsSymbol::Marker )
-    {
-      mOrigSize = static_cast<QgsMarkerSymbol*>( mSymbol.data() )->size();
-    }
-    else if ( mSymbol->type() == QgsSymbol::Line )
-    {
-      mOrigSize = static_cast<QgsLineSymbol*>( mSymbol.data() )->width();
-    }
-    else
-    {
-      mOrigSize = 0;
-    }
-  }
-
-  return;
 }
 
 void QgsSingleSymbolRenderer::stopRender( QgsRenderContext& context )
 {
-  if ( !mSymbol.data() ) return;
+  if ( !mSymbol.data() )
+    return;
 
   mSymbol->stopRender( context );
-
-  if ( mRotation.data() || mSizeScale.data() )
-  {
-    // we are going to need a temporary symbol
-    mTempSymbol->stopRender( context );
-    mTempSymbol.reset();
-  }
 }
 
 QList<QString> QgsSingleSymbolRenderer::usedAttributes()
 {
   QSet<QString> attributes;
   if ( mSymbol.data() ) attributes.unite( mSymbol->usedAttributes() );
-  if ( mRotation.data() ) attributes.unite( mRotation->referencedColumns().toSet() );
-  if ( mSizeScale.data() ) attributes.unite( mSizeScale->referencedColumns().toSet() );
   return attributes.toList();
 }
 
@@ -154,43 +90,6 @@ void QgsSingleSymbolRenderer::setSymbol( QgsSymbol* s )
   mSymbol.reset( s );
 }
 
-void QgsSingleSymbolRenderer::setRotationField( const QString& fieldOrExpression )
-{
-  if ( mSymbol->type() == QgsSymbol::Marker )
-  {
-    QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( mSymbol.data() );
-    s->setDataDefinedAngle( QgsDataDefined( fieldOrExpression ) );
-  }
-}
-
-QString QgsSingleSymbolRenderer::rotationField() const
-{
-  if ( mSymbol->type() == QgsSymbol::Marker )
-  {
-    QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( mSymbol.data() );
-    QgsDataDefined ddAngle = s->dataDefinedAngle();
-    return ddAngle.useExpression() ? ddAngle.expressionString() : ddAngle.field();
-  }
-
-  return QString();
-}
-
-void QgsSingleSymbolRenderer::setSizeScaleField( const QString& fieldOrExpression )
-{
-  mSizeScale.reset( QgsSymbolLayerUtils::fieldOrExpressionToExpression( fieldOrExpression ) );
-}
-
-QString QgsSingleSymbolRenderer::sizeScaleField() const
-{
-  return mSizeScale.data() ? QgsSymbolLayerUtils::fieldOrExpressionFromExpression( mSizeScale.data() ) : QString();
-}
-
-void QgsSingleSymbolRenderer::setScaleMethod( QgsSymbol::ScaleMethod scaleMethod )
-{
-  mScaleMethod = scaleMethod;
-  setScaleMethodToSymbol( mSymbol.data(), scaleMethod );
-}
-
 QString QgsSingleSymbolRenderer::dump() const
 {
   return mSymbol.data() ? QString( "SINGLE: %1" ).arg( mSymbol->dump() ) : "";
@@ -200,18 +99,12 @@ QgsSingleSymbolRenderer* QgsSingleSymbolRenderer::clone() const
 {
   QgsSingleSymbolRenderer* r = new QgsSingleSymbolRenderer( mSymbol->clone() );
   r->setUsingSymbolLevels( usingSymbolLevels() );
-  r->setSizeScaleField( sizeScaleField() );
   copyRendererData( r );
   return r;
 }
 
 void QgsSingleSymbolRenderer::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
 {
-  if ( mRotation.data() )
-    props[ "angle" ] = mRotation->expression();
-  if ( mSizeScale.data() )
-    props[ "scale" ] = mSizeScale->expression();
-
   QDomElement ruleElem = doc.createElement( "se:Rule" );
   element.appendChild( ruleElem );
 
@@ -368,14 +261,9 @@ QDomElement QgsSingleSymbolRenderer::save( QDomDocument& doc )
   rendererElem.appendChild( symbolsElem );
 
   QDomElement rotationElem = doc.createElement( "rotation" );
-  if ( mRotation.data() )
-    rotationElem.setAttribute( "field", QgsSymbolLayerUtils::fieldOrExpressionFromExpression( mRotation.data() ) );
   rendererElem.appendChild( rotationElem );
 
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
-  if ( mSizeScale.data() )
-    sizeScaleElem.setAttribute( "field", QgsSymbolLayerUtils::fieldOrExpressionFromExpression( mSizeScale.data() ) );
-  sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerUtils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
