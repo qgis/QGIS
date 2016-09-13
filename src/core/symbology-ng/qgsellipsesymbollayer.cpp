@@ -312,7 +312,7 @@ void QgsEllipseSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContext& 
     usingDataDefinedRotation = ok;
   }
 
-  hasDataDefinedRotation = context.renderHints() & QgsSymbol::DataDefinedRotation || usingDataDefinedRotation;
+  hasDataDefinedRotation = context.renderHints() & QgsSymbol::DynamicRotation || usingDataDefinedRotation;
   if ( hasDataDefinedRotation )
   {
     // For non-point markers, "dataDefinedRotation" means following the

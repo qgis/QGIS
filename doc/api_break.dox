@@ -951,6 +951,10 @@ parameters or QgsSymbol::OutputUnitList parameters now take QgsUnitTypes::Render
 <li>startRender() now accepts a QgsFields reference, not a pointer.</li>
 <li>isSymbolLayerCompatible() was removed. Use QgsSymbolLayer::isCompatibleWithSymbol() instead.</li>
 <li>The DataDefinedSizeScale flag has been removed. This is no longer used and data defined scaling on a symbol layer level should be used instead.</li>
+<li>The DataDefinedRotation RenderHint was renamed to DynamicRotation, as it is no longer used for
+data defined rotation.</li>
+<li>setRenderHints() and renderHints() now accept and return a QgsSymbol::RenderHints flag rather
+than an integer value</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsSymbolLayer QgsSymbolLayer (renamed from QgsSymbolLayerV2)
@@ -968,6 +972,8 @@ the variant which takes QgsSymbolRenderContext instead.</li>
 
 <ul>
 <li>The constructor now accepts a QgsFields reference, not a pointer.</li>
+<li>The constructor, setRenderHints() and renderHints() now accept and return a QgsSymbol::RenderHints flag rather
+than an integer value</li>
 <li>fields() now returns a QgsFields value, not a pointer.</li>
 </ul>
 
