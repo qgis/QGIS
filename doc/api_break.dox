@@ -920,7 +920,14 @@ be returned instead of a null pointer if no transformation is required.</li>
 
 <ul>
 <li>QgsRuleBasedRenderer.Rule checkState() and setCheckState() were removed. Use active() and setActive() instead.</li>
+<li>QgsRuleBasedRenderer.Rule updateElseRules() was removed.</li>
 <li>startRender( QgsRenderContext& context, const QgsFields& fields ) was removed. Use startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter ) instead.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsRuleBasedRendererWidget QgsRuleBasedRendererWidget
+
+<ul>
+<li>refineRuleCategoriesGui() and refineRuleRangesGui() no longer take a QModelIndexList argument.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsSimpleMarkerSymbolLayer QgsSimpleMarkerSymbolLayer
@@ -930,6 +937,13 @@ be returned instead of a null pointer if no transformation is required.</li>
 <li>name() and setName() have been removed. Use shape() and setShape() instead.</li>
 <li>prepareShape() and preparePath() were removed. Calling these methods manually should no longer be required.</li>
 </ul>
+
+\subsection qgis_api_break_3_0_QgsSimpleMarkerSymbolLayerWidget QgsSimpleMarkerSymbolLayerWidget
+
+<ul>
+<li>setName() was removed.</li>
+</ul>
+
 
 \subsection qgis_api_break_3_0_QgsSingleSymbolRendererWidget QgsSingleSymbolRendererWidget
 <ul>

@@ -227,9 +227,9 @@ void QgsRuleBasedRendererWidget::refineRule( int type )
 
 
   if ( type == 0 ) // categories
-    refineRuleCategoriesGui( indexlist );
+    refineRuleCategoriesGui();
   else if ( type == 1 ) // ranges
-    refineRuleRangesGui( indexlist );
+    refineRuleRangesGui();
   else // scales
     refineRuleScalesGui( indexlist );
 
@@ -255,7 +255,7 @@ void QgsRuleBasedRendererWidget::refineRuleScales()
   refineRule( 2 );
 }
 
-void QgsRuleBasedRendererWidget::refineRuleCategoriesGui( const QModelIndexList& )
+void QgsRuleBasedRendererWidget::refineRuleCategoriesGui()
 {
   QgsCategorizedSymbolRendererWidget* w = new QgsCategorizedSymbolRendererWidget( mLayer, mStyle, nullptr );
   w->setPanelTitle( tr( "Add categories to rules" ) );
@@ -265,7 +265,7 @@ void QgsRuleBasedRendererWidget::refineRuleCategoriesGui( const QModelIndexList&
   openPanel( w );
 }
 
-void QgsRuleBasedRendererWidget::refineRuleRangesGui( const QModelIndexList& )
+void QgsRuleBasedRendererWidget::refineRuleRangesGui()
 {
   QgsGraduatedSymbolRendererWidget* w = new QgsGraduatedSymbolRendererWidget( mLayer, mStyle, nullptr );
   w->setPanelTitle( tr( "Add ranges to rules" ) );

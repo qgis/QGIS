@@ -191,8 +191,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     virtual QgsSymbolLayer* symbolLayer() override;
 
   public slots:
-    //TODO QGIS 3.0 - rename to setShape
-    void setName();
+
     void setColorBorder( const QColor& color );
     void setColorFill( const QColor& color );
     void setSize();
@@ -210,7 +209,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     QgsSimpleMarkerSymbolLayer* mLayer;
 
   private slots:
-
+    void setShape();
     void updateAssistantSymbol();
     void penJoinStyleChanged();
 

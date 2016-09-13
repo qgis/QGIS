@@ -137,10 +137,10 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
 
   protected:
     void refineRule( int type );
-    //TODO QGIS 3.0 - remove index parameter
-    void refineRuleCategoriesGui( const QModelIndexList& index );
-    //TODO QGIS 3.0 - remove index parameter
-    void refineRuleRangesGui( const QModelIndexList& index );
+    //! Opens the dialog for refining a rule using categories
+    void refineRuleCategoriesGui();
+    //! Opens the dialog for refining a rule using ranges
+    void refineRuleRangesGui();
     void refineRuleScalesGui( const QModelIndexList& index );
 
     QgsRuleBasedRenderer::Rule* currentRule();

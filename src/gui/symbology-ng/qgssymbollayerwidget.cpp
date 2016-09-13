@@ -428,7 +428,7 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( const QgsVec
     delete lyr;
   }
 
-  connect( lstNames, SIGNAL( currentRowChanged( int ) ), this, SLOT( setName() ) );
+  connect( lstNames, SIGNAL( currentRowChanged( int ) ), this, SLOT( setShape() ) );
   connect( btnChangeColorBorder, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColorBorder( const QColor& ) ) );
   connect( btnChangeColorFill, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColorFill( const QColor& ) ) );
   connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penJoinStyleChanged() ) );
@@ -539,7 +539,7 @@ QgsSymbolLayer* QgsSimpleMarkerSymbolLayerWidget::symbolLayer()
   return mLayer;
 }
 
-void QgsSimpleMarkerSymbolLayerWidget::setName()
+void QgsSimpleMarkerSymbolLayerWidget::setShape()
 {
   mLayer->setShape( static_cast< QgsSimpleMarkerSymbolLayerBase::Shape>( lstNames->currentItem()->data( Qt::UserRole ).toInt() ) );
   btnChangeColorFill->setEnabled( QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( mLayer->shape() ) );

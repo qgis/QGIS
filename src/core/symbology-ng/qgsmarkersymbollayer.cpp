@@ -689,7 +689,6 @@ QgsSimpleMarkerSymbolLayer::QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLay
     , mOutlineWidth( 0 )
     , mOutlineWidthUnit( QgsUnitTypes::RenderMillimeters )
     , mPenJoinStyle( penJoinStyle )
-    , mName( encodeShape( shape ) )
     , mUsingCache( false )
 {
   mColor = color;
