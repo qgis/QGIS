@@ -101,8 +101,6 @@ class NumberInputPanel(BASE, WIDGET):
                     variables['%s_avg' % name] = "Mean value of %s" % desc
                     variables['%s_stddev' % name] = "Standard deviation of %s" % desc
 
-            #context.appendScope(modelerScope)
-            #context.setHighlightedVariables(modelerScope.variableNames())
         dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, 'generic', context)
         for variable, desc in variables.iteritems():
             dlg.expressionBuilder().registerItem("Modeler", variable, "@" + variable, desc, highlightedItem=True)
