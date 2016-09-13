@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis
 import os
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsField, NULL
+from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsField, QgsMapLayerRegistry, QgsVectorJoinInfo, NULL
 from qgis.testing import (start_app,
                           unittest
                           )
