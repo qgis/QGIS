@@ -348,7 +348,7 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
     props[ "filter" ] += mFilterExp;
   }
 
-  QgsSymbolLayerUtils::mergeScaleDependencies( mScaleMinDenom, mScaleMaxDenom, props );
+  QgsSymbolLayerV2Utils::mergeScaleDependencies( mScaleMinDenom, mScaleMaxDenom, props );
 
   if ( mSymbol )
   {
@@ -384,7 +384,7 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
       QgsSymbolLayerV2Utils::createFunctionElement( doc, ruleElem, props.value( "filter", "" ) );
     }
 
-    QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, props );
+    QgsSymbolLayerV2Utils::applyScaleDependency( doc, ruleElem, props );
 
     mSymbol->toSld( doc, ruleElem, props );
   }
@@ -947,11 +947,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::clone() const
   return r;
 }
 
-<<<<<<< HEAD:src/core/symbology-ng/qgsrulebasedrendererv2.cpp
-void QgsRuleBasedRendererV2::toSld( QDomDocument& doc, QDomElement &element ) const
-=======
-void QgsRuleBasedRenderer::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
->>>>>>> a25b025... Export map level scale based dependencies in most vector symbology:src/core/symbology-ng/qgsrulebasedrenderer.cpp
+void QgsRuleBasedRendererV2::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
 {
   mRootRule->toSld( doc, element, props );
 }

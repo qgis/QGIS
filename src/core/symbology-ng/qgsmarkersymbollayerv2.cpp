@@ -2852,7 +2852,6 @@ void QgsFontMarkerSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement 
 
   QString fontPath = QString( "ttf://%1" ).arg( mFontFamily );
   int markIndex = mChr.unicode();
-  QgsSymbolLayerV2Utils::externalMarkerToSld( doc, graphicElem, fontPath, "ttf", &markIndex, mColor, mSize );
   double size = QgsSymbolLayerV2Utils::rescaleUom( mSize, mSizeUnit, props );
   QgsSymbolLayerV2Utils::externalMarkerToSld( doc, graphicElem, fontPath, "ttf", &markIndex, mColor, size );
 

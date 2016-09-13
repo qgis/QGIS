@@ -2340,7 +2340,7 @@ bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& error
   QgsStringMap localProps = QgsStringMap( props );
   if ( hasScaleBasedVisibility() )
   {
-    QgsSymbolLayerUtils::mergeScaleDependencies( minimumScale(), maximumScale(), localProps );
+    QgsSymbolLayerV2Utils::mergeScaleDependencies( minimumScale(), maximumScale(), localProps );
   }
 
   if ( hasGeometryType() )
