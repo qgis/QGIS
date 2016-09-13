@@ -105,6 +105,9 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     void setDistanceMapUnitScale( const QgsMapUnitScale& scale ) { mDistanceMapUnitScale = scale; }
     const QgsMapUnitScale& distanceMapUnitScale() const { return mDistanceMapUnitScale; }
 
+    // TODO - implement properly
+    virtual QRectF bounds( QPointF, QgsSymbolRenderContext& ) override { return QRectF(); }
+
   private:
     QString mXAttribute;
     QString mYAttribute;

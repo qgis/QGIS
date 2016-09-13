@@ -516,10 +516,8 @@ class QgsMarkerSymbolLayer : QgsSymbolLayer
      * any data defined overrides and offsets which are set for the marker layer.
      * @returns approximate symbol bounds, in painter units
      * @note added in QGIS 2.14
-     * @note this method will become pure virtual in QGIS 3.0
      */
-    //TODO QGIS 3.0 - make pure virtual
-    virtual QRectF bounds( QPointF point, QgsSymbolRenderContext& context );
+    virtual QRectF bounds( QPointF point, QgsSymbolRenderContext& context ) = 0;
 
   protected:
 
