@@ -50,6 +50,8 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 
     virtual Capabilities capabilities() override { return SymbolLevels; }
     virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
+
+    //! create renderer from XML element
     static QgsFeatureRenderer* create( QDomElement& element );
     virtual QDomElement save( QDomDocument& doc ) override;
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
