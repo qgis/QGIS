@@ -502,8 +502,16 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
     , mXyDms( p->mXyDms )
     , attributeColumns( p->attributeColumns )
 {
+  QUrl url = p->mFile->url();
+
+  // make sure watcher not created when using iterator (e.g. for rendering, see issue #15558)
+  if ( url.hasQueryItem( "watchFile" ) )
+  {
+    url.removeQueryItem( "watchFile" );
+  }
+
   mFile = new QgsDelimitedTextFile();
-  mFile->setFromUrl( p->mFile->url() );
+  mFile->setFromUrl( url );
 
   mExpressionContext << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope();
