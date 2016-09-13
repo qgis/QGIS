@@ -26,6 +26,7 @@
 #include "qgsattributeformeditorwidget.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgstabwidget.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -38,7 +39,6 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QScrollArea>
-#include <QTabWidget>
 #include <QUiLoader>
 #include <QMessageBox>
 #include <QSettings>
@@ -744,6 +744,14 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
 
     // sync ok button status
     synchronizeEnabledState();
+
+    mExpressionContext.setFeature( ft );
+
+    // Recheck visibility for all containers which are controlled by this value
+    Q_FOREACH ( ContainerInformation* info, mContainerInformationDependency.value( eww->field().name() ) )
+    {
+      info->apply( &mExpressionContext );
+    }
   }
 }
 
@@ -805,6 +813,15 @@ void QgsAttributeForm::displayInvalidConstraintMessage( const QStringList& f,
   mInvalidConstraintMessage->show();
   mInvalidConstraintMessage->setText( msg );
   mInvalidConstraintMessage->setStyleSheet( "QLabel { background-color : #ffc800; }" );
+}
+
+void QgsAttributeForm::registerContainerInformation( QgsAttributeForm::ContainerInformation* info )
+{
+  mContainerVisibilityInformation.append( info );
+  Q_FOREACH ( const QString& col, info->expression.referencedColumns() )
+  {
+    mContainerInformationDependency[ col ].append( info );
+  }
 }
 
 bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields,
@@ -1090,7 +1107,7 @@ void QgsAttributeForm::init()
     }
   }
 
-  QTabWidget* tabWidget = nullptr;
+  QgsTabWidget* tabWidget = nullptr;
 
   // Tab layout
   if ( !formWidget && mLayer->editFormConfig()->layout() == QgsEditFormConfig::TabLayout )
@@ -1112,13 +1129,14 @@ void QgsAttributeForm::init()
           tabWidget = nullptr;
           WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
           layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
+          registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().data() ) );
           column += 2;
         }
         else
         {
           if ( !tabWidget )
           {
-            tabWidget = new QTabWidget();
+            tabWidget = new QgsTabWidget();
             layout->addWidget( tabWidget, row, column, 1, 2 );
             column += 2;
           }
@@ -1126,6 +1144,11 @@ void QgsAttributeForm::init()
           QWidget* tabPage = new QWidget( tabWidget );
 
           tabWidget->addTab( tabPage, widgDef->name() );
+
+          if ( containerDef->visibilityExpression().enabled() )
+          {
+            registerContainerInformation( new ContainerInformation( tabWidget, tabPage, containerDef->visibilityExpression().data() ) );
+          }
           QGridLayout* tabPageLayout = new QGridLayout();
           tabPage->setLayout( tabPageLayout );
 
@@ -1592,6 +1615,12 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       {
         WidgetInfo widgetInfo = createWidgetFromDef( childDef, myContainer, vl, context );
 
+        if ( childDef->type() == QgsAttributeEditorElement::AeTypeContainer )
+        {
+          QgsAttributeEditorContainer* containerDef = static_cast<QgsAttributeEditorContainer*>( childDef );
+          registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().data() ) );
+        }
+
         if ( widgetInfo.labelText.isNull() )
         {
           gbLayout->addWidget( widgetInfo.widget, row, column, 1, 2 );
@@ -1872,4 +1901,23 @@ int QgsAttributeForm::messageTimeout()
 {
   QSettings settings;
   return settings.value( "/qgis/messageTimeout", 5 ).toInt();
+}
+
+void QgsAttributeForm::ContainerInformation::apply( QgsExpressionContext* expressionContext )
+{
+  bool newVisibility = expression.evaluate( expressionContext ).toBool();
+
+  if ( newVisibility != isVisible )
+  {
+    if ( tabWidget )
+    {
+      tabWidget->setTabVisible( widget, newVisibility );
+    }
+    else
+    {
+      widget->setVisible( newVisibility );
+    }
+
+    isVisible = newVisibility;
+  }
 }

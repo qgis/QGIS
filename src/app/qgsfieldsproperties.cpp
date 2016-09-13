@@ -28,6 +28,7 @@
 #include "qgsrelationmanager.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsfieldexpressionwidget.h"
 
 #include <QTreeWidgetItem>
 #include <QWidget>
@@ -73,7 +74,7 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   // tab and group display
   mAddItemButton->setEnabled( false );
 
-  mDesignerTree = new DesignerTree( mAttributesTreeFrame );
+  mDesignerTree = new DesignerTree( mLayer, mAttributesTreeFrame );
   mDesignerListLayout->addWidget( mDesignerTree );
   mDesignerTree->setHeaderLabels( QStringList() << tr( "Label" ) );
 
@@ -155,7 +156,7 @@ void QgsFieldsProperties::onAttributeSelectionChanged()
   updateButtons();
 }
 
-QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent )
+QTreeWidgetItem* QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent )
 {
   QTreeWidgetItem* newWidget = nullptr;
   switch ( widgetDef->type() )
@@ -188,6 +189,7 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
 
       itemData.setColumnCount( container->columnCount() );
       itemData.setShowAsGroupBox( container->isGroupBox() );
+      itemData.setVisibilityExpression( container->visibilityExpression() );
       newWidget = mDesignerTree->addItem( parent, itemData );
 
       Q_FOREACH ( QgsAttributeEditorElement* wdg, container->children() )
@@ -901,6 +903,7 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
       QgsAttributeEditorContainer* container = new QgsAttributeEditorContainer( item->text( 0 ), parent );
       container->setColumnCount( itemData.columnCount() );
       container->setIsGroupBox( forceGroup ? true : itemData.showAsGroupBox() );
+      container->setVisibilityExpression( itemData.visibilityExpression() );
 
       for ( int t = 0; t < item->childCount(); t++ )
       {
@@ -1124,8 +1127,9 @@ QTreeWidgetItem* DesignerTree::addContainer( QTreeWidgetItem* parent, const QStr
   return newItem;
 }
 
-DesignerTree::DesignerTree( QWidget* parent )
+DesignerTree::DesignerTree( QgsVectorLayer* layer, QWidget* parent )
     : QTreeWidget( parent )
+    , mLayer( layer )
 {
   connect( this, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( onItemDoubleClicked( QTreeWidgetItem*, int ) ) );
 }
@@ -1303,11 +1307,22 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
     QCheckBox* showAsGroupBox = nullptr;
     QLineEdit* title = new QLineEdit( itemData.name() );
     QSpinBox* columnCount = new QSpinBox();
+    QGroupBox* visibilityExpressionGroupBox = new QGroupBox( tr( "Control visibility by expression " ) );
+    visibilityExpressionGroupBox->setCheckable( true );
+    visibilityExpressionGroupBox->setChecked( itemData.visibilityExpression().enabled() );
+    visibilityExpressionGroupBox->setLayout( new QGridLayout );
+    QgsFieldExpressionWidget* visibilityExpressionWidget = new QgsFieldExpressionWidget;
+    visibilityExpressionWidget->setLayer( mLayer );
+    visibilityExpressionWidget->setExpressionDialogTitle( tr( "Visibility expression" ) );
+    visibilityExpressionWidget->setExpression( itemData.visibilityExpression()->expression() );
+    visibilityExpressionGroupBox->layout()->addWidget( visibilityExpressionWidget );
+
     columnCount->setRange( 1, 5 );
     columnCount->setValue( itemData.columnCount() );
 
     layout->addRow( tr( "Title" ), title );
     layout->addRow( tr( "Column count" ), columnCount );
+    layout->addWidget( visibilityExpressionGroupBox );
 
     if ( !item->parent() )
     {
@@ -1330,6 +1345,11 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
       itemData.setShowAsGroupBox( showAsGroupBox ? showAsGroupBox->isChecked() : true );
       itemData.setName( title->text() );
       itemData.setShowLabel( showLabelCheckbox->isChecked() );
+
+      QgsOptionalExpression visibilityExpression;
+      visibilityExpression.setData( QgsExpression( visibilityExpressionWidget->expression() ) );
+      visibilityExpression.setEnabled( visibilityExpressionGroupBox->isChecked() );
+      itemData.setVisibilityExpression( visibilityExpression );
 
       item->setData( 0, QgsFieldsProperties::DesignerTreeRole, itemData.asQVariant() );
       item->setText( 0, title->text() );
@@ -1400,4 +1420,14 @@ bool QgsFieldsProperties::DesignerTreeItemData::showLabel() const
 void QgsFieldsProperties::DesignerTreeItemData::setShowLabel( bool showLabel )
 {
   mShowLabel = showLabel;
+}
+
+QgsOptionalExpression QgsFieldsProperties::DesignerTreeItemData::visibilityExpression() const
+{
+  return mVisibilityExpression;
+}
+
+void QgsFieldsProperties::DesignerTreeItemData::setVisibilityExpression( const QgsOptionalExpression& visibilityExpression )
+{
+  mVisibilityExpression = visibilityExpression;
 }

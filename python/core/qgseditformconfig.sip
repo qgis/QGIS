@@ -179,6 +179,20 @@ class QgsAttributeEditorContainer : QgsAttributeEditorElement
      */
     void setColumnCount( int columnCount );
 
+    /**
+     * An expression that controls the visibility of this container.
+     *
+     * @note Added in QGIS 2.18
+     */
+    QgsOptionalExpression visibilityExpression() const;
+
+    /**
+     * An expression that controls the visibility of this container.
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setVisibilityExpression( const QgsOptionalExpression& visibilityExpression );
+
 };
 
 /**

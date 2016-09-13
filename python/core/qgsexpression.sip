@@ -12,7 +12,22 @@ class QgsExpression
      * loop in which this expression is used.
      */
     QgsExpression( const QString& expr );
+    /**
+     * Create an empty expression.
+     *
+     * @note Added in QGIS 2.18
+     */
+    QgsExpression();
+
     ~QgsExpression();
+
+    /**
+     * Checks if this expression is valid.
+     * A valid expression could be parsed but does not necessarily evaluate properly.
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool isValid() const;
 
     //! Returns true if an error occurred when parsing the input expression
     bool hasParserError() const;
@@ -134,6 +149,13 @@ class QgsExpression
     void setScale( double scale );
 
     double scale();
+
+    /**
+     * Set the expression string, will reset the whole internal structure.
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setExpression( const QString& expression );
 
     //! Return the original, unmodified expression string.
     //! If there was none supplied because it was constructed by sole

@@ -108,6 +108,11 @@ QString QgsFieldExpressionWidget::asExpression() const
   return isExpression() ? currentText() : QgsExpression::quotedColumnRef( currentText() );
 }
 
+QString QgsFieldExpressionWidget::expression() const
+{
+  return asExpression();
+}
+
 bool QgsFieldExpressionWidget::isValidExpression( QString *expressionError ) const
 {
   QString temp;
@@ -198,6 +203,11 @@ void QgsFieldExpressionWidget::setField( const QString &fieldName )
   QModelIndex proxyIndex = mFieldProxyModel->mapFromSource( idx );
   mCombo->setCurrentIndex( proxyIndex.row() );
   currentFieldChanged();
+}
+
+void QgsFieldExpressionWidget::setExpression( const QString& expression )
+{
+  setField( expression );
 }
 
 void QgsFieldExpressionWidget::editExpression()
