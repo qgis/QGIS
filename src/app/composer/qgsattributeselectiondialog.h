@@ -28,11 +28,8 @@
 class QGridLayout;
 class QgsVectorLayer;
 class QPushButton;
-class QgsComposerAttributeTable;
 class QgsComposerAttributeTableV2;
-class QgsComposerAttributeTableColumnModel;
 class QgsComposerAttributeTableColumnModelV2;
-class QgsComposerTableSortColumnsProxyModel;
 class QgsComposerTableSortColumnsProxyModelV2;
 class QgsComposerTableAvailableSortProxyModel;
 class QgsComposerObject;
@@ -118,10 +115,6 @@ class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelec
   public:
     QgsAttributeSelectionDialog( QgsComposerAttributeTableV2* table, QgsVectorLayer* vLayer, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
 
-    //todo - remove for QGIS 3.0
-    QgsAttributeSelectionDialog( QgsComposerAttributeTable* table, QgsVectorLayer* vLayer, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
-
-
     ~QgsAttributeSelectionDialog();
 
   private slots:
@@ -137,18 +130,14 @@ class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelec
 
   private:
     QgsComposerAttributeTableV2* mComposerTable;
-    QgsComposerAttributeTable* mComposerTableV1;
 
     const QgsVectorLayer* mVectorLayer;
 
     QgsComposerAttributeTableColumnModelV2* mColumnModel;
-    QgsComposerAttributeTableColumnModel* mColumnModelV1;
 
     QgsComposerTableSortColumnsProxyModelV2* mSortedProxyModel;
-    QgsComposerTableSortColumnsProxyModel* mSortedProxyModelV1;
 
     QgsComposerTableSortColumnsProxyModelV2* mAvailableSortProxyModel;
-    QgsComposerTableSortColumnsProxyModel* mAvailableSortProxyModelV1;
 
     QgsComposerColumnAlignmentDelegate *mColumnAlignmentDelegate;
     QgsComposerColumnSourceDelegate *mColumnSourceDelegate;

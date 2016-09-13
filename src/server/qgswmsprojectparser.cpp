@@ -29,7 +29,6 @@
 
 #include "qgscomposition.h"
 #include "qgscomposerarrow.h"
-#include "qgscomposerattributetable.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
 #include "qgscomposermap.h"

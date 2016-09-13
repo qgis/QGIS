@@ -51,15 +51,10 @@ class TestQgsComposerRotation : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
 
-    // All old (deprecated) methods tests disabled (we have enough troubles to maintain not deprecated)
-    // Label tests disabled because are platform dependent (font)
     void shapeRotation(); //test if composer shape rotation is functioning
-    //void oldShapeRotationApi(); //test if old deprecated composer shape rotation api is functioning
     void labelRotation(); //test if composer label rotation is functioning
-    //void oldLabelRotationApi(); //test if old deprectated composer label rotation api is functioning
     void mapRotation(); //test if composer map mapRotation is functioning
     void mapItemRotation(); //test if composer map item rotation is functioning
-    //void oldMapRotationApi(); //test if old deprectated composer map rotation api is functioning
 
   private:
     QgsComposition* mComposition;
@@ -157,22 +152,6 @@ void TestQgsComposerRotation::shapeRotation()
   mComposerRect->setItemRotation( 0, true );
 }
 
-#if 0
-void TestQgsComposerRotation::oldShapeRotationApi()
-{
-  //test old style deprecated rotation api - remove after 2.0 series
-  mComposition->addComposerShape( mComposerRect );
-
-  mComposerRect->setRotation( 45 );
-
-  QgsCompositionChecker checker( "composerrotation_shape_oldapi", mComposition );
-  checker.setControlPathPrefix( "composer_items" );
-  QVERIFY( checker.testComposition( mReport ) );
-
-  mComposition->removeItem( mComposerRect );
-}
-#endif
-
 void TestQgsComposerRotation::labelRotation()
 {
   mComposition->addComposerLabel( mComposerLabel );
@@ -182,22 +161,6 @@ void TestQgsComposerRotation::labelRotation()
   checker.setControlPathPrefix( "composer_items" );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
-
-#if 0
-void TestQgsComposerRotation::oldLabelRotationApi()
-{
-  //test old style deprecated rotation api - remove test after 2.0 series
-  mComposition->addComposerLabel( mComposerLabel );
-
-  mComposerLabel->setRotation( 135 );
-
-  QgsCompositionChecker checker( "composerrotation_label_oldapi", mComposition );
-  checker.setControlPathPrefix( "composer_items" );
-  QVERIFY( checker.testComposition( mReport ) );
-
-  mComposition->removeItem( mComposerLabel );
-}
-#endif
 
 void TestQgsComposerRotation::mapRotation()
 {

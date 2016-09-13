@@ -104,61 +104,6 @@ QString QgsAtlasComposition::nameForPage( int pageNumber ) const
   return mFeatureIds.at( pageNumber ).second;
 }
 
-QgsComposerMap* QgsAtlasComposition::composerMap() const
-{
-  //deprecated method. Until removed just return the first atlas-enabled composer map
-
-  //build a list of composer maps
-  QList<QgsComposerMap*> maps;
-  mComposition->composerItems( maps );
-  for ( QList<QgsComposerMap*>::iterator mit = maps.begin(); mit != maps.end(); ++mit )
-  {
-    QgsComposerMap* currentMap = ( *mit );
-    if ( currentMap->atlasDriven() )
-    {
-      return currentMap;
-    }
-  }
-
-  return nullptr;
-}
-
-void QgsAtlasComposition::setComposerMap( QgsComposerMap* map )
-{
-  //deprecated
-
-  if ( !map )
-  {
-    return;
-  }
-
-  map->setAtlasDriven( true );
-}
-
-
-int QgsAtlasComposition::sortKeyAttributeIndex() const
-{
-  if ( !mCoverageLayer )
-  {
-    return -1;
-  }
-  return mCoverageLayer->fieldNameIndex( mSortKeyAttributeName );
-}
-
-void QgsAtlasComposition::setSortKeyAttributeIndex( int idx )
-{
-  if ( mCoverageLayer )
-  {
-    QgsFields fields = mCoverageLayer->fields();
-    if ( idx >= 0 && idx < fields.count() )
-    {
-      mSortKeyAttributeName = fields.at( idx ).name();
-      return;
-    }
-  }
-  mSortKeyAttributeName = "";
-}
-
 /// @cond PRIVATE
 class FieldSorter
 {
@@ -855,55 +800,6 @@ void QgsAtlasComposition::setPredefinedScales( const QVector<qreal>& scales )
   qSort( mPredefinedScales.begin(), mPredefinedScales.end() );
 }
 
-Q_NOWARN_DEPRECATED_PUSH
-bool QgsAtlasComposition::fixedScale() const
-{
-  //deprecated method. Until removed just return the property for the first atlas-enabled composer map
-  QgsComposerMap * map = composerMap();
-  if ( !map )
-  {
-    return false;
-  }
-
-  return map->atlasFixedScale();
-}
-
-void QgsAtlasComposition::setFixedScale( bool fixed )
-{
-  //deprecated method. Until removed just set the property for the first atlas-enabled composer map
-  QgsComposerMap * map = composerMap();
-  if ( !map )
-  {
-    return;
-  }
-
-  map->setAtlasScalingMode( fixed ? QgsComposerMap::Fixed : QgsComposerMap::Auto );
-}
-
-float QgsAtlasComposition::margin() const
-{
-  //deprecated method. Until removed just return the property for the first atlas-enabled composer map
-  QgsComposerMap * map = composerMap();
-  if ( !map )
-  {
-    return 0;
-  }
-
-  return map->atlasMargin();
-}
-
-void QgsAtlasComposition::setMargin( float margin )
-{
-  //deprecated method. Until removed just set the property for the first atlas-enabled composer map
-  QgsComposerMap * map = composerMap();
-  if ( !map )
-  {
-    return;
-  }
-
-  map->setAtlasMargin( static_cast< double >( margin ) );
-}
-
 QgsGeometry QgsAtlasComposition::currentGeometry( const QgsCoordinateReferenceSystem& crs ) const
 {
   if ( !mCoverageLayer || !mCurrentFeature.isValid() || !mCurrentFeature.hasGeometry() )
@@ -934,5 +830,3 @@ QgsGeometry QgsAtlasComposition::currentGeometry( const QgsCoordinateReferenceSy
   mGeometryCache[crs.srsid()] = transformed;
   return transformed;
 }
-
-Q_NOWARN_DEPRECATED_POP

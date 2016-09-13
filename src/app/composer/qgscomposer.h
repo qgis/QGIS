@@ -414,9 +414,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     /** Adds a composer shape to the item/widget map and creates a configuration widget*/
     void addComposerShape( QgsComposerShape* shape );
 
-    /** Adds a composer table to the item/widget map and creates a configuration widget*/
-    void addComposerTable( QgsComposerAttributeTable* table );
-
     /** Adds a composer table v2 to the item/widget map and creates a configuration widget*/
     void addComposerTableV2( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame );
 

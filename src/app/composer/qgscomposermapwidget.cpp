@@ -1006,10 +1006,6 @@ void QgsComposerMapWidget::handleChangedAnnotationPosition( QgsComposerMapGrid::
   {
     grid->setAnnotationPosition( QgsComposerMapGrid::InsideMapFrame, border );
   }
-  else if ( text == tr( "Disabled" ) )
-  {
-    grid->setAnnotationPosition( QgsComposerMapGrid::Disabled, border );
-  }
   else //Outside frame
   {
     grid->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, border );

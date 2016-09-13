@@ -49,12 +49,6 @@ class QgsComposerLabel : QgsComposerItem
      */
     void setVAlign( Qt::AlignmentFlag a );
 
-    /** Returns the margin between the edge of the frame and the label contents
-     * @returns margin in mm
-     * @deprecated use marginX and marginY instead
-     */
-    double margin() /Deprecated/;
-
     /** Returns the horizontal margin between the edge of the frame and the label
      * contents.
      * @returns horizontal margin in mm

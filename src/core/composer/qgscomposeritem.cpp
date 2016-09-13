@@ -866,16 +866,6 @@ void QgsComposerItem::drawBackground( QPainter* p )
   }
 }
 
-void QgsComposerItem::drawArrowHead( QPainter *p, double x, double y, double angle, double arrowHeadWidth ) const
-{
-  QgsComposerUtils::drawArrowHead( p, x, y, angle, arrowHeadWidth );
-}
-
-double QgsComposerItem::angle( QPointF p1, QPointF p2 ) const
-{
-  return QgsComposerUtils::angle( p1, p2 );
-}
-
 void QgsComposerItem::setBackgroundColor( const QColor& backgroundColor )
 {
   mBackgroundColor = backgroundColor;
@@ -949,50 +939,6 @@ void QgsComposerItem::setEffectsEnabled( const bool effectsEnabled )
   mEffect->setEnabled( effectsEnabled );
 }
 
-void QgsComposerItem::drawText( QPainter* p, double x, double y, const QString& text, const QFont& font, const QColor& c ) const
-{
-  QgsComposerUtils::drawText( p, QPointF( x, y ), text, font, c );
-}
-
-void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment, Qt::AlignmentFlag valignment, int flags ) const
-{
-  QgsComposerUtils::drawText( p, rect, text, font, QColor(), halignment, valignment, flags );
-}
-double QgsComposerItem::textWidthMillimeters( const QFont& font, const QString& text ) const
-{
-  return QgsComposerUtils::textWidthMM( font, text );
-}
-
-double QgsComposerItem::fontHeightCharacterMM( const QFont& font, QChar c ) const
-{
-  return QgsComposerUtils::fontHeightCharacterMM( font, c );
-}
-
-double QgsComposerItem::fontAscentMillimeters( const QFont& font ) const
-{
-  return QgsComposerUtils::fontAscentMM( font );
-}
-
-double QgsComposerItem::fontDescentMillimeters( const QFont& font ) const
-{
-  return QgsComposerUtils::fontDescentMM( font );
-}
-
-double QgsComposerItem::fontHeightMillimeters( const QFont& font ) const
-{
-  return QgsComposerUtils::fontHeightMM( font );
-}
-
-double QgsComposerItem::pixelFontSize( double pointSize ) const
-{
-  return QgsComposerUtils::pointsToMM( pointSize );
-}
-
-QFont QgsComposerItem::scaledFontPixelSize( const QFont& font ) const
-{
-  return QgsComposerUtils::scaledFontPixelSize( font );
-}
-
 double QgsComposerItem::horizontalViewScaleFactor() const
 {
   double result = -1;
@@ -1028,28 +974,6 @@ double QgsComposerItem::rectHandlerBorderTolerance() const
     rectHandlerSize = rect().height() / 3;
   }
   return rectHandlerSize;
-}
-
-double QgsComposerItem::lockSymbolSize() const
-{
-  double lockSymbolSize = 20.0 / horizontalViewScaleFactor();
-
-  if ( lockSymbolSize > ( rect().width() / 3 ) )
-  {
-    lockSymbolSize = rect().width() / 3;
-  }
-  if ( lockSymbolSize > ( rect().height() / 3 ) )
-  {
-    lockSymbolSize = rect().height() / 3;
-  }
-  return lockSymbolSize;
-}
-
-void QgsComposerItem::setRotation( const double r )
-{
-  //kept for api compatibility with QGIS 2.0
-  //remove after 2.0 series
-  setItemRotation( r, true );
 }
 
 void QgsComposerItem::setItemRotation( const double r, const bool adjustPosition )
@@ -1116,180 +1040,6 @@ void QgsComposerItem::refreshRotation( const bool updateItem, const bool adjustP
   {
     update();
   }
-}
-
-bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height ) const
-{
-  //kept for api compatibility with QGIS 2.0, use item rotation
-  Q_NOWARN_DEPRECATED_PUSH
-  return imageSizeConsideringRotation( width, height, mEvaluatedItemRotation );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation ) const
-{
-  if ( qAbs( rotation ) <= 0.0 ) //width and height stays the same if there is no rotation
-  {
-    return true;
-  }
-
-  if ( qgsDoubleNear( qAbs( rotation ), 90 ) || qgsDoubleNear( qAbs( rotation ), 270 ) )
-  {
-    double tmp = width;
-    width = height;
-    height = tmp;
-    return true;
-  }
-
-  double x1 = 0;
-  double y1 = 0;
-  double x2 = width;
-  double y2 = 0;
-  double x3 = width;
-  double y3 = height;
-  double x4 = 0;
-  double y4 = height;
-  double midX = width / 2.0;
-  double midY = height / 2.0;
-
-  Q_NOWARN_DEPRECATED_PUSH
-  if ( !cornerPointOnRotatedAndScaledRect( x1, y1, width, height, rotation ) )
-  {
-    return false;
-  }
-  if ( !cornerPointOnRotatedAndScaledRect( x2, y2, width, height, rotation ) )
-  {
-    return false;
-  }
-  if ( !cornerPointOnRotatedAndScaledRect( x3, y3, width, height, rotation ) )
-  {
-    return false;
-  }
-  if ( !cornerPointOnRotatedAndScaledRect( x4, y4, width, height, rotation ) )
-  {
-    return false;
-  }
-  Q_NOWARN_DEPRECATED_POP
-
-
-  //assume points 1 and 3 are on the rectangle boundaries. Calculate 2 and 4.
-  double distM1 = sqrt(( x1 - midX ) * ( x1 - midX ) + ( y1 - midY ) * ( y1 - midY ) );
-  QPointF p2 = QgsSymbolLayerUtils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x2, y2 ), distM1 );
-
-  if ( p2.x() < width && p2.x() > 0 && p2.y() < height && p2.y() > 0 )
-  {
-    width = sqrt(( p2.x() - x1 ) * ( p2.x() - x1 ) + ( p2.y() - y1 ) * ( p2.y() - y1 ) );
-    height = sqrt(( x3 - p2.x() ) * ( x3 - p2.x() ) + ( y3 - p2.y() ) * ( y3 - p2.y() ) );
-    return true;
-  }
-
-  //else assume that points 2 and 4 are on the rectangle boundaries. Calculate 1 and 3
-  double distM2 = sqrt(( x2 - midX ) * ( x2 - midX ) + ( y2 - midY ) * ( y2 - midY ) );
-  QPointF p1 = QgsSymbolLayerUtils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x1, y1 ), distM2 );
-  QPointF p3 = QgsSymbolLayerUtils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x3, y3 ), distM2 );
-  width = sqrt(( x2 - p1.x() ) * ( x2 - p1.x() ) + ( y2 - p1.y() ) * ( y2 - p1.y() ) );
-  height = sqrt(( p3.x() - x2 ) * ( p3.x() - x2 ) + ( p3.y() - y2 ) * ( p3.y() - y2 ) );
-  return true;
-}
-
-QRectF QgsComposerItem::largestRotatedRectWithinBounds( const QRectF& originalRect, const QRectF& boundsRect, double rotation ) const
-{
-  return QgsComposerUtils::largestRotatedRectWithinBounds( originalRect, boundsRect, rotation );
-}
-
-bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const
-{
-  //kept for api compatibility with QGIS 2.0, use item rotation
-  Q_NOWARN_DEPRECATED_PUSH
-  return cornerPointOnRotatedAndScaledRect( x, y, width, height, mEvaluatedItemRotation );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const
-{
-  //first rotate point clockwise
-  double rotToRad = rotation * M_PI / 180.0;
-  QPointF midpoint( width / 2.0, height / 2.0 );
-  double xVector = x - midpoint.x();
-  double yVector = y - midpoint.y();
-  //double xRotated = cos(rotToRad) * xVector + sin(rotToRad) * yVector;
-  //double yRotated = -sin(rotToRad) * xVector + cos(rotToRad) * yVector;
-  double xRotated = cos( rotToRad ) * xVector - sin( rotToRad ) * yVector;
-  double yRotated = sin( rotToRad ) * xVector + cos( rotToRad ) * yVector;
-
-  //create line from midpoint to rotated point
-  QLineF line( midpoint.x(), midpoint.y(), midpoint.x() + xRotated, midpoint.y() + yRotated );
-
-  //intersect with all four borders and return result
-  QList<QLineF> borders;
-  borders << QLineF( 0, 0, width, 0 );
-  borders << QLineF( width, 0, width, height );
-  borders << QLineF( width, height, 0, height );
-  borders << QLineF( 0, height, 0, 0 );
-
-  QList<QLineF>::const_iterator it = borders.constBegin();
-  QPointF intersectionPoint;
-
-  for ( ; it != borders.constEnd(); ++it )
-  {
-    if ( line.intersect( *it, &intersectionPoint ) == QLineF::BoundedIntersection )
-    {
-      x = intersectionPoint.x();
-      y = intersectionPoint.y();
-      return true;
-    }
-  }
-  return false;
-}
-
-void QgsComposerItem::sizeChangedByRotation( double& width, double& height )
-{
-  //kept for api compatibility with QGIS 2.0, use item rotation
-  Q_NOWARN_DEPRECATED_PUSH
-  return sizeChangedByRotation( width, height, mEvaluatedItemRotation );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-void QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
-{
-  if ( rotation == 0.0 )
-  {
-    return;
-  }
-
-  //vector to p1
-  double x1 = -width / 2.0;
-  double y1 = -height / 2.0;
-  QgsComposerUtils::rotate( rotation, x1, y1 );
-  //vector to p2
-  double x2 = width / 2.0;
-  double y2 = -height / 2.0;
-  QgsComposerUtils::rotate( rotation, x2, y2 );
-  //vector to p3
-  double x3 = width / 2.0;
-  double y3 = height / 2.0;
-  QgsComposerUtils::rotate( rotation, x3, y3 );
-  //vector to p4
-  double x4 = -width / 2.0;
-  double y4 = height / 2.0;
-  QgsComposerUtils::rotate( rotation, x4, y4 );
-
-  //double midpoint
-  QPointF midpoint( width / 2.0, height / 2.0 );
-
-  QPolygonF rotatedRectPoly;
-  rotatedRectPoly << QPointF( midpoint.x() + x1, midpoint.y() + y1 );
-  rotatedRectPoly << QPointF( midpoint.x() + x2, midpoint.y() + y2 );
-  rotatedRectPoly << QPointF( midpoint.x() + x3, midpoint.y() + y3 );
-  rotatedRectPoly << QPointF( midpoint.x() + x4, midpoint.y() + y4 );
-  QRectF boundingRect = rotatedRectPoly.boundingRect();
-  width = boundingRect.width();
-  height = boundingRect.height();
-}
-
-void QgsComposerItem::rotate( double angle, double& x, double& y ) const
-{
-  QgsComposerUtils::rotate( angle, x, y );
 }
 
 QGraphicsLineItem* QgsComposerItem::hAlignSnapItem()

@@ -200,10 +200,8 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      */
     enum AnnotationPosition
     {
-      InsideMapFrame = 0,
+      InsideMapFrame = 0, /*!< draw annotations inside the map frame */
       OutsideMapFrame, /*!< draw annotations outside the map frame */
-      Disabled /*!< disable annotation
-                  * @deprecated in QGIS 2.7, use QgsComposerMapGrid::HideAll instead */
     };
 
     /** Direction of grid annotations

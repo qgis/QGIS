@@ -171,8 +171,6 @@ class QgsComposerMapGrid : QgsComposerMapItem
     {
       InsideMapFrame = 0,
       OutsideMapFrame, /*!< draw annotations outside the map frame */
-      Disabled /*!< disable annotation
-                  * @deprecated in QGIS 2.7, use QgsComposerMapGrid::HideAll instead */
     };
 
     /** Direction of grid annotations

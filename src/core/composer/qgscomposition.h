@@ -55,7 +55,6 @@ class QgsComposerMap;
 class QgsComposerPicture;
 class QgsComposerScaleBar;
 class QgsComposerShape;
-class QgsComposerAttributeTable;
 class QgsComposerAttributeTableV2;
 class QgsComposerMultiFrame;
 class QgsComposerMultiFrameCommand;
@@ -297,38 +296,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void setGridStyle( const GridStyle s );
     GridStyle gridStyle() const {return mGridStyle;}
 
-    /** Sets the snap tolerance to use when automatically snapping items during movement and resizing to the
-     * composition grid.
-     * @param tolerance snap tolerance in pixels
-     * @see snapGridTolerance
-     * @deprecated Use setSnapTolerance instead
-     */
-    Q_DECL_DEPRECATED void setSnapGridTolerance( double tolerance ) { mSnapTolerance = tolerance; }
-
-    /** Returns the snap tolerance to use when automatically snapping items during movement and resizing to the
-     * composition grid.
-     * @returns snap tolerance in pixels
-     * @see setSnapGridTolerance
-     * @deprecated Use snapTolerance instead
-     */
-    Q_DECL_DEPRECATED double snapGridTolerance() const {return mSnapTolerance;}
-
-    /** Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
-     * and the edges and centers of other items.
-     * @param t snap tolerance in pixels
-     * @see alignmentSnapTolerance
-     * @deprecated Use setSnapTolerance instead
-     */
-    Q_DECL_DEPRECATED void setAlignmentSnapTolerance( double t ) { mSnapTolerance = t; }
-
-    /** Returns the snap tolerance to use when automatically snapping items during movement and resizing to guides
-     * and the edges and centers of other items.
-     * @returns snap tolerance in pixels
-     * @see setAlignmentSnapTolerance
-     * @deprecated Use snapTolerance instead
-     */
-    Q_DECL_DEPRECATED double alignmentSnapTolerance() const { return mSnapTolerance; }
-
     /** Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
      * and the edges and centers of other items.
      * @param snapTolerance snap tolerance in pixels
@@ -413,14 +380,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     const QgsComposerMap* getComposerMapById( const int id ) const;
 
-    /** Returns the composer html with specified id (a string as named in the
-     * composer user interface item properties).
-     * @param item the item.
-     * @return QgsComposerHtml pointer or 0 pointer if no such item exists.
-     * @deprecated Use QgsComposerFrame::multiFrame() instead
-     */
-    Q_DECL_DEPRECATED const QgsComposerHtml* getComposerHtmlByItem( QgsComposerItem *item ) const;
-
     /** Returns a composer item given its text identifier.
      *  Ids are not necessarely unique, but this function returns only one element.
      * @param theId - A QString representing the identifier of the item to retrieve.
@@ -480,17 +439,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     QgsComposition::PlotStyle plotStyle() const { return mPlotStyle; }
     void setPlotStyle( const QgsComposition::PlotStyle style ) { mPlotStyle = style; }
-
-    /** Returns the mm font size for a font that has point size set.
-     * Each item that sets a font should call this function before drawing text
-     * @deprecated use QgsComposerUtils::pointsToMM instead
-     */
-    Q_DECL_DEPRECATED int pixelFontSize( double pointSize ) const;
-
-    /** Does the inverse calculation and returns points for mm
-     * @deprecated use QgsComposerUtils::mmToPoints instead
-     */
-    Q_DECL_DEPRECATED double pointFontSize( int pixelSize ) const;
 
     /** Writes settings to xml (paper dimension)*/
     bool writeXml( QDomElement& composerElem, QDomDocument& doc );
@@ -576,12 +524,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     QList<QgsComposerItem*> ungroupItems( QgsComposerItemGroup* group );
 
-    /** Sorts the zList. The only time where this function needs to be called is from QgsComposer
-     * after reading all the items from xml file
-     * @deprecated use refreshZList instead
-     */
-    Q_DECL_DEPRECATED void sortZList() {}
-
     /** Rebuilds the z order list by adding any item which are present in the composition
      * but missing from the z order list.
      */
@@ -647,8 +589,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void addComposerPolygon( QgsComposerPolygon* polygon );
     /** Adds a composer polyline and advises composer to create a widget for it (through signal)*/
     void addComposerPolyline( QgsComposerPolyline* polyline );
-    /** Adds a composer table to the graphics scene and advises composer to create a widget for it (through signal)*/
-    void addComposerTable( QgsComposerAttributeTable* table );
     /** Adds composer html frame and advises composer to create a widget for it (through signal)*/
     void addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame );
     /** Adds composer tablev2 frame and advises composer to create a widget for it (through signal)*/
@@ -766,16 +706,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void computeWorldFileParameters( const QRectF& exportRegion, double& a, double& b, double& c, double& d, double& e, double& f ) const;
 
     QgsAtlasComposition& atlasComposition() { return mAtlasComposition; }
-
-    /** Resizes a QRectF relative to the change from boundsBefore to boundsAfter
-     * @deprecated use QgsComposerUtils::relativeResizeRect instead
-     */
-    Q_DECL_DEPRECATED static void relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter );
-
-    /** Returns a scaled position given a before and after range
-     * @deprecated use QgsComposerUtils::relativePosition instead
-     */
-    Q_DECL_DEPRECATED static double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax );
 
     /** Returns the current atlas mode of the composition
      * @returns current atlas mode
@@ -1125,8 +1055,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void composerPictureAdded( QgsComposerPicture* picture );
     /** Is emitted when a new composer shape has been added*/
     void composerShapeAdded( QgsComposerShape* shape );
-    /** Is emitted when a new composer table has been added*/
-    void composerTableAdded( QgsComposerAttributeTable* table );
     /** Is emitted when a new composer table frame has been added to the view*/
     void composerTableFrameAdded( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame );
     /** Is emitted when a composer item has been removed from the scene*/

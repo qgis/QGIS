@@ -27,62 +27,6 @@ class QgsComposerMap : QgsComposerItem
       Rectangle    // Display only rectangle
     };
 
-    //grid enums are moved to QgsComposerMapGrid
-    //TODO - remove for QGIS 3.0
-    enum GridStyle
-    {
-      Solid, //solid lines
-      Cross, //only draw line crossings
-      Markers,
-      FrameAnnotationsOnly
-    };
-
-    enum GridAnnotationPosition
-    {
-      InsideMapFrame,
-      OutsideMapFrame,
-      Disabled
-    };
-
-    enum GridAnnotationDirection
-    {
-      Horizontal,
-      Vertical,
-      HorizontalAndVertical,
-      BoundaryDirection
-    };
-
-    enum GridAnnotationFormat
-    {
-      Decimal,
-      DegreeMinute,
-      DegreeMinuteSecond,
-      DecimalWithSuffix,
-      DegreeMinuteNoSuffix,
-      DegreeMinutePadded,
-      DegreeMinuteSecondNoSuffix,
-      DegreeMinuteSecondPadded
-    };
-
-    enum GridFrameStyle
-    {
-      NoGridFrame,
-      Zebra, // black/white pattern
-      InteriorTicks,
-      ExteriorTicks,
-      InteriorExteriorTicks,
-      LineBorder
-    };
-
-    /** Enum for different frame borders*/
-    enum Border
-    {
-      Left,
-      Right,
-      Bottom,
-      Top
-    };
-
     /** Scaling modes used for the serial rendering (atlas)
      */
     enum AtlasScalingMode
@@ -132,14 +76,6 @@ class QgsComposerMap : QgsComposerItem
      */
     void moveContent( double dx, double dy );
 
-    /** Zoom content of map
-     * @param delta value from wheel event that describes direction (positive /negative number)
-     * @param x x-position of mouse cursor (in item coordinates)
-     * @param y y-position of mouse cursor (in item coordinates)
-     * @deprecated use zoomContent( double, QPointF, ZoomMode ) instead
-     */
-    void zoomContent( int delta, double x, double y ) /Deprecated/;
-
     /** Zoom content of item. Does nothing per default (but implemented in composer map)
      * @param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
      * @param point item point for zoom center
@@ -179,11 +115,6 @@ class QgsComposerMap : QgsComposerItem
       Atlas preview extents are only temporary, and are regenerated whenever the atlas feature changes
      */
     void setNewAtlasFeatureExtent( const QgsRectangle& extent );
-
-    /** Called when atlas preview is toggled, to force map item to update its extent and redraw
-     * @deprecated no longer required
-     */
-    void toggleAtlasPreview() /Deprecated/;
 
     /** Returns a pointer to the current map extent, which is either the original user specified
      * extent or the temporary atlas-driven feature extent depending on the current atlas state
@@ -270,263 +201,6 @@ class QgsComposerMap : QgsComposerItem
      */
     bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
-    /** Enables a coordinate grid that is shown on top of this composermap.
-     * @deprecated use grid()->setEnabled() or grids() instead
-     */
-    void setGridEnabled( bool enabled ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->enabled() or grids() instead
-     */
-    bool gridEnabled() const /Deprecated/;
-
-    /** Sets coordinate grid style to solid or cross
-     * @deprecated use grid()->setStyle() or grids() instead
-     */
-    void setGridStyle( GridStyle style ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->style() or grids() instead
-     */
-    GridStyle gridStyle() const /Deprecated/;
-
-    /** Sets coordinate interval in x-direction for composergrid.
-     * @deprecated use grid()->setIntervalX() or grids() instead
-     */
-    void setGridIntervalX( double interval ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->intervalX() or grids() instead
-     */
-    double gridIntervalX() const /Deprecated/;
-
-    /** Sets coordinate interval in y-direction for composergrid.
-     * @deprecated use grid()->setIntervalY() or grids() instead
-     */
-    void setGridIntervalY( double interval ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->intervalY() or grids() instead
-     */
-    double gridIntervalY() const /Deprecated/;
-
-    /** Sets x-coordinate offset for composer grid
-     * @deprecated use grid()->setOffsetX() or grids() instead
-     */
-    void setGridOffsetX( double offset ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->offsetX() or grids() instead
-     */
-    double gridOffsetX() const /Deprecated/;
-
-    /** Sets y-coordinate offset for composer grid
-     * @deprecated use grid()->setOffsetY() or grids() instead
-     */
-    void setGridOffsetY( double offset ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->offsetY() or grids() instead
-     */
-    double gridOffsetY() const /Deprecated/;
-
-    /** Sets the pen to draw composer grid
-     * @deprecated use grid()->setPenWidth(), grid()->setPenColor() or grids() instead
-     */
-    void setGridPen( const QPen& p ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->pen() or grids() instead
-     */
-    QPen gridPen() const /Deprecated/;
-
-    /** Sets width of grid pen
-     * @deprecated use grid()->setPenWidth() or grids() instead
-     */
-    void setGridPenWidth( double w ) /Deprecated/;
-
-    /** Sets the color of the grid pen
-     * @deprecated use grid()->setPenColor() or grids() instead
-     */
-    void setGridPenColor( const QColor& c ) /Deprecated/;
-
-    /** Sets font for grid annotations
-     * @deprecated use grid()->setAnnotationFont() or grids() instead
-     */
-    void setGridAnnotationFont( const QFont& f ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->annotationFont() or grids() instead
-     */
-    QFont gridAnnotationFont() const /Deprecated/;
-
-    /** Sets font color for grid annotations
-     * @deprecated use grid()->setAnnotationFontColor() or grids() instead
-     */
-    void setAnnotationFontColor( const QColor& c ) /Deprecated/;
-
-    /** Get font color for grid annotations
-     * @deprecated use grid()->annotationFontColor() or grids() instead
-     */
-    QColor annotationFontColor() const /Deprecated/;
-
-    /** Sets coordinate precision for grid annotations
-     * @deprecated use grid()->setAnnotationPrecision or grids() instead
-     */
-    void setGridAnnotationPrecision( int p ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->annotationPrecision() or grids() instead
-     */
-    int gridAnnotationPrecision() const /Deprecated/;
-
-    /** Sets flag if grid annotation should be shown
-     * @deprecated use grid()->setAnnotationEnabled() or grids() instead
-     */
-    void setShowGridAnnotation( bool show ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->annotationEnabled() or grids() instead
-     */
-    bool showGridAnnotation() const /Deprecated/;
-
-    /**
-     * @deprecated use grid()->setAnnotationPosition() or grids() instead
-     */
-    void setGridAnnotationPosition( GridAnnotationPosition p, QgsComposerMap::Border border ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->annotationPosition() or grids() instead
-     */
-    GridAnnotationPosition gridAnnotationPosition( QgsComposerMap::Border border ) const /Deprecated/;
-
-    /** Sets distance between map frame and annotations
-     * @deprecated use grid()->setAnnotationFrameDistance() or grids() instead
-     */
-    void setAnnotationFrameDistance( double d ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->annotationFrameDistance() or grids() instead
-     */
-    double annotationFrameDistance() const /Deprecated/;
-
-    /**
-     * @deprecated use grid()->setAnnotationDirection() or grids() instead
-     */
-    void setGridAnnotationDirection( GridAnnotationDirection d, QgsComposerMap::Border border ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->annotationDirection() or grids() instead
-     */
-    GridAnnotationDirection gridAnnotationDirection( QgsComposerMap::Border border ) const /Deprecated/;
-
-    /**
-     * @deprecated use grid()->setAnnotationFormat() or grids() instead
-     */
-    void setGridAnnotationFormat( GridAnnotationFormat f ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->annotationFormat() or grids() instead
-     */
-    GridAnnotationFormat gridAnnotationFormat() const /Deprecated/;
-
-    /** Set grid frame style (NoGridFrame or Zebra)
-     * @deprecated use grid()->setFrameStyle() or grids() instead
-     */
-    void setGridFrameStyle( GridFrameStyle style ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->frameStyle() or grids() instead
-     */
-    GridFrameStyle gridFrameStyle() const /Deprecated/;
-
-    /** Set grid frame width
-     * @deprecated use grid()->setFrameWidth() or grids() instead
-     */
-    void setGridFrameWidth( double w ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->frameWidth() or grids() instead
-     */
-    double gridFrameWidth() const /Deprecated/;
-
-    /** Set grid frame pen thickness
-     * @note: this function was added in version 2.1
-     * @deprecated use grid()->setFramePenSize() or grids() instead
-     */
-    void setGridFramePenSize( double w ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->framePenSize() or grids() instead
-     */
-    double gridFramePenSize() const /Deprecated/;
-
-    /** Sets pen color for grid frame
-     * @note: this function was added in version 2.1
-     * @deprecated use grid()->setFramePenColor() or grids() instead
-     */
-    void setGridFramePenColor( const QColor& c ) /Deprecated/;
-
-    /** Get pen color for grid frame
-     * @note: this function was added in version 2.1
-     * @deprecated use grid()->framePenColor() or grids() instead
-     */
-    QColor gridFramePenColor() const /Deprecated/;
-
-    /** Sets first fill color for grid zebra frame
-     * @note: this function was added in version 2.1
-     * @deprecated use grid()->setFrameFillColor1() or grids() instead
-     */
-    void setGridFrameFillColor1( const QColor& c ) /Deprecated/;
-
-    /** Get first fill color for grid zebra frame
-     * @note: this function was added in version 2.1
-     * @deprecated use grid()->frameFillColor1() or grids() instead
-     */
-    QColor gridFrameFillColor1() const /Deprecated/;
-
-    /** Sets second fill color for grid zebra frame
-     * @note: this function was added in version 2.1
-     * @deprecated use grid()->setFrameFillColor2() or grids() instead
-     */
-    void setGridFrameFillColor2( const QColor& c ) /Deprecated/;
-
-    /** Get second fill color for grid zebra frame
-     * @note: this function was added in version 2.1
-     * @deprecated use grid()->frameFillColor2() or grids() instead
-     */
-    QColor gridFrameFillColor2() const /Deprecated/;
-
-    /** Sets length of the cross segments (if grid style is cross)
-     * @deprecated use grid()->setCrossLength() or grids() instead
-     */
-    void setCrossLength( double l ) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->crossLength() or grids() instead
-     */
-    double crossLength() /Deprecated/;
-
-    /**
-     * @deprecated use grid()->setLineSymbol() or grids() instead
-     */
-    void setGridLineSymbol( QgsLineSymbol* symbol /Transfer/) /Deprecated/;
-
-    /**
-     * @deprecated use grid()->lineSymbol() or grids() instead
-     */
-    QgsLineSymbol* gridLineSymbol() /Deprecated/;
-
-    /** Returns the grid's blending mode
-     * @deprecated use grid()->blendMode() or grids() instead
-     */
-    QPainter::CompositionMode gridBlendMode() const /Deprecated/;
-
-    /** Sets the grid's blending mode
-     * @deprecated use grid()->setBlendMode() or grids() instead
-     */
-    void setGridBlendMode( QPainter::CompositionMode blendMode ) /Deprecated/;
-
     /** Returns the map item's grid stack, which is used to control how grids
      * are drawn over the map's contents.
      * @returns pointer to grid stack
@@ -564,17 +238,6 @@ class QgsComposerMap : QgsComposerItem
     virtual void setFrameOutlineWidth( const double outlineWidth );
 
     /** Sets rotation for the map - this does not affect the composer item shape, only the
-      way the map is drawn within the item
-     * @deprecated Use setMapRotation( double rotation ) instead
-     */
-    void setRotation( double r ) /Deprecated/;
-
-    /** Returns the rotation used for drawing the map within the composer item
-     * @deprecated Use mapRotation() instead
-     */
-    double rotation() const /Deprecated/;
-
-    /** Sets rotation for the map - this does not affect the composer item shape, only the
      * way the map is drawn within the item
      * @note this function was added in version 2.1
      */
@@ -599,75 +262,9 @@ class QgsComposerMap : QgsComposerItem
     /** Returns the conversion factor map units -> mm*/
     double mapUnitsToMM() const;
 
-    /** Sets overview frame map. -1 disables the overview frame
-     * @deprecated use overview()->setFrameMap() or overviews() instead
-     */
-    void setOverviewFrameMap( int mapId ) /Deprecated/;
-
-    /** Returns id of overview frame (or -1 if no overfiew frame)
-     * @deprecated use overview()->frameMapId() or overviews() instead
-     */
-    int overviewFrameMapId() const /Deprecated/;
-
-    /**
-     * @deprecated use overview()->setFrameSymbol() or overviews() instead
-     */
-    void setOverviewFrameMapSymbol( QgsFillSymbol* symbol /Transfer/ ) /Deprecated/;
-
-    /**
-     * @deprecated use overview()->frameSymbol() or overviews() instead
-     */
-    QgsFillSymbol* overviewFrameMapSymbol() /Deprecated/;
-
-    /** Returns the overview's blending mode
-     * @deprecated use overview()->blendMode() or overviews() instead
-     */
-    QPainter::CompositionMode overviewBlendMode() const /Deprecated/;
-
-    /** Sets the overview's blending mode
-     * @deprecated use overview()->setBlendMode() or overviews() instead
-     */
-    void setOverviewBlendMode( QPainter::CompositionMode blendMode ) /Deprecated/;
-
-    /** Returns true if the overview frame is inverted
-     * @deprecated use overview()->inverted() or overviews() instead
-     */
-    bool overviewInverted() const /Deprecated/;
-
-    /** Sets the overview's inversion mode
-     * @deprecated use overview()->setInverted() or overviews() instead
-     */
-    void setOverviewInverted( bool inverted ) /Deprecated/;
-
-    /** Returns true if the extent is forced to center on the overview
-     * @deprecated use overview()->centered() or overviews() instead
-     */
-    bool overviewCentered() const /Deprecated/;
-
-    /** Set the overview's centering mode
-     * @deprecated use overview()->setCentered() or overviews() instead
-     */
-    void setOverviewCentered( bool centered ) /Deprecated/;
-
     /** Sets mId to a number not yet used in the composition. mId is kept if it is not in use.
         Usually, this function is called before adding the composer map to the composition*/
     void assignFreeId();
-
-    /** Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
-     * @deprecated Use bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation )
-     * instead
-     */
-    bool imageSizeConsideringRotation( double& width, double& height ) const /Deprecated/;
-    /** Calculates corner point after rotation and scaling
-     * @deprecated Use QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
-     * instead
-     */
-    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const /Deprecated/;
-    /** Calculates width / height of the bounding box of a rotated rectangle
-     * @deprecated Use QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
-     * instead
-     */
-    void sizeChangedByRotation( double& width, double& height ) /Deprecated/;
 
     /** Returns whether the map extent is set to follow the current atlas feature.
      * @returns true if map will follow the current atlas feature.
@@ -682,16 +279,6 @@ class QgsComposerMap : QgsComposerItem
      * @see setAtlasScalingMode
      */
     void setAtlasDriven( bool enabled );
-
-    /** Returns true if the map uses a fixed scale when in atlas mode
-     * @deprecated since 2.4 Use atlasScalingMode() instead
-     */
-    bool atlasFixedScale() const /Deprecated/;
-
-    /** Set to true if the map should use a fixed scale when in atlas mode
-     * @deprecated since 2.4 Use setAtlasScalingMode() instead
-     */
-    void setAtlasFixedScale( bool fixed ) /Deprecated/;
 
     /** Returns the current atlas scaling mode. This controls how the map's extents
      * are calculated for the current atlas feature when an atlas composition
@@ -762,9 +349,6 @@ class QgsComposerMap : QgsComposerItem
     /** Transforms map coordinates to item coordinates (considering rotation and move offset)*/
     QPointF mapToItemCoords( QPointF mapCoords ) const;
 
-    //! @deprecated will be removed in QGIS 3.0
-    void connectMapOverviewSignals() /Deprecated/;
-
     /** Calculates the extent to request and the yShift of the top-left point in case of rotation.
      * @note added in 2.6 */
     void requestedExtent( QgsRectangle& extent ) const;
@@ -798,9 +382,6 @@ class QgsComposerMap : QgsComposerItem
 
     /** Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle */
     void updateBoundingRect();
-
-    /** @deprecated use QgsComposerMapOverview::overviewExtentChanged instead*/
-    void overviewExtentChanged();
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = 0 );
 

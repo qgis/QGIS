@@ -76,16 +76,6 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      */
     double arrowHeadWidth() const { return mArrowHeadWidth; }
 
-    /** Sets the pen width for drawing the line and arrow head
-     * @deprecated use setArrowHeadOutlineWidth or setLineSymbol instead
-     */
-    Q_DECL_DEPRECATED void setOutlineWidth( double width );
-
-    /** Returns the pen width for drawing the line and arrow head
-     * @deprecated use arrowHeadOutlineWidth or lineSymbol instead
-     */
-    Q_DECL_DEPRECATED double outlineWidth() const;
-
     /** Sets the marker to draw at the start of the line
      * @param svgPath file path for svg marker graphic to draw
      * @see startMarker
@@ -113,16 +103,6 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      * @see startMarker
      */
     QString endMarker() const { return mEndMarkerFile; }
-
-    /** Returns the color for the line and arrow head
-     * @deprecated use arrowHeadOutlineColor, arrowHeadFillColor or lineStyle instead
-     */
-    Q_DECL_DEPRECATED QColor arrowColor() const;
-
-    /** Sets the color for the line and arrow head
-     * @deprecated use setArrowHeadOutlineColor, setArrowHeadFillColor or setLineStyle instead
-     */
-    Q_DECL_DEPRECATED void setArrowColor( const QColor& c );
 
     /** Returns the color used to draw outline around the the arrow head.
      * @returns arrow head outline color

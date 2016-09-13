@@ -19,7 +19,6 @@
 #include "qgscomposition.h"
 #include "qgscomposermap.h"
 #include "qgscomposertexttable.h"
-#include "qgscomposerattributetable.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmapsettings.h"
 #include "qgsvectorlayer.h"

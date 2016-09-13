@@ -78,7 +78,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         # an overview
         mOverview = QgsComposerMap(self.mComposition, 180, 20, 50, 50)
         mOverview.setFrameEnabled(True)
-        mOverview.setOverviewFrameMap(self.mAtlasMap.id())
+        mOverview.overview().setFrameMap(self.mAtlasMap.id())
         self.mComposition.addComposerMap(mOverview)
         nextent = QgsRectangle(49670.718, 6415139.086, 699672.519, 7065140.887)
         mOverview.setNewExtent(nextent)
@@ -86,7 +86,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         # set the fill symbol of the overview map
         props2 = {"color": "127,0,0,127"}
         fillSymbol2 = QgsFillSymbol.createSimple(props2)
-        mOverview.setOverviewFrameMapSymbol(fillSymbol2)
+        mOverview.overview().setFrameSymbol(fillSymbol2)
 
         # header label
         self.mLabel1 = QgsComposerLabel(self.mComposition)
@@ -112,7 +112,6 @@ class TestQgsAtlasComposition(unittest.TestCase):
 
         self.filename_test()
         self.autoscale_render_test()
-        self.autoscale_render_test_old_api()
         self.fixedscale_render_test()
         self.predefinedscales_render_test()
         self.hidden_render_test()
@@ -150,29 +149,6 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mAtlasMap.setAtlasDriven(False)
         self.mAtlasMap.setAtlasScalingMode(QgsComposerMap.Fixed)
         self.mAtlasMap.setAtlasMargin(0)
-
-    def autoscale_render_test_old_api(self):
-        self.mAtlas.setComposerMap(self.mAtlasMap)
-        self.mAtlas.setFixedScale(False)
-        self.mAtlas.setMargin(0.10)
-
-        self.mAtlas.beginRender()
-
-        for i in range(0, 2):
-            self.mAtlas.prepareForFeature(i)
-            self.mLabel1.adjustSizeToText()
-
-            checker = QgsCompositionChecker('atlas_autoscale_old_api%d' % (i + 1), self.mComposition)
-            checker.setControlPathPrefix("atlas")
-            myTestResult, myMessage = checker.testComposition(0, 200)
-
-            assert myTestResult
-        self.mAtlas.endRender()
-
-        self.mAtlas.setFixedScale(True)
-        self.mAtlas.setMargin(0)
-        self.mAtlas.setComposerMap(None)
-        self.mAtlasMap.setAtlasDriven(False)
 
     def fixedscale_render_test(self):
         self.mAtlasMap.setNewExtent(QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620))

@@ -39,24 +39,6 @@ class QgsComposerPicture: QgsComposerItem
     /** Reimplementation of QCanvasItem::paint*/
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
-    /** Sets the source file of the image (may be svg or a raster format). Data defined
-     * picture source may override this value.
-     * @param path full path to the source image
-     * @see usePictureExpression
-     * @see pictureFile
-     * @deprecated use setPicturePath instead
-     */
-    void setPictureFile( const QString& path ) /Deprecated/;
-
-    /** Returns the path of the source image file. Data defined picture source may override
-     * this value.
-     * @returns path to the source image
-     * @see usePictureExpression
-     * @see setPictureFile
-     * @deprecated use picturePath instead
-     */
-    QString pictureFile() const /Deprecated/;
-
     /** Sets the source path of the image (may be svg or a raster format). Data defined
      * picture source may override this value. The path can either be a local path
      * or a remote (http) path.
@@ -92,11 +74,6 @@ class QgsComposerPicture: QgsComposerItem
      * @param doc is Dom document
      */
     bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
-
-    /** Returns the rotation used for drawing the picture within the composer item
-     * @deprecated Use pictureRotation() instead
-     */
-    double rotation() const /Deprecated/;
 
     /** Returns the rotation used for drawing the picture within the item's frame
      * @returns picture rotation in degrees
@@ -207,45 +184,6 @@ class QgsComposerPicture: QgsComposerItem
      */
     void setSvgBorderWidth( double width );
 
-    /** Returns whether the picture item is using an expression for the image source.
-     * @returns true if the picture is using an expression for the source, false if
-     * it is using a single static file path for the source.
-     * @note added in 2.3
-     * @see setUsePictureExpression
-     * @see pictureFile
-     * @see pictureExpression
-     * @deprecated use QgsComposerObject::dataDefinedProperty( QgsComposerObject::PictureSource ) instead
-     */
-    bool usePictureExpression() const /Deprecated/;
-
-    /** Returns the expression the item is using for the picture source. This is only
-     * used if usePictureExpression() is true.
-     * @returns expression for the picture item's image path
-     * @note added in 2.3
-     * @see setPictureExpression
-     * @see usePictureExpression
-     * @deprecated use QgsComposerObject::dataDefinedProperty( QgsComposerObject::PictureSource ) instead
-     */
-    QString pictureExpression() const /Deprecated/;
-
-    /** Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
-     * @deprecated Use bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation )
-     * instead
-     */
-    bool imageSizeConsideringRotation( double& width, double& height ) const /Deprecated/;
-
-    /** Calculates corner point after rotation and scaling
-     * @deprecated Use QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
-     * instead
-     */
-    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const /Deprecated/;
-
-    /** Calculates width / height of the bounding box of a rotated rectangle
-     * @deprecated Use QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
-     * instead
-     */
-    void sizeChangedByRotation( double& width, double& height ) /Deprecated/;
-
     /** Returns the current picture mode (image format).
      * @returns picture mode
      * @note added in 2.3
@@ -253,11 +191,6 @@ class QgsComposerPicture: QgsComposerItem
     Mode mode() const;
 
   public slots:
-    /** Sets the picture rotation within the item bounds. This does not affect
-     * the item rectangle, only the way the picture is drawn within the item.
-     * @deprecated Use setPictureRotation( double rotation ) instead
-     */
-    virtual void setRotation( double r ) /Deprecated/;
 
     /** Sets the picture rotation within the item bounds. This does not affect
      * the item's frame, only the way the picture is drawn within the item.
@@ -274,40 +207,12 @@ class QgsComposerPicture: QgsComposerItem
      */
     virtual void setResizeMode( ResizeMode mode );
 
-    /** Sets whether the picture should use an expression based image source path
-     * @param useExpression set to true to use an expression based image source,
-     * set to false to use a single image source path
-     * @note added in 2.3
-     * @see usePictureExpression
-     * @see setPictureFile
-     * @see setPictureExpression
-     * @deprecated use QgsComposerObject::dataDefinedProperty( QgsComposerObject::PictureSource ) instead
-     */
-    virtual void setUsePictureExpression( bool useExpression ) /Deprecated/;
-
-    /** Sets an expression to use for the picture source. This expression is only
-     * used if usePictureExpression() is true.
-     * @param expression to use for picture path
-     * @note added in 2.3
-     * @see setUsePictureExpression
-     * @see pictureExpression
-     * @deprecated use QgsComposerObject::dataDefinedProperty( QgsComposerObject::PictureSource ) instead
-     */
-    virtual void setPictureExpression( const QString& expression ) /Deprecated/;
-
     /** Recalculates the source image (if using an expression for picture's source)
      * and reloads and redraws the picture.
      * @param context expression context for evaluating data defined picture sources
      * @note added in 2.3
      */
     void refreshPicture( const QgsExpressionContext* context = 0 );
-
-    /** Prepares the picture's source expression after it is altered or the compositions
-     * atlas coverage layer changes.
-     * @note added in 2.3
-     * @deprecated no longer required
-     */
-    void updatePictureExpression() /Deprecated/;
 
     /** Forces a recalculation of the picture's frame size
      * @note added in 2.3
