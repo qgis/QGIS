@@ -57,7 +57,6 @@ pluginPath = os.path.normpath(os.path.join(
 
 sessionExportedLayers = {}
 
-_icon = QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
 
 class SagaAlgorithm212(GeoAlgorithm):
 
@@ -76,8 +75,8 @@ class SagaAlgorithm212(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return _icon
-    
+        return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
+
     def defineCharacteristicsFromFile(self):
         lines = open(self.descriptionFile)
         line = lines.readline().strip('\n').strip()

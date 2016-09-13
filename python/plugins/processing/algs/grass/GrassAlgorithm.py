@@ -66,7 +66,6 @@ from processing.tools import dataobjects, system
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
-_icon = QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
 
 class GrassAlgorithm(GeoAlgorithm):
 
@@ -90,10 +89,9 @@ class GrassAlgorithm(GeoAlgorithm):
         newone = GrassAlgorithm(self.descriptionFile)
         newone.provider = self.provider
         return newone
-    
+
     def getIcon(self):
-        return _icon
-    
+        return QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
 
     def help(self):
         return False, 'http://grass.osgeo.org/grass64/manuals/' + self.grassName + '.html'
@@ -123,10 +121,11 @@ class GrassAlgorithm(GeoAlgorithm):
         line = lines.readline().strip('\n').strip()
         self.grassName = line
         line = lines.readline().strip('\n').strip()
-        self.name = line.split("-")[0]
-        #self.i18n_name = QCoreApplication.translate("GrassAlgorithm", self.name)
-        self.name = self.grassName
-        self.i18n_name = self.grassName
+        self.name = line
+        self.i18n_name = QCoreApplication.translate("GrassAlgorithm", line)
+        if " - " not in self.name:
+            self.name = self.grassName + " - " + self.name
+            self.i18n_name = self.grassName + " - " + self.i18n_name
         line = lines.readline().strip('\n').strip()
         self.group = line
         self.i18n_group = QCoreApplication.translate("GrassAlgorithm", line)
