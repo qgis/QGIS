@@ -1123,7 +1123,9 @@ in code which previously passed a null pointer to QgsVectorFileWriter.</li>
 <ul>
 <li>New virtual method <code>bool writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage, QgsStringMap props = QgsStringMap() )</code> accepts an
 optional property map passing down layer level properties to the SLD encoders. If scale based visibility is enabled, it will contain the
-<code>scaleMinDenom</code> and <code>scaleMaxDenom</code> properties.
+<code>scaleMinDenom</code> and <code>scaleMaxDenom</code> properties.</li>
+<li>The RotationField capabitity was removed. This is now handled using data defined rotation at a symbol layer level</li>
+<li>setScaleMethodToSymbol was removed. This is now handled using data defined scaling at a symbol layer level</li>
 </ul>
 
 

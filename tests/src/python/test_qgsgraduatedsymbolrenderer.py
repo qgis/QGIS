@@ -144,8 +144,6 @@ def dumpGraduatedRenderer(r):
     rstr = rstr + dumpColorRamp(r.sourceColorRamp())
     rstr = rstr + str(r.invertedColorRamp()) + ':'
     rstr = rstr + dumpRangeList(r.ranges())
-    rstr = rstr + r.sizeScaleField() + ':'
-    rstr = rstr + str(r.scaleMethod()) + ':'
     return rstr
 
 #=================================================================
@@ -314,26 +312,12 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         self.assertFalse(renderer.invertedColorRamp(),
                          "Get/set renderer inverted color ramp")
 
-        value = '"value"*3'
-        exp = QgsSymbolLayerUtils.fieldOrExpressionToExpression(value)
-        valuestr = QgsSymbolLayerUtils.fieldOrExpressionFromExpression(exp)
-        renderer.setSizeScaleField(value)
-        self.assertEqual(valuestr, renderer.sizeScaleField(),
-                         "Get/set renderer size scale field")
-
         renderer.setSourceColorRamp(ramp)
         self.assertEqual(
             dumpColorRamp(ramp),
             dumpColorRamp(renderer.sourceColorRamp()),
             "Get/set renderer color ramp")
 
-        for sm in (
-            QgsSymbol.ScaleArea,
-            QgsSymbol.ScaleDiameter,
-        ):
-            renderer.setScaleMethod(sm)
-            self.assertEqual(str(sm), str(renderer.scaleMethod()),
-                             "Get/set renderer scale method")
         # test for classificatio with varying size
         renderer.setGraduatedMethod(QgsGraduatedSymbolRenderer.GraduatedSize)
         renderer.setSourceColorRamp(None)

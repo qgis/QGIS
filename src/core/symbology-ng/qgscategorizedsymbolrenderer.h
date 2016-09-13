@@ -90,7 +90,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     virtual QString dump() const override;
     virtual QgsCategorizedSymbolRenderer* clone() const override;
     virtual void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props = QgsStringMap() ) const override;
-    virtual Capabilities capabilities() override { return SymbolLevels | RotationField | Filter; }
+    virtual Capabilities capabilities() override { return SymbolLevels | Filter; }
     virtual QString filter( const QgsFields& fields = QgsFields() ) override;
     virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
 
@@ -178,12 +178,6 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
       */
     void updateColorRamp( QgsColorRamp* ramp, bool inverted = false );
 
-    void setSizeScaleField( const QString& fieldOrExpression );
-    QString sizeScaleField() const;
-
-    void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
-    QgsSymbol::ScaleMethod scaleMethod() const { return mScaleMethod; }
-
     virtual bool legendSymbolItemsCheckable() const override;
     virtual bool legendSymbolItemChecked( const QString& key ) override;
     virtual void setLegendSymbolItem( const QString& key, QgsSymbol* symbol ) override;
@@ -201,9 +195,6 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     QScopedPointer<QgsSymbol> mSourceSymbol;
     QScopedPointer<QgsColorRamp> mSourceColorRamp;
     bool mInvertedColorRamp;
-    QScopedPointer<QgsExpression> mRotation;
-    QScopedPointer<QgsExpression> mSizeScale;
-    QgsSymbol::ScaleMethod mScaleMethod;
     QScopedPointer<QgsExpression> mExpression;
 
     //! attribute index (derived from attribute name in startRender)
@@ -212,9 +203,6 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     //! hashtable for faster access to symbols
     QHash<QString, QgsSymbol*> mSymbolHash;
     bool mCounting;
-
-    //! temporary symbols, used for data-defined rotation and scaling
-    QHash<QgsSymbol*, QgsSymbol*> mTempSymbols;
 
     void rebuildHash();
 

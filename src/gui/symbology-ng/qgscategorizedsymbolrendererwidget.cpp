@@ -761,8 +761,6 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   // recreate renderer
   QgsCategorizedSymbolRenderer *r = new QgsCategorizedSymbolRenderer( attrName, cats );
   r->setSourceSymbol( mCategorizedSymbol->clone() );
-  r->setScaleMethod( mRenderer->scaleMethod() );
-  r->setSizeScaleField( mRenderer->sizeScaleField() );
   r->setInvertedColorRamp( cbxInvertedColorRamp->isChecked() );
   QScopedPointer< QgsColorRamp > ramp( getColorRamp() );
   if ( ramp )

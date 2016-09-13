@@ -45,21 +45,6 @@ QPointF QgsFeatureRenderer::_getPoint( QgsRenderContext& context, const QgsPoint
   return QgsSymbol::_getPoint( context, point );
 }
 
-void QgsFeatureRenderer::setScaleMethodToSymbol( QgsSymbol* symbol, int scaleMethod )
-{
-  if ( symbol )
-  {
-    if ( symbol->type() == QgsSymbol::Marker )
-    {
-      QgsMarkerSymbol* ms = static_cast<QgsMarkerSymbol*>( symbol );
-      if ( ms )
-      {
-        ms->setScaleMethod( static_cast< QgsSymbol::ScaleMethod >( scaleMethod ) );
-      }
-    }
-  }
-}
-
 void QgsFeatureRenderer::copyRendererData( QgsFeatureRenderer* destRenderer ) const
 {
   if ( !destRenderer || !mPaintEffect )

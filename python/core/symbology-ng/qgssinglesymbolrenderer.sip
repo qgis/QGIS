@@ -24,12 +24,6 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
     QgsSymbol* symbol() const;
     void setSymbol( QgsSymbol* s /Transfer/ );
 
-    void setSizeScaleField( const QString& fieldOrExpression );
-    QString sizeScaleField() const;
-
-    void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
-    QgsSymbol::ScaleMethod scaleMethod() const;
-
     virtual QString dump() const;
 
     virtual QgsSingleSymbolRenderer* clone() const /Factory/;

@@ -149,7 +149,6 @@ class QgsFeatureRenderer
     enum Capability
     {
       SymbolLevels,           // rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
-      RotationField,          // rotate symbols by attribute value
       MoreSymbolsPerFeature,  // may use more than one symbol to render a feature: symbolsForFeature() will return them
       Filter,                 // features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
       ScaleDependent          // depends on scale if feature will be rendered (rule based )
@@ -359,8 +358,6 @@ class QgsFeatureRenderer
      * coordinates
      */
     static QPointF _getPoint( QgsRenderContext& context, const QgsPointV2& point );
-
-    void setScaleMethodToSymbol( QgsSymbol* symbol, int scaleMethod );
 
     /**
      * Clones generic renderer data to another renderer.

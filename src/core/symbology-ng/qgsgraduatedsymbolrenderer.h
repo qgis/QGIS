@@ -144,7 +144,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     virtual QString dump() const override;
     virtual QgsGraduatedSymbolRenderer* clone() const override;
     virtual void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props = QgsStringMap() ) const override;
-    virtual Capabilities capabilities() override { return SymbolLevels | RotationField | Filter; }
+    virtual Capabilities capabilities() override { return SymbolLevels | Filter; }
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     QString classAttribute() const { return mAttrName; }
@@ -326,12 +326,6 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! @note added in 2.10
     void setGraduatedMethod( GraduatedMethod method ) { mGraduatedMethod = method; }
 
-    void setSizeScaleField( const QString& fieldOrExpression );
-    QString sizeScaleField() const;
-
-    void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
-    QgsSymbol::ScaleMethod scaleMethod() const { return mScaleMethod; }
-
     virtual bool legendSymbolItemsCheckable() const override;
     virtual bool legendSymbolItemChecked( const QString& key ) override;
     virtual void checkLegendSymbolItem( const QString& key, bool state = true ) override;
@@ -352,17 +346,11 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     bool mInvertedColorRamp;
     QgsRendererRangeLabelFormat mLabelFormat;
 
-    QScopedPointer<QgsExpression> mRotation;
-    QScopedPointer<QgsExpression> mSizeScale;
-    QgsSymbol::ScaleMethod mScaleMethod;
     QScopedPointer<QgsExpression> mExpression;
     GraduatedMethod mGraduatedMethod;
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum;
     bool mCounting;
-
-    //! temporary symbols, used for data-defined rotation and scaling
-    QHash<QgsSymbol*, QgsSymbol*> mTempSymbols;
 
     QgsSymbol* symbolForValue( double value );
 

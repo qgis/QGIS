@@ -41,12 +41,6 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     QgsSymbol* symbol() const;
     void setSymbol( QgsSymbol* s );
 
-    void setSizeScaleField( const QString& fieldOrExpression );
-    QString sizeScaleField() const;
-
-    void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
-    QgsSymbol::ScaleMethod scaleMethod() const { return mScaleMethod; }
-
     virtual QString dump() const override;
 
     virtual QgsSingleSymbolRenderer* clone() const override;
@@ -54,7 +48,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     virtual void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props = QgsStringMap() ) const override;
     static QgsFeatureRenderer* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType );
 
-    virtual Capabilities capabilities() override { return SymbolLevels | RotationField; }
+    virtual Capabilities capabilities() override { return SymbolLevels; }
     virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
     static QgsFeatureRenderer* create( QDomElement& element );
     virtual QDomElement save( QDomDocument& doc ) override;
@@ -71,13 +65,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 
   protected:
     QScopedPointer<QgsSymbol> mSymbol;
-    QScopedPointer<QgsExpression> mRotation;
-    QScopedPointer<QgsExpression> mSizeScale;
-    QgsSymbol::ScaleMethod mScaleMethod;
 
-    // temporary stuff for rendering
-    QScopedPointer<QgsSymbol> mTempSymbol;
-    double mOrigSize;
 };
 
 

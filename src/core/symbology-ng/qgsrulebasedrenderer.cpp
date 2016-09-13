@@ -1211,7 +1211,6 @@ QgsRuleBasedRenderer* QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
       return nullptr;
 
     QgsSymbol* origSymbol = singleSymbolRenderer->symbol()->clone();
-    convertToDataDefinedSymbology( origSymbol, singleSymbolRenderer->sizeScaleField() );
     r = new QgsRuleBasedRenderer( origSymbol );
   }
   else if ( renderer->type() == "categorizedSymbol" )
@@ -1269,7 +1268,6 @@ QgsRuleBasedRenderer* QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
       //data dependent area and rotation, so we need to convert these to obtain the same rendering
 
       QgsSymbol* origSymbol = category.symbol()->clone();
-      convertToDataDefinedSymbology( origSymbol, categorizedRenderer->sizeScaleField() );
       rule->setSymbol( origSymbol );
 
       rootrule->appendChild( rule );
@@ -1324,8 +1322,6 @@ QgsRuleBasedRenderer* QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
       //data dependent area and rotation, so we need to convert these to obtain the same rendering
 
       QgsSymbol* symbol = range.symbol()->clone();
-      convertToDataDefinedSymbology( symbol, graduatedRenderer->sizeScaleField() );
-
       rule->setSymbol( symbol );
 
       rootrule->appendChild( rule );
