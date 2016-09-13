@@ -38,7 +38,8 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinat
 
 from processing.tools.vector import resolveFieldIndex, features
 from processing.tools import dataobjects
-from processing.core.outputs import OutputNumber
+from processing.core.outputs import OutputNumber, OutputRaster, OutputVector
+from processing.tools.dataobjects import getObject
 
 def parseBool(s):
     if s is None or s == unicode(None).lower():
@@ -860,6 +861,23 @@ class ParameterNumber(Parameter):
         if isinstance(self.value, basestring):
             self.value = self._evaluate(self.value)
         
+    def _layerVariables(self, element, alg=None):
+        variables = {}
+        layer = getObject(element.value)
+        if layer is not None:
+            name = element.name if alg is None else "%s_%s" % (alg.name, element.name)
+            variables['@%s_minx' % name] =  layer.extent().xMinimum()
+            variables['@%s_miny' % name] = layer.extent().yMinimum()
+            variables['@%s_maxx' % name] =  layer.extent().yMaximum()
+            variables['@%s_maxy' % name]= layer.extent().yMaximum()
+            if isinstance(element, (ParameterRaster, OutputRaster)):
+                stats = layer.dataProvider().bandStatistics(1)
+                variables['@%s_avg' % name] = stats.mean
+                variables['@%s_stddev' % name] = stats.stdDev
+                variables['@%s_min' % name] = stats.minimumValue
+                variables['@%s_max' % name] = stats.maximumValue
+        return variables
+      
     def evaluateForModeler(self, value, model):
         if isinstance(value, numbers.Number):
             return value
@@ -867,15 +885,18 @@ class ParameterNumber(Parameter):
         for param in model.parameters:
             if isinstance(param, ParameterNumber):
                 variables["@" + param.name] = param.value
+            if isinstance(param, (ParameterRaster, ParameterVector)):
+                variables.update(self._layerVariables(param))
+                    
         for alg in model.algs.values():
             for out in alg.algorithm.outputs:
                 if isinstance(out, OutputNumber):
                     variables["@%s_%s" % (alg.name, out.name)] = out.value
+                if isinstance(out, (OutputRaster, OutputVector)):
+                    variables.update(self._layerVariables(out, alg))
         for k,v in variables.iteritems():
-            print k,v
             value = value.replace(k,unicode(v))
         
-        print value
         return value
     
     def expressionContext(self):

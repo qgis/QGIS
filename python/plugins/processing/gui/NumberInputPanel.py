@@ -38,8 +38,8 @@ from qgis.core import (QgsDataSourceUri,
                        QgsExpressionContextScope)
 from qgis.gui import QgsEncodingFileDialog, QgsExpressionBuilderDialog
 from qgis.utils import iface
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputNumber
+from processing.core.parameters import ParameterNumber, ParameterVector, ParameterRaster
+from processing.core.outputs import OutputNumber, OutputVector, OutputRaster
 from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput, CompoundValue
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -67,12 +67,45 @@ class NumberInputPanel(BASE, WIDGET):
         if self.modelParametersDialog is not None:
             context.popScope()
             values = self.modelParametersDialog.getAvailableValuesOfType(ParameterNumber, OutputNumber)
-            modelerScope = QgsExpressionContextScope()
+            variables = {}
             for value in values:
-                name = value.name if isinstance(value, ValueFromInput) else "%s_%s" % (value.alg, value.output)
-                modelerScope.setVariable(name, 1)
-            context.appendScope(modelerScope) 
+                if isinstance(value, ValueFromInput):
+                    name = value.name  
+                    element = self.modelParametersDialog.model.inputs[name].param
+                    desc = element.description
+                else:
+                    name = "%s_%s" % (value.alg, value.output)
+                    alg = self.modelParametersDialog.model.algs[value.alg]
+                    out = alg.algorithm.getOutputFromName(value.output)
+                    desc = "Output '%s' from algorithm '%s" % (out.description, alg.description)
+                variables[name] = desc 
+            values = self.modelParametersDialog.getAvailableValuesOfType(ParameterVector, OutputVector)
+            values.extend(self.modelParametersDialog.getAvailableValuesOfType(ParameterRaster, OutputRaster))
+            for value in values:
+                if isinstance(value, ValueFromInput): 
+                    name = value.name                    
+                    element = self.modelParametersDialog.model.inputs[name].param
+                    desc = element.description
+                else:
+                    name = "%s_%s" % (value.alg, value.output)
+                    alg = self.modelParametersDialog.model.algs[value.alg]
+                    element = alg.algorithm.getOutputFromName(value.output)
+                    desc = "Output '%s' from algorithm '%s" % (element.description, alg.description)
+                variables['%s_minx' % name] = "Minimum X of %s" % desc
+                variables['%s_miny' % name] = "Maximum X of %s" % desc
+                variables['%s_maxx' % name] = "Minimum Y of %s" % desc
+                variables['%s_maxy' % name] = "Maximum Y of %s" % desc
+                if isinstance(element, (ParameterRaster, OutputRaster)):
+                    variables['%s_min' % name] = "Minimum value of %s" % desc
+                    variables['%s_max' % name] = "Maximum value of %s" % desc
+                    variables['%s_avg' % name] = "Mean value of %s" % desc
+                    variables['%s_stddev' % name] = "Standard deviation of %s" % desc
+
+            #context.appendScope(modelerScope)
+            #context.setHighlightedVariables(modelerScope.variableNames())
         dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, 'generic', context)
+        for variable, desc in variables.iteritems():
+            dlg.expressionBuilder().registerItem("Modeler", variable, "@" + variable, desc, highlightedItem=True)
         dlg.setWindowTitle(self.tr('Expression based input'))
         if dlg.exec_() == QDialog.Accepted:
             exp = QgsExpression(dlg.expressionText())
