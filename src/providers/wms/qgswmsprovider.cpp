@@ -709,9 +709,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
 #if QGISDEBUG
     int n = ( col1 - col0 + 1 ) * ( row1 - row0 + 1 );
     QgsDebugMsg( QString( "tile number: %1x%2 = %3" ).arg( col1 - col0 + 1 ).arg( row1 - row0 + 1 ).arg( n ) );
-    if ( n > 100 )
+    if ( n > 256 )
     {
-      emit statusChanged( QString( "current view would need %1 tiles. tile request per draw limited to 100." ).arg( n ) );
+      emit statusChanged( QString( "current view would need %1 tiles. tile request per draw limited to 256." ).arg( n ) );
       return image;
     }
 #endif
