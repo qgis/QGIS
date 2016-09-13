@@ -9,7 +9,30 @@ class QgsRasterBlockFeedback : QgsFeedback
 %TypeHeaderCode
 #include <qgsrasterinterface.h>
 %End
-    // TODO: extend with preview functionality??
+
+  public:
+    //! Construct a new raster block feedback object
+    QgsRasterBlockFeedback( QObject* parent = nullptr );
+
+    //! May be emitted by raster data provider to indicate that some partial data are available
+    //! and a new preview image may be produced
+    virtual void onNewData();
+
+    //! Whether the raster provider should return only data that are already available
+    //! without waiting for full result. By default this flag is not enabled.
+    //! @see setPreviewOnly()
+    bool isPreviewOnly() const;
+    //! set flag whether the block request is for preview purposes only
+    //! @see isPreviewOnly()
+    void setPreviewOnly( bool preview );
+
+    //! Whether our painter is drawing to a temporary image used just by this layer
+    //! @see setRenderPartialOutput()
+    bool renderPartialOutput() const;
+    //! Set whether our painter is drawing to a temporary image used just by this layer
+    //! @see renderPartialOutput()
+    void setRenderPartialOutput( bool enable );
+
 };
 
 
@@ -256,5 +279,10 @@ class QgsRasterInterface
                          int theStats = QgsRasterBandStats::All,
                          const QgsRectangle & theExtent = QgsRectangle(),
                          int theBinCount = 0 );
+
+  private:
+    QgsRasterInterface(const QgsRasterInterface &);
+    QgsRasterInterface &operator=(const QgsRasterInterface &);
+
 };
 

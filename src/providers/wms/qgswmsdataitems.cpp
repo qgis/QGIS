@@ -16,12 +16,16 @@
 
 #include "qgslogger.h"
 
+#include "qgsdataitemproviderregistry.h"
 #include "qgsdatasourceuri.h"
 #include "qgswmscapabilities.h"
 #include "qgswmsconnection.h"
 #include "qgswmssourceselect.h"
 #include "qgsnewhttpconnection.h"
 #include "qgstilescalewidget.h"
+#include "qgsxyzconnection.h"
+
+#include <QInputDialog>
 
 // ---------------------------------------------------------------------------
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
@@ -423,12 +427,8 @@ QGISEXTERN QgsWMSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags 
   return new QgsWMSSourceSelect( parent, fl );
 }
 
-QGISEXTERN int dataCapabilities()
-{
-  return  QgsDataProvider::Net;
-}
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QgsDataItem* QgsWmsDataItemProvider::createDataItem( const QString& thePath, QgsDataItem *parentItem )
 {
   QgsDebugMsg( "thePath = " + thePath );
   if ( thePath.isEmpty() )
@@ -450,3 +450,87 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   return nullptr;
 }
 
+QGISEXTERN QList<QgsDataItemProvider*> dataItemProviders()
+{
+  return QList<QgsDataItemProvider*>()
+         << new QgsWmsDataItemProvider
+         << new QgsXyzTileDataItemProvider;
+}
+
+// ---------------------------------------------------------------------------
+
+
+QgsXyzTileRootItem::QgsXyzTileRootItem( QgsDataItem *parent, QString name, QString path )
+    : QgsDataCollectionItem( parent, name, path )
+{
+  mCapabilities |= Fast;
+  mIconName = "mIconWms.svg";
+  populate();
+}
+
+QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
+{
+  QVector<QgsDataItem*> connections;
+  Q_FOREACH ( const QString& connName, QgsXyzConnectionUtils::connectionList() )
+  {
+    QgsXyzConnection connection( QgsXyzConnectionUtils::connection( connName ) );
+    QgsDataItem * conn = new QgsXyzLayerItem( this, connName, mPath + '/' + connName, connection.encodedUri() );
+    connections.append( conn );
+  }
+  return connections;
+}
+
+QList<QAction *> QgsXyzTileRootItem::actions()
+{
+  QAction* actionNew = new QAction( tr( "New Connection..." ), this );
+  connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
+  return QList<QAction*>() << actionNew;
+}
+
+void QgsXyzTileRootItem::newConnection()
+{
+  QString url = QInputDialog::getText( nullptr, tr( "New XYZ tile layer" ),
+                                       tr( "Please enter XYZ tile layer URL. {x}, {y}, {z} will be replaced by actual tile coordinates." ) );
+  if ( url.isEmpty() )
+    return;
+
+  QString name = QInputDialog::getText( nullptr, tr( "New XYZ tile layer" ),
+                                        tr( "Please enter name of the tile layer:" ) );
+  if ( name.isEmpty() )
+    return;
+
+  QgsXyzConnection conn;
+  conn.name = name;
+  conn.url = url;
+  QgsXyzConnectionUtils::addConnection( conn );
+
+  refresh();
+}
+
+
+// ---------------------------------------------------------------------------
+
+
+QgsXyzLayerItem::QgsXyzLayerItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri )
+    : QgsLayerItem( parent, name, path, encodedUri, QgsLayerItem::Raster, "wms" )
+{
+  setState( Populated );
+}
+
+QList<QAction *> QgsXyzLayerItem::actions()
+{
+  QList<QAction*> lst = QgsLayerItem::actions();
+
+  QAction* actionDelete = new QAction( tr( "Delete" ), this );
+  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  lst << actionDelete;
+
+  return lst;
+}
+
+void QgsXyzLayerItem::deleteConnection()
+{
+  QgsXyzConnectionUtils::deleteConnection( mName );
+
+  mParent->refresh();
+}

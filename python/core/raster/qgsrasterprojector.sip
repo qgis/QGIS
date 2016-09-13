@@ -1,6 +1,10 @@
 
-/** Raster projector */
-
+/** \ingroup core
+ * \brief QgsRasterProjector implements approximate projection support for
+ * it calculates grid of points in source CRS for target CRS + extent
+ * which are used to calculate affine transformation matrices.
+ * \class QgsRasterProjector
+ */
 class QgsRasterProjector : QgsRasterInterface
 {
 %TypeHeaderCode
@@ -18,33 +22,6 @@ class QgsRasterProjector : QgsRasterInterface
       Exact,   //!< Exact, precise but slow
     };
 
-    /** \brief QgsRasterProjector implements approximate projection support for
-     * it calculates grid of points in source CRS for target CRS + extent
-     * which are used to calculate affine transformation matrices.
-     */
-
-    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
-                        const QgsCoordinateReferenceSystem& theDestCRS,
-                        int theSrcDatumTransform,
-                        int theDestDatumTransform,
-                        const QgsRectangle& theDestExtent,
-                        int theDestRows, int theDestCols,
-                        double theMaxSrcXRes, double theMaxSrcYRes,
-                        const QgsRectangle& theExtent
-                      );
-
-    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
-                        const QgsCoordinateReferenceSystem& theDestCRS,
-                        const QgsRectangle& theDestExtent,
-                        int theDestRows, int theDestCols,
-                        double theMaxSrcXRes, double theMaxSrcYRes,
-                        const QgsRectangle& theExtent
-                      );
-    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
-                        const QgsCoordinateReferenceSystem& theDestCRS,
-                        double theMaxSrcXRes, double theMaxSrcYRes,
-                        const QgsRectangle& theExtent
-                      );
     QgsRasterProjector();
 
     /** \brief The destructor */
@@ -65,9 +42,6 @@ class QgsRasterProjector : QgsRasterInterface
 
     /** \brief Get destination CRS */
     QgsCoordinateReferenceSystem destinationCrs() const;
-
-    /** \brief set maximum source resolution */
-    void setMaxSrcRes( double theMaxSrcXRes, double theMaxSrcYRes );
 
     Precision precision() const;
     void setPrecision( Precision precision );

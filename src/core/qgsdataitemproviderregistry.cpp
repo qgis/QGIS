@@ -21,6 +21,8 @@
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
 
+typedef QList<QgsDataItemProvider*> dataItemProviders_t();
+
 
 /**
  * \ingroup core
@@ -63,6 +65,17 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
     QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
     if ( !library )
       continue;
+
+    // new / better way of returning data items from providers
+
+    dataItemProviders_t* dataItemProvidersFn = reinterpret_cast< dataItemProviders_t * >( cast_to_fptr( library->resolve( "dataItemProviders" ) ) );
+    if ( dataItemProvidersFn )
+    {
+      // the function is a factory - we keep ownership of the returned providers
+      mProviders << dataItemProvidersFn();
+    }
+
+    // legacy support - using dataItem() and dataCapabilities() methods
 
     dataCapabilities_t * dataCapabilities = reinterpret_cast< dataCapabilities_t * >( cast_to_fptr( library->resolve( "dataCapabilities" ) ) );
     if ( !dataCapabilities )

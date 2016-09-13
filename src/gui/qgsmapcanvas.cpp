@@ -143,6 +143,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent )
 
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
   mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
+  mSettings.setFlag( QgsMapSettings::RenderPartialOutput );
 
   //segmentation parameters
   QSettings settings;

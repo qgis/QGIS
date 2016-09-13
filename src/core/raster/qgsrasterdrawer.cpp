@@ -88,9 +88,19 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
       }
     }
 
+    if ( feedback && feedback->renderPartialOutput() )
+    {
+      // there could have been partial preview written before
+      // so overwrite anything with the resulting image.
+      // (we are guaranteed to have a temporary image for this layer, see QgsMapRendererJob::needTemporaryImage)
+      p->setCompositionMode( QPainter::CompositionMode_Source );
+    }
+
     drawImage( p, viewPort, img, topLeftCol, topLeftRow, theQgsMapToPixel );
 
     delete block;
+
+    p->setCompositionMode( QPainter::CompositionMode_SourceOver );  // go back to the default composition mode
 
     // ok this does not matter much anyway as the tile size quite big so most of the time
     // there would be just one tile for the whole display area, but it won't hurt...

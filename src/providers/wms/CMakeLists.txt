@@ -9,8 +9,10 @@ SET (WMS_SRCS
   qgswmssourceselect.cpp
   qgswmsconnection.cpp
   qgswmsdataitems.cpp
+  qgstilecache.cpp
   qgstilescalewidget.cpp
   qgswmtsdimensions.cpp
+  qgsxyzconnection.cpp
 )
 SET (WMS_MOC_HDRS
   qgswmscapabilities.h

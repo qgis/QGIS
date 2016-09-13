@@ -308,30 +308,54 @@ struct QgsWmtsTheme
   ~QgsWmtsTheme() { delete subTheme; }
 };
 
+struct QgsWmtsTileMatrixLimits;
+
 struct QgsWmtsTileMatrix
 {
   QString identifier;
   QString title, abstract;
   QStringList keywords;
   double scaleDenom;
-  QgsPoint topLeft;
-  int tileWidth;
-  int tileHeight;
-  int matrixWidth;
-  int matrixHeight;
+  QgsPoint topLeft;  //!< top-left corner of the tile matrix in map units
+  int tileWidth;     //!< width of a tile in pixels
+  int tileHeight;    //!< height of a tile in pixels
+  int matrixWidth;   //!< number of tiles horizontally
+  int matrixHeight;  //!< number of tiles vertically
+  double tres;       //!< pixel span in map units
+
+  //! Returns extent of a tile in map coordinates.
+  //! (same function as tileBBox() but returns QRectF instead of QgsRectangle)
+  QRectF tileRect( int col, int row ) const;
+
+  //! Returns extent of a tile in map coordinates
+  //! (same function as tileRect() but returns QgsRectangle instead of QRectF)
+  QgsRectangle tileBBox( int col, int row ) const;
+
+  //! Returns range of tiles that intersects with the view extent
+  //! (tml may be null)
+  void viewExtentIntersection( const QgsRectangle& viewExtent, const QgsWmtsTileMatrixLimits* tml, int& col0, int& row0, int& col1, int& row1 ) const;
+
 };
 
 struct QgsWmtsTileMatrixSet
 {
-  QString identifier;
-  QString title, abstract;
-  QStringList keywords;
-  QString crs;
-  QString wkScaleSet;
+  QString identifier;   //!< tile matrix set identifier
+  QString title;        //!< human readable tile matrix set name
+  QString abstract;     //!< brief description of the tile matrix set
+  QStringList keywords; //!< list of words/phrases to describe the dataset
+  QString crs;          //!< CRS of the tile matrix set
+  QString wkScaleSet;   //!< optional reference to a well-known scale set
+  //! available tile matrixes (key = pixel span in map units)
   QMap<double, QgsWmtsTileMatrix> tileMatrices;
+
+  //! Returns closest tile resolution to the requested one. (resolution = width [map units] / with [pixels])
+  const QgsWmtsTileMatrix* findNearestResolution( double vres ) const;
+
+  //! Return tile matrix for other near resolution from given tres (positive offset = lower resolution tiles)
+  const QgsWmtsTileMatrix* findOtherResolution( double tres, int offset ) const;
 };
 
-enum QgsTileMode { WMTS, WMSC };
+enum QgsTileMode { WMTS, WMSC, XYZ };
 
 struct QgsWmtsTileMatrixLimits
 {
@@ -363,16 +387,22 @@ struct QgsWmtsStyle
   QList<QgsWmtsLegendURL> legendURLs;
 };
 
+/**
+ * In case of multi-dimensional data, the service metadata can describe their multi-
+ * dimensionality and tiles can be requested at specific values in these dimensions.
+ * Examples of dimensions are Time, Elevation and Band.
+ */
 struct QgsWmtsDimension
 {
-  QString identifier;
-  QString title, abstract;
-  QStringList keywords;
-  QString UOM;
-  QString unitSymbol;
-  QString defaultValue;
-  bool current;
-  QStringList values;
+  QString identifier;   //!< name of the dimensional axis
+  QString title;        //!< human readable name
+  QString abstract;     //!< brief description of the dimension
+  QStringList keywords; //!< list of words/phrases to describe the dataset
+  QString UOM;          //!< units of measure of dimensional axis
+  QString unitSymbol;   //!< symbol of the units
+  QString defaultValue; //!< default value to be used if value is not specified in request
+  bool current;         //!< indicates whether temporal data are normally kept current
+  QStringList values;   //!< available values for this dimension
 };
 
 struct QgsWmtsTileLayer
@@ -385,6 +415,7 @@ struct QgsWmtsTileLayer
   QStringList formats;
   QStringList infoFormats;
   QString defaultStyle;
+  //! available dimensions (optional, for multi-dimensional data)
   QHash<QString, QgsWmtsDimension> dimensions;
   QHash<QString, QgsWmtsStyle> styles;
   QHash<QString, QgsWmtsTileMatrixSetLink> setLinks;
@@ -513,7 +544,11 @@ class QgsWmsSettings
 
     //! layer is tiled, tile layer and active matrix set
     bool                    mTiled;
+    //! whether we actually work with XYZ tiles instead of WMS / WMTS
+    bool mXyz;
+    //! chosen values for dimensions in case of multi-dimensional data (key=dim id, value=dim value)
     QHash<QString, QString>  mTileDimensionValues;
+    //! name of the chosen tile matrix set
     QString                 mTileMatrixSetId;
 
     /**
