@@ -476,19 +476,19 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
      *  returns the value un-modified
      * @note added in 3.0
      */
-    static double rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props );
+    static double rescaleUom( double size, QgsSymbolV2::OutputUnit unit, const QgsStringMap& props );
 
     /** Rescales the given point based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
      * @note added in 3.0
      */
-    static QPointF rescaleUom( const QPointF& point, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props );
+    static QPointF rescaleUom( const QPointF& point, QgsSymbolV2::OutputUnit unit, const QgsStringMap& props );
 
     /** Rescales the given array based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
      * @note added in 3.0
      */
-    static QVector<qreal> rescaleUom( const QVector<qreal>& array, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props );
+    static QVector<qreal> rescaleUom( const QVector<qreal>& array, QgsSymbolV2::OutputUnit unit, const QgsStringMap& props );
 
     /**
      * Checks if the properties contain scaleMinDenom and scaleMaxDenom, if available, they are added into the SE Rule element

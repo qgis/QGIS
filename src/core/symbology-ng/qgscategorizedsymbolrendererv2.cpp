@@ -142,7 +142,7 @@ void QgsRendererCategoryV2::toSld( QDomDocument &doc, QDomElement &element, QgsS
   QgsSymbolLayerV2Utils::createFunctionElement( doc, ruleElem, filterFunc );
 
   // add the mix/max scale denoms if we got any from the callers
-  QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, props );
+  QgsSymbolLayerV2Utils::applyScaleDependency( doc, ruleElem, props );
 
   mSymbol->toSld( doc, ruleElem, props );
 }

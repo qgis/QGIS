@@ -700,7 +700,7 @@ void QgsSimpleMarkerSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElemen
 
   double outlineWidth = QgsSymbolLayerV2Utils::rescaleUom( mOutlineWidth, mOutlineWidthUnit, props );
   double size = QgsSymbolLayerV2Utils::rescaleUom( mSize, mSizeUnit, props );
-  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, encodeShape( mShape ), mColor, mBorderColor, mOutlineStyle, outlineWidth, size );
+  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, mName, mColor, mBorderColor, mOutlineStyle, outlineWidth, size );
 
   // <Rotation>
   QString angleFunc;
@@ -2144,7 +2144,6 @@ void QgsFontMarkerSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement 
 
   QString fontPath = QString( "ttf://%1" ).arg( mFontFamily );
   int markIndex = mChr.unicode();
-  QgsSymbolLayerV2Utils::externalMarkerToSld( doc, graphicElem, fontPath, "ttf", &markIndex, mColor, mSize );
   double size = QgsSymbolLayerV2Utils::rescaleUom( mSize, mSizeUnit, props );
   QgsSymbolLayerV2Utils::externalMarkerToSld( doc, graphicElem, fontPath, "ttf", &markIndex, mColor, size );
 

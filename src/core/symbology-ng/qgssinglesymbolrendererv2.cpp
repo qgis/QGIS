@@ -219,7 +219,7 @@ void QgsSingleSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element, 
   nameElem.appendChild( doc.createTextNode( "Single symbol" ) );
   ruleElem.appendChild( nameElem );
 
-  QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, props );
+  QgsSymbolLayerV2Utils::applyScaleDependency( doc, ruleElem, props );
 
   if ( mSymbol.data() ) mSymbol->toSld( doc, ruleElem, props );
 }

@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    test_qgssymbollayer_createsld.py
+    test_qgssymbollayerv2_createsld.py
     ---------------------
     Date                 : July 2016
     Copyright            : (C) 2016 by Andrea Aime
@@ -33,9 +33,9 @@ from qgis.PyQt.QtXml import (
 from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (
-    QgsSimpleMarkerSymbolLayer, QgsUnitTypes, QgsSvgMarkerSymbolLayer,
-    QgsFontMarkerSymbolLayer, QgsEllipseSymbolLayer, QgsSimpleLineSymbolLayer,
-    QgsMarkerLineSymbolLayer, QgsMarkerSymbol, QgsSimpleFillSymbolLayer, QgsSVGFillSymbolLayer,
+    QgsSimpleMarkerSymbolLayerV2, QgsSymbolV2, QgsSvgMarkerSymbolLayerV2,
+    QgsFontMarkerSymbolLayerV2, QgsEllipseSymbolLayerV2, QgsSimpleLineSymbolLayerV2,
+    QgsMarkerLineSymbolLayerV2, QgsMarkerSymbolV2, QgsSimpleFillSymbolLayerV2, QgsSVGFillSymbolLayer,
     QgsLinePatternFillSymbolLayer, QgsPointPatternFillSymbolLayer, QgsVectorLayer)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -45,14 +45,14 @@ from utilities import unitTestDataPath
 start_app()
 
 
-class TestQgsSymbolLayerCreateSld(unittest.TestCase):
+class TestQgsSymbolLayerV2CreateSld(unittest.TestCase):
 
     """
      This class tests the creation of SLD from QGis layers
      """
 
     def testSimpleMarkerRotation(self):
-        symbol = QgsSimpleMarkerSymbolLayer(
+        symbol = QgsSimpleMarkerSymbolLayerV2(
             'star', QColor(255, 0, 0), QColor(0, 255, 0), 10)
         symbol.setAngle(50)
         dom, root = self.symbolToSld(symbol)
@@ -87,7 +87,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertLess(abs(expected - actual), tol)
 
     def testSimpleMarkerUnitDefault(self):
-        symbol = QgsSimpleMarkerSymbolLayer(
+        symbol = QgsSimpleMarkerSymbolLayerV2(
             'star', QColor(255, 0, 0), QColor(0, 255, 0), 10)
         symbol.setOutlineWidth(3)
         symbol.setOffset(QPointF(5, 10))
@@ -110,11 +110,11 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
             expectedWidth, strokeWidth.firstChild().nodeValue())
 
     def testSimpleMarkerUnitPixels(self):
-        symbol = QgsSimpleMarkerSymbolLayer(
+        symbol = QgsSimpleMarkerSymbolLayerV2(
             'star', QColor(255, 0, 0), QColor(0, 255, 0), 10)
         symbol.setOutlineWidth(3)
         symbol.setOffset(QPointF(5, 10))
-        symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
+        symbol.setOutputUnit(QgsSymbolV2.Pixel)
         dom, root = self.symbolToSld(symbol)
         # print("Marker unit mm: " + root.ownerDocument().toString())
 
@@ -126,7 +126,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertStaticDisplacement(root, 5, 10)
 
     def testSvgMarkerUnitDefault(self):
-        symbol = QgsSvgMarkerSymbolLayer('symbols/star.svg', 10, 90)
+        symbol = QgsSvgMarkerSymbolLayerV2('symbols/star.svg', 10, 90)
         symbol.setOffset(QPointF(5, 10))
 
         dom, root = self.symbolToSld(symbol)
@@ -140,9 +140,9 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertStaticDisplacement(root, 18, 36)
 
     def testSvgMarkerUnitPixels(self):
-        symbol = QgsSvgMarkerSymbolLayer('symbols/star.svg', 10, 0)
+        symbol = QgsSvgMarkerSymbolLayerV2('symbols/star.svg', 10, 0)
         symbol.setOffset(QPointF(5, 10))
-        symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
+        symbol.setOutputUnit(QgsSymbolV2.Pixel)
         dom, root = self.symbolToSld(symbol)
         # print("Svg marker unit px: " + dom.toString())
 
@@ -151,7 +151,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertStaticDisplacement(root, 5, 10)
 
     def testFontMarkerUnitDefault(self):
-        symbol = QgsFontMarkerSymbolLayer('sans', ',', 10, QColor('black'), 45)
+        symbol = QgsFontMarkerSymbolLayerV2('sans', ',', 10, QColor('black'), 45)
         symbol.setOffset(QPointF(5, 10))
         dom, root = self.symbolToSld(symbol)
         # print "Font marker unit mm: " + dom.toString()
@@ -162,9 +162,9 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertStaticDisplacement(root, 18, 36)
 
     def testFontMarkerUnitPixel(self):
-        symbol = QgsFontMarkerSymbolLayer('sans', ',', 10, QColor('black'), 45)
+        symbol = QgsFontMarkerSymbolLayerV2('sans', ',', 10, QColor('black'), 45)
         symbol.setOffset(QPointF(5, 10))
-        symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
+        symbol.setOutputUnit(QgsSymbolV2.Pixel)
         dom, root = self.symbolToSld(symbol)
         # print ("Font marker unit mm: " + dom.toString())
 
@@ -175,7 +175,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def createEllipseSymbolLayer(self):
         # No way to build it programmatically...
-        mTestName = 'QgsEllipseSymbolLayer'
+        mTestName = 'QgsEllipseSymbolLayerV2'
         mFilePath = QDir.toNativeSeparators(
             '%s/symbol_layer/%s.sld' % (unitTestDataPath(), mTestName))
 
@@ -184,14 +184,14 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         mFile.open(QIODevice.ReadOnly)
         mDoc.setContent(mFile, True)
         mFile.close()
-        mSymbolLayer = QgsEllipseSymbolLayer.createFromSld(
+        mSymbolLayer = QgsEllipseSymbolLayerV2.createFromSld(
             mDoc.elementsByTagName('PointSymbolizer').item(0).toElement())
         return mSymbolLayer
 
     def testEllipseMarkerUnitDefault(self):
         symbol = self.createEllipseSymbolLayer()
         symbol.setOffset(QPointF(5, 10))
-        symbol.setOutputUnit(QgsUnitTypes.RenderMillimeters)
+        symbol.setOutputUnit(QgsSymbolV2.MM)
         dom, root = self.symbolToSld(symbol)
         # print ("Ellipse marker unit mm: " + dom.toString())
 
@@ -204,7 +204,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
     def testEllipseMarkerUnitPixel(self):
         symbol = self.createEllipseSymbolLayer()
         symbol.setOffset(QPointF(5, 10))
-        symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
+        symbol.setOutputUnit(QgsSymbolV2.Pixel)
         dom, root = self.symbolToSld(symbol)
         # print ("Ellipse marker unit mm: " + dom.toString())
 
@@ -215,7 +215,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertStaticDisplacement(root, 5, 10)
 
     def testSimpleLineUnitDefault(self):
-        symbol = QgsSimpleLineSymbolLayer(QColor("black"), 1)
+        symbol = QgsSimpleLineSymbolLayerV2(QColor("black"), 1)
         symbol.setCustomDashVector([10, 10])
         symbol.setUseCustomDashPattern(True)
         symbol.setOffset(5)
@@ -228,11 +228,11 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertStaticPerpendicularOffset(root, '18')
 
     def testSimpleLineUnitPixel(self):
-        symbol = QgsSimpleLineSymbolLayer(QColor("black"), 1)
+        symbol = QgsSimpleLineSymbolLayerV2(QColor("black"), 1)
         symbol.setCustomDashVector([10, 10])
         symbol.setUseCustomDashPattern(True)
         symbol.setOffset(5)
-        symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
+        symbol.setOutputUnit(QgsSymbolV2.Pixel)
         dom, root = self.symbolToSld(symbol)
 
         # print ("Simple line px: \n" + dom.toString())
@@ -242,9 +242,9 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertStaticPerpendicularOffset(root, '5')
 
     def testMarkLineUnitDefault(self):
-        symbol = QgsMarkerLineSymbolLayer()
+        symbol = QgsMarkerLineSymbolLayerV2()
         symbol.setSubSymbol(
-            QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3'}))
+            QgsMarkerSymbolV2.createSimple({'color': '#ffffff', 'size': '3'}))
         symbol.setInterval(5)
         symbol.setOffset(5)
         dom, root = self.symbolToSld(symbol)
@@ -258,12 +258,12 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertStaticPerpendicularOffset(root, '18')
 
     def testMarkLineUnitPixels(self):
-        symbol = QgsMarkerLineSymbolLayer()
+        symbol = QgsMarkerLineSymbolLayerV2()
         symbol.setSubSymbol(
-            QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3'}))
+            QgsMarkerSymbolV2.createSimple({'color': '#ffffff', 'size': '3'}))
         symbol.setInterval(5)
         symbol.setOffset(5)
-        symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
+        symbol.setOutputUnit(QgsSymbolV2.Pixel)
         dom, root = self.symbolToSld(symbol)
 
         # print ("Mark line px: \n" + dom.toString())
@@ -275,7 +275,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertStaticPerpendicularOffset(root, '5')
 
     def testSimpleFillDefault(self):
-        symbol = QgsSimpleFillSymbolLayer(
+        symbol = QgsSimpleFillSymbolLayerV2(
             QColor('red'), Qt.SolidPattern, QColor('green'), Qt.SolidLine, 5)
         symbol.setOffset(QPointF(5, 10))
 
@@ -287,10 +287,10 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertStaticDisplacement(root, 18, 36)
 
     def testSimpleFillPixels(self):
-        symbol = QgsSimpleFillSymbolLayer(
+        symbol = QgsSimpleFillSymbolLayerV2(
             QColor('red'), Qt.SolidPattern, QColor('green'), Qt.SolidLine, 5)
         symbol.setOffset(QPointF(5, 10))
-        symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
+        symbol.setOutputUnit(QgsSymbolV2.Pixel)
 
         dom, root = self.symbolToSld(symbol)
         # print ( "Simple fill px: \n" + dom.toString())
@@ -315,7 +315,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
     def testSvgFillPixel(self):
         symbol = QgsSVGFillSymbolLayer('test/star.svg', 10, 45)
         symbol.setSvgOutlineWidth(3)
-        symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
+        symbol.setOutputUnit(QgsSymbolV2.Pixel)
 
         dom, root = self.symbolToSld(symbol)
         # print ("Svg fill px: \n" + dom.toString())
@@ -346,7 +346,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         symbol.setLineAngle(45)
         symbol.setLineWidth(1)
         symbol.setOffset(5)
-        symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
+        symbol.setOutputUnit(QgsSymbolV2.Pixel)
 
         dom, root = self.symbolToSld(symbol)
         # print ("Line fill px: \n" + dom.toString())
@@ -365,7 +365,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
     def testPointFillpixels(self):
         symbol = QgsPointPatternFillSymbolLayer()
-        symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
+        symbol.setOutputUnit(QgsSymbolV2.Pixel)
         dom, root = self.symbolToSld(symbol)
         # print ("Point fill px: \n" + dom.toString())
 
