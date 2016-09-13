@@ -82,7 +82,6 @@ class CORE_EXPORT QgsSymbol
 
     enum RenderHint
     {
-      DataDefinedSizeScale = 1,
       DataDefinedRotation = 2
     };
 

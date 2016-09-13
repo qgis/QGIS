@@ -41,7 +41,6 @@ class QgsSymbol
 
     enum RenderHint
     {
-      DataDefinedSizeScale,
       DataDefinedRotation
     };
 

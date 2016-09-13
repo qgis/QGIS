@@ -950,6 +950,7 @@ and renamed to RenderUnit. QgsSymbol::OutputUnitList was renamed to QgsUnitTypes
 parameters or QgsSymbol::OutputUnitList parameters now take QgsUnitTypes::RenderUnit or QgsUnitTypes::RenderUnitList parameters respectively.</li>
 <li>startRender() now accepts a QgsFields reference, not a pointer.</li>
 <li>isSymbolLayerCompatible() was removed. Use QgsSymbolLayer::isCompatibleWithSymbol() instead.</li>
+<li>The DataDefinedSizeScale flag has been removed. This is no longer used and data defined scaling on a symbol layer level should be used instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsSymbolLayer QgsSymbolLayer (renamed from QgsSymbolLayerV2)
