@@ -28,7 +28,7 @@
  * or diabled but when disabled it shouldn't lose it's information for the case
  * it gets re-enabled later on and a user shoulnd't be force to redo the configuration.
  *
- * Added in QGIS 2.17
+ * @note Added in QGIS 2.18
  */
 
 class CORE_EXPORT QgsOptionalExpression : public QgsOptional<QgsExpression>
