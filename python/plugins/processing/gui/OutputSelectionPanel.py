@@ -82,14 +82,14 @@ class OutputSelectionPanel(BASE, WIDGET):
 
             if isinstance(self.output, OutputVector) \
                     and self.alg.provider.supportsNonFileBasedOutput():
-                # use memory layers for temporary files if supported
-                actionSaveToTempFile = QAction(
+                # use memory layers for temporary layers if supported
+                actionSaveToTemp = QAction(
                     self.tr('Create temporary layer'), self.btnSelect)
             else:
-                actionSaveToTempFile = QAction(
+                actionSaveToTemp = QAction(
                     self.tr('Save to a temporary file'), self.btnSelect)
-            actionSaveToTempFile.triggered.connect(self.saveToTemporaryFile)
-            popupMenu.addAction(actionSaveToTempFile)
+            actionSaveToTemp.triggered.connect(self.saveToTemporary)
+            popupMenu.addAction(actionSaveToTemp)
 
             actionSaveToFile = QAction(
                 self.tr('Save to file...'), self.btnSelect)
@@ -120,22 +120,13 @@ class OutputSelectionPanel(BASE, WIDGET):
             popupMenu.exec_(QCursor.pos())
 
     def showExpressionsBuilder(self):
-        dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, 'generic', self.expressionContext())
+        dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, 'generic', 
+                                         self.output.expressionContext(self.alg))
         dlg.setWindowTitle(self.tr('Expression based output'))
         if dlg.exec_() == QDialog.Accepted:
             self.leText.setText(dlg.expressionText())
 
-    def expressionContext(self):
-        context = QgsExpressionContext()
-        context.appendScope(QgsExpressionContextUtils.globalScope())
-        context.appendScope(QgsExpressionContextUtils.projectScope())
-        processingScope = QgsExpressionContextScope()
-        for param in self.alg.parameters:
-            processingScope.setVariable('%s_value' % param.name, '')
-        context.appendScope(processingScope)
-        return context
-
-    def saveToTemporaryFile(self):
+    def saveToTemporary(self):
         self.leText.setText('')
 
     def saveToPostGIS(self):
@@ -236,32 +227,5 @@ class OutputSelectionPanel(BASE, WIDGET):
         self.leText.setText(dirName)
 
     def getValue(self):
-        fileName = unicode(self.leText.text())
-        context = self.expressionContext()
-        exp = QgsExpression(fileName)
-        if not exp.hasParserError():
-            result = exp.evaluate(context)
-            if not exp.hasEvalError():
-                fileName = result
-                if fileName.startswith("[") and fileName.endswith("]"):
-                    fileName = fileName[1:-1]
-        if fileName.strip() in ['', self.SAVE_TO_TEMP_FILE, self.SAVE_TO_TEMP_LAYER]:
-            if isinstance(self.output, OutputVector) \
-                    and self.alg.provider.supportsNonFileBasedOutput():
-                # use memory layers for temporary files if supported
-                value = 'memory:'
-            else:
-                value = None
-        elif fileName.startswith('memory:'):
-            value = fileName
-        elif fileName.startswith('postgis:'):
-            value = fileName
-        elif fileName.startswith('spatialite:'):
-            value = fileName
-        elif not os.path.isabs(fileName):
-            value = ProcessingConfig.getSetting(
-                ProcessingConfig.OUTPUT_FOLDER) + os.sep + fileName
-        else:
-            value = fileName
-
-        return value
+        return self.leText.text()
+        

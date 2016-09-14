@@ -195,10 +195,8 @@ class GeoAlgorithm:
         self.model = model
         try:
             self.setOutputCRS()
-            self.resolveTemporaryOutputs()
-            self.resolveDataObjects()
+            self.resolveOutputs()
             self.evaluateParameterValues()
-            self.checkOutputFileExtensions()
             self.runPreExecutionScript(progress)
             self.processAlgorithm(progress)
             progress.setPercentage(100)
@@ -326,51 +324,24 @@ class GeoAlgorithm:
                 return name
         return 'GTiff'
 
-    def checkOutputFileExtensions(self):
-        """Checks if the values of outputs are correct and have one of
-        the supported output extensions.
-
-        If not, it adds the first one of the supported extensions, which
-        is assumed to be the default one.
-        """
-        for out in self.outputs:
-            if not out.hidden and out.value is not None:
-                if not os.path.isabs(out.value):
-                    continue
-                if isinstance(out, OutputRaster):
-                    exts = dataobjects.getSupportedOutputRasterLayerExtensions()
-                elif isinstance(out, OutputVector):
-                    exts = dataobjects.getSupportedOutputVectorLayerExtensions()
-                elif isinstance(out, OutputTable):
-                    exts = dataobjects.getSupportedOutputTableExtensions()
-                elif isinstance(out, OutputHTML):
-                    exts = ['html', 'htm']
-                else:
-                    continue
-                idx = out.value.rfind('.')
-                if idx == -1:
-                    out.value = out.value + '.' + exts[0]
-                else:
-                    ext = out.value[idx + 1:]
-                    if ext not in exts + ['dbf']:
-                        out.value = out.value + '.' + exts[0]
-
-
     def evaluateParameterValues(self):
         for param in self.parameters:
             try:
                 param.evaluate(self)
             except ValueError, e:
+                traceback.print_exc()
                 raise GeoAlgorithmExecutionException(str(e))
             
-    def resolveTemporaryOutputs(self):
+    def resolveOutputs(self):
         """Sets temporary outputs (output.value = None) with a
-        temporary file instead.
+        temporary file instead. Resolves expressions as well.
         """
-        for out in self.outputs:
-            if not out.hidden and out.value is None:
-                setTempOutput(out, self)
-
+        try:
+            for out in self.outputs:
+                out.resolveValue(self)
+        except ValueError, e:
+            raise GeoAlgorithmExecutionException(str(e))
+        
     def setOutputCRS(self):
         layers = dataobjects.getAllLayers()
         for param in self.parameters:
