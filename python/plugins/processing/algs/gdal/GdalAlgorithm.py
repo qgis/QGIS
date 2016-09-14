@@ -60,9 +60,9 @@ class GdalAlgorithm(GeoAlgorithm):
                     c = c.replace(layer.source(), exported)
                     if os.path.isfile(layer.source()):
                         fileName = os.path.splitext(os.path.split(layer.source())[1])[0]
-                        c = re.sub('[\s]{}[\s]'.format(fileName),  ' ' + exportedFileName + ' ', c)
-                        c = re.sub('[\s]{}'.format(fileName),  ' ' + exportedFileName, c)
-                        c = re.sub('["\']{}["\']'.format(fileName),  "'" + exportedFileName + "'", c)
+                        c = re.sub('[\s]{}[\s]'.format(fileName), ' ' + exportedFileName + ' ', c)
+                        c = re.sub('[\s]{}'.format(fileName), ' ' + exportedFileName, c)
+                        c = re.sub('["\']{}["\']'.format(fileName), "'" + exportedFileName + "'", c)
 
             commands[i] = c
         GdalUtils.runGdal(commands, progress)
