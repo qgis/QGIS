@@ -505,7 +505,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
 static bool _fuzzyContainsRect( const QRectF& r1, const QRectF& r2 )
 {
   double significantDigits = log10( qMax( r1.width(), r1.height() ) );
-  double epsilon = pow( 10, ( significantDigits - 5 ) ); // floats have 6-9 significant digits
+  double epsilon = pow( 10.0, significantDigits - 5 ); // floats have 6-9 significant digits
   return r1.contains( r2.adjusted( epsilon, epsilon, -epsilon, -epsilon ) );
 }
 
@@ -1188,10 +1188,8 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri )
     QgsWmtsTileMatrix tm;
     tm.identifier = QString::number( zoom );
     tm.topLeft = topLeft;
-    tm.tileWidth = 256;
-    tm.tileHeight = 256;
-    tm.matrixWidth = pow( 2, zoom );
-    tm.matrixHeight = pow( 2, zoom );
+    tm.tileWidth = tm.tileHeight = 256;
+    tm.matrixWidth = tm.matrixHeight = 1 << zoom;
     tm.tres = xspan / ( tm.tileWidth * tm.matrixWidth );
 
     mCaps.mTileMatrixSets[tms.identifier].tileMatrices[tm.tres] = tm;
