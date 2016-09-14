@@ -608,6 +608,8 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
     , mMapCanvas( mapCanvas )
 {
   setupUi( this );
+  layout()->setMargin( 0 );
+  layout()->setContentsMargins( 0, 0, 0, 0 );
 
   editFilter->setText( mRule->filterExpression() );
   editFilter->setToolTip( mRule->filterExpression() );
