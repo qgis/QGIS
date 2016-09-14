@@ -69,6 +69,7 @@ QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWeb
   page()->setLinkDelegationPolicy( QWebPage::DontDelegateLinks );
   settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
   settings()->setAttribute( QWebSettings::JavascriptCanOpenWindows, true );
+  settings()->setAttribute( QWebSettings::PluginsEnabled, true );
 #ifdef QGISDEBUG
   settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
 #endif
@@ -109,6 +110,7 @@ QgsWebView *QgsIdentifyResultsWebView::createWindow( QWebPage::WebWindowType typ
   wv->page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
   wv->settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
   wv->settings()->setAttribute( QWebSettings::JavascriptCanOpenWindows, true );
+  settings()->setAttribute( QWebSettings::PluginsEnabled, true );
 #ifdef QGISDEBUG
   wv->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
 #endif
