@@ -15,12 +15,15 @@
  ***************************************************************************/
 
 /**
- * \ingroup core
+ * An expression with an additional enabled flag.
  *
- * QgsOptionalExpression is a container for an expression with an additional enabled/disabled flag.
+ * This can be used for configuration options where an expression can be enabled
+ * or diabled but when disabled it shouldn't lose it's information for the case
+ * it gets re-enabled later on and a user shouldn't be force to redo the configuration.
  *
  * @note Added in QGIS 3.0
  */
+
 class QgsOptionalExpression
 {
 %TypeHeaderCode
@@ -28,30 +31,39 @@ class QgsOptionalExpression
 %End
   public:
     /**
-     * A QgsOptionalExpression is disabled by default if default constructed.
+     * Construct a default optional expression.
+     * It will be disabled and with an empty expression.
      */
     QgsOptionalExpression();
 
     /**
-     * A QgsOptionalExpression is enabled by default if constructed with an expression.
+     * Construct an optional expression with the provided expression.
+     * It will be enabled.
      */
-    QgsOptionalExpression( const QgsExpression& data );
+    QgsOptionalExpression( const QgsExpression& expression );
 
     /**
-     * A QgsOptionalExptression constructed with enabled status and data
+     * Construct an optional expression with the provided expression and enabled state.
      */
-    QgsOptionalExpression( const QgsExpression& data, bool enabled );
+    QgsOptionalExpression( const QgsExpression& expression, bool enabled );
 
     /**
-     * Compare this QgsOptionalExptression to another one.
+     * Compare this QgsOptionalExpression to another one.
      *
      * This will compare the enabled flag and call the == operator
      * of the contained class.
      *
      * @note Added in QGIS 3.0
      */
-    bool operator== ( const QgsOptionalExpression& other ) const;
-    operator bool () const;
+    int operator== ( const QgsOptionalExpression& other ) const;
+%MethodCode
+      sipRes = *sipCpp == *a0;
+%End
+
+    int __bool__() const;
+%MethodCode
+      sipRes = sipCpp->enabled();
+%End
 
     /**
      * Check if this optional is enabled
@@ -89,12 +101,12 @@ class QgsOptionalExpression
      *
      * @note Added in QGIS 2.18
      */
-    void writeXml(QDomElement& parent );
+    void writeXml( QDomElement& element );
 
     /**
      * Read the optional expression from the provided QDomElement.
      *
      * @note Added in QGIS 2.18
      */
-    void readXml(const QDomElement& parent );
+    void readXml( const QDomElement& element );
 };

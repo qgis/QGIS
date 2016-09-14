@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsoptionalexpression - %{Cpp:License:ClassName}
+  qgsoptionalexpression.h - QgsOptionalExpression
 
  ---------------------
  begin                : 8.9.2016
@@ -26,7 +26,7 @@
  *
  * This can be used for configuration options where an expression can be enabled
  * or diabled but when disabled it shouldn't lose it's information for the case
- * it gets re-enabled later on and a user shoulnd't be force to redo the configuration.
+ * it gets re-enabled later on and a user shouldn't be force to redo the configuration.
  *
  * @note Added in QGIS 2.18
  */
@@ -68,5 +68,9 @@ class CORE_EXPORT QgsOptionalExpression : public QgsOptional<QgsExpression>
      */
     void readXml( const QDomElement& element );
 };
+
+#if defined(Q_OS_WIN)
+template CORE_EXPORT QgsOptional<QgsExpression>;
+#endif
 
 #endif // QGSOPTIONALEXPRESSION_H
