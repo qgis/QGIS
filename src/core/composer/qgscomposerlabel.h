@@ -74,12 +74,6 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
      */
     void setVAlign( Qt::AlignmentFlag a ) { mVAlignment = a; }
 
-    /** Returns the margin between the edge of the frame and the label contents
-     * @returns margin in mm
-     * @deprecated use marginX and marginY instead
-     */
-    Q_DECL_DEPRECATED double margin() { return mMarginX; }
-
     /** Returns the horizontal margin between the edge of the frame and the label
      * contents.
      * @returns horizontal margin in mm

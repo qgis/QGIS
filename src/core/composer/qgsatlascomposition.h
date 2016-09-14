@@ -254,49 +254,6 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     /** Recalculates the bounds of an atlas driven map */
     void prepareMap( QgsComposerMap* map );
 
-
-    //deprecated methods
-
-    /** Returns the map used by the atlas
-     * @deprecated Use QgsComposerMap::atlasDriven() instead
-     */
-    Q_DECL_DEPRECATED QgsComposerMap* composerMap() const;
-
-    /** Sets the map used by the atlas
-     * @deprecated Use QgsComposerMap::setAtlasDriven( true ) instead
-     */
-    Q_DECL_DEPRECATED void setComposerMap( QgsComposerMap* map );
-
-    /** Returns whether the atlas map uses a fixed scale
-     * @deprecated since 2.4 Use QgsComposerMap::atlasScalingMode() instead
-     */
-    Q_DECL_DEPRECATED bool fixedScale() const;
-
-    /** Sets whether the atlas map should use a fixed scale
-     * @deprecated since 2.4 Use QgsComposerMap::setAtlasScalingMode() instead
-     */
-    Q_DECL_DEPRECATED void setFixedScale( bool fixed );
-
-    /** Returns the margin for the atlas map
-     * @deprecated Use QgsComposerMap::atlasMargin() instead
-     */
-    Q_DECL_DEPRECATED float margin() const;
-
-    /** Sets the margin for the atlas map
-     * @deprecated Use QgsComposerMap::setAtlasMargin( double ) instead
-     */
-    Q_DECL_DEPRECATED void setMargin( float margin );
-
-    //! @deprecated use sortKeyAttributeName instead
-    Q_DECL_DEPRECATED int sortKeyAttributeIndex() const;
-    //! @deprecated use setSortKeyAttributeName instead
-    Q_DECL_DEPRECATED void setSortKeyAttributeIndex( int idx );
-
-    /** Returns the current atlas feature. Must be called after prepareForFeature( i ).
-     * @deprecated use feature() instead
-     */
-    Q_DECL_DEPRECATED QgsFeature* currentFeature() { return &mCurrentFeature; }
-
     /** Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS) */
     QgsGeometry currentGeometry( const QgsCoordinateReferenceSystem& projectedTo = QgsCoordinateReferenceSystem() ) const;
 

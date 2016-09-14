@@ -21,4 +21,9 @@ be updated so that any expressions in use have the following changes:
 <li>$numfeatures has been replaced by \@atlas_totalfeatures</li>
 </ul>
 
+\section qgis3_user_changes_composer Composer
+
+Very old projects containing composer attribute tables will not restore the attribute
+tables when loaded into QGIS 3.0. These tables must be manually readded to the compositions.
+
 */

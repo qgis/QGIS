@@ -83,10 +83,6 @@ void QgsComposerPicture::init()
   //data defined strings
   mDataDefinedNames.insert( QgsComposerObject::PictureSource, QString( "dataDefinedSource" ) );
 
-  //insert PictureSource data defined property (only required due to deprecated API elements,
-  //remove after 3.0
-  setDataDefinedProperty( QgsComposerObject::PictureSource, false, true, QString(), QString() );
-
   //connect some signals
 
   //connect to atlas feature changing
@@ -301,11 +297,6 @@ QRect QgsComposerPicture::clippedImageRect( double &boundRectWidthMM, double &bo
   return QRect( leftClip, topClip, boundRectWidthPixels, boundRectHeightPixels );
 }
 
-void QgsComposerPicture::setPictureFile( const QString& path )
-{
-  setPicturePath( path );
-}
-
 void QgsComposerPicture::refreshPicture( const QgsExpressionContext *context )
 {
   QgsExpressionContext scopedContext = createExpressionContext();
@@ -316,7 +307,8 @@ void QgsComposerPicture::refreshPicture( const QgsExpressionContext *context )
   //data defined source set?
   mHasExpressionError = false;
   QVariant exprVal;
-  if ( dataDefinedProperty( QgsComposerObject::PictureSource )->isActive() )
+  if ( dataDefinedProperty( QgsComposerObject::PictureSource ) &&
+       dataDefinedProperty( QgsComposerObject::PictureSource )->isActive() )
   {
     if ( dataDefinedEvaluate( QgsComposerObject::PictureSource, exprVal, *evalContext ) )
     {
@@ -596,12 +588,6 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
   }
 }
 
-void QgsComposerPicture::setRotation( double r )
-{
-  //kept for compatibility for QGIS2.0 api
-  setPictureRotation( r );
-}
-
 void QgsComposerPicture::setPictureRotation( double r )
 {
   double oldRotation = mPictureRotation;
@@ -697,23 +683,6 @@ void QgsComposerPicture::refreshDataDefinedProperty( const QgsComposerObject::Da
   }
 
   QgsComposerItem::refreshDataDefinedProperty( property, evalContext );
-}
-
-void QgsComposerPicture::setUsePictureExpression( bool useExpression )
-{
-  dataDefinedProperty( QgsComposerObject::PictureSource )->setActive( useExpression );
-  refreshPicture();
-}
-
-void QgsComposerPicture::setPictureExpression( const QString& expression )
-{
-  dataDefinedProperty( QgsComposerObject::PictureSource )->setExpressionString( expression );
-  refreshPicture();
-}
-
-QString QgsComposerPicture::pictureFile() const
-{
-  return picturePath();
 }
 
 void QgsComposerPicture::setPicturePath( const QString &path )
@@ -875,38 +844,4 @@ void QgsComposerPicture::setSvgBorderWidth( double width )
 {
   mSvgBorderWidth = width;
   refreshPicture();
-}
-
-bool QgsComposerPicture::usePictureExpression() const
-{
-  return dataDefinedProperty( QgsComposerObject::PictureSource )->isActive();
-}
-
-QString QgsComposerPicture::pictureExpression() const
-{
-  return dataDefinedProperty( QgsComposerObject::PictureSource )->expressionString();
-}
-
-bool QgsComposerPicture::imageSizeConsideringRotation( double& width, double& height ) const
-{
-  //kept for api compatibility with QGIS 2.0 - use mPictureRotation
-  Q_NOWARN_DEPRECATED_PUSH
-  return QgsComposerItem::imageSizeConsideringRotation( width, height, mPictureRotation );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-bool QgsComposerPicture::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const
-{
-  //kept for api compatibility with QGIS 2.0 - use mPictureRotation
-  Q_NOWARN_DEPRECATED_PUSH
-  return QgsComposerItem::cornerPointOnRotatedAndScaledRect( x, y, width, height, mPictureRotation );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-void QgsComposerPicture::sizeChangedByRotation( double& width, double& height )
-{
-  //kept for api compatibility with QGIS 2.0 - use mPictureRotation
-  Q_NOWARN_DEPRECATED_PUSH
-  return QgsComposerItem::sizeChangedByRotation( width, height, mPictureRotation );
-  Q_NOWARN_DEPRECATED_POP
 }

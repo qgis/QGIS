@@ -177,8 +177,6 @@
 %Include composer/qgsaddremovemultiframecommand.sip
 %Include composer/qgsatlascomposition.sip
 %Include composer/qgscomposerarrow.sip
-%Include composer/qgscomposerattributetable.sip
-%Include composer/qgscomposerattributetablemodel.sip
 %Include composer/qgscomposerattributetablemodelv2.sip
 %Include composer/qgscomposerattributetablev2.sip
 %Include composer/qgscomposereffect.sip
@@ -205,7 +203,6 @@
 %Include composer/qgscomposernodesitem.sip
 %Include composer/qgscomposerpolygon.sip
 %Include composer/qgscomposerpolyline.sip
-%Include composer/qgscomposertable.sip
 %Include composer/qgscomposertablecolumn.sip
 %Include composer/qgscomposertablev2.sip
 %Include composer/qgscomposertexttable.sip

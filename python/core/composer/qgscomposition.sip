@@ -232,38 +232,6 @@ class QgsComposition : QGraphicsScene
     void setGridStyle( const GridStyle s );
     GridStyle gridStyle() const;
 
-    /** Sets the snap tolerance to use when automatically snapping items during movement and resizing to the
-     * composition grid.
-     * @param tolerance snap tolerance in pixels
-     * @see snapGridTolerance
-     * @deprecated Use setSnapTolerance instead
-     */
-    void setSnapGridTolerance( const double tolerance ) /Deprecated/;
-
-    /** Returns the snap tolerance to use when automatically snapping items during movement and resizing to the
-     * composition grid.
-     * @returns snap tolerance in pixels
-     * @see setSnapGridTolerance
-     * @deprecated Use snapTolerance instead
-     */
-    double snapGridTolerance() const /Deprecated/;
-
-    /** Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
-     * and the edges and centers of other items.
-     * @param t snap tolerance in pixels
-     * @see alignmentSnapTolerance
-     * @deprecated Use setSnapTolerance instead
-     */
-    void setAlignmentSnapTolerance( double t ) /Deprecated/;
-
-    /** Returns the snap tolerance to use when automatically snapping items during movement and resizing to guides
-     * and the edges and centers of other items.
-     * @returns snap tolerance in pixels
-     * @see setAlignmentSnapTolerance
-     * @deprecated Use snapTolerance instead
-     */
-    double alignmentSnapTolerance() const /Deprecated/;
-
     /** Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
      * and the edges and centers of other items.
      * @param snapTolerance snap tolerance in pixels
@@ -350,14 +318,6 @@ class QgsComposition : QGraphicsScene
      */
     const QgsComposerMap* getComposerMapById( const int id ) const;
 
-    /** Returns the composer html with specified id (a string as named in the
-     * composer user interface item properties).
-     * @param item the item.
-     * @return QgsComposerHtml pointer or 0 pointer if no such item exists.
-     * @deprecated Use QgsComposerFrame::multiFrame() instead
-     */
-    const QgsComposerHtml* getComposerHtmlByItem( QgsComposerItem *item ) const /Deprecated/;
-
     /** Returns a composer item given its text identifier.
      *  Ids are not necessarely unique, but this function returns only one element.
      * @param theId - A QString representing the identifier of the item to retrieve.
@@ -417,17 +377,6 @@ class QgsComposition : QGraphicsScene
 
     QgsComposition::PlotStyle plotStyle() const;
     void setPlotStyle( const QgsComposition::PlotStyle style );
-
-    /** Returns the mm font size for a font that has point size set.
-     * Each item that sets a font should call this function before drawing text
-     * @deprecated use QgsComposerUtils::pointsToMM instead
-     */
-    int pixelFontSize( double pointSize ) const /Deprecated/;
-
-    /** Does the inverse calculation and returns points for mm
-     * @deprecated use QgsComposerUtils::mmToPoints instead
-     */
-    double pointFontSize( int pixelSize ) const /Deprecated/;
 
     /** Writes settings to xml (paper dimension)*/
     bool writeXml( QDomElement& composerElem, QDomDocument& doc );
@@ -512,12 +461,6 @@ class QgsComposition : QGraphicsScene
      */
     QList<QgsComposerItem*> ungroupItems( QgsComposerItemGroup* group );
 
-    /** Sorts the zList. The only time where this function needs to be called is from QgsComposer
-     * after reading all the items from xml file
-     * @deprecated use refreshZList instead
-     */
-    void sortZList() /Deprecated/;
-
     /** Rebuilds the z order list by adding any item which are present in the composition
      * but missing from the z order list.
      */
@@ -583,8 +526,6 @@ class QgsComposition : QGraphicsScene
     void addComposerPolygon( QgsComposerPolygon* polygon );
     /** Adds a composer polyline and advises composer to create a widget for it (through signal)*/
     void addComposerPolyline( QgsComposerPolyline* polyline );
-    /** Adds a composer table to the graphics scene and advises composer to create a widget for it (through signal)*/
-    void addComposerTable( QgsComposerAttributeTable* table );
     /** Adds composer html frame and advises composer to create a widget for it (through signal)*/
     void addComposerHtmlFrame( QgsComposerHtml* html /Transfer/, QgsComposerFrame* frame /Transfer/);
     /** Adds composer tablev2 frame and advises composer to create a widget for it (through signal)*/
@@ -702,16 +643,6 @@ class QgsComposition : QGraphicsScene
     void computeWorldFileParameters( const QRectF& exportRegion, double& a, double& b, double& c, double& d, double& e, double& f ) const;
 
     QgsAtlasComposition& atlasComposition();
-
-    /** Resizes a QRectF relative to the change from boundsBefore to boundsAfter
-     * @deprecated use QgsComposerUtils::relativeResizeRect instead
-     */
-    static void relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter ) /Deprecated/;
-
-    /** Returns a scaled position given a before and after range
-     * @deprecated use QgsComposerUtils::relativePosition instead
-     */
-    static double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax ) /Deprecated/;
 
     /** Returns the current atlas mode of the composition
      * @returns current atlas mode
@@ -882,8 +813,6 @@ class QgsComposition : QGraphicsScene
     void composerPictureAdded( QgsComposerPicture* picture );
     /** Is emitted when a new composer shape has been added*/
     void composerShapeAdded( QgsComposerShape* shape );
-    /** Is emitted when a new composer table has been added*/
-    void composerTableAdded( QgsComposerAttributeTable* table );
     /** Is emitted when a new composer table frame has been added to the view*/
     void composerTableFrameAdded( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame );
     /** Is emitted when a composer item has been removed from the scene*/

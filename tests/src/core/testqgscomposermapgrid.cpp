@@ -128,9 +128,9 @@ void TestQgsComposerMapGrid::grid()
 
   mComposerMap->grid()->setAnnotationEnabled( true );
   mComposerMap->grid()->setGridLineColor( QColor( 0, 255, 0 ) );
-  mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::Disabled, QgsComposerMapGrid::Left );
+  mComposerMap->grid()->setAnnotationDisplay( QgsComposerMapGrid::HideAll, QgsComposerMapGrid::Left );
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, QgsComposerMapGrid::Right );
-  mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::Disabled, QgsComposerMapGrid::Top );
+  mComposerMap->grid()->setAnnotationDisplay( QgsComposerMapGrid::HideAll, QgsComposerMapGrid::Top );
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, QgsComposerMapGrid::Bottom );
   mComposerMap->grid()->setAnnotationDirection( QgsComposerMapGrid::Horizontal, QgsComposerMapGrid::Right );
   mComposerMap->grid()->setAnnotationDirection( QgsComposerMapGrid::Horizontal, QgsComposerMapGrid::Bottom );

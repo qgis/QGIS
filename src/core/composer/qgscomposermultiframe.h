@@ -91,19 +91,12 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     virtual QSizeF minFrameSize( const int frameIndex = -1 ) const { Q_UNUSED( frameIndex ); return QSizeF( 0, 0 ); }
 
     /** Renders a portion of the multiframe's content into a painter.
-     * @param p destination painter
-     * @param renderExtent visible extent of content to render into the painter.
-     * @deprecated use render( QPainter* painter, const QRectF& renderExtent, const int frameIndex ) instead
-     */
-    Q_DECL_DEPRECATED virtual void render( QPainter* p, const QRectF& renderExtent );
-
-    /** Renders a portion of the multiframe's content into a painter.
      * @param painter destination painter
      * @param renderExtent visible extent of content to render into the painter.
      * @param frameIndex frame number for content
      * @note added in version 2.5
      */
-    virtual void render( QPainter* painter, const QRectF& renderExtent, const int frameIndex );
+    virtual void render( QPainter* painter, const QRectF& renderExtent, const int frameIndex ) = 0;
 
     /** Adds a frame to the multiframe.
      * @param frame frame to add

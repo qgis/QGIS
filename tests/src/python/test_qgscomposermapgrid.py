@@ -63,9 +63,9 @@ class TestQgsComposerMap(unittest.TestCase):
         self.mComposerMap.grid().setGridLineWidth(0.5)
         self.mComposerMap.grid().setAnnotationFont(QgsFontUtils.getStandardTestFont())
         self.mComposerMap.grid().setAnnotationPrecision(0)
-        self.mComposerMap.grid().setAnnotationPosition(QgsComposerMapGrid.Disabled, QgsComposerMapGrid.Left)
+        self.mComposerMap.grid().setAnnotationDisplay(QgsComposerMapGrid.HideAll, QgsComposerMapGrid.Left)
         self.mComposerMap.grid().setAnnotationPosition(QgsComposerMapGrid.OutsideMapFrame, QgsComposerMapGrid.Right)
-        self.mComposerMap.grid().setAnnotationPosition(QgsComposerMapGrid.Disabled, QgsComposerMapGrid.Top)
+        self.mComposerMap.grid().setAnnotationDisplay(QgsComposerMapGrid.HideAll, QgsComposerMapGrid.Top)
         self.mComposerMap.grid().setAnnotationPosition(QgsComposerMapGrid.OutsideMapFrame, QgsComposerMapGrid.Bottom)
         self.mComposerMap.grid().setAnnotationDirection(QgsComposerMapGrid.Horizontal, QgsComposerMapGrid.Right)
         self.mComposerMap.grid().setAnnotationDirection(QgsComposerMapGrid.Horizontal, QgsComposerMapGrid.Bottom)
@@ -76,8 +76,8 @@ class TestQgsComposerMap(unittest.TestCase):
         checker = QgsCompositionChecker('composermap_grid', self.mComposition)
         checker.setControlPathPrefix("composer_mapgrid")
         myTestResult, myMessage = checker.testComposition()
-        self.mComposerMap.setGridEnabled(False)
-        self.mComposerMap.setShowGridAnnotation(False)
+        self.mComposerMap.grid().setEnabled(False)
+        self.mComposerMap.grid().setAnnotationEnabled(False)
 
         assert myTestResult, myMessage
 
@@ -152,7 +152,7 @@ class TestQgsComposerMap(unittest.TestCase):
         assert myTestResult, myMessage
 
     def testZebraStyle(self):
-        self.mComposerMap.setGridFrameStyle(QgsComposerMap.Zebra)
+        self.mComposerMap.grid().setFrameStyle(QgsComposerMapGrid.Zebra)
         myRectangle = QgsRectangle(785462.375, 3341423.125,
                                    789262.375, 3343323.125)
         self.mComposerMap.setNewExtent(myRectangle)
@@ -177,7 +177,7 @@ class TestQgsComposerMap(unittest.TestCase):
         assert myTestResult, myMessage
 
     def testZebraStyleSides(self):
-        self.mComposerMap.setGridFrameStyle(QgsComposerMap.Zebra)
+        self.mComposerMap.grid().setFrameStyle(QgsComposerMapGrid.Zebra)
         myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
         self.mComposerMap.setNewExtent(myRectangle)
         self.mComposerMap.grid().setIntervalX(2000)
@@ -223,7 +223,7 @@ class TestQgsComposerMap(unittest.TestCase):
         self.mComposerMap.grid().setFrameStyle(QgsComposerMapGrid.NoFrame)
 
     def testInteriorTicks(self):
-        self.mComposerMap.setGridFrameStyle(QgsComposerMap.Zebra)
+        self.mComposerMap.grid().setFrameStyle(QgsComposerMapGrid.Zebra)
         myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
         self.mComposerMap.setNewExtent(myRectangle)
         self.mComposerMap.grid().setIntervalX(2000)

@@ -51,9 +51,7 @@
 #include "qgscomposerscalebarwidget.h"
 #include "qgscomposershape.h"
 #include "qgscomposershapewidget.h"
-#include "qgscomposerattributetable.h"
 #include "qgscomposerattributetablev2.h"
-#include "qgscomposertablewidget.h"
 #include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
@@ -3752,17 +3750,6 @@ void QgsComposer::addComposerShape( QgsComposerShape* shape )
   }
   QgsComposerShapeWidget* sWidget = new QgsComposerShapeWidget( shape );
   mItemWidgetMap.insert( shape, sWidget );
-}
-
-void QgsComposer::addComposerTable( QgsComposerAttributeTable* table )
-{
-  if ( !table )
-  {
-    return;
-  }
-
-  QgsComposerTableWidget* tWidget = new QgsComposerTableWidget( table );
-  mItemWidgetMap.insert( table, tWidget );
 }
 
 void QgsComposer::addComposerTableV2( QgsComposerAttributeTableV2 *table, QgsComposerFrame* frame )

@@ -591,57 +591,6 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      */
     bool contentsContainsRow( const QgsComposerTableContents &contents, const QgsComposerTableRow &row ) const;
 
-    //deprecated methods
-
-    /** Calculates how many content rows are visible within a given frame
-     * @param frameIndex index number for frame
-     * @returns number of visible content rows (excludes header rows)
-     * @deprecated will be removed in QGIS 3.0
-     */
-    Q_DECL_DEPRECATED int rowsVisible( const int frameIndex ) const;
-
-    /** Calculates how many content rows would be visible within a specified
-     * height.
-     * @param frameHeight height of frame
-     * @param includeHeader set to true if frame would include a header row
-     * @returns number of visible content rows (excluding header row)
-     * @deprecated will be removed in QGIS 3.0
-     */
-    Q_DECL_DEPRECATED int rowsVisible( const double frameHeight, const bool includeHeader ) const;
-
-    /** Calculates a range of rows which should be visible in a given
-     * frame extent.
-     * @param extent visible extent
-     * @param frameIndex index number for frame
-     * @returns row range
-     * @deprecated will be removed in QGIS 3.0
-     */
-    Q_DECL_DEPRECATED QPair<int, int> rowRange( const QRectF &extent, const int frameIndex ) const;
-
-    /** Draws the horizontal grid lines for the table.
-     * @param painter destination painter for grid lines
-     * @param rows number of rows shown in table
-     * @param drawHeaderLines set to true to include for the table header
-     * @see drawVerticalGridLines
-     * @deprecated will be removed in QGIS 3.0
-     */
-    Q_DECL_DEPRECATED void drawHorizontalGridLines( QPainter* painter, const int rows, const bool drawHeaderLines ) const;
-
-    /** Draws the vertical grid lines for the table.
-     * @param painter destination painter for grid lines
-     * @param maxWidthMap QMap of int to double, where the int contains the column number and the double is the
-     * maximum width of text present in the column.
-     * @param numberRows number of rows of content in table frame
-     * @param hasHeader set to true if table frame includes header cells
-     * @param mergeCells set to true to merge table content cells
-     * @note not available in python bindings
-     * @see drawVerticalGridLines
-     * @see calculateMaxColumnWidths
-     * @note not available in python bindings
-     * @deprecated will be removed in QGIS 3.0
-     */
-    Q_DECL_DEPRECATED void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap, const int numberRows, const bool hasHeader, const bool mergeCells = false ) const;
-
   private:
 
     QMap< CellStyleGroup, QString > mCellStyleNames;

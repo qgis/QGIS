@@ -332,28 +332,6 @@ void QgsComposerArrow::setEndMarker( const QString& svgPath )
   adaptItemSceneRect();
 }
 
-QColor QgsComposerArrow::arrowColor() const
-{
-  if ( mLineSymbol )
-  {
-    return mLineSymbol->color();
-  }
-
-  return Qt::black;
-}
-
-void QgsComposerArrow::setArrowColor( const QColor &c )
-{
-  if ( mLineSymbol )
-  {
-    mLineSymbol->setColor( c );
-  }
-  mArrowHeadOutlineColor = c;
-  mArrowHeadFillColor = c;
-  mPen.setColor( c );
-  mBrush.setColor( c );
-}
-
 void QgsComposerArrow::setArrowHeadOutlineColor( const QColor &color )
 {
   mArrowHeadOutlineColor = color;
@@ -364,28 +342,6 @@ void QgsComposerArrow::setArrowHeadFillColor( const QColor &color )
 {
   mArrowHeadFillColor = color;
   mBrush.setColor( color );
-}
-
-void QgsComposerArrow::setOutlineWidth( double width )
-{
-  if ( mLineSymbol )
-  {
-    mLineSymbol->setWidth( width );
-  }
-  mArrowHeadOutlineWidth = width;
-  mPen.setWidthF( mArrowHeadOutlineWidth );
-
-  adaptItemSceneRect();
-}
-
-double QgsComposerArrow::outlineWidth() const
-{
-  if ( mLineSymbol )
-  {
-    return mLineSymbol->width();
-  }
-
-  return 0;
 }
 
 void QgsComposerArrow::setArrowHeadOutlineWidth( const double width )

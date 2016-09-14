@@ -136,21 +136,5 @@ class TestQgsComposerHtml(unittest.TestCase):
 
         assert myTestResult, myMessage
 
-    def testComposerHtmlAccessor(self):
-        """Test that we can retrieve the ComposerHtml instance given an item.
-        """
-        myComposition = QgsComposition(self.iface.mapCanvas().mapSettings())
-        mySubstitutionMap = {'replace-me': 'Foo bar'}
-        myFile = os.path.join(TEST_DATA_DIR, 'template.qpt')
-        with open(myFile, 'rt') as myTemplateFile:
-            myTemplateContent = myTemplateFile.read()
-        myDocument = QDomDocument()
-        myDocument.setContent(myTemplateContent)
-        myComposition.loadFromTemplate(myDocument, mySubstitutionMap)
-        myItem = myComposition.getComposerItemById('html-test')
-        myComposerHtml = myComposition.getComposerHtmlByItem(myItem)
-        myMessage = 'Could not retrieve the composer html given an item'
-        self.assertIsNotNone(myComposerHtml, myMessage)
-
 if __name__ == '__main__':
     unittest.main()

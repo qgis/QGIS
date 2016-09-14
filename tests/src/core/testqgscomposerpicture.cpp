@@ -39,7 +39,6 @@ class TestQgsComposerPicture : public QObject
 
     void pictureRotation(); //test if picture pictureRotation is functioning
     void pictureItemRotation(); //test if composer picture item rotation is functioning
-    //void oldPictureRotationApi(); //test if old deprectated composer picture rotation api is functioning
 
     void pictureResizeZoom();
     void pictureResizeStretch();
@@ -157,22 +156,6 @@ void TestQgsComposerPicture::pictureItemRotation()
   mComposition->removeItem( mComposerPicture );
   mComposerPicture->setItemRotation( 0, true );
 }
-
-#if 0
-void TestQgsComposerPicture::oldPictureRotationApi()
-{
-  //test old style deprecated rotation api - remove test after 2.0 series
-  mComposition->addComposerPicture( mComposerPicture );
-  mComposerPicture->setRotation( 45 );
-
-  QgsCompositionChecker checker( "composerpicture_rotation_oldapi", mComposition );
-  checker.setControlPathPrefix( "composer_picture" );
-  QVERIFY( checker.testComposition( mReport ) );
-
-  mComposition->removeItem( mComposerPicture );
-  mComposerPicture->setRotation( 0 );
-}
-#endif
 
 void TestQgsComposerPicture::pictureResizeZoom()
 {
@@ -411,15 +394,17 @@ void TestQgsComposerPicture::pictureExpression()
   mComposition->addComposerPicture( mComposerPicture );
 
   QString expr = QString( "'%1' || '/sample_svg.svg'" ).arg( TEST_DATA_DIR );
-  mComposerPicture->setPictureExpression( expr );
-  mComposerPicture->setUsePictureExpression( true );
+  mComposerPicture->setDataDefinedProperty( QgsComposerObject::PictureSource,
+      true, true, expr, QString() );
+  mComposerPicture->refreshPicture();
 
   QgsCompositionChecker checker( "composerpicture_expression", mComposition );
   checker.setControlPathPrefix( "composer_picture" );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
-  mComposerPicture->setUsePictureExpression( false );
+  mComposerPicture->setDataDefinedProperty( QgsComposerObject::PictureSource,
+      false, false, QString(), QString() );
 }
 
 void TestQgsComposerPicture::pictureInvalidExpression()
@@ -428,15 +413,17 @@ void TestQgsComposerPicture::pictureInvalidExpression()
   mComposition->addComposerPicture( mComposerPicture );
 
   QString expr = QString( "bad expression" );
-  mComposerPicture->setPictureExpression( expr );
-  mComposerPicture->setUsePictureExpression( true );
+  mComposerPicture->setDataDefinedProperty( QgsComposerObject::PictureSource,
+      true, true, expr, QString() );
+  mComposerPicture->refreshPicture();
 
   QgsCompositionChecker checker( "composerpicture_badexpression", mComposition );
   checker.setControlPathPrefix( "composer_picture" );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
-  mComposerPicture->setUsePictureExpression( false );
+  mComposerPicture->setDataDefinedProperty( QgsComposerObject::PictureSource,
+      false, false, QString(), QString() );
 }
 
 QTEST_MAIN( TestQgsComposerPicture )

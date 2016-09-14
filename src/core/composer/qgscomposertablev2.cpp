@@ -232,49 +232,6 @@ QSizeF QgsComposerTableV2::totalSize() const
   return mTableSize;
 }
 
-int QgsComposerTableV2::rowsVisible( const int frameIndex ) const
-{
-  //get frame extent
-  if ( frameIndex >= frameCount() )
-  {
-    return 0;
-  }
-  QRectF frameExtent = frame( frameIndex )->extent();
-
-  bool includeHeader = false;
-  if (( mHeaderMode == QgsComposerTableV2::FirstFrame && frameIndex < 1 )
-      || ( mHeaderMode == QgsComposerTableV2::AllFrames ) )
-  {
-    includeHeader = true;
-  }
-  Q_NOWARN_DEPRECATED_PUSH
-  return rowsVisible( frameExtent.height(), includeHeader );
-  Q_NOWARN_DEPRECATED_POP
-}
-
-int QgsComposerTableV2::rowsVisible( const double frameHeight, const bool includeHeader ) const
-{
-  //calculate header height
-  double headerHeight = 0;
-  if ( includeHeader )
-  {
-    //frame has a header
-    headerHeight = 2 * ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin +  QgsComposerUtils::fontAscentMM( mHeaderFont );
-  }
-  else
-  {
-    //frame has no header text, just the stroke
-    headerHeight = ( mShowGrid ? mGridStrokeWidth : 0 );
-  }
-
-  //remaining height available for content rows
-  double contentHeight = frameHeight - headerHeight;
-
-  //calculate number of visible rows
-  double rowHeight = ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin + QgsComposerUtils::fontAscentMM( mContentFont );
-  return qMax( floor( contentHeight / rowHeight ), 0.0 );
-}
-
 int QgsComposerTableV2::rowsVisible( double frameHeight, int firstRow, bool includeHeader , bool includeEmptyRows ) const
 {
   //calculate header height
@@ -354,13 +311,6 @@ QPair<int, int> QgsComposerTableV2::rowRange( const int frameIndex ) const
 
   return qMakePair( firstVisible, lastVisible );
 }
-
-QPair< int, int > QgsComposerTableV2::rowRange( const QRectF &extent, const int frameIndex ) const
-{
-  Q_UNUSED( extent );
-  return rowRange( frameIndex );
-}
-
 
 void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameIndex )
 {
@@ -1124,12 +1074,6 @@ double QgsComposerTableV2::totalHeight()
   return height;
 }
 
-void QgsComposerTableV2::drawHorizontalGridLines( QPainter *painter, const int rows, const bool drawHeaderLines ) const
-{
-  //hacky shortcut to maintain 2.10 API without adding code - whooo!
-  drawHorizontalGridLines( painter, 100000, 100000 + rows, drawHeaderLines );
-}
-
 void QgsComposerTableV2::drawHorizontalGridLines( QPainter *painter, int firstRow, int lastRow, bool drawHeaderLines ) const
 {
   //horizontal lines
@@ -1156,12 +1100,6 @@ void QgsComposerTableV2::drawHorizontalGridLines( QPainter *painter, int firstRo
     currentY += ( rowHeight + 2 * mCellMargin );
   }
   painter->drawLine( QPointF( halfGridStrokeWidth, currentY ), QPointF( mTableSize.width() - halfGridStrokeWidth, currentY ) );
-}
-
-void QgsComposerTableV2::drawVerticalGridLines( QPainter *painter, const QMap<int, double> &maxWidthMap, const int numberRows, const bool hasHeader, const bool mergeCells ) const
-{
-  //hacky shortcut to maintain 2.10 API without adding code - whooo!
-  drawVerticalGridLines( painter, maxWidthMap, 100000, 100000 + numberRows, hasHeader, mergeCells );
 }
 
 bool QgsComposerTableV2::textRequiresWrapping( const QString& text, double columnWidth, const QFont &font ) const

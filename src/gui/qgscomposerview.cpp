@@ -47,7 +47,6 @@
 #include "qgsmapcanvas.h" //for QgsMapCanvas::WheelAction
 #include "qgscursors.h"
 #include "qgscomposerutils.h"
-#include "qgscomposerattributetable.h"
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0
@@ -1086,34 +1085,6 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         removeRubberBand();
         emit actionFinished();
         composition()->pushAddRemoveCommand( newLegend, tr( "Legend added" ) );
-      }
-      break;
-
-    case AddTable:
-      if ( !composition() || !mRubberBandItem )
-      {
-        removeRubberBand();
-        return;
-      }
-      else
-      {
-        QgsComposerAttributeTable* newTable = new QgsComposerAttributeTable( composition() );
-        QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
-        if ( !mapItemList.isEmpty() )
-        {
-          newTable->setComposerMap( mapItemList.at( 0 ) );
-        }
-        newTable->setSceneRect( QRectF( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() ) );
-
-        composition()->addComposerTable( newTable );
-
-        composition()->setAllUnselected();
-        newTable->setSelected( true );
-        emit selectedItemChanged( newTable );
-
-        removeRubberBand();
-        emit actionFinished();
-        composition()->pushAddRemoveCommand( newTable, tr( "Table added" ) );
       }
       break;
 

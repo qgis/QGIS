@@ -31,7 +31,6 @@
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
 #include "qgscomposermodel.h"
-#include "qgscomposerattributetable.h"
 #include "qgscomposerattributetablev2.h"
 #include "qgsaddremovemultiframecommand.h"
 #include "qgscomposermultiframecommand.h"
@@ -703,25 +702,6 @@ const QgsComposerMap* QgsComposition::getComposerMapById( const int id ) const
   return nullptr;
 }
 
-const QgsComposerHtml* QgsComposition::getComposerHtmlByItem( QgsComposerItem *item ) const
-{
-  // an html item will be a composer frame and if it is we can try to get
-  // its multiframe parent and then try to cast that to a composer html
-  const QgsComposerFrame* composerFrame =
-    dynamic_cast<const QgsComposerFrame *>( item );
-  if ( composerFrame )
-  {
-    const QgsComposerMultiFrame * mypMultiFrame = composerFrame->multiFrame();
-    const QgsComposerHtml* composerHtml =
-      dynamic_cast<const QgsComposerHtml *>( mypMultiFrame );
-    if ( composerHtml )
-    {
-      return composerHtml;
-    }
-  }
-  return nullptr;
-}
-
 const QgsComposerItem* QgsComposition::getComposerItemById( const QString& theId ) const
 {
   QList<QGraphicsItem *> itemList = items();
@@ -829,16 +809,6 @@ void QgsComposition::setUseAdvancedEffects( const bool effectsEnabled )
       composerItem->setEffectsEnabled( effectsEnabled );
     }
   }
-}
-
-int QgsComposition::pixelFontSize( double pointSize ) const
-{
-  return qRound( QgsComposerUtils::pointsToMM( pointSize ) ); //round to nearest mm
-}
-
-double QgsComposition::pointFontSize( int pixelSize ) const
-{
-  return QgsComposerUtils::mmToPoints( pixelSize );
 }
 
 bool QgsComposition::writeXml( QDomElement& composerElem, QDomDocument& doc )
@@ -1468,34 +1438,7 @@ void QgsComposition::addItemsFromXml( const QDomElement& elem, const QDomDocumen
       pushAddRemoveCommand( newLegend, tr( "Legend added" ) );
     }
   }
-  // table
-  QDomNodeList composerTableList = elem.elementsByTagName( "ComposerAttributeTable" );
-  for ( int i = 0; i < composerTableList.size(); ++i )
-  {
-    QDomElement currentComposerTableElem = composerTableList.at( i ).toElement();
-    QgsComposerAttributeTable* newTable = new QgsComposerAttributeTable( this );
-    newTable->readXml( currentComposerTableElem, doc );
-    if ( pos )
-    {
-      if ( pasteInPlace )
-      {
-        newTable->setItemPosition( newTable->pos().x(), fmod( newTable->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
-        newTable->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
-      }
-      else
-      {
-        newTable->move( pasteShiftPos.x(), pasteShiftPos.y() );
-      }
-      newTable->setSelected( true );
-      lastPastedItem = newTable;
-    }
-    addComposerTable( newTable );
-    newTable->setZValue( newTable->zValue() + zOrderOffset );
-    if ( addUndoCommands )
-    {
-      pushAddRemoveCommand( newTable, tr( "Table added" ) );
-    }
-  }
+
   // html
   //TODO - fix this. pasting multiframe frame items has no effect
   QDomNodeList composerHtmlList = elem.elementsByTagName( "ComposerHtml" );
@@ -2588,16 +2531,6 @@ void QgsComposition::addComposerShape( QgsComposerShape* shape )
   emit composerShapeAdded( shape );
 }
 
-void QgsComposition::addComposerTable( QgsComposerAttributeTable* table )
-{
-  addItem( table );
-
-  updateBounds();
-  connect( table, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
-
-  emit composerTableAdded( table );
-}
-
 void QgsComposition::addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame )
 {
   addItem( frame );
@@ -2786,13 +2719,7 @@ void QgsComposition::sendItemAddedSignal( QgsComposerItem* item )
     emit selectedItemChanged( polyline );
     return;
   }
-  QgsComposerAttributeTable* table = dynamic_cast<QgsComposerAttributeTable*>( item );
-  if ( table )
-  {
-    emit composerTableAdded( table );
-    emit selectedItemChanged( table );
-    return;
-  }
+
   QgsComposerFrame* frame = dynamic_cast<QgsComposerFrame*>( item );
   if ( frame )
   {
@@ -3649,12 +3576,3 @@ void QgsComposition::prepareAllDataDefinedExpressions()
   prepareDataDefinedExpression( nullptr, &mDataDefinedProperties, context );
 }
 
-void QgsComposition::relativeResizeRect( QRectF& rectToResize, const QRectF& boundsBefore, const QRectF& boundsAfter )
-{
-  QgsComposerUtils::relativeResizeRect( rectToResize, boundsBefore, boundsAfter );
-}
-
-double QgsComposition::relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax )
-{
-  return QgsComposerUtils::relativePosition( position, beforeMin, beforeMax, afterMin, afterMax );
-}

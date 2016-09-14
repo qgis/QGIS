@@ -61,12 +61,8 @@ class TestQgsAtlasComposition : public QObject
     void filename();
     // test rendering with an autoscale atlas
     void autoscale_render();
-    // test rendering with an autoscale atlas using the old api
-    void autoscale_render_2_0_api();
     // test rendering with a fixed scale atlas
     void fixedscale_render();
-    // test rendering with a fixed scale atlas using the old api
-    void fixedscale_render_2_0_api();
     // test rendering with predefined scales
     void predefinedscales_render();
     // test rendering with two atlas-driven maps
@@ -248,28 +244,6 @@ void TestQgsAtlasComposition::autoscale_render()
   mAtlas->endRender();
 }
 
-void TestQgsAtlasComposition::autoscale_render_2_0_api()
-{
-  Q_NOWARN_DEPRECATED_PUSH
-  mAtlas->setComposerMap( mAtlasMap );
-  mAtlas->setFixedScale( false );
-  mAtlas->setMargin( 0.10f );
-  Q_NOWARN_DEPRECATED_POP
-
-  mAtlas->beginRender();
-
-  for ( int fit = 0; fit < 2; ++fit )
-  {
-    mAtlas->prepareForFeature( fit );
-    mLabel1->adjustSizeToText();
-
-    QgsCompositionChecker checker( QString( "atlas_autoscale_old_api%1" ).arg((( int )fit ) + 1 ), mComposition );
-    checker.setControlPathPrefix( "atlas" );
-    QVERIFY( checker.testComposition( mReport, 0, 100 ) );
-  }
-  mAtlas->endRender();
-}
-
 void TestQgsAtlasComposition::fixedscale_render()
 {
   //TODO QGIS3.0 - setting the extent AFTER setting atlas driven/fixed scaling mode should
@@ -286,27 +260,6 @@ void TestQgsAtlasComposition::fixedscale_render()
     mLabel1->adjustSizeToText();
 
     QgsCompositionChecker checker( QString( "atlas_fixedscale%1" ).arg((( int )fit ) + 1 ), mComposition );
-    checker.setControlPathPrefix( "atlas" );
-    QVERIFY( checker.testComposition( mReport, 0, 100 ) );
-  }
-  mAtlas->endRender();
-}
-
-void TestQgsAtlasComposition::fixedscale_render_2_0_api()
-{
-  Q_NOWARN_DEPRECATED_PUSH
-  mAtlasMap->setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
-  mAtlas->setComposerMap( mAtlasMap );
-  mAtlas->setFixedScale( true );
-  Q_NOWARN_DEPRECATED_POP
-  mAtlas->beginRender();
-
-  for ( int fit = 0; fit < 2; ++fit )
-  {
-    mAtlas->prepareForFeature( fit );
-    mLabel1->adjustSizeToText();
-
-    QgsCompositionChecker checker( QString( "atlas_fixedscale_old_api%1" ).arg((( int )fit ) + 1 ), mComposition );
     checker.setControlPathPrefix( "atlas" );
     QVERIFY( checker.testComposition( mReport, 0, 100 ) );
   }

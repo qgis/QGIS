@@ -419,27 +419,6 @@ bool QgsComposerMapGrid::readXml( const QDomElement& itemElem, const QDomDocumen
   mRightGridAnnotationDisplay = QgsComposerMapGrid::DisplayMode( itemElem.attribute( "rightAnnotationDisplay", "0" ).toInt() );
   mTopGridAnnotationDisplay = QgsComposerMapGrid::DisplayMode( itemElem.attribute( "topAnnotationDisplay", "0" ).toInt() );
   mBottomGridAnnotationDisplay = QgsComposerMapGrid::DisplayMode( itemElem.attribute( "bottomAnnotationDisplay", "0" ).toInt() );
-  //upgrade pre-2.7 projects
-  if ( mLeftGridAnnotationPosition == QgsComposerMapGrid::Disabled )
-  {
-    mLeftGridAnnotationDisplay = QgsComposerMapGrid::HideAll;
-    mLeftGridAnnotationPosition = QgsComposerMapGrid::OutsideMapFrame;
-  }
-  if ( mRightGridAnnotationPosition == QgsComposerMapGrid::Disabled )
-  {
-    mRightGridAnnotationDisplay = QgsComposerMapGrid::HideAll;
-    mRightGridAnnotationPosition = QgsComposerMapGrid::OutsideMapFrame;
-  }
-  if ( mTopGridAnnotationPosition == QgsComposerMapGrid::Disabled )
-  {
-    mTopGridAnnotationDisplay = QgsComposerMapGrid::HideAll;
-    mTopGridAnnotationPosition = QgsComposerMapGrid::OutsideMapFrame;
-  }
-  if ( mBottomGridAnnotationPosition == QgsComposerMapGrid::Disabled )
-  {
-    mBottomGridAnnotationDisplay = QgsComposerMapGrid::HideAll;
-    mBottomGridAnnotationPosition = QgsComposerMapGrid::OutsideMapFrame;
-  }
 
   mLeftGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( "leftAnnotationDirection", "0" ).toInt() );
   mRightGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( "rightAnnotationDirection", "0" ).toInt() );

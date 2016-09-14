@@ -154,14 +154,6 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual void moveContent( double dx, double dy ) { Q_UNUSED( dx ); Q_UNUSED( dy ); }
 
     /** Zoom content of item. Does nothing per default (but implemented in composer map)
-     * @param delta value from wheel event that describes direction (positive /negative number)
-     * @param x x-position of mouse cursor (in item coordinates)
-     * @param y y-position of mouse cursor (in item coordinates)
-     * @deprecated use zoomContent( double, QPointF, ZoomMode ) instead
-     */
-    Q_DECL_DEPRECATED virtual void zoomContent( int delta, double x, double y ) { Q_UNUSED( delta ); Q_UNUSED( x ); Q_UNUSED( y ); }
-
-    /** Zoom content of item. Does nothing per default (but implemented in composer map)
      * @param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
      * @param point item point for zoom center
      * @param mode zoom mode
@@ -416,61 +408,6 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     //functions that encapsulate the workaround for the Qt font bug (that is to scale the font size up and then scale the
     //painter down by the same factor for drawing
 
-    /** Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
-     * to work around the Qt font bug)
-     * @deprecated use QgsComposerUtils::drawText instead
-     */
-    Q_DECL_DEPRECATED void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font, const QColor& c = QColor() ) const;
-
-    /** Like the above, but with a rectangle for multiline text
-     * @param p painter to use
-     * @param rect rectangle to draw into
-     * @param text text to draw
-     * @param font font to use
-     * @param halignment optional horizontal alignment
-     * @param valignment optional vertical alignment
-     * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
-     * @deprecated use QgsComposerUtils::drawText instead
-     */
-    Q_DECL_DEPRECATED void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
-
-    /** Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
-     * @deprecated use QgsComposerUtils::textWidthMM instead
-     */
-    Q_DECL_DEPRECATED double textWidthMillimeters( const QFont& font, const QString& text ) const;
-
-    /** Returns the font height of a character in millimeters
-     * @deprecated use QgsComposerUtils::fontHeightCharacterMM instead
-     */
-    Q_DECL_DEPRECATED double fontHeightCharacterMM( const QFont& font, QChar c ) const;
-
-    /** Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
-     * @deprecated use QgsComposerUtils::fontAscentMM instead
-     */
-    Q_DECL_DEPRECATED double fontAscentMillimeters( const QFont& font ) const;
-
-    /** Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
-     * @deprecated use QgsComposerUtils::fontDescentMM instead
-     */
-    Q_DECL_DEPRECATED double fontDescentMillimeters( const QFont& font ) const;
-
-    /** Returns the font height in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE.
-     * Font height equals the font ascent+descent+1 (for baseline).
-     * @note Added in version 2.4
-     * @deprecated use QgsComposerUtils::fontHeightMM instead
-     */
-    Q_DECL_DEPRECATED double fontHeightMillimeters( const QFont& font ) const;
-
-    /** Calculates font size in mm from a font point size
-     * @deprecated use QgsComposerUtils::mmFontSize instead
-     */
-    Q_DECL_DEPRECATED double pixelFontSize( double pointSize ) const;
-
-    /** Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE
-     * @deprecated use QgsComposerUtils::scaledFontPixelSize instead
-     */
-    Q_DECL_DEPRECATED QFont scaledFontPixelSize( const QFont& font ) const;
-
     /** Locks / unlocks the item position for mouse drags
      * @param lock set to true to prevent item movement and resizing via the mouse
      * @see positionLock
@@ -492,11 +429,6 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see setItemRotation
      */
     double itemRotation( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
-
-    /** Returns the rotation for the composer item
-     * @deprecated Use itemRotation() instead
-     */
-    Q_DECL_DEPRECATED double rotation() const { return mEvaluatedItemRotation; }
 
     /** Updates item, with the possibility to do custom update for subclasses*/
     virtual void updateItem() { QGraphicsRectItem::update(); }
@@ -591,10 +523,6 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual QgsExpressionContext createExpressionContext() const override;
 
   public slots:
-    /** Sets the item rotation
-     * @deprecated Use setItemRotation( double rotation ) instead
-     */
-    virtual void setRotation( double r );
 
     /** Sets the item rotation
      * @param r item rotation in degrees
@@ -694,24 +622,9 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /** Draw background*/
     virtual void drawBackground( QPainter* p );
 
-    /** Draws arrowhead
-     * @deprecated use QgsComposerUtils::drawArrowHead instead
-     */
-    Q_DECL_DEPRECATED void drawArrowHead( QPainter* p, double x, double y, double angle, double arrowHeadWidth ) const;
-
-    /** Returns angle of the line from p1 to p2 (clockwise, starting at N)
-     * @deprecated will be removed in QGIS 3.0
-     */
-    Q_DECL_DEPRECATED double angle( QPointF p1, QPointF p2 ) const;
-
     /** Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
     item border for resizing*/
     double rectHandlerBorderTolerance() const;
-
-    /** Returns the size of the lock symbol depending on the composer zoom level and the item size
-     * @deprecated will be removed in QGIS 3.0
-     */
-    Q_DECL_DEPRECATED double lockSymbolSize() const;
 
     /** Returns the zoom factor of the graphics view.
      * @return the factor or -1 in case of error (e.g. graphic view does not exist)
@@ -719,53 +632,6 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     double horizontalViewScaleFactor() const;
 
     //some utility functions
-
-    /** Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation.
-     * @deprecated will be removed in QGIS 3.0
-     */
-    Q_DECL_DEPRECATED bool imageSizeConsideringRotation( double& width, double& height, double rotation ) const;
-
-    /** Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
-     * @deprecated will be removed in QGIS 3.0
-     */
-    Q_DECL_DEPRECATED bool imageSizeConsideringRotation( double& width, double& height ) const;
-
-    /** Calculates the largest scaled version of originalRect which fits within boundsRect, when it is rotated by
-     * a specified amount
-     * @param originalRect QRectF to be rotated and scaled
-     * @param boundsRect QRectF specifying the bounds which the rotated and scaled rectangle must fit within
-     * @param rotation the rotation in degrees to be applied to the rectangle
-     * @deprecated use QgsComposerUtils::largestRotatedRectWithinBounds instead
-     */
-    Q_DECL_DEPRECATED QRectF largestRotatedRectWithinBounds( const QRectF& originalRect, const QRectF& boundsRect, double rotation ) const;
-
-    /** Calculates corner point after rotation and scaling
-     * @deprecated will be removed in QGIS 3.0
-     */
-    Q_DECL_DEPRECATED bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation ) const;
-
-    /** Calculates corner point after rotation and scaling
-     * @deprecated will be removed in QGIS 3.0
-     */
-    Q_DECL_DEPRECATED bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
-
-    /** Calculates width / height of the bounding box of a rotated rectangle
-     * @deprecated will be removed in QGIS 3.0
-     */
-    Q_DECL_DEPRECATED void sizeChangedByRotation( double& width, double& height, double rotation );
-
-    /** Calculates width / height of the bounding box of a rotated rectangle
-     * @deprecated will be removed in QGIS 3.0
-     */
-    Q_DECL_DEPRECATED void sizeChangedByRotation( double& width, double& height );
-
-    /** Rotates a point / vector
-     * @param angle rotation angle in degrees, counterclockwise
-     * @param x in/out: x coordinate before / after the rotation
-     * @param y in/out: y cooreinate before / after the rotation
-     * @deprecated use QgsComposerUtils:rotate instead
-     */
-    Q_DECL_DEPRECATED void rotate( double angle, double& x, double& y ) const;
 
     /** Return horizontal align snap item. Creates a new graphics line if 0*/
     QGraphicsLineItem* hAlignSnapItem();

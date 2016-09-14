@@ -233,8 +233,6 @@ SET(QGIS_CORE_SRCS
   composer/qgsaddremovemultiframecommand.cpp
   composer/qgsatlascomposition.cpp
   composer/qgscomposerarrow.cpp
-  composer/qgscomposerattributetable.cpp
-  composer/qgscomposerattributetablemodel.cpp
   composer/qgscomposerattributetablemodelv2.cpp
   composer/qgscomposerattributetablev2.cpp
   composer/qgscomposereffect.cpp
@@ -262,7 +260,6 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposernodesitem.cpp
   composer/qgscomposerpolygon.cpp
   composer/qgscomposerpolyline.cpp
-  composer/qgscomposertable.cpp
   composer/qgscomposertablecolumn.cpp
   composer/qgscomposertablev2.cpp
   composer/qgscomposertexttable.cpp
@@ -507,8 +504,6 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgsaddremoveitemcommand.h
   composer/qgsatlascomposition.h
   composer/qgscomposerarrow.h
-  composer/qgscomposerattributetable.h
-  composer/qgscomposerattributetablemodel.h
   composer/qgscomposerattributetablemodelv2.h
   composer/qgscomposerattributetablev2.h
   composer/qgscomposereffect.h
@@ -533,7 +528,6 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerpolygon.h
   composer/qgscomposerpolyline.h
   composer/qgscomposertablecolumn.h
-  composer/qgscomposertable.h
   composer/qgscomposertablev2.h
   composer/qgscomposertexttable.h
   composer/qgscomposition.h
@@ -759,7 +753,6 @@ SET(QGIS_CORE_HDRS
   composer/qgscomposerlegenditem.h
   composer/qgscomposerlegendstyle.h
   composer/qgscomposermultiframecommand.h
-  composer/qgscomposertable.h
   composer/qgscomposertexttable.h
   composer/qgsdoubleboxscalebarstyle.h
   composer/qgsnumericscalebarstyle.h

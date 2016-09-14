@@ -312,58 +312,6 @@ void QgsComposerAttributeTableV2::setFeatureFilter( const QString& expression )
   emit changed();
 }
 
-void QgsComposerAttributeTableV2::setDisplayAttributes( const QSet<int>& attr, bool refresh )
-{
-  QgsVectorLayer* source = sourceLayer();
-  if ( !source )
-  {
-    return;
-  }
-
-  //rebuild columns list, taking only attributes with index in supplied QSet
-  qDeleteAll( mColumns );
-  mColumns.clear();
-
-  const QgsFields& fields = source->fields();
-
-  if ( !attr.empty() )
-  {
-    QSet<int>::const_iterator attIt = attr.constBegin();
-    for ( ; attIt != attr.constEnd(); ++attIt )
-    {
-      int attrIdx = ( *attIt );
-      if ( !fields.exists( attrIdx ) )
-      {
-        continue;
-      }
-      QString currentAlias = source->attributeDisplayName( attrIdx );
-      QgsComposerTableColumn* col = new QgsComposerTableColumn;
-      col->setAttribute( fields.at( attrIdx ).name() );
-      col->setHeading( currentAlias );
-      mColumns.append( col );
-    }
-  }
-  else
-  {
-    //resetting, so add all attributes to columns
-    int idx = 0;
-    Q_FOREACH ( const QgsField& field, fields )
-    {
-      QString currentAlias = source->attributeDisplayName( idx );
-      QgsComposerTableColumn* col = new QgsComposerTableColumn;
-      col->setAttribute( field.name() );
-      col->setHeading( currentAlias );
-      mColumns.append( col );
-      idx++;
-    }
-  }
-
-  if ( refresh )
-  {
-    refreshAttributes();
-  }
-}
-
 void QgsComposerAttributeTableV2::setDisplayedFields( const QStringList& fields, bool refresh )
 {
   QgsVectorLayer* source = sourceLayer();
