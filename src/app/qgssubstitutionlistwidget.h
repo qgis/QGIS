@@ -27,7 +27,7 @@
  * \ingroup app
  * A widget which allows users to specify a list of substitutions to apply to a string, with
  * options for exporting and importing substitution lists.
- * \note added in QGIS 3.0
+ * \note added in QGIS 2.18
  * \see QgsSubstitutionListDialog
  */
 class APP_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::QgsSubstitutionListWidgetBase

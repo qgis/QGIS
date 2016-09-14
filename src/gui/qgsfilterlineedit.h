@@ -58,28 +58,28 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
     /** Returns true if the widget's clear button is visible.
      * @see setShowClearButton()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     bool showClearButton() const { return mClearButtonVisible; }
 
     /** Sets whether the widget's clear button is visible.
      * @param visible set to false to hide the clear button
      * @see showClearButton()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     void setShowClearButton( bool visible );
 
     /** Returns the clear mode for the widget. The clear mode defines the behaviour of the
      * widget when its value is cleared. This defaults to ClearToNull.
      * @see setClearMode()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     ClearMode clearMode() const { return mClearMode; }
 
     /** Sets the clear mode for the widget. The clear mode defines the behaviour of the
      * widget when its value is cleared. This defaults to ClearToNull.
      * @see clearMode()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     void setClearMode( ClearMode mode ) { mClearMode = mode; }
 
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @param defaultValue default value
      * @see defaultValue()
      * @see clearMode()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     void setDefaultValue( const QString& defaultValue ) { mDefaultValue = defaultValue; }
 
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * is equal to ClearToDefault.
      * @see setDefaultValue()
      * @see clearMode()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     QString defaultValue() const { return mDefaultValue; }
 
@@ -147,7 +147,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
     /** Clears the widget and resets it to the null value.
      * @see nullValue()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     virtual void clearValue();
 

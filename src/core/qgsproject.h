@@ -464,7 +464,7 @@ class CORE_EXPORT QgsProject : public QObject
     void homePathChanged();
 
     /** Emitted whenever the expression variables stored in the project have been changed.
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     void variablesChanged();
 
@@ -482,7 +482,7 @@ class CORE_EXPORT QgsProject : public QObject
     /** Causes the project to emit the variablesChanged() signal. This should
      * be called whenever expression variables related to the project are changed.
      * @see variablesChanged()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     void emitVariablesChanged();
 

@@ -104,7 +104,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      *
      * Alias for asExpression()
      *
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     QString expression() const;
 
@@ -149,7 +149,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      * Sets the current expression text and if applicable also the field.
      * Alias for setField.
      *
-     * @note Added in QGIS 3.0
+     * @note Added in QGIS 2.18
      */
     void setExpression( const QString& expression );
 

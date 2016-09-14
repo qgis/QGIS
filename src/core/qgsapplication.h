@@ -370,7 +370,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * be called whenever global, application-wide settings are altered to advise listeners
      * that they may need to update their state.
      * @see settingsChanged()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     void emitSettingsChanged();
 
@@ -379,7 +379,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     void preNotify( QObject * receiver, QEvent * event, bool * done );
 
     /** Emitted whenever any global, application-wide settings are changed.
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      * @see emitSettingsChanged()
      */
     void settingsChanged();

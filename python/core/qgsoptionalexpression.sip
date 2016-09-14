@@ -19,7 +19,7 @@
  *
  * QgsOptionalExpression is a container for an expression with an additional enabled/disabled flag.
  *
- * @note Added in QGIS 3.0
+ * @note Added in QGIS 2.18
  */
 class QgsOptionalExpression
 {
@@ -48,7 +48,7 @@ class QgsOptionalExpression
      * This will compare the enabled flag and call the == operator
      * of the contained class.
      *
-     * @note Added in QGIS 3.0
+     * @note Added in QGIS 2.18
      */
     bool operator== ( const QgsOptionalExpression& other ) const;
     operator bool () const;
@@ -56,28 +56,28 @@ class QgsOptionalExpression
     /**
      * Check if this optional is enabled
      *
-     * @note Added in QGIS 3.0
+     * @note Added in QGIS 2.18
      */
     bool enabled() const;
 
     /**
      * Set if this optional is enabled
      *
-     * @note Added in QGIS 3.0
+     * @note Added in QGIS 2.18
      */
     void setEnabled( bool enabled );
 
     /**
      * Access the payload data
      *
-     * @note Added in QGIS 3.0
+     * @note Added in QGIS 2.18
      */
     QgsExpression data() const;
 
     /**
      * Set the payload data
      *
-     * @note Added in QGIS 3.0
+     * @note Added in QGIS 2.18
      */
     void setData( const QgsExpression& data );
 

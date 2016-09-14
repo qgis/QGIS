@@ -183,7 +183,7 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
     bool isDirty() const;
 
     /** Returns the scheme currently selected in the list.
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      * @see setScheme()
      */
     QgsColorScheme* scheme();

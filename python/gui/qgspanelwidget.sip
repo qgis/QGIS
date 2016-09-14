@@ -78,7 +78,7 @@ class QgsPanelWidget : public QWidget
      * widget.
      * @param widget widget which may be contained within a panel widget
      * @returns parent panel widget if found, otherwise nullptr
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     static QgsPanelWidget* findParentPanel( QWidget* widget );
 

@@ -52,7 +52,7 @@ class QgsField
      * field alias if set, otherwise the field name.
      * @see name()
      * @see alias()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     QString displayName() const;
 
@@ -129,7 +129,7 @@ class QgsField
     /** Returns the expression used when calculating the default value for the field.
      * @returns expression evaluated when calculating default values for field, or an
      * empty string if no default is set
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      * @see setDefaultValueExpression()
      */
     QString defaultValueExpression() const;
@@ -137,7 +137,7 @@ class QgsField
     /** Sets an expression to use when calculating the default value for the field.
      * @param expression expression to evaluate when calculating default values for field. Pass
      * an empty expression to clear the default.
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      * @see defaultValueExpression()
      */
     void setDefaultValueExpression( const QString& expression );
@@ -145,14 +145,14 @@ class QgsField
     /** Returns the alias for the field (the friendly displayed name of the field ),
      * or an empty string if there is no alias.
      * @see setAlias()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     QString alias() const;
 
     /** Sets the alias for the field (the friendly displayed name of the field ).
      * @param alias field alias, or empty string to remove an existing alias
      * @see alias()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     void setAlias( const QString& alias );
 

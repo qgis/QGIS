@@ -902,7 +902,7 @@ class QgsComposition : QGraphicsScene
     void statusMsgChanged( QString message );
 
     /** Emitted whenever the expression variables stored in the composition have been changed.
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     void variablesChanged();
 };

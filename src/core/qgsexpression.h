@@ -135,7 +135,7 @@ class CORE_EXPORT QgsExpression
     /**
      * Create an empty expression.
      *
-     * @note Added in QGIS 3.0
+     * @note Added in QGIS 2.18
      */
     QgsExpression();
 

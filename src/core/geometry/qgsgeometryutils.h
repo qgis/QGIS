@@ -57,7 +57,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param nextVertex will be set to next vertex ID
      * @note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
      * @returns true if vertices were successfully retrieved
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     static bool verticesAtDistance( const QgsAbstractGeometryV2& geometry,
                                     double distance,

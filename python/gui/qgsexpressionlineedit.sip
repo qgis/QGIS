@@ -7,7 +7,7 @@
  * use in an expression. In contexts where the expression is directly associated with
  * a layer and fields can be used, then QgsFieldExpressionWidget is a more appropriate
  * choice as it gives users direct access to select fields from a drop down list.
- * @note added in QGIS 3.0
+ * @note added in QGIS 2.18
  */
 
 class QgsExpressionLineEdit : QWidget

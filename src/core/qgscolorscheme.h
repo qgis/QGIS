@@ -166,7 +166,7 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 
     /** Sets whether a this scheme should be shown in color button menus.
      * @param show set to true to show in color button menus, or false to hide from menus
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     void setShowSchemeInMenu( bool show );
 

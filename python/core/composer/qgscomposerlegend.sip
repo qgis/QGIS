@@ -50,13 +50,13 @@ class QgsComposerLegend : QgsComposerItem
      * @param enabled set to false to disable automatic resizing. The legend frame will not
      * be expanded to fit legend items, and items may be cropped from display.
      * @see resizeToContents()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     void setResizeToContents( bool enabled );
 
     /** Returns whether the legend should automatically resize to fit its contents.
      * @see setResizeToContents()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     bool resizeToContents() const;
 

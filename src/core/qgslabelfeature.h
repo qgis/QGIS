@@ -112,7 +112,7 @@ class CORE_EXPORT QgsLabelFeature
      * are not contained within the zone.
      * @param geometry permissible zone geometry. If an invalid QgsGeometry is passed then no zone limit
      * will be applied to the label candidates (this is the default behaviour).
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      * @see permissibleZone()
      */
     void setPermissibleZone( const QgsGeometry& geometry );
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsLabelFeature
     /** Returns the label's permissible zone geometry. If a valid geometry is returned, the feature's label
      * MUST be fully contained within this zone, and the feature will not be labeled if no candidates can be
      * generated which are not contained within the zone.
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      * @see setPermissibleZone()
      * @see permissibleZonePrepared()
      */
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsLabelFeature
 
     /** Returns a GEOS prepared geometry representing the label's permissibleZone().
      * @see permissibleZone()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     //TODO - remove when QgsGeometry caches GEOS preparedness
     const GEOSPreparedGeometry* permissibleZonePrepared() const { return mPermissibleZoneGeosPrepared; }

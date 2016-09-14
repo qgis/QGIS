@@ -1718,7 +1718,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param context optional expression context to evaluate expressions again. If not
      * specified, a default context will be created
      * @return calculated default value
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      * @see setDefaultValueExpression()
      */
     QVariant defaultValue( int index, const QgsFeature& feature = QgsFeature(),
@@ -1728,7 +1728,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param index field index
      * @param expression expression to evaluate when calculating default values for field. Pass
      * an empty expression to clear the default.
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      * @see defaultValue()
      * @see defaultValueExpression()
      */
@@ -1738,7 +1738,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param index field index
      * @returns expression evaluated when calculating default values for field, or an
      * empty string if no default is set
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      * @see defaultValue()
      * @see setDefaultValueExpression()
      */

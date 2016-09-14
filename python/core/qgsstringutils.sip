@@ -137,7 +137,7 @@ class QgsStringUtils
      * @param string input string
      * @param capitalization capitalization type to apply
      * @return capitalized string
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     static QString capitalize( const QString& string, Capitalization capitalization );
 
@@ -183,7 +183,7 @@ class QgsStringUtils
      * @param string string to insert links into
      * @param foundLinks if specified, will be set to true if any links were inserted into the string
      * @returns string with inserted links
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     static QString insertLinks( const QString& string, bool* foundLinks = nullptr );
 };

@@ -238,7 +238,7 @@ class CORE_EXPORT QgsGeometry
      * Returns the bisector angle for this geometry at the specified vertex.
      * @param vertex vertex index to calculate bisector angle at
      * @returns bisector angle, in radians clockwise from north
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      * @see interpolateAngle()
      */
     double angleAtVertex( int vertex ) const;
@@ -536,7 +536,7 @@ class CORE_EXPORT QgsGeometry
      * @return distance along line, or -1 on error
      * @note only valid for linestring geometries
      * @see interpolate()
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     double lineLocatePoint( const QgsGeometry& point ) const;
 
@@ -545,7 +545,7 @@ class CORE_EXPORT QgsGeometry
      * If the distance coincides precisely at a node then the average angle from the segment either side
      * of the node is returned.
      * @param distance distance along geometry
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      * @see angleAtVertex()
      */
     double interpolateAngle( double distance ) const;
@@ -564,7 +564,7 @@ class CORE_EXPORT QgsGeometry
      * @returns a LineString or MultiLineString geometry, with any connected lines
      * joined. An empty geometry will be returned if the input geometry was not a
      * MultiLineString geometry.
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     QgsGeometry mergeLines() const;
 

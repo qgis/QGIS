@@ -94,7 +94,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * @returns a LineString or MultiLineString geometry, with any connected lines
      * joined. An empty geometry will be returned if the input geometry was not a
      * LineString/MultiLineString geometry.
-     * @note added in QGIS 3.0
+     * @note added in QGIS 2.18
      */
     QgsGeometry mergeLines( QString* errorMsg = nullptr ) const;
 
