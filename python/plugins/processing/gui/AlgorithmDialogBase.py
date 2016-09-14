@@ -34,7 +34,7 @@ from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QDesktopWidget
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 from qgis.utils import iface
-from qgis.core import QgsNetworkAccessManager
+from qgis.core import QgsNetworkAccessManager, QgsMapLayerRegistry
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -121,8 +121,15 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
         super(AlgorithmDialogBase, self).closeEvent(evt)
 
-    def setMainWidget(self):
+    def setMainWidget(self, widget):
+        if self.mainWidget is not None:
+            QgsMapLayerRegistry.instance().layerWasAdded.disconnect(self.mainWidget.layerRegistryChanged)
+            QgsMapLayerRegistry.instance().layersWillBeRemoved.disconnect(self.mainWidget.layerRegistryChanged)
+        self.mainWidget = widget
         self.tabWidget.widget(0).layout().addWidget(self.mainWidget)
+        QgsMapLayerRegistry.instance().layerWasAdded.connect(self.mainWidget.layerRegistryChanged)
+        QgsMapLayerRegistry.instance().layersWillBeRemoved.connect(self.mainWidget.layerRegistryChanged)
+
 
     def error(self, msg):
         QApplication.restoreOverrideCursor()

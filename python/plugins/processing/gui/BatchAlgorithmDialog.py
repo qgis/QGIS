@@ -55,8 +55,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
         self.setWindowTitle(self.tr('Batch Processing - %s') % self.alg.name)
 
-        self.mainWidget = BatchPanel(self, self.alg)
-        self.setMainWidget()
+        self.setMainWidget(BatchPanel(self, self.alg))
 
         self.textShortHelp.setVisible(False)
 

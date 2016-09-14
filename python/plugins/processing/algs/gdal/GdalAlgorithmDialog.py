@@ -40,9 +40,8 @@ class GdalAlgorithmDialog(AlgorithmDialog):
         AlgorithmDialogBase.__init__(self, alg)
 
         self.alg = alg
-
-        self.mainWidget = GdalParametersPanel(self, alg)
-        self.setMainWidget()
+ 
+        self.setMainWidget(GdalParametersPanel(self, alg))
 
         cornerWidget = QWidget()
         layout = QVBoxLayout()
@@ -55,10 +54,6 @@ class GdalAlgorithmDialog(AlgorithmDialog):
         self.tabWidget.setCornerWidget(cornerWidget)
 
         self.mainWidget.parametersHaveChanged()
-
-        QgsMapLayerRegistry.instance().layerWasAdded.connect(self.mainWidget.layerAdded)
-        QgsMapLayerRegistry.instance().layersWillBeRemoved.connect(self.mainWidget.layersWillBeRemoved)
-
 
 class GdalParametersPanel(ParametersPanel):
 
