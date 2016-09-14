@@ -106,7 +106,7 @@ class OneSideBuffer(GdalAlgorithm):
         arguments.append('-sql')
 
         if dissolveall or field is not None:
-           sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})), * FROM '{}'".format(geometry, distance, leftright, layername)
+            sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})), * FROM '{}'".format(geometry, distance, leftright, layername)
         else:
             sql = "SELECT ST_SingleSidedBuffer({},{},{}), * FROM '{}'".format(geometry, distance, leftright, layername)
 
