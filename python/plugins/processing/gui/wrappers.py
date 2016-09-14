@@ -83,7 +83,7 @@ class WidgetWrapper(QObject):
         self.dialog = dialog
         self.row = row
         self.col = col
-        self.dialogType = dialogTypes[dialog.__class__.__name__]
+        self.dialogType = dialogTypes.get(dialog.__class__.__name__, DIALOG_STANDARD)
         self.widget = self.createWidget()
         if param.default is not None:
             self.setValue(param.default)
