@@ -101,8 +101,6 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
     void on_mAddColorToSchemeButton_clicked();
 
-    void exportColors();
-    void importColors();
     void importPalette();
     void removePalette();
     void newPalette();

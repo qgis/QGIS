@@ -745,6 +745,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   connect( mButtonCopyColors, SIGNAL( clicked() ), mTreeCustomColors, SLOT( copyColors() ) );
   connect( mButtonRemoveColor, SIGNAL( clicked() ), mTreeCustomColors, SLOT( removeSelection() ) );
   connect( mButtonPasteColors, SIGNAL( clicked() ), mTreeCustomColors, SLOT( pasteColors() ) );
+  connect( mButtonImportColors, SIGNAL( clicked( bool ) ), mTreeCustomColors, SLOT( showImportColorsDialog() ) );
+  connect( mButtonExportColors, SIGNAL( clicked( bool ) ), mTreeCustomColors, SLOT( showExportColorsDialog() ) );
 
   //find custom color scheme from registry
   QList<QgsCustomColorScheme *> customSchemes;
@@ -2158,64 +2160,6 @@ void QgsOptions::on_mButtonAddColor_clicked()
   activateWindow();
 
   mTreeCustomColors->addColor( newColor, QgsSymbolLayerUtils::colorToName( newColor ) );
-}
-
-void QgsOptions::on_mButtonImportColors_clicked()
-{
-  QSettings s;
-  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
-  QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, "GPL (*.gpl);;All files (*.*)" );
-  activateWindow();
-  if ( filePath.isEmpty() )
-  {
-    return;
-  }
-
-  //check if file exists
-  QFileInfo fileInfo( filePath );
-  if ( !fileInfo.exists() || !fileInfo.isReadable() )
-  {
-    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
-    return;
-  }
-
-  s.setValue( "/UI/lastGplPaletteDir", fileInfo.absolutePath() );
-  QFile file( filePath );
-  bool importOk = mTreeCustomColors->importColorsFromGpl( file );
-  if ( !importOk )
-  {
-    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, no colors found in palette file" ) );
-    return;
-  }
-}
-
-void QgsOptions::on_mButtonExportColors_clicked()
-{
-  QSettings s;
-  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Palette file" ), lastDir, "GPL (*.gpl)" );
-  activateWindow();
-  if ( fileName.isEmpty() )
-  {
-    return;
-  }
-
-  // ensure filename contains extension
-  if ( !fileName.endsWith( ".gpl", Qt::CaseInsensitive ) )
-  {
-    fileName += ".gpl";
-  }
-
-  QFileInfo fileInfo( fileName );
-  s.setValue( "/UI/lastGplPaletteDir", fileInfo.absolutePath() );
-
-  QFile file( fileName );
-  bool exportOk = mTreeCustomColors->exportColorsToGpl( file );
-  if ( !exportOk )
-  {
-    QMessageBox::critical( nullptr, tr( "Error exporting" ), tr( "Error writing palette file" ) );
-    return;
-  }
 }
 
 QListWidgetItem* QgsOptions::addScaleToScaleList( const QString &newScale )

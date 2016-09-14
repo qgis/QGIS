@@ -23,6 +23,8 @@
 #include <QMimeData>
 #include <QClipboard>
 #include <QKeyEvent>
+#include <QFileDialog>
+#include <QMessageBox>
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -133,6 +135,64 @@ void QgsColorSchemeList::copyColors()
   //copy colors
   QMimeData* mimeData = QgsSymbolLayerUtils::colorListToMimeData( colorsToCopy );
   QApplication::clipboard()->setMimeData( mimeData );
+}
+
+void QgsColorSchemeList::showImportColorsDialog()
+{
+  QSettings s;
+  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
+  QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, "GPL (*.gpl);;All files (*.*)" );
+  activateWindow();
+  if ( filePath.isEmpty() )
+  {
+    return;
+  }
+
+  //check if file exists
+  QFileInfo fileInfo( filePath );
+  if ( !fileInfo.exists() || !fileInfo.isReadable() )
+  {
+    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
+    return;
+  }
+
+  s.setValue( "/UI/lastGplPaletteDir", fileInfo.absolutePath() );
+  QFile file( filePath );
+  bool importOk = importColorsFromGpl( file );
+  if ( !importOk )
+  {
+    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, no colors found in palette file" ) );
+    return;
+  }
+}
+
+void QgsColorSchemeList::showExportColorsDialog()
+{
+  QSettings s;
+  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Palette file" ), lastDir, "GPL (*.gpl)" );
+  activateWindow();
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  // ensure filename contains extension
+  if ( !fileName.endsWith( ".gpl", Qt::CaseInsensitive ) )
+  {
+    fileName += ".gpl";
+  }
+
+  QFileInfo fileInfo( fileName );
+  s.setValue( "/UI/lastGplPaletteDir", fileInfo.absolutePath() );
+
+  QFile file( fileName );
+  bool exportOk = exportColorsToGpl( file );
+  if ( !exportOk )
+  {
+    QMessageBox::critical( nullptr, tr( "Error exporting" ), tr( "Error writing palette file" ) );
+    return;
+  }
 }
 
 void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )

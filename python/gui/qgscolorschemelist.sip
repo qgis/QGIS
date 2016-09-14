@@ -178,6 +178,18 @@ class QgsColorSchemeList: QTreeView
      */
     void copyColors();
 
+    /** Displays a file picker dialog allowing users to import colors into the list from a file.
+     * @note added in QGIS 3.0
+     * @see showExportColorsDialog()
+     */
+    void showImportColorsDialog();
+
+    /** Displays a file picker dialog allowing users to export colors from the list into a file.
+     * @note added in QGIS 3.0
+     * @see showImportColorsDialog()
+     */
+    void showExportColorsDialog();
+
   signals:
 
     /** Emitted when a color is selected from the list

@@ -167,8 +167,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void projectionSelectorInitialized();
 
     void on_mButtonAddColor_clicked();
-    void on_mButtonImportColors_clicked();
-    void on_mButtonExportColors_clicked();
 
   signals:
     //! Signal used to inform listeners that the mouse display precision may have changed
