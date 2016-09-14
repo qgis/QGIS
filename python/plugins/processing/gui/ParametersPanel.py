@@ -124,7 +124,6 @@ class ParametersPanel(BASE, WIDGET):
                 widget = QWidget()
                 widget.setLayout(layout)
 
-            print wrapper
             tooltips = self.alg.getParameterDescriptions()
             widget.setToolTip(tooltips.get(param.name, param.description))
 
