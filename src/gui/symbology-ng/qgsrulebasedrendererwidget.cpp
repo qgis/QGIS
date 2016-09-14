@@ -651,8 +651,8 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   connect( btnExpressionBuilder, SIGNAL( clicked() ), this, SLOT( buildExpression() ) );
   connect( btnTestFilter, SIGNAL( clicked() ), this, SLOT( testFilter() ) );
   connect( editFilter, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
-  connect( editLabel, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
-  connect( editDescription, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
+  connect( editLabel, SIGNAL( editingFinished() ), this, SIGNAL( widgetChanged() ) );
+  connect( editDescription, SIGNAL( editingFinished() ), this, SIGNAL( widgetChanged() ) );
   connect( groupSymbol, SIGNAL( toggled( bool ) ), this, SIGNAL( widgetChanged() ) );
   connect( groupScale, SIGNAL( toggled( bool ) ), this, SIGNAL( widgetChanged() ) );
   connect( mScaleRangeWidget, SIGNAL( rangeChanged( double, double ) ), this, SIGNAL( widgetChanged() ) );
