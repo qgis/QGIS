@@ -80,7 +80,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       ChangeGeometries =                            1 <<  8,
       /** Allows user to select encoding */
       SelectEncoding =                              1 << 13,
-      /** DEPRECATED - do not use */
+      /** Can create indexes on provider's fields */
       CreateAttributeIndex =                        1 << 12,
       /** Supports simplification of geometries on provider side according to a distance tolerance */
       SimplifyGeometries =                          1 << 14,

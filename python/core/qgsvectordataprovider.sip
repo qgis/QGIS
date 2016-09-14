@@ -31,7 +31,7 @@ class QgsVectorDataProvider : QgsDataProvider
       SelectAtId,
       /** Allows modifications of geometries */
       ChangeGeometries,
-      /** DEPRECATED - do not use */
+      /** Can create indexes on provider's fields */
       CreateAttributeIndex,
       /** Allows user to select encoding */
       SelectEncoding,
