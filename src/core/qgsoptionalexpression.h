@@ -20,6 +20,8 @@
 #include "qgsexpression.h"
 
 /**
+ * \ingroup core
+ *
  * An expression with an additional enabled flag.
  *
  * This can be used for configuration options where an expression can be enabled
