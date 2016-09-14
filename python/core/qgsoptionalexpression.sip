@@ -80,4 +80,21 @@ class QgsOptionalExpression
      * @note Added in QGIS 3.0
      */
     void setData( const QgsExpression& data );
+
+    /**
+     * Save the optional expression to the provided QDomElement.
+     *
+     * The caller is responsible to pass an empty QDomElement and to append it to
+     * a parent element.
+     *
+     * @note Added in QGIS 2.18
+     */
+    void writeXml(QDomElement& parent );
+
+    /**
+     * Read the optional expression from the provided QDomElement.
+     *
+     * @note Added in QGIS 2.18
+     */
+    void readXml(const QDomElement& parent );
 };
