@@ -86,8 +86,10 @@ class QgsRuleBasedRendererWidget : QgsRendererWidget
 
   protected:
     void refineRule( int type );
-    void refineRuleCategoriesGui( const QModelIndexList& index );
-    void refineRuleRangesGui( const QModelIndexList& index );
+    //! Opens the dialog for refining a rule using categories
+    void refineRuleCategoriesGui();
+    //! Opens the dialog for refining a rule using ranges
+    void refineRuleRangesGui();
     void refineRuleScalesGui( const QModelIndexList& index );
 
     QgsRuleBasedRenderer::Rule* currentRule();

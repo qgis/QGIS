@@ -39,10 +39,12 @@ class QgsSymbol
       ScaleDiameter  //!< Calculate scale by the diameter
     };
 
+    //! Flags controlling behaviour of symbols during rendering
     enum RenderHint
     {
-      DataDefinedRotation
+      DynamicRotation, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
     };
+    typedef QFlags<QgsSymbol::RenderHint> RenderHints;
 
     virtual ~QgsSymbol();
 
@@ -178,8 +180,15 @@ class QgsSymbol
     //! Set alpha transparency 1 for opaque, 0 for invisible
     void setAlpha( qreal alpha );
 
-    void setRenderHints( int hints );
-    int renderHints() const;
+    /** Sets rendering hint flags for the symbol.
+     * @see renderHints()
+     */
+    void setRenderHints( RenderHints hints );
+
+    /** Returns the rendering hint flags for the symbol.
+     * @see setRenderHints()
+     */
+    RenderHints renderHints() const;
 
     /** Sets whether features drawn by the symbol should be clipped to the render context's
      * extent. If this option is enabled then features which are partially outside the extent
@@ -281,6 +290,9 @@ class QgsSymbol
     QgsSymbol( const QgsSymbol& );
 };
 
+QFlags<QgsSymbol::RenderHint> operator|(QgsSymbol::RenderHint f1, QFlags<QgsSymbol::RenderHint> f2);
+
+
 ///////////////////////
 
 class QgsSymbolRenderContext
@@ -296,12 +308,12 @@ class QgsSymbolRenderContext
      * @param u
      * @param alpha
      * @param selected set to true if symbol should be drawn in a "selected" state
-     * @param renderHints
+     * @param renderHints flags controlling rendering behaviour
      * @param f
      * @param fields
      * @param mapUnitScale
      */
-    QgsSymbolRenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields& fields = QgsFields(), const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolRenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature* f = 0, const QgsFields& fields = QgsFields(), const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
     ~QgsSymbolRenderContext();
 
     QgsRenderContext& renderContext();
@@ -331,8 +343,15 @@ class QgsSymbolRenderContext
     bool selected() const;
     void setSelected( bool selected );
 
-    int renderHints() const;
-    void setRenderHints( int hints );
+    /** Returns the rendering hint flags for the symbol.
+     * @see setRenderHints()
+     */
+    QgsSymbol::RenderHints renderHints() const;
+
+    /** Sets rendering hint flags for the symbol.
+     * @see renderHints()
+     */
+    void setRenderHints( QgsSymbol::RenderHints hints );
 
     void setFeature( const QgsFeature* f );
     //! Current feature being rendered - may be null

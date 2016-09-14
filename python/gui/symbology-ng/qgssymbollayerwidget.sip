@@ -126,7 +126,6 @@ class QgsSimpleMarkerSymbolLayerWidget : QgsSymbolLayerWidget
     virtual QgsSymbolLayer* symbolLayer();
 
   public slots:
-    void setName();
     void setColorBorder( const QColor& color );
     void setColorFill( const QColor& color );
     void setSize();

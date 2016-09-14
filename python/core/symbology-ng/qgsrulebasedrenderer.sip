@@ -296,13 +296,6 @@ class QgsRuleBasedRenderer : QgsFeatureRenderer
         QgsRuleBasedRenderer::Rule* findRuleByKey( const QString& key );
 
         /**
-         * Check which child rules are else rules and update the internal list of else rules
-         *
-         * TODO QGIS 3: Does this need to be public?
-         */
-        void updateElseRules();
-
-        /**
          * Sets if this rule is an ELSE rule
          *
          * @param iselse If true, this rule is an ELSE rule

@@ -366,9 +366,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     //! QBrush corresponding to marker's fill style
     QBrush mBrush;
 
-    //TODO QGIS 3.0 - remove
-    QString mName;
-
     //! Cached image of marker, if using cached version
     QImage mCache;
     //! QPen to use as outline of selected symbols

@@ -83,4 +83,6 @@ class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayer
 
     void setDistanceMapUnitScale( const QgsMapUnitScale& scale );
     const QgsMapUnitScale& distanceMapUnitScale() const;
+
+    QRectF bounds( QPointF point, QgsSymbolRenderContext& context );
 };

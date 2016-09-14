@@ -354,13 +354,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         Rule* findRuleByKey( const QString& key );
 
         /**
-         * Check which child rules are else rules and update the internal list of else rules
-         *
-         * TODO QGIS 3: Does this need to be public?
-         */
-        void updateElseRules();
-
-        /**
          * Sets if this rule is an ELSE rule
          *
          * @param iselse If true, this rule is an ELSE rule
@@ -398,6 +391,12 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
         Rule( const Rule& rh );
         Rule& operator=( const Rule& rh );
+
+        /**
+         * Check which child rules are else rules and update the internal list of else rules
+         *
+         */
+        void updateElseRules();
     };
 
     /////

@@ -80,10 +80,13 @@ class CORE_EXPORT QgsSymbol
       ScaleDiameter  //!< Calculate scale by the diameter
     };
 
+
+    //! Flags controlling behaviour of symbols during rendering
     enum RenderHint
     {
-      DataDefinedRotation = 2
+      DynamicRotation = 2, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
     };
+    Q_DECLARE_FLAGS( RenderHints, RenderHint )
 
     virtual ~QgsSymbol();
 
@@ -224,8 +227,15 @@ class CORE_EXPORT QgsSymbol
     //! Set alpha transparency 1 for opaque, 0 for invisible
     void setAlpha( qreal alpha ) { mAlpha = alpha; }
 
-    void setRenderHints( int hints ) { mRenderHints = hints; }
-    int renderHints() const { return mRenderHints; }
+    /** Sets rendering hint flags for the symbol.
+     * @see renderHints()
+     */
+    void setRenderHints( RenderHints hints ) { mRenderHints = hints; }
+
+    /** Returns the rendering hint flags for the symbol.
+     * @see setRenderHints()
+     */
+    RenderHints renderHints() const { return mRenderHints; }
 
     /** Sets whether features drawn by the symbol should be clipped to the render context's
      * extent. If this option is enabled then features which are partially outside the extent
@@ -343,7 +353,7 @@ class CORE_EXPORT QgsSymbol
     /** Symbol opacity (in the range 0 - 1)*/
     qreal mAlpha;
 
-    int mRenderHints;
+    RenderHints mRenderHints;
     bool mClipFeaturesToExtent;
 
     const QgsVectorLayer* mLayer; //current vectorlayer
@@ -355,6 +365,8 @@ class CORE_EXPORT QgsSymbol
     Q_DISABLE_COPY( QgsSymbol )
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSymbol::RenderHints )
 
 ///////////////////////
 
@@ -370,12 +382,12 @@ class CORE_EXPORT QgsSymbolRenderContext
      * @param u
      * @param alpha
      * @param selected set to true if symbol should be drawn in a "selected" state
-     * @param renderHints
+     * @param renderHints flags controlling rendering behaviour
      * @param f
      * @param fields
      * @param mapUnitScale
      */
-    QgsSymbolRenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = nullptr, const QgsFields& fields = QgsFields(), const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolRenderContext( QgsRenderContext& c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature* f = nullptr, const QgsFields& fields = QgsFields(), const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
     ~QgsSymbolRenderContext();
 
     QgsRenderContext& renderContext() { return mRenderContext; }
@@ -405,8 +417,15 @@ class CORE_EXPORT QgsSymbolRenderContext
     bool selected() const { return mSelected; }
     void setSelected( bool selected ) { mSelected = selected; }
 
-    int renderHints() const { return mRenderHints; }
-    void setRenderHints( int hints ) { mRenderHints = hints; }
+    /** Returns the rendering hint flags for the symbol.
+     * @see setRenderHints()
+     */
+    QgsSymbol::RenderHints renderHints() const { return mRenderHints; }
+
+    /** Sets rendering hint flags for the symbol.
+     * @see renderHints()
+     */
+    void setRenderHints( QgsSymbol::RenderHints hints ) { mRenderHints = hints; }
 
     void setFeature( const QgsFeature* f ) { mFeature = f; }
     //! Current feature being rendered - may be null
@@ -464,7 +483,7 @@ class CORE_EXPORT QgsSymbolRenderContext
     QgsMapUnitScale mMapUnitScale;
     qreal mAlpha;
     bool mSelected;
-    int mRenderHints;
+    QgsSymbol::RenderHints mRenderHints;
     const QgsFeature* mFeature; //current feature
     QgsFields mFields;
     int mGeometryPartCount;
