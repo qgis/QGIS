@@ -69,8 +69,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
         self.alg = alg
 
-        self.mainWidget = ParametersPanel(self, alg)
-        self.setMainWidget()
+        self.setMainWidget(ParametersPanel(self, alg))
 
         self.cornerWidget = QWidget()
         layout = QVBoxLayout()
@@ -82,8 +81,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
         self.cornerWidget.setLayout(layout)
         self.tabWidget.setCornerWidget(self.cornerWidget)
 
-        QgsMapLayerRegistry.instance().layerWasAdded.connect(self.mainWidget.layerRegistryChanged)
-        QgsMapLayerRegistry.instance().layersWillBeRemoved.connect(self.mainWidget.layerRegistryChanged)
 
     def runAsBatch(self):
         self.close()

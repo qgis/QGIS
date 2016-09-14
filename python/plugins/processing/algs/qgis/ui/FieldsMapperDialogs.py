@@ -98,8 +98,7 @@ class FieldsMapperParametersDialog(AlgorithmDialog):
 
         self.alg = alg
 
-        self.mainWidget = FieldsMapperParametersPanel(self, alg)
-        self.setMainWidget()
+        self.setMainWidget(FieldsMapperParametersPanel(self, alg))
 
     def setParamValue(self, param, widget, alg=None):
         if isinstance(param, ParameterFieldsMapping):

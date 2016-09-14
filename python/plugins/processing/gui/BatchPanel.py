@@ -88,6 +88,10 @@ class BatchPanel(BASE, WIDGET):
             self.fillParameterValues)
 
         self.initWidgets()
+        
+        
+    def layerRegistryChanged(self):
+        pass
 
     def initWidgets(self):
         # If there are advanced parameters — show corresponding button
