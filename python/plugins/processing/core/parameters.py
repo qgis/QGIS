@@ -102,6 +102,17 @@ def _expressionContext():
     context.appendScope(processingScope)
     return context
 
+def _resolveLayers(value):
+    layers = dataobjects.getAllLayers()
+    if value:
+        inputlayers = value.split(';')
+        for i, inputlayer in enumerate(inputlayers):
+            for layer in layers:
+                if layer.name() == inputlayer:
+                    inputlayers[i] = layer.source()
+                    break
+        return ";".join(inputlayers)
+
 class Parameter:
 
     """
@@ -312,6 +323,9 @@ class ParameterDataObject(Parameter):
             s = dataobjects.normalizeLayerSource(str(self.value))
             s = '"%s"' % s
             return s
+        
+    def evaluate(self, alg):
+        self.value = _resolveLayers(self.value)
 
 
 class ParameterExtent(Parameter):
@@ -771,6 +785,9 @@ class ParameterMultipleInput(ParameterDataObject):
             return ParameterMultipleInput(name, definition,
                                            dataobjects.TYPE_VECTOR_ANY, isOptional)
 
+    def evaluate(self, alg):
+        self.value = _resolveLayers(self.value)
+
 
 class ParameterNumber(Parameter):
     
@@ -861,7 +878,7 @@ class ParameterNumber(Parameter):
         return result
         
     def evaluate(self, alg):
-        if isinstance(self.value, basestring):
+        if isinstance(self.value, basestring) and bool(self.value):
             self.value = self._evaluate(self.value)
         
     def _layerVariables(self, element, alg=None):
@@ -1024,7 +1041,6 @@ class ParameterRaster(ParameterDataObject):
     def fromScriptCode(self, line):
         isOptional, name, definition = _splitParameterOptions(line)
         descName = _createDescriptiveName(name)
-        print isOptional, name, definition
         if definition.lower().strip().startswith('raster'):
             return ParameterRaster(name, descName, optional=isOptional)
 
@@ -1111,7 +1127,7 @@ class ParameterString(Parameter):
         self.evaluateExpressions = parseBool(evaluateExpressions)
 
     def setValue(self, obj):
-        if obj is None:
+        if not bool(obj):
             if not self.optional:
                 return False
             self.value = None
@@ -1153,13 +1169,14 @@ class ParameterString(Parameter):
                 return ParameterString(name, descName, multiline=True, optional=isOptional)
             
     def evaluate(self, alg):
-        exp = QgsExpression(self.value)
-        if exp.hasParserError():
-            raise ValueError(self.tr("Error in parameter expression: ") + exp.parserErrorString())
-        result = exp.evaluate(_expressionContext())
-        if exp.hasEvalError():
-            raise ValueError("Error evaluating parameter expression: " + exp.evalErrorString())
-        self.value = result
+        if isinstance(self.value, basestring) and bool(self.value) and self.evaluateExpressions:
+            exp = QgsExpression(self.value)
+            if exp.hasParserError():
+                raise ValueError(self.tr("Error in parameter expression: ") + exp.parserErrorString())
+            result = exp.evaluate(_expressionContext())
+            if exp.hasEvalError():
+                raise ValueError("Error evaluating parameter expression: " + exp.evalErrorString())
+            self.value = result
         
     def expressionContext(self):
         return _expressionContext()
