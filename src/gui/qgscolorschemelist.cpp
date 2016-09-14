@@ -758,7 +758,22 @@ bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *mod
       //item not editable
       return false;
     }
+
     QColor color = index.model()->data( index, Qt::DisplayRole ).value<QColor>();
+
+    QgsPanelWidget* panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget* >( parent() ) );
+    if ( panel && panel->dockMode() )
+    {
+      QgsCompoundColorWidget* colorWidget = new QgsCompoundColorWidget( panel, color, QgsCompoundColorWidget::LayoutVertical );
+      colorWidget->setPanelTitle( tr( "Select color" ) );
+      colorWidget->setAllowAlpha( true );
+      colorWidget->setProperty( "index", index );
+      connect( colorWidget, SIGNAL( currentColorChanged( QColor ) ), this, SLOT( colorChanged() ) );
+      panel->openPanel( colorWidget );
+      return true;
+    }
+
+
     QColor newColor = QgsColorDialog::getColor( color, mParent, tr( "Select color" ), true );
     if ( !newColor.isValid() )
     {
@@ -769,4 +784,13 @@ bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *mod
   }
 
   return false;
+}
+
+void QgsColorSwatchDelegate::colorChanged()
+{
+  if ( QgsCompoundColorWidget* colorWidget = qobject_cast< QgsCompoundColorWidget* >( sender() ) )
+  {
+    QModelIndex index = colorWidget->property( "index" ).toModelIndex();
+    const_cast< QAbstractItemModel* >( index.model() )->setData( index, colorWidget->color(), Qt::EditRole );
+  }
 }

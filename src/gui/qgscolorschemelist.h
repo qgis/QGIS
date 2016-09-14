@@ -22,6 +22,7 @@
 #include <QFile>
 
 class QMimeData;
+class QgsPanelWidget;
 
 /** \ingroup gui
  * \class QgsColorSwatchDelegate
@@ -38,6 +39,10 @@ class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
     void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
     QSize sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
     bool editorEvent( QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index ) override;
+
+  private slots:
+
+    void colorChanged();
 
   private:
     QWidget* mParent;
