@@ -105,7 +105,7 @@ void TestQgsAuthManager::initTestCase()
   // create QGIS_AUTH_PASSWORD_FILE file
   QString passfilepath = mTempDir + "/passfile";
   QFile passfile( passfilepath );
-  if ( passfile.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  if ( passfile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
     QTextStream fout( &passfile );
     fout << QString( mPass ) << "\r\n";
@@ -149,7 +149,7 @@ void TestQgsAuthManager::cleanupTestCase()
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly ) )
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QTextStream myQTextStream( &myFile );
     myQTextStream << mReport;

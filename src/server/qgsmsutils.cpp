@@ -70,7 +70,7 @@ QString QgsMSUtils::createTempFilePath()
 int QgsMSUtils::createTextFile( const QString& filePath, const QString& text )
 {
   QFile file( filePath );
-  if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  if ( file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
     QTextStream fileStream( &file );
     fileStream << text;

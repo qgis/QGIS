@@ -1052,7 +1052,7 @@ void QgsGrassMapcalc::save()
                  + "/mapcalc/" + mFileName;
 
   QFile out( path );
-  if ( !out.open( QIODevice::WriteOnly ) )
+  if ( !out.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QMessageBox::warning( this, tr( "Save mapcalc" ),
                           tr( "Cannot open mapcalc file" ) );

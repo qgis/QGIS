@@ -2875,7 +2875,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
         QFileInfo fi( outputFileName );
         QString currentFileName = i == 0 ? outputFileName : fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
         QFile out( currentFileName );
-        bool openOk = out.open( QIODevice::WriteOnly | QIODevice::Text );
+        bool openOk = out.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate );
         if ( !openOk )
         {
           QMessageBox::warning( this, tr( "SVG export error" ),
@@ -3097,7 +3097,7 @@ void QgsComposer::on_mActionSaveAsTemplate_triggered()
   settings.setValue( "UI/lastComposerTemplateDir", saveFileInfo.absolutePath() );
 
   QFile templateFile( saveFileName );
-  if ( !templateFile.open( QIODevice::WriteOnly ) )
+  if ( !templateFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     return;
   }
@@ -4055,7 +4055,7 @@ void QgsComposer::createComposerView()
 void QgsComposer::writeWorldFile( const QString& worldFileName, double a, double b, double c, double d, double e, double f ) const
 {
   QFile worldFile( worldFileName );
-  if ( !worldFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  if ( !worldFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
     return;
   }

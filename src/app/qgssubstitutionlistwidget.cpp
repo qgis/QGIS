@@ -107,7 +107,7 @@ void QgsSubstitutionListWidget::on_mButtonExport_clicked()
   doc.appendChild( root );
 
   QFile file( fileName );
-  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
     QMessageBox::warning( nullptr, tr( "Export substitutions" ),
                           tr( "Cannot write file %1:\n%2." ).arg( fileName, file.errorString() ),

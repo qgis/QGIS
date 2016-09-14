@@ -363,7 +363,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     {
       QString layerName = vectorFileName.left( vectorFileName.indexOf( ".shp", Qt::CaseInsensitive ) );
       QFile prjFile( layerName + ".qpj" );
-      if ( prjFile.open( QIODevice::WriteOnly ) )
+      if ( prjFile.open( QIODevice::WriteOnly  | QIODevice::Truncate ) )
       {
         QTextStream prjStream( &prjFile );
         prjStream << srs.toWkt().toLocal8Bit().constData() << endl;

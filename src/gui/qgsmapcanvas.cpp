@@ -782,7 +782,7 @@ void QgsMapCanvas::saveAsImage( const QString& theFileName, QPixmap * theQPixmap
   QString myWorldFileName = myInfo.absolutePath() + '/' + myInfo.baseName() + '.'
                             + outputSuffix.at( 0 ) + outputSuffix.at( myInfo.suffix().size() - 1 ) + 'w';
   QFile myWorldFile( myWorldFileName );
-  if ( !myWorldFile.open( QIODevice::WriteOnly ) ) //don't use QIODevice::Text
+  if ( !myWorldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) ) //don't use QIODevice::Text
   {
     return;
   }

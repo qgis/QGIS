@@ -2950,7 +2950,7 @@ QMimeData* QgsSymbolLayerUtils::colorListToMimeData( const QgsNamedColorList& co
 
 bool QgsSymbolLayerUtils::saveColorsToGpl( QFile &file, const QString& paletteName, const QgsNamedColorList& colors )
 {
-  if ( !file.open( QIODevice::ReadWrite ) )
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     return false;
   }

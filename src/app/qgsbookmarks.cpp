@@ -372,7 +372,7 @@ void QgsBookmarks::exportToXml()
   }
 
   QFile f( fileName );
-  if ( !f.open( QFile::WriteOnly ) )
+  if ( !f.open( QFile::WriteOnly | QIODevice::Truncate ) )
   {
     f.close();
     return;

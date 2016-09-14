@@ -904,7 +904,7 @@ void QgsWFSFeatureIterator::featureReceivedSynchronous( QVector<QgsWFSFeatureGml
     mWriterFilename = QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QString( "iterator_%1_%2.bin" ).arg( thisStr ).arg( mCounter ) );
     QgsDebugMsg( QString( "Transferring feature iterator cache to %1" ).arg( mWriterFilename ) );
     mWriterFile = new QFile( mWriterFilename );
-    if ( !mWriterFile->open( QIODevice::WriteOnly ) )
+    if ( !mWriterFile->open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       QgsDebugMsg( QString( "Cannot open %1 for writing" ).arg( mWriterFilename ) );
       delete mWriterFile;

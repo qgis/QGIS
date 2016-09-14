@@ -139,7 +139,7 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
   }
 
   QFile file( fileName );
-  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
     QMessageBox::warning( this, tr( "Saving shortcuts" ),
                           tr( "Cannot write file %1:\n%2." )

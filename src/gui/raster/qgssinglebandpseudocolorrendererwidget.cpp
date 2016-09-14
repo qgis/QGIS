@@ -670,7 +670,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mExportToFileButton_clicked()
     }
 
     QFile outputFile( fileName );
-    if ( outputFile.open( QFile::WriteOnly ) )
+    if ( outputFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream outputStream( &outputFile );
       outputStream << "# " << tr( "QGIS Generated Color Map Export File" ) << '\n';

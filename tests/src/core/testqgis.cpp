@@ -57,7 +57,7 @@ void TestQgis::cleanupTestCase()
 {
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly ) )
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QTextStream myQTextStream( &myFile );
     myQTextStream << mReport;

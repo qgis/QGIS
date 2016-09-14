@@ -203,7 +203,7 @@ bool QgsGPXProvider::addFeatures( QgsFeatureList & flist )
 
   // write back to file
   QFile file( mFileName );
-  if ( !file.open( QIODevice::WriteOnly ) )
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     return false;
   QTextStream ostr( &file );
   data->writeXml( ostr );
@@ -391,7 +391,7 @@ bool QgsGPXProvider::deleteFeatures( const QgsFeatureIds & id )
 
   // write back to file
   QFile file( mFileName );
-  if ( !file.open( QIODevice::WriteOnly ) )
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     return false;
   QTextStream ostr( &file );
   data->writeXml( ostr );
@@ -441,7 +441,7 @@ bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
   // write back to file
   QFile file( mFileName );
-  if ( !file.open( QIODevice::WriteOnly ) )
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     return false;
   QTextStream ostr( &file );
   data->writeXml( ostr );

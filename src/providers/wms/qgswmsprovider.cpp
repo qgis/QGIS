@@ -3835,7 +3835,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
                                    .arg( reply->url().toString() ), tr( "WMS" ) );
 #ifdef QGISDEBUG
         QFile file( QDir::tempPath() + "/broken-image.png" );
-        if ( file.open( QIODevice::WriteOnly ) )
+        if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
         {
           file.write( text );
           file.close();

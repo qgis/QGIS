@@ -422,7 +422,7 @@ void TestQgsWcsPublicServers::test()
           {
             uri = myPath + "-gdal.xml";
             QFile myGdalXmlFile( uri );
-            Q_ASSERT( myGdalXmlFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
+            Q_ASSERT( myGdalXmlFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) );
             QTextStream myStream( &myGdalXmlFile );
             myStream << "<WCS_GDAL>\n";
             myStream << "  <ServiceURL>" + serverUrl + '?' + "</ServiceURL>\n";
@@ -519,7 +519,7 @@ void TestQgsWcsPublicServers::test()
 
         QFile myLogFile( myLogPath );
 
-        Q_ASSERT( myLogFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
+        Q_ASSERT( myLogFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) );
         QTextStream myStream( &myLogFile );
         myStream << myLog.join( "\n" );
 
@@ -531,13 +531,13 @@ void TestQgsWcsPublicServers::test()
         QgsDebugMsg( "Coverage not found" );
       }
       QFile myVersionLogFile( myVersionLogPath );
-      Q_ASSERT( myVersionLogFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
+      Q_ASSERT( myVersionLogFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) );
       QTextStream myVersionStream( &myVersionLogFile );
       myVersionStream << myVersionLog.join( "\n" );
       myVersionLogFile.close();
     }
     QFile myServerLogFile( myServerLogPath );
-    Q_ASSERT( myServerLogFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
+    Q_ASSERT( myServerLogFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) );
     QTextStream myServerStream( &myServerLogFile );
     myServerStream << myServerLog.join( "\n" );
     myServerLogFile.close();
@@ -548,7 +548,7 @@ void TestQgsWcsPublicServers::writeReport( const QString& theReport )
 {
   QString myReportFile = mCacheDir.absolutePath() + "/index.html";
   QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly ) )
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QTextStream myStream( &myFile );
     myStream << theReport;

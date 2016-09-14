@@ -2663,7 +2663,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   {
     QString layerName = uri.left( uri.indexOf( ".shp", Qt::CaseInsensitive ) );
     QFile prjFile( layerName + ".qpj" );
-    if ( prjFile.open( QIODevice::WriteOnly ) )
+    if ( prjFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream prjStream( &prjFile );
       prjStream << myWkt.toLocal8Bit().data() << endl;
