@@ -49,8 +49,7 @@ void QgsEditFormConfig::setFields( const QgsFields& fields )
     d->mInvisibleRootContainer->clear();
     for ( int i = 0; i < d->mFields.size(); ++i )
     {
-      QgsAttributeEditorField* field = new QgsAttributeEditorField( !d->mFields.at( i ).alias().isEmpty() ? d->mFields.at( i ).alias()
-          : d->mFields.at( i ).name(), i, d->mInvisibleRootContainer );
+      QgsAttributeEditorField* field = new QgsAttributeEditorField( d->mFields.at( i ).name(), i, d->mInvisibleRootContainer );
       d->mInvisibleRootContainer->addChildElement( field );
     }
   }
