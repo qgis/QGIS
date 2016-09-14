@@ -74,7 +74,7 @@ bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
   char* pszOutWkt = nullptr;
   OSRExportToWkt( hSRS, &pszOutWkt );
   QFile prjFile( layerName + ".prj" );
-  if ( prjFile.open( QIODevice::WriteOnly ) )
+  if ( prjFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QTextStream prjStream( &prjFile );
     prjStream << pszOutWkt << endl;
@@ -90,7 +90,7 @@ bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
 
   // save qgis-specific .qpj file (maybe because of better wkt compatibility?)
   QFile qpjFile( layerName + ".qpj" );
-  if ( qpjFile.open( QIODevice::WriteOnly ) )
+  if ( qpjFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QTextStream qpjStream( &qpjFile );
     qpjStream << wkt.toLocal8Bit().data() << endl;

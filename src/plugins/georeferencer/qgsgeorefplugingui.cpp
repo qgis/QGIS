@@ -1280,7 +1280,7 @@ bool QgsGeorefPluginGui::loadGCPs( /*bool verbose*/ )
 void QgsGeorefPluginGui::saveGCPs()
 {
   QFile pointFile( mGCPpointsFileName );
-  if ( pointFile.open( QIODevice::WriteOnly ) )
+  if ( pointFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QTextStream points( &pointFile );
     points << "mapX,mapY,pixelX,pixelY,enable" << endl;
@@ -1422,7 +1422,7 @@ bool QgsGeorefPluginGui::writeWorldFile( const QgsPoint& origin, double pixelXSi
 {
   // write the world file
   QFile file( mWorldFileName );
-  if ( !file.open( QIODevice::WriteOnly ) )
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     mMessageBar->pushMessage( tr( "Error" ), tr( "Could not write to %1." ).arg( mWorldFileName ), QgsMessageBar::CRITICAL, messageTimeout() );
     return false;

@@ -494,7 +494,7 @@ void QgsApplication::setUITheme( const QString &themeName )
 
   if ( variableInfo.exists() && variablesfile.open( QIODevice::ReadOnly ) )
   {
-    if ( !file.open( QIODevice::ReadOnly ) || !fileout.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    if ( !file.open( QIODevice::ReadOnly ) || !fileout.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
     {
       return;
     }

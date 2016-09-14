@@ -249,7 +249,7 @@ bool QgsWmsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapa
 
 #ifdef QGISDEBUG
   QFile file( QDir::tempPath() + "/qgis-wmsprovider-capabilities.xml" );
-  if ( file.open( QIODevice::WriteOnly ) )
+  if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     file.write( xml );
     file.close();

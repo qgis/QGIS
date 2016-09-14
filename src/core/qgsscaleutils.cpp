@@ -34,7 +34,7 @@ bool QgsScaleUtils::saveScaleList( const QString &fileName, const QStringList &s
   }
 
   QFile file( fileName );
-  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
     errorMessage = QString( "Cannot write file %1:\n%2." ).arg( fileName, file.errorString() );
     return false;

@@ -427,7 +427,7 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
   QgsDebugMsg( "Entered." );
 #ifdef QGISDEBUG
   QFile file( QDir::tempPath() + "/qgis-wcs-capabilities.xml" );
-  if ( file.open( QIODevice::WriteOnly ) )
+  if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     file.write( xml );
     file.close();

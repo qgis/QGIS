@@ -249,7 +249,7 @@ void QgsRasterTerrainAnalysisDialog::on_mExportColorsButton_clicked()
   }
 
   QFile outputFile( file );
-  if ( !outputFile.open( QIODevice::WriteOnly ) )
+  if ( !outputFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     return;
   }

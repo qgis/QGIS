@@ -354,7 +354,7 @@ bool QgsWFSSharedData::createCache()
 
     // Copy the in-memory template Spatialite DB into the target DB
     QFile dbFile( mCacheDbname );
-    if ( !dbFile.open( QIODevice::WriteOnly ) )
+    if ( !dbFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       QgsMessageLog::logMessage( tr( "Cannot create temporary SpatiaLite cache" ), tr( "WFS" ) );
       return false;

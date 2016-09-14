@@ -230,7 +230,7 @@ bool QgsRenderChecker::runTest( const QString& theTestName,
   //create a world file to go with the image...
 
   QFile wldFile( QDir::tempPath() + '/' + theTestName + "_result.wld" );
-  if ( wldFile.open( QIODevice::WriteOnly ) )
+  if ( wldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QgsRectangle r = mMapSettings.extent();
 

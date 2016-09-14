@@ -379,7 +379,7 @@ void QgsSearchQueryBuilder::saveQuery()
   }
 
   QFile saveFile( saveFileName );
-  if ( !saveFile.open( QIODevice::WriteOnly ) )
+  if ( !saveFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QMessageBox::critical( nullptr, tr( "Error" ), tr( "Could not open file for writing" ) );
     return;

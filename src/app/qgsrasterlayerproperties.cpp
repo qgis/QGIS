@@ -1281,7 +1281,7 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
     }
 
     QFile myOutputFile( myFileName );
-    if ( myOutputFile.open( QFile::WriteOnly ) )
+    if ( myOutputFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream myOutputStream( &myOutputFile );
       myOutputStream << "# " << tr( "QGIS Generated Transparent Pixel Value Export File" ) << '\n';

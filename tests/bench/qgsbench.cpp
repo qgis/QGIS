@@ -335,7 +335,7 @@ QString QgsBench::serialize( const QMap<QString, QVariant>& theMap, int level )
 void QgsBench::saveLog( const QString & fileName )
 {
   QFile file( fileName );
-  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
     return;
 
   QTextStream out( &file );

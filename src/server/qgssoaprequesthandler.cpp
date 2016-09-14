@@ -768,7 +768,7 @@ int QgsSOAPRequestHandler::setUrlToFile( QImage* img )
     theFile.setFileName( tmpMasDir.absolutePath() + "/" + folderName + "/map.png" );
     uri.append( "/mas_tmp/" + folderName + "/map.png" );
   }
-  if ( !theFile.open( QIODevice::WriteOnly ) )
+  if ( !theFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QgsDebugMsg( "Error, could not open file" );
     return 4;

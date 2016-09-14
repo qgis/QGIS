@@ -1388,7 +1388,7 @@ bool QgsStyle::exportXml( const QString& filename )
 
   // save
   QFile f( filename );
-  if ( !f.open( QFile::WriteOnly ) )
+  if ( !f.open( QFile::WriteOnly | QIODevice::Truncate ) )
   {
     mErrorString = "Couldn't open file for writing: " + filename;
     return false;

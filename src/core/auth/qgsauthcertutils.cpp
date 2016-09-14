@@ -253,7 +253,7 @@ QString QgsAuthCertUtils::pemTextToTempFile( const QString &name, const QByteArr
   QFile pemFile( QDir::tempPath() + QDir::separator() + name );
   QString pemFilePath( pemFile.fileName() );
 
-  if ( pemFile.open( QIODevice::WriteOnly ) )
+  if ( pemFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     qint64 bytesWritten = pemFile.write( pemtext );
     if ( bytesWritten == -1 )

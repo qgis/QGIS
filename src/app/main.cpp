@@ -1229,7 +1229,7 @@ int main( int argc, char *argv[] )
     QFile dxfFile;
     if ( dxfOutputFile == "-" )
     {
-      if ( !dxfFile.open( stdout, QIODevice::WriteOnly ) )
+      if ( !dxfFile.open( stdout, QIODevice::WriteOnly | QIODevice::Truncate ) )
       {
         std::cerr << "could not open stdout" << std::endl;
         return 2;

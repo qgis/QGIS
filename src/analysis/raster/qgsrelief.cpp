@@ -574,7 +574,7 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString& file )
 
   //write out frequency values to csv file for debugging
   QFile outFile( file );
-  if ( !outFile.open( QIODevice::WriteOnly ) )
+  if ( !outFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     return false;
   }
