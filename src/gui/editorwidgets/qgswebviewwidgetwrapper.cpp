@@ -125,6 +125,7 @@ void QgsWebViewWidgetWrapper::initWidget( QWidget* editor )
     mWebView->page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
     mWebView->settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
     mWebView->settings()->setAttribute( QWebSettings::JavascriptCanOpenWindows, true );
+    mWebView->settings()->setAttribute( QWebSettings::PluginsEnabled, true );
 #ifdef QGISDEBUG
     mWebView->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
 #endif
