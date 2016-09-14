@@ -101,7 +101,6 @@ void QgsColorButton::showColorDialog()
     colorWidget->setPanelTitle( mColorDialogTitle );
     colorWidget->setAllowAlpha( mAllowAlpha );
     connect( colorWidget, SIGNAL( currentColorChanged( QColor ) ), this, SLOT( setValidTemporaryColor( QColor ) ) );
-    connect( colorWidget, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( panelAccepted( QgsPanelWidget* ) ) );
     panel->openPanel( colorWidget );
     return;
   }
@@ -141,7 +140,6 @@ void QgsColorButton::showColorDialog()
   if ( newColor.isValid() )
   {
     setValidColor( newColor );
-    addRecentColor( newColor );
   }
 
   // reactivate button's window
@@ -375,14 +373,6 @@ void QgsColorButton::setValidTemporaryColor( const QColor& newColor )
   if ( newColor.isValid() )
   {
     setColor( newColor );
-  }
-}
-
-void QgsColorButton::panelAccepted( QgsPanelWidget* widget )
-{
-  if ( QgsCompoundColorWidget* colorWidget = qobject_cast< QgsCompoundColorWidget* >( widget ) )
-  {
-    addRecentColor( colorWidget->color() );
   }
 }
 

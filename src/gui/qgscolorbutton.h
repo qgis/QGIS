@@ -425,9 +425,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     void setValidTemporaryColor( const QColor& newColor );
 
-    //! Called when a color widget panel is accepted, and adds the final color to the recent colors list
-    void panelAccepted( QgsPanelWidget* widget );
-
     /** Adds a color to the recent colors list
      * @param color to add to recent colors list
      */
