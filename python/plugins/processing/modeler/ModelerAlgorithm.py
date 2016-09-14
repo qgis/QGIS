@@ -363,7 +363,6 @@ class ModelerAlgorithm(GeoAlgorithm):
             if value is None:
                 continue
             if isinstance(value, CompoundValue):
-                print value
                 for v in value.values:
                     if isinstance(v, ValueFromOutput):
                         algs.add(v.alg)
