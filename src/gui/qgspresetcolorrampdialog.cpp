@@ -74,7 +74,7 @@ void QgsPresetColorRampWidget::on_mButtonAddColor_clicked()
 {
   if ( dockMode() )
   {
-    mTreeColors->addColor( QgsRecentColorScheme::lastUsedColor(), QgsSymbolLayerUtils::colorToName( QgsRecentColorScheme::lastUsedColor() ) );
+    mTreeColors->addColor( QgsRecentColorScheme::lastUsedColor(), QgsSymbolLayerUtils::colorToName( QgsRecentColorScheme::lastUsedColor() ), true );
 
     QgsCompoundColorWidget* colorWidget = new QgsCompoundColorWidget( this, QgsRecentColorScheme::lastUsedColor(), QgsCompoundColorWidget::LayoutVertical );
     colorWidget->setPanelTitle( tr( "Select Color" ) );

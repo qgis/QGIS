@@ -93,9 +93,9 @@ void QgsColorSchemeList::removeSelection()
   }
 }
 
-void QgsColorSchemeList::addColor( const QColor &color, const QString &label )
+void QgsColorSchemeList::addColor( const QColor &color, const QString &label, bool allowDuplicate )
 {
-  mModel->addColor( color, label );
+  mModel->addColor( color, label, allowDuplicate );
 }
 
 void QgsColorSchemeList::pasteColors()
@@ -647,22 +647,25 @@ bool QgsColorSchemeModel::insertRows( int row, int count, const QModelIndex& par
   return true;
 }
 
-void QgsColorSchemeModel::addColor( const QColor &color, const QString &label )
+void QgsColorSchemeModel::addColor( const QColor &color, const QString &label, bool allowDuplicate )
 {
   if ( !mScheme || !mScheme->isEditable() )
   {
     return;
   }
 
-  //matches existing color? if so, remove it first
-  QPair< QColor, QString > newColor = qMakePair( color, !label.isEmpty() ? label : QgsSymbolLayerUtils::colorToName( color ) );
-  //if color already exists, remove it
-  int existingIndex = mColors.indexOf( newColor );
-  if ( existingIndex >= 0 )
+  if ( !allowDuplicate )
   {
-    beginRemoveRows( QModelIndex(), existingIndex, existingIndex );
-    mColors.removeAt( existingIndex );
-    endRemoveRows();
+    //matches existing color? if so, remove it first
+    QPair< QColor, QString > newColor = qMakePair( color, !label.isEmpty() ? label : QgsSymbolLayerUtils::colorToName( color ) );
+    //if color already exists, remove it
+    int existingIndex = mColors.indexOf( newColor );
+    if ( existingIndex >= 0 )
+    {
+      beginRemoveRows( QModelIndex(), existingIndex, existingIndex );
+      mColors.removeAt( existingIndex );
+      endRemoveRows();
+    }
   }
 
   int row = rowCount();
