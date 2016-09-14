@@ -204,8 +204,15 @@ class QgsRecentColorScheme : QgsColorScheme
     /** Adds a color to the list of recent colors.
      * @param color color to add
      * @note added in QGIS 2.14
+     * @see lastUsedColor()
      */
     static void addRecentColor( const QColor& color );
+
+    /** Returns the most recently used color.
+     * @note added in QGIS 3.0
+     * @see addRecentColor()
+     */
+    static QColor lastUsedColor();
 };
 
 /** \ingroup core

@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.testing import unittest, start_app
-from qgis.core import QgsColorScheme, QgsUserColorScheme
+from qgis.core import QgsColorScheme, QgsUserColorScheme, QgsRecentColorScheme
 from qgis.PyQt.QtCore import QCoreApplication, QSettings
 from qgis.PyQt.QtGui import QColor
 
@@ -112,6 +112,18 @@ class TestQgsColorScheme(unittest.TestCase):
         self.assertFalse(scheme.flags() & QgsColorScheme.ShowInColorButtonMenu)
 
         scheme.erase()
+
+    def testRecentColors(self):
+        """ test retrieving recent colors """
+
+        # no colors
+        self.assertFalse(QgsRecentColorScheme().lastUsedColor().isValid())
+
+        # add a recent color
+        QgsRecentColorScheme().addRecentColor(QColor(255, 0, 0))
+        self.assertEqual(QgsRecentColorScheme().lastUsedColor(), QColor(255, 0, 0))
+        QgsRecentColorScheme().addRecentColor(QColor(0, 255, 0))
+        self.assertEqual(QgsRecentColorScheme().lastUsedColor(), QColor(0, 255, 0))
 
 
 if __name__ == "__main__":

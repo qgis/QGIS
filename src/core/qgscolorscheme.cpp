@@ -117,6 +117,18 @@ void QgsRecentColorScheme::addRecentColor( const QColor& color )
   settings.setValue( QString( "/colors/recent" ), recentColorVariants );
 }
 
+QColor QgsRecentColorScheme::lastUsedColor()
+{
+  //fetch recent colors
+  QSettings settings;
+  QList< QVariant > recentColorVariants = settings.value( QString( "/colors/recent" ) ).toList();
+
+  if ( recentColorVariants.isEmpty() )
+    return QColor();
+
+  return recentColorVariants.at( 0 ).value<QColor>();
+}
+
 
 QgsCustomColorScheme::QgsCustomColorScheme() : QgsColorScheme()
 {
