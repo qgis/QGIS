@@ -20,14 +20,53 @@
 #include "qgsexpression.h"
 
 /**
+ * \ingroup core
+ *
  * An expression with an additional enabled flag.
  *
  * This can be used for configuration options where an expression can be enabled
  * or diabled but when disabled it shouldn't lose it's information for the case
  * it gets re-enabled later on and a user shoulnd't be force to redo the configuration.
  *
- * Added in QGIS 3.0
+ * @note Added in QGIS 2.18
  */
-typedef QgsOptional<QgsExpression> QgsOptionalExpression;
+
+class CORE_EXPORT QgsOptionalExpression : public QgsOptional<QgsExpression>
+{
+  public:
+    /**
+     * Construct a default optional expression.
+     * It will be disabled and with an empty expression.
+     */
+    QgsOptionalExpression();
+
+    /**
+     * Construct an optional expression with the provided expression.
+     * It will be enabled.
+     */
+    QgsOptionalExpression( const QgsExpression& expression );
+
+    /**
+     * Construct an optional expression with the provided expression and enabled state.
+     */
+    QgsOptionalExpression( const QgsExpression& expression, bool enabled );
+
+    /**
+     * Save the optional expression to the provided QDomElement.
+     *
+     * The caller is responsible to pass an empty QDomElement and to append it to
+     * a parent element.
+     *
+     * @note Added in QGIS 2.18
+     */
+    void writeXml( QDomElement& element );
+
+    /**
+     * Read the optional expression from the provided QDomElement.
+     *
+     * @note Added in QGIS 2.18
+     */
+    void readXml( const QDomElement& element );
+};
 
 #endif // QGSOPTIONALEXPRESSION_H

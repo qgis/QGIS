@@ -130,8 +130,8 @@ class CORE_EXPORT QgsOptional
     }
 
   private:
-    T mData;
     bool mEnabled;
+    T mData;
 };
 
 #endif // QGSOPTIONAL_H

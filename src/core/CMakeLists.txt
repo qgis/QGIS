@@ -164,7 +164,7 @@ SET(QGIS_CORE_SRCS
   qgsofflineediting.cpp
   qgsogcutils.cpp
   qgsogrutils.cpp
-  qgsoptional.cpp
+  qgsoptionalexpression.cpp
   qgsowsconnection.cpp
   qgspaintenginehack.cpp
   qgspainting.cpp
