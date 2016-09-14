@@ -76,7 +76,8 @@ from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
 from .ogr2ogrpointsonlines import Ogr2OgrPointsOnLines
 from .ogr2ogrbuffer import Ogr2OgrBuffer
 from .ogr2ogrdissolve import Ogr2OgrDissolve
-from .ogr2ogronesidebuffer import Ogr2OgrOneSideBuffer
+from .onesidebuffer import OneSideBuffer
+from .offsetcurve import OffsetCurve
 from .ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
 from .ogrinfo import OgrInfo
 from .ogrsql import OgrSql
@@ -125,8 +126,8 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
                               # ----- OGR tools -----
                               OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
                               Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
-                              Ogr2OgrBuffer(), Ogr2OgrDissolve(), Ogr2OgrOneSideBuffer(),
-                              Ogr2OgrTableToPostGisList(), OgrSql(),
+                              Ogr2OgrBuffer(), Ogr2OgrDissolve(), OneSideBuffer(),
+                              OffsetCurve(), Ogr2OgrTableToPostGisList(), OgrSql(),
                               ]
 
     def getSupportedOutputRasterLayerExtensions(self):

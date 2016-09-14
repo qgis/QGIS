@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    ogr2ogronesidebuffer.py
+    offsetcurve.py
     ---------------------
     Date                 : Janaury 2015
     Copyright            : (C) 2015 by Giovanni Manghi
@@ -40,12 +40,10 @@ from processing.tools.system import isWindows
 from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 
-class Ogr2OgrOneSideBuffer(GdalAlgorithm):
+class OffsetCurve(GdalAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
-    OPERATION = 'OPERATION'
-    OPERATIONLIST = ['Single Side Buffer', 'Offset Curve']
     GEOMETRY = 'GEOMETRY'
     RADIUS = 'RADIUS'
     LEFTRIGHT = 'LEFTRIGHT'
@@ -56,20 +54,18 @@ class Ogr2OgrOneSideBuffer(GdalAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Single sided buffers (and offset lines) for lines')
+        self.name, self.i18n_name = self.trAlgorithm('Offset lines for lines')
         self.group, self.i18n_group = self.trAlgorithm('[OGR] Geoprocessing')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE], False))
-        self.addParameter(ParameterSelection(self.OPERATION,
-                                             self.tr('Operation'), self.OPERATIONLIST, 0))
         self.addParameter(ParameterString(self.GEOMETRY,
                                           self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
                                           'geometry', optional=False))
         self.addParameter(ParameterString(self.RADIUS,
-                                          self.tr('Buffer distance'), '1000', optional=False))
+                                          self.tr('Offset distance'), '1000', optional=False))
         self.addParameter(ParameterSelection(self.LEFTRIGHT,
-                                             self.tr('Buffer side'), self.LEFTRIGHTLIST, 0))
+                                             self.tr('Offset side'), self.LEFTRIGHTLIST, 0))
         self.addParameter(ParameterBoolean(self.DISSOLVEALL,
                                            self.tr('Dissolve all results'), False))
         self.addParameter(ParameterTableField(self.FIELD,
@@ -80,11 +76,10 @@ class Ogr2OgrOneSideBuffer(GdalAlgorithm):
                                           self.tr('Additional creation options (see ogr2ogr manual)'),
                                           '', optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Single sided buffer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Offset line')))
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        operation = self.getParameterValue(self.OPERATION)
         geometry = self.getParameterValue(self.GEOMETRY)
         distance = self.getParameterValue(self.RADIUS)
         leftright = self.getParameterValue(self.LEFTRIGHT)
@@ -111,15 +106,9 @@ class Ogr2OgrOneSideBuffer(GdalAlgorithm):
         arguments.append('-sql')
 
         if dissolveall or field is not None:
-            if operation == 0:
-                sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})), * FROM '{}'".format(geometry, distance, leftright, layername)
-            else:
-                sql = "SELECT ST_Union(ST_OffsetCurve({}, {}, {})) * FROM '{}'".format(geometry, distance, leftright, layername)
+            sql = "SELECT ST_Union(ST_OffsetCurve({}, {}, {})) * FROM '{}'".format(geometry, distance, leftright, layername)
         else:
-            if operation == 0:
-                sql = "SELECT ST_SingleSidedBuffer({},{},{}), * FROM '{}'".format(geometry, distance, leftright, layername)
-            else:
-                sql = "SELECT ST_OffsetCurve({}, {}, {}), * FROM '{}'".format(geometry, distance, leftright, layername)
+            sql = "SELECT ST_OffsetCurve({}, {}, {}), * FROM '{}'".format(geometry, distance, leftright, layername)
 
         if field is not None:
             sql = '"{} GROUP BY {}"'.format(sql, field)
