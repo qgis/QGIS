@@ -141,6 +141,7 @@
 %Include qgspanelwidgetstack.sip
 %Include qgspixmaplabel.sip
 %Include qgspluginmanagerinterface.sip
+%Include qgspresetcolorrampdialog.sip
 %Include qgsprevieweffect.sip
 %Include qgsprojectbadlayerguihandler.sip
 %Include qgsprojectionselectionwidget.sip

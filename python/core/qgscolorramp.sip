@@ -16,6 +16,8 @@ class QgsColorRamp
     sipType = sipType_QgsLimitedRandomColorRamp;
   else if (sipCpp->type() == "randomcolors")
     sipType = sipType_QgsRandomColorRamp;
+  else if (sipCpp->type() == "preset")
+    sipType = sipType_QgsPresetSchemeColorRamp;
   else if (sipCpp->type() == "colorbrewer")
     sipType = sipType_QgsColorBrewerColorRamp;
   else if (sipCpp->type() == "cpt-city")
@@ -283,6 +285,64 @@ class QgsRandomColorRamp : QgsColorRamp
     virtual QgsRandomColorRamp* clone() const /Factory/;
 
     QgsStringMap properties() const;
+};
+
+/** \ingroup core
+ * \class QgsPresetSchemeColorRamp
+ * \brief A scheme based color ramp consisting of a list of predefined colors.
+ * \note added in QGIS 3.0
+ */
+class QgsPresetSchemeColorRamp : QgsColorRamp, QgsColorScheme
+{
+%TypeHeaderCode
+#include <qgscolorramp.h>
+%End
+
+  public:
+
+    /** Constructor for QgsPresetSchemeColorRamp.
+     * @param colors list of colors in ramp
+     */
+    QgsPresetSchemeColorRamp( const QList< QColor >& colors = QList< QColor >() );
+
+    /** Constructor for QgsPresetColorRamp.
+     * @param colors list of named colors in ramp
+     * @note not available in Python bindings - use setColors instead
+     */
+    //QgsPresetSchemeColorRamp( const QgsNamedColorList& colors );
+
+    /** Returns a new QgsPresetSchemeColorRamp color ramp created using the properties encoded in a string
+     * map.
+     * @param properties color ramp properties
+     * @see properties()
+     */
+    static QgsColorRamp* create( const QgsStringMap& properties = QgsStringMap() );
+
+    /** Sets the list of colors used by the ramp.
+     * @param colors list of colors
+     * @see colors()
+     */
+    bool setColors( const QgsNamedColorList& colors, const QString& = QString(), const QColor& = QColor() );
+
+    /** Returns the list of colors used by the ramp.
+     * @see setColors()
+     */
+    QList< QColor > colors() const;
+
+    // QgsColorRamp interface
+    virtual double value( int index ) const;
+    virtual QColor color( double value ) const;
+    virtual QString type() const;
+    virtual QgsPresetSchemeColorRamp* clone() const /Factory/;
+    virtual QgsStringMap properties() const;
+    int count() const;
+
+    // QgsColorScheme interface
+    QString schemeName() const;
+    QgsNamedColorList fetchColors( const QString &context = QString(),
+                                   const QColor &baseColor = QColor() );
+    bool isEditable() const;
+
 };
 
 /** \ingroup core

@@ -23,6 +23,7 @@
 #include "qgslimitedrandomcolorrampdialog.h"
 #include "qgscolorbrewercolorrampdialog.h"
 #include "qgscptcitycolorrampdialog.h"
+#include "qgspresetcolorrampdialog.h"
 
 QSize QgsColorRampComboBox::rampIconSize( 50, 16 );
 
@@ -172,6 +173,26 @@ void QgsColorRampComboBox::editSourceRamp()
       }
     }
   }
+  else if ( currentRamp->type() == "preset" )
+  {
+    QgsPresetSchemeColorRamp* presetRamp = static_cast<QgsPresetSchemeColorRamp*>( currentRamp.data() );
+    if ( panelMode )
+    {
+      QgsPresetColorRampWidget* widget = new QgsPresetColorRampWidget( *presetRamp, this );
+      widget->setPanelTitle( tr( "Edit ramp" ) );
+      connect( widget, SIGNAL( changed() ), this, SLOT( rampWidgetUpdated() ) );
+      panel->openPanel( widget );
+    }
+    else
+    {
+      QgsPresetColorRampDialog dlg( *presetRamp, this );
+      if ( dlg.exec() )
+      {
+        setSourceColorRamp( dlg.ramp().clone() );
+        emit sourceRampEdited();
+      }
+    }
+  }
   else if ( currentRamp->type() == "colorbrewer" )
   {
     QgsColorBrewerColorRamp* brewerRamp = static_cast<QgsColorBrewerColorRamp*>( currentRamp.data() );
@@ -224,6 +245,13 @@ void QgsColorRampComboBox::rampWidgetUpdated()
   if ( colorBrewerRampWidget )
   {
     setSourceColorRamp( colorBrewerRampWidget->ramp().clone() );
+    emit sourceRampEdited();
+    return;
+  }
+  QgsPresetColorRampWidget* presetRampWidget = qobject_cast< QgsPresetColorRampWidget* >( sender() );
+  if ( presetRampWidget )
+  {
+    setSourceColorRamp( presetRampWidget->ramp().clone() );
     emit sourceRampEdited();
     return;
   }

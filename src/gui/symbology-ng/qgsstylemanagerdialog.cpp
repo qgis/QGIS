@@ -24,6 +24,7 @@
 #include "qgsgradientcolorrampdialog.h"
 #include "qgslimitedrandomcolorrampdialog.h"
 #include "qgscolorbrewercolorrampdialog.h"
+#include "qgspresetcolorrampdialog.h"
 #include "qgscptcitycolorrampdialog.h"
 #include "qgsstyleexportimportdialog.h"
 #include "qgssmartgroupeditordialog.h"
@@ -133,7 +134,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle* style, QWidget* parent )
 
   // Menu for the "Add item" toolbutton when in colorramp mode
   QStringList rampTypes;
-  rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" );
+  rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" ) << tr( "Preset colors" );
   rampTypes << tr( "cpt-city" ); // todo, only for rasters?
   mMenuBtnAddItemColorRamp = new QMenu( this );
   Q_FOREACH ( const QString& rampType, rampTypes )
@@ -443,7 +444,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget* parent, QgsStyle* st
   if ( rampType.isEmpty() )
   {
     QStringList rampTypes;
-    rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" );
+    rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" ) << tr( "Preset colors" );
     rampTypes << tr( "cpt-city" ); // todo, only for rasters?
     rampType = QInputDialog::getItem( parent, tr( "Color ramp type" ),
                                       tr( "Please select color ramp type:" ), rampTypes, 0, false, &ok );
@@ -483,6 +484,16 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget* parent, QgsStyle* st
     }
     ramp.reset( dlg.ramp().clone() );
     name = dlg.ramp().schemeName() + QString::number( dlg.ramp().colors() );
+  }
+  else if ( rampType == tr( "Preset colors" ) )
+  {
+    QgsPresetColorRampDialog dlg( QgsPresetSchemeColorRamp(), parent );
+    if ( !dlg.exec() )
+    {
+      return QString();
+    }
+    ramp.reset( dlg.ramp().clone() );
+    name = tr( "new preset ramp" );
   }
   else if ( rampType == tr( "cpt-city" ) )
   {
@@ -648,6 +659,16 @@ bool QgsStyleManagerDialog::editColorRamp()
   {
     QgsColorBrewerColorRamp* brewerRamp = static_cast<QgsColorBrewerColorRamp*>( ramp.data() );
     QgsColorBrewerColorRampDialog dlg( *brewerRamp, this );
+    if ( !dlg.exec() )
+    {
+      return false;
+    }
+    ramp.reset( dlg.ramp().clone() );
+  }
+  else if ( ramp->type() == "preset" )
+  {
+    QgsPresetSchemeColorRamp* presetRamp = static_cast<QgsPresetSchemeColorRamp*>( ramp.data() );
+    QgsPresetColorRampDialog dlg( *presetRamp, this );
     if ( !dlg.exec() )
     {
       return false;
