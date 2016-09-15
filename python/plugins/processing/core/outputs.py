@@ -104,15 +104,11 @@ class Output(object):
             self.value = self._resolveTemporary(alg) 
         else:
             exp = QgsExpression(self.value)
-            if exp.hasParserError():
-                raise ValueError(self.tr("Error in output expression: ") + exp.parserErrorString())
-            self.value = exp.evaluate(_expressionContext(alg))
-            if exp.hasEvalError():
-                raise ValueError("Error evaluating output expression: " + exp.evalErrorString())
+            if not exp.hasParserError():
+                value = exp.evaluate(_expressionContext(alg))
+                if not exp.hasEvalError():
+                    self.value = value
 
-
-
-        print self.value
         if ":" not in self.value:
             if not os.path.isabs(self.value):
                 self.value = os.path.join(ProcessingConfig.getSetting(ProcessingConfig.OUTPUT_FOLDER), 
