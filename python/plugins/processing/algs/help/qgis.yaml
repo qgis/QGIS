@@ -136,7 +136,7 @@ qgis:difference: >
   Attributes are not modified
 
 qgis:dissolve: >
-  This algorithm takes a polygon vector layer and dissolve adjacent polygons into  single geometries. An attribute can be specified to dissolve only polygons belonging to the same class (having the same value for the specified attribute), or all polygons can be dissolved, considering only their geometries.
+  This algorithm takes a polygon or line vector layer and combines their geometries into new geometries. An attribute can be specified to dissolve only geometries belonging to the same class (having the same value for the specified attribute), alternatively all geometries can be dissolved. If the geometries to be dissolved are spatially separated from each other the output will be multi geometries. In case the input is a polygon layer, common boundaries of adjacent polygons being dissolved will get erased.
 
 qgis:distancematrix: >
   This algorithms creates a table containing a distance matrix, with distances between all the points in a points layer.
