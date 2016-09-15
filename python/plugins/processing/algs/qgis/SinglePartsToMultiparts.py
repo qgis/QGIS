@@ -108,7 +108,9 @@ class SinglePartsToMultiparts(GeoAlgorithm):
 
             del writer
         else:
-            raise GeoAlgorithmExecutionException(self.tr('Invalid unique ID field'))
+            raise GeoAlgorithmExecutionException(
+                self.tr('At least two features must have same attribute '
+                        'value! Please choose another field...'))
 
     def singleToMultiGeom(self, wkbType):
         try:
