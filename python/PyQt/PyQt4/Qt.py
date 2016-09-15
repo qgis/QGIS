@@ -2,11 +2,11 @@
 
 """
 ***************************************************************************
-    QtCore.py
+    Qt.py
     ---------------------
     Date                 : September 2016
     Copyright            : (C) 2015 by Marco Bernasocchi
-    Email                : matthias at opengis dot ch
+    Email                : marco at opengis dot ch
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
