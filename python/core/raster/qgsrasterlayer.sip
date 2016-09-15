@@ -176,20 +176,11 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief Set default contrast enhancement */
     void setDefaultContrastEnhancement();
 
-    /** \brief Overloaded version of the above function for convenience when restoring from xml
-     * @deprecated Deprecated since QGIS 2.10. Use setRendererForDrawingStyle() or directly setRenderer()
-     */
-    void setDrawingStyle( const QString & theDrawingStyleQString ) /Deprecated/;
-
     /** \brief [ data provider interface ] A wrapper function to emit a progress update signal */
     void showProgress( int theValue );
 
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     virtual QStringList subLayers() const;
-
-    /** \brief Draws a preview of the rasterlayer into a pixmap
-    @deprecated use previewAsImage() for rendering with QGIS>=2.4 */
-    QPixmap previewAsPixmap( QSize size, const QColor& bgColor = QColor( 255, 255, 255 ) ) /Deprecated/;
 
     /** \brief Draws a preview of the rasterlayer into a QImage
      @note added in 2.4 */
@@ -214,9 +205,6 @@ class QgsRasterLayer : QgsMapLayer
 
   public slots:
     void showStatusMessage( const QString & theMessage );
-
-    //! @deprecated in 2.4 - does nothing
-    void updateProgress( int, int ) /Deprecated/;
 
     /** \brief receive progress signal from provider */
     void onProgress( int, double, const QString& );

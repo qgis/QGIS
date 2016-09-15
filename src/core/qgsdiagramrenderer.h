@@ -236,12 +236,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
      */
     void setCoordinateTransform( const QgsCoordinateTransform& transform );
 
-    //! @deprecated will be removed in QGIS 3.0
-    Q_DECL_DEPRECATED const QgsMapToPixel* xform;
-
-    //! @deprecated will be removed in QGIS 3.0
-    Q_DECL_DEPRECATED QgsFields fields;
-
     //! Attribute index for x coordinate (or -1 if position not data defined)
     int xPosColumn;
 
@@ -296,13 +290,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
 class CORE_EXPORT QgsDiagramSettings
 {
   public:
-
-    //! @deprecated use QgsUnitTypes::RenderUnit instead
-    enum SizeType
-    {
-      MM,
-      MapUnits
-    };
 
     enum LabelPlacementMethod
     {

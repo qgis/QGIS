@@ -61,5 +61,5 @@ class SetVectorStyle(GeoAlgorithm):
         else:
             layer.loadNamedStyle(style)
             iface.mapCanvas().refresh()
-            iface.legendInterface().refreshLayerSymbology(layer)
+            iface.legendInterface().refreshLayerLegend(layer)
             layer.triggerRepaint()

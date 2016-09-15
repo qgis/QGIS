@@ -94,7 +94,7 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
             if strategy == 0:
                 pointCount = int(value)
             else:
-                pointCount = int(round(value * da.measure(fGeom)))
+                pointCount = int(round(value * da.measureArea(fGeom)))
 
             index = QgsSpatialIndex()
             points = dict()

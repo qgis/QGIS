@@ -16,17 +16,6 @@
 #include "qgscachedfeatureiterator.h"
 #include "qgsvectorlayercache.h"
 
-QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest& featureRequest, const QgsFeatureIds& featureIds )
-    : QgsAbstractFeatureIterator( featureRequest )
-    , mFeatureIds( featureIds )
-    , mVectorLayerCache( vlCache )
-{
-  mFeatureIdIterator = featureIds.constBegin();
-
-  if ( mFeatureIdIterator == featureIds.constEnd() )
-    close();
-}
-
 QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest& featureRequest )
     : QgsAbstractFeatureIterator( featureRequest )
     , mVectorLayerCache( vlCache )

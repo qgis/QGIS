@@ -30,14 +30,11 @@ class CORE_EXPORT QgsTolerance
 
   public:
     /** Type of unit of tolerance value from settings.
-     * MapUnits is slightly confusing, because it actually refers to layer units (historically).
-     * For map (project) units, use ProjectUnits. Try to avoid using MapUnits value and use LayerUnits instead. */
+     * For map (project) units, use ProjectUnits.*/
     enum UnitType
     {
-      /** Layer unit value. @note deprecated: use LayerUnits */
-      MapUnits,
       /** Layer unit value */
-      LayerUnits = MapUnits,
+      LayerUnits = 1,
       /** Pixels unit of tolerance*/
       Pixels,
       /** Map (project) units. Added in 2.8 */

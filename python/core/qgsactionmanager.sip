@@ -128,11 +128,6 @@ class QgsActionManager
   }
 %End
 
-    /** @deprecated Initialize QgsPythonRunner instead
-     * @note not available in Python bindings
-     */
-    // Q_DECL_DEPRECATED static void setPythonExecute( void ( * )( const QString & ) );
-
     /**
      * Returns the index of the default action, or -1 if no default action is available.
      * @see setDefaultAction()

@@ -4012,14 +4012,6 @@ int QgsPalLabeling::prepareDiagramLayer( QgsVectorLayer* layer, QStringList& att
   return 1;
 }
 
-int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings *s )
-{
-  QgsDebugMsg( "Called addDiagramLayer()... need to use prepareDiagramLayer() instead!" );
-  Q_UNUSED( layer );
-  Q_UNUSED( s );
-  return 0;
-}
-
 void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, QgsRenderContext &context )
 {
   if ( QgsVectorLayerLabelProvider* provider = mLabelProviders.value( layerID, nullptr ) )
@@ -4221,12 +4213,6 @@ void QgsPalLabeling::exit()
 {
   delete mEngine;
   mEngine = new QgsLabelingEngine();
-}
-
-QgsPalLayerSettings& QgsPalLabeling::layer( const QString& layerName )
-{
-  Q_UNUSED( layerName );
-  return mInvalidLayerSettings;
 }
 
 void QgsPalLabeling::dataDefinedTextStyle( QgsPalLayerSettings& tmpLyr,
@@ -4550,16 +4536,6 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
 void QgsPalLabeling::deleteTemporaryData()
 {
-}
-
-QList<QgsLabelPosition> QgsPalLabeling::labelsAtPosition( const QgsPoint& p )
-{
-  return mEngine->results() ? mEngine->results()->labelsAtPosition( p ) : QList<QgsLabelPosition>();
-}
-
-QList<QgsLabelPosition> QgsPalLabeling::labelsWithinRect( const QgsRectangle& r )
-{
-  return mEngine->results() ? mEngine->results()->labelsWithinRect( r ) : QList<QgsLabelPosition>();
 }
 
 QgsLabelingResults *QgsPalLabeling::takeResults()

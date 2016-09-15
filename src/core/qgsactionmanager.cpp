@@ -204,8 +204,3 @@ bool QgsActionManager::readXml( const QDomNode& layer_node )
 }
 
 void ( *QgsActionManager::smPythonExecute )( const QString & ) = nullptr;
-
-void QgsActionManager::setPythonExecute( void ( *runPython )( const QString & ) )
-{
-  smPythonExecute = runPython;
-}

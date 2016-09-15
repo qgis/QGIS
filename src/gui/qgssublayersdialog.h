@@ -62,13 +62,6 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     //! @note added in 2.16
     LayerDefinitionList selection();
 
-    //! @deprecated since 2.16 - use other populateLayerTable() variant
-    Q_DECL_DEPRECATED void populateLayerTable( const QStringList& theList, const QString& delim = ":" );
-    //! @deprecated since 2.16 - use selection()
-    Q_DECL_DEPRECATED QStringList selectionNames();
-    //! @deprecated since 2.16 - use selection()
-    Q_DECL_DEPRECATED QList<int> selectionIndexes();
-
   public slots:
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     int exec();

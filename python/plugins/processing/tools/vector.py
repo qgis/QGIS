@@ -290,10 +290,11 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
             measure.setEllipsoid(ellips)
             measure.setEllipsoidalMode(True)
 
-        attr1 = measure.measure(geom)
         if geom.type() == QgsWkbTypes.PolygonGeometry:
+            attr1 = measure.measureArea(geom)
             attr2 = measure.measurePerimeter(geom)
         else:
+            attr1 = measure.measureLength(geom)
             attr2 = None
 
     return (attr1, attr2)

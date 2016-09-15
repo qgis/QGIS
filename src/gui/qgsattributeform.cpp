@@ -15,7 +15,6 @@
 
 #include "qgsattributeform.h"
 
-#include "qgsattributeeditor.h"
 #include "qgsattributeforminterface.h"
 #include "qgsattributeformlegacyinterface.h"
 #include "qgseditorwidgetregistry.h"
@@ -221,11 +220,6 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
   }
 
   emit modeChanged( mMode );
-}
-
-void QgsAttributeForm::setIsAddDialog( bool isAddDialog )
-{
-  setMode( isAddDialog ? AddFeatureMode : SingleEditMode );
 }
 
 void QgsAttributeForm::changeAttribute( const QString& field, const QVariant& value )

@@ -34,8 +34,8 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
     , mWidth( width )
     , mHeight( height )
     , mRotation( rotation )
-    , xCenter( xc )
-    , yCenter( yc )
+    , mXCenter( xc )
+    , mYCenter( yc )
     , xMin( xc - ( mWidth * mMapUnitsPerPixel / 2.0 ) )
     , yMin( yc - ( mHeight * mMapUnitsPerPixel / 2.0 ) )
 {
@@ -48,8 +48,8 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel )
     , mWidth( 0 )
     , mHeight( 0 )
     , mRotation( 0 )
-    , xCenter( 0 )
-    , yCenter( 0 )
+    , mXCenter( 0 )
+    , mYCenter( 0 )
     , xMin( 0 )
     , yMin( 0 )
 {
@@ -61,27 +61,10 @@ QgsMapToPixel::QgsMapToPixel()
     , mWidth( 1 )
     , mHeight( 1 )
     , mRotation( 0.0 )
-    , xCenter( 0.5 )
-    , yCenter( 0.5 )
+    , mXCenter( 0.5 )
+    , mYCenter( 0.5 )
     , xMin( 0 )
     , yMin( 0 )
-{
-  updateMatrix();
-}
-
-// @deprecated in 2.8
-QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
-                              double height,
-                              double ymin,
-                              double xmin )
-    : mMapUnitsPerPixel( mapUnitsPerPixel )
-    , mWidth( -1 )
-    , mHeight( height )
-    , mRotation( 0.0 )
-    , xCenter( 0.0 )
-    , yCenter( 0.0 )
-    , xMin( xmin )
-    , yMin( ymin )
 {
   updateMatrix();
 }
@@ -154,24 +137,24 @@ double QgsMapToPixel::mapUnitsPerPixel() const
 void QgsMapToPixel::setMapRotation( double degrees, double cx, double cy )
 {
   double oldRotation = mRotation;
-  double oldXCenter = xCenter;
-  double oldYCenter = yCenter;
+  double oldXCenter = mXCenter;
+  double oldYCenter = mYCenter;
   double oldWidth = mWidth;
 
   mRotation = degrees;
-  xCenter = cx;
-  yCenter = cy;
+  mXCenter = cx;
+  mYCenter = cy;
   if ( mWidth < 0 )
   {
     // set width not that we can compute it
-    mWidth = (( xCenter - xMin ) * 2 ) / mMapUnitsPerPixel;
+    mWidth = (( mXCenter - xMin ) * 2 ) / mMapUnitsPerPixel;
   }
 
   if ( !updateMatrix() )
   {
     mRotation = oldRotation;
-    xCenter = oldXCenter;
-    yCenter = oldYCenter;
+    mXCenter = oldXCenter;
+    mYCenter = oldYCenter;
     mWidth = oldWidth;
   }
 }
@@ -179,68 +162,6 @@ void QgsMapToPixel::setMapRotation( double degrees, double cx, double cy )
 double QgsMapToPixel::mapRotation() const
 {
   return mRotation;
-}
-
-// @deprecated in 2.8
-void QgsMapToPixel::setYMinimum( double ymin )
-{
-  double oldRotation = mRotation;
-  double oldYCenter = yCenter;
-
-  yCenter = ymin + mHeight * mMapUnitsPerPixel / 2.0;
-  mRotation = 0.0;
-  if ( !updateMatrix() )
-  {
-    mRotation = oldRotation;
-    yCenter = oldYCenter;
-  }
-}
-
-// @deprecated in 2.8
-void QgsMapToPixel::setXMinimum( double xmin )
-{
-  double oldRotation = mRotation;
-  double oldXCenter = xCenter;
-
-  xCenter = xmin + mWidth * mMapUnitsPerPixel / 2.0;
-  mRotation = 0.0;
-
-  if ( !updateMatrix() )
-  {
-    mRotation = oldRotation;
-    xCenter = oldXCenter;
-  }
-}
-
-// @deprecated in 2.8
-void QgsMapToPixel::setParameters( double mapUnitsPerPixel, double xmin, double ymin, double ymax )
-{
-  double oldMUPP = mMapUnitsPerPixel;
-  double oldXMin = xMin;
-  double oldYMin = yMin;
-  double oldHeight = mHeight;
-  double oldXCenter = xCenter;
-  double oldYCenter = yCenter;
-  double oldRotation = mRotation;
-
-  mMapUnitsPerPixel = mapUnitsPerPixel;
-  xMin = xmin;
-  yMin = ymin;
-  mHeight = ymax;
-  xCenter = xmin + mWidth * mMapUnitsPerPixel / 2.0;
-  yCenter = ymin + mHeight * mMapUnitsPerPixel / 2.0;
-  mRotation = 0.0;
-
-  if ( !updateMatrix() )
-  {
-    mMapUnitsPerPixel = oldMUPP;
-    xMin = oldXMin;
-    yMin = oldYMin;
-    mHeight = oldHeight;
-    xCenter = oldXCenter;
-    yCenter = oldYCenter;
-    mRotation = oldRotation;
-  }
 }
 
 void QgsMapToPixel::setParameters( double mapUnitsPerPixel,
@@ -251,8 +172,8 @@ void QgsMapToPixel::setParameters( double mapUnitsPerPixel,
                                    double rotation )
 {
   double oldMUPP = mMapUnitsPerPixel;
-  double oldXCenter = xCenter;
-  double oldYCenter = yCenter;
+  double oldXCenter = mXCenter;
+  double oldYCenter = mYCenter;
   double oldWidth = mWidth;
   double oldHeight = mHeight;
   double oldRotation = mRotation;
@@ -260,8 +181,8 @@ void QgsMapToPixel::setParameters( double mapUnitsPerPixel,
   double oldYMin = yMin;
 
   mMapUnitsPerPixel = mapUnitsPerPixel;
-  xCenter = xc;
-  yCenter = yc;
+  mXCenter = xc;
+  mYCenter = yc;
   mWidth = width;
   mHeight = height;
   mRotation = rotation;
@@ -271,8 +192,8 @@ void QgsMapToPixel::setParameters( double mapUnitsPerPixel,
   if ( !updateMatrix() )
   {
     mMapUnitsPerPixel = oldMUPP;
-    xCenter = oldXCenter;
-    yCenter = oldYCenter;
+    mXCenter = oldXCenter;
+    mYCenter = oldYCenter;
     mWidth = oldWidth;
     mHeight = oldHeight;
     mRotation = oldRotation;
@@ -285,7 +206,7 @@ QString QgsMapToPixel::showParameters() const
 {
   QString rep;
   QTextStream( &rep ) << "Map units/pixel: " << mMapUnitsPerPixel
-  << " center: " << xCenter << ',' << yCenter
+  << " center: " << mXCenter << ',' << mYCenter
   << " rotation: " << mRotation
   << " size: " << mWidth << 'x' << mHeight;
   return rep;
@@ -353,6 +274,6 @@ QTransform QgsMapToPixel::transform() const
     return QTransform::fromTranslate( cx, cy )
            .rotate( rotation )
            .scale( 1 / mMapUnitsPerPixel, -1 / mMapUnitsPerPixel )
-           .translate( -xCenter, -yCenter );
+           .translate( -mXCenter, -mYCenter );
   }
 }

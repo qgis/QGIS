@@ -98,11 +98,6 @@ QgsVector QgsVector::rotateBy( double rot ) const
   return QgsVector( len * cos( ang ), len * sin( ang ) );
 }
 
-QgsVector QgsVector::normal() const
-{
-  return normalized();
-}
-
 QgsVector QgsVector::normalized() const
 {
   double len = length();

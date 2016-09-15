@@ -37,10 +37,6 @@ class QgsMapCanvasItem : QGraphicsItem
     //! default implementation for canvas items
     virtual QRectF boundingRect() const;
 
-    //! sets current offset, to be called from QgsMapCanvas
-    //! @deprecated since v2.4 - not called by QgsMapCanvas anymore
-    void setPanningOffset( QPoint point ) /Deprecated/;
-
     //! returns canvas item rectangle in map units
     QgsRectangle rect() const;
 

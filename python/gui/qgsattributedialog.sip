@@ -5,19 +5,6 @@ class QgsAttributeDialog : QDialog
 %End
 
   public:
-    /**
-     * Create an attribute dialog for a given layer and feature
-     *
-     * @param vl                The layer for which the dialog will be generated
-     * @param thepFeature       A feature for which the dialog will be generated
-     * @param featureOwner      Set to true, if the dialog should take ownership of the feature
-     * @param myDa              A QgsDistanceArea which will be used for expressions
-     * @param parent            A parent widget for the dialog
-     * @param showDialogButtons True: Show the dialog buttons accept/cancel
-     *
-     * @deprecated
-     */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, const QgsDistanceArea& myDa, QWidget* parent /TransferThis/ = 0, bool showDialogButtons = true ) /Deprecated/;
 
     /**
      * Create an attribute dialog for a given layer and feature
@@ -48,15 +35,6 @@ class QgsAttributeDialog : QDialog
      */
     void setHighlight( QgsHighlight *h );
 
-    /**
-     * @brief Returns reference to self. Only here for legacy compliance
-     *
-     * @return this
-     *
-     * @deprecated Do not use. Just use this object itself. Or QgsAttributeForm if you want to embed.
-     */
-    QDialog *dialog() /Deprecated/;
-
     QgsAttributeForm *attributeForm();
 
     const QgsFeature *feature();
@@ -67,16 +45,6 @@ class QgsAttributeDialog : QDialog
      * @return returns true, if this dialog was created in an editable manner.
      */
     bool editable();
-
-    /**
-     * Toggles the form mode between edit feature and add feature.
-     * If set to true, the dialog will be editable even with an invalid feature.
-     * If set to true, the dialog will add a new feature when the form is accepted.
-     *
-     * @param isAddDialog If set to true, turn this dialog into an add feature dialog.
-     * @deprecated use setMode() instead
-     */
-    void setIsAddDialog( bool isAddDialog ) /Deprecated/;
 
     /**
      * Toggles the form mode.

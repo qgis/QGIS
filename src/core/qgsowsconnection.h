@@ -61,9 +61,6 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     QgsDataSourceUri uri() const;
     QString mConnectionInfo;
 
-    //! @deprecated use mConnectionInfo instead
-    Q_DECL_DEPRECATED QString connectionInfo();
-
   protected:
     QgsDataSourceUri mUri;
     QString mService;

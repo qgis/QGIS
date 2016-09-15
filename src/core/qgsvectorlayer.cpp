@@ -2834,7 +2834,10 @@ void QgsVectorLayer::removeExpressionField( int index )
 QString QgsVectorLayer::expressionField( int index ) const
 {
   int oi = mUpdatedFields.fieldOriginIndex( index );
-  return mExpressionFieldBuffer->expressions().value( oi ).expression;
+  if ( oi < 0 || oi >= mExpressionFieldBuffer->expressions().size() )
+    return QString();
+
+  return mExpressionFieldBuffer->expressions().at( oi ).cachedExpression.expression();
 }
 
 void QgsVectorLayer::updateExpressionField( int index, const QString& exp )

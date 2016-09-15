@@ -61,10 +61,6 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! default implementation for canvas items
     virtual QRectF boundingRect() const override;
 
-    //! sets current offset, to be called from QgsMapCanvas
-    //! @deprecated since v2.4 - not called by QgsMapCanvas anymore
-    Q_DECL_DEPRECATED void setPanningOffset( QPoint point );
-
     //! returns canvas item rectangle in map units
     QgsRectangle rect() const;
 
@@ -93,11 +89,6 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     QgsRectangle mRect;
 
     double mRectRotation;
-
-    //! offset from normal position due current panning operation,
-    //! used when converting map coordinates to move map canvas items
-    //! @deprecated since v2.4
-    QPoint mPanningOffset;
 
     //! cached size of the item (to return in boundingRect())
     QSizeF mItemSize;

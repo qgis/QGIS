@@ -32,7 +32,7 @@ class QgisApp;
  * Only those functions "exposed" by QgisInterface can be called from within a
  * plugin.
  */
-Q_NOWARN_DEPRECATED_PUSH
+
 class APP_EXPORT QgisAppInterface : public QgisInterface
 {
     Q_OBJECT
@@ -426,7 +426,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QAction *actionCancelEdits() override;
     virtual QAction *actionCancelAllEdits() override;
     virtual QAction *actionLayerSaveAs() override;
-    virtual QAction *actionRemoveLayer() override;
     virtual QAction *actionDuplicateLayer() override;
     virtual QAction *actionLayerProperties() override;
     virtual QAction *actionAddToOverview() override;
@@ -530,6 +529,5 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Pointer to the PluginManagerInterface object
     QgsAppPluginManagerInterface pluginManagerIface;
 };
-Q_NOWARN_DEPRECATED_POP
 
 #endif //#define QGISAPPINTERFACE_H

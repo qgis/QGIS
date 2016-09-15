@@ -123,15 +123,9 @@ class QgsLabelingEngineInterface
     virtual void clearActiveLayer( const QString& layerID ) = 0;
     //! called when starting rendering of a layer
     virtual int prepareLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx ) = 0;
-    //! returns PAL layer settings for a registered layer
-    //! @deprecated since 2.12 - if direct access to QgsPalLayerSettings is necessary, use QgsPalLayerSettings::fromLayer()
-    virtual QgsPalLayerSettings &layer( const QString &layerName ) = 0 /Deprecated/;
     //! adds a diagram layer to the labeling engine
     //! @note added in QGIS 2.12
     virtual int prepareDiagramLayer( QgsVectorLayer *layer, QStringList &attrNames, QgsRenderContext &ctx );
-    //! adds a diagram layer to the labeling engine
-    //! @deprecated since 2.12 - use prepareDiagramLayer()
-    virtual int addDiagramLayer( QgsVectorLayer *layer, const QgsDiagramLayerSettings *s ) /Deprecated/;
     //! called for every feature
     virtual void registerFeature( const QString &layerID, QgsFeature &feat, QgsRenderContext &context ) = 0;
     //! called for every diagram feature
@@ -140,12 +134,6 @@ class QgsLabelingEngineInterface
     virtual void drawLabeling( QgsRenderContext& context ) = 0;
     //! called when we're done with rendering
     virtual void exit() = 0;
-    //! return infos about labels at a given (map) position
-    //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
-    virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) = 0 /Deprecated/;
-    //! return infos about labels within a given (map) rectangle
-    //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
-    virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) = 0 /Deprecated/;
 
     //! called when passing engine among map renderers
     virtual QgsLabelingEngineInterface* clone() = 0 /Factory/;
@@ -871,9 +859,6 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     QgsPalLabeling();
     ~QgsPalLabeling();
 
-    //! @deprecated since 2.12 - if direct access to QgsPalLayerSettings is necessary, use QgsPalLayerSettings::fromLayer()
-    QgsPalLayerSettings& layer( const QString& layerName ) /Deprecated/;
-
     void numCandidatePositions( int& candPoint, int& candLine, int& candPolygon );
     void setNumCandidatePositions( int candPoint, int candLine, int candPolygon );
 
@@ -884,8 +869,6 @@ class QgsPalLabeling : QgsLabelingEngineInterface
 
     bool isShowingCandidates() const;
     void setShowingCandidates( bool showing );
-    //! @deprecated since 2.12
-    const QList<QgsLabelCandidate>& candidates() /Deprecated/;
 
     bool isShowingShadowRectangles() const;
     void setShowingShadowRectangles( bool showing );
@@ -936,9 +919,6 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     //! adds a diagram layer to the labeling engine
     //! @note added in QGIS 2.12
     virtual int prepareDiagramLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx );
-    //! adds a diagram layer to the labeling engine
-    //! @deprecated since 2.12 - use prepareDiagramLayer()
-    virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings *s ) /Deprecated/;
 
     /** Register a feature for labelling.
      * @param layerID string identifying layer associated with label
@@ -953,13 +933,6 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     virtual void drawLabeling( QgsRenderContext& context );
     //! called when we're done with rendering
     virtual void exit();
-
-    //! return infos about labels at a given (map) position
-    //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
-    virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) /Deprecated/;
-    //! return infos about labels within a given (map) rectangle
-    //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
-    virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) /Deprecated/;
 
     //! Return pointer to recently computed results (in drawLabeling()) and pass the ownership of results to the caller
     //! @note added in 2.4
@@ -987,10 +960,6 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     void loadEngineSettings();
     void saveEngineSettings();
     void clearEngineSettings();
-    //! @deprecated since 2.4 - settings are always stored in project
-    bool isStoredWithProject() const /Deprecated/;
-    //! @deprecated since 2.4 - settings are always stored in project
-    void setStoredWithProject( bool store ) /Deprecated/;
 
     /** Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
      * @param geometry geometry to prepare

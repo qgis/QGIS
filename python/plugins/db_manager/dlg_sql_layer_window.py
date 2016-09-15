@@ -337,7 +337,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             self.layer.reload()
             self.iface.actionDraw().trigger()
             self.iface.mapCanvas().refresh()
-            self.iface.legendInterface().refreshLayerSymbology(layer)
+            self.iface.legendInterface().refreshLayerLegend(layer)
         finally:
             QApplication.restoreOverrideCursor()
 

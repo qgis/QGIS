@@ -19,7 +19,6 @@
 #include <QPainter>
 #include <QToolButton>
 
-#include "qgsattributeeditor.h"
 #include "qgsattributetabledelegate.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
