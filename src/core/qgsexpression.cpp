@@ -50,6 +50,8 @@
 #include "qgsexpressionprivate.h"
 #include "qgsexpressionsorter.h"
 #include "qgscrscache.h"
+#include "qgsmessagelog.h"
+#include "qgscsexception.h"
 
 #if QT_VERSION < 0x050000
 #include <qtextdocument.h>
@@ -2974,8 +2976,16 @@ static QVariant fcnTransformGeometry( const QVariantList& values, const QgsExpre
     return QVariant::fromValue( fGeom );
 
   QgsCoordinateTransform t( s, d );
-  if ( fGeom.transform( t ) == 0 )
-    return QVariant::fromValue( fGeom );
+  try
+  {
+    if ( fGeom.transform( t ) == 0 )
+      return QVariant::fromValue( fGeom );
+  }
+  catch ( QgsCsException &cse )
+  {
+    QgsMessageLog::logMessage( QString( "Transform error caught in transform() function: %1" ).arg( cse.what() ) );
+    return QVariant();
+  }
   return QVariant();
 }
 
