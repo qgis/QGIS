@@ -92,6 +92,7 @@ class CORE_EXPORT QgsSymbolLayerV2
      */
     virtual QgsSymbolLayerV2* clone() const = 0;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
     { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
 
@@ -592,6 +593,7 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
      */
     VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
 
+    //! Writes the SLD element following the SLD v1.1 specs
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     /** Writes the symbol layer definition as a SLD XML element.

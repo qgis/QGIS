@@ -344,7 +344,7 @@ QDomElement QgsFeatureRendererV2::writeSld( QDomDocument& doc, const QgsVectorLa
   return writeSld( doc, layer.name(), props );
 }
 
-QDomElement QgsFeatureRendererV2::writeSld( QDomDocument& doc, const QString& styleName, QgsStringMap props ) const
+QDomElement QgsFeatureRendererV2::writeSld( QDomDocument& doc, const QString& styleName, const QgsStringMap& props ) const
 {
   QDomElement userStyleElem = doc.createElement( "UserStyle" );
 

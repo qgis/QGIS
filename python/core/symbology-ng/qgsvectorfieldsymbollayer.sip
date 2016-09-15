@@ -44,6 +44,7 @@ class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayerV2
     virtual QgsVectorFieldSymbolLayer* clone() const /Factory/;
     QgsStringMap properties() const;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );

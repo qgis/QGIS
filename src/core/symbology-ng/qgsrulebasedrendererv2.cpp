@@ -334,21 +334,22 @@ QDomElement QgsRuleBasedRendererV2::Rule::save( QDomDocument& doc, QgsSymbolV2Ma
   return ruleElem;
 }
 
-void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
+void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const
 {
   // do not convert this rule if there are no symbols
   QgsRenderContext context;
   if ( symbols( context ).isEmpty() )
     return;
 
+  QgsStringMap locProps( props );
   if ( !mFilterExp.isEmpty() )
   {
-    if ( !props.value( "filter", "" ).isEmpty() )
-      props[ "filter" ] += " AND ";
-    props[ "filter" ] += mFilterExp;
+    if ( !locProps.value( "filter", "" ).isEmpty() )
+      locProps[ "filter" ] += " AND ";
+    locProps[ "filter" ] += mFilterExp;
   }
 
-  QgsSymbolLayerV2Utils::mergeScaleDependencies( mScaleMinDenom, mScaleMaxDenom, props );
+  QgsSymbolLayerV2Utils::mergeScaleDependencies( mScaleMinDenom, mScaleMaxDenom, locProps );
 
   if ( mSymbol )
   {
@@ -379,20 +380,20 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
       ruleElem.appendChild( descrElem );
     }
 
-    if ( !props.value( "filter", "" ).isEmpty() )
+    if ( !locProps.value( "filter", "" ).isEmpty() )
     {
-      QgsSymbolLayerV2Utils::createFunctionElement( doc, ruleElem, props.value( "filter", "" ) );
+      QgsSymbolLayerV2Utils::createFunctionElement( doc, ruleElem, locProps.value( "filter", "" ) );
     }
 
-    QgsSymbolLayerV2Utils::applyScaleDependency( doc, ruleElem, props );
+    QgsSymbolLayerV2Utils::applyScaleDependency( doc, ruleElem, locProps );
 
-    mSymbol->toSld( doc, ruleElem, props );
+    mSymbol->toSld( doc, ruleElem, locProps );
   }
 
   // loop into childern rule list
   Q_FOREACH ( Rule* rule, mChildren )
   {
-    rule->toSld( doc, element, props );
+    rule->toSld( doc, element, locProps );
   }
 }
 
@@ -947,7 +948,12 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::clone() const
   return r;
 }
 
-void QgsRuleBasedRendererV2::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
+void QgsRuleBasedRendererV2::toSld( QDomDocument& doc, QDomElement &element ) const
+{
+  toSld( doc, element, QgsStringMap() );
+}
+
+void QgsRuleBasedRendererV2::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const
 {
   mRootRule->toSld( doc, element, props );
 }
