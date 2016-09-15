@@ -1495,6 +1495,7 @@ def getParameterFromString(s):
             clazz = getattr(sys.modules[__name__], tokens[0])
             param = clazz(*params)
             param.isAdvanced = isAdvanced
+            return param
         except:
             return None
     else:  # try script syntax
