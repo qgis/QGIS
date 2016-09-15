@@ -184,7 +184,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! Find nearest vertex to the specified point - up to distance specified by tolerance
     //! Optional filter may discard unwanted matches.
     Match nearestVertex( const QgsPoint& point, double tolerance, MatchFilter* filter = nullptr );
-    //! Find nearest edges to the specified point - up to distance specified by tolerance
+    //! Find nearest edge to the specified point - up to distance specified by tolerance
     //! Optional filter may discard unwanted matches.
     Match nearestEdge( const QgsPoint& point, double tolerance, MatchFilter* filter = nullptr );
     //! Find edges within a specified recangle
