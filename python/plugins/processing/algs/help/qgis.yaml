@@ -136,7 +136,7 @@ qgis:difference: >
   Attributes are not modified
 
 qgis:dissolve: >
-  This algorithm takes a polygon vector layer and dissolve adjacent polygons into  single geometries. An attribute can be specified to dissolve only polygons belonging to the same class (having the same value for the specified attribute), or all polygons can be dissolved, considering only their geometries.
+  This algorithm takes a polygon or line vector layer and combines their geometries into new geometries. An attribute can be specified to dissolve only geometries belonging to the same class (having the same value for the specified attribute), alternatively all geometries can be dissolved. If the geometries to be dissolved are spatially separated from each other the output will be multi geometries. In case the input is a polygon layer, common boundaries of adjacent polygons being dissolved will get erased.
 
 qgis:distancematrix: >
   This algorithms creates a table containing a distance matrix, with distances between all the points in a points layer.
@@ -148,7 +148,7 @@ qgis:distancetonearesthub: >
   The resulting layer can contain only source points with an additional field indicating the distance to the nearest point and the name of the destination point, or lines linking each source point with its nearest destination point.
 
 qgis:eliminatesliverpolygons: >
-  This algorithm combines selected polygons of the input layer with certain adjacent polygons by erasing their common boundary. Eliminate can either use an exisiting selection or a logical query based on one of the layer's fields to make the selection itself. The adjacent polygon can be either the one with the largest or smallest area or the one sharing the largest common boundary with the polygon to be eliminated. Eliminate is normally used to get rid of sliver polygons, i.e. tiny polygons that are a result of polygon instersection processes where boundaries of the inputs are similar but not identical.
+  This algorithm combines selected polygons of the input layer with certain adjacent polygons by erasing their common boundary. Eliminate can either use an existing selection or a logical query based on one of the layer's fields to make the selection itself. The adjacent polygon can be either the one with the largest or smallest area or the one sharing the largest common boundary with the polygon to be eliminated. Eliminate is normally used to get rid of sliver polygons, i.e. tiny polygons that are a result of polygon intersection processes where boundaries of the inputs are similar but not identical.
 
 qgis:explodelines: >
   This algorithm takes a lines layer and creates a new one in which each line is replaced is replaced by a set of lines representing the segments in the original line. Each line in the resulting layer contains only a start and an end point, with no intermediate nodes between them.
