@@ -65,6 +65,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
     QgsVectorFieldSymbolLayer* clone() const override;
     QgsStringMap properties() const override;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) override;

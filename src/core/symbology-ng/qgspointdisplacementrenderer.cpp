@@ -87,7 +87,12 @@ QgsPointDisplacementRenderer* QgsPointDisplacementRenderer::clone() const
   return r;
 }
 
-void QgsPointDisplacementRenderer::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
+void QgsPointDisplacementRenderer::toSld( QDomDocument& doc, QDomElement &element ) const
+{
+  toSld( doc, element, QgsStringMap() );
+}
+
+void QgsPointDisplacementRenderer::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const
 {
   mRenderer->toSld( doc, element, props );
 }

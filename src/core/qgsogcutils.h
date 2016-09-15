@@ -164,6 +164,7 @@ class CORE_EXPORT QgsOgcUtils
     /** Creates an OGC expression XML element.
      * @return valid OGC expression QDomElement on success,
      * otherwise null QDomElement
+     * @note added in 2.14
      */
     static QDomElement expressionToOgcExpression( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage = nullptr );
 

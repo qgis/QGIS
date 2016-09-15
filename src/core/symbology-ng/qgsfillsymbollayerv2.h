@@ -63,6 +63,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     QgsSimpleFillSymbolLayerV2* clone() const override;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
@@ -809,6 +810,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 
     QgsSVGFillSymbolLayer* clone() const override;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     //getters and setters
@@ -899,6 +901,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     QgsLinePatternFillSymbolLayer* clone() const override;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     double estimateMaxBleed() const override;
@@ -995,6 +998,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     QgsPointPatternFillSymbolLayer* clone() const override;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     double estimateMaxBleed() const override;
@@ -1099,6 +1103,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     QgsCentroidFillSymbolLayerV2* clone() const override;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     void setColor( const QColor& color ) override;
