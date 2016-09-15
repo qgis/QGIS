@@ -109,7 +109,7 @@ void QgsOfflineEditingPlugin::convertProject()
     }
 
     mProgressDialog->setTitle( tr( "Converting to offline project" ) );
-    if ( mOfflineEditing->convertToOfflineProject( myPluginGui->offlineDataPath(), myPluginGui->offlineDbFile(), selectedLayerIds ) )
+    if ( mOfflineEditing->convertToOfflineProject( myPluginGui->offlineDataPath(), myPluginGui->offlineDbFile(), selectedLayerIds, myPluginGui->onlySelected() ) )
     {
       updateActions();
       // Redraw, to make the offline layer visible

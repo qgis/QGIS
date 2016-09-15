@@ -77,7 +77,7 @@ QgsOfflineEditing::~QgsOfflineEditing()
  *  - remove remote layers
  *  - mark as offline project
  */
-bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath, const QString& offlineDbFile, const QStringList& layerIds )
+bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath, const QString& offlineDbFile, const QStringList& layerIds, bool onlySelected )
 {
   if ( layerIds.isEmpty() )
   {
@@ -102,9 +102,9 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
       QMap<QString, QgsVectorJoinList > joinInfoBuffer;
       QMap<QString, QgsVectorLayer*> layerIdMapping;
 
-      for ( int i = 0; i < layerIds.count(); i++ )
+      Q_FOREACH ( const QString& layerId, layerIds )
       {
-        QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerIds.at( i ) );
+        QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
         if ( !vl )
           continue;
@@ -114,17 +114,17 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
         // Join fields are prefixed with the layer name and we do not want the
         // field name to change so we stabilize the field name by defining a
         // custom prefix with the layername without _offline suffix.
-        QgsVectorJoinList::iterator it = joins.begin();
-        while ( it != joins.end() )
+        QgsVectorJoinList::iterator joinIt = joins.begin();
+        while ( joinIt != joins.end() )
         {
-          if (( *it ).prefix.isNull() )
+          if ( joinIt->prefix.isNull() )
           {
-            QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer(( *it ).joinLayerId ) );
+            QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinIt->joinLayerId ) );
 
             if ( vl )
-              ( *it ).prefix = vl->name() + '_';
+              joinIt->prefix = vl->name() + '_';
           }
-          ++it;
+          ++joinIt;
         }
         joinInfoBuffer.insert( vl->id(), joins );
       }
@@ -139,7 +139,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
         if ( vl )
         {
           QString origLayerId = vl->id();
-          QgsVectorLayer* newLayer = copyVectorLayer( vl, db, dbPath );
+          QgsVectorLayer* newLayer = copyVectorLayer( vl, db, dbPath, onlySelected );
 
           if ( newLayer )
           {
@@ -195,7 +195,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
   return false;
 }
 
-bool QgsOfflineEditing::isOfflineProject()
+bool QgsOfflineEditing::isOfflineProject() const
 {
   return !QgsProject::instance()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH ).isEmpty();
 }
@@ -226,7 +226,7 @@ void QgsOfflineEditing::synchronize()
   QgsDebugMsgLevel( QString( "Found %1 offline layers" ).arg( offlineLayers.count() ), 4 );
   for ( int l = 0; l < offlineLayers.count(); l++ )
   {
-    QgsMapLayer* layer = offlineLayers[l];
+    QgsMapLayer* layer = offlineLayers.at( l );
 
     emit layerProgressUpdated( l + 1, offlineLayers.count() );
 
@@ -252,8 +252,7 @@ void QgsOfflineEditing::synchronize()
       QgsVectorLayer* offlineLayer = qobject_cast<QgsVectorLayer*>( layer );
 
       // register this layer with the central layers registry
-      QgsMapLayerRegistry::instance()->addMapLayers(
-        QList<QgsMapLayer *>() << remoteLayer, true );
+      QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << remoteLayer, true );
 
       // copy style
       copySymbology( offlineLayer, remoteLayer );
@@ -315,8 +314,7 @@ void QgsOfflineEditing::synchronize()
       // again with the same path
       offlineLayer->dataProvider()->invalidateConnections( QgsDataSourceURI( offlineLayer->source() ).database() );
       // remove offline layer
-      QgsMapLayerRegistry::instance()->removeMapLayers(
-        ( QStringList() << qgisLayerId ) );
+      QgsMapLayerRegistry::instance()->removeMapLayers( QStringList() << qgisLayerId );
 
 
       // disable offline project
@@ -484,7 +482,7 @@ void QgsOfflineEditing::createLoggingTables( sqlite3* db )
   */
 }
 
-QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, const QString& offlineDbPath )
+QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, const QString& offlineDbPath , bool onlySelected )
 {
   if ( !layer )
     return nullptr;
@@ -637,12 +635,18 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
 
       QgsFeatureIterator fit = layer->dataProvider()->getFeatures();
 
+      QgsFeatureIds selectedFids = layer->selectedFeaturesIds();
+
       emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->dataProvider()->featureCount() );
       int featureCount = 1;
 
       QList<QgsFeatureId> remoteFeatureIds;
       while ( fit.nextFeature( f ) )
       {
+        // Check if we only want selected feature, if the selection is not empty and the current feature is not selected: dismiss it
+        if ( onlySelected && !selectedFids.isEmpty() && !selectedFids.contains( f.id() ) )
+          continue;
+
         remoteFeatureIds << f.id();
 
         // NOTE: Spatialite provider ignores position of geometry column

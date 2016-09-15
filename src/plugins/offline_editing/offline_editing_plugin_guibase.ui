@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>435</width>
-    <height>270</height>
+    <width>590</width>
+    <height>570</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -91,6 +91,13 @@
       </layout>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mOnlySelectedCheckBox">
+     <property name="text">
+      <string>Only synchronize selected features if a selection is present</string>
+     </property>
+    </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">

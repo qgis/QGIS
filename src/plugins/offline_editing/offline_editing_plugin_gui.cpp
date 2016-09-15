@@ -102,9 +102,14 @@ QString QgsOfflineEditingPluginGui::offlineDbFile()
   return mOfflineDbFile;
 }
 
-QStringList& QgsOfflineEditingPluginGui::selectedLayerIds()
+QStringList QgsOfflineEditingPluginGui::selectedLayerIds()
 {
   return mSelectedLayerIds;
+}
+
+bool QgsOfflineEditingPluginGui::onlySelected() const
+{
+  return mOnlySelectedCheckBox->checkState() == Qt::Checked;
 }
 
 void QgsOfflineEditingPluginGui::on_mBrowseButton_clicked()
