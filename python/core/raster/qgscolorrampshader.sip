@@ -40,6 +40,11 @@ class QgsColorRampShader : QgsRasterShaderFunction
     /** \brief Get the color ramp type */
     QgsColorRampShader::ColorRamp_TYPE colorRampType() const;
 
+    /** \brief Get the original color ramp name
+     * @note added in QGIS 3.0
+     */
+    QString colorRampName() const;
+
     /** \brief Get the color ramp type as a string */
     QString colorRampTypeAsQString();
 
@@ -50,6 +55,11 @@ class QgsColorRampShader : QgsRasterShaderFunction
 
     /** \brief Set custom colormap */
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ); //TODO: sort on set
+
+    /** \brief Set the source color ramp name
+     * @note added in QGIS 3.0
+     */
+    void setColorRampName( const QString& theName );
 
     /** \brief Set the color ramp type*/
     void setColorRampType( QgsColorRampShader::ColorRamp_TYPE theColorRampType );
