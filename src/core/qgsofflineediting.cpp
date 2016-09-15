@@ -622,20 +622,30 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
       // NOTE: force feature recount for PostGIS layer, else only visible features are counted, before iterating over all features (WORKAROUND)
       layer->setSubsetString( layer->subsetString() );
 
-      QgsFeatureIterator fit = layer->dataProvider()->getFeatures();
+      QgsFeatureRequest req;
 
-      QgsFeatureIds selectedFids = layer->selectedFeaturesIds();
+      if ( onlySelected )
+      {
+        QgsFeatureIds selectedFids = layer->selectedFeaturesIds();
+        if ( !selectedFids.isEmpty() )
+          req.setFilterFids( selectedFids );
+      }
 
-      emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->dataProvider()->featureCount() );
+      QgsFeatureIterator fit = layer->dataProvider()->getFeatures( req );
+
+      if ( req.filterType() == QgsFeatureRequest::FilterFids )
+      {
+        emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->selectedFeaturesIds().size() );
+      }
+      else
+      {
+        emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->dataProvider()->featureCount() );
+      }
       int featureCount = 1;
 
       QList<QgsFeatureId> remoteFeatureIds;
       while ( fit.nextFeature( f ) )
       {
-        // Check if we only want selected feature, if the selection is not empty and the current feature is not selected: dismiss it
-        if ( onlySelected && !selectedFids.isEmpty() && !selectedFids.contains( f.id() ) )
-          continue;
-
         remoteFeatureIds << f.id();
 
         // NOTE: Spatialite provider ignores position of geometry column
