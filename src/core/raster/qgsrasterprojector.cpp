@@ -65,7 +65,7 @@ QGis::DataType QgsRasterProjector::dataType( int bandNo ) const
 /// @cond PRIVATE
 
 
-void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS, int srcDatumTransform, int destDatumTransform )
+void QgsRasterProjector::setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS, int srcDatumTransform, int destDatumTransform )
 {
   mSrcCRS = theSrcCRS;
   mDestCRS = theDestCRS;
@@ -74,9 +74,9 @@ void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem & theSrcCRS,
 }
 
 
-ProjectorData::ProjectorData( const QgsRectangle& extent, int width, int height, QgsRasterInterface* input, const QgsCoordinateTransform& inverseCt, QgsRasterProjector::Precision precision )
+ProjectorData::ProjectorData( const QgsRectangle& extent, int width, int height, QgsRasterInterface* input, const QgsCoordinateTransform* inverseCt, QgsRasterProjector::Precision precision )
     : mApproximate( false )
-    , mInverseCt( new QgsCoordinateTransform( inverseCt ) )
+    , mInverseCt( inverseCt->clone() )
     , mDestExtent( extent )
     , mDestRows( height )
     , mDestCols( width )
@@ -346,7 +346,7 @@ void ProjectorData::calcSrcRowsCols()
     //double
     QgsRectangle srcExtent;
     int srcXSize, srcYSize;
-    if ( QgsRasterProjector::extentSize( *mInverseCt, mDestExtent, mDestCols, mDestRows, srcExtent, srcXSize, srcYSize ) )
+    if ( QgsRasterProjector::extentSize( mInverseCt, mDestExtent, mDestCols, mDestRows, srcExtent, srcXSize, srcYSize ) )
     {
       double srcXRes = srcExtent.width() / srcXSize;
       double srcYRes = srcExtent.height() / srcYSize;
@@ -548,7 +548,7 @@ bool ProjectorData::approximateSrcRowCol( int theDestRow, int theDestCol, int *t
   return true;
 }
 
-void ProjectorData::insertRows( const QgsCoordinateTransform& ct )
+void ProjectorData::insertRows( const QgsCoordinateTransform* ct )
 {
   for ( int r = 0; r < mCPRows - 1; r++ )
   {
@@ -572,7 +572,7 @@ void ProjectorData::insertRows( const QgsCoordinateTransform& ct )
   }
 }
 
-void ProjectorData::insertCols( const QgsCoordinateTransform& ct )
+void ProjectorData::insertCols( const QgsCoordinateTransform* ct )
 {
   for ( int r = 0; r < mCPRows; r++ )
   {
@@ -590,7 +590,7 @@ void ProjectorData::insertCols( const QgsCoordinateTransform& ct )
 
 }
 
-void ProjectorData::calcCP( int theRow, int theCol, const QgsCoordinateTransform& ct )
+void ProjectorData::calcCP( int theRow, int theCol, const QgsCoordinateTransform* ct )
 {
   double myDestX, myDestY;
   destPointOnCPMatrix( theRow, theCol, &myDestX, &myDestY );
@@ -615,7 +615,7 @@ void ProjectorData::calcCP( int theRow, int theCol, const QgsCoordinateTransform
   }
 }
 
-bool ProjectorData::calcRow( int theRow, const QgsCoordinateTransform& ct )
+bool ProjectorData::calcRow( int theRow, const QgsCoordinateTransform* ct )
 {
   QgsDebugMsgLevel( QString( "theRow = %1" ).arg( theRow ), 3 );
   for ( int i = 0; i < mCPCols; i++ )
@@ -626,7 +626,7 @@ bool ProjectorData::calcRow( int theRow, const QgsCoordinateTransform& ct )
   return true;
 }
 
-bool ProjectorData::calcCol( int theCol, const QgsCoordinateTransform& ct )
+bool ProjectorData::calcCol( int theCol, const QgsCoordinateTransform* ct )
 {
   QgsDebugMsgLevel( QString( "theCol = %1" ).arg( theCol ), 3 );
   for ( int i = 0; i < mCPRows; i++ )
@@ -637,7 +637,7 @@ bool ProjectorData::calcCol( int theCol, const QgsCoordinateTransform& ct )
   return true;
 }
 
-bool ProjectorData::checkCols( const QgsCoordinateTransform& ct )
+bool ProjectorData::checkCols( const QgsCoordinateTransform* ct )
 {
   if ( !ct )
   {
@@ -682,7 +682,7 @@ bool ProjectorData::checkCols( const QgsCoordinateTransform& ct )
   return true;
 }
 
-bool ProjectorData::checkRows( const QgsCoordinateTransform& ct )
+bool ProjectorData::checkRows( const QgsCoordinateTransform* ct )
 {
   if ( !ct )
   {
@@ -758,7 +758,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
     return mInput->block( bandNo, extent, width, height, feedback );
   }
 
-  QgsCoordinateTransform inverseCt = QgsCoordinateTransformCache::instance()->transform( mDestCRS.authid(), mSrcCRS.authid(), mDestDatumTransform, mSrcDatumTransform );
+  const QgsCoordinateTransform* inverseCt = QgsCoordinateTransformCache::instance()->transform( mDestCRS.authid(), mSrcCRS.authid(), mDestDatumTransform, mSrcDatumTransform );
 
   ProjectorData pd( extent, width, height, mInput, inverseCt, mPrecision );
 

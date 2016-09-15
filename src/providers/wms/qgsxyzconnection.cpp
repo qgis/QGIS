@@ -21,7 +21,7 @@
 
 QString QgsXyzConnection::encodedUri() const
 {
-  QgsDataSourceUri uri;
+  QgsDataSourceURI uri;
   uri.setParam( "type", "xyz" );
   uri.setParam( "url", url );
   return uri.encodedUri();

@@ -1148,7 +1148,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 
 void QgsWmsProvider::setupXyzCapabilities( const QString &uri )
 {
-  QgsDataSourceUri parsedUri;
+  QgsDataSourceURI parsedUri;
   parsedUri.setEncodedUri( uri );
 
   QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( "EPSG:4326" ), QgsCoordinateReferenceSystem( mSettings.mCrsId ) );

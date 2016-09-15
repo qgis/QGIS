@@ -76,8 +76,8 @@ void QgsRasterTransparencyWidget::syncToLayer()
   QgsRasterRenderer* renderer = mRasterLayer->renderer();
   if ( provider )
   {
-    if ( provider->dataType( 1 ) == Qgis::ARGB32
-         || provider->dataType( 1 ) == Qgis::ARGB32_Premultiplied )
+    if ( provider->dataType( 1 ) == QGis::ARGB32
+         || provider->dataType( 1 ) == QGis::ARGB32_Premultiplied )
     {
       gboxNoDataValue->setEnabled( false );
       gboxCustomTransparency->setEnabled( false );

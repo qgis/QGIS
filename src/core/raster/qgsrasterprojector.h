@@ -120,7 +120,7 @@ class ProjectorData
 {
   public:
     /** Initialize reprojector and calculate matrix */
-    ProjectorData( const QgsRectangle &extent, int width, int height, QgsRasterInterface *input, const QgsCoordinateTransform &inverseCt, QgsRasterProjector::Precision precision );
+    ProjectorData( const QgsRectangle &extent, int width, int height, QgsRasterInterface *input, const QgsCoordinateTransform *inverseCt, QgsRasterProjector::Precision precision );
     ~ProjectorData();
 
     /** \brief Get source row and column indexes for current source extent and resolution
