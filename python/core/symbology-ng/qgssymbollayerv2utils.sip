@@ -415,31 +415,31 @@ class QgsSymbolLayerV2Utils
 
     /** Rescales the given size based on the uomScale found in the props, if any is found, otherwise
      *  returns the value un-modified
-     * @note added in 3.0
+     * @note added in 2.14.8
      */
     static double rescaleUom( double size, QgsSymbolV2::OutputUnit unit, const QgsStringMap& props );
 
     /** Rescales the given point based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
-     * @note added in 3.0
+     * @note added in 2.14.8
      */
     static QPointF rescaleUom( const QPointF& point, QgsSymbolV2::OutputUnit unit, const QgsStringMap& props ) /PyName=rescalePointUom/;
 
     /** Rescales the given array based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
-     * @note added in 3.0
+     * @note added in 2.14.8
      */
     static QVector<qreal> rescaleUom( const QVector<qreal>& array, QgsSymbolV2::OutputUnit unit, const QgsStringMap& props ) /PyName=rescaleArrayUom/;
 
     /**
      * Checks if the properties contain scaleMinDenom and scaleMaxDenom, if available, they are added into the SE Rule element
-     * @note added in 3.0
+     * @note added in 2.14.8
      */
     static void applyScaleDependency( QDomDocument& doc, QDomElement& ruleElem, QgsStringMap& props );
 
     /**
       * Merges the local scale limits, if any, with the ones already in the map, if any
-      * @note added in 3.0
+      * @note added in 2.14.8
       */
     static void mergeScaleDependencies( int mScaleMinDenom, int mScaleMaxDenom, QgsStringMap& props );
 

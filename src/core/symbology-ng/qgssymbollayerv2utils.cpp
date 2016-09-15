@@ -4121,7 +4121,7 @@ QVector<qreal> QgsSymbolLayerV2Utils::rescaleUom( const QVector<qreal>& array, Q
   return result;
 }
 
-void QgsSymbolLayerV2Utils::applyScaleDependency( QDomDocument& doc, QDomElement& ruleElem, QgsStringMap& props )
+void QgsSymbolLayerV2Utils::applyScaleDependency( QDomDocument& doc, QDomElement& ruleElem, const QgsStringMap& props )
 {
   if ( !props.value( "scaleMinDenom", "" ).isEmpty() )
   {

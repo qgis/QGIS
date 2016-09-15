@@ -18,6 +18,7 @@ class QgsEllipseSymbolLayerV2 : QgsMarkerSymbolLayerV2
     virtual QgsEllipseSymbolLayerV2* clone() const /Factory/;
     QgsStringMap properties() const;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
     void writeSldMarker( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
 
