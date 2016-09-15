@@ -20,4 +20,7 @@ export CTEST_PARALLEL_LEVEL=1
 export CCACHE_CPP2=yes
 export CCACHE_TEMPDIR=/tmp
 
+#Set OTB application path (installed in before_install.sh script)
+export OTB_APPLICATION_PATH=${HOME}/OTB-5.6.0-Linux64/lib/otb/applications
+
 xvfb-run ctest -V -E 'qgis_openstreetmaptest|qgis_wcsprovidertest|PyQgsOfflineEditingWFS' -S ./qgis-test-travis.ctest --output-on-failure
