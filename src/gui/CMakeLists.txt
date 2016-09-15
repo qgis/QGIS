@@ -166,7 +166,6 @@ SET(QGIS_GUI_SRCS
   qgsadvanceddigitizingdockwidget.cpp
   qgsannotationitem.cpp
   qgsattributedialog.cpp
-  qgsattributeeditor.cpp
   qgsattributeform.cpp
   qgsattributeformeditorwidget.cpp
   qgsattributeforminterface.cpp
@@ -332,7 +331,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgsactionmenu.h
   qgsadvanceddigitizingdockwidget.h
   qgsattributedialog.h
-  qgsattributeeditor.h
   qgsattributeform.h
   qgsattributeformeditorwidget.h
   qgsattributetypeloaddialog.h

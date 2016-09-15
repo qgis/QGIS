@@ -178,6 +178,7 @@ This page tries to maintain a list with incompatible changes that happened in pr
 
 <ul>
 <li>QgsAttributeAction was removed, and replaced by QgsActionManager.</li>
+<li>QgsAttributeEditor was removed. Use QgsEditorWidgetRegistry::create() instead.</li>
 <li>QgsColorbutton was removed. QgsColorButtonV2 has now been renamed to QgsColorButton. Hence, QgsColorButtonV2 does not exist anymore.</li>
 <li>QgsColorDialog was removed, and QgsColorDialogV2 was renamed to QgsColorDialog. Hence, QgsColorButtonV2 does not exist anymore.
 All the functionality from the old QgsColorDialog has been moved to the new class.</li>
