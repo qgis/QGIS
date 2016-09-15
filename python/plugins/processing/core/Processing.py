@@ -193,10 +193,6 @@ class Processing:
         return algList.getAlgorithm(name)
 
     @staticmethod
-    def getAlgorithmFromFullName(name):
-        return algList.getAlgorithmFromFullName(name)
-
-    @staticmethod
     def getObject(uri):
         """Returns the QGIS object identified by the given URI."""
         return dataobjects.getObjectFromUri(uri)
