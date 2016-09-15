@@ -1281,7 +1281,7 @@ class ParameterTableField(Parameter):
                  optional=False, multiple = False):
         Parameter.__init__(self, name, description, None, optional)
         self.parent = parent
-        self.multiple = True
+        self.multiple = multiple
         self.datatype = int(datatype)
 
     def getValueAsCommandLineParameter(self):
