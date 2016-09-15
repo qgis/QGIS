@@ -52,7 +52,7 @@ class CORE_EXPORT QgsMapLayerRenderer
     virtual bool render() = 0;
 
     //! Access to feedback object of the layer renderer (may be null)
-    //! @note added in QGIS 3.0
+    //! @note added in QGIS 2.18
     virtual QgsFeedback* feedback() const { return nullptr; }
 
     //! Return list of errors (problems) that happened during the rendering

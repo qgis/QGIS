@@ -35,7 +35,7 @@
  * subclass and available with QgsMapLayerRenderer::feedback() method. When a map rendering job
  * gets cancelled, the cancel() method is called on the feedback object of all layers.
  *
- * @note added in QGIS 3.0
+ * @note added in QGIS 2.18
  */
 class CORE_EXPORT QgsFeedback : public QObject
 {

@@ -53,10 +53,41 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
       Exact = 1,   //!< Exact, precise but slow
     };
 
+    Q_DECL_DEPRECATED
+    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
+                        const QgsCoordinateReferenceSystem& theDestCRS,
+                        int theSrcDatumTransform,
+                        int theDestDatumTransform,
+                        const QgsRectangle& theDestExtent,
+                        int theDestRows, int theDestCols,
+                        double theMaxSrcXRes, double theMaxSrcYRes,
+                        const QgsRectangle& theExtent
+                      );
+    Q_DECL_DEPRECATED
+    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
+                        const QgsCoordinateReferenceSystem& theDestCRS,
+                        const QgsRectangle& theDestExtent,
+                        int theDestRows, int theDestCols,
+                        double theMaxSrcXRes, double theMaxSrcYRes,
+                        const QgsRectangle& theExtent
+                      );
+    Q_DECL_DEPRECATED
+    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
+                        const QgsCoordinateReferenceSystem& theDestCRS,
+                        double theMaxSrcXRes, double theMaxSrcYRes,
+                        const QgsRectangle& theExtent
+                      );
     QgsRasterProjector();
+
+    /** \brief Copy constructor */
+    // To avoid synthesized which fails on copy of QgsCoordinateTransform
+    // (QObject child) in Python bindings
+    Q_DECL_DEPRECATED QgsRasterProjector( const QgsRasterProjector &projector );
 
     /** \brief The destructor */
     ~QgsRasterProjector();
+
+    QgsRasterProjector & operator=( const QgsRasterProjector &projector );
 
     QgsRasterProjector *clone() const override;
 
@@ -74,12 +105,16 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     /** \brief Get destination CRS */
     QgsCoordinateReferenceSystem destCrs() const { return mDestCRS; }
 
+    /** @deprecated since 2.18, does nothing */
+    Q_DECL_DEPRECATED void setMaxSrcRes( double theMaxSrcXRes, double theMaxSrcYRes ) { Q_UNUSED( theMaxSrcXRes ); Q_UNUSED( theMaxSrcYRes ); }
+
     Precision precision() const { return mPrecision; }
     void setPrecision( Precision precision ) { mPrecision = precision; }
     // Translated precision mode, for use in ComboBox etc.
     static QString precisionLabel( Precision precision );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) override;
+    QgsRasterBlock *block2( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     /** Calculate destination extent and size from source extent and size */
     bool destExtentSize( const QgsRectangle& theSrcExtent, int theSrcXSize, int theSrcYSize,

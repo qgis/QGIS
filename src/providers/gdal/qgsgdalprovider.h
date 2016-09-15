@@ -170,7 +170,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString generateBandName( int theBandNumber ) const override;
 
     /** Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)*/
-    QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight ) override;
+    QgsRasterBlock *block2( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;

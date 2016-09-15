@@ -30,7 +30,7 @@ QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator* iterator ): mIterator( iter
 {
 }
 
-void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel, QgsRasterBlockFeedback* feedback )
+void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel, const QgsRenderContext *ctx, QgsRasterBlockFeedback* feedback )
 {
   QgsDebugMsgLevel( "Entered", 4 );
   if ( !p || !mIterator || !viewPort || !theQgsMapToPixel )
@@ -104,6 +104,10 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
     // ok this does not matter much anyway as the tile size quite big so most of the time
     // there would be just one tile for the whole display area, but it won't hurt...
     if ( feedback && feedback->isCancelled() )
+      break;
+
+    // for compatibility
+    if ( ctx && ctx->renderingStopped() )
       break;
   }
 }

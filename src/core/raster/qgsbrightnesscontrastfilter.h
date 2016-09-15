@@ -40,7 +40,8 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
 
     bool setInput( QgsRasterInterface* input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height );
+    QgsRasterBlock *block2( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     void setBrightness( int brightness ) { mBrightness = qBound( -255, brightness, 255 ); }
     int brightness() const { return mBrightness; }

@@ -33,7 +33,7 @@
 /** \ingroup core
  * Feedback object tailored for raster block reading.
  *
- * @note added in QGIS 3.0
+ * @note added in QGIS 2.18
  */
 class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 {
@@ -150,9 +150,25 @@ class CORE_EXPORT QgsRasterInterface
      * @param extent extent of block
      * @param width pixel width of block
      * @param height pixel height of block
-     * @param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) = 0;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0;
+
+    /** Read block of data using given extent and size.
+     *  Returns pointer to data.
+     *  Caller is responsible to free the memory returned.
+     * @param bandNo band number
+     * @param extent extent of block
+     * @param width pixel width of block
+     * @param height pixel height of block
+     * @param feedback optional raster feedback object for cancellation/preview
+     * @note This is extended version of block() method. Default implementation falls back to calling block().
+     * @note Added in QGIS 2.18
+     */
+    virtual QgsRasterBlock *block2( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr )
+    {
+      Q_UNUSED( feedback );
+      return block( bandNo, extent, width, height );
+    }
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */
@@ -284,8 +300,6 @@ class CORE_EXPORT QgsRasterInterface
                          const QgsRectangle & theExtent = QgsRectangle(),
                          int theBinCount = 0 );
 
-  private:
-    Q_DISABLE_COPY( QgsRasterInterface )   // there is clone() for copying
 };
 
 #endif

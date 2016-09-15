@@ -95,7 +95,7 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
   double ymax = viewPortExtent.yMaximum() - pInfo.currentRow / static_cast< double >( pInfo.nRows ) * viewPortExtent.height();
   QgsRectangle blockRect( xmin, ymin, xmax, ymax );
 
-  *block = mInput->block( bandNumber, blockRect, nCols, nRows, mFeedback );
+  *block = mInput->block2( bandNumber, blockRect, nCols, nRows, mFeedback );
   topLeftCol = pInfo.currentCol;
   topLeftRow = pInfo.currentRow;
 

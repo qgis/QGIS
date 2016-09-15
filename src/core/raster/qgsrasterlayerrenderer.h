@@ -59,7 +59,7 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
     /** \ingroup core
      * Specific internal feedback class to provide preview of raster layer rendering.
-     * @note added in 3.0
+     * @note added in 2.18
      * @note not available in Python bindings
      */
     class Feedback : public QgsRasterBlockFeedback

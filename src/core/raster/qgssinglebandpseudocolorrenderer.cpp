@@ -107,7 +107,12 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& 
   return r;
 }
 
-QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height )
+{
+  return block2( bandNo, extent, width, height );
+}
+
+QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block2( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
   Q_UNUSED( bandNo );
 
@@ -118,7 +123,7 @@ QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
   }
 
 
-  QgsRasterBlock *inputBlock = mInput->block( mBand, extent, width, height, feedback );
+  QgsRasterBlock *inputBlock = mInput->block2( mBand, extent, width, height, feedback );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );
@@ -132,7 +137,7 @@ QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
   QgsRasterBlock *alphaBlock = nullptr;
   if ( mAlphaBand > 0 && mAlphaBand != mBand )
   {
-    alphaBlock = mInput->block( mAlphaBand, extent, width, height, feedback );
+    alphaBlock = mInput->block2( mAlphaBand, extent, width, height, feedback );
     if ( !alphaBlock || alphaBlock->isEmpty() )
     {
       delete inputBlock;

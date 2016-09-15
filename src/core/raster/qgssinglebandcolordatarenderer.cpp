@@ -52,7 +52,12 @@ QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& el
   return r;
 }
 
-QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle  const & extent, int width, int height )
+{
+  return block2( bandNo, extent, width, height );
+}
+
+QgsRasterBlock* QgsSingleBandColorDataRenderer::block2( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
   Q_UNUSED( bandNo );
 
@@ -62,7 +67,7 @@ QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
     return outputBlock;
   }
 
-  QgsRasterBlock *inputBlock = mInput->block( mBand, extent, width, height, feedback );
+  QgsRasterBlock *inputBlock = mInput->block2( mBand, extent, width, height, feedback );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );

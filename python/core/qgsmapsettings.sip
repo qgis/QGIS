@@ -117,7 +117,7 @@ class QgsMapSettings
       DrawSelection,              //!< Whether vector selections should be shown in the rendered map
       DrawSymbolBounds,           //!< Draw bounds of symbols (for debugging/testing)
       RenderMapTile,              //!< Draw map such that there are no problems between adjacent tiles
-      RenderPartialOutput,        //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
+      RenderPartialOutput,        //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 2.18
     };
     typedef QFlags<QgsMapSettings::Flag> Flags;
 

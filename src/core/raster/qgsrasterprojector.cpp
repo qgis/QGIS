@@ -22,6 +22,72 @@
 #include "qgsrasterprojector.h"
 #include "qgscoordinatetransform.h"
 
+QgsRasterProjector::QgsRasterProjector(
+  const QgsCoordinateReferenceSystem& theSrcCRS,
+  const QgsCoordinateReferenceSystem& theDestCRS,
+  int theSrcDatumTransform,
+  int theDestDatumTransform,
+  const QgsRectangle& theDestExtent,
+  int theDestRows, int theDestCols,
+  double theMaxSrcXRes, double theMaxSrcYRes,
+  const QgsRectangle& theExtent )
+    : QgsRasterInterface( nullptr )
+    , mSrcCRS( theSrcCRS )
+    , mDestCRS( theDestCRS )
+    , mSrcDatumTransform( theSrcDatumTransform )
+    , mDestDatumTransform( theDestDatumTransform )
+    , mPrecision( Approximate )
+{
+  // these are temporary variables, calculated on the fly in block() call
+  Q_UNUSED( theDestExtent );
+  Q_UNUSED( theDestRows );
+  Q_UNUSED( theDestCols );
+  Q_UNUSED( theMaxSrcXRes );
+  Q_UNUSED( theMaxSrcYRes );
+  Q_UNUSED( theExtent );
+}
+
+QgsRasterProjector::QgsRasterProjector(
+  const QgsCoordinateReferenceSystem& theSrcCRS,
+  const QgsCoordinateReferenceSystem& theDestCRS,
+  const QgsRectangle& theDestExtent,
+  int theDestRows, int theDestCols,
+  double theMaxSrcXRes, double theMaxSrcYRes,
+  const QgsRectangle& theExtent )
+    : QgsRasterInterface( nullptr )
+    , mSrcCRS( theSrcCRS )
+    , mDestCRS( theDestCRS )
+    , mSrcDatumTransform( -1 )
+    , mDestDatumTransform( -1 )
+    , mPrecision( Approximate )
+{
+  // these are temporary variables, calculated on the fly in block() call
+  Q_UNUSED( theDestExtent );
+  Q_UNUSED( theDestRows );
+  Q_UNUSED( theDestCols );
+  Q_UNUSED( theMaxSrcXRes );
+  Q_UNUSED( theMaxSrcYRes );
+  Q_UNUSED( theExtent );
+}
+
+QgsRasterProjector::QgsRasterProjector(
+  const QgsCoordinateReferenceSystem& theSrcCRS,
+  const QgsCoordinateReferenceSystem& theDestCRS,
+  double theMaxSrcXRes, double theMaxSrcYRes,
+  const QgsRectangle& theExtent )
+    : QgsRasterInterface( nullptr )
+    , mSrcCRS( theSrcCRS )
+    , mDestCRS( theDestCRS )
+    , mSrcDatumTransform( -1 )
+    , mDestDatumTransform( -1 )
+    , mPrecision( Approximate )
+{
+  // these are temporary variables, calculated on the fly in block() call
+  Q_UNUSED( theMaxSrcXRes );
+  Q_UNUSED( theMaxSrcYRes );
+  Q_UNUSED( theExtent );
+}
+
 QgsRasterProjector::QgsRasterProjector()
     : QgsRasterInterface( nullptr )
     , mSrcDatumTransform( -1 )
@@ -29,6 +95,29 @@ QgsRasterProjector::QgsRasterProjector()
     , mPrecision( Approximate )
 {
   QgsDebugMsgLevel( "Entered", 4 );
+}
+
+QgsRasterProjector::QgsRasterProjector( const QgsRasterProjector &projector )
+  : QgsRasterInterface( nullptr )
+  , mSrcCRS( projector.mSrcCRS )
+  , mDestCRS( projector.mDestCRS )
+  , mSrcDatumTransform( projector.mSrcDatumTransform )
+  , mDestDatumTransform( projector.mDestDatumTransform )
+  , mPrecision( projector.mPrecision )
+{
+}
+
+QgsRasterProjector & QgsRasterProjector::operator=( const QgsRasterProjector & projector )
+{
+  if ( &projector != this )
+  {
+    mSrcCRS = projector.mSrcCRS;
+    mDestCRS = projector.mDestCRS;
+    mSrcDatumTransform = projector.mSrcDatumTransform;
+    mDestDatumTransform = projector.mDestDatumTransform;
+    mPrecision = projector.mPrecision;
+  }
+  return *this;
 }
 
 
@@ -742,7 +831,12 @@ QString QgsRasterProjector::precisionLabel( Precision precision )
   return "Unknown";
 }
 
-QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & extent, int width, int height )
+{
+  return block2( bandNo, extent, width, height );
+}
+
+QgsRasterBlock * QgsRasterProjector::block2( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
   QgsDebugMsgLevel( QString( "extent:\n%1" ).arg( extent.toString() ), 4 );
   QgsDebugMsgLevel( QString( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );
@@ -755,7 +849,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
   if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
   {
     QgsDebugMsgLevel( "No projection necessary", 4 );
-    return mInput->block( bandNo, extent, width, height, feedback );
+    return mInput->block2( bandNo, extent, width, height, feedback );
   }
 
   const QgsCoordinateTransform* inverseCt = QgsCoordinateTransformCache::instance()->transform( mDestCRS.authid(), mSrcCRS.authid(), mDestDatumTransform, mSrcDatumTransform );
@@ -772,7 +866,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
     return new QgsRasterBlock();
   }
 
-  QgsRasterBlock *inputBlock = mInput->block( bandNo, pd.srcExtent(), pd.srcCols(), pd.srcRows(), feedback );
+  QgsRasterBlock *inputBlock = mInput->block2( bandNo, pd.srcExtent(), pd.srcCols(), pd.srcRows(), feedback );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );

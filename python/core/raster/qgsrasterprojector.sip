@@ -22,6 +22,27 @@ class QgsRasterProjector : QgsRasterInterface
       Exact,   //!< Exact, precise but slow
     };
 
+    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
+                        const QgsCoordinateReferenceSystem& theDestCRS,
+                        int theSrcDatumTransform,
+                        int theDestDatumTransform,
+                        const QgsRectangle& theDestExtent,
+                        int theDestRows, int theDestCols,
+                        double theMaxSrcXRes, double theMaxSrcYRes,
+                        const QgsRectangle& theExtent
+                      ) /Deprecated/;
+    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
+                        const QgsCoordinateReferenceSystem& theDestCRS,
+                        const QgsRectangle& theDestExtent,
+                        int theDestRows, int theDestCols,
+                        double theMaxSrcXRes, double theMaxSrcYRes,
+                        const QgsRectangle& theExtent
+                      ) /Deprecated/;
+    QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
+                        const QgsCoordinateReferenceSystem& theDestCRS,
+                        double theMaxSrcXRes, double theMaxSrcYRes,
+                        const QgsRectangle& theExtent
+                      ) /Deprecated/;
     QgsRasterProjector();
 
     /** \brief The destructor */
@@ -43,12 +64,16 @@ class QgsRasterProjector : QgsRasterInterface
     /** \brief Get destination CRS */
     QgsCoordinateReferenceSystem destCrs() const;
 
+    /** @deprecated since 2.18, does nothing */
+    void setMaxSrcRes( double theMaxSrcXRes, double theMaxSrcYRes ) /Deprecated/;
+
     Precision precision() const;
     void setPrecision( Precision precision );
     // Translated precision mode, for use in ComboBox etc.
     static QString precisionLabel( Precision precision );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) / Factory /;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
+    QgsRasterBlock *block2( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) / Factory /;
 
     /** Calculate destination extent and size from source extent and size */
     bool destExtentSize( const QgsRectangle& theSrcExtent, int theSrcXSize, int theSrcYSize,

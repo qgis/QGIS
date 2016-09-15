@@ -212,7 +212,7 @@ bool QgsRasterLayerRenderer::render()
   // Drawer to pipe?
   QgsRasterIterator iterator( mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
-  drawer.draw( mPainter, mRasterViewPort, mMapToPixel, mFeedback );
+  drawer.draw( mPainter, mRasterViewPort, mMapToPixel, nullptr, mFeedback );
 
   QgsDebugMsgLevel( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
 
@@ -251,7 +251,7 @@ void QgsRasterLayerRenderer::Feedback::onNewData()
   feedback.setRenderPartialOutput( true );
   QgsRasterIterator iterator( mR->mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
-  drawer.draw( mR->mPainter, mR->mRasterViewPort, mR->mMapToPixel, &feedback );
+  drawer.draw( mR->mPainter, mR->mRasterViewPort, mR->mMapToPixel, nullptr, &feedback );
   QgsDebugMsg( QString( "total raster preview time: %1 ms" ).arg( t.elapsed() ) );
   mLastPreview = QTime::currentTime();
 }

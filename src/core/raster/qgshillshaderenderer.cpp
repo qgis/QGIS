@@ -83,7 +83,12 @@ void QgsHillshadeRenderer::writeXML( QDomDocument &doc, QDomElement &parentElem 
   parentElem.appendChild( rasterRendererElem );
 }
 
-QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &extent, int width, int height )
+{
+  return block2( bandNo, extent, width, height );
+}
+
+QgsRasterBlock *QgsHillshadeRenderer::block2( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback )
 {
   Q_UNUSED( bandNo );
   QgsRasterBlock *outputBlock = new QgsRasterBlock();
@@ -93,7 +98,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
     return outputBlock;
   }
 
-  QgsRasterBlock *inputBlock = mInput->block( mBand, extent, width, height, feedback );
+  QgsRasterBlock *inputBlock = mInput->block2( mBand, extent, width, height, feedback );
 
   if ( !inputBlock || inputBlock->isEmpty() )
   {
@@ -107,7 +112,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
   if ( mAlphaBand > 0 && mBand != mAlphaBand )
   {
 
-    alphaBlock = mInput->block( mAlphaBand, extent, width, height, feedback );
+    alphaBlock = mInput->block2( mAlphaBand, extent, width, height, feedback );
     if ( !alphaBlock || alphaBlock->isEmpty() )
     {
       // TODO: better to render without alpha
