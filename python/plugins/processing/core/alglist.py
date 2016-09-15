@@ -72,10 +72,5 @@ class AlgorithmList(QObject):
             if name in provider:
                 return provider[name]
 
-    def getAlgorithmFromFullName(self, name):
-        for provider in self.algs.values():
-            for alg in provider.values():
-                if alg.name == name:
-                    return alg
 
 algList = AlgorithmList()
