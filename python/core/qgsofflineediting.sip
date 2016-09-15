@@ -28,10 +28,10 @@ class QgsOfflineEditing : QObject
      * @param offlineDbFile offline db file name
      * @param layerIds list of layer names to convert
      */
-    bool convertToOfflineProject( const QString& offlineDataPath, const QString& offlineDbFile, const QStringList& layerIds );
+    bool convertToOfflineProject( const QString& offlineDataPath, const QString& offlineDbFile, const QStringList& layerIds, bool onlySelected = false );
 
     /** Return true if current project is offline */
-    bool isOfflineProject();
+    bool isOfflineProject() const;
 
     /** Synchronize to remote layers */
     void synchronize();

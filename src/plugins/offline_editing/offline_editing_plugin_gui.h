@@ -46,7 +46,8 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
 
     QString offlineDataPath();
     QString offlineDbFile();
-    QStringList& selectedLayerIds();
+    QStringList selectedLayerIds();
+    bool onlySelected() const;
 
   public slots:
     /** Change the selection of layers in the list */
