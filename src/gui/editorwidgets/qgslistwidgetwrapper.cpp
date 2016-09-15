@@ -1,7 +1,7 @@
 /***************************************************************************
-    qgskeyvaluewidgetwrapper.cpp
+    qgslistwidgetwrapper.cpp
      --------------------------------------
-    Date                 : 08.2016
+    Date                 : 09.2016
     Copyright            : (C) 2016 Patrick Valsecchi
     Email                : patrick.valsecchi@camptocamp.com
  ***************************************************************************
@@ -13,27 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgskeyvaluewidgetwrapper.h"
-#include "qgskeyvaluewidget.h"
+#include "qgslistwidgetwrapper.h"
+#include "qgslistwidget.h"
 #include "qgsattributeform.h"
 
-QgsKeyValueWidgetWrapper::QgsKeyValueWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ):
+QgsListWidgetWrapper::QgsListWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ):
     QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent ), mWidget( nullptr )
 {
 }
 
-QVariant QgsKeyValueWidgetWrapper::value() const
+void QgsListWidgetWrapper::showIndeterminateState()
 {
-  if ( !mWidget ) return QVariant( QVariant::Map );
-  return mWidget->map();
+  mWidget->setList( QVariantList() );
 }
 
-void QgsKeyValueWidgetWrapper::showIndeterminateState()
-{
-  mWidget->setMap( QVariantMap() );
-}
-
-QWidget* QgsKeyValueWidgetWrapper::createWidget( QWidget* parent )
+QWidget* QgsListWidgetWrapper::createWidget( QWidget* parent )
 {
   if ( isInTable( parent ) )
   {
@@ -41,43 +35,59 @@ QWidget* QgsKeyValueWidgetWrapper::createWidget( QWidget* parent )
     QFrame* ret = new QFrame( parent );
     ret->setFrameShape( QFrame::StyledPanel );
     QHBoxLayout* layout = new QHBoxLayout( ret );
-    layout->addWidget( new QgsKeyValueWidget( ret ) );
+    layout->addWidget( new QgsListWidget( field().subType(), ret ) );
     ret->setMinimumSize( QSize( 320, 110 ) );
     return ret;
   }
   else
   {
-    return new QgsKeyValueWidget( parent );
+    return new QgsListWidget( field().subType(), parent );
   }
 }
 
-void QgsKeyValueWidgetWrapper::initWidget( QWidget* editor )
+void QgsListWidgetWrapper::initWidget( QWidget* editor )
 {
-  mWidget = qobject_cast<QgsKeyValueWidget*>( editor );
+  mWidget = qobject_cast<QgsListWidget*>( editor );
   if ( !mWidget )
   {
-    mWidget = editor->findChild<QgsKeyValueWidget*>();
+    mWidget = editor->findChild<QgsListWidget*>();
   }
 
   connect( mWidget, SIGNAL( valueChanged() ), this, SLOT( onValueChanged() ) );
 }
 
-bool QgsKeyValueWidgetWrapper::valid() const
+bool QgsListWidgetWrapper::valid() const
 {
-  return true;
+  return mWidget ? mWidget->valid() : true;
 }
 
-void QgsKeyValueWidgetWrapper::setValue( const QVariant& value )
+void QgsListWidgetWrapper::setValue( const QVariant& value )
 {
-  mWidget->setMap( value.toMap() );
+  mWidget->setList( value.toList() );
 }
 
-void QgsKeyValueWidgetWrapper::updateConstraintWidgetStatus( bool /*constraintValid*/ )
+QVariant QgsListWidgetWrapper::value() const
 {
-  // Nothing
+  QVariant::Type type = field().type();
+  if ( !mWidget ) return QVariant( type );
+  if ( type == QVariant::StringList )
+  {
+    QStringList result;
+    const QVariantList list = mWidget->list();
+    for ( QVariantList::const_iterator it = list.constBegin(); it != list.constEnd(); ++it )
+      result.append( it->toString() );
+    return result;
+  }
+  else
+    return QVariant( mWidget->list() );
 }
 
-void QgsKeyValueWidgetWrapper::onValueChanged()
+void QgsListWidgetWrapper::onValueChanged()
 {
   emit valueChanged( value() );
+}
+
+void QgsListWidgetWrapper::updateConstraintWidgetStatus( bool /*constraintValid*/ )
+{
+  // Nothing
 }

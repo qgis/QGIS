@@ -220,7 +220,11 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "timestamp without time zone", QVariant::DateTime, -1, -1, -1, -1 )
 
   // complex types
-  << QgsVectorDataProvider::NativeType( tr( "Map" ), "hstore", QVariant::Map, -1, -1, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Map" ), "hstore", QVariant::Map, -1, -1, -1, -1, QVariant::String )
+  << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 32bit)" ), "int4[]", QVariant::List, -1, -1, -1, -1, QVariant::Int )
+  << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 64bit)" ), "int8[]", QVariant::List, -1, -1, -1, -1, QVariant::LongLong )
+  << QgsVectorDataProvider::NativeType( tr( "Array of number (double)" ), "double precision[]", QVariant::List, -1, -1, -1, -1, QVariant::Double )
+  << QgsVectorDataProvider::NativeType( tr( "Array of text" ), "text[]", QVariant::StringList, -1, -1, -1, -1, QVariant::String )
   ;
 
   QString key;
@@ -356,27 +360,13 @@ static bool operator<( const QVariant &a, const QVariant &b )
         return a.toLongLong() < b.toLongLong();
 
       case QVariant::List:
+      case QVariant::StringList:
       {
-        const QList<QVariant> &al = a.toList();
-        const QList<QVariant> &bl = b.toList();
+        const QList<QVariant> al = a.toList();
+        const QList<QVariant> bl = b.toList();
 
         int i, n = qMin( al.size(), bl.size() );
         for ( i = 0; i < n && al[i].type() == bl[i].type() && al[i].isNull() == bl[i].isNull() && al[i] == bl[i]; i++ )
-          ;
-
-        if ( i == n )
-          return al.size() < bl.size();
-        else
-          return al[i] < bl[i];
-      }
-
-      case QVariant::StringList:
-      {
-        const QStringList &al = a.toStringList();
-        const QStringList &bl = b.toStringList();
-
-        int i, n = qMin( al.size(), bl.size() );
-        for ( i = 0; i < n && al[i] == bl[i]; i++ )
           ;
 
         if ( i == n )
@@ -884,6 +874,7 @@ bool QgsPostgresProvider::loadFields()
     QString fieldComment = descrMap[tableoid][attnum];
 
     QVariant::Type fieldType;
+    QVariant::Type fieldSubType = QVariant::Invalid;
 
     if ( fieldTType == "b" )
     {
@@ -1025,6 +1016,7 @@ bool QgsPostgresProvider::loadFields()
       else if ( fieldTypeName == "hstore" )
       {
         fieldType = QVariant::Map;
+        fieldSubType = QVariant::String;
         fieldSize = -1;
       }
       else
@@ -1036,7 +1028,8 @@ bool QgsPostgresProvider::loadFields()
       if ( isArray )
       {
         fieldTypeName = '_' + fieldTypeName;
-        fieldType = QVariant::String;
+        fieldSubType = fieldType;
+        fieldType = ( fieldType == QVariant::String ? QVariant::StringList : QVariant::List );
         fieldSize = -1;
       }
     }
@@ -1068,7 +1061,7 @@ bool QgsPostgresProvider::loadFields()
 
     mAttrPalIndexName.insert( i, fieldName );
     mDefaultValues.insert( mAttributeFields.size(), defValMap[tableoid][attnum] );
-    mAttributeFields.append( QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment ) );
+    mAttributeFields.append( QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment, fieldSubType ) );
   }
 
   setEditorWidgets();
@@ -1570,7 +1563,7 @@ QVariant QgsPostgresProvider::minimumValue( int index ) const
     sql = QString( "SELECT %1 FROM (%2) foo" ).arg( connectionRO()->fieldExpression( fld ), sql );
 
     QgsPostgresResult rmin( connectionRO()->PQexec( sql ) );
-    return convertValue( fld.type(), rmin.PQgetvalue( 0, 0 ) );
+    return convertValue( fld.type(), fld.subType(), rmin.PQgetvalue( 0, 0 ) );
   }
   catch ( PGFieldNotFound )
   {
@@ -1609,7 +1602,7 @@ void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues
     if ( res.PQresultStatus() == PGRES_TUPLES_OK )
     {
       for ( int i = 0; i < res.PQntuples(); i++ )
-        uniqueValues.append( convertValue( fld.type(), res.PQgetvalue( i, 0 ) ) );
+        uniqueValues.append( convertValue( fld.type(), fld.subType(), res.PQgetvalue( i, 0 ) ) );
     }
   }
   catch ( PGFieldNotFound )
@@ -1746,7 +1739,7 @@ QVariant QgsPostgresProvider::maximumValue( int index ) const
 
     QgsPostgresResult rmax( connectionRO()->PQexec( sql ) );
 
-    return convertValue( fld.type(), rmax.PQgetvalue( 0, 0 ) );
+    return convertValue( fld.type(), fld.subType(), rmax.PQgetvalue( 0, 0 ) );
   }
   catch ( PGFieldNotFound )
   {
@@ -1770,7 +1763,7 @@ QVariant QgsPostgresProvider::defaultValue( int fieldId ) const
 
     QgsPostgresResult res( connectionRO()->PQexec( QString( "SELECT %1" ).arg( defVal.toString() ) ) );
 
-    return convertValue( fld.type(), res.PQgetvalue( 0, 0 ) );
+    return convertValue( fld.type(), fld.subType(), res.PQgetvalue( 0, 0 ) );
   }
 
   return defVal;
@@ -2070,7 +2063,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         {
           QgsField fld = field( attrIdx );
           v = paramValue( defaultValues[ i ], defaultValues[ i ] );
-          features->setAttribute( attrIdx, convertValue( fld.type(), v ) );
+          features->setAttribute( attrIdx, convertValue( fld.type(), fld.subType(), v ) );
         }
         else
         {
@@ -2079,7 +2072,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
           if ( v != value.toString() )
           {
             QgsField fld = field( attrIdx );
-            features->setAttribute( attrIdx, convertValue( fld.type(), v ) );
+            features->setAttribute( attrIdx, convertValue( fld.type(), fld.subType(), v ) );
           }
         }
 
@@ -2092,8 +2085,9 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       {
         for ( int i = 0; i < mPrimaryKeyAttrs.size(); ++i )
         {
-          int idx = mPrimaryKeyAttrs.at( i );
-          features->setAttribute( idx, convertValue( mAttributeFields.at( idx ).type(), result.PQgetvalue( 0, i ) ) );
+          const int idx = mPrimaryKeyAttrs.at( i );
+          const QgsField fld = mAttributeFields.at( idx );
+          features->setAttribute( idx, convertValue( fld.type(), fld.subType(), result.PQgetvalue( 0, i ) ) );
         }
       }
       else if ( result.PQresultStatus() != PGRES_COMMAND_OK )
@@ -3485,6 +3479,20 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
       fieldPrec = -1;
       break;
 
+    case QVariant::StringList:
+      fieldType = "_text";
+      fieldPrec = -1;
+      break;
+
+    case QVariant::List:
+    {
+      QgsField sub( "", field.subType(), "", fieldSize, fieldPrec );
+      if ( !convertField( sub, nullptr ) ) return false;
+      fieldType = "_" + sub.typeName();
+      fieldPrec = -1;
+      break;
+    }
+
     case QVariant::Double:
       if ( fieldPrec > 0 )
       {
@@ -3847,42 +3855,130 @@ QString  QgsPostgresProvider::description() const
   return tr( "PostgreSQL/PostGIS provider\n%1\nPostGIS %2" ).arg( pgVersion, postgisVersion );
 } //  QgsPostgresProvider::description()
 
-
-static QVariant parseHstore( const QString& value )
+static void jumpSpace( const QString& txt, int& i )
 {
-  QRegExp recordSep( "\\s*,\\s*" );
-  QRegExp valueExtractor( "^(?:\"((?:\\.|.)*)\"|((?:\\.|.)*))\\s*=>\\s*(?:\"((?:\\.|.)*)\"|((?:\\.|.)*))$" );
-  QVariantMap result;
-  Q_FOREACH ( QString record, value.split( recordSep ) )
+  while ( i < txt.length() && txt.at( i ).isSpace() ) ++i;
+}
+
+static QString getNextString( const QString& txt, int& i, const QString& sep )
+{
+  jumpSpace( txt, i );
+  QString cur = txt.mid( i );
+  if ( cur.startsWith( '"' ) )
   {
-    if ( valueExtractor.exactMatch( record ) )
+    QRegExp stringRe( "^\"((?:\\\\.|[^\"\\\\])*)\".*" );
+    if ( !stringRe.exactMatch( cur ) )
     {
-      QString key = valueExtractor.cap( 1 ) + valueExtractor.cap( 2 );
-      key.replace( "\\\"", "\"" ).replace( "\\\\", "\\" );
-      QString value = valueExtractor.cap( 3 ) + valueExtractor.cap( 4 );
-      value.replace( "\\\"", "\"" ).replace( "\\\\", "\\" );
-      result.insert( key, value );
+      QgsLogger::warning( "Cannot find end of double quoted string: " + txt );
+      return QString::null;
     }
-    else
+    i += stringRe.cap( 1 ).length() + 2;
+    jumpSpace( txt, i );
+    if ( !txt.mid( i ).startsWith( sep ) && i < txt.length() )
     {
-      QgsLogger::warning( "Error parsing hstore record: " + record );
+      QgsLogger::warning( "Cannot find separator: " + txt.mid( i ) );
+      return QString::null;
     }
+    i += sep.length();
+    return stringRe.cap( 1 ).replace( "\\\"", "\"" ).replace( "\\\\", "\\" );
+  }
+  else
+  {
+    QString ret;
+    int sepPos = cur.indexOf( sep );
+    if ( sepPos < 0 )
+    {
+      i += cur.length();
+      return cur.trimmed();
+    }
+    i += sepPos + sep.length();
+    return cur.left( sepPos ).trimmed();
+  }
+}
+
+static QVariant parseHstore( const QString& txt )
+{
+  QVariantMap result;
+  int i = 0;
+  while ( i < txt.length() )
+  {
+    QString key = getNextString( txt, i, "=>" );
+    QString value = getNextString( txt, i, "," );
+    if ( key.isNull() || value.isNull() )
+    {
+      QgsLogger::warning( "Error parsing hstore: " + txt );
+      break;
+    }
+    result.insert( key, value );
+  }
+
+  return result;
+}
+
+static QVariant parseOtherArray( const QString& txt, QVariant::Type subType )
+{
+  int i = 0;
+  QVariantList result;
+  while ( i < txt.length() )
+  {
+    const QString value = getNextString( txt, i, "," );
+    if ( value.isNull() )
+    {
+      QgsLogger::warning( "Error parsing array: " + txt );
+      break;
+    }
+    result.append( QgsPostgresProvider::convertValue( subType, QVariant::Invalid, value ) );
   }
   return result;
 }
 
-QVariant QgsPostgresProvider::convertValue( QVariant::Type type, const QString& value )
+static QVariant parseStringArray( const QString& txt )
 {
-  if ( type == QVariant::Map )
+  int i = 0;
+  QStringList result;
+  while ( i < txt.length() )
   {
-    return parseHstore( value );
+    const QString value = getNextString( txt, i, "," );
+    if ( value.isNull() )
+    {
+      QgsLogger::warning( "Error parsing array: " + txt );
+      break;
+    }
+    result.append( value );
   }
-  QVariant v( value );
+  return result;
+}
 
-  if ( !v.convert( type ) || value.isNull() )
-    v = QVariant( type );
+static QVariant parseArray( const QString& txt, QVariant::Type type, QVariant::Type subType )
+{
+  if ( !txt.startsWith( '{' ) || !txt.endsWith( '}' ) )
+  {
+    QgsLogger::warning( "Error parsing array, missing curly braces: " + txt );
+    return QVariant( type );
+  }
+  QString inner = txt.mid( 1, txt.length() - 2 );
+  if ( type == QVariant::StringList )
+    return parseStringArray( inner );
+  else
+    return parseOtherArray( inner, subType );
+}
 
-  return v;
+QVariant QgsPostgresProvider::convertValue( QVariant::Type type, QVariant::Type subType, const QString& value )
+{
+  switch ( type )
+  {
+    case QVariant::Map:
+      return parseHstore( value );
+    case QVariant::StringList:
+    case QVariant::List:
+      return parseArray( value, type, subType );
+    default:
+    {
+      QVariant v( value );
+      if ( !v.convert( type ) || value.isNull() ) return QVariant( type );
+      return v;
+    }
+  }
 }
 
 /**

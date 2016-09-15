@@ -346,6 +346,7 @@ void QgsFieldCalculator::populateOutputFieldTypes()
     mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMaxLen, Qt::UserRole + 3 );
     mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMinPrec, Qt::UserRole + 4 );
     mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMaxPrec, Qt::UserRole + 5 );
+    mOutputFieldTypeComboBox->setItemData( i, static_cast<int>( typelist[i].mSubType ), Qt::UserRole + 6 );
   }
   mOutputFieldTypeComboBox->blockSignals( false );
   mOutputFieldTypeComboBox->setCurrentIndex( 0 );

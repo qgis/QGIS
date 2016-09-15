@@ -76,6 +76,13 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
     static QgsEditorWidgetWrapper* fromWidget( QWidget* widget );
 
     /**
+     * Check if the given widget or one of its parent is a QTableView.
+     * @param parent the widget to check
+     * @return true if yes
+     */
+    static bool isInTable( const QWidget* parent );
+
+    /**
      * Is used to enable or disable the edit functionality of the managed widget.
      * By default this will enable or disable the whole widget
      *

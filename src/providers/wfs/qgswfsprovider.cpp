@@ -542,7 +542,8 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
               tablePrefix = QgsWFSUtils::removeNamespacePrefix( tablePrefix );
             fieldName = tablePrefix + "." + fieldName;
           }
-          QgsField field( fieldName, srcField.type(), srcField.typeName() );
+          QgsField field( srcField );
+          field.setName( fieldName );
           if ( mapFieldNameToSrcLayerNameFieldName.contains( fieldName ) )
           {
             errorMsg = tr( "Field '%1': a field with the same name already exists" ).arg( field.name() );
@@ -572,7 +573,8 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
                 tablePrefix = QgsWFSUtils::removeNamespacePrefix( tablePrefix );
               fieldName = tablePrefix + "." + fieldName;
             }
-            QgsField field( fieldName, srcField.type(), srcField.typeName() );
+            QgsField field( srcField );
+            field.setName( fieldName );
             mapFieldNameToSrcLayerNameFieldName[ field.name()] =
               QPair<QString, QString>( typeName, srcField.name() );
             mShared->mFields.append( field );
@@ -618,9 +620,11 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
         return false;
       }
 
-      QgsField field( fieldName, tableFields.at( idx ).type(), tableFields.at( idx ).typeName() );
+      QgsField orig = tableFields.at( idx );
+      QgsField field( orig );
+      field.setName( fieldName );
       mapFieldNameToSrcLayerNameFieldName[ field.name()] =
-        QPair<QString, QString>( columnTableTypename, tableFields.at( idx ).name() );
+        QPair<QString, QString>( columnTableTypename, orig.name() );
       mShared->mFields.append( field );
     }
   }

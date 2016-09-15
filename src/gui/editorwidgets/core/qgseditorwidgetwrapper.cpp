@@ -18,7 +18,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsfield.h"
 
-#include <QWidget>
+#include <QTableView>
 
 QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsWidgetWrapper( vl, editor, parent )
@@ -168,4 +168,11 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
 bool QgsEditorWidgetWrapper::isValidConstraint() const
 {
   return mValidConstraint;
+}
+
+bool QgsEditorWidgetWrapper::isInTable( const QWidget* parent )
+{
+  if ( !parent ) return false;
+  if ( qobject_cast<const QTableView*>( parent ) ) return true;
+  return isInTable( parent->parentWidget() );
 }

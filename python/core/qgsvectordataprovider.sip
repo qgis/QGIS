@@ -302,7 +302,7 @@ class QgsVectorDataProvider : QgsDataProvider
 
     struct NativeType
     {
-      NativeType( const QString& typeDesc, const QString& typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0 );
+      NativeType( const QString& typeDesc, const QString& typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QVariant::Type subType = QVariant::Invalid );
 
       QString mTypeDesc;
       QString mTypeName;
@@ -311,6 +311,7 @@ class QgsVectorDataProvider : QgsDataProvider
       int mMaxLen;
       int mMinPrec;
       int mMaxPrec;
+      QVariant::Type mSubType;
     };
 
     /**

@@ -2343,6 +2343,15 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( map ) ), QString( "<i>&lt;map: 1: 'One', 2: 'Two'&gt;</i>" ) );
       map["3"] = "A very long string that is going to be truncated";
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( map ) ), QString( "<i>&lt;map: 1: 'One', 2: 'Two', 3: 'A very long string that is going to ...&gt;</i>" ) );
+
+      QVariantList list;
+      list << 1 << 2 << 3;
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( list ) ), QString( "<i>&lt;list: 1, 2, 3&gt;</i>" ) );
+
+      QStringList stringList;
+      stringList << "One" << "Two" << "A very long string that is going to be truncated";
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( stringList ) ),
+                QString( "<i>&lt;list: 'One', 'Two', 'A very long string that is going to be trunca...&gt;</i>" ) );
     }
 
 };

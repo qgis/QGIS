@@ -16,50 +16,16 @@
 #include "qgskeyvaluewidget.h"
 
 QgsKeyValueWidget::QgsKeyValueWidget( QWidget* parent )
-    : QWidget( parent )
+    : QgsTableWidgetBase( parent )
     , mModel( this )
 {
-  setupUi( this );
-  tableView->setModel( &mModel );
-  connect( tableView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( onSelectionChanged() ) );
-  connect( &mModel, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( onValueChanged() ) );
+  init( &mModel );
 }
 
 void QgsKeyValueWidget::setMap( const QVariantMap& map )
 {
   removeButton->setEnabled( false );
   mModel.setMap( map );
-}
-
-void QgsKeyValueWidget::on_addButton_clicked()
-{
-  const QItemSelectionModel *select = tableView->selectionModel();
-  const int pos = select->hasSelection() ? select->selectedRows()[0].row() : 0;
-  mModel.insertRows( pos, 1 );
-  const QModelIndex index = mModel.index( pos, 0 );
-  tableView->scrollTo( index );
-  tableView->edit( index );
-  tableView->selectRow( pos );
-}
-
-void QgsKeyValueWidget::on_removeButton_clicked()
-{
-  const QItemSelectionModel *select = tableView->selectionModel();
-  // The UI is configured to have single row selection.
-  if ( select->hasSelection() )
-  {
-    mModel.removeRows( select->selectedRows()[0].row(), 1 );
-  }
-}
-
-void QgsKeyValueWidget::onSelectionChanged()
-{
-  removeButton->setEnabled( tableView->selectionModel()->hasSelection() );
-}
-
-void QgsKeyValueWidget::onValueChanged()
-{
-  emit valueChanged( QVariant( map() ) );
 }
 
 ///@cond PRIVATE

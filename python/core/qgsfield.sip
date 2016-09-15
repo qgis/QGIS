@@ -24,13 +24,17 @@ class QgsField
      * @param prec Field precision. Usually decimal places but may also be
      * used in conjunction with other fields types (eg. variable character fields)
      * @param comment Comment for the field
+     * @param subType If the field is a collection, its element's type. When
+     *                all the elements don't need to have the same type, leave
+     *                this to QVariant::Invalid.
      */
     QgsField( const QString& name = QString(),
               QVariant::Type type = QVariant::Invalid,
               const QString& typeName = QString(),
               int len = 0,
               int prec = 0,
-              const QString& comment = QString() );
+              const QString& comment = QString(),
+              QVariant::Type subType = QVariant::Invalid );
 
     /** Copy constructor
      */
@@ -58,6 +62,14 @@ class QgsField
 
     //! Gets variant type of the field as it will be retrieved from data source
     QVariant::Type type() const;
+
+    /**
+     * If the field is a collection, gets its element's type.
+     * When all the elements don't need to have the same type, this returns
+     * QVariant::Invalid.
+     * @note added in QGIS 3.0
+     */
+    QVariant::Type subType() const;
 
     /**
      * Gets the field type. Field types vary depending on the data source. Examples
@@ -102,6 +114,14 @@ class QgsField
      * Set variant type.
      */
     void setType( QVariant::Type type );
+
+    /**
+     * If the field is a collection, set its element's type.
+     * When all the elements don't need to have the same type, set this to
+     * QVariant::Invalid.
+     * @note added in QGIS 3.0
+     */
+    void setSubType( QVariant::Type subType );
 
     /**
      * Set the field type.

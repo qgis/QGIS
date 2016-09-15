@@ -961,6 +961,20 @@ static QString quotedMap( const QVariantMap& map )
   return "E'" + ret + "'::hstore";
 }
 
+static QString quotedList( const QVariantList& list )
+{
+  QString ret;
+  for ( QVariantList::const_iterator i = list.constBegin(); i != list.constEnd(); ++i )
+  {
+    if ( !ret.isEmpty() )
+    {
+      ret += ",";
+    }
+    ret.append( doubleQuotedMapValue( i->toString() ) );
+  }
+  return "E'{" + ret + "}'";
+}
+
 QString QgsPostgresConn::quotedValue( const QVariant& value )
 {
   if ( value.isNull() )
@@ -978,6 +992,10 @@ QString QgsPostgresConn::quotedValue( const QVariant& value )
 
     case QVariant::Map:
       return quotedMap( value.toMap() );
+
+    case QVariant::StringList:
+    case QVariant::List:
+      return quotedList( value.toList() );
 
     case QVariant::String:
     default:

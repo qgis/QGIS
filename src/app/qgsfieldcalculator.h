@@ -67,7 +67,10 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
                        static_cast< QVariant::Type >( mOutputFieldTypeComboBox->itemData( mOutputFieldTypeComboBox->currentIndex(), Qt::UserRole ).toInt() ),
                        mOutputFieldTypeComboBox->itemData( mOutputFieldTypeComboBox->currentIndex(), Qt::UserRole + 1 ).toString(),
                        mOutputFieldWidthSpinBox->value(),
-                       mOutputFieldPrecisionSpinBox->value() );
+                       mOutputFieldPrecisionSpinBox->value(),
+                       QString(),
+                       static_cast< QVariant::Type >( mOutputFieldTypeComboBox->itemData( mOutputFieldTypeComboBox->currentIndex(), Qt::UserRole + 6 ).toInt() )
+                     );
     }
 
     /** Idx of changed attribute*/

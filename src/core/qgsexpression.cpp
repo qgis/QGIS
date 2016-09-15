@@ -5074,6 +5074,22 @@ QString QgsExpression::formatPreviewString( const QVariant& value )
     }
     return tr( "<i>&lt;map: %1&gt;</i>" ).arg( mapStr );
   }
+  else if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
+  {
+    QString listStr;
+    const QVariantList list = value.toList();
+    for ( QVariantList::const_iterator it = list.constBegin(); it != list.constEnd(); ++it )
+    {
+      if ( !listStr.isEmpty() ) listStr.append( ", " );
+      listStr.append( formatPreviewString( *it ) );
+      if ( listStr.length() > MAX_PREVIEW + 3 )
+      {
+        listStr = QString( tr( "%1..." ) ).arg( listStr.left( MAX_PREVIEW ) );
+        break;
+      }
+    }
+    return tr( "<i>&lt;list: %1&gt;</i>" ).arg( listStr );
+  }
   else
   {
     return value.toString();

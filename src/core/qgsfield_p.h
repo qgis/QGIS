@@ -44,12 +44,14 @@ class QgsFieldPrivate : public QSharedData
 
     QgsFieldPrivate( const QString& name = QString(),
                      QVariant::Type type = QVariant::Invalid,
+                     QVariant::Type subType = QVariant::Invalid,
                      const QString& typeName = QString(),
                      int len = 0,
                      int prec = 0,
                      const QString& comment = QString() )
         : name( name )
         , type( type )
+        , subType( subType )
         , typeName( typeName )
         , length( len )
         , precision( prec )
@@ -61,6 +63,7 @@ class QgsFieldPrivate : public QSharedData
         : QSharedData( other )
         , name( other.name )
         , type( other.type )
+        , subType( other.subType )
         , typeName( other.typeName )
         , length( other.length )
         , precision( other.precision )
@@ -74,7 +77,7 @@ class QgsFieldPrivate : public QSharedData
 
     bool operator==( const QgsFieldPrivate& other ) const
     {
-      return (( name == other.name ) && ( type == other.type )
+      return (( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
               && ( length == other.length ) && ( precision == other.precision )
               && ( alias == other.alias ) && ( defaultValueExpression == other.defaultValueExpression ) );
     }
@@ -84,6 +87,9 @@ class QgsFieldPrivate : public QSharedData
 
     //! Variant type
     QVariant::Type type;
+
+    //! If the variant is a collection, its element's type
+    QVariant::Type subType;
 
     //! Type name from provider
     QString typeName;
