@@ -34,8 +34,8 @@ QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximu
     , mLUTOffset( 0.0 )
     , mLUTFactor( 1.0 )
     , mLUTInitialized( false )
+    , mColorRampName( QString() )
     , mClip( false )
-    , mColorRampName( "" )
 {
   QgsDebugMsgLevel( "called.", 4 );
 }

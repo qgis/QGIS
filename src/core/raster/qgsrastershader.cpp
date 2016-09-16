@@ -170,7 +170,7 @@ void QgsRasterShader::readXml( const QDomElement& elem )
   if ( !colorRampShaderElem.isNull() )
   {
     QgsColorRampShader* colorRampShader = new QgsColorRampShader();
-    colorRampShader->setColorRampName( colorRampShaderElem.attribute( "colorRampName", "" ) );
+    colorRampShader->setColorRampName( colorRampShaderElem.attribute( "colorRampName", QString() ) );
     colorRampShader->setColorRampType( colorRampShaderElem.attribute( "colorRampType", "INTERPOLATED" ) );
     colorRampShader->setClip( colorRampShaderElem.attribute( "clip", "0" ) == "1" );
 

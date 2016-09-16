@@ -74,6 +74,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     /** \brief Get the original color ramp name
      * @note added in QGIS 3.0
+     * @see setColorRampName()
      */
     QString colorRampName() const {return mColorRampName;}
 
@@ -93,6 +94,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     /** \brief Set the source color ramp name
      * @note added in QGIS 3.0
+     * @see colorRampName()
      */
     void setColorRampName( const QString& theName );
 
