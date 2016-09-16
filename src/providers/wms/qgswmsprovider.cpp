@@ -1093,6 +1093,25 @@ void QgsWmsProvider::createTileRequestsWMTS( const QgsWmtsTileMatrix* tm, const 
 }
 
 
+// support for Bing Maps tile system
+// https://msdn.microsoft.com/en-us/library/bb259689.aspx
+static QString _tile2quadkey( int tileX, int tileY, int z )
+{
+  QString quadKey;
+  for ( int i = z; i > 0; i-- )
+  {
+    char digit = '0';
+    int mask = 1 << ( i - 1 );
+    if ( tileX & mask )
+      digit++;
+    if ( tileY & mask )
+      digit += 2;
+    quadKey.append( QChar( digit ) );
+  }
+  return quadKey;
+}
+
+
 void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix* tm, const QgsWmsProvider::TilePositions& tiles, QgsWmsProvider::TileRequests& requests )
 {
   int z = tm->identifier.toInt();
@@ -1102,6 +1121,10 @@ void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix* tm, const Q
   {
     ++i;
     QString turl( url );
+
+    if ( turl.contains( "{q}" ) )  // used in Bing maps
+      turl.replace( "{q}", _tile2quadkey( tile.col, tile.row, z ) );
+
     turl.replace( "{x}", QString::number( tile.col ), Qt::CaseInsensitive );
     turl.replace( "{y}", QString::number( tile.row ), Qt::CaseInsensitive );
     turl.replace( "{z}", QString::number( z ), Qt::CaseInsensitive );
