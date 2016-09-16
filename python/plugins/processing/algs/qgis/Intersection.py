@@ -96,8 +96,10 @@ class Intersection(GeoAlgorithm):
                     int_geom = QgsGeometry(geom.intersection(tmpGeom))
                     if int_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
                         int_com = geom.combine(tmpGeom)
-                        int_sym = geom.symDifference(tmpGeom)
-                        int_geom = QgsGeometry(int_com.difference(int_sym))
+                        int_geom = QgsGeometry()
+                        if int_com is not None:
+                            int_sym = geom.symDifference(tmpGeom)
+                            int_geom = QgsGeometry(int_com.difference(int_sym))
                     if int_geom.isGeosEmpty() or not int_geom.isGeosValid():
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                                self.tr('GEOS geoprocessing error: One or '
