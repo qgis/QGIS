@@ -60,6 +60,12 @@ GEOM_TYPE_MAP = {
     QgsWkbTypes.MultiPoint: 'MultiPoint',
     QgsWkbTypes.MultiLineString: 'MultiLineString',
     QgsWkbTypes.MultiPolygon: 'MultiPolygon',
+    QgsWkbTypes.Point25D: 'Point25D',
+    QgsWkbTypes.LineString25D: 'LineString25D',
+    QgsWkbTypes.Polygon25D: 'Polygon25D',
+    QgsWkbTypes.MultiPoint25D: 'MultiPoint25D',
+    QgsWkbTypes.MultiLineString25D: 'MultiLineString25D',
+    QgsWkbTypes.MultiPolygon25D: 'MultiPolygon25D',
 }
 
 
