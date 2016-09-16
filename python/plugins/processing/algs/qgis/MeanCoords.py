@@ -59,11 +59,14 @@ class MeanCoords(GeoAlgorithm):
         self.addParameter(ParameterVector(self.POINTS,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.WEIGHT,
-                                              self.tr('Weight field'), MeanCoords.POINTS,
-                                              ParameterTableField.DATA_TYPE_NUMBER, optional=True))
+                                              self.tr('Weight field'),
+                                              MeanCoords.POINTS,
+                                              ParameterTableField.DATA_TYPE_NUMBER,
+                                              optional=True))
         self.addParameter(ParameterTableField(self.UID,
-                                              self.tr('Unique ID field'), MeanCoords.POINTS,
-                                              ParameterTableField.DATA_TYPE_NUMBER, optional=True))
+                                              self.tr('Unique ID field'),
+                                              MeanCoords.POINTS,
+                                              optional=True))
 
         self.addOutput(OutputVector(MeanCoords.OUTPUT, self.tr('Mean coordinates')))
 
