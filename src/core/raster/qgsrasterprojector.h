@@ -53,6 +53,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
       Exact = 1,   //!< Exact, precise but slow
     };
 
+    //! @deprecated since 2.18: use default constructor
     Q_DECL_DEPRECATED
     QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
                         const QgsCoordinateReferenceSystem& theDestCRS,
@@ -63,6 +64,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
                         double theMaxSrcXRes, double theMaxSrcYRes,
                         const QgsRectangle& theExtent
                       );
+    //! @deprecated since 2.18: use default constructor
     Q_DECL_DEPRECATED
     QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
                         const QgsCoordinateReferenceSystem& theDestCRS,
@@ -71,6 +73,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
                         double theMaxSrcXRes, double theMaxSrcYRes,
                         const QgsRectangle& theExtent
                       );
+    //! @deprecated since 2.18: use default constructor
     Q_DECL_DEPRECATED
     QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
                         const QgsCoordinateReferenceSystem& theDestCRS,
@@ -79,7 +82,9 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
                       );
     QgsRasterProjector();
 
-    /** \brief Copy constructor */
+    /** \brief Copy constructor
+     * @deprecated since 2.18: use clone()
+     */
     // To avoid synthesized which fails on copy of QgsCoordinateTransform
     // (QObject child) in Python bindings
     Q_DECL_DEPRECATED QgsRasterProjector( const QgsRasterProjector &projector );

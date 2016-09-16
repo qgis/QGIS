@@ -22,6 +22,7 @@ class QgsRasterProjector : QgsRasterInterface
       Exact,   //!< Exact, precise but slow
     };
 
+    //! @deprecated since 2.18: use default constructor
     QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
                         const QgsCoordinateReferenceSystem& theDestCRS,
                         int theSrcDatumTransform,
@@ -31,6 +32,7 @@ class QgsRasterProjector : QgsRasterInterface
                         double theMaxSrcXRes, double theMaxSrcYRes,
                         const QgsRectangle& theExtent
                       ) /Deprecated/;
+    //! @deprecated since 2.18: use default constructor
     QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
                         const QgsCoordinateReferenceSystem& theDestCRS,
                         const QgsRectangle& theDestExtent,
@@ -38,6 +40,7 @@ class QgsRasterProjector : QgsRasterInterface
                         double theMaxSrcXRes, double theMaxSrcYRes,
                         const QgsRectangle& theExtent
                       ) /Deprecated/;
+    //! @deprecated since 2.18: use default constructor
     QgsRasterProjector( const QgsCoordinateReferenceSystem& theSrcCRS,
                         const QgsCoordinateReferenceSystem& theDestCRS,
                         double theMaxSrcXRes, double theMaxSrcYRes,
