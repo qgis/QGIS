@@ -93,9 +93,9 @@ void QgsColorSchemeList::removeSelection()
   }
 }
 
-void QgsColorSchemeList::addColor( const QColor &color, const QString &label )
+void QgsColorSchemeList::addColor( const QColor &color, const QString &label, bool allowDuplicate )
 {
-  mModel->addColor( color, label );
+  mModel->addColor( color, label, allowDuplicate );
 }
 
 void QgsColorSchemeList::pasteColors()
@@ -647,22 +647,25 @@ bool QgsColorSchemeModel::insertRows( int row, int count, const QModelIndex& par
   return true;
 }
 
-void QgsColorSchemeModel::addColor( const QColor &color, const QString &label )
+void QgsColorSchemeModel::addColor( const QColor &color, const QString &label, bool allowDuplicate )
 {
   if ( !mScheme || !mScheme->isEditable() )
   {
     return;
   }
 
-  //matches existing color? if so, remove it first
-  QPair< QColor, QString > newColor = qMakePair( color, !label.isEmpty() ? label : QgsSymbolLayerUtils::colorToName( color ) );
-  //if color already exists, remove it
-  int existingIndex = mColors.indexOf( newColor );
-  if ( existingIndex >= 0 )
+  if ( !allowDuplicate )
   {
-    beginRemoveRows( QModelIndex(), existingIndex, existingIndex );
-    mColors.removeAt( existingIndex );
-    endRemoveRows();
+    //matches existing color? if so, remove it first
+    QPair< QColor, QString > newColor = qMakePair( color, !label.isEmpty() ? label : QgsSymbolLayerUtils::colorToName( color ) );
+    //if color already exists, remove it
+    int existingIndex = mColors.indexOf( newColor );
+    if ( existingIndex >= 0 )
+    {
+      beginRemoveRows( QModelIndex(), existingIndex, existingIndex );
+      mColors.removeAt( existingIndex );
+      endRemoveRows();
+    }
   }
 
   int row = rowCount();
@@ -758,7 +761,23 @@ bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *mod
       //item not editable
       return false;
     }
+
     QColor color = index.model()->data( index, Qt::DisplayRole ).value<QColor>();
+
+#if QT_VERSION >= 0x050000
+    QgsPanelWidget* panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget* >( parent() ) );
+    if ( panel && panel->dockMode() )
+    {
+      QgsCompoundColorWidget* colorWidget = new QgsCompoundColorWidget( panel, color, QgsCompoundColorWidget::LayoutVertical );
+      colorWidget->setPanelTitle( tr( "Select color" ) );
+      colorWidget->setAllowAlpha( true );
+      colorWidget->setProperty( "index", index );
+      connect( colorWidget, SIGNAL( currentColorChanged( QColor ) ), this, SLOT( colorChanged() ) );
+      panel->openPanel( colorWidget );
+      return true;
+    }
+#endif
+
     QColor newColor = QgsColorDialog::getColor( color, mParent, tr( "Select color" ), true );
     if ( !newColor.isValid() )
     {
@@ -769,4 +788,15 @@ bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *mod
   }
 
   return false;
+}
+
+void QgsColorSwatchDelegate::colorChanged()
+{
+#if QT_VERSION >= 0x050000
+  if ( QgsCompoundColorWidget* colorWidget = qobject_cast< QgsCompoundColorWidget* >( sender() ) )
+  {
+    QModelIndex index = colorWidget->property( "index" ).toModelIndex();
+    const_cast< QAbstractItemModel* >( index.model() )->setData( index, colorWidget->color(), Qt::EditRole );
+  }
+#endif
 }

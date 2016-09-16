@@ -738,3 +738,102 @@ bool QgsCptCityColorRamp::loadFile()
   mFileLoaded = true;
   return true;
 }
+
+
+//
+// QgsPresetColorRamp
+//
+
+QgsPresetSchemeColorRamp::QgsPresetSchemeColorRamp( const QList<QColor>& colors )
+{
+  Q_FOREACH ( const QColor& color, colors )
+  {
+    mColors << qMakePair( color, color.name() );
+  }
+  // need at least one color
+  if ( mColors.isEmpty() )
+    mColors << qMakePair( QColor( 250, 75, 60 ), QString( "#fa4b3c" ) );
+}
+
+QgsPresetSchemeColorRamp::QgsPresetSchemeColorRamp( const QgsNamedColorList& colors )
+    : mColors( colors )
+{
+  // need at least one color
+  if ( mColors.isEmpty() )
+    mColors << qMakePair( QColor( 250, 75, 60 ), QString( "#fa4b3c" ) );
+}
+
+QgsColorRamp* QgsPresetSchemeColorRamp::create( const QgsStringMap& properties )
+{
+  QgsNamedColorList colors;
+
+  int i = 0;
+  QString colorString = properties.value( QString( "preset_color_%1" ).arg( i ), QString() );
+  QString colorName = properties.value( QString( "preset_color_name_%1" ).arg( i ), QString() );
+  while ( !colorString.isEmpty() )
+  {
+    colors << qMakePair( QgsSymbolLayerUtils::decodeColor( colorString ), colorName );
+    i++;
+    colorString = properties.value( QString( "preset_color_%1" ).arg( i ), QString() );
+    colorName = properties.value( QString( "preset_color_name_%1" ).arg( i ), QString() );
+  }
+
+  return new QgsPresetSchemeColorRamp( colors );
+}
+
+QList<QColor> QgsPresetSchemeColorRamp::colors() const
+{
+  QList< QColor > l;
+  for ( int i = 0; i < mColors.count(); ++i )
+  {
+    l << mColors.at( i ).first;
+  }
+  return l;
+}
+
+double QgsPresetSchemeColorRamp::value( int index ) const
+{
+  if ( mColors.size() < 1 )
+    return 0;
+  return static_cast< double >( index ) / ( mColors.size() - 1 );
+}
+
+QColor QgsPresetSchemeColorRamp::color( double value ) const
+{
+  if ( value < 0 || value > 1 )
+    return QColor();
+
+  int colorCnt = mColors.count();
+  int colorIdx = qMin( static_cast< int >( value * colorCnt ), colorCnt - 1 );
+
+  if ( colorIdx >= 0 && colorIdx < colorCnt )
+    return mColors.at( colorIdx ).first;
+
+  return QColor();
+}
+
+QgsPresetSchemeColorRamp* QgsPresetSchemeColorRamp::clone() const
+{
+  return new QgsPresetSchemeColorRamp( *this );
+}
+
+QgsStringMap QgsPresetSchemeColorRamp::properties() const
+{
+  QgsStringMap props;
+  for ( int i = 0; i < mColors.count(); ++i )
+  {
+    props.insert( QString( "preset_color_%1" ).arg( i ), QgsSymbolLayerUtils::encodeColor( mColors.at( i ).first ) );
+    props.insert( QString( "preset_color_name_%1" ).arg( i ), mColors.at( i ).second );
+  }
+  return props;
+}
+
+int QgsPresetSchemeColorRamp::count() const
+{
+  return mColors.count();
+}
+
+QgsNamedColorList QgsPresetSchemeColorRamp::fetchColors( const QString& , const QColor& )
+{
+  return mColors;
+}

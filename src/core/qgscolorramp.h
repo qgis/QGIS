@@ -19,6 +19,7 @@
 #include <QColor>
 #include <QGradient>
 #include "qgis.h"
+#include "qgscolorscheme.h"
 
 /** \ingroup core
  * \class QgsColorRamp
@@ -378,6 +379,64 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
     int mTotalColorCount;
     QList<QColor> mPrecalculatedColors;
 
+};
+
+
+/** \ingroup core
+ * \class QgsPresetSchemeColorRamp
+ * \brief A scheme based color ramp consisting of a list of predefined colors.
+ * \note added in QGIS 3.0
+ */
+class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColorScheme
+{
+  public:
+
+    /** Constructor for QgsPresetSchemeColorRamp.
+     * @param colors list of colors in ramp
+     */
+    QgsPresetSchemeColorRamp( const QList< QColor >& colors = QList< QColor >() );
+
+    /** Constructor for QgsPresetColorRamp.
+     * @param colors list of named colors in ramp
+     * @note not available in Python bindings - use setColors instead
+     */
+    QgsPresetSchemeColorRamp( const QgsNamedColorList& colors );
+
+    /** Returns a new QgsPresetSchemeColorRamp color ramp created using the properties encoded in a string
+     * map.
+     * @param properties color ramp properties
+     * @see properties()
+     */
+    static QgsColorRamp* create( const QgsStringMap& properties = QgsStringMap() );
+
+    /** Sets the list of colors used by the ramp.
+     * @param colors list of colors
+     * @see colors()
+     */
+    bool setColors( const QgsNamedColorList& colors, const QString& = QString(), const QColor& = QColor() ) override { mColors = colors; return true; }
+
+    /** Returns the list of colors used by the ramp.
+     * @see setColors()
+     */
+    QList< QColor > colors() const;
+
+    // QgsColorRamp interface
+    virtual double value( int index ) const override;
+    virtual QColor color( double value ) const override;
+    virtual QString type() const override { return "preset"; }
+    virtual QgsPresetSchemeColorRamp* clone() const override;
+    virtual QgsStringMap properties() const override;
+    int count() const override;
+
+    // QgsColorScheme interface
+    QString schemeName() const override { return "preset"; }
+    QgsNamedColorList fetchColors( const QString &context = QString(),
+                                   const QColor &baseColor = QColor() ) override;
+    bool isEditable() const override { return true; }
+
+  private:
+
+    QgsNamedColorList mColors;
 };
 
 

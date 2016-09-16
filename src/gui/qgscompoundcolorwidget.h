@@ -61,6 +61,13 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      */
     void setAllowAlpha( const bool allowAlpha );
 
+    /** Sets whether the widget's color has been "discarded" and the selected color should not
+     * be stored in the recent color list.
+     * @param discarded set to true to avoid adding color to recent color list on widget destruction.
+     * @note added in QGIS 3.0
+     */
+    void setDiscarded( bool discarded ) { mDiscarded = discarded; }
+
   signals:
 
     /** Emitted when the dialog's color changes
@@ -124,6 +131,8 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     int mLastCustomColorIndex;
 
     bool mPickingColor;
+
+    bool mDiscarded;
 
     /** Saves all widget settings
      */

@@ -2665,6 +2665,8 @@ QgsColorRamp* QgsSymbolLayerUtils::loadColorRamp( QDomElement& element )
     return QgsColorBrewerColorRamp::create( props );
   else if ( rampType == "cpt-city" )
     return QgsCptCityColorRamp::create( props );
+  else if ( rampType == "preset" )
+    return QgsPresetSchemeColorRamp::create( props );
   else
   {
     QgsDebugMsg( "unknown colorramp type " + rampType );

@@ -18,7 +18,8 @@ from qgis.core import (QgsGradientColorRamp,
                        QgsGradientStop,
                        QgsLimitedRandomColorRamp,
                        QgsRandomColorRamp,
-                       QgsColorBrewerColorRamp)
+                       QgsColorBrewerColorRamp,
+                       QgsPresetSchemeColorRamp)
 from qgis.PyQt.QtGui import QColor, QGradient
 from qgis.testing import unittest
 
@@ -267,6 +268,47 @@ class PyQgsVectorColorRamp(unittest.TestCase):
             for j in range(10):
                 c = r.color(j * 0.1)
                 self.assertTrue(c.isValid())
+
+    def testQgsPresetSchemeColorRamp(self):
+        # test preset color ramp
+        r = QgsPresetSchemeColorRamp()
+        self.assertEqual(r.type(), 'preset')
+        # should be forced to have at least one color
+        self.assertEqual(r.count(), 1)
+
+        # test getter/setter
+        r = QgsPresetSchemeColorRamp([QColor(255, 0, 0), QColor(0, 255, 0), QColor(0, 0, 255), QColor(0, 0, 0)])
+        self.assertEqual(r.colors(), [QColor(255, 0, 0), QColor(0, 255, 0), QColor(0, 0, 255), QColor(0, 0, 0)])
+        r.setColors([(QColor(255, 0, 0), '1'), (QColor(0, 255, 0), '2')])
+        self.assertEqual(r.colors(), [QColor(255, 0, 0), QColor(0, 255, 0)])
+        self.assertEqual(r.fetchColors(), [(QColor(255, 0, 0), '1'), (QColor(0, 255, 0), '2')])
+
+        # test value
+        r = QgsPresetSchemeColorRamp([QColor(255, 0, 0), QColor(0, 255, 0), QColor(0, 0, 255), QColor(0, 0, 0), QColor(255, 255, 255)])
+        self.assertEqual(r.value(0), 0)
+        self.assertEqual(r.value(1), 0.25)
+        self.assertEqual(r.value(2), 0.5)
+        self.assertEqual(r.value(3), 0.75)
+        self.assertEqual(r.value(4), 1)
+
+        self.assertTrue(not r.color(-1).isValid())
+        self.assertTrue(not r.color(5).isValid())
+
+        # test generated colors
+        for i in range(5):
+            self.assertEqual(r.color(r.value(i)), r.colors()[i])
+
+        # test creating from properties
+        r.setColors([(QColor(255, 0, 0), '1'), (QColor(0, 255, 0), '2')])
+        props = r.properties()
+        fromProps = QgsPresetSchemeColorRamp.create(props)
+        self.assertEqual(fromProps.count(), 2)
+        self.assertEqual(fromProps.fetchColors(), r.fetchColors())
+
+        # test cloning ramp
+        cloned = r.clone()
+        self.assertEqual(cloned.count(), 2)
+        self.assertEqual(cloned.fetchColors(), r.fetchColors())
 
     def testQgsColorBrewerColorRampV2(self):
         # test color brewer color ramps

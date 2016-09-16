@@ -22,6 +22,7 @@
 #include <QFile>
 
 class QMimeData;
+class QgsPanelWidget;
 
 /** \ingroup gui
  * \class QgsColorSwatchDelegate
@@ -38,6 +39,10 @@ class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
     void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
     QSize sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
     bool editorEvent( QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index ) override;
+
+  private slots:
+
+    void colorChanged();
 
   private:
     QWidget* mParent;
@@ -114,8 +119,9 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     /** Add a color to the list
      * @param color color to add
      * @param label label for color
+     * @param allowDuplicate set to true to allow duplicate colors to be added (colors which are already present in the list)
      */
-    void addColor( const QColor &color, const QString &label = QString() );
+    void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
 
     /** Returns whether the color scheme model has been modified
      * @returns true if colors have been modified
@@ -205,8 +211,9 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
     /** Adds a color to the list
      * @param color color to add
      * @param label optional label for color
+     * @param allowDuplicate set to true to allow duplicate colors to be added, ie colors which already exist in the list
      */
-    void addColor( const QColor &color, const QString &label = QString() );
+    void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
 
     /** Pastes colors from clipboard to the list
      * @see copyColors

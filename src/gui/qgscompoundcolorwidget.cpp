@@ -35,6 +35,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
     , mAllowAlpha( true )
     , mLastCustomColorIndex( 0 )
     , mPickingColor( false )
+    , mDiscarded( false )
 {
   setupUi( this );
 
@@ -240,6 +241,10 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
 QgsCompoundColorWidget::~QgsCompoundColorWidget()
 {
   saveSettings();
+  if ( !mDiscarded )
+  {
+    QgsRecentColorScheme::addRecentColor( color() );
+  }
 }
 
 QColor QgsCompoundColorWidget::color() const

@@ -85,8 +85,9 @@ class QgsColorSchemeModel: QAbstractItemModel
     /** Add a color to the list
      * @param color color to add
      * @param label label for color
+     * @param allowDuplicate set to true to allow duplicate colors to be added (colors which are already present in the list)
      */
-    void addColor( const QColor color, const QString &label = QString() );
+    void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
 
     /** Returns whether the color scheme model has been modified
      * @returns true if colors have been modified
@@ -162,11 +163,12 @@ class QgsColorSchemeList: QTreeView
      */
     void removeSelection();
 
-    /** Adds a color to the list
+    /** Add a color to the list
      * @param color color to add
-     * @param label optional label for color
+     * @param label label for color
+     * @param allowDuplicate set to true to allow duplicate colors to be added (colors which are already present in the list)
      */
-    void addColor( const QColor &color, const QString &label = QString() );
+    void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
 
     /** Pastes colors from clipboard to the list
      * @see copyColors
