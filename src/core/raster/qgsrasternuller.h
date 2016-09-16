@@ -46,6 +46,7 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
     QGis::DataType dataType( int bandNo ) const override;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) override;
+    QgsRasterBlock *block2( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     void setNoData( int bandNo, const QgsRasterRangeList& noData );
 

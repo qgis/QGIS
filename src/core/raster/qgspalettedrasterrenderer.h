@@ -39,6 +39,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) override;
+    QgsRasterBlock *block2( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     /** Returns number of colors*/
     int nColors() const { return mNColors; }

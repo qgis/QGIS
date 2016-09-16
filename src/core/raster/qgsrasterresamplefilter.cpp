@@ -131,6 +131,11 @@ void QgsRasterResampleFilter::setZoomedOutResampler( QgsRasterResampler* r )
 
 QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
+  return block2( bandNo, extent, width, height );
+}
+
+QgsRasterBlock * QgsRasterResampleFilter::block2( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+{
   Q_UNUSED( bandNo );
   QgsDebugMsgLevel( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
   QgsRasterBlock *outputBlock = new QgsRasterBlock();
@@ -169,7 +174,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   {
     QgsDebugMsgLevel( "No oversampling.", 4 );
     delete outputBlock;
-    return mInput->block( bandNumber, extent, width, height );
+    return mInput->block2( bandNumber, extent, width, height, feedback );
   }
 
   //effective oversampling factors are different to global one because of rounding
@@ -181,7 +186,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   int resWidth = width * oversamplingX;
   int resHeight = height * oversamplingY;
 
-  QgsRasterBlock *inputBlock = mInput->block( bandNumber, extent, resWidth, resHeight );
+  QgsRasterBlock *inputBlock = mInput->block2( bandNumber, extent, resWidth, resHeight, feedback );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );

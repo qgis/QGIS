@@ -14,8 +14,9 @@ class QgsRasterDrawer
      * @param viewPort viewport to render
      * @param theQgsMapToPixel map to pixel convertor
      * @param ctx render context
+     * @param feedback optional raster feedback object for cancellation/preview. Added in QGIS 2.18.
      */
-    void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel, const QgsRenderContext *ctx = nullptr );
+    void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel, const QgsRenderContext *ctx = nullptr, QgsRasterBlockFeedback* feedback = nullptr );
 
   protected:
     /** Draws raster part

@@ -71,13 +71,18 @@ QGis::DataType QgsRasterNuller::dataType( int bandNo ) const
 
 QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
+  return block2( bandNo, extent, width, height );
+}
+
+QgsRasterBlock * QgsRasterNuller::block2( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+{
   QgsDebugMsgLevel( "Entered", 4 );
   if ( !mInput )
   {
     return new QgsRasterBlock();
   }
 
-  QgsRasterBlock *inputBlock = mInput->block( bandNo, extent, width, height );
+  QgsRasterBlock *inputBlock = mInput->block2( bandNo, extent, width, height, feedback );
   if ( !inputBlock )
   {
     return new QgsRasterBlock();

@@ -15,6 +15,7 @@
 
 #include "qgsmaprenderercustompainterjob.h"
 
+#include "qgsfeedback.h"
 #include "qgslabelingenginev2.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
@@ -138,6 +139,8 @@ void QgsMapRendererCustomPainterJob::cancel()
   for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
   {
     it->context.setRenderingStopped( true );
+    if ( it->renderer->feedback() )
+      it->renderer->feedback()->cancel();
   }
 
   QTime t;
@@ -407,6 +410,12 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer* ml )
       //layer properties require rasterisation
       return true;
     }
+  }
+  else if ( ml->type() == QgsMapLayer::RasterLayer )
+  {
+    // preview of intermediate raster rendering results requires a temporary output image
+    if ( mSettings.testFlag( QgsMapSettings::RenderPartialOutput ) )
+      return true;
   }
 
   return false;

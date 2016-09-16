@@ -43,6 +43,7 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
     bool setInput( QgsRasterInterface* input ) override;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) override;
+    QgsRasterBlock *block2( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
     /** Set resampler for zoomed in scales. Takes ownership of the object*/
     void setZoomedInResampler( QgsRasterResampler* r );

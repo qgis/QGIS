@@ -168,7 +168,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight ) override;
 
-    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data ) override;
+    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;
     //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
 
 
@@ -358,6 +358,30 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     static QString prepareUri( QString uri );
 
+    //! Helper struct for tile requests
+    struct TileRequest
+    {
+      TileRequest( const QUrl& u, const QRectF& r, int i )
+          : url( u )
+          , rect( r )
+          , index( i )
+      {}
+      QUrl url;
+      QRectF rect;
+      int index;
+    };
+    typedef QList<TileRequest> TileRequests;
+
+    //! Tile identifier within a tile source
+    typedef struct TilePosition
+    {
+      TilePosition( int r, int c ): row( r ), col( c ) {}
+      bool operator==( const TilePosition& other ) const { return row == other.row && col == other.col; }
+      int row;
+      int col;
+    } TilePosition;
+    typedef QList<TilePosition> TilePositions;
+
   signals:
 
     /** \brief emit a signal to notify of a progress event */
@@ -372,6 +396,11 @@ class QgsWmsProvider : public QgsRasterDataProvider
     void getLegendGraphicReplyProgress( qint64, qint64 );
 
   private:
+
+    //! In case of XYZ tile layer, setup capabilities from its URI
+    void setupXyzCapabilities( const QString& uri );
+
+    QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback* feedback );
 
     /**
      * Try to get best extent for the layer in given CRS. Returns true on success, false otherwise (layer not found, invalid CRS, transform failed)
@@ -431,6 +460,21 @@ class QgsWmsProvider : public QgsRasterDataProvider
     void setSRSQueryItem( QUrl& url );
 
   private:
+
+    QUrl createRequestUrlWMS( const QgsRectangle& viewExtent, int pixelWidth, int pixelHeight );
+    void createTileRequestsWMSC( const QgsWmtsTileMatrix* tm, const QgsWmsProvider::TilePositions& tiles, QgsWmsProvider::TileRequests& requests );
+    void createTileRequestsWMTS( const QgsWmtsTileMatrix* tm, const QgsWmsProvider::TilePositions& tiles, QgsWmsProvider::TileRequests& requests );
+    void createTileRequestsXYZ( const QgsWmtsTileMatrix* tm, const QgsWmsProvider::TilePositions& tiles, QgsWmsProvider::TileRequests& requests );
+
+    //! Helper structure to store a cached tile image with its rectangle
+    typedef struct TileImage
+    {
+      TileImage( QRectF r, QImage i ): rect( r ), img( i ) {}
+      QRectF rect; //!< destination rectangle for a tile (in screen coordinates)
+      QImage img;  //!< cached tile to be drawn
+    } TileImage;
+    //! Get tiles from a different resolution to cover the missing areas
+    void fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangle& viewExtent, int imageWidth, QList<QRectF>& missing, double tres, int resOffset, QList<TileImage> &otherResTiles );
 
     /** Return the full url to request legend graphic
      * The visibleExtent isi only used if provider supports contextual
@@ -497,13 +541,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString mImageCrs;
 
     /**
-     * The previously retrieved image from the WMS server.
-     * This can be reused if draw() is called consecutively
-     * with the same parameters.
-     */
-    QImage *mCachedImage;
-
-    /**
      * The reply to the capabilities request
      */
     QNetworkReply *mIdentifyReply;
@@ -519,13 +556,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString mIdentifyResultXsd;
 
     /**
-     * The previous parameters to draw().
-     */
-    QgsRectangle mCachedViewExtent;
-    int mCachedViewWidth;
-    int mCachedViewHeight;
-
-    /**
      * The error caption associated with the last WMS error.
      */
     QString mErrorCaption;
@@ -539,9 +569,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /** The mime type of the message
      */
     QString mErrorFormat;
-
-    //! A QgsCoordinateTransform is used for transformation of WMS layer extents
-    QgsCoordinateTransform *mCoordinateTransform;
 
     //! See if calculateExtents() needs to be called before extent() returns useful data
     bool mExtentDirty;
@@ -574,7 +601,7 @@ class QgsWmsImageDownloadHandler : public QObject
 {
     Q_OBJECT
   public:
-    QgsWmsImageDownloadHandler( const QString& providerUri, const QUrl& url, const QgsWmsAuthorization& auth, QImage* image );
+    QgsWmsImageDownloadHandler( const QString& providerUri, const QUrl& url, const QgsWmsAuthorization& auth, QImage* image, QgsRasterBlockFeedback* feedback );
     ~QgsWmsImageDownloadHandler();
 
     void downloadBlocking();
@@ -582,6 +609,7 @@ class QgsWmsImageDownloadHandler : public QObject
   protected slots:
     void cacheReplyFinished();
     void cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal );
+    void cancelled();
 
   protected:
     void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
@@ -592,6 +620,8 @@ class QgsWmsImageDownloadHandler : public QObject
     QImage* mCachedImage;
 
     QEventLoop* mEventLoop;
+
+    QgsRasterBlockFeedback* mFeedback;
 };
 
 
@@ -601,25 +631,14 @@ class QgsWmsTiledImageDownloadHandler : public QObject
     Q_OBJECT
   public:
 
-    struct TileRequest
-    {
-      TileRequest( const QUrl& u, const QRectF& r, int i )
-          : url( u )
-          , rect( r )
-          , index( i )
-      {}
-      QUrl url;
-      QRectF rect;
-      int index;
-    };
-
-    QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int reqNo, const QList<TileRequest>& requests, QImage* cachedImage, const QgsRectangle& cachedViewExtent, bool smoothPixmapTransform );
+    QgsWmsTiledImageDownloadHandler( const QString& providerUri, const QgsWmsAuthorization& auth, int reqNo, const QgsWmsProvider::TileRequests& requests, QImage* image, const QgsRectangle& viewExtent, bool smoothPixmapTransform, QgsRasterBlockFeedback* feedback );
     ~QgsWmsTiledImageDownloadHandler();
 
     void downloadBlocking();
 
   protected slots:
     void tileReplyFinished();
+    void cancelled();
 
   protected:
     /**
@@ -637,8 +656,8 @@ class QgsWmsTiledImageDownloadHandler : public QObject
 
     QgsWmsAuthorization mAuth;
 
-    QImage* mCachedImage;
-    QgsRectangle mCachedViewExtent;
+    QImage* mImage;
+    QgsRectangle mViewExtent;
 
     QEventLoop* mEventLoop;
 
@@ -647,6 +666,8 @@ class QgsWmsTiledImageDownloadHandler : public QObject
 
     //! Running tile requests
     QList<QNetworkReply*> mReplies;
+
+    QgsRasterBlockFeedback* mFeedback;
 };
 
 

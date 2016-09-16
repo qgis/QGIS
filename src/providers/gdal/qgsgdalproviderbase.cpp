@@ -280,7 +280,17 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess 
   return hDS;
 }
 
-CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void * pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace )
+int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char *pszMessage, void *pProgressArg )
+{
+  Q_UNUSED( dfComplete );
+  Q_UNUSED( pszMessage );
+
+  QgsRasterBlockFeedback* feedback = static_cast<QgsRasterBlockFeedback*>( pProgressArg );
+  return !feedback->isCancelled();
+}
+
+
+CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void * pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace, QgsRasterBlockFeedback* feedback )
 {
   // See http://hub.qgis.org/issues/8356 and http://trac.osgeo.org/gdal/ticket/5170
 #if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
@@ -289,7 +299,24 @@ CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWF
   QgsDebugMsg( "Disabled VSI_CACHE" );
 #endif
 
+#if GDAL_VERSION_MAJOR >= 2
+  GDALRasterIOExtraArg extra;
+  INIT_RASTERIO_EXTRA_ARG( extra );
+  if ( 0 && feedback )  // disabled!
+  {
+    // Currently the cancellation is disabled... When RasterIO call is cancelled,
+    // GDAL returns CE_Failure with error code = 0 (CPLE_None), however one would
+    // expect to get CPLE_UserInterrupt to clearly identify that the failure was
+    // caused by the cancellation and not that something dodgy is going on.
+    // Are both error codes acceptable?
+    extra.pfnProgress = _gdalProgressFnWithFeedback;
+    extra.pProgressData = ( void* ) feedback;
+  }
+  CPLErr err = GDALRasterIOEx( hBand, eRWFlag, nXOff, nYOff, nXSize, nYSize, pData, nBufXSize, nBufYSize, eBufType, nPixelSpace, nLineSpace, &extra );
+#else
+  Q_UNUSED( feedback );
   CPLErr err = GDALRasterIO( hBand, eRWFlag, nXOff, nYOff, nXSize, nYSize, pData, nBufXSize, nBufYSize, eBufType, nPixelSpace, nLineSpace );
+#endif
 
 #if GDAL_VERSION_MAJOR == 1 && ( (GDAL_VERSION_MINOR == 9 && GDAL_VERSION_REV <= 2) || (GDAL_VERSION_MINOR == 10 && GDAL_VERSION_REV <= 0) )
   CPLSetThreadLocalConfigOption( "VSI_CACHE", pszOldVal );

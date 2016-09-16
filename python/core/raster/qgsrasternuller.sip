@@ -20,6 +20,7 @@ class QgsRasterNuller : QgsRasterInterface
     QGis::DataType dataType( int bandNo ) const;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) / Factory /;
+    QgsRasterBlock *block2( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) / Factory /;
 
     void setNoData( int bandNo, const QgsRasterRangeList& noData );
 

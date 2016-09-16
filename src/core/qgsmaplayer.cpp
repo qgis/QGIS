@@ -246,7 +246,9 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
     // This is modified version of old QgsWmsProvider::parseUri
     // The new format has always params crs,format,layers,styles and that params
     // should not appear in old format url -> use them to identify version
-    if ( !mDataSource.contains( "crs=" ) && !mDataSource.contains( "format=" ) )
+    // XYZ tile layers do not need to contain crs,format params, but they have type=xyz
+    if ( !mDataSource.contains( "type=" ) &&
+         !mDataSource.contains( "crs=" ) && !mDataSource.contains( "format=" ) )
     {
       QgsDebugMsg( "Old WMS URI format detected -> converting to new format" );
       QgsDataSourceURI uri;

@@ -69,8 +69,6 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     virtual bool setInput( QgsRasterInterface* input ) override;
 
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) override = 0;
-
     bool usesTransparency() const;
 
     void setOpacity( double opacity ) { mOpacity = opacity; }
