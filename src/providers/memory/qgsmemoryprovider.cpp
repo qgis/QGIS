@@ -60,6 +60,18 @@ QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
     mWkbType = QgsWkbTypes::MultiLineString;
   else if ( geometry == "multipolygon" )
     mWkbType = QgsWkbTypes::MultiPolygon;
+  else if ( geometry == "point25d" )
+    mWkbType = QgsWkbTypes::Point25D;
+  else if ( geometry == "linestring25d" )
+    mWkbType = QgsWkbTypes::LineString25D;
+  else if ( geometry == "polygon25d" )
+    mWkbType = QgsWkbTypes::Polygon25D;
+  else if ( geometry == "multipoint25d" )
+    mWkbType = QgsWkbTypes::MultiPoint25D;
+  else if ( geometry == "multilinestring25d" )
+    mWkbType = QgsWkbTypes::MultiLineString25D;
+  else if ( geometry == "multipolygon25d" )
+    mWkbType = QgsWkbTypes::MultiPolygon25D;
   else if ( geometry == "none" )
     mWkbType = QgsWkbTypes::NoGeometry;
   else
@@ -228,6 +240,24 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
       break;
     case QgsWkbTypes::MultiPolygon :
       geometry = "MultiPolygon";
+      break;
+    case QgsWkbTypes::Point25D :
+      geometry = "Point25D";
+      break;
+    case QgsWkbTypes::LineString25D :
+      geometry = "LineString25D";
+      break;
+    case QgsWkbTypes::Polygon25D :
+      geometry = "Polygon25D";
+      break;
+    case QgsWkbTypes::MultiPoint25D :
+      geometry = "MultiPoint25D";
+      break;
+    case QgsWkbTypes::MultiLineString25D :
+      geometry = "MultiLineString25D";
+      break;
+    case QgsWkbTypes::MultiPolygon25D :
+      geometry = "MultiPolygon25D";
       break;
     case QgsWkbTypes::NoGeometry :
       geometry = "None";
