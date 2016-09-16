@@ -89,7 +89,7 @@ class OneSideBuffer(GdalAlgorithm):
         options = self.getParameterValue(self.OPTIONS)
 
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
-        layername = "'" + ogrLayerName(inLayer) + "'"
+        layername = ogrLayerName(inLayer)
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
