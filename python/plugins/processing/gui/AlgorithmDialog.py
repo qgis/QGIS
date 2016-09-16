@@ -41,21 +41,6 @@ from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmExecutor import runalg, runalgIterating
 from processing.gui.Postprocessing import handleAlgorithmResults
 
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterFixedTable
-from processing.core.parameters import ParameterRange
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterMultipleInput
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterFile
-from processing.core.parameters import ParameterPoint
-from processing.core.parameters import ParameterGeometryPredicate
-
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputTable
