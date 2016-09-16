@@ -1049,8 +1049,9 @@ class ParameterSelection(Parameter):
 
 
     def __init__(self, name='', description='', options=[], default=None, isSource=False,
-                 optional=False):
+                         multiple=False, optional=False):
         Parameter.__init__(self, name, description, default, optional)
+        self.multiple = multiple
         isSource = parseBool(isSource)
         self.options = options
         if isSource:
@@ -1074,19 +1075,34 @@ class ParameterSelection(Parameter):
                 self.default = 0
             self.value = self.default
 
-    def setValue(self, n):
-        if n is None:
+    def setValue(self, value):
+        if value is None:
             if not self.optional:
                 return False
             self.value = 0
             return True
 
-        try:
-            n = int(n)
-            self.value = n
+        if isinstance(value, list):
+            if not self.multiple:
+                return False
+            values = []
+            for v in value:
+                try:
+                    n = int(v)
+                    values.append(n)
+                except:
+                    return False
+            if not self.optional and len(values) == 0:
+                return False
+            self.value = values
             return True
-        except:
-            return False
+        else:
+            try:
+                n = int(value)
+                self.value = n
+                return True
+            except:
+                return False
 
     @classmethod
     def fromScriptCode(self, line):
@@ -1098,6 +1114,13 @@ class ParameterSelection(Parameter):
         elif definition.lower().strip().startswith('selection'):
             options = definition.strip()[len('selection '):].split(';')
             return ParameterSelection(name, descName, options, optional=isOptional)
+        elif definition.lower().strip().startswith('multipleselectionfromfile'):
+            options = definition.strip()[len('multipleselectionfromfile '):].split(';')
+            return ParameterSelection(name, descName, options, isSource=True,
+                                      multiple=True, optional=isOptional)
+        elif definition.lower().strip().startswith('multipleselection'):
+            options = definition.strip()[len('multipleselection '):].split(';')
+            return ParameterSelection(name, descName, options, multiple=True, optional=isOptional)
 
 
 class ParameterEvaluationException(Exception):

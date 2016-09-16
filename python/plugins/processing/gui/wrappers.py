@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    BooleanWidget.py
+    wrappers.py
     ---------------------
     Date                 : May 2016
     Copyright            : (C) 2016 by Arnaud Morvan, Victor Olaya
@@ -43,7 +43,7 @@ from processing.core.parameters import (ParameterBoolean, ParameterPoint, Parame
     ParameterTableField, ParameterExtent, ParameterFixedTable, ParameterCrs)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.FileSelectionPanel import FileSelectionPanel
-from processing.core.outputs import (OutputFile, OutputRaster, OutputVector, OutputNumber, 
+from processing.core.outputs import (OutputFile, OutputRaster, OutputVector, OutputNumber,
     OutputString, OutputTable, OutputExtent)
 from processing.tools import dataobjects
 from processing.gui.MultipleInputPanel import MultipleInputPanel
@@ -122,13 +122,13 @@ class WidgetWrapper(QObject):
 
     def value(self):
         pass
-    
+
     def anotherParameterWidgetHasChanged(self, wrapper):
         pass
-    
+
     def postInitialize(self, wrappers):
         pass
-    
+
     def refresh(self):
         pass
 
@@ -136,7 +136,7 @@ class BasicWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         return QLineEdit()
-    
+
     def setValue(self, value):
         self.widget.setText(value)
 
@@ -200,7 +200,7 @@ class CrsWidgetWrapper(WidgetWrapper):
             for r in raster:
                 widget.addItem("Crs of layer " + self.dialog.resolveValueDescription(r), r)
             for v in vector:
-                widget.addItem("Crs of layer " + self.dialog.resolveValueDescription(v), v)                
+                widget.addItem("Crs of layer " + self.dialog.resolveValueDescription(v), v)
             if not self.param.default:
                 widget.setEditText(self.param.default)
             return widget
@@ -226,7 +226,7 @@ class CrsWidgetWrapper(WidgetWrapper):
 class ExtentWidgetWrapper(WidgetWrapper):
 
     USE_MIN_COVERING_EXTENT = "[Use min covering extent]"
-    
+
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             return ExtentSelectionPanel(self.dialog, self.param)
@@ -247,7 +247,7 @@ class ExtentWidgetWrapper(WidgetWrapper):
             if not self.param.default:
                 widget.setEditText(self.param.default)
             return widget
-                
+
     def setValue(self, value):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             self.widget.setExtentFromString(value)
@@ -364,7 +364,7 @@ class FixedTableWidgetWrapper(WidgetWrapper):
             return ParameterFixedTable.tableToString(table)
         else:
             return self.widget.table
-        
+
 
 class MultipleInputWidgetWrapper(WidgetWrapper):
 
@@ -404,7 +404,7 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
         else:
             options = [self.dialog.resolveValueDescription(opt) for opt in self._getOptions()]
             return MultipleInputPanel(options)
-        
+
     def refresh(self):
         if self.param.datatype != dataobjects.TYPE_FILE:
             if self.param.datatype == dataobjects.TYPE_RASTER:
@@ -461,7 +461,7 @@ class NumberWidgetWrapper(WidgetWrapper):
 
     def setValue(self, value):
         self.widget.setValue(value)
-        
+
     def value(self):
         return self.widget.getValue()
 
@@ -496,7 +496,7 @@ class RasterWidgetWrapper(WidgetWrapper):
             self.widget.cmbText.addItem(self.NOT_SELECTED, None)
         for layer in layers:
             self.widget.cmbText.addItem(getExtendedLayerName(layer), layer)
-        
+
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
             pass  # TODO
@@ -519,17 +519,26 @@ class RasterWidgetWrapper(WidgetWrapper):
 class SelectionWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
-        widget = QComboBox()
-        widget.addItems(self.param.options)
-        if self.param.default:
-            widget.setCurrentIndex(self.param.default)
-        return widget
+        if self.param.multiple:
+            return MultipleInputPanel(options=self.param.options)
+        else:
+            widget = QComboBox()
+            widget.addItems(self.param.options)
+            if self.param.default:
+                widget.setCurrentIndex(self.param.default)
+            return widget
 
     def setValue(self, value):
-        self.widget.setCurrentIndex(int(value))
+        if self.param.multiple:
+            self.widget.setSelectedItems(value)
+        else:
+            self.widget.setCurrentIndex(int(value))
 
     def value(self):
-        return self.widget.currentIndex()
+        if self.param.multiple:
+                return self.widget.selectedoptions
+        else:
+            return self.widget.currentIndex()
 
 
 class VectorWidgetWrapper(WidgetWrapper):
@@ -551,7 +560,7 @@ class VectorWidgetWrapper(WidgetWrapper):
             for layer in layers:
                 widget.addItem(self.dialog.resolveValueDescription(layer), layer)
             return widget
-        
+
     def _populate(self, widget):
         widget.clear()
         layers = dataobjects.getVectorLayers(self.param.datatype)
@@ -562,10 +571,10 @@ class VectorWidgetWrapper(WidgetWrapper):
             widget.addItem(getExtendedLayerName(layer), layer)
         widget.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
         widget.name = self.param.name
-        
+
     def refresh(self):
         self._populate(self.widget)
-        
+
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
             pass  # TODO
@@ -719,8 +728,8 @@ class TableFieldWidgetWrapper(WidgetWrapper):
             if self.dialogType == DIALOG_STANDARD:
                     return MultipleInputPanel(options=[])
             else:
-                return QLineEdit()   
-        else:            
+                return QLineEdit()
+        else:
             if self.dialogType == DIALOG_STANDARD:
                 widget = QComboBox()
                 return widget
@@ -746,13 +755,13 @@ class TableFieldWidgetWrapper(WidgetWrapper):
                     fields = self.getFields(layer, wrapper.param.datatype)
                     if self.param.multiple:
                         self.widget.updateForOptions(fields)
-                    else: 
+                    else:
                         self.widget.clear()
                         if self.param.optional:
                             self.widget.addItem(self.tr(self.NOT_SET))
                         self.widget.addItems(fields)
                 break
-    
+
     def getFields(self, layer, datatype):
         fieldTypes = []
         if datatype == ParameterTableField.DATA_TYPE_STRING:
@@ -766,7 +775,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
             if not fieldTypes or field.type() in fieldTypes:
                 fieldNames.add(unicode(field.name()))
         return sorted(list(fieldNames), cmp=locale.strcoll)
-            
+
     def setValue(self, value):
         if self.param.multiple:
             if self.dialogType == DIALOG_STANDARD:
@@ -778,7 +787,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
                 self.widget.setSelectedItems(selected)
             else:
                 self.widget.setText(value)
-        else: 
+        else:
             if self.dialogType == DIALOG_STANDARD:
                 pass  # TODO
             elif self.dialogType == DIALOG_BATCH:
@@ -794,11 +803,11 @@ class TableFieldWidgetWrapper(WidgetWrapper):
             elif self.dialogType == DIALOG_BATCH:
                 return self.widget.text()
             else:
-                text =  self.widget.text()
+                text = self.widget.text()
                 if not bool(text) and not self.param.optional:
                     raise InvalidParameterValue()
                 return text
-        else:    
+        else:
             if self.dialogType == DIALOG_STANDARD:
                 if self.param.optional and self.widget.currentIndex() == 0:
                     return None
@@ -808,9 +817,9 @@ class TableFieldWidgetWrapper(WidgetWrapper):
             else:
                 def validator(v):
                     return bool(v) or self.param.optional
-                return self.comboValue(validator)                
-            
-    def anotherParameterWidgetHasChanged(self,wrapper):
+                return self.comboValue(validator)
+
+    def anotherParameterWidgetHasChanged(self, wrapper):
         if wrapper.param.name == self.param.parent:
             layer = wrapper.value()
             if layer is not None:
@@ -822,15 +831,15 @@ class TableFieldWidgetWrapper(WidgetWrapper):
                     if self.param.optional:
                         self.widget.addItem(self.tr(self.NOT_SET))
                     self.widget.addItems(fields)
-                    
+
 
 def GeometryPredicateWidgetWrapper(WidgetWrapper):
-    
+
     def createWidget(self):
         return GeometryPredicateSelectionPanel()
-    
+
     def setValue(self, value):
         self.widget.setValue(value)
-        
+
     def value(self):
         return self.widget.value()
