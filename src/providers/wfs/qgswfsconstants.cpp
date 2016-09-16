@@ -31,7 +31,7 @@ const QString QgsWFSConstants::URI_PARAM_TYPENAME( "typename" );
 const QString QgsWFSConstants::URI_PARAM_SRSNAME( "srsname" );
 const QString QgsWFSConstants::URI_PARAM_BBOX( "bbox" );
 const QString QgsWFSConstants::URI_PARAM_FILTER( "filter" );
-const QString QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX( "retrictToRequestBBOX" );
+const QString QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX( "restrictToRequestBBOX" );
 const QString QgsWFSConstants::URI_PARAM_MAXNUMFEATURES( "maxNumFeatures" );
 const QString QgsWFSConstants::URI_PARAM_IGNOREAXISORIENTATION( "IgnoreAxisOrientation" );
 const QString QgsWFSConstants::URI_PARAM_INVERTAXISORIENTATION( "InvertAxisOrientation" );

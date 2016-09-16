@@ -193,8 +193,15 @@ void QgsWFSDataSourceURI::setSql( const QString& sql )
 
 bool QgsWFSDataSourceURI::isRestrictedToRequestBBOX() const
 {
-  return mURI.hasParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX ) &&
-         mURI.param( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX ).toInt() == 1;
+  if ( mURI.hasParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX ) &&
+       mURI.param( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX ).toInt() == 1 )
+    return true;
+
+  // accept previously used version with typo
+  if ( mURI.hasParam( "retrictToRequestBBOX" ) && mURI.param( "retrictToRequestBBOX" ).toInt() == 1 )
+    return true;
+
+  return false;
 }
 
 bool QgsWFSDataSourceURI::ignoreAxisOrientation() const

@@ -892,7 +892,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 """.encode('UTF-8'))
 
         # Create test layer
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' retrictToRequestBBOX=1", u'test', u'WFS')
+        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' restrictToRequestBBOX=1", u'test', u'WFS')
         assert vl.isValid()
         self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
 
@@ -1872,8 +1872,8 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         vl_extent = QgsGeometry.fromRect(vl.extent())
         assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
 
-        # Same with retrictToRequestBBOX=1
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' retrictToRequestBBOX=1", u'test', u'WFS')
+        # Same with restrictToRequestBBOX=1
+        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' restrictToRequestBBOX=1", u'test', u'WFS')
         assert vl.isValid()
 
         # First request that will be attempted
