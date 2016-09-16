@@ -17,7 +17,6 @@
 
 #include "qgsdataitem.h"
 
-Q_NOWARN_DEPRECATED_PUSH
 class QgsGdalLayerItem : public QgsLayerItem
 {
     Q_OBJECT
@@ -38,6 +37,5 @@ class QgsGdalLayerItem : public QgsLayerItem
 
     QString layerName() const override;
 };
-Q_NOWARN_DEPRECATED_POP
 
 #endif // QGSGDALDATAITEMS_H

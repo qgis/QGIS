@@ -420,14 +420,6 @@ void QgsDxfExport::writeGroup( int code, const QString& s )
   writeString( s );
 }
 
-void QgsDxfExport::writeGroup( int code, const QgsPoint &p, double z, bool skipz )
-{
-  writeGroup( code + 10, p.x() );
-  writeGroup( code + 20, p.y() );
-  if ( !skipz )
-    writeGroup( code + 30, z );
-}
-
 void QgsDxfExport::writeGroup( int code, const QgsPointV2 &p )
 {
   writeGroup( code + 10, p.x() );
@@ -928,9 +920,8 @@ void QgsDxfExport::writeEntities()
   ctx.setRendererScale( mSymbologyScaleDenominator );
   ctx.setExtent( bbox );
   ctx.setScaleFactor( 96.0 / 25.4 );
-  Q_NOWARN_DEPRECATED_PUSH
-  ctx.setMapToPixel( QgsMapToPixel( 1.0 / factor, bbox.xMinimum(), bbox.yMinimum(), bbox.height() * factor ) );
-  Q_NOWARN_DEPRECATED_POP
+  ctx.setMapToPixel( QgsMapToPixel( 1.0 / factor, bbox.center().x(), bbox.center().y(), bbox.width() * factor,
+                                    bbox.height() * factor, 0 ) );
 
   // label engine
   QgsLabelingEngine engine;
@@ -3392,14 +3383,6 @@ void QgsDxfExport::writePoint( const QgsPointV2 &pt, const QString& layer, const
   }
 }
 
-void QgsDxfExport::writePolyline( const QgsPolyline &line, const QString& layer, const QString& lineStyleName, const QColor& color, double width )
-{
-  QgsPointSequence s;
-  Q_FOREACH ( const QgsPoint& p, line )
-    s << QgsPointV2( p );
-  writePolyline( s, layer, lineStyleName, color, width );
-}
-
 void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString& layer, const QString& lineStyleName, const QColor& color, double width )
 {
   int n = line.size();
@@ -3471,22 +3454,6 @@ void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString& l
   }
 }
 
-void QgsDxfExport::writePolygon( const QgsPolygon &polygon, const QString& layer, const QString& hatchPattern, const QColor& color )
-{
-  QgsRingSequence r;
-
-  Q_FOREACH ( const QgsPolyline& l, polygon )
-  {
-    QgsPointSequence s;
-    Q_FOREACH ( const QgsPoint& p, l )
-      s << QgsPointV2( p );
-    r << s;
-  }
-
-  writePolygon( r, layer, hatchPattern, color );
-}
-
-
 void QgsDxfExport::writePolygon( const QgsRingSequence &polygon, const QString& layer, const QString& hatchPattern, const QColor& color )
 {
   writeGroup( 0, "HATCH" );         // Entity type
@@ -3526,19 +3493,9 @@ void QgsDxfExport::writePolygon( const QgsRingSequence &polygon, const QString& 
   writeGroup( 98, 0 );    // Number of seed points
 }
 
-void QgsDxfExport::writeLine( const QgsPoint& pt1, const QgsPoint& pt2, const QString& layer, const QString& lineStyleName, const QColor& color, double width )
-{
-  writeLine( QgsPointV2( pt1 ),  QgsPointV2( pt2 ), layer, lineStyleName, color, width );
-}
-
 void QgsDxfExport::writeLine( const QgsPointV2& pt1, const QgsPointV2& pt2, const QString& layer, const QString& lineStyleName, const QColor& color, double width )
 {
   writePolyline( QgsPointSequence() << pt1 << pt2, layer, lineStyleName, color, width );
-}
-
-void QgsDxfExport::writePoint( const QString &layer, const QColor &color, const QgsPoint &pt )
-{
-  writePoint( layer, color, QgsPointV2( pt ) );
 }
 
 void QgsDxfExport::writePoint( const QString& layer, const QColor& color, const QgsPointV2 &pt )
@@ -3550,11 +3507,6 @@ void QgsDxfExport::writePoint( const QString& layer, const QColor& color, const 
   writeGroup( 8, layer );
   writeGroup( color );
   writeGroup( 0, pt );
-}
-
-void QgsDxfExport::writeFilledCircle( const QString &layer, const QColor& color, const QgsPoint &pt, double radius )
-{
-  writeFilledCircle( layer, color, QgsPointV2( pt ), radius );
 }
 
 void QgsDxfExport::writeFilledCircle( const QString &layer, const QColor& color, const QgsPointV2 &pt, double radius )
@@ -3594,11 +3546,6 @@ void QgsDxfExport::writeFilledCircle( const QString &layer, const QColor& color,
   writeGroup( 98, 0 );       // Number of seed points
 }
 
-void QgsDxfExport::writeCircle( const QString& layer, const QColor& color, const QgsPoint &pt, double radius, const QString &lineStyleName, double width )
-{
-  writeCircle( layer, color, QgsPointV2( pt ), radius, lineStyleName, width );
-}
-
 void QgsDxfExport::writeCircle( const QString& layer, const QColor& color, const QgsPointV2 &pt, double radius, const QString &lineStyleName, double width )
 {
   writeGroup( 0, "LWPOLYLINE" );
@@ -3621,11 +3568,6 @@ void QgsDxfExport::writeCircle( const QString& layer, const QColor& color, const
   writeGroup( 42, 1.0 );
 }
 
-void QgsDxfExport::writeText( const QString& layer, const QString& text, const QgsPoint &pt, double size, double angle, const QColor& color )
-{
-  writeText( layer, text, QgsPointV2( pt ), size, angle, color );
-}
-
 void QgsDxfExport::writeText( const QString& layer, const QString& text, const QgsPointV2 &pt, double size, double angle, const QColor& color )
 {
   writeGroup( 0, "TEXT" );
@@ -3639,11 +3581,6 @@ void QgsDxfExport::writeText( const QString& layer, const QString& text, const Q
   writeGroup( 1, text );
   writeGroup( 50, angle );
   writeGroup( 7, "STANDARD" ); // so far only support for standard font
-}
-
-void QgsDxfExport::writeMText( const QString& layer, const QString& text, const QgsPoint &pt, double width, double angle, const QColor& color )
-{
-  writeMText( layer, text, QgsPointV2( pt ), width, angle, color );
 }
 
 void QgsDxfExport::writeMText( const QString& layer, const QString& text, const QgsPointV2 &pt, double width, double angle, const QColor& color )
@@ -3681,18 +3618,6 @@ void QgsDxfExport::writeMText( const QString& layer, const QString& text, const 
   writeGroup( 71, 7 );
 
   writeGroup( 7, "STANDARD" );    // so far only support for standard font
-}
-
-void QgsDxfExport::writeSolid( const QString& layer, const QColor& color, const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, const QgsPoint &pt4 )
-{
-  // pt1 pt2
-  // pt3 pt4
-  QgsPointSequence p;
-  p << QgsPointV2( pt1 ) << QgsPointV2( pt2 ) << QgsPointV2( pt4 );
-  if ( pt3 != pt4 )
-    p << QgsPointV2( pt3 );
-  p << QgsPointV2( pt1 );
-  writePolygon( QgsRingSequence() << p, layer, "SOLID", color );
 }
 
 QgsRectangle QgsDxfExport::dxfExtent() const

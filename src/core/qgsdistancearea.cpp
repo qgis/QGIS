@@ -343,15 +343,6 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry* geomV2, MeasureType 
   }
 }
 
-double QgsDistanceArea::measure( const QgsGeometry *geometry ) const
-{
-  if ( !geometry )
-    return 0.0;
-
-  const QgsAbstractGeometry* geomV2 = geometry->geometry();
-  return measure( geomV2 );
-}
-
 double QgsDistanceArea::measureArea( const QgsGeometry* geometry ) const
 {
   if ( !geometry )
@@ -992,136 +983,6 @@ double QgsDistanceArea::computePolygonFlatArea( const QList<QgsPoint>& points ) 
   return qAbs( area ); // All areas are positive!
 }
 
-QString QgsDistanceArea::textUnit( double value, int decimals, QgsUnitTypes::DistanceUnit u, bool isArea, bool keepBaseUnit )
-{
-  QString unitLabel;
-
-  switch ( u )
-  {
-    case QgsUnitTypes::DistanceMeters:
-      if ( isArea )
-      {
-        if ( keepBaseUnit )
-        {
-          unitLabel = QObject::trUtf8( " m²" );
-        }
-        else if ( qAbs( value ) > 1000000.0 )
-        {
-          unitLabel = QObject::trUtf8( " km²" );
-          value = value / 1000000.0;
-        }
-        else if ( qAbs( value ) > 10000.0 )
-        {
-          unitLabel = QObject::tr( " ha" );
-          value = value / 10000.0;
-        }
-        else
-        {
-          unitLabel = QObject::trUtf8( " m²" );
-        }
-      }
-      else
-      {
-        if ( keepBaseUnit || qAbs( value ) == 0.0 )
-        {
-          unitLabel = QObject::tr( " m" );
-        }
-        else if ( qAbs( value ) > 1000.0 )
-        {
-          unitLabel = QObject::tr( " km" );
-          value = value / 1000;
-        }
-        else if ( qAbs( value ) < 0.01 )
-        {
-          unitLabel = QObject::tr( " mm" );
-          value = value * 1000;
-        }
-        else if ( qAbs( value ) < 0.1 )
-        {
-          unitLabel = QObject::tr( " cm" );
-          value = value * 100;
-        }
-        else
-        {
-          unitLabel = QObject::tr( " m" );
-        }
-      }
-      break;
-    case QgsUnitTypes::DistanceFeet:
-      if ( isArea )
-      {
-        if ( keepBaseUnit  || qAbs( value ) <= 0.5*43560.0 )
-        {
-          // < 0.5 acre show sq ft
-          unitLabel = QObject::tr( " sq ft" );
-        }
-        else if ( qAbs( value ) <= 0.5*5280.0*5280.0 )
-        {
-          // < 0.5 sq mile show acre
-          unitLabel = QObject::tr( " acres" );
-          value /= 43560.0;
-        }
-        else
-        {
-          // above 0.5 acre show sq mi
-          unitLabel = QObject::tr( " sq mile" );
-          value /= 5280.0 * 5280.0;
-        }
-      }
-      else
-      {
-        if ( qAbs( value ) <= 528.0 || keepBaseUnit )
-        {
-          if ( qAbs( value ) == 1.0 )
-          {
-            unitLabel = QObject::tr( " foot" );
-          }
-          else
-          {
-            unitLabel = QObject::tr( " feet" );
-          }
-        }
-        else
-        {
-          unitLabel = QObject::tr( " mile" );
-          value /= 5280.0;
-        }
-      }
-      break;
-    case QgsUnitTypes::DistanceNauticalMiles:
-      if ( isArea )
-      {
-        unitLabel = QObject::tr( " sq. NM" );
-      }
-      else
-      {
-        unitLabel = QObject::tr( " NM" );
-      }
-      break;
-    case QgsUnitTypes::DistanceDegrees:
-      if ( isArea )
-      {
-        unitLabel = QObject::tr( " sq.deg." );
-      }
-      else
-      {
-        if ( qAbs( value ) == 1.0 )
-          unitLabel = QObject::tr( " degree" );
-        else
-          unitLabel = QObject::tr( " degrees" );
-      }
-      break;
-    case QgsUnitTypes::DistanceUnknownUnit:
-      unitLabel.clear();
-      break;
-    default:
-      QgsDebugMsg( QString( "Error: not picked up map units - actual value = %1" ).arg( u ) );
-      break;
-  }
-
-  return QString( "%L1%2" ).arg( value, 0, 'f', decimals ).arg( unitLabel );
-}
-
 QString QgsDistanceArea::formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit )
 {
   QString unitLabel;
@@ -1358,37 +1219,6 @@ QString QgsDistanceArea::formatArea( double area, int decimals, QgsUnitTypes::Ar
   }
 
   return QString( "%L1%2" ).arg( area, 0, 'f', decimals ).arg( unitLabel );
-}
-
-void QgsDistanceArea::convertMeasurement( double &measure, QgsUnitTypes::DistanceUnit &measureUnits, QgsUnitTypes::DistanceUnit displayUnits, bool isArea ) const
-{
-  // Helper for converting between meters and feet and degrees and NauticalMiles...
-  // The parameters measure and measureUnits are in/out
-
-  if (( measureUnits == QgsUnitTypes::DistanceDegrees || measureUnits == QgsUnitTypes::DistanceFeet || measureUnits == QgsUnitTypes::DistanceNauticalMiles ) &&
-      mEllipsoid != GEO_NONE &&
-      mEllipsoidalMode )
-  {
-    // Measuring on an ellipsoid returned meters. Force!
-    measureUnits = QgsUnitTypes::DistanceMeters;
-    QgsDebugMsg( "We're measuring on an ellipsoid or using projections, the system is returning meters" );
-  }
-  else if ( mEllipsoidalMode && mEllipsoid == GEO_NONE )
-  {
-    // Measuring in plane within the source CRS. Force its map units
-    measureUnits = mCoordTransform.sourceCrs().mapUnits();
-    QgsDebugMsg( "We're measuing on planimetric distance/area on given CRS, measured value is in CRS units" );
-  }
-
-  // Gets the conversion factor between the specified units
-  double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, displayUnits );
-  if ( isArea )
-    factorUnits *= factorUnits;
-
-  QgsDebugMsg( QString( "Converting %1 %2" ).arg( QString::number( measure ), QgsUnitTypes::toString( measureUnits ) ) );
-  measure *= factorUnits;
-  QgsDebugMsg( QString( "to %1 %2" ).arg( QString::number( measure ), QgsUnitTypes::toString( displayUnits ) ) );
-  measureUnits = displayUnits;
 }
 
 double QgsDistanceArea::convertLengthMeasurement( double length, QgsUnitTypes::DistanceUnit toUnits ) const

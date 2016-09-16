@@ -53,7 +53,7 @@ class TestQgsDistanceArea(unittest.TestCase):
             [QgsPoint(0, 0), QgsPoint(1, 0), QgsPoint(1, 1), QgsPoint(2, 1), QgsPoint(2, 0), ]
         )
         da = QgsDistanceArea()
-        length = da.measure(linestring)
+        length = da.measureLength(linestring)
         myMessage = ('Expected:\n%f\nGot:\n%f\n' %
                      (4, length))
         assert length == 4, myMessage
@@ -69,7 +69,7 @@ class TestQgsDistanceArea(unittest.TestCase):
             ]
         )
         da = QgsDistanceArea()
-        length = da.measure(linestring)
+        length = da.measureLength(linestring)
         myMessage = ('Expected:\n%f\nGot:\n%f\n' %
                      (9, length))
         assert length == 9, myMessage
@@ -87,7 +87,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         )
 
         da = QgsDistanceArea()
-        area = da.measure(polygon)
+        area = da.measureArea(polygon)
         assert area == 3, 'Expected:\n%f\nGot:\n%f\n' % (3, area)
 
         perimeter = da.measurePerimeter(polygon)
@@ -108,7 +108,7 @@ class TestQgsDistanceArea(unittest.TestCase):
             ]
         )
         da = QgsDistanceArea()
-        area = da.measure(polygon)
+        area = da.measureArea(polygon)
         assert area == 8, "Expected:\n%f\nGot:\n%f\n" % (8, area)
 
 # MH150729: Changed behaviour to consider inner rings for perimeter calculation. Therefore, expected result is 16.
@@ -129,7 +129,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         )
 
         da = QgsDistanceArea()
-        area = da.measure(polygon)
+        area = da.measureArea(polygon)
         assert area == 6, 'Expected:\n%f\nGot:\n%f\n' % (6, area)
 
         perimeter = da.measurePerimeter(polygon)
@@ -162,7 +162,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         da.setEllipsoidalMode(False)
         da.setEllipsoid("NONE")
         daCRS = QgsCoordinateReferenceSystem()
-        daCRS.createFromSrsId(da.sourceCrs())
+        daCRS = da.sourceCrs()
 
         # We check both the measured length AND the units, in case the logic regarding
         # ellipsoids and units changes in future
@@ -230,7 +230,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         da.setEllipsoidalMode(False)
         da.setEllipsoid("NONE")
         daCRS = QgsCoordinateReferenceSystem()
-        daCRS.createFromSrsId(da.sourceCrs())
+        daCRS = da.sourceCrs()
 
         polygon = QgsGeometry.fromPolygon(
             [[

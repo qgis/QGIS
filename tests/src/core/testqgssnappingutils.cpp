@@ -203,7 +203,7 @@ class TestQgsSnappingUtils : public QObject
       u.setMapSettings( mapSettings );
       u.setSnapToMapMode( QgsSnappingUtils::SnapAdvanced );
       QList<QgsSnappingUtils::LayerConfig> layers;
-      layers << QgsSnappingUtils::LayerConfig( vl, QgsPointLocator::Vertex, 0.1, QgsTolerance::MapUnits );
+      layers << QgsSnappingUtils::LayerConfig( vl, QgsPointLocator::Vertex, 0.1, QgsTolerance::ProjectUnits );
       u.setLayers( layers );
 
       // no snapping on intersections by default - should find nothing

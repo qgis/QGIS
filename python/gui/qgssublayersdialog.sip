@@ -39,13 +39,6 @@ class QgsSublayersDialog : QDialog
     //! @note added in 2.16
     QgsSublayersDialog::LayerDefinitionList selection();
 
-    //! @deprecated since 2.16 - use other populateLayerTable() variant
-    void populateLayerTable( const QStringList& theList, const QString& delim = ":" ) /Deprecated/;
-    //! @deprecated since 2.16 - use selection()
-    QStringList selectionNames() /Deprecated/;
-    //! @deprecated since 2.16 - use selection()
-    QList<int> selectionIndexes() /Deprecated/;
-
   public slots:
     void on_buttonBox_helpRequested();
     int exec();

@@ -210,7 +210,7 @@ def load(fileName, name=None, crs=None, style=None):
                 style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
             qgslayer.loadNamedStyle(style)
             QgsMapLayerRegistry.instance().addMapLayers([qgslayer])
-            iface.legendInterface().refreshLayerSymbology(qgslayer)
+            iface.legendInterface().refreshLayerLegend(qgslayer)
         else:
             if prjSetting:
                 settings.setValue('/Projections/defaultBehaviour', prjSetting)
@@ -427,13 +427,16 @@ def getRasterSublayer(path, param):
                 if subLayer.endswith("\""):
                     subLayer = subLayer[:-1]
 
-                layers.append(unicode(subLayerNum) + "|" + subLayer)
+                ld = QgsSublayersDialog.LayerDefinition()
+                ld.layerId = subLayerNum
+                ld.layerName = subLayer
+                layers.append(ld)
                 subLayerNum = subLayerNum + 1
 
             # Use QgsSublayersDialog
             # Would be good if QgsSublayersDialog had an option to allow only one sublayer to be selected
             chooseSublayersDialog = QgsSublayersDialog(QgsSublayersDialog.Gdal, "gdal")
-            chooseSublayersDialog.populateLayerTable(layers, "|")
+            chooseSublayersDialog.populateLayerTable(layers)
 
             if chooseSublayersDialog.exec_():
                 return layer.subLayers()[chooseSublayersDialog.selectionIndexes()[0]]

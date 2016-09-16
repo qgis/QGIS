@@ -184,20 +184,6 @@ bool QgsMapTool::gestureEvent( QGestureEvent *e )
 }
 #endif
 
-void QgsMapTool::renderComplete()
-{
-}
-
-bool QgsMapTool::isTransient() const
-{
-  return flags() & Transient;
-}
-
-bool QgsMapTool::isEditTool() const
-{
-  return flags() & EditTool;
-}
-
 QgsMapCanvas* QgsMapTool::canvas()
 {
   return mCanvas;

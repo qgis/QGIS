@@ -19,13 +19,13 @@
 #include "qgsmergeattributesdialog.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgseditorwidgetwrapper.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfield.h"
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsattributeeditor.h"
 #include "qgsstatisticalsummary.h"
 #include "qgseditorwidgetregistry.h"
 
@@ -142,6 +142,8 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   QStringList verticalHeaderLabels; //the id column is in the
   verticalHeaderLabels << tr( "Id" );
 
+  QgsAttributeEditorContext context;
+
   for ( int i = 0; i < mFeatureList.size(); ++i )
   {
     verticalHeaderLabels << FID_TO_STRING( mFeatureList[i].id() );
@@ -155,8 +157,12 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
       QTableWidgetItem* attributeValItem = new QTableWidgetItem( attrs.at( idx ).toString() );
       attributeValItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       mTableWidget->setItem( i + 1, j, attributeValItem );
-      QWidget* attributeWidget = QgsAttributeEditor::createAttributeEditor( mTableWidget, nullptr, mVectorLayer, idx, attrs.at( idx ) );
-      mTableWidget->setCellWidget( i + 1, j, attributeWidget );
+      QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( mVectorLayer, idx, nullptr, mTableWidget, context );
+      if ( eww )
+      {
+        eww->setValue( attrs.at( idx ) );
+      }
+      mTableWidget->setCellWidget( i + 1, j, eww->widget() );
     }
   }
 
@@ -329,16 +335,14 @@ QVariant QgsMergeAttributesDialog::featureAttribute( QgsFeatureId featureId, int
   for ( i = 0; i < mFeatureList.size() && mFeatureList.at( i ).id() != featureId; i++ )
     ;
 
-  QVariant value;
-  if ( i < mFeatureList.size() &&
-       QgsAttributeEditor::retrieveValue( mTableWidget->cellWidget( i + 1, col ), mVectorLayer, fieldIdx, value ) )
+  if ( i < mFeatureList.size() )
   {
-    return value;
+    QgsEditorWidgetWrapper* wrapper = QgsEditorWidgetWrapper::fromWidget( mTableWidget->cellWidget( i + 1, col ) );
+    if ( wrapper )
+      return wrapper->value();
   }
-  else
-  {
-    return QVariant( mVectorLayer->fields().at( fieldIdx ).type() );
-  }
+
+  return QVariant( mVectorLayer->fields().at( fieldIdx ).type() );
 }
 
 

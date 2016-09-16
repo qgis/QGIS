@@ -452,7 +452,6 @@ class QgisInterface : QObject
     virtual QAction *actionCancelEdits() = 0;
     virtual QAction *actionCancelAllEdits() = 0;
     virtual QAction *actionLayerSaveAs() = 0;
-    virtual QAction *actionRemoveLayer() = 0;
     virtual QAction *actionDuplicateLayer() = 0;
     virtual QAction *actionLayerProperties() = 0;
     virtual QAction *actionAddToOverview() = 0;

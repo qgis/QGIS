@@ -485,17 +485,6 @@ QList<QgsLayerTreeNode*> QgsLayerTreeModel::indexes2nodes( const QModelIndexList
   return nodesFinal;
 }
 
-bool QgsLayerTreeModel::isIndexSymbologyNode( const QModelIndex& index ) const
-{
-  return nullptr != index2legendNode( index );
-}
-
-QgsLayerTreeLayer* QgsLayerTreeModel::layerNodeForSymbologyNode( const QModelIndex& index ) const
-{
-  QgsLayerTreeModelLegendNode* symNode = index2legendNode( index );
-  return symNode ? symNode->layerNode() : nullptr;
-}
-
 QgsLayerTreeGroup*QgsLayerTreeModel::rootGroup() const
 {
   return mRootNode;

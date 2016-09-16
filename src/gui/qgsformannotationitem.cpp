@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include "qgsformannotationitem.h"
-#include "qgsattributeeditor.h"
+#include "qgsattributeeditorcontext.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgseditorwidgetwrapper.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
@@ -89,6 +91,7 @@ QWidget* QgsFormAnnotationItem::createDesignerWidget( const QString& filePath )
   file.close();
 
   //get feature and set attribute information
+  QgsAttributeEditorContext context;
   if ( mVectorLayer && mHasAssociatedFeature )
   {
     QgsFeature f;
@@ -103,7 +106,11 @@ QWidget* QgsFormAnnotationItem::createDesignerWidget( const QString& filePath )
           QWidget* attWidget = widget->findChild<QWidget*>( fields.at( i ).name() );
           if ( attWidget )
           {
-            QgsAttributeEditor::createAttributeEditor( widget, attWidget, mVectorLayer, i, attrs.at( i ) );
+            QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( mVectorLayer, i, attWidget, widget, context );
+            if ( eww )
+            {
+              eww->setValue( attrs.at( i ) );
+            }
           }
         }
       }

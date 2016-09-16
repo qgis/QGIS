@@ -178,6 +178,7 @@ This page tries to maintain a list with incompatible changes that happened in pr
 
 <ul>
 <li>QgsAttributeAction was removed, and replaced by QgsActionManager.</li>
+<li>QgsAttributeEditor was removed. Use QgsEditorWidgetRegistry::create() instead.</li>
 <li>QgsColorbutton was removed. QgsColorButtonV2 has now been renamed to QgsColorButton. Hence, QgsColorButtonV2 does not exist anymore.</li>
 <li>QgsColorDialog was removed, and QgsColorDialogV2 was renamed to QgsColorDialog. Hence, QgsColorButtonV2 does not exist anymore.
 All the functionality from the old QgsColorDialog has been moved to the new class.</li>
@@ -266,7 +267,8 @@ corresponding counterparts in QgsUnitTypes should be used instead.</li>
 \subsection qgis_api_break_3_0_QgisInterface QgisInterface
 
 <ul>
-<li>fileMenu() has been removed, use projectMenu() instead.
+<li>fileMenu() has been removed, use projectMenu() instead.</li>
+<li>actionRemoveLayer was removed as it no longer exists.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsAnnotation QgsAnnotation
@@ -283,6 +285,7 @@ corresponding counterparts in QgsUnitTypes should be used instead.</li>
 <li>The doAction() variant which takes a QgsFeature along has been removed. Use the expression context
 variant instead.</li>
 <li>expandAction() has been removed. Use QgsExpression::replaceExpressionText() instead.</li>
+<li>setPythonExecute() was removed. Initialize QgsPythonRunner instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsAdvancedDigitizingDockWidget QgsAdvancedDigitizingDockWidget
@@ -306,6 +309,22 @@ and setSortKeyAttributeName() instead.</li>
 <li>currentFeature() was removed. Use feature() instead.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsAttributeDialog QgsAttributeDialog
+
+<ul>
+<li>The constructor for QgsAttributeDialog has changed</li>
+<li>dialog() was removed - just use the object directly.</li>
+<li>setIsAddDialog() was removed. Use setMode() instead.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsAttributeForm QgsAttributeForm
+
+<ul>
+<li>setIsAddDialog() was removed. Use setMode() instead.</li>
+<li>accept() was removed. Use save() instead.</li>
+<li>reject() was removed. Use resetValues() instead.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsAuthConfigUriEdit QgsAuthConfigUriEdit
 
 <ul>
@@ -316,6 +335,11 @@ and setSortKeyAttributeName() instead.</li>
 <ul>
 <li>DataSourceURI has been renamed to DataSourceUri</li>
 <li>GenericDataSourceURI has been renamed to GenericDataSourceUri</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsQgsCachedFeatureIterator QgsCachedFeatureIterator
+<ul>
+<li>The constructor for QgsCachedFeatureIterator has changed.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsCategorizedSymbolRendererWidget QgsCategorizedSymbolRendererWidget
@@ -335,6 +359,12 @@ and setSortKeyAttributeName() instead.</li>
 <li>The dialog no longer edits a color ramp in place. Instead, a copy of the ramp is edited
 and the new ramp can be retrieved after executing the dialog by calling ramp().</li>
 <li>Some internal methods which were previously public or protected were made private.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsColorRampShader QgsColorRampShader
+
+<ul>
+<li>maximumColorCacheSize() and setMaximumColorCacheSize() were no longer used and are removed.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsComposerArrow QgsComposerArrow
@@ -547,6 +577,10 @@ and the new ramp can be retrieved after executing the dialog by calling ramp().<
 <ul>
 <li>expressionParams(), setExpressionParams() and insertExpressionParam() have been removed.
 QgsExpressionContext variables should be used in their place.</li>
+<li>prepareExpression( QgsVectorLayer* layer ) and prepareExpression( const QgsFields &fields )
+were removed. Use QgsExpressionContext variant instead.</li>
+<li>referencedColumns( QgsVectorLayer* layer ) and referencedColumns( const QgsFields& fields )
+were removed. Use QgsExpressionContext variant instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsDataDefinedButton QgsDataDefinedButton
@@ -597,6 +631,12 @@ Use renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiag
 Use diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) instead.
 </ul>
 
+\subsection qgis_api_break_3_0_QgsDiagramRenderer QgsDiagramRenderer
+
+<ul>
+<li>xform, fields were no longer required and are removed.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsDiagramLayerSettings QgsDiagramLayerSettings
 
 <ul>
@@ -605,6 +645,33 @@ be returned in place of a null pointer.</li>
 <li>setCoordinateTransform() now takes a QgsCoordinateTransform object, not a pointer. Use an invalid QgsCoordinateTransform in
 place of a null pointer.</li>
 <li>The ct member has been removed. Use coordinateTransform() and setCoordinateTransform() instead.
+</ul>
+
+\subsection qgis_api_break_3_0_QgsDiagramSettings QgsDiagramSettings
+
+<ul>
+<li>The SizeType enum was removed. Use QgsUnitTypes.RenderUnit instead.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsDistanceArea QgsDistanceArea
+
+<ul>
+<li>sourceCrs() now returns a QgsCoordinateReferenceSystem instead of the crs ID.</li>
+<li>measure() has been removed. Use measureArea() or measureLength() instead.</li>
+<li>textUnit() was removed. Use formatDistance() or formatArea() instead.</li>
+<li>convertMeasurement was removed. Use QgsUnitTypes for conversion instead.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsDxfExport QgsDxfExport
+
+<ul>
+<li>The writeGroup() method taking a QgsPoint argument was removed. Use the version which takes a QgsPointV2 instead.</li>
+<li>The writePolyline() method taking a QgsPolyline argument was removed. Use the alternative version instead.</li>
+<li>The writePolygon() method taking a QgsPolygon argument was removed. Use the version which takes a QgsRingSequence instead.</li>
+<li>writeSolid() was removed. Use writePolygon() instead.</li>
+<li>The signature for writeLine() has changed.</li>
+<li>writePoint(), writeFilledCircle(), writeCircle(), writeText() and writeMText() now take QgsPointV2 arguments</li>
+
 </ul>
 
 \subsection qgis_api_break_3_0_QgsEditFormConfig QgsEditFormConfig
@@ -772,6 +839,10 @@ plugins calling this method will need to be updated.</li>
 
 <ul>
 <li>init(QgsMapRenderer*) has been removed. Use init(const QgsMapSettings&) instead.</li>
+<li>&layer() was removed. use QgsPalLayerSettings::fromLayer() instead.</li>
+<li>addDiagramLayer() was removed. Use prepareDiagramLayer() instead.</li>
+<li>labelsAtPosition() was removed. Use takeResults() and methods of QgsLabelingResults instead.</li>
+<li>labelsWithinRect() was removed. Use takeResults() and methods of QgsLabelingResults.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsLayerTreeGroup QgsLayerTreeGroup
@@ -779,6 +850,20 @@ plugins calling this method will need to be updated.</li>
 <ul>
 <li>readChildrenFromXML() has been renamed to readChildrenFromXml()</li>
 </ul>
+
+\subsection qgis_api_break_3_0_QgsLayerTreeMode QgsLayerTreeModel
+
+<ul>
+<li>The ShowSymbology flag was removed. Use ShowLegend instead.</li>
+<li>The AllowSymbologyChangeState flag was removed. Use AllowLegendChangeState instead.</li>
+<li>legendFilterByMap() was renamed to legendFilterMapSettings()</li>
+<li>isIndexSymbologyNode() was removed. Use index2legendNode() instead.</li>
+<li>layerNodeForSymbologyNode() was removed. Use index2legendNode()->parent() instead.</li>
+<li>refreshLayerSymbology() was removed. Use refreshLayerLegend() instead.</li>
+<li>setAutoCollapseSymbologyNodes() was removed. Use setAutoCollapseLegendNodes() instead.</li>
+<li>autoCollapseSymbologyNodes() was removed. Use autoCollapseLegendNodes() instead.</li>
+</ul>
+
 
 \subsection qgis_api_break_3_0_QgsLayerTreeNode QgsLayerTreeNode
 
@@ -812,6 +897,12 @@ and the new ramp can be retrieved after executing the dialog by calling ramp().<
 <li>setProgress() signal has been removed. It was not emitted since 2.0.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsMapCanvasItem QgsMapCanvasItem
+
+<ul>
+<li>setPanningOffset() was removed.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsMapLayer QgsMapLayer
 
 <ul>
@@ -836,6 +927,12 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 <li>writeLayerXML() was renamed to writeLayerXml()</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsMapLayerRegistry QgsMapLayerRegistry
+
+<ul>
+<li>clearAllLayerCaches() was removed. This method has had no effect since QGIS 2.4</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsMapOverviewCanvas QgsMapOverviewCanvas
 
 <ul>
@@ -858,6 +955,27 @@ be returned instead of a null pointer if no transformation is required.</li>
 be used instead of a null pointer if no transformation is required.</li>
 <li>prepareJobs() and drawLabeling() (neither available in PyQGIS) do not take QgsPalLabeling parameter anymore. All drawing of labels is done by QgsLabelingEngineV2.</li>
 <li>drawOldLabeling(), drawNewLabeling() were removed. The method drawLabeling() should be used instead.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsMapTool QgsMapTool
+
+<ul>
+<li>renderComplete() was removed. Map tools must not directly depend on rendering progress.</li>
+<li>isTransient() and isEditTool() were removed. Use flags() instead.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsMapToolCapture QgsMapToolCapture
+
+<ul>
+<li>The nextPoint() method taking a QgsPoint was removed. Use the version taking a QgsPointV2 instead.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsMapToPixel QgsMapToPixel
+
+<ul>
+<li>The constructor now uses the map center x and y, and requires both height and width in pixels and a rotation value</li>
+<li>setYMaximum(), setYMinimum(), setXMinimum() were removed. Use setParameters() instead</li>
+
 </ul>
 
 \subsection qgis_api_break_3_0_QgsMapToPixelGeometrySimplifier QgsMapToPixelGeometrySimplifier
@@ -889,10 +1007,24 @@ plugins calling this method will need to be updated.</li>
 <li>Constructor taking QgsLayerItem argument has been removed. Use QgsDataItem::mimeUri() instead.</li>
 </ul>
 
+\subsection qgis_api_break_3_0_QgsNetworkAccessManager QgsNetworkAccessManager
+
+<ul>
+<li>sendGet() was removed. Use get() directly.</li>
+<li>deleteReply() was removed. Use abort() and deleteLayer() on the reply directly.</li>
+<li>requestSent signal was removed. This is no longer emitted.</li>
+</ul>
+
 \subsection qgis_api_break_3_0_QgsOSMElement QgsOSMElement
 
 <ul>
 <li>elemID() has been renamed to elemId()</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsOwsConnection QgsOwsConnection
+
+<ul>
+<li>connectionInfo() was removed.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsOWSSourceSelect QgsOWSSourceSelect
@@ -925,6 +1057,12 @@ and for forcing certain items to always sort on top.</li>
 <ul>
 <li>init(QgsMapRenderer*) has been removed. Use init(const QgsMapSettings&) instead.</li>
 <li>prepareGeometry and geometryRequiresPreparation now take geometry references, not pointers.</li>
+<li>layer() was removed. If direct access to QgsPalLayerSettings is necessary, use QgsPalLayerSettings::fromLayer()</li>
+<li>candidates() was removed.</li>
+<li>addDiagramLayer() was removed. Use prepareDiagramLayer() instead.</li>
+<li>labelsAtPosition() was removed. Use takeResults() and methods of QgsLabelingResults instead.</li>
+<li>labelsWithinRect() was removed. Use takeResults() and methods of QgsLabelingResults instead.</li>
+<li>isStoredWithProject() and setStoredWithProject() had no effect and were removed.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsPalLayerSettings QgsPalLayerSettings
@@ -956,6 +1094,9 @@ plugins calling this method will need to be updated.</li>
 
 <ul>
 <li>visibilityPresetCollection() has been renamed to mapThemeCollection()</li>
+<li>title( const QString & title ) was removed. Use setTitle() instead.</li>
+<li>dirty( bool b ) was removed. Use setDirty() instead.</li>
+<li>clearProperties() was removed. Use clear() instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsRasterCalcNode QgsRasterCalcNode
@@ -980,6 +1121,14 @@ plugins calling this method will need to be updated.</li>
 <li>srcDataType() has been renamed to sourceDataType()</li>
 <li>srcInput() has been renamed to sourceInput()</li>
 <li>block() has new "feedback" argument.</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsRasterLayer QgsRasterLayer
+
+<ul>
+<li>setDrawingStyle() was removed. Use setRendererForDrawingStyle() or setRenderer() instead.</li>
+<li>previewAsPixmap() was removed. Use previewAsImage() instead.</li>
+<li>updateProgress() had no effect and was removed.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsRasterProjector QgsRasterProjector
@@ -1061,6 +1210,14 @@ be returned instead of a null pointer if no transformation is required.</li>
 
 <ul>
 <li>Constructor variant with QgsMapRenderer has been removed. Use the variant with QgsMapSettings.</li>
+<li>Signature for snapPoint() has changed.</li> 
+</ul>
+
+\subsection qgis_api_break_3_0_QgsSublayersDialog QgsSublayersDialog
+
+<ul>
+<li>populateLayerTable() now takes a list of QgsSublayersDialog.LayerDefinition values</li>
+<li>selectionNames() and selectionIndexes() were removed. Use selection().</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsSvgCache QgsSvgCache
@@ -1127,6 +1284,7 @@ than an integer value</li>
 
 <ul>
 <li>vertexSearchRadius(), defaultTolerance(), toleranceInMapUnits() do not have variant with QgsMapRenderer anymore. Use the variants with QgsMapSettings.</li>
+<li>The MapUnits UnitType was removed. Use LayerUnits or ProjectUnits instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsTreeWidgetItem QgsTreeWidgetItem
@@ -1151,6 +1309,12 @@ and UnknownAreaUnit to AreaUnknownUnit</li>
 <li>All angle enumeration values were renamed to have a "Angle" prefix, including
 Radians (to AngleRadians), Gon (to AngleGon), MinutesOfArc (to AngleMinutesOfArc),
 SecondsOfArc (to AngleSecondsOfArc), Turn (to AngleTurn) and UnknownAngleUnit to AngleUnknownUnit</li>
+</ul>
+
+\subsection qgis_api_break_3_0_QgsVector QgsVector
+
+<ul>
+<li>normal() was removed. Use normalized() instead.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsVectorDataProvider QgsVectorDataProvider

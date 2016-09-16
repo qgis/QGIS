@@ -318,15 +318,6 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent * e )
   }
 } // mouseMoveEvent
 
-int QgsMapToolCapture::nextPoint( const QgsPoint& mapPoint, QgsPoint& layerPoint )
-{
-  QgsPointV2 p1( mapPoint.x(), mapPoint.y() );
-  QgsPointV2 p2;
-  int r = nextPoint( p1, p2 );
-  layerPoint.setX( p2.x() );
-  layerPoint.setY( p2.y() );
-  return r;
-}
 
 int QgsMapToolCapture::nextPoint( const QgsPointV2& mapPoint, QgsPointV2& layerPoint )
 {
@@ -359,14 +350,6 @@ int QgsMapToolCapture::nextPoint( QPoint p, QgsPointV2 &layerPoint, QgsPointV2 &
 {
   mapPoint = QgsPointV2( toMapCoordinates( p ) );
   return nextPoint( mapPoint, layerPoint );
-}
-
-int QgsMapToolCapture::nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint )
-{
-  mapPoint = toMapCoordinates( p );
-  Q_NOWARN_DEPRECATED_PUSH
-  return nextPoint( mapPoint, layerPoint );
-  Q_NOWARN_DEPRECATED_POP
 }
 
 int QgsMapToolCapture::fetchLayerPoint( QgsPointLocator::Match match , QgsPointV2 &layerPoint )

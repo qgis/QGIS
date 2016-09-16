@@ -43,11 +43,6 @@ class QgsColorRampShader : QgsRasterShaderFunction
     /** \brief Get the color ramp type as a string */
     QString colorRampTypeAsQString();
 
-    /** \brief Get the maximum size the color cache can be
-     * @deprecated will be removed in QGIS 3.0. Color cache is not used anymore.
-     */
-    int maximumColorCacheSize();
-
     /** \brief Set custom colormap */
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ); //TODO: sort on set
 
@@ -56,11 +51,6 @@ class QgsColorRampShader : QgsRasterShaderFunction
 
     /** \brief Set the color ramp type*/
     void setColorRampType( const QString& theType );
-
-    /** \brief Set the maximum size the color cache can be
-     * @deprecated will be removed in QGIS 3.0. Color cache is not used anymore.
-     */
-    void setMaximumColorCacheSize( int theSize );
 
     /** \brief Generates and new RGB value based on one input value */
     bool shade( double, int* /Out/, int* /Out/, int* /Out/, int* /Out/ );

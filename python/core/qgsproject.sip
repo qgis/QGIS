@@ -27,13 +27,6 @@ class QgsProject : QObject
     //! Returns the QgsProject singleton instance
     static QgsProject * instance();
 
-    /**
-     * Every project has an associated title string
-     *
-     * @deprecated Use setTitle instead.
-     */
-    void title( const QString & title ) /Deprecated/;
-
     /** Sets the project's title.
      * @param title new title
      *  @note added in 2.4
@@ -50,14 +43,6 @@ class QgsProject : QObject
      * Returns true if the project has been modified since the last write()
      */
     bool isDirty() const;
-
-    /**
-     * Flag the project as dirty (modified). If this flag is set, the user will
-     * be asked to save changes to the project before closing the current project.
-     *
-     * @deprecated use setDirty instead
-     */
-    void dirty( bool b ) /Deprecated/;
 
     /** Sets the file name associated with the project. This is the file which contains the project's XML
      * representation.
@@ -136,14 +121,6 @@ class QgsProject : QObject
      * @returns true if project was written successfully
      */
     bool write();
-
-    /**
-     * Removes all project properties.
-     *
-     * @deprecated use clear() instead
-     */
-    void clearProperties() /Deprecated/;
-
 
     /**
      * Write a boolean entry to the project file.

@@ -76,7 +76,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     {
       // display flags
       ShowLegend                 = 0x0001,  //!< Add legend nodes for layer nodes
-      ShowSymbology              = 0x0001,  //!< deprecated - use ShowLegend
       ShowRasterPreviewIcon      = 0x0002,  //!< Will use real preview of raster layer as icon (may be slow)
       ShowLegendAsTree           = 0x0004,  //!< For legends that support it, will show them in a tree instead of a list (needs also ShowLegend). Added in 2.8
       DeferredLegendInvalidation = 0x0008,  //!< defer legend model invalidation
@@ -87,7 +86,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       AllowNodeRename            = 0x2000,  //!< Allow renaming of groups and layers
       AllowNodeChangeVisibility  = 0x4000,  //!< Allow user to set node visibility with a check box
       AllowLegendChangeState     = 0x8000,  //!< Allow check boxes for legend nodes (if supported by layer's legend)
-      AllowSymbologyChangeState  = 0x8000,  //!< deprecated - use AllowLegendChangeState
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -182,10 +180,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! @note added in 2.14
     void setLegendFilter( const QgsMapSettings* settings, bool useExtent = true, const QgsGeometry& polygon = QgsGeometry(), bool useExpressions = true );
 
-    //! Returns the current map settings used for legend filtering
-    //! @deprecated It has been renamed to legendFilterMapSettings()
-    Q_DECL_DEPRECATED const QgsMapSettings* legendFilterByMap() const { return mLegendFilterMapSettings.data(); }
-
     //! Returns the current map settings used for the current legend filter (or null if none is enabled)
     //! @note added in 2.14
     const QgsMapSettings* legendFilterMapSettings() const { return mLegendFilterMapSettings.data(); }
@@ -205,19 +199,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Set map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
     //! @note added in 2.10
     void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
-
-    //! Return true if index represents a legend node (instead of layer node)
-    //! @deprecated use index2legendNode()
-    Q_DECL_DEPRECATED bool isIndexSymbologyNode( const QModelIndex& index ) const;
-    //! Return layer node to which a legend node belongs to. Returns null pointer if index is not a legend node.
-    //! @deprecated use index2legendNode()->parent()
-    Q_DECL_DEPRECATED QgsLayerTreeLayer* layerNodeForSymbologyNode( const QModelIndex& index ) const;
-    //! @deprecated use refreshLayerLegend()
-    Q_DECL_DEPRECATED void refreshLayerSymbology( QgsLayerTreeLayer* nodeLayer ) { refreshLayerLegend( nodeLayer ); }
-    //! @deprecated use setAutoCollapseLegendNodes()
-    Q_DECL_DEPRECATED void setAutoCollapseSymbologyNodes( int nodeCount ) { setAutoCollapseLegendNodes( nodeCount ); }
-    //! @deprecated use autoCollapseLegendNodes()
-    Q_DECL_DEPRECATED int autoCollapseSymbologyNodes() const { return autoCollapseLegendNodes(); }
 
   signals:
 

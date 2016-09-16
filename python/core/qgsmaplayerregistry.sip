@@ -175,15 +175,6 @@ class QgsMapLayerRegistry : QObject
     void removeAllMapLayers();
 
     /**
-     * Clears all layer caches, resetting them to zero and
-     * freeing up any memory they may have been using. Layer
-     * caches are used to speed up rendering in certain situations
-     * see ticket #1974 for more details.
-     */
-    //! @deprecated since 2.4 - does nothing
-    void clearAllLayerCaches() /Deprecated/;
-
-    /**
      * Reload all registered layer's provider data caches, synchronising the layer
      * with any changes in the datasource.
      * @see QgsMapLayer::reload()

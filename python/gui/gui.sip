@@ -28,7 +28,6 @@
 %Include qgsadvanceddigitizingdockwidget.sip
 %Include qgsannotationitem.sip
 %Include qgsattributedialog.sip
-%Include qgsattributeeditor.sip
 %Include qgsattributeeditorcontext.sip
 %Include qgsattributeform.sip
 %Include qgsattributeformeditorwidget.sip

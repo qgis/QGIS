@@ -110,21 +110,6 @@ class QgsDataDefined
      */
     QString expressionOrField() const;
 
-    /** Prepares the expression using a vector layer
-     * @param layer vector layer
-     * @returns true if expression was successfully prepared
-     * @deprecated use QgsExpressionContext variant instead
-     */
-    bool prepareExpression( QgsVectorLayer* layer ) /Deprecated/;
-
-    /** Prepares the expression using a fields collection
-     * @param fields
-     * @returns true if expression was successfully prepared
-     * @note added in QGIS 2.9
-     * @deprecated use QgsExpressionContext variant instead
-     */
-    bool prepareExpression( const QgsFields &fields ) /Deprecated/;
-
     /** Prepares the expression using an expression context.
      * @param context expression context
      * @returns true if expression was successfully prepared
@@ -138,19 +123,6 @@ class QgsDataDefined
     bool expressionIsPrepared() const;
 
     QgsExpression* expression();
-
-    /** Returns the columns referenced by the QgsDataDefined
-     * @param layer vector layer, used for preparing the expression if required
-     * @deprecated use QgsExpressionContext variant instead
-     */
-    QStringList referencedColumns( QgsVectorLayer* layer ) /Deprecated/;
-
-    /** Returns the columns referenced by the QgsDataDefined
-     * @param fields vector layer, used for preparing the expression if required
-     * @note added in QGIS 2.9
-     * @deprecated use QgsExpressionContext variant instead
-     */
-    QStringList referencedColumns( const QgsFields& fields ) /Deprecated/;
 
     /** Returns the columns referenced by the QgsDataDefined
      * @param context expression context, used for preparing the expression if required

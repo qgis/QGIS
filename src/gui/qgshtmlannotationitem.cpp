@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgshtmlannotationitem.h"
-#include "qgsattributeeditor.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"

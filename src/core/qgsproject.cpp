@@ -1248,13 +1248,6 @@ bool QgsProject::write()
   return true;
 }
 
-void QgsProject::clearProperties()
-{
-  clear();
-
-  setDirty( true );
-}
-
 bool QgsProject::writeEntry( const QString& scope, QString const& key, bool value )
 {
   setDirty( true );

@@ -72,12 +72,6 @@ class QgsVector
 
     /** Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0). Will throw an expection
      * if called on a vector with length of 0.
-     * @deprecated use normalized() instead
-     */
-    QgsVector normal() const /Deprecated/;
-
-    /** Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0). Will throw an expection
-     * if called on a vector with length of 0.
      */
     QgsVector normalized() const;
 };

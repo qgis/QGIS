@@ -195,12 +195,6 @@ class QgsDiagramLayerSettings
      */
     void setCoordinateTransform( const QgsCoordinateTransform& transform );
 
-    //! @deprecated will be removed in QGIS 3.0
-    const QgsMapToPixel* xform;
-
-    //! @deprecated will be removed in QGIS 3.0
-    QgsFields fields;
-
     //! Attribute index for x coordinate (or -1 if position not data defined)
     int xPosColumn;
 
@@ -251,13 +245,6 @@ class QgsDiagramSettings
 #include <qgsdiagramrenderer.h>
 %End
   public:
-
-    //! @deprecated use QgsSymbol::OutputUnit instead
-    enum SizeType
-    {
-      MM,
-      MapUnits
-    };
 
     enum LabelPlacementMethod
     {

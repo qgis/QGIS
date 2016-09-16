@@ -75,11 +75,6 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     /** \brief Get the color ramp type as a string */
     QString colorRampTypeAsQString();
 
-    /** \brief Get the maximum size the color cache can be
-     * @deprecated will be removed in QGIS 3.0. Color cache is not used anymore.
-     */
-    Q_DECL_DEPRECATED int maximumColorCacheSize() { return 0; }
-
     /** \brief Set custom colormap */
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ); //TODO: sort on set
 
@@ -88,11 +83,6 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     /** \brief Set the color ramp type*/
     void setColorRampType( const QString& theType );
-
-    /** \brief Set the maximum size the color cache can be
-     * @deprecated will be removed in QGIS 3.0. Color cache is not used anymore.
-     */
-    Q_DECL_DEPRECATED void setMaximumColorCacheSize( int theSize ) { Q_UNUSED( theSize ); }
 
     /** \brief Generates and new RGB value based on one input value */
     bool shade( double, int*, int*, int*, int* ) override;

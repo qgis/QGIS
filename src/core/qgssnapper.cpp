@@ -30,12 +30,6 @@ QgsSnapper::QgsSnapper( const QgsMapSettings& mapSettings )
 {
 }
 
-int QgsSnapper::snapPoint( QPoint startPoint, QList<QgsSnappingResult>& snappingResult, const QList<QgsPoint>& excludePoints )
-{
-  QgsPoint mapCoordPoint = mMapSettings.mapToPixel().toMapCoordinates( startPoint.x(), startPoint.y() );
-  return snapMapPoint( mapCoordPoint, snappingResult, excludePoints );
-}
-
 int QgsSnapper::snapMapPoint( const QgsPoint& mapCoordPoint, QList<QgsSnappingResult>& snappingResult, const QList<QgsPoint>& excludePoints )
 {
   snappingResult.clear();

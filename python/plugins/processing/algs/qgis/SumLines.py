@@ -109,7 +109,7 @@ class SumLines(GeoAlgorithm):
                     tmpGeom = ftLine.geometry()
                     if inGeom.intersects(tmpGeom):
                         outGeom = inGeom.intersection(tmpGeom)
-                        length += distArea.measure(outGeom)
+                        length += distArea.measureLength(outGeom)
                         count += 1
 
             outFeat.setGeometry(inGeom)

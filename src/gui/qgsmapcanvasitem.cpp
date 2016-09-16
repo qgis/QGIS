@@ -29,7 +29,6 @@ QgsMapCanvasItem::QgsMapCanvasItem( QgsMapCanvas* mapCanvas )
     : QGraphicsItem()
     , mMapCanvas( mapCanvas )
     , mRectRotation( 0.0 )
-    , mPanningOffset( 0, 0 )
     , mItemSize( 0, 0 )
 {
   Q_ASSERT( mapCanvas && mapCanvas->scene() );
@@ -56,7 +55,7 @@ void QgsMapCanvasItem::paint( QPainter * painter,
 
 QgsPoint QgsMapCanvasItem::toMapCoordinates( QPoint point ) const
 {
-  return mMapCanvas->getCoordinateTransform()->toMapCoordinates( point - mPanningOffset );
+  return mMapCanvas->getCoordinateTransform()->toMapCoordinates( point );
 }
 
 
@@ -64,7 +63,7 @@ QPointF QgsMapCanvasItem::toCanvasCoordinates( const QgsPoint& point ) const
 {
   qreal x = point.x(), y = point.y();
   mMapCanvas->getCoordinateTransform()->transformInPlace( x, y );
-  return QPointF( x, y ) + mPanningOffset;
+  return QPointF( x, y );
 }
 
 QgsRectangle QgsMapCanvasItem::rect() const
@@ -140,10 +139,4 @@ void QgsMapCanvasItem::updatePosition()
   // default implementation: recalculate position of the item
   setRect( mRect, false );
   setRotation( mMapCanvas->rotation() - mRectRotation );
-}
-
-
-void QgsMapCanvasItem::setPanningOffset( QPoint point )
-{
-  mPanningOffset = point;
 }

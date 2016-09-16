@@ -102,7 +102,7 @@ void QgsGPSPlugin::initGui()
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   connect( mCreateGPXAction, SIGNAL( triggered() ), this, SLOT( createGPX() ) );
 
-  mQGisInterface->layerToolBar()->insertAction( mQGisInterface->actionRemoveLayer(), mCreateGPXAction );
+  mQGisInterface->layerToolBar()->insertAction( nullptr, mCreateGPXAction );
   mQGisInterface->newLayerMenu()->addAction( mCreateGPXAction );
   mQGisInterface->addPluginToVectorMenu( tr( "&GPS" ), mQActionPointer );
   mQGisInterface->addVectorToolBarIcon( mQActionPointer );

@@ -85,29 +85,10 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     //! return whether the system proxy should be used
     bool useSystemProxy() const { return mUseSystemProxy; }
 
-  public slots:
-    /** Send GET request, calls get().
-     * Emits requestSent().
-     * @param request request to be sent
-     * @deprecated use get() directly
-     */
-    Q_DECL_DEPRECATED void sendGet( const QNetworkRequest & request );
-    /** Abort and delete reply.
-     * @param reply reply to be aborted.
-     * @deprecated use abort() and deleteLayer() on the reply directly
-     */
-    Q_DECL_DEPRECATED void deleteReply( QNetworkReply * reply );
-
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
     void requestTimedOut( QNetworkReply * );
-    /** Emitted when request was sent by request()
-     * @param reply request reply
-     * @param sender the object which called request() slot.
-     * @deprecated only emitted from deprecated sendGet
-     */
-    void requestSent( QNetworkReply * reply, QObject *sender );
 
   private slots:
     void abortRequest();

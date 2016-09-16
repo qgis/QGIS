@@ -95,7 +95,7 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
             if strategy == 0:
                 pointCount = int(f[fieldName])
             else:
-                pointCount = int(round(f[fieldName] * da.measure(fGeom)))
+                pointCount = int(round(f[fieldName] * da.measureArea(fGeom)))
 
             if strategy == 0 and pointCount == 0:
                 continue

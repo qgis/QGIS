@@ -388,18 +388,3 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
     setCache( newcache );
 }
 
-void QgsNetworkAccessManager::sendGet( const QNetworkRequest & request )
-{
-  QNetworkReply * reply = get( request );
-  emit requestSent( reply, QObject::sender() );
-}
-
-void QgsNetworkAccessManager::deleteReply( QNetworkReply * reply )
-{
-  if ( !reply )
-  {
-    return;
-  }
-  reply->abort();
-  reply->deleteLater();
-}

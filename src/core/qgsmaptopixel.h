@@ -33,27 +33,18 @@ class QPoint;
 class CORE_EXPORT QgsMapToPixel
 {
   public:
-    /**
-     * Constructor
-     * @param mapUnitsPerPixel Map units per pixel
-     * @param height Map canvas height, in pixels
-     * @param ymin Minimum y value of the map canvas
-     * @param xmin Minimum x value of the map canvas
-     * @deprecated in 2.8, use version with all parameters
-     */
-    Q_DECL_DEPRECATED QgsMapToPixel( double mapUnitsPerPixel, double height, double ymin = 0, double xmin = 0 );
 
     /**
      * Constructor
      * @param mapUnitsPerPixel Map units per pixel
-     * @param xc X ordinate of map center, in geographical units
-     * @param yc Y ordinate of map center, in geographical units
-     * @param width Output width, in pixels
-     * @param height Output height, in pixels
+     * @param centerX X coordinate of map center, in geographical units
+     * @param centerY Y coordinate of map center, in geographical units
+     * @param widthPixels Output width, in pixels
+     * @param heightPixels Output height, in pixels
      * @param rotation clockwise rotation in degrees
      * @note added in 2.8
      */
-    QgsMapToPixel( double mapUnitsPerPixel, double xc, double yc, int width, int height, double rotation );
+    QgsMapToPixel( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
 
     /**
      * Constructor
@@ -162,61 +153,43 @@ class CORE_EXPORT QgsMapToPixel
     double mapRotation() const;
 
     /**
-     * Set maximum y value
-     * @deprecated in 2.8, use setParameters
-     * @note this really sets the viewport height, not ymax
-     */
-    Q_DECL_DEPRECATED void setYMaximum( double yMax ) { mHeight = static_cast< int >( yMax ); }
-
-    /**
-     * Set minimum y value
-     * @deprecated in 2.8, use setParameters
-     */
-    Q_DECL_DEPRECATED void setYMinimum( double ymin );
-
-    /**
-     * set minimum x value
-     * @deprecated in 2.8, use setParameters
-     */
-    Q_DECL_DEPRECATED void setXMinimum( double xmin );
-
-    /**
      * Set parameters for use in transforming coordinates
      * @param mapUnitsPerPixel Map units per pixel
-     * @param xmin Minimum x value
-     * @param ymin Minimum y value
-     * @param height Map height, in pixels
-     * @deprecated in 2.8, use the version with full parameters
-     * @note not available in python bindings
-     */
-    Q_DECL_DEPRECATED void setParameters( double mapUnitsPerPixel, double xmin, double ymin, double height );
-
-    /**
-     * Set parameters for use in transforming coordinates
-     * @param mapUnitsPerPixel Map units per pixel
-     * @param xc X ordinate of map center, in geographical units
-     * @param yc Y ordinate of map center, in geographical units
-     * @param width Output width, in pixels
-     * @param height Output height, in pixels
+     * @param centerX X coordinate of map center, in geographical units
+     * @param centerY Y coordinate of map center, in geographical units
+     * @param widthPixels Output width, in pixels
+     * @param heightPixels Output height, in pixels
      * @param rotation clockwise rotation in degrees
      * @note added in 2.8
      */
-    void setParameters( double mapUnitsPerPixel, double xc, double yc, int width, int height, double rotation );
+    void setParameters( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
 
     //! String representation of the parameters used in the transform
     QString showParameters() const;
 
     QTransform transform() const;
 
+    /** Returns the center x-coordinate for the transform.
+     * @see yCenter()
+     * @note added in QGIS 3.0
+     */
+    double xCenter() const { return mXCenter; }
+
+    /** Returns the center y-coordinate for the transform.
+     * @see xCenter()
+     * @note added in QGIS 3.0
+     */
+    double yCenter() const { return mYCenter; }
+
   private:
     double mMapUnitsPerPixel;
     int mWidth;
     int mHeight;
     double mRotation;
-    double xCenter;
-    double yCenter;
-    double xMin; //!< @deprecated in 2.8
-    double yMin; //!< @deprecated in 2.8
+    double mXCenter;
+    double mYCenter;
+    double xMin;
+    double yMin;
     QTransform mMatrix;
 
     bool updateMatrix();

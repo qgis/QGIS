@@ -36,19 +36,6 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     Q_OBJECT
 
   public:
-    /**
-     * Create an attribute dialog for a given layer and feature
-     *
-     * @param vl                The layer for which the dialog will be generated
-     * @param thepFeature       A feature for which the dialog will be generated
-     * @param featureOwner      Set to true, if the dialog should take ownership of the feature
-     * @param myDa              A QgsDistanceArea which will be used for expressions
-     * @param parent            A parent widget for the dialog
-     * @param showDialogButtons True: Show the dialog buttons accept/cancel
-     *
-     * @deprecated
-     */
-    Q_DECL_DEPRECATED QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, const QgsDistanceArea& myDa, QWidget* parent = nullptr, bool showDialogButtons = true );
 
     /**
      * Create an attribute dialog for a given layer and feature
@@ -81,15 +68,6 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      */
     void setHighlight( QgsHighlight *h );
 
-    /**
-     * @brief Returns reference to self. Only here for legacy compliance
-     *
-     * @return this
-     *
-     * @deprecated Do not use. Just use this object itself. Or QgsAttributeForm if you want to embed.
-     */
-    Q_DECL_DEPRECATED QDialog *dialog() { return this; }
-
     QgsAttributeForm *attributeForm() { return mAttributeForm; }
 
     const QgsFeature *feature() { return &mAttributeForm->feature(); }
@@ -100,16 +78,6 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      * @return returns true, if this dialog was created in an editable manner.
      */
     bool editable() { return mAttributeForm->editable(); }
-
-    /**
-     * Toggles the form mode between edit feature and add feature.
-     * If set to true, the dialog will be editable even with an invalid feature.
-     * If set to true, the dialog will add a new feature when the form is accepted.
-     *
-     * @param isAddDialog If set to true, turn this dialog into an add feature dialog.
-     * @deprecated use setMode() instead
-     */
-    Q_DECL_DEPRECATED void setIsAddDialog( bool isAddDialog ) { mAttributeForm->setMode( isAddDialog ? QgsAttributeForm::AddFeatureMode : QgsAttributeForm::SingleEditMode ); }
 
     /**
      * Toggles the form mode.

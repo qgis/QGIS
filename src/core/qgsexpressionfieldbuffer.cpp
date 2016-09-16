@@ -35,7 +35,6 @@ void QgsExpressionFieldBuffer::removeExpression( int index )
 
 void QgsExpressionFieldBuffer::updateExpression( int index, const QString& exp )
 {
-  mExpressions[index].expression = exp;
   mExpressions[index].cachedExpression = QgsExpression( exp );
 }
 
@@ -48,7 +47,7 @@ void QgsExpressionFieldBuffer::writeXml( QDomNode& layerNode, QDomDocument& docu
   {
     QDomElement fldElem = document.createElement( "field" );
 
-    fldElem.setAttribute( "expression", fld.expression );
+    fldElem.setAttribute( "expression", fld.cachedExpression.expression() );
     fldElem.setAttribute( "name", fld.field.name() );
     fldElem.setAttribute( "precision", fld.field.precision() );
     fldElem.setAttribute( "comment", fld.field.comment() );

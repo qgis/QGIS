@@ -83,13 +83,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Returns the QgsProject singleton instance
     static QgsProject * instance();
 
-    /**
-     * Every project has an associated title string
-     *
-     * @deprecated Use setTitle instead.
-     */
-    Q_DECL_DEPRECATED inline void title( const QString & title ) { setTitle( title ); }
-
     /** Sets the project's title.
      * @param title new title
      * @note added in 2.4
@@ -106,14 +99,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Returns true if the project has been modified since the last write()
      */
     bool isDirty() const;
-
-    /**
-     * Flag the project as dirty (modified). If this flag is set, the user will
-     * be asked to save changes to the project before closing the current project.
-     *
-     * @deprecated use setDirty instead
-     */
-    Q_DECL_DEPRECATED inline void dirty( bool b ) { setDirty( b ); }
 
     /** Sets the file name associated with the project. This is the file which contains the project's XML
      * representation.
@@ -192,14 +177,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @returns true if project was written successfully
      */
     bool write();
-
-    /**
-     * Removes all project properties.
-     *
-     * @deprecated use clear() instead
-     */
-    Q_DECL_DEPRECATED void clearProperties();
-
 
     /**
      * Write a boolean entry to the project file.

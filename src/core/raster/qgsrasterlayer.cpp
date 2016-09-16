@@ -981,64 +981,6 @@ void QgsRasterLayer::setDefaultContrastEnhancement()
   setContrastEnhancement( myAlgorithm, myLimits );
 }
 
-/**
- *
- * Implemented mainly for serialisation / deserialisation of settings to xml.
- * \note May be deprecated in the future! Use setDrawingStyle( DrawingStyle ) instead.
- */
-void QgsRasterLayer::setDrawingStyle( QString const & theDrawingStyleQString )
-{
-  QgsDebugMsgLevel( "DrawingStyle = " + theDrawingStyleQString, 4 );
-  QgsRaster::DrawingStyle drawingStyle;
-  if ( theDrawingStyleQString == "SingleBandGray" )//no need to tr() this its not shown in ui
-  {
-    drawingStyle = QgsRaster::SingleBandGray;
-  }
-  else if ( theDrawingStyleQString == "SingleBandPseudoColor" )//no need to tr() this its not shown in ui
-  {
-    drawingStyle = QgsRaster::SingleBandPseudoColor;
-  }
-  else if ( theDrawingStyleQString == "PalettedColor" )//no need to tr() this its not shown in ui
-  {
-    drawingStyle = QgsRaster::PalettedColor;
-  }
-  else if ( theDrawingStyleQString == "PalettedSingleBandGray" )//no need to tr() this its not shown in ui
-  {
-    drawingStyle = QgsRaster::PalettedSingleBandGray;
-  }
-  else if ( theDrawingStyleQString == "PalettedSingleBandPseudoColor" )//no need to tr() this its not shown in ui
-  {
-    drawingStyle = QgsRaster::PalettedSingleBandPseudoColor;
-  }
-  else if ( theDrawingStyleQString == "PalettedMultiBandColor" )//no need to tr() this its not shown in ui
-  {
-    drawingStyle = QgsRaster::PalettedMultiBandColor;
-  }
-  else if ( theDrawingStyleQString == "MultiBandSingleBandGray" )//no need to tr() this its not shown in ui
-  {
-    drawingStyle = QgsRaster::MultiBandSingleBandGray;
-  }
-  else if ( theDrawingStyleQString == "MultiBandSingleBandPseudoColor" )//no need to tr() this its not shown in ui
-  {
-    drawingStyle = QgsRaster::MultiBandSingleBandPseudoColor;
-  }
-  else if ( theDrawingStyleQString == "MultiBandColor" )//no need to tr() this its not shown in ui
-  {
-    drawingStyle = QgsRaster::MultiBandColor;
-  }
-  else if ( theDrawingStyleQString == "SingleBandColorDataStyle" )//no need to tr() this its not shown in ui
-  {
-    QgsDebugMsgLevel( "Setting drawingStyle to SingleBandColorDataStyle " + QString::number( QgsRaster::SingleBandColorDataStyle ), 4 );
-    drawingStyle = QgsRaster::SingleBandColorDataStyle;
-    QgsDebugMsgLevel( "Setted drawingStyle to " + QString::number( drawingStyle ), 4 );
-  }
-  else
-  {
-    drawingStyle = QgsRaster::UndefinedDrawingStyle;
-  }
-  setRendererForDrawingStyle( drawingStyle );
-}
-
 void QgsRasterLayer::setLayerOrder( QStringList const & layers )
 {
   QgsDebugMsgLevel( "entered.", 4 );
@@ -1096,55 +1038,6 @@ QStringList QgsRasterLayer::subLayers() const
   return mDataProvider->subLayers();
 }
 
-QPixmap QgsRasterLayer::previewAsPixmap( QSize size, const QColor& bgColor )
-{
-  QPixmap myQPixmap( size );
-
-  myQPixmap.fill( bgColor );  //defaults to white, set to transparent for rendering on a map
-
-  QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
-
-  double myMapUnitsPerPixel;
-  double myX = 0.0;
-  double myY = 0.0;
-  QgsRectangle myExtent = mDataProvider->extent();
-  if ( myExtent.width() / myExtent.height() >= static_cast< double >( myQPixmap.width() ) / myQPixmap.height() )
-  {
-    myMapUnitsPerPixel = myExtent.width() / myQPixmap.width();
-    myY = ( myQPixmap.height() - myExtent.height() / myMapUnitsPerPixel ) / 2;
-  }
-  else
-  {
-    myMapUnitsPerPixel = myExtent.height() / myQPixmap.height();
-    myX = ( myQPixmap.width() - myExtent.width() / myMapUnitsPerPixel ) / 2;
-  }
-
-  double myPixelWidth = myExtent.width() / myMapUnitsPerPixel;
-  double myPixelHeight = myExtent.height() / myMapUnitsPerPixel;
-
-  myRasterViewPort->mTopLeftPoint = QgsPoint( myX, myY );
-  myRasterViewPort->mBottomRightPoint = QgsPoint( myPixelWidth, myPixelHeight );
-  myRasterViewPort->mWidth = myQPixmap.width();
-  myRasterViewPort->mHeight = myQPixmap.height();
-
-  myRasterViewPort->mDrawnExtent = myExtent;
-  myRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
-  myRasterViewPort->mDestCRS = QgsCoordinateReferenceSystem(); // will be invalid
-  myRasterViewPort->mSrcDatumTransform = -1;
-  myRasterViewPort->mDestDatumTransform = -1;
-
-  QgsMapToPixel *myMapToPixel = new QgsMapToPixel( myMapUnitsPerPixel );
-
-  QPainter * myQPainter = new QPainter( &myQPixmap );
-  draw( myQPainter, myRasterViewPort, myMapToPixel );
-  delete myRasterViewPort;
-  delete myMapToPixel;
-  myQPainter->end();
-  delete myQPainter;
-
-  return myQPixmap;
-}
-
 // this function should be used when rendering with the MTR engine introduced in 2.3, as QPixmap is not thread safe (see bug #9626)
 // note: previewAsImage and previewAsPixmap should use a common low-level fct QgsRasterLayer::previewOnPaintDevice( QSize size, QColor bgColor, QPaintDevice &device )
 QImage QgsRasterLayer::previewAsImage( QSize size, const QColor& bgColor, QImage::Format format )
@@ -1195,12 +1088,6 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor& bgColor, QImage
   delete myQPainter;
 
   return myQImage;
-}
-
-void QgsRasterLayer::updateProgress( int theProgress, int theMax )
-{
-  Q_UNUSED( theProgress );
-  Q_UNUSED( theMax );
 }
 
 void QgsRasterLayer::onProgress( int theType, double theProgress, const QString& theMessage )

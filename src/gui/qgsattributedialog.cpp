@@ -24,18 +24,6 @@
 
 #include <QSettings>
 
-
-QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, const QgsDistanceArea &myDa, QWidget* parent, bool showDialogButtons )
-    : QDialog( parent )
-    , mHighlight( nullptr )
-    , mOwnedFeature( featureOwner ? thepFeature : nullptr )
-{
-  QgsAttributeEditorContext context;
-  context.setDistanceArea( myDa );
-
-  init( vl, thepFeature, context, showDialogButtons );
-}
-
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, QWidget* parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
     : QDialog( parent )
     , mHighlight( nullptr )

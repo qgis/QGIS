@@ -78,16 +78,17 @@ class CORE_EXPORT QgsDistanceArea
     /**
      * Sets source spatial reference system (by QGIS CRS)
      * @note: missing in Python bindings in QGIS < 2.2
+     * @see sourceCrs()
      */
     void setSourceCrs( const QgsCoordinateReferenceSystem& srcCRS );
 
     //! sets source spatial reference system by authid
     void setSourceAuthId( const QString& authid );
 
-    //! returns source spatial reference system
-    //! @deprecated use sourceCrsId() instead
-    // TODO QGIS 3.0 - make sourceCrs() return QgsCoordinateReferenceSystem
-    Q_DECL_DEPRECATED long sourceCrs() const { return mCoordTransform.sourceCrs().srsid(); }
+    /** Returns the source spatial reference system.
+     * @see setSourceCrs()
+     */
+    QgsCoordinateReferenceSystem sourceCrs() const { return mCoordTransform.sourceCrs(); }
 
     /** Returns the QgsCoordinateReferenceSystem::srsid() for the CRS used during calculations.
      * @see setSourceCrs()
@@ -131,12 +132,6 @@ class CORE_EXPORT QgsDistanceArea
     double ellipsoidSemiMinor() const { return mSemiMinor; }
     //! returns ellipsoid's inverse flattening
     double ellipsoidInverseFlattening() const { return mInvFlattening; }
-
-    /** General measurement (line distance or polygon area)
-     * @deprecated use measureArea() or measureLength() methods instead, as this method
-     * is unpredictable for geometry collections
-     */
-    Q_DECL_DEPRECATED double measure( const QgsGeometry* geometry ) const;
 
     /** Measures the area of a geometry.
      * @param geometry geometry to measure
@@ -246,18 +241,6 @@ class CORE_EXPORT QgsDistanceArea
     //! compute bearing - in radians
     double bearing( const QgsPoint& p1, const QgsPoint& p2 ) const;
 
-    /** Returns a measurement formatted as a friendly string
-     * @param value value of measurement
-     * @param decimals number of decimal places to show
-     * @param u unit of measurement
-     * @param isArea set to true if measurement is an area measurement
-     * @param keepBaseUnit set to false to allow conversion of large distances to more suitable units, eg meters
-     * to kilometers
-     * @return formatted measurement string
-     * @deprecated use formatDistance() or formatArea() instead
-     */
-    Q_DECL_DEPRECATED static QString textUnit( double value, int decimals, QgsUnitTypes::DistanceUnit u, bool isArea, bool keepBaseUnit = false );
-
     /** Returns an distance formatted as a friendly string.
      * @param distance distance to format
      * @param decimals number of decimal places to show
@@ -281,10 +264,6 @@ class CORE_EXPORT QgsDistanceArea
      * @see formatDistance()
      */
     static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
-
-    //! Helper for conversion between physical units
-    // TODO QGIS 3.0 - remove this method, as its behaviour is non-intuitive.
-    void convertMeasurement( double &measure, QgsUnitTypes::DistanceUnit &measureUnits, QgsUnitTypes::DistanceUnit displayUnits, bool isArea ) const;
 
     /** Takes a length measurement calculated by this QgsDistanceArea object and converts it to a
      * different distance unit.

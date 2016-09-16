@@ -76,11 +76,6 @@ class QgsMapTool : QObject
     virtual bool gestureEvent( QGestureEvent* e );
 %End
 
-    //! Called when rendering has finished. Default implementation does nothing.
-    //! @deprecated since 2.4 - not called anymore - map tools must not directly depend on rendering progress
-    virtual void renderComplete() /Deprecated/;
-
-
     /** Use this to associate a QAction to this maptool. Then when the setMapTool
      * method of mapcanvas is called the action state will be set to on.
      * Usually this will cause e.g. a toolbutton to appear pressed in and
@@ -99,19 +94,6 @@ class QgsMapTool : QObject
 
     /** Set a user defined cursor */
     virtual void setCursor( const QCursor& cursor );
-
-    /** Check whether this MapTool performs a zoom or pan operation.
-     * If it does, we will be able to perform the zoom  and then
-     * resume operations with the original / previously used tool.
-     * @deprecated use flags() instead
-    */
-    virtual bool isTransient() const /Deprecated/;
-
-    /** Check whether this MapTool performs an edit operation.
-     * If it does, we will deactivate it when editing is turned off.
-     * @deprecated use flags() instead
-     */
-    virtual bool isEditTool() const /Deprecated/;
 
     //! called when set as currently active map tool
     virtual void activate();

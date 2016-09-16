@@ -34,7 +34,6 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings()
     , obstacle( false )
     , dist( 0.0 )
     , renderer( nullptr )
-    , xform( nullptr )
     , xPosColumn( -1 )
     , yPosColumn( -1 )
     , showColumn( -1 )
@@ -52,8 +51,6 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings&
     , obstacle( rh.obstacle )
     , dist( rh.dist )
     , renderer( rh.renderer ? rh.renderer->clone() : nullptr )
-    , xform( rh.xform )
-    , fields( rh.fields )
     , xPosColumn( rh.xPosColumn )
     , yPosColumn( rh.yPosColumn )
     , showColumn( rh.showColumn )
@@ -74,8 +71,6 @@ QgsDiagramLayerSettings&QgsDiagramLayerSettings::operator=( const QgsDiagramLaye
   dist = rh.dist;
   renderer = rh.renderer ? rh.renderer->clone() : nullptr;
   mCt = rh.mCt;
-  xform = rh.xform;
-  fields = rh.fields;
   xPosColumn = rh.xPosColumn;
   yPosColumn = rh.yPosColumn;
   showColumn = rh.showColumn;

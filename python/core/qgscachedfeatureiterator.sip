@@ -4,18 +4,6 @@ class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
 #include <qgscachedfeatureiterator.h>
 %End
   public:
-    /**
-     * This constructor creates a feature iterator, that delivers only cached information, based on the
-     * @link QgsFeatureIds @endlink. No request is made to the backend.
-     *
-     * @param vlCache          The vector layer cache to use
-     * @param featureRequest   The feature request to answer
-     * @param featureIds       The feature ids to return
-     *
-     * @deprecated Use QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, QgsFeatureRequest featureRequest )
-     *             instead
-     */
-    QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, const QgsFeatureRequest& featureRequest, const QgsFeatureIds& featureIds ) /Deprecated/;
 
     /**
      * This constructor creates a feature iterator, that delivers all cached features. No request is made to the backend.
