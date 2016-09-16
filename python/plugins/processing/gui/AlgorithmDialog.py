@@ -27,9 +27,10 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget, QVBoxLayout
-from qgis.PyQt.QtGui import QCursor, QColor, QPalette
+from qgis.PyQt.QtGui import QCursor, QColor, QPalette, QSizePolicy
 
 from qgis.core import QgsMapLayerRegistry
+from qgis.gui import QgsMessageBar
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -68,6 +69,10 @@ class AlgorithmDialog(AlgorithmDialogBase):
         self.alg = alg
 
         self.setMainWidget(ParametersPanel(self, alg))
+
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().insertWidget(0, self.bar)
 
         self.cornerWidget = QWidget()
         layout = QVBoxLayout()
@@ -177,13 +182,11 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 palette = e.widget.palette()
                 palette.setColor(QPalette.Base, QColor(255, 255, 0))
                 e.widget.setPalette(palette)
-                self.lblProgress.setText(
-                    self.tr('<b>Missing parameter value: %s</b>') % e.parameter.description)
-                return
             except:
-                QMessageBox.critical(self,
-                                     self.tr('Unable to execute algorithm'),
-                                     self.tr('Wrong or missing parameter values'))
+                pass
+            self.bar.clearWidgets()
+            self.bar.pushMessage("", "Wrong or missing parameter value: %s" % e.parameter.description,
+                                 level=QgsMessageBar.WARNING, duration=5)
 
     def finish(self):
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
