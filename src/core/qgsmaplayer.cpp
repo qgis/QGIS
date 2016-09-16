@@ -154,11 +154,6 @@ QPainter::CompositionMode QgsMapLayer::blendMode() const
   return mBlendMode;
 }
 
-bool QgsMapLayer::draw( QgsRenderContext& rendererContext )
-{
-  Q_UNUSED( rendererContext );
-  return false;
-}
 
 bool QgsMapLayer::readLayerXml( const QDomElement& layerElement )
 {

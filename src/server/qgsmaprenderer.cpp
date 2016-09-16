@@ -22,6 +22,7 @@
 #include "qgsmessagelog.h"
 #include "qgsmaprenderer.h"
 #include "qgsscalecalculator.h"
+#include "qgsmaplayerrenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
@@ -235,6 +236,14 @@ void QgsMapRenderer::adjustExtentToSize()
   mRenderContext.setExtent( mExtent );
 }
 
+
+static bool drawLayer( QgsMapLayer* ml, QgsRenderContext& context )
+{
+  QgsMapLayerRenderer* mlr = ml->createMapRenderer( context );
+  bool res = mlr->render();
+  delete mlr;
+  return res;
+}
 
 void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 {
@@ -498,7 +507,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
         mRenderContext.painter()->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
       }
 
-      if ( !ml->draw( mRenderContext ) )
+      if ( !drawLayer( ml, mRenderContext ) )
       {
         emit drawError( ml );
       }
@@ -510,7 +519,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       if ( split )
       {
         mRenderContext.setExtent( r2 );
-        if ( !ml->draw( mRenderContext ) )
+        if ( !drawLayer( ml, mRenderContext ) )
         {
           emit drawError( ml );
         }
