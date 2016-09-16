@@ -995,11 +995,6 @@ class QgsVectorLayer : QgsMapLayer
      */
     virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) /Factory/;
 
-    /** Draws the layer
-     *  @return false if an error occurred during drawing
-     */
-    bool draw( QgsRenderContext& rendererContext );
-
     /** Return the extent of the layer */
     QgsRectangle extent() const;
 

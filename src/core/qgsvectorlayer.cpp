@@ -238,11 +238,6 @@ QgsMapLayerRenderer* QgsVectorLayer::createMapRenderer( QgsRenderContext& render
   return new QgsVectorLayerRenderer( this, rendererContext );
 }
 
-bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
-{
-  QgsVectorLayerRenderer renderer( this, rendererContext );
-  return renderer.render();
-}
 
 void QgsVectorLayer::drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int m )
 {

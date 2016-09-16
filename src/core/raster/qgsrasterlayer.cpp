@@ -263,21 +263,6 @@ QgsMapLayerRenderer *QgsRasterLayer::createMapRenderer( QgsRenderContext& render
   return new QgsRasterLayerRenderer( this, rendererContext );
 }
 
-bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
-{
-  QgsDebugMsgLevel( "entered. (renderContext)", 4 );
-
-  QgsDebugMsgLevel( "checking timestamp.", 4 );
-
-  // Check timestamp
-  if ( !update() )
-  {
-    return false;
-  }
-
-  QgsRasterLayerRenderer renderer( this, rendererContext );
-  return renderer.render();
-}
 
 void QgsRasterLayer::draw( QPainter * theQPainter,
                            QgsRasterViewPort * theRasterViewPort,

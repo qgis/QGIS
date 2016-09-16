@@ -274,15 +274,7 @@ class QgsMapLayer : QObject
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * @note added in 2.4
      */
-    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) /Factory/;
-
-    /** This is the method that does the actual work of
-     * drawing the layer onto a paint device.
-     * @param rendererContext describes the extents,
-     * resolumon etc. that should be used when rendering the
-     * layer.
-     */
-    virtual bool draw( QgsRenderContext& rendererContext );
+    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) = 0 /Factory/;
 
     /** Returns the extent of the layer. */
     virtual QgsRectangle extent() const;
