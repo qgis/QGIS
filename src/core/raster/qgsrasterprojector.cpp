@@ -98,12 +98,12 @@ QgsRasterProjector::QgsRasterProjector()
 }
 
 QgsRasterProjector::QgsRasterProjector( const QgsRasterProjector &projector )
-  : QgsRasterInterface( nullptr )
-  , mSrcCRS( projector.mSrcCRS )
-  , mDestCRS( projector.mDestCRS )
-  , mSrcDatumTransform( projector.mSrcDatumTransform )
-  , mDestDatumTransform( projector.mDestDatumTransform )
-  , mPrecision( projector.mPrecision )
+    : QgsRasterInterface( nullptr )
+    , mSrcCRS( projector.mSrcCRS )
+    , mDestCRS( projector.mDestCRS )
+    , mSrcDatumTransform( projector.mSrcDatumTransform )
+    , mDestDatumTransform( projector.mDestDatumTransform )
+    , mPrecision( projector.mPrecision )
 {
 }
 
