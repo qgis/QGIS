@@ -35,6 +35,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QLineEdit, QHeaderView, QFileDialog, QMessageBox
 
 from qgis.core import QgsApplication
+from qgis.gui import QgsMessageBar
 
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 from processing.gui.GeometryPredicateSelectionPanel import GeometryPredicateSelectionPanel
@@ -88,8 +89,8 @@ class BatchPanel(BASE, WIDGET):
             self.fillParameterValues)
 
         self.initWidgets()
-        
-        
+
+
     def layerRegistryChanged(self):
         pass
 
@@ -192,8 +193,9 @@ class BatchPanel(BASE, WIDGET):
                     continue
                 wrapper = self.wrappers[row][col]
                 if not self.setParamValue(param, wrapper, alg):
-                    self.parent.lblProgress.setText(
-                        self.tr('<b>Missing parameter value: %s (row %d)</b>') % (param.description, row + 1))
+                    self.parent.bar.pushMessage("", self.tr('Wrong or missing parameter value: %s (row %d)')
+                                         % (param.description, row + 1),
+                                         level=QgsMessageBar.WARNING, duration=5)
                     return
                 algParams[param.name] = param.getValueAsCommandLineParameter()
                 col += 1
@@ -206,8 +208,9 @@ class BatchPanel(BASE, WIDGET):
                     algOutputs[out.name] = text.strip()
                     col += 1
                 else:
-                    self.parent.lblProgress.setText(
-                        self.tr('<b>Wrong or missing parameter value: %s (row %d)</b>') % (out.description, row + 1))
+                    self.parent.bar.pushMessage("", self.tr('Wrong or missing output value: %s (row %d)')
+                                                % (out.description, row + 1),
+                                                level=QgsMessageBar.WARNING, duration=5)
                     return
             toSave.append({self.PARAMETERS: algParams, self.OUTPUTS: algOutputs})
 
@@ -267,7 +270,7 @@ class BatchPanel(BASE, WIDGET):
         wrapper = self.wrappers[0][column]
         for row in range(1, self.tblParameters.rowCount()):
             self.wrappers[row][column].setValue(wrapper.value())
-            
+
     def toggleAdvancedMode(self, checked):
         for column, param in enumerate(self.alg.parameters):
             if param.isAdvanced:
