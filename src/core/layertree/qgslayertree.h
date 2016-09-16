@@ -30,10 +30,16 @@
  */
 namespace QgsLayerTree
 {
+  //! Check whether the node is a valid map group node
+  inline bool isMapGroup( QgsLayerTreeNode* node )
+  {
+    return node && node->nodeType() == QgsLayerTreeNode::NodeMapGroup;
+  }
+
   //! Check whether the node is a valid group node
   inline bool isGroup( QgsLayerTreeNode* node )
   {
-    return node && node->nodeType() == QgsLayerTreeNode::NodeGroup;
+    return node && ( node->nodeType() == QgsLayerTreeNode::NodeGroup || node->nodeType() == QgsLayerTreeNode::NodeMapGroup );
   }
 
   //! Check whether the node is a valid layer node

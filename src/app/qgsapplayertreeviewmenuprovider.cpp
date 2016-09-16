@@ -39,9 +39,8 @@
 #include "qgssymbolselectordialog.h"
 #include "qgssinglesymbolrenderer.h"
 
-QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view, QgsMapCanvas* canvas )
+QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view )
     : mView( view )
-    , mCanvas( canvas )
 {
 }
 
@@ -51,13 +50,18 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
   QMenu* menu = new QMenu;
 
   QgsLayerTreeViewDefaultActions* actions = mView->defaultActions();
+  QgsMapCanvas* mapCanvas = QgisApp::instance()->mapCanvas();
 
   QModelIndex idx = mView->currentIndex();
   if ( !idx.isValid() )
   {
-    // global menu
-    menu->addAction( actions->actionAddGroup( menu ) );
+    // allow to add root group items only when multimap style mode is not enabled
+    if ( !QgisApp::instance()->multimapEnabled() )
+    {
+      menu->addAction( actions->actionAddGroup( menu ) );
+    }
 
+    // global menu
     menu->addAction( QgsApplication::getThemeIcon( "/mActionExpandTree.svg" ), tr( "&Expand All" ), mView, SLOT( expandAll() ) );
     menu->addAction( QgsApplication::getThemeIcon( "/mActionCollapseTree.svg" ), tr( "&Collapse All" ), mView, SLOT( collapseAll() ) );
 
@@ -66,9 +70,26 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
   else if ( QgsLayerTreeNode* node = mView->layerTreeModel()->index2node( idx ) )
   {
     // layer or group selected
-    if ( QgsLayerTree::isGroup( node ) )
+    if ( QgsLayerTree::isMapGroup( node ) )
     {
-      menu->addAction( actions->actionZoomToGroup( mCanvas, menu ) );
+      QgsLayerTreeGroup* mapGroup = QgsLayerTree::toGroup( node );
+
+      if ( mapGroup->name() != QgisApp::instance()->defaultMapCanvas()->objectName() )
+      {
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+
+        menu->addAction( actions->actionRenameGroupOrLayer( menu ) );
+      }
+      menu->addAction( actions->actionAddGroup( menu ) );
+
+      QAction* a = menu->addAction( tr( "&Synchronize extent with other maps" ), this, SLOT( synchronizeExtent() ) );
+      a->setCheckable( true );
+      a->setChecked( node->customProperty( "synchronizeExtent", false ).toBool() );
+      a->setData( QVariant::fromValue<QObject*>( node ) );
+    }
+    else if ( QgsLayerTree::isGroup( node ) )
+    {
+      menu->addAction( actions->actionZoomToGroup( mapCanvas, menu ) );
 
       menu->addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
@@ -99,7 +120,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
 
-      menu->addAction( actions->actionZoomToLayer( mCanvas, menu ) );
+      menu->addAction( actions->actionZoomToLayer( mapCanvas, menu ) );
       menu->addAction( actions->actionShowInOverview( menu ) );
 
       if ( rlayer )
@@ -120,7 +141,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         // set layer scale visibility
         menu->addAction( tr( "&Set Layer Scale Visibility" ), QgisApp::instance(), SLOT( setLayerScaleVisibility() ) );
 
-        if ( !layer->isInScaleRange( mCanvas->scale() ) )
+        if ( !layer->isInScaleRange( mapCanvas->scale() ) )
           menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), SLOT( zoomToLayerScale() ) );
 
         // set layer crs
@@ -496,7 +517,7 @@ void QgsAppLayerTreeViewMenuProvider::editVectorSymbol()
   QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyle::defaultStyle(), layer, mView->window() );
   dlg.setWindowTitle( tr( "Symbol selector" ) );
   QgsSymbolWidgetContext context;
-  context.setMapCanvas( mCanvas );
+  context.setMapCanvas( QgisApp::instance()->mapCanvas() );
   dlg.setContext( context );
   if ( dlg.exec() )
   {
@@ -573,7 +594,7 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
   QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyle::defaultStyle(), vlayer, mView->window() );
   dlg.setWindowTitle( tr( "Symbol selector" ) );
   QgsSymbolWidgetContext context;
-  context.setMapCanvas( mCanvas );
+  context.setMapCanvas( QgisApp::instance()->mapCanvas() );
   dlg.setContext( context );
   if ( dlg.exec() )
   {
@@ -609,4 +630,25 @@ void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &co
   {
     layer->emitStyleChanged();
   }
+}
+
+void QgsAppLayerTreeViewMenuProvider::synchronizeExtent()
+{
+  QAction* a = qobject_cast<QAction*>( sender() );
+  if ( !a )
+    return;
+
+  QgsLayerTreeNode* node = qobject_cast<QgsLayerTreeNode*>( a->data().value<QObject*>() );
+  if ( !node )
+    return;
+
+  if ( a->isChecked() )
+  {
+    node->setCustomProperty( "synchronizeExtent", true );
+  }
+  else
+  {
+    node->removeCustomProperty( "synchronizeExtent" );
+  }
+  QgsProject::instance()->setDirty( true );
 }

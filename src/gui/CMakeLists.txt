@@ -391,6 +391,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfocuswatcher.h
   qgsformannotationitem.h
   qgsgenericprojectionselector.h
+  qgsgeometryrubberband.h
   qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
   qgsgroupwmsdatadialog.h
@@ -450,6 +451,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsrasterlayersaveasdialog.h
   qgsrasterpyramidsoptionswidget.h
   qgsrelationeditorwidget.h
+  qgsrubberband.h
   qgsscalecombobox.h
   qgsscalerangewidget.h
   qgsscalevisibilitydialog.h

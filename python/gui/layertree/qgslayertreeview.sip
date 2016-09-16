@@ -53,6 +53,8 @@ class QgsLayerTreeView : QTreeView
     QgsLayerTreeNode* currentNode() const;
     //! Get current group node. If a layer is current node, the function will return parent group. May be null.
     QgsLayerTreeGroup* currentGroupNode() const;
+    //! Get current map group node. May be null.
+    QgsLayerTreeGroup* currentMapGroupNode() const;
 
     /** Get current legend node. May be null if current node is not a legend node.
      * @note added in QGIS 2.14

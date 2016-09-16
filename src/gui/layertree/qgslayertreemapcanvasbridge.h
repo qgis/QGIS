@@ -109,9 +109,8 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     bool mAutoSetupOnFirstLayer;
     bool mAutoEnableCrsTransform;
 
-    bool mHasFirstLayer;
-    bool mLastLayerCount;
-    QgsCoordinateReferenceSystem mFirstCRS;
+    QHash<QgsMapCanvas*, bool> mLastLayersCount;
+    QHash<QgsMapCanvas*, QgsCoordinateReferenceSystem> mFirstCRSs;
 };
 
 #endif // QGSLAYERTREEMAPCANVASBRIDGE_H

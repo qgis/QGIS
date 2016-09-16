@@ -292,7 +292,16 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void updateItem() override;
 
     /** Sets canvas pointer (necessary to query and draw map canvas items)*/
-    void setMapCanvas( QGraphicsView* canvas ) { mMapCanvas = canvas; }
+    void setMapCanvas( QGraphicsView* canvas );
+
+    //! Returns the canvas pointer
+    QGraphicsView* mapCanvas() const;
+
+    //! Returns the canvas name
+    QString mapCanvasName() const;
+
+    //! Returns the map settings of the canvas
+    const QgsMapSettings& mapSettings() const;
 
     void setDrawCanvasItems( bool b ) { mDrawCanvasItems = b; }
     bool drawCanvasItems() const { return mDrawCanvasItems; }
@@ -511,7 +520,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Current bounding rectangle. This is used to check if notification to the graphics scene is necessary*/
     QRectF mCurrentRectangle;
+    /** Current canvas*/
     QGraphicsView* mMapCanvas;
+    /** Current canvas name*/
+    QString mMapCanvasName;
     /** True if annotation items, rubber band, etc. from the main canvas should be displayed*/
     bool mDrawCanvasItems;
 

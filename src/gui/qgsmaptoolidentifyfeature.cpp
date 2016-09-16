@@ -21,7 +21,6 @@
 
 QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas* canvas, QgsVectorLayer* vl )
     : QgsMapToolIdentify( canvas )
-    , mCanvas( canvas )
     , mLayer( vl )
 {
   mToolName = tr( "Identify feature" );

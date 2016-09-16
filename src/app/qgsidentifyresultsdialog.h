@@ -118,7 +118,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     //! Constructor - takes it own copy of the QgsAttributeAction so
     // that it is independent of whoever created it.
-    QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsIdentifyResultsDialog( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
 
     ~QgsIdentifyResultsDialog();
 
@@ -217,6 +217,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void mapLayerActionDestroyed();
 
+    void mapCanvasRemoved( QgsMapCanvas* mapCanvas );
+
   private:
     QString representValue( QgsVectorLayer* vlayer, const QgsEditorWidgetSetup& setup, const QString& fieldName, const QVariant& value );
 
@@ -227,7 +229,6 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     QMenu *mActionPopup;
     QMap<QTreeWidgetItem *, QgsHighlight * > mHighlights;
-    QgsMapCanvas *mCanvas;
     QList<QgsFeature> mFeatures;
     QMap< QString, QMap< QString, QVariant > > mWidgetCaches;
 

@@ -74,3 +74,10 @@ void QgsMapToolSelectPolygon::canvasMoveEvent( QgsMapMouseEvent* e )
   }
 }
 
+void QgsMapToolSelectPolygon::setMapCanvas( QgsMapCanvas* mapCanvas )
+{
+  if ( mCanvas != mapCanvas && !mRubberBand )
+  {
+    QgsMapTool::setMapCanvas( mapCanvas );
+  }
+}

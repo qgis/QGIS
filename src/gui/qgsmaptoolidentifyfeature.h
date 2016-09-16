@@ -50,7 +50,6 @@ class GUI_EXPORT QgsMapToolIdentifyFeature : public QgsMapToolIdentify
     virtual void keyPressEvent( QKeyEvent* e ) override;
 
   private:
-    QgsMapCanvas* mCanvas;
     QgsVectorLayer* mLayer;
 };
 

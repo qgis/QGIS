@@ -7,7 +7,7 @@ class QgsSnappingUtils : QObject
 
   public:
     QgsSnappingUtils( QObject* parent /TransferThis/ = 0 );
-    ~QgsSnappingUtils();
+    virtual ~QgsSnappingUtils();
 
     // main actions
 

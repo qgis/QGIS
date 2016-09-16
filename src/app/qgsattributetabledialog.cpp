@@ -82,11 +82,26 @@ void QgsAttributeTableDialog::updateMultiEditButtonState()
 QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFlags flags )
     : QDialog( parent, flags )
     , mDock( nullptr )
+    , mMapCanvas( nullptr )
     , mLayer( theLayer )
     , mRubberBand( nullptr )
     , mCurrentSearchWidgetWrapper( nullptr )
 {
   setupUi( this );
+
+  if ( QgisApp::instance()->multimapEnabled() )
+  {
+    mMapCanvas = QgisApp::instance()->getMapCanvas( theLayer );
+
+    if ( !mMapCanvas )
+    {
+      mMapCanvas = QgisApp::instance()->defaultMapCanvas();
+    }
+  }
+  else
+  {
+    mMapCanvas = QgisApp::instance()->defaultMapCanvas();
+  }
 
   Q_FOREACH ( const QgsField& field, mLayer->fields() )
   {
@@ -125,7 +140,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   myDa = new QgsDistanceArea();
 
   myDa->setSourceCrs( mLayer->crs() );
-  myDa->setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
+  myDa->setEllipsoidalMode( mMapCanvas->mapSettings().hasCrsTransformEnabled() );
   myDa->setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 
   mEditorContext.setDistanceArea( *myDa );
@@ -135,7 +150,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   if ( mLayer->geometryType() != QgsWkbTypes::NullGeometry &&
        settings.value( "/qgis/attributeTableBehaviour", QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
   {
-    QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
+    QgsMapCanvas *mc = mMapCanvas;
     QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( theLayer, mc->extent() ) );
     r.setFilterRect( extent );
 
@@ -146,7 +161,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   }
 
   // Initialize dual view
-  mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, mEditorContext );
+  mMainView->init( mLayer, mMapCanvas, r, mEditorContext );
 
   QgsAttributeTableConfig config = mLayer->attributeTableConfig();
   mMainView->setAttributeTableConfig( config );
@@ -558,7 +573,7 @@ void QgsAttributeTableDialog::filterExpressionBuilder()
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs().srsid() );
-  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
+  myDa.setEllipsoidalMode( mMapCanvas->mapSettings().hasCrsTransformEnabled() );
   myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
   dlg.setGeomCalculator( myDa );
 
@@ -688,12 +703,12 @@ void QgsAttributeTableDialog::on_mActionPasteFeatures_triggered()
 
 void QgsAttributeTableDialog::on_mActionZoomMapToSelectedRows_triggered()
 {
-  QgisApp::instance()->mapCanvas()->zoomToSelected( mLayer );
+  mMapCanvas->zoomToSelected( mLayer );
 }
 
 void QgsAttributeTableDialog::on_mActionPanMapToSelectedRows_triggered()
 {
-  QgisApp::instance()->mapCanvas()->panToSelected( mLayer );
+  mMapCanvas->panToSelected( mLayer );
 }
 
 void QgsAttributeTableDialog::on_mActionInvertSelection_triggered()
@@ -919,7 +934,7 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, 
   QgsDistanceArea myDa;
 
   myDa.setSourceCrs( mLayer->crs().srsid() );
-  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
+  myDa.setEllipsoidalMode( mMapCanvas->mapSettings().hasCrsTransformEnabled() );
   myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
 
   // parse search string and build parsed tree

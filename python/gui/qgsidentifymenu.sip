@@ -83,6 +83,9 @@ class QgsIdentifyMenu : QMenu
      */
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult>& idResults, QPoint pos );
 
+    //! sets the map canvas
+    void setMapCanvas( QgsMapCanvas* mapCanvas );
+
   protected:
     virtual void closeEvent( QCloseEvent *e );
 };

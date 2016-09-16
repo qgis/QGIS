@@ -43,7 +43,7 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
 {
     Q_OBJECT
   public:
-    QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view, QgsMapCanvas* canvas );
+    QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view );
 
     QMenu* createContextMenu() override;
 
@@ -59,7 +59,6 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
     void addCustomLayerActions( QMenu* menu, QgsMapLayer* layer );
 
     QgsLayerTreeView* mView;
-    QgsMapCanvas* mCanvas;
 
     QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > > mLegendLayerActionMap;
 
@@ -69,6 +68,7 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
     void setVectorSymbolColor( const QColor &color );
     void editSymbolLegendNodeSymbol();
     void setSymbolLegendNodeColor( const QColor &color );
+    void synchronizeExtent();
 };
 
 #endif // QGSAPPLAYERTREEVIEWMENUPROVIDER_H

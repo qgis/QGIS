@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgisapp.h"
 #include "qgsdistancearea.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -55,10 +56,15 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
 
   connect( canvas, SIGNAL( destinationCrsChanged() ),
            this, SLOT( updateSettings() ) );
+  connect( QgisApp::instance(), SIGNAL( mapCanvasRemoved( QgsMapCanvas* ) ),
+           this, SLOT( mapCanvasRemoved( QgsMapCanvas* ) ) );
 }
 
 QgsMeasureTool::~QgsMeasureTool()
 {
+  disconnect( QgisApp::instance(), SIGNAL( mapCanvasRemoved( QgsMapCanvas* ) ),
+              this, SLOT( mapCanvasRemoved( QgsMapCanvas* ) ) );
+
   delete mDialog;
   delete mRubberBand;
   delete mRubberBandPoints;
@@ -104,6 +110,14 @@ void QgsMeasureTool::deactivate()
   QgsMapTool::deactivate();
 }
 
+void QgsMeasureTool::setMapCanvas( QgsMapCanvas* mapCanvas )
+{
+  if ( mapCanvas != mCanvas && ( mDone || mRubberBand->size() == 0 ) )
+  {
+    QgsMapTool::setMapCanvas( mapCanvas );
+  }
+}
+
 void QgsMeasureTool::restart()
 {
   mPoints.clear();
@@ -117,6 +131,9 @@ void QgsMeasureTool::restart()
 
 void QgsMeasureTool::updateSettings()
 {
+  if ( mRubberBand->mapCanvas() != mCanvas )
+    return;
+
   QSettings settings;
 
   int myRed = settings.value( "/qgis/default_measure_color_red", 222 ).toInt();
@@ -196,11 +213,15 @@ void QgsMeasureTool::canvasMoveEvent( QgsMapMouseEvent* e )
 
 void QgsMeasureTool::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
-  QgsPoint point = snapPoint( e->pos() );
-
   if ( mDone ) // if we have stopped measuring any mouse click restart measuring
   {
     mDialog->restart();
+
+    mRubberBand->setMapCanvas( mCanvas );
+    mRubberBandPoints->setMapCanvas( mCanvas );
+    updateSettings();
+    mRubberBand->setVisible( true );
+    mRubberBandPoints->setVisible( true );
   }
 
   if ( e->button() == Qt::RightButton ) // if we clicked the right button we stop measuring
@@ -212,6 +233,7 @@ void QgsMeasureTool::canvasReleaseEvent( QgsMapMouseEvent* e )
   else if ( e->button() == Qt::LeftButton )
   {
     mDone = false;
+    QgsPoint point = snapPoint( e->pos() );
     addPoint( point );
   }
 
@@ -289,4 +311,15 @@ QgsPoint QgsMeasureTool::snapPoint( const QPoint& p )
 {
   QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToMap( p );
   return m.isValid() ? m.point() : mCanvas->getCoordinateTransform()->toMapCoordinates( p );
+}
+
+void QgsMeasureTool::mapCanvasRemoved( QgsMapCanvas* mapCanvas )
+{
+  if ( mRubberBand->mapCanvas() == mapCanvas )
+  {
+    QgsMapTool::setMapCanvas( QgisApp::instance()->mapCanvas() );
+
+    restart();
+    updateSettings();
+  }
 }

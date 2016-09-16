@@ -58,6 +58,10 @@ class QDomElement;
  * - "embedded_project" - path to the external project (embedded root node only)
  * - "legend/..." - properties for legend appearance customization
  * - "expandedLegendNodes" - list of layer's legend nodes' rules in expanded state
+ * - "multimapOrphan" - node without a MapTreeGroup parent (multimap mode only),
+ *    it will be deleted
+ * - "synchronizeExtent" - all MapTreeGroup nodes with this flag synchronize the
+ *    extent of their related map canvas (multimap mode only)
  *
  * @see also QgsLayerTree, QgsLayerTreeLayer, QgsLayerTreeGroup
  * @note added in 2.4
@@ -71,7 +75,8 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     enum NodeType
     {
       NodeGroup,   //!< container of other groups and layers
-      NodeLayer    //!< leaf node pointing to a layer
+      NodeLayer,   //!< leaf node pointing to a layer
+      NodeMapGroup //!< container of a map canvas, for multimap view mode
     };
 
     ~QgsLayerTreeNode();

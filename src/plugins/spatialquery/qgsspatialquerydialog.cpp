@@ -41,7 +41,7 @@ QgsSpatialQueryDialog::QgsSpatialQueryDialog( QWidget* parent, QgisInterface* if
 
   mLayerReference = mLayerTarget = nullptr;
   mIface = iface;
-  mRubberSelectId = new QgsRubberSelectId( iface->mapCanvas() );
+  mRubberSelectId = new QgsRubberSelectId( iface->defaultMapCanvas() );
 
   initGui();
   connectAll();
@@ -186,6 +186,14 @@ void QgsSpatialQueryDialog::runQuery()
   mFeatureResult.clear();
   mFeatureInvalidTarget.clear();
   mFeatureInvalidReference.clear();
+
+  if ( mRubberSelectId->mapCanvas() != mIface->getMapCanvas( mLayerTarget ) )
+  {
+    QgsMapCanvas* mapCanvas = mIface->getMapCanvas( mLayerTarget );
+    delete mRubberSelectId;
+    mRubberSelectId = new QgsRubberSelectId( mapCanvas ? mapCanvas : mIface->defaultMapCanvas() );
+    mRubberSelectId->setStyle( 250, 0, 0, 2 ); // Same identify
+  }
 
   int currentItem = cbOperation->currentIndex();
   int operation = cbOperation->itemData( currentItem ).toInt();
@@ -680,15 +688,19 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
   {
     return;
   }
+
+  QgsMapCanvas* mapCanvas = mIface->getMapCanvas( lyr );
+  if ( !mapCanvas ) mapCanvas = mIface->defaultMapCanvas();
+
   // Set system reference
   QgsCoordinateReferenceSystem srsSource = lyr->dataProvider()->crs();
-  QgsCoordinateReferenceSystem srcMapcanvas = mIface->mapCanvas()->mapSettings().destinationCrs();
+  QgsCoordinateReferenceSystem srcMapcanvas = mapCanvas->mapSettings().destinationCrs();
   if ( ! srsSource.isValid() )
   {
     if ( hasMsg )
     {
       QString crsMapcanvas = srcMapcanvas.authid();
-      bool isFly = mIface->mapCanvas()->mapSettings().hasCrsTransformEnabled();
+      bool isFly = mapCanvas->mapSettings().hasCrsTransformEnabled();
       QString msgFly = tr( "Map \"%1\" \"on the fly\" transformation." ).arg( isFly ? tr( "enable" ) : tr( "disable" ) );
       QString msg = tr( "Coordinate reference system(CRS) of\n\"%1\" is invalid(see CRS of provider)." ).arg( lyr->name() );
       msg.append( tr( "\n\nCRS of map is %1.\n%2." ).arg( crsMapcanvas, msgFly ) );
@@ -696,19 +708,19 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 
       QMessageBox::warning( this, tr( "Zoom to feature" ), msg, QMessageBox::Ok );
     }
-    mIface->mapCanvas()->setExtent( feat.geometry().boundingBox() );
+    mapCanvas->setExtent( feat.geometry().boundingBox() );
   }
   else if ( srsSource == srcMapcanvas )
   {
-    mIface->mapCanvas()->setExtent( feat.geometry().boundingBox() );
+    mapCanvas->setExtent( feat.geometry().boundingBox() );
   }
   else
   {
     QgsCoordinateTransform coordTransform( srsSource, srcMapcanvas );
     QgsRectangle rectExtent = coordTransform.transform( feat.geometry().boundingBox() );
-    mIface->mapCanvas()->setExtent( rectExtent );
+    mapCanvas->setExtent( rectExtent );
   }
-  mIface->mapCanvas()->refresh();
+  mapCanvas->refresh();
 } // void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 
 void QgsSpatialQueryDialog::showRubberFeature( QgsVectorLayer* lyr, QgsFeatureId id )
@@ -1021,7 +1033,7 @@ void QgsSpatialQueryDialog::signal_qgis_layerWasAdded( QgsMapLayer* mapLayer )
 void QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved( const QString& idLayer )
 {
   // If Frozen: the QGis can be: Exit, Add Project, New Project
-  if ( mIface->mapCanvas()->isFrozen() )
+  if ( mIface->defaultMapCanvas()->isFrozen() || mIface->mapCanvas()->isFrozen() )
   {
     reject();
   }

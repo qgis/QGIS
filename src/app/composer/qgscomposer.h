@@ -88,9 +88,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Zoom to full extent of the paper
     void zoomFull();
 
-    //! Return pointer to map canvas
-    QgsMapCanvas* mapCanvas();
-
     //! Return pointer to composer view
     QgsComposerView* view();
 
@@ -528,6 +525,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Load predefined scales from the project's properties
     void loadAtlasPredefinedScalesFromProject();
 
+    //! Stops rendering the maps
+    void stopRendering();
+
     QPrinter* printer();
 
     /** Composer title*/
@@ -682,6 +682,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void updateAtlasPageComboBox( int pageCount );
 
     void atlasFeatureChanged( QgsFeature* feature );
+
+    //! called when a map canvas instance has been deleted
+    void mapCanvasRemoved( QgsMapCanvas* mapCanvas );
 };
 
 #endif

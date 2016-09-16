@@ -34,6 +34,8 @@ class QgsMapToolAddCircularString: public QgsMapToolCapture
 
     void activate() override;
 
+    void setMapCanvas( QgsMapCanvas* mapCanvas ) override;
+
   private slots:
     void setParentTool( QgsMapTool* newTool, QgsMapTool* oldTool );
 

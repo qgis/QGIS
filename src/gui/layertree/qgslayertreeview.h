@@ -73,6 +73,8 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeNode* currentNode() const;
     //! Get current group node. If a layer is current node, the function will return parent group. May be null.
     QgsLayerTreeGroup* currentGroupNode() const;
+    //! Get current map group node. May be null.
+    QgsLayerTreeGroup* currentMapGroupNode() const;
 
     /** Get current legend node. May be null if current node is not a legend node.
      * @note added in QGIS 2.14
@@ -103,6 +105,8 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     QgsMapLayer* layerForIndex( const QModelIndex& index ) const;
 
+    void dragMoveEvent( QDragMoveEvent *event ) override;
+
   protected slots:
 
     void modelRowsInserted( const QModelIndex& index, int start, int end );
@@ -121,6 +125,10 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeViewMenuProvider* mMenuProvider;
     //! Keeps track of current layer ID (to check when to emit signal about change of current layer)
     QString mCurrentLayerID;
+
+  private:
+    //! Returns the map parent node of the specified node
+    QgsLayerTreeGroup* findParentMapGroupNode( QgsLayerTreeNode* treeNode ) const;
 };
 
 

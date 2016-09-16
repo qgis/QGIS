@@ -24,8 +24,8 @@
 #include <QStringList>
 
 
-QgsLayerTreeGroup::QgsLayerTreeGroup( const QString& name, Qt::CheckState checked )
-    : QgsLayerTreeNode( NodeGroup )
+QgsLayerTreeGroup::QgsLayerTreeGroup( const QString& name, Qt::CheckState checked, NodeType nodeType )
+    : QgsLayerTreeNode( nodeType )
     , mName( name )
     , mChecked( checked )
     , mChangingChildVisibility( false )
@@ -46,6 +46,17 @@ QgsLayerTreeGroup::QgsLayerTreeGroup( const QgsLayerTreeGroup& other )
   connect( this, SIGNAL( visibilityChanged( QgsLayerTreeNode*, Qt::CheckState ) ), this, SLOT( nodeVisibilityChanged( QgsLayerTreeNode* ) ) );
 }
 
+void QgsLayerTreeGroup::setName( const QString& n )
+{
+  if ( mName != n )
+  {
+    const QString oldName = mName;
+    const QString newName = n;
+
+    mName = n;
+    emit nameChanged( oldName, newName );
+  }
+}
 
 QgsLayerTreeGroup* QgsLayerTreeGroup::insertGroup( int index, const QString& name )
 {
@@ -246,12 +257,13 @@ QgsLayerTreeGroup* QgsLayerTreeGroup::readXml( QDomElement& element )
     return nullptr;
 
   QString name = element.attribute( "name" );
+  NodeType nodeType = ( NodeType ) element.attribute( "type", "0" ).toInt();
   bool isExpanded = ( element.attribute( "expanded", "1" ) == "1" );
   Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( "checked" ) );
   bool isMutuallyExclusive = element.attribute( "mutually-exclusive", "0" ) == "1";
   int mutuallyExclusiveChildIndex = element.attribute( "mutually-exclusive-child", "-1" ).toInt();
 
-  QgsLayerTreeGroup* groupNode = new QgsLayerTreeGroup( name, checked );
+  QgsLayerTreeGroup* groupNode = new QgsLayerTreeGroup( name, checked, nodeType );
   groupNode->setExpanded( isExpanded );
 
   groupNode->readCommonXml( element );
@@ -268,6 +280,7 @@ void QgsLayerTreeGroup::writeXml( QDomElement& parentElement )
   QDomDocument doc = parentElement.ownerDocument();
   QDomElement elem = doc.createElement( "layer-tree-group" );
   elem.setAttribute( "name", mName );
+  elem.setAttribute( "type", ( int ) nodeType() );
   elem.setAttribute( "expanded", mExpanded ? "1" : "0" );
   elem.setAttribute( "checked", QgsLayerTreeUtils::checkStateToXml( mChecked ) );
   if ( mMutuallyExclusive )

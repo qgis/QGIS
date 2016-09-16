@@ -161,6 +161,13 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
     connect( mOverviewFrameMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( overviewMapChanged( QgsComposerItem* ) ) );
   }
 
+  // connections for multimap mode
+  if ( QgisApp::instance()->multimapEnabled() )
+  {
+    connect( QgisApp::instance(), SIGNAL( mapCanvasAdded( QgsMapCanvas* ) ), this, SLOT( setGuiElementValues() ) );
+    connect( QgisApp::instance(), SIGNAL( mapCanvasRemoved( QgsMapCanvas* ) ), this, SLOT( setGuiElementValues() ) );
+  }
+
   updateGuiElements();
   loadGridEntries();
   loadOverviewEntries();
@@ -456,6 +463,23 @@ void QgsComposerMapWidget::on_mPreviewModeComboBox_activated( int i )
   mComposerMap->update();
 }
 
+void QgsComposerMapWidget::on_mMapCanvasComboBox_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+
+  if ( !mComposerMap || mMapCanvasComboBox->count() == 0 )
+  {
+    return;
+  }
+
+  QgsMapCanvas* mapCanvas = QgisApp::instance()->getMapCanvas( mMapCanvasComboBox->currentText() );
+  if ( !mapCanvas ) mapCanvas = QgisApp::instance()->defaultMapCanvas();
+
+  mComposerMap->beginCommand( tr( "Map canvas changed" ) );
+  mComposerMap->setMapCanvas( mapCanvas );
+  mComposerMap->endCommand();
+}
+
 void QgsComposerMapWidget::on_mScaleLineEdit_editingFinished()
 {
   if ( !mComposerMap )
@@ -500,7 +524,7 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
     return;
   }
 
-  QgsRectangle newExtent = mComposerMap->composition()->mapSettings().visibleExtent();
+  QgsRectangle newExtent = mComposerMap->mapSettings().visibleExtent();
 
   mComposerMap->beginCommand( tr( "Map extent changed" ) );
   mComposerMap->zoomToExtent( newExtent );
@@ -518,8 +542,11 @@ void QgsComposerMapWidget::on_mViewExtentInCanvasButton_clicked()
 
   if ( !currentMapExtent.isEmpty() )
   {
-    QgisApp::instance()->mapCanvas()->setExtent( currentMapExtent );
-    QgisApp::instance()->mapCanvas()->refresh();
+    QgsMapCanvas* mapCanvas = QgisApp::instance()->getMapCanvas( mComposerMap->mapCanvasName() );
+    if ( !mapCanvas ) return;
+
+    mapCanvas->setExtent( currentMapExtent );
+    mapCanvas->refresh();
   }
 }
 
@@ -604,6 +631,33 @@ void QgsComposerMapWidget::updateGuiElements()
   if ( index != -1 )
   {
     mPreviewModeComboBox->setCurrentIndex( index );
+  }
+
+  // Configure the Multimap settings.
+  if ( QgisApp::instance()->multimapEnabled() )
+  {
+    mMapCanvasComboBox->clear();
+
+    Q_FOREACH ( QgsMapCanvas* mapCanvas, QgisApp::instance()->mapCanvases() )
+    {
+      mMapCanvasComboBox->addItem( mapCanvas->objectName(), mapCanvas->objectName() );
+    }
+
+    mMapCanvasComboBox->setCurrentIndex( mMapCanvasComboBox->findData( mComposerMap->mapCanvasName() ) );
+
+    if ( mMapCanvasComboBox->currentIndex() == -1 && mMapCanvasComboBox->count() > 0 )
+    {
+      mMapCanvasComboBox->setCurrentIndex( 0 );
+    }
+    mMapCanvasLabel->setVisible( true );
+    mMapCanvasComboBox->setVisible( true );
+  }
+  else
+  {
+    mMapCanvasComboBox->clear();
+
+    mMapCanvasLabel->setVisible( false );
+    mMapCanvasComboBox->setVisible( false );
   }
 
   //composer map extent
@@ -735,6 +789,7 @@ void QgsComposerMapWidget::updateComposerExtentFromGui()
 
 void QgsComposerMapWidget::blockAllSignals( bool b )
 {
+  mMapCanvasComboBox->blockSignals( b );
   mScaleLineEdit->blockSignals( b );
   mXMinLineEdit->blockSignals( b );
   mXMaxLineEdit->blockSignals( b );

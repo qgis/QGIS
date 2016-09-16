@@ -86,3 +86,8 @@ void QgsRubberSelectId::setStyle()
   mRubberBand->setColor( color );
   mRubberBand->setWidth( mWidth );
 }
+
+QgsMapCanvas* QgsRubberSelectId::mapCanvas()
+{
+  return mMapCanvas;
+}

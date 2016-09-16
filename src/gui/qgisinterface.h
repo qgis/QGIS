@@ -46,6 +46,7 @@ class QgsVectorLayerTools;
 #include <QObject>
 #include <QFont>
 #include <QPair>
+#include <QRect>
 #include <map>
 
 #include "qgis.h"
@@ -68,6 +69,8 @@ class GUI_EXPORT QgisInterface : public QObject
     Q_OBJECT
 
   public:
+    //! Returns the QgisInterface singleton instance
+    static QgisInterface * instance();
 
     /** Constructor */
     QgisInterface();
@@ -208,6 +211,36 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /** Return a pointer to the map canvas */
     virtual QgsMapCanvas * mapCanvas() = 0;
+
+    //! Return the collection of map canvas instances managed
+    virtual QList<QgsMapCanvas*> mapCanvases() = 0;
+
+    //! Create a new map canvas with the specified unique name
+    virtual QgsMapCanvas* createNewMapCanvas( const QString& mapName, bool activateObject = true, bool floatingWidget = true, const QRect& geometryForWidget = QRect() ) = 0;
+    //! Delete the map canvas with the specified name
+    virtual bool deleteMapCanvas( const QString& mapName ) = 0;
+
+    //! Get the default map canvas of the application
+    virtual QgsMapCanvas* defaultMapCanvas() = 0;
+    //! Get the map canvas with the specified name
+    virtual QgsMapCanvas* getMapCanvas( const QString& mapName ) = 0;
+    //! Get the map canvas that manages the specified layer
+    virtual QgsMapCanvas* getMapCanvas( QgsMapLayer* mapLayer ) = 0;
+
+    //! Set the active MapCanvas instance of the application (canvas gets selected in the legend)
+    virtual bool setActiveMapCanvas( const QString& mapName ) = 0;
+    //! Set the active MapCanvas instance of the application (canvas gets selected in the legend)
+    virtual bool setActiveMapCanvas( QgsMapCanvas* mapCanvas ) = 0;
+
+    //! Creates a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+    virtual bool connectChangeableCanvas( const QgsMapCanvas* sender, const char* signal, const QObject* receiver, const char* member ) = 0;
+    //! Creates a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+    virtual bool connectChangeableCanvas( const QObject* sender, const char* signal, const QgsMapCanvas* receiver, const char* member ) = 0;
+
+    //! Removes a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+    virtual bool disconnectChangeableCanvas( const QgsMapCanvas* sender, const char* signal, const QObject* receiver, const char* member ) = 0;
+    //! Removes a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+    virtual bool disconnectChangeableCanvas( const QObject* sender, const char* signal, const QgsMapCanvas* receiver, const char* member ) = 0;
 
     /**
      * Returns a pointer to the layer tree canvas bridge
@@ -413,6 +446,8 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionSaveProjectAs() = 0;
     virtual QAction *actionSaveMapAsImage() = 0;
     virtual QAction *actionProjectProperties() = 0;
+    //! Action to create a new map canvas
+    virtual QAction *actionNewMapCanvas() = 0;
     virtual QAction *actionPrintComposer() = 0;
     virtual QAction *actionShowComposerManager() = 0;
     virtual QAction *actionExit() = 0;
@@ -583,6 +618,21 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual int messageTimeout() = 0;
 
   signals:
+    /**
+     * This signal is emitted when the current (selected) map canvas is changed
+     */
+    void currentMapCanvasChanged( QgsMapCanvas* mapCanvas );
+
+    /**
+     * This signal is emitted when a new map canvas instance has been created
+     */
+    void mapCanvasAdded( QgsMapCanvas* mapCanvas );
+
+    /**
+     * This signal is emitted when a map canvas instance has been removed
+     */
+    void mapCanvasRemoved( QgsMapCanvas* mapCanvas );
+
     /** Emitted whenever current (selected) layer changes.
      *  The pointer to layer can be null if no layer is selected
      */
@@ -629,6 +679,13 @@ class GUI_EXPORT QgisInterface : public QObject
      * added in version 2.7
      */
     void layerSavedAs( QgsMapLayer* l, const QString& path );
+
+  private:
+    static QgisInterface* smInstance;
+
+  private slots:
+    //! Notified new current (selected) map canvas in the application, it updates some MapCanvas registered signals
+    void notifiedCurrentMapCanvasChanged( QgsMapCanvas* mapCanvas );
 };
 
 #endif //#ifndef QGISINTERFACE_H

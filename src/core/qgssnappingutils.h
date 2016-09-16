@@ -43,7 +43,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     Q_OBJECT
   public:
     QgsSnappingUtils( QObject* parent = nullptr );
-    ~QgsSnappingUtils();
+    virtual ~QgsSnappingUtils();
 
     // main actions
 

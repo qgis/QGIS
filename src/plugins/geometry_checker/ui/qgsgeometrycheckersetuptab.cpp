@@ -278,7 +278,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   QgsFeaturePool* featurePool = new QgsFeaturePool( layer, selectedOnly );
 
   QList<QgsGeometryCheck*> checks;
-  double mapToLayer = 1. / mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
+  double mapToLayer = 1. / mIface->getMapCanvas( layer )->mapSettings().layerToMapUnits( layer );
   Q_FOREACH ( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
   {
     QgsGeometryCheck* check = factory->createInstance( featurePool, ui, mapToLayer );

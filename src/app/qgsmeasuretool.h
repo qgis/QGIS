@@ -70,6 +70,9 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     //! called when map tool is being deactivated
     virtual void deactivate() override;
 
+    //! sets the tool's map canvas
+    virtual void setMapCanvas( QgsMapCanvas* mapCanvas ) override;
+
     virtual void keyPressEvent( QKeyEvent* e ) override;
 
   public slots:
@@ -107,6 +110,10 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
     /** Removes the last vertex from mRubberBand*/
     void undo();
+
+  private slots:
+    //! called when a map canvas instance has been deleted
+    void mapCanvasRemoved( QgsMapCanvas* mapCanvas );
 };
 
 #endif

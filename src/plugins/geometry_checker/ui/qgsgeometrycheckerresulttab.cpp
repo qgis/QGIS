@@ -117,7 +117,7 @@ void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError *error )
   int row = ui.tableWidgetErrors->rowCount();
   int prec = 7 - std::floor( qMax( 0., std::log10( qMax( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QString( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
-  double layerToMap = mIface->mapCanvas()->mapSettings().layerToMapUnits( mFeaturePool->getLayer() );
+  double layerToMap = mIface->getMapCanvas( mFeaturePool->getLayer() )->mapSettings().layerToMapUnits( mFeaturePool->getLayer() );
   QVariant value;
   if ( error->valueType() == QgsGeometryCheckError::ValueLength )
   {
@@ -165,7 +165,7 @@ void QgsGeometryCheckerResultTab::updateError( QgsGeometryCheckError *error, boo
   int row = mErrorMap.value( error ).row();
   int prec = 7 - std::floor( qMax( 0., std::log10( qMax( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QString( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
-  double layerToMap = mIface->mapCanvas()->mapSettings().layerToMapUnits( mFeaturePool->getLayer() );
+  double layerToMap = mIface->getMapCanvas( mFeaturePool->getLayer() )->mapSettings().layerToMapUnits( mFeaturePool->getLayer() );
   QVariant value;
   if ( error->valueType() == QgsGeometryCheckError::ValueLength )
   {
@@ -310,6 +310,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   qDeleteAll( mCurrentRubberBands );
   mCurrentRubberBands.clear();
 
+  QgsMapCanvas* mapCanvas = mIface->getMapCanvas( mFeaturePool->getLayer() );
   QList<QTableWidgetItem*> items;
   QVector<QgsPoint> errorPositions;
   QgsRectangle totextent;
@@ -329,7 +330,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
     QgsAbstractGeometry* geometry = error->geometry();
     if ( ui.checkBoxHighlight->isChecked() && geometry )
     {
-      QgsRubberBand* featureRubberBand = new QgsRubberBand( mIface->mapCanvas() );
+      QgsRubberBand* featureRubberBand = new QgsRubberBand( mapCanvas );
       QgsGeometry geom( geometry->clone() );
       featureRubberBand->addGeometry( geom, mFeaturePool->getLayer() );
       featureRubberBand->setWidth( 5 );
@@ -345,8 +346,8 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
 
     if ( ui.radioButtonError->isChecked() || current || error->status() == QgsGeometryCheckError::StatusFixed )
     {
-      QgsRubberBand* pointRubberBand = new QgsRubberBand( mIface->mapCanvas(), QgsWkbTypes::PointGeometry );
-      QgsPoint pos = mIface->mapCanvas()->mapSettings().layerToMapCoordinates( mFeaturePool->getLayer(), QgsPoint( error->location().x(), error->location().y() ) );
+      QgsRubberBand* pointRubberBand = new QgsRubberBand( mapCanvas, QgsWkbTypes::PointGeometry );
+      QgsPoint pos = mapCanvas->mapSettings().layerToMapCoordinates( mFeaturePool->getLayer(), QgsPoint( error->location().x(), error->location().y() ) );
       pointRubberBand->addPoint( pos );
       pointRubberBand->setWidth( 20 );
       pointRubberBand->setColor( Qt::red );
@@ -355,7 +356,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
     }
     else if ( ui.radioButtonFeature->isChecked() && geometry )
     {
-      QgsRectangle geomextent = mIface->mapCanvas()->mapSettings().layerExtentToOutputExtent( mFeaturePool->getLayer(), geometry->boundingBox() );
+      QgsRectangle geomextent = mapCanvas->mapSettings().layerExtentToOutputExtent( mFeaturePool->getLayer(), geometry->boundingBox() );
       if ( totextent.isEmpty() )
       {
         totextent = geomextent;
@@ -382,7 +383,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
     QgsPoint center = QgsPoint( cx / errorPositions.size(), cy / errorPositions.size() );
     if ( totextent.isEmpty() )
     {
-      QgsRectangle extent = mIface->mapCanvas()->extent();
+      QgsRectangle extent = mapCanvas->extent();
       QgsVector diff = center - extent.center();
       extent.setXMinimum( extent.xMinimum() + diff.x() );
       extent.setXMaximum( extent.xMaximum() + diff.x() );
@@ -397,8 +398,8 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
     }
   }
 
-  mIface->mapCanvas()->setExtent( totextent );
-  mIface->mapCanvas()->refresh();
+  mapCanvas->setExtent( totextent );
+  mapCanvas->refresh();
 }
 
 void QgsGeometryCheckerResultTab::onSelectionChanged( const QItemSelection &newSel, const QItemSelection &/*oldSel*/ )

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgisinterface.h"
 #include "qgslogger.h"
 #include "qgsmaptool.h"
 #include "qgsmapcanvas.h"
@@ -184,6 +185,17 @@ bool QgsMapTool::gestureEvent( QGestureEvent *e )
 }
 #endif
 
+void QgsMapTool::setMapCanvas( QgsMapCanvas* mapCanvas )
+{
+  if ( mCanvas != mapCanvas )
+  {
+    mCanvas = mapCanvas;
+
+    if ( mCanvas )
+      mCanvas->setCursor( mCursor );
+  }
+}
+
 QgsMapCanvas* QgsMapTool::canvas()
 {
   return mCanvas;
@@ -215,4 +227,62 @@ double QgsMapTool::searchRadiusMU( QgsMapCanvas * canvas )
   QgsMapSettings mapSettings = canvas->mapSettings();
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   return searchRadiusMU( context );
+}
+
+void QgsMapTool::connect( const QgsMapCanvas* sender, const char* signal, const QObject* receiver, const char* member )
+{
+  if ( QgisInterface::instance() )
+  {
+    QgisInterface::instance()->connectChangeableCanvas( sender, signal, receiver, member );
+  }
+  else
+  {
+    QObject::connect( sender, signal, receiver, member );
+  }
+}
+
+void QgsMapTool::connect( const QObject* sender, const char* signal, const QgsMapCanvas* receiver, const char* member )
+{
+  if ( QgisInterface::instance() )
+  {
+    QgisInterface::instance()->connectChangeableCanvas( sender, signal, receiver, member );
+  }
+  else
+  {
+    QObject::connect( sender, signal, receiver, member );
+  }
+}
+
+void QgsMapTool::connect( const QObject* sender, const char* signal, const QObject* receiver, const char* member )
+{
+  QObject::connect( sender, signal, receiver, member );
+}
+
+void QgsMapTool::disconnect( const QgsMapCanvas* sender, const char* signal, const QObject* receiver, const char* member )
+{
+  if ( QgisInterface::instance() )
+  {
+    QgisInterface::instance()->disconnectChangeableCanvas( sender, signal, receiver, member );
+  }
+  else
+  {
+    QObject::disconnect( sender, signal, receiver, member );
+  }
+}
+
+void QgsMapTool::disconnect( const QObject* sender, const char* signal, const QgsMapCanvas* receiver, const char* member )
+{
+  if ( QgisInterface::instance() )
+  {
+    QgisInterface::instance()->disconnectChangeableCanvas( sender, signal, receiver, member );
+  }
+  else
+  {
+    QObject::disconnect( sender, signal, receiver, member );
+  }
+}
+
+void QgsMapTool::disconnect( const QObject* sender, const char* signal, const QObject* receiver, const char* member )
+{
+  QObject::disconnect( sender, signal, receiver, member );
 }

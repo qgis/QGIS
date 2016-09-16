@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
+#include "qgisinterface.h"
 #include <QPainter>
 
 /*!
@@ -41,6 +42,11 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType
   setWidth( 1 );
   setLineStyle( Qt::SolidLine );
   setBrushStyle( Qt::SolidPattern );
+
+  if ( QgisInterface::instance() )
+  {
+    connect( QgisInterface::instance(), SIGNAL( mapCanvasRemoved( QgsMapCanvas* ) ), this, SLOT( mapCanvasRemoved( QgsMapCanvas* ) ) );
+  }
 }
 
 QgsRubberBand::QgsRubberBand()
@@ -51,6 +57,10 @@ QgsRubberBand::QgsRubberBand()
     , mTranslationOffsetX( 0.0 )
     , mTranslationOffsetY( 0.0 )
 {
+  if ( QgisInterface::instance() )
+  {
+    connect( QgisInterface::instance(), SIGNAL( mapCanvasRemoved( QgsMapCanvas* ) ), this, SLOT( mapCanvasRemoved( QgsMapCanvas* ) ) );
+  }
 }
 
 QgsRubberBand::~QgsRubberBand()
@@ -683,4 +693,13 @@ QgsPolyline QgsRubberBand::getPolyline( const QList<QgsPoint> & points )
     polyline.append( *iter );
   }
   return polyline;
+}
+
+void QgsRubberBand::mapCanvasRemoved( QgsMapCanvas* mapCanvas )
+{
+  if ( mMapCanvas == mapCanvas && mMapCanvas != QgisInterface::instance()->defaultMapCanvas() )
+  {
+    reset( mGeometryType );
+    setMapCanvas( QgisInterface::instance()->mapCanvas() );
+  }
 }

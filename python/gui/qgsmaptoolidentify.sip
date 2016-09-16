@@ -84,6 +84,9 @@ class QgsMapToolIdentify : QgsMapTool
     //! this menu can also be customized
     QgsIdentifyMenu* identifyMenu();
 
+    //! sets the tool's map canvas
+    virtual void setMapCanvas( QgsMapCanvas* mapCanvas );
+
   public slots:
     void formatChanged( QgsRasterLayer *layer );
 

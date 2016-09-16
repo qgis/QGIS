@@ -107,6 +107,32 @@ static bool cmpByText_( QAction* a, QAction* b )
   return QString::localeAwareCompare( a->text(), b->text() ) < 0;
 }
 
+// Specific QgsComposition to manage QGIS using multimap mode
+class QgisAppComposition : public QgsComposition
+{
+  public:
+    QgisAppComposition( QgisApp *qgis )
+        : QgsComposition( qgis->defaultMapCanvas()->mapSettings() )
+        , mQgis( qgis )
+    {
+    };
+
+    //! Returns the settings of the specified map canvas
+    virtual const QgsMapSettings& mapSettings( const QgsComposerMap* map ) const override
+    {
+      if ( map )
+      {
+        QgsMapCanvas* mapCanvas = mQgis->getMapCanvas( map->mapCanvasName() );
+        if ( mapCanvas ) return mapCanvas->mapSettings();
+      }
+      return QgsComposition::mapSettings();
+    };
+
+  private:
+    //! Pointer to QGIS application
+    QgisApp *mQgis;
+};
+
 QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
     : QMainWindow()
     , mTitle( title )
@@ -547,7 +573,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   connect( mActionShowRulers, SIGNAL( triggered( bool ) ), this, SLOT( toggleRulers( bool ) ) );
 
   //init undo/redo buttons
-  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings() );
+  mComposition = new QgisAppComposition( mQgis );
 
   mActionUndo->setEnabled( false );
   mActionRedo->setEnabled( false );
@@ -689,10 +715,14 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   menuBar()->setNativeMenuBar( false );
   menuBar()->setVisible( true );
 #endif
+
+  connect( mQgis, SIGNAL( mapCanvasRemoved( QgsMapCanvas* ) ), this, SLOT( mapCanvasRemoved( QgsMapCanvas* ) ) );
 }
 
 QgsComposer::~QgsComposer()
 {
+  disconnect( mQgis, SIGNAL( mapCanvasRemoved( QgsMapCanvas* ) ), this, SLOT( mapCanvasRemoved( QgsMapCanvas* ) ) );
+
   deleteItemWidgets();
   delete mPrinter;
 }
@@ -1085,12 +1115,15 @@ void QgsComposer::atlasFeatureChanged( QgsFeature *feature )
   mAtlasPageComboBox->blockSignals( false );
 
   //update expression context variables in map canvas to allow for previewing atlas feature based renderering
-  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_featurenumber", mComposition->atlasComposition().currentFeatureNumber() + 1, true ) );
-  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_pagename", mComposition->atlasComposition().currentPageName(), true ) );
-  QgsFeature atlasFeature = mComposition->atlasComposition().feature();
-  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_feature", QVariant::fromValue( atlasFeature ), true ) );
-  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_featureid", atlasFeature.id(), true ) );
-  mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_geometry", QVariant::fromValue( atlasFeature.geometry() ), true ) );
+  Q_FOREACH ( QgsMapCanvas* mapCanvas, mQgis->mapCanvases() )
+  {
+    mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_featurenumber", mComposition->atlasComposition().currentFeatureNumber() + 1, true ) );
+    mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_pagename", mComposition->atlasComposition().currentPageName(), true ) );
+    QgsFeature atlasFeature = mComposition->atlasComposition().feature();
+    mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_feature", QVariant::fromValue( atlasFeature ), true ) );
+    mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_featureid", atlasFeature.id(), true ) );
+    mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( "atlas_geometry", QVariant::fromValue( atlasFeature.geometry() ), true ) );
+  }
 }
 
 void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
@@ -1144,7 +1177,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
 
   if ( checked )
   {
-    mapCanvas()->stopRendering();
+    stopRendering();
     emit atlasPreviewFeatureChanged();
   }
   else
@@ -1161,7 +1194,7 @@ void QgsComposer::on_mActionAtlasNext_triggered()
     return;
   }
 
-  mapCanvas()->stopRendering();
+  stopRendering();
 
   loadAtlasPredefinedScalesFromProject();
   atlasMap->nextFeature();
@@ -1176,7 +1209,7 @@ void QgsComposer::on_mActionAtlasPrev_triggered()
     return;
   }
 
-  mapCanvas()->stopRendering();
+  stopRendering();
 
   loadAtlasPredefinedScalesFromProject();
   atlasMap->prevFeature();
@@ -1191,7 +1224,7 @@ void QgsComposer::on_mActionAtlasFirst_triggered()
     return;
   }
 
-  mapCanvas()->stopRendering();
+  stopRendering();
 
   loadAtlasPredefinedScalesFromProject();
   atlasMap->firstFeature();
@@ -1206,7 +1239,7 @@ void QgsComposer::on_mActionAtlasLast_triggered()
     return;
   }
 
-  mapCanvas()->stopRendering();
+  stopRendering();
 
   loadAtlasPredefinedScalesFromProject();
   atlasMap->lastFeature();
@@ -1237,16 +1270,11 @@ void QgsComposer::atlasPageComboEditingFinished()
   }
   else if ( page != mComposition->atlasComposition().currentFeatureNumber() + 1 )
   {
-    mapCanvas()->stopRendering();
+    stopRendering();
     loadAtlasPredefinedScalesFromProject();
     mComposition->atlasComposition().prepareForFeature( page - 1 );
     emit atlasPreviewFeatureChanged();
   }
-}
-
-QgsMapCanvas* QgsComposer::mapCanvas()
-{
-  return mQgis->mapCanvas();
 }
 
 QgsComposerView* QgsComposer::view()
@@ -3539,7 +3567,7 @@ void QgsComposer::readXml( const QDomElement& composerElem, const QDomDocument& 
   createComposerView();
 
   //read composition settings
-  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings() );
+  mComposition = new QgisAppComposition( mQgis );
   QDomNodeList compositionNodeList = composerElem.elementsByTagName( "Composition" );
   if ( compositionNodeList.size() > 0 )
   {
@@ -3691,7 +3719,11 @@ void QgsComposer::addComposerMap( QgsComposerMap* map )
     return;
   }
 
-  map->setMapCanvas( mapCanvas() ); //set canvas to composer map to have the possibility to draw canvas items
+  QgsMapCanvas* mapCanvas = nullptr;
+  if ( map->mapCanvasName().length() > 0 ) mapCanvas = mQgis->getMapCanvas( map->mapCanvasName() );
+  if ( !mapCanvas ) mapCanvas = mQgis->defaultMapCanvas();
+
+  map->setMapCanvas( mapCanvas ); //set canvas to composer map to have the possibility to draw canvas items
   QgsComposerMapWidget* mapWidget = new QgsComposerMapWidget( map );
   connect( this, SIGNAL( zoomLevelChanged() ), map, SLOT( renderModeUpdateCachedImage() ) );
   mItemWidgetMap.insert( map, mapWidget );
@@ -3913,10 +3945,15 @@ void QgsComposer::cleanupAfterTemplateRead()
       QgsRectangle composerMapExtent = mapItem->extent();
       if ( mQgis )
       {
-        QgsMapCanvas* canvas = mQgis->mapCanvas();
+        QgsMapCanvas* canvas = mQgis->getMapCanvas( mapItem->mapCanvasName() );
+        if ( !canvas )
+        {
+          mapItem->setMapCanvas( mQgis->defaultMapCanvas() );
+          canvas = mQgis->defaultMapCanvas();
+        }
         if ( canvas )
         {
-          QgsRectangle mapCanvasExtent = mQgis->mapCanvas()->fullExtent();
+          QgsRectangle mapCanvasExtent = canvas->fullExtent();
           if ( composerMapExtent.intersects( mapCanvasExtent ) )
           {
             intersects = true;
@@ -3931,7 +3968,7 @@ void QgsComposer::cleanupAfterTemplateRead()
         double currentHeight = mapItem->rect().height();
         if ( currentWidth - 0 > 0.0 ) //don't divide through zero
         {
-          QgsRectangle canvasExtent = mComposition->mapSettings().visibleExtent();
+          QgsRectangle canvasExtent = mComposition->mapSettings( mapItem ).visibleExtent();
           //adapt min y of extent such that the size of the map item stays the same
           double newCanvasExtentHeight = currentHeight / currentWidth * canvasExtent.width();
           canvasExtent.setYMinimum( canvasExtent.yMaximum() - newCanvasExtentHeight );
@@ -4096,7 +4133,7 @@ void QgsComposer::setAtlasFeature( QgsMapLayer* layer, const QgsFeature& feat )
   //bring composer window to foreground
   activate();
 
-  mapCanvas()->stopRendering();
+  stopRendering();
 
   //set current preview feature id
   atlas.prepareForFeature( &feat );
@@ -4196,6 +4233,11 @@ void QgsComposer::loadAtlasPredefinedScalesFromProject()
   atlasMap.setPredefinedScales( pScales );
 }
 
+void QgsComposer::stopRendering()
+{
+  Q_FOREACH ( QgsMapCanvas* mapCanvas, mQgis->mapCanvases() ) mapCanvas->stopRendering();
+}
+
 QPrinter *QgsComposer::printer()
 {
   //only create the printer on demand - creating a printer object can be very slow
@@ -4206,3 +4248,21 @@ QPrinter *QgsComposer::printer()
   return mPrinter;
 }
 
+void QgsComposer::mapCanvasRemoved( QgsMapCanvas* mapCanvas )
+{
+  if ( mQgis )
+  {
+    QMap<QgsComposerItem*, QWidget*>::const_iterator itemIt = mItemWidgetMap.constBegin();
+    QgsComposerMap* currentMap = nullptr;
+
+    for ( ; itemIt != mItemWidgetMap.constEnd(); ++itemIt )
+    {
+      currentMap = dynamic_cast<QgsComposerMap *>( itemIt.key() );
+
+      if ( currentMap && currentMap->mapCanvas() == mapCanvas )
+      {
+        currentMap->setMapCanvas( mQgis->defaultMapCanvas() );
+      }
+    }
+  }
+}

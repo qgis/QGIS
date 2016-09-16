@@ -70,7 +70,7 @@ QgsRubberBand* QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geome
 
 QgsVectorLayer* QgsMapToolEdit::currentVectorLayer()
 {
-  return qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  return mCanvas ? qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ) : nullptr;
 }
 
 

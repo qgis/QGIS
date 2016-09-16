@@ -507,7 +507,7 @@ void QgsGeorefPluginGui::addPoint( const QgsPoint& pixelCoords, const QgsPoint& 
     mIface->mapCanvas()->refresh();
   }
 
-  connect( mCanvas, SIGNAL( extentsChanged() ), pnt, SLOT( updateCoords() ) );
+  mIface->connectChangeableCanvas( mCanvas, SIGNAL( extentsChanged() ), pnt, SLOT( updateCoords() ) );
   updateGeorefTransform();
 
   //  if (verbose)
@@ -1004,8 +1004,8 @@ void QgsGeorefPluginGui::createMapCanvas()
 
   // Connect main canvas and georef canvas signals so we are aware if any of the viewports change
   // (used by the map follow mode)
-  connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChangedGeorefCanvas() ) );
-  connect( mIface->mapCanvas(), SIGNAL( extentsChanged() ), this, SLOT( extentsChangedQGisCanvas() ) );
+  mIface->connectChangeableCanvas( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChangedGeorefCanvas() ) );
+  mIface->connectChangeableCanvas( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChangedQGisCanvas() ) );
 }
 
 void QgsGeorefPluginGui::createMenus()
@@ -1101,17 +1101,17 @@ void QgsGeorefPluginGui::createStatusBar()
 
 void QgsGeorefPluginGui::setupConnections()
 {
-  connect( mCanvas, SIGNAL( xyCoordinates( QgsPoint ) ), this, SLOT( showMouseCoords( QgsPoint ) ) );
-  connect( mCanvas, SIGNAL( scaleChanged( double ) ), this, SLOT( updateMouseCoordinatePrecision() ) );
+  mIface->connectChangeableCanvas( mCanvas, SIGNAL( xyCoordinates( QgsPoint ) ), this, SLOT( showMouseCoords( QgsPoint ) ) );
+  mIface->connectChangeableCanvas( mCanvas, SIGNAL( scaleChanged( double ) ), this, SLOT( updateMouseCoordinatePrecision() ) );
 
   // Connect status from ZoomLast/ZoomNext to corresponding action
-  connect( mCanvas, SIGNAL( zoomLastStatusChanged( bool ) ), mActionZoomLast, SLOT( setEnabled( bool ) ) );
-  connect( mCanvas, SIGNAL( zoomNextStatusChanged( bool ) ), mActionZoomNext, SLOT( setEnabled( bool ) ) );
+  mIface->connectChangeableCanvas( mCanvas, SIGNAL( zoomLastStatusChanged( bool ) ), mActionZoomLast, SLOT( setEnabled( bool ) ) );
+  mIface->connectChangeableCanvas( mCanvas, SIGNAL( zoomNextStatusChanged( bool ) ), mActionZoomNext, SLOT( setEnabled( bool ) ) );
   // Connect when one Layer is removed - Case where change the Projetct in QGIS
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( layerWillBeRemoved( QString ) ) );
 
   // Connect extents changed - Use for need add again Raster
-  connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
+  mIface->connectChangeableCanvas( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
 }
 
 void QgsGeorefPluginGui::removeOldLayer()

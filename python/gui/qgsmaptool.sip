@@ -101,6 +101,9 @@ class QgsMapTool : QObject
     //! called when map tool is being deactivated
     virtual void deactivate();
 
+    //! sets the tool's map canvas
+    virtual void setMapCanvas( QgsMapCanvas* mapCanvas );
+
     //! returns pointer to the tool's map canvas
     QgsMapCanvas* canvas();
 
@@ -164,6 +167,19 @@ class QgsMapTool : QObject
     //! transformation from map coordinates to screen coordinates
     QPoint toCanvasCoordinates( const QgsPoint& point );
 
+    //! Creates a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+    void connect( const QgsMapCanvas* sender, const char* signal, const QObject* receiver, const char* member );
+    //! Creates a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+    void connect( const QObject* sender, const char* signal, const QgsMapCanvas* receiver, const char* member );
+    //! Creates a connection of the given type from the signal in the sender object to the method in the receiver object
+    void connect( const QObject* sender, const char* signal, const QObject* receiver, const char* member );
+
+    //! Removes a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+    void disconnect( const QgsMapCanvas* sender, const char* signal, const QObject* receiver, const char* member );
+    //! Removes a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+    void disconnect( const QObject* sender, const char* signal, const QgsMapCanvas* receiver, const char* member );
+    //! Removes a connection of the given type from the signal in the sender object to the method in the receiver object
+    void disconnect( const QObject* sender, const char* signal, const QObject* receiver, const char* member );
 
 };
 

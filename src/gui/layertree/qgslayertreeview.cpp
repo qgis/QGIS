@@ -82,6 +82,25 @@ QgsLayerTreeViewDefaultActions* QgsLayerTreeView::defaultActions()
   return mDefaultActions;
 }
 
+void QgsLayerTreeView::dragMoveEvent( QDragMoveEvent *event )
+{
+  QgsLayerTreeNode* sourceNode = layerTreeModel()->index2node( selectionModel()->currentIndex() );
+  QgsLayerTreeNode* targetNode = layerTreeModel()->index2node( indexAt( event->pos() ) );
+
+  // We can not drag objects between different map groups
+  if ( sourceNode && targetNode && sourceNode != targetNode )
+  {
+    QgsLayerTreeGroup* sourceMapTreeGroup = findParentMapGroupNode( sourceNode );
+    QgsLayerTreeGroup* targetMapTreeGroup = findParentMapGroupNode( targetNode );
+
+    if ( sourceMapTreeGroup && sourceMapTreeGroup != targetMapTreeGroup )
+    {
+      event->setDropAction( Qt::IgnoreAction );
+    }
+  }
+  QTreeView::dragMoveEvent( event );
+}
+
 void QgsLayerTreeView::setMenuProvider( QgsLayerTreeViewMenuProvider* menuProvider )
 {
   delete mMenuProvider;
@@ -297,6 +316,17 @@ QgsLayerTreeGroup* QgsLayerTreeView::currentGroupNode() const
   return nullptr;
 }
 
+QgsLayerTreeGroup* QgsLayerTreeView::currentMapGroupNode() const
+{
+  QgsLayerTreeNode* node = currentNode();
+
+  if ( node )
+  {
+    return findParentMapGroupNode( node );
+  }
+  return nullptr;
+}
+
 QgsLayerTreeModelLegendNode* QgsLayerTreeView::currentLegendNode() const
 {
   return layerTreeModel()->index2legendNode( selectionModel()->currentIndex() );
@@ -335,4 +365,17 @@ void QgsLayerTreeView::refreshLayerSymbology( const QString& layerId )
   QgsLayerTreeLayer* nodeLayer = layerTreeModel()->rootGroup()->findLayer( layerId );
   if ( nodeLayer )
     layerTreeModel()->refreshLayerLegend( nodeLayer );
+}
+
+QgsLayerTreeGroup* QgsLayerTreeView::findParentMapGroupNode( QgsLayerTreeNode* treeNode ) const
+{
+  while ( treeNode != nullptr )
+  {
+    if ( QgsLayerTree::isMapGroup( treeNode ) )
+    {
+      return QgsLayerTree::toGroup( treeNode );
+    }
+    treeNode = treeNode->parent();
+  }
+  return nullptr;
 }

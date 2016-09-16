@@ -12,7 +12,8 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
 %End
 
   public:
-    QgsLayerTreeGroup( const QString& name = QString(), Qt::CheckState checked = Qt::Checked );
+    //! Constructor
+    QgsLayerTreeGroup( const QString& name = QString(), Qt::CheckState checked = Qt::Checked, NodeType nodeType = NodeGroup );
 
     //! Get group's name
     QString name() const;
@@ -81,6 +82,10 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
     //! of -1 will determine automatically (either first one currently checked or none)
     //! @note added in 2.12
     void setIsMutuallyExclusive( bool enabled, int initialChildIndex = -1 );
+
+  signals:
+    //! Emitted when the node was renamed
+    void nameChanged( const QString& oldName, const QString& newName );
 
   protected slots:
     void layerDestroyed();

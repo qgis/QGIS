@@ -32,9 +32,8 @@
 #include <QPushButton>
 #include <QDoubleSpinBox>
 
-QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas )
+QgsSnappingDialog::QgsSnappingDialog( QWidget* parent )
     : QDialog( parent )
-    , mMapCanvas( canvas )
     , mDock( nullptr )
 {
   setupUi( this );
@@ -89,8 +88,7 @@ QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas )
 }
 
 QgsSnappingDialog::QgsSnappingDialog()
-    : mMapCanvas( nullptr )
-    , mDock( nullptr )
+    : mDock( nullptr )
 {
 }
 

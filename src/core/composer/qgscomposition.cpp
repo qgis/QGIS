@@ -794,6 +794,13 @@ void QgsComposition::setWorldFileMap( QgsComposerMap* map )
   QgsProject::instance()->setDirty( true );
 }
 
+const QgsMapSettings& QgsComposition::mapSettings( const QgsComposerMap* map ) const
+{
+  Q_UNUSED( map );
+
+  return mapSettings();
+}
+
 void QgsComposition::setUseAdvancedEffects( const bool effectsEnabled )
 {
   mUseAdvancedEffects = effectsEnabled;

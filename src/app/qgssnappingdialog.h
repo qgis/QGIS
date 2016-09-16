@@ -32,9 +32,7 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
 
   public:
 
-    //! Returns the instance pointer, creating the object on the first call
-    //static QgsSnappingDialog * instance( QgsMapCanvas* canvas );
-    QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas );
+    QgsSnappingDialog( QWidget* parent );
     ~QgsSnappingDialog();
 
   public slots:
@@ -86,9 +84,6 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
 
     /** Stores ids of layers where intersections of new polygons is considered. Is passed to / read from QgsAvoidIntersectionsDialog*/
     QSet<QString> mAvoidIntersectionsSettings;
-
-    /** Used to query the loaded layers*/
-    QgsMapCanvas* mMapCanvas;
 
     QgsDockWidget *mDock;
 

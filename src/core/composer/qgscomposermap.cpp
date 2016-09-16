@@ -84,7 +84,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
   setBackgroundColor( QColor( bgRedInt, bgGreenInt, bgBlueInt ) );
 
   //calculate mExtent based on width/height ratio and map canvas extent
-  mExtent = mComposition->mapSettings().visibleExtent();
+  mExtent = mapSettings().visibleExtent();
 
   init();
 
@@ -198,7 +198,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, QSizeF
 
 QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF size, int dpi ) const
 {
-  const QgsMapSettings &ms = mComposition->mapSettings();
+  const QgsMapSettings &ms = mapSettings();
 
   QgsExpressionContext expressionContext = createExpressionContext();
 
@@ -540,7 +540,7 @@ QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context 
     if ( QgsProject::instance()->mapThemeCollection()->hasPreset( presetName ) )
       renderLayerSet = QgsProject::instance()->mapThemeCollection()->presetVisibleLayers( presetName );
     else  // fallback to using map canvas layers
-      renderLayerSet = mComposition->mapSettings().layers();
+      renderLayerSet = mapSettings().layers();
   }
   else if ( mKeepLayerSet )
   {
@@ -548,7 +548,7 @@ QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context 
   }
   else
   {
-    renderLayerSet = mComposition->mapSettings().layers();
+    renderLayerSet = mapSettings().layers();
   }
 
   QVariant exprVal;
@@ -616,7 +616,7 @@ QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender( const QgsExp
 double QgsComposerMap::scale() const
 {
   QgsScaleCalculator calculator;
-  calculator.setMapUnits( mComposition->mapSettings().mapUnits() );
+  calculator.setMapUnits( mapSettings().mapUnits() );
   calculator.setDpi( 25.4 );  //QGraphicsView units are mm
   return calculator.calculate( *currentMapExtent(), rect().width() );
 }
@@ -708,7 +708,7 @@ void QgsComposerMap::zoomContent( const double factor, const QPointF point, cons
     //and also apply to the map's original extent (see #9602)
     //we can't use the scaleRatio calculated earlier, as the scale can vary depending on extent for geographic coordinate systems
     QgsScaleCalculator calculator;
-    calculator.setMapUnits( mComposition->mapSettings().mapUnits() );
+    calculator.setMapUnits( mapSettings().mapUnits() );
     calculator.setDpi( 25.4 );  //QGraphicsView units are mm
     double scaleRatio = scale() / calculator.calculate( mExtent, rect().width() );
     mExtent.scale( scaleRatio );
@@ -896,7 +896,7 @@ void QgsComposerMap::setNewScale( double scaleDenominator, bool forceUpdate )
     //and also apply to the map's original extent (see #9602)
     //we can't use the scaleRatio calculated earlier, as the scale can vary depending on extent for geographic coordinate systems
     QgsScaleCalculator calculator;
-    calculator.setMapUnits( mComposition->mapSettings().mapUnits() );
+    calculator.setMapUnits( mapSettings().mapUnits() );
     calculator.setDpi( 25.4 );  //QGraphicsView units are mm
     scaleRatio = scaleDenominator / calculator.calculate( mExtent, rect().width() );
     mExtent.scale( scaleRatio );
@@ -1117,9 +1117,51 @@ void QgsComposerMap::updateItem()
   QgsComposerItem::updateItem();
 }
 
+void QgsComposerMap::setMapCanvas( QGraphicsView* canvas )
+{
+  if ( mMapCanvas != canvas )
+  {
+    bool updateData = mMapCanvas || ( canvas && mMapCanvasName.length() > 0 && canvas->objectName() != mMapCanvasName );
+
+    mMapCanvasName = canvas ? canvas->objectName() : "";
+    mMapCanvas = canvas;
+
+    if ( updateData )
+    {
+      QRectF sceneRect = QRectF( pos().x(), pos().y(), rect().width(), rect().height() );
+      syncLayerSet();
+      QgsRectangle extent1 = mapSettings().visibleExtent();
+      QgsRectangle extent2 = extent1;
+      extent2.scale( 1.01 );
+      *currentMapExtent() = extent2;
+      setSceneRect( sceneRect );
+      zoomToExtent( extent1 );
+    }
+    else
+    {
+      emit itemChanged();
+    }
+  }
+}
+
+QGraphicsView* QgsComposerMap::mapCanvas() const
+{
+  return mMapCanvas;
+}
+
+QString QgsComposerMap::mapCanvasName() const
+{
+  return mMapCanvasName.length() > 0 ? mMapCanvasName : ( mMapCanvas ? mMapCanvas->objectName() : "" );
+}
+
+const QgsMapSettings& QgsComposerMap::mapSettings() const
+{
+  return mComposition->mapSettings( this );
+}
+
 bool QgsComposerMap::containsWmsLayer() const
 {
-  QStringList layers = mComposition->mapSettings().layers();
+  QStringList layers = mapSettings().layers();
 
   QStringList::const_iterator layer_it = layers.constBegin();
   QgsMapLayer* currentLayer = nullptr;
@@ -1164,7 +1206,7 @@ bool QgsComposerMap::containsAdvancedEffects() const
 
   // check if map contains advanced effects like blend modes, or flattened layers for transparency
 
-  QStringList layers = mComposition->mapSettings().layers();
+  QStringList layers = mapSettings().layers();
 
   QStringList::const_iterator layer_it = layers.constBegin();
   QgsMapLayer* currentLayer = nullptr;
@@ -1230,6 +1272,7 @@ bool QgsComposerMap::writeXml( QDomElement& elem, QDomDocument & doc ) const
 
   QDomElement composerMapElem = doc.createElement( "ComposerMap" );
   composerMapElem.setAttribute( "id", mId );
+  composerMapElem.setAttribute( "mapCanvas", mapCanvasName() );
 
   //previewMode
   if ( mPreviewMode == Cache )
@@ -1340,6 +1383,7 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
     mId = idRead.toInt();
     updateToolTip();
   }
+  mMapCanvasName = itemElem.attribute( "mapCanvas", "" );
   mPreviewMode = Rectangle;
 
   //previewMode
@@ -1571,7 +1615,7 @@ bool QgsComposerMap::readXml( const QDomElement& itemElem, const QDomDocument& d
 
 void QgsComposerMap::storeCurrentLayerSet()
 {
-  mLayerSet = mComposition->mapSettings().layers();
+  mLayerSet = mapSettings().layers();
 
   if ( mKeepLayerStyles )
   {
@@ -1620,7 +1664,7 @@ void QgsComposerMap::syncLayerSet()
   }
   else //only consider layers visible in the map
   {
-    currentLayerSet = mComposition->mapSettings().layers();
+    currentLayerSet = mapSettings().layers();
   }
 
   for ( int i = mLayerSet.size() - 1; i >= 0; --i )
@@ -1979,10 +2023,10 @@ QPointF QgsComposerMap::composerMapPosForItem( const QgsAnnotation* annotation )
   mapY = annotation->mapPosition().y();
   QgsCoordinateReferenceSystem crs = annotation->mapPositionCrs();
 
-  if ( crs != mComposition->mapSettings().destinationCrs() )
+  if ( crs != mapSettings().destinationCrs() )
   {
     //need to reproject
-    QgsCoordinateTransform t( crs, mComposition->mapSettings().destinationCrs() );
+    QgsCoordinateTransform t( crs, mapSettings().destinationCrs() );
     double z = 0.0;
     t.transformInPlace( mapX, mapY, z );
   }

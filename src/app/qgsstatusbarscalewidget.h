@@ -59,6 +59,9 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
       */
     void setFont( const QFont& font );
 
+    //! sets the map canvas
+    void setMapCanvas( QgsMapCanvas* mapCanvas );
+
   public slots:
     void updateScales( const QStringList &scales = QStringList() );
 
