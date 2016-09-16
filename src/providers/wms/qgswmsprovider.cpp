@@ -786,7 +786,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, i
       // while loading the right resolution
 
       p.setCompositionMode( QPainter::CompositionMode_Source );
-      p.fillRect( image->rect(), QBrush( Qt::lightGray, Qt::CrossPattern ) );
       p.setRenderHint( QPainter::SmoothPixmapTransform, false );  // let's not waste time with bilinear filtering
 
       QList<TileImage> lowerResTiles, lowerResTiles2, higherResTiles;
