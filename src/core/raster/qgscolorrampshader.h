@@ -67,10 +67,10 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     };
 
     //! \brief Get the custom colormap
-    QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const {return mColorRampItemList.toList();}
+    QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const { return mColorRampItemList.toList(); }
 
     //! \brief Get the color ramp type
-    QgsColorRampShader::ColorRamp_TYPE colorRampType() const {return mColorRampType;}
+    QgsColorRampShader::ColorRamp_TYPE colorRampType() const { return mColorRampType; }
 
     // \brief Get the color ramp type as a string
     QString colorRampTypeAsQString();
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * @note added in QGIS 3.0
      * @see setColorRampName()
      */
-    QString colorRampName() const {return mColorRampName;}
+    QString colorRampName() const { return mColorRampName; }
 
     //! \brief Set custom colormap
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ); //TODO: sort on set
