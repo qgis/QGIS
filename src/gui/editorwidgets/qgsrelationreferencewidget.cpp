@@ -473,7 +473,7 @@ void QgsRelationReferenceWidget::init()
         QVariant nullValue = QSettings().value( "qgis/nullValue", "NULL" );
         cb->addItem( nullValue.toString(), QVariant( mReferencedLayer->fields().at( idx ).type() ) );
 
-        std::sort( uniqueValues.begin(), uniqueValues.end(), qgsVariantLessThan );
+        qSort( uniqueValues.begin(), uniqueValues.end(), qgsVariantLessThan );
         Q_FOREACH ( const QVariant& v, uniqueValues )
         {
           cb->addItem( v.toString(), v );
