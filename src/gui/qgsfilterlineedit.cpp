@@ -46,11 +46,13 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue 
 
 void QgsFilterLineEdit::setShowClearButton( bool visible )
 {
+  bool changed = mClearButtonVisible != visible;
   mClearButtonVisible = visible;
   if ( !visible )
     mClearHover = false;
 
-  update();
+  if ( changed )
+    update();
 }
 
 void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
