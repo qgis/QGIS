@@ -106,46 +106,57 @@ typedef SInt32 SRefCon;
 
 /** Print usage text
  */
-void usage( std::string const & appName )
+void usage( QString appName )
 {
-  std::cerr << "QGIS - " << VERSION << " '" << RELEASE_NAME << "' ("
-            << QGSVERSION << ")\n"
-            << "QGIS is a user friendly Open Source Geographic Information System.\n"
-            << "Usage: " << appName <<  " [OPTION] [FILE]\n"
-            << "  OPTION:\n"
-            << "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n"
-            << "\t[--width width]\twidth of snapshot to emit\n"
-            << "\t[--height height]\theight of snapshot to emit\n"
-            << "\t[--lang language]\tuse language for interface text\n"
-            << "\t[--project projectfile]\tload the given QGIS project\n"
-            << "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n"
-            << "\t[--nologo]\thide splash screen\n"
-            << "\t[--noversioncheck]\tdon't check for new version of QGIS at startup\n"
-            << "\t[--noplugins]\tdon't restore plugins on startup\n"
-            << "\t[--nocustomization]\tdon't apply GUI customization\n"
-            << "\t[--customizationfile]\tuse the given ini file as GUI customization\n"
-            << "\t[--optionspath path]\tuse the given QSettings path\n"
-            << "\t[--configpath path]\tuse the given path for all user configuration\n"
-            << "\t[--authdbdirectory path] use the given directory for authentication database\n"
-            << "\t[--code path]\trun the given python file on load\n"
-            << "\t[--defaultui]\tstart by resetting user ui settings to default\n"
-            << "\t[--dxf-export filename.dxf]\temit dxf output of loaded datasets to given file\n"
-            << "\t[--dxf-extent xmin,ymin,xmax,ymax]\tset extent to export to dxf\n"
-            << "\t[--dxf-symbology-mode none|symbollayer|feature]\tsymbology mode for dxf output\n"
-            << "\t[--dxf-scale-denom scale]\tscale for dxf output\n"
-            << "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n"
-            << "\t[--dxf-preset visiblity-preset]\tlayer visibility preset to use for dxf output\n"
-            << "\t[--help]\t\tthis text\n"
-            << "\t[--]\t\ttreat all following arguments as FILEs\n\n"
-            << "  FILE:\n"
-            << "    Files specified on the command line can include rasters,\n"
-            << "    vectors, and QGIS project files (.qgs): \n"
-            << "     1. Rasters - supported formats include GeoTiff, DEM \n"
-            << "        and others supported by GDAL\n"
-            << "     2. Vectors - supported formats include ESRI Shapefiles\n"
-            << "        and others supported by OGR and PostgreSQL layers using\n"
-            << "        the PostGIS extension\n"  ; // OK
+  QStringList msg;
 
+  msg
+  << "QGIS - " << VERSION << " '" << RELEASE_NAME << "' ("
+  << QGSVERSION << ")\n"
+  << "QGIS is a user friendly Open Source Geographic Information System.\n"
+  << "Usage: " << appName <<  " [OPTION] [FILE]\n"
+  << "  OPTION:\n"
+  << "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n"
+  << "\t[--width width]\twidth of snapshot to emit\n"
+  << "\t[--height height]\theight of snapshot to emit\n"
+  << "\t[--lang language]\tuse language for interface text\n"
+  << "\t[--project projectfile]\tload the given QGIS project\n"
+  << "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n"
+  << "\t[--nologo]\thide splash screen\n"
+  << "\t[--noversioncheck]\tdon't check for new version of QGIS at startup\n"
+  << "\t[--noplugins]\tdon't restore plugins on startup\n"
+  << "\t[--nocustomization]\tdon't apply GUI customization\n"
+  << "\t[--customizationfile]\tuse the given ini file as GUI customization\n"
+  << "\t[--optionspath path]\tuse the given QSettings path\n"
+  << "\t[--configpath path]\tuse the given path for all user configuration\n"
+  << "\t[--authdbdirectory path] use the given directory for authentication database\n"
+  << "\t[--code path]\trun the given python file on load\n"
+  << "\t[--defaultui]\tstart by resetting user ui settings to default\n"
+  << "\t[--dxf-export filename.dxf]\temit dxf output of loaded datasets to given file\n"
+  << "\t[--dxf-extent xmin,ymin,xmax,ymax]\tset extent to export to dxf\n"
+  << "\t[--dxf-symbology-mode none|symbollayer|feature]\tsymbology mode for dxf output\n"
+  << "\t[--dxf-scale-denom scale]\tscale for dxf output\n"
+  << "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n"
+  << "\t[--dxf-preset visiblity-preset]\tlayer visibility preset to use for dxf output\n"
+  << "\t[--help]\t\tthis text\n"
+  << "\t[--]\t\ttreat all following arguments as FILEs\n\n"
+  << "  FILE:\n"
+  << "    Files specified on the command line can include rasters,\n"
+  << "    vectors, and QGIS project files (.qgs): \n"
+  << "     1. Rasters - supported formats include GeoTiff, DEM \n"
+  << "        and others supported by GDAL\n"
+  << "     2. Vectors - supported formats include ESRI Shapefiles\n"
+  << "        and others supported by OGR and PostgreSQL layers using\n"
+  << "        the PostGIS extension\n"  ; // OK
+
+#ifdef Q_OS_WIN
+  MessageBox( nullptr,
+              msg.join( QString() ).toLocal8Bit().constData(),
+              "QGIS command line options",
+              MB_OK );
+#else
+  std::cerr << msg.join( QString() ).toLocal8Bit().constData();
+#endif
 
 } // usage()
 
@@ -571,7 +582,7 @@ int main( int argc, char *argv[] )
 
       if ( arg == "--help" || arg == "-?" )
       {
-        usage( args[0].toStdString() );
+        usage( args[0] );
         return 2;
       }
       else if ( arg == "--nologo" || arg == "-n" )
