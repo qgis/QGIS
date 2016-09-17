@@ -30,13 +30,14 @@ import os
 from collections import OrderedDict
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtGui import QBrush, QIcon
+from qgis.PyQt.QtGui import QBrush, QIcon, QSpacerItem
 from qgis.PyQt.QtWidgets import QComboBox, QHeaderView, QLineEdit, QMessageBox, QSpinBox, QStyledItemDelegate
 from qgis.PyQt.QtCore import QItemSelectionModel, QAbstractTableModel, QModelIndex, QVariant, Qt, pyqtSlot
 
-from qgis.core import QgsExpression, QgsExpressionContextUtils, QgsApplication
+from qgis.core import QgsExpression, QgsExpressionContextUtils, QgsApplication, QgsFeature
 from qgis.gui import QgsFieldExpressionWidget
 
+from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_MODELER
 from processing.tools import dataobjects
 
 pluginPath = os.path.dirname(__file__)
@@ -92,7 +93,7 @@ class FieldsMappingModel(QAbstractTableModel):
         if self._layer is None:
             return
         context = QgsExpressionContextUtils.createFeatureBasedContext(QgsFeature(), self._layer.fields())
-        for feature in dp.getFeatures():
+        for feature in self._layer.getFeatures():
             context.setFeature(feature)
             expression.evaluate(context)
             if expression.hasEvalError():
@@ -472,3 +473,35 @@ class FieldsMappingPanel(BASE, WIDGET):
         if layer is None:
             return
         self.model.loadLayerFields(layer)
+
+
+class FieldsMappingWidgetWrapper(WidgetWrapper):
+
+    def createWidget(self):
+        return FieldsMappingPanel()
+
+    def postInitialize(self, wrappers):
+        for wrapper in wrappers:
+            if wrapper.param.name == self.param.parent:
+                wrapper.widgetValueHasChanged.connect(self.parentLayerChanged)
+                break
+        layers = dataobjects.getTables()
+        if len(layers) > 0:
+            # as first item in combobox is already selected
+            self.widget.setLayer(layers[0])
+
+        # remove exiting spacers to get FieldsMappingPanel fully expanded
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_MODELER):
+            layout = self.widget.parent().layout()
+            spacer = layout.itemAt(layout.count() - 1)
+            if isinstance(spacer, QSpacerItem):
+                layout.removeItem(spacer)
+
+    def parentLayerChanged(self):
+        self.widget.setLayer(self.sender().value())
+
+    def setValue(self, value):
+        self.widget.setValue(value)
+
+    def value(self):
+        return self.widget.value()

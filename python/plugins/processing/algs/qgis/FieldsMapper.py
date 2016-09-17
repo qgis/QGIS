@@ -35,8 +35,6 @@ from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 from .fieldsmapping import ParameterFieldsMapping
-from .ui.FieldsMapperDialogs import (FieldsMapperParametersDialog,
-                                     FieldsMapperModelerParametersDialog)
 
 
 class FieldsMapper(GeoAlgorithm):
@@ -149,9 +147,3 @@ class FieldsMapper(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('An error occurred while evaluating the calculation'
                         ' string:\n') + error)
-
-    def getCustomParametersDialog(self):
-        return FieldsMapperParametersDialog(self)
-
-    def getCustomModelerParametersDialog(self, modelAlg, algName=None):
-        return FieldsMapperModelerParametersDialog(self, modelAlg, algName)

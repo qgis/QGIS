@@ -32,6 +32,10 @@ from processing.core.parameters import Parameter
 
 class ParameterFieldsMapping(Parameter):
 
+    default_metadata = {
+        'widget_wrapper': 'processing.algs.qgis.ui.FieldsMappingPanel.FieldsMappingWidgetWrapper'
+    }
+
     def __init__(self, name='', description='', parent=None):
         Parameter.__init__(self, name, description)
         self.parent = parent
