@@ -657,7 +657,7 @@ class StringWidgetWrapper(WidgetWrapper):
                 text = self.widget.getValue()
             return text
         if self.dialogType == DIALOG_BATCH:
-            text = self.widget.text()
+            return self.widget.text()
         else:
             if self.param.multiline:
                 value = self.widget.getValue()
