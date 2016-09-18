@@ -233,6 +233,7 @@ class BatchPanel(BASE, WIDGET):
         self.wrappers.append([None] * self.tblParameters.columnCount())
         self.tblParameters.setRowCount(self.tblParameters.rowCount() + 1)
 
+        wrappers = {}
         row = self.tblParameters.rowCount() - 1
         column = 0
         for param in self.alg.parameters:
@@ -240,6 +241,7 @@ class BatchPanel(BASE, WIDGET):
                 continue
 
             wrapper = param.wrapper(self.parent, row, column)
+            wrappers[param.name] = wrapper
             self.setCellWrapper(row, column, wrapper)
             column += 1
 
@@ -258,6 +260,9 @@ class BatchPanel(BASE, WIDGET):
             item.addItem(self.tr('No'))
             item.setCurrentIndex(0)
             self.tblParameters.setCellWidget(row, column, item)
+
+        for wrapper in wrappers.values():
+            wrapper.postInitialize(wrappers.values())
 
     def removeRows(self):
         if self.tblParameters.rowCount() > 2:
