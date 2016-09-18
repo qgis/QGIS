@@ -31,7 +31,7 @@ __revision__ = '$Format:%H$'
 import locale
 import os
 
-from qgis.core import QgsCoordinateReferenceSystem
+from qgis.core import QgsCoordinateReferenceSystem, QgsVectorLayer
 from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QLineEdit, QPlainTextEdit
 from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant
 
@@ -42,7 +42,7 @@ from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.PointSelectionPanel import PointSelectionPanel
 from processing.core.parameters import (ParameterBoolean, ParameterPoint, ParameterFile,
     ParameterRaster, ParameterVector, ParameterNumber, ParameterString, ParameterTable,
-    ParameterTableField, ParameterExtent, ParameterFixedTable, ParameterCrs)
+    ParameterTableField, ParameterExtent, ParameterFixedTable, ParameterCrs, _resolveLayers)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.core.outputs import (OutputFile, OutputRaster, OutputVector, OutputNumber,
@@ -97,8 +97,7 @@ class WidgetWrapper(QObject):
             if validator is not None and not validator(v):
                 raise InvalidParameterValue()
             return v
-        else:
-            return self.widget.itemData(self.widget.currentIndex())
+        return self.widget.itemData(self.widget.currentIndex())
 
     def createWidget(self):
         pass
@@ -123,9 +122,6 @@ class WidgetWrapper(QObject):
             self.widget.setCurrentIndex(0)
 
     def value(self):
-        pass
-
-    def anotherParameterWidgetHasChanged(self, wrapper):
         pass
 
     def postInitialize(self, wrappers):
@@ -403,7 +399,9 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
                 opts = [getExtendedLayerName(opt) for opt in options]
                 return MultipleInputPanel(opts)
         elif self.dialogType == DIALOG_BATCH:
-            return BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget = BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget.textChanged
+            return widget
         else:
             options = [self.dialog.resolveValueDescription(opt) for opt in self._getOptions()]
             return MultipleInputPanel(options)
@@ -557,9 +555,12 @@ class VectorWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_STANDARD:
             widget = QComboBox()
             self._populate(widget)
+            widget.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             return widget
         elif self.dialogType == DIALOG_BATCH:
-            return BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget = BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            return widget
         else:
             widget = QComboBox()
             layers = self.dialog.getAvailableValuesOfType(ParameterVector, OutputVector)
@@ -578,7 +579,6 @@ class VectorWidgetWrapper(WidgetWrapper):
             widget.addItem(self.NOT_SELECTED, None)
         for layer in layers:
             widget.addItem(getExtendedLayerName(layer), layer)
-        widget.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
         widget.name = self.param.name
 
     def refresh(self):
@@ -588,10 +588,9 @@ class VectorWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_STANDARD:
             pass  # TODO
         elif self.dialogType == DIALOG_BATCH:
-            self.widget.setText(value)
+            self.widget.setValue(value)
         else:
             self.setComboValue(value)
-
 
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
@@ -600,7 +599,7 @@ class VectorWidgetWrapper(WidgetWrapper):
             except:
                 return self.widget.getValue()
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.getText()
+            return self.widget.value()
         else:
             def validator(v):
                 if not bool(v):
@@ -736,19 +735,18 @@ class TableFieldWidgetWrapper(WidgetWrapper):
     NOT_SET = '[Not set]'
 
     def createWidget(self):
+        self._layer = None
+
         if self.param.multiple:
             if self.dialogType == DIALOG_STANDARD:
-                    return MultipleInputPanel(options=[])
+                return MultipleInputPanel(options=[])
             else:
                 return QLineEdit()
         else:
-            if self.dialogType == DIALOG_STANDARD:
+            if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
                 widget = QComboBox()
-                return widget
-            elif self.dialogType == DIALOG_BATCH:
-                widget = QLineEdit()
-                if self.param.default:
-                    widget.setText(self.param.default)
+                if self.dialogType == DIALOG_BATCH:
+                    widget.setEditable(True)  # Should be removed at the end
                 return widget
             else:
                 widget = QComboBox()
@@ -763,28 +761,42 @@ class TableFieldWidgetWrapper(WidgetWrapper):
     def postInitialize(self, wrappers):
         for wrapper in wrappers:
             if wrapper.param.name == self.param.parent:
-                layer = wrapper.widget.itemData(wrapper.widget.currentIndex())
-                if layer is not None:
-                    fields = self.getFields(layer, wrapper.param.datatype)
-                    if self.param.multiple:
-                        self.widget.updateForOptions(fields)
-                    else:
-                        self.widget.clear()
-                        if self.param.optional:
-                            self.widget.addItem(self.tr(self.NOT_SET))
-                        self.widget.addItems(fields)
+                # self.refreshItems()
+                if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+                    self.setLayer(wrapper.value())
+                    wrapper.widgetValueHasChanged.connect(self.parentValueChanged)
                 break
 
-    def getFields(self, layer, datatype):
+    def parentValueChanged(self, wrapper):
+        self.setLayer(wrapper.value())
+
+    def setLayer(self, layer):
+        if isinstance(layer, basestring):
+            layer = dataobjects.getObjectFromUri(_resolveLayers(layer))
+        self._layer = layer
+        self.refreshItems()
+
+    def refreshItems(self):
+        if self.param.multiple:
+            self.widget.updateForOptions(self.getFields())
+        else:
+            self.widget.clear()
+            if self.param.optional:
+                self.widget.addItem(self.tr(self.NOT_SET))
+            self.widget.addItems(self.getFields())
+
+    def getFields(self):
+        if self._layer is None:
+            return []
         fieldTypes = []
-        if datatype == ParameterTableField.DATA_TYPE_STRING:
+        if self.param.datatype == ParameterTableField.DATA_TYPE_STRING:
             fieldTypes = [QVariant.String]
-        elif datatype == ParameterTableField.DATA_TYPE_NUMBER:
+        elif self.param.datatype == ParameterTableField.DATA_TYPE_NUMBER:
             fieldTypes = [QVariant.Int, QVariant.Double, QVariant.LongLong,
                           QVariant.UInt, QVariant.ULongLong]
 
         fieldNames = set()
-        for field in layer.fields():
+        for field in self._layer.fields():
             if not fieldTypes or field.type() in fieldTypes:
                 fieldNames.add(unicode(field.name()))
         return sorted(list(fieldNames), cmp=locale.strcoll)
@@ -802,12 +814,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
                 self.widget.setText(value)
         else:
             if self.dialogType == DIALOG_STANDARD:
-                pass  # TODO
-            elif self.dialogType == DIALOG_BATCH:
-                return self.widget.setText(value)
-            else:
                 self.setComboValue(value)
-
 
     def value(self):
         if self.param.multiple:
@@ -821,29 +828,14 @@ class TableFieldWidgetWrapper(WidgetWrapper):
                     raise InvalidParameterValue()
                 return text
         else:
-            if self.dialogType == DIALOG_STANDARD:
+            if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
                 if self.param.optional and self.widget.currentIndex() == 0:
                     return None
                 return self.widget.currentText()
-            elif self.dialogType == DIALOG_BATCH:
-                return self.widget.text()
             else:
                 def validator(v):
                     return bool(v) or self.param.optional
                 return self.comboValue(validator)
-
-    def anotherParameterWidgetHasChanged(self, wrapper):
-        if wrapper.param.name == self.param.parent:
-            layer = wrapper.value()
-            if layer is not None:
-                fields = self.getFields(layer, wrapper.param.datatype)
-                if self.param.multiple:
-                    self.widget.updateForOptions(fields)
-                else:
-                    self.widget.clear()
-                    if self.param.optional:
-                        self.widget.addItem(self.tr(self.NOT_SET))
-                    self.widget.addItems(fields)
 
 
 def GeometryPredicateWidgetWrapper(WidgetWrapper):
