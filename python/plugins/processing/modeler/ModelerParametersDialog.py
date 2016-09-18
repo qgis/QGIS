@@ -183,9 +183,7 @@ class ModelerParametersDialog(QDialog):
         self.dependenciesPanel = self.getDependenciesPanel()
         self.verticalLayout.addWidget(label)
         self.verticalLayout.addWidget(self.dependenciesPanel)
-
         self.verticalLayout.addStretch(1000)
-        self.setLayout(self.verticalLayout)
 
         self.setPreviousValues()
         self.setWindowTitle(self._alg.name)
@@ -228,6 +226,9 @@ class ModelerParametersDialog(QDialog):
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
         QMetaObject.connectSlotsByName(self)
+
+        for wrapper in self.wrappers.values():
+            wrapper.postInitialize(self.wrappers.values())
 
     def requestFinished(self):
         """Change the webview HTML content"""
