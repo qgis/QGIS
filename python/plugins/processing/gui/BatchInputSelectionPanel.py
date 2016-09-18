@@ -27,9 +27,11 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings, pyqtSignal
 from qgis.PyQt.QtWidgets import QWidget, QHBoxLayout, QMenu, QPushButton, QLineEdit, QSizePolicy, QAction, QFileDialog
 from qgis.PyQt.QtGui import QCursor
+
+from qgis.core import QgsMapLayer
 
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 
@@ -43,6 +45,8 @@ from processing.tools import dataobjects
 
 class BatchInputSelectionPanel(QWidget):
 
+    valueChanged = pyqtSignal()
+
     def __init__(self, param, row, col, dialog):
         super(BatchInputSelectionPanel, self).__init__(None)
         self.param = param
@@ -53,8 +57,10 @@ class BatchInputSelectionPanel(QWidget):
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setMargin(0)
         self.text = QLineEdit()
+        self.text.setObjectName('text')
         self.text.setMinimumWidth(300)
-        self.text.setText('')
+        self.setValue('')
+        self.text.editingFinished.connect(self.on_text_EditingFinished)
         self.text.setSizePolicy(QSizePolicy.Expanding,
                                 QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.text)
@@ -65,7 +71,7 @@ class BatchInputSelectionPanel(QWidget):
         self.setLayout(self.horizontalLayout)
 
     def _panel(self):
-        return self.dialog.mainWidget()
+        return self.dialog.mainWidget
 
     def _table(self):
         return self._panel().tblParameters
@@ -116,7 +122,7 @@ class BatchInputSelectionPanel(QWidget):
                         self._panel().addRow()
                     for i, layeridx in enumerate(selected):
                         self._table().cellWidget(i + self.row,
-                                              self.col).setText(layers[layeridx].name())
+                                              self.col).setValue(layers[layeridx])
 
     def showFileSelectionDialog(self):
         settings = QSettings()
@@ -149,10 +155,19 @@ class BatchInputSelectionPanel(QWidget):
                         self._panel().addRow()
                     for i, f in enumerate(files):
                         self._table().cellWidget(i + self.row,
-                                              self.col).setText(f)
+                                              self.col).setValue(f)
 
-    def setText(self, text):
-        return self.text.setText(text)
+    def on_text_EditingFinished(self):
+        self._value = self.text.text()
+        self.valueChanged.emit()
 
-    def getText(self):
-        return self.text.text()
+    def value(self):
+        return self._value
+
+    def setValue(self, value):
+        self._value = value
+        if isinstance(value, QgsMapLayer):
+            self.text.setText(value.name())
+        else:  # should be basestring
+            self.text.setText(value)
+        self.valueChanged.emit()
