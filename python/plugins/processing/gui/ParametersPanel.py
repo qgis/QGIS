@@ -164,10 +164,4 @@ class ParametersPanel(BASE, WIDGET):
                     button.setChecked(False)
 
     def getWidgetWrapperFromParameter(self, param):
-        wrapper = param.wrapper(self.parent)
-        wrapper.widgetValueHasChanged.connect(self.widgetValueHasChanged)
-        return wrapper
-
-    def widgetValueHasChanged(self, wrapper):
-        for wrapper in self.wrappers.values():
-            wrapper.anotherParameterWidgetHasChanged(wrapper)
+        return param.wrapper(self.parent)
