@@ -345,7 +345,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                                         unicode(self.defaultTextBox.text()))
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_CRS or
                 isinstance(self.param, ParameterCrs)):
-            self.param = ParameterCrs(name, description, self.defaultTextbox.getValue())
+            self.param = ParameterCrs(name, description, self.defaultTextBox.getValue())
         self.param.optional = self.requiredCheck.isChecked()
 >>>>>>> [processing] UI improvement for defining model parameters
         self.close()
