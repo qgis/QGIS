@@ -18,6 +18,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Arnaud Morvan'
 __date__ = 'May 2016'
 __copyright__ = '(C) 2016, Arnaud Morvan'
@@ -28,6 +29,7 @@ __revision__ = '$Format:%H$'
 
 
 import locale
+import os
 
 from qgis.core import QgsCoordinateReferenceSystem
 from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QLineEdit, QPlainTextEdit
@@ -486,6 +488,8 @@ class RasterWidgetWrapper(WidgetWrapper):
             files = self.dialog.getAvailableValuesOfType(ParameterRaster, OutputRaster)
             for f in files:
                 widget.addItem(self.dialog.resolveValueDescription(f), f)
+            if self.param.optional:
+                widget.setEditText("")
             return widget
 
     def refresh(self):
@@ -512,7 +516,10 @@ class RasterWidgetWrapper(WidgetWrapper):
             return self.widget.getText()
         else:
             def validator(v):
-                return bool(v) or self.param.optional
+                if not bool(v):
+                    return self.param.optional
+                else:
+                    return os.path.exists(v)
             return self.comboValue(validator)
 
 
@@ -555,10 +562,11 @@ class VectorWidgetWrapper(WidgetWrapper):
         else:
             widget = QComboBox()
             layers = self.dialog.getAvailableValuesOfType(ParameterVector, OutputVector)
-            if self.param.optional:
-                widget.addItem(self.NOT_SELECTED, None)
+            widget.setEditable(True)
             for layer in layers:
                 widget.addItem(self.dialog.resolveValueDescription(layer), layer)
+            if self.param.optional:
+                widget.setEditText("")
             return widget
 
     def _populate(self, widget):
@@ -594,7 +602,10 @@ class VectorWidgetWrapper(WidgetWrapper):
             return self.widget.getText()
         else:
             def validator(v):
-                return bool(v) or self.param.optional
+                if not bool(v):
+                    return self.param.optional
+                else:
+                    return os.path.exists(v)
             return self.comboValue(validator)
 
 class StringWidgetWrapper(WidgetWrapper):
