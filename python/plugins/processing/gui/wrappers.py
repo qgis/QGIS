@@ -293,6 +293,7 @@ class PointWidgetWrapper(WidgetWrapper):
             for p in points:
                 item.addItem(self.dialog.resolveValueDescription(p), p)
             item.setEditText(unicode(self.param.default))
+            return item
 
     def setValue(self, value):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
