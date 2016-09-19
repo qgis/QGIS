@@ -819,6 +819,21 @@
           46.7963
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Francisco Raga",
+        "Committer": "No",
+        "GIT Nickname": "All4Gis"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.69178439,
+          40.4008237
+        ]
+      }
     }
   ]
 }
