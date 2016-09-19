@@ -40,7 +40,7 @@ class GdalAlgorithmDialog(AlgorithmDialog):
         AlgorithmDialogBase.__init__(self, alg)
 
         self.alg = alg
- 
+
         self.setMainWidget(GdalParametersPanel(self, alg))
 
         cornerWidget = QWidget()
@@ -54,6 +54,7 @@ class GdalAlgorithmDialog(AlgorithmDialog):
         self.tabWidget.setCornerWidget(cornerWidget)
 
         self.mainWidget.parametersHaveChanged()
+
 
 class GdalParametersPanel(ParametersPanel):
 

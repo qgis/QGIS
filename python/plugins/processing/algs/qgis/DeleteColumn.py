@@ -51,7 +51,7 @@ class DeleteColumn(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
-        
+
         toDelete = self.getParameterValue(self.COLUMNS)
         fields = layer.fields()
         idxs = []

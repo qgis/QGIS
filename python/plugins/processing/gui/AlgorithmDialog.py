@@ -71,7 +71,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
         self.cornerWidget.setLayout(layout)
         self.tabWidget.setCornerWidget(self.cornerWidget)
 
-
     def runAsBatch(self):
         self.close()
         dlg = BatchAlgorithmDialog(self.alg)

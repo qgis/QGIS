@@ -80,7 +80,6 @@ class ExtentSelectionPanel(BASE, WIDGET):
                 except:
                     pass
 
-
     def selectExtent(self):
         popupmenu = QMenu()
         useLayerExtentAction = QAction(

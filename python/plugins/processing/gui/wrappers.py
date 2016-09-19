@@ -41,12 +41,12 @@ from processing.modeler.MultilineTextPanel import MultilineTextPanel
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.PointSelectionPanel import PointSelectionPanel
 from processing.core.parameters import (ParameterBoolean, ParameterPoint, ParameterFile,
-    ParameterRaster, ParameterVector, ParameterNumber, ParameterString, ParameterTable,
-    ParameterTableField, ParameterExtent, ParameterFixedTable, ParameterCrs, _resolveLayers)
+                                        ParameterRaster, ParameterVector, ParameterNumber, ParameterString, ParameterTable,
+                                        ParameterTableField, ParameterExtent, ParameterFixedTable, ParameterCrs, _resolveLayers)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.core.outputs import (OutputFile, OutputRaster, OutputVector, OutputNumber,
-    OutputString, OutputTable, OutputExtent)
+                                     OutputString, OutputTable, OutputExtent)
 from processing.tools import dataobjects
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
@@ -60,13 +60,15 @@ DIALOG_STANDARD = 'standard'
 DIALOG_BATCH = 'batch'
 DIALOG_MODELER = 'modeler'
 
+
 class InvalidParameterValue(Exception):
     pass
 
 
-dialogTypes = {"AlgorithmDialog":DIALOG_STANDARD,
-               "ModelerParametersDialog":DIALOG_MODELER,
+dialogTypes = {"AlgorithmDialog": DIALOG_STANDARD,
+               "ModelerParametersDialog": DIALOG_MODELER,
                "BatchAlgorithmDialog": DIALOG_BATCH}
+
 
 def getExtendedLayerName(layer):
     authid = layer.crs().authid()
@@ -74,6 +76,7 @@ def getExtendedLayerName(layer):
         return u'{} [{}]'.format(layer.name(), authid)
     else:
         return layer.name()
+
 
 class WidgetWrapper(QObject):
 
@@ -129,6 +132,7 @@ class WidgetWrapper(QObject):
 
     def refresh(self):
         pass
+
 
 class BasicWidgetWrapper(WidgetWrapper):
 
@@ -220,6 +224,7 @@ class CrsWidgetWrapper(WidgetWrapper):
             return self.comboValue()
         else:
             return self.widget.getValue()
+
 
 class ExtentWidgetWrapper(WidgetWrapper):
 
@@ -347,6 +352,7 @@ class FileWidgetWrapper(WidgetWrapper):
         else:
             return self.comboValue()
 
+
 class FixedTableWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
@@ -464,6 +470,7 @@ class NumberWidgetWrapper(WidgetWrapper):
     def value(self):
         return self.widget.getValue()
 
+
 class RasterWidgetWrapper(WidgetWrapper):
 
     NOT_SELECTED = '[Not selected]'
@@ -540,7 +547,7 @@ class SelectionWidgetWrapper(WidgetWrapper):
 
     def value(self):
         if self.param.multiple:
-                return self.widget.selectedoptions
+            return self.widget.selectedoptions
         else:
             return self.widget.currentIndex()
 
@@ -614,6 +621,7 @@ class VectorWidgetWrapper(WidgetWrapper):
                     return os.path.exists(v)
             return self.comboValue(validator)
 
+
 class StringWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
@@ -627,9 +635,9 @@ class StringWidgetWrapper(WidgetWrapper):
                 if self.param.default:
                     widget.setValue(self.param.default)
         elif self.dialogType == DIALOG_BATCH:
-                widget = QLineEdit()
-                if self.param.default:
-                    widget.setText(self.param.default)
+            widget = QLineEdit()
+            if self.param.default:
+                widget.setText(self.param.default)
         else:
             strings = self.dialog.getAvailableValuesOfType(ParameterString, OutputString)
             options = [(self.dialog.resolveValueDescription(s), s) for s in strings]
@@ -722,7 +730,6 @@ class TableWidgetWrapper(WidgetWrapper):
         else:
             self.setComboValue(value)
 
-
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
             try:
@@ -735,6 +742,7 @@ class TableWidgetWrapper(WidgetWrapper):
             def validator(v):
                 return bool(v) or self.param.optional
             return self.comboValue(validator)
+
 
 class TableFieldWidgetWrapper(WidgetWrapper):
 
@@ -825,7 +833,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
     def value(self):
         if self.param.multiple:
             if self.dialogType == DIALOG_STANDARD:
-                return  [self.widget.options[i] for i in self.widget.selectedoptions]
+                return [self.widget.options[i] for i in self.widget.selectedoptions]
             elif self.dialogType == DIALOG_BATCH:
                 return self.widget.text()
             else:

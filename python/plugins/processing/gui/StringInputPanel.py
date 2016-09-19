@@ -66,7 +66,6 @@ class StringInputPanel(BASE, WIDGET):
             if not exp.hasParserError():
                 self.setValue(dlg.expressionText())
 
-    
     def getValue(self):
         return self.leText.text()
 

@@ -124,7 +124,7 @@ class BatchInputSelectionPanel(QWidget):
                         self._panel().addRow()
                     for i, layeridx in enumerate(selected):
                         self._table().cellWidget(i + self.row,
-                                              self.col).setValue(layers[layeridx])
+                                                 self.col).setValue(layers[layeridx])
 
     def showFileSelectionDialog(self):
         settings = QSettings()
@@ -157,7 +157,7 @@ class BatchInputSelectionPanel(QWidget):
                         self._panel().addRow()
                     for i, f in enumerate(files):
                         self._table().cellWidget(i + self.row,
-                                              self.col).setValue(f)
+                                                 self.col).setValue(f)
 
     def textEditingFinished(self):
         self._value = self.text.text()
@@ -170,6 +170,6 @@ class BatchInputSelectionPanel(QWidget):
         self._value = value
         if isinstance(value, QgsMapLayer):
             self.text.setText(value.name())
-        else:  # Â should be basestring
+        else:  #  should be basestring
             self.text.setText(value)
         self.valueChanged.emit()

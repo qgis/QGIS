@@ -204,9 +204,10 @@ class ValueFromOutput(object):
     def asPythonParameter(self):
         return "outputs_%s['%s']" % (self.alg, self.output)
 
+
 class CompoundValue():
 
-    def __init__(self, values = [], definition=""):
+    def __init__(self, values=[], definition=""):
         self.values = values
         self.definition = definition
 
@@ -223,7 +224,7 @@ class CompoundValue():
         return self.definition
 
     def asPythonParameter(self):
-        return "" #TODO
+        return ""  # TODO
 
 
 class ModelerAlgorithm(GeoAlgorithm):
@@ -368,7 +369,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 for v in value.values:
                     if isinstance(v, ValueFromOutput):
                         algs.add(v.alg)
-                        algs.update(self.getDependsOnAlgorithms(v.alg)) 
+                        algs.update(self.getDependsOnAlgorithms(v.alg))
             if isinstance(value, list):
                 for v in value:
                     if isinstance(v, ValueFromOutput):

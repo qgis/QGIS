@@ -40,6 +40,7 @@ from processing.tools import dataobjects
 
 from qgis.core import QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope
 
+
 def _expressionContext(alg):
     context = QgsExpressionContext()
     context.appendScope(QgsExpressionContextUtils.globalScope())
@@ -49,6 +50,7 @@ def _expressionContext(alg):
         processingScope.setVariable('%s_value' % param.name, '')
     context.appendScope(processingScope)
     return context
+
 
 class Output(object):
 
@@ -93,17 +95,17 @@ class Output(object):
             return True
         except:
             return False
-        
+
     def _resolveTemporary(self, alg):
         ext = self.getDefaultFileExtension()
         return getTempFilenameInTempFolder(self.name + '.' + ext)
-    
+
     def _supportedExtensions(self):
         return []
-        
+
     def resolveValue(self, alg):
         if not self.hidden and not bool(self.value):
-            self.value = self._resolveTemporary(alg) 
+            self.value = self._resolveTemporary(alg)
         else:
             exp = QgsExpression(self.value)
             if not exp.hasParserError():
@@ -113,7 +115,7 @@ class Output(object):
 
         if ":" not in self.value:
             if not os.path.isabs(self.value):
-                self.value = os.path.join(ProcessingConfig.getSetting(ProcessingConfig.OUTPUT_FOLDER), 
+                self.value = os.path.join(ProcessingConfig.getSetting(ProcessingConfig.OUTPUT_FOLDER),
                                           self.value)
             supported = self._supportedExtensions()
             if supported:
@@ -138,7 +140,7 @@ class Output(object):
 
 
 class OutputDirectory(Output):
-    
+
     def resolveValue(self, alg):
         self.value = getTempDirInTempFolder()
 
@@ -330,7 +332,6 @@ class OutputVector(Output):
             default = 'dbf'
         return default
 
-
     def getCompatibleFileName(self, alg):
         """Returns a filename that is compatible with the algorithm
         that is going to generate this output.
@@ -389,7 +390,7 @@ class OutputVector(Output):
         else:
             ext = self.getDefaultFileExtension()
             return getTempFilenameInTempFolder(self.name + '.' + ext)
-        
+
 
 def getOutputFromString(s):
     try:
@@ -402,7 +403,7 @@ def getOutputFromString(s):
             tokens = s.split("=")
             token = tokens[1].strip()[len('output') + 1:]
             out = None
-    
+
             if token.lower().strip().startswith('raster'):
                 out = OutputRaster()
             elif token.lower().strip() == 'vector':
@@ -430,7 +431,7 @@ def getOutputFromString(s):
                 out = OutputString()
             elif token.lower().strip().startswith('extent'):
                 out = OutputExtent()
-    
+
             return out
     except:
         return None

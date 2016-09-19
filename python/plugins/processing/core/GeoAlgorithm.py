@@ -73,7 +73,6 @@ class GeoAlgorithm(object):
         self.showInToolbox = True
         self.showInModeler = True
 
-
         # False if it should not be run a a batch process
         self.canRunInBatchMode = True
 
@@ -333,7 +332,7 @@ class GeoAlgorithm(object):
             except ValueError, e:
                 traceback.print_exc()
                 raise GeoAlgorithmExecutionException(str(e))
-            
+
     def resolveOutputs(self):
         """Sets temporary outputs (output.value = None) with a
         temporary file instead. Resolves expressions as well.
@@ -343,7 +342,7 @@ class GeoAlgorithm(object):
                 out.resolveValue(self)
         except ValueError, e:
             raise GeoAlgorithmExecutionException(str(e))
-        
+
     def setOutputCRS(self):
         layers = dataobjects.getAllLayers()
         for param in self.parameters:
