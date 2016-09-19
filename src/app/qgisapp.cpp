@@ -5090,7 +5090,7 @@ void QgisApp::dxfExport()
       //extent
       if ( d.exportMapExtent() )
       {
-        QgsCoordinateTransform t( mapCanvas()->mapSettings().destinationCrs(), QgsCoordinateReferenceSystem( d.crs(), QgsCoordinateReferenceSystem::InternalCrsId ) );
+        QgsCoordinateTransform t( mapCanvas()->mapSettings().destinationCrs(), d.crs() );
         dxfExport.setExtent( t.transformBoundingBox( mapCanvas()->extent() ) );
       }
     }
