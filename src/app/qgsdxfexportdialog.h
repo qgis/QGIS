@@ -88,7 +88,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     bool exportMapExtent() const;
     bool layerTitleAsName() const;
     QString encoding() const;
-    long crs() const;
+    QgsCoordinateReferenceSystem crs() const;
 
   public slots:
     /** Change the selection of layers in the list */
@@ -107,7 +107,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     QgsLayerTreeGroup *mLayerTreeGroup;
     FieldSelectorDelegate *mFieldSelectorDelegate;
 
-    long mCRS;
+    QgsCoordinateReferenceSystem mCRS;
 };
 
 #endif // QGSDXFEXPORTDIALOG_H

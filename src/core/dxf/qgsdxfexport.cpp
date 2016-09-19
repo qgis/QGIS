@@ -373,7 +373,6 @@ QgsDxfExport::QgsDxfExport()
     , mSymbolLayerCounter( 0 )
     , mNextHandleId( DXF_HANDSEED )
     , mBlockCounter( 0 )
-    , mCrs( -1 )
 {
 }
 
@@ -392,7 +391,7 @@ QgsDxfExport& QgsDxfExport::operator=( const QgsDxfExport & dxfExport )
   mSymbolLayerCounter = 0; // internal counter
   mNextHandleId = 0;
   mBlockCounter = 0;
-  mCrs = -1;
+  mCrs = QgsCoordinateReferenceSystem();
   return *this;
 }
 
@@ -524,12 +523,12 @@ int QgsDxfExport::writeToFile( QIODevice* d, const QString& encoding )
   mMapSettings.setExtent( mExtent );
 
   int dpi = 96;
-  mFactor = 1000 * dpi / mSymbologyScaleDenominator / 25.4 * QgsUnitTypes::fromUnitToUnitFactor( mMapUnits, QGis::Meters );
+  mFactor = 1000 * dpi / mSymbologyScaleDenominator / 25.4 * QgsUnitTypes::fromUnitToUnitFactor( mMapUnits, QgsUnitTypes::DistanceMeters );
   mMapSettings.setOutputSize( QSize( mExtent.width() * mFactor, mExtent.height() * mFactor ) );
   mMapSettings.setOutputDpi( dpi );
-  if ( mCrs >= 0 )
-    mMapSettings.setDestinationCrs( QgsCRSCache::instance()->crsBySrsId( mCrs ) );
-  mMapSettings.setCrsTransformEnabled( mCrs >= 0 );
+  if ( mCrs.isValid() )
+    mMapSettings.setDestinationCrs( mCrs );
+  mMapSettings.setCrsTransformEnabled( mCrs.isValid() );
 
   writeHeader( dxfEncoding( encoding ) );
   writeTables();
@@ -553,11 +552,11 @@ void QgsDxfExport::writeHeader( const QString& codepage )
 
   // EXTMIN
   writeGroup( 9, "$EXTMIN" );
-  writeGroup( 0, QgsPointV2( QgsWKBTypes::PointZ, mExtent.xMinimum(), mExtent.yMinimum() ) );
+  writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ, mExtent.xMinimum(), mExtent.yMinimum() ) );
 
   // EXTMAX
   writeGroup( 9, "$EXTMAX" );
-  writeGroup( 0, QgsPointV2( QgsWKBTypes::PointZ, mExtent.xMaximum(), mExtent.yMaximum() ) );
+  writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ, mExtent.xMaximum(), mExtent.yMaximum() ) );
 
   // Global linetype scale
   writeGroup( 9, "$LTSCALE" );
@@ -1015,7 +1014,7 @@ void QgsDxfExport::writeEntities()
 
     QgsFeatureIterator featureIt = vl->getFeatures( freq );
 
-    const QgsCoordinateTransform *ct = mMapSettings.hasCrsTransformEnabled() ? mMapSettings.layerTransform( vl ) : nullptr;
+    QgsCoordinateTransform ct = mMapSettings.hasCrsTransformEnabled() ? mMapSettings.layerTransform( vl ) : QgsCoordinateTransform();
 
     QgsFeature fet;
     while ( featureIt.nextFeature( fet ) )
@@ -1150,7 +1149,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
     }
   }
 
-  const QgsCoordinateTransform *ct = mMapSettings.hasCrsTransformEnabled() ? mMapSettings.layerTransform( layer ) : nullptr;
+  QgsCoordinateTransform ct = mMapSettings.hasCrsTransformEnabled() ? mMapSettings.layerTransform( layer ) : QgsCoordinateTransform();
 
   // export symbol layers and symbology
   for ( int l = 0; l < levels.count(); l++ )
@@ -3642,7 +3641,7 @@ void QgsDxfExport::writeMText( const QString& layer, const QString& text, const 
   writeGroup( 7, "STANDARD" );    // so far only support for standard font
 }
 
-void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateTransform *ct, const QString& layer, const QgsSymbolLayer* symbolLayer, const QgsSymbol* symbol )
+void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateTransform& ct, const QString& layer, const QgsSymbolLayer* symbolLayer, const QgsSymbol* symbol )
 {
   const QgsFeature *fet = ctx.feature();
   if ( !fet )
@@ -3651,10 +3650,10 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext& ctx, const QgsCoordinateT
   if ( !fet->hasGeometry() )
     return;
 
-  QScopedPointer<QgsAbstractGeometry> geom( fet->constGeometry()->geometry()->clone() );
-  if ( ct )
+  QScopedPointer<QgsAbstractGeometry> geom( fet->geometry().geometry()->clone() );
+  if ( ct.isValid() )
   {
-    geom->transform( *ct );
+    geom->transform( ct );
   }
 
   QgsWkbTypes::Type geometryType = geom->wkbType();
@@ -4389,12 +4388,12 @@ void QgsDxfExport::registerDxfLayer( QString layerId, QgsFeatureId fid, QString 
   mDxfLayerNames[layerId][fid] = layerName;
 }
 
-void QgsDxfExport::setDestinationCrs( long crs )
+void QgsDxfExport::setDestinationCrs( const QgsCoordinateReferenceSystem& crs )
 {
   mCrs = crs;
 }
 
-long QgsDxfExport::destinationCrs()
+QgsCoordinateReferenceSystem QgsDxfExport::destinationCrs() const
 {
   return mCrs;
 }

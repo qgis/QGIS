@@ -73,6 +73,20 @@ class QgsDxfExport
     QgsUnitTypes::DistanceUnit mapUnits() const;
 
     /**
+     * Set destination CRS
+     * @see destinationCrs()
+     * @note added in QGIS 3.0
+     */
+    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
+
+    /**
+     * Returns the destination CRS, or an invalid CRS if no reprojection will be done.
+     * @see setDestinationCrs()
+     * @note added in QGIS 3.0
+     */
+    QgsCoordinateReferenceSystem destinationCrs() const;
+
+    /**
      * Set symbology export mode
      * @param e the mode
      */

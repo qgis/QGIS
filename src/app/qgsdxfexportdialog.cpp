@@ -460,13 +460,12 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   restoreGeometry( s.value( "/Windows/DxfExport/geometry" ).toByteArray() );
 
-  mCRS = QgsProject::instance()->readEntry( "dxf", "/lastDxfCrs",
-         s.value( "qgis/lastDxfCrs", QString::number( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().srsid() ) ).toString()
-                                          ).toLong();
-
-  QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsBySrsId( mCRS );
-  mCrsSelector->setCrs( crs );
-  mCrsSelector->setLayerCrs( crs );
+  long crsid = QgsProject::instance()->readEntry( "dxf", "/lastDxfCrs",
+               s.value( "qgis/lastDxfCrs", QString::number( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().srsid() ) ).toString()
+                                                ).toLong();
+  mCRS = QgsCoordinateReferenceSystem::fromSrsId( crsid );
+  mCrsSelector->setCrs( mCRS );
+  mCrsSelector->setLayerCrs( mCRS );
   mCrsSelector->dialog()->setMessage( tr( "Select the coordinate reference system for the dxf file. "
                                           "The data points will be transformed from the layer coordinate reference system." ) );
 
@@ -613,7 +612,7 @@ void QgsDxfExportDialog::saveSettings()
   s.setValue( "qgis/lastDxfMapRectangle", mMapExtentCheckBox->isChecked() );
   s.setValue( "qgis/lastDxfLayerTitleAsName", mLayerTitleAsName->isChecked() );
   s.setValue( "qgis/lastDxfEncoding", mEncoding->currentText() );
-  s.setValue( "qgis/lastDxfCrs", QString::number( mCRS ) );
+  s.setValue( "qgis/lastDxfCrs", QString::number( mCRS.srsid() ) );
 
   QgsProject::instance()->writeEntry( "dxf", "/lastDxfSymbologyMode", mSymbologyModeComboBox->currentIndex() );
   QgsProject::instance()->writeEntry( "dxf", "/lastSymbologyExportScale", mScaleWidget->scale() );
@@ -621,7 +620,7 @@ void QgsDxfExportDialog::saveSettings()
   QgsProject::instance()->writeEntry( "dxf", "/lastDxfMapRectangle", mMapExtentCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( "dxf", "/lastDxfEncoding", mEncoding->currentText() );
   QgsProject::instance()->writeEntry( "dxf", "/lastVisibilityPreset", mVisibilityPresets->currentText() );
-  QgsProject::instance()->writeEntry( "dxf", "/lastDxfCrs", QString::number( mCRS ) );
+  QgsProject::instance()->writeEntry( "dxf", "/lastDxfCrs", QString::number( mCRS.srsid() ) );
 }
 
 
@@ -632,10 +631,10 @@ QString QgsDxfExportDialog::encoding() const
 
 void QgsDxfExportDialog::on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  mCRS = crs.srsid();
+  mCRS = crs;
 }
 
-long QgsDxfExportDialog::crs() const
+QgsCoordinateReferenceSystem QgsDxfExportDialog::crs() const
 {
   return mCRS;
 }

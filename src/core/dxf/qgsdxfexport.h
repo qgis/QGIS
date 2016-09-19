@@ -98,13 +98,17 @@ class CORE_EXPORT QgsDxfExport
 
     /**
      * Set destination CRS
+     * @see destinationCrs()
+     * @note added in QGIS 3.0
      */
-    void setDestinationCrs( long crs );
+    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
 
     /**
-     * Set destination CRS
+     * Returns the destination CRS, or an invalid CRS if no reprojection will be done.
+     * @see setDestinationCrs()
+     * @note added in QGIS 3.0
      */
-    long destinationCrs();
+    QgsCoordinateReferenceSystem destinationCrs() const;
 
     /**
      * Set symbology export mode
@@ -362,7 +366,7 @@ class CORE_EXPORT QgsDxfExport
     void writeSymbolLayerLinetype( const QgsSymbolLayer *symbolLayer );
     void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsUnitTypes::RenderUnit u );
 
-    void addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateTransform *ct, const QString &layer, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol );
+    void addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateTransform& ct, const QString &layer, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol );
 
     //returns dxf palette index from symbol layer color
     static QColor colorFromSymbolLayer( const QgsSymbolLayer *symbolLayer, QgsSymbolRenderContext &ctx );
@@ -390,7 +394,7 @@ class CORE_EXPORT QgsDxfExport
 
     //! DXF layer name for each label feature
     QMap< QString, QMap<QgsFeatureId, QString> > mDxfLayerNames;
-    long mCrs;
+    QgsCoordinateReferenceSystem mCrs;
     QgsMapSettings mMapSettings;
     double mFactor;
 };
