@@ -102,7 +102,9 @@ class Output(object):
         return []
 
     def resolveValue(self, alg):
-        if not self.hidden and not bool(self.value):
+        if self.hidden:
+            return
+        if not bool(self.value):
             self.value = self._resolveTemporary(alg)
         else:
             exp = QgsExpression(self.value)
