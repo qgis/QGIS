@@ -5083,6 +5083,7 @@ void QgisApp::dxfExport()
     dxfExport.setSymbologyScaleDenominator( d.symbologyScale() );
     dxfExport.setSymbologyExport( d.symbologyMode() );
     dxfExport.setLayerTitleAsName( d.layerTitleAsName() );
+    dxfExport.setDestinationCrs( d.crs() );
     if ( mapCanvas() )
     {
       dxfExport.setMapUnits( mapCanvas()->mapUnits() );

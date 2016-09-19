@@ -173,12 +173,6 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
 } //RgShortestPathWidget::RgShortestPathWidget()
 RgShortestPathWidget::~RgShortestPathWidget()
 {
-  delete mFrontPointMapTool;
-  delete mBackPointMapTool;
-
-  delete mrbFrontPoint;
-  delete mrbBackPoint;
-  delete mrbPath;
 } //RgShortestPathWidget::~RgShortestPathWidget()
 
 void RgShortestPathWidget::mapCanvasExtentsChanged()

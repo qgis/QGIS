@@ -35,6 +35,7 @@
 #include "geomfunction.h"
 #include "util.h"
 #include "qgslabelingengine.h"
+
 #include <cmath>
 #include <vector>
 
