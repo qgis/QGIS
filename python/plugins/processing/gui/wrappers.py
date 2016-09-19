@@ -406,7 +406,9 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
                 opts = [getExtendedLayerName(opt) for opt in options]
                 return MultipleInputPanel(opts)
         elif self.dialogType == DIALOG_BATCH:
-            return BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget = BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            return widget
         else:
             options = [self.dialog.resolveValueDescription(opt) for opt in self._getOptions()]
             return MultipleInputPanel(options)
