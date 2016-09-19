@@ -294,10 +294,9 @@ ENDIF (WITH_TOUCH)
 FIND_PACKAGE(QScintilla REQUIRED)
 
 # search for QJSON and decide whether to enable ArcGIS providers
-FIND_PACKAGE (QJSON)
-IF (QJSON_FOUND AND NOT ENABLE_QT5)
-  SET (WITH_ARCGIS TRUE)
-ENDIF (QJSON_FOUND AND NOT ENABLE_QT5)
+
+# TODO - needs to be ported to qt5
+SET (WITH_ARCGIS FALSE)
 
 # Master password hash and authentication encryption
 FIND_PACKAGE(QCA REQUIRED)
