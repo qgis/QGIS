@@ -60,7 +60,7 @@ class BatchInputSelectionPanel(QWidget):
         self.text.setObjectName('text')
         self.text.setMinimumWidth(300)
         self.setValue('')
-        self.text.editingFinished.connect(self.on_text_EditingFinished)
+        self.text.editingFinished.connect(self.textEditingFinished)
         self.text.setSizePolicy(QSizePolicy.Expanding,
                                 QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.text)
@@ -157,7 +157,7 @@ class BatchInputSelectionPanel(QWidget):
                         self._table().cellWidget(i + self.row,
                                               self.col).setValue(f)
 
-    def on_text_EditingFinished(self):
+    def textEditingFinished(self):
         self._value = self.text.text()
         self.valueChanged.emit()
 
@@ -168,6 +168,6 @@ class BatchInputSelectionPanel(QWidget):
         self._value = value
         if isinstance(value, QgsMapLayer):
             self.text.setText(value.name())
-        else:  # should be basestring
+        else:  #  should be basestring
             self.text.setText(value)
         self.valueChanged.emit()
