@@ -40,7 +40,7 @@ WIDGET, BASE = uic.loadUiType(
 
 class InputLayerSelectorPanel(BASE, WIDGET):
 
-    valueHasChanged = pyqtSignal()
+    valueChanged = pyqtSignal()
 
     def __init__(self, options, param):
         super(InputLayerSelectorPanel, self).__init__(None)
@@ -56,7 +56,7 @@ class InputLayerSelectorPanel(BASE, WIDGET):
             self.cmbText.addItem(name, value)
 
         self.btnSelect.clicked.connect(self.showSelectionDialog)
-        self.cmbText.currentIndexChanged.connect(self.valueHasChanged.emit)
+        self.cmbText.currentIndexChanged.connect(self.valueChanged.emit)
 
     def showSelectionDialog(self):
         settings = QSettings()
@@ -83,7 +83,7 @@ class InputLayerSelectorPanel(BASE, WIDGET):
         self.cmbText.clear()
         for (name, value) in options:
             self.cmbText.addItem(name, value)
-        self.valueHasChanged.emit()
+        self.valueChanged.emit()
 
     def getValue(self):
         return self.cmbText.itemData(self.cmbText.currentIndex())
