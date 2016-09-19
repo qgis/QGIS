@@ -51,7 +51,7 @@ class CORE_EXPORT QgsProperty
     QgsProperty()
     {}
 
-    virtual ~ QgsProperty()
+    virtual ~QgsProperty()
     {}
 
     /** Dumps out the keys and values
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
 {
   public:
     QgsPropertyKey( const QString &name = "" );
-    virtual ~ QgsPropertyKey();
+    virtual ~QgsPropertyKey();
 
     /// every key has a name
     // @{

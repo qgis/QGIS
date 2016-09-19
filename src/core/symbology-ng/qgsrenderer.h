@@ -213,7 +213,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * @param context render context
      * @note added in QGIS 2.12
      */
-    virtual QgsSymbolList symbols( QgsRenderContext& context ) {  Q_UNUSED( context ); return QgsSymbolList(); }
+    virtual QgsSymbolList symbols( QgsRenderContext& context ) { Q_UNUSED( context ); return QgsSymbolList(); }
 
     bool usingSymbolLevels() const { return mUsingSymbolLevels; }
     void setUsingSymbolLevels( bool usingSymbolLevels ) { mUsingSymbolLevels = usingSymbolLevels; }

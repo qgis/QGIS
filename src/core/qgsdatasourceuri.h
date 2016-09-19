@@ -238,7 +238,7 @@ class CORE_EXPORT QgsDataSourceUri
     bool mUseEstimatedMetadata;
     //! Disable SelectAtId capability (eg. to trigger the attribute table memory model for expensive views)
     bool mSelectAtIdDisabled;
-    //! geometry type (or QGis::WKBUnknown if not specified)
+    //! geometry type (or QgsWkbTypes::Unknown if not specified)
     QgsWkbTypes::Type mWkbType;
     //! SRID or a null string if not specified
     QString mSrid;

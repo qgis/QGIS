@@ -40,6 +40,7 @@ extern "C"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
 #include "qgsconfig.h"
+#include "qgsunittypes.h"
 
 #include <QByteArray>
 #include <QFileDialog>
@@ -1060,7 +1061,7 @@ int GRASS_LIB_EXPORT G_get_cellhd( const char *name, const char *mapset, struct 
 
 double QgsGrassGisLib::G_database_units_to_meters_factor( void )
 {
-  return QGis::fromUnitToUnitFactor( mCrs.mapUnits(), Qgis::Meters );
+  return QgsUnitTypes::fromUnitToUnitFactor( mCrs.mapUnits(), QgsUnitTypes::DistanceMeters );
 }
 
 double QgsGrassGisLib::G_area_of_cell_at_row( int row )
