@@ -229,13 +229,14 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   }
 
   const GEOSGeometry* geos_geom = nullptr;
-  QScopedPointer<QgsGeometry> preparedGeom;
+  QScopedPointer<QgsGeometry> scopedPreparedGeom;
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), &extentGeom ) )
   {
-    QgsGeometry preparedGeom = QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), &extentGeom );
-    if ( preparedGeom.isEmpty() )
+    scopedPreparedGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), &extentGeom ) ) );
+    QgsGeometry* preparedGeom = scopedPreparedGeom.data();
+    if ( preparedGeom->isEmpty() )
       return nullptr;
-    geos_geom = preparedGeom.asGeos();
+    geos_geom = preparedGeom->asGeos();
   }
   else
   {
