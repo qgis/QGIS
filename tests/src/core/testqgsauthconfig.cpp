@@ -205,11 +205,7 @@ void TestQgsAuthConfig::testConfigSslServer()
 
   QgsAuthConfigSslServer sslconfig;
   QVERIFY( sslconfig.isNull() );
-#if QT_VERSION >= 0x040800
   QCOMPARE( sslconfig.qtVersion(), 480 );
-#else
-  QCOMPARE( sslconfig.qtVersion(), 470 );
-#endif
   QCOMPARE( sslconfig.version(), 1 );
   QCOMPARE( sslconfig.sslPeerVerifyMode(), QSslSocket::VerifyPeer );
 

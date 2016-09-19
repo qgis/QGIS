@@ -30,12 +30,10 @@ QString QgsAuthCertUtils::getSslProtocolName( QSsl::SslProtocol protocol )
 {
   switch ( protocol )
   {
-#if QT_VERSION >= 0x040800
     case QSsl::SecureProtocols:
       return QObject::tr( "SecureProtocols" );
     case QSsl::TlsV1SslV3:
       return QObject::tr( "TlsV1SslV3" );
-#endif
     case QSsl::TlsV1:
       return QObject::tr( "TlsV1" );
     case QSsl::SslV3:

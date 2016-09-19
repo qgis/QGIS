@@ -4,15 +4,9 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
-IF(ENABLE_QT5)
-  SET(PYUIC_PROG_NAME pyuic5)
-  SET(PYUIC_PROG_NAMES pyuic5)
-  SET(PYRCC_PROG_NAME pyrcc5)
-ELSE(ENABLE_QT5)
-  SET(PYUIC_PROG_NAME pyuic4)
-  SET(PYUIC_PROG_NAMES python2-pyuic4 pyuic4)
-  SET(PYRCC_PROG_NAME pyrcc4)
-ENDIF(ENABLE_QT5)
+SET(PYUIC_PROG_NAME pyuic5)
+SET(PYUIC_PROG_NAMES pyuic5)
+SET(PYRCC_PROG_NAME pyrcc5)
 
 IF(NOT PYUIC_PROGRAM)
   IF (MSVC)

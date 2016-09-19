@@ -439,7 +439,6 @@ QString QgsFontUtils::asCSS( const QFont& font, double pointToPixelScale )
     case QFont::Black:
       cssWeight = 900;
       break;
-#if QT_VERSION >= 0x050500
     case QFont::Thin:
       cssWeight = 100;
       break;
@@ -452,7 +451,6 @@ QString QgsFontUtils::asCSS( const QFont& font, double pointToPixelScale )
     case QFont::ExtraBold:
       cssWeight = 800;
       break;
-#endif
   }
   css += QString( "font-weight: %1;" ).arg( cssWeight );
 

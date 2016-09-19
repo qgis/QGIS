@@ -26,9 +26,7 @@
 #include <QSettings>
 #include <QRegExp>
 #include <QUrl>
-#if QT_VERSION >= 0x050000
 #include <QUrlQuery>
-#endif
 
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
@@ -155,12 +153,8 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
 
   if ( url.hasQueryItem( "subset" ) )
   {
-#if QT_VERSION < 0x050000
-    subset = url.queryItemValue( "subset" );
-#else
     // We need to specify FullyDecoded so that %25 is decoded as %
     subset = QUrlQuery( url ).queryItemValue( "subset" , QUrl::FullyDecoded );
-#endif
     QgsDebugMsg( "subset is: " + subset );
   }
 

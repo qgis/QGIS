@@ -131,12 +131,10 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
   // add config field names
   mProtocolItem = addRootItem( tr( "Protocol" ) );
   mProtocolCmbBx = new QComboBox( treeSslConfig );
-#if QT_VERSION >= 0x040800
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::SecureProtocols ),
                            ( int )QSsl::SecureProtocols );
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::TlsV1SslV3 ),
                            ( int )QSsl::TlsV1SslV3 );
-#endif
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::TlsV1 ),
                            ( int )QSsl::TlsV1 );
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::SslV3 ),

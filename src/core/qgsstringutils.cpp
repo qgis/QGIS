@@ -45,13 +45,8 @@ QString QgsStringUtils::capitalize( const QString& string, QgsStringUtils::Capit
 
       wordSplitter.setPosition( 0 );
       bool first = true;
-#if QT_VERSION >= 0x050000
       while (( first && wordSplitter.boundaryReasons() & QTextBoundaryFinder::StartOfItem )
              || wordSplitter.toNextBoundary() >= 0 )
-#else
-      while (( first && wordSplitter.boundaryReasons() & QTextBoundaryFinder::StartWord )
-             || wordSplitter.toNextBoundary() >= 0 )
-#endif
       {
         first = false;
         letterSplitter.setPosition( wordSplitter.position() );
