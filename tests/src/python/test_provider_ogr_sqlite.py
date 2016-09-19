@@ -66,7 +66,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         f = None
         ds = None
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile), u'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
         self.assertEqual(len(vl.fields()), 3)
         got = [(f.attribute('fid'), f.attribute('strfield'), f.attribute('intfield')) for f in vl.getFeatures()]
         self.assertEqual(got, [(12, 'foo', 123)])

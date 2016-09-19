@@ -61,13 +61,13 @@ class TestQgsFeatureIterator(unittest.TestCase):
         layer = QgsVectorLayer(myShpFile, 'poly', 'ogr')
 
         layer.setProviderEncoding("ISO-8859-1")
-        ids = [feat.id() for feat in layer.getFeatures(QgsFeatureRequest().setFilterExpression(u"TYPE_1 = 'Région'"))]
+        ids = [feat.id() for feat in layer.getFeatures(QgsFeatureRequest().setFilterExpression("TYPE_1 = 'Région'"))]
         expectedIds = [0, 1, 2, 3]
         myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
         assert ids == expectedIds, myMessage
 
         layer.setProviderEncoding("UTF-8")
-        ids = [feat.id() for feat in layer.getFeatures(QgsFeatureRequest().setFilterExpression(u"TYPE_1 = 'Région'"))]
+        ids = [feat.id() for feat in layer.getFeatures(QgsFeatureRequest().setFilterExpression("TYPE_1 = 'Région'"))]
         expectedIds = []
         myMessage = '\nExpected: {0} features\nGot: {1} features'.format(repr(expectedIds), repr(ids))
         assert ids == expectedIds, myMessage
@@ -79,20 +79,20 @@ class TestQgsFeatureIterator(unittest.TestCase):
 
         ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterFids([7, 8, 12, 30]))]
         expectedIds = [7, 8, 12]
-        self.assertEquals(set(ids), set(expectedIds))
+        self.assertEqual(set(ids), set(expectedIds))
 
         pointLayer.startEditing()
         self.addFeatures(pointLayer)
 
         ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterFids([-4, 7, 8, 12, 30]))]
         expectedIds = [-4, 7, 8, 12]
-        self.assertEquals(set(ids), set(expectedIds))
+        self.assertEqual(set(ids), set(expectedIds))
 
         pointLayer.rollBack()
 
         ids = [feat.id() for feat in pointLayer.getFeatures(QgsFeatureRequest().setFilterFids([-2, 7, 8, 12, 30]))]
         expectedIds = [7, 8, 12]
-        self.assertEquals(set(ids), set(expectedIds))
+        self.assertEqual(set(ids), set(expectedIds))
 
     def addFeatures(self, vl):
         feat = QgsFeature()

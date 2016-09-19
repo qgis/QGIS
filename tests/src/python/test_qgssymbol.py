@@ -188,7 +188,7 @@ class TestQgsSymbol(unittest.TestCase):
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
         self.report += checker.report()
-        print(self.report)
+        print((self.report))
         return result
 
 

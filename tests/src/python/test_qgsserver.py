@@ -15,9 +15,11 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
-import urllib
+import urllib.request
+import urllib.parse
+import urllib.error
 from mimetools import Message
-from StringIO import StringIO
+from io import StringIO
 from qgis.server import QgsServer
 from qgis.core import QgsMessageLog
 from qgis.testing import unittest
@@ -153,7 +155,7 @@ class TestQgsServer(unittest.TestCase):
         project = self.testdata_path + "test+project.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.quote(project), request)
+        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.parse.quote(project), request)
         if extra is not None:
             query_string += extra
         header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
@@ -209,7 +211,7 @@ class TestQgsServer(unittest.TestCase):
                                  'INFO_FORMAT=text%2Fxml&' +
                                  'width=600&height=400&srs=EPSG%3A3857&' +
                                  'query_layers=testlayer%20%C3%A8%C3%A9&' +
-                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.quote(':"NAME" = \'two\''),
+                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\''),
                                  'wms_getfeatureinfo_filter')
 
     def wms_inspire_request_compare(self, request):
@@ -217,7 +219,7 @@ class TestQgsServer(unittest.TestCase):
         project = self.testdata_path + "test+project_inspire.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (urllib.quote(project), request)
+        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (urllib.parse.quote(project), request)
         header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
         response = header + body
         f = open(self.testdata_path + request.lower() + '_inspire.txt')
@@ -246,7 +248,7 @@ class TestQgsServer(unittest.TestCase):
         project = self.testdata_path + "test+project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.quote(project), request)
+        query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
         header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
         self.assert_headers(header, body)
         response = header + body
@@ -280,11 +282,11 @@ class TestQgsServer(unittest.TestCase):
         project = self.testdata_path + "test+project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.quote(project), request)
+        query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
         header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
         self.result_compare(
             'wfs_getfeature_' + requestid + '.txt',
-            u"request %s failed.\n Query: %s" % (
+            "request %s failed.\n Query: %s" % (
                 query_string,
                 request,
             ),
@@ -308,17 +310,17 @@ class TestQgsServer(unittest.TestCase):
         """
         response = re.sub(RE_STRIP_PATH, '', response)
         expected = re.sub(RE_STRIP_PATH, '', expected)
-        self.assertEqual(response, expected, msg=u"%s\n Expected:\n%s\n\n Response:\n%s"
+        self.assertEqual(response, expected, msg="%s\n Expected:\n%s\n\n Response:\n%s"
                                                  % (error_msg_header,
-                                                    unicode(expected, errors='replace'),
-                                                    unicode(response, errors='replace')))
+                                                    str(expected, errors='replace'),
+                                                    str(response, errors='replace')))
 
     def test_getfeature(self):
         tests = []
-        tests.append(('nobbox', u'GetFeature&TYPENAME=testlayer'))
-        tests.append(('startindex2', u'GetFeature&TYPENAME=testlayer&STARTINDEX=2'))
-        tests.append(('limit2', u'GetFeature&TYPENAME=testlayer&MAXFEATURES=2'))
-        tests.append(('start1_limit1', u'GetFeature&TYPENAME=testlayer&MAXFEATURES=1&STARTINDEX=1'))
+        tests.append(('nobbox', 'GetFeature&TYPENAME=testlayer'))
+        tests.append(('startindex2', 'GetFeature&TYPENAME=testlayer&STARTINDEX=2'))
+        tests.append(('limit2', 'GetFeature&TYPENAME=testlayer&MAXFEATURES=2'))
+        tests.append(('start1_limit1', 'GetFeature&TYPENAME=testlayer&MAXFEATURES=1&STARTINDEX=1'))
 
         for id, req in tests:
             self.wfs_getfeature_compare(id, req)
@@ -327,7 +329,7 @@ class TestQgsServer(unittest.TestCase):
         project = self.testdata_path + "test+project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP={}'.format(urllib.quote(project))
+        query_string = 'MAP={}'.format(urllib.parse.quote(project))
         self.server.putenv("REQUEST_METHOD", "POST")
         self.server.putenv("REQUEST_BODY", request)
         header, body = self.server.handleRequest(query_string)
@@ -376,12 +378,12 @@ class TestQgsServer(unittest.TestCase):
             'FORMAT': 'image/png',
             #'WIDTH': '20', # optional
             #'HEIGHT': '20', # optional
-            'LAYER': u'testlayer+èé',
+            'LAYER': 'testlayer+èé',
         }
-        qs = '&'.join([u"%s=%s" % (k, v) for k, v in parms.iteritems()])
+        qs = '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
         h, r = self.server.handleRequest(qs)
         self.assertEqual(-1, h.find('Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
-        self.assertNotEquals(-1, h.find('Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
+        self.assertNotEqual(-1, h.find('Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
 
 
 if __name__ == '__main__':

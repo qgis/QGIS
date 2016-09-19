@@ -134,10 +134,10 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         pass
 
     def enableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', True)
+        QSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', False)
+        QSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
         return set(['cnt = 10 ^ 2',
@@ -238,7 +238,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         # The iterator will take one extra connection
         myiter = vl.getFeatures()
-        print(vl.featureCount())
+        print((vl.featureCount()))
         # Consume one feature but the iterator is still opened
         f = next(myiter)
         self.assertTrue(f.isValid())

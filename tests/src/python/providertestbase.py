@@ -6,7 +6,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from __future__ import print_function
+
 from builtins import str
 from builtins import object
 __author__ = 'Matthias Kuhn'
@@ -71,7 +71,7 @@ class ProviderTestCase(object):
                                3: None,
                                4: 'Point(-65.32 78.3)',
                                5: 'Point(-71.123 78.23)'}
-        for pk, geom in expected_geometries.items():
+        for pk, geom in list(expected_geometries.items()):
             if geom:
                 assert compareWkt(geom, geometries[pk]), "Geometry {} mismatch Expected:\n{}\nGot:\n{}\n".format(pk, geom, geometries[pk].exportToWkt())
             else:
@@ -534,7 +534,7 @@ class ProviderTestCase(object):
 
     def testUnique(self):
         self.assertEqual(set(self.provider.uniqueValues(1)), set([-200, 100, 200, 300, 400]))
-        assert set([u'Apple', u'Honey', u'Orange', u'Pear', NULL]) == set(self.provider.uniqueValues(2)), 'Got {}'.format(set(self.provider.uniqueValues(2)))
+        assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(self.provider.uniqueValues(2)), 'Got {}'.format(set(self.provider.uniqueValues(2)))
 
         subset = self.getSubsetString2()
         self.provider.setSubsetString(subset)
@@ -574,7 +574,7 @@ class ProviderTestCase(object):
                  'cnt': set([-200, 300, 100, 200, 400]),
                  'name': set(['Pear', 'Orange', 'Apple', 'Honey', NULL]),
                  'name2': set(['NuLl', 'PEaR', 'oranGe', 'Apple', 'Honey'])}
-        for field, expected in tests.items():
+        for field, expected in list(tests.items()):
             request = QgsFeatureRequest().setSubsetOfAttributes([field], self.provider.fields())
             result = set([f[field] for f in self.provider.getFeatures(request)])
             all_valid = (all(f.isValid() for f in self.provider.getFeatures(request)))

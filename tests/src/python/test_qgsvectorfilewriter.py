@@ -121,7 +121,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(write_result, QgsVectorFileWriter.NoError)
 
         # Open result and check
-        created_layer = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+        created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
 
         fields = created_layer.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName('date_f')).type(), QVariant.Date)
@@ -176,7 +176,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(write_result, QgsVectorFileWriter.NoError)
 
         # Open result and check
-        created_layer = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+        created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
 
         fields = created_layer.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName('date_f')).type(), QVariant.Date)
@@ -231,7 +231,7 @@ class TestQgsVectorLayer(unittest.TestCase):
             self.assertEqual(write_result, QgsVectorFileWriter.NoError)
 
             # Open result and check
-            created_layer = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+            created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
             f = next(created_layer.getFeatures(QgsFeatureRequest()))
             g = f.geometry()
             wkt = g.exportToWkt()
@@ -253,7 +253,7 @@ class TestQgsVectorLayer(unittest.TestCase):
             self.assertEqual(write_result, QgsVectorFileWriter.NoError)
 
             # Open result and check
-            created_layer_from_shp = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+            created_layer_from_shp = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
             f = next(created_layer_from_shp.getFeatures(QgsFeatureRequest()))
             g = f.geometry()
             wkt = g.exportToWkt()
@@ -291,7 +291,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(write_result, QgsVectorFileWriter.NoError)
 
         # Open result and check
-        created_layer = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+        created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
         g = f.geometry()
         wkt = g.exportToWkt()
@@ -331,7 +331,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(write_result, QgsVectorFileWriter.NoError)
 
         # Open result and check
-        created_layer = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+        created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
         self.assertEqual(created_layer.fields().count(), 4)
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
         self.assertEqual(f['id'], 1)
@@ -351,7 +351,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(write_result, QgsVectorFileWriter.NoError)
 
         # Open result and check
-        created_layer = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+        created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
         self.assertEqual(created_layer.fields().count(), 2)
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
         self.assertEqual(f['field1'], 11)
@@ -369,7 +369,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(write_result, QgsVectorFileWriter.NoError)
 
         # Open result and check
-        created_layer = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+        created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
         # expect only a default 'FID' field for shapefiles
         self.assertEqual(created_layer.fields().count(), 1)
         self.assertEqual(created_layer.fields()[0].name(), 'FID')
@@ -414,7 +414,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(write_result, QgsVectorFileWriter.NoError)
 
         # Open result and check
-        created_layer = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+        created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
         self.assertEqual(created_layer.fields().count(), 2)
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
         self.assertEqual(f['nonconv'], 1)
@@ -451,7 +451,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(write_result, QgsVectorFileWriter.NoError)
 
         # Open result and check
-        created_layer = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+        created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
 
         fields = created_layer.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName('int8')).type(), QVariant.Double)

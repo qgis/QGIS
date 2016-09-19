@@ -44,9 +44,9 @@ class PyQgsAttributeFormEditorWidget(unittest.TestCase):
         # test that filter combines both current value in search widget wrapper and flags from search tool button
         w.lineEdit().setText('5.5')
         af.searchWidgetToolButton().setActiveFlags(QgsSearchWidgetWrapper.EqualTo)
-        self.assertEquals(af.currentFilterExpression(), '"fldint"=5.5')
+        self.assertEqual(af.currentFilterExpression(), '"fldint"=5.5')
         af.searchWidgetToolButton().setActiveFlags(QgsSearchWidgetWrapper.NotEqualTo)
-        self.assertEquals(af.currentFilterExpression(), '"fldint"<>5.5')
+        self.assertEqual(af.currentFilterExpression(), '"fldint"<>5.5')
 
     def testSetActive(self):
         """ Test setting the search as active - should set active flags to match search widget wrapper's defaults """
@@ -88,9 +88,9 @@ class PyQgsAttributeFormEditorWidget(unittest.TestCase):
         d2.setDateTime(QDateTime(QDate(2013, 5, 16), QTime()))
 
         af.searchWidgetToolButton().setActiveFlags(QgsSearchWidgetWrapper.Between)
-        self.assertEquals(af.currentFilterExpression(), '"fldtext">=\'2013-05-06\' AND "fldtext"<=\'2013-05-16\'')
+        self.assertEqual(af.currentFilterExpression(), '"fldtext">=\'2013-05-06\' AND "fldtext"<=\'2013-05-16\'')
         af.searchWidgetToolButton().setActiveFlags(QgsSearchWidgetWrapper.IsNotBetween)
-        self.assertEquals(af.currentFilterExpression(), '"fldtext"<\'2013-05-06\' OR "fldtext">\'2013-05-16\'')
+        self.assertEqual(af.currentFilterExpression(), '"fldtext"<\'2013-05-06\' OR "fldtext">\'2013-05-16\'')
 
 
 if __name__ == '__main__':

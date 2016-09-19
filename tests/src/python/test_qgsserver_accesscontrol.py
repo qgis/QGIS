@@ -27,7 +27,9 @@ from qgis.server import QgsServer, QgsAccessControlFilter
 from qgis.core import QgsRenderChecker
 from qgis.PyQt.QtCore import QSize
 import tempfile
-import urllib
+import urllib.request
+import urllib.parse
+import urllib.error
 import base64
 
 
@@ -185,12 +187,12 @@ class TestQgsServerAccessControl(unittest.TestCase):
 # # WMS # # WMS # # WMS # #
 
     def test_wms_getcapabilities(self):
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetCapabilities"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -209,14 +211,14 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "Country layer in GetCapabilities\n%s" % response)
 
     def test_wms_describelayer_hello(self):
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "DescribeLayer",
             "LAYERS": "Hello",
             "SLD_VERSION": "1.1.0"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -229,14 +231,14 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "No Hello layer in DescribeLayer\n%s" % response)
 
     def test_wms_describelayer_country(self):
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "DescribeLayer",
             "LAYERS": "Country",
             "SLD_VERSION": "1.1.0"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -249,14 +251,14 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "Country layer in DescribeLayer\n%s" % response)
 
     def test_wms_getlegendgraphic_hello(self):
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetLegendGraphic",
             "LAYERS": "Hello",
             "FORMAT": "image/png"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self._img_diff_error(response, headers, "WMS_GetLegendGraphic_Hello", 250, QSize(10, 10))
@@ -265,14 +267,14 @@ class TestQgsServerAccessControl(unittest.TestCase):
         self._img_diff_error(response, headers, "WMS_GetLegendGraphic_Hello", 250, QSize(10, 10))
 
     def test_wms_getlegendgraphic_country(self):
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetLegendGraphic",
             "LAYERS": "Country",
             "FORMAT": "image/png"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self._img_diff_error(response, headers, "WMS_GetLegendGraphic_Country", 250, QSize(10, 10))
@@ -287,8 +289,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
         )
 
     def test_wms_getmap(self):
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
@@ -299,13 +301,13 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "SRS": "EPSG:3857"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self._img_diff_error(response, headers, "WMS_GetMap")
 
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
@@ -316,12 +318,12 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "SRS": "EPSG:3857"
-        }.items()])
+        }.items())])
         response, headers = self._get_restricted(query_string)
         self._img_diff_error(response, headers, "Restricted_WMS_GetMap")
 
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
@@ -332,7 +334,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "SRS": "EPSG:3857"
-        }.items()])
+        }.items())])
         response, headers = self._get_restricted(query_string)
         self.assertEqual(
             headers.get("Content-Type"), "text/xml; charset=utf-8",
@@ -343,8 +345,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
         )
 
     def test_wms_getfeatureinfo_hello(self):
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetFeatureInfo",
@@ -360,7 +362,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "INFO_FORMAT": "application/vnd.ogc.gml",
             "X": "56",
             "Y": "144"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -382,8 +384,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "Unexpected color NULL in result of GetFeatureInfo\n%s" % response)
 
     def test_wms_getfeatureinfo_hello2(self):
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetFeatureInfo",
@@ -399,7 +401,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "INFO_FORMAT": "application/vnd.ogc.gml",
             "X": "146",
             "Y": "160"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -412,8 +414,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "Unexpected result in GetFeatureInfo\n%s" % response)
 
     def test_wms_getfeatureinfo_country(self):
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetFeatureInfo",
@@ -429,7 +431,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "INFO_FORMAT": "application/vnd.ogc.gml",
             "X": "56",
             "Y": "144"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -444,12 +446,12 @@ class TestQgsServerAccessControl(unittest.TestCase):
 # # WFS # # WFS # # WFS # #
 
     def test_wfs_getcapabilities(self):
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WFS",
             "VERSION": "1.1.0",
             "REQUEST": "GetCapabilities"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -468,13 +470,13 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "Unexpected Country layer in WFS/GetCapabilities\n%s" % response)
 
     def test_wfs_describefeaturetype_hello(self):
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WFS",
             "VERSION": "1.1.0",
             "REQUEST": "DescribeFeatureType",
             "TYPENAME": "Hello"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -487,13 +489,13 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "No Hello layer in DescribeFeatureType\n%s" % response)
 
     def test_wfs_describefeaturetype_country(self):
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WFS",
             "VERSION": "1.1.0",
             "REQUEST": "DescribeFeatureType",
             "TYPENAME": "Country"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -575,12 +577,12 @@ class TestQgsServerAccessControl(unittest.TestCase):
 # # WCS # # WCS # # WCS # #
 
     def test_wcs_getcapabilities(self):
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WCS",
             "VERSION": "1.0.0",
             "REQUEST": "GetCapabilities",
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -592,13 +594,13 @@ class TestQgsServerAccessControl(unittest.TestCase):
             str(response).find("<name>dem</name>") != -1,
             "No dem layer in WCS/GetCapabilities\n%s" % response)
 
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WCS",
             "VERSION": "1.0.0",
             "REQUEST": "GetCapabilities",
             "TEST": "dem",
-        }.items()])
+        }.items())])
 
         response, headers = self._get_restricted(query_string)
         self.assertFalse(
@@ -606,13 +608,13 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "Unexpected dem layer in WCS/GetCapabilities\n%s" % response)
 
     def test_wcs_describecoverage(self):
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WCS",
             "VERSION": "1.0.0",
             "REQUEST": "DescribeCoverage",
             "COVERAGE": "dem",
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -624,14 +626,14 @@ class TestQgsServerAccessControl(unittest.TestCase):
             str(response).find("<name>dem</name>") != -1,
             "No dem layer in DescribeCoverage\n%s" % response)
 
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WCS",
             "VERSION": "1.0.0",
             "REQUEST": "DescribeCoverage",
             "COVERAGE": "dem",
             "TEST": "dem",
-        }.items()])
+        }.items())])
 
         response, headers = self._get_restricted(query_string)
         self.assertFalse(
@@ -639,8 +641,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "Unexpected dem layer in DescribeCoverage\n%s" % response)
 
     def test_wcs_getcoverage(self):
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WCS",
             "VERSION": "1.0.0",
             "REQUEST": "GetCoverage",
@@ -650,7 +652,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "HEIGHT": "100",
             "WIDTH": "100",
             "FORMAT": "GTiff",
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertEqual(
@@ -668,8 +670,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
             self._geo_img_diff(response, "WCS_GetCoverage.geotiff") == 0,
             "Image for GetCoverage is wrong")
 
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WCS",
             "VERSION": "1.0.0",
             "REQUEST": "GetCoverage",
@@ -680,7 +682,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "WIDTH": "100",
             "FORMAT": "GTiff",
             "TEST": "dem",
-        }.items()])
+        }.items())])
 
         response, headers = self._get_restricted(query_string)
         self.assertEqual(
@@ -835,8 +837,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
 
 # # WMS # # WMS # # WMS # #
     def test_wms_getmap_subsetstring(self):
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
@@ -847,13 +849,13 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "SRS": "EPSG:3857"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self._img_diff_error(response, headers, "WMS_GetMap")
 
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
@@ -864,7 +866,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "SRS": "EPSG:3857"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_restricted(query_string)
         self._img_diff_error(response, headers, "Restricted_WMS_GetMap")
@@ -874,8 +876,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
         test we reuse the projectsubsetstring reference images as we are using filter requests to set the same
         filter " pkuid in (7,8) " as the project subsetstring uses for its test.
         """
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
@@ -887,13 +889,13 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "SRS": "EPSG:3857"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self._img_diff_error(response, headers, "WMS_GetMap_projectsubstring")
 
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
@@ -905,15 +907,15 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "SRS": "EPSG:3857"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_restricted(query_string)
         self._img_diff_error(response, headers, "Restricted_WMS_GetMap_projectsubstring")
 
     def test_wms_getmap_projectsubsetstring(self):
         """ test that project set layer subsetStrings are honored"""
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
@@ -924,13 +926,13 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "SRS": "EPSG:3857"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self._img_diff_error(response, headers, "WMS_GetMap_projectsubstring")
 
-        query_string = "&".join(["%s=%s" % i for i in {
-            "MAP": urllib.quote(self.projectPath),
+        query_string = "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
@@ -941,13 +943,13 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "SRS": "EPSG:3857"
-        }.items()])
+        }.items())])
 
         response, headers = self._get_restricted(query_string)
         self._img_diff_error(response, headers, "Restricted_WMS_GetMap_projectsubstring")
 
     def test_wms_getfeatureinfo_subsetstring(self):
-        query_string = "&".join(["%s=%s" % i for i in {
+        query_string = "&".join(["%s=%s" % i for i in list({
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetFeatureInfo",
@@ -963,8 +965,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "INFO_FORMAT": "application/vnd.ogc.gml",
             "X": "56",
             "Y": "144",
-            "MAP": urllib.quote(self.projectPath)
-        }.items()])
+            "MAP": urllib.parse.quote(self.projectPath)
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -983,7 +985,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "No good result in GetFeatureInfo Hello/1\n%s" % response)
 
     def test_wms_getfeatureinfo_subsetstring2(self):
-        query_string = "&".join(["%s=%s" % i for i in {
+        query_string = "&".join(["%s=%s" % i for i in list({
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetFeatureInfo",
@@ -999,8 +1001,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "INFO_FORMAT": "application/vnd.ogc.gml",
             "X": "146",
             "Y": "160",
-            "MAP": urllib.quote(self.projectPath)
-        }.items()])
+            "MAP": urllib.parse.quote(self.projectPath)
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -1019,7 +1021,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         """test that layer subsetStrings set in projects are honored. This test checks for a feature which should be filtered
         out by the project set layer subsetString
         """
-        query_string = "&".join(["%s=%s" % i for i in {
+        query_string = "&".join(["%s=%s" % i for i in list({
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetFeatureInfo",
@@ -1035,8 +1037,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "INFO_FORMAT": "application/vnd.ogc.gml",
             "X": "56",
             "Y": "144",
-            "MAP": urllib.quote(self.projectPath)
-        }.items()])
+            "MAP": urllib.parse.quote(self.projectPath)
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertFalse(
@@ -1052,7 +1054,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         """test that layer subsetStrings set in projects are honored. This test checks for a feature which should pass
         both project set layer subsetString and access control filters
         """
-        query_string = "&".join(["%s=%s" % i for i in {
+        query_string = "&".join(["%s=%s" % i for i in list({
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetFeatureInfo",
@@ -1068,8 +1070,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "INFO_FORMAT": "application/vnd.ogc.gml",
             "X": "146",
             "Y": "160",
-            "MAP": urllib.quote(self.projectPath)
-        }.items()])
+            "MAP": urllib.parse.quote(self.projectPath)
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -1091,7 +1093,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         """test that layer subsetStrings set in projects are honored. This test checks for a feature which should pass
         the project set layer subsetString but fail the access control checks
         """
-        query_string = "&".join(["%s=%s" % i for i in {
+        query_string = "&".join(["%s=%s" % i for i in list({
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetFeatureInfo",
@@ -1107,8 +1109,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "INFO_FORMAT": "application/vnd.ogc.gml",
             "X": "146",
             "Y": "160",
-            "MAP": urllib.quote(self.projectPath)
-        }.items()])
+            "MAP": urllib.parse.quote(self.projectPath)
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -1127,7 +1129,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         """test that request filters are honored. This test checks for a feature which should be filtered
         out by the request filter
         """
-        query_string = "&".join(["%s=%s" % i for i in {
+        query_string = "&".join(["%s=%s" % i for i in list({
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetFeatureInfo",
@@ -1144,8 +1146,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "INFO_FORMAT": "application/vnd.ogc.gml",
             "X": "56",
             "Y": "144",
-            "MAP": urllib.quote(self.projectPath)
-        }.items()])
+            "MAP": urllib.parse.quote(self.projectPath)
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertFalse(
@@ -1161,7 +1163,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         """test that request filters are honored. This test checks for a feature which should pass
         both request filter and access control filters
         """
-        query_string = "&".join(["%s=%s" % i for i in {
+        query_string = "&".join(["%s=%s" % i for i in list({
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetFeatureInfo",
@@ -1178,8 +1180,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "INFO_FORMAT": "application/vnd.ogc.gml",
             "X": "146",
             "Y": "160",
-            "MAP": urllib.quote(self.projectPath)
-        }.items()])
+            "MAP": urllib.parse.quote(self.projectPath)
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -1201,7 +1203,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         """test that request filters are honored. This test checks for a feature which should pass
         the request filter but fail the access control checks
         """
-        query_string = "&".join(["%s=%s" % i for i in {
+        query_string = "&".join(["%s=%s" % i for i in list({
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetFeatureInfo",
@@ -1218,8 +1220,8 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "INFO_FORMAT": "application/vnd.ogc.gml",
             "X": "146",
             "Y": "160",
-            "MAP": urllib.quote(self.projectPath)
-        }.items()])
+            "MAP": urllib.parse.quote(self.projectPath)
+        }.items())])
 
         response, headers = self._get_fullaccess(query_string)
         self.assertTrue(
@@ -1475,7 +1477,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         return sqrt(square_sum)
 
     def _test_colors(self, colors):
-        for id, color in colors.items():
+        for id, color in list(colors.items()):
             response, headers = self._post_fullaccess(
                 """<?xml version="1.0" encoding="UTF-8"?>
                 <wfs:GetFeature {xml_ns}>

@@ -33,7 +33,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = u"dbname='gis' host=localhost\sqlexpress"
+        cls.dbconn = "dbname='gis' host=localhost\sqlexpress"
         if 'QGIS_MSSQLTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_MSSQLTEST_DB']
         # Create test layers
@@ -51,10 +51,10 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         """Run after all tests"""
 
     def enableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', True)
+        QSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', False)
+        QSettings().setValue('/qgis/compileExpressions', False)
 
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDateTimeTypes(self):

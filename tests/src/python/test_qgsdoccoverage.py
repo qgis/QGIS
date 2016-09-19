@@ -42,42 +42,42 @@ class TestQgsDocCoverage(unittest.TestCase):
         missing = parser.documentable_members - parser.documented_members
 
         print("---------------------------------")
-        print("{} total documentable members".format(parser.documentable_members))
-        print("{} total contain valid documentation".format(parser.documented_members))
-        print("Total documentation coverage {}%".format(coverage))
+        print(("{} total documentable members".format(parser.documentable_members)))
+        print(("{} total contain valid documentation".format(parser.documented_members)))
+        print(("Total documentation coverage {}%".format(coverage)))
         print("---------------------------------")
-        print("{} members missing documentation".format(missing))
+        print(("{} members missing documentation".format(missing)))
         print("---------------------------------")
         print("Unacceptable missing documentation:")
 
         if parser.undocumented_members:
-            for cls, props in parser.undocumented_members.items():
-                print('\n\nClass {}, {}/{} members documented\n'.format(colored(cls, 'yellow'), props['documented'], props['members']))
+            for cls, props in list(parser.undocumented_members.items()):
+                print(('\n\nClass {}, {}/{} members documented\n'.format(colored(cls, 'yellow'), props['documented'], props['members'])))
                 for mem in props['missing_members']:
-                    print(colored('  ' + mem, 'yellow', attrs=['bold']))
+                    print((colored('  ' + mem, 'yellow', attrs=['bold'])))
 
         # self.assertEquals(len(parser.undocumented_string), 0, 'FAIL: new undocumented members have been introduced, please add documentation for these members')
 
         if parser.classes_missing_group:
             print("---------------------------------")
             print('\n')
-            print(colored('{} classes have been added without Doxygen group tag ("\ingroup"):'.format(len(parser.classes_missing_group)), 'yellow'))
+            print((colored('{} classes have been added without Doxygen group tag ("\ingroup"):'.format(len(parser.classes_missing_group)), 'yellow')))
             print('')
-            print('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_group]))
+            print(('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_group])))
 
         if parser.classes_missing_version_added:
             print("---------------------------------")
             print('\n')
-            print(colored('{} classes have been added without a version added doxygen note ("@note added in QGIS x.xx"):'.format(len(parser.classes_missing_version_added)), 'yellow'))
+            print((colored('{} classes have been added without a version added doxygen note ("@note added in QGIS x.xx"):'.format(len(parser.classes_missing_version_added)), 'yellow')))
             print('')
-            print('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_version_added]))
+            print(('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_version_added])))
 
         if parser.classes_missing_brief:
             print("---------------------------------")
             print('\n')
-            print(colored('{} classes have been added without at least a brief description:'.format(len(parser.classes_missing_brief)), 'yellow'))
+            print((colored('{} classes have been added without at least a brief description:'.format(len(parser.classes_missing_brief)), 'yellow')))
             print('')
-            print('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_brief]))
+            print(('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_brief])))
 
         sys.stdout.flush()
         self.assertTrue(not parser.undocumented_members, 'Undocumented members found')

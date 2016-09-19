@@ -152,7 +152,7 @@ class TestWFST(unittest.TestCase):
             'table': '',
             #'sql': '',
         }
-        uri = ' '.join([("%s='%s'" % (k, v)) for k, v in parms.items()])
+        uri = ' '.join([("%s='%s'" % (k, v)) for k, v in list(parms.items())])
         wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')
         assert wfs_layer.isValid()
         return wfs_layer

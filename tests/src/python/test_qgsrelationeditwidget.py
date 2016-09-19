@@ -49,7 +49,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         :return:
         """
         QgsEditorWidgetRegistry.initEditors()
-        cls.dbconn = u'service=\'qgis_test\''
+        cls.dbconn = 'service=\'qgis_test\''
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layer

@@ -49,7 +49,7 @@ class TestPyQgsTabfileProvider(unittest.TestCase):
     def testDateTimeFormats(self):
         # check that date and time formats are correctly interpreted
         basetestfile = os.path.join(TEST_DATA_DIR, 'tab_file.tab')
-        vl = QgsVectorLayer(u'{}|layerid=0'.format(basetestfile), u'test', u'ogr')
+        vl = QgsVectorLayer('{}|layerid=0'.format(basetestfile), 'test', 'ogr')
 
         fields = vl.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName('date')).type(), QVariant.Date)
@@ -74,20 +74,20 @@ class TestPyQgsTabfileProvider(unittest.TestCase):
         """ Test that on-the-fly re-opening in update/read-only mode works """
 
         basetestfile = os.path.join(TEST_DATA_DIR, 'tab_file.tab')
-        vl = QgsVectorLayer(u'{}|layerid=0'.format(basetestfile), u'test', u'ogr')
+        vl = QgsVectorLayer('{}|layerid=0'.format(basetestfile), 'test', 'ogr')
         caps = vl.dataProvider().capabilities()
         self.assertTrue(caps & QgsVectorDataProvider.AddFeatures)
 
         # We should be really opened in read-only mode even if write capabilities are declared
-        self.assertEquals(vl.dataProvider().property("_debug_open_mode"), "read-only")
+        self.assertEqual(vl.dataProvider().property("_debug_open_mode"), "read-only")
 
         # Test that startEditing() / commitChanges() plays with enterUpdateMode() / leaveUpdateMode()
         self.assertTrue(vl.startEditing())
-        self.assertEquals(vl.dataProvider().property("_debug_open_mode"), "read-write")
+        self.assertEqual(vl.dataProvider().property("_debug_open_mode"), "read-write")
         self.assertTrue(vl.dataProvider().isValid())
 
         self.assertTrue(vl.commitChanges())
-        self.assertEquals(vl.dataProvider().property("_debug_open_mode"), "read-only")
+        self.assertEqual(vl.dataProvider().property("_debug_open_mode"), "read-only")
         self.assertTrue(vl.dataProvider().isValid())
 
     @unittest.expectedFailure(int(osgeo.gdal.VersionInfo()[:1]) < 2)
@@ -100,7 +100,7 @@ class TestPyQgsTabfileProvider(unittest.TestCase):
         shutil.copy(os.path.join(TEST_DATA_DIR, 'tab_file.dat'), base_dest_file_name + '.dat')
         shutil.copy(os.path.join(TEST_DATA_DIR, 'tab_file.map'), base_dest_file_name + '.map')
         shutil.copy(os.path.join(TEST_DATA_DIR, 'tab_file.id'), base_dest_file_name + '.id')
-        vl = QgsVectorLayer(u'{}|layerid=0'.format(dest_file_name), u'test', u'ogr')
+        vl = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.dataProvider().addAttributes([QgsField("int8", QVariant.LongLong, "integer64")]))
 

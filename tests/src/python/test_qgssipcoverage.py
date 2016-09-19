@@ -82,12 +82,12 @@ class TestQgsSipCoverage(unittest.TestCase):
 
         if missing_objects:
             print("---------------------------------")
-            print(colored('Missing classes:', 'yellow'))
-            print('  ' + '\n  '.join([colored(obj, 'yellow', attrs=['bold']) for obj in missing_objects]))
+            print((colored('Missing classes:', 'yellow')))
+            print(('  ' + '\n  '.join([colored(obj, 'yellow', attrs=['bold']) for obj in missing_objects])))
         if missing_members:
             print("---------------------------------")
-            print(colored('Missing members:', 'yellow'))
-            print('  ' + '\n  '.join([colored(mem, 'yellow', attrs=['bold']) for mem in missing_members]))
+            print((colored('Missing members:', 'yellow')))
+            print(('  ' + '\n  '.join([colored(mem, 'yellow', attrs=['bold']) for mem in missing_members])))
 
         # print summaries
         missing_class_count = len(missing_objects)
@@ -113,11 +113,11 @@ class TestQgsSipCoverage(unittest.TestCase):
         printImportant("---------------------------------")
         printImportant("{} members missing bindings".format(missing_member_count))
 
-        self.assertEquals(missing_class_count, 0, """\n\nFAIL: new unbound classes have been introduced, please add SIP bindings for these classes
+        self.assertEqual(missing_class_count, 0, """\n\nFAIL: new unbound classes have been introduced, please add SIP bindings for these classes
 If these classes are not suitable for the Python bindings, please add the Doxygen tag
 "@note not available in Python bindings" to the CLASS Doxygen comments""")
 
-        self.assertEquals(missing_member_count, 0, """\n\nFAIL: new unbound members have been introduced, please add SIP bindings for these members
+        self.assertEqual(missing_member_count, 0, """\n\nFAIL: new unbound members have been introduced, please add SIP bindings for these members
 If these members are not suitable for the Python bindings, please add the Doxygen tag
 "@note not available in Python bindings" to the MEMBER Doxygen comments""")
 

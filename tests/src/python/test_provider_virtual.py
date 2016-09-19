@@ -57,7 +57,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         d = QgsVirtualLayerDefinition()
         d.addSource("vtab1", shp, "ogr")
         d.setUid("pk")
-        cls.vl = QgsVectorLayer(d.toString(), u'test', u'virtual')
+        cls.vl = QgsVectorLayer(d.toString(), 'test', 'virtual')
         assert (cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
 
@@ -65,7 +65,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         d = QgsVirtualLayerDefinition()
         d.addSource("vtab2", shp_poly, "ogr")
         d.setUid("pk")
-        cls.poly_vl = QgsVectorLayer(d.toString(), u'test_poly', u'virtual')
+        cls.poly_vl = QgsVectorLayer(d.toString(), 'test_poly', 'virtual')
         assert (cls.poly_vl.isValid())
         cls.poly_provider = cls.poly_vl.dataProvider()
 
@@ -78,7 +78,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         """Run before each test."""
         self.testDataDir = unitTestDataPath()
         print("****************************************************")
-        print("In method", self._testMethodName)
+        print(("In method", self._testMethodName))
         print("****************************************************")
         pass
 
@@ -315,7 +315,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(l2.isValid(), True)
         self.assertEqual(l2.dataProvider().featureCount(), 1)
         a = [fit.attributes()[4] for fit in l2.getFeatures()]
-        self.assertEqual(a, [u"Basse-Normandie"])
+        self.assertEqual(a, ["Basse-Normandie"])
 
     def test_recursiveLayer(self):
         source = toPercent(os.path.join(self.testDataDir, "france_parts.shp"))
@@ -401,7 +401,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         # now delete the layer
         QgsMapLayerRegistry.instance().removeMapLayer(l1.id())
         # check that it does not crash
-        print(sum([f.id() for f in l2.getFeatures()]))
+        print((sum([f.id() for f in l2.getFeatures()])))
 
     def test_refLayers(self):
         l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", False)
@@ -481,8 +481,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         r.setFlags(QgsFeatureRequest.SubsetOfAttributes)
         r.setSubsetOfAttributes([1])
         s = [(f.id(), f.attributes()[1]) for f in l5.getFeatures(r)]
-        self.assertEqual(sum(map(lambda x: x[0], s)), 10659)
-        self.assertEqual(sum(map(lambda x: x[1], s)), 3064.0)
+        self.assertEqual(sum([x[0] for x in s]), 10659)
+        self.assertEqual(sum([x[1] for x in s]), 3064.0)
 
         # test NoGeometry
         # by request flag
@@ -603,13 +603,13 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(l.isValid(), True)
 
         for f in l.getFeatures():
-            self.assertEqual(f.attributes()[1], u"accents éàè")
+            self.assertEqual(f.attributes()[1], "accents éàè")
 
         # use UTF-8 now
         l = QgsVectorLayer("?layer=ogr:%s:fp:UTF-8" % source, "vtab", "virtual", False)
         self.assertEqual(l.isValid(), True)
         for f in l.getFeatures():
-            self.assertEqual(f.attributes()[1], u"accents \ufffd\ufffd\ufffd")  # invalid unicode characters
+            self.assertEqual(f.attributes()[1], "accents \ufffd\ufffd\ufffd")  # invalid unicode characters
 
     def test_rowid(self):
         source = toPercent(os.path.join(self.testDataDir, "france_parts.shp"))
@@ -715,13 +715,13 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(l.isValid(), True)
 
         for f in l.getFeatures():
-            self.assertEqual(f.attributes(), ['hello world', 2016, u'This', u'project'])
+            self.assertEqual(f.attributes(), ['hello world', 2016, 'This', 'project'])
 
     def test_query_with_accents(self):
         # shapefile with accents and latin1 encoding
         df = QgsVirtualLayerDefinition()
         df.addSource("vtab", os.path.join(self.testDataDir, "france_parts.shp"), "ogr", "ISO-8859-1")
-        df.setQuery(u"SELECT * FROM vtab WHERE TYPE_1 = 'Région'")
+        df.setQuery("SELECT * FROM vtab WHERE TYPE_1 = 'Région'")
         vl = QgsVectorLayer(df.toString(), "testq", "virtual")
         self.assertEqual(vl.isValid(), True)
         ids = [f.id() for f in vl.getFeatures()]
@@ -729,19 +729,19 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
         # the same shapefile with a wrong encoding
         df.addSource("vtab", os.path.join(self.testDataDir, "france_parts.shp"), "ogr", "UTF-8")
-        df.setQuery(u"SELECT * FROM vtab WHERE TYPE_1 = 'Région'")
+        df.setQuery("SELECT * FROM vtab WHERE TYPE_1 = 'Région'")
         vl2 = QgsVectorLayer(df.toString(), "testq", "virtual")
         self.assertEqual(vl2.isValid(), True)
         ids = [f.id() for f in vl2.getFeatures()]
         self.assertEqual(ids, [])
 
     def test_layer_with_accents(self):
-        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), u"françéà", "ogr", False)
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "françéà", "ogr", False)
         self.assertEqual(l1.isValid(), True)
         QgsMapLayerRegistry.instance().addMapLayer(l1)
 
         df = QgsVirtualLayerDefinition()
-        df.setQuery(u'select * from "françéà"')
+        df.setQuery('select * from "françéà"')
 
         vl = QgsVectorLayer(df.toString(), "testq", "virtual")
         self.assertEqual(vl.isValid(), True)
