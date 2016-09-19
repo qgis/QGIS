@@ -141,6 +141,8 @@ class ModelerParametersDialog(QDialog):
                 desc += self.tr('(xmin, xmax, ymin, ymax)')
             if isinstance(param, ParameterPoint):
                 desc += self.tr('(x, y)')
+            if param.optional:
+                desc += self.tr(' [optional]')
             label = QLabel(desc)
             self.labels[param.name] = label
 
@@ -213,12 +215,14 @@ class ModelerParametersDialog(QDialog):
                 else:
                     html = self.tr('<p>Downloading algorithm help... Please wait.</p>')
                     self.txtHelp.setHtml(html)
+                    self.tabWidget.addTab(self.txtHelp, 'Help')
                     self.reply = QgsNetworkAccessManager.instance().get(QNetworkRequest(algHelp))
                     self.reply.finished.connect(self.requestFinished)
             except:
-                self.txtHelp.setHtml(self.tr('<h2>No help available for this algorithm</h2>'))
+                pass
 
-        self.tabWidget.addTab(self.txtHelp, 'Help')
+
+
 
         self.verticalLayout2.addWidget(self.tabWidget)
         self.verticalLayout2.addWidget(self.buttonBox)
