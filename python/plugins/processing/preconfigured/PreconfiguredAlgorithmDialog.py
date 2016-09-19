@@ -80,8 +80,8 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
                 palette.setColor(QPalette.Base, QColor(255, 255, 0))
                 e.widget.setPalette(palette)
                 self.parent.bar.pushMessage("", self.tr('Missing parameter value: %s')
-                                     % e.parameter.description,
-                                     level=QgsMessageBar.WARNING, duration=5)
+                                            % e.parameter.description,
+                                            level=QgsMessageBar.WARNING, duration=5)
                 return
             except:
                 QMessageBox.critical(self,

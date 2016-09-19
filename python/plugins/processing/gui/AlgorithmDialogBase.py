@@ -130,7 +130,6 @@ class AlgorithmDialogBase(BASE, WIDGET):
         QgsMapLayerRegistry.instance().layerWasAdded.connect(self.mainWidget.layerRegistryChanged)
         QgsMapLayerRegistry.instance().layersWillBeRemoved.connect(self.mainWidget.layerRegistryChanged)
 
-
     def error(self, msg):
         QApplication.restoreOverrideCursor()
         self.setInfo(msg, True)

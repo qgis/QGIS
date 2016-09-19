@@ -63,7 +63,7 @@ class Dissolve(GeoAlgorithm):
         self.addParameter(ParameterBoolean(Dissolve.DISSOLVE_ALL,
                                            self.tr('Dissolve all (do not use fields)'), True))
         self.addParameter(ParameterTableField(Dissolve.FIELD,
-                                                      self.tr('Unique ID fields'), Dissolve.INPUT, optional=True, multiple=True))
+                                              self.tr('Unique ID fields'), Dissolve.INPUT, optional=True, multiple=True))
         self.addOutput(OutputVector(Dissolve.OUTPUT, self.tr('Dissolved')))
 
     def processAlgorithm(self, progress):

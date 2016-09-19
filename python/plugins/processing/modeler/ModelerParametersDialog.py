@@ -217,9 +217,6 @@ class ModelerParametersDialog(QDialog):
             except:
                 pass
 
-
-
-
         self.verticalLayout2.addWidget(self.tabWidget)
         self.verticalLayout2.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout2)

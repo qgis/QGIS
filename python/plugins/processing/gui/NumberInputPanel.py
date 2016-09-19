@@ -70,7 +70,7 @@ class NumberInputPanel(BASE, WIDGET):
             variables = {}
             for value in values:
                 if isinstance(value, ValueFromInput):
-                    name = value.name  
+                    name = value.name
                     element = self.modelParametersDialog.model.inputs[name].param
                     desc = element.description
                 else:
@@ -78,12 +78,12 @@ class NumberInputPanel(BASE, WIDGET):
                     alg = self.modelParametersDialog.model.algs[value.alg]
                     out = alg.algorithm.getOutputFromName(value.output)
                     desc = "Output '%s' from algorithm '%s" % (out.description, alg.description)
-                variables[name] = desc 
+                variables[name] = desc
             values = self.modelParametersDialog.getAvailableValuesOfType(ParameterVector, OutputVector)
             values.extend(self.modelParametersDialog.getAvailableValuesOfType(ParameterRaster, OutputRaster))
             for value in values:
-                if isinstance(value, ValueFromInput): 
-                    name = value.name                    
+                if isinstance(value, ValueFromInput):
+                    name = value.name
                     element = self.modelParametersDialog.model.inputs[name].param
                     desc = element.description
                 else:
@@ -110,7 +110,6 @@ class NumberInputPanel(BASE, WIDGET):
             if not exp.hasParserError():
                 self.setValue(dlg.expressionText())
 
-    
     def getValue(self):
         if self.modelParametersDialog:
             value = self.leText.text()

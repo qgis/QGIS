@@ -120,7 +120,7 @@ class OutputSelectionPanel(BASE, WIDGET):
             popupMenu.exec_(QCursor.pos())
 
     def showExpressionsBuilder(self):
-        dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, 'generic', 
+        dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, 'generic',
                                          self.output.expressionContext(self.alg))
         dlg.setWindowTitle(self.tr('Expression based output'))
         if dlg.exec_() == QDialog.Accepted:
@@ -228,4 +228,3 @@ class OutputSelectionPanel(BASE, WIDGET):
 
     def getValue(self):
         return self.leText.text()
-        

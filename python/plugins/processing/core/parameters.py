@@ -33,7 +33,7 @@ import numbers
 
 from qgis.utils import iface
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinateReferenceSystem, 
+from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinateReferenceSystem,
                        QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope)
 
 from processing.tools.vector import resolveFieldIndex, features
@@ -41,10 +41,12 @@ from processing.tools import dataobjects
 from processing.core.outputs import OutputNumber, OutputRaster, OutputVector
 from processing.tools.dataobjects import getObject
 
+
 def parseBool(s):
     if s is None or s == unicode(None).lower():
         return None
     return unicode(s).lower() == unicode(True).lower()
+
 
 def _splitParameterOptions(line):
     tokens = line.split('=', 1)
@@ -56,8 +58,10 @@ def _splitParameterOptions(line):
         definition = tokens[1]
     return isOptional, tokens[0], definition
 
+
 def _createDescriptiveName(s):
     return s.replace('_', ' ')
+
 
 def _expressionContext():
     context = QgsExpressionContext()
@@ -75,7 +79,7 @@ def _expressionContext():
             cellsize = (layer.extent().xMaximum()
                         - layer.extent().xMinimum()) / layer.width()
             processingScope.setVariable('%s_cellsize' % name, cellsize)
-    
+
     layers = dataobjects.getRasterLayers()
     for layer in layers:
         for i in range(layer.bandCount()):
@@ -84,13 +88,13 @@ def _expressionContext():
             processingScope.setVariable('%s_band%i_stddev' % (name, i + 1), stats.stdDev)
             processingScope.setVariable('%s_band%i_min' % (name, i + 1), stats.minimumValue)
             processingScope.setVariable('%s_band%i_max' % (name, i + 1), stats.maximumValue)
-    
+
     extent = iface.mapCanvas().extent()
     processingScope.setVariable('canvasextent_minx', extent.xMinimum())
     processingScope.setVariable('canvasextent_miny', extent.yMinimum())
     processingScope.setVariable('canvasextent_maxx', extent.xMaximum())
     processingScope.setVariable('canvasextent_maxy', extent.yMaximum())
-    
+
     extent = iface.mapCanvas().fullExtent()
     processingScope.setVariable('fullextent_minx', extent.xMinimum())
     processingScope.setVariable('fullextent_miny', extent.yMinimum())
@@ -98,6 +102,7 @@ def _expressionContext():
     processingScope.setVariable('fullextent_maxy', extent.yMaximum())
     context.appendScope(processingScope)
     return context
+
 
 def _resolveLayers(value):
     layers = dataobjects.getAllLayers()
@@ -109,6 +114,7 @@ def _resolveLayers(value):
                     inputlayers[i] = layer.source()
                     break
         return ";".join(inputlayers)
+
 
 class Parameter:
 
@@ -200,12 +206,13 @@ class Parameter:
             wrapper = wrapper(self, dialog, row, col)
         # or a wrapper instance
         return wrapper
-    
+
     def evaluate(self, alg):
         pass
-    
+
     def evaluateForModeler(self, value, model):
         return value
+
 
 class ParameterBoolean(Parameter):
 
@@ -250,7 +257,6 @@ class ParameterBoolean(Parameter):
             return param
 
 
-
 class ParameterCrs(Parameter):
 
     default_metadata = {
@@ -284,8 +290,7 @@ class ParameterCrs(Parameter):
                 return True
         except:
             pass
-        
-        
+
         # TODO: check it is a valid authid
         self.value = value
         return True
@@ -311,6 +316,7 @@ class ParameterCrs(Parameter):
             else:
                 return ParameterCrs(name, descName, None, isOptional)
 
+
 class ParameterDataObject(Parameter):
 
     def getValueAsCommandLineParameter(self):
@@ -320,7 +326,7 @@ class ParameterDataObject(Parameter):
             s = dataobjects.normalizeLayerSource(unicode(self.value))
             s = '"%s"' % s
             return s
-        
+
     def evaluate(self, alg):
         self.value = _resolveLayers(self.value)
 
@@ -330,7 +336,7 @@ class ParameterExtent(Parameter):
     default_metadata = {
         'widget_wrapper': 'processing.gui.wrappers.ExtentWidgetWrapper'
     }
-    
+
     USE_MIN_COVERING_EXTENT = 'USE_MIN_COVERING_EXTENT'
 
     def __init__(self, name='', description='', default=None, optional=True):
@@ -349,7 +355,7 @@ class ParameterExtent(Parameter):
             self.value = '{},{},{},{}'.format(
                 rect.xMinimum(), rect.xMaximum(), rect.yMinimum(), rect.yMaximum())
             return True
-        
+
         try:
             layer = dataobjects.getObjectFromUri(value)
             if layer is not None:
@@ -359,7 +365,7 @@ class ParameterExtent(Parameter):
                 return True
         except:
             pass
-        
+
         tokens = unicode(value).split(',')
         if len(tokens) != 4:
             return False
@@ -435,7 +441,7 @@ class ParameterExtent(Parameter):
             self.xmax = max(self.xmax, layer.extent().xMaximum())
             self.ymin = min(self.ymin, layer.extent().yMinimum())
             self.ymax = max(self.ymax, layer.extent().yMaximum())
-            
+
 
 class ParameterPoint(Parameter):
 
@@ -535,7 +541,6 @@ class ParameterFile(Parameter):
 
 
 class ParameterFixedTable(Parameter):
-    
 
     def __init__(self, name='', description='', numRows=3,
                  cols=['value'], fixedNumOfRows=False, optional=False):
@@ -588,11 +593,10 @@ class ParameterMultipleInput(ParameterDataObject):
     Its value is a string with substrings separated by semicolons,
     each of which represents the data source location of each element.
     """
-    
+
     default_metadata = {
         'widget_wrapper': 'processing.gui.wrappers.MultipleInputWidgetWrapper'
     }
-
 
     exported = None
 
@@ -777,21 +781,20 @@ class ParameterMultipleInput(ParameterDataObject):
         descName = _createDescriptiveName(name)
         if definition.lower().strip() == 'multiple raster':
             return ParameterMultipleInput(name, descName,
-                                           dataobjects.TYPE_RASTER, isOptional)
+                                          dataobjects.TYPE_RASTER, isOptional)
         elif definition.lower().strip() == 'multiple vector':
             return ParameterMultipleInput(name, definition,
-                                           dataobjects.TYPE_VECTOR_ANY, isOptional)
+                                          dataobjects.TYPE_VECTOR_ANY, isOptional)
 
     def evaluate(self, alg):
         self.value = _resolveLayers(self.value)
 
 
 class ParameterNumber(Parameter):
-    
+
     default_metadata = {
         'widget_wrapper': 'processing.gui.wrappers.NumberWidgetWrapper'
     }
-
 
     def __init__(self, name='', description='', minValue=None, maxValue=None,
                  default=None, optional=False):
@@ -832,7 +835,7 @@ class ParameterNumber(Parameter):
             except:
                 raise
                 return False
-        else:    
+        else:
             try:
                 if float(n) - int(float(n)) == 0:
                     value = int(float(n))
@@ -864,7 +867,7 @@ class ParameterNumber(Parameter):
         if definition.lower().strip().startswith('number'):
             default = definition.strip()[len('number') + 1:] or None
             return ParameterNumber(name, descName, default=default, optional=isOptional)
-    
+
     def _evaluate(self, value):
         exp = QgsExpression(value)
         if exp.hasParserError():
@@ -873,20 +876,20 @@ class ParameterNumber(Parameter):
         if exp.hasEvalError():
             raise ValueError("Error evaluating parameter expression: " + exp.evalErrorString())
         return result
-        
+
     def evaluate(self, alg):
         if isinstance(self.value, basestring) and bool(self.value):
             self.value = self._evaluate(self.value)
-        
+
     def _layerVariables(self, element, alg=None):
         variables = {}
         layer = getObject(element.value)
         if layer is not None:
             name = element.name if alg is None else "%s_%s" % (alg.name, element.name)
-            variables['@%s_minx' % name] =  layer.extent().xMinimum()
+            variables['@%s_minx' % name] = layer.extent().xMinimum()
             variables['@%s_miny' % name] = layer.extent().yMinimum()
-            variables['@%s_maxx' % name] =  layer.extent().yMaximum()
-            variables['@%s_maxy' % name]= layer.extent().yMaximum()
+            variables['@%s_maxx' % name] = layer.extent().yMaximum()
+            variables['@%s_maxy' % name] = layer.extent().yMaximum()
             if isinstance(element, (ParameterRaster, OutputRaster)):
                 stats = layer.dataProvider().bandStatistics(1)
                 variables['@%s_avg' % name] = stats.mean
@@ -894,7 +897,7 @@ class ParameterNumber(Parameter):
                 variables['@%s_min' % name] = stats.minimumValue
                 variables['@%s_max' % name] = stats.maximumValue
         return variables
-      
+
     def evaluateForModeler(self, value, model):
         if isinstance(value, numbers.Number):
             return value
@@ -904,28 +907,27 @@ class ParameterNumber(Parameter):
                 variables["@" + param.name] = param.value
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 variables.update(self._layerVariables(param))
-                    
+
         for alg in model.algs.values():
             for out in alg.algorithm.outputs:
                 if isinstance(out, OutputNumber):
                     variables["@%s_%s" % (alg.name, out.name)] = out.value
                 if isinstance(out, (OutputRaster, OutputVector)):
                     variables.update(self._layerVariables(out, alg))
-        for k,v in variables.iteritems():
-            value = value.replace(k,unicode(v))
-        
+        for k, v in variables.iteritems():
+            value = value.replace(k, unicode(v))
+
         return value
-    
+
     def expressionContext(self):
         return _expressionContext()
-    
+
     def getValueAsCommandLineParameter(self):
         if self.value is None:
             return str(None)
         if isinstance(self.value, basestring):
             return '"%s"' + self.value
         return str(self.value)
-
 
 
 class ParameterRange(Parameter):
@@ -967,11 +969,10 @@ class ParameterRange(Parameter):
 
 
 class ParameterRaster(ParameterDataObject):
-    
+
     default_metadata = {
         'widget_wrapper': 'processing.gui.wrappers.RasterWidgetWrapper'
     }
-
 
     def __init__(self, name='', description='', optional=False, showSublayersDialog=True):
         ParameterDataObject.__init__(self, name, description, None, optional)
@@ -1041,15 +1042,15 @@ class ParameterRaster(ParameterDataObject):
         if definition.lower().strip().startswith('raster'):
             return ParameterRaster(name, descName, optional=isOptional)
 
+
 class ParameterSelection(Parameter):
-    
+
     default_metadata = {
         'widget_wrapper': 'processing.gui.wrappers.SelectionWidgetWrapper'
     }
 
-
     def __init__(self, name='', description='', options=[], default=None, isSource=False,
-                         multiple=False, optional=False):
+                 multiple=False, optional=False):
         Parameter.__init__(self, name, description, default, optional)
         self.multiple = multiple
         isSource = parseBool(isSource)
@@ -1124,18 +1125,17 @@ class ParameterSelection(Parameter):
 
 
 class ParameterEvaluationException(Exception):
-    
+
     def __init__(self, param, msg):
         Exception.__init__(msg)
         self.param = param
 
 
 class ParameterString(Parameter):
-    
+
     default_metadata = {
         'widget_wrapper': 'processing.gui.wrappers.StringWidgetWrapper'
     }
-
 
     NEWLINE = '\n'
     ESCAPED_NEWLINE = '\\n'
@@ -1187,7 +1187,7 @@ class ParameterString(Parameter):
                 return ParameterString(name, descName, default, multiline=True, optional=isOptional)
             else:
                 return ParameterString(name, descName, multiline=True, optional=isOptional)
-            
+
     def evaluate(self, alg):
         if isinstance(self.value, basestring) and bool(self.value) and self.evaluateExpressions:
             exp = QgsExpression(self.value)
@@ -1197,16 +1197,16 @@ class ParameterString(Parameter):
             if exp.hasEvalError():
                 raise ValueError("Error evaluating parameter expression: " + exp.evalErrorString())
             self.value = result
-        
+
     def expressionContext(self):
         return _expressionContext()
 
+
 class ParameterTable(ParameterDataObject):
-    
+
     default_metadata = {
         'widget_wrapper': 'processing.gui.wrappers.TableWidgetWrapper'
     }
-
 
     def __init__(self, name='', description='', optional=False):
         ParameterDataObject.__init__(self, name, description, None, optional)
@@ -1295,13 +1295,12 @@ class ParameterTableField(Parameter):
         'widget_wrapper': 'processing.gui.wrappers.TableFieldWidgetWrapper'
     }
 
-
     DATA_TYPE_NUMBER = 0
     DATA_TYPE_STRING = 1
     DATA_TYPE_ANY = -1
 
     def __init__(self, name='', description='', parent=None, datatype=-1,
-                 optional=False, multiple = False):
+                 optional=False, multiple=False):
         Parameter.__init__(self, name, description, None, optional)
         self.parent = parent
         self.multiple = multiple
@@ -1316,7 +1315,7 @@ class ParameterTableField(Parameter):
                 return False
             self.value = None
             return True
-        
+
         if isinstance(value, list):
             if not self.multiple and len(value) > 1:
                 return False
@@ -1345,7 +1344,6 @@ class ParameterTableField(Parameter):
         param_type += 'field'
         return '##' + self.name + '=' + param_type + self.parent
 
-
     @classmethod
     def fromScriptCode(self, line):
         isOptional, name, definition = _splitParameterOptions(line)
@@ -1365,7 +1363,7 @@ class ParameterTableField(Parameter):
 
 
 class ParameterVector(ParameterDataObject):
-    
+
     default_metadata = {
         'widget_wrapper': 'processing.gui.wrappers.VectorWidgetWrapper'
     }
@@ -1450,16 +1448,17 @@ class ParameterVector(ParameterDataObject):
         descName = _createDescriptiveName(name)
         if definition.lower().strip() == 'vector':
             return ParameterVector(name, descName,
-                                    [dataobjects.TYPE_VECTOR_ANY], isOptional)
+                                   [dataobjects.TYPE_VECTOR_ANY], isOptional)
         elif definition.lower().strip() == 'vector point':
             return ParameterVector(name, descName,
-                                    [dataobjects.TYPE_VECTOR_POINT], isOptional)
+                                   [dataobjects.TYPE_VECTOR_POINT], isOptional)
         elif definition.lower().strip() == 'vector line':
             return ParameterVector(name, descName,
-                                    [dataobjects.TYPE_VECTOR_LINE], isOptional)
+                                   [dataobjects.TYPE_VECTOR_LINE], isOptional)
         elif definition.lower().strip() == 'vector polygon':
             return ParameterVector(name, descName,
-                                    [dataobjects.TYPE_VECTOR_POLYGON], isOptional)
+                                   [dataobjects.TYPE_VECTOR_POLYGON], isOptional)
+
 
 class ParameterGeometryPredicate(Parameter):
 
@@ -1502,6 +1501,7 @@ class ParameterGeometryPredicate(Parameter):
 
 
 paramClasses = [c for c in sys.modules[__name__].__dict__.values() if isclass(c) and issubclass(c, Parameter)]
+
 
 def getParameterFromString(s):
     # Try the parameter definitions used in description files

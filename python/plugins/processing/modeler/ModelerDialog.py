@@ -339,8 +339,8 @@ class ModelerDialog(BASE, WIDGET):
             fout.write(text)
             fout.close()
             self.update = True
-            self.bar.pushMessage("", "Model was correctly saved", level = QgsMessageBar.SUCCESS, duration = 5)
-            
+            self.bar.pushMessage("", "Model was correctly saved", level=QgsMessageBar.SUCCESS, duration=5)
+
             self.hasChanged = False
 
     def openModel(self):
