@@ -490,13 +490,13 @@ class RasterWidgetWrapper(WidgetWrapper):
             return widget
 
     def refresh(self):
-        self.widget.cmbText.clear()
-        layers = dataobjects.getRasterLayers(self)
-        layers.sort(key=lambda lay: lay.name())
+        items = []
+        layers = dataobjects.getRasterLayers()
         if self.param.optional:
-            self.widget.cmbText.addItem(self.NOT_SELECTED, None)
+            items.append((self.NOT_SELECTED, None))
         for layer in layers:
-            self.widget.cmbText.addItem(getExtendedLayerName(layer), layer)
+            items.append((getExtendedLayerName(layer), layer))
+        self.widget.update(items)
 
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
@@ -551,9 +551,15 @@ class VectorWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
-            widget = QComboBox()
-            self._populate(widget)
-            widget.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            layers = dataobjects.getVectorLayers(self.param.datatype)
+            items = []
+            if self.param.optional:
+                items.append((self.NOT_SELECTED, None))
+            for layer in layers:
+                items.append((getExtendedLayerName(layer), layer))
+            widget = InputLayerSelectorPanel(items, self.param)
+            widget.name = self.param.name
+            widget.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             return widget
         elif self.dialogType == DIALOG_BATCH:
             widget = BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
@@ -570,14 +576,16 @@ class VectorWidgetWrapper(WidgetWrapper):
             return widget
 
     def _populate(self, widget):
-        widget.clear()
+        items = []
         layers = dataobjects.getVectorLayers(self.param.datatype)
         layers.sort(key=lambda lay: lay.name())
         if self.param.optional:
-            widget.addItem(self.NOT_SELECTED, None)
+            items.append((self.NOT_SELECTED, None))
         for layer in layers:
-            widget.addItem(getExtendedLayerName(layer), layer)
-        widget.name = self.param.name
+            items.append((getExtendedLayerName(layer), layer))
+        self.widget.update(items)
+
+
 
     def refresh(self):
         self._populate(self.widget)
