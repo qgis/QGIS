@@ -745,9 +745,10 @@ class TableFieldWidgetWrapper(WidgetWrapper):
                 widget = QComboBox()
                 return widget
             elif self.dialogType == DIALOG_BATCH:
-                item = QLineEdit()
-                if self.param.default is not None:
-                    item.setText(self.param.default)
+                widget = QLineEdit()
+                if self.param.default:
+                    widget.setText(self.param.default)
+                return widget
             else:
                 widget = QComboBox()
                 widget.setEditable(True)
