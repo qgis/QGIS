@@ -20,6 +20,7 @@
 
 #include "qgsgeometry.h"
 #include "qgssymbolv2.h"
+#include "qgsmapsettings.h"
 
 #include <QColor>
 #include <QList>
@@ -94,6 +95,16 @@ class CORE_EXPORT QgsDxfExport
      * @see setMapUnits
      */
     QGis::UnitType mapUnits() const { return mMapUnits; }
+
+    /**
+     * Set destination CRS
+     */
+    void setDestinationCrs( long crs );
+
+    /**
+     * Set destination CRS
+     */
+    long destinationCrs();
 
     /**
      * Set symbology export mode
@@ -418,9 +429,7 @@ class CORE_EXPORT QgsDxfExport
     void writeSymbolLayerLinetype( const QgsSymbolLayerV2 *symbolLayer );
     void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsSymbolV2::OutputUnit u );
 
-    QgsRectangle dxfExtent() const;
-
-    void addFeature( QgsSymbolV2RenderContext &ctx, const QString &layer, const QgsSymbolLayerV2 *symbolLayer, const QgsSymbolV2 *symbol );
+    void addFeature( QgsSymbolV2RenderContext &ctx, const QgsCoordinateTransform *ct, const QString &layer, const QgsSymbolLayerV2 *symbolLayer, const QgsSymbolV2 *symbol );
 
     //returns dxf palette index from symbol layer color
     static QColor colorFromSymbolLayer( const QgsSymbolLayerV2 *symbolLayer, QgsSymbolV2RenderContext &ctx );
@@ -448,6 +457,9 @@ class CORE_EXPORT QgsDxfExport
 
     //! DXF layer name for each label feature
     QMap< QString, QMap<QgsFeatureId, QString> > mDxfLayerNames;
+    long mCrs;
+    QgsMapSettings mMapSettings;
+    double mFactor;
 };
 
 #endif // QGSDXFEXPORT_H

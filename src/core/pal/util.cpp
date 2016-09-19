@@ -33,6 +33,8 @@
 #include "labelposition.h"
 #include "feature.h"
 #include "geomfunction.h"
+
+#include <qgslogger.h>
 #include <cfloat>
 
 #ifndef M_PI
@@ -105,11 +107,13 @@ QLinkedList<const GEOSGeometry *>* pal::Util::unmulti( const GEOSGeometry *the_g
   int nGeom;
   int i;
 
+  GEOSContextHandle_t geosctxt = geosContext();
+
   while ( !queue->isEmpty() )
   {
     geom = queue->takeFirst();
-    GEOSContextHandle_t geosctxt = geosContext();
-    switch ( GEOSGeomTypeId_r( geosctxt, geom ) )
+    int type = GEOSGeomTypeId_r( geosctxt, geom );
+    switch ( type )
     {
       case GEOS_MULTIPOINT:
       case GEOS_MULTILINESTRING:
@@ -126,6 +130,7 @@ QLinkedList<const GEOSGeometry *>* pal::Util::unmulti( const GEOSGeometry *the_g
         final_queue->append( geom );
         break;
       default:
+        QgsDebugMsg( QString( "unexpected geometry type:%1" ).arg( type ) );
         delete final_queue;
         delete queue;
         return nullptr;
