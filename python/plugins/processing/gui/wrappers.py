@@ -30,6 +30,7 @@ __revision__ = '$Format:%H$'
 
 import locale
 import os
+from functools import cmp_to_key
 
 from qgis.core import QgsCoordinateReferenceSystem, QgsVectorLayer
 from qgis.PyQt.QtWidgets import QCheckBox, QComboBox, QLineEdit, QPlainTextEdit
@@ -813,7 +814,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         for field in self._layer.fields():
             if not fieldTypes or field.type() in fieldTypes:
                 fieldNames.add(unicode(field.name()))
-        return sorted(list(fieldNames), cmp=locale.strcoll)
+        return sorted(list(fieldNames), key=cmp_to_key(locale.strcoll))
 
     def setValue(self, value):
         if self.param.multiple:
