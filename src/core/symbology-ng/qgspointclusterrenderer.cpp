@@ -20,6 +20,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgspainteffectregistry.h"
 #include "qgspainteffect.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsdatadefined.h"
 #include <cmath>
 
 #ifndef M_SQRT2
@@ -32,6 +34,14 @@ QgsPointClusterRenderer::QgsPointClusterRenderer()
   mClusterSymbol.reset( new QgsMarkerSymbol() );
   mClusterSymbol->setSize( 4 );
   mClusterSymbol->setColor( QColor( 245, 75, 80 ) );
+
+  QgsFontMarkerSymbolLayer* fm = new QgsFontMarkerSymbolLayer();
+  fm->setFontFamily( QFont().defaultFamily() );
+  fm->setColor( QColor( 255, 255, 255 ) );
+  fm->setSize( 3.2 );
+  fm->setOffset( QPointF( 0, -0.4 ) );
+  fm->setDataDefinedProperty( "char", new QgsDataDefined( true, true, "@cluster_size" ) );
+  mClusterSymbol->insertSymbolLayer( 1, fm );
 }
 
 QgsPointClusterRenderer* QgsPointClusterRenderer::clone() const
