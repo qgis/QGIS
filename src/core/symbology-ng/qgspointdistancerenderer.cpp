@@ -81,19 +81,27 @@ bool QgsPointDistanceRenderer::renderFeature( QgsFeature& feature, QgsRenderCont
     label = getLabel( feature );
   }
 
+  QgsCoordinateTransform xform = context.coordinateTransform();
+  QgsFeature transformedFeature = feature;
+  if ( xform.isValid() )
+  {
+    geom.transform( xform );
+    transformedFeature.setGeometry( geom );
+  }
+
   double searchDistance = mTolerance * QgsSymbolLayerUtils::mapUnitScaleFactor( context, mToleranceUnit, mToleranceMapUnitScale );
-  QgsPoint point = feature.geometry().asPoint();
+  QgsPoint point = transformedFeature.geometry().asPoint();
   QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( point, searchDistance ) );
   if ( intersectList.empty() )
   {
-    mSpatialIndex->insertFeature( feature );
+    mSpatialIndex->insertFeature( transformedFeature );
     // create new group
     ClusteredGroup newGroup;
-    newGroup << GroupedFeature( feature, symbol, selected, label );
+    newGroup << GroupedFeature( transformedFeature, symbol, selected, label );
     mClusteredGroups.push_back( newGroup );
     // add to group index
-    mGroupIndex.insert( feature.id(), mClusteredGroups.count() - 1 );
-    mGroupLocations.insert( feature.id(), point );
+    mGroupIndex.insert( transformedFeature.id(), mClusteredGroups.count() - 1 );
+    mGroupLocations.insert( transformedFeature.id(), point );
   }
   else
   {
@@ -120,9 +128,9 @@ bool QgsPointDistanceRenderer::renderFeature( QgsFeature& feature, QgsRenderCont
                                           ( oldCenter.y() * group.size() + point.y() ) / ( group.size() + 1.0 ) );
 
     // add to a group
-    group << GroupedFeature( feature, symbol, selected, label );
+    group << GroupedFeature( transformedFeature, symbol, selected, label );
     // add to group index
-    mGroupIndex.insert( feature.id(), groupIdx );
+    mGroupIndex.insert( transformedFeature.id(), groupIdx );
   }
 
   return true;
@@ -138,7 +146,8 @@ void QgsPointDistanceRenderer::drawGroup( const ClusteredGroup& group, QgsRender
   }
   QgsGeometry groupGeom( groupMultiPoint );
   QgsGeometry centroid = groupGeom.centroid();
-  QPointF pt = _getPoint( context, *static_cast<QgsPointV2*>( centroid.geometry() ) );
+  QPointF pt = centroid.asQPointF();
+  context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
 
   context.expressionContext().appendScope( createGroupScope( group ) );
   drawGroup( pt, context, group );
