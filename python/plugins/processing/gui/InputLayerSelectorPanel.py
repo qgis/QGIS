@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings, pyqtSignal
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QFileDialog
 from processing.tools import dataobjects
@@ -39,6 +39,8 @@ WIDGET, BASE = uic.loadUiType(
 
 
 class InputLayerSelectorPanel(BASE, WIDGET):
+
+    valueHasChanged = pyqtSignal()
 
     def __init__(self, options, param):
         super(InputLayerSelectorPanel, self).__init__(None)
@@ -54,6 +56,7 @@ class InputLayerSelectorPanel(BASE, WIDGET):
             self.cmbText.addItem(name, value)
 
         self.btnSelect.clicked.connect(self.showSelectionDialog)
+        self.cmbText.currentIndexChanged.connect(self.valueHasChanged.emit)
 
     def showSelectionDialog(self):
         settings = QSettings()
@@ -75,6 +78,12 @@ class InputLayerSelectorPanel(BASE, WIDGET):
             filename = dataobjects.getRasterSublayer(filename, self.param)
             self.cmbText.addItem(filename, filename)
             self.cmbText.setCurrentIndex(self.cmbText.count() - 1)
+
+    def update(self, options):
+        self.cmbText.clear()
+        for (name, value) in options:
+            self.cmbText.addItem(name, value)
+        self.valueHasChanged.emit()
 
     def getValue(self):
         return self.cmbText.itemData(self.cmbText.currentIndex())
