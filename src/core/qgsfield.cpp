@@ -481,9 +481,9 @@ int QgsFields::fieldOriginIndex( int fieldIdx ) const
   return d->fields[fieldIdx].originIndex;
 }
 
-int QgsFields::indexFromName( const QString &name ) const
+int QgsFields::indexFromName( const QString &fieldName ) const
 {
-  return d->nameToIndex.value( name, -1 );
+  return d->nameToIndex.value( fieldName, -1 );
 }
 
 QList<QgsField> QgsFields::toList() const
@@ -602,6 +602,12 @@ int QgsFields::fieldNameIndex( const QString& fieldName ) const
   for ( int idx = 0; idx < count(); ++idx )
   {
     if ( QString::compare( d->fields[idx].field.name(), fieldName, Qt::CaseInsensitive ) == 0 )
+      return idx;
+  }
+
+  for ( int idx = 0; idx < count(); ++idx )
+  {
+    if ( QString::compare( d->fields[idx].field.alias(), fieldName, Qt::CaseInsensitive ) == 0 )
       return idx;
   }
 

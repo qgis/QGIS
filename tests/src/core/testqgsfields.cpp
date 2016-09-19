@@ -330,6 +330,7 @@ void TestQgsFields::indexFromName()
 {
   QgsFields fields;
   QgsField field( QString( "testfield" ) );
+  field.setAlias( "testfieldAlias" );
   fields.append( field );
   QgsField field2( QString( "testfield2" ) );
   fields.append( field2 );
@@ -351,6 +352,11 @@ void TestQgsFields::indexFromName()
   QgsField sameNameDifferentCase( QString( "teStFielD" ) );
   fields.append( sameNameDifferentCase );
   QCOMPARE( fields.fieldNameIndex( QString( "teStFielD" ) ), 3 );
+
+  //test that the alias is only matched with fieldNameIndex
+  QCOMPARE( fields.indexFromName( "testfieldAlias" ), -1 );
+  QCOMPARE( fields.fieldNameIndex( "testfieldAlias" ), 0 );
+  QCOMPARE( fields.fieldNameIndex( "testfieldalias" ), 0 );
 }
 
 void TestQgsFields::toList()

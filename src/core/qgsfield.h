@@ -365,12 +365,32 @@ class CORE_EXPORT QgsFields
     //! Get field's origin index (its meaning is specific to each type of origin)
     int fieldOriginIndex( int fieldIdx ) const;
 
-    //! Look up field's index from name. Returns -1 on error
-    int indexFromName( const QString& name ) const;
+    /**
+     * Look up field's index from the field name.
+     * This method takes is case sensitive and only matches the data source
+     * name of the field.
+     *
+     * @param fieldName The name of the field.
+     *
+     * @return The field index if found or -1 in case it cannot be found.
+     * @see fieldNameIndex For a more tolerant alternative.
+     */
+    int indexFromName( const QString& fieldName ) const;
 
-    //! Look up field's index from name
-    //! also looks up case-insensitive if there is no match otherwise
-    //! @note added in 2.4
+    /**
+     * Look up field's index from the field name.
+     * This method matches in the following order:
+     *
+     *  1. The exact field name taking case sensitivity into account
+     *  2. Looks for the field name by case insensitive comparison
+     *  3. The field alias (case insensitive)
+     *
+     * @param fieldName The name to look for.
+     *
+     * @return The field index if found or -1 in case it cannot be found.
+     * @see indexFromName For a more performant and precise but less tolerant alternative.
+     * @note added in 2.4
+     */
     int fieldNameIndex( const QString& fieldName ) const;
 
     //! Utility function to get list of attribute indexes
