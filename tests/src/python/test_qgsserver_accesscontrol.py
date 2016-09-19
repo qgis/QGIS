@@ -158,14 +158,21 @@ class RestrictedAccessControl(QgsAccessControlFilter):
         return "r" if self._active else "f"
 
 
-server = QgsServer()
-server.handleRequest()
-server_iface = server.serverInterface()
-accesscontrol = RestrictedAccessControl(server_iface)
-server_iface.registerAccessControl(accesscontrol, 100)
-
-
 class TestQgsServerAccessControl(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        cls._server = QgsServer()
+        cls._server.handleRequest()
+        cls._server_iface = cls._server.serverInterface()
+        cls._accesscontrol = RestrictedAccessControl(cls._server_iface)
+        cls._server_iface.registerAccessControl(cls._accesscontrol, 100)
+
+    @classmethod
+    def tearDownClass(cls):
+        """Run after all tests"""
+        del cls._server
 
     def setUp(self):
         self.testdata_path = unitTestDataPath("qgis_server_accesscontrol")
@@ -1368,13 +1375,13 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "Project based layer subsetString not respected in GetFeature with restricted access\n%s" % response)
 
     def _handle_request(self, restricted, *args):
-        accesscontrol._active = restricted
-        result = self._result(server.handleRequest(*args))
+        self._accesscontrol._active = restricted
+        result = self._result(self._server.handleRequest(*args))
         return result
 
     def _result(self, data):
         headers = {}
-        for line in data[0].split("\n"):
+        for line in data[0].decode('UTF-8').split("\n"):
             if line != "":
                 header = line.split(":")
                 self.assertEqual(len(header), 2, line)
@@ -1383,35 +1390,35 @@ class TestQgsServerAccessControl(unittest.TestCase):
         return data[1], headers
 
     def _get_fullaccess(self, query_string):
-        server.putenv("REQUEST_METHOD", "GET")
+        self._server.putenv("REQUEST_METHOD", "GET")
         result = self._handle_request(False, query_string)
-        server.putenv("REQUEST_METHOD", '')
+        self._server.putenv("REQUEST_METHOD", '')
         return result
 
     def _get_restricted(self, query_string):
-        server.putenv("REQUEST_METHOD", "GET")
+        self._server.putenv("REQUEST_METHOD", "GET")
         result = self._handle_request(True, query_string)
-        server.putenv("REQUEST_METHOD", '')
+        self._server.putenv("REQUEST_METHOD", '')
         return result
 
     def _post_fullaccess(self, data, query_string=None):
-        server.putenv("REQUEST_METHOD", "POST")
-        server.putenv("REQUEST_BODY", data)
-        server.putenv("QGIS_PROJECT_FILE", self.projectPath)
+        self._server.putenv("REQUEST_METHOD", "POST")
+        self._server.putenv("REQUEST_BODY", data)
+        self._server.putenv("QGIS_PROJECT_FILE", self.projectPath)
         result = self._handle_request(False, query_string)
-        server.putenv("REQUEST_METHOD", '')
-        server.putenv("REQUEST_BODY", '')
-        server.putenv("QGIS_PROJECT_FILE", '')
+        self._server.putenv("REQUEST_METHOD", '')
+        self._server.putenv("REQUEST_BODY", '')
+        self._server.putenv("QGIS_PROJECT_FILE", '')
         return result
 
     def _post_restricted(self, data, query_string=None):
-        server.putenv("REQUEST_METHOD", "POST")
-        server.putenv("REQUEST_BODY", data)
-        server.putenv("QGIS_PROJECT_FILE", self.projectPath)
+        self._server.putenv("REQUEST_METHOD", "POST")
+        self._server.putenv("REQUEST_BODY", data)
+        self._server.putenv("QGIS_PROJECT_FILE", self.projectPath)
         result = self._handle_request(True, query_string)
-        server.putenv("REQUEST_METHOD", '')
-        server.putenv("REQUEST_BODY", '')
-        server.putenv("QGIS_PROJECT_FILE", '')
+        self._server.putenv("REQUEST_METHOD", '')
+        self._server.putenv("REQUEST_BODY", '')
+        self._server.putenv("QGIS_PROJECT_FILE", '')
         return result
 
     def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize()):
