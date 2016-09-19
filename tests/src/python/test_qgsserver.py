@@ -18,7 +18,7 @@ import re
 import urllib.request
 import urllib.parse
 import urllib.error
-from mimetools import Message
+import email
 from io import StringIO
 from qgis.server import QgsServer
 from qgis.core import QgsMessageLog
@@ -45,7 +45,10 @@ class TestQgsServer(unittest.TestCase):
         self.server = QgsServer()
 
     def assert_headers(self, header, body):
-        headers = Message(StringIO(header))
+        stream = StringIO()
+        header_string = header.decode('utf-8')
+        stream.write(header_string)
+        headers = email.message_from_string(header_string)
         if 'content-length' in headers:
             content_length = int(headers['content-length'])
             body_length = len(body)

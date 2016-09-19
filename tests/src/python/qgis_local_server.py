@@ -425,7 +425,7 @@ class QgisLocalServer(object):
         url = self._fcgi_url + '?' + self.process_params(params)
 
         res = urllib.request.urlopen(url)
-        xml = res.read()
+        xml = res.read().decode('utf-8')
         if browser:
             tmp_name = getTempfilePath('html')
             with open(tmp_name, 'wt') as temp_html:
@@ -732,7 +732,7 @@ def getLocalServer():
             # print repr(res)
             assert (res is not None
                     and res.getcode() == 200
-                    and 'Web Server Working' in res.read()), msg
+                    and 'Web Server Working' in res.read().decode('utf-8')), msg
 
             # verify basic wms service
             params = {
