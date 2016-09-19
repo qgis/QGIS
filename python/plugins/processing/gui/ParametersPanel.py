@@ -36,7 +36,7 @@ from qgis.core import QgsMapLayerRegistry, QgsMapLayer
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
-from qgis.PyQt.QtWidgets import (QWidget, QLayout, QVBoxLayout, QHBoxLayout, QToolButton,                                  
+from qgis.PyQt.QtWidgets import (QWidget, QLayout, QVBoxLayout, QHBoxLayout, QToolButton,
                                  QLabel, QCheckBox, QComboBox, QLineEdit, QPlainTextEdit)
 from qgis.PyQt.QtGui import QIcon
 
@@ -96,11 +96,8 @@ class ParametersPanel(BASE, WIDGET):
                 desc += self.tr(' (xmin, xmax, ymin, ymax)')
             if isinstance(param, ParameterPoint):
                 desc += self.tr(' (x, y)')
-            try:
-                if param.optional:
-                    desc += self.tr(' [optional]')
-            except:
-                pass
+            if param.optional:
+                desc += self.tr(' [optional]')
 
             wrapper = self.getWidgetWrapperFromParameter(param)
             self.wrappers[param.name] = wrapper
@@ -170,7 +167,7 @@ class ParametersPanel(BASE, WIDGET):
         wrapper = param.wrapper(self.parent)
         wrapper.widgetValueHasChanged.connect(self.widgetValueHasChanged)
         return wrapper
-    
+
     def widgetValueHasChanged(self, wrapper):
         for wrapper in self.wrappers.values():
             wrapper.anotherParameterWidgetHasChanged(wrapper)
