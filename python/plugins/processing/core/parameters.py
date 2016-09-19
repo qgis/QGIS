@@ -833,7 +833,6 @@ class ParameterNumber(Parameter):
                 self.value = float(v)
                 return True
             except:
-                raise
                 return False
         else:
             try:
