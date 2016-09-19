@@ -84,7 +84,7 @@ void TestQgsAttributeForm::testFieldConstraint()
 
   // set constraint
   QgsEditFormConfig config = layer->editFormConfig();
-  config.setExpression( 0, QString() );
+  config.setConstraintExpression( 0, QString() );
   layer->setEditFormConfig( config );
 
   // get wrapper
@@ -96,7 +96,7 @@ void TestQgsAttributeForm::testFieldConstraint()
   QCOMPARE( label->text(), QString( "col0" ) );
 
   // set a not null constraint
-  config.setExpression( 0, "col0 is not null" );
+  config.setConstraintExpression( 0, "col0 is not null" );
   layer->setEditFormConfig( config );
 
   // set value to 1
@@ -132,10 +132,10 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
 
   // set constraints for each field
   QgsEditFormConfig config = layer->editFormConfig();
-  config.setExpression( 0, QString() );
-  config.setExpression( 1, QString() );
-  config.setExpression( 2, QString() );
-  config.setExpression( 3, QString() );
+  config.setConstraintExpression( 0, QString() );
+  config.setConstraintExpression( 1, QString() );
+  config.setConstraintExpression( 2, QString() );
+  config.setConstraintExpression( 3, QString() );
   layer->setEditFormConfig( config );
 
   // build a form for this feature
@@ -167,10 +167,10 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   QCOMPARE( label3->text(), QString( "col3" ) );
 
   // update constraint
-  config.setExpression( 0, "col0 < (col1 * col2)" );
-  config.setExpression( 1, QString() );
-  config.setExpression( 2, QString() );
-  config.setExpression( 3, "col0 = 2" );
+  config.setConstraintExpression( 0, "col0 < (col1 * col2)" );
+  config.setConstraintExpression( 1, QString() );
+  config.setConstraintExpression( 2, QString() );
+  config.setConstraintExpression( 3, "col0 = 2" );
   layer->setEditFormConfig( config );
 
   // change value
@@ -206,7 +206,7 @@ void TestQgsAttributeForm::testOKButtonStatus()
 
   // set constraint
   QgsEditFormConfig config = layer->editFormConfig();
-  config.setExpression( 0, QString() );
+  config.setConstraintExpression( 0, QString() );
   layer->setEditFormConfig( config );
 
   // build a form for this feature
@@ -235,13 +235,13 @@ void TestQgsAttributeForm::testOKButtonStatus()
   QCOMPARE( okButton->isEnabled(), true );
 
   // invalid constraint and editable layer : OK button disabled
-  config.setExpression( 0, "col0 = 0" );
+  config.setConstraintExpression( 0, "col0 = 0" );
   layer->setEditFormConfig( config );
   ww->setValue( 1 );
   QCOMPARE( okButton->isEnabled(), false );
 
   // valid constraint and editable layer : OK button enabled
-  config.setExpression( 0, "col0 = 2" );
+  config.setConstraintExpression( 0, "col0 = 2" );
   layer->setEditFormConfig( config );
   ww->setValue( 2 );
   QCOMPARE( okButton->isEnabled(), true );

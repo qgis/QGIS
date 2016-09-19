@@ -681,6 +681,10 @@ place of a null pointer.</li>
 <li>widgetType() and widgetConfig() now reflect only the user configured values.
 QgsEditorWidgetRegistry::instance()->findBest() must be used instead.</li>
 <li>widgetType(), widgetConfig(), setWidgetType(), setWidgetConfig() and removeWidgetConfig() now only take a string as first parameter. Access by index has been removed.</li>
+<li>expression() has been renamed to constraintExpression()</li>
+<li>setExpression() has been renamed to setConstraintExpression()</li>
+<li>expressionDescription() has been renamed to constraintDescription()</li>
+<li>setExpressionDesctiption() has been renamed to setConstraintDescription()</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsExpression QgsExpression

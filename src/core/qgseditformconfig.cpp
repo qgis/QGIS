@@ -182,7 +182,7 @@ bool QgsEditFormConfig::labelOnTop( int idx ) const
     return false;
 }
 
-QString QgsEditFormConfig::expression( int idx ) const
+QString QgsEditFormConfig::constraintExpression( int idx ) const
 {
   QString expr;
 
@@ -192,16 +192,16 @@ QString QgsEditFormConfig::expression( int idx ) const
   return expr;
 }
 
-void QgsEditFormConfig::setExpression( int idx, const QString& str )
+void QgsEditFormConfig::setConstraintExpression( int idx, const QString& expression )
 {
   if ( idx >= 0 && idx < d->mFields.count() )
   {
     d.detach();
-    d->mConstraints[ d->mFields.at( idx ).name()] = str;
+    d->mConstraints[ d->mFields.at( idx ).name()] = expression;
   }
 }
 
-QString QgsEditFormConfig::expressionDescription( int idx ) const
+QString QgsEditFormConfig::constraintDescription( int idx ) const
 {
   QString description;
 
@@ -211,7 +211,7 @@ QString QgsEditFormConfig::expressionDescription( int idx ) const
   return description;
 }
 
-void QgsEditFormConfig::setExpressionDescription( int idx, const QString &descr )
+void QgsEditFormConfig::setContraintDescription( int idx, const QString &descr )
 {
   if ( idx >= 0 && idx < d->mFields.count() )
   {

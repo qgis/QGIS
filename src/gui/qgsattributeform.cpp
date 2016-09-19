@@ -835,7 +835,7 @@ bool QgsAttributeForm::currentFormValidConstraints( QStringList &invalidFields,
       {
         invalidFields.append( eww->field().name() );
 
-        QString desc = eww->layer()->editFormConfig().expressionDescription( eww->fieldIdx() );
+        QString desc = eww->layer()->editFormConfig().constraintDescription( eww->fieldIdx() );
         descriptions.append( desc );
 
         valid = false; // continue to get all invalif fields
@@ -952,7 +952,7 @@ QList<QgsEditorWidgetWrapper*> QgsAttributeForm::constraintDependencies( QgsEdit
       if ( name != ewwName )
       {
         // get expression and referencedColumns
-        QgsExpression expr = eww->layer()->editFormConfig().expression( eww->fieldIdx() );
+        QgsExpression expr = eww->layer()->editFormConfig().constraintExpression( eww->fieldIdx() );
 
         Q_FOREACH ( const QString& colName, expr.referencedColumns() )
         {
