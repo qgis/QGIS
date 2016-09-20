@@ -199,35 +199,49 @@ class QgsEditFormConfig
 
     /**
      * Returns the constraint expression of a specific field
+     *
      * @param idx The index of the field
      * @return the expression
+     *
      * @note added in QGIS 2.16
+     * @note renamed in QGIS 3.0
      */
-    QString expression( int idx ) const;
+    QString constraintExpression( int idx ) const;
 
     /**
      * Set the constraint expression for a specific field
+     *
      * @param idx the field index
-     * @param str the constraint expression
+     * @param expression the constraint expression
+     *
      * @note added in QGIS 2.16
+     * @note renamed in QGIS 3.0
      */
-    void setExpression( int idx, const QString& str );
+    void setConstraintExpression( int idx, const QString& expression );
 
     /**
-     * Returns the constraint expression description of a specific filed.
+     * Returns the constraint expression description of a specific field.
+     *
      * @param idx The index of the field
-     * @return the expression description
+     * @return The expression description. Will be presented
+     *         to the user in case the constraint fails.
+     *
      * @note added in QGIS 2.16
+     * @note renamed in QGIS 3.0
      */
-    QString expressionDescription( int idx ) const;
+    QString constraintDescription( int idx ) const;
 
     /**
      * Set the constraint expression description for a specific field.
+     *
      * @param idx The index of the field
-     * @param descr The description of the expression
+     * @param description The description of the expression. Will be presented
+     *                    to the user in case the constraint fails.
+     *
      * @note added in QGIS 2.16
+     * @note renamed in QGIS 3.0
      */
-    void setExpressionDescription( int idx, const QString &descr );
+    void setContraintDescription( int idx, const QString& description );
 
     /**
      * Returns if the field at fieldidx should be treated as NOT NULL value

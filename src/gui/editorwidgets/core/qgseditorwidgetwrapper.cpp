@@ -109,13 +109,13 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
 {
   bool toEmit( false );
   QString errStr( tr( "predicate is True" ) );
-  QString expression = layer()->editFormConfig().expression( mFieldIdx );
+  QString expression = layer()->editFormConfig().constraintExpression( mFieldIdx );
   QString description;
   QVariant value = ft.attribute( mFieldIdx );
 
   if ( ! expression.isEmpty() )
   {
-    description = layer()->editFormConfig().expressionDescription( mFieldIdx );
+    description = layer()->editFormConfig().constraintDescription( mFieldIdx );
 
     QgsExpressionContext context = layer()->createExpressionContext();
     context.setFeature( ft );
