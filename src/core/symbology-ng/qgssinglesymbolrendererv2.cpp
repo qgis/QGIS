@@ -207,11 +207,16 @@ QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::clone() const
 
 void QgsSingleSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element ) const
 {
-  QgsStringMap props;
+  toSld( doc, element, QgsStringMap() );
+}
+
+void QgsSingleSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const
+{
+  QgsStringMap locProps( props );
   if ( mRotation.data() )
-    props[ "angle" ] = mRotation->expression();
+    locProps[ "angle" ] = mRotation->expression();
   if ( mSizeScale.data() )
-    props[ "scale" ] = mSizeScale->expression();
+    locProps[ "scale" ] = mSizeScale->expression();
 
   QDomElement ruleElem = doc.createElement( "se:Rule" );
   element.appendChild( ruleElem );
@@ -220,7 +225,9 @@ void QgsSingleSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element )
   nameElem.appendChild( doc.createTextNode( "Single symbol" ) );
   ruleElem.appendChild( nameElem );
 
-  if ( mSymbol.data() ) mSymbol->toSld( doc, ruleElem, props );
+  QgsSymbolLayerV2Utils::applyScaleDependency( doc, ruleElem, locProps );
+
+  if ( mSymbol.data() ) mSymbol->toSld( doc, ruleElem, locProps );
 }
 
 QgsSymbolV2List QgsSingleSymbolRendererV2::symbols( QgsRenderContext &context )

@@ -58,7 +58,12 @@ class CORE_EXPORT QgsRendererCategoryV2
     // debugging
     QString dump() const;
 
-    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
+    /** Creates a DOM element representing the category in SLD format.
+     * @param doc DOM document
+     * @param element destination DOM element
+     * @param props graduated renderer properties
+     */
+    void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
 
   protected:
     QVariant mValue;
@@ -99,7 +104,10 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual QgsCategorizedSymbolRendererV2* clone() const override;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
+    //! Writes the SLD element following the SLD v1.1 specs
+    virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities() override { return SymbolLevels | RotationField | Filter; }

@@ -191,7 +191,8 @@ class CORE_EXPORT QgsSymbolV2
 
     virtual QgsSymbolV2* clone() const = 0;
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    //! Writes the SLD element following the SLD v1.1 specs
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap&  props ) const;
 
     QgsSymbolV2::OutputUnit outputUnit() const;
     void setOutputUnit( QgsSymbolV2::OutputUnit u );

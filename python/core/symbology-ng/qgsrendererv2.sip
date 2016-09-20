@@ -212,6 +212,9 @@ class QgsFeatureRendererV2
     //! create the SLD UserStyle element following the SLD v1.1 specs with the given name
     //! @note added in 2.8
     virtual QDomElement writeSld( QDomDocument& doc, const QString& styleName ) const;
+    //! create the SLD UserStyle element following the SLD v1.1 specs with the given name
+    //! @note added in 2.14
+    virtual QDomElement writeSld( QDomDocument& doc, const QString& styleName, const QgsStringMap& props ) const;
 
     /** Create a new renderer according to the information contained in
      * the UserStyle element of a SLD style document
@@ -227,6 +230,8 @@ class QgsFeatureRendererV2
 
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
+    //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
+    virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
 
     //! return a list of symbology items for the legend
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );

@@ -87,7 +87,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
          */
         bool needsGeometry() const;
 
-	//! @note available in python bindings as symbol2
+        //! @note available in python bindings as symbol2
         QgsSymbolV2List symbols( const QgsRenderContext& context = QgsRenderContext() ) /PyName=symbols2/;
 
         //! @note not available in python bindings
@@ -203,7 +203,12 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         //! clone this rule, return new instance
         QgsRuleBasedRendererV2::Rule* clone() const /Factory/;
 
-        void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props );
+        /** Creates a DOM element representing the rule in SLD format.
+         * @param doc DOM document
+         * @param element destination DOM element
+         * @param props graduated renderer properties
+         */
+        void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props = QgsStringMap() );
         static QgsRuleBasedRendererV2::Rule* createFromSld( QDomElement& element, QGis::GeometryType geomType ) /Factory/;
 
         QDomElement save( QDomDocument& doc, QgsSymbolV2Map& symbolMap );
@@ -366,7 +371,10 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     virtual QgsRuleBasedRendererV2* clone() const /Factory/;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
+    //! Writes the SLD element following the SLD v1.1 specs
+    virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
 
     static QgsFeatureRendererV2* createFromSld( QDomElement& element, QGis::GeometryType geomType ) /Factory/;
 
