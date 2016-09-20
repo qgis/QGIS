@@ -65,8 +65,6 @@
 %Include qgsmaptopixelgeometrysimplifier.sip
 %Include qgstransaction.sip
 %Include qgstransactiongroup.sip
-// TODO - update for Qt5
-// %Include qgshttptransaction.sip
 %Include qgsdartmeasurement.sip
 %Include qgsexpressionfieldbuffer.sip
 %Include qgsfontutils.sip

@@ -22,6 +22,7 @@ SET ( qgis_mapserv_SRCS
   qgscapabilitiescache.cpp
   qgsconfigcache.cpp
   qgshttprequesthandler.cpp
+#  qgshttptransaction.cpp
   qgsgetrequesthandler.cpp
   qgspostrequesthandler.cpp
   qgssoaprequesthandler.cpp
@@ -65,6 +66,7 @@ ENDIF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
 SET (qgis_mapserv_MOC_HDRS
   qgscapabilitiescache.h
   qgsconfigcache.h
+#  qgshttptransaction.h
   qgsmaprenderer.h
   qgsmslayercache.h
   qgsserverlogger.h

@@ -190,6 +190,7 @@ Use QgsComposerAttributeTableV2 instead.</li>
 <li>QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,
 so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).</li>
+<li>QgsHttpTransaction. This class was outdated and code should be ported to native Qt or Python implementations.</li>
 <li>QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngineV2.</li>
 <li>QgsLegendModel was removed.
 <li>QgsMapCanvasMap. It is an internal class used by map canvas.</li>
