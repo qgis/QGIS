@@ -2148,6 +2148,189 @@ class TestQgsExpression: public QObject
       QCOMPARE( v4, QVariant( "test value" ) );
     }
 
+    void eval_string_array()
+    {
+      QgsFeature f( 100 );
+      QgsFields fields;
+      fields.append( QgsField( "col1" ) );
+      fields.append( QgsField( "strings", QVariant::StringList, "string[]", 0, 0, QString(), QVariant::String ) );
+      f.setFields( fields, true );
+      f.setAttribute( "col1", QString( "test value" ) );
+      QStringList array;
+      array << "one" << "two";
+      f.setAttribute( "strings", array );
+
+      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
+
+      QVariantList builderExpected;
+      QCOMPARE( QgsExpression( "array()" ).evaluate( &context ), QVariant( ) );
+      builderExpected << "hello";
+      QCOMPARE( QgsExpression( "array('hello')" ).evaluate( &context ), QVariant( builderExpected ) );
+      builderExpected << "world";
+      QCOMPARE( QgsExpression( "array('hello', 'world')" ).evaluate( &context ), QVariant( builderExpected ) );
+
+      QCOMPARE( QgsExpression( "array_length(\"strings\")" ).evaluate( &context ), QVariant( 2 ) );
+
+      QCOMPARE( QgsExpression( "array_contains(\"strings\", 'two')" ).evaluate( &context ), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array_contains(\"strings\", 'three')" ).evaluate( &context ), QVariant( false ) );
+
+      QCOMPARE( QgsExpression( "array_find(\"strings\", 'two')" ).evaluate( &context ), QVariant( 1 ) );
+      QCOMPARE( QgsExpression( "array_find(\"strings\", 'three')" ).evaluate( &context ), QVariant( -1 ) );
+
+      QCOMPARE( QgsExpression( "array_get(\"strings\", 1)" ).evaluate( &context ), QVariant( "two" ) );
+      QCOMPARE( QgsExpression( "array_get(\"strings\", 2)" ).evaluate( &context ), QVariant() );
+      QCOMPARE( QgsExpression( "array_get(\"strings\", -1)" ).evaluate( &context ), QVariant() );
+
+      QStringList appendExpected = array;
+      appendExpected << "three";
+      QCOMPARE( QgsExpression( "array_append(\"strings\", 'three')" ).evaluate( &context ), QVariant( appendExpected ) );
+
+      QStringList prependExpected = array;
+      prependExpected.prepend( "zero" );
+      QCOMPARE( QgsExpression( "array_prepend(\"strings\", 'zero')" ).evaluate( &context ), QVariant( prependExpected ) );
+
+      QStringList insertExpected = array;
+      insertExpected.insert( 1, "one and a half" );
+      QCOMPARE( QgsExpression( "array_insert(\"strings\", 1, 'one and a half')" ).evaluate( &context ), QVariant( insertExpected ) );
+
+      QStringList removeAtExpected = array;
+      removeAtExpected.removeAt( 0 );
+      QCOMPARE( QgsExpression( "array_remove_at(\"strings\", 0)" ).evaluate( &context ), QVariant( removeAtExpected ) );
+
+      QStringList removeAllExpected;
+      removeAllExpected << "a" << "b" << "d";
+      QCOMPARE( QgsExpression( "array_remove_all(array('a', 'b', 'c', 'd', 'c'), 'c')" ).evaluate( &context ), QVariant( removeAllExpected ) );
+
+      QStringList concatExpected = array;
+      concatExpected << "a" << "b" << "c";
+      QCOMPARE( QgsExpression( "array_cat(\"strings\", array('a', 'b'), array('c'))" ).evaluate( &context ), QVariant( concatExpected ) );
+
+      QCOMPARE( QgsExpression( "array_intersect(array('1', '2', '3', '4'), array('4', '0', '2', '5'))" ).evaluate( &context ), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array_intersect(array('1', '2', '3', '4'), array('0', '5'))" ).evaluate( &context ), QVariant( false ) );
+    }
+
+    void eval_int_array()
+    {
+      QgsFeature f( 100 );
+      QgsFields fields;
+      fields.append( QgsField( "col1" ) );
+      fields.append( QgsField( "ints", QVariant::List, "int[]", 0, 0, QString(), QVariant::Int ) );
+      f.setFields( fields, true );
+      f.setAttribute( "col1", QString( "test value" ) );
+      QVariantList array;
+      array << 1 << -2;
+      f.setAttribute( "ints", array );
+
+      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
+
+      QVariantList builderExpected;
+      builderExpected << 1;
+      QCOMPARE( QgsExpression( "array(1)" ).evaluate( &context ), QVariant( builderExpected ) );
+      builderExpected << 2;
+      QCOMPARE( QgsExpression( "array(1, 2)" ).evaluate( &context ), QVariant( builderExpected ) );
+
+      QCOMPARE( QgsExpression( "array_contains(\"ints\", 1)" ).evaluate( &context ), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array_contains(\"ints\", 2)" ).evaluate( &context ), QVariant( false ) );
+
+      QCOMPARE( QgsExpression( "array_find(\"ints\", -2)" ).evaluate( &context ), QVariant( 1 ) );
+      QCOMPARE( QgsExpression( "array_find(\"ints\", 3)" ).evaluate( &context ), QVariant( -1 ) );
+
+      QCOMPARE( QgsExpression( "array_get(\"ints\", 1)" ).evaluate( &context ), QVariant( -2 ) );
+      QCOMPARE( QgsExpression( "array_get(\"ints\", 2)" ).evaluate( &context ), QVariant() );
+      QCOMPARE( QgsExpression( "array_get(\"ints\", -1)" ).evaluate( &context ), QVariant() );
+
+      QVariantList appendExpected = array;
+      appendExpected << 3;
+      QCOMPARE( QgsExpression( "array_append(\"ints\", 3)" ).evaluate( &context ), QVariant( appendExpected ) );
+
+      QVariantList prependExpected = array;
+      prependExpected.prepend( 0 );
+      QCOMPARE( QgsExpression( "array_prepend(\"ints\", 0)" ).evaluate( &context ), QVariant( prependExpected ) );
+
+      QVariantList insertExpected = array;
+      insertExpected.insert( 1, 2 );
+      QCOMPARE( QgsExpression( "array_insert(\"ints\", 1, 2)" ).evaluate( &context ), QVariant( insertExpected ) );
+
+      QVariantList removeAtExpected = array;
+      removeAtExpected.removeAt( 0 );
+      QCOMPARE( QgsExpression( "array_remove_at(\"ints\", 0)" ).evaluate( &context ), QVariant( removeAtExpected ) );
+
+      QVariantList removeAllExpected;
+      removeAllExpected << 1 << 2 << 4;
+      QCOMPARE( QgsExpression( "array_remove_all(array(1, 2, 3, 4, 3), 3)" ).evaluate( &context ), QVariant( removeAllExpected ) );
+      QCOMPARE( QgsExpression( "array_remove_all(array(1, 2, 3, 4, 3), '3')" ).evaluate( &context ), QVariant( removeAllExpected ) );
+
+      QVariantList concatExpected = array;
+      concatExpected << 56 << 57;
+      QCOMPARE( QgsExpression( "array_cat(\"ints\", array(56, 57))" ).evaluate( &context ), QVariant( concatExpected ) );
+
+      QCOMPARE( QgsExpression( "array_intersect(array(1, 2, 3, 4), array(4, 0, 2, 5))" ).evaluate( &context ), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array_intersect(array(1, 2, 3, 4), array(0, 5))" ).evaluate( &context ), QVariant( false ) );
+
+      QgsExpression badArray( "array_get('not an array', 0)" );
+      QCOMPARE( badArray.evaluate( &context ), QVariant() );
+      QVERIFY( badArray.hasEvalError() );
+      QCOMPARE( badArray.evalErrorString(), QString( "Cannot convert 'not an array' to array" ) );
+    }
+
+    void eval_map()
+    {
+      QgsFeature f( 100 );
+      QgsFields fields;
+      fields.append( QgsField( "col1" ) );
+      fields.append( QgsField( "map", QVariant::Map, "map", 0, 0, QString(), QVariant::String ) );
+      f.setFields( fields, true );
+      f.setAttribute( "col1", QString( "test value" ) );
+      QVariantMap map;
+      map["1"] = "one";
+      map["2"] = "two";
+      f.setAttribute( "map", map );
+
+      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
+
+      QVariantMap builderExpected;
+      QCOMPARE( QgsExpression( "map()" ).evaluate( &context ), QVariant( ) );
+      builderExpected["1"] = "hello";
+      QCOMPARE( QgsExpression( "map('1', 'hello')" ).evaluate( &context ), QVariant( builderExpected ) );
+      builderExpected["2"] = "world";
+      QCOMPARE( QgsExpression( "map('1', 'hello', '2', 'world')" ).evaluate( &context ), QVariant( builderExpected ) );
+      QCOMPARE( QgsExpression( "map('1', 'hello', '2', 'world', 'ignoredOddParam')" ).evaluate( &context ), QVariant( builderExpected ) );
+
+      QCOMPARE( QgsExpression( "map_get(\"map\", '2')" ).evaluate( &context ), QVariant( "two" ) );
+      QCOMPARE( QgsExpression( "map_get(\"map\", '3')" ).evaluate( &context ), QVariant() );
+
+      QCOMPARE( QgsExpression( "map_exist(\"map\", '2')" ).evaluate( &context ), QVariant( true ) );
+      QCOMPARE( QgsExpression( "map_exist(\"map\", '3')" ).evaluate( &context ), QVariant( false ) );
+
+      QVariantMap deleteExpected = map;
+      deleteExpected.remove( "1" );
+      QCOMPARE( QgsExpression( "map_delete(\"map\", '1')" ).evaluate( &context ), QVariant( deleteExpected ) );
+      QCOMPARE( QgsExpression( "map_delete(\"map\", '3')" ).evaluate( &context ), QVariant( map ) );
+
+      QVariantMap insertExpected = map;
+      insertExpected.insert( "3", "three" );
+      QCOMPARE( QgsExpression( "map_insert(\"map\", '3', 'three')" ).evaluate( &context ), QVariant( insertExpected ) );
+
+      QVariantMap concatExpected;
+      concatExpected["1"] = "one";
+      concatExpected["2"] = "two";
+      concatExpected["3"] = "three";
+      QCOMPARE( QgsExpression( "map_concat(map('1', 'one', '2', 'overriden by next map'), map('2', 'two', '3', 'three'))" ).evaluate( &context ), QVariant( concatExpected ) );
+
+      QStringList keysExpected;
+      keysExpected << "1" << "2";
+      QCOMPARE( QgsExpression( "map_akeys(\"map\")" ).evaluate( &context ), QVariant( keysExpected ) );
+
+      QVariantList valuesExpected;
+      valuesExpected << "one" << "two";
+      QCOMPARE( QgsExpression( "map_avals(\"map\")" ).evaluate( &context ), QVariant( valuesExpected ) );
+
+      QgsExpression badMap( "map_get('not a map', '0')" );
+      QCOMPARE( badMap.evaluate( &context ), QVariant() );
+      QVERIFY( badMap.hasEvalError() );
+      QCOMPARE( badMap.evalErrorString(), QString( "Cannot convert 'not a map' to map" ) );
+    }
+
     void expression_from_expression_data()
     {
       QTest::addColumn<QString>( "string" );
@@ -2346,12 +2529,12 @@ class TestQgsExpression: public QObject
 
       QVariantList list;
       list << 1 << 2 << 3;
-      QCOMPARE( QgsExpression::formatPreviewString( QVariant( list ) ), QString( "<i>&lt;list: 1, 2, 3&gt;</i>" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( list ) ), QString( "<i>&lt;array: 1, 2, 3&gt;</i>" ) );
 
       QStringList stringList;
       stringList << "One" << "Two" << "A very long string that is going to be truncated";
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( stringList ) ),
-                QString( "<i>&lt;list: 'One', 'Two', 'A very long string that is going to be trunca...&gt;</i>" ) );
+                QString( "<i>&lt;array: 'One', 'Two', 'A very long string that is going to be trunca...&gt;</i>" ) );
     }
 
 };

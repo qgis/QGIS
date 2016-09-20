@@ -1,0 +1,12 @@
+{
+  "name": "array_cat",
+  "type": "function",
+  "description": "Returns an array containing all the given arrays concatenated.",
+  "variableLenArguments": true,
+  "arguments": [
+    {"arg":"array1", "syntaxOnly": true},
+    {"arg":"array2", "syntaxOnly": true},
+    {"arg":"array", "descOnly": true, "description":"an array"}],
+  "examples": [ { "expression":"array_cat(array(1,2),array(2,3))", "returns":"array: 1,2,2,3"}
+  ]
+}
