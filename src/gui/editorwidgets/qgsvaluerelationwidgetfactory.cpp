@@ -142,8 +142,6 @@ Qt::AlignmentFlag QgsValueRelationWidgetFactory::alignmentFlag( QgsVectorLayer* 
   Q_UNUSED( fieldIdx );
   Q_UNUSED( config );
 
-  QgsDebugMsg( "Entered" );
-
   return Qt::AlignLeft;
 }
 
