@@ -481,8 +481,7 @@ void QgsDualView::tableColumnResized( int column, int width )
   if ( sourceCol >= 0 )
   {
     config.setColumnWidth( sourceCol, width );
-    mLayerCache->layer()->setAttributeTableConfig( config );
-    mConfig = config;
+    setAttributeTableConfig( config );
   }
 }
 
@@ -495,7 +494,6 @@ void QgsDualView::hideColumn()
   if ( sourceCol >= 0 )
   {
     config.setColumnHidden( sourceCol, true );
-    mLayerCache->layer()->setAttributeTableConfig( config );
     setAttributeTableConfig( config );
   }
 }
@@ -518,7 +516,6 @@ void QgsDualView::resizeColumn()
     if ( ok )
     {
       config.setColumnWidth( sourceCol, width );
-      mLayerCache->layer()->setAttributeTableConfig( config );
       setAttributeTableConfig( config );
     }
   }
@@ -635,7 +632,7 @@ void QgsDualView::onSortColumnChanged()
   QgsAttributeTableConfig cfg = mLayerCache->layer()->attributeTableConfig();
   cfg.setSortExpression( mFilterModel->sortExpression() );
   cfg.setSortOrder( mFilterModel->sortOrder() );
-  mLayerCache->layer()->setAttributeTableConfig( cfg );
+  setAttributeTableConfig( cfg );
 }
 
 void QgsDualView::sortByPreviewExpression()
@@ -691,7 +688,7 @@ void QgsDualView::setSortExpression( const QString& sortExpression, Qt::SortOrde
 
   mConfig.setSortExpression( sortExpression );
   mConfig.setSortOrder( sortOrder );
-  mLayerCache->layer()->setAttributeTableConfig( mConfig );
+  setAttributeTableConfig( mConfig );
 }
 
 QString QgsDualView::sortExpression() const

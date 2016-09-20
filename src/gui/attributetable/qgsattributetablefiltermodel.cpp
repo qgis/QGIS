@@ -188,7 +188,7 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
     {
       if ( newColumnMapping.size() == mColumnMapping.size() - removedColumnCount )
       {
-        beginRemoveColumns( QModelIndex(), firstRemovedColumn, firstRemovedColumn + removedColumnCount );
+        beginRemoveColumns( QModelIndex(), firstRemovedColumn, firstRemovedColumn );
         mColumnMapping = newColumnMapping;
         endRemoveColumns();
       }
