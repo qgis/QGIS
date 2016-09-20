@@ -56,7 +56,5 @@
 
 #cmakedefine ENABLE_MODELTEST
 
-#cmakedefine WITH_ARCGIS
-
 #endif
 

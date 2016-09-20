@@ -292,11 +292,6 @@ ENDIF (WITH_TOUCH)
 # search for QScintilla2 (C++ lib)
 FIND_PACKAGE(QScintilla REQUIRED)
 
-# search for QJSON and decide whether to enable ArcGIS providers
-
-# TODO - needs to be ported to qt5
-SET (WITH_ARCGIS FALSE)
-
 # Master password hash and authentication encryption
 FIND_PACKAGE(QCA REQUIRED)
 # Check for runtime dependency of qca-ossl plugin
