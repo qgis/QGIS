@@ -175,7 +175,7 @@ class DBConnector:
 
     @classmethod
     def quoteId(self, identifier):
-        if hasattr(identifier, '__iter__'):
+        if hasattr(identifier, '__iter__') and not isinstance(identifier, str):
             ids = list()
             for i in identifier:
                 if i is None or i == "":
@@ -190,7 +190,7 @@ class DBConnector:
     @classmethod
     def quoteString(self, txt):
         """ make the string safe - replace ' with '' """
-        if hasattr(txt, '__iter__'):
+        if hasattr(txt, '__iter__') and not isinstance(txt, str):
             txts = list()
             for i in txt:
                 if i is None:
@@ -203,7 +203,7 @@ class DBConnector:
 
     @classmethod
     def getSchemaTableName(self, table):
-        if not hasattr(table, '__iter__'):
+        if not hasattr(table, '__iter__') and not isinstance(table, str):
             return (None, table)
         elif len(table) < 2:
             return (None, table[0])

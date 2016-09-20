@@ -84,9 +84,9 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.defaultLayerName = 'QueryLayer'
 
         if self.allowMultiColumnPk:
-            self.uniqueColumnCheck.setText(self.trUtf8("Column(s) with unique values"))
+            self.uniqueColumnCheck.setText(self.tr("Column(s) with unique values"))
         else:
-            self.uniqueColumnCheck.setText(self.trUtf8("Column with unique values"))
+            self.uniqueColumnCheck.setText(self.tr("Column with unique values"))
 
         self.editSql.setFocus()
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)

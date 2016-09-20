@@ -22,6 +22,8 @@ The content of this file is based on
  ***************************************************************************/
 """
 
+from functools import cmp_to_key
+
 from qgis.PyQt.QtCore import QRegExp
 from qgis.core import QgsCredentials, QgsDataSourceUri
 
@@ -331,7 +333,7 @@ class PostGisDBConnector(DBConnector):
                 items.append(item)
         self._close_cursor(c)
 
-        return sorted(items, cmp=lambda x, y: cmp((x[2], x[1]), (y[2], y[1])))
+        return sorted(items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1])))
 
     def getVectorTables(self, schema=None):
         """ get list of table with a geometry column

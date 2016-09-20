@@ -20,6 +20,10 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
+import sys
+if sys.version_info < (3,):
+    memoryview = buffer
+
 from qgis.PyQt.QtCore import Qt, QTime, QRegExp, QAbstractTableModel
 from qgis.PyQt.QtGui import QFont, QStandardItemModel, QStandardItem
 from qgis.PyQt.QtWidgets import QApplication
@@ -76,7 +80,7 @@ class BaseTableModel(QAbstractTableModel):
 
         if val is None:
             return "NULL"
-        elif isinstance(val, buffer):
+        elif isinstance(val, memoryview):
             # hide binary data
             return None
         elif isinstance(val, (str, unicode)) and len(val) > 300:
