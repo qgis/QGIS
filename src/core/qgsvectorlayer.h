@@ -556,7 +556,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void setDisplayField( const QString& fldName = "" );
 
     /** Returns the primary display field name used in the identify results dialog */
-    const QString displayField() const;
+    QString displayField() const;
 
     /** Set the preview expression, used to create a human readable preview string.
      *  Used e.g. in the attribute table feature list. Uses { @link QgsExpression }.
@@ -572,7 +572,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      *  @return The expression which will be used to preview features for this layer
      */
-    const QString displayExpression();
+    QString displayExpression() const;
 
     /** Returns the data provider */
     QgsVectorDataProvider* dataProvider();

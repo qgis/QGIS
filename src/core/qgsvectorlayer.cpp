@@ -2878,7 +2878,7 @@ void QgsVectorLayer::setCoordinateSystem()
 }
 
 
-const QString QgsVectorLayer::displayField() const
+QString QgsVectorLayer::displayField() const
 {
   return mDisplayField;
 }
@@ -2888,7 +2888,7 @@ void QgsVectorLayer::setDisplayExpression( const QString &displayExpression )
   mDisplayExpression = displayExpression;
 }
 
-const QString QgsVectorLayer::displayExpression()
+QString QgsVectorLayer::displayExpression() const
 {
   return mDisplayExpression;
 }
