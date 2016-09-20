@@ -3367,57 +3367,7 @@ const QStringList& QgsExpression::BuiltinFunctions()
 {
   if ( gmBuiltinFunctions.isEmpty() )
   {
-    gmBuiltinFunctions
-    << "abs" << "sqrt" << "cos" << "sin" << "tan"
-    << "asin" << "acos" << "atan" << "atan2"
-    << "exp" << "ln" << "log10" << "log"
-    << "round" << "rand" << "randf" << "max" << "min" << "clamp"
-    << "scale_linear" << "scale_exp" << "floor" << "ceil" << "$pi"
-    << "toint" << "to_int" << "toreal" << "to_real" << "tostring" << "to_string"
-    << "todatetime" << "to_datetime" << "todate" << "to_date"
-    << "totime" << "to_time" << "tointerval" << "to_interval"
-    << "coalesce" << "if" << "regexp_match" << "age" << "year"
-    << "month" << "week" << "day" << "hour" << "day_of_week"
-    << "minute" << "second" << "lower" << "upper"
-    << "title" << "length" << "replace" << "trim" << "wordwrap"
-    << "regexp_replace" << "regexp_substr"
-    << "substr" << "concat" << "strpos" << "left"
-    << "right" << "rpad" << "lpad" << "format"
-    << "format_number" << "format_date"
-    << "color_rgb" << "color_rgba" << "ramp_color"
-    << "color_hsl" << "color_hsla" << "color_hsv" << "color_hsva"
-    << "color_cmyk" << "color_cmyka" << "color_part" << "set_color_part"
-    << "xat" << "yat" << "$area" << "area" << "perimeter"
-    << "$length" << "$perimeter" << "x" << "y" << "$x" << "$y" << "z" << "m" << "num_points"
-    << "num_interior_rings" << "num_rings" << "num_geometries"
-    << "geometry_n" << "interior_ring_n"
-    << "point_n" << "start_point" << "end_point" << "make_point" << "make_point_m"
-    << "nodes_to_points" << "segments_to_lines"
-    << "make_line" << "make_polygon"
-    << "$x_at" << "x_at" << "xat" << "$y_at" << "y_at" << "yat" << "x_min" << "xmin" << "x_max" << "xmax"
-    << "y_min" << "ymin" << "y_max" << "ymax" << "geom_from_wkt" << "geomFromWKT"
-    << "geom_from_gml" << "geomFromGML" << "intersects_bbox" << "bbox"
-    << "disjoint" << "intersects" << "touches" << "crosses" << "contains"
-    << "relate"
-    << "overlaps" << "within" << "buffer" << "offset_curve" << "single_sided_buffer"
-    << "simplify" << "simplify_vw" << "smooth"
-    << "centroid" << "bounds" << "reverse" << "exterior_ring"
-    << "boundary" << "line_merge"
-    << "bounds_width" << "bounds_height" << "is_closed" << "convex_hull" << "difference"
-    << "distance" << "intersection" << "sym_difference" << "combine"
-    << "extrude" << "azimuth" <<  "project" << "closest_point" << "shortest_line"
-    << "line_locate_point" << "line_interpolate_point"
-    << "line_interpolate_angle" << "angle_at_vertex" << "distance_to_vertex"
-    << "union" << "geom_to_wkt" << "geomToWKT" << "geometry"
-    << "transform" << "get_feature" << "getFeature"
-    << "levenshtein" << "longest_common_substring" << "hamming_distance"
-    << "soundex"
-    << "aggregate" << "relation_aggregate" << "count" << "count_distinct"
-    << "count_missing" << "minimum" << "maximum" << "sum" << "mean"
-    << "median" << "stdev" << "range" << "minority" << "majority"
-    << "q1" << "q3" << "iqr" << "min_length" << "max_length" << "collect" << "concatenate"
-    << "attribute" << "var" << "layer_property"
-    << "$id" << "$scale" << "_specialcol_";
+    Functions();  // this method builds the gmBuiltinFunctions as well
   }
   return gmBuiltinFunctions;
 }
@@ -3693,6 +3643,8 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     Q_FOREACH ( QgsExpression::Function* func, gmFunctions )
     {
       gmOwnedFunctions << func;
+      gmBuiltinFunctions << func->name();
+      gmBuiltinFunctions.append( func->aliases() );
     }
   }
   return gmFunctions;
