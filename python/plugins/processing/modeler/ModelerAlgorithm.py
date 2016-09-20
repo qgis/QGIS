@@ -208,15 +208,9 @@ class ModelerAlgorithm(GeoAlgorithm):
     CANVAS_SIZE = 4000
 
     def getCopy(self):
-        newone = ModelerAlgorithm()
-        newone.provider = self.provider
-        newone.algs = copy.deepcopy(self.algs)
-        newone.inputs = copy.deepcopy(self.inputs)
+        newone = ModelerAlgorithm.fromFile(self.descriptionFile)
         newone.defineCharacteristics()
-        newone.name = self.name
-        newone.group = self.group
-        newone.descriptionFile = self.descriptionFile
-        newone.helpContent = copy.deepcopy(self.helpContent)
+        newone.provider = self.provider
         return newone
 
     def __init__(self):
@@ -243,10 +237,10 @@ class ModelerAlgorithm(GeoAlgorithm):
         for c in classes:
             for inp in self.inputs.values():
                 if isinstance(inp.param, c):
-                    self.parameters.append(inp.param)
+                    GeoAlgorithm.addParameter(self, inp.param)
         for inp in self.inputs.values():
             if inp.param not in self.parameters:
-                self.parameters.append(inp.param)
+                GeoAlgorithm.addParameter(self, inp.param)
         self.outputs = []
         for alg in self.algs.values():
             if alg.active:
