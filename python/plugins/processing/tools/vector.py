@@ -200,7 +200,7 @@ def testForUniqueness(fieldList1, fieldList2):
 def spatialindex(layer):
     """Creates a spatial index for the passed vector layer.
     """
-    idx = QgsSpatialIndex(layer.getFeatures())
+    idx = QgsSpatialIndex(features(layer))
     return idx
 
 
