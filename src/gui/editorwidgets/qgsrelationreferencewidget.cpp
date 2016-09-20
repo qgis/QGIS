@@ -537,12 +537,7 @@ void QgsRelationReferenceWidget::init()
     mFeatureListModel->setInjectNull( mAllowNull );
     if ( mOrderByValue )
     {
-      const QStringList referencedColumns = QgsExpression( mReferencedLayer->displayExpression() ).referencedColumns();
-      if ( !referencedColumns.isEmpty() )
-      {
-        int sortIdx = mReferencedLayer->fieldNameIndex( referencedColumns.first() );
-        mFilterModel->sort( sortIdx );
-      }
+      mFilterModel->sort( mReferencedLayer->displayExpression() );
     }
 
     mComboBox->setModel( mFeatureListModel );
