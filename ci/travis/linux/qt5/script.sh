@@ -21,5 +21,5 @@ export CCACHE_TEMPDIR=/tmp
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-xvfb-run ctest -V -E "qgis_openstreetmaptest|qgis_wcsprovidertest|PyQgsOfflineEditingWFS|$(cat ${DIR}/blacklist.txt | paste -sd '|' -)" -S ./qgis-test-travis.ctest --output-on-failure
-# xvfb-run ctest -V -E "qgis_openstreetmaptest|qgis_wcsprovidertest" -S ./qgis-test-travis.ctest --output-on-failure
+# xvfb-run ctest -V -E "qgis_openstreetmaptest|qgis_wcsprovidertest|PyQgsOfflineEditingWFS|$(cat ${DIR}/blacklist.txt | paste -sd '|' -)" -S ./qgis-test-travis.ctest --output-on-failure
+xvfb-run ctest -V -E "qgis_openstreetmaptest|qgis_wcsprovidertest" -S ./qgis-test-travis.ctest --output-on-failure

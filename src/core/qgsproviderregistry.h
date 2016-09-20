@@ -89,9 +89,9 @@ class CORE_EXPORT QgsProviderRegistry
         @param providerKey identificator of the provider
         @param functionName name of function
         @return pointer to function or NULL on error
+        @note Note available in python bindings
      */
-    QFunctionPointer function( const QString & providerKey,
-                               const QString & functionName );
+    QFunctionPointer function( const QString& providerKey, const QString& functionName );
 #else
     /** Get pointer to provider function
      * @param providerKey identificator of the provider
