@@ -11,12 +11,7 @@
 %Import QtXml/QtXmlmod.sip
 
 %If (HAVE_QSCI_SIP)
-  %If (!QT5_SUPPORT)
-    %Import Qsci/qscimod4.sip
-  %End
-  %If (QT5_SUPPORT)
-    %Import Qsci/qscimod5.sip
-  %End
+  %Import Qsci/qscimod5.sip
 %End
 
 %Include qgsblendmodecombobox.sip

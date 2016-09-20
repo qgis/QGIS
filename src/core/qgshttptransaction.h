@@ -27,6 +27,9 @@
 
 class QTimer;
 
+// needs porting to Qt5 - until then don't include in api docs
+///@cond PRIVATE
+
 /** \ingroup core
  * HTTP request/response manager that is redirect-aware.
  * This class extends the Qt QHttp concept by being able to recognise
@@ -213,6 +216,8 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
     /** Network timeout in milliseconds*/
     int mNetworkTimeoutMsec;
 };
+
+///@endcond
 
 #endif
 

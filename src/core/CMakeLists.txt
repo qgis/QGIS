@@ -394,11 +394,10 @@ IF(ENABLE_MODELTEST)
   )
 ENDIF(ENABLE_MODELTEST)
 
-IF (NOT QT5_BUILD)
-  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    qgshttptransaction.cpp
-  )
-ENDIF (NOT QT5_BUILD)
+# TODO - update for Qt5
+#SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+#    qgshttptransaction.cpp
+#)
 
 IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # spatialindex headers produce warnings
@@ -560,11 +559,10 @@ IF (NOT WITH_QTWEBKIT)
   )
 ENDIF(NOT WITH_QTWEBKIT)
 
-IF (NOT QT5_BUILD)
-  SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
-    qgshttptransaction.h
-  )
-ENDIF (NOT QT5_BUILD)
+# TODO - update for Qt5
+#SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
+#    qgshttptransaction.h
+#)
 
 IF (WITH_INTERNAL_QEXTSERIALPORT)
   SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}

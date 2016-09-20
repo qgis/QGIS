@@ -2,16 +2,12 @@
         version=0,
         keyword_arguments="Optional")
 
-%Feature QT5_SUPPORT
-
 %Import QtXml/QtXmlmod.sip
 %Import QtNetwork/QtNetworkmod.sip
 %Import QtSql/QtSqlmod.sip
 
-%If (QT5_SUPPORT)
-  %Import QtPrintSupport/QtPrintSupportmod.sip
-  %Import QtWidgets/QtWidgetsmod.sip
-%End
+%Import QtPrintSupport/QtPrintSupportmod.sip
+%Import QtWidgets/QtWidgetsmod.sip
 
 %Include conversions.sip
 %Include qgsexception.sip
@@ -69,9 +65,8 @@
 %Include qgsmaptopixelgeometrysimplifier.sip
 %Include qgstransaction.sip
 %Include qgstransactiongroup.sip
-%If(!QT5_SUPPORT)
-  %Include qgshttptransaction.sip
-%End
+// TODO - update for Qt5
+// %Include qgshttptransaction.sip
 %Include qgsdartmeasurement.sip
 %Include qgsexpressionfieldbuffer.sip
 %Include qgsfontutils.sip
