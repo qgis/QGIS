@@ -31,11 +31,11 @@ SET (geometrysnapper_RCCS
 ########################################################
 # Build
 
-QT4_WRAP_UI (geometrysnapper_UIS_H  ${geometrysnapper_UIS})
+QT5_WRAP_UI (geometrysnapper_UIS_H  ${geometrysnapper_UIS})
 
-QT4_WRAP_CPP (geometrysnapper_MOC_SRCS  ${geometrysnapper_MOC_HDRS})
+QT5_WRAP_CPP (geometrysnapper_MOC_SRCS  ${geometrysnapper_MOC_HDRS})
 
-QT4_ADD_RESOURCES(geometrysnapper_RCC_SRCS ${geometrysnapper_RCCS})
+QT5_ADD_RESOURCES(geometrysnapper_RCC_SRCS ${geometrysnapper_RCCS})
 
 ADD_LIBRARY (geometrysnapperplugin   MODULE ${geometrysnapper_HDRS} ${geometrysnapper_SRCS} ${geometrysnapper_MOC_SRCS} ${geometrysnapper_RCC_SRCS} ${geometrysnapper_UIS_H})
 

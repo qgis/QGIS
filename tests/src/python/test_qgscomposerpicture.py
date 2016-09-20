@@ -17,7 +17,7 @@ import qgis  # NOQA
 import os
 import socketserver
 import threading
-import SimpleHTTPServer
+import http.server
 from qgis.PyQt.QtCore import QRectF
 
 from qgis.core import (QgsComposerPicture,
@@ -38,7 +38,7 @@ class TestQgsComposerPicture(unittest.TestCase):
     def setUpClass(cls):
         # Bring up a simple HTTP server, for remote picture tests
         os.chdir(unitTestDataPath() + '')
-        handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+        handler = http.server.SimpleHTTPRequestHandler
 
         cls.httpd = socketserver.TCPServer(('localhost', 0), handler)
         cls.port = cls.httpd.server_address[1]

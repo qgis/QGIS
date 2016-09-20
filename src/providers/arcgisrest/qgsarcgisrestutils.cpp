@@ -32,7 +32,8 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QThread>
-#include <qjson/parser.h>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 
 QVariant::Type QgsArcGisRestUtils::mapEsriFieldType( const QString &esriFieldType )
@@ -464,17 +465,16 @@ QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &erro
   }
 
   // Parse data
-  QJson::Parser parser;
-  bool ok = false;
-  QVariantMap map = parser.parse( reply, &ok ).toMap();
-  if ( !ok )
+  QJsonParseError err;
+  QJsonDocument doc = QJsonDocument::fromJson( reply, &err );
+  if ( doc.isNull() )
   {
     errorTitle = "Parsing error";
-    errorText = QString( "Line %1: %2" ).arg( parser.errorLine() ).arg( parser.errorString() );
-    QgsDebugMsg( QString( "Parsing error: %1 (line %2" ).arg( parser.errorString() ).arg( parser.errorLine() ) );
+    errorText = err.errorString();
+    QgsDebugMsg( QString( "Parsing error: %1" ).arg( err.errorString() ) );
     return QVariantMap();
   }
-  return map;
+  return doc.object().toVariantMap();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

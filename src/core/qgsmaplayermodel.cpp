@@ -216,7 +216,6 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
   return QVariant();
 }
 
-#if QT_VERSION >= 0x050000
 QHash<int, QByteArray> QgsMapLayerModel::roleNames() const
 {
   QHash<int, QByteArray> roles  = QAbstractItemModel::roleNames();
@@ -225,7 +224,6 @@ QHash<int, QByteArray> QgsMapLayerModel::roleNames() const
 
   return roles;
 }
-#endif
 
 Qt::ItemFlags QgsMapLayerModel::flags( const QModelIndex &index ) const
 {

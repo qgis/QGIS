@@ -88,14 +88,12 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     int columnCount( const QModelIndex &parent ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
 
-#if QT_VERSION >= 0x050000
     /**
      * Returns strings for all roles supported by this model.
      *
      * @note Available only with Qt5 (python and c++)
      */
     QHash<int, QByteArray> roleNames() const override;
-#endif
 
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;

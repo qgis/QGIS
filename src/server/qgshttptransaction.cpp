@@ -17,6 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
+///@cond PRIVATE
 
 #include <fstream>
 
@@ -28,6 +29,7 @@
 #include <QUrl>
 #include <QSettings>
 #include <QTimer>
+
 
 static int HTTP_PORT_DEFAULT = 80;
 
@@ -567,5 +569,7 @@ void QgsHttpTransaction::abort()
     http->abort();
   }
 }
+
+/// @endcond
 
 // ENDS

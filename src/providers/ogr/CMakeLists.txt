@@ -6,7 +6,7 @@ SET(OGR_MOC_HDRS qgsogrprovider.h qgsogrdataitems.h qgsogrconnpool.h)
 ########################################################
 # Build
 
-QT4_WRAP_CPP(OGR_MOC_SRCS ${OGR_MOC_HDRS})
+QT5_WRAP_CPP(OGR_MOC_SRCS ${OGR_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   .

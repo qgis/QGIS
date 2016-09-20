@@ -23,7 +23,7 @@ SET(DB2_MOC_HDRS
 ########################################################
 # Build
 
-QT4_WRAP_CPP(DB2_MOC_SRCS ${DB2_MOC_HDRS})
+QT5_WRAP_CPP(DB2_MOC_SRCS ${DB2_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   .

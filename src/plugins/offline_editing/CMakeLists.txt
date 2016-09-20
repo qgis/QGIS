@@ -24,11 +24,11 @@ SET (offline_editing_plugin_RCCS  offline_editing_plugin.qrc)
 ########################################################
 # Build
 
-QT4_WRAP_UI(offline_editing_plugin_UIS_H ${offline_editing_plugin_UIS})
+QT5_WRAP_UI(offline_editing_plugin_UIS_H ${offline_editing_plugin_UIS})
 
-QT4_WRAP_CPP(offline_editing_plugin_MOC_SRCS ${offline_editing_plugin_MOC_HDRS})
+QT5_WRAP_CPP(offline_editing_plugin_MOC_SRCS ${offline_editing_plugin_MOC_HDRS})
 
-QT4_ADD_RESOURCES(offline_editing_plugin_RCC_SRCS ${offline_editing_plugin_RCCS})
+QT5_ADD_RESOURCES(offline_editing_plugin_RCC_SRCS ${offline_editing_plugin_RCCS})
 
 ADD_LIBRARY (offlineeditingplugin MODULE
 	${offline_editing_plugin_SRCS}

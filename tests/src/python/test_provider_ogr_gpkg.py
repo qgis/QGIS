@@ -51,7 +51,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         lyr = ds.CreateLayer('test', geom_type=ogr.wkbMultiPolygon)
         ds = None
 
-        vl = QgsVectorLayer(u'{}|layerid=0'.format(tmpfile), u'test', u'ogr')
+        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile), 'test', 'ogr')
         f = QgsFeature()
         f.setGeometry(QgsGeometry.fromWkt('POLYGON ((0 0,0 1,1 1,0 0))'))
         vl.dataProvider().addFeatures([f])
@@ -69,8 +69,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         lyr = ds.CreateLayer('test', geom_type=ogr.wkbCurvePolygon)
         ds = None
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile), u'test', u'ogr')
-        self.assertEqual(vl.dataProvider().subLayers(), [u'0:test:0:CurvePolygon'])
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
+        self.assertEqual(vl.dataProvider().subLayers(), ['0:test:0:CurvePolygon'])
         f = QgsFeature()
         f.setGeometry(QgsGeometry.fromWkt('POLYGON ((0 0,0 1,1 1,0 0))'))
         vl.dataProvider().addFeatures([f])

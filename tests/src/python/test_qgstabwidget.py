@@ -47,42 +47,42 @@ class TestQgsTabWidget(unittest.TestCase):
         tabWidget.addTab(wdg3, '3')
 
         tabWidget.hideTab(wdg2)
-        self.assertEquals(tabWidget.count(), 2)
+        self.assertEqual(tabWidget.count(), 2)
         tabWidget.showTab(wdg2)
-        self.assertEquals(tabWidget.count(), 3)
+        self.assertEqual(tabWidget.count(), 3)
 
-        self.assertEquals(tabWidget.tabText(0), '1')
-        self.assertEquals(tabWidget.tabText(1), '2')
-        self.assertEquals(tabWidget.tabText(2), '3')
+        self.assertEqual(tabWidget.tabText(0), '1')
+        self.assertEqual(tabWidget.tabText(1), '2')
+        self.assertEqual(tabWidget.tabText(2), '3')
 
         tabWidget.hideTab(wdg2)
         tabWidget.removeTab(1)
-        self.assertEquals(tabWidget.tabText(0), '1')
+        self.assertEqual(tabWidget.tabText(0), '1')
         tabWidget.showTab(wdg2)
-        self.assertEquals(tabWidget.tabText(1), '2')
-        self.assertEquals(tabWidget.count(), 2)
+        self.assertEqual(tabWidget.tabText(1), '2')
+        self.assertEqual(tabWidget.count(), 2)
 
         # Show an already visible tab
         tabWidget.showTab(wdg2)
-        self.assertEquals(tabWidget.count(), 2)
+        self.assertEqual(tabWidget.count(), 2)
 
         # Hide twice
         tabWidget.hideTab(wdg2)
-        self.assertEquals(tabWidget.count(), 1)
+        self.assertEqual(tabWidget.count(), 1)
         tabWidget.hideTab(wdg2)
-        self.assertEquals(tabWidget.count(), 1)
+        self.assertEqual(tabWidget.count(), 1)
 
         tabWidget.hideTab(wdg1)
-        self.assertEquals(tabWidget.count(), 0)
+        self.assertEqual(tabWidget.count(), 0)
 
         tabWidget.showTab(wdg1)
         tabWidget.showTab(wdg2)
-        self.assertEquals(tabWidget.count(), 2)
+        self.assertEqual(tabWidget.count(), 2)
 
         tabWidget.removeTab(0)
-        self.assertEquals(tabWidget.count(), 1)
+        self.assertEqual(tabWidget.count(), 1)
         tabWidget.hideTab(wdg2)
-        self.assertEquals(tabWidget.count(), 0)
+        self.assertEqual(tabWidget.count(), 0)
 
 if __name__ == '__main__':
     unittest.main()

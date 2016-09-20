@@ -12,7 +12,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from __future__ import print_function
+
 from future import standard_library
 standard_library.install_aliases()
 __author__ = 'Larry Shaffer'
@@ -167,7 +167,7 @@ def run_suite(module, tests):
                     datetime.datetime.now().strftime('%Y-%m-%d %X')
         report = '<html><head><title>{0}</title></head><body>'.format(teststamp)
         report += '\n<h2>Failed Image Tests: {0}</h2>'.format(len(TESTREPORTS))
-        for k, v in TESTREPORTS.items():
+        for k, v in list(TESTREPORTS.items()):
             report += '\n<h3>{0}</h3>\n{1}'.format(k, v)
         report += '</body></html>'
 

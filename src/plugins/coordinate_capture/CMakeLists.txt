@@ -19,11 +19,11 @@ SET (coordinatecapture_RCCS  coordinatecapture.qrc)
 ########################################################
 # Build
 
-QT4_WRAP_UI (coordinatecapture_UIS_H  ${coordinatecapture_UIS})
+QT5_WRAP_UI (coordinatecapture_UIS_H  ${coordinatecapture_UIS})
 
-QT4_WRAP_CPP (coordinatecapture_MOC_SRCS  ${coordinatecapture_MOC_HDRS})
+QT5_WRAP_CPP (coordinatecapture_MOC_SRCS  ${coordinatecapture_MOC_HDRS})
 
-QT4_ADD_RESOURCES(coordinatecapture_RCC_SRCS ${coordinatecapture_RCCS})
+QT5_ADD_RESOURCES(coordinatecapture_RCC_SRCS ${coordinatecapture_RCCS})
 
 ADD_LIBRARY (coordinatecaptureplugin MODULE ${coordinatecapture_SRCS} ${coordinatecapture_MOC_SRCS} ${coordinatecapture_RCC_SRCS})
 

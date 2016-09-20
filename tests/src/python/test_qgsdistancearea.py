@@ -169,7 +169,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         distance = da.measureLine(QgsPoint(1, 1), QgsPoint(2, 3))
         units = da.lengthUnits()
 
-        print("measured {} in {}".format(distance, QgsUnitTypes.toString(units)))
+        print(("measured {} in {}".format(distance, QgsUnitTypes.toString(units))))
         assert ((abs(distance - 2.23606797) < 0.00000001 and units == QgsUnitTypes.DistanceDegrees) or
                 (abs(distance - 248.52) < 0.01 and units == QgsUnitTypes.DistanceMeters))
 
@@ -177,7 +177,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         distance = da.measureLine(QgsPoint(1, 1), QgsPoint(2, 3))
         units = da.lengthUnits()
 
-        print("measured {} in {}".format(distance, QgsUnitTypes.toString(units)))
+        print(("measured {} in {}".format(distance, QgsUnitTypes.toString(units))))
         assert ((abs(distance - 2.23606797) < 0.00000001 and units == QgsUnitTypes.DistanceDegrees) or
                 (abs(distance - 248.52) < 0.01 and units == QgsUnitTypes.DistanceMeters))
 
@@ -185,7 +185,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         distance = da.measureLine(QgsPoint(1, 1), QgsPoint(2, 3))
         units = da.lengthUnits()
 
-        print("measured {} in {}".format(distance, QgsUnitTypes.toString(units)))
+        print(("measured {} in {}".format(distance, QgsUnitTypes.toString(units))))
         # should always be in Meters
         self.assertAlmostEqual(distance, 247555.57, delta=0.01)
         self.assertEqual(units, QgsUnitTypes.DistanceMeters)
@@ -200,7 +200,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         # measurement should be in feet
         distance = da.measureLine(QgsPoint(1, 1), QgsPoint(2, 3))
         units = da.lengthUnits()
-        print("measured {} in {}".format(distance, QgsUnitTypes.toString(units)))
+        print(("measured {} in {}".format(distance, QgsUnitTypes.toString(units))))
         self.assertAlmostEqual(distance, 2.23606797, delta=0.000001)
         self.assertEqual(units, QgsUnitTypes.DistanceFeet)
 
@@ -212,7 +212,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         # now should be in Meters again
         distance = da.measureLine(QgsPoint(1, 1), QgsPoint(2, 3))
         units = da.lengthUnits()
-        print("measured {} in {}".format(distance, QgsUnitTypes.toString(units)))
+        print(("measured {} in {}".format(distance, QgsUnitTypes.toString(units))))
         self.assertAlmostEqual(distance, 0.67953772, delta=0.000001)
         self.assertEqual(units, QgsUnitTypes.DistanceMeters)
 
@@ -243,7 +243,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         area = da.measureArea(polygon)
         units = da.areaUnits()
 
-        print("measured {} in {}".format(area, QgsUnitTypes.toString(units)))
+        print(("measured {} in {}".format(area, QgsUnitTypes.toString(units))))
         assert ((abs(area - 3.0) < 0.00000001 and units == QgsUnitTypes.AreaSquareDegrees) or
                 (abs(area - 37176087091.5) < 0.1 and units == QgsUnitTypes.AreaSquareMeters))
 
@@ -251,7 +251,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         area = da.measureArea(polygon)
         units = da.areaUnits()
 
-        print("measured {} in {}".format(area, QgsUnitTypes.toString(units)))
+        print(("measured {} in {}".format(area, QgsUnitTypes.toString(units))))
         assert ((abs(area - 3.0) < 0.00000001 and units == QgsUnitTypes.AreaSquareDegrees) or
                 (abs(area - 37176087091.5) < 0.1 and units == QgsUnitTypes.AreaSquareMeters))
 
@@ -259,7 +259,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         area = da.measureArea(polygon)
         units = da.areaUnits()
 
-        print("measured {} in {}".format(area, QgsUnitTypes.toString(units)))
+        print(("measured {} in {}".format(area, QgsUnitTypes.toString(units))))
         # should always be in Meters Squared
         self.assertAlmostEqual(area, 37416879192.9, delta=0.1)
         self.assertEqual(units, QgsUnitTypes.AreaSquareMeters)
@@ -279,7 +279,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         # measurement should be in square feet
         area = da.measureArea(polygon)
         units = da.areaUnits()
-        print("measured {} in {}".format(area, QgsUnitTypes.toString(units)))
+        print(("measured {} in {}".format(area, QgsUnitTypes.toString(units))))
         self.assertAlmostEqual(area, 2000000, delta=0.001)
         self.assertEqual(units, QgsUnitTypes.AreaSquareFeet)
 
@@ -291,7 +291,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         # now should be in Square Meters again
         area = da.measureArea(polygon)
         units = da.areaUnits()
-        print("measured {} in {}".format(area, QgsUnitTypes.toString(units)))
+        print(("measured {} in {}".format(area, QgsUnitTypes.toString(units))))
         self.assertAlmostEqual(area, 184149.37, delta=1.0)
         self.assertEqual(units, QgsUnitTypes.AreaSquareMeters)
 
@@ -302,33 +302,33 @@ class TestQgsDistanceArea(unittest.TestCase):
     def testFormatDistance(self):
         """Test formatting distances"""
         QLocale.setDefault(QLocale.c())
-        self.assertEqual(QgsDistanceArea.formatDistance(45, 3, QgsUnitTypes.DistanceMeters), u'45.000 m')
-        self.assertEqual(QgsDistanceArea.formatDistance(1300, 1, QgsUnitTypes.DistanceMeters, False), u'1.3 km')
-        self.assertEqual(QgsDistanceArea.formatDistance(.005, 1, QgsUnitTypes.DistanceMeters, False), u'5.0 mm')
-        self.assertEqual(QgsDistanceArea.formatDistance(.05, 1, QgsUnitTypes.DistanceMeters, False), u'5.0 cm')
-        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 3, QgsUnitTypes.DistanceKilometers, True), u'1.500 km')
-        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 3, QgsUnitTypes.DistanceKilometers, False), u'1.500 km')
-        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 3, QgsUnitTypes.DistanceKilometers, True), u'0.500 km')
-        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 3, QgsUnitTypes.DistanceKilometers, False), u'500.000 m')
-        self.assertEqual(QgsDistanceArea.formatDistance(6000, 0, QgsUnitTypes.DistanceFeet, True), u'6,000 ft')
-        self.assertEqual(QgsDistanceArea.formatDistance(6000, 3, QgsUnitTypes.DistanceFeet, False), u'1.136 mi')
-        self.assertEqual(QgsDistanceArea.formatDistance(300, 0, QgsUnitTypes.DistanceFeet, True), u'300 ft')
-        self.assertEqual(QgsDistanceArea.formatDistance(300, 0, QgsUnitTypes.DistanceFeet, False), u'300 ft')
-        self.assertEqual(QgsDistanceArea.formatDistance(3000, 0, QgsUnitTypes.DistanceYards, True), u'3,000 yd')
-        self.assertEqual(QgsDistanceArea.formatDistance(3000, 3, QgsUnitTypes.DistanceYards, False), u'1.705 mi')
-        self.assertEqual(QgsDistanceArea.formatDistance(300, 0, QgsUnitTypes.DistanceYards, True), u'300 yd')
-        self.assertEqual(QgsDistanceArea.formatDistance(300, 0, QgsUnitTypes.DistanceYards, False), u'300 yd')
-        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 3, QgsUnitTypes.DistanceMiles, True), u'1.500 mi')
-        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 3, QgsUnitTypes.DistanceMiles, False), u'1.500 mi')
-        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 3, QgsUnitTypes.DistanceMiles, True), u'0.500 mi')
-        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 0, QgsUnitTypes.DistanceMiles, False), u'2,640 ft')
-        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 1, QgsUnitTypes.DistanceNauticalMiles, True), u'0.5 NM')
-        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 1, QgsUnitTypes.DistanceNauticalMiles, False), u'0.5 NM')
-        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 1, QgsUnitTypes.DistanceNauticalMiles, True), u'1.5 NM')
-        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 1, QgsUnitTypes.DistanceNauticalMiles, False), u'1.5 NM')
-        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 1, QgsUnitTypes.DistanceDegrees, True), u'1.5 degrees')
-        self.assertEqual(QgsDistanceArea.formatDistance(1.0, 1, QgsUnitTypes.DistanceDegrees, False), u'1.0 degree')
-        self.assertEqual(QgsDistanceArea.formatDistance(1.0, 1, QgsUnitTypes.DistanceUnknownUnit, False), u'1.0')
+        self.assertEqual(QgsDistanceArea.formatDistance(45, 3, QgsUnitTypes.DistanceMeters), '45.000 m')
+        self.assertEqual(QgsDistanceArea.formatDistance(1300, 1, QgsUnitTypes.DistanceMeters, False), '1.3 km')
+        self.assertEqual(QgsDistanceArea.formatDistance(.005, 1, QgsUnitTypes.DistanceMeters, False), '5.0 mm')
+        self.assertEqual(QgsDistanceArea.formatDistance(.05, 1, QgsUnitTypes.DistanceMeters, False), '5.0 cm')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 3, QgsUnitTypes.DistanceKilometers, True), '1.500 km')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 3, QgsUnitTypes.DistanceKilometers, False), '1.500 km')
+        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 3, QgsUnitTypes.DistanceKilometers, True), '0.500 km')
+        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 3, QgsUnitTypes.DistanceKilometers, False), '500.000 m')
+        self.assertEqual(QgsDistanceArea.formatDistance(6000, 0, QgsUnitTypes.DistanceFeet, True), '6,000 ft')
+        self.assertEqual(QgsDistanceArea.formatDistance(6000, 3, QgsUnitTypes.DistanceFeet, False), '1.136 mi')
+        self.assertEqual(QgsDistanceArea.formatDistance(300, 0, QgsUnitTypes.DistanceFeet, True), '300 ft')
+        self.assertEqual(QgsDistanceArea.formatDistance(300, 0, QgsUnitTypes.DistanceFeet, False), '300 ft')
+        self.assertEqual(QgsDistanceArea.formatDistance(3000, 0, QgsUnitTypes.DistanceYards, True), '3,000 yd')
+        self.assertEqual(QgsDistanceArea.formatDistance(3000, 3, QgsUnitTypes.DistanceYards, False), '1.705 mi')
+        self.assertEqual(QgsDistanceArea.formatDistance(300, 0, QgsUnitTypes.DistanceYards, True), '300 yd')
+        self.assertEqual(QgsDistanceArea.formatDistance(300, 0, QgsUnitTypes.DistanceYards, False), '300 yd')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 3, QgsUnitTypes.DistanceMiles, True), '1.500 mi')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 3, QgsUnitTypes.DistanceMiles, False), '1.500 mi')
+        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 3, QgsUnitTypes.DistanceMiles, True), '0.500 mi')
+        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 0, QgsUnitTypes.DistanceMiles, False), '2,640 ft')
+        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 1, QgsUnitTypes.DistanceNauticalMiles, True), '0.5 NM')
+        self.assertEqual(QgsDistanceArea.formatDistance(0.5, 1, QgsUnitTypes.DistanceNauticalMiles, False), '0.5 NM')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 1, QgsUnitTypes.DistanceNauticalMiles, True), '1.5 NM')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 1, QgsUnitTypes.DistanceNauticalMiles, False), '1.5 NM')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.5, 1, QgsUnitTypes.DistanceDegrees, True), '1.5 degrees')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.0, 1, QgsUnitTypes.DistanceDegrees, False), '1.0 degree')
+        self.assertEqual(QgsDistanceArea.formatDistance(1.0, 1, QgsUnitTypes.DistanceUnknownUnit, False), '1.0')
         QLocale.setDefault(QLocale.system())
 
 if __name__ == '__main__':

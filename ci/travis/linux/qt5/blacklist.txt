@@ -3,8 +3,6 @@ PyQgsJSONUtils
 PyQgsLocalServer
 PyQgsPalLabelingServer
 PyQgsServer
-PyQgsServerAccessControl
-PyQgsSipCoverage
 qgis_composermapgridtest
 qgis_composerutils
 ProcessingGrass7AlgorithmsImageryTest

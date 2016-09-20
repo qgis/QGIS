@@ -245,13 +245,9 @@ class QgsComposerScaleBar: QgsComposerItem
 
     /** Returns the x - positions of the segment borders (in item coordinates) and the width
      * of the segment
-     * @note python bindings not available on android
+     * @note not available in Python bindings
      */
-%If (!ARM)
-%If (!QT5_SUPPORT)
-    void segmentPositions( QList<QPair<double, double> >& posWidthList ) const;
-%End
-%End
+    // void segmentPositions( QList<QPair<double, double> >& posWidthList ) const;
 
     /** Sets box size suitable to content*/
     void adjustBoxSize();

@@ -20,11 +20,7 @@ FIND_PATH(QWT_INCLUDE_DIR NAMES qwt.h PATHS
   PATH_SUFFIXES qwt-qt4 qwt qwt5 qwt6
   )
 
-if(ENABLE_QT5)
-  set(QWT_LIBRARY_NAMES qwt-qt5 qwt6-qt5)
-else(ENABLE_QT5)
-  set(QWT_LIBRARY_NAMES qwt qwt6 qwt5 qwt-qt4 qwt6-qt4 qwt5-qt4)
-endif(ENABLE_QT5)
+set(QWT_LIBRARY_NAMES qwt-qt5 qwt6-qt5)
 
 find_library(QWT_LIBRARY
   NAMES ${QWT_LIBRARY_NAMES}

@@ -102,21 +102,21 @@ class TestPyQgsAppStartup(unittest.TestCase):
         if sys.platform[:3] == 'dar':  # Mac
             subdir = 'qgis.org'
         ini = os.path.join(subdir, 'QGIS2.ini')
-        for p in ['test_opts', 'test opts', u'test_optsé€']:
+        for p in ['test_opts', 'test opts', 'test_optsé€']:
             self.doTestStartup(option="--optionspath",
                                testDir=os.path.join(self.TMP_DIR, p),
                                testFile=ini,
                                timeOut=360)
 
     def testConfigPath(self):
-        for p in ['test_config', 'test config', u'test_configé€']:
+        for p in ['test_config', 'test config', 'test_configé€']:
             self.doTestStartup(option="--configpath",
                                testDir=os.path.join(self.TMP_DIR, p),
                                testFile="qgis.db",
                                timeOut=360)
 
     def testPluginPath(self):
-        for t in ['test_plugins', 'test plugins', u'test_pluginsé€']:
+        for t in ['test_plugins', 'test plugins', 'test_pluginsé€']:
 
             # get a unicode test dir
             if sys.version_info.major == 2:
@@ -206,6 +206,6 @@ if __name__ == '__main__':
             if found:
                 break
 
-    print('\nQGIS_BIN: {}'.format(QGIS_BIN))
+    print(('\nQGIS_BIN: {}'.format(QGIS_BIN)))
     assert QGIS_BIN, 'QGIS binary not found, skipping test suite'
     unittest.main()

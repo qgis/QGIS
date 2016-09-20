@@ -34,9 +34,6 @@
 #include <QString>
 #include <QStringList>
 #include <QStyle>
-#if QT_VERSION < 0x050000
-#include <QPlastiqueStyle>
-#endif
 #include <QDesktopWidget>
 #include <QTranslator>
 #include <QImageReader>
@@ -418,13 +415,11 @@ void myMessageOutput( QtMsgType type, const char *msg )
 #endif
     }
 
-
 #if QT_VERSION >= 0x050500
     case QtInfoMsg:
       myPrint( "Info: %s\n", msg );
       break;
 #endif
-
   }
 }
 
@@ -949,12 +944,6 @@ int main( int argc, char *argv[] )
     QApplication::setStyle( style );
     mySettings.setValue( "/qgis/style", QApplication::style()->objectName() );
   }
-#ifdef Q_OS_WIN
-#if QT_VERSION < 0x050000
-  else
-    QApplication::setStyle( new QPlastiqueStyle );
-#endif
-#endif
 
   /* Translation file for QGIS.
    */

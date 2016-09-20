@@ -27,13 +27,17 @@
 
 class QTimer;
 
-/** \ingroup core
+// needs porting to Qt5 - until then don't include in api docs
+///@cond PRIVATE
+
+/** \ingroup server
  * HTTP request/response manager that is redirect-aware.
  * This class extends the Qt QHttp concept by being able to recognise
  *  and respond to redirection responses (e.g. HTTP code 302)
+ * @note not available in Python bindings
 */
 
-class CORE_EXPORT QgsHttpTransaction : public QObject
+class QgsHttpTransaction : public QObject
 {
 
     Q_OBJECT
@@ -213,6 +217,8 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
     /** Network timeout in milliseconds*/
     int mNetworkTimeoutMsec;
 };
+
+///@endcond
 
 #endif
 

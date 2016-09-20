@@ -36,7 +36,7 @@ SET(ORACLE_HDRS
 ########################################################
 # Build
 
-QT4_WRAP_CPP(ORACLE_MOC_SRCS ${ORACLE_MOC_HDRS})
+QT5_WRAP_CPP(ORACLE_MOC_SRCS ${ORACLE_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ../../core

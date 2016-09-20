@@ -268,7 +268,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     /** Returns the x - positions of the segment borders (in item coordinates) and the width
      * of the segment
-     * @note python bindings not available on android
+     * @note not available in Python bindings
      */
     void segmentPositions( QList<QPair<double, double> >& posWidthList ) const;
 

@@ -125,21 +125,7 @@ class CORE_EXPORT Qgis
 // retrieved from QLibrary::resolve to function pointers.
 // It's assumed that this works on all systems supporting
 // QLibrary
-#if QT_VERSION >= 0x050000
 #define cast_to_fptr(f) f
-#else
-inline void ( *cast_to_fptr( void *p ) )()
-{
-  union
-  {
-    void *p;
-    void ( *f )();
-  } u;
-
-  u.p = p;
-  return u.f;
-}
-#endif
 
 /** \ingroup core
  * RAII signal blocking class. Used for temporarily blocking signals from a QObject
@@ -266,32 +252,6 @@ CORE_EXPORT double qgsPermissiveToDouble( QString string, bool& ok );
  * @see permissiveToDouble
  */
 CORE_EXPORT int qgsPermissiveToInt( QString string, bool& ok );
-
-// Add missing qHash implementation for QDate, QTime, QDateTime
-// implementations taken from upstream Qt5 versions
-#if QT_VERSION < 0x050000
-
-//! Hash implementation for QDateTime
-//! @note not available in Python bindings
-inline uint qHash( const QDateTime &key )
-{
-  return qHash( key.toMSecsSinceEpoch() );
-}
-
-//! Hash implementation for QDate
-//! @note not available in Python bindings
-inline uint qHash( const QDate &key )
-{
-  return qHash( key.toJulianDay() );
-}
-
-//! Hash implementation for QTime
-//! @note not available in Python bindings
-inline uint qHash( const QTime &key )
-{
-  return QTime( 0, 0, 0, 0 ).msecsTo( key );
-}
-#endif
 
 //! Compares two QVariant values and returns whether the first is less than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various

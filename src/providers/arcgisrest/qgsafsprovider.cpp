@@ -23,7 +23,6 @@
 #include "geometry/qgsgeometry.h"
 #include "qgsnetworkaccessmanager.h"
 
-#include <qjson/parser.h>
 #include <QEventLoop>
 #include <QMessageBox>
 #include <QNetworkRequest>

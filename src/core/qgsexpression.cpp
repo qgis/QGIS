@@ -55,10 +55,6 @@
 #include "qgsmessagelog.h"
 #include "qgscsexception.h"
 
-#if QT_VERSION < 0x050000
-#include <qtextdocument.h>
-#endif
-
 // from parser
 extern QgsExpression::Node* parseExpression( const QString& str, QString& parserErrorMsg );
 
@@ -4927,11 +4923,7 @@ QString QgsExpression::helpText( QString name )
   if ( f.mType == tr( "group" ) )
     name = group( name );
 
-#if QT_VERSION < 0x050000
-  name = Qt::escape( name );
-#else
   name = name.toHtmlEscaped();
-#endif
 
   QString helpContents( QString( "<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>" )
                         .arg( tr( "%1 %2" ).arg( f.mType, name ),

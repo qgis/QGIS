@@ -81,7 +81,7 @@ class TestQgsRelationManager(unittest.TestCase):
 
         relations = manager.relations()
         self.assertEqual(len(relations), 2)
-        ids = [r.id() for r in relations.values()]
+        ids = [r.id() for r in list(relations.values())]
         self.assertEqual(set(ids), set(['rel1', 'rel2']))
 
     def test_relationById(self):

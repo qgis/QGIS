@@ -139,7 +139,7 @@ WId Session::windowId() const
 	// https://bugreports.qt-project.org/browse/QTBUG-41942
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-	return 0;
+  return 0;
 #else
     if ( _views.count() == 0 ) {
         return 0;

@@ -26,11 +26,11 @@ SET (GPS_RCCS  qgsgps_plugin.qrc)
 ########################################################
 # Build
 
-QT4_WRAP_UI (GPS_UIS_H  ${GPS_UIS})
+QT5_WRAP_UI (GPS_UIS_H  ${GPS_UIS})
 
-QT4_WRAP_CPP (GPS_MOC_SRCS  ${GPS_MOC_HDRS})
+QT5_WRAP_CPP (GPS_MOC_SRCS  ${GPS_MOC_HDRS})
 
-QT4_ADD_RESOURCES(GPS_RCC_SRCS ${GPS_RCCS})
+QT5_ADD_RESOURCES(GPS_RCC_SRCS ${GPS_RCCS})
 
 ADD_LIBRARY (gpsimporterplugin MODULE ${GPS_SRCS} ${GPS_MOC_SRCS} ${GPS_RCC_SRCS} ${GPS_UIS_H})
 

@@ -64,19 +64,19 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         # Check the rotation element is a literal, not a
         rotation = root.elementsByTagName('se:Rotation').item(0)
         literal = rotation.firstChild()
-        self.assertEquals("ogc:Literal", literal.nodeName())
-        self.assertEquals(expectedValue, literal.firstChild().nodeValue())
+        self.assertEqual("ogc:Literal", literal.nodeName())
+        self.assertEqual(expectedValue, literal.firstChild().nodeValue())
 
     def assertStaticDisplacement(self, root, expectedDispX, expectedDispY):
         displacement = root.elementsByTagName('se:Displacement').item(0)
         self.assertIsNotNone(displacement)
         dx = displacement.firstChild()
         self.assertIsNotNone(dx)
-        self.assertEquals("se:DisplacementX", dx.nodeName())
+        self.assertEqual("se:DisplacementX", dx.nodeName())
         self.assertSldNumber(expectedDispX, dx.firstChild().nodeValue())
         dy = displacement.lastChild()
         self.assertIsNotNone(dy)
-        self.assertEquals("se:DisplacementY", dy.nodeName())
+        self.assertEqual("se:DisplacementY", dy.nodeName())
         self.assertSldNumber(expectedDispY, dy.firstChild().nodeValue())
 
     def assertSldNumber(self, expected, stringValue):
@@ -105,7 +105,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         strokeWidth = root.elementsByTagName(
             'se:SvgParameter').item(svgParameterIdx)
         svgParameterName = strokeWidth.attributes().namedItem('name')
-        self.assertEquals("stroke-width", svgParameterName.nodeValue())
+        self.assertEqual("stroke-width", svgParameterName.nodeValue())
         self.assertSldNumber(
             expectedWidth, strokeWidth.firstChild().nodeValue())
 
@@ -441,7 +441,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         status = layer.loadNamedStyle(mFilePath)
 
         dom, root = self.layerToSld(layer)
-        print("Rule based, no root scale deps:" + dom.toString())
+        print(("Rule based, no root scale deps:" + dom.toString()))
 
         ruleCount = root.elementsByTagName('se:Rule').size()
         self.assertScaleDenominator(root, '1000', '40000000', 0)
@@ -468,38 +468,38 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
         if expectedMinScale:
             minScale = rule.elementsByTagName('se:MinScaleDenominator').item(0)
-            self.assertEquals(expectedMinScale, minScale.firstChild().nodeValue())
+            self.assertEqual(expectedMinScale, minScale.firstChild().nodeValue())
         else:
-            self.assertEquals(0, root.elementsByTagName('se:MinScaleDenominator').size())
+            self.assertEqual(0, root.elementsByTagName('se:MinScaleDenominator').size())
 
         if expectedMaxScale:
             maxScale = rule.elementsByTagName('se:MaxScaleDenominator').item(0)
-            self.assertEquals(expectedMaxScale, maxScale.firstChild().nodeValue())
+            self.assertEqual(expectedMaxScale, maxScale.firstChild().nodeValue())
         else:
-            self.assertEquals(0, root.elementsByTagName('se:MaxScaleDenominator').size())
+            self.assertEqual(0, root.elementsByTagName('se:MaxScaleDenominator').size())
 
     def assertDashPattern(self, root, svgParameterIdx, expectedPattern):
         strokeWidth = root.elementsByTagName(
             'se:SvgParameter').item(svgParameterIdx)
         svgParameterName = strokeWidth.attributes().namedItem('name')
-        self.assertEquals("stroke-dasharray", svgParameterName.nodeValue())
-        self.assertEquals(
+        self.assertEqual("stroke-dasharray", svgParameterName.nodeValue())
+        self.assertEqual(
             expectedPattern, strokeWidth.firstChild().nodeValue())
 
     def assertStaticGap(self, root, expectedValue):
         # Check the rotation element is a literal, not a
         rotation = root.elementsByTagName('se:Gap').item(0)
         literal = rotation.firstChild()
-        self.assertEquals("ogc:Literal", literal.nodeName())
-        self.assertEquals(expectedValue, literal.firstChild().nodeValue())
+        self.assertEqual("ogc:Literal", literal.nodeName())
+        self.assertEqual(expectedValue, literal.firstChild().nodeValue())
 
     def assertStaticSize(self, root, expectedValue):
         size = root.elementsByTagName('se:Size').item(0)
-        self.assertEquals(expectedValue, size.firstChild().nodeValue())
+        self.assertEqual(expectedValue, size.firstChild().nodeValue())
 
     def assertStaticPerpendicularOffset(self, root, expectedValue):
         offset = root.elementsByTagName('se:PerpendicularOffset').item(0)
-        self.assertEquals(expectedValue, offset.firstChild().nodeValue())
+        self.assertEqual(expectedValue, offset.firstChild().nodeValue())
 
     def symbolToSld(self, symbolLayer):
         dom = QDomDocument()

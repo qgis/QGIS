@@ -18,7 +18,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from __future__ import print_function
+
 from builtins import str
 from builtins import object
 __author__ = 'Alessandro Pasotti'

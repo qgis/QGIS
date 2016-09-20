@@ -690,20 +690,12 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
       if ( value.isNull() )
       {
         // not good
-#if QT_VERSION >= 0x050000
         buddy->setText( QString( "%1<font color=\"red\">❌</font>" ).arg( text ) );
-#else
-        buddy->setText( QString( "%1<font color=\"red\">*</font>" ).arg( text ) );
-#endif
       }
       else
       {
         // good
-#if QT_VERSION >= 0x050000
         buddy->setText( QString( "%1<font color=\"green\">✔</font>" ).arg( text ) );
-#else
-        buddy->setText( QString( "%1<font color=\"green\">*</font>" ).arg( text ) );
-#endif
       }
     }
   }

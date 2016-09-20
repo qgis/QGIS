@@ -91,6 +91,8 @@ QgsServer::QgsServer()
 
 QgsServer::~QgsServer()
 {
+  if ( sQgsApplication )
+    sQgsApplication->exitQgis();
 }
 
 

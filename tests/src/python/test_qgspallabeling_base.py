@@ -10,8 +10,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from __future__ import print_function
+
 from future import standard_library
+import collections
 standard_library.install_aliases()
 
 __author__ = 'Larry Shaffer'
@@ -274,7 +275,7 @@ class TestQgsPalLabeling(unittest.TestCase):
         for attr in dir(lyr):
             if attr[0].islower() and not attr.startswith("__"):
                 value = getattr(lyr, attr)
-                if not callable(value):
+                if not isinstance(value, collections.Callable):
                     res[attr] = value
         return res
 
@@ -465,7 +466,7 @@ def runSuite(module, tests):
                     datetime.datetime.now().strftime('%Y-%m-%d %X')
         report = '<html><head><title>{0}</title></head><body>'.format(teststamp)
         report += '\n<h2>Failed Tests: {0}</h2>'.format(len(PALREPORTS))
-        for k, v in PALREPORTS.items():
+        for k, v in list(PALREPORTS.items()):
             report += '\n<h3>{0}</h3>\n{1}'.format(k, v)
         report += '</body></html>'
 

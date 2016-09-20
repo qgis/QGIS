@@ -22,11 +22,11 @@ SET (dxf2shpconverter_RCCS  dxf2shpconverter.qrc)
 ########################################################
 # Build
 
-QT4_WRAP_UI (dxf2shpconverter_UIS_H  ${dxf2shpconverter_UIS})
+QT5_WRAP_UI (dxf2shpconverter_UIS_H  ${dxf2shpconverter_UIS})
 
-QT4_WRAP_CPP (dxf2shpconverter_MOC_SRCS  ${dxf2shpconverter_MOC_HDRS})
+QT5_WRAP_CPP (dxf2shpconverter_MOC_SRCS  ${dxf2shpconverter_MOC_HDRS})
 
-QT4_ADD_RESOURCES(dxf2shpconverter_RCC_SRCS ${dxf2shpconverter_RCCS})
+QT5_ADD_RESOURCES(dxf2shpconverter_RCC_SRCS ${dxf2shpconverter_RCCS})
 
 ADD_LIBRARY (dxf2shpconverterplugin MODULE ${dxf2shpconverter_SRCS} ${dxf2shpconverter_MOC_SRCS} ${dxf2shpconverter_RCC_SRCS} ${dxf2shpconverter_UIS_H})
 

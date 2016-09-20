@@ -22,6 +22,7 @@ SET ( qgis_mapserv_SRCS
   qgscapabilitiescache.cpp
   qgsconfigcache.cpp
   qgshttprequesthandler.cpp
+#  qgshttptransaction.cpp
   qgsgetrequesthandler.cpp
   qgspostrequesthandler.cpp
   qgssoaprequesthandler.cpp
@@ -65,6 +66,7 @@ ENDIF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
 SET (qgis_mapserv_MOC_HDRS
   qgscapabilitiescache.h
   qgsconfigcache.h
+#  qgshttptransaction.h
   qgsmaprenderer.h
   qgsmslayercache.h
   qgsserverlogger.h
@@ -106,7 +108,7 @@ REMOVE_DEFINITIONS("-DSERVER_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("\"-DSERVER_EXPORT=${DLLEXPORT}\"")
 
 
-QT4_WRAP_CPP(qgis_mapserv_MOC_SRCS ${qgis_mapserv_MOC_HDRS})
+QT5_WRAP_CPP(qgis_mapserv_MOC_SRCS ${qgis_mapserv_MOC_HDRS})
 
 IF(MSVC)
   SET_SOURCE_FILES_PROPERTIES(${qgis_mapserv_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4512 /wd4996" )
@@ -162,14 +164,14 @@ INCLUDE_DIRECTORIES(
 
 # end qgis_server library
 
-QT4_WRAP_UI (qgis_mapserv_UIS_H  ${qgis_mapserv_UIS})
+QT5_WRAP_UI (qgis_mapserv_UIS_H  ${qgis_mapserv_UIS})
 
 
-QT4_ADD_RESOURCES(qgis_mapserv_RCC_SRCS ${qgis_mapserv_RCCS})
+QT5_ADD_RESOURCES(qgis_mapserv_RCC_SRCS ${qgis_mapserv_RCCS})
 
 # add test resources, e.g. standard test font
 SET(qgis_mapserv_TESTRCCS ../../tests/testdata/testdata.qrc)
-QT4_ADD_RESOURCES(qgis_mapserv_TESTRCC_SRCS ${qgis_mapserv_TESTRCCS})
+QT5_ADD_RESOURCES(qgis_mapserv_TESTRCC_SRCS ${qgis_mapserv_TESTRCCS})
 
 ADD_EXECUTABLE(qgis_mapserv.fcgi
   ${qgis_mapserv_SRCS}
