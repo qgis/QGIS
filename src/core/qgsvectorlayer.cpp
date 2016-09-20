@@ -4139,6 +4139,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
     disconnect( lyr, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SIGNAL( dataChanged() ) );
     disconnect( lyr, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SIGNAL( dataChanged() ) );
     disconnect( lyr, SIGNAL( dataChanged() ), this, SIGNAL( dataChanged() ) );
+    disconnect( lyr, SIGNAL( repaintRequested() ), this, SLOT( triggerRepaint() ) );
   }
 
   // assign new dependencies
@@ -4158,6 +4159,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
     connect( lyr, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SIGNAL( dataChanged() ) );
     connect( lyr, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry& ) ), this, SIGNAL( dataChanged() ) );
     connect( lyr, SIGNAL( dataChanged() ), this, SIGNAL( dataChanged() ) );
+    connect( lyr, SIGNAL( repaintRequested() ), this, SLOT( triggerRepaint() ) );
   }
 
   // if new layers are present, emit a data change
