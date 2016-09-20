@@ -21,7 +21,7 @@
     <number>9</number>
    </property>
    <item>
-    <widget class="QTextEdit" name="txtPreview"/>
+    <widget class="QTextBrowser" name="txtPreview"/>
    </item>
    <item>
     <widget class="QSplitter" name="splitter_2">

@@ -41,7 +41,7 @@
        </property>
       </column>
      </widget>
-     <widget class="QTextEdit" name="txtResults"/>
+     <widget class="QTextBrowser" name="txtResults"/>
     </widget>
    </item>
    <item>
