@@ -34,7 +34,7 @@ SET (WFS_MOC_HDRS
 ########################################################
 # Build
 
-QT4_WRAP_CPP(WFS_MOC_SRCS ${WFS_MOC_HDRS})
+QT5_WRAP_CPP(WFS_MOC_SRCS ${WFS_MOC_HDRS})
 
 INCLUDE_DIRECTORIES (
   ../../core

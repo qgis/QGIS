@@ -31,7 +31,7 @@ SET (AFS_MOC_HDRS
   qgsafssourceselect.h
 )
 
-QT4_WRAP_CPP (AFS_MOC_SRCS ${AFS_MOC_HDRS})
+QT5_WRAP_CPP (AFS_MOC_SRCS ${AFS_MOC_HDRS})
 
 ADD_LIBRARY(arcgisfeatureserverprovider MODULE ${AFS_SRCS} ${AFS_MOC_SRCS})
 
@@ -62,7 +62,7 @@ SET (AMS_MOC_HDRS
   qgsamssourceselect.h
 )
 
-QT4_WRAP_CPP (AMS_MOC_SRCS ${AMS_MOC_HDRS})
+QT5_WRAP_CPP (AMS_MOC_SRCS ${AMS_MOC_HDRS})
 
 ADD_LIBRARY(arcgismapserverprovider MODULE ${AMS_SRCS} ${AMS_MOC_SRCS})
 

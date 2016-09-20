@@ -35,7 +35,7 @@ SET(PG_HDRS
 ########################################################
 # Build
 
-QT4_WRAP_CPP(PG_MOC_SRCS ${PG_MOC_HDRS})
+QT5_WRAP_CPP(PG_MOC_SRCS ${PG_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ../../core

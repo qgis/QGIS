@@ -13,7 +13,7 @@ SET (BENCH_MOC_HDRS
 ########################################################
 # Build
 
-QT4_WRAP_CPP (BENCH_MOC_SRCS  ${BENCH_MOC_HDRS})
+QT5_WRAP_CPP (BENCH_MOC_SRCS  ${BENCH_MOC_HDRS})
 
 ADD_EXECUTABLE (qgis_bench MACOSX_BUNDLE WIN32 ${BENCH_SRCS} ${BENCH_MOC_SRCS} )
 

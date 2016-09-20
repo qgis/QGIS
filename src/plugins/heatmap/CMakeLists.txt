@@ -19,11 +19,11 @@ SET (heatmap_RCCS  heatmap.qrc)
 ########################################################
 # Build
 
-QT4_WRAP_UI (heatmap_UIS_H  ${heatmap_UIS})
+QT5_WRAP_UI (heatmap_UIS_H  ${heatmap_UIS})
 
-QT4_WRAP_CPP (heatmap_MOC_SRCS  ${heatmap_MOC_HDRS})
+QT5_WRAP_CPP (heatmap_MOC_SRCS  ${heatmap_MOC_HDRS})
 
-QT4_ADD_RESOURCES(heatmap_RCC_SRCS ${heatmap_RCCS})
+QT5_ADD_RESOURCES(heatmap_RCC_SRCS ${heatmap_RCCS})
 
 ADD_LIBRARY (heatmapplugin   MODULE ${heatmap_SRCS} ${heatmap_MOC_SRCS} ${heatmap_RCC_SRCS} ${heatmap_UIS_H})
 

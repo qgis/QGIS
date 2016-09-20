@@ -40,11 +40,11 @@ SET (evis_RCCS resources/evis.qrc)
 ########################################################
 # Build
 
-QT4_WRAP_UI (evis_UIS_H  ${evis_UIS})
+QT5_WRAP_UI (evis_UIS_H  ${evis_UIS})
 
-QT4_WRAP_CPP (evis_MOC_SRCS  ${evis_MOC_HDRS})
+QT5_WRAP_CPP (evis_MOC_SRCS  ${evis_MOC_HDRS})
 
-QT4_ADD_RESOURCES(evis_RCC_SRCS ${evis_RCCS})
+QT5_ADD_RESOURCES(evis_RCC_SRCS ${evis_RCCS})
 
 ADD_LIBRARY (evis MODULE ${evis_SRCS} ${evis_MOC_SRCS} ${evis_RCC_SRCS} ${evis_UIS_H})
 

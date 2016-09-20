@@ -71,7 +71,7 @@ ENDIF (APPLE)
 #
 #SET(qgis_quickprinttest_SRCS testqgsquickprint.cpp ${util_SRCS})
 #SET(qgis_quickprinttest_MOC_CPPS testqgsquickprint.cpp)
-#QT4_WRAP_CPP(qgis_quickprinttest_MOC_SRCS ${qgis_quickprinttest_MOC_CPPS})
+#QT5_WRAP_CPP(qgis_quickprinttest_MOC_SRCS ${qgis_quickprinttest_MOC_CPPS})
 #ADD_CUSTOM_TARGET(qgis_quickprinttestmoc ALL DEPENDS ${qgis_quickprinttest_MOC_SRCS})
 #ADD_EXECUTABLE(qgis_quickprinttest ${qgis_quickprinttest_SRCS})
 #ADD_DEPENDENCIES(qgis_quickprinttest qgis_quickprinttestmoc)
@@ -89,7 +89,7 @@ ENDIF (APPLE)
 #ENDIF (APPLE)
 
 SET(IMAGE_RCCS ../../../images/images.qrc)
-QT4_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
+QT5_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
 
 MACRO (ADD_QGIS_TEST testname testsrc)
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
@@ -122,7 +122,7 @@ ADD_QGIS_TEST(zoomtest testqgsmaptoolzoom.cpp)
 # These tests are old and are never run so removed for now.
 #SET(rendererv2gui_SRCS testrenderergui.cpp)
 #SET(rendererv2gui_HDRS testrenderergui.h)
-#QT4_WRAP_CPP(rendererv2gui_MOC_SRCS ${rendererv2gui_HDRS})
+#QT5_WRAP_CPP(rendererv2gui_MOC_SRCS ${rendererv2gui_HDRS})
 #ADD_EXECUTABLE(qgis_rendererv2gui ${rendererv2gui_SRCS} ${rendererv2gui_MOC_SRCS})
 
 #ADD_QGIS_TEST(histogramtest testqgsrasterhistogram.cpp)

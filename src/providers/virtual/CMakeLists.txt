@@ -2,16 +2,16 @@
 ########################################################
 # Files
 
-QT4_ADD_RESOURCES(QGIS_VLAYER_SQL_FUNCTIONS_RCC sqlfunctionslist.qrc)
+QT5_ADD_RESOURCES(QGIS_VLAYER_SQL_FUNCTIONS_RCC sqlfunctionslist.qrc)
 
-QT4_WRAP_CPP(vlayer_provider_MOC_SRCS
+QT5_WRAP_CPP(vlayer_provider_MOC_SRCS
   qgsvirtuallayerprovider.h
   qgsslottofunction.h
   qgsvirtuallayersourceselect.h
   qgsembeddedlayerselectdialog.h
 )
 
-QT4_WRAP_UI(vlayer_provider_UI_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)
+QT5_WRAP_UI(vlayer_provider_UI_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)
 
 SET(QGIS_VLAYER_PROVIDER_SRCS
   ${vlayer_provider_MOC_SRCS}

@@ -75,11 +75,11 @@ SET (geometrychecker_RCCS
 ########################################################
 # Build
 
-QT4_WRAP_UI (geometrychecker_UIS_H  ${geometrychecker_UIS})
+QT5_WRAP_UI (geometrychecker_UIS_H  ${geometrychecker_UIS})
 
-QT4_WRAP_CPP (geometrychecker_MOC_SRCS  ${geometrychecker_MOC_HDRS})
+QT5_WRAP_CPP (geometrychecker_MOC_SRCS  ${geometrychecker_MOC_HDRS})
 
-QT4_ADD_RESOURCES(geometrychecker_RCC_SRCS ${geometrychecker_RCCS})
+QT5_ADD_RESOURCES(geometrychecker_RCC_SRCS ${geometrychecker_RCCS})
 
 ADD_LIBRARY (geometrycheckerplugin   MODULE ${geometrychecker_HDRS} ${geometrychecker_SRCS} ${geometrychecker_MOC_SRCS} ${geometrychecker_RCC_SRCS} ${geometrychecker_UIS_H})
 
