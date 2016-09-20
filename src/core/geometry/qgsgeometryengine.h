@@ -17,6 +17,7 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSGEOMETRYENGINE_H
 
 #include "qgslinestring.h"
+#include "qgsgeometry.h"
 
 #include <QList>
 
@@ -31,6 +32,23 @@ class QgsAbstractGeometry;
 class CORE_EXPORT QgsGeometryEngine
 {
   public:
+    /**
+     * Success or failure of a geometry operation.
+     * This gived details about cause of failure.
+     */
+    enum EngineOperationResult
+    {
+      Success = 0, /*!< Operation succeeded */
+      NothingHappened, /*!< Nothing happened, without any error */
+      MethodNotImplemented, /*!< Method not implemented in geometry engine */
+      EngineError, /*!< Error occured in the geometry engine */
+      NodedGeometryError, /*!< Error occured while creating a noded geometry */
+      InvalidBaseGeometry, /*!< The geometry on which the operation occurs is not valid */
+      InvalidInput, /*!< The input is not valid */
+      /* split */
+      SplitCannotSplitPoint, /*!< Points cannot be split */
+    };
+
     QgsGeometryEngine( const QgsAbstractGeometry* geometry ): mGeometry( geometry ) {}
     virtual ~QgsGeometryEngine() {}
 
@@ -84,17 +102,17 @@ class CORE_EXPORT QgsGeometryEngine
     virtual bool isEqual( const QgsAbstractGeometry& geom, QString* errorMsg = nullptr ) const = 0;
     virtual bool isEmpty( QString* errorMsg ) const = 0;
 
-    virtual int splitGeometry( const QgsLineString& splitLine,
-                               QList<QgsAbstractGeometry*>& newGeometries,
-                               bool topological,
-                               QgsPointSequence &topologyTestPoints, QString* errorMsg = nullptr ) const
+    virtual QgsGeometryEngine::EngineOperationResult splitGeometry( const QgsLineString& splitLine,
+        QList<QgsAbstractGeometry*>& newGeometries,
+        bool topological,
+        QgsPointSequence &topologyTestPoints, QString* errorMsg = nullptr ) const
     {
       Q_UNUSED( splitLine );
       Q_UNUSED( newGeometries );
       Q_UNUSED( topological );
       Q_UNUSED( topologyTestPoints );
       Q_UNUSED( errorMsg );
-      return 2;
+      return MethodNotImplemented;
     }
 
     virtual QgsAbstractGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const = 0;

@@ -5,6 +5,23 @@ class QgsGeometryEngine
 %End
 
   public:
+    /**
+     * Success or failure of a geometry operation.
+     * This gived details about cause of failure.
+     */
+    enum EngineOperationResult
+    {
+      Success, /*!< Operation succeeded */
+      NothingHappened, /*!< Nothing happened, without any error */
+      MethodNotImplemented, /*!< Method not implemented in geometry engine */
+      EngineError, /*!< Error occured in the geometry engine */
+      NodedGeometryError, /*!< Error occured while creating a noded geometry */
+      InvalidBaseGeometry, /*!< The geometry on which the operation occurs is not valid */
+      InvalidInput, /*!< The input is not valid */
+      /* split */
+      SplitCannotSplitPoint, /*!< Points cannot be split */
+    };
+
     QgsGeometryEngine( const QgsAbstractGeometry* geometry );
     virtual ~QgsGeometryEngine();
 
@@ -58,7 +75,7 @@ class QgsGeometryEngine
     virtual bool isEqual( const QgsAbstractGeometry& geom, QString* errorMsg = 0 ) const = 0;
     virtual bool isEmpty( QString* errorMsg = 0 ) const = 0;
 
-    virtual int splitGeometry( const QgsLineString& splitLine,
+    virtual QgsGeometryEngine::EngineOperationResult splitGeometry( const QgsLineString& splitLine,
                                QList<QgsAbstractGeometry*>& newGeometries,
                                bool topological,
                                QList<QgsPointV2> &topologyTestPoints, QString* errorMsg = nullptr ) const;

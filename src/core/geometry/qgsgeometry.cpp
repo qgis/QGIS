@@ -647,7 +647,7 @@ double QgsGeometry::closestSegmentWithContext(
   return sqrDist;
 }
 
-int QgsGeometry::addRing( const QList<QgsPoint> &ring )
+QgsGeometry::OperationResult QgsGeometry::addRing( const QList<QgsPoint> &ring )
 {
   detach( true );
 
@@ -659,12 +659,12 @@ int QgsGeometry::addRing( const QList<QgsPoint> &ring )
   return addRing( ringLine );
 }
 
-int QgsGeometry::addRing( QgsCurve* ring )
+QgsGeometry::OperationResult QgsGeometry::addRing( QgsCurve* ring )
 {
   if ( !d->geometry )
   {
     delete ring;
-    return 1;
+    return InvalidInput;
   }
 
   detach( true );
@@ -673,14 +673,14 @@ int QgsGeometry::addRing( QgsCurve* ring )
   return QgsGeometryEditUtils::addRing( d->geometry, ring );
 }
 
-int QgsGeometry::addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType )
+QgsGeometry::OperationResult QgsGeometry::addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType )
 {
   QgsPointSequence l;
   convertPointList( points, l );
   return addPart( l, geomType );
 }
 
-int QgsGeometry::addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType )
+QgsGeometry::OperationResult QgsGeometry::addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType )
 {
   QgsAbstractGeometry* partGeom = nullptr;
   if ( points.size() == 1 )
@@ -696,7 +696,7 @@ int QgsGeometry::addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryT
   return addPart( partGeom, geomType );
 }
 
-int QgsGeometry::addPart( QgsAbstractGeometry* part, QgsWkbTypes::GeometryType geomType )
+QgsGeometry::OperationResult QgsGeometry::addPart( QgsAbstractGeometry* part, QgsWkbTypes::GeometryType geomType )
 {
   if ( !d->geometry )
   {
@@ -713,7 +713,7 @@ int QgsGeometry::addPart( QgsAbstractGeometry* part, QgsWkbTypes::GeometryType g
         d->geometry = new QgsMultiPolygonV2();
         break;
       default:
-        return 1;
+        return QgsGeometry::AddPartNotMultiGeometry;
     }
   }
   else
@@ -726,21 +726,29 @@ int QgsGeometry::addPart( QgsAbstractGeometry* part, QgsWkbTypes::GeometryType g
   return QgsGeometryEditUtils::addPart( d->geometry, part );
 }
 
-int QgsGeometry::addPart( const QgsGeometry *newPart )
+QgsGeometry::OperationResult QgsGeometry::addPart( const QgsGeometry *newPart )
 {
-  if ( !d->geometry || !newPart || !newPart->d || !newPart->d->geometry )
+  if ( !d->geometry )
   {
-    return 1;
+    return QgsGeometry::InvalidBaseGeometry;
+  }
+  if ( !newPart || !newPart->d || !newPart->d->geometry )
+  {
+    return QgsGeometry::AddPartNotMultiGeometry;
   }
 
   return addPart( newPart->d->geometry->clone() );
 }
 
-int QgsGeometry::addPart( GEOSGeometry *newPart )
+QgsGeometry::OperationResult QgsGeometry::addPart( GEOSGeometry *newPart )
 {
-  if ( !d->geometry || !newPart )
+  if ( !d->geometry )
   {
-    return 1;
+    return QgsGeometry::InvalidBaseGeometry;
+  }
+  if ( !newPart )
+  {
+    return QgsGeometry::AddPartNotMultiGeometry;
   }
 
   detach( true );
@@ -750,25 +758,25 @@ int QgsGeometry::addPart( GEOSGeometry *newPart )
   return QgsGeometryEditUtils::addPart( d->geometry, geom );
 }
 
-int QgsGeometry::translate( double dx, double dy )
+QgsGeometry::OperationResult QgsGeometry::translate( double dx, double dy )
 {
   if ( !d->geometry )
   {
-    return 1;
+    return QgsGeometry::InvalidBaseGeometry;
   }
 
   detach( true );
 
   d->geometry->transform( QTransform::fromTranslate( dx, dy ) );
   removeWkbGeos();
-  return 0;
+  return QgsGeometry::Success;
 }
 
-int QgsGeometry::rotate( double rotation, const QgsPoint& center )
+QgsGeometry::OperationResult QgsGeometry::rotate( double rotation, const QgsPoint& center )
 {
   if ( !d->geometry )
   {
-    return 1;
+    return QgsGeometry::InvalidBaseGeometry;
   }
 
   detach( true );
@@ -778,14 +786,14 @@ int QgsGeometry::rotate( double rotation, const QgsPoint& center )
   t.translate( -center.x(), -center.y() );
   d->geometry->transform( t );
   removeWkbGeos();
-  return 0;
+  return QgsGeometry::Success;
 }
 
-int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries, bool topological, QList<QgsPoint> &topologyTestPoints )
+QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries, bool topological, QList<QgsPoint> &topologyTestPoints )
 {
   if ( !d->geometry )
   {
-    return 0;
+    return InvalidBaseGeometry;
   }
 
   QList<QgsAbstractGeometry*> newGeoms;
@@ -796,9 +804,9 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
   QgsPointSequence tp;
 
   QgsGeos geos( d->geometry );
-  int result = geos.splitGeometry( splitLineString, newGeoms, topological, tp );
+  QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( splitLineString, newGeoms, topological, tp );
 
-  if ( result == 0 )
+  if ( result == QgsGeometryEngine::Success )
   {
     detach( false );
     d->geometry = newGeoms.at( 0 );
@@ -812,15 +820,36 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
 
   convertPointList( tp, topologyTestPoints );
   removeWkbGeos();
-  return result;
+
+  switch ( result )
+  {
+    case QgsGeometryEngine::Success:
+      return QgsGeometry::Success;
+    case QgsGeometryEngine::MethodNotImplemented:
+    case QgsGeometryEngine::EngineError:
+    case QgsGeometryEngine::NodedGeometryError:
+      return QgsGeometry::GeometryEngineError;
+    case QgsGeometryEngine::InvalidBaseGeometry:
+      return QgsGeometry::InvalidBaseGeometry;
+    case QgsGeometryEngine::InvalidInput:
+      return QgsGeometry::InvalidInput;
+    case QgsGeometryEngine::SplitCannotSplitPoint:
+      return QgsGeometry::SplitCannotSplitPoint;
+    case QgsGeometryEngine::NothingHappened:
+      return QgsGeometry::NothingHappened;
+      //default: do not implement default to handle properly all cases
+  }
+
+  // this should never be reached
+  return QgsGeometry::NothingHappened;
 }
 
 /** Replaces a part of this geometry with another line*/
-int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
+QgsGeometry::OperationResult QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
 {
   if ( !d->geometry )
   {
-    return 0;
+    return InvalidBaseGeometry;
   }
 
   QgsPointSequence reshapeLine;
@@ -829,17 +858,37 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
   reshapeLineString.setPoints( reshapeLine );
 
   QgsGeos geos( d->geometry );
-  int errorCode = 0;
+  QgsGeometryEngine::EngineOperationResult errorCode = QgsGeometryEngine::Success;
   QgsAbstractGeometry* geom = geos.reshapeGeometry( reshapeLineString, &errorCode );
-  if ( errorCode == 0 && geom )
+  if ( errorCode == QgsGeometryEngine::Success && geom )
   {
     detach( false );
     delete d->geometry;
     d->geometry = geom;
     removeWkbGeos();
-    return 0;
+    return Success;
   }
-  return errorCode;
+
+  switch ( errorCode )
+  {
+    case QgsGeometryEngine::Success:
+      return Success;
+    case QgsGeometryEngine::MethodNotImplemented:
+    case QgsGeometryEngine::EngineError:
+    case QgsGeometryEngine::NodedGeometryError:
+      return GeometryEngineError;
+    case QgsGeometryEngine::InvalidBaseGeometry:
+      return InvalidBaseGeometry;
+    case QgsGeometryEngine::InvalidInput:
+      return InvalidInput;
+    case QgsGeometryEngine::SplitCannotSplitPoint: // should not happen
+      return GeometryEngineError;
+    case QgsGeometryEngine::NothingHappened:
+      return NothingHappened;
+  }
+
+  // should not be reached
+  return GeometryEngineError;
 }
 
 int QgsGeometry::makeDifference( const QgsGeometry* other )
@@ -1887,30 +1936,30 @@ bool QgsGeometry::requiresConversionToStraightSegments() const
   return d->geometry->hasCurvedSegments();
 }
 
-int QgsGeometry::transform( const QgsCoordinateTransform& ct )
+QgsGeometry::OperationResult QgsGeometry::transform( const QgsCoordinateTransform& ct )
 {
   if ( !d->geometry )
   {
-    return 1;
+    return QgsGeometry::InvalidBaseGeometry;
   }
 
   detach();
   d->geometry->transform( ct );
   removeWkbGeos();
-  return 0;
+  return QgsGeometry::Success;
 }
 
-int QgsGeometry::transform( const QTransform& ct )
+QgsGeometry::OperationResult QgsGeometry::transform( const QTransform& ct )
 {
   if ( !d->geometry )
   {
-    return 1;
+    return QgsGeometry::InvalidBaseGeometry;
   }
 
   detach();
   d->geometry->transform( ct );
   removeWkbGeos();
-  return 0;
+  return QgsGeometry::Success;
 }
 
 void QgsGeometry::mapToPixel( const QgsMapToPixel& mtp )

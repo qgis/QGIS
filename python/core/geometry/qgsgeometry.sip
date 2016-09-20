@@ -28,8 +28,27 @@ class QgsGeometry
 %TypeHeaderCode
 #include <qgsgeometry.h>
 %End
-
   public:
+    enum OperationResult
+    {
+      Success, /*!< Operation succeeded */
+      NothingHappened, /*!< Nothing happened, without any error */
+      InvalidBaseGeometry, /*!< The base geometry on which the operation is done is invalid or empty */
+      InvalidInput, /*!< The input geometry (ring, part, split line, etc.) has not the correct geometry type */
+      GeometryEngineError, /*!< Geometry engine misses a method implemented or an error occured in the geometry engine */
+      /* Add part issues */
+      AddPartSelectedGeometryNotFound, /*!< The selected geometry cannot be found */
+      AddPartNotMultiGeometry, /*!< The source geometry is not multi */
+      /* Add ring issues*/
+      AddRingNotClosed, /*!< The imput ring is not closed */
+      AddRingNotValid, /*!< The input ring is not valid */
+      AddRingCrossesExistingRings, /*!< The input ring crosses existing rings (it is not disjoint) */
+      AddRingNotInExistingFeature, /*!<  The input ring doesn't have any existing ring to fit into */
+      /* Split features */
+      SplitCannotSplitPoint, /*!< cannot split points */
+    };
+
+
     //! Constructor
     QgsGeometry();
 
@@ -304,67 +323,59 @@ class QgsGeometry
      */
     double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint /Out/, int& afterVertex /Out/ ) const;
 
-    /** Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
-     @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
-     3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( const QList<QgsPoint>& ring );
+    /**
+     * Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
+     * @param ring The ring to be added
+     * @returns OperationResult a result code: success or reason of failure
+     */
+    OperationResult addRing( const QList<QgsPoint>& ring );
 
-    /** Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
-     @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
-     3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( QgsCurve* ring );
+    /**
+     * Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
+     * @param ring The ring to be added
+     * @returns OperationResult a result code: success or reason of failure
+     */
+    OperationResult addRing( QgsCurve* ring );
 
     /** Adds a new part to a the geometry.
      * @param points points describing part to add
      * @param geomType default geometry type to create if no existing geometry
-     * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-     * not disjoint with existing polygons of the feature
+     * @returns OperationResult a result code: success or reason of failure
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
 %If (!QT5_SUPPORT)
-    int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    QgsGeometry::OperationResult addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 %End
-    int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry )/PyName=addPoints/;
+    QgsGeometry::OperationResult addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry )/PyName=addPoints/;
 
     /** Adds a new part to a the geometry.
      * @param points points describing part to add
      * @param geomType default geometry type to create if no existing geometry
-     * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-     * not disjoint with existing polygons of the feature
+     * @returns OperationResult a result code: success or reason of failure
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
 %If (!QT5_SUPPORT)
-    int addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    QgsGeometry::OperationResult addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 %End
-    int addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry )/PyName=addPointsV2/;
+    QgsGeometry::OperationResult addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry )/PyName=addPointsV2/;
 
     /** Adds a new part to this geometry.
      * @param part part to add (ownership is transferred)
      * @param geomType default geometry type to create if no existing geometry
-     * @returns 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-     * not disjoint with existing polygons of the feature
+     * @returns OperationResult a result code: success or reason of failure
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( QgsAbstractGeometry* part /Transfer/, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    QgsGeometry::OperationResult addPart( QgsAbstractGeometry* part, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /** Adds a new island polygon to a multipolygon feature
      * @param newPart part to add. Ownership is NOT transferred.
-     * @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-     * not disjoint with existing polygons of the feature
+     * @returns OperationResult a result code: success or reason of failure
      * @note not available in python bindings
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    // int addPart( GEOSGeometry *newPart );
+    // QgsGeometry::OperationResult  addPart( GEOSGeometry *newPart );
 
     /** Adds a new island polygon to a multipolygon feature
-     @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
-     not disjoint with existing polygons of the feature
-     @note available in python bindings as addPartGeometry (added in 2.2)
+     * @returns OperationResult a result code: success or reason of failure
+     @note available in python bindings as addPartGeometry
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QgsGeometry *newPart /Transfer/ ) /PyName=addPartGeometry/;
+    QgsGeometry::OperationResult addPart( const QgsGeometry *newPart /Transfer/ ) /PyName=addPartGeometry/;
 
     /** Translate this geometry by dx, dy
      @return 0 in case of success*/
