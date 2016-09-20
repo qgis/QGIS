@@ -247,7 +247,7 @@ ELSE (WITH_QTWEBKIT)
 ENDIF(WITH_QTWEBKIT)
 #############################################################
 # search for Qt5
-SET(QT_MIN_VERSION 5.5.0)
+SET(QT_MIN_VERSION 5.2.0)
 FIND_PACKAGE(Qt5Core QUIET)
 FIND_PACKAGE(Qt5Gui REQUIRED)
 FIND_PACKAGE(Qt5Widgets REQUIRED)
