@@ -20,4 +20,4 @@ export CTEST_PARALLEL_LEVEL=1
 export CCACHE_CPP2=yes
 export CCACHE_TEMPDIR=/tmp
 
-xvfb-run ctest -V -E 'qgis_openstreetmaptest|qgis_wcsprovidertest|PyQgsOfflineEditingWFS|PyQgsWFSProviderGUI' -S ./qgis-test-travis.ctest --output-on-failure
+xvfb-run ctest -V -E 'qgis_openstreetmaptest|qgis_wcsprovidertest|PyQgsOfflineEditingWFS|PyQgsWFSProviderGUI|PyQgsServerWFST' -S ./qgis-test-travis.ctest --output-on-failure
