@@ -112,7 +112,7 @@ class BatchInputSelectionPanel(QWidget):
         if dlg.selectedoptions is not None:
             selected = dlg.selectedoptions
             if len(selected) == 1:
-                self.text.setText(layers[selected[0]].name())
+                self.setValue(layers[selected[0]])
             else:
                 if isinstance(self.param, ParameterMultipleInput):
                     self.text.setText(';'.join(layers[idx].name() for idx in selected))
@@ -146,6 +146,7 @@ class BatchInputSelectionPanel(QWidget):
                 files[i] = dataobjects.getRasterSublayer(filename, self.param)
             if len(files) == 1:
                 self.text.setText(files[0])
+                self.textEditingFinished()
             else:
                 if isinstance(self.param, ParameterMultipleInput):
                     self.text.setText(';'.join(unicode(f) for f in files))
@@ -168,6 +169,6 @@ class BatchInputSelectionPanel(QWidget):
         self._value = value
         if isinstance(value, QgsMapLayer):
             self.text.setText(value.name())
-        else:  #  should be basestring
+        else:  # should be basestring
             self.text.setText(value)
         self.valueChanged.emit()

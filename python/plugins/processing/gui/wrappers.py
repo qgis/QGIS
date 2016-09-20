@@ -762,8 +762,6 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         else:
             if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
                 widget = QComboBox()
-                if self.dialogType == DIALOG_BATCH:
-                    widget.setEditable(True)  # Should be removed at the end
                 return widget
             else:
                 widget = QComboBox()
@@ -778,7 +776,6 @@ class TableFieldWidgetWrapper(WidgetWrapper):
     def postInitialize(self, wrappers):
         for wrapper in wrappers:
             if wrapper.param.name == self.param.parent:
-                # self.refreshItems()
                 if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
                     self.setLayer(wrapper.value())
                     wrapper.widgetValueHasChanged.connect(self.parentValueChanged)
