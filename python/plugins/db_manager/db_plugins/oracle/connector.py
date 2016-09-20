@@ -369,8 +369,8 @@ class OracleDBConnector(DBConnector):
 
         self.populated = True
 
-        listTables = sorted(items, cmp=lambda x, y: cmp((x[2], x[1]),
-                                                        (y[2], y[1])))
+        listTables = sorted(items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1])))
+
         if self.hasCache():
             self.updateCache(listTables, schema)
             return self.getTablesCache(schema)
@@ -392,9 +392,7 @@ class OracleDBConnector(DBConnector):
             pass
 
         if not self.allowGeometrylessTables:
-            return sorted(items,
-                          cmp=lambda x, y: cmp((x[2], x[1]),
-                                               (y[2], y[1])))
+            return sorted(items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1])))
 
         # get all non geographic tables and views
         schema_where = u""
@@ -421,7 +419,7 @@ class OracleDBConnector(DBConnector):
                 items.append(item)
         c.close()
 
-        return sorted(items, cmp=lambda x, y: cmp((x[2], x[1]), (y[2], y[1])))
+        return sorted(items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1])))
 
     def updateCache(self, tableList, schema=None):
         """Update the SQLite cache of table list for a schema."""

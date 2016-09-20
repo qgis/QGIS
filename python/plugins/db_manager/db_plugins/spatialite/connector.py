@@ -20,6 +20,8 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
+from functools import cmp_to_key
+
 from qgis.PyQt.QtCore import QFile
 from qgis.PyQt.QtWidgets import QApplication
 
@@ -260,7 +262,7 @@ class SpatiaLiteDBConnector(DBConnector):
         for i, tbl in enumerate(items):
             tbl.insert(3, tbl[1] in sys_tables)
 
-        return sorted(items, cmp=lambda x, y: cmp(x[1], y[1]))
+        return sorted(items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1])))
 
     def getVectorTables(self, schema=None):
         """ get list of table with a geometry column
