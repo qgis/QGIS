@@ -273,14 +273,15 @@ def getObjectFromUri(uri, forceLoad=True):
         settings.setValue('/Projections/defaultBehaviour', '')
 
         # If is not opened, we open it
+        name = os.path.basename(uri)
         for provider in ['ogr', 'postgres', 'spatialite', 'virtual']:
-            layer = QgsVectorLayer(uri, uri, provider)
+            layer = QgsVectorLayer(uri, name, provider)
             if layer.isValid():
                 if prjSetting:
                     settings.setValue('/Projections/defaultBehaviour', prjSetting)
                 _loadedLayers[normalizeLayerSource(layer.source())] = layer
                 return layer
-        layer = QgsRasterLayer(uri, uri)
+        layer = QgsRasterLayer(uri, name)
         if layer.isValid():
             if prjSetting:
                 settings.setValue('/Projections/defaultBehaviour', prjSetting)
