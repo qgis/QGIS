@@ -275,7 +275,10 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      */
     QgsAttributeEditorRelation( const QString& name, const QString &relationId, QObject *parent )
         : QgsAttributeEditorElement( AeTypeRelation, name, parent )
-        , mRelationId( relationId ) {}
+        , mRelationId( relationId )
+        , mShowLinkButton( true )
+        , mShowUnlinkButton( true )
+    {}
 
     /**
      * Creates a new element which embeds a relation.
@@ -287,7 +290,10 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     QgsAttributeEditorRelation( const QString& name, const QgsRelation& relation, QObject *parent )
         : QgsAttributeEditorElement( AeTypeRelation, name, parent )
         , mRelationId( relation.id() )
-        , mRelation( relation ) {}
+        , mRelation( relation )
+        , mShowLinkButton( true )
+        , mShowUnlinkButton( true )
+    {}
 
     //! Destructor
     virtual ~QgsAttributeEditorRelation() {}
