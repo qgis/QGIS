@@ -84,6 +84,7 @@ class GrassAlgorithm(GeoAlgorithm):
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
+        self._icon = None
 
     def getCopy(self):
         newone = GrassAlgorithm(self.descriptionFile)
@@ -91,7 +92,10 @@ class GrassAlgorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
+        if self._icon is None:
+            self._icon = QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
+        return self._icon
+
 
     def help(self):
         return False, 'http://grass.osgeo.org/grass64/manuals/' + self.grassName + '.html'
@@ -158,7 +162,7 @@ class GrassAlgorithm(GeoAlgorithm):
                     elif isinstance(output, OutputVector):
                         vectorOutputs += 1
                     if isinstance(output, OutputHTML):
-                        self.addOutput(OutputFile("rawoutput", output.description +
+                        self.addOutput(OutputFile("rawoutput", output.description + 
                                                   " (raw output)", "txt"))
                 line = lines.readline().strip('\n').strip()
             except Exception as e:
@@ -180,7 +184,7 @@ class GrassAlgorithm(GeoAlgorithm):
         if hasVectorInput:
             param = ParameterNumber(self.GRASS_SNAP_TOLERANCE_PARAMETER,
                                     'v.in.ogr snap tolerance (-1 = no snap)',
-                                    -1, None, -1.0)
+                                    - 1, None, -1.0)
             param.isAdvanced = True
             self.addParameter(param)
             param = ParameterNumber(self.GRASS_MIN_AREA_PARAMETER,
