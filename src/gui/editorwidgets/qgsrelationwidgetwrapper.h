@@ -48,6 +48,32 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      */
     void setShowLabel( bool showLabel );
 
+    /**
+     * Determines if the "link feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showLinkButton() const;
+    /**
+     * Determines if the "link feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowLinkButton( bool showLinkButton );
+
+    /**
+     * Determines if the "unlink feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showUnlinkButton() const;
+    /**
+     * Determines if the "unlink feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowUnlinkButton( bool showUnlinkButton );
+
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;

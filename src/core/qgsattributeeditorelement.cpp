@@ -84,6 +84,8 @@ QgsAttributeEditorElement* QgsAttributeEditorRelation::clone( QgsAttributeEditor
 {
   QgsAttributeEditorRelation* element = new QgsAttributeEditorRelation( name(), mRelationId, parent );
   element->mRelation = mRelation;
+  element->mShowLinkButton = mShowLinkButton;
+  element->mShowUnlinkButton = mShowUnlinkButton;
 
   return element;
 }
@@ -120,9 +122,31 @@ void QgsAttributeEditorElement::setShowLabel( bool showLabel )
 void QgsAttributeEditorRelation::saveConfiguration( QDomElement& elem ) const
 {
   elem.setAttribute( "relation", mRelation.id() );
+  elem.setAttribute( "showLinkButton", mShowLinkButton );
+  elem.setAttribute( "showUnlinkButton", mShowUnlinkButton );
 }
 
 QString QgsAttributeEditorRelation::typeIdentifier() const
 {
   return "attributeEditorRelation";
+}
+
+bool QgsAttributeEditorRelation::showLinkButton() const
+{
+  return mShowLinkButton;
+}
+
+void QgsAttributeEditorRelation::setShowLinkButton( bool showLinkButton )
+{
+  mShowLinkButton = showLinkButton;
+}
+
+bool QgsAttributeEditorRelation::showUnlinkButton() const
+{
+  return mShowUnlinkButton;
+}
+
+void QgsAttributeEditorRelation::setShowUnlinkButton( bool showUnlinkButton )
+{
+  mShowUnlinkButton = showUnlinkButton;
 }

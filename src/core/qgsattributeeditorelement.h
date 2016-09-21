@@ -298,7 +298,10 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      */
     QgsAttributeEditorRelation( const QString& name, const QString &relationId, QgsAttributeEditorElement* parent )
         : QgsAttributeEditorElement( AeTypeRelation, name, parent )
-        , mRelationId( relationId ) {}
+        , mRelationId( relationId )
+        , mShowLinkButton( true )
+        , mShowUnlinkButton( true )
+    {}
 
     /**
      * Creates a new element which embeds a relation.
@@ -332,11 +335,40 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 
     virtual QgsAttributeEditorElement* clone( QgsAttributeEditorElement* parent ) const override;
 
+    /**
+     * Determines if the "link feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showLinkButton() const;
+    /**
+     * Determines if the "link feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowLinkButton( bool showLinkButton );
+
+    /**
+     * Determines if the "unlink feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showUnlinkButton() const;
+    /**
+     * Determines if the "unlink feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowUnlinkButton( bool showUnlinkButton );
+
+
   private:
     void saveConfiguration( QDomElement& elem ) const override;
     QString typeIdentifier() const override;
     QString mRelationId;
     QgsRelation mRelation;
+    bool mShowLinkButton;
+    bool mShowUnlinkButton;
 };
 
 

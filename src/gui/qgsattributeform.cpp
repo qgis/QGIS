@@ -1538,7 +1538,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
     case QgsAttributeEditorElement::AeTypeRelation:
     {
-      const QgsAttributeEditorRelation* relDef = dynamic_cast<const QgsAttributeEditorRelation*>( widgetDef );
+      const QgsAttributeEditorRelation* relDef = static_cast<const QgsAttributeEditorRelation*>( widgetDef );
 
       QgsRelationWidgetWrapper* rww = new QgsRelationWidgetWrapper( mLayer, relDef->relation(), nullptr, this );
       const QgsEditorWidgetSetup widgetSetup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, relDef->relation().id() );
@@ -1546,6 +1546,8 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       rww->setContext( context );
       newWidgetInfo.widget = rww->widget();
       rww->setShowLabel( relDef->showLabel() );
+      rww->setShowLinkButton( relDef->showLinkButton() );
+      rww->setShowUnlinkButton( relDef->showUnlinkButton() );
       mWidgets.append( rww );
       newWidgetInfo.labelText = QString::null;
       newWidgetInfo.labelOnTop = true;

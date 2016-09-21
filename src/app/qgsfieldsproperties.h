@@ -42,6 +42,16 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
       FieldConfigRole
     };
 
+    struct RelationEditorConfiguration
+    {
+      RelationEditorConfiguration()
+          : showLinkButton( true )
+          , showUnlinkButton( true )
+      {}
+      bool showLinkButton;
+      bool showUnlinkButton;
+    };
+
     class DesignerTreeItemData
     {
       public:
@@ -87,6 +97,9 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         QgsOptionalExpression visibilityExpression() const;
         void setVisibilityExpression( const QgsOptionalExpression& visibilityExpression );
 
+        RelationEditorConfiguration relationEditorConfiguration() const;
+        void setRelationEditorConfiguration( const RelationEditorConfiguration& relationEditorConfiguration );
+
       private:
         Type mType;
         QString mName;
@@ -94,6 +107,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         bool mShowAsGroupBox;
         bool mShowLabel;
         QgsOptionalExpression mVisibilityExpression;
+        RelationEditorConfiguration mRelationEditorConfiguration;
     };
 
     /**

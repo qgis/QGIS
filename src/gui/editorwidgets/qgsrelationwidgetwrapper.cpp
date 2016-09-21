@@ -46,6 +46,17 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
     mWidget->setVisible( visible );
 }
 
+bool QgsRelationWidgetWrapper::showUnlinkButton() const
+{
+  return mWidget->showUnlinkButton();
+}
+
+void QgsRelationWidgetWrapper::setShowUnlinkButton( bool showUnlinkButton )
+{
+  if ( mWidget )
+    mWidget->setShowUnlinkButton( showUnlinkButton );
+}
+
 bool QgsRelationWidgetWrapper::showLabel() const
 {
   if ( mWidget )
@@ -105,4 +116,15 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
 bool QgsRelationWidgetWrapper::valid() const
 {
   return mWidget;
+}
+
+bool QgsRelationWidgetWrapper::showLinkButton() const
+{
+  return mWidget->showLinkButton();
+}
+
+void QgsRelationWidgetWrapper::setShowLinkButton( bool showLinkButton )
+{
+  if ( mWidget )
+    mWidget->setShowLinkButton( showLinkButton );
 }

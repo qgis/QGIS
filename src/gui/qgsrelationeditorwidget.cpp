@@ -547,6 +547,26 @@ void QgsRelationEditorWidget::updateUi()
   }
 }
 
+bool QgsRelationEditorWidget::showLinkButton() const
+{
+  return mLinkFeatureButton->isVisible();
+}
+
+void QgsRelationEditorWidget::setShowLinkButton( bool showLinkButton )
+{
+  mLinkFeatureButton->setVisible( showLinkButton );
+}
+
+bool QgsRelationEditorWidget::showUnlinkButton() const
+{
+  return mUnlinkFeatureButton->isVisible();
+}
+
+void QgsRelationEditorWidget::setShowUnlinkButton( bool showUnlinkButton )
+{
+  mUnlinkFeatureButton->setVisible( showUnlinkButton );
+}
+
 bool QgsRelationEditorWidget::showLabel() const
 {
   return mShowLabel;

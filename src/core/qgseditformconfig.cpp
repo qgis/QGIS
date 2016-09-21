@@ -605,7 +605,10 @@ QgsAttributeEditorElement* QgsEditFormConfig::attributeEditorElementFromDomEleme
     // At this time, the relations are not loaded
     // So we only grab the id and delegate the rest to onRelationsLoaded()
     QString name = elem.attribute( "name" );
-    newElement = new QgsAttributeEditorRelation( name, elem.attribute( "relation", "[None]" ), parent );
+    QgsAttributeEditorRelation* relElement = new QgsAttributeEditorRelation( name, elem.attribute( "relation", "[None]" ), parent );
+    relElement->setShowLinkButton( elem.attribute( "showLinkButton", "1" ).toInt() );
+    relElement->setShowUnlinkButton( elem.attribute( "showUnlinkButton", "1" ).toInt() );
+    newElement = relElement;
   }
 
   if ( elem.hasAttribute( "showLabel" ) )
