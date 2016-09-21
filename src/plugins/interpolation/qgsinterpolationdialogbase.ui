@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>772</width>
-    <height>382</height>
+    <width>858</width>
+    <height>389</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -147,7 +147,7 @@
         </property>
         <property name="icon">
          <iconset resource="interpolator.qrc">
-          <normaloff>:/options.png</normaloff>:/options.png</iconset>
+          <normaloff>:/mActionOptions.svg</normaloff>:/mActionOptions.svg</iconset>
         </property>
        </widget>
       </item>
