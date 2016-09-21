@@ -390,6 +390,7 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
             options = self.dialog.getAvailableValuesOfType(ParameterRaster, OutputRaster)
         else:
             options = self.dialog.getAvailableValuesOfType(ParameterFile, OutputFile)
+        options = sorted(options, key=lambda opt: self.dialog.resolveValueDescription(opt))
         return options
 
     def createWidget(self):
