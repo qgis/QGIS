@@ -183,6 +183,12 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget* editor )
   mWidget->setAllowAddFeatures( false );
   mWidget->setOpenFormButtonVisible( false );
 
+  if ( config( "FilterFields", QVariant() ).isValid() )
+  {
+    mWidget->setFilterFields( config( "FilterFields" ).toStringList() );
+    mWidget->setChainFilters( config( "ChainFilters" ).toBool() );
+  }
+
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( "Relation" ).toString() );
   mWidget->setRelation( relation, false );
 
