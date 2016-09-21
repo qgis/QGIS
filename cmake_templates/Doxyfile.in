@@ -570,42 +570,7 @@ WARN_LOGFILE           =
 # with spaces.
 
 
-INPUT                  = @CMAKE_SOURCE_DIR@/doc \
-                         @CMAKE_SOURCE_DIR@/src/core \
-                         @CMAKE_SOURCE_DIR@/src/core/auth \
-                         @CMAKE_SOURCE_DIR@/src/core/composer \
-                         @CMAKE_SOURCE_DIR@/src/core/diagram \
-                         @CMAKE_SOURCE_DIR@/src/core/dxf \
-                         @CMAKE_SOURCE_DIR@/src/core/effects \
-                         @CMAKE_SOURCE_DIR@/src/core/geometry \
-                         @CMAKE_SOURCE_DIR@/src/core/gps \
-                         @CMAKE_SOURCE_DIR@/src/core/layertree \
-                         @CMAKE_SOURCE_DIR@/src/core/pal \
-                         @CMAKE_SOURCE_DIR@/src/core/raster \
-                         @CMAKE_SOURCE_DIR@/src/core/symbology-ng \
-                         @CMAKE_SOURCE_DIR@/src/gui \
-                         @CMAKE_SOURCE_DIR@/src/gui/auth \
-                         @CMAKE_SOURCE_DIR@/src/gui/attributetable \
-                         @CMAKE_SOURCE_DIR@/src/gui/editorwidgets \
-                         @CMAKE_SOURCE_DIR@/src/gui/editorwidgets/core \
-                         @CMAKE_SOURCE_DIR@/src/gui/effects \
-                         @CMAKE_SOURCE_DIR@/src/gui/layertree \
-                         @CMAKE_SOURCE_DIR@/src/gui/raster \
-                         @CMAKE_SOURCE_DIR@/src/gui/symbology-ng \
-                         @CMAKE_SOURCE_DIR@/src/analysis \
-                         @CMAKE_SOURCE_DIR@/src/analysis/interpolation \
-                         @CMAKE_SOURCE_DIR@/src/analysis/network \
-                         @CMAKE_SOURCE_DIR@/src/analysis/openstreetmap \
-                         @CMAKE_SOURCE_DIR@/src/analysis/raster \
-                         @CMAKE_SOURCE_DIR@/src/analysis/vector \
-                         @CMAKE_SOURCE_DIR@/src/plugins \
-                         @CMAKE_SOURCE_DIR@/src/server/qgsserver.h \
-                         @CMAKE_SOURCE_DIR@/src/server/qgscapabilitiescache.h \
-                         @CMAKE_SOURCE_DIR@/src/server/qgsmapserviceexception.h \
-                         @CMAKE_SOURCE_DIR@/src/server/qgsrequesthandler.h \
-                         @CMAKE_SOURCE_DIR@/src/server/qgsserverfilter.h \
-                         @CMAKE_SOURCE_DIR@/src/server/qgsaccesscontrolfilter.h \
-                         @CMAKE_SOURCE_DIR@/src/server/qgsserverinterface.h
+INPUT                  = @DOXYGEN_INPUT@
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
@@ -622,9 +587,7 @@ INPUT_ENCODING         = UTF-8
 # *.c *.cc *.cxx *.cpp *.c++ *.java *.ii *.ixx *.ipp *.i++ *.inl *.h *.hh *.hxx
 # *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.py *.f90
 
-FILE_PATTERNS          = *.h \
-                         *.cpp \
-                         *.dox
+FILE_PATTERNS          = @DOXYGEN_FILE_PATTERN@
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories
 # should be searched for input files as well. Possible values are YES and NO.

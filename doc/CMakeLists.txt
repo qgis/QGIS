@@ -52,12 +52,66 @@ IF(WITH_APIDOC)
       SET(DOXYGEN_TAGS ${QT_TAG_FILE}=${QT_DOC_URL})
     ENDIF(QT_TAG_FILE)
 
+    SET(DOXYGEN_INPUT
+      ${CMAKE_SOURCE_DIR}/doc
+      ${CMAKE_SOURCE_DIR}/src/core
+      ${CMAKE_SOURCE_DIR}/src/core/auth
+      ${CMAKE_SOURCE_DIR}/src/core/composer
+      ${CMAKE_SOURCE_DIR}/src/core/diagram
+      ${CMAKE_SOURCE_DIR}/src/core/dxf
+      ${CMAKE_SOURCE_DIR}/src/core/effects
+      ${CMAKE_SOURCE_DIR}/src/core/geometry
+      ${CMAKE_SOURCE_DIR}/src/core/gps
+      ${CMAKE_SOURCE_DIR}/src/core/layertree
+      ${CMAKE_SOURCE_DIR}/src/core/pal
+      ${CMAKE_SOURCE_DIR}/src/core/raster
+      ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+      ${CMAKE_SOURCE_DIR}/src/gui
+      ${CMAKE_SOURCE_DIR}/src/gui/auth
+      ${CMAKE_SOURCE_DIR}/src/gui/attributetable
+      ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
+      ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
+      ${CMAKE_SOURCE_DIR}/src/gui/effects
+      ${CMAKE_SOURCE_DIR}/src/gui/layertree
+      ${CMAKE_SOURCE_DIR}/src/gui/raster
+      ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
+      ${CMAKE_SOURCE_DIR}/src/analysis
+      ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
+      ${CMAKE_SOURCE_DIR}/src/analysis/network
+      ${CMAKE_SOURCE_DIR}/src/analysis/openstreetmap
+      ${CMAKE_SOURCE_DIR}/src/analysis/raster
+      ${CMAKE_SOURCE_DIR}/src/analysis/vector
+      ${CMAKE_SOURCE_DIR}/src/plugins
+      ${CMAKE_SOURCE_DIR}/src/server/qgsserver.h
+      ${CMAKE_SOURCE_DIR}/src/server/qgscapabilitiescache.h
+      ${CMAKE_SOURCE_DIR}/src/server/qgsmapserviceexception.h
+      ${CMAKE_SOURCE_DIR}/src/server/qgsrequesthandler.h
+      ${CMAKE_SOURCE_DIR}/src/server/qgsserverfilter.h
+      ${CMAKE_SOURCE_DIR}/src/server/qgsaccesscontrolfilter.h
+      ${CMAKE_SOURCE_DIR}/src/server/qgsserverinterface.h
+    )
+
+    SET(DOXYGEN_FILE_PATTERNS *.h *.cpp *.dox)
+
+    SET(DOXYGEN_FILES)
+    FOREACH(_dir ${DOXYGEN_INPUT})
+      FOREACH(_pattern ${DOXYGEN_FILE_PATTERNS})
+        FILE(GLOB_RECURSE _files ${_dir}/${_pattern})
+        LIST(APPEND DOXYGEN_FILES ${_files})
+      ENDFOREACH(_pattern)
+    ENDFOREACH(_dir)
+
+    STRING(REPLACE ";" " " DOXYGEN_INPUT "${DOXYGEN_INPUT}")
+
     CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake_templates/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-    ADD_CUSTOM_TARGET(apidoc ALL
-            COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-            DEPENDS qgis_core qgis_gui qgis_analysis version
-            COMMENT "Generating API documentation" VERBATIM)
+    ADD_CUSTOM_TARGET(apidoc ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/doxygen.stamp)
+    ADD_CUSTOM_COMMAND(
+      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doxygen.stamp
+      DEPENDS ${DOXYGEN_FILES}
+      COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+      COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/doxygen.stamp
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+      COMMENT "Generating API documentation" VERBATIM)
     INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api/html/ DESTINATION ${QGIS_DATA_DIR}/doc/api)
     INSTALL(FILES ../images/icons/qgis-icon-60x60.png DESTINATION ${QGIS_DATA_DIR}/doc/api)
     IF(GENERATE_QHP)
