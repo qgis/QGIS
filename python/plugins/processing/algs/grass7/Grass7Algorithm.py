@@ -83,6 +83,7 @@ class Grass7Algorithm(GeoAlgorithm):
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
+        self._icon = None
         self.uniqueSufix = unicode(uuid.uuid4()).replace('-', '')
 
         # Use the ext mechanism
@@ -98,7 +99,9 @@ class Grass7Algorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
+        if self._icon is None:
+            self._icon = QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
+        return self._icon
 
     def help(self):
         localDoc = None
@@ -192,7 +195,7 @@ class Grass7Algorithm(GeoAlgorithm):
                     elif isinstance(output, OutputVector):
                         vectorOutputs += 1
                     if isinstance(output, OutputHTML):
-                        self.addOutput(OutputFile("rawoutput", output.description +
+                        self.addOutput(OutputFile("rawoutput", output.description + 
                                                   " (raw output)", "txt"))
                 line = lines.readline().strip('\n').strip()
             except Exception as e:
@@ -214,7 +217,7 @@ class Grass7Algorithm(GeoAlgorithm):
         if hasVectorInput:
             param = ParameterNumber(self.GRASS_SNAP_TOLERANCE_PARAMETER,
                                     'v.in.ogr snap tolerance (-1 = no snap)',
-                                    -1, None, -1.0)
+                                    - 1, None, -1.0)
             param.isAdvanced = True
             self.addParameter(param)
             param = ParameterNumber(self.GRASS_MIN_AREA_PARAMETER,
