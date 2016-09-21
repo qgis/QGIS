@@ -20,6 +20,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -77,7 +80,7 @@ class lasclip(LAStoolsAlgorithm):
         if operation != 0:
             commands.append("-classify")
             classify_as = self.getParameterValue(lasclip.CLASSIFY_AS)
-            commands.append(unicode(classify_as))
+            commands.append(str(classify_as))
         self.addParametersPointOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)
 

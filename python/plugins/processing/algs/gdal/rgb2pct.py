@@ -17,6 +17,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -61,7 +62,7 @@ class rgb2pct(GdalAlgorithm):
     def getConsoleCommands(self):
         arguments = []
         arguments.append('-n')
-        arguments.append(unicode(self.getParameterValue(rgb2pct.NCOLORS)))
+        arguments.append(str(self.getParameterValue(rgb2pct.NCOLORS)))
         arguments.append('-of')
         out = self.getOutputValue(rgb2pct.OUTPUT)
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))

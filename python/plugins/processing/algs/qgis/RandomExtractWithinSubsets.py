@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -118,7 +119,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
 
                 selran.extend(selFeat)
         else:
-            selran = range(featureCount)
+            selran = list(range(featureCount))
 
         features = vector.features(layer)
         total = 100.0 / len(features)

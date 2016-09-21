@@ -86,10 +86,10 @@ class PointsDisplacement(GeoAlgorithm):
         fullPerimeter = 2 * math.pi
 
         request = QgsFeatureRequest()
-        for (geom, fids) in duplicates.iteritems():
+        for (geom, fids) in duplicates.items():
             count = len(fids)
             if count == 1:
-                f = layer.getFeatures(request.setFilterFid(fids[0])).next()
+                f = next(layer.getFeatures(request.setFilterFid(fids[0])))
                 writer.addFeature(f)
             else:
                 angleStep = fullPerimeter / count
@@ -105,7 +105,7 @@ class PointsDisplacement(GeoAlgorithm):
                     dx = radius * sinusCurrentAngle
                     dy = radius * cosinusCurrentAngle
 
-                    f = layer.getFeatures(request.setFilterFid(fid)).next()
+                    f = next(layer.getFeatures(request.setFilterFid(fid)))
 
                     new_point = QgsPoint(old_point.x() + dx, old_point.y()
                                          + dy)

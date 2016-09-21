@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'December 2010'
@@ -118,10 +119,10 @@ class GdalToolsExtentSelector(QWidget, Ui_ExtentSelector):
         rect = self.getExtent()
         self.blockSignals(True)
         if rect is not None:
-            self.x1CoordEdit.setText(unicode(rect.xMinimum()))
-            self.x2CoordEdit.setText(unicode(rect.xMaximum()))
-            self.y1CoordEdit.setText(unicode(rect.yMaximum()))
-            self.y2CoordEdit.setText(unicode(rect.yMinimum()))
+            self.x1CoordEdit.setText(str(rect.xMinimum()))
+            self.x2CoordEdit.setText(str(rect.xMaximum()))
+            self.y1CoordEdit.setText(str(rect.yMaximum()))
+            self.y2CoordEdit.setText(str(rect.yMinimum()))
         else:
             self.x1CoordEdit.clear()
             self.x2CoordEdit.clear()

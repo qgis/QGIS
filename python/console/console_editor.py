@@ -18,6 +18,9 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
+from __future__ import print_function
+from builtins import str
+from builtins import range
 from qgis.PyQt.QtCore import Qt, QObject, QEvent, QSettings, QCoreApplication, QFileInfo, QSize
 from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor
 from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
@@ -47,7 +50,7 @@ class KeyFilter(QObject):
         self.window = window
         self.tab = tab
         self._handlers = {}
-        for shortcut, handler in KeyFilter.SHORTCUTS.items():
+        for shortcut, handler in list(KeyFilter.SHORTCUTS.items()):
             modifiers = shortcut[0]
             if not isinstance(modifiers, list):
                 modifiers = [modifiers]
@@ -1190,7 +1193,7 @@ class EditorTabWidget(QTabWidget):
                             for superClass in class_data.super:
                                 if superClass == 'object':
                                     continue
-                                if isinstance(superClass, basestring):
+                                if isinstance(superClass, str):
                                     superClassName.append(superClass)
                                 else:
                                     superClassName.append(superClass.name)

@@ -82,7 +82,7 @@ class SelectByAttributeSum(GeoAlgorithm):
                 break
 
             for i in intersected:
-                ft = layer.getFeatures(req.setFilterFid(i)).next()
+                ft = next(layer.getFeatures(req.setFilterFid(i)))
                 tmpGeom = ft.geometry()
                 if tmpGeom.touches(geom):
                     geom = tmpGeom.combine(geom)

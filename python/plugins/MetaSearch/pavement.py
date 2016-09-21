@@ -1,3 +1,6 @@
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
@@ -19,12 +22,12 @@
 #
 ###############################################################################
 
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 import getpass
 import os
 import shutil
 import xml.etree.ElementTree as etree
-import xmlrpclib
+import xmlrpc.client
 import zipfile
 
 from paver.easy import (call_task, cmdopts, error, info, options, path,
@@ -154,19 +157,19 @@ def upload():
     info('Uploading to http://%s/%s' % (options.upload.host,
                                         options.upload.endpoint))
 
-    server = xmlrpclib.ServerProxy(url, verbose=False)
+    server = xmlrpc.client.ServerProxy(url, verbose=False)
 
     try:
         with open(zipf) as zfile:
             plugin_id, version_id = \
-                server.plugin.upload(xmlrpclib.Binary(zfile.read()))
+                server.plugin.upload(xmlrpc.client.Binary(zfile.read()))
             info('Plugin ID: %s', plugin_id)
             info('Version ID: %s', version_id)
-    except xmlrpclib.Fault as err:
+    except xmlrpc.client.Fault as err:
         error('ERROR: fault error')
         error('Fault code: %d', err.faultCode)
         error('Fault string: %s', err.faultString)
-    except xmlrpclib.ProtocolError as err:
+    except xmlrpc.client.ProtocolError as err:
         error('Error: Protocol error')
         error("%s : %s", err.errcode, err.errmsg)
         if err.errcode == 403:
@@ -213,7 +216,7 @@ def generate_csw_connections_file():
                 continue
             try:
                 csw = CatalogueServiceWeb(url)
-                title = unicode(csw.identification.title)
+                title = str(csw.identification.title)
                 etree.SubElement(conns, 'csw', name=title, url=url)
             except Exception as err:
                 error('ERROR on CSW %s: %s', url, err)

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'
@@ -197,7 +198,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
             arguments.append(self.expand_method[self.expandCombo.currentIndex()])
         if self.nodataCheck.isChecked():
             arguments.append("-a_nodata")
-            arguments.append(unicode(self.nodataSpin.value()))
+            arguments.append(str(self.nodataSpin.value()))
         if self.sdsCheck.isChecked():
             arguments.append("-sds")
         if self.srcwinCheck.isChecked() and self.srcwinEdit.text():

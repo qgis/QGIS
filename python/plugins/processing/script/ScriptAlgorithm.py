@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -399,13 +400,13 @@ class ScriptAlgorithm(GeoAlgorithm):
     def shortHelp(self):
         if self.descriptionFile is None:
             return None
-        helpFile = unicode(self.descriptionFile) + '.help'
+        helpFile = str(self.descriptionFile) + '.help'
         if os.path.exists(helpFile):
             with open(helpFile) as f:
                 try:
                     descriptions = json.load(f)
                     if 'ALG_DESC' in descriptions:
-                        return self._formatHelp(unicode(descriptions['ALG_DESC']))
+                        return self._formatHelp(str(descriptions['ALG_DESC']))
                 except:
                     return None
         return None
@@ -414,14 +415,14 @@ class ScriptAlgorithm(GeoAlgorithm):
         descs = {}
         if self.descriptionFile is None:
             return descs
-        helpFile = unicode(self.descriptionFile) + '.help'
+        helpFile = str(self.descriptionFile) + '.help'
         if os.path.exists(helpFile):
             with open(helpFile) as f:
                 try:
                     descriptions = json.load(f)
                     for param in self.parameters:
                         if param.name in descriptions:
-                            descs[param.name] = unicode(descriptions[param.name])
+                            descs[param.name] = str(descriptions[param.name])
                 except:
                     return descs
         return descs

@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 
 __author__ = 'Victor Olaya'
@@ -160,7 +162,7 @@ class ModelerParametersDialog(QDialog):
             self.labels[param.name] = label
             widget = self.getWidgetFromParameter(param)
             self.valueItems[param.name] = widget
-            if param.name in tooltips.keys():
+            if param.name in list(tooltips.keys()):
                 tooltip = tooltips[param.name]
             else:
                 tooltip = param.description
@@ -243,7 +245,7 @@ class ModelerParametersDialog(QDialog):
         if reply.error() != QNetworkReply.NoError:
             html = self.tr('<h2>No help available for this algorithm</h2><p>{}</p>'.format(reply.errorString()))
         else:
-            html = unicode(reply.readAll())
+            html = str(reply.readAll())
         reply.deleteLater()
         self.txtHelp.setHtml(html)
 
@@ -253,7 +255,7 @@ class ModelerParametersDialog(QDialog):
         else:
             dependent = self.model.getDependentAlgorithms(self._algName)
         opts = []
-        for alg in self.model.algs.values():
+        for alg in list(self.model.algs.values()):
             if alg.name not in dependent:
                 opts.append(alg)
         return opts
@@ -275,7 +277,7 @@ class ModelerParametersDialog(QDialog):
     def getAvailableValuesOfType(self, paramType, outType=None, dataType=None):
         values = []
         inputs = self.model.inputs
-        for i in inputs.values():
+        for i in list(inputs.values()):
             param = i.param
             if isinstance(param, paramType):
                 if dataType is not None and param.datatype in dataType:
@@ -288,7 +290,7 @@ class ModelerParametersDialog(QDialog):
             dependent = []
         else:
             dependent = self.model.getDependentAlgorithms(self._algName)
-        for alg in self.model.algs.values():
+        for alg in list(self.model.algs.values()):
             if alg.name not in dependent:
                 for out in alg.algorithm.outputs:
                     if isinstance(out, outType):
@@ -372,13 +374,13 @@ class ModelerParametersDialog(QDialog):
             options = [(self.resolveValueDescription(s), s) for s in strings]
             if param.multiline:
                 item = MultilineTextPanel(options)
-                item.setText(unicode(param.default or ""))
+                item.setText(str(param.default or ""))
             else:
                 item = QComboBox()
                 item.setEditable(True)
                 for desc, val in options:
                     item.addItem(desc, val)
-                item.setEditText(unicode(param.default or ""))
+                item.setEditText(str(param.default or ""))
         elif isinstance(param, ParameterTableField):
             item = QComboBox()
             item.setEditable(True)
@@ -397,7 +399,7 @@ class ModelerParametersDialog(QDialog):
             numbers = self.getAvailableValuesOfType(ParameterNumber, OutputNumber)
             for n in numbers:
                 item.addItem(self.resolveValueDescription(n), n)
-            item.setEditText(unicode(param.default))
+            item.setEditText(str(param.default))
         elif isinstance(param, ParameterCrs):
             item = QComboBox()
             values = self.getAvailableValuesOfType(ParameterCrs, OutputCrs)
@@ -412,14 +414,14 @@ class ModelerParametersDialog(QDialog):
             for ex in extents:
                 item.addItem(self.resolveValueDescription(ex), ex)
             if not self.canUseAutoExtent():
-                item.setEditText(unicode(param.default))
+                item.setEditText(str(param.default))
         elif isinstance(param, ParameterPoint):
             item = QComboBox()
             item.setEditable(True)
             points = self.getAvailableValuesOfType(ParameterPoint)
             for p in points:
                 item.addItem(self.resolveValueDescription(p), p)
-            item.setEditText(unicode(param.default))
+            item.setEditText(str(param.default))
         elif isinstance(param, ParameterFile):
             item = QComboBox()
             item.setEditable(True)
@@ -431,7 +433,7 @@ class ModelerParametersDialog(QDialog):
         else:
             item = QLineEdit()
             try:
-                item.setText(unicode(param.default))
+                item.setText(str(param.default))
             except:
                 pass
         return item
@@ -482,7 +484,7 @@ class ModelerParametersDialog(QDialog):
             pass
         if combo.isEditable():
             if value is not None:
-                combo.setEditText(unicode(value))
+                combo.setEditText(str(value))
         elif isinstance(param, ParameterSelection):
             combo.setCurrentIndex(int(value))
         elif isinstance(param, ParameterBoolean):
@@ -545,7 +547,7 @@ class ModelerParametersDialog(QDialog):
                 elif isinstance(param, ParameterGeometryPredicate):
                     widget.setValue(value)
 
-            for name, out in alg.outputs.iteritems():
+            for name, out in alg.outputs.items():
                 widget = self.valueItems[name].setText(out.description)
 
             selected = []
@@ -571,7 +573,7 @@ class ModelerParametersDialog(QDialog):
                 return None
         for output in outputs:
             if not output.hidden:
-                name = unicode(self.valueItems[output.name].text())
+                name = str(self.valueItems[output.name].text())
                 if name.strip() != '' and name != ModelerParametersDialog.ENTER_NAME:
                     alg.outputs[output.name] = ModelerOutput(name)
 
@@ -594,7 +596,7 @@ class ModelerParametersDialog(QDialog):
     def setParamTableFieldValue(self, alg, param, widget):
         idx = widget.findText(widget.currentText())
         if idx < 0:
-            s = unicode(widget.currentText()).strip()
+            s = str(widget.currentText()).strip()
             if s == '':
                 if param.optional:
                     alg.params[param.name] = None
@@ -669,7 +671,7 @@ class ModelerParametersDialog(QDialog):
     def setParamExtentValue(self, alg, param, widget):
         idx = widget.findText(widget.currentText())
         if idx < 0:
-            s = unicode(widget.currentText()).strip()
+            s = str(widget.currentText()).strip()
             if s:
                 try:
                     tokens = s.split(',')
@@ -692,7 +694,7 @@ class ModelerParametersDialog(QDialog):
     def setParamPointValue(self, alg, param, widget):
         idx = widget.findText(widget.currentText())
         if idx < 0:
-            s = unicode(widget.currentText()).strip()
+            s = str(widget.currentText()).strip()
             if s:
                 try:
                     tokens = s.split(',')
@@ -781,7 +783,7 @@ class ModelerParametersDialog(QDialog):
             alg.params[param.name] = widget.value()
             return True
         else:
-            alg.params[param.name] = unicode(widget.text())
+            alg.params[param.name] = str(widget.text())
             return True
 
     def okPressed(self):

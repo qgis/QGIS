@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -36,7 +38,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import userFolder, isWindows, mkdir
 
 
-class RUtils:
+class RUtils(object):
 
     RSCRIPTS_FOLDER = 'R_SCRIPTS_FOLDER'
     R_FOLDER = 'R_FOLDER'
@@ -48,11 +50,11 @@ class RUtils:
         folder = ProcessingConfig.getSetting(RUtils.R_FOLDER)
         if folder is None:
             if isWindows():
-                if 'ProgramW6432' in os.environ.keys() and os.path.isdir(os.path.join(os.environ['ProgramW6432'], 'R')):
+                if 'ProgramW6432' in list(os.environ.keys()) and os.path.isdir(os.path.join(os.environ['ProgramW6432'], 'R')):
                     testfolder = os.path.join(os.environ['ProgramW6432'], 'R')
-                elif 'PROGRAMFILES(x86)' in os.environ.keys() and os.path.isdir(os.path.join(os.environ['PROGRAMFILES(x86)'], 'R')):
+                elif 'PROGRAMFILES(x86)' in list(os.environ.keys()) and os.path.isdir(os.path.join(os.environ['PROGRAMFILES(x86)'], 'R')):
                     testfolder = os.path.join(os.environ['PROGRAMFILES(x86)'], 'R')
-                elif 'PROGRAMFILES' in os.environ.keys() and os.path.isdir(os.path.join(os.environ['PROGRAMFILES'], 'R')):
+                elif 'PROGRAMFILES' in list(os.environ.keys()) and os.path.isdir(os.path.join(os.environ['PROGRAMFILES'], 'R')):
                     testfolder = os.path.join(os.environ['PROGRAMFILES'], 'R')
                 else:
                     testfolder = 'C:\\R'
@@ -69,23 +71,23 @@ class RUtils:
             else:
                 folder = ''
 
-        return os.path.abspath(unicode(folder))
+        return os.path.abspath(str(folder))
 
     @staticmethod
     def RLibs():
         folder = ProcessingConfig.getSetting(RUtils.R_LIBS_USER)
         if folder is None:
-            folder = unicode(os.path.join(userFolder(), 'rlibs'))
+            folder = str(os.path.join(userFolder(), 'rlibs'))
         try:
             mkdir(folder)
         except:
-            folder = unicode(os.path.join(userFolder(), 'rlibs'))
+            folder = str(os.path.join(userFolder(), 'rlibs'))
             mkdir(folder)
-        return os.path.abspath(unicode(folder))
+        return os.path.abspath(str(folder))
 
     @staticmethod
     def defaultRScriptsFolder():
-        folder = unicode(os.path.join(userFolder(), 'rscripts'))
+        folder = str(os.path.join(userFolder(), 'rscripts'))
         mkdir(folder)
         return os.path.abspath(folder)
 

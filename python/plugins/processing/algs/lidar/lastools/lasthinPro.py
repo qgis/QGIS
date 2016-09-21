@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'October 2014'
@@ -76,17 +79,17 @@ class lasthinPro(LAStoolsAlgorithm):
         step = self.getParameterValue(lasthinPro.THIN_STEP)
         if step != 0.0:
             commands.append("-step")
-            commands.append(unicode(step))
+            commands.append(str(step))
         operation = self.getParameterValue(lasthinPro.OPERATION)
         if (operation != 0):
             commands.append("-" + self.OPERATIONS[operation])
         if (operation >= 4):
-            commands.append(unicode(self.getParameterValue(lasthinPro.THRESHOLD_OR_INTERVAL)))
+            commands.append(str(self.getParameterValue(lasthinPro.THRESHOLD_OR_INTERVAL)))
         if self.getParameterValue(lasthinPro.WITHHELD):
             commands.append("-withheld")
         if self.getParameterValue(lasthinPro.CLASSIFY_AS):
             commands.append("-classify_as")
-            commands.append(unicode(self.getParameterValue(lasthinPro.CLASSIFY_AS_CLASS)))
+            commands.append(str(self.getParameterValue(lasthinPro.CLASSIFY_AS_CLASS)))
         self.addParametersOutputDirectoryCommands(commands)
         self.addParametersOutputAppendixCommands(commands)
         self.addParametersPointOutputFormatCommands(commands)

@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2012'
@@ -102,19 +105,19 @@ class DinfDistUp(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(unicode(processNum))
+        commands.append(str(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemPath(), self.cmdName))
         commands.append('-ang')
         commands.append(self.getParameterValue(self.DINF_FLOW_DIR_GRID))
         commands.append('-fel')
         commands.append(self.getParameterValue(self.PIT_FILLED_GRID))
         commands.append('-m')
-        commands.append(unicode(self.STAT_DICT[self.getParameterValue(
+        commands.append(str(self.STAT_DICT[self.getParameterValue(
             self.STAT_METHOD)]))
-        commands.append(unicode(self.DIST_DICT[self.getParameterValue(
+        commands.append(str(self.DIST_DICT[self.getParameterValue(
             self.DIST_METHOD)]))
         commands.append('-thresh')
-        commands.append(unicode(self.getParameterValue(self.THRESHOLD)))
+        commands.append(str(self.getParameterValue(self.THRESHOLD)))
         if not self.getParameterValue(self.EDGE_CONTAM):
             commands.append('-nc')
         commands.append('-du')

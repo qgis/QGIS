@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -119,4 +120,4 @@ class RAlgorithmProvider(AlgorithmProvider):
                     except Exception as e:
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
-                            self.tr('Could not load R script: %s\n%s' % (descriptionFile, unicode(e))))
+                            self.tr('Could not load R script: %s\n%s' % (descriptionFile, str(e))))

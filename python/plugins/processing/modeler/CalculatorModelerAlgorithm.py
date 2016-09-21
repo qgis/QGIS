@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import chr
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -54,16 +57,16 @@ class CalculatorModelerAlgorithm(GeoAlgorithm):
                                           self.tr('Formula', 'CalculatorModelerAlgorithm'), ''))
         for i in range(AVAILABLE_VARIABLES):
             self.addParameter(ParameterNumber(NUMBER
-                                              + unicode(i), 'dummy', optional=True))
+                                              + str(i), 'dummy', optional=True))
         self.addOutput(OutputNumber(RESULT,
                                     self.tr('Result', 'CalculatorModelerAlgorithm')))
 
     def processAlgorithm(self, progress):
         formula = self.getParameterValue(FORMULA)
         for i in range(AVAILABLE_VARIABLES):
-            name = NUMBER + unicode(i)
+            name = NUMBER + str(i)
             num = self.getParameterValue(name)
-            formula = formula.replace(chr(97 + i), unicode(num))
+            formula = formula.replace(chr(97 + i), str(num))
         try:
             result = eval(formula)
             self.setOutputValue(RESULT, result)
@@ -124,18 +127,18 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
         formula = self.formulaText.text()
         alg.params[FORMULA] = formula
 
-        for i in xrange(AVAILABLE_VARIABLES):
-            paramname = NUMBER + unicode(i)
+        for i in range(AVAILABLE_VARIABLES):
+            paramname = NUMBER + str(i)
             alg.params[paramname] = None
 
         numbers = self.getAvailableValuesOfType(ParameterNumber, OutputNumber)
         used = []
         for i in range(len(numbers)):
-            if unicode(chr(i + 97)) in formula:
+            if str(chr(i + 97)) in formula:
                 used.append(numbers[i])
 
         for i, variable in enumerate(used):
-            paramname = NUMBER + unicode(i)
+            paramname = NUMBER + str(i)
             alg.params[paramname] = variable
 
         # TODO check formula is correct

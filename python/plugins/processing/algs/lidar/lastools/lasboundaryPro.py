@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'October 2014'
@@ -76,7 +79,7 @@ class lasboundaryPro(LAStoolsAlgorithm):
         else:
             concavity = self.getParameterValue(lasboundaryPro.CONCAVITY)
             commands.append("-concavity")
-            commands.append(unicode(concavity))
+            commands.append(str(concavity))
             if self.getParameterValue(lasboundaryPro.HOLES):
                 commands.append("-holes")
             if self.getParameterValue(lasboundaryPro.DISJOINT):

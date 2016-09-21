@@ -72,7 +72,7 @@ class EquivalentNumField(GeoAlgorithm):
             clazz = atMap[fieldindex]
 
             if clazz not in classes:
-                classes[clazz] = len(classes.keys())
+                classes[clazz] = len(list(classes.keys()))
 
             atMap.append(classes[clazz])
             outFeat.setAttributes(atMap)

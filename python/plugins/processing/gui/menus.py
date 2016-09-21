@@ -1,7 +1,8 @@
 import os
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QMenu
-from PyQt4.QtGui import QIcon, QApplication
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QApplication
 from processing.core.alglist import algList
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.MessageDialog import MessageDialog

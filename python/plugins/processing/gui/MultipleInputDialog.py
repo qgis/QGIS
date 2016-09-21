@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -78,7 +79,7 @@ class MultipleInputDialog(BASE, WIDGET):
     def accept(self):
         self.selectedoptions = []
         model = self.lstLayers.model()
-        for i in xrange(model.rowCount()):
+        for i in range(model.rowCount()):
             item = model.item(i)
             if item.checkState() == Qt.Checked:
                 self.selectedoptions.append(i)
@@ -90,13 +91,13 @@ class MultipleInputDialog(BASE, WIDGET):
 
     def selectAll(self, value):
         model = self.lstLayers.model()
-        for i in xrange(model.rowCount()):
+        for i in range(model.rowCount()):
             item = model.item(i)
             item.setCheckState(Qt.Checked if value else Qt.Unchecked)
 
     def toggleSelection(self):
         model = self.lstLayers.model()
-        for i in xrange(model.rowCount()):
+        for i in range(model.rowCount()):
             item = model.item(i)
             checked = item.checkState() == Qt.Checked
             item.setCheckState(Qt.Unchecked if checked else Qt.Checked)

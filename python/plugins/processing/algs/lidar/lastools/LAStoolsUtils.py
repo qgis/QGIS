@@ -20,6 +20,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
 
 
 __author__ = 'Victor Olaya'
@@ -38,7 +39,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows
 
 
-class LAStoolsUtils:
+class LAStoolsUtils(object):
 
     LASTOOLS_FOLDER = "LASTOOLS_FOLDER"
     WINE_FOLDER = "WINE_FOLDER"

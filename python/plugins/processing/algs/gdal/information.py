@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -78,6 +79,6 @@ class information(GdalAlgorithm):
         f = open(output, 'w')
         f.write('<pre>')
         for s in GdalUtils.getConsoleOutput()[1:]:
-            f.write(unicode(s))
+            f.write(str(s))
         f.write('</pre>')
         f.close()

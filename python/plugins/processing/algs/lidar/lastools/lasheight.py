@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
@@ -69,10 +72,10 @@ class lasheight(LAStoolsAlgorithm):
             commands.append("-replace_z")
         if self.getParameterValue(lasheight.DROP_ABOVE):
             commands.append("-drop_above")
-            commands.append(unicode(self.getParameterValue(lasheight.DROP_ABOVE_HEIGHT)))
+            commands.append(str(self.getParameterValue(lasheight.DROP_ABOVE_HEIGHT)))
         if self.getParameterValue(lasheight.DROP_BELOW):
             commands.append("-drop_below")
-            commands.append(unicode(self.getParameterValue(lasheight.DROP_BELOW_HEIGHT)))
+            commands.append(str(self.getParameterValue(lasheight.DROP_BELOW_HEIGHT)))
         self.addParametersPointOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)
 

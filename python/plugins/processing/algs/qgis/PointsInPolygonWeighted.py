@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -96,14 +97,14 @@ class PointsInPolygonWeighted(GeoAlgorithm):
             count = 0
             points = spatialIndex.intersects(geom.boundingBox())
             if len(points) > 0:
-                progress.setText(unicode(len(points)))
+                progress.setText(str(len(points)))
                 request = QgsFeatureRequest().setFilterFids(points)
                 fit = pointLayer.getFeatures(request)
                 ftPoint = QgsFeature()
                 while fit.nextFeature(ftPoint):
                     tmpGeom = QgsGeometry(ftPoint.geometry())
                     if engine.contains(tmpGeom.geometry()):
-                        weight = unicode(ftPoint.attributes()[fieldIdx])
+                        weight = str(ftPoint.attributes()[fieldIdx])
                         try:
                             count += float(weight)
                         except:

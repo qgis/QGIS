@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'September 2012'
@@ -158,6 +159,6 @@ class BasicStatisticsStrings(GeoAlgorithm):
         f.write('<meta http-equiv="Content-Type" content="text/html; \
                 charset=utf-8" /></head><body>\n')
         for s in algData:
-            f.write('<p>' + unicode(s) + '</p>\n')
+            f.write('<p>' + str(s) + '</p>\n')
         f.write('</body></html>')
         f.close()

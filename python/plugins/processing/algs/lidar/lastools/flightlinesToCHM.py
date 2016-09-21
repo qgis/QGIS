@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'May 2014'
@@ -73,11 +76,11 @@ class flightlinesToCHM(LAStoolsAlgorithm):
         commands.append("-files_are_flightlines")
         tile_size = self.getParameterValue(flightlinesToCHM.TILE_SIZE)
         commands.append("-tile_size")
-        commands.append(unicode(tile_size))
+        commands.append(str(tile_size))
         buffer = self.getParameterValue(flightlinesToCHM.BUFFER)
         if buffer != 0.0:
             commands.append("-buffer")
-            commands.append(unicode(buffer))
+            commands.append(str(buffer))
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
         base_name = self.getParameterValue(flightlinesToCHM.BASE_NAME)
         if base_name == "":
@@ -129,10 +132,10 @@ class flightlinesToCHM(LAStoolsAlgorithm):
         beam_width = self.getParameterValue(flightlinesToCHM.BEAM_WIDTH)
         if beam_width != 0.0:
             commands.append("-subcircle")
-            commands.append(unicode(beam_width / 2))
+            commands.append(str(beam_width / 2))
         step = self.getParametersStepValue()
         commands.append("-step")
-        commands.append(unicode(step / 4))
+        commands.append(str(step / 4))
         commands.append("-highest")
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
         commands.append("-odix")

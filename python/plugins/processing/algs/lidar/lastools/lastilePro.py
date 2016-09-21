@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'April 2014'
@@ -71,11 +74,11 @@ class lastilePro(LAStoolsAlgorithm):
         self.addParametersApplyFileSourceIdCommands(commands)
         tile_size = self.getParameterValue(lastilePro.TILE_SIZE)
         commands.append("-tile_size")
-        commands.append(unicode(tile_size))
+        commands.append(str(tile_size))
         buffer = self.getParameterValue(lastilePro.BUFFER)
         if buffer != 0.0:
             commands.append("-buffer")
-            commands.append(unicode(buffer))
+            commands.append(str(buffer))
         if self.getParameterValue(lastilePro.FLAG_AS_WITHHELD):
             commands.append("-flag_as_withheld")
         if self.getParameterValue(lastilePro.EXTRA_PASS):

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
 
 
 __author__ = 'Victor Olaya'
@@ -32,7 +33,7 @@ from qgis.utils import iface
 from processing.gui.MessageDialog import MessageDialog
 
 
-class MessageBarProgress:
+class MessageBarProgress(object):
 
     def __init__(self, algname=None):
         self.msg = []

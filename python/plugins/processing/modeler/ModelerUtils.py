@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -30,14 +32,14 @@ from processing.tools.system import userFolder, mkdir
 from processing.core.ProcessingConfig import ProcessingConfig
 
 
-class ModelerUtils:
+class ModelerUtils(object):
 
     MODELS_FOLDER = 'MODELS_FOLDER'
     ACTIVATE_MODELS = 'ACTIVATE_MODELS'
 
     @staticmethod
     def defaultModelsFolder():
-        folder = unicode(os.path.join(userFolder(), 'models'))
+        folder = str(os.path.join(userFolder(), 'models'))
         mkdir(folder)
         return os.path.abspath(folder)
 

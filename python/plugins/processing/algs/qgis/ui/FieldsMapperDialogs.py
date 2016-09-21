@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Arnaud Morvan'
 __date__ = 'October 2014'
@@ -130,7 +131,7 @@ class FieldsMapperModelerParametersDialog(ModelerParametersDialog):
                 if isinstance(param, ParameterFieldsMapping):
                     widget = self.valueItems[param.name]
                     value = alg.params[param.name]
-                    if isinstance(value, unicode):
+                    if isinstance(value, str):
                         # convert to list because of ModelerAlgorithme.resolveValue behavior with lists
                         value = eval(value)
                     widget.setValue(value)
@@ -138,6 +139,6 @@ class FieldsMapperModelerParametersDialog(ModelerParametersDialog):
     def setParamValue(self, alg, param, widget):
         if isinstance(param, ParameterFieldsMapping):
             # convert to unicode because of ModelerAlgorithme.resolveValue behavior with lists
-            alg.params[param.name] = unicode(widget.value())
+            alg.params[param.name] = str(widget.value())
             return True
         return ModelerParametersDialog.setParamValue(self, alg, param, widget)

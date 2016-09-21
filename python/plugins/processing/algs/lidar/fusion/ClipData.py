@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -68,10 +71,10 @@ class ClipData(FusionAlgorithm):
         commands = [os.path.join(FusionUtils.FusionPath(), 'ClipData.exe')]
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
-        commands.append('/shape:' + unicode(self.getParameterValue(self.SHAPE)))
+        commands.append('/shape:' + str(self.getParameterValue(self.SHAPE)))
         dtm = self.getParameterValue(self.DTM)
         if dtm:
-            commands.append('/dtm:' + unicode(dtm))
+            commands.append('/dtm:' + str(dtm))
         height = self.getParameterValue(self.HEIGHT)
         if height:
             commands.append('/height')
@@ -83,7 +86,7 @@ class ClipData(FusionAlgorithm):
             commands.append(FusionUtils.tempFileListFilepath())
         outFile = self.getOutputValue(self.OUTPUT)
         commands.append(outFile)
-        extent = unicode(self.getParameterValue(self.EXTENT)).split(',')
+        extent = str(self.getParameterValue(self.EXTENT)).split(',')
         commands.append(extent[0])
         commands.append(extent[2])
         commands.append(extent[1])

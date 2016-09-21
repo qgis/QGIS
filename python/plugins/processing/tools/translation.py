@@ -76,7 +76,7 @@ def translationShadow():
     f.write('''
     """Groups and subgroups"""
 ''')
-    for group, context in groups.iteritems():
+    for group, context in groups.items():
         f.write("    QCoreApplication.translate(\"{}\", \"{}\")\n"
                 .format(context,
                         group.replace('"', '\\"')))

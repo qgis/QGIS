@@ -20,6 +20,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'March 2014'
@@ -51,14 +54,14 @@ class lasquery(LAStoolsAlgorithm):
         self.addParametersVerboseCommands(commands)
 
     # get area-of-interest
-        aoi = unicode(self.getParameterValue(self.AOI))
+        aoi = str(self.getParameterValue(self.AOI))
         aoiCoords = aoi.split(',')
 
         # get layers
         layers = QgsMapLayerRegistry.instance().mapLayers()
 
         # loop over layers
-        for name, layer in layers.iteritems():
+        for name, layer in layers.items():
             layerType = layer.type()
             if layerType == QgsMapLayer.VectorLayer:
                 shp_file_name = layer.source()

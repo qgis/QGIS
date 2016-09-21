@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'
@@ -130,18 +131,18 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             rect = self.extentSelector.getExtent()
             if rect is not None:
                 arguments.append("-txe")
-                arguments.append(unicode(rect.xMinimum()))
-                arguments.append(unicode(rect.xMaximum()))
+                arguments.append(str(rect.xMinimum()))
+                arguments.append(str(rect.xMaximum()))
                 arguments.append("-tye")
-                arguments.append(unicode(rect.yMaximum()))
-                arguments.append(unicode(rect.yMinimum()))
+                arguments.append(str(rect.yMaximum()))
+                arguments.append(str(rect.yMinimum()))
         if self.algorithmCheck.isChecked() and self.algorithmCombo.currentIndex() >= 0:
             arguments.append("-a")
             arguments.append(self.algorithmArguments(self.algorithmCombo.currentIndex()))
         if self.resizeGroupBox.isChecked():
             arguments.append("-outsize")
-            arguments.append(unicode(self.widthSpin.value()))
-            arguments.append(unicode(self.heightSpin.value()))
+            arguments.append(str(self.widthSpin.value()))
+            arguments.append(str(self.heightSpin.value()))
         outputFn = self.getOutputFileName()
         if outputFn:
             arguments.append("-of")
@@ -164,34 +165,34 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments = []
         if algorithm == "invdist":
             arguments.append(algorithm)
-            arguments.append("power=" + unicode(self.invdistPowerSpin.value()))
-            arguments.append("smothing=" + unicode(self.invdistSmothingSpin.value()))
-            arguments.append("radius1=" + unicode(self.invdistRadius1Spin.value()))
-            arguments.append("radius2=" + unicode(self.invdistRadius2Spin.value()))
-            arguments.append("angle=" + unicode(self.invdistAngleSpin.value()))
-            arguments.append("max_points=" + unicode(self.invdistMaxPointsSpin.value()))
-            arguments.append("min_points=" + unicode(self.invdistMinPointsSpin.value()))
-            arguments.append("nodata=" + unicode(self.invdistNoDataSpin.value()))
+            arguments.append("power=" + str(self.invdistPowerSpin.value()))
+            arguments.append("smothing=" + str(self.invdistSmothingSpin.value()))
+            arguments.append("radius1=" + str(self.invdistRadius1Spin.value()))
+            arguments.append("radius2=" + str(self.invdistRadius2Spin.value()))
+            arguments.append("angle=" + str(self.invdistAngleSpin.value()))
+            arguments.append("max_points=" + str(self.invdistMaxPointsSpin.value()))
+            arguments.append("min_points=" + str(self.invdistMinPointsSpin.value()))
+            arguments.append("nodata=" + str(self.invdistNoDataSpin.value()))
         elif algorithm == "average":
             arguments.append(algorithm)
-            arguments.append("radius1=" + unicode(self.averageRadius1Spin.value()))
-            arguments.append("radius2=" + unicode(self.averageRadius2Spin.value()))
-            arguments.append("angle=" + unicode(self.averageAngleSpin.value()))
-            arguments.append("min_points=" + unicode(self.averageMinPointsSpin.value()))
-            arguments.append("nodata=" + unicode(self.averageNoDataSpin.value()))
+            arguments.append("radius1=" + str(self.averageRadius1Spin.value()))
+            arguments.append("radius2=" + str(self.averageRadius2Spin.value()))
+            arguments.append("angle=" + str(self.averageAngleSpin.value()))
+            arguments.append("min_points=" + str(self.averageMinPointsSpin.value()))
+            arguments.append("nodata=" + str(self.averageNoDataSpin.value()))
         elif algorithm == "nearest":
             arguments.append(algorithm)
-            arguments.append("radius1=" + unicode(self.nearestRadius1Spin.value()))
-            arguments.append("radius2=" + unicode(self.nearestRadius2Spin.value()))
-            arguments.append("angle=" + unicode(self.nearestAngleSpin.value()))
-            arguments.append("nodata=" + unicode(self.nearestNoDataSpin.value()))
+            arguments.append("radius1=" + str(self.nearestRadius1Spin.value()))
+            arguments.append("radius2=" + str(self.nearestRadius2Spin.value()))
+            arguments.append("angle=" + str(self.nearestAngleSpin.value()))
+            arguments.append("nodata=" + str(self.nearestNoDataSpin.value()))
         else:
             arguments.append(self.datametrics[self.datametricsCombo.currentIndex()])
-            arguments.append("radius1=" + unicode(self.datametricsRadius1Spin.value()))
-            arguments.append("radius2=" + unicode(self.datametricsRadius2Spin.value()))
-            arguments.append("angle=" + unicode(self.datametricsAngleSpin.value()))
-            arguments.append("min_points=" + unicode(self.datametricsMinPointsSpin.value()))
-            arguments.append("nodata=" + unicode(self.datametricsNoDataSpin.value()))
+            arguments.append("radius1=" + str(self.datametricsRadius1Spin.value()))
+            arguments.append("radius2=" + str(self.datametricsRadius2Spin.value()))
+            arguments.append("angle=" + str(self.datametricsAngleSpin.value()))
+            arguments.append("min_points=" + str(self.datametricsMinPointsSpin.value()))
+            arguments.append("nodata=" + str(self.datametricsNoDataSpin.value()))
         return ':'.join(arguments)
 
     def loadFields(self, vectorFile=''):

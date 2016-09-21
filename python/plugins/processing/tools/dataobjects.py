@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 
 __author__ = 'Victor Olaya'
@@ -69,8 +70,8 @@ def resetLoadedLayers():
 def getSupportedOutputVectorLayerExtensions():
     formats = QgsVectorFileWriter.supportedFiltersAndFormats()
     exts = ['shp']  # shp is the default, should be the first
-    for extension in formats.keys():
-        extension = unicode(extension)
+    for extension in list(formats.keys()):
+        extension = str(extension)
         extension = extension[extension.find('*.') + 2:]
         extension = extension[:extension.find(' ')]
         if extension.lower() != 'shp':
@@ -80,7 +81,7 @@ def getSupportedOutputVectorLayerExtensions():
 
 def getSupportedOutputRasterLayerExtensions():
     allexts = ['tif']
-    for exts in GdalUtils.getSupportedRasters().values():
+    for exts in list(GdalUtils.getSupportedRasters().values()):
         for ext in exts:
             if ext not in allexts:
                 allexts.append(ext)
@@ -167,7 +168,7 @@ def extent(layers):
     if first:
         return '0,0,0,0'
     else:
-        return unicode(xmin) + ',' + unicode(xmax) + ',' + unicode(ymin) + ',' + unicode(ymax)
+        return str(xmin) + ',' + str(xmax) + ',' + str(ymin) + ',' + str(ymax)
 
 
 def loadList(layers):
@@ -214,7 +215,7 @@ def load(fileName, name=None, crs=None, style=None):
         else:
             if prjSetting:
                 settings.setValue('/Projections/defaultBehaviour', prjSetting)
-            raise RuntimeError('Could not load layer: ' + unicode(fileName)
+            raise RuntimeError('Could not load layer: ' + str(fileName)
                                + '\nCheck the processing framework log to look for errors')
     if prjSetting:
         settings.setValue('/Projections/defaultBehaviour', prjSetting)
@@ -324,7 +325,7 @@ def exportVectorLayer(layer, supported=None):
     else:
         isASCII = True
         try:
-            unicode(layer.source()).decode('ascii')
+            str(layer.source()).decode('ascii')
         except UnicodeEncodeError:
             isASCII = False
         if not os.path.splitext(layer.source())[1].lower() in supported or not isASCII:
@@ -338,7 +339,7 @@ def exportVectorLayer(layer, supported=None):
             del writer
             return output
         else:
-            return unicode(layer.source())
+            return str(layer.source())
 
 
 def exportRasterLayer(layer):
@@ -355,7 +356,7 @@ def exportRasterLayer(layer):
     """
 
     # TODO: Do the conversion here
-    return unicode(layer.source())
+    return str(layer.source())
 
 
 def exportTable(table):
@@ -376,11 +377,11 @@ def exportTable(table):
     output = getTempFilename()
     isASCII = True
     try:
-        unicode(table.source()).decode('ascii')
+        str(table.source()).decode('ascii')
     except UnicodeEncodeError:
         isASCII = False
-    isDbf = unicode(table.source()).endswith('dbf') \
-        or unicode(table.source()).endswith('shp')
+    isDbf = str(table.source()).endswith('dbf') \
+        or str(table.source()).endswith('shp')
     if not isDbf or not isASCII:
         writer = QgsVectorFileWriter(output, systemEncoding,
                                      layer.fields(), QgsWkbTypes.NullGeometry,
@@ -390,8 +391,8 @@ def exportTable(table):
         del writer
         return output + '.dbf'
     else:
-        filename = unicode(table.source())
-        if unicode(table.source()).endswith('shp'):
+        filename = str(table.source())
+        if str(table.source()).endswith('shp'):
             return filename[:-3] + 'dbf'
         else:
             return filename

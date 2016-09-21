@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 
 __author__ = 'Victor Olaya'
@@ -97,7 +98,7 @@ class ProcessingToolbox(BASE, WIDGET):
         if not showTip or self.tipWasClosed:
             return False
 
-        for providerName in algList.algs.keys():
+        for providerName in list(algList.algs.keys()):
             name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
             if not ProcessingConfig.getSetting(name):
                 return True
@@ -105,16 +106,16 @@ class ProcessingToolbox(BASE, WIDGET):
 
     def textChanged(self):
         text = self.searchBox.text().strip(' ').lower()
-        for item in self.disabledProviderItems.values():
+        for item in list(self.disabledProviderItems.values()):
             item.setHidden(True)
         self._filterItem(self.algorithmTree.invisibleRootItem(), text)
         if text:
             self.algorithmTree.expandAll()
             self.disabledWithMatchingAlgs = []
-            for providerName, provider in algList.algs.iteritems():
+            for providerName, provider in algList.algs.items():
                 name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
                 if not ProcessingConfig.getSetting(name):
-                    for alg in provider.values():
+                    for alg in list(provider.values()):
                         if text in alg.name:
                             self.disabledWithMatchingAlgs.append(providerName)
                             break
@@ -129,10 +130,10 @@ class ProcessingToolbox(BASE, WIDGET):
     def _filterItem(self, item, text):
         if (item.childCount() > 0):
             show = False
-            for i in xrange(item.childCount()):
+            for i in range(item.childCount()):
                 child = item.child(i)
                 showChild = self._filterItem(child, text)
-                show = (showChild or show) and item not in self.disabledProviderItems.values()
+                show = (showChild or show) and item not in list(self.disabledProviderItems.values())
             item.setHidden(not show)
             return show
         elif isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
@@ -162,7 +163,7 @@ class ProcessingToolbox(BASE, WIDGET):
         if item is not None:
             item.refresh()
             item.sortChildren(0, Qt.AscendingOrder)
-            for i in xrange(item.childCount()):
+            for i in range(item.childCount()):
                 item.child(i).sortChildren(0, Qt.AscendingOrder)
             self.addRecentAlgorithms(True)
 
@@ -172,7 +173,7 @@ class ProcessingToolbox(BASE, WIDGET):
             self.algorithmTree.invisibleRootItem().removeChild(item)
 
     def _providerItem(self, providerName):
-        for i in xrange(self.algorithmTree.invisibleRootItem().childCount()):
+        for i in range(self.algorithmTree.invisibleRootItem().childCount()):
             child = self.algorithmTree.invisibleRootItem().child(i)
             if isinstance(child, TreeProviderItem):
                 if child.providerName == providerName:
@@ -313,7 +314,7 @@ class ProcessingToolbox(BASE, WIDGET):
             providerItem.setHidden(True)
             self.disabledProviderItems[providerName] = providerItem
 
-        for i in xrange(self.algorithmTree.invisibleRootItem().childCount()):
+        for i in range(self.algorithmTree.invisibleRootItem().childCount()):
             child = self.algorithmTree.invisibleRootItem().child(i)
             if isinstance(child, TreeProviderItem):
                 if child.text(0) > providerItem.text(0):
@@ -324,7 +325,7 @@ class ProcessingToolbox(BASE, WIDGET):
         self.algorithmTree.clear()
         self.disabledProviderItems = {}
         disabled = []
-        for providerName in algList.algs.keys():
+        for providerName in list(algList.algs.keys()):
             name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
             if ProcessingConfig.getSetting(name):
                 providerItem = TreeProviderItem(providerName, self.algorithmTree, self)
@@ -381,7 +382,7 @@ class TreeProviderItem(QTreeWidgetItem):
         groups = {}
         count = 0
         provider = algList.algs[self.providerName]
-        algs = provider.values()
+        algs = list(provider.values())
 
         name = 'ACTIVATE_' + self.providerName.upper().replace(' ', '_')
         active = ProcessingConfig.getSetting(name)
@@ -431,7 +432,7 @@ class TreeProviderItem(QTreeWidgetItem):
             text += QCoreApplication.translate("TreeProviderItem", " [{0} geoalgorithms]").format(count)
         self.setText(0, text)
         self.setToolTip(0, self.text(0))
-        for groupItem in groups.values():
+        for groupItem in list(groups.values()):
             self.addChild(groupItem)
 
         self.setHidden(self.childCount() == 0)

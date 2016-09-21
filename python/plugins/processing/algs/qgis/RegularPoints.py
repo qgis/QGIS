@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2014'
@@ -74,7 +75,7 @@ class RegularPoints(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Regular points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, progress):
-        extent = unicode(self.getParameterValue(self.EXTENT)).split(',')
+        extent = str(self.getParameterValue(self.EXTENT)).split(',')
 
         spacing = float(self.getParameterValue(self.SPACING))
         inset = float(self.getParameterValue(self.INSET))

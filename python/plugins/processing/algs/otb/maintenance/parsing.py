@@ -17,6 +17,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 __author__ = 'Julien Malik, Oscar Picas'
 __copyright__ = '(C) 2013, CS Systemes d\'information  (CS SI)'
 
@@ -59,7 +61,7 @@ class File(list):
 class Comment(str):
 
     def __repr__(self):
-        return 'Comment(' + unicode(self) + ')'
+        return 'Comment(' + str(self) + ')'
 
 
 def Arg(contents, comments=None):
@@ -78,7 +80,7 @@ def prettify(s):
     """
     Returns the pretty-print of the contents of a CMakeLists file.
     """
-    return unicode(parse(s))
+    return str(parse(s))
 
 
 def parse(s):
@@ -136,7 +138,7 @@ def parse_command(start_line_num, command_name, toks):
     expect('left paren', toks)
     for line_num, (typ, tok_contents) in toks:
         if typ == 'right paren':
-            line_nums = range(start_line_num, line_num + 1)
+            line_nums = list(range(start_line_num, line_num + 1))
             return line_nums, cmd
         elif typ == 'left paren':
             raise ValueError('Unexpected left paren at line %s' % line_num)
@@ -154,7 +156,7 @@ def parse_command(start_line_num, command_name, toks):
 
 
 def expect(expected_type, toks):
-    line_num, (typ, tok_contents) = toks.next()
+    line_num, (typ, tok_contents) = next(toks)
     if typ != expected_type:
         msg = 'Expected a %s, but got "%s" at line %s' % (
             expected_type, tok_contents, line_num)

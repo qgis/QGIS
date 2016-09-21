@@ -17,6 +17,9 @@
 ***************************************************************************
 """
 from __future__ import print_function
+from builtins import zip
+from builtins import str
+from builtins import object
 
 __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
@@ -64,7 +67,7 @@ def processingTestDataPath():
     return os.path.join(os.path.dirname(__file__), 'testdata')
 
 
-class AlgorithmsTest:
+class AlgorithmsTest(object):
 
     def test_algorithms(self):
         """
@@ -94,15 +97,15 @@ class AlgorithmsTest:
             for param in zip(alg.parameters, params):
                 param[0].setValue(param[1])
         else:
-            for k, p in params.items():
+            for k, p in list(params.items()):
                 alg.setParameterValue(k, p)
 
-        for r, p in defs['results'].items():
+        for r, p in list(defs['results'].items()):
             alg.setOutputValue(r, self.load_result_param(p))
 
         expectFailure = False
         if 'expectedFailure' in defs:
-            exec('\n'.join(defs['expectedFailure'][:-1])) in globals(), locals()
+            exec(('\n'.join(defs['expectedFailure'][:-1])), globals(), locals())
             expectFailure = eval(defs['expectedFailure'][-1])
 
         if expectFailure:
@@ -124,7 +127,7 @@ class AlgorithmsTest:
         if isinstance(params, list):
             return [self.load_param(p) for p in params]
         elif isinstance(params, dict):
-            return {key: self.load_param(p) for key, p in params.items()}
+            return {key: self.load_param(p) for key, p in list(params.items())}
         else:
             return params
 
@@ -195,13 +198,13 @@ class AlgorithmsTest:
         """
         Checks if result produced by an algorithm matches with the expected specification.
         """
-        for id, expected_result in expected.items():
+        for id, expected_result in list(expected.items()):
             if 'vector' == expected_result['type']:
                 expected_lyr = self.load_layer(expected_result)
                 try:
                     results[id]
                 except KeyError as e:
-                    raise KeyError('Expected result {} does not exist in {}'.format(unicode(e), results.keys()))
+                    raise KeyError('Expected result {} does not exist in {}'.format(str(e), list(results.keys())))
 
                 result_lyr = QgsVectorLayer(results[id], id, 'ogr')
 

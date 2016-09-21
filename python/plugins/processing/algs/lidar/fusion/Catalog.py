@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Agresta S. Coop - www.agresta.org'
 __date__ = 'June 2014'
@@ -74,15 +77,15 @@ class Catalog(FusionAlgorithm):
         commands = [os.path.join(FusionUtils.FusionPath(), 'Catalog.exe')]
         commands.append('/verbose')
         intensity = self.getParameterValue(self.INTENSITY)
-        if unicode(intensity).strip():
-            commands.append('/intensity:' + unicode(intensity))
+        if str(intensity).strip():
+            commands.append('/intensity:' + str(intensity))
         density = self.getParameterValue(self.DENSITY)
-        if unicode(density).strip():
-            commands.append('/density:' + unicode(density))
+        if str(density).strip():
+            commands.append('/density:' + str(density))
         firstdensity = self.getParameterValue(self.FIRSTDENSITY)
-        if unicode(firstdensity).strip():
-            commands.append('/firstdensity:' + unicode(firstdensity))
-        advanced_modifiers = unicode(self.getParameterValue(self.ADVANCED_MODIFIERS)).strip()
+        if str(firstdensity).strip():
+            commands.append('/firstdensity:' + str(firstdensity))
+        advanced_modifiers = str(self.getParameterValue(self.ADVANCED_MODIFIERS)).strip()
         if advanced_modifiers:
             commands.append(advanced_modifiers)
         files = self.getParameterValue(self.INPUT).split(';')

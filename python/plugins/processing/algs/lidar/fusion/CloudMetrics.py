@@ -20,6 +20,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -71,8 +74,8 @@ class CloudMetrics(FusionAlgorithm):
         commands = [os.path.join(FusionUtils.FusionPath(), 'CloudMetrics.exe')]
         commands.append('/verbose')
         above = self.getParameterValue(self.ABOVE)
-        if unicode(above).strip() != '':
-            commands.append('/above:' + unicode(above))
+        if str(above).strip() != '':
+            commands.append('/above:' + str(above))
         firstImpulse = self.getParameterValue(self.FIRSTIMPULSE)
         if firstImpulse:
             commands.append('/firstinpulse')
@@ -80,8 +83,8 @@ class CloudMetrics(FusionAlgorithm):
         if firstReturn:
             commands.append('/firstreturn')
         htmin = self.getParameterValue(self.HTMIN)
-        if unicode(htmin).strip() != '':
-            commands.append('/minht:' + unicode(htmin))
+        if str(htmin).strip() != '':
+            commands.append('/minht:' + str(htmin))
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -265,7 +266,7 @@ class ModelerDialog(BASE, WIDGET):
             filename += '.png'
 
         totalRect = QRectF(0, 0, 1, 1)
-        for item in self.scene.items():
+        for item in list(self.scene.items()):
             totalRect = totalRect.united(item.sceneBoundingRect())
         totalRect.adjust(-10, -10, 10, 10)
 
@@ -297,14 +298,14 @@ class ModelerDialog(BASE, WIDGET):
                                 self.tr('Model was correctly exported.'))
 
     def saveModel(self, saveAs):
-        if unicode(self.textGroup.text()).strip() == '' \
-                or unicode(self.textName.text()).strip() == '':
+        if str(self.textGroup.text()).strip() == '' \
+                or str(self.textName.text()).strip() == '':
             QMessageBox.warning(
                 self, self.tr('Warning'), self.tr('Please enter group and model names before saving')
             )
             return
-        self.alg.name = unicode(self.textName.text())
-        self.alg.group = unicode(self.textGroup.text())
+        self.alg.name = str(self.textName.text())
+        self.alg.group = str(self.textGroup.text())
         if self.alg.descriptionFile is not None and not saveAs:
             filename = self.alg.descriptionFile
         else:
@@ -323,7 +324,7 @@ class ModelerDialog(BASE, WIDGET):
             except:
                 if saveAs:
                     QMessageBox.warning(self, self.tr('I/O error'),
-                                        self.tr('Unable to save edits. Reason:\n %s') % unicode(sys.exc_info()[1]))
+                                        self.tr('Unable to save edits. Reason:\n %s') % str(sys.exc_info()[1]))
                 else:
                     QMessageBox.warning(self, self.tr("Can't save model"),
                                         self.tr("This model can't be saved in its "
@@ -340,9 +341,9 @@ class ModelerDialog(BASE, WIDGET):
             self.hasChanged = False
 
     def openModel(self):
-        filename, selected_filter = unicode(QFileDialog.getOpenFileName(self,
-                                                                        self.tr('Open Model'), ModelerUtils.modelsFolders()[0],
-                                                                        self.tr('Processing models (*.model *.MODEL)')))
+        filename, selected_filter = str(QFileDialog.getOpenFileName(self,
+                                                                    self.tr('Open Model'), ModelerUtils.modelsFolders()[0],
+                                                                    self.tr('Processing models (*.model *.MODEL)')))
         if filename:
             try:
                 alg = ModelerAlgorithm.fromFile(filename)
@@ -376,7 +377,7 @@ class ModelerDialog(BASE, WIDGET):
 
     def addInput(self):
         item = self.inputsTree.currentItem()
-        paramType = unicode(item.text(0))
+        paramType = str(item.text(0))
         self.addInputOfType(paramType)
 
     def addInputOfType(self, paramType, pos=None):
@@ -398,7 +399,7 @@ class ModelerDialog(BASE, WIDGET):
         BOX_WIDTH = 200
         BOX_HEIGHT = 80
         if self.alg.inputs:
-            maxX = max([i.pos.x() for i in self.alg.inputs.values()])
+            maxX = max([i.pos.x() for i in list(self.alg.inputs.values())])
             newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
         else:
             newX = MARGIN + BOX_WIDTH / 2
@@ -448,8 +449,8 @@ class ModelerDialog(BASE, WIDGET):
         BOX_WIDTH = 200
         BOX_HEIGHT = 80
         if self.alg.algs:
-            maxX = max([alg.pos.x() for alg in self.alg.algs.values()])
-            maxY = max([alg.pos.y() for alg in self.alg.algs.values()])
+            maxX = max([alg.pos.x() for alg in list(self.alg.algs.values())])
+            maxY = max([alg.pos.y() for alg in list(self.alg.algs.values())])
             newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
             newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE
                        - BOX_HEIGHT)
@@ -462,20 +463,20 @@ class ModelerDialog(BASE, WIDGET):
         self.fillAlgorithmTreeUsingProviders()
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
 
-        text = unicode(self.searchBox.text())
+        text = str(self.searchBox.text())
         if text != '':
             self.algorithmTree.expandAll()
 
     def fillAlgorithmTreeUsingProviders(self):
         self.algorithmTree.clear()
-        text = unicode(self.searchBox.text())
+        text = str(self.searchBox.text())
         allAlgs = algList.algs
-        for providerName in allAlgs.keys():
+        for providerName in list(allAlgs.keys()):
             name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
             if not ProcessingConfig.getSetting(name):
                 continue
             groups = {}
-            algs = allAlgs[providerName].values()
+            algs = list(allAlgs[providerName].values())
 
             # Add algorithms
             for alg in algs:
@@ -501,11 +502,11 @@ class ModelerDialog(BASE, WIDGET):
                 providerItem.setText(0, provider.getDescription())
                 providerItem.setToolTip(0, provider.getDescription())
                 providerItem.setIcon(0, provider.getIcon())
-                for groupItem in groups.values():
+                for groupItem in list(groups.values()):
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)
                 providerItem.setExpanded(text != '')
-                for groupItem in groups.values():
+                for groupItem in list(groups.values()):
                     if text != '':
                         groupItem.setExpanded(True)
 

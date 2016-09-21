@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya & NextGIS'
 __date__ = 'August 2012'
@@ -103,14 +104,14 @@ class FieldsPyculator(GeoAlgorithm):
                 exec(bytecode, new_ns)
             except:
                 raise GeoAlgorithmExecutionException(
-                    self.tr("FieldPyculator code execute error.Global code block can't be executed!\n%s\n%s") % (unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1])))
+                    self.tr("FieldPyculator code execute error.Global code block can't be executed!\n%s\n%s") % (str(sys.exc_info()[0].__name__), str(sys.exc_info()[1])))
 
         # Replace all fields tags
         fields = layer.fields()
         num = 0
         for field in fields:
-            field_name = unicode(field.name())
-            replval = '__attr[' + unicode(num) + ']'
+            field_name = str(field.name())
+            replval = '__attr[' + str(num) + ']'
             code = code.replace('<' + field_name + '>', replval)
             num += 1
 
@@ -126,7 +127,7 @@ class FieldsPyculator(GeoAlgorithm):
             bytecode = compile(code, '<string>', 'exec')
         except:
             raise GeoAlgorithmExecutionException(
-                self.tr("FieldPyculator code execute error.Field code block can't be executed!\n%s\n%s") % (unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1])))
+                self.tr("FieldPyculator code execute error.Field code block can't be executed!\n%s\n%s") % (str(sys.exc_info()[0].__name__), str(sys.exc_info()[1])))
 
         # Run
         features = vector.features(layer)

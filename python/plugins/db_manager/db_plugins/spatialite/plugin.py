@@ -19,6 +19,7 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
 
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import SpatiaLiteDBConnector
@@ -153,7 +154,7 @@ class SLDatabase(Database):
         self.database().refresh()
 
     def runAction(self, action):
-        action = unicode(action)
+        action = str(action)
 
         if action.startswith("vacuum/"):
             if action == "vacuum/run":

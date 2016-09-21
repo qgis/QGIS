@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'
@@ -45,7 +46,7 @@ class GdalToolsSRSDialog(QDialog):
         buttonBox.rejected.connect(self.reject)
 
     def authid(self):
-        return unicode(self.selector.selectedAuthId())
+        return str(self.selector.selectedAuthId())
 
     def proj4string(self):
         return self.selector.selectedProj4String()

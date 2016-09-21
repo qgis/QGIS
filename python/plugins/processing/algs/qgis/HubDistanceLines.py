@@ -108,7 +108,7 @@ class HubDistanceLines(GeoAlgorithm):
             src = f.geometry().boundingBox().center()
 
             neighbors = index.nearestNeighbor(src, 1)
-            ft = layerHubs.getFeatures(QgsFeatureRequest().setFilterFid(neighbors[0])).next()
+            ft = next(layerHubs.getFeatures(QgsFeatureRequest().setFilterFid(neighbors[0])))
             closest = ft.geometry().boundingBox().center()
             hubDist = distance.measureLine(src, closest)
 

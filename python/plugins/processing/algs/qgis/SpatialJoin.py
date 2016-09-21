@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import zip
+from builtins import range
 
 __author__ = 'Joshua Arnott'
 __date__ = 'October 2013'
@@ -113,26 +116,26 @@ class SpatialJoin(GeoAlgorithm):
 
         if not summary:
             joinFields = vector.testForUniqueness(targetFields, joinFields)
-            seq = range(len(targetFields) + len(joinFields))
+            seq = list(range(len(targetFields) + len(joinFields)))
             targetFields.extend(joinFields)
-            targetFields = dict(zip(seq, targetFields))
+            targetFields = dict(list(zip(seq, targetFields)))
         else:
             numFields = {}
-            for j in xrange(len(joinFields)):
+            for j in range(len(joinFields)):
                 if joinFields[j].type() in [QVariant.Int, QVariant.Double, QVariant.LongLong, QVariant.UInt, QVariant.ULongLong]:
                     numFields[j] = []
                     for i in sumList:
-                        field = QgsField(i + unicode(joinFields[j].name()), QVariant.Double, '', 24, 16)
+                        field = QgsField(i + str(joinFields[j].name()), QVariant.Double, '', 24, 16)
                         fieldList.append(field)
             field = QgsField('count', QVariant.Double, '', 24, 16)
             fieldList.append(field)
             joinFields = vector.testForUniqueness(targetFields, fieldList)
             targetFields.extend(fieldList)
-            seq = range(len(targetFields))
-            targetFields = dict(zip(seq, targetFields))
+            seq = list(range(len(targetFields)))
+            targetFields = dict(list(zip(seq, targetFields)))
 
         fields = QgsFields()
-        for f in targetFields.values():
+        for f in list(targetFields.values()):
             fields.append(f)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
@@ -196,15 +199,15 @@ class SpatialJoin(GeoAlgorithm):
                             atMap = atMap1
                             atMap2 = atMap2
                             atMap.extend(atMap2)
-                            atMap = dict(zip(seq, atMap))
+                            atMap = dict(list(zip(seq, atMap)))
                             break
                         else:
-                            for j in numFields.keys():
+                            for j in list(numFields.keys()):
                                 numFields[j].append(atMap2[j])
 
                 if summary and not none:
                     atMap = atMap1
-                    for j in numFields.keys():
+                    for j in list(numFields.keys()):
                         for k in sumList:
                             if k == 'sum':
                                 atMap.append(sum(self._filterNull(numFields[j])))
@@ -229,11 +232,11 @@ class SpatialJoin(GeoAlgorithm):
 
                         numFields[j] = []
                     atMap.append(count)
-                    atMap = dict(zip(seq, atMap))
+                    atMap = dict(list(zip(seq, atMap)))
             if none:
                 outFeat.setAttributes(atMap1)
             else:
-                outFeat.setAttributes(atMap.values())
+                outFeat.setAttributes(list(atMap.values()))
 
             if keep:
                 writer.addFeature(outFeat)

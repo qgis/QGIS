@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Bernhard Ströbl'
 __date__ = 'September 2013'
@@ -118,20 +120,20 @@ class Eliminate(GeoAlgorithm):
                     y = int(comparisonvalue)
                 except ValueError:
                     selectionError = True
-                    msg = self.tr('Cannot convert "%s" to integer' % unicode(comparisonvalue))
+                    msg = self.tr('Cannot convert "%s" to integer' % str(comparisonvalue))
             elif selectType == 6:
                 try:
                     y = float(comparisonvalue)
                 except ValueError:
                     selectionError = True
-                    msg = self.tr('Cannot convert "%s" to float' % unicode(comparisonvalue))
+                    msg = self.tr('Cannot convert "%s" to float' % str(comparisonvalue))
             elif selectType == 10:
                 # 10: string, boolean
                 try:
-                    y = unicode(comparisonvalue)
+                    y = str(comparisonvalue)
                 except ValueError:
                     selectionError = True
-                    msg = self.tr('Cannot convert "%s" to unicode' % unicode(comparisonvalue))
+                    msg = self.tr('Cannot convert "%s" to unicode' % str(comparisonvalue))
             elif selectType == 14:
                 # date
                 dateAndFormat = comparisonvalue.split(' ')
@@ -141,12 +143,12 @@ class Eliminate(GeoAlgorithm):
                     y = QLocale.system().toDate(dateAndFormat[0])
 
                     if y.isNull():
-                        msg = self.tr('Cannot convert "%s" to date with system date format %s' % (unicode(dateAndFormat), QLocale.system().dateFormat()))
+                        msg = self.tr('Cannot convert "%s" to date with system date format %s' % (str(dateAndFormat), QLocale.system().dateFormat()))
                 elif len(dateAndFormat) == 2:
                     y = QDate.fromString(dateAndFormat[0], dateAndFormat[1])
 
                     if y.isNull():
-                        msg = self.tr('Cannot convert "%s" to date with format string "%s"' % (unicode(dateAndFormat[0]), dateAndFormat[1]))
+                        msg = self.tr('Cannot convert "%s" to date with format string "%s"' % (str(dateAndFormat[0]), dateAndFormat[1]))
                 else:
                     y = QDate()
                     msg = ''
@@ -179,7 +181,7 @@ class Eliminate(GeoAlgorithm):
                         x = float(aValue)
                     elif selectType == 10:
                         # 10: string, boolean
-                        x = unicode(aValue)
+                        x = str(aValue)
                     elif selectType == 14:
                         # date
                         x = aValue  # should be date

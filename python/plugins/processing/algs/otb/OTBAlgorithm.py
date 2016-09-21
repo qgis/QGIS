@@ -22,6 +22,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -81,7 +85,7 @@ class OTBAlgorithm(GeoAlgorithm):
         if folder is None:
             return False, None
         folder = os.path.join(folder, 'doc')
-        helpfile = os.path.join(unicode(folder), self.appkey + ".html")
+        helpfile = os.path.join(str(folder), self.appkey + ".html")
         if os.path.exists(helpfile):
             return False, helpfile
         else:
@@ -98,7 +102,7 @@ class OTBAlgorithm(GeoAlgorithm):
                 a_list[3] = -1
 
         a_list[1] = "-%s" % a_list[1]
-        b_list = map(lambda x: ";".join(x) if isinstance(x, list) else unicode(x), a_list)
+        b_list = [";".join(x) if isinstance(x, list) else str(x) for x in a_list]
         res = "|".join(b_list)
         return res
 
@@ -139,7 +143,7 @@ class OTBAlgorithm(GeoAlgorithm):
 
         try:
             rebu = self.get_list_from_node(dom_model)
-            the_result = map(self.adapt_list_to_string, rebu)
+            the_result = list(map(self.adapt_list_to_string, rebu))
         except Exception as e:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                    self.tr('Could not open OTB algorithm: %s\n%s' % (self.descriptionFile, traceback.format_exc())))
@@ -228,7 +232,7 @@ class OTBAlgorithm(GeoAlgorithm):
 
                         if not indexSubdataset == -1:
                             indexSubdataset = int(indexSubdataset) - 1
-                            newParam = "\'" + data + "?&sdataidx=" + unicode(indexSubdataset) + "\'"
+                            newParam = "\'" + data + "?&sdataidx=" + str(indexSubdataset) + "\'"
 
                         else:
                             newParam = inputParameter
@@ -262,27 +266,27 @@ class OTBAlgorithm(GeoAlgorithm):
                     commands.append("\"" + param.value + "\"")
             elif isinstance(param, ParameterMultipleInput):
                 commands.append(param.name)
-                files = unicode(param.value).split(";")
+                files = str(param.value).split(";")
                 paramvalue = " ".join(["\"" + f + " \"" for f in files])
                 commands.append(paramvalue)
             elif isinstance(param, ParameterSelection):
                 commands.append(param.name)
                 idx = int(param.value)
-                commands.append(unicode(param.options[idx]))
+                commands.append(str(param.options[idx]))
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     commands.append(param.name)
-                    commands.append(unicode(param.value).lower())
+                    commands.append(str(param.value).lower())
             elif isinstance(param, ParameterExtent):
                 self.roiValues = param.value.split(",")
             else:
                 commands.append(param.name)
-                commands.append(unicode(param.value))
+                commands.append(str(param.value))
 
         for out in self.outputs:
             commands.append(out.name)
             commands.append('"' + out.value + '"')
-        for roiInput, roiFile in self.roiRasters.items():
+        for roiInput, roiFile in list(self.roiRasters.items()):
             startX, startY = float(self.roiValues[0]), float(self.roiValues[1])
             sizeX = float(self.roiValues[2]) - startX
             sizeY = float(self.roiValues[3]) - startY
@@ -290,18 +294,18 @@ class OTBAlgorithm(GeoAlgorithm):
                 "otbcli_ExtractROI",
                 "-in", roiInput,
                 "-out", roiFile,
-                "-startx", unicode(startX),
-                "-starty", unicode(startY),
-                "-sizex", unicode(sizeX),
-                "-sizey", unicode(sizeY)
+                "-startx", str(startX),
+                "-starty", str(startY),
+                "-sizex", str(sizeX),
+                "-sizey", str(sizeY)
             ]
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, helperCommands)
             progress.setCommand(helperCommands)
             OTBUtils.executeOtb(helperCommands, progress)
 
         if self.roiRasters:
-            supportRaster = self.roiRasters.itervalues().next()
-            for roiInput, roiFile in self.roiVectors.items():
+            supportRaster = next(iter(self.roiRasters.values()))
+            for roiInput, roiFile in list(self.roiVectors.items()):
                 helperCommands = [
                     "otbcli_VectorDataExtractROIApplication",
                     "-vd.in", roiInput,

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -68,14 +69,14 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.tool.rectangleCreated.connect(self.updateExtent)
 
         if default:
-            tokens = unicode(default).split(',')
+            tokens = str(default).split(',')
             if len(tokens) == 4:
                 try:
                     float(tokens[0])
                     float(tokens[1])
                     float(tokens[2])
                     float(tokens[3])
-                    self.leText.setText(unicode(default))
+                    self.leText.setText(str(default))
                 except:
                     pass
 
@@ -152,9 +153,9 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.dialog.activateWindow()
 
     def getValue(self):
-        if unicode(self.leText.text()).strip() == '':
+        if str(self.leText.text()).strip() == '':
             return None
-        return unicode(self.leText.text())
+        return str(self.leText.text())
 
     def setExtentFromString(self, s):
         self.leText.setText(s)

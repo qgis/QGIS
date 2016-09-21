@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -29,7 +30,7 @@ import os
 from processing.tools.system import userFolder
 
 
-class RenderingStyles:
+class RenderingStyles(object):
 
     styles = {}
 
@@ -50,7 +51,7 @@ class RenderingStyles:
         line = lines.readline().strip('\n')
         while line != '':
             tokens = line.split('|')
-            if tokens[0] in RenderingStyles.styles.keys():
+            if tokens[0] in list(RenderingStyles.styles.keys()):
                 RenderingStyles.styles[tokens[0]][tokens[1]] = tokens[2]
             else:
                 alg = {}
@@ -62,8 +63,8 @@ class RenderingStyles:
     @staticmethod
     def saveSettings():
         fout = open(RenderingStyles.configFile(), 'w')
-        for alg in RenderingStyles.styles.keys():
-            for out in RenderingStyles.styles[alg].keys():
+        for alg in list(RenderingStyles.styles.keys()):
+            for out in list(RenderingStyles.styles[alg].keys()):
                 fout.write(alg + '|' + out + '|'
                            + RenderingStyles.styles[alg][out] + '\n')
         fout.close()

@@ -1,3 +1,4 @@
+from builtins import range
 ##Vector geometry tools=group
 ##Polygons=vector polygon
 ##To_keep=number 1

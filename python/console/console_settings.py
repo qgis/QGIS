@@ -18,6 +18,7 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
+from builtins import range
 
 from qgis.PyQt.QtCore import QCoreApplication, QSize, QSettings, QFileInfo, Qt
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTableWidgetItem

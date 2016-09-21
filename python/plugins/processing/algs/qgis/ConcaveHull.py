@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Piotr Pociask'
 __date__ = 'May 2014'
@@ -88,7 +89,7 @@ class ConcaveHull(GeoAlgorithm):
         counter = 50. / len(edges)
         i = 0
         ids = []
-        for id, max_len in edges.iteritems():
+        for id, max_len in edges.items():
             if max_len > alpha * max_length:
                 ids.append(id)
             progress.setPercentage(50 + i * counter)

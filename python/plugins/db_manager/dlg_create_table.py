@@ -21,6 +21,8 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
 from qgis.PyQt.QtCore import Qt, QModelIndex
 from qgis.PyQt.QtWidgets import QItemDelegate, QComboBox, QDialog, QPushButton, QDialogButtonBox, QMessageBox, QApplication
@@ -164,7 +166,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         self.cboPrimaryKey.clear()
 
         m = self.fields.model()
-        for row in xrange(m.rowCount()):
+        for row in range(m.rowCount()):
             name = m.data(m.index(row, 0))
             self.cboPrimaryKey.addItem(name)
 
@@ -260,12 +262,12 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         if not self.hasSchemas:
             schema = None
         else:
-            schema = unicode(self.cboSchema.currentText())
+            schema = str(self.cboSchema.currentText())
             if len(schema) == 0:
                 QMessageBox.information(self, self.tr("DB Manager"), self.tr("select schema!"))
                 return
 
-        table = unicode(self.editName.text())
+        table = str(self.editName.text())
         if len(table) == 0:
             QMessageBox.information(self, self.tr("DB Manager"), self.tr("enter table name!"))
             return
@@ -277,7 +279,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 
         useGeomColumn = self.chkGeomColumn.isChecked()
         if useGeomColumn:
-            geomColumn = unicode(self.editGeomColumn.text())
+            geomColumn = str(self.editGeomColumn.text())
             if len(geomColumn) == 0:
                 QMessageBox.information(self, self.tr("DB Manager"), self.tr("set geometry column name"))
                 return

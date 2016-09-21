@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
@@ -76,19 +77,19 @@ class hillshade(GdalAlgorithm):
 
     def getConsoleCommands(self):
         arguments = ['hillshade']
-        arguments.append(unicode(self.getParameterValue(self.INPUT)))
-        arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
+        arguments.append(str(self.getParameterValue(self.INPUT)))
+        arguments.append(str(self.getOutputValue(self.OUTPUT)))
 
         arguments.append('-b')
-        arguments.append(unicode(self.getParameterValue(self.BAND)))
+        arguments.append(str(self.getParameterValue(self.BAND)))
         arguments.append('-z')
-        arguments.append(unicode(self.getParameterValue(self.Z_FACTOR)))
+        arguments.append(str(self.getParameterValue(self.Z_FACTOR)))
         arguments.append('-s')
-        arguments.append(unicode(self.getParameterValue(self.SCALE)))
+        arguments.append(str(self.getParameterValue(self.SCALE)))
         arguments.append('-az')
-        arguments.append(unicode(self.getParameterValue(self.AZIMUTH)))
+        arguments.append(str(self.getParameterValue(self.AZIMUTH)))
         arguments.append('-alt')
-        arguments.append(unicode(self.getParameterValue(self.ALTITUDE)))
+        arguments.append(str(self.getParameterValue(self.ALTITUDE)))
 
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')

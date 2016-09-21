@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -129,19 +131,19 @@ class PointDistance(GeoAlgorithm):
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
-            inID = unicode(inFeat.attributes()[inIdx])
+            inID = str(inFeat.attributes()[inIdx])
             featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
             distList = []
             vari = 0.0
             for i in featList:
                 request = QgsFeatureRequest().setFilterFid(i)
-                outFeat = targetLayer.getFeatures(request).next()
+                outFeat = next(targetLayer.getFeatures(request))
                 outID = outFeat.attributes()[outIdx]
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(),
                                             outGeom.asPoint())
                 if matType == 0:
-                    self.writer.addRecord([inID, unicode(outID), unicode(dist)])
+                    self.writer.addRecord([inID, str(outID), str(dist)])
                 else:
                     distList.append(float(dist))
 
@@ -150,9 +152,9 @@ class PointDistance(GeoAlgorithm):
                 for i in distList:
                     vari += (i - mean) * (i - mean)
                 vari = math.sqrt(vari / len(distList))
-                self.writer.addRecord([inID, unicode(mean),
-                                       unicode(vari), unicode(min(distList)),
-                                       unicode(max(distList))])
+                self.writer.addRecord([inID, str(mean),
+                                       str(vari), str(min(distList)),
+                                       str(max(distList))])
 
             progress.setPercentage(int(current * total))
 
@@ -169,7 +171,7 @@ class PointDistance(GeoAlgorithm):
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
-            inID = unicode(inFeat.attributes()[inIdx])
+            inID = str(inFeat.attributes()[inIdx])
             featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
             if first:
                 first = False
@@ -181,11 +183,11 @@ class PointDistance(GeoAlgorithm):
             data = [inID]
             for i in featList:
                 request = QgsFeatureRequest().setFilterFid(i)
-                outFeat = targetLayer.getFeatures(request).next()
+                outFeat = next(targetLayer.getFeatures(request))
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(),
                                             outGeom.asPoint())
-                data.append(unicode(float(dist)))
+                data.append(str(float(dist)))
             self.writer.addRecord(data)
 
             progress.setPercentage(int(current * total))

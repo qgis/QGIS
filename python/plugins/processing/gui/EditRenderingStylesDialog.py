@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -77,7 +78,7 @@ class EditRenderingStylesDialog(BASE, WIDGET):
                         RenderingStyles.getStyle(self.alg.commandLineName(),
                                                  output.name)
                     if style:
-                        item.setText(unicode(style))
+                        item.setText(str(style))
                     self.valueItems[output.name] = item
                     self.tblStyles.setCellWidget(i, 1, item)
                     self.tblStyles.setRowHeight(i, 22)
@@ -85,8 +86,8 @@ class EditRenderingStylesDialog(BASE, WIDGET):
 
     def accept(self):
         styles = {}
-        for key in self.valueItems.keys():
-            styles[key] = unicode(self.valueItems[key].getValue())
+        for key in list(self.valueItems.keys()):
+            styles[key] = str(self.valueItems[key].getValue())
         RenderingStyles.addAlgStylesAndSave(self.alg.commandLineName(), styles)
 
         QDialog.accept(self)

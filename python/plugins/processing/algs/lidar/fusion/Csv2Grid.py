@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
 
 __author__ = 'Agresta S. Coop - www.agresta.org'
 __date__ = 'June 2014'

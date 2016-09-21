@@ -16,6 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'April 2016'
@@ -61,11 +65,11 @@ def orderedInput(alg, inputParameter, targetParameterDef, numSeq=None):
     alg.addParameter(inputParameter)
     # Handle specific range
     if numSeq is None:
-        numSeq = range(1, len(rasters) + 1)
+        numSeq = list(range(1, len(rasters) + 1))
 
     for idx in range(len(rasters)):
         layer = rasters[idx]
-        if layer in alg.exportedLayers.keys():
+        if layer in list(alg.exportedLayers.keys()):
             continue
         else:
             destFilename = '{}{}'.format(rootFilename, numSeq[idx])
@@ -77,19 +81,19 @@ def orderedInput(alg, inputParameter, targetParameterDef, numSeq=None):
     alg.setSessionProjectionFromProject(alg.commands)
 
     region = \
-        unicode(alg.getParameterValue(alg.GRASS_REGION_EXTENT_PARAMETER))
+        str(alg.getParameterValue(alg.GRASS_REGION_EXTENT_PARAMETER))
     regionCoords = region.split(',')
     command = 'g.region'
     command += ' -a'
-    command += ' n=' + unicode(regionCoords[3])
-    command += ' s=' + unicode(regionCoords[2])
-    command += ' e=' + unicode(regionCoords[1])
-    command += ' w=' + unicode(regionCoords[0])
+    command += ' n=' + str(regionCoords[3])
+    command += ' s=' + str(regionCoords[2])
+    command += ' e=' + str(regionCoords[1])
+    command += ' w=' + str(regionCoords[0])
     cellsize = alg.getParameterValue(alg.GRASS_REGION_CELLSIZE_PARAMETER)
     if cellsize:
-        command += ' res=' + unicode(cellsize)
+        command += ' res=' + str(cellsize)
     else:
-        command += ' res=' + unicode(alg.getDefaultCellsize())
+        command += ' res=' + str(alg.getDefaultCellsize())
     alignToResolution = \
         alg.getParameterValue(alg.GRASS_REGION_ALIGN_TO_RESOLUTION)
     if alignToResolution:
@@ -131,7 +135,7 @@ def regroupRasters(alg, field, groupField, subgroupField=None, extFile=None):
     # Handle external files
     origExtParams = {}
     if subgroupField and extFile:
-        for ext in extFile.keys():
+        for ext in list(extFile.keys()):
             extFileName = alg.getParameterValue(ext)
             if extFileName:
                 shortFileName = path.basename(extFileName)
@@ -151,7 +155,7 @@ def regroupRasters(alg, field, groupField, subgroupField=None, extFile=None):
     alg.addParameter(rasters)
 
     # replace external files value with original value
-    for param in origExtParams.keys():
+    for param in list(origExtParams.keys()):
         alg.setParameterValue(param, origExtParams[param])
 
     # Delete group:
@@ -170,7 +174,7 @@ def exportInputRasters(alg, rasterDic):
     { 'inputName1': 'outputName1', 'inputName2': 'outputName2'}
     """
     # Get inputs and outputs
-    for inputName, outputName in rasterDic.iteritems():
+    for inputName, outputName in rasterDic.items():
         inputRaster = alg.getParameterValue(inputName)
         outputRaster = alg.getOutputFromName(outputName)
         command = 'r.out.gdal -c -t -f --overwrite createopt="TFW=YES,COMPRESS=LZW" input={} output=\"{}\"'.format(

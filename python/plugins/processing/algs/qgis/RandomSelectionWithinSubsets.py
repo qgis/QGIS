@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -130,6 +131,6 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
                 selran.extend(selFeat)
             layer.selectByIds(selran)
         else:
-            layer.selectByIds(range(featureCount))  # FIXME: implies continuous feature ids
+            layer.selectByIds(list(range(featureCount)))  # FIXME: implies continuous feature ids
 
         self.setOutputValue(self.OUTPUT, filename)

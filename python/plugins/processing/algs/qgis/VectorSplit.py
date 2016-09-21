@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2014'
@@ -77,7 +78,7 @@ class VectorSplit(GeoAlgorithm):
         total = 100.0 / len(uniqueValues)
 
         for current, i in enumerate(uniqueValues):
-            fName = u'{0}_{1}.shp'.format(baseName, unicode(i).strip())
+            fName = u'{0}_{1}.shp'.format(baseName, str(i).strip())
 
             writer = vector.VectorWriter(fName, None, fields, geomType, crs)
             for f in vector.features(layer):

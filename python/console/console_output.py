@@ -18,6 +18,8 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
+from builtins import range
+from builtins import object
 
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QSettings
 from qgis.PyQt.QtGui import QColor, QFont, QKeySequence

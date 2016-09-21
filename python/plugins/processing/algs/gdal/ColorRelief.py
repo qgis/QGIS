@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
@@ -67,16 +68,16 @@ class ColorRelief(GdalAlgorithm):
 
     def getConsoleCommands(self):
         arguments = ['color-relief']
-        arguments.append(unicode(self.getParameterValue(self.INPUT)))
-        arguments.append(unicode(self.getParameterValue(self.COLOR_TABLE)))
+        arguments.append(str(self.getParameterValue(self.INPUT)))
+        arguments.append(str(self.getParameterValue(self.COLOR_TABLE)))
         #filePath = unicode(self.getParameterValue(self.COLOR_TABLE))
         #if filePath is None or filePath == '':
         #    filePath = os.path.join(os.path.dirname(__file__), 'terrain.txt')
         #arguments.append(filePath)
-        arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
+        arguments.append(str(self.getOutputValue(self.OUTPUT)))
 
         arguments.append('-b')
-        arguments.append(unicode(self.getParameterValue(self.BAND)))
+        arguments.append(str(self.getParameterValue(self.BAND)))
 
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')

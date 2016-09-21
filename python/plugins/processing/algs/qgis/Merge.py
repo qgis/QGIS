@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Michael Minn'
 __date__ = 'May 2010'
@@ -64,8 +66,8 @@ class Merge(GeoAlgorithm):
         layers = []
         fields = QgsFields()
         totalFeatureCount = 0
-        for x in xrange(len(paths)):
-            layer = QgsVectorLayer(paths[x], unicode(x), 'ogr')
+        for x in range(len(paths)):
+            layer = QgsVectorLayer(paths[x], str(x), 'ogr')
 
             if (len(layers) > 0):
                 if (layer.wkbType() != layers[0].wkbType()):

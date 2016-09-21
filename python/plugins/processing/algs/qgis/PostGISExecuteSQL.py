@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya, Carterix Geomatics'
 __date__ = 'October 2012'
@@ -49,7 +50,7 @@ class PostGISExecuteSQL(GeoAlgorithm):
         self.db = postgis.GeoDB.from_name(connection)
         sql = self.getParameterValue(self.SQL).replace('\n', ' ')
         try:
-            self.db._exec_sql_and_commit(unicode(sql))
+            self.db._exec_sql_and_commit(str(sql))
         except postgis.DbError as e:
             raise GeoAlgorithmExecutionException(
-                self.tr('Error executing SQL:\n%s') % unicode(e))
+                self.tr('Error executing SQL:\n%s') % str(e))

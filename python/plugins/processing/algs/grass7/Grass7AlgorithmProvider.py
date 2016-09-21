@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'April 2014'
@@ -84,7 +85,7 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
                 except Exception as e:
                     ProcessingLog.addToLog(
                         ProcessingLog.LOG_ERROR,
-                        self.tr('Could not open GRASS GIS 7 algorithm: %s\n%s') % (descriptionFile, unicode(e)))
+                        self.tr('Could not open GRASS GIS 7 algorithm: %s\n%s') % (descriptionFile, str(e)))
         self.preloadedAlgs.append(nviz7())
 
     def _loadAlgorithms(self):

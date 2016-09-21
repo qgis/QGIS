@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
@@ -176,25 +177,25 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         shapeEncoding = self.getParameterValue(self.SHAPE_ENCODING)
-        ssrs = unicode(self.getParameterValue(self.S_SRS))
-        tsrs = unicode(self.getParameterValue(self.T_SRS))
-        asrs = unicode(self.getParameterValue(self.A_SRS))
-        schema = unicode(self.getParameterValue(self.SCHEMA))
-        table = unicode(self.getParameterValue(self.TABLE))
-        pk = unicode(self.getParameterValue(self.PK))
+        ssrs = str(self.getParameterValue(self.S_SRS))
+        tsrs = str(self.getParameterValue(self.T_SRS))
+        asrs = str(self.getParameterValue(self.A_SRS))
+        schema = str(self.getParameterValue(self.SCHEMA))
+        table = str(self.getParameterValue(self.TABLE))
+        pk = str(self.getParameterValue(self.PK))
         pkstring = "-lco FID=" + pk
         primary_key = self.getParameterValue(self.PRIMARY_KEY)
-        geocolumn = unicode(self.getParameterValue(self.GEOCOLUMN))
+        geocolumn = str(self.getParameterValue(self.GEOCOLUMN))
         geocolumnstring = "-lco GEOMETRY_NAME=" + geocolumn
         dim = self.DIMLIST[self.getParameterValue(self.DIM)]
         dimstring = "-lco DIM=" + dim
-        simplify = unicode(self.getParameterValue(self.SIMPLIFY))
-        segmentize = unicode(self.getParameterValue(self.SEGMENTIZE))
+        simplify = str(self.getParameterValue(self.SIMPLIFY))
+        segmentize = str(self.getParameterValue(self.SEGMENTIZE))
         spat = self.getParameterValue(self.SPAT)
         clip = self.getParameterValue(self.CLIP)
-        where = unicode(self.getParameterValue(self.WHERE))
+        where = str(self.getParameterValue(self.WHERE))
         wherestring = '-where "' + where + '"'
-        gt = unicode(self.getParameterValue(self.GT))
+        gt = str(self.getParameterValue(self.GT))
         overwrite = self.getParameterValue(self.OVERWRITE)
         append = self.getParameterValue(self.APPEND)
         addfields = self.getParameterValue(self.ADDFIELDS)
@@ -205,7 +206,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         skipfailures = self.getParameterValue(self.SKIPFAILURES)
         promotetomulti = self.getParameterValue(self.PROMOTETOMULTI)
         precision = self.getParameterValue(self.PRECISION)
-        options = unicode(self.getParameterValue(self.OPTIONS))
+        options = str(self.getParameterValue(self.OPTIONS))
 
         arguments = []
         arguments.append('-progress')

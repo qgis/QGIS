@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -102,17 +103,17 @@ class proximity(GdalAlgorithm):
             arguments.append('-values')
             arguments.append(values)
 
-        values = unicode(self.getParameterValue(self.MAX_DIST))
+        values = str(self.getParameterValue(self.MAX_DIST))
         if values < 0:
             arguments.append('-maxdist')
             arguments.append(values)
 
-        values = unicode(self.getParameterValue(self.NODATA))
+        values = str(self.getParameterValue(self.NODATA))
         if values < 0:
             arguments.append('-nodata')
             arguments.append(values)
 
-        values = unicode(self.getParameterValue(self.BUF_VAL))
+        values = str(self.getParameterValue(self.BUF_VAL))
         if values < 0:
             arguments.append('-fixed-buf-val')
             arguments.append(values)

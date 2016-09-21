@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -43,7 +46,7 @@ except:
     gdalAvailable = False
 
 
-class GdalUtils:
+class GdalUtils(object):
 
     supportedRasters = None
 
@@ -70,7 +73,7 @@ class GdalUtils:
                 envval += '{}{}'.format(os.pathsep, path)
                 os.putenv('PATH', envval)
 
-        fused_command = ' '.join([unicode(c) for c in commands])
+        fused_command = ' '.join([str(c) for c in commands])
         progress.setInfo('GDAL command:')
         progress.setCommand(fused_command)
         progress.setInfo('GDAL command output:')
@@ -139,7 +142,7 @@ class GdalUtils:
     @staticmethod
     def getSupportedRasterExtensions():
         allexts = ['tif']
-        for exts in GdalUtils.getSupportedRasters().values():
+        for exts in list(GdalUtils.getSupportedRasters().values()):
             for ext in exts:
                 if ext not in allexts and ext != '':
                     allexts.append(ext)
@@ -152,7 +155,7 @@ class GdalUtils:
             return 'ESRI Shapefile'
 
         formats = QgsVectorFileWriter.supportedFiltersAndFormats()
-        for k, v in formats.iteritems():
+        for k, v in formats.items():
             if ext in k:
                 return v
         return 'ESRI Shapefile'
@@ -161,7 +164,7 @@ class GdalUtils:
     def getFormatShortNameFromFilename(filename):
         ext = filename[filename.rfind('.') + 1:]
         supported = GdalUtils.getSupportedRasters()
-        for name in supported.keys():
+        for name in list(supported.keys()):
             exts = supported[name]
             if ext in exts:
                 return name

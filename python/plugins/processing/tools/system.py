@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 
 __author__ = 'Victor Olaya'
@@ -42,7 +43,7 @@ def userFolder():
     if not QDir(userDir).exists():
         QDir().mkpath(userDir)
 
-    return unicode(QDir.toNativeSeparators(userDir))
+    return str(QDir.toNativeSeparators(userDir))
 
 
 def defaultOutputFolder():
@@ -50,7 +51,7 @@ def defaultOutputFolder():
     if not QDir(folder).exists():
         QDir().mkpath(folder)
 
-    return unicode(QDir.toNativeSeparators(folder))
+    return str(QDir.toNativeSeparators(folder))
 
 
 def isWindows():
@@ -64,11 +65,11 @@ _tempFolderSuffix = uuid.uuid4().hex
 
 
 def tempFolder():
-    tempDir = os.path.join(unicode(QDir.tempPath()), 'processing' + _tempFolderSuffix)
+    tempDir = os.path.join(str(QDir.tempPath()), 'processing' + _tempFolderSuffix)
     if not QDir(tempDir).exists():
         QDir().mkpath(tempDir)
 
-    return unicode(os.path.abspath(tempDir))
+    return str(os.path.abspath(tempDir))
 
 
 def setTempOutput(out, alg):
@@ -82,11 +83,11 @@ def setTempOutput(out, alg):
 def getTempFilename(ext=None):
     path = tempFolder()
     if ext is None:
-        filename = path + os.sep + unicode(time.time()) \
-            + unicode(getNumExportedLayers())
+        filename = path + os.sep + str(time.time()) \
+            + str(getNumExportedLayers())
     else:
-        filename = path + os.sep + unicode(time.time()) \
-            + unicode(getNumExportedLayers()) + '.' + ext
+        filename = path + os.sep + str(time.time()) \
+            + str(getNumExportedLayers()) + '.' + ext
     return filename
 
 

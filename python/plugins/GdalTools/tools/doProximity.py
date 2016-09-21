@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'
@@ -92,13 +93,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             arguments.append(self.distUnitsCombo.currentText())
         if self.maxDistCheck.isChecked():
             arguments.append("-maxdist")
-            arguments.append(unicode(self.maxDistSpin.value()))
+            arguments.append(str(self.maxDistSpin.value()))
         if self.noDataCheck.isChecked():
             arguments.append("-nodata")
-            arguments.append(unicode(self.noDataSpin.value()))
+            arguments.append(str(self.noDataSpin.value()))
         if self.fixedBufValCheck.isChecked():
             arguments.append("-fixed-buf-val")
-            arguments.append(unicode(self.fixedBufValSpin.value()))
+            arguments.append(str(self.fixedBufValSpin.value()))
         if outputFn:
             arguments.append("-of")
             arguments.append(self.outputFormat)

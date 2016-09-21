@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -63,7 +66,7 @@ class GroundFilter(FusionAlgorithm):
             commands.append('/surface')
         outFile = self.getOutputValue(self.OUTPUT)
         commands.append(outFile)
-        commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
+        commands.append(str(self.getParameterValue(self.CELLSIZE)))
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))

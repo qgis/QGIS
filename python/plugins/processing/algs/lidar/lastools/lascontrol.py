@@ -16,6 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'May 2016'
@@ -24,8 +28,8 @@ __copyright__ = '(C) 2016, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterString
@@ -71,11 +75,11 @@ class lascontrol(LAStoolsAlgorithm):
         use_point = self.getParameterValue(lascontrol.USE_POINTS)
         if use_point > 0:
             commands.append("-keep_class")
-            commands.append(unicode(2))
+            commands.append(str(2))
             if use_point > 1:
-                commands.append(unicode(8))
+                commands.append(str(8))
                 if use_point > 2:
-                    commands.append(unicode(6))
+                    commands.append(str(6))
         if self.getParameterValue(lascontrol.ADJUST_Z):
             commands.append("-adjust_z")
             commands.append("-odix _adjusted")

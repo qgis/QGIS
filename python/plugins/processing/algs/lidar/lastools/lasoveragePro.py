@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'October 2014'
@@ -63,7 +66,7 @@ class lasoveragePro(LAStoolsAlgorithm):
         step = self.getParameterValue(lasoveragePro.CHECK_STEP)
         if step != 1.0:
             commands.append("-step")
-            commands.append(unicode(step))
+            commands.append(str(step))
         operation = self.getParameterValue(lasoveragePro.OPERATION)
         if operation == 1:
             commands.append("-flag_as_withheld")

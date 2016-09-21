@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -39,7 +41,7 @@ from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mk
 from processing.tests.TestData import points
 
 
-class GrassUtils:
+class GrassUtils(object):
 
     GRASS_REGION_XMIN = 'GRASS_REGION_XMIN'
     GRASS_REGION_YMIN = 'GRASS_REGION_YMIN'
@@ -92,9 +94,9 @@ class GrassUtils:
         if folder is None:
             if isWindows():
                 if "OSGEO4W_ROOT" in os.environ:
-                    testfolder = os.path.join(unicode(os.environ['OSGEO4W_ROOT']), "apps")
+                    testfolder = os.path.join(str(os.environ['OSGEO4W_ROOT']), "apps")
                 else:
-                    testfolder = unicode(QgsApplication.prefixPath())
+                    testfolder = str(QgsApplication.prefixPath())
                 testfolder = os.path.join(testfolder, 'grass')
                 if os.path.isdir(testfolder):
                     for subfolder in os.listdir(testfolder):
@@ -116,7 +118,7 @@ class GrassUtils:
         if not os.path.exists(folder):
             folder = None
         if folder is None:
-            folder = os.path.dirname(unicode(QgsApplication.prefixPath()))
+            folder = os.path.dirname(str(QgsApplication.prefixPath()))
             folder = os.path.join(folder, 'msys')
         return folder
 
@@ -360,8 +362,8 @@ class GrassUtils:
     @staticmethod
     def addSessionLayers(exportedLayers):
         GrassUtils.sessionLayers = dict(
-            GrassUtils.sessionLayers.items()
-            + exportedLayers.items())
+            list(GrassUtils.sessionLayers.items())
+            + list(exportedLayers.items()))
 
     @staticmethod
     def checkGrassIsInstalled(ignorePreviousState=False):

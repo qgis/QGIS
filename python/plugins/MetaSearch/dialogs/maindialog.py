@@ -1,3 +1,8 @@
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import str
+from builtins import range
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
@@ -29,7 +34,7 @@
 
 import json
 import os.path
-from urllib2 import build_opener, install_opener, ProxyHandler
+from urllib.request import build_opener, install_opener, ProxyHandler
 
 from qgis.PyQt.QtCore import QSettings, Qt
 from qgis.PyQt.QtWidgets import QApplication, QDialog, QDialogButtonBox, QMessageBox, QTreeWidgetItem, QWidget
@@ -396,10 +401,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             maxx = extent.xMaximum()
             maxy = extent.yMaximum()
 
-        self.leNorth.setText(unicode(maxy)[0:9])
-        self.leSouth.setText(unicode(miny)[0:9])
-        self.leWest.setText(unicode(minx)[0:9])
-        self.leEast.setText(unicode(maxx)[0:9])
+        self.leNorth.setText(str(maxy)[0:9])
+        self.leSouth.setText(str(miny)[0:9])
+        self.leWest.setText(str(minx)[0:9])
+        self.leEast.setText(str(maxx)[0:9])
 
     def set_bbox_global(self):
         """set global bounding box"""
@@ -561,7 +566,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                         QMessageBox.warning(
                             self,
                             self.tr('Coordinate Transformation Error'),
-                            unicode(err))
+                            str(err))
                 self.rubber_band.setToGeometry(geom, None)
 
         # figure out if the data is interactive and can be operated on
@@ -585,9 +590,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             if link_type is not None:
                 link_type = link_type.upper()
 
-            wmswmst_link_types = map(str.upper, link_types.WMSWMST_LINK_TYPES)
-            wfs_link_types = map(str.upper, link_types.WFS_LINK_TYPES)
-            wcs_link_types = map(str.upper, link_types.WCS_LINK_TYPES)
+            wmswmst_link_types = list(map(str.upper, link_types.WMSWMST_LINK_TYPES))
+            wfs_link_types = list(map(str.upper, link_types.WFS_LINK_TYPES))
+            wcs_link_types = list(map(str.upper, link_types.WCS_LINK_TYPES))
 
             # if the link type exists, and it is one of the acceptable
             # interactive link types, then set

@@ -19,6 +19,7 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
 
 
 class NotSupportedDbType(Exception):
@@ -44,7 +45,7 @@ def initDbPluginList():
         try:
             exec(u"from .%s import plugin as mod" % name, globals())
         except ImportError as e:
-            DBPLUGIN_ERRORS.append(u"%s: %s" % (name, unicode(e)))
+            DBPLUGIN_ERRORS.append(u"%s: %s" % (name, str(e)))
             continue
 
         pluginclass = mod.classFactory()  # NOQA

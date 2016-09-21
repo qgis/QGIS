@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -69,17 +72,17 @@ class CanopyMaxima(FusionAlgorithm):
         commands = [os.path.join(FusionUtils.FusionPath(), 'CanopyMaxima.exe')]
         commands.append('/verbose')
         ### begin
-        commands.append('/wse:' + unicode(self.getParameterValue(self.PARAM_A)) + ',0,' + unicode(self.getParameterValue(self.PARAM_C)) + ',0')
+        commands.append('/wse:' + str(self.getParameterValue(self.PARAM_A)) + ',0,' + str(self.getParameterValue(self.PARAM_C)) + ',0')
         if self.getParameterValue(self.SUMMARY):
             commands.append('/summary')
         ### end
         self.addAdvancedModifiersToCommand(commands)
         ground = self.getParameterValue(self.GROUND)
         ## here it's necessary to have the support for multiple files like for INPUT.
-        if unicode(ground).strip():
-            commands.append('/ground:' + unicode(ground))
+        if str(ground).strip():
+            commands.append('/ground:' + str(ground))
         commands.append('/threshold:'
-                        + unicode(self.getParameterValue(self.THRESHOLD)))
+                        + str(self.getParameterValue(self.THRESHOLD)))
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))

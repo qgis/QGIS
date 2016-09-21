@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Thursday June 09, 2016
+Wednesday September 21, 2016
 
 
-Last Updated: Thursday June 09, 2016
-Last Change : Thursday June 09, 2016
+Last Updated: Wednesday September 21, 2016
+Last Change : Wednesday July 27, 2016
 
 
   1. Introduction
@@ -356,7 +356,7 @@ If you want to use `ccmake` or other interactive tools, run the following
 command in the empty build directory once before starting to use the
 interactive tools.
 
-  cmake -DENABLE_QT5=ON -DPORT_PLUGINS=ON
+  cmake
 
 If everything went ok you can finally start to compile. (As usual append a -jX where X is the number of available cores option to make to speed up your build process)
 

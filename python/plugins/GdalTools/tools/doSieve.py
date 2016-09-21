@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'
@@ -78,7 +79,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments = []
         if self.thresholdCheck.isChecked():
             arguments.append("-st")
-            arguments.append(unicode(self.thresholdSpin.value()))
+            arguments.append(str(self.thresholdSpin.value()))
         if self.connectionsCheck.isChecked() and self.connectionsCombo.currentIndex() >= 0:
             arguments.append("-" + self.connectionsCombo.currentText())
         outputFn = self.getOutputFileName()

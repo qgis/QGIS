@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 from __future__ import print_function
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'December 2014'
@@ -104,7 +105,7 @@ def testDescriptionFile(f):
         # fix_print_with_import
         print("Name in description:" + cmdname)
         # fix_print_with_import
-        print("Parameters in description:" + unicode(params))
+        print("Parameters in description:" + str(params))
         # fix_print_with_import
         print("-" * 50)
         print()

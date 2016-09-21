@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'April 2011'
@@ -123,8 +124,8 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
         if isinstance(fn, QgsMapLayer):
             fn = fn.source()
 
-        elif isinstance(fn, str) or isinstance(fn, unicode):
-            fn = unicode(fn)
+        elif isinstance(fn, str) or isinstance(fn, str):
+            fn = str(fn)
 
         # TODO test
         elif isinstance(fn, list):

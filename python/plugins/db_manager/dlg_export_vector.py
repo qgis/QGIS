@@ -21,6 +21,7 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
 
 from qgis.PyQt.QtCore import Qt, QSettings, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
@@ -106,7 +107,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
 
     def populateFileFilters(self):
         # populate the combo with supported vector file formats
-        for name, filt in QgsVectorFileWriter.ogrDriverList().items():
+        for name, filt in list(QgsVectorFileWriter.ogrDriverList().items()):
             self.cboFileFormat.addItem(name, filt)
 
         # set the last used filter
@@ -178,7 +179,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
                                                            False, options)
         except Exception as e:
             ret = -1
-            errMsg = unicode(e)
+            errMsg = str(e)
 
         finally:
             # restore input layer crs and encoding

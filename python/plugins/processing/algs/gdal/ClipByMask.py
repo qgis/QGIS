@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
@@ -127,20 +128,20 @@ class ClipByMask(GdalAlgorithm):
         ogrMask = ogrConnectionString(mask)[1:-1]
         noData = self.getParameterValue(self.NO_DATA)
         if noData is not None:
-            noData = unicode(noData)
+            noData = str(noData)
         addAlphaBand = self.getParameterValue(self.ALPHA_BAND)
         cropToCutline = self.getParameterValue(self.CROP_TO_CUTLINE)
         keepResolution = self.getParameterValue(self.KEEP_RESOLUTION)
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:
-            extra = unicode(extra)
-        jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
-        predictor = unicode(self.getParameterValue(self.PREDICTOR))
-        zlevel = unicode(self.getParameterValue(self.ZLEVEL))
-        tiled = unicode(self.getParameterValue(self.TILED))
+            extra = str(extra)
+        jpegcompression = str(self.getParameterValue(self.JPEGCOMPRESSION))
+        predictor = str(self.getParameterValue(self.PREDICTOR))
+        zlevel = str(self.getParameterValue(self.ZLEVEL))
+        tiled = str(self.getParameterValue(self.TILED))
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
-        tfw = unicode(self.getParameterValue(self.TFW))
+        tfw = str(self.getParameterValue(self.TFW))
 
         arguments = []
         arguments.append('-ot')
@@ -157,8 +158,8 @@ class ClipByMask(GdalAlgorithm):
             geoTransform = r.GetGeoTransform()
             r = None
             arguments.append('-tr')
-            arguments.append(unicode(geoTransform[1]))
-            arguments.append(unicode(geoTransform[5]))
+            arguments.append(str(geoTransform[1]))
+            arguments.append(str(geoTransform[5]))
             arguments.append('-tap')
 
         arguments.append('-cutline')

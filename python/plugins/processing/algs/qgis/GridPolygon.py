@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Michael Minn'
 __date__ = 'May 2010'
@@ -128,13 +129,13 @@ class GridPolygon(GeoAlgorithm):
         columns = int(math.ceil(float(width) / hSpacing))
         rows = int(math.ceil(float(height) / vSpacing))
 
-        for col in xrange(columns):
+        for col in range(columns):
             # (column + 1) and (row + 1) calculation is used to maintain
             # topology between adjacent shapes and avoid overlaps/holes
             # due to rounding errors
             x1 = originX + (col * hSpacing)
             x2 = originX + ((col + 1) * hSpacing)
-            for row in xrange(rows):
+            for row in range(rows):
                 y1 = originY - (row * vSpacing)
                 y2 = originY - ((row + 1) * vSpacing)
 
@@ -159,12 +160,12 @@ class GridPolygon(GeoAlgorithm):
         columns = int(math.ceil(float(width) / halfHSpacing))
         rows = int(math.ceil(float(height) / vSpacing))
 
-        for col in xrange(columns):
+        for col in range(columns):
             x1 = originX + ((col + 0) * halfHSpacing)
             x2 = originX + ((col + 1) * halfHSpacing)
             x3 = originX + ((col + 2) * halfHSpacing)
 
-            for row in xrange(rows):
+            for row in range(rows):
                 if (col % 2) == 0:
                     y1 = originY - (((row * 2) + 0) * halfVSpacing)
                     y2 = originY - (((row * 2) + 1) * halfVSpacing)
@@ -199,7 +200,7 @@ class GridPolygon(GeoAlgorithm):
         columns = int(math.ceil(float(width) / hSpacing))
         rows = int(math.ceil(float(height) / vSpacing))
 
-        for col in xrange(columns):
+        for col in range(columns):
             # (column + 1) and (row + 1) calculation is used to maintain
             # topology between adjacent shapes and avoid overlaps/holes
             # due to rounding errors
@@ -208,7 +209,7 @@ class GridPolygon(GeoAlgorithm):
             x3 = originX + ((col + 1) * hSpacing)   # right
             x4 = x3 + (xVertexHi - xVertexLo)       # far right
 
-            for row in xrange(rows):
+            for row in range(rows):
                 if (col % 2) == 0:
                     y1 = originY - (((row * 2) + 0) * halfVSpacing)  # hi
                     y2 = originY - (((row * 2) + 1) * halfVSpacing)  # mid

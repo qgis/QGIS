@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = "Niccolo' Marchi"
 __date__ = 'January 2016'
@@ -67,10 +70,10 @@ class ImageCreate(FusionAlgorithm):
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'ImageCreate.exe')]
         commands.append('/verbose')
-        commands.append('/coloroption:' + unicode(self.getParameterValue(self.COLOROPTION)))
+        commands.append('/coloroption:' + str(self.getParameterValue(self.COLOROPTION)))
         ground = self.getParameterValue(self.GROUND)
-        if unicode(ground).strip():
-            commands.append('/dtm:' + unicode(ground))
+        if str(ground).strip():
+            commands.append('/dtm:' + str(ground))
         if self.getParameterValue(self.RGB):
             commands.append('/rgb')
         if self.getParameterValue(self.SWITCH) == 0:
@@ -79,7 +82,7 @@ class ImageCreate(FusionAlgorithm):
             commands.append('/bmp')
         outFile = self.getOutputValue(self.OUTPUT)
         commands.append(outFile)
-        commands.append(unicode(self.getParameterValue(self.PIXEL)))
+        commands.append(str(self.getParameterValue(self.PIXEL)))
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))

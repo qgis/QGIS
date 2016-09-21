@@ -21,6 +21,9 @@
 ***************************************************************************
 """
 from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
@@ -64,7 +67,7 @@ class lasview(LAStoolsAlgorithm):
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         points = self.getParameterValue(lasview.POINTS)
-        commands.append("-points " + unicode(points))
+        commands.append("-points " + str(points))
         coloring = self.getParameterValue(lasview.COLORING)
         if coloring != 0:
             commands.append("-color_by_" + lasview.COLORINGS[coloring])

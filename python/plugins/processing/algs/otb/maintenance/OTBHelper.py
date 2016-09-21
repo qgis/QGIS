@@ -19,6 +19,9 @@
 ***************************************************************************
 """
 from __future__ import print_function
+from builtins import filter
+from builtins import map
+from builtins import str
 __author__ = 'Julien Malik, Oscar Picas, Alexia Mondot'
 __copyright__ = '(C) 2013, CS Systemes d\'information  (CS SI)'
 # This will get replaced with a git SHA1 when you do a git archive
@@ -113,7 +116,7 @@ def get_inverted_parameters():
     """
     parameters = {getattr(otbApplication, each): each for each in dir(otbApplication) if 'ParameterType_' in each}
 
-    inverted_parameters = {key: value for value, key in parameters.items()}
+    inverted_parameters = {key: value for value, key in list(parameters.items())}
     inverted_parameters['ParameterType_Radius'] = 1
     inverted_parameters['ParameterType_RAM'] = 1
     inverted_parameters['ParameterType_ComplexInputImage'] = 9
@@ -235,7 +238,7 @@ def get_xml_description_from_application_name(our_app, criteria=None):
 
     # get parameters
     param_keys = [param_key for param_key in app_instance.GetParametersKeys()]
-    param_keys = filter(real_criteria, param_keys)
+    param_keys = list(filter(real_criteria, param_keys))
 
     for param_key in param_keys:
         if not param_key == "inxml" and not param_key == "outxml":
@@ -575,7 +578,7 @@ def adapt_list_to_string(c_list):
     if a_list[-1] is None:
         return ""
 
-    b_list = map(mystr, a_list)
+    b_list = list(map(mystr, a_list))
     b_list = [b_list[1], b_list[-1]]
     res = " ".join(b_list)
     return res
@@ -592,7 +595,7 @@ def get_automatic_ut_from_xml_description(the_root):
             raise Exception('Wrong client executable')
 
         rebu = get_list_from_node(dom_model, appkey)
-        the_result = map(adapt_list_to_string, rebu)
+        the_result = list(map(adapt_list_to_string, rebu))
         ut_command = cliName + " " + " ".join(the_result)
         return ut_command
     except Exception:

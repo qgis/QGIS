@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -99,7 +100,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
                     rq = QNetworkRequest(algHelp)
                     self.reply = QgsNetworkAccessManager.instance().get(rq)
                     self.reply.finished.connect(self.requestFinished)
-            except Exception, e:
+            except Exception as e:
                 self.tabWidget.removeTab(2)
         else:
             self.tabWidget.removeTab(2)
@@ -113,7 +114,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
         if reply.error() != QNetworkReply.NoError:
             html = self.tr('<h2>No help available for this algorithm</h2><p>{}</p>'.format(reply.errorString()))
         else:
-            html = unicode(reply.readAll())
+            html = str(reply.readAll())
         reply.deleteLater()
         self.txtHelp.setHtml(html)
 

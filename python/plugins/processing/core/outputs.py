@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
+from builtins import object
 
 
 __author__ = 'Victor Olaya'
@@ -38,7 +41,7 @@ from processing.tools import dataobjects
 
 def getOutputFromString(s):
     tokens = s.split("|")
-    params = [t if unicode(t) != "None" else None for t in tokens[1:]]
+    params = [t if str(t) != "None" else None for t in tokens[1:]]
     clazz = getattr(sys.modules[__name__], tokens[0])
     return clazz(*params)
 
@@ -60,7 +63,7 @@ class Output(object):
         # in a vector layer). In the case of layers, hidden outputs are
         # not loaded into QGIS after the algorithm is executed. Other
         # outputs not representing layers or tables should always be hidden.
-        self.hidden = unicode(hidden).lower() == unicode(True).lower()
+        self.hidden = str(hidden).lower() == str(True).lower()
 
         # This value indicates whether the output has to be opened
         # after being produced by the algorithm or not
@@ -71,16 +74,16 @@ class Output(object):
 
     def getValueAsCommandLineParameter(self):
         if self.value is None:
-            return unicode(None)
+            return str(None)
         else:
             if not isWindows():
-                return '"' + unicode(self.value) + '"'
+                return '"' + str(self.value) + '"'
             else:
-                return '"' + unicode(self.value).replace('\\', '\\\\') + '"'
+                return '"' + str(self.value).replace('\\', '\\\\') + '"'
 
     def setValue(self, value):
         try:
-            if value is not None and isinstance(value, basestring):
+            if value is not None and isinstance(value, str):
                 value = value.strip()
             self.value = value
             return True
@@ -110,10 +113,10 @@ class OutputExtent(Output):
 
     def setValue(self, value):
         try:
-            if value is not None and isinstance(value, basestring):
+            if value is not None and isinstance(value, str):
                 value = value.strip()
             else:
-                self.value = ','.join([unicode(v) for v in value])
+                self.value = ','.join([str(v) for v in value])
             return True
         except:
             return False
@@ -269,7 +272,7 @@ class OutputVector(Output):
         self.base_layer = None
         if isinstance(datatype, int):
             datatype = [datatype]
-        elif isinstance(datatype, basestring):
+        elif isinstance(datatype, str):
             datatype = [int(t) for t in datatype.split(',')]
         self.datatype = datatype
 

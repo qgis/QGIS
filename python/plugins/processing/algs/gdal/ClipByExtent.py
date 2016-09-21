@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
@@ -109,18 +110,18 @@ class ClipByExtent(GdalAlgorithm):
         out = self.getOutputValue(self.OUTPUT)
         noData = self.getParameterValue(self.NO_DATA)
         if noData is not None:
-            noData = unicode(noData)
-        projwin = unicode(self.getParameterValue(self.PROJWIN))
+            noData = str(noData)
+        projwin = str(self.getParameterValue(self.PROJWIN))
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:
-            extra = unicode(extra)
-        jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
-        predictor = unicode(self.getParameterValue(self.PREDICTOR))
-        zlevel = unicode(self.getParameterValue(self.ZLEVEL))
-        tiled = unicode(self.getParameterValue(self.TILED))
+            extra = str(extra)
+        jpegcompression = str(self.getParameterValue(self.JPEGCOMPRESSION))
+        predictor = str(self.getParameterValue(self.PREDICTOR))
+        zlevel = str(self.getParameterValue(self.ZLEVEL))
+        tiled = str(self.getParameterValue(self.TILED))
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
-        tfw = unicode(self.getParameterValue(self.TFW))
+        tfw = str(self.getParameterValue(self.TFW))
 
         arguments = []
         arguments.append('-of')

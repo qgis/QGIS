@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'October 2014'
@@ -90,17 +93,17 @@ class lasinfoPro(LAStoolsAlgorithm):
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfoPro.HISTOGRAM[histo])
-            commands.append(unicode(self.getParameterValue(lasinfoPro.HISTO1_BIN)))
+            commands.append(str(self.getParameterValue(lasinfoPro.HISTO1_BIN)))
         histo = self.getParameterValue(lasinfoPro.HISTO2)
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfoPro.HISTOGRAM[histo])
-            commands.append(unicode(self.getParameterValue(lasinfoPro.HISTO2_BIN)))
+            commands.append(str(self.getParameterValue(lasinfoPro.HISTO2_BIN)))
         histo = self.getParameterValue(lasinfoPro.HISTO3)
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfoPro.HISTOGRAM[histo])
-            commands.append(unicode(self.getParameterValue(lasinfoPro.HISTO3_BIN)))
+            commands.append(str(self.getParameterValue(lasinfoPro.HISTO3_BIN)))
         self.addParametersOutputDirectoryCommands(commands)
         self.addParametersOutputAppendixCommands(commands)
         commands.append("-otxt")

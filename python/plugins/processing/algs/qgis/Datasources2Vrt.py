@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Luigi Pirelli'
 __date__ = 'May 2015'
@@ -122,7 +123,7 @@ class Datasources2Vrt(GeoAlgorithm):
                     vrt += '<LayerSRS>{}</LayerSRS>'.format(self.XmlEsc(crs.ExportToWkt()))
 
                 # Process all the fields.
-                for fieldIdx in xrange(layerDef.GetFieldCount()):
+                for fieldIdx in range(layerDef.GetFieldCount()):
                     fieldDef = layerDef.GetFieldDefn(fieldIdx)
                     vrt += '<Field name="{}" type="{}"'.format(self.XmlEsc(fieldDef.GetName()), self.fieldType2Name(fieldDef.GetType()))
                     if not schema:

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giovanni Manghi'
 __date__ = 'January 2015'
@@ -101,12 +102,12 @@ class gdalcalc(GdalAlgorithm):
         out = self.getOutputValue(self.OUTPUT)
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:
-            extra = unicode(extra)
+            extra = str(extra)
         #debug = self.getParameterValue(self.DEBUG)
         formula = self.getParameterValue(self.FORMULA)
         noData = self.getParameterValue(self.NO_DATA)
         if noData is not None:
-            noData = unicode(noData)
+            noData = str(noData)
 
         arguments = []
         arguments.append('--calc')

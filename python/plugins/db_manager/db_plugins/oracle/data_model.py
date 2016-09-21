@@ -22,6 +22,7 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
 
 from qgis.PyQt.QtCore import QTime
 
@@ -72,7 +73,7 @@ class ORTableDataModel(TableDataModel):
                     int(field.modifier)
                 return u"CAST({} AS VARCHAR2({}))".format(
                     self.db.quoteId(field.name),
-                    unicode(nbChars))
+                    str(nbChars))
 
         return u"CAST({0} As VARCHAR2({1}))".format(
             self.db.quoteId(field.name), field.charMaxLen)
@@ -120,7 +121,7 @@ class ORSqlResultModel(SqlResultModel):
 
         t = QTime()
         t.start()
-        c = self.db._execute(None, unicode(sql))
+        c = self.db._execute(None, str(sql))
 
         self._affectedRows = 0
         data = []

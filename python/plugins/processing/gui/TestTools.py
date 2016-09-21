@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
@@ -115,9 +116,9 @@ def parseParameters(command):
         # Handle special values:
         if result == 'None':
             result = None
-        elif result.lower() == unicode(True).lower():
+        elif result.lower() == str(True).lower():
             result = True
-        elif result.lower() == unicode(False).lower():
+        elif result.lower() == str(False).lower():
             result = False
 
         yield result
@@ -229,7 +230,7 @@ def createTest(text):
         token = tokens[i - alg.getVisibleOutputsCount()]
 
         if isinstance(out, (OutputNumber, OutputString)):
-            results[out.name] = unicode(out)
+            results[out.name] = str(out)
         elif isinstance(out, OutputRaster):
             dataset = gdal.Open(token, GA_ReadOnly)
             dataArray = nan_to_num(dataset.ReadAsArray(0))

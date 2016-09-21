@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'August 2013'
@@ -80,7 +81,7 @@ class ZonalStatistics(GeoAlgorithm):
 
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
 
-        rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
+        rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
         bandNumber = self.getParameterValue(self.RASTER_BAND)
         columnPrefix = self.getParameterValue(self.COLUMN_PREFIX)
         useGlobalExtent = self.getParameterValue(self.GLOBAL_EXTENT)

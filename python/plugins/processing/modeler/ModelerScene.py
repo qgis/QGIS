@@ -43,16 +43,16 @@ class ModelerScene(QGraphicsScene):
         self.setItemIndexMethod(QGraphicsScene.NoIndex)
 
     def getParameterPositions(self):
-        return {key: item.pos() for key, item in self.paramItems.iteritems()}
+        return {key: item.pos() for key, item in self.paramItems.items()}
 
     def getAlgorithmPositions(self):
-        return {key: item.pos() for key, item in self.algItems.iteritems()}
+        return {key: item.pos() for key, item in self.algItems.items()}
 
     def getOutputPositions(self):
         pos = {}
-        for algName, outputs in self.outputItems.iteritems():
+        for algName, outputs in self.outputItems.items():
             outputPos = {}
-            for (key, value) in outputs.iteritems():
+            for (key, value) in outputs.items():
                 if value is not None:
                     outputPos[key] = value.pos()
                 else:
@@ -78,7 +78,7 @@ class ModelerScene(QGraphicsScene):
     def paintModel(self, model):
         self.model = model
         # Inputs
-        for inp in model.inputs.values():
+        for inp in list(model.inputs.values()):
             item = ModelerGraphicItem(inp, model)
             item.setFlag(QGraphicsItem.ItemIsMovable, True)
             item.setFlag(QGraphicsItem.ItemIsSelectable, True)
@@ -87,7 +87,7 @@ class ModelerScene(QGraphicsScene):
             self.paramItems[inp.param.name] = item
 
         # We add the algs
-        for alg in model.algs.values():
+        for alg in list(model.algs.values()):
             item = ModelerGraphicItem(alg, model)
             item.setFlag(QGraphicsItem.ItemIsMovable, True)
             item.setFlag(QGraphicsItem.ItemIsSelectable, True)
@@ -96,7 +96,7 @@ class ModelerScene(QGraphicsScene):
             self.algItems[alg.name] = item
 
         # And then the arrows
-        for alg in model.algs.values():
+        for alg in list(model.algs.values()):
             idx = 0
             for parameter in alg.algorithm.parameters:
                 if not parameter.hidden:
@@ -121,7 +121,7 @@ class ModelerScene(QGraphicsScene):
                 self.addItem(arrow)
 
         # And finally the outputs
-        for alg in model.algs.values():
+        for alg in list(model.algs.values()):
             outputs = alg.outputs
             outputItems = {}
             idx = 0

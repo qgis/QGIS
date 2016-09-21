@@ -19,9 +19,11 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import object
 
 
-class HtmlContent:
+class HtmlContent(object):
 
     def __init__(self, data):
         self.data = data if not isinstance(data, HtmlContent) else data.data
@@ -36,7 +38,7 @@ class HtmlContent:
         if hasattr(self.data, 'toHtml'):
             return self.data.toHtml()
 
-        html = unicode(self.data).replace("\n", "<br>")
+        html = str(self.data).replace("\n", "<br>")
         return html
 
     def hasContents(self):
@@ -54,7 +56,7 @@ class HtmlContent:
         return len(self.data) > 0
 
 
-class HtmlElem:
+class HtmlElem(object):
 
     def __init__(self, tag, data, attrs=None):
         self.tag = tag
@@ -75,7 +77,7 @@ class HtmlElem:
 
     def getAttrsHtml(self):
         html = u''
-        for k, v in self.attrs.items():
+        for k, v in list(self.attrs.items()):
             html += u' %s="%s"' % (k, v)
         return html
 

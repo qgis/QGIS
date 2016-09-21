@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -101,7 +102,7 @@ class MeanCoords(GeoAlgorithm):
             if uniqueIndex == -1:
                 clazz = "Single class"
             else:
-                clazz = unicode(feat.attributes()[uniqueIndex]).strip()
+                clazz = str(feat.attributes()[uniqueIndex]).strip()
             if weightIndex == -1:
                 weight = 1.00
             else:
@@ -123,7 +124,7 @@ class MeanCoords(GeoAlgorithm):
 
         current = 0
         total = 100.0 / len(means)
-        for (clazz, values) in means.iteritems():
+        for (clazz, values) in means.items():
             outFeat = QgsFeature()
             cx = values[0] / values[2]
             cy = values[1] / values[2]

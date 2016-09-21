@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'January 2013'
@@ -80,8 +82,8 @@ class RasterLayerHistogram(GeoAlgorithm):
         fields = [QgsField('CENTER_VALUE', QVariant.Double),
                   QgsField('NUM_ELEM', QVariant.Double)]
         writer = outputtable.getTableWriter(fields)
-        for i in xrange(len(values)):
-            writer.addRecord([unicode(bins[i]) + '-' + unicode(bins[i + 1]), n[i]])
+        for i in range(len(values)):
+            writer.addRecord([str(bins[i]) + '-' + str(bins[i + 1]), n[i]])
 
         plotFilename = outputplot + '.png'
         lab.savefig(plotFilename)

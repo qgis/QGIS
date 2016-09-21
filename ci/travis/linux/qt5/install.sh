@@ -52,6 +52,5 @@ cmake \
       -DWITH_SERVER=ON \
       -DWITH_INTERNAL_YAML=OFF \
       -DDISABLE_DEPRECATED=ON \
-      -DPORT_PLUGINS=ON \
       -DCXX_EXTRA_FLAGS="$CLANG_WARNINGS" \
       ..

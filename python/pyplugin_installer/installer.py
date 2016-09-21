@@ -22,6 +22,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
 
 from qgis.PyQt.QtCore import Qt, QObject, QSettings, QDir, QUrl
 from qgis.PyQt.QtWidgets import QMessageBox, QLabel, QFrame, QApplication
@@ -247,7 +248,7 @@ class QgsPluginInstaller(QObject):
         # finally, show the plugin manager window
         tabIndex = -1
         if len(params) == 1:
-            indx = unicode(params[0])
+            indx = str(params[0])
             if indx.isdigit() and int(indx) > -1 and int(indx) < 7:
                 tabIndex = int(indx)
         iface.pluginManagerInterface().showPluginManager(tabIndex)
@@ -420,7 +421,7 @@ class QgsPluginInstaller(QObject):
         dlg.checkBoxEnabled.setCheckState(Qt.Checked)
         if not dlg.exec_():
             return
-        for i in repositories.all().values():
+        for i in list(repositories.all().values()):
             if dlg.editURL.text().strip() == i["url"]:
                 iface.pluginManagerInterface().pushMessage(self.tr("Unable to add another repository with the same URL!"), QgsMessageBar.WARNING)
                 return
@@ -460,7 +461,7 @@ class QgsPluginInstaller(QObject):
             dlg.labelInfo.setFrameShape(QFrame.Box)
         if not dlg.exec_():
             return  # nothing to do if cancelled
-        for i in repositories.all().values():
+        for i in list(repositories.all().values()):
             if dlg.editURL.text().strip() == i["url"] and dlg.editURL.text().strip() != repositories.all()[reposName]["url"]:
                 iface.pluginManagerInterface().pushMessage(self.tr("Unable to add another repository with the same URL!"), QgsMessageBar.WARNING)
                 return
@@ -491,7 +492,7 @@ class QgsPluginInstaller(QObject):
         reposName = reposName.decode('utf-8')
         settings = QSettings()
         settings.beginGroup(reposGroup)
-        if settings.value(reposName + "/url", "", type=unicode) == officialRepo[1]:
+        if settings.value(reposName + "/url", "", type=str) == officialRepo[1]:
             iface.pluginManagerInterface().pushMessage(self.tr("You can't remove the official QGIS Plugin Repository. You can disable it if needed."), QgsMessageBar.WARNING)
             return
         warning = self.tr("Are you sure you want to remove the following repository?") + "\n" + reposName

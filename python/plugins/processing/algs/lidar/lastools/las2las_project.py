@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
@@ -80,9 +83,9 @@ class las2las_project(LAStoolsAlgorithm):
                 if source_utm_zone != 0:
                     commands.append("-" + las2las_project.PROJECTIONS[source_projection])
                     if source_utm_zone > 60:
-                        commands.append(unicode(source_utm_zone - 60) + "M")
+                        commands.append(str(source_utm_zone - 60) + "M")
                     else:
-                        commands.append(unicode(source_utm_zone) + "N")
+                        commands.append(str(source_utm_zone) + "N")
             elif source_projection < 4:
                 source_sp_code = self.getParameterValue(las2las_project.SOURCE_SP)
                 if source_sp_code != 0:
@@ -97,9 +100,9 @@ class las2las_project(LAStoolsAlgorithm):
                 if target_utm_zone != 0:
                     commands.append("-target_" + las2las_project.PROJECTIONS[target_projection])
                     if target_utm_zone > 60:
-                        commands.append(unicode(target_utm_zone - 60) + "M")
+                        commands.append(str(target_utm_zone - 60) + "M")
                     else:
-                        commands.append(unicode(target_utm_zone) + "N")
+                        commands.append(str(target_utm_zone) + "N")
             elif target_projection < 4:
                 target_sp_code = self.getParameterValue(las2las_project.TARGET_SP)
                 if target_sp_code != 0:

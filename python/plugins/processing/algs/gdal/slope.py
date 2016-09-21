@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
@@ -69,17 +70,17 @@ class slope(GdalAlgorithm):
 
     def getConsoleCommands(self):
         arguments = ['slope']
-        arguments.append(unicode(self.getParameterValue(self.INPUT)))
-        output = unicode(self.getOutputValue(self.OUTPUT))
+        arguments.append(str(self.getParameterValue(self.INPUT)))
+        output = str(self.getOutputValue(self.OUTPUT))
         arguments.append(output)
 
         arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
 
         arguments.append('-b')
-        arguments.append(unicode(self.getParameterValue(self.BAND)))
+        arguments.append(str(self.getParameterValue(self.BAND)))
         arguments.append('-s')
-        arguments.append(unicode(self.getParameterValue(self.SCALE)))
+        arguments.append(str(self.getParameterValue(self.SCALE)))
 
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')

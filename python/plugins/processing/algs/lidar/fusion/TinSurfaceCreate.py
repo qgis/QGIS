@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Agresta S. Coop - www.agresta.org'
 __date__ = 'June 2014'
@@ -71,14 +74,14 @@ class TinSurfaceCreate(FusionAlgorithm):
         commands = [os.path.join(FusionUtils.FusionPath(), 'TINSurfaceCreate.exe')]
         commands.append('/verbose')
         class_var = self.getParameterValue(self.CLASS)
-        if unicode(class_var).strip():
-            commands.append('/class:' + unicode(class_var))
+        if str(class_var).strip():
+            commands.append('/class:' + str(class_var))
             return_sel = self.getParameterValue(self.RETURN)
-        if unicode(return_sel).strip():
-            commands.append('/return:' + unicode(return_sel))
+        if str(return_sel).strip():
+            commands.append('/return:' + str(return_sel))
         outFile = self.getOutputValue(self.OUTPUT)
         commands.append(outFile)
-        commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
+        commands.append(str(self.getParameterValue(self.CELLSIZE)))
         commands.append(self.UNITS[self.getParameterValue(self.XYUNITS)][0])
         commands.append(self.UNITS[self.getParameterValue(self.ZUNITS)][0])
         commands.append('0')

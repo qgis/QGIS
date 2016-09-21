@@ -20,6 +20,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -274,7 +275,7 @@ class ParametersPanel(BASE, WIDGET):
     def buttonToggled(self, value):
         if value:
             sender = self.sender()
-            for button in self.iterateButtons.values():
+            for button in list(self.iterateButtons.values()):
                 if button is not sender:
                     button.setChecked(False)
 
@@ -413,7 +414,7 @@ class ParametersPanel(BASE, WIDGET):
             else:
                 item = QLineEdit()
                 if param.default:
-                    item.setText(unicode(param.default))
+                    item.setText(str(param.default))
         elif isinstance(param, ParameterGeometryPredicate):
             item = GeometryPredicateSelectionPanel(param.enabledPredicates)
             if param.left:
@@ -434,7 +435,7 @@ class ParametersPanel(BASE, WIDGET):
         else:
             item = QLineEdit()
             if param.default:
-                item.setText(unicode(param.default))
+                item.setText(str(param.default))
 
         return item
 
@@ -473,7 +474,7 @@ class ParametersPanel(BASE, WIDGET):
         fieldNames = set()
         for field in layer.fields():
             if not fieldTypes or field.type() in fieldTypes:
-                fieldNames.add(unicode(field.name()))
+                fieldNames.add(str(field.name()))
         return sorted(list(fieldNames), cmp=locale.strcoll)
 
     def somethingDependsOnThisParameter(self, parent):

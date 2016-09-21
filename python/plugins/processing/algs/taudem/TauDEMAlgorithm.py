@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2012'
@@ -102,7 +105,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(unicode(processNum))
+        commands.append(str(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemPath(), self.cmdName))
 
         for param in self.parameters:
@@ -110,7 +113,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
                 continue
             if isinstance(param, ParameterNumber):
                 commands.append(param.name)
-                commands.append(unicode(param.value))
+                commands.append(str(param.value))
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 commands.append(param.name)
                 commands.append(param.value)
@@ -119,7 +122,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
                     commands.append(param.name)
             elif isinstance(param, ParameterString):
                 commands.append(param.name)
-                commands.append(unicode(param.value))
+                commands.append(str(param.value))
 
         for out in self.outputs:
             commands.append(out.name)

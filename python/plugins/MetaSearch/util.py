@@ -1,3 +1,6 @@
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
@@ -28,7 +31,7 @@
 import warnings
 warnings.filterwarnings("ignore", category=PendingDeprecationWarning)
 
-import ConfigParser
+import configparser
 from gettext import gettext, ngettext
 import logging
 import os
@@ -57,7 +60,7 @@ class StaticContext(object):
     def __init__(self):
         """init"""
         self.ppath = os.path.dirname(os.path.abspath(__file__))
-        self.metadata = ConfigParser.ConfigParser()
+        self.metadata = configparser.ConfigParser()
         self.metadata.readfp(open(os.path.join(self.ppath, 'metadata.txt')))
 
 

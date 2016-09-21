@@ -159,7 +159,7 @@ class Dissolve(GeoAlgorithm):
             nFeat = len(attribute_dict)
 
             nElement = 0
-            for key, value in geometry_dict.items():
+            for key, value in list(geometry_dict.items()):
                 outFeat = QgsFeature()
                 nElement += 1
                 progress.setPercentage(int(nElement * 100 / nFeat))

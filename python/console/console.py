@@ -18,6 +18,8 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
+from builtins import str
+from builtins import range
 import os
 
 from qgis.PyQt.QtCore import Qt, QTimer, QSettings, QCoreApplication, QSize, QByteArray, QFileInfo, QUrl, QDir
@@ -410,7 +412,7 @@ class PythonConsoleWidget(QWidget):
         }
 
         self.classMenu = QMenu()
-        for (title, icon), commands in default_command.items():
+        for (title, icon), commands in list(default_command.items()):
             action = self.classMenu.addAction(icon, title)
             action.triggered.connect(partial(self.shell.commandConsole, commands))
 

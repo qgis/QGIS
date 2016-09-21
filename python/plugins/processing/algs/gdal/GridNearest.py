@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
@@ -86,7 +87,7 @@ class GridNearest(GdalAlgorithm):
         arguments = ['-l']
         arguments.append(
             os.path.basename(os.path.splitext(
-                unicode(self.getParameterValue(self.INPUT)))[0]))
+                str(self.getParameterValue(self.INPUT)))[0]))
 
         fieldName = self.getParameterValue(self.Z_FIELD)
         if fieldName is not None and fieldName != '':
@@ -103,7 +104,7 @@ class GridNearest(GdalAlgorithm):
         arguments.append(params)
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-        arguments.append(unicode(self.getParameterValue(self.INPUT)))
-        arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
+        arguments.append(str(self.getParameterValue(self.INPUT)))
+        arguments.append(str(self.getOutputValue(self.OUTPUT)))
 
         return ['gdal_grid', GdalUtils.escapeAndJoin(arguments)]

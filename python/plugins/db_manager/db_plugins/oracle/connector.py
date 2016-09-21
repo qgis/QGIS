@@ -22,6 +22,8 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
 from qgis.PyQt.QtSql import QSqlDatabase
 
@@ -124,7 +126,7 @@ class OracleDBConnector(DBConnector):
         self._checkGeometryColumnsTable()
 
     def _connectionInfo(self):
-        return unicode(self._uri.connectionInfo(True))
+        return str(self._uri.connectionInfo(True))
 
     def _checkSpatial(self):
         """Check whether Oracle Spatial is present in catalog."""
@@ -530,8 +532,8 @@ class OracleDBConnector(DBConnector):
             geomtypes = item.pop()
             item.insert(0, Table.VectorType)
             if len(geomtypes) > 0 and len(srids) > 0:
-                geomtypes = [int(l) for l in unicode(geomtypes).split(u",")]
-                srids = [int(l) for l in unicode(srids).split(u",")]
+                geomtypes = [int(l) for l in str(geomtypes).split(u",")]
+                srids = [int(l) for l in str(srids).split(u",")]
                 geomtypes, srids = self.singleGeomTypes(geomtypes, srids)
                 for j in range(len(geomtypes)):
                     buf = list(item)
@@ -641,9 +643,9 @@ class OracleDBConnector(DBConnector):
                 if not self.onlyExistingTypes:
                     geomMultiTypes.append(0)
                     multiSrids.append(multiSrids[0])
-                buf.append(u",".join([unicode(x) for x in
+                buf.append(u",".join([str(x) for x in
                                       geomMultiTypes]))
-                buf.append(u",".join([unicode(x) for x in multiSrids]))
+                buf.append(u",".join([str(x) for x in multiSrids]))
                 items.append(buf)
 
             if self.allowGeometrylessTables and buf[-6] != u"UNKNOWN":
@@ -1532,7 +1534,7 @@ class OracleDBConnector(DBConnector):
                {3})
             """.format(self.quoteString(tablename),
                        self.quoteString(geom_column),
-                       sqlExtent, unicode(srid))
+                       sqlExtent, str(srid))
 
         self._execute_and_commit(sql)
 

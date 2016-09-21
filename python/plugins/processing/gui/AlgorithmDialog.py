@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -167,7 +169,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
             return param.setValue(widget.getValue())
         elif isinstance(param, ParameterString):
             if param.multiline:
-                text = unicode(widget.toPlainText())
+                text = str(widget.toPlainText())
             else:
                 text = widget.text()
 
@@ -180,7 +182,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
         elif isinstance(param, ParameterGeometryPredicate):
             return param.setValue(widget.value())
         else:
-            return param.setValue(unicode(widget.text()))
+            return param.setValue(str(widget.text()))
 
     def accept(self):
         self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
@@ -207,10 +209,10 @@ class AlgorithmDialog(AlgorithmDialogBase):
             buttons = self.mainWidget.iterateButtons
             self.iterateParam = None
 
-            for i in range(len(buttons.values())):
-                button = buttons.values()[i]
+            for i in range(len(list(buttons.values()))):
+                button = list(buttons.values())[i]
                 if button.isChecked():
-                    self.iterateParam = buttons.keys()[i]
+                    self.iterateParam = list(buttons.keys())[i]
                     break
 
             self.progressBar.setMaximum(0)

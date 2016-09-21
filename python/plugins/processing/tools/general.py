@@ -17,6 +17,9 @@
 ***************************************************************************
 """
 from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'April 2013'
@@ -30,7 +33,7 @@ import os
 try:
     import configparser
 except ImportError:
-    import ConfigParser as configparser
+    import configparser as configparser
 
 from processing.core.Processing import Processing
 from processing.core.alglist import algList
@@ -40,8 +43,8 @@ from processing.gui.Postprocessing import handleAlgorithmResults
 
 def alglist(text=None):
     s = ''
-    for provider in algList.algs.values():
-        sortedlist = sorted(provider.values(), key=lambda alg: alg.name)
+    for provider in list(algList.algs.values()):
+        sortedlist = sorted(list(provider.values()), key=lambda alg: alg.name)
         for alg in sortedlist:
             if text is None or text.lower() in alg.name.lower():
                 s += alg.name.ljust(50, '-') + '--->' + alg.commandLineName() \
@@ -58,7 +61,7 @@ def algoptions(name):
                 s += param.name + '(' + param.description + ')\n'
                 i = 0
                 for option in param.options:
-                    s += '\t' + unicode(i) + ' - ' + unicode(option) + '\n'
+                    s += '\t' + str(i) + ' - ' + str(option) + '\n'
                     i += 1
         print(s)
     else:
@@ -69,7 +72,7 @@ def alghelp(name):
     alg = Processing.getAlgorithm(name)
     if alg is not None:
         alg = alg.getCopy()
-        print(unicode(alg))
+        print(str(alg))
         algoptions(name)
     else:
         print('Algorithm not found')

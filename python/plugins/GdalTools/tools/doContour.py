@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'
@@ -98,7 +99,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             arguments.append(self.attributeEdit.text())
         if True:  # XXX in this moment the -i argument is not optional
             arguments.append("-i")
-            arguments.append(unicode(self.intervalDSpinBox.value()))
+            arguments.append(str(self.intervalDSpinBox.value()))
 
         outputFn = self.getOutputFileName()
         if outputFn:

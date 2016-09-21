@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'
@@ -146,7 +147,7 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
 
     # called when a value in the plugin widget interface changed
     def handleRefreshArgs(self, args):
-        self.arguments = [unicode(a) for a in args]
+        self.arguments = [str(a) for a in args]
 
         if not self.commandIsEnabled():
             self.textEditCommand.setPlainText(self.command)
@@ -205,9 +206,9 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
             return
 
         # show the error message if there's one, otherwise show the process output message
-        msg = unicode(self.process.readAllStandardError())
+        msg = str(self.process.readAllStandardError())
         if msg == '':
-            outMessages = unicode(self.process.readAllStandardOutput()).splitlines()
+            outMessages = str(self.process.readAllStandardOutput()).splitlines()
 
             # make sure to not show the help
             for m in outMessages:

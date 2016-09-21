@@ -21,6 +21,7 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import range
 
 from qgis.PyQt.QtCore import Qt, pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QApplication

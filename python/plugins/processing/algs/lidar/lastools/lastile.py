@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
@@ -62,11 +65,11 @@ class lastile(LAStoolsAlgorithm):
         self.addParametersPointInputCommands(commands)
         tile_size = self.getParameterValue(lastile.TILE_SIZE)
         commands.append("-tile_size")
-        commands.append(unicode(tile_size))
+        commands.append(str(tile_size))
         buffer = self.getParameterValue(lastile.BUFFER)
         if buffer != 0.0:
             commands.append("-buffer")
-            commands.append(unicode(buffer))
+            commands.append(str(buffer))
         if self.getParameterValue(lastile.FLAG_AS_WITHHELD):
             commands.append("-flag_as_withheld")
         if self.getParameterValue(lastile.REVERSIBLE):

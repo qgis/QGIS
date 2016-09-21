@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2012'
@@ -36,7 +37,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import isMac
 
 
-class TauDEMUtils:
+class TauDEMUtils(object):
 
     TAUDEM_FOLDER = 'TAUDEM_FOLDER'
     TAUDEM_MULTIFILE_FOLDER = 'TAUDEM_MULTIFILE_FOLDER'

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -74,14 +75,14 @@ class fillnodata(GdalAlgorithm):
 
         arguments = []
         arguments.append('-md')
-        arguments.append(unicode(self.getParameterValue(self.DISTANCE)))
+        arguments.append(str(self.getParameterValue(self.DISTANCE)))
 
         if self.getParameterValue(self.ITERATIONS) != 0:
             arguments.append('-si')
-            arguments.append(unicode(self.getParameterValue(self.ITERATIONS)))
+            arguments.append(str(self.getParameterValue(self.ITERATIONS)))
 
         arguments.append('-b')
-        arguments.append(unicode(self.getParameterValue(self.BAND)))
+        arguments.append(str(self.getParameterValue(self.BAND)))
 
         mask = self.getParameterValue(self.MASK)
         if mask is not None:

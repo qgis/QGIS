@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 
 __author__ = 'Victor Olaya'
@@ -83,10 +84,10 @@ def runalgIterating(alg, paramToIter, progress):
         for out in alg.outputs:
             filename = outputs[out.name]
             if filename:
-                filename = filename[:filename.rfind('.')] + '_' + unicode(i) \
+                filename = filename[:filename.rfind('.')] + '_' + str(i) \
                     + filename[filename.rfind('.'):]
             out.value = filename
-        progress.setText(tr('Executing iteration %s/%s...' % (unicode(i), unicode(len(filelist)))))
+        progress.setText(tr('Executing iteration %s/%s...' % (str(i), str(len(filelist)))))
         progress.setPercentage(i * 100 / len(filelist))
         if runalg(alg):
             handleAlgorithmResults(alg, None, False)

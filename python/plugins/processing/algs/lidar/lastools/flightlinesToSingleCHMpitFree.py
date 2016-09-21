@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'May 2014'
@@ -70,11 +73,11 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("-files_are_flightlines")
         tile_size = self.getParameterValue(flightlinesToSingleCHMpitFree.TILE_SIZE)
         commands.append("-tile_size")
-        commands.append(unicode(tile_size))
+        commands.append(str(tile_size))
         buffer = self.getParameterValue(flightlinesToSingleCHMpitFree.BUFFER)
         if buffer != 0.0:
             commands.append("-buffer")
-            commands.append(unicode(buffer))
+            commands.append(str(buffer))
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
         commands.append("-o")
         commands.append("tile.laz")
@@ -122,9 +125,9 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         beam_width = self.getParameterValue(flightlinesToSingleCHMpitFree.BEAM_WIDTH)
         if beam_width != 0.0:
             commands.append("-subcircle")
-            commands.append(unicode(beam_width / 2))
+            commands.append(str(beam_width / 2))
         commands.append("-step")
-        commands.append(unicode(step / 4))
+        commands.append(str(step / 4))
         commands.append("-highest")
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
         commands.append("-odix")
@@ -158,7 +161,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("2")
         self.addParametersStepCommands(commands)
         commands.append("-kill")
-        commands.append(unicode(step * 3))
+        commands.append(str(step * 3))
         commands.append("-use_tile_bb")
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
         commands.append("-ocut")
@@ -178,7 +181,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("5")
         self.addParametersStepCommands(commands)
         commands.append("-kill")
-        commands.append(unicode(step * 3))
+        commands.append(str(step * 3))
         commands.append("-use_tile_bb")
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
         commands.append("-ocut")
@@ -198,7 +201,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("10")
         self.addParametersStepCommands(commands)
         commands.append("-kill")
-        commands.append(unicode(step * 3))
+        commands.append(str(step * 3))
         commands.append("-use_tile_bb")
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
         commands.append("-ocut")
@@ -218,7 +221,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("15")
         self.addParametersStepCommands(commands)
         commands.append("-kill")
-        commands.append(unicode(step * 3))
+        commands.append(str(step * 3))
         commands.append("-use_tile_bb")
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
         commands.append("-ocut")
@@ -238,7 +241,7 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         commands.append("20")
         self.addParametersStepCommands(commands)
         commands.append("-kill")
-        commands.append(unicode(step * 3))
+        commands.append(str(step * 3))
         commands.append("-use_tile_bb")
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
         commands.append("-ocut")

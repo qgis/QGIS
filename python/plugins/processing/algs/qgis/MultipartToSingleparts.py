@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -101,7 +102,7 @@ class MultipartToSingleparts(GeoAlgorithm):
             else:
                 return QgsWkbTypes.Unknown
         except Exception as err:
-            raise GeoAlgorithmExecutionException(unicode(err))
+            raise GeoAlgorithmExecutionException(str(err))
 
     def extractAsSingle(self, geom):
         multiGeom = QgsGeometry()

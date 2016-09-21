@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'
@@ -30,7 +31,7 @@ from .dialogBase import GdalToolsBaseDialog as BaseDialog
 from . import GdalTools_utils as Utils
 
 
-class GdalToolsBasePluginWidget:
+class GdalToolsBasePluginWidget(object):
 
     def __init__(self, iface, commandName):
         self.iface = iface

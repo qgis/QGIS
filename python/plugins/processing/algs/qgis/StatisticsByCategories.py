@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'September 2012'
@@ -72,7 +73,7 @@ class StatisticsByCategories(GeoAlgorithm):
             attrs = feat.attributes()
             try:
                 value = float(attrs[valuesField])
-                cat = unicode(attrs[categoriesField])
+                cat = str(attrs[categoriesField])
                 if cat not in values:
                     values[cat] = []
                 values[cat].append(value)
@@ -85,7 +86,7 @@ class StatisticsByCategories(GeoAlgorithm):
                                      QgsStatisticalSummary.Mean | QgsStatisticalSummary.StDevSample |
                                      QgsStatisticalSummary.Sum | QgsStatisticalSummary.Count)
 
-        for (cat, v) in values.items():
+        for (cat, v) in list(values.items()):
             stat.calculate(v)
             record = [cat, stat.min(), stat.max(), stat.mean(), stat.sampleStDev(), stat.sum(), stat.count()]
             writer.addRecord(record)

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'
@@ -152,15 +153,15 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments = []
         if self.noDataCheck.isChecked():
             arguments.append("-a_nodata")
-            arguments.append(unicode(self.noDataSpin.value()))
+            arguments.append(str(self.noDataSpin.value()))
         if self.extentModeRadio.isChecked() and self.extentSelector.isCoordsValid():
             rect = self.extentSelector.getExtent()
             if rect is not None and not inputFn == '':
                 arguments.append("-projwin")
-                arguments.append(unicode(rect.xMinimum()))
-                arguments.append(unicode(rect.yMaximum()))
-                arguments.append(unicode(rect.xMaximum()))
-                arguments.append(unicode(rect.yMinimum()))
+                arguments.append(str(rect.xMinimum()))
+                arguments.append(str(rect.yMaximum()))
+                arguments.append(str(rect.xMaximum()))
+                arguments.append(str(rect.yMinimum()))
         outputFn = self.getOutputFileName()
         if not outputFn == '':
             arguments.append("-of")
@@ -175,7 +176,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments = []
         if self.noDataCheck.isChecked():
             arguments.append("-dstnodata")
-            arguments.append(unicode(self.noDataSpin.value()))
+            arguments.append(str(self.noDataSpin.value()))
         if self.maskModeRadio.isChecked():
             mask = self.maskSelector.filename()
             if not mask == '' and not inputFn == '':
@@ -195,8 +196,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
                         arguments.append(resolution[1])
                 else:
                     arguments.append("-tr")
-                    arguments.append(unicode(self.xRes.value()))
-                    arguments.append(unicode(self.yRes.value()))
+                    arguments.append(str(self.xRes.value()))
+                    arguments.append(str(self.yRes.value()))
         outputFn = self.getOutputFileName()
         if not outputFn == '':
             arguments.append("-of")

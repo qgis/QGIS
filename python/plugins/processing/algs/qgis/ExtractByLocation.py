@@ -85,7 +85,7 @@ class ExtractByLocation(GeoAlgorithm):
             intersects = index.intersects(bbox)
             for i in intersects:
                 request = QgsFeatureRequest().setFilterFid(i)
-                feat = layer.getFeatures(request).next()
+                feat = next(layer.getFeatures(request))
                 tmpGeom = vector.snapToPrecision(feat.geometry(), precision)
                 res = False
                 for predicate in predicates:

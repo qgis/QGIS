@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -88,7 +89,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
                 for inFeat in features:
                     atMap = inFeat.attributes()
                     idVar = atMap[index]
-                    if unicode(idVar).strip() == unicode(i).strip():
+                    if str(idVar).strip() == str(i).strip():
                         if first:
                             attrs = atMap
                             first = False

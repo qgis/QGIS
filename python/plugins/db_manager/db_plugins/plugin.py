@@ -19,6 +19,8 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
 from qgis.PyQt.QtCore import Qt, QObject, QSettings, pyqtSignal
 from qgis.PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMessageBox
@@ -38,8 +40,8 @@ class BaseError(Exception):
         else:
             msg = e
 
-        if not isinstance(msg, unicode):
-            msg = unicode(msg, 'utf-8', 'replace')  # convert from utf8 and replace errors (if any)
+        if not isinstance(msg, str):
+            msg = str(msg, 'utf-8', 'replace')  # convert from utf8 and replace errors (if any)
 
         self.msg = msg
         Exception.__init__(self, msg)
@@ -48,7 +50,7 @@ class BaseError(Exception):
         return self.msg
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return str(self).encode('utf-8')
 
 
 class InvalidDataException(BaseError):
@@ -63,7 +65,7 @@ class DbError(BaseError):
 
     def __init__(self, e, query=None):
         BaseError.__init__(self, e)
-        self.query = unicode(query) if query is not None else None
+        self.query = str(query) if query is not None else None
 
     def __unicode__(self):
         if self.query is None:
@@ -593,7 +595,7 @@ class Schema(DbItemObject):
 
 
 class Table(DbItemObject):
-    TableType, VectorType, RasterType = range(3)
+    TableType, VectorType, RasterType = list(range(3))
 
     def __init__(self, db, schema=None, parent=None):
         DbItemObject.__init__(self, db)
@@ -870,7 +872,7 @@ class Table(DbItemObject):
             self.refresh()
 
     def runAction(self, action):
-        action = unicode(action)
+        action = str(action)
 
         if action.startswith("rows/"):
             if action == "rows/count":
@@ -992,7 +994,7 @@ class VectorTable(Table):
             self.refresh()
 
     def runAction(self, action):
-        action = unicode(action)
+        action = str(action)
 
         if action.startswith("spatialindex/"):
             parts = action.split('/')
@@ -1113,7 +1115,7 @@ class TableConstraint(TableSubItemObject):
 
     """ class that represents a constraint of a table (relation) """
 
-    TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique, TypeExclusion, TypeUnknown = range(6)
+    TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique, TypeExclusion, TypeUnknown = list(range(6))
     types = {"c": TypeCheck, "f": TypeForeignKey, "p": TypePrimaryKey, "u": TypeUnique, "x": TypeExclusion}
 
     onAction = {"a": "NO ACTION", "r": "RESTRICT", "c": "CASCADE", "n": "SET NULL", "d": "SET DEFAULT"}

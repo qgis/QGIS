@@ -105,7 +105,7 @@ class SumLines(GeoAlgorithm):
             if hasIntersections:
                 for i in lines:
                     request = QgsFeatureRequest().setFilterFid(i)
-                    ftLine = lineLayer.getFeatures(request).next()
+                    ftLine = next(lineLayer.getFeatures(request))
                     tmpGeom = ftLine.geometry()
                     if inGeom.intersects(tmpGeom):
                         outGeom = inGeom.intersection(tmpGeom)

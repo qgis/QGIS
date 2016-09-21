@@ -45,7 +45,7 @@ wkbTypeGroups = {
     'LineString': (QgsWkbTypes.LineString, QgsWkbTypes.MultiLineString, QgsWkbTypes.LineString25D, QgsWkbTypes.MultiLineString25D,),
     'Polygon': (QgsWkbTypes.Polygon, QgsWkbTypes.MultiPolygon, QgsWkbTypes.Polygon25D, QgsWkbTypes.MultiPolygon25D,),
 }
-for key, value in wkbTypeGroups.items():
+for key, value in list(wkbTypeGroups.items()):
     for const in value:
         wkbTypeGroups[const] = key
 
@@ -107,7 +107,7 @@ class Union(GeoAlgorithm):
                 for id in intersects:
                     count += 1
                     request = QgsFeatureRequest().setFilterFid(id)
-                    inFeatB = vlayerB.getFeatures(request).next()
+                    inFeatB = next(vlayerB.getFeatures(request))
                     atMapB = inFeatB.attributes()
                     tmpGeom = inFeatB.geometry()
 
@@ -198,7 +198,7 @@ class Union(GeoAlgorithm):
             else:
                 for id in intersects:
                     request = QgsFeatureRequest().setFilterFid(id)
-                    inFeatB = vlayerA.getFeatures(request).next()
+                    inFeatB = next(vlayerA.getFeatures(request))
                     atMapB = inFeatB.attributes()
                     tmpGeom = inFeatB.geometry()
 

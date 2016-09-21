@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Alexander Bruy'
 __date__ = 'August 2013'
@@ -55,7 +57,7 @@ class PointsFromLines(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
 
-        rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
+        rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
 
         rasterDS = gdal.Open(rasterPath, gdal.GA_ReadOnly)
         geoTransform = rasterDS.GetGeoTransform()
@@ -83,7 +85,7 @@ class PointsFromLines(GeoAlgorithm):
             if geom.isMultipart():
                 lines = geom.asMultiPolyline()
                 for line in lines:
-                    for i in xrange(len(line) - 1):
+                    for i in range(len(line) - 1):
                         p1 = line[i]
                         p2 = line[i + 1]
 
@@ -96,7 +98,7 @@ class PointsFromLines(GeoAlgorithm):
                                        writer, outFeature)
             else:
                 points = geom.asPolyline()
-                for i in xrange(len(points) - 1):
+                for i in range(len(points) - 1):
                     p1 = points[i]
                     p2 = points[i + 1]
 
@@ -118,13 +120,13 @@ class PointsFromLines(GeoAlgorithm):
             if startY > endY:
                 (startY, endY) = (endY, startY)
             row = startX
-            for col in xrange(startY, endY + 1):
+            for col in range(startY, endY + 1):
                 self.createPoint(row, col, geoTransform, writer, feature)
         elif startY == endY:
             if startX > endX:
                 (startX, endX) = (endX, startX)
             col = startY
-            for row in xrange(startX, endX + 1):
+            for row in range(startX, endX + 1):
                 self.createPoint(row, col, geoTransform, writer, feature)
         else:
             width = endX - startX
@@ -154,7 +156,7 @@ class PointsFromLines(GeoAlgorithm):
                 dx2 = 0
 
             err = longest / 2
-            for i in xrange(longest + 1):
+            for i in range(longest + 1):
                 self.createPoint(startX, startY, geoTransform, writer, feature)
 
                 err += shortest

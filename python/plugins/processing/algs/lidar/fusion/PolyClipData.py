@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = "Niccolo' Marchi"
 __date__ = 'May 2014'
@@ -63,7 +66,7 @@ class PolyClipData(FusionAlgorithm):
         commands = [os.path.join(FusionUtils.FusionPath(), 'PolyClipData.exe')]
         commands.append('/verbose')
         if self.getParameterValue(self.SHAPE):
-            commands.append('/shape:' + unicode(self.getParameterValue(self.FIELD)) + ',' + unicode(self.getParameterValue(self.VALUE)))
+            commands.append('/shape:' + str(self.getParameterValue(self.FIELD)) + ',' + str(self.getParameterValue(self.VALUE)))
         self.addAdvancedModifiersToCommand(commands)
         commands.append(self.getParameterValue(self.MASK))
         outFile = self.getOutputValue(self.OUTPUT)

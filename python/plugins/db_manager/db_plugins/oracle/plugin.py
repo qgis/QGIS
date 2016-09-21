@@ -22,6 +22,8 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import OracleDBConnector
@@ -97,15 +99,15 @@ class OracleDBPlugin(DBPlugin):
 
         useEstimatedMetadata = settings.value(
             "estimatedMetadata", False, type=bool)
-        uri.setParam('userTablesOnly', unicode(
+        uri.setParam('userTablesOnly', str(
             settings.value("userTablesOnly", False, type=bool)))
-        uri.setParam('geometryColumnsOnly', unicode(
+        uri.setParam('geometryColumnsOnly', str(
             settings.value("geometryColumnsOnly", False, type=bool)))
-        uri.setParam('allowGeometrylessTables', unicode(
+        uri.setParam('allowGeometrylessTables', str(
             settings.value("allowGeometrylessTables", False, type=bool)))
-        uri.setParam('onlyExistingTypes', unicode(
+        uri.setParam('onlyExistingTypes', str(
             settings.value("onlyExistingTypes", False, type=bool)))
-        uri.setParam('includeGeoAttributes', unicode(
+        uri.setParam('includeGeoAttributes', str(
             settings.value("includeGeoAttributes", False, type=bool)))
 
         settings.endGroup()
@@ -118,7 +120,7 @@ class OracleDBPlugin(DBPlugin):
         try:
             return self.connectToUri(uri)
         except ConnectionError as e:
-            err = unicode(e)
+            err = str(e)
 
         # ask for valid credentials
         max_attempts = 3
@@ -136,7 +138,7 @@ class OracleDBPlugin(DBPlugin):
             except ConnectionError as e:
                 if i == max_attempts - 1:  # failed the last attempt
                     raise e
-                err = unicode(e)
+                err = str(e)
                 continue
 
             QgsCredentials.instance().put(
@@ -210,7 +212,7 @@ class ORDatabase(Database):
                 u"({})".format(sql), geomCol)
             uri.setWkbType(wkbType)
             if srid:
-                uri.setSrid(unicode(srid))
+                uri.setSrid(str(srid))
             vlayer = QgsVectorLayer(uri.uri(False), layerName, provider)
 
         return vlayer
@@ -317,7 +319,7 @@ class ORTable(Table):
             return None
 
     def runAction(self, action):
-        action = unicode(action)
+        action = str(action)
 
         if action.startswith("rows/"):
             if action == "rows/recount":
@@ -429,7 +431,7 @@ class ORTable(Table):
         # Handle geographic table
         if geomCol:
             uri.setWkbType(self.wkbType)
-            uri.setSrid(unicode(self.srid))
+            uri.setSrid(str(self.srid))
 
         return uri
 
@@ -556,7 +558,7 @@ class ORTableField(TableField):
 class ORTableConstraint(TableConstraint):
 
     TypeCheck, TypeForeignKey, TypePrimaryKey, \
-        TypeUnique, TypeUnknown = range(5)
+        TypeUnique, TypeUnknown = list(range(5))
 
     types = {"c": TypeCheck, "r": TypeForeignKey,
              "p": TypePrimaryKey, "u": TypeUnique}

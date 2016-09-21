@@ -19,6 +19,7 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 """
 from __future__ import print_function
+from builtins import object
 
 from qgis.PyQt.QtCore import QUrl, QTemporaryFile
 
@@ -30,7 +31,7 @@ from qgis.core import Qgis, QgsDataSourceUri, QgsVirtualLayerDefinition, QgsMapL
 import sqlite3
 
 
-class sqlite3_connection:
+class sqlite3_connection(object):
 
     def __init__(self, sqlite_file):
         self.conn = sqlite3.connect(sqlite_file)
@@ -60,7 +61,7 @@ def classFactory():
 # Tables in DB Manager are identified by their display names
 # This global registry maps a display name with a layer id
 # It is filled when getVectorTables is called
-class VLayerRegistry:
+class VLayerRegistry(object):
     _instance = None
 
     @classmethod
@@ -107,7 +108,7 @@ class VLayerConnector(DBConnector):
 
     def _execute(self, cursor, sql):
         # This is only used to get list of fields
-        class DummyCursor:
+        class DummyCursor(object):
 
             def __init__(self, sql):
                 self.sql = sql

@@ -17,6 +17,8 @@
 ***************************************************************************
 """
 from __future__ import print_function
+from builtins import str
+from builtins import object
 
 
 __author__ = 'Victor Olaya'
@@ -66,7 +68,7 @@ from processing.algs.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvid
 from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider
 
 
-class Processing:
+class Processing(object):
 
     providers = []
 
@@ -220,7 +222,7 @@ class Processing:
             # Set params by name and try to run the alg even if not all parameter values are provided,
             # by using the default values instead.
             setParams = []
-            for (name, value) in args[0].items():
+            for (name, value) in list(args[0].items()):
                 param = alg.getParameterFromName(name)
                 if param and param.setValue(value):
                     setParams.append(name)
@@ -262,8 +264,8 @@ class Processing:
                 if not param.hidden:
                     if not param.setValue(args[i]):
                         # fix_print_with_import
-                        print('Error: Wrong parameter value: ' + unicode(args[i]))
-                        QgsMessageLog.logMessage(Processing.tr('Error: Wrong parameter value: ') + unicode(args[i]), Processing.tr("Processing"))
+                        print('Error: Wrong parameter value: ' + str(args[i]))
+                        QgsMessageLog.logMessage(Processing.tr('Error: Wrong parameter value: ') + str(args[i]), Processing.tr("Processing"))
                         return
                     i = i + 1
 
@@ -271,15 +273,15 @@ class Processing:
                 if not output.hidden:
                     if not output.setValue(args[i]):
                         # fix_print_with_import
-                        print('Error: Wrong output value: ' + unicode(args[i]))
-                        QgsMessageLog.logMessage(Processing.tr('Error: Wrong output value: ') + unicode(args[i]), Processing.tr("Processing"))
+                        print('Error: Wrong output value: ' + str(args[i]))
+                        QgsMessageLog.logMessage(Processing.tr('Error: Wrong output value: ') + str(args[i]), Processing.tr("Processing"))
                         return
                     i = i + 1
 
         msg = alg._checkParameterValuesBeforeExecuting()
         if msg:
             # fix_print_with_import
-            print('Unable to execute algorithm\n' + unicode(msg))
+            print('Unable to execute algorithm\n' + str(msg))
             QgsMessageLog.logMessage(Processing.tr('Unable to execute algorithm\n{0}').format(msg), Processing.tr("Processing"))
             return
 
@@ -301,7 +303,7 @@ class Processing:
                 overrideCursor = True
 
         progress = None
-        if kwargs is not None and "progress" in kwargs.keys():
+        if kwargs is not None and "progress" in list(kwargs.keys()):
             progress = kwargs["progress"]
         elif iface is not None:
             progress = MessageBarProgress(alg.name)

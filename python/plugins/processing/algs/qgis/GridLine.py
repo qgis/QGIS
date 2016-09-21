@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Michael Minn'
 __date__ = 'May 2010'
@@ -111,10 +112,10 @@ class GridLine(GeoAlgorithm):
         rows = int(math.ceil(float(height) / vSpacing))
 
         # Longitude lines
-        for col in xrange(columns + 1):
+        for col in range(columns + 1):
             polyline = []
             x = originX + (col * hSpacing)
-            for row in xrange(rows + 1):
+            for row in range(rows + 1):
                 y = originY - (row * vSpacing)
                 polyline.append(QgsPoint(x, y))
 
@@ -123,10 +124,10 @@ class GridLine(GeoAlgorithm):
             writer.addFeature(ft)
 
         # Latitude lines
-        for row in xrange(rows + 1):
+        for row in range(rows + 1):
             polyline = []
             y = originY - (row * vSpacing)
-            for col in xrange(columns + 1):
+            for col in range(columns + 1):
                 x = originX + (col * hSpacing)
                 polyline.append(QgsPoint(x, y))
 

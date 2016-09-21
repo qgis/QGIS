@@ -17,6 +17,10 @@
 ***************************************************************************
 """
 from __future__ import print_function
+from past.builtins import cmp
+from builtins import str
+from builtins import range
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -228,9 +232,9 @@ def voronoi(siteList, context):
         priorityQ = PriorityQueue(siteList.ymin, siteList.ymax, len(siteList))
         siteIter = siteList.iterator()
 
-        bottomsite = siteIter.next()
+        bottomsite = next(siteIter)
         context.outSite(bottomsite)
-        newsite = siteIter.next()
+        newsite = next(siteIter)
         minpt = Site(-BIG_FLOAT, -BIG_FLOAT)
         while True:
             if not priorityQ.isEmpty():
@@ -275,7 +279,7 @@ def voronoi(siteList, context):
                     # push the Halfedge into the ordered linked list of vertices
                     priorityQ.insert(bisector, p, newsite.distance(p))
 
-                newsite = siteIter.next()
+                newsite = next(siteIter)
 
             elif not priorityQ.isEmpty():
                 # intersection is smallest - this is a vector (circle) event
@@ -362,7 +366,7 @@ def voronoi(siteList, context):
         # fix_print_with_import
         print("######################################################")
         # fix_print_with_import
-        print(unicode(err))
+        print(str(err))
 
 #------------------------------------------------------------------
 
@@ -788,7 +792,7 @@ class SiteList(object):
 
         def next(this):
             try:
-                return this.generator.next()
+                return next(this.generator)
             except StopIteration:
                 return None
 

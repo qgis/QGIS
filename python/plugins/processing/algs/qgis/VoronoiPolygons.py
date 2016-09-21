@@ -109,9 +109,9 @@ class VoronoiPolygons(GeoAlgorithm):
         current = 0
         total = 100.0 / len(c.polygons)
 
-        for (site, edges) in c.polygons.iteritems():
+        for (site, edges) in c.polygons.items():
             request = QgsFeatureRequest().setFilterFid(ptDict[ids[site]])
-            inFeat = layer.getFeatures(request).next()
+            inFeat = next(layer.getFeatures(request))
             lines = self.clip_voronoi(edges, c, width, height, extent, extraX, extraY)
 
             geom = QgsGeometry.fromMultiPoint(lines)

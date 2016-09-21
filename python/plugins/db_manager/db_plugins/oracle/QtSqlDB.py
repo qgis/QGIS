@@ -19,6 +19,8 @@ email                : jef at norbit dot de
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import range
+from builtins import object
 
 from qgis.PyQt.QtCore import QVariant, QDate, QTime, QDateTime, QByteArray
 from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery, QSqlField
@@ -67,7 +69,7 @@ class ExecError(Exception):
         super(Exception, self).__init__(*args, **kwargs)
 
 
-class QtSqlDBCursor:
+class QtSqlDBCursor(object):
 
     def __init__(self, conn):
         self.qry = QSqlQuery(conn)
@@ -108,9 +110,9 @@ class QtSqlDBCursor:
             elif f.type() == QVariant.Int:
                 t = int
             elif f.type() == QVariant.String:
-                t = unicode
+                t = str
             elif f.type() == QVariant.ByteArray:
-                t = unicode
+                t = str
             else:
                 continue
 
@@ -142,7 +144,7 @@ class QtSqlDBCursor:
         return self.qry.seek(row)
 
     def fetchone(self):
-        if not self.qry.next():
+        if not next(self.qry):
             return None
 
         row = []
@@ -187,7 +189,7 @@ class QtSqlDBCursor:
         raise ExecError("nyi")
 
 
-class QtSqlDBConnection:
+class QtSqlDBConnection(object):
     connections = 0
 
     def __init__(self, driver, dbname, user, passwd):

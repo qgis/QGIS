@@ -59,9 +59,9 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
 
     def execute(self, progress):
         self.alg = algList.getAlgorithm(self.description["algname"]).getCopy()
-        for name, value in self.description["parameters"].iteritems():
+        for name, value in self.description["parameters"].items():
             self.alg.setParameterValue(name, value)
-        for name, value in self.description["outputs"].iteritems():
+        for name, value in self.description["outputs"].items():
             self.alg.setOutputValue(name, value)
         self.alg.execute(progress)
         self.outputs = self.alg.outputs

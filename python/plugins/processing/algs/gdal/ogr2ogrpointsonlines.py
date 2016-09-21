@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giovanni Manghi'
 __date__ = 'January 2015'
@@ -67,14 +68,14 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         layername = "'" + ogrLayerName(inLayer) + "'"
-        distance = unicode(self.getParameterValue(self.DISTANCE))
-        geometry = unicode(self.getParameterValue(self.GEOMETRY))
+        distance = str(self.getParameterValue(self.DISTANCE))
+        geometry = str(self.getParameterValue(self.GEOMETRY))
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
         output = ogrConnectionString(outFile)
-        options = unicode(self.getParameterValue(self.OPTIONS))
+        options = str(self.getParameterValue(self.OPTIONS))
 
         arguments = []
         arguments.append(output)

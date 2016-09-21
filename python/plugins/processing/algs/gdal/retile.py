@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'January 2016'
@@ -93,7 +94,7 @@ class retile(GdalAlgorithm):
                                          self.TYPE, 5, False, True))
         params.append(ParameterSelection(self.FORMAT,
                                          self.tr('Output raster format'),
-                                         GdalUtils.getSupportedRasters().keys(), 0, False, True))
+                                         list(GdalUtils.getSupportedRasters().keys()), 0, False, True))
         params.append(ParameterBoolean(self.USEDIRFOREACHROW,
                                        self.tr('Use a directory for each row'),
                                        False, True))
@@ -126,7 +127,7 @@ class retile(GdalAlgorithm):
             arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
 
         arguments.append('-of')
-        arguments.append(GdalUtils.getSupportedRasters().keys()[self.getParameterValue(self.FORMAT)])
+        arguments.append(list(GdalUtils.getSupportedRasters().keys())[self.getParameterValue(self.FORMAT)])
 
         if self.getParameterValue(self.PIXELSIZE):
             pixelSize = self.getParameterValue(self.PIXELSIZE)
@@ -142,14 +143,14 @@ class retile(GdalAlgorithm):
         if self.getParameterValue(self.USEDIRFOREACHROW):
             arguments.append('-useDirForEachRow')
 
-        ssrs = unicode(self.getParameterValue(self.S_SRS))
+        ssrs = str(self.getParameterValue(self.S_SRS))
         if len(ssrs) > 0:
             arguments.append('-s_srs')
             arguments.append(ssrs)
 
         if self.getParameterValue(self.PYRAMIDLEVELS):
             arguments.append('-levels')
-            arguments.append(unicode(self.getParameterValue(self.PYRAMIDLEVELS)))
+            arguments.append(str(self.getParameterValue(self.PYRAMIDLEVELS)))
 
         arguments.append('-r')
         arguments.append(self.ALGO[self.getParameterValue(self.ALGORITHM)])

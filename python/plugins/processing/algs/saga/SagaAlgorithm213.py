@@ -16,6 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'December 2014'
@@ -135,14 +139,14 @@ class SagaAlgorithm213(SagaAlgorithm212):
             if isinstance(param, (ParameterRaster, ParameterVector,
                                   ParameterTable)):
                 value = param.value
-                if value in self.exportedLayers.keys():
+                if value in list(self.exportedLayers.keys()):
                     command += ' -' + param.name + ' "' \
                         + self.exportedLayers[value] + '"'
                 else:
                     command += ' -' + param.name + ' "' + value + '"'
             elif isinstance(param, ParameterMultipleInput):
                 s = param.value
-                for layer in self.exportedLayers.keys():
+                for layer in list(self.exportedLayers.keys()):
                     s = s.replace(layer, self.exportedLayers[layer])
                 command += ' -' + param.name + ' "' + s + '"'
             elif isinstance(param, ParameterBoolean):
@@ -169,11 +173,11 @@ class SagaAlgorithm213(SagaAlgorithm212):
                 values = param.value.split(',')
                 for i in range(4):
                     command += ' -' + self.extentParamNames[i] + ' ' \
-                        + unicode(float(values[i]) + offset[i])
+                        + str(float(values[i]) + offset[i])
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
-                command += ' -' + param.name + ' ' + unicode(param.value)
+                command += ' -' + param.name + ' ' + str(param.value)
             else:
-                command += ' -' + param.name + ' "' + unicode(param.value) + '"'
+                command += ' -' + param.name + ' "' + str(param.value) + '"'
 
         for out in self.outputs:
             command += ' -' + out.name + ' "' + out.getCompatibleFileName(self) + '"'

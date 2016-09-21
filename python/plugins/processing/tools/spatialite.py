@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import object
 
 __author__ = 'René-Luc Dhont'
 __date__ = 'November 2015'
@@ -32,14 +34,14 @@ class DbError(Exception):
 
     def __init__(self, message, query=None):
         # Save error. funny that the variables are in utf-8
-        self.message = unicode(message, 'utf-8')
-        self.query = (unicode(query, 'utf-8') if query is not None else None)
+        self.message = str(message, 'utf-8')
+        self.query = (str(query, 'utf-8') if query is not None else None)
 
     def __str__(self):
         return 'MESSAGE: %s\nQUERY: %s' % (self.message, self.query)
 
 
-class GeoDB:
+class GeoDB(object):
 
     def __init__(self, uri=None):
         self.uri = uri
@@ -49,14 +51,14 @@ class GeoDB:
             self.con = spatialite_connect(self.con_info())
 
         except (sqlite.InterfaceError, sqlite.OperationalError) as e:
-            raise DbError(unicode(e))
+            raise DbError(str(e))
 
         self.has_spatialite = self.check_spatialite()
         if not self.has_spatialite:
             self.has_spatialite = self.init_spatialite()
 
     def con_info(self):
-        return unicode(self.dbname)
+        return str(self.dbname)
 
     def init_spatialite(self):
         # Get spatialite version
@@ -84,7 +86,7 @@ class GeoDB:
             self.con = spatialite_connect(self.con_info())
 
         except (sqlite.InterfaceError, sqlite.OperationalError) as e:
-            raise DbError(unicode(e))
+            raise DbError(str(e))
 
         return self.check_spatialite()
 
@@ -106,7 +108,7 @@ class GeoDB:
         try:
             cursor.execute(sql)
         except (sqlite.Error, sqlite.ProgrammingError, sqlite.Warning, sqlite.InterfaceError, sqlite.OperationalError) as e:
-            raise DbError(unicode(e), sql)
+            raise DbError(str(e), sql)
 
     def _exec_sql_and_commit(self, sql):
         """Tries to execute and commit some action, on error it rolls

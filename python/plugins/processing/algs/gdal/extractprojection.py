@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
@@ -60,12 +61,12 @@ class ExtractProjection(GdalAlgorithm):
         rasterPath = self.getParameterValue(self.INPUT)
         createPrj = self.getParameterValue(self.PRJ_FILE)
 
-        raster = gdal.Open(unicode(rasterPath))
+        raster = gdal.Open(str(rasterPath))
         crs = raster.GetProjection()
         geotransform = raster.GetGeoTransform()
         raster = None
 
-        outFileName = os.path.splitext(unicode(rasterPath))[0]
+        outFileName = os.path.splitext(str(rasterPath))[0]
 
         if crs != '' and createPrj:
             tmp = osr.SpatialReference()

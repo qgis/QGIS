@@ -19,6 +19,8 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
 from functools import partial
 from qgis.PyQt.QtCore import Qt, QObject, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, QAbstractItemModel, QModelIndex, pyqtSignal
@@ -446,7 +448,7 @@ class DBModel(QAbstractItemModel):
             return False
 
         item = index.internalPointer()
-        new_value = unicode(value)
+        new_value = str(value)
 
         if isinstance(item, SchemaItem) or isinstance(item, TableItem):
             obj = item.getItemData()

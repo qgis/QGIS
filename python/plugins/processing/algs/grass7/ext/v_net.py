@@ -87,7 +87,7 @@ def variableOutput(alg, params, nocats=True):
     """
 
     # Build the v.out.ogr commands
-    for outputName, typeList in params.iteritems():
+    for outputName, typeList in params.items():
         if not isinstance(typeList, list):
             continue
 

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'November 2011'
@@ -153,10 +154,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
             arguments.append(self.distanceSpin.text())
         if self.smoothCheck.isChecked() and self.smoothSpin.value() != 0:
             arguments.append("-si")
-            arguments.append(unicode(self.smoothSpin.value()))
+            arguments.append(str(self.smoothSpin.value()))
         if self.bandCheck.isChecked() and self.bandSpin.value() != 0:
             arguments.append("-b")
-            arguments.append(unicode(self.bandSpin.value()))
+            arguments.append(str(self.bandSpin.value()))
         if self.maskCheck.isChecked() and maskFile:
             arguments.append("-mask")
             arguments.append(maskFile)

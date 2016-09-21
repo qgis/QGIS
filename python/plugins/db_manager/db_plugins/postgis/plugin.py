@@ -19,6 +19,9 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import map
+from builtins import range
 
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import PostGisDBConnector
@@ -194,7 +197,7 @@ class PGTable(Table):
         self.schema().refresh() if self.schema() else self.database().refresh()
 
     def runAction(self, action):
-        action = unicode(action)
+        action = str(action)
 
         if action.startswith("vacuumanalyze/"):
             if action == "vacuumanalyze/run":
@@ -377,7 +380,7 @@ class PGTableConstraint(TableConstraint):
     def __init__(self, row, table):
         TableConstraint.__init__(self, table)
         self.name, constr_type_str, self.isDefferable, self.isDeffered, columns = row[:5]
-        self.columns = map(int, columns.split(' '))
+        self.columns = list(map(int, columns.split(' ')))
 
         if constr_type_str in TableConstraint.types:
             self.type = TableConstraint.types[constr_type_str]
@@ -399,7 +402,7 @@ class PGTableIndex(TableIndex):
     def __init__(self, row, table):
         TableIndex.__init__(self, table)
         self.name, columns, self.isUnique = row
-        self.columns = map(int, columns.split(' '))
+        self.columns = list(map(int, columns.split(' ')))
 
 
 class PGTableTrigger(TableTrigger):

@@ -21,6 +21,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -82,7 +83,7 @@ class OTBAlgorithmProvider(AlgorithmProvider):
                                                self.tr("Could not open OTB algorithm: %s") % descriptionFile)
                 except Exception as e:
                     ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                           self.tr("Could not open OTB algorithm: %s\n%s") % (descriptionFile, unicode(e)))
+                                           self.tr("Could not open OTB algorithm: %s\n%s") % (descriptionFile, str(e)))
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)

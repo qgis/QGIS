@@ -20,6 +20,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -136,7 +139,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         cores = self.getParameterValue(LAStoolsAlgorithm.CORES)
         if cores != 1:
             commands.append("-cores")
-            commands.append(unicode(cores))
+            commands.append(str(cores))
 
     def addParametersPointInputGUI(self):
         self.addParameter(ParameterFile(LAStoolsAlgorithm.INPUT_LASLAZ, self.tr("input LAS/LAZ file"), False, False))
@@ -225,7 +228,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         step = self.getParameterValue(LAStoolsAlgorithm.STEP)
         if step != 0.0:
             commands.append("-step")
-            commands.append(unicode(step))
+            commands.append(str(step))
 
     def getParametersStepValue(self):
         step = self.getParameterValue(LAStoolsAlgorithm.STEP)
@@ -428,7 +431,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         ignore1 = self.getParameterValue(LAStoolsAlgorithm.IGNORE_CLASS1)
         if ignore1 != 0:
             commands.append("-ignore_class")
-            commands.append(unicode(ignore1))
+            commands.append(str(ignore1))
 
     def addParametersIgnoreClass2GUI(self):
         self.addParameter(ParameterSelection(LAStoolsAlgorithm.IGNORE_CLASS2,
@@ -438,4 +441,4 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         ignore2 = self.getParameterValue(LAStoolsAlgorithm.IGNORE_CLASS2)
         if ignore2 != 0:
             commands.append("-ignore_class")
-            commands.append(unicode(ignore2))
+            commands.append(str(ignore2))

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -147,7 +148,7 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.horizontalLayoutParent.addWidget(QLabel(self.tr('Parent layer')))
             self.parentCombo = QComboBox()
             idx = 0
-            for param in self.alg.inputs.values():
+            for param in list(self.alg.inputs.values()):
                 if isinstance(param.param, (ParameterVector, ParameterTable)):
                     self.parentCombo.addItem(param.param.description, param.param.name)
                     if self.param is not None:
@@ -205,8 +206,8 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.minTextBox = QLineEdit()
             self.maxTextBox = QLineEdit()
             if self.param is not None:
-                self.minTextBox.setText(unicode(self.param.min))
-                self.maxTextBox.setText(unicode(self.param.max))
+                self.minTextBox.setText(str(self.param.min))
+                self.maxTextBox.setText(str(self.param.max))
             self.horizontalLayoutParent.addWidget(self.minTextBox)
             self.horizontalLayoutParent.addWidget(self.maxTextBox)
             self.verticalLayout.addLayout(self.horizontalLayoutParent)
@@ -217,7 +218,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 default = self.param.default
                 if self.param.isInteger:
                     default = int(math.floor(default))
-                self.defaultTextBox.setText(unicode(default))
+                self.defaultTextBox.setText(str(default))
             self.horizontalLayoutDefault.addWidget(self.defaultTextBox)
             self.verticalLayout.addLayout(self.horizontalLayoutDefault)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_STRING or \
@@ -279,7 +280,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         self.setLayout(self.verticalLayout)
 
     def okPressed(self):
-        description = unicode(self.nameTextBox.text())
+        description = str(self.nameTextBox.text())
         if description.strip() == '':
             QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                 self.tr('Invalid parameter name'))
@@ -345,18 +346,18 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_NUMBER or \
                 isinstance(self.param, ParameterNumber):
             try:
-                vmin = unicode(self.minTextBox.text()).strip()
+                vmin = str(self.minTextBox.text()).strip()
                 if vmin == '':
                     vmin = None
                 else:
                     vmin = float(vmin)
-                vmax = unicode(self.maxTextBox.text()).strip()
+                vmax = str(self.maxTextBox.text()).strip()
                 if vmax == '':
                     vmax = None
                 else:
                     vmax = float(vmax)
                 self.param = ParameterNumber(name, description, vmin, vmax,
-                                             unicode(self.defaultTextBox.text()))
+                                             str(self.defaultTextBox.text()))
             except:
                 QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                     self.tr('Wrong or missing parameter values'))
@@ -364,7 +365,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_STRING or \
                 isinstance(self.param, ParameterString):
             self.param = ParameterString(name, description,
-                                         unicode(self.defaultTextBox.text()))
+                                         str(self.defaultTextBox.text()))
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_EXTENT or \
                 isinstance(self.param, ParameterExtent):
             self.param = ParameterExtent(name, description)
@@ -375,7 +376,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_POINT or \
                 isinstance(self.param, ParameterPoint):
             self.param = ParameterPoint(name, description,
-                                        unicode(self.defaultTextBox.text()))
+                                        str(self.defaultTextBox.text()))
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_CRS or \
                 isinstance(self.param, ParameterCrs):
             self.param = ParameterCrs(name, description, self.defaultTextBox.getValue(), self.yesNoCombo.currentIndex() == 1)

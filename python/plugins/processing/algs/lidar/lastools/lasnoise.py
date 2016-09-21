@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
@@ -68,20 +71,20 @@ class lasnoise(LAStoolsAlgorithm):
         self.addParametersIgnoreClass2Commands(commands)
         isolated = self.getParameterValue(lasnoise.ISOLATED)
         commands.append("-isolated")
-        commands.append(unicode(isolated))
+        commands.append(str(isolated))
         step_xy = self.getParameterValue(lasnoise.STEP_XY)
         commands.append("-step_xy")
-        commands.append(unicode(step_xy))
+        commands.append(str(step_xy))
         step_z = self.getParameterValue(lasnoise.STEP_Z)
         commands.append("-step_z")
-        commands.append(unicode(step_z))
+        commands.append(str(step_z))
         operation = self.getParameterValue(lasnoise.OPERATION)
         if operation != 0:
             commands.append("-remove_noise")
         else:
             commands.append("-classify_as")
             classify_as = self.getParameterValue(lasnoise.CLASSIFY_AS)
-            commands.append(unicode(classify_as))
+            commands.append(str(classify_as))
         self.addParametersPointOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)
 

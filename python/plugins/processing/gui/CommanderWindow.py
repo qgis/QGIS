@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'April 2013'
@@ -50,7 +51,7 @@ class CommanderWindow(QDialog):
         self.initGui()
 
     def commandsFolder(self):
-        folder = unicode(os.path.join(userFolder(), 'commander'))
+        folder = str(os.path.join(userFolder(), 'commander'))
         mkdir(folder)
         return os.path.abspath(folder)
 
@@ -99,7 +100,7 @@ class CommanderWindow(QDialog):
         self.combo.clear()
 
         # Add algorithms
-        for provider in algList.algs.values():
+        for provider in list(algList.algs.values()):
             for alg in provider:
                 self.combo.addItem('Processing algorithm: ' + alg)
 
@@ -115,7 +116,7 @@ class CommanderWindow(QDialog):
         for action in actions:
             menuActions.extend(self.getActions(action))
         for action in menuActions:
-            self.combo.addItem('Menu action: ' + unicode(action.text()))
+            self.combo.addItem('Menu action: ' + str(action.text()))
 
     def prepareGui(self):
         self.combo.setEditText('')
@@ -149,7 +150,7 @@ class CommanderWindow(QDialog):
         return menuActions
 
     def run(self):
-        s = unicode(self.combo.currentText())
+        s = str(self.combo.currentText())
         if s.startswith('Processing algorithm: '):
             algName = s[len('Processing algorithm: '):]
             alg = algList.getAlgorithm(algName)
@@ -163,7 +164,7 @@ class CommanderWindow(QDialog):
                 self.close()
             except Exception as e:
                 self.label.setVisible(True)
-                self.label.setText('Error:' + unicode(e))
+                self.label.setText('Error:' + str(e))
 
         elif s.startswith('Menu action: '):
             actionName = s[len('Menu action: '):]
@@ -182,7 +183,7 @@ class CommanderWindow(QDialog):
                 self.close()
             except Exception as e:
                 self.label.setVisible(True)
-                self.label.setText('Error:' + unicode(e))
+                self.label.setText('Error:' + str(e))
 
     def runCommand(self, command):
         tokens = command.split(' ')
@@ -238,4 +239,4 @@ class ExtendedComboBox(QComboBox):
         self.completer.popup().setStyleSheet('min-height: 150px')
         self.completer.popup().setAlternatingRowColors(True)
         self.setCompleter(self.completer)
-        self.lineEdit().textEdited[unicode].connect(self.pFilterModel.setFilterFixedString)
+        self.lineEdit().textEdited[str].connect(self.pFilterModel.setFilterFixedString)

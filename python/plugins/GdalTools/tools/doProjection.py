@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'
@@ -164,11 +165,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         layerList = []
 
         layerMap = QgsMapLayerRegistry.instance().mapLayers()
-        for name, layer in layerMap.iteritems():
+        for name, layer in layerMap.items():
             if layer.type() == QgsMapLayer.RasterLayer:
-                layerList.append(unicode(layer.source()))
+                layerList.append(str(layer.source()))
 
-        if unicode(self.inputFileEdit.text()) in layerList:
+        if str(self.inputFileEdit.text()) in layerList:
             QMessageBox.warning(self, self.tr("Assign projection"), self.tr("This raster already found in map canvas"))
             return
 

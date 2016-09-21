@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -362,7 +365,7 @@ class RAlgorithm(GeoAlgorithm):
 
         # Try to install packages if needed
         if isWindows():
-            commands.append('.libPaths(\"' + unicode(RUtils.RLibs()).replace('\\', '/') + '\")')
+            commands.append('.libPaths(\"' + str(RUtils.RLibs()).replace('\\', '/') + '\")')
         packages = RUtils.getRequiredPackages(self.script)
         packages.extend(['rgdal', 'raster'])
         for p in packages:
@@ -416,7 +419,7 @@ class RAlgorithm(GeoAlgorithm):
                                         + '", head=TRUE, sep=",")')
             elif isinstance(param, ParameterExtent):
                 if param.value:
-                    tokens = unicode(param.value).split(',')
+                    tokens = str(param.value).split(',')
                     # Extent from raster package is "xmin, xmax, ymin, ymax" like in Processing
                     # http://www.inside-r.org/packages/cran/raster/docs/Extent
                     commands.append(param.name + ' = extent(' + tokens[0] + ',' + tokens[1] + ',' + tokens[2] + ',' + tokens[3] + ')')
@@ -437,7 +440,7 @@ class RAlgorithm(GeoAlgorithm):
                 if param.value is None:
                     commands.append(param.name + '= NULL')
                 else:
-                    commands.append(param.name + '=' + unicode(param.value))
+                    commands.append(param.name + '=' + str(param.value))
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     commands.append(param.name + '=TRUE')
@@ -450,13 +453,13 @@ class RAlgorithm(GeoAlgorithm):
                     for layer in layers:
                         layer = layer.replace('\\', '/')
                         if self.passFileNames:
-                            commands.append('tempvar' + unicode(iLayer) + ' <- "'
+                            commands.append('tempvar' + str(iLayer) + ' <- "'
                                             + layer + '"')
                         elif self.useRasterPackage:
-                            commands.append('tempvar' + unicode(iLayer) + ' <- '
+                            commands.append('tempvar' + str(iLayer) + ' <- '
                                             + 'brick("' + layer + '")')
                         else:
-                            commands.append('tempvar' + unicode(iLayer) + ' <- '
+                            commands.append('tempvar' + str(iLayer) + ' <- '
                                             + 'readGDAL("' + layer + '")')
                         iLayer += 1
                 else:
@@ -471,10 +474,10 @@ class RAlgorithm(GeoAlgorithm):
                         filename = os.path.basename(layer)
                         filename = filename[:-4]
                         if self.passFileNames:
-                            commands.append('tempvar' + unicode(iLayer) + ' <- "'
+                            commands.append('tempvar' + str(iLayer) + ' <- "'
                                             + layer + '"')
                         else:
-                            commands.append('tempvar' + unicode(iLayer) + ' <- '
+                            commands.append('tempvar' + str(iLayer) + ' <- '
                                             + 'readOGR("' + layer + '",layer="'
                                             + filename + '")')
                         iLayer += 1
@@ -485,7 +488,7 @@ class RAlgorithm(GeoAlgorithm):
                 for layer in layers:
                     if iLayer != 0:
                         s += ','
-                    s += 'tempvar' + unicode(iLayer)
+                    s += 'tempvar' + str(iLayer)
                     iLayer += 1
                 s += ')\n'
                 commands.append(s)
@@ -502,7 +505,7 @@ class RAlgorithm(GeoAlgorithm):
         return self.commands
 
     def help(self):
-        helpfile = unicode(self.descriptionFile) + '.help'
+        helpfile = str(self.descriptionFile) + '.help'
         if os.path.exists(helpfile):
             return True, getHtmlFromHelpFile(self, helpfile)
         else:
@@ -511,13 +514,13 @@ class RAlgorithm(GeoAlgorithm):
     def shortHelp(self):
         if self.descriptionFile is None:
             return None
-        helpFile = unicode(self.descriptionFile) + '.help'
+        helpFile = str(self.descriptionFile) + '.help'
         if os.path.exists(helpFile):
             with open(helpFile) as f:
                 try:
                     descriptions = json.load(f)
                     if 'ALG_DESC' in descriptions:
-                        return self._formatHelp(unicode(descriptions['ALG_DESC']))
+                        return self._formatHelp(str(descriptions['ALG_DESC']))
                 except:
                     return None
         return None
@@ -526,14 +529,14 @@ class RAlgorithm(GeoAlgorithm):
         descs = {}
         if self.descriptionFile is None:
             return descs
-        helpFile = unicode(self.descriptionFile) + '.help'
+        helpFile = str(self.descriptionFile) + '.help'
         if os.path.exists(helpFile):
             with open(helpFile) as f:
                 try:
                     descriptions = json.load(f)
                     for param in self.parameters:
                         if param.name in descriptions:
-                            descs[param.name] = unicode(descriptions[param.name])
+                            descs[param.name] = str(descriptions[param.name])
                 except:
                     return descs
         return descs

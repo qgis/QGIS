@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Alexander Bruy'
 __date__ = 'August 2013'
@@ -55,7 +57,7 @@ class PointsFromPolygons(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
 
-        rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
+        rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
 
         rasterDS = gdal.Open(rasterPath, gdal.GA_ReadOnly)
         geoTransform = rasterDS.GetGeoTransform()
@@ -91,8 +93,8 @@ class PointsFromPolygons(GeoAlgorithm):
             (startRow, startColumn) = raster.mapToPixel(xMin, yMax, geoTransform)
             (endRow, endColumn) = raster.mapToPixel(xMax, yMin, geoTransform)
 
-            for row in xrange(startRow, endRow + 1):
-                for col in xrange(startColumn, endColumn + 1):
+            for row in range(startRow, endRow + 1):
+                for col in range(startColumn, endColumn + 1):
                     (x, y) = raster.pixelToMap(row, col, geoTransform)
                     point.setX(x)
                     point.setY(y)

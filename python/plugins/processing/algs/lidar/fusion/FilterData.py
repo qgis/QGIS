@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -59,8 +62,8 @@ class FilterData(FusionAlgorithm):
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
         commands.append('/outlier')
-        commands.append(unicode(self.getParameterValue(self.VALUE)))
-        commands.append(unicode(self.getParameterValue(self.WINDOWSIZE)))
+        commands.append(str(self.getParameterValue(self.VALUE)))
+        commands.append(str(self.getParameterValue(self.WINDOWSIZE)))
         outFile = self.getOutputValue(self.OUTPUT)
         commands.append(outFile)
         files = self.getParameterValue(self.INPUT).split(';')

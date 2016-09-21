@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -71,7 +72,7 @@ class sieve(GdalAlgorithm):
 
         arguments = []
         arguments.append('-st')
-        arguments.append(unicode(self.getParameterValue(self.THRESHOLD)))
+        arguments.append(str(self.getParameterValue(self.THRESHOLD)))
 
         arguments.append('-' +
                          self.PIXEL_CONNECTIONS[self.getParameterValue(

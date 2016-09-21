@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'May 2014'
@@ -69,11 +72,11 @@ class flightlinesToDTMandDSM(LAStoolsAlgorithm):
         commands.append("-files_are_flightlines")
         tile_size = self.getParameterValue(flightlinesToDTMandDSM.TILE_SIZE)
         commands.append("-tile_size")
-        commands.append(unicode(tile_size))
+        commands.append(str(tile_size))
         buffer = self.getParameterValue(flightlinesToDTMandDSM.BUFFER)
         if buffer != 0.0:
             commands.append("-buffer")
-            commands.append(unicode(buffer))
+            commands.append(str(buffer))
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
         base_name = self.getParameterValue(flightlinesToDTMandDSM.BASE_NAME)
         if base_name == "":

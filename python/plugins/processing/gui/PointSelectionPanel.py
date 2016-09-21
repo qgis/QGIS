@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'February 2016'
@@ -55,12 +56,12 @@ class PointSelectionPanel(BASE, WIDGET):
         self.tool.canvasClicked.connect(self.updatePoint)
 
         if default:
-            tokens = unicode(default).split(',')
+            tokens = str(default).split(',')
             if len(tokens) == 2:
                 try:
                     float(tokens[0])
                     float(tokens[1])
-                    self.leText.setText(unicode(default))
+                    self.leText.setText(str(default))
                 except:
                     pass
 
@@ -80,8 +81,8 @@ class PointSelectionPanel(BASE, WIDGET):
         self.dialog.activateWindow()
 
     def getValue(self):
-        if unicode(self.leText.text()).strip() != '':
-            return unicode(self.leText.text())
+        if str(self.leText.text()).strip() != '':
+            return str(self.leText.text())
         else:
             return None
 

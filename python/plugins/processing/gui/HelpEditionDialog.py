@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -78,7 +79,7 @@ class HelpEditionDialog(BASE, WIDGET):
         QDialog.reject(self)
 
     def accept(self):
-        self.descriptions[self.currentName] = unicode(self.text.toPlainText())
+        self.descriptions[self.currentName] = str(self.text.toPlainText())
         QDialog.accept(self)
 
     def getHtml(self):
@@ -120,7 +121,7 @@ class HelpEditionDialog(BASE, WIDGET):
         item = self.tree.currentItem()
         if isinstance(item, TreeDescriptionItem):
             if self.currentName:
-                self.descriptions[self.currentName] = unicode(self.text.toPlainText())
+                self.descriptions[self.currentName] = str(self.text.toPlainText())
             name = item.name
             if name:
                 self.text.setEnabled(True)

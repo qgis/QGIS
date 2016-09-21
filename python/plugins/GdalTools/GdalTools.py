@@ -17,6 +17,8 @@ email                : lorenxo86@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import object
 # Import the PyQt and QGIS libraries
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QLocale, QFileInfo, QTranslator
 from qgis.PyQt.QtWidgets import QMessageBox, QMenu, QAction
@@ -53,7 +55,7 @@ except ImportError as e:
         raise ImportError(error_str)
 
 
-class GdalTools:
+class GdalTools(object):
 
     def __init__(self, iface):
         if not valid:
@@ -62,9 +64,9 @@ class GdalTools:
         # Save reference to the QGIS interface
         self.iface = iface
         try:
-            self.QgisVersion = unicode(Qgis.QGIS_VERSION_INT)
+            self.QgisVersion = str(Qgis.QGIS_VERSION_INT)
         except:
-            self.QgisVersion = unicode(Qgis.qgisVersion)[0]
+            self.QgisVersion = str(Qgis.qgisVersion)[0]
 
         if Qgis.QGIS_VERSION[0:3] < "1.5":
             # For i18n support
@@ -97,7 +99,7 @@ class GdalTools:
         if int(self.QgisVersion) < 1:
             QMessageBox.warning(
                 self.iface.getMainWindow(), "Gdal Tools",
-                QCoreApplication.translate("GdalTools", "QGIS version detected: ") + unicode(self.QgisVersion) + ".xx\n"
+                QCoreApplication.translate("GdalTools", "QGIS version detected: ") + str(self.QgisVersion) + ".xx\n"
                 + QCoreApplication.translate("GdalTools", "This version of Gdal Tools requires at least QGIS version 1.0.0\nPlugin will not be enabled."))
             return None
 

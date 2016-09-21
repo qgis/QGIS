@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -116,7 +117,7 @@ class ConvexHull(GeoAlgorithm):
                 features = vector.features(layer)
                 for f in features:
                     idVar = f[fieldName]
-                    if unicode(idVar).strip() == unicode(i).strip():
+                    if str(idVar).strip() == str(i).strip():
                         if first:
                             val = idVar
                             first = False

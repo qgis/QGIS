@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'January 2016'
@@ -133,21 +134,21 @@ class gdal2tiles(GdalAlgorithm):
             arguments.append('-r')
             arguments.append(self.RESAMPLINGS[self.getParameterValue(self.RESAMPLING)])
 
-        ssrs = unicode(self.getParameterValue(self.S_SRS))
+        ssrs = str(self.getParameterValue(self.S_SRS))
         if len(ssrs) > 0:
             arguments.append('-s')
             arguments.append(ssrs)
 
         if self.getParameterValue(self.ZOOM):
             arguments.append('-z')
-            arguments.append(unicode(self.getParameterValue(self.ZOOM)))
+            arguments.append(str(self.getParameterValue(self.ZOOM)))
 
         if self.getParameterValue(self.RESUME):
             arguments.append('-e')
 
         if self.getParameterValue(self.NODATA):
             arguments.append('-a')
-            arguments.append(unicode(self.getParameterValue(self.NODATA)))
+            arguments.append(str(self.getParameterValue(self.NODATA)))
 
         # KML arguments
         if self.getParameterValue(self.FORCEKML):
@@ -158,7 +159,7 @@ class gdal2tiles(GdalAlgorithm):
 
         if self.getParameterValue(self.URL):
             arguments.append('-u')
-            arguments.append(unicode(self.getParameterValue(self.URL)))
+            arguments.append(str(self.getParameterValue(self.URL)))
 
         # Web viewer arguments
         if self.getParameterValue(self.WEBVIEWER):
@@ -167,7 +168,7 @@ class gdal2tiles(GdalAlgorithm):
 
         parameters = {self.TITLE: '-t', self.COPYRIGHT: '-c',
                       self.GOOGLEKEY: '-g', self.BINGKEY: '-b'}
-        for arg, parameter in parameters.iteritems():
+        for arg, parameter in parameters.items():
             if self.getParameterValue(arg):
                 arguments.append(parameter)
                 arguments.append(self.getParameterValue(arg))

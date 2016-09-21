@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Arnaud Morvan'
 __date__ = 'October 2014'
@@ -97,14 +99,14 @@ class FieldsMapper(GeoAlgorithm):
             if expression.hasParserError():
                 raise GeoAlgorithmExecutionException(
                     self.tr(u'Parser error in expression "{}": {}')
-                    .format(unicode(field_def['expression']),
-                            unicode(expression.parserErrorString())))
+                    .format(str(field_def['expression']),
+                            str(expression.parserErrorString())))
             expression.prepare(exp_context)
             if expression.hasEvalError():
                 raise GeoAlgorithmExecutionException(
                     self.tr(u'Evaluation error in expression "{}": {}')
-                    .format(unicode(field_def['expression']),
-                            unicode(expression.evalErrorString())))
+                    .format(str(field_def['expression']),
+                            str(expression.evalErrorString())))
             expressions.append(expression)
 
         writer = output.getVectorWriter(fields,
@@ -125,7 +127,7 @@ class FieldsMapper(GeoAlgorithm):
             outFeat.setGeometry(geometry)
 
             attrs = []
-            for i in xrange(0, len(mapping)):
+            for i in range(0, len(mapping)):
                 field_def = mapping[i]
                 expression = expressions[i]
                 exp_context.setFeature(inFeat)

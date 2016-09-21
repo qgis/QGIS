@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'October 2014'
@@ -107,11 +110,11 @@ class lascanopyPro(LAStoolsAlgorithm):
         plot_size = self.getParameterValue(lascanopyPro.PLOT_SIZE)
         if plot_size != 20:
             commands.append("-step")
-            commands.append(unicode(plot_size))
+            commands.append(str(plot_size))
         height_cutoff = self.getParameterValue(lascanopyPro.HEIGHT_CUTOFF)
         if height_cutoff != 1.37:
             commands.append("-height_cutoff")
-            commands.append(unicode(height_cutoff))
+            commands.append(str(height_cutoff))
         product = self.getParameterValue(lascanopyPro.PRODUCT1)
         if product != 0:
             commands.append("-" + lascanopyPro.PRODUCTS[product])

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
@@ -70,7 +71,7 @@ class rasterize_over(GdalAlgorithm):
 
         arguments = []
         arguments.append('-a')
-        arguments.append(unicode(self.getParameterValue(self.FIELD)))
+        arguments.append(str(self.getParameterValue(self.FIELD)))
 
         arguments.append('-l')
         arguments.append(ogrLayerName(inLayer))

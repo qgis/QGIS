@@ -17,6 +17,10 @@
 ***************************************************************************
 """
 from __future__ import print_function
+from builtins import map
+from builtins import str
+from builtins import range
+from builtins import object
 
 __author__ = 'Martin Dobias'
 __date__ = 'November 2012'
@@ -65,7 +69,7 @@ def uri_from_name(conn_name):
     return uri
 
 
-class TableAttribute:
+class TableAttribute(object):
 
     def __init__(self, row):
         (self.num,
@@ -79,12 +83,12 @@ class TableAttribute:
          ) = row
 
 
-class TableConstraint:
+class TableConstraint(object):
 
     """Class that represents a constraint of a table (relation).
     """
 
-    (TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique) = range(4)
+    (TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique) = list(range(4))
     types = {
         'c': TypeCheck,
         'f': TypeForeignKey,
@@ -103,7 +107,7 @@ class TableConstraint:
 
     def __init__(self, row):
         (self.name, con_type, self.is_defferable, self.is_deffered, keys) = row[:5]
-        self.keys = map(int, keys.split(' '))
+        self.keys = list(map(int, keys.split(' ')))
         self.con_type = TableConstraint.types[con_type]  # Convert to enum
         if self.con_type == TableConstraint.TypeCheck:
             self.check_src = row[5]
@@ -115,11 +119,11 @@ class TableConstraint:
             self.foreign_keys = row[10]
 
 
-class TableIndex:
+class TableIndex(object):
 
     def __init__(self, row):
         (self.name, columns) = row
-        self.columns = map(int, columns.split(' '))
+        self.columns = list(map(int, columns.split(' ')))
 
 
 class DbError(Exception):
@@ -129,7 +133,7 @@ class DbError(Exception):
         self.query = query
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return str(self).encode('utf-8')
 
     def __unicode__(self):
         text = u'MESSAGE: %s' % self.message
@@ -138,7 +142,7 @@ class DbError(Exception):
         return text
 
 
-class TableField:
+class TableField(object):
 
     def __init__(self, name, data_type, is_null=None, default=None,
                  modifier=None):
@@ -171,7 +175,7 @@ class TableField:
             return '"%s"' % ident.replace('"', '""')
 
 
-class GeoDB:
+class GeoDB(object):
 
     @classmethod
     def from_name(cls, conn_name):
@@ -205,9 +209,9 @@ class GeoDB:
                 break
             except psycopg2.OperationalError as e:
                 if i == 3:
-                    raise DbError(unicode(e))
+                    raise DbError(str(e))
 
-                err = unicode(e)
+                err = str(e)
                 user = self.uri.username()
                 password = self.uri.password()
                 (ok, user, password) = QgsCredentials.instance().get(conninfo,
@@ -821,7 +825,7 @@ class GeoDB:
         try:
             cursor.execute(sql)
         except psycopg2.Error as e:
-            raise DbError(unicode(e), e.cursor.query)
+            raise DbError(str(e), e.cursor.query)
 
     def _exec_sql_and_commit(self, sql):
         """Tries to execute and commit some action, on error it rolls
@@ -840,7 +844,7 @@ class GeoDB:
         """Quote identifier if needed."""
 
         # Make sure it's python unicode string
-        identifier = unicode(identifier)
+        identifier = str(identifier)
 
         # Is it needed to quote the identifier?
         if self.re_ident_ok.match(identifier) is not None:
@@ -854,7 +858,7 @@ class GeoDB:
         """
 
         # make sure it's python unicode string
-        txt = unicode(txt)
+        txt = str(txt)
         return txt.replace("'", "''")
 
     def _table_name(self, schema, table):

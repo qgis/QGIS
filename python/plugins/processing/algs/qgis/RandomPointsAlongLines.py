@@ -87,7 +87,7 @@ class RandomPointsAlongLines(GeoAlgorithm):
         while nIterations < maxIterations and nPoints < pointCount:
             # pick random feature
             fid = random.randint(0, featureCount - 1)
-            f = layer.getFeatures(request.setFilterFid(fid)).next()
+            f = next(layer.getFeatures(request.setFilterFid(fid)))
             fGeom = f.geometry()
 
             if fGeom.isMultipart():

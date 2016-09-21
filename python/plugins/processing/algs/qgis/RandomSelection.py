@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -89,7 +90,7 @@ class RandomSelection(GeoAlgorithm):
                             "different value and try again."))
             value = int(round(value / 100.0, 4) * featureCount)
 
-        selran = random.sample(xrange(featureCount), value)
+        selran = random.sample(range(featureCount), value)
 
         layer.selectByIds(selran)
         self.setOutputValue(self.OUTPUT, filename)

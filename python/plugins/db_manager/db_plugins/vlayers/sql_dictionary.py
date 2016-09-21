@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import map
 
 __author__ = 'Hugo Mercier'
 __date__ = 'December 2015'
@@ -158,7 +159,7 @@ def getSqlDictionary(spatial=True):
         f += qgis_functions
         c += spatialite_constants
 
-    return {'keyword': map(strip_star, k), 'constant': map(strip_star, c), 'function': map(strip_star, f)}
+    return {'keyword': list(map(strip_star, k)), 'constant': list(map(strip_star, c)), 'function': list(map(strip_star, f))}
 
 
 def getQueryBuilderDictionary():

@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -34,7 +36,7 @@ from qgis.core import QgsMessageLog
 from qgis.PyQt.QtCore import QCoreApplication
 
 
-class ProcessingLog:
+class ProcessingLog(object):
 
     LOG_ERROR = 'ERROR'
     LOG_INFO = 'INFO'
@@ -133,7 +135,7 @@ class ProcessingLog:
     def saveLog(fileName):
         entries = ProcessingLog.getLogEntries()
         with codecs.open(fileName, 'w', encoding='utf-8') as f:
-            for k, v in entries.iteritems():
+            for k, v in entries.items():
                 for entry in v:
                     f.write('%s|%s|%s\n' % (k, entry.date, entry.text))
 
@@ -144,7 +146,7 @@ class ProcessingLog:
         return QCoreApplication.translate(context, string)
 
 
-class LogEntry:
+class LogEntry(object):
 
     def __init__(self, date, text):
         self.date = date

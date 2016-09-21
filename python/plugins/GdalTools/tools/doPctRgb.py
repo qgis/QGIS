@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'
@@ -129,7 +130,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         arguments = []
         if self.bandCheck.isChecked():
             arguments.append("-b")
-            arguments.append(unicode(self.bandSpin.value()))
+            arguments.append(str(self.bandSpin.value()))
         if self.isBatchEnabled():
             return arguments
 

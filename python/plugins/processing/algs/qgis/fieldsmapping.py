@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 from __future__ import print_function
+from builtins import str
 
 __author__ = 'Arnaud Morvan'
 __date__ = 'October 2014'
@@ -38,7 +39,7 @@ class ParameterFieldsMapping(Parameter):
         self.value = []
 
     def getValueAsCommandLineParameter(self):
-        return '"' + unicode(self.value) + '"'
+        return '"' + str(self.value) + '"'
 
     def setValue(self, value):
         if value is None:
@@ -46,12 +47,12 @@ class ParameterFieldsMapping(Parameter):
         if isinstance(value, list):
             self.value = value
             return True
-        if isinstance(value, unicode):
+        if isinstance(value, str):
             try:
                 self.value = eval(value)
                 return True
             except Exception as e:
                 # fix_print_with_import
-                print(unicode(e))  # display error in console
+                print(str(e))  # display error in console
                 return False
         return False

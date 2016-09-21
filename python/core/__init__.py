@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import object
 
 __author__ = 'Nathan Woodrow'
 __date__ = 'May 2014'
@@ -156,7 +158,7 @@ class QgsEditError(Exception):
 # Define a `with edit(layer)` statement
 
 
-class edit:
+class edit(object):
 
     def __init__(self, layer):
         self.layer = layer

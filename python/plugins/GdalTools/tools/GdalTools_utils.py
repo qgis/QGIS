@@ -16,6 +16,11 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import filter
+from builtins import map
+from builtins import str
+from builtins import range
+from builtins import object
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'
@@ -62,8 +67,8 @@ def escapeAndJoin(strList):
 
 def getLastUsedDir():
     settings = QSettings()
-    lastProjectDir = settings.value("/UI/lastProjectDir", u".", type=unicode)
-    return settings.value("/GdalTools/lastUsedDir", lastProjectDir, type=unicode)
+    lastProjectDir = settings.value("/UI/lastProjectDir", u".", type=str)
+    return settings.value("/GdalTools/lastUsedDir", lastProjectDir, type=str)
 
 # Stores last used dir in persistent settings
 
@@ -82,7 +87,7 @@ def setLastUsedDir(filePath):
 
 def getGdalBinPath():
     settings = QSettings()
-    return settings.value("/GdalTools/gdalPath", u"", type=unicode)
+    return settings.value("/GdalTools/gdalPath", u"", type=str)
 
 # Stores GDAL binaries location
 
@@ -96,7 +101,7 @@ def setGdalBinPath(path):
 
 def getGdalPymodPath():
     settings = QSettings()
-    return settings.value("/GdalTools/gdalPymodPath", u"", type=unicode)
+    return settings.value("/GdalTools/gdalPymodPath", u"", type=str)
 
 # Stores GDAL python modules location
 
@@ -110,7 +115,7 @@ def setGdalPymodPath(path):
 
 def getHelpPath():
     settings = QSettings()
-    return settings.value("/GdalTools/helpPath", u"", type=unicode)
+    return settings.value("/GdalTools/helpPath", u"", type=str)
 
 # Stores GDAL help files location
 
@@ -124,7 +129,7 @@ def setHelpPath(path):
 
 def getLastUsedEncoding():
     settings = QSettings()
-    return settings.value("/UI/encoding", u"System", type=unicode)
+    return settings.value("/UI/encoding", u"System", type=str)
 
 # Stores last used encoding in persistent settings
 
@@ -184,7 +189,7 @@ class LayerRegistry(QObject):
     def getAllLayers(self):
         if LayerRegistry._iface and hasattr(LayerRegistry._iface, 'legendInterface'):
             return LayerRegistry._iface.legendInterface().layers()
-        return QgsMapLayerRegistry.instance().mapLayers().values()
+        return list(QgsMapLayerRegistry.instance().mapLayers().values())
 
     def layerAdded(self, layer):
         LayerRegistry.layers.append(layer)
@@ -208,7 +213,7 @@ class LayerRegistry(QObject):
         return True
 
     def getRasterLayers(self):
-        return filter(self.isRaster, LayerRegistry.layers)
+        return list(filter(self.isRaster, LayerRegistry.layers))
 
     @classmethod
     def isVector(self, layer):
@@ -219,7 +224,7 @@ class LayerRegistry(QObject):
         return True
 
     def getVectorLayers(self):
-        return filter(self.isVector, LayerRegistry.layers)
+        return list(filter(self.isVector, LayerRegistry.layers))
 
 
 def getRasterFiles(path, recursive=False):
@@ -237,7 +242,7 @@ def getRasterFiles(path, recursive=False):
         rasters.append(path + "/" + f)
 
     if recursive:
-        for myRoot, myDirs, myFiles in os.walk(unicode(path)):
+        for myRoot, myDirs, myFiles in os.walk(str(path)):
             for dir in myDirs:
                 workDir = QDir(myRoot + "/" + dir)
                 workDir.setFilter(QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot)
@@ -297,7 +302,7 @@ class UnsupportedOGRFormat(Exception):
 
 
 def getVectorFields(vectorFile):
-    hds = ogr.Open(unicode(vectorFile).encode('utf8'))
+    hds = ogr.Open(str(vectorFile).encode('utf8'))
     if hds is None:
         raise UnsupportedOGRFormat()
 
@@ -390,7 +395,7 @@ def getRasterResolution(fileName):
 # so sometimes the dialog excedes the screen width
 
 
-class FileDialog:
+class FileDialog(object):
 
     @classmethod
     def getDialog(self, parent=None, caption='', acceptMode=QFileDialog.AcceptOpen, fileMode=QFileDialog.ExistingFile, filter='', selectedFilter=None, useEncoding=False):
@@ -480,12 +485,12 @@ class FileDialog:
         return res
 
 
-class FileFilter:
+class FileFilter(object):
 
     @classmethod
     def getFilter(self, typeName):
         settings = QSettings()
-        return settings.value("/GdalTools/" + typeName + "FileFilter", u"", type=unicode)
+        return settings.value("/GdalTools/" + typeName + "FileFilter", u"", type=str)
 
     @classmethod
     def setFilter(self, typeName, aFilter):
@@ -584,12 +589,12 @@ class FileFilter:
 
     @classmethod
     def filenameMatchesFilterExt(self, fileName, ext):
-        return re.match('.' + unicode(ext), fileName) is not None
+        return re.match('.' + str(ext), fileName) is not None
 
 # Retrieves gdal information
 
 
-class GdalConfig:
+class GdalConfig(object):
     # retrieves and return the installed gdal version
 
     @classmethod
@@ -621,7 +626,7 @@ class GdalConfig:
             driver = gdal.GetDriver(i)
 
             if driver is None:
-                QgsLogger.warning("unable to get driver " + unicode(i))
+                QgsLogger.warning("unable to get driver " + str(i))
                 continue
 
             # now we need to see if the driver is for something currently
@@ -636,7 +641,7 @@ class GdalConfig:
 
             metadata = driver.GetMetadata()
             if gdal.DMD_EXTENSION in metadata:
-                extensions = unicode(metadata[gdal.DMD_EXTENSION])
+                extensions = str(metadata[gdal.DMD_EXTENSION])
 
             if longName != '':
                 if extensions != '':
@@ -692,7 +697,7 @@ class GdalConfig:
             driver = ogr.GetDriver(i)
 
             if driver is None:
-                QgsLogger.warning("unable to get driver " + unicode(i))
+                QgsLogger.warning("unable to get driver " + str(i))
                 continue
 
             driverName = driver.GetName()
@@ -811,7 +816,7 @@ class GdalConfig:
 
         return self.supportedVectors
 
-    class SupportedRasters:
+    class SupportedRasters(object):
         dict_long2shortName = dict()
 
         # retrieve the raster format short name by long format name
@@ -868,7 +873,7 @@ class GdalConfig:
 # class which allows creating version objects and compare them
 
 
-class Version:
+class Version(object):
 
     def __init__(self, ver):
         self.vers = ('0', '0', '0')
@@ -876,7 +881,7 @@ class Version:
         if isinstance(ver, Version):
             self.vers = ver.vers
         elif isinstance(ver, tuple) or isinstance(ver, list):
-            self.vers = map(str, ver)
+            self.vers = list(map(str, ver))
         elif isinstance(ver, str):
             self.vers = self.string2vers(ver)
 
@@ -884,7 +889,7 @@ class Version:
     def string2vers(string):
         vers = ['0', '0', '0']
 
-        nums = unicode(string).split(".")
+        nums = str(string).split(".")
 
         if len(nums) > 0:
             vers[0] = nums[0]
@@ -918,16 +923,16 @@ def setProcessEnvironment(process):
 
     sep = os.pathsep
 
-    for name, val in envvar_list.iteritems():
+    for name, val in envvar_list.items():
         if val is None or val == "":
             continue
 
         envval = os.getenv(name)
         if envval is None or envval == "":
-            envval = unicode(val)
+            envval = str(val)
         elif (platform.system() == "Windows" and val.lower() not in envval.lower().split(sep)) or \
              (platform.system() != "Windows" and val not in envval.split(sep)):
-            envval += "%s%s" % (sep, unicode(val))
+            envval += "%s%s" % (sep, str(val))
         else:
             envval = None
 
@@ -953,7 +958,7 @@ def setMacOSXDefaultEnvironment():
     qgis_standalone_gdal_path = u"%s/Frameworks/GDAL.framework" % qgis_app
 
     # path to the GDAL framework when installed as external framework
-    gdal_versionsplit = unicode(GdalConfig.version()).split('.')
+    gdal_versionsplit = str(GdalConfig.version()).split('.')
     gdal_base_path = u"/Library/Frameworks/GDAL.framework/Versions/%s.%s" % (gdal_versionsplit[0], gdal_versionsplit[1])
 
     if os.path.exists(qgis_standalone_gdal_path):  # qgis standalone

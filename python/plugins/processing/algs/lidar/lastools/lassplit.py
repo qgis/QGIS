@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'March 2014'
@@ -59,7 +62,7 @@ class lassplit(LAStoolsAlgorithm):
         digits = self.getParameterValue(lassplit.DIGITS)
         if digits != 5:
             commands.append("-digits")
-            commands.append(unicode(digits))
+            commands.append(str(digits))
         operation = self.getParameterValue(lassplit.OPERATION)
         if operation != 0:
             if operation == 9:
@@ -68,7 +71,7 @@ class lassplit(LAStoolsAlgorithm):
                 commands.append("-" + lassplit.OPERATIONS[operation])
         if operation > 1 and operation < 10:
             interval = self.getParameterValue(lassplit.INTERVAL)
-            commands.append(unicode(interval))
+            commands.append(str(interval))
         self.addParametersPointOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)
 

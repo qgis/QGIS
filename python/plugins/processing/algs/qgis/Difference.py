@@ -86,7 +86,7 @@ class Difference(GeoAlgorithm):
             intersections = index.intersects(geom.boundingBox())
             for i in intersections:
                 request = QgsFeatureRequest().setFilterFid(i)
-                inFeatB = layerB.getFeatures(request).next()
+                inFeatB = next(layerB.getFeatures(request))
                 tmpGeom = inFeatB.geometry()
                 if diff_geom.intersects(tmpGeom):
                     diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'
@@ -126,7 +127,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         arguments = []
         if self.colorsCheck.isChecked():
             arguments.append("-n")
-            arguments.append(unicode(self.colorsSpin.value()))
+            arguments.append(str(self.colorsSpin.value()))
         if self.isBatchEnabled():
             return arguments
 

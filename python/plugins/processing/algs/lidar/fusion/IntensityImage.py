@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = "Niccolo' Marchi"
 __date__ = 'January 2016'
@@ -75,7 +78,7 @@ class IntensityImage(FusionAlgorithm):
             commands.append('/hist')
         if self.getParameterValue(self.SWITCH) == 1:
             commands.append('/jpg')
-        commands.append(unicode(self.getParameterValue(self.PIXEL)))
+        commands.append(str(self.getParameterValue(self.PIXEL)))
         outFile = self.getOutputValue(self.OUTPUT)
         commands.append(outFile)
         files = self.getParameterValue(self.INPUT).split(';')

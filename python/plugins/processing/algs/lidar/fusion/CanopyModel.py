@@ -20,6 +20,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -94,26 +97,26 @@ class CanopyModel(FusionAlgorithm):
         commands = [os.path.join(FusionUtils.FusionPath(), 'CanopyModel.exe')]
         commands.append('/verbose')
         ground = self.getParameterValue(self.GROUND)
-        if unicode(ground).strip():
-            commands.append('/ground:' + unicode(ground))
+        if str(ground).strip():
+            commands.append('/ground:' + str(ground))
         median = self.getParameterValue(self.MEDIAN)
-        if unicode(median).strip():
-            commands.append('/median:' + unicode(median))
+        if str(median).strip():
+            commands.append('/median:' + str(median))
         smooth = self.getParameterValue(self.SMOOTH)
-        if unicode(smooth).strip():
-            commands.append('/smooth:' + unicode(smooth))
+        if str(smooth).strip():
+            commands.append('/smooth:' + str(smooth))
         slope = self.getParameterValue(self.SLOPE)
         if slope:
             commands.append('/slope')
         class_var = self.getParameterValue(self.CLASS)
-        if unicode(class_var).strip():
-            commands.append('/class:' + unicode(class_var))
+        if str(class_var).strip():
+            commands.append('/class:' + str(class_var))
         ascii = self.getParameterValue(self.ASCII)
         if ascii:
             commands.append('/ascii')
         self.addAdvancedModifiersToCommand(commands)
         commands.append(self.getOutputValue(self.OUTPUT_DTM))
-        commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
+        commands.append(str(self.getParameterValue(self.CELLSIZE)))
         commands.append(self.UNITS[self.getParameterValue(self.XYUNITS)][0])
         commands.append(self.UNITS[self.getParameterValue(self.ZUNITS)][0])
         commands.append('0')

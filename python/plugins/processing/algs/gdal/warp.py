@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -125,17 +126,17 @@ class warp(GdalAlgorithm):
     def getConsoleCommands(self):
         noData = self.getParameterValue(self.NO_DATA)
         if noData is not None:
-            noData = unicode(noData)
+            noData = str(noData)
         srccrs = self.getParameterValue(self.SOURCE_SRS)
         dstcrs = self.getParameterValue(self.DEST_SRS)
-        jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
-        predictor = unicode(self.getParameterValue(self.PREDICTOR))
-        zlevel = unicode(self.getParameterValue(self.ZLEVEL))
-        tiled = unicode(self.getParameterValue(self.TILED))
+        jpegcompression = str(self.getParameterValue(self.JPEGCOMPRESSION))
+        predictor = str(self.getParameterValue(self.PREDICTOR))
+        zlevel = str(self.getParameterValue(self.ZLEVEL))
+        tiled = str(self.getParameterValue(self.TILED))
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
-        tfw = unicode(self.getParameterValue(self.TFW))
-        rastext = unicode(self.getParameterValue(self.RAST_EXT))
+        tfw = str(self.getParameterValue(self.TFW))
+        rastext = str(self.getParameterValue(self.RAST_EXT))
         rastext_crs = self.getParameterValue(self.EXT_CRS)
 
         arguments = []
@@ -158,11 +159,11 @@ class warp(GdalAlgorithm):
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
         if self.getParameterValue(self.TR) != 0:
             arguments.append('-tr')
-            arguments.append(unicode(self.getParameterValue(self.TR)))
-            arguments.append(unicode(self.getParameterValue(self.TR)))
+            arguments.append(str(self.getParameterValue(self.TR)))
+            arguments.append(str(self.getParameterValue(self.TR)))
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:
-            extra = unicode(extra)
+            extra = str(extra)
         regionCoords = rastext.split(',')
         try:
             rastext = []

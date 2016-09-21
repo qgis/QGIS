@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Arnaud Morvan'
 __date__ = 'October 2014'
@@ -78,8 +79,8 @@ class FieldsMappingModel(QAbstractTableModel):
         self.endResetModel()
 
     def testAllExpressions(self):
-        self._errors = [None for i in xrange(len(self._mapping))]
-        for row in xrange(len(self._mapping)):
+        self._errors = [None for i in range(len(self._mapping))]
+        for row in range(len(self._mapping)):
             self.testExpression(row)
 
     def testExpression(self, row):
@@ -189,7 +190,7 @@ class FieldsMappingModel(QAbstractTableModel):
     def insertRows(self, row, count, index=QModelIndex()):
         self.beginInsertRows(index, row, row + count - 1)
 
-        for i in xrange(count):
+        for i in range(count):
             field = self.newField()
             self._mapping.insert(row + i, field)
             self._errors.insert(row + i, None)
@@ -201,7 +202,7 @@ class FieldsMappingModel(QAbstractTableModel):
     def removeRows(self, row, count, index=QModelIndex()):
         self.beginRemoveRows(index, row, row + count - 1)
 
-        for i in xrange(row + count - 1, row + 1):
+        for i in range(row + count - 1, row + 1):
             self._mapping.pop(i)
             self._errors.pop(i)
 
@@ -246,7 +247,7 @@ class FieldDelegate(QStyledItemDelegate):
         fieldType = FieldsMappingModel.columns[column]['type']
         if fieldType == QVariant.Type:
             editor = QComboBox(parent)
-            for key, text in FieldsMappingModel.fieldTypes.iteritems():
+            for key, text in FieldsMappingModel.fieldTypes.items():
                 editor.addItem(text, key)
 
         elif fieldType == QgsExpression:
@@ -382,7 +383,7 @@ class FieldsMappingPanel(BASE, WIDGET):
 
         self.model.insertRows(row - 1, 1)
 
-        for column in xrange(self.model.columnCount()):
+        for column in range(self.model.columnCount()):
             srcIndex = self.model.index(row + 1, column)
             dstIndex = self.model.index(row - 1, column)
             value = self.model.data(srcIndex, Qt.EditRole)
@@ -408,7 +409,7 @@ class FieldsMappingPanel(BASE, WIDGET):
 
         self.model.insertRows(row + 2, 1)
 
-        for column in xrange(self.model.columnCount()):
+        for column in range(self.model.columnCount()):
             srcIndex = self.model.index(row, column)
             dstIndex = self.model.index(row + 2, column)
             value = self.model.data(srcIndex, Qt.EditRole)
@@ -434,7 +435,7 @@ class FieldsMappingPanel(BASE, WIDGET):
     def resizeColumns(self):
         header = self.fieldsView.horizontalHeader()
         header.resizeSections(QHeaderView.ResizeToContents)
-        for section in xrange(header.count()):
+        for section in range(header.count()):
             size = header.sectionSize(section)
             fieldType = FieldsMappingModel.columns[section]['type']
             if fieldType == QgsExpression:
@@ -444,8 +445,8 @@ class FieldsMappingPanel(BASE, WIDGET):
 
     def openPersistentEditor(self, topLeft, bottomRight):
         return
-        for row in xrange(topLeft.row(), bottomRight.row() + 1):
-            for column in xrange(topLeft.column(), bottomRight.column() + 1):
+        for row in range(topLeft.row(), bottomRight.row() + 1):
+            for column in range(topLeft.column(), bottomRight.column() + 1):
                 self.fieldsView.openPersistentEditor(self.model.index(row, column))
                 editor = self.fieldsView.indexWidget(self.model.index(row, column))
                 if isinstance(editor, QLineEdit):

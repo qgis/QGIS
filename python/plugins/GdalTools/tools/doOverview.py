@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'
@@ -123,8 +124,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         for option in self.mPyramidOptionsWidget.configOptions():
             (k, v) = option.split("=")
             arguments.append("--config")
-            arguments.append(unicode(k))
-            arguments.append(unicode(v))
+            arguments.append(str(k))
+            arguments.append(str(v))
 
         if self.cleanCheck.isChecked():
             arguments.append("-clean")
@@ -137,7 +138,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
         if len(self.mPyramidOptionsWidget.overviewList()) > 0:
             for level in self.mPyramidOptionsWidget.overviewList():
-                arguments.append(unicode(level))
+                arguments.append(str(level))
 
         # set creation options filename/layer for validation
         if self.init:
@@ -168,7 +169,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
             arguments.extend(["2", "4", "8", "16", "32"])
         else:
             for level in self.mPyramidOptionsWidget.overviewList():
-                arguments.append(unicode(level))
+                arguments.append(str(level))
         return arguments
 
     def isBatchEnabled(self):
@@ -180,7 +181,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
             BasePluginWidget.onFinished(self, exitCode, status)
             return
 
-        msg = unicode(self.base.process.readAllStandardError())
+        msg = str(self.base.process.readAllStandardError())
         if msg != '':
             self.errors.append(">> " + self.inFiles[self.batchIndex] + "<br>" + msg.replace("\n", "<br>"))
 

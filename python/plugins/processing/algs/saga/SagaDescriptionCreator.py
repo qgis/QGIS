@@ -17,6 +17,8 @@
 ***************************************************************************
 """
 from __future__ import print_function
+from builtins import str
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -30,7 +32,7 @@ import subprocess
 import os
 
 
-class SagaDescriptionCreator:
+class SagaDescriptionCreator(object):
 
     def createLibraryFiles(self):
         f = open('c:\\saga\\sagalibs.txt')
@@ -68,16 +70,16 @@ class SagaDescriptionCreator:
                 f.close()
 
         # fix_print_with_import
-        print(unicode(self.map))
+        print(str(self.map))
 
     def createDescriptionFiles(self):
-        for lib in self.map.keys():
+        for lib in list(self.map.keys()):
             algs = self.map[lib]
             for alg in algs:
                 command = ['c:\\saga\\saga_cmd.exe', lib, alg]
                 f = open('c:\\saga\\desc\\' + lib + '_' + alg + '.txt', 'w')
                 # fix_print_with_import
-                print(unicode(command))
+                print(str(command))
                 subprocess.Popen(
                     command,
                     shell=True,

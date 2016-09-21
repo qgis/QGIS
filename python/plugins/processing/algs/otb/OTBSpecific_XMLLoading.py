@@ -26,6 +26,8 @@ Most of the following functions are like follows :
     adaptNameOfTheOTBApplication(commands_list)
 The command list is a list of all parameters of the given algorithm with all user values.
 """
+from builtins import str
+from builtins import map
 
 
 __author__ = 'Julien Malik, Oscar Picas, Alexia Mondot'
@@ -57,7 +59,7 @@ def adaptBinaryMorphologicalOperation(commands_list):
             return param
 
     import functools
-    com_list = map(functools.partial(replace_dilate, value=val), commands_list)
+    com_list = list(map(functools.partial(replace_dilate, value=val), commands_list))
 
     val = com_list[com_list.index("-structype.ball.xradius") + 1]
 

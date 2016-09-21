@@ -16,6 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -96,7 +100,6 @@ class GrassAlgorithm(GeoAlgorithm):
             self._icon = QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
         return self._icon
 
-
     def help(self):
         return False, 'http://grass.osgeo.org/grass64/manuals/' + self.grassName + '.html'
 
@@ -162,7 +165,7 @@ class GrassAlgorithm(GeoAlgorithm):
                     elif isinstance(output, OutputVector):
                         vectorOutputs += 1
                     if isinstance(output, OutputHTML):
-                        self.addOutput(OutputFile("rawoutput", output.description + 
+                        self.addOutput(OutputFile("rawoutput", output.description +
                                                   " (raw output)", "txt"))
                 line = lines.readline().strip('\n').strip()
             except Exception as e:
@@ -257,7 +260,7 @@ class GrassAlgorithm(GeoAlgorithm):
 
                 # Check if the layer hasn't already been exported in, for
                 # example, previous GRASS calls in this session
-                if value in self.exportedLayers.keys():
+                if value in list(self.exportedLayers.keys()):
                     continue
                 else:
                     self.setSessionProjectionFromLayer(value, commands)
@@ -266,7 +269,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 if param.value is None:
                     continue
                 value = param.value
-                if value in self.exportedLayers.keys():
+                if value in list(self.exportedLayers.keys()):
                     continue
                 else:
                     self.setSessionProjectionFromLayer(value, commands)
@@ -281,7 +284,7 @@ class GrassAlgorithm(GeoAlgorithm):
                     continue
                 if param.datatype == dataobjects.TYPE_RASTER:
                     for layer in layers:
-                        if layer in self.exportedLayers.keys():
+                        if layer in list(self.exportedLayers.keys()):
                             continue
                         else:
                             self.setSessionProjectionFromLayer(layer, commands)
@@ -291,7 +294,7 @@ class GrassAlgorithm(GeoAlgorithm):
                                         dataobjects.TYPE_VECTOR_POLYGON,
                                         dataobjects.TYPE_VECTOR_POINT]:
                     for layer in layers:
-                        if layer in self.exportedLayers.keys():
+                        if layer in list(self.exportedLayers.keys()):
                             continue
                         else:
                             self.setSessionProjectionFromLayer(layer, commands)
@@ -300,18 +303,18 @@ class GrassAlgorithm(GeoAlgorithm):
         self.setSessionProjectionFromProject(commands)
 
         region = \
-            unicode(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
+            str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
         regionCoords = region.split(',')
         command = 'g.region'
-        command += ' n=' + unicode(regionCoords[3])
-        command += ' s=' + unicode(regionCoords[2])
-        command += ' e=' + unicode(regionCoords[1])
-        command += ' w=' + unicode(regionCoords[0])
+        command += ' n=' + str(regionCoords[3])
+        command += ' s=' + str(regionCoords[2])
+        command += ' e=' + str(regionCoords[1])
+        command += ' w=' + str(regionCoords[0])
         cellsize = self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER)
         if cellsize:
-            command += ' res=' + unicode(cellsize)
+            command += ' res=' + str(cellsize)
         else:
-            command += ' res=' + unicode(self.getDefaultCellsize())
+            command += ' res=' + str(self.getDefaultCellsize())
         alignToResolution = \
             self.getParameterValue(self.GRASS_REGION_ALIGN_TO_RESOLUTION)
         if alignToResolution:
@@ -332,13 +335,13 @@ class GrassAlgorithm(GeoAlgorithm):
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 value = param.value
-                if value in self.exportedLayers.keys():
+                if value in list(self.exportedLayers.keys()):
                     command += ' %s="%s"' % (param.name, self.exportedLayers[value])
                 else:
                     command += ' %s="%s"' % (param.name, value)
             elif isinstance(param, ParameterMultipleInput):
                 s = param.value
-                for layer in self.exportedLayers.keys():
+                for layer in list(self.exportedLayers.keys()):
                     s = s.replace(layer, self.exportedLayers[layer])
                 s = s.replace(';', ',')
                 command += ' %s="%s"' % (param.name, s)
@@ -347,15 +350,15 @@ class GrassAlgorithm(GeoAlgorithm):
                     command += ' ' + param.name
             elif isinstance(param, ParameterSelection):
                 idx = int(param.value)
-                command += ' ' + param.name + '=' + unicode(param.options[idx])
+                command += ' ' + param.name + '=' + str(param.options[idx])
             elif isinstance(param, ParameterString):
-                command += ' ' + param.name + '="' + unicode(param.value) + '"'
+                command += ' ' + param.name + '="' + str(param.value) + '"'
             elif isinstance(param, ParameterPoint):
-                command += ' ' + param.name + '=' + unicode(param.value)
+                command += ' ' + param.name + '=' + str(param.value)
             else:
-                command += ' ' + param.name + '="' + unicode(param.value) + '"'
+                command += ' ' + param.name + '="' + str(param.value) + '"'
 
-        uniqueSufix = unicode(uuid.uuid4()).replace('-', '')
+        uniqueSufix = str(uuid.uuid4()).replace('-', '')
         for out in self.outputs:
             if isinstance(out, OutputFile):
                 command += ' > ' + out.value
@@ -465,9 +468,9 @@ class GrassAlgorithm(GeoAlgorithm):
         self.exportedLayers[orgFilename] = destFilename
         command = 'v.in.ogr'
         min_area = self.getParameterValue(self.GRASS_MIN_AREA_PARAMETER)
-        command += ' min_area=' + unicode(min_area)
+        command += ' min_area=' + str(min_area)
         snap = self.getParameterValue(self.GRASS_SNAP_TOLERANCE_PARAMETER)
-        command += ' snap=' + unicode(snap)
+        command += ' snap=' + str(snap)
         command += ' dsn="%s"' % os.path.dirname(filename)
         command += ' layer="%s"' % os.path.basename(filename)[:-4]
         command += ' output=' + destFilename
@@ -487,7 +490,7 @@ class GrassAlgorithm(GeoAlgorithm):
         if not GrassUtils.projectionSet:
             qGisLayer = dataobjects.getObjectFromUri(layer)
             if qGisLayer:
-                proj4 = unicode(qGisLayer.crs().toProj4())
+                proj4 = str(qGisLayer.crs().toProj4())
                 command = 'g.proj'
                 command += ' -c'
                 command += ' proj4="' + proj4 + '"'
@@ -508,8 +511,8 @@ class GrassAlgorithm(GeoAlgorithm):
         return command
 
     def getTempFilename(self):
-        filename = 'tmp' + unicode(time.time()).replace('.', '') \
-            + unicode(system.getNumExportedLayers())
+        filename = 'tmp' + str(time.time()).replace('.', '') \
+            + str(system.getNumExportedLayers())
         return filename
 
     def commandLineName(self):

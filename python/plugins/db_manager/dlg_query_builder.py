@@ -20,6 +20,7 @@ email                : hugo dot mercier at oslandia dot com
 
 Query builder dialog, based on the QSpatialite plugin (GPLv2+) by Romain Riviere
 """
+from builtins import str
 
 from qgis.PyQt.QtCore import Qt, QObject, QEvent
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QTextEdit
@@ -292,7 +293,7 @@ class QueryBuilderDlg(QDialog):
         if value is None:
             queryWord = u'NULL'
         elif isinstance(value, (int, float)):
-            queryWord = unicode(value)
+            queryWord = str(value)
         else:
             queryWord = self.db.connector.quoteString(value)
 
@@ -331,11 +332,11 @@ class QueryBuilderDlg(QDialog):
         self.col_where = []
 
     def validate(self):
-        query_col = unicode(self.ui.col.toPlainText())
-        query_table = unicode(self.ui.tab.text())
-        query_where = unicode(self.ui.where.toPlainText())
-        query_group = unicode(self.ui.group.toPlainText())
-        query_order = unicode(self.ui.order.toPlainText())
+        query_col = str(self.ui.col.toPlainText())
+        query_table = str(self.ui.tab.text())
+        query_where = str(self.ui.where.toPlainText())
+        query_group = str(self.ui.group.toPlainText())
+        query_order = str(self.ui.order.toPlainText())
         query = ""
         if query_col.strip() != '':
             query += "SELECT %s \nFROM %s" % (query_col, query_table)

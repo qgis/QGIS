@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -40,7 +42,7 @@ class ScriptUtils(object):
 
     @staticmethod
     def defaultScriptsFolder():
-        folder = unicode(os.path.join(userFolder(), 'scripts'))
+        folder = str(os.path.join(userFolder(), 'scripts'))
         mkdir(folder)
         return os.path.abspath(folder)
 
@@ -70,5 +72,5 @@ class ScriptUtils(object):
                     except Exception as e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                                'Could not load script:' + descriptionFile + '\n'
-                                               + unicode(e))
+                                               + str(e))
         return algs

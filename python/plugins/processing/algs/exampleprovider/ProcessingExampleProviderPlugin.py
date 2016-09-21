@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'July 2013'
@@ -38,7 +39,7 @@ if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
 
-class ProcessingExampleProviderPlugin:
+class ProcessingExampleProviderPlugin(object):
 
     def __init__(self):
         self.provider = ExampleAlgorithmProvider()

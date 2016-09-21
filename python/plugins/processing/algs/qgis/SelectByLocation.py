@@ -106,7 +106,7 @@ class SelectByLocation(GeoAlgorithm):
 
             for i in intersects:
                 request = QgsFeatureRequest().setFilterFid(i)
-                feat = inputLayer.getFeatures(request).next()
+                feat = next(inputLayer.getFeatures(request))
                 tmpGeom = vector.snapToPrecision(feat.geometry(), precision)
 
                 res = False

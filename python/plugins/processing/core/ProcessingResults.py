@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -26,7 +27,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 
-class ProcessingResults:
+class ProcessingResults(object):
 
     results = []
 
@@ -39,7 +40,7 @@ class ProcessingResults:
         return ProcessingResults.results
 
 
-class Result:
+class Result(object):
 
     def __init__(self, name, filename):
         self.name = name

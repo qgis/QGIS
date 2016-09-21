@@ -19,6 +19,8 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import map
 
 from functools import cmp_to_key
 
@@ -55,7 +57,7 @@ class SpatiaLiteDBConnector(DBConnector):
         self._checkGeopackage()
 
     def _connectionInfo(self):
-        return unicode(self.dbname)
+        return str(self.dbname)
 
     @classmethod
     def isValidDatabase(self, path):
@@ -133,7 +135,7 @@ class SpatiaLiteDBConnector(DBConnector):
                 result = False
         else:
             # Spatialite < 4.2 has no GeoPackage support, check for filename and GPKG layout
-            ver = map(int, self.getInfo()[0].split('.')[0:2])
+            ver = list(map(int, self.getInfo()[0].split('.')[0:2]))
             if ver[0] < 4 or (ver[0] == 4 and ver[1] < 2):
                 hasGpkgFileExt = self.dbname[-5:] == ".gpkg" or self.dbname[-11:] == ".geopackage"
 

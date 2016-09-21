@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 
 __author__ = 'Victor Olaya'
@@ -88,7 +89,7 @@ def getHtmlFromDescriptionsDict(alg, descriptions):
 
 def getDescription(name, descriptions):
     if name in descriptions:
-        return unicode(descriptions[name]).replace("\n", "<br>")
+        return str(descriptions[name]).replace("\n", "<br>")
     else:
         return ''
 

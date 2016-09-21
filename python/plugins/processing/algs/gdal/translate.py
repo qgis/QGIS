@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -127,26 +128,26 @@ class translate(GdalAlgorithm):
 
     def getConsoleCommands(self):
         out = self.getOutputValue(translate.OUTPUT)
-        outsize = unicode(self.getParameterValue(self.OUTSIZE))
-        outsizePerc = unicode(self.getParameterValue(self.OUTSIZE_PERC))
+        outsize = str(self.getParameterValue(self.OUTSIZE))
+        outsizePerc = str(self.getParameterValue(self.OUTSIZE_PERC))
         noData = self.getParameterValue(self.NO_DATA)
         if noData is not None:
-            noData = unicode(noData)
-        expand = unicode(self.getParameterFromName(
+            noData = str(noData)
+        expand = str(self.getParameterFromName(
             self.EXPAND).options[self.getParameterValue(self.EXPAND)])
-        projwin = unicode(self.getParameterValue(self.PROJWIN))
+        projwin = str(self.getParameterValue(self.PROJWIN))
         crsId = self.getParameterValue(self.SRS)
         sds = self.getParameterValue(self.SDS)
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:
-            extra = unicode(extra)
-        jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
-        predictor = unicode(self.getParameterValue(self.PREDICTOR))
-        zlevel = unicode(self.getParameterValue(self.ZLEVEL))
-        tiled = unicode(self.getParameterValue(self.TILED))
+            extra = str(extra)
+        jpegcompression = str(self.getParameterValue(self.JPEGCOMPRESSION))
+        predictor = str(self.getParameterValue(self.PREDICTOR))
+        zlevel = str(self.getParameterValue(self.ZLEVEL))
+        tiled = str(self.getParameterValue(self.TILED))
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
-        tfw = unicode(self.getParameterValue(self.TFW))
+        tfw = str(self.getParameterValue(self.TFW))
 
         arguments = []
         arguments.append('-of')
@@ -181,7 +182,7 @@ class translate(GdalAlgorithm):
             arguments.extend(projwin)
         if crsId:
             arguments.append('-a_srs')
-            arguments.append(unicode(crsId))
+            arguments.append(str(crsId))
         if sds:
             arguments.append('-sds')
         if extra and len(extra) > 0:

@@ -16,6 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
+from builtins import zip
+from builtins import map
+from builtins import str
 
 __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'

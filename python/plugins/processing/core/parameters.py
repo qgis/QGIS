@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -37,18 +40,18 @@ from processing.tools import dataobjects
 
 def getParameterFromString(s):
     tokens = s.split("|")
-    params = [t if unicode(t) != unicode(None) else None for t in tokens[1:]]
+    params = [t if str(t) != str(None) else None for t in tokens[1:]]
     clazz = getattr(sys.modules[__name__], tokens[0])
     return clazz(*params)
 
 
 def parseBool(s):
-    if s is None or s == unicode(None).lower():
+    if s is None or s == str(None).lower():
         return None
-    return unicode(s).lower() == unicode(True).lower()
+    return str(s).lower() == str(True).lower()
 
 
-class Parameter:
+class Parameter(object):
 
     """
     Base class for all parameters that a geoalgorithm might
@@ -83,7 +86,7 @@ class Parameter:
             self.value = None
             return True
 
-        self.value = unicode(obj)
+        self.value = str(obj)
         return True
 
     def setDefaultValue(self):
@@ -104,7 +107,7 @@ class Parameter:
         entered in the console if calling an algorithm using the
         Processing.runalg() method.
         """
-        return unicode(self.value)
+        return str(self.value)
 
     def typeName(self):
         return self.__class__.__name__.replace('Parameter', '').lower()
@@ -130,8 +133,8 @@ class ParameterBoolean(Parameter):
             self.value = None
             return True
 
-        if isinstance(value, basestring):
-            self.value = unicode(value).lower() == unicode(True).lower()
+        if isinstance(value, str):
+            self.value = str(value).lower() == str(True).lower()
         else:
             self.value = bool(value)
         return True
@@ -161,11 +164,11 @@ class ParameterCrs(Parameter):
             return True
 
         # TODO: check it is a valid authid
-        self.value = unicode(value)
+        self.value = str(value)
         return True
 
     def getValueAsCommandLineParameter(self):
-        return '"' + unicode(self.value) + '"'
+        return '"' + str(self.value) + '"'
 
     def getAsScriptCode(self):
         param_type = ''
@@ -179,9 +182,9 @@ class ParameterDataObject(Parameter):
 
     def getValueAsCommandLineParameter(self):
         if self.value is None:
-            return unicode(None)
+            return str(None)
         else:
-            s = dataobjects.normalizeLayerSource(unicode(self.value))
+            s = dataobjects.normalizeLayerSource(str(self.value))
             s = '"%s"' % s
             return s
 
@@ -201,7 +204,7 @@ class ParameterExtent(Parameter):
             self.value = None
             return True
 
-        tokens = unicode(text).split(',')
+        tokens = str(text).split(',')
         if len(tokens) != 4:
             return False
         try:
@@ -215,7 +218,7 @@ class ParameterExtent(Parameter):
             return False
 
     def getValueAsCommandLineParameter(self):
-        return '"' + unicode(self.value) + '"'
+        return '"' + str(self.value) + '"'
 
     def getAsScriptCode(self):
         param_type = ''
@@ -238,7 +241,7 @@ class ParameterPoint(Parameter):
             self.value = None
             return True
 
-        tokens = unicode(text).split(',')
+        tokens = str(text).split(',')
         if len(tokens) != 2:
             return False
         try:
@@ -250,7 +253,7 @@ class ParameterPoint(Parameter):
             return False
 
     def getValueAsCommandLineParameter(self):
-        return '"' + unicode(self.value) + '"'
+        return '"' + str(self.value) + '"'
 
     def getAsScriptCode(self):
         param_type = ''
@@ -268,7 +271,7 @@ class ParameterFile(Parameter):
         self.isFolder = parseBool(isFolder)
 
     def getValueAsCommandLineParameter(self):
-        return '"' + unicode(self.value) + '"'
+        return '"' + str(self.value) + '"'
 
     def setValue(self, obj):
         if obj is None or obj.strip() == '':
@@ -279,7 +282,7 @@ class ParameterFile(Parameter):
 
         if self.ext is not None and obj != '' and not obj.endswith(self.ext):
             return False
-        self.value = unicode(obj)
+        self.value = str(obj)
         return True
 
     def typeName(self):
@@ -305,7 +308,7 @@ class ParameterFixedTable(Parameter):
                  cols=['value'], fixedNumOfRows=False, optional=False):
         Parameter.__init__(self, name, description, None, optional)
         self.cols = cols
-        if isinstance(cols, basestring):
+        if isinstance(cols, str):
             self.cols = self.cols.split(";")
         self.numRows = int(numRows)
         self.fixedNumOfRows = parseBool(fixedNumOfRows)
@@ -318,14 +321,14 @@ class ParameterFixedTable(Parameter):
             return True
 
         # TODO: check that it contains a correct number of elements
-        if isinstance(obj, (str, unicode)):
+        if isinstance(obj, str):
             self.value = obj
         else:
             self.value = ParameterFixedTable.tableToString(obj)
         return True
 
     def getValueAsCommandLineParameter(self):
-        return '"' + unicode(self.value) + '"'
+        return '"' + str(self.value) + '"'
 
     @staticmethod
     def tableToString(table):
@@ -406,7 +409,7 @@ class ParameterMultipleInput(ParameterDataObject):
             self.value = ";".join([self.getAsString(lay) for lay in obj])
             return True
         else:
-            self.value = unicode(obj)
+            self.value = str(obj)
             return True
 
     def getSafeExportedLayers(self):
@@ -463,26 +466,26 @@ class ParameterMultipleInput(ParameterDataObject):
     def getAsString(self, value):
         if self.datatype == dataobjects.TYPE_RASTER:
             if isinstance(value, QgsRasterLayer):
-                return unicode(value.dataProvider().dataSourceUri())
+                return str(value.dataProvider().dataSourceUri())
             else:
-                s = unicode(value)
+                s = str(value)
                 layers = dataobjects.getRasterLayers()
                 for layer in layers:
                     if layer.name() == s:
-                        return unicode(layer.dataProvider().dataSourceUri())
+                        return str(layer.dataProvider().dataSourceUri())
                 return s
 
         if self.datatype == dataobjects.TYPE_FILE:
-            return unicode(value)
+            return str(value)
         else:
             if isinstance(value, QgsVectorLayer):
-                return unicode(value.source())
+                return str(value.source())
             else:
-                s = unicode(value)
+                s = str(value)
                 layers = dataobjects.getVectorLayers([self.datatype])
                 for layer in layers:
                     if layer.name() == s:
-                        return unicode(layer.source())
+                        return str(layer.source())
                 return s
 
     def getFileFilter(self):
@@ -531,7 +534,7 @@ class ParameterNumber(Parameter):
 
         if default is not None:
             try:
-                self.default = int(unicode(default))
+                self.default = int(str(default))
                 self.isInteger = True
             except ValueError:
                 self.default = float(default)
@@ -615,7 +618,7 @@ class ParameterRange(Parameter):
             return False
 
     def getValueAsCommandLineParameter(self):
-        return '"' + unicode(self.value) + '"' if self.value is not None else unicode(None)
+        return '"' + str(self.value) + '"' if self.value is not None else str(None)
 
 
 class ParameterRaster(ParameterDataObject):
@@ -662,10 +665,10 @@ class ParameterRaster(ParameterDataObject):
             return True
 
         if isinstance(obj, QgsRasterLayer):
-            self.value = unicode(obj.dataProvider().dataSourceUri())
+            self.value = str(obj.dataProvider().dataSourceUri())
             return True
         else:
-            self.value = unicode(obj)
+            self.value = str(obj)
             return True
 
     def getFileFilter(self):
@@ -697,10 +700,10 @@ class ParameterSelection(Parameter):
                     index = resolveFieldIndex(layer, options[1])
                     feats = features(layer)
                     for feature in feats:
-                        self.options.append(unicode(feature.attributes()[index]))
+                        self.options.append(str(feature.attributes()[index]))
                 except ValueError:
                     pass
-        elif isinstance(self.options, basestring):
+        elif isinstance(self.options, str):
             self.options = self.options.split(";")
 
         if default is not None:
@@ -743,16 +746,16 @@ class ParameterString(Parameter):
             self.value = None
             return True
 
-        self.value = unicode(obj).replace(
+        self.value = str(obj).replace(
             ParameterString.ESCAPED_NEWLINE,
             ParameterString.NEWLINE
         )
         return True
 
     def getValueAsCommandLineParameter(self):
-        return ('"' + unicode(self.value.replace(ParameterString.NEWLINE,
-                                                 ParameterString.ESCAPED_NEWLINE)) + '"'
-                if self.value is not None else unicode(None))
+        return ('"' + str(self.value.replace(ParameterString.NEWLINE,
+                                             ParameterString.ESCAPED_NEWLINE)) + '"'
+                if self.value is not None else str(None))
 
     def getAsScriptCode(self):
         param_type = ''
@@ -777,18 +780,18 @@ class ParameterTable(ParameterDataObject):
             return True
 
         if isinstance(obj, QgsVectorLayer):
-            source = unicode(obj.source())
+            source = str(obj.source())
             self.value = source
             return True
         else:
-            self.value = unicode(obj)
+            self.value = str(obj)
             layers = dataobjects.getTables()
             for layer in layers:
                 if layer.name() == self.value or layer.source() == self.value:
-                    source = unicode(layer.source())
+                    source = str(layer.source())
                     self.value = source
                     return True
-            val = unicode(obj)
+            val = str(obj)
             self.value = val
             return os.path.exists(self.value)
 
@@ -854,7 +857,7 @@ class ParameterTableField(Parameter):
         self.datatype = int(datatype)
 
     def getValueAsCommandLineParameter(self):
-        return '"' + unicode(self.value) + '"' if self.value is not None else unicode(None)
+        return '"' + str(self.value) + '"' if self.value is not None else str(None)
 
     def setValue(self, value):
         if value is None:
@@ -865,7 +868,7 @@ class ParameterTableField(Parameter):
 
         elif len(value) == 0 and not self.optional:
             return False
-        self.value = unicode(value)
+        self.value = str(value)
         return True
 
     def __str__(self):
@@ -914,7 +917,7 @@ class ParameterTableMultipleField(Parameter):
         self.datatype = int(datatype)
 
     def getValueAsCommandLineParameter(self):
-        return '"' + unicode(self.value) + '"' if self.value is not None else unicode(None)
+        return '"' + str(self.value) + '"' if self.value is not None else str(None)
 
     def setValue(self, obj):
         if obj is None:
@@ -932,7 +935,7 @@ class ParameterTableMultipleField(Parameter):
             self.value = ";".join(obj)
             return True
         else:
-            self.value = unicode(obj)
+            self.value = str(obj)
             return True
 
     def __str__(self):
@@ -962,7 +965,7 @@ class ParameterVector(ParameterDataObject):
         ParameterDataObject.__init__(self, name, description, None, optional)
         if isinstance(datatype, int):
             datatype = [datatype]
-        elif isinstance(datatype, basestring):
+        elif isinstance(datatype, str):
             datatype = [int(t) for t in datatype.split(',')]
         self.datatype = datatype
         self.exported = None
@@ -976,10 +979,10 @@ class ParameterVector(ParameterDataObject):
             return True
 
         if isinstance(obj, QgsVectorLayer):
-            self.value = unicode(obj.source())
+            self.value = str(obj.source())
             return True
         else:
-            self.value = unicode(obj)
+            self.value = str(obj)
             return True
 
     def getSafeExportedLayer(self):
@@ -1053,7 +1056,7 @@ class ParameterGeometryPredicate(Parameter):
             self.enabledPredicates = self.predicates
 
     def getValueAsCommandLineParameter(self):
-        return unicode(self.value)
+        return str(self.value)
 
     def setValue(self, value):
         if value is None:
@@ -1064,7 +1067,7 @@ class ParameterGeometryPredicate(Parameter):
         elif len(value) == 0 and not self.optional:
             return False
 
-        if isinstance(value, unicode):
+        if isinstance(value, str):
             self.value = value.split(';')  # relates to ModelerAlgorithm.resolveValue
         else:
             self.value = value

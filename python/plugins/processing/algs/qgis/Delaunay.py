@@ -111,7 +111,7 @@ class Delaunay(GeoAlgorithm):
             step = 0
             for index in indicies:
                 request = QgsFeatureRequest().setFilterFid(ptDict[ids[index]])
-                inFeat = layer.getFeatures(request).next()
+                inFeat = next(layer.getFeatures(request))
                 geom = inFeat.geometry()
                 point = QgsPoint(geom.asPoint())
                 polygon.append(point)

@@ -20,6 +20,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -100,28 +103,28 @@ class GridSurfaceCreate(FusionAlgorithm):
         commands = [os.path.join(FusionUtils.FusionPath(), 'GridSurfaceCreate.exe')]
         commands.append('/verbose')
         spike = self.getParameterValue(self.SPIKE)
-        if unicode(spike).strip():
-            commands.append('/spike:' + unicode(spike))
+        if str(spike).strip():
+            commands.append('/spike:' + str(spike))
         median = self.getParameterValue(self.MEDIAN)
-        if unicode(median).strip():
-            commands.append('/median:' + unicode(median))
+        if str(median).strip():
+            commands.append('/median:' + str(median))
         smooth = self.getParameterValue(self.SMOOTH)
-        if unicode(smooth).strip():
-            commands.append('/smooth:' + unicode(smooth))
+        if str(smooth).strip():
+            commands.append('/smooth:' + str(smooth))
         slope = self.getParameterValue(self.SLOPE)
-        if unicode(slope).strip():
-            commands.append('/slope:' + unicode(slope))
+        if str(slope).strip():
+            commands.append('/slope:' + str(slope))
         minimum = self.getParameterValue(self.MINIMUM)
-        if unicode(minimum).strip():
-            commands.append('/minimum:' + unicode(minimum))
+        if str(minimum).strip():
+            commands.append('/minimum:' + str(minimum))
         class_var = self.getParameterValue(self.CLASS)
-        if unicode(class_var).strip():
-            commands.append('/class:' + unicode(class_var))
-        advance_modifiers = unicode(self.getParameterValue(self.ADVANCED_MODIFIERS)).strip()
+        if str(class_var).strip():
+            commands.append('/class:' + str(class_var))
+        advance_modifiers = str(self.getParameterValue(self.ADVANCED_MODIFIERS)).strip()
         if advance_modifiers:
             commands.append(advance_modifiers)
         commands.append(self.getOutputValue(self.OUTPUT_DTM))
-        commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
+        commands.append(str(self.getParameterValue(self.CELLSIZE)))
         commands.append(self.UNITS[self.getParameterValue(self.XYUNITS)][0])
         commands.append(self.UNITS[self.getParameterValue(self.ZUNITS)][0])
         commands.append('0')

@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 
 __author__ = 'Victor Olaya'
@@ -192,7 +194,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         if reply.error() != QNetworkReply.NoError:
             self.popupError(reply.error(), reply.request().url().toString())
         else:
-            resources = unicode(reply.readAll()).splitlines()
+            resources = str(reply.readAll()).splitlines()
             resources = [r.split(',') for r in resources]
             self.resources = {f: (v, n) for f, v, n in resources}
 
@@ -212,9 +214,9 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         self.uptodateItem.setIcon(0, self.icon)
         self.notinstalledItem.setIcon(0, self.icon)
 
-        text = unicode(self.leFilter.text())
+        text = str(self.leFilter.text())
 
-        for i in sorted(self.resources.keys(), key=lambda kv: kv[2].lower()):
+        for i in sorted(list(self.resources.keys()), key=lambda kv: kv[2].lower()):
             filename = i
             version = self.resources[filename][0]
             name = self.resources[filename][1]
@@ -240,7 +242,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         if reply.error() != QNetworkReply.NoError:
             html = self.tr('<h2>No detailed description available for this script</h2>')
         else:
-            content = unicode(reply.readAll())
+            content = str(reply.readAll())
             descriptions = json.loads(content)
             html = '<h2>%s</h2>' % item.name
             html += self.tr('<p><b>Description:</b> %s</p>') % getDescription(ALG_DESC, descriptions)
@@ -297,11 +299,11 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
 
     def okPressed(self):
         toDownload = []
-        for i in xrange(self.toupdateItem.childCount()):
+        for i in range(self.toupdateItem.childCount()):
             item = self.toupdateItem.child(i)
             if item.checkState(0) == Qt.Checked:
                 toDownload.append(item.filename)
-        for i in xrange(self.notinstalledItem.childCount()):
+        for i in range(self.notinstalledItem.childCount()):
             item = self.notinstalledItem.child(i)
             if item.checkState(0) == Qt.Checked:
                 toDownload.append(item.filename)
@@ -317,7 +319,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
                 self.grabHTTP(url, self.storeFile, filename + '.help')
 
         toDelete = []
-        for i in xrange(self.uptodateItem.childCount()):
+        for i in range(self.uptodateItem.childCount()):
             item = self.uptodateItem.child(i)
             if item.checkState(0) == Qt.Unchecked:
                 toDelete.append(item.filename)

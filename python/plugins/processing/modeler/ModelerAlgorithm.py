@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -61,7 +63,7 @@ from processing.core.alglist import algList
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
-class ModelerParameter():
+class ModelerParameter(object):
 
     def __init__(self, param=None, pos=None):
         self.param = param
@@ -75,7 +77,7 @@ class ModelerParameter():
         return ModelerParameter(d["param"], d["pos"])
 
 
-class ModelerOutput():
+class ModelerOutput(object):
 
     def __init__(self, description=""):
         self.description = description
@@ -85,7 +87,7 @@ class ModelerOutput():
         return self.__dict__
 
 
-class Algorithm():
+class Algorithm(object):
 
     def __init__(self, consoleName=""):
 
@@ -114,7 +116,7 @@ class Algorithm():
         self.active = True
 
     def todict(self):
-        return {k: v for k, v in self.__dict__.iteritems() if not k.startswith("_")}
+        return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
 
     @property
     def algorithm(self):
@@ -125,10 +127,10 @@ class Algorithm():
     def setName(self, model):
         if self.name is None:
             i = 1
-            name = self.consoleName + "_" + unicode(i)
+            name = self.consoleName + "_" + str(i)
             while name in model.algs:
                 i += 1
-                name = self.consoleName + "_" + unicode(i)
+                name = self.consoleName + "_" + str(i)
             self.name = name
 
     def getOutputType(self, outputName):
@@ -144,12 +146,12 @@ class Algorithm():
             def _toString(v):
                 if isinstance(v, (ValueFromInput, ValueFromOutput)):
                     return v.asPythonParameter()
-                elif isinstance(v, basestring):
+                elif isinstance(v, str):
                     return "\\n".join(("'%s'" % v).splitlines())
                 elif isinstance(v, list):
                     return "[%s]" % ",".join([_toString(val) for val in v])
                 else:
-                    return unicode(value)
+                    return str(value)
             params.append(_toString(value))
         for out in self.algorithm.outputs:
             if out.name in self.outputs:
@@ -160,7 +162,7 @@ class Algorithm():
         return s
 
 
-class ValueFromInput():
+class ValueFromInput(object):
 
     def __init__(self, name=""):
         self.name = name
@@ -181,7 +183,7 @@ class ValueFromInput():
         return self.name
 
 
-class ValueFromOutput():
+class ValueFromOutput(object):
 
     def __init__(self, alg="", output=""):
         self.alg = alg
@@ -241,14 +243,14 @@ class ModelerAlgorithm(GeoAlgorithm):
                    ParameterBoolean, ParameterString, ParameterNumber]
         self.parameters = []
         for c in classes:
-            for inp in self.inputs.values():
+            for inp in list(self.inputs.values()):
                 if isinstance(inp.param, c):
                     self.parameters.append(inp.param)
-        for inp in self.inputs.values():
+        for inp in list(self.inputs.values()):
             if inp.param not in self.parameters:
                 self.parameters.append(inp.param)
         self.outputs = []
-        for alg in self.algs.values():
+        for alg in list(self.algs.values()):
             if alg.active:
                 for out in alg.outputs:
                     modelOutput = copy.deepcopy(alg.algorithm.getOutputFromName(out))
@@ -270,9 +272,9 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def getNameForAlgorithm(self, alg):
         i = 1
-        while alg.consoleName.upper().replace(":", "") + "_" + unicode(i) in self.algs.keys():
+        while alg.consoleName.upper().replace(":", "") + "_" + str(i) in list(self.algs.keys()):
             i += 1
-        return alg.consoleName.upper().replace(":", "") + "_" + unicode(i)
+        return alg.consoleName.upper().replace(":", "") + "_" + str(i)
 
     def updateAlgorithm(self, alg):
         alg.pos = self.algs[alg.name].pos
@@ -311,8 +313,8 @@ class ModelerAlgorithm(GeoAlgorithm):
         """This method returns True if some other element depends on
         the passed one.
         """
-        for alg in self.algs.values():
-            for value in alg.params.values():
+        for alg in list(self.algs.values()):
+            for value in list(alg.params.values()):
                 if value is None:
                     continue
                 if isinstance(value, list):
@@ -338,7 +340,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         alg = self.algs[name]
         algs = set()
         algs.update(set(alg.dependencies))
-        for value in alg.params.values():
+        for value in list(alg.params.values()):
             if value is None:
                 continue
             if isinstance(value, list):
@@ -358,8 +360,8 @@ class ModelerAlgorithm(GeoAlgorithm):
         """
         algs = set()
         algs.add(name)
-        for alg in self.algs.values():
-            for value in alg.params.values():
+        for alg in list(self.algs.values()):
+            for value in list(alg.params.values()):
                 if value is None:
                     continue
                 if isinstance(value, list):
@@ -372,12 +374,12 @@ class ModelerAlgorithm(GeoAlgorithm):
         return algs
 
     def setPositions(self, paramPos, algPos, outputsPos):
-        for param, pos in paramPos.iteritems():
+        for param, pos in paramPos.items():
             self.inputs[param].pos = pos
-        for alg, pos in algPos.iteritems():
+        for alg, pos in algPos.items():
             self.algs[alg].pos = pos
-        for alg, positions in outputsPos.iteritems():
-            for output, pos in positions.iteritems():
+        for alg, positions in outputsPos.items():
+            for output, pos in positions.items():
                 self.algs[alg].outputs[output].pos = pos
 
     def prepareAlgorithm(self, alg):
@@ -442,7 +444,7 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         executed = []
-        toExecute = [alg for alg in self.algs.values() if alg.active]
+        toExecute = [alg for alg in list(self.algs.values()) if alg.active]
         while len(executed) < len(toExecute):
             for alg in toExecute:
                 if alg.name not in executed:
@@ -459,8 +461,8 @@ class ModelerAlgorithm(GeoAlgorithm):
                             self.prepareAlgorithm(alg)
                             progress.setText(
                                 self.tr('Running %s [%i/%i]', 'ModelerAlgorithm') % (alg.description, len(executed) + 1, len(toExecute)))
-                            progress.setDebugInfo('Parameters: ' + ', '.join([unicode(p).strip()
-                                                                              + '=' + unicode(p.value) for p in alg.algorithm.parameters]))
+                            progress.setDebugInfo('Parameters: ' + ', '.join([str(p).strip()
+                                                                              + '=' + str(p.value) for p in alg.algorithm.parameters]))
                             t0 = time.time()
                             alg.algorithm.execute(progress, self)
                             dt = time.time() - t0
@@ -488,7 +490,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             return 'modeler:' + os.path.basename(self.descriptionFile)[:-6].lower()
 
     def checkBeforeOpeningParametersDialog(self):
-        for alg in self.algs.values():
+        for alg in list(self.algs.values()):
             algInstance = algList.getAlgorithm(alg.consoleName)
             if algInstance is None:
                 return "The model you are trying to run contains an algorithm that is not available: <i>%s</i>" % alg.consoleName
@@ -508,7 +510,7 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def shortHelp(self):
         if 'ALG_DESC' in self.helpContent:
-            return self._formatHelp(unicode(self.helpContent['ALG_DESC']))
+            return self._formatHelp(str(self.helpContent['ALG_DESC']))
         return None
 
     def getParameterDescriptions(self):
@@ -516,12 +518,12 @@ class ModelerAlgorithm(GeoAlgorithm):
         descriptions = self.helpContent
         for param in self.parameters:
             if param.name in descriptions:
-                descs[param.name] = unicode(descriptions[param.name])
+                descs[param.name] = str(descriptions[param.name])
         return descs
 
     def todict(self):
         keys = ["inputs", "group", "name", "algs", "helpContent"]
-        return {k: v for k, v in self.__dict__.iteritems() if k in keys}
+        return {k: v for k, v in self.__dict__.items() if k in keys}
 
     def toJson(self):
         def todict(o):
@@ -555,7 +557,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 module = _import(moduleName)
                 clazz = getattr(module, className)
                 instance = clazz()
-                for k, v in values.iteritems():
+                for k, v in values.items():
                     instance.__dict__[k] = v
                 return instance
             except KeyError:
@@ -638,7 +640,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                         for param in alg.parameters:
                             if not param.hidden:
                                 line = lines.readline().strip('\n').strip('\r')
-                                if line == unicode(None):
+                                if line == str(None):
                                     modelAlg.params[param.name] = None
                                 else:
                                     tokens = line.split('|')
@@ -661,7 +663,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                         for out in alg.outputs:
                             if not out.hidden:
                                 line = lines.readline().strip('\n').strip('\r')
-                                if unicode(None) != line:
+                                if str(None) != line:
                                     if '|' in line:
                                         tokens = line.split('|')
                                         name = tokens[0]
@@ -680,8 +682,8 @@ class ModelerAlgorithm(GeoAlgorithm):
                         raise WrongModelException(
                             _tr('Error in algorithm name: %s',) % algLine)
                 line = lines.readline().strip('\n').strip('\r')
-            for modelAlg in model.algs.values():
-                for name, value in modelAlg.params.iteritems():
+            for modelAlg in list(model.algs.values()):
+                for name, value in modelAlg.params.items():
                     if isinstance(value, ValueFromOutput):
                         value.alg = modelAlgs[value.alg]
             return model
@@ -693,14 +695,14 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def toPython(self):
         s = ['##%s=name' % self.name]
-        for param in self.inputs.values():
+        for param in list(self.inputs.values()):
             s.append(param.param.getAsScriptCode())
-        for alg in self.algs.values():
-            for name, out in alg.outputs.iteritems():
+        for alg in list(self.algs.values()):
+            for name, out in alg.outputs.items():
                 s.append('##%s=%s' % (safeName(out.description).lower(), alg.getOutputType(name)))
 
         executed = []
-        toExecute = [alg for alg in self.algs.values() if alg.active]
+        toExecute = [alg for alg in list(self.algs.values()) if alg.active]
         while len(executed) < len(toExecute):
             for alg in toExecute:
                 if alg.name not in executed:

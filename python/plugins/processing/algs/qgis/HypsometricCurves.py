@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'November 2014'
@@ -196,7 +197,7 @@ class HypsometricCurves(GeoAlgorithm):
         else:
             multiplier = pX * pY
 
-        for k, v in out.iteritems():
+        for k, v in out.items():
             out[k] = v * multiplier
 
         prev = None

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -94,7 +95,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
             neighbourID = spatialIndex.nearestNeighbor(
                 feat.geometry().asPoint(), 2)[1]
             request = QgsFeatureRequest().setFilterFid(neighbourID)
-            neighbour = layer.getFeatures(request).next()
+            neighbour = next(layer.getFeatures(request))
             sumDist += distance.measureLine(neighbour.geometry().asPoint(),
                                             feat.geometry().asPoint())
 
@@ -107,11 +108,11 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         zscore = float((do - de) / SE)
 
         data = []
-        data.append('Observed mean distance: ' + unicode(do))
-        data.append('Expected mean distance: ' + unicode(de))
-        data.append('Nearest neighbour index: ' + unicode(d))
-        data.append('Number of points: ' + unicode(count))
-        data.append('Z-Score: ' + unicode(zscore))
+        data.append('Observed mean distance: ' + str(do))
+        data.append('Expected mean distance: ' + str(de))
+        data.append('Nearest neighbour index: ' + str(d))
+        data.append('Number of points: ' + str(count))
+        data.append('Z-Score: ' + str(zscore))
 
         self.createHTML(output, data)
 
@@ -127,6 +128,6 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         f.write('<meta http-equiv="Content-Type" content="text/html; \
                 charset=utf-8" /></head><body>')
         for s in algData:
-            f.write('<p>' + unicode(s) + '</p>')
+            f.write('<p>' + str(s) + '</p>')
         f.write('</body></html>')
         f.close()

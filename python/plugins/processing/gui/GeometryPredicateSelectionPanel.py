@@ -17,6 +17,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Arnaud Morvan'
 __date__ = 'January 2015'
@@ -99,7 +100,7 @@ class GeometryPredicateSelectionPanel(BASE, WIDGET):
             widget = self.getWidget(predicate)
             self.gridLayout.removeWidget(widget)
             widgets.append(widget)
-        for i in xrange(0, len(widgets)):
+        for i in range(0, len(widgets)):
             widget = widgets[i]
             self.gridLayout.addWidget(widget, i % rows, i / rows)
 

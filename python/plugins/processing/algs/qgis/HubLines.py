@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Michael Minn'
 __date__ = 'May 2010'
@@ -81,10 +82,10 @@ class HubLines(GeoAlgorithm):
             p = spokepoint.geometry().boundingBox().center()
             spokeX = p.x()
             spokeY = p.y()
-            spokeId = unicode(spokepoint[fieldSpoke])
+            spokeId = str(spokepoint[fieldSpoke])
 
             for hubpoint in hubs:
-                hubId = unicode(hubpoint[fieldHub])
+                hubId = str(hubpoint[fieldHub])
                 if hubId == spokeId:
                     p = hubpoint.geometry().boundingBox().center()
                     hubX = p.x()

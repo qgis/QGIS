@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Alexander Bruy'
 __date__ = 'November 2014'
@@ -128,7 +130,7 @@ class BatchPanel(BASE, WIDGET):
                 column, QTableWidgetItem(self.tr('Load in QGIS')))
 
         # Add three empty rows by default
-        for i in xrange(3):
+        for i in range(3):
             self.addRow()
 
         self.tblParameters.horizontalHeader().setResizeMode(QHeaderView.Interactive)
@@ -172,16 +174,16 @@ class BatchPanel(BASE, WIDGET):
             item = QLineEdit()
             if param.default is not None:
                 try:
-                    item.setText(unicode(param.default))
+                    item.setText(str(param.default))
                 except:
                     pass
 
         return item
 
     def load(self):
-        filename, selected_filter = unicode(QFileDialog.getOpenFileName(self,
-                                                                        self.tr('Open batch'), None,
-                                                                        self.tr('JSON files (*.json)')))
+        filename, selected_filter = str(QFileDialog.getOpenFileName(self,
+                                                                    self.tr('Open batch'), None,
+                                                                    self.tr('JSON files (*.json)')))
         if filename:
             with open(filename) as f:
                 values = json.load(f)
@@ -221,12 +223,12 @@ class BatchPanel(BASE, WIDGET):
 
     def setValueInWidget(self, widget, value):
         if isinstance(widget, (BatchInputSelectionPanel, QLineEdit, FileSelectionPanel)):
-            widget.setText(unicode(value))
+            widget.setText(str(value))
         elif isinstance(widget, (BatchOutputSelectionPanel, GeometryPredicateSelectionPanel)):
-            widget.setValue(unicode(value))
+            widget.setValue(str(value))
 
         elif isinstance(widget, QComboBox):
-            idx = widget.findText(unicode(value))
+            idx = widget.findText(str(value))
             if idx != -1:
                 widget.setCurrentIndex(idx)
         elif isinstance(widget, ExtentSelectionPanel):
@@ -282,7 +284,7 @@ class BatchPanel(BASE, WIDGET):
         if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable,
                               ParameterMultipleInput)):
             value = widget.getText()
-            if unicode(value).strip() == '':
+            if str(value).strip() == '':
                 value = None
             return param.setValue(value)
         elif isinstance(param, ParameterBoolean):

@@ -17,6 +17,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Anita Graser'
 __date__ = 'Dec 2012'
@@ -110,7 +111,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
 
     def densify(self, polyline, interval):
         output = []
-        for i in xrange(len(polyline) - 1):
+        for i in range(len(polyline) - 1):
             p1 = polyline[i]
             p2 = polyline[i + 1]
             output.append(p1)
@@ -121,7 +122,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
                 multiplier = 1.0 / float(pointsNumber)
             else:
                 multiplier = 1
-            for j in xrange(int(pointsNumber)):
+            for j in range(int(pointsNumber)):
                 delta = multiplier * (j + 1)
                 x = p1.x() + delta * (p2.x() - p1.x())
                 y = p1.y() + delta * (p2.y() - p1.y())

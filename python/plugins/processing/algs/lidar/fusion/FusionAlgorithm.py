@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -53,6 +56,6 @@ class FusionAlgorithm(GeoAlgorithm):
         self.addParameter(param)
 
     def addAdvancedModifiersToCommand(self, commands):
-        s = unicode(self.getParameterValue(self.ADVANCED_MODIFIERS)).strip()
+        s = str(self.getParameterValue(self.ADVANCED_MODIFIERS)).strip()
         if s != '':
             commands.append(s)

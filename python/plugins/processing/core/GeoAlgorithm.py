@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import object
 
 
 __author__ = 'Victor Olaya'
@@ -49,7 +51,7 @@ from processing.tools.system import setTempOutput
 from processing.algs.help import shortHelp
 
 
-class GeoAlgorithm:
+class GeoAlgorithm(object):
 
     def __init__(self):
         self._icon = QIcon(os.path.dirname(__file__) + '/../images/alg.png')
@@ -219,7 +221,7 @@ class GeoAlgorithm:
             lines = [self.tr('Uncaught error while executing algorithm')]
             lines.append(traceback.format_exc())
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
-            raise GeoAlgorithmExecutionException(unicode(e) + self.tr('\nSee log for more details'), lines, e)
+            raise GeoAlgorithmExecutionException(str(e) + self.tr('\nSee log for more details'), lines, e)
 
     def _checkParameterValuesBeforeExecuting(self):
         for param in self.parameters:
@@ -292,8 +294,8 @@ class GeoAlgorithm:
                     destFile = out.value
                     crsid = layer.crs().authid()
                     settings = QSettings()
-                    path = unicode(settings.value('/GdalTools/gdalPath', ''))
-                    envval = unicode(os.getenv('PATH'))
+                    path = str(settings.value('/GdalTools/gdalPath', ''))
+                    envval = str(os.getenv('PATH'))
                     if not path.lower() in envval.lower().split(os.pathsep):
                         envval += '%s%s' % (os.pathsep, path)
                         os.putenv('PATH', envval)
@@ -324,7 +326,7 @@ class GeoAlgorithm:
     def getFormatShortNameFromFilename(self, filename):
         ext = filename[filename.rfind('.') + 1:]
         supported = GdalUtils.getSupportedRasters()
-        for name in supported.keys():
+        for name in list(supported.keys()):
             exts = supported[name]
             if ext in exts:
                 return name
@@ -541,9 +543,9 @@ class GeoAlgorithm:
     def __str__(self):
         s = 'ALGORITHM: ' + self.name + '\n'
         for param in self.parameters:
-            s += '\t' + unicode(param) + '\n'
+            s += '\t' + str(param) + '\n'
         for out in self.outputs:
-            s += '\t' + unicode(out) + '\n'
+            s += '\t' + str(out) + '\n'
         s += '\n'
         return s
 

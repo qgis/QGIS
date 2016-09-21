@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -66,7 +68,7 @@ class NumberInputDialog(BASE, WIDGET):
         layers = dataobjects.getAllLayers()
         for layer in layers:
             layerItem = QTreeWidgetItem()
-            layerItem.setText(0, unicode(layer.name()))
+            layerItem.setText(0, str(layer.name()))
             layerItem.addChild(TreeValueItem(self.tr('Min X'),
                                              layer.extent().xMinimum()))
             layerItem.addChild(TreeValueItem(self.tr('Max X'),
@@ -90,7 +92,7 @@ class NumberInputDialog(BASE, WIDGET):
             for i in range(layer.bandCount()):
                 stats = layer.dataProvider().bandStatistics(i + 1)
                 layerItem = QTreeWidgetItem()
-                layerItem.setText(0, unicode(layer.name()))
+                layerItem.setText(0, str(layer.name()))
                 layerItem.addChild(TreeValueItem(self.tr('Mean'), stats.mean))
                 layerItem.addChild(TreeValueItem(self.tr('Std. deviation'),
                                                  stats.stdDev))
@@ -125,12 +127,12 @@ class NumberInputDialog(BASE, WIDGET):
     def addValue(self):
         item = self.treeValues.currentItem()
         if isinstance(item, TreeValueItem):
-            formula = self.leFormula.text() + ' ' + unicode(item.value)
+            formula = self.leFormula.text() + ' ' + str(item.value)
             self.leFormula.setText(formula.strip())
 
     def accept(self):
         try:
-            self.value = float(eval(unicode(self.leFormula.text())))
+            self.value = float(eval(str(self.leFormula.text())))
             if self.isInteger:
                 self.value = int(round(self.value))
             QDialog.accept(self)
@@ -148,4 +150,4 @@ class TreeValueItem(QTreeWidgetItem):
     def __init__(self, name, value):
         QTreeWidgetItem.__init__(self)
         self.value = value
-        self.setText(0, name + ': ' + unicode(value))
+        self.setText(0, name + ': ' + str(value))

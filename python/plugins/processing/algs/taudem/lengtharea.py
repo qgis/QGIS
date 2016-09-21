@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2012'
@@ -81,15 +84,15 @@ class LengthArea(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(unicode(processNum))
+        commands.append(str(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemPath(), self.cmdName))
         commands.append('-plen')
         commands.append(self.getParameterValue(self.LENGTH_GRID))
         commands.append('-ad8')
         commands.append(self.getParameterValue(self.CONTRIB_AREA_GRID))
         commands.append('-par')
-        commands.append(unicode(self.getParameterValue(self.THRESHOLD)))
-        commands.append(unicode(self.getParameterValue(self.EXPONENT)))
+        commands.append(str(self.getParameterValue(self.THRESHOLD)))
+        commands.append(str(self.getParameterValue(self.EXPONENT)))
         commands.append('-ss')
         commands.append(self.getOutputValue(self.STREAM_SOURCE_GRID))
 

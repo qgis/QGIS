@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'
@@ -195,11 +196,11 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
             arguments.append(self.resampling_method[self.resamplingCombo.currentIndex()])
         if self.cacheCheck.isChecked():
             arguments.append("-wm")
-            arguments.append(unicode(self.cacheSpin.value()))
+            arguments.append(str(self.cacheSpin.value()))
         if self.resizeGroupBox.isChecked():
             arguments.append("-ts")
-            arguments.append(unicode(self.widthSpin.value()))
-            arguments.append(unicode(self.heightSpin.value()))
+            arguments.append(str(self.widthSpin.value()))
+            arguments.append(str(self.heightSpin.value()))
         if self.multithreadCheck.isChecked():
             arguments.append("-multi")
         if self.noDataCheck.isChecked():

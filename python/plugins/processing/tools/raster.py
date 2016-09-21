@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
+from builtins import object
 
 __author__ = 'Victor Olaya  and Alexander Bruy'
 __date__ = 'February 2013'
@@ -33,12 +36,12 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 
 
 def scanraster(layer, progress):
-    filename = unicode(layer.source())
+    filename = str(layer.source())
     dataset = gdal.Open(filename, GA_ReadOnly)
     band = dataset.GetRasterBand(1)
     nodata = band.GetNoDataValue()
     bandtype = gdal.GetDataTypeName(band.DataType)
-    for y in xrange(band.YSize):
+    for y in range(band.YSize):
         progress.setPercentage(y / float(band.YSize) * 100)
         scanline = band.ReadRaster(0, y, band.XSize, 1, band.XSize, 1,
                                    band.DataType)
@@ -80,7 +83,7 @@ def pixelToMap(pX, pY, geoTransform):
     return gdal.ApplyGeoTransform(geoTransform, pX + 0.5, pY + 0.5)
 
 
-class RasterWriter:
+class RasterWriter(object):
 
     NODATA = -99999.0
 

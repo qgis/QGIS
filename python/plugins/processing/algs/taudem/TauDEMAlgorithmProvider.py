@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2012'
@@ -116,4 +117,4 @@ class TauDEMAlgorithmProvider(AlgorithmProvider):
                                        self.tr('Could not open TauDEM algorithm: {}'.format(descriptionFile)))
         except Exception as e:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                   self.tr('Could not open TauDEM algorithm {}:\n{}'.format(descriptionFile, unicode(e))))
+                                   self.tr('Could not open TauDEM algorithm {}:\n{}'.format(descriptionFile, str(e))))

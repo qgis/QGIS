@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'August 2011'
@@ -149,14 +150,14 @@ class GdalToolsDialog(QDialog, Ui_Dialog):
 
 
 def extractProjection(filename, createPrj):
-    raster = gdal.Open(unicode(filename))
+    raster = gdal.Open(str(filename))
 
     crs = raster.GetProjection()
     geotransform = raster.GetGeoTransform()
 
     raster = None
 
-    outFileName = os.path.splitext(unicode(filename))[0]
+    outFileName = os.path.splitext(str(filename))[0]
 
     # create prj file requested and if projection available
     if crs != "" and createPrj:

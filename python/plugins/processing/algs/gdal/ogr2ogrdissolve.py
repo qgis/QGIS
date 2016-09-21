@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giovanni Manghi'
 __date__ = 'January 2015'
@@ -86,9 +87,9 @@ class Ogr2OgrDissolve(GdalAlgorithm):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         layername = "'" + ogrLayerName(inLayer) + "'"
-        geometry = unicode(self.getParameterValue(self.GEOMETRY))
-        field = unicode(self.getParameterValue(self.FIELD))
-        statsatt = unicode(self.getParameterValue(self.STATSATT))
+        geometry = str(self.getParameterValue(self.GEOMETRY))
+        field = str(self.getParameterValue(self.FIELD))
+        statsatt = str(self.getParameterValue(self.STATSATT))
         stats = self.getParameterValue(self.STATS)
         area = self.getParameterValue(self.AREA)
         multi = self.getParameterValue(self.MULTI)
@@ -118,7 +119,7 @@ class Ogr2OgrDissolve(GdalAlgorithm):
         outFile = output.value
 
         output = ogrConnectionString(outFile)
-        options = unicode(self.getParameterValue(self.OPTIONS))
+        options = str(self.getParameterValue(self.OPTIONS))
 
         arguments = []
         arguments.append(output)

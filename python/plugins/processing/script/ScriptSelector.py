@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'May 2016'
@@ -50,7 +51,7 @@ class ScriptSelector(BASE, WIDGET):
         for script in alglist:
             allScripts[script.group].append(script)
 
-        for group, groupScripts in allScripts.iteritems():
+        for group, groupScripts in allScripts.items():
             groupItem = QTreeWidgetItem()
             groupItem.setText(0, group)
             groupItem.setFlags(groupItem.flags() | Qt.ItemIsTristate)
@@ -80,9 +81,9 @@ class ScriptSelector(BASE, WIDGET):
 
     def checkScripts(self, b):
         state = Qt.Checked if b else Qt.Unchecked
-        for i in xrange(self.scriptsTree.topLevelItemCount()):
+        for i in range(self.scriptsTree.topLevelItemCount()):
             item = self.scriptsTree.topLevelItem(i)
-            for j in xrange(item.childCount()):
+            for j in range(item.childCount()):
                 child = item.child(j)
                 child.setCheckState(0, state)
 
@@ -99,9 +100,9 @@ class ScriptSelector(BASE, WIDGET):
 
     def okPressed(self):
         self.scripts = []
-        for i in xrange(self.scriptsTree.topLevelItemCount()):
+        for i in range(self.scriptsTree.topLevelItemCount()):
             groupItem = self.scriptsTree.topLevelItem(i)
-            for j in xrange(groupItem.childCount()):
+            for j in range(groupItem.childCount()):
                 scriptItem = groupItem.child(j)
                 if scriptItem.checkState(0) == Qt.Checked:
                     self.scripts.append(scriptItem.script)

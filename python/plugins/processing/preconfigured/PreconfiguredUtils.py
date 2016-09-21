@@ -16,13 +16,14 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 import os
 from processing.tools.system import mkdir, userFolder
 
 
 def preconfiguredAlgorithmsFolder():
-    folder = unicode(os.path.join(userFolder(), 'preconfigured'))
+    folder = str(os.path.join(userFolder(), 'preconfigured'))
     mkdir(folder)
     return folder
 

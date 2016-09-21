@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -94,7 +96,7 @@ class ConfigDialog(BASE, WIDGET):
         self.tree.expanded.connect(self.adjustColumns)
 
     def textChanged(self):
-        text = unicode(self.searchBox.text().lower())
+        text = str(self.searchBox.text().lower())
         self._filterItem(self.model.invisibleRootItem(), text)
         if text:
             self.tree.expandAll()
@@ -104,7 +106,7 @@ class ConfigDialog(BASE, WIDGET):
     def _filterItem(self, item, text):
         if item.hasChildren():
             show = False
-            for i in xrange(item.rowCount()):
+            for i in range(item.rowCount()):
                 child = item.child(i)
                 showChild = self._filterItem(child, text)
                 show = (showChild or show)
@@ -164,7 +166,7 @@ class ConfigDialog(BASE, WIDGET):
         emptyItem.setEditable(False)
 
         rootItem.insertRow(0, [providersItem, emptyItem])
-        for group in settings.keys():
+        for group in list(settings.keys()):
             if group in priorityKeys or group == menusSettingsGroup:
                 continue
 
@@ -261,15 +263,15 @@ class ConfigDialog(BASE, WIDGET):
                 item.setData(d, Qt.EditRole)
 
     def accept(self):
-        for setting in self.items.keys():
+        for setting in list(self.items.keys()):
             if isinstance(setting.value, bool):
                 setting.setValue(self.items[setting].checkState() == Qt.Checked)
             else:
                 try:
-                    setting.setValue(unicode(self.items[setting].text()))
+                    setting.setValue(str(self.items[setting].text()))
                 except ValueError as e:
                     QMessageBox.warning(self, self.tr('Wrong value'),
-                                        self.tr('Wrong value for parameter "%s":\n\n%s' % (setting.description, unicode(e))))
+                                        self.tr('Wrong value for parameter "%s":\n\n%s' % (setting.description, str(e))))
                     return
             setting.save()
         Processing.updateAlgsList()
@@ -318,7 +320,7 @@ class SettingDelegate(QStyledItemDelegate):
             return MultipleDirectorySelector(parent)
         else:
             value = self.convertValue(index.model().data(index, Qt.EditRole))
-            if isinstance(value, (int, long)):
+            if isinstance(value, int):
                 spnBox = QgsSpinBox(parent)
                 spnBox.setRange(-999999999, 999999999)
                 return spnBox
@@ -327,7 +329,7 @@ class SettingDelegate(QStyledItemDelegate):
                 spnBox.setRange(-999999999.999999, 999999999.999999)
                 spnBox.setDecimals(6)
                 return spnBox
-            elif isinstance(value, (str, unicode)):
+            elif isinstance(value, str):
                 return QLineEdit(parent)
 
     def setEditorData(self, editor, index):
@@ -344,7 +346,7 @@ class SettingDelegate(QStyledItemDelegate):
         if setting.valuetype == Setting.SELECTION:
             model.setData(index, editor.currentText(), Qt.EditRole)
         else:
-            if isinstance(value, (str, basestring)):
+            if isinstance(value, str):
                 model.setData(index, editor.text(), Qt.EditRole)
             else:
                 model.setData(index, editor.value(), Qt.EditRole)
@@ -367,7 +369,7 @@ class SettingDelegate(QStyledItemDelegate):
             try:
                 return float(value)
             except:
-                return unicode(value)
+                return str(value)
 
 
 class FileDirectorySelector(QWidget):

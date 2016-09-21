@@ -35,8 +35,8 @@ from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.core.alglist import algList
 
-from PyQt4.QtGui import QMessageBox, QPalette, QColor, QVBoxLayout, QLabel, \
-    QLineEdit, QWidget
+from qgis.PyQt.QtWidgets import QMessageBox, QVBoxLayout, QLabel, QLineEdit, QWidget
+from qgis.PyQt.QtGui import QPalette, QColor
 
 
 class PreconfiguredAlgorithmDialog(AlgorithmDialog):

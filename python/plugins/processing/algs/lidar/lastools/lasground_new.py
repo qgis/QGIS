@@ -15,6 +15,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'May 2016'
@@ -23,8 +27,8 @@ __copyright__ = '(C) 2016 by Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
@@ -75,15 +79,15 @@ class lasground_new(LAStoolsAlgorithm):
         method = self.getParameterValue(lasground_new.TERRAIN)
         if (method == 5):
             commands.append("-step")
-            commands.append(unicode(self.getParameterValue(lasground_new.STEP)))
+            commands.append(str(self.getParameterValue(lasground_new.STEP)))
             commands.append("-bulge")
-            commands.append(unicode(self.getParameterValue(lasground_new.BULGE)))
+            commands.append(str(self.getParameterValue(lasground_new.BULGE)))
             commands.append("-spike")
-            commands.append(unicode(self.getParameterValue(lasground_new.SPIKE)))
+            commands.append(str(self.getParameterValue(lasground_new.SPIKE)))
             commands.append("-spike_down")
-            commands.append(unicode(self.getParameterValue(lasground_new.DOWN_SPIKE)))
+            commands.append(str(self.getParameterValue(lasground_new.DOWN_SPIKE)))
             commands.append("-offset")
-            commands.append(unicode(self.getParameterValue(lasground_new.OFFSET)))
+            commands.append(str(self.getParameterValue(lasground_new.OFFSET)))
         else:
             commands.append("-" + lasground_new.TERRAINS[method])
         granularity = self.getParameterValue(lasground_new.GRANULARITY)

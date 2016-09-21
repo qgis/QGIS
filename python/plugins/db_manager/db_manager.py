@@ -21,6 +21,8 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from __future__ import absolute_import
+from builtins import range
 
 import functools
 
@@ -200,7 +202,7 @@ class DBManager(QMainWindow):
         query.nameChanged.connect(functools.partial(self.update_query_tab_name, index, dbname))
 
     def runSqlLayerWindow(self, layer):
-        from dlg_sql_layer_window import DlgSqlLayerWindow
+        from .dlg_sql_layer_window import DlgSqlLayerWindow
         query = DlgSqlLayerWindow(self.iface, layer, self)
         lname = layer.name()
         tabname = self.tr("Layer") + u" (%s)" % lname

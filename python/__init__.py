@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import zip
 
 __author__ = 'Martin Dobias'
 __date__ = 'January 2007'
@@ -31,7 +32,7 @@ def mapping_feature(feature):
     geom = feature.geometry()
     properties = {}
     fields = [field.name() for field in feature.fields()]
-    properties = dict(zip(fields, feature.attributes()))
+    properties = dict(list(zip(fields, feature.attributes())))
     return {'type': 'Feature',
             'properties': properties,
             'geometry': geom.__geo_interface__}

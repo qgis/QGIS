@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
@@ -128,23 +129,23 @@ class rasterize(GdalAlgorithm):
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         noData = self.getParameterValue(self.NO_DATA)
         if noData is not None:
-            noData = unicode(noData)
-        jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
-        predictor = unicode(self.getParameterValue(self.PREDICTOR))
-        zlevel = unicode(self.getParameterValue(self.ZLEVEL))
-        tiled = unicode(self.getParameterValue(self.TILED))
+            noData = str(noData)
+        jpegcompression = str(self.getParameterValue(self.JPEGCOMPRESSION))
+        predictor = str(self.getParameterValue(self.PREDICTOR))
+        zlevel = str(self.getParameterValue(self.ZLEVEL))
+        tiled = str(self.getParameterValue(self.TILED))
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
-        tfw = unicode(self.getParameterValue(self.TFW))
+        tfw = str(self.getParameterValue(self.TFW))
         out = self.getOutputValue(self.OUTPUT)
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:
-            extra = unicode(extra)
-        rastext = unicode(self.getParameterValue(self.RAST_EXT))
+            extra = str(extra)
+        rastext = str(self.getParameterValue(self.RAST_EXT))
 
         arguments = []
         arguments.append('-a')
-        arguments.append(unicode(self.getParameterValue(self.FIELD)))
+        arguments.append(str(self.getParameterValue(self.FIELD)))
 
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
@@ -168,13 +169,13 @@ class rasterize(GdalAlgorithm):
         if dimType == 0:
             # size in pixels
             arguments.append('-ts')
-            arguments.append(unicode(self.getParameterValue(self.WIDTH)))
-            arguments.append(unicode(self.getParameterValue(self.HEIGHT)))
+            arguments.append(str(self.getParameterValue(self.WIDTH)))
+            arguments.append(str(self.getParameterValue(self.HEIGHT)))
         else:
             # resolution in map units per pixel
             arguments.append('-tr')
-            arguments.append(unicode(self.getParameterValue(self.WIDTH)))
-            arguments.append(unicode(self.getParameterValue(self.HEIGHT)))
+            arguments.append(str(self.getParameterValue(self.WIDTH)))
+            arguments.append(str(self.getParameterValue(self.HEIGHT)))
 
         if noData and len(noData) > 0:
             arguments.append('-a_nodata')
@@ -201,5 +202,5 @@ class rasterize(GdalAlgorithm):
         arguments.append(ogrLayerName(inLayer))
         arguments.append(ogrLayer)
 
-        arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
+        arguments.append(str(self.getOutputValue(self.OUTPUT)))
         return ['gdal_rasterize', GdalUtils.escapeAndJoin(arguments)]

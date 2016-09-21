@@ -21,6 +21,9 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import zip
+from builtins import next
+from builtins import str
 
 from qgis.PyQt.QtCore import Qt, pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate
@@ -142,8 +145,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if query == "":
             return
         name = self.presetName.text()
-        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/name', name)
-        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/query', query)
+        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name', name)
+        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query', query)
         index = self.presetCombo.findText(name)
         if index == -1:
             self.presetCombo.addItem(name)
@@ -153,13 +156,13 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def deletePreset(self):
         name = self.presetCombo.currentText()
-        QgsProject.instance().removeEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()))
+        QgsProject.instance().removeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()))
         self.presetCombo.removeItem(self.presetCombo.findText(name))
         self.presetCombo.setCurrentIndex(-1)
 
     def loadPreset(self, name):
-        query = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/query')[0]
-        name = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/name')[0]
+        query = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query')[0]
+        name = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name')[0]
         self.editSql.setText(query)
 
     def loadAsLayerToggled(self, checked):
@@ -303,9 +306,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                     break
                 aliasIndex += 1
 
-            sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % (unicode(query), connector.quoteId(alias))
+            sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % (str(query), connector.quoteId(alias))
         else:
-            sql = u"SELECT * FROM (%s\n) WHERE 1=0" % unicode(query)
+            sql = u"SELECT * FROM (%s\n) WHERE 1=0" % str(query)
 
         c = None
         try:
@@ -416,7 +419,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             dictionary = getSqlDictionary()
 
         wordlist = []
-        for name, value in dictionary.items():
+        for name, value in list(dictionary.items()):
             wordlist += value  # concat lists
         wordlist = list(set(wordlist))  # remove duplicates
 

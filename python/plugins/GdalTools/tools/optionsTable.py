@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'

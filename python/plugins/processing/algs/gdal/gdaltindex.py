@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Pedro Venancio'
 __date__ = 'February 2015'
@@ -63,7 +64,7 @@ class gdaltindex(GdalAlgorithm):
         self.addOutput(OutputVector(gdaltindex.OUTPUT, self.tr('Tile index')))
 
     def getConsoleCommands(self):
-        fieldName = unicode(self.getParameterValue(self.FIELD_NAME))
+        fieldName = str(self.getParameterValue(self.FIELD_NAME))
 
         arguments = []
         if len(fieldName) > 0:
@@ -71,7 +72,7 @@ class gdaltindex(GdalAlgorithm):
             arguments.append(fieldName)
         if self.getParameterValue(gdaltindex.PROJ_DIFFERENCE):
             arguments.append('-skip_different_projection')
-        arguments.append(unicode(self.getOutputValue(gdaltindex.OUTPUT)))
-        arguments.extend(unicode(self.getParameterValue(gdaltindex.INPUT)).split(';'))
+        arguments.append(str(self.getOutputValue(gdaltindex.OUTPUT)))
+        arguments.extend(str(self.getParameterValue(gdaltindex.INPUT)).split(';'))
 
         return ['gdaltindex', GdalUtils.escapeAndJoin(arguments)]

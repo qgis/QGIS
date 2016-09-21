@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'January 2013'
@@ -98,13 +99,13 @@ class RasterLayerStatistics(GeoAlgorithm):
         stddev = math.sqrt(variance)
 
         data = []
-        data.append('Valid cells: ' + unicode(n))
-        data.append('No-data cells: ' + unicode(nodata))
-        data.append('Minimum value: ' + unicode(minvalue))
-        data.append('Maximum value: ' + unicode(maxvalue))
-        data.append('Sum: ' + unicode(sum))
-        data.append('Mean value: ' + unicode(mean))
-        data.append('Standard deviation: ' + unicode(stddev))
+        data.append('Valid cells: ' + str(n))
+        data.append('No-data cells: ' + str(nodata))
+        data.append('Minimum value: ' + str(minvalue))
+        data.append('Maximum value: ' + str(maxvalue))
+        data.append('Sum: ' + str(sum))
+        data.append('Mean value: ' + str(mean))
+        data.append('Standard deviation: ' + str(stddev))
 
         self.createHTML(outputFile, data)
 
@@ -122,6 +123,6 @@ class RasterLayerStatistics(GeoAlgorithm):
         f.write('<meta http-equiv="Content-Type" content="text/html; \
                 charset=utf-8" /></head><body>')
         for s in algData:
-            f.write('<p>' + unicode(s) + '</p>')
+            f.write('<p>' + str(s) + '</p>')
         f.write('</body></html>')
         f.close()

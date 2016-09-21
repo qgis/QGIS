@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'June 2010'
@@ -81,7 +82,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             arguments.append("-white")
         if self.nearCheck.isChecked():
             arguments.append("-near")
-            arguments.append(unicode(self.nearSpin.value()))
+            arguments.append(str(self.nearSpin.value()))
         arguments.append("-o")
         arguments.append(self.getOutputFileName())
         arguments.append(self.getInputFileName())

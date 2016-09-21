@@ -106,7 +106,7 @@ class LinesIntersection(GeoAlgorithm):
             if hasIntersections:
                 for i in lines:
                     request = QgsFeatureRequest().setFilterFid(i)
-                    inFeatB = layerB.getFeatures(request).next()
+                    inFeatB = next(layerB.getFeatures(request))
                     tmpGeom = inFeatB.geometry()
 
                     points = []

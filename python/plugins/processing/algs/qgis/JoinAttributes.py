@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -84,7 +85,7 @@ class JoinAttributes(GeoAlgorithm):
         total = 100.0 / len(features)
         for current, feat in enumerate(features):
             attrs = feat.attributes()
-            joinValue2 = unicode(attrs[joinField2Index])
+            joinValue2 = str(attrs[joinField2Index])
             if joinValue2 not in cache:
                 cache[joinValue2] = attrs
             progress.setPercentage(int(current * total))
@@ -96,7 +97,7 @@ class JoinAttributes(GeoAlgorithm):
         for current, feat in enumerate(features):
             outFeat.setGeometry(feat.geometry())
             attrs = feat.attributes()
-            joinValue1 = unicode(attrs[joinField1Index])
+            joinValue1 = str(attrs[joinField1Index])
             attrs.extend(cache.get(joinValue1, []))
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)

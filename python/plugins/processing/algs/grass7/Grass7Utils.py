@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'February 2015'
@@ -37,7 +39,7 @@ from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mk
 from processing.tests.TestData import points
 
 
-class Grass7Utils:
+class Grass7Utils(object):
 
     GRASS_REGION_XMIN = 'GRASS7_REGION_XMIN'
     GRASS_REGION_YMIN = 'GRASS7_REGION_YMIN'
@@ -89,9 +91,9 @@ class Grass7Utils:
         if folder is None:
             if isWindows():
                 if "OSGEO4W_ROOT" in os.environ:
-                    testfolder = os.path.join(unicode(os.environ['OSGEO4W_ROOT']), "apps")
+                    testfolder = os.path.join(str(os.environ['OSGEO4W_ROOT']), "apps")
                 else:
-                    testfolder = unicode(QgsApplication.prefixPath())
+                    testfolder = str(QgsApplication.prefixPath())
                 testfolder = os.path.join(testfolder, 'grass')
                 if os.path.isdir(testfolder):
                     for subfolder in os.listdir(testfolder):
@@ -99,7 +101,7 @@ class Grass7Utils:
                             folder = os.path.join(testfolder, subfolder)
                             break
             else:
-                folder = os.path.join(unicode(QgsApplication.prefixPath()), 'grass7')
+                folder = os.path.join(str(QgsApplication.prefixPath()), 'grass7')
                 if not os.path.isdir(folder):
                     folder = '/Applications/GRASS-7.0.app/Contents/MacOS'
 
@@ -338,8 +340,8 @@ class Grass7Utils:
     @staticmethod
     def addSessionLayers(exportedLayers):
         Grass7Utils.sessionLayers = dict(
-            Grass7Utils.sessionLayers.items()
-            + exportedLayers.items())
+            list(Grass7Utils.sessionLayers.items())
+            + list(exportedLayers.items()))
 
     @staticmethod
     def checkGrass7IsInstalled(ignorePreviousState=False):

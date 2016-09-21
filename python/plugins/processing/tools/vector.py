@@ -17,6 +17,12 @@
 ***************************************************************************
 """
 from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import str
+from builtins import range
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
@@ -31,7 +37,7 @@ import os
 import csv
 import uuid
 import codecs
-import cStringIO
+import io
 
 import psycopg2
 
@@ -97,7 +103,7 @@ def features(layer, request=QgsFeatureRequest()):
     This should be used by algorithms instead of calling the Qgis API
     directly, to ensure a consistent behaviour across algorithms.
     """
-    class Features:
+    class Features(object):
 
         def __init__(self, layer, request):
             self.layer = layer
@@ -150,7 +156,7 @@ def resolveFieldIndex(layer, attr):
     if isinstance(attr, int):
         return attr
     else:
-        index = layer.fieldNameIndex(unicode(attr))
+        index = layer.fieldNameIndex(str(attr))
         if index == -1:
             raise ValueError('Wrong field name')
         return index
@@ -319,16 +325,16 @@ def combineVectorFields(layerA, layerB):
     fields = []
     fieldsA = layerA.fields()
     fields.extend(fieldsA)
-    namesA = [unicode(f.name()).lower() for f in fieldsA]
+    namesA = [str(f.name()).lower() for f in fieldsA]
     fieldsB = layerB.fields()
     for field in fieldsB:
-        name = unicode(field.name()).lower()
+        name = str(field.name()).lower()
         if name in namesA:
             idx = 2
-            newName = name + '_' + unicode(idx)
+            newName = name + '_' + str(idx)
             while newName in namesA:
                 idx += 1
-                newName = name + '_' + unicode(idx)
+                newName = name + '_' + str(idx)
             field = QgsField(newName, field.type(), field.typeName())
         fields.append(field)
 
@@ -361,7 +367,7 @@ def duplicateInMemory(layer, newName='', addToRegistry=False):
         raise RuntimeError('Layer is not a VectorLayer')
 
     crs = layer.crs().authid().lower()
-    myUuid = unicode(uuid.uuid4())
+    myUuid = str(uuid.uuid4())
     uri = '%s?crs=%s&index=yes&uuid=%s' % (strType, crs, myUuid)
     memLayer = QgsVectorLayer(uri, newName, 'memory')
     memProvider = memLayer.dataProvider()
@@ -447,7 +453,7 @@ def ogrConnectionString(uri):
     if provider == 'spatialite':
         # dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
         regex = re.compile("dbname='(.+)'")
-        r = regex.search(unicode(layer.source()))
+        r = regex.search(str(layer.source()))
         ogrstr = r.groups()[0]
     elif provider == 'postgres':
         # dbname='ktryjh_iuuqef' host=spacialdb.com port=9999
@@ -506,7 +512,7 @@ def ogrConnectionString(uri):
 
         ogrstr += dsUri.table()
     else:
-        ogrstr = unicode(layer.source()).split("|")[0]
+        ogrstr = str(layer.source()).split("|")[0]
 
     return '"' + ogrstr + '"'
 
@@ -528,7 +534,7 @@ def ogrLayerName(uri):
         return os.path.basename(os.path.splitext(uri)[0])
 
 
-class VectorWriter:
+class VectorWriter(object):
 
     MEMORY_LAYER_PREFIX = 'memory:'
     POSTGIS_LAYER_PREFIX = 'postgis:'
@@ -555,7 +561,7 @@ class VectorWriter:
         if self.destination.startswith(self.MEMORY_LAYER_PREFIX):
             self.isNotFileBased = True
 
-            uri = GEOM_TYPE_MAP[geometryType] + "?uuid=" + unicode(uuid.uuid4())
+            uri = GEOM_TYPE_MAP[geometryType] + "?uuid=" + str(uuid.uuid4())
             if crs.isValid():
                 uri += '&crs=' + crs.authid()
             fieldsdesc = []
@@ -588,7 +594,7 @@ class VectorWriter:
 
             def _runSQL(sql):
                 try:
-                    db._exec_sql_and_commit(unicode(sql))
+                    db._exec_sql_and_commit(str(sql))
                 except postgis.DbError as e:
                     raise GeoAlgorithmExecutionException(
                         'Error creating output PostGIS table:\n%s' % e.message)
@@ -619,10 +625,10 @@ class VectorWriter:
 
             def _runSQL(sql):
                 try:
-                    db._exec_sql_and_commit(unicode(sql))
+                    db._exec_sql_and_commit(str(sql))
                 except spatialite.DbError as e:
                     raise GeoAlgorithmExecutionException(
-                        'Error creating output Spatialite table:\n%s' % unicode(e))
+                        'Error creating output Spatialite table:\n%s' % str(e))
 
             fields = [_toQgsField(f) for f in fields]
             fieldsdesc = ",".join('%s %s' % (f.name(),
@@ -641,8 +647,8 @@ class VectorWriter:
         else:
             formats = QgsVectorFileWriter.supportedFiltersAndFormats()
             OGRCodes = {}
-            for (key, value) in formats.items():
-                extension = unicode(key)
+            for (key, value) in list(formats.items()):
+                extension = str(key)
                 extension = extension[extension.find('*.') + 2:]
                 extension = extension[:extension.find(' ')]
                 OGRCodes[extension] = value
@@ -681,7 +687,7 @@ class VectorWriter:
             self.writer.addFeature(feature)
 
 
-class TableWriter:
+class TableWriter(object):
 
     def __init__(self, fileName, encoding, fields):
         self.fileName = fileName
@@ -708,16 +714,16 @@ class TableWriter:
             self.writer.writerows(records)
 
 
-class UnicodeWriter:
+class UnicodeWriter(object):
 
     def __init__(self, f, dialect=csv.excel, encoding='utf-8', **kwds):
-        self.queue = cStringIO.StringIO()
+        self.queue = io.StringIO()
         self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
         self.stream = f
         self.encoder = codecs.getincrementalencoder(encoding)()
 
     def writerow(self, row):
-        row = map(unicode, row)
+        row = list(map(str, row))
         try:
             self.writer.writerow([s.encode('utf-8') for s in row])
         except:

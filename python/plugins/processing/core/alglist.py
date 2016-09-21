@@ -68,7 +68,7 @@ class AlgorithmList(QObject):
                 return provider
 
     def getAlgorithm(self, name):
-        for provider in self.algs.values():
+        for provider in list(self.algs.values()):
             if name in provider:
                 return provider[name]
 
