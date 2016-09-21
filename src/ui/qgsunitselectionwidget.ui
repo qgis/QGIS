@@ -60,15 +60,15 @@
       <string notr="true"/>
      </property>
      <property name="icon">
-      <iconset resource="../plugins/interpolation/interpolator.qrc">
-       <normaloff>:/options.png</normaloff>:/options.png</iconset>
+      <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <resources>
-  <include location="../plugins/interpolation/interpolator.qrc"/>
+  <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
 </ui>
