@@ -73,6 +73,16 @@ class QgsDxfExport
     QGis::UnitType mapUnits() const;
 
     /**
+     * Set destination CRS
+     */
+    void setDestinationCrs( long crs );
+
+    /**
+     * Set destination CRS
+     */
+    long destinationCrs();
+
+    /**
      * Set symbology export mode
      * @param e the mode
      */
@@ -227,8 +237,9 @@ class QgsDxfExport
      * @param lineStyleName line type to use
      * @param color color to use
      * @param width line width to use
+     * @deprecated use QgsPointSequenceV2 variant
      */
-    void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
+    void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 ) /Deprecated/;
 
     /**
      * Draw dxf primitives (LWPOLYLINE)
@@ -276,7 +287,8 @@ class QgsDxfExport
     void writeSolid( const QString &layer, const QColor& color, const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, const QgsPoint &pt4 ) /Deprecated/;
 
     //! Write line (as a polyline)
-    void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
+    //! @deprecated use QgsPointV2 version
+    void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 ) /Deprecated/;
 
     //! Write line (as a polyline)
     //! @note added in 2.15
