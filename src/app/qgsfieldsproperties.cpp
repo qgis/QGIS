@@ -171,8 +171,13 @@ QTreeWidgetItem* QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
 
     case QgsAttributeEditorElement::AeTypeRelation:
     {
+      const QgsAttributeEditorRelation* relationEditor = static_cast<const QgsAttributeEditorRelation*>( widgetDef );
       DesignerTreeItemData itemData = DesignerTreeItemData( DesignerTreeItemData::Relation, widgetDef->name() );
       itemData.setShowLabel( widgetDef->showLabel() );
+      RelationEditorConfiguration relEdConfig;
+      relEdConfig.showLinkButton = relationEditor->showLinkButton();
+      relEdConfig.showUnlinkButton = relationEditor->showUnlinkButton();
+      itemData.setRelationEditorConfiguration( relEdConfig );
 
       newWidget = mDesignerTree->addItem( parent, itemData );
       break;
@@ -183,7 +188,7 @@ QTreeWidgetItem* QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
       DesignerTreeItemData itemData( DesignerTreeItemData::Container, widgetDef->name() );
       itemData.setShowLabel( widgetDef->showLabel() );
 
-      const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>( widgetDef );
+      const QgsAttributeEditorContainer* container = static_cast<const QgsAttributeEditorContainer*>( widgetDef );
       if ( !container )
         break;
 
@@ -894,7 +899,10 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
     case DesignerTreeItemData::Relation:
     {
       QgsRelation relation = QgsProject::instance()->relationManager()->relation( itemData.name() );
-      widgetDef = new QgsAttributeEditorRelation( itemData.name(), relation, parent );
+      QgsAttributeEditorRelation* relDef = new QgsAttributeEditorRelation( itemData.name(), relation, parent );
+      relDef->setShowLinkButton( itemData.relationEditorConfiguration().showLinkButton );
+      relDef->setShowUnlinkButton( itemData.relationEditorConfiguration().showUnlinkButton );
+      widgetDef = relDef;
       break;
     }
 
@@ -1355,10 +1363,43 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
       item->setText( 0, title->text() );
     }
   }
+  else if ( itemData.type() == QgsFieldsProperties::DesignerTreeItemData::Relation )
+  {
+    QDialog dlg;
+    dlg.setWindowTitle( tr( "Configure relation editor" ) );
+    QFormLayout* layout = new QFormLayout() ;
+    dlg.setLayout( layout );
+    layout->addWidget( baseWidget );
+
+    QCheckBox* showLinkButton = new QCheckBox( tr( "Show link button" ) );
+    showLinkButton->setChecked( itemData.relationEditorConfiguration().showLinkButton );
+    QCheckBox* showUnlinkButton = new QCheckBox( tr( "Show unlink button" ) );
+    showUnlinkButton->setChecked( itemData.relationEditorConfiguration().showUnlinkButton );
+    layout->addRow( showLinkButton );
+    layout->addRow( showUnlinkButton );
+
+    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+
+    connect( buttonBox, SIGNAL( accepted() ), &dlg, SLOT( accept() ) );
+    connect( buttonBox, SIGNAL( rejected() ), &dlg, SLOT( reject() ) );
+
+    dlg.layout()->addWidget( buttonBox );
+
+    if ( dlg.exec() )
+    {
+      QgsFieldsProperties::RelationEditorConfiguration relEdCfg;
+      relEdCfg.showLinkButton = showLinkButton->isChecked();
+      relEdCfg.showUnlinkButton = showUnlinkButton->isChecked();
+      itemData.setShowLabel( showLabelCheckbox->isChecked() );
+      itemData.setRelationEditorConfiguration( relEdCfg );
+
+      item->setData( 0, QgsFieldsProperties::DesignerTreeRole, itemData.asQVariant() );
+    }
+  }
   else
   {
     QDialog dlg;
-    dlg.setWindowTitle( tr( "Configure container" ) );
+    dlg.setWindowTitle( tr( "Configure field" ) );
     dlg.setLayout( new QGridLayout() );
     dlg.layout()->addWidget( baseWidget );
 
@@ -1430,4 +1471,14 @@ QgsOptionalExpression QgsFieldsProperties::DesignerTreeItemData::visibilityExpre
 void QgsFieldsProperties::DesignerTreeItemData::setVisibilityExpression( const QgsOptionalExpression& visibilityExpression )
 {
   mVisibilityExpression = visibilityExpression;
+}
+
+QgsFieldsProperties::RelationEditorConfiguration QgsFieldsProperties::DesignerTreeItemData::relationEditorConfiguration() const
+{
+  return mRelationEditorConfiguration;
+}
+
+void QgsFieldsProperties::DesignerTreeItemData::setRelationEditorConfiguration( const QgsFieldsProperties::RelationEditorConfiguration& relationEditorConfiguration )
+{
+  mRelationEditorConfiguration = relationEditorConfiguration;
 }

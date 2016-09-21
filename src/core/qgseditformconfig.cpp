@@ -459,7 +459,10 @@ QgsAttributeEditorElement* QgsEditFormConfig::attributeEditorElementFromDomEleme
     // At this time, the relations are not loaded
     // So we only grab the id and delegate the rest to onRelationsLoaded()
     QString name = elem.attribute( "name" );
-    newElement = new QgsAttributeEditorRelation( name, elem.attribute( "relation", "[None]" ), parent );
+    QgsAttributeEditorRelation* relElement = new QgsAttributeEditorRelation( name, elem.attribute( "relation", "[None]" ), parent );
+    relElement->setShowLinkButton( elem.attribute( "showLinkButton", "1" ).toInt() );
+    relElement->setShowUnlinkButton( elem.attribute( "showUnlinkButton", "1" ).toInt() );
+    newElement = relElement;
   }
 
   if ( elem.hasAttribute( "showLabel" ) )
@@ -597,6 +600,8 @@ void QgsAttributeEditorElement::setShowLabel( bool showLabel )
 void QgsAttributeEditorRelation::saveConfiguration( QDomElement& elem ) const
 {
   elem.setAttribute( "relation", mRelation.id() );
+  elem.setAttribute( "showLinkButton", mShowLinkButton );
+  elem.setAttribute( "showUnlinkButton", mShowUnlinkButton );
 }
 
 QString QgsAttributeEditorRelation::typeIdentifier() const
@@ -604,8 +609,28 @@ QString QgsAttributeEditorRelation::typeIdentifier() const
   return "attributeEditorRelation";
 }
 
+bool QgsAttributeEditorRelation::showUnlinkButton() const
+{
+  return mShowUnlinkButton;
+}
+
+void QgsAttributeEditorRelation::setShowUnlinkButton( bool showUnlinkButton )
+{
+  mShowUnlinkButton = showUnlinkButton;
+}
+
 bool QgsAttributeEditorRelation::init( QgsRelationManager* relationManager )
 {
   mRelation = relationManager->relation( mRelationId );
   return mRelation.isValid();
+}
+
+bool QgsAttributeEditorRelation::showLinkButton() const
+{
+  return mShowLinkButton;
+}
+
+void QgsAttributeEditorRelation::setShowLinkButton( bool showLinkButton )
+{
+  mShowLinkButton = showLinkButton;
 }

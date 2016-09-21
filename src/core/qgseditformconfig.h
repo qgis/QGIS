@@ -307,11 +307,39 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      */
     bool init( QgsRelationManager *relManager );
 
+    /**
+     * Determines if the "link feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showLinkButton() const;
+    /**
+     * Determines if the "link feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowLinkButton( bool showLinkButton );
+
+    /**
+     * Determines if the "unlink feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showUnlinkButton() const;
+    /**
+     * Determines if the "unlink feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowUnlinkButton( bool showUnlinkButton );
+
   private:
     virtual void saveConfiguration( QDomElement& elem ) const override;
     virtual QString typeIdentifier() const override;
     QString mRelationId;
     QgsRelation mRelation;
+    bool mShowLinkButton;
+    bool mShowUnlinkButton;
 };
 
 
