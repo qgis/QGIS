@@ -54,7 +54,7 @@ class TestQgsJSONUtils : public QObject
       }
 
       { // check invalid entries are ignored
-        const QVariantList back = QgsJSONUtils::parseArray( "[1,a,-2]", QVariant::Int );
+        const QVariantList back = QgsJSONUtils::parseArray( "[1,\"a\",-2]", QVariant::Int );
         QCOMPARE( back, list );
       }
     }
