@@ -310,7 +310,7 @@ void QgsSnappingDialog::addLayer( QgsMapLayer *theMapLayer )
   bool myDockFlag = myQsettings.value( "/qgis/dockSnapping", false ).toBool();
   double defaultSnappingTolerance = myQsettings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble();
   int defaultSnappingUnit = myQsettings.value( "/qgis/digitizing/default_snapping_tolerance_unit", QgsTolerance::ProjectUnits ).toInt();
-  QString defaultSnappingString = myQsettings.value( "/qgis/digitizing/default_snap_mode", "to vertex" ).toString();
+  QString defaultSnappingString = myQsettings.value( "/qgis/digitizing/default_snap_mode", "off" ).toString();
 
   int defaultSnappingStringIdx = 0;
   if ( defaultSnappingString == "to vertex" )
