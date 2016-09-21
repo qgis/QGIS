@@ -462,7 +462,8 @@ class GeoAlgorithm(object):
         for param in self.parameters:
             s += '\t' + str(param) + '\n'
         for out in self.outputs:
-            s += '\t' + str(out) + '\n'
+            if not out.hidden:
+                s += '\t' + str(out) + '\n'
         s += '\n'
         return s
 
