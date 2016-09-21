@@ -151,10 +151,11 @@ class Algorithm():
                     return unicode(value)
             params.append(_toString(value))
         for out in self.algorithm.outputs:
-            if out.name in self.outputs:
-                params.append(safeName(self.outputs[out.name].description).lower())
-            else:
-                params.append(str(None))
+            if not out.hidden:
+                if out.name in self.outputs:
+                    params.append(safeName(self.outputs[out.name].description).lower())
+                else:
+                    params.append(str(None))
         s.append("outputs_%s=processing.runalg('%s', %s)" % (self.name, self.consoleName, ",".join(params)))
         return s
 
