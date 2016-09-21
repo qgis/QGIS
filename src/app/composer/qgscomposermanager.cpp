@@ -249,7 +249,7 @@ void QgsComposerManager::on_mAddButton_clicked()
     }
     else
     {
-      templateFile.setFileName( mTemplate->itemData( mTemplate->currentIndex() ).toString() );
+      templateFile.setFileName( mTemplate->currentData().toString() );
     }
 
     if ( !templateFile.exists() )

@@ -710,7 +710,7 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
 {
   QgsDebugMsg( "called." );
 
-  RegionMode mode = ( QgsGrassModuleOptions::RegionMode ) mRegionModeComboBox->itemData( mRegionModeComboBox->currentIndex() ).toInt();
+  RegionMode mode = ( QgsGrassModuleOptions::RegionMode ) mRegionModeComboBox->currentData().toInt();
   if ( mDirect && mode == RegionCurrent )
   {
     // TODO: warn if outside region

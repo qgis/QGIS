@@ -33,7 +33,7 @@ QVariant QgsUniqueValuesWidgetWrapper::value() const
   QVariant value;
 
   if ( mComboBox )
-    value = mComboBox->itemData( mComboBox->currentIndex() );
+    value = mComboBox->currentData();
 
   if ( mLineEdit )
   {

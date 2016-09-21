@@ -177,7 +177,7 @@ void QgsGlobePluginDialog::apply()
   writeProjectSettings();
 
   // Apply stereo settings
-  int stereoMode = comboBoxStereoMode->itemData( comboBoxStereoMode->currentIndex() ).toInt();
+  int stereoMode = comboBoxStereoMode->currentData().toInt();
   if ( stereoMode == -1 )
   {
     osg::DisplaySettings::instance()->setStereo( false );

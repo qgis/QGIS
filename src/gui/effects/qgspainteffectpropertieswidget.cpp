@@ -141,7 +141,7 @@ void QgsPaintEffectPropertiesWidget::effectTypeChanged()
   if ( !effect )
     return;
 
-  QString newEffectType = mEffectTypeCombo->itemData( mEffectTypeCombo->currentIndex() ).toString();
+  QString newEffectType = mEffectTypeCombo->currentData().toString();
   if ( effect->type() == newEffectType )
     return;
 

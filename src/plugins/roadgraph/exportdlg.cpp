@@ -72,7 +72,7 @@ RgExportDlg::~RgExportDlg()
 QgsVectorLayer* RgExportDlg::mapLayer() const
 {
   QgsVectorLayer* myLayer = nullptr;
-  QString layerId = mcbLayers->itemData( mcbLayers->currentIndex() ).toString();
+  QString layerId = mcbLayers->currentData().toString();
 
   if ( layerId == "-1" )
   {

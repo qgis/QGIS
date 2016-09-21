@@ -49,7 +49,7 @@ bool QgsAuthIdentCertEdit::validateConfig()
 QgsStringMap QgsAuthIdentCertEdit::configMap() const
 {
   QgsStringMap config;
-  config.insert( "certid", cmbIdentityCert->itemData( cmbIdentityCert->currentIndex() ).toString() );
+  config.insert( "certid", cmbIdentityCert->currentData().toString() );
 
   return config;
 }

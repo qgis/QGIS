@@ -162,8 +162,8 @@ void QgsGeorefConfigDialog::writeSettings()
   s.setValue( "/Plugin-GeoReferencer/Config/LeftMarginPDF", mLeftMarginSpinBox->value() );
   s.setValue( "/Plugin-GeoReferencer/Config/RightMarginPDF", mRightMarginSpinBox->value() );
 
-  s.setValue( "/Plugin-GeoReferencer/Config/WidthPDFMap", mPaperSizeComboBox->itemData( mPaperSizeComboBox->currentIndex() ).toSizeF().width() );
-  s.setValue( "/Plugin-GeoReferencer/Config/HeightPDFMap", mPaperSizeComboBox->itemData( mPaperSizeComboBox->currentIndex() ).toSizeF().height() );
+  s.setValue( "/Plugin-GeoReferencer/Config/WidthPDFMap", mPaperSizeComboBox->currentData().toSizeF().width() );
+  s.setValue( "/Plugin-GeoReferencer/Config/HeightPDFMap", mPaperSizeComboBox->currentData().toSizeF().height() );
 
 }
 

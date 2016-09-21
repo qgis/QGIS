@@ -181,7 +181,7 @@ QgsUnitTypes::RenderUnit QgsUnitSelectionWidget::unit() const
   if ( mUnitCombo->count() == 0 )
     return QgsUnitTypes::RenderUnknownUnit;
 
-  QVariant currentData = mUnitCombo->itemData( mUnitCombo->currentIndex() );
+  QVariant currentData = mUnitCombo->currentData();
   if ( currentData.isValid() )
   {
     return ( QgsUnitTypes::RenderUnit ) currentData.toInt();

@@ -201,7 +201,7 @@ void QgsFieldCalculator::accept()
     //update existing field
     if ( mUpdateExistingGroupBox->isChecked() || !mNewFieldGroupBox->isEnabled() )
     {
-      if ( mExistingFieldComboBox->itemData( mExistingFieldComboBox->currentIndex() ).toString() == "geom" )
+      if ( mExistingFieldComboBox->currentData().toString() == "geom" )
       {
         //update geometry
         mAttributeId = -1;

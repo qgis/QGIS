@@ -30,7 +30,7 @@ QVariant QgsValueMapWidgetWrapper::value() const
   QVariant v;
 
   if ( mComboBox )
-    v = mComboBox->itemData( mComboBox->currentIndex() );
+    v = mComboBox->currentData();
 
   if ( v == QString( VALUEMAP_NULL_TEXT ) )
     v = QVariant( field().type() );

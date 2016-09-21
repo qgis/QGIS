@@ -815,7 +815,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "PositionPrecision", "/Automatic", radAutomatic->isChecked() );
   QgsProject::instance()->writeEntry( "PositionPrecision", "/DecimalPlaces", spinBoxDP->value() );
   QString degreeFormat;
-  switch ( static_cast< CoordinateFormat >( mCoordinateDisplayComboBox->itemData( mCoordinateDisplayComboBox->currentIndex() ).toInt() ) )
+  switch ( static_cast< CoordinateFormat >( mCoordinateDisplayComboBox->currentData().toInt() ) )
   {
     case DegreesMinutes:
       degreeFormat = "DM";
@@ -836,10 +836,10 @@ void QgsProjectProperties::apply()
   // Announce that we may have a new display precision setting
   emit displayPrecisionChanged();
 
-  QgsUnitTypes::DistanceUnit distanceUnits = static_cast< QgsUnitTypes::DistanceUnit >( mDistanceUnitsCombo->itemData( mDistanceUnitsCombo->currentIndex() ).toInt() );
+  QgsUnitTypes::DistanceUnit distanceUnits = static_cast< QgsUnitTypes::DistanceUnit >( mDistanceUnitsCombo->currentData().toInt() );
   QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( distanceUnits ) );
 
-  QgsUnitTypes::AreaUnit areaUnits = static_cast< QgsUnitTypes::AreaUnit >( mAreaUnitsCombo->itemData( mAreaUnitsCombo->currentIndex() ).toInt() );
+  QgsUnitTypes::AreaUnit areaUnits = static_cast< QgsUnitTypes::AreaUnit >( mAreaUnitsCombo->currentData().toInt() );
   QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( areaUnits ) );
 
   QgsProject::instance()->writeEntry( "Paths", "/Absolute", cbxAbsolutePath->currentIndex() == 0 );

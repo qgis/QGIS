@@ -117,7 +117,7 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
 
 QString QgsRasterPyramidsOptionsWidget::resamplingMethod() const
 {
-  return cboResamplingMethod->itemData( cboResamplingMethod->currentIndex() ).toString();
+  return cboResamplingMethod->currentData().toString();
 }
 
 void QgsRasterPyramidsOptionsWidget::apply()

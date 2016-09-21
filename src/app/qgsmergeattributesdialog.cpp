@@ -289,7 +289,7 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   }
 
   //evaluate behaviour (feature value or min / max / mean )
-  QString mergeBehaviourString = comboBox->itemData( comboBox->currentIndex() ).toString();
+  QString mergeBehaviourString = comboBox->currentData().toString();
   QVariant mergeResult; // result to show in the merge result field
   if ( mergeBehaviourString == "concat" )
   {
@@ -312,7 +312,7 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   else
   {
     //numerical statistic
-    QgsStatisticalSummary::Statistic stat = ( QgsStatisticalSummary::Statistic )( comboBox->itemData( comboBox->currentIndex() ).toInt() );
+    QgsStatisticalSummary::Statistic stat = ( QgsStatisticalSummary::Statistic )( comboBox->currentData().toInt() );
     mergeResult = calcStatistic( col, stat );
   }
 
@@ -557,7 +557,7 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
     if ( fieldIdx >= results.count() )
       results.resize( fieldIdx + 1 ); // make sure the results vector is long enough (maybe not necessary)
 
-    if ( comboBox->itemData( comboBox->currentIndex() ).toString() != "skip" )
+    if ( comboBox->currentData().toString() != "skip" )
     {
       results[fieldIdx] = currentItem->data( Qt::DisplayRole );
     }
@@ -595,7 +595,7 @@ QSet<int> QgsMergeAttributesDialog::skippedAttributeIndexes() const
       continue;
     }
 
-    if ( comboBox->itemData( comboBox->currentIndex() ).toString() == "skip" )
+    if ( comboBox->currentData().toString() == "skip" )
     {
       skipped << i;
     }

@@ -95,7 +95,7 @@ void RgSettingsDlg::on_buttonBox_helpRequested()
 
 QString RgSettingsDlg::timeUnitName()
 {
-  return mcbPluginsTimeUnit->itemData( mcbPluginsTimeUnit->currentIndex() ).toString();
+  return mcbPluginsTimeUnit->currentData().toString();
 }
 
 void RgSettingsDlg::setTimeUnitName( const QString& name )
@@ -109,7 +109,7 @@ void RgSettingsDlg::setTimeUnitName( const QString& name )
 
 QString RgSettingsDlg::distanceUnitName()
 {
-  return mcbPluginsDistanceUnit->itemData( mcbPluginsDistanceUnit->currentIndex() ).toString();
+  return mcbPluginsDistanceUnit->currentData().toString();
 }
 
 void RgSettingsDlg::setDistanceUnitName( const QString& name )

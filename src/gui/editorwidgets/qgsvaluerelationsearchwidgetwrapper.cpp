@@ -58,7 +58,7 @@ QVariant QgsValueRelationSearchWidgetWrapper::value() const
     int cbxIdx = mComboBox->currentIndex();
     if ( cbxIdx > -1 )
     {
-      v = mComboBox->itemData( mComboBox->currentIndex() );
+      v = mComboBox->currentData();
     }
   }
 

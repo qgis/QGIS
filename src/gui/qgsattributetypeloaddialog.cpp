@@ -126,9 +126,9 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
     //when nothing is selected there is no reason for preview
     return;
   }
-  int idx = keyComboBox->itemData( keyComboBox->currentIndex() ).toInt();
-  int idx2 = valueComboBox->itemData( valueComboBox->currentIndex() ).toInt();
-  QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->itemData( layerComboBox->currentIndex() ).toString() );
+  int idx = keyComboBox->currentData().toInt();
+  int idx2 = valueComboBox->currentData().toInt();
+  QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->currentData().toString() );
   QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( !vLayer )
     return;
@@ -175,9 +175,9 @@ bool QgsAttributeTypeLoadDialog::insertNull()
 void QgsAttributeTypeLoadDialog::loadDataToValueMap()
 {
   mValueMap.clear();
-  int idx = keyComboBox->itemData( keyComboBox->currentIndex() ).toInt();
-  int idx2 = valueComboBox->itemData( valueComboBox->currentIndex() ).toInt();
-  QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->itemData( layerComboBox->currentIndex() ).toString() );
+  int idx = keyComboBox->currentData().toInt();
+  int idx2 = valueComboBox->currentData().toInt();
+  QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->currentData().toString() );
   QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( !vLayer )
     return;

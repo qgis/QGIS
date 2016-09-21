@@ -994,7 +994,7 @@ void QgsFieldsProperties::apply()
     QgsEditorWidgetConfig cfg;
 
     QComboBox* cb = qobject_cast<QComboBox*>( mRelationsList->cellWidget( i, RelNmCol ) );
-    QVariant otherRelation = cb->itemData( cb->currentIndex() );
+    QVariant otherRelation = cb->currentData();
 
     if ( otherRelation.isValid() )
     {

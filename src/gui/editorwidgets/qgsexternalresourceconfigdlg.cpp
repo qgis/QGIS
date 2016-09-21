@@ -157,7 +157,7 @@ QgsEditorWidgetConfig QgsExternalResourceConfigDlg::config()
 
   if ( mDocumentViewerGroupBox->isChecked() )
   {
-    cfg.insert( "DocumentViewer", mDocumentViewerContentComboBox->itemData( mDocumentViewerContentComboBox->currentIndex() ).toInt() );
+    cfg.insert( "DocumentViewer", mDocumentViewerContentComboBox->currentData().toInt() );
     cfg.insert( "DocumentViewerHeight", mDocumentViewerHeight->value() );
     cfg.insert( "DocumentViewerWidth", mDocumentViewerWidth->value() );
   }

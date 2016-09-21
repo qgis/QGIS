@@ -99,7 +99,7 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
   {
     if ( index.column() == QgsMssqlTableModel::dbtmType )
     {
-      QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->itemData( cb->currentIndex() ).toInt();
+      QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->currentData().toInt();
 
       model->setData( index, QgsMssqlTableModel::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::displayString( type ) : tr( "Select..." ) );

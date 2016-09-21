@@ -90,7 +90,7 @@ void QgsDecorationCopyrightDialog::apply()
   mDeco.mQFont = txtCopyrightText->currentFont();
   mDeco.mLabelQString = txtCopyrightText->toPlainText();
   mDeco.mLabelQColor = pbnColorChooser->color();
-  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->itemData( cboPlacement->currentIndex() ).toInt() ) );
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
   mDeco.mMarginUnit = wgtUnitSelection->unit();
   mDeco.mMarginHorizontal = spnHorizontal->value();
   mDeco.mMarginVertical = spnVertical->value();

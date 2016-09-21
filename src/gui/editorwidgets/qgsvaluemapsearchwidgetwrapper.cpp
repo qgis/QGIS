@@ -94,7 +94,7 @@ QString QgsValueMapSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper
   if ( flags & IsNotNull )
     return fieldName + " IS NOT NULL";
 
-  QString currentKey = mComboBox->itemData( mComboBox->currentIndex() ).toString();
+  QString currentKey = mComboBox->currentData().toString();
 
   switch ( fldType )
   {

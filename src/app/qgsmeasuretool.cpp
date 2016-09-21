@@ -206,14 +206,15 @@ void QgsMeasureTool::canvasReleaseEvent( QgsMapMouseEvent* e )
   if ( e->button() == Qt::RightButton ) // if we clicked the right button we stop measuring
   {
     mDone = true;
+    mRubberBand->removeLastPoint();
+    mDialog->removeLastPoint();
   }
   else if ( e->button() == Qt::LeftButton )
   {
     mDone = false;
+    addPoint( point );
   }
 
-  // we always add the clicked point to the measuring feature
-  addPoint( point );
   mDialog->show();
 
 }

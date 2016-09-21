@@ -119,10 +119,10 @@ void QgsGlobeVectorLayerPropertiesPage::apply()
 {
   QgsGlobeVectorLayerConfig* layerConfig = QgsGlobeVectorLayerConfig::getConfig( mLayer );
 
-  layerConfig->renderingMode = static_cast<QgsGlobeVectorLayerConfig::RenderingMode>( comboBoxRenderingMode->itemData( comboBoxRenderingMode->currentIndex() ).toInt() );
-  layerConfig->altitudeClamping = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>( comboBoxAltitudeClamping->itemData( comboBoxAltitudeClamping->currentIndex() ).toInt() );
-  layerConfig->altitudeTechnique = static_cast<osgEarth::Symbology::AltitudeSymbol::Technique>( comboBoxAltitudeTechnique->itemData( comboBoxAltitudeTechnique->currentIndex() ).toInt() );
-  layerConfig->altitudeBinding = static_cast<osgEarth::Symbology::AltitudeSymbol::Binding>( comboBoxAltitudeBinding->itemData( comboBoxAltitudeBinding->currentIndex() ).toInt() );
+  layerConfig->renderingMode = static_cast<QgsGlobeVectorLayerConfig::RenderingMode>( comboBoxRenderingMode->currentData().toInt() );
+  layerConfig->altitudeClamping = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>( comboBoxAltitudeClamping->currentData().toInt() );
+  layerConfig->altitudeTechnique = static_cast<osgEarth::Symbology::AltitudeSymbol::Technique>( comboBoxAltitudeTechnique->currentData().toInt() );
+  layerConfig->altitudeBinding = static_cast<osgEarth::Symbology::AltitudeSymbol::Binding>( comboBoxAltitudeBinding->currentData().toInt() );
 
   layerConfig->verticalOffset = spinBoxAltitudeOffset->value();
   layerConfig->verticalScale = spinBoxAltitudeScale->value();
@@ -153,7 +153,7 @@ void QgsGlobeVectorLayerPropertiesPage::onAltitudeClampingChanged( int index )
 
 void QgsGlobeVectorLayerPropertiesPage::onAltituteTechniqueChanged( int index )
 {
-  osgEarth::Symbology::AltitudeSymbol::Clamping clamping = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>( comboBoxAltitudeClamping->itemData( comboBoxAltitudeClamping->currentIndex() ).toInt() );
+  osgEarth::Symbology::AltitudeSymbol::Clamping clamping = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>( comboBoxAltitudeClamping->currentData().toInt() );
   osgEarth::Symbology::AltitudeSymbol::Technique technique = static_cast<osgEarth::Symbology::AltitudeSymbol::Technique>( comboBoxAltitudeTechnique->itemData( index ).toInt() );
 
   bool mapTechnique = technique == osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_MAP && clamping == osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;

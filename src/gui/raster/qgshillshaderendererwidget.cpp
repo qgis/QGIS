@@ -86,7 +86,7 @@ QgsRasterRenderer *QgsHillshadeRendererWidget::renderer()
     return nullptr;
   }
 
-  int band = mBandsCombo->itemData( mBandsCombo->currentIndex() ).toInt();
+  int band = mBandsCombo->currentData().toInt();
   QgsHillshadeRenderer* renderer = new QgsHillshadeRenderer( provider, band, mLightAzimuth->value(), mLightAngle->value() );
   double value = mZFactor->value();
   renderer->setZFactor( value );

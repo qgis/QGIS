@@ -157,7 +157,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
   {
     if ( index.column() == QgsPgTableModel::dbtmType )
     {
-      QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->itemData( cb->currentIndex() ).toInt();
+      QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->currentData().toInt();
 
       model->setData( index, QgsPgTableModel::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != QgsWkbTypes::Unknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select..." ) );

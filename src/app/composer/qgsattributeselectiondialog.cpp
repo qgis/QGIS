@@ -76,7 +76,7 @@ void QgsComposerColumnAlignmentDelegate::setEditorData( QWidget* editor, const Q
 void QgsComposerColumnAlignmentDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
 {
   QComboBox *comboBox = static_cast<QComboBox*>( editor );
-  Qt::AlignmentFlag alignment = ( Qt::AlignmentFlag ) comboBox->itemData( comboBox->currentIndex() ).toInt();
+  Qt::AlignmentFlag alignment = ( Qt::AlignmentFlag ) comboBox->currentData().toInt();
   model->setData( index, alignment, Qt::EditRole );
 }
 

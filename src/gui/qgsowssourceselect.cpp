@@ -500,7 +500,7 @@ QString QgsOWSSourceSelect::selectedFormat()
 
 QNetworkRequest::CacheLoadControl QgsOWSSourceSelect::selectedCacheLoadControl()
 {
-  int cache = mCacheComboBox->itemData( mCacheComboBox->currentIndex() ).toInt();
+  int cache = mCacheComboBox->currentData().toInt();
   return static_cast<QNetworkRequest::CacheLoadControl>( cache );
 }
 

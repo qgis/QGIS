@@ -122,7 +122,7 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
       }
 
       emit downloadFromGPS( cmbDLDevice->currentText(),
-                            cmbDLPort->itemData( cmbDLPort->currentIndex() ).toString(),
+                            cmbDLPort->currentData().toString(),
                             featureType == 0, featureType == 1, featureType == 2,
                             fileName, leDLBasename->text() );
       break;
@@ -133,14 +133,14 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
       // or upload GPS data to a device?
       emit uploadToGPS( mGPXLayers[cmbULLayer->currentIndex()],
                         cmbULDevice->currentText(),
-                        cmbULPort->itemData( cmbULPort->currentIndex() ).toString() );
+                        cmbULPort->currentData().toString() );
       break;
     }
 
     case 4:
     {
       // or convert between waypoints/tracks=
-      int convertType = cmbCONVType->itemData( cmbCONVType->currentIndex() ).toInt();
+      int convertType = cmbCONVType->currentData().toInt();
 
       emit convertGPSFile( leCONVInput->text(),
                            convertType,

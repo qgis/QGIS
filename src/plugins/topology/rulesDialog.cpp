@@ -266,11 +266,11 @@ void rulesDialog::addRule()
   // add layer ids to hidden columns
   // -1 for "No layer" string
   if ( mTestConfMap[test].useSecondLayer )
-    layer2ID = mLayer2Box->itemData( mLayer2Box->currentIndex() ).toString();
+    layer2ID = mLayer2Box->currentData().toString();
   else
     layer2ID = tr( "No layer" );
 
-  layer1ID =  mLayer1Box->itemData( mLayer1Box->currentIndex() ).toString();
+  layer1ID =  mLayer1Box->currentData().toString();
 
   //TODO: use setItemData (or something like that) instead of hidden columns
   newItem = new QTableWidgetItem( layer1ID );
@@ -316,7 +316,7 @@ void rulesDialog::updateRuleItems( const QString &layerName )
     return;
   }
 
-  QString layerId = mLayer1Box->itemData( mLayer1Box->currentIndex() ).toString();
+  QString layerId = mLayer1Box->currentData().toString();
 
   QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
   QgsVectorLayer* vlayer = ( QgsVectorLayer* )layerRegistry->mapLayer( layerId );

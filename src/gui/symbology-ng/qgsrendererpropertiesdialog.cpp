@@ -209,7 +209,7 @@ void QgsRendererPropertiesDialog::rendererChanged()
     return;
   }
 
-  QString rendererName = cboRenderers->itemData( cboRenderers->currentIndex() ).toString();
+  QString rendererName = cboRenderers->currentData().toString();
 
   //Retrieve the previous renderer: from the old active widget if possible, otherwise from the layer
   QgsFeatureRenderer* oldRenderer;

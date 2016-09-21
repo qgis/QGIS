@@ -636,7 +636,7 @@ void QgsAuthAuthoritiesEditor::editDefaultTrustPolicy()
   if ( dlg->exec() )
   {
     QgsAuthCertUtils::CertTrustPolicy trustpolicy(
-      ( QgsAuthCertUtils::CertTrustPolicy )cmbpolicy->itemData( cmbpolicy->currentIndex() ).toInt() );
+      ( QgsAuthCertUtils::CertTrustPolicy )cmbpolicy->currentData().toInt() );
     if ( mDefaultTrustPolicy != trustpolicy )
     {
       defaultTrustPolicyChanged( trustpolicy );

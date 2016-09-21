@@ -352,7 +352,7 @@ QSsl::SslProtocol QgsAuthSslConfigWidget::sslProtocol()
   {
     return QSsl::UnknownProtocol;
   }
-  return ( QSsl::SslProtocol )mProtocolCmbBx->itemData( mProtocolCmbBx->currentIndex() ).toInt();
+  return ( QSsl::SslProtocol )mProtocolCmbBx->currentData().toInt();
 }
 
 void QgsAuthSslConfigWidget::setSslProtocol( QSsl::SslProtocol protocol )
@@ -475,7 +475,7 @@ QSslSocket::PeerVerifyMode QgsAuthSslConfigWidget::sslPeerVerifyMode()
   {
     return QSslSocket::AutoVerifyPeer;
   }
-  return ( QSslSocket::PeerVerifyMode )mVerifyPeerCmbBx->itemData( mVerifyPeerCmbBx->currentIndex() ).toInt();
+  return ( QSslSocket::PeerVerifyMode )mVerifyPeerCmbBx->currentData().toInt();
 }
 
 int QgsAuthSslConfigWidget::sslPeerVerifyDepth()

@@ -116,7 +116,7 @@ void QgsRendererRasterPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
 
 void QgsRendererRasterPropertiesWidget::rendererChanged()
 {
-  QString rendererName = cboRenderers->itemData( cboRenderers->currentIndex() ).toString();
+  QString rendererName = cboRenderers->currentData().toString();
   setRendererWidget( rendererName );
   emit widgetChanged();
 }

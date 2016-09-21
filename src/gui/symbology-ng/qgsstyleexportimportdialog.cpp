@@ -470,7 +470,7 @@ void QgsStyleExportImportDialog::importTypeChanged( int index )
 
 void QgsStyleExportImportDialog::browse()
 {
-  QString type = importTypeCombo->itemData( importTypeCombo->currentIndex() ).toString();
+  QString type = importTypeCombo->currentData().toString();
 
   if ( type == "file" )
   {

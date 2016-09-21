@@ -152,7 +152,7 @@ void QgsPgNewConnection::accept()
   settings.setValue( baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
   settings.setValue( baseKey + "/dontResolveType", cb_dontResolveType->isChecked() );
   settings.setValue( baseKey + "/allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
-  settings.setValue( baseKey + "/sslmode", cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
+  settings.setValue( baseKey + "/sslmode", cbxSSLmode->currentData().toInt() );
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() && !hasAuthConfigID ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() && !hasAuthConfigID ? "true" : "false" );
   settings.setValue( baseKey + "/estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
@@ -189,14 +189,14 @@ void QgsPgNewConnection::testConnection()
   {
     uri.setConnection( txtService->text(), txtDatabase->text(),
                        txtUsername->text(), txtPassword->text(),
-                       ( QgsDataSourceUri::SslMode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt(),
+                       ( QgsDataSourceUri::SslMode ) cbxSSLmode->currentData().toInt(),
                        mAuthConfigSelect->configId() );
   }
   else
   {
     uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(),
                        txtUsername->text(), txtPassword->text(),
-                       ( QgsDataSourceUri::SslMode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt(),
+                       ( QgsDataSourceUri::SslMode ) cbxSSLmode->currentData().toInt(),
                        mAuthConfigSelect->configId() );
   }
 

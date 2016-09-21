@@ -211,7 +211,7 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
   QgsSymbolLayer* layer = mLayer;
   if ( !layer )
     return;
-  QString newLayerType = cboLayerType->itemData( cboLayerType->currentIndex() ).toString();
+  QString newLayerType = cboLayerType->currentData().toString();
   if ( layer->layerType() == newLayerType )
     return;
 

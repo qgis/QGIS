@@ -234,7 +234,7 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
   if ( !mFeatureResult.isEmpty() )
   {
     // Select features
-    TypeResultFor typeResultFor = ( TypeResultFor ) cbResultFor->itemData( cbResultFor->currentIndex() ).toInt();
+    TypeResultFor typeResultFor = ( TypeResultFor ) cbResultFor->currentData().toInt();
     switch ( typeResultFor )
     {
       case selectedNew:
@@ -601,7 +601,7 @@ void QgsSpatialQueryDialog::populateCbOperation()
   }
   else
   {
-    currentValueItem = cbOperation->itemData( cbOperation->currentIndex() );
+    currentValueItem = cbOperation->currentData();
   }
 
   // Populate new values
@@ -792,7 +792,7 @@ void QgsSpatialQueryDialog::on_bbMain_clicked( QAbstractButton * button )
 
 void QgsSpatialQueryDialog::on_pbCreateLayerItems_clicked()
 {
-  TypeItems typeItem = ( TypeItems ) cbTypeItems->itemData( cbTypeItems->currentIndex() ).toInt();
+  TypeItems typeItem = ( TypeItems ) cbTypeItems->currentData().toInt();
   QgsFeatureIds *fids = nullptr;
   switch ( typeItem )
   {
@@ -965,7 +965,7 @@ void QgsSpatialQueryDialog::on_cbOperation_currentIndexChanged()
 
 void QgsSpatialQueryDialog::on_lwFeatures_currentItemChanged( QListWidgetItem * item )
 {
-  TypeItems typeItem = ( TypeItems )( cbTypeItems->itemData( cbTypeItems->currentIndex() ).toInt() );
+  TypeItems typeItem = ( TypeItems )( cbTypeItems->currentData().toInt() );
   QgsVectorLayer *lyr = typeItem == itemsInvalidReference ? mLayerReference : mLayerTarget;
   changeLwFeature( lyr, STRING_TO_FID( item->data( Qt::UserRole ).toString() ) );
 } // void QgsSpatialQueryDialog::on_lwFeatures_currentItemChanged( QListWidgetItem * item )
@@ -988,7 +988,7 @@ void QgsSpatialQueryDialog::on_ckbZoomItem_clicked( bool checked )
     if ( lwFeatures->count() > 0 )
     {
       QgsFeatureId fid = STRING_TO_FID( lwFeatures->currentItem()->data( Qt::UserRole ).toString() );
-      TypeItems typeItem = ( TypeItems )( cbTypeItems->itemData( cbTypeItems->currentIndex() ).toInt() );
+      TypeItems typeItem = ( TypeItems )( cbTypeItems->currentData().toInt() );
       QgsVectorLayer *lyr = typeItem == itemsInvalidReference ? mLayerReference : mLayerTarget;
       zoomFeature( lyr, fid );
     }

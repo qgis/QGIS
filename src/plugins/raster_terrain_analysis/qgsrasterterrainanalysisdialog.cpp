@@ -124,7 +124,7 @@ QList< QgsRelief::ReliefColor > QgsRasterTerrainAnalysisDialog::reliefColors() c
 
 QString QgsRasterTerrainAnalysisDialog::inputFile() const
 {
-  QgsMapLayer* inputLayer = QgsMapLayerRegistry::instance()->mapLayer( mElevationLayerComboBox->itemData( mElevationLayerComboBox->currentIndex() ).toString() );
+  QgsMapLayer* inputLayer = QgsMapLayerRegistry::instance()->mapLayer( mElevationLayerComboBox->currentData().toString() );
   if ( !inputLayer )
   {
     return "";

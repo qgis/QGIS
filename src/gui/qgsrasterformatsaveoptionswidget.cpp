@@ -509,7 +509,7 @@ QString QgsRasterFormatSaveOptionsWidget::settingsKey( QString profileName ) con
 
 QString QgsRasterFormatSaveOptionsWidget::currentProfileKey() const
 {
-  return mProfileComboBox->itemData( mProfileComboBox->currentIndex() ).toString();
+  return mProfileComboBox->currentData().toString();
 }
 
 QStringList QgsRasterFormatSaveOptionsWidget::options() const

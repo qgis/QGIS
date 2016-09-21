@@ -207,7 +207,7 @@ void QgsSnappingDialog::apply()
   }
   QgsProject::instance()->writeEntry( "Digitizing", "/SnappingMode", snapMode );
 
-  QString snapType = mDefaultSnapToComboBox->itemData( mDefaultSnapToComboBox->currentIndex() ).toString();
+  QString snapType = mDefaultSnapToComboBox->currentData().toString();
   QgsProject::instance()->writeEntry( "Digitizing", "/DefaultSnapType", snapType );
   QgsProject::instance()->writeEntry( "Digitizing", "/DefaultSnapTolerance", mDefaultSnappingToleranceSpinBox->value() );
   QgsProject::instance()->writeEntry( "Digitizing", "/DefaultSnapToleranceUnit", mDefaultSnappingToleranceComboBox->currentIndex() == 1 ? QgsTolerance::Pixels : QgsTolerance::ProjectUnits );

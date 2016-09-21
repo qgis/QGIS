@@ -26,7 +26,7 @@ QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer* 
 
 QVariant QgsClassificationWidgetWrapper::value() const
 {
-  return mComboBox->itemData( mComboBox->currentIndex() );
+  return mComboBox->currentData();
 }
 
 void QgsClassificationWidgetWrapper::showIndeterminateState()

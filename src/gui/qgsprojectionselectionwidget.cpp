@@ -73,7 +73,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
 {
-  switch (( CrsOption )mCrsComboBox->itemData( mCrsComboBox->currentIndex() ).toInt() )
+  switch (( CrsOption )mCrsComboBox->currentData().toInt() )
   {
     case QgsProjectionSelectionWidget::LayerCrs:
       return mLayerCrs;

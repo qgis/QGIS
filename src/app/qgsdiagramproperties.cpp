@@ -667,7 +667,7 @@ void QgsDiagramProperties::apply()
       }
       else
       {
-        maxVal = provider->maximumValue( mSizeAttributeComboBox->itemData( mSizeAttributeComboBox->currentIndex() ).toInt() ).toDouble();
+        maxVal = provider->maximumValue( mSizeAttributeComboBox->currentData().toInt() ).toDouble();
       }
     }
 
@@ -724,8 +724,8 @@ void QgsDiagramProperties::apply()
   ds.sizeScale = mDiagramUnitComboBox->getMapUnitScale();
   ds.lineSizeUnit = mDiagramLineUnitComboBox->unit();
   ds.lineSizeScale = mDiagramLineUnitComboBox->getMapUnitScale();
-  ds.labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->itemData( mLabelPlacementComboBox->currentIndex() ).toInt() );
-  ds.scaleByArea = mScaleDependencyComboBox->itemData( mScaleDependencyComboBox->currentIndex() ).toBool();
+  ds.labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->currentData().toInt() );
+  ds.scaleByArea = mScaleDependencyComboBox->currentData().toBool();
 
   if ( mIncreaseSmallDiagramsCheck->isChecked() )
   {
@@ -745,7 +745,7 @@ void QgsDiagramProperties::apply()
   ds.scaleBasedVisibility = mScaleVisibilityGroupBox->isChecked();
 
   // Diagram angle offset (pie)
-  ds.angleOffset = mAngleOffsetComboBox->itemData( mAngleOffsetComboBox->currentIndex() ).toInt();
+  ds.angleOffset = mAngleOffsetComboBox->currentData().toInt();
 
   // Diagram orientation (histogram)
   ds.diagramOrientation = static_cast<QgsDiagramSettings::DiagramOrientation>( mOrientationButtonGroup->checkedButton()->property( "direction" ).toInt() );
@@ -795,7 +795,7 @@ void QgsDiagramProperties::apply()
   dls.setShowAllDiagrams( mShowAllCheckBox->isChecked() );
   if ( mDataDefinedVisibilityGroupBox->isChecked() )
   {
-    dls.showColumn = mDataDefinedVisibilityComboBox->itemData( mDataDefinedVisibilityComboBox->currentIndex() ).toInt();
+    dls.showColumn = mDataDefinedVisibilityComboBox->currentData().toInt();
   }
   else
   {
@@ -803,15 +803,15 @@ void QgsDiagramProperties::apply()
   }
   if ( mDataDefinedPositionGroupBox->isChecked() )
   {
-    dls.xPosColumn = mDataDefinedXComboBox->itemData( mDataDefinedXComboBox->currentIndex() ).toInt();
-    dls.yPosColumn = mDataDefinedYComboBox->itemData( mDataDefinedYComboBox->currentIndex() ).toInt();
+    dls.xPosColumn = mDataDefinedXComboBox->currentData().toInt();
+    dls.yPosColumn = mDataDefinedYComboBox->currentData().toInt();
   }
   else
   {
     dls.xPosColumn = -1;
     dls.yPosColumn = -1;
   }
-  dls.setPlacement(( QgsDiagramLayerSettings::Placement )mPlacementComboBox->itemData( mPlacementComboBox->currentIndex() ).toInt() );
+  dls.setPlacement(( QgsDiagramLayerSettings::Placement )mPlacementComboBox->currentData().toInt() );
 
   unsigned int flags = 0;
   if ( chkLineAbove->isChecked() )

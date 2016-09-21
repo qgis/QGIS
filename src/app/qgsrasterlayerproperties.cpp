@@ -863,7 +863,7 @@ void QgsRasterLayerProperties::apply()
   QgsRasterRenderer* rasterRenderer = mRasterLayer->renderer();
   if ( rasterRenderer )
   {
-    rasterRenderer->setAlphaBand( cboxTransparencyBand->itemData( cboxTransparencyBand->currentIndex() ).toInt() );
+    rasterRenderer->setAlphaBand( cboxTransparencyBand->currentData().toInt() );
 
     //Walk through each row in table and test value. If not valid set to 0.0 and continue building transparency list
     QgsRasterTransparency* rasterTransparency = new QgsRasterTransparency();
@@ -1016,7 +1016,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   // keep it in sync with qgsrasterpyramidsoptionwidget.cpp
   QString prefix = provider->name() + "/driverOptions/_pyramids/";
   QSettings mySettings;
-  QString resamplingMethod( cboResamplingMethod->itemData( cboResamplingMethod->currentIndex() ).toString() );
+  QString resamplingMethod( cboResamplingMethod->currentData().toString() );
   mySettings.setValue( prefix + "resampling", resamplingMethod );
 
   //

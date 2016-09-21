@@ -220,7 +220,7 @@ void QgsAuthConfigEdit::saveConfig()
   if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
     return;
 
-  QString authMethodKey = cmbAuthMethods->itemData( cmbAuthMethods->currentIndex() ).toString();
+  QString authMethodKey = cmbAuthMethods->currentData().toString();
 
   QgsAuthMethodEdit *editWidget = currentEditWidget();
   if ( !editWidget )

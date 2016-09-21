@@ -66,7 +66,7 @@ QgsRasterRenderer* QgsPalettedRendererWidget::renderer()
       labels[i] = label;
     }
   }
-  int bandNumber = mBandComboBox->itemData( mBandComboBox->currentIndex() ).toInt();
+  int bandNumber = mBandComboBox->currentData().toInt();
   return new QgsPalettedRasterRenderer( mRasterLayer->dataProvider(), bandNumber, colorArray, nColors, labels );
 }
 
@@ -111,7 +111,7 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
     QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
     if ( provider )
     {
-      QList<QgsColorRampShader::ColorRampItem> itemList = provider->colorTable( mBandComboBox->itemData( mBandComboBox->currentIndex() ).toInt() );
+      QList<QgsColorRampShader::ColorRampItem> itemList = provider->colorTable( mBandComboBox->currentData().toInt() );
       QList<QgsColorRampShader::ColorRampItem>::const_iterator itemIt = itemList.constBegin();
       int index = 0;
       for ( ; itemIt != itemList.constEnd(); ++itemIt )

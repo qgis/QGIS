@@ -565,7 +565,7 @@ void QgsVectorLayerProperties::apply()
   }
   QgsVectorSimplifyMethod simplifyMethod = mLayer->simplifyMethod();
   simplifyMethod.setSimplifyHints( simplifyHints );
-  simplifyMethod.setSimplifyAlgorithm( static_cast< QgsVectorSimplifyMethod::SimplifyAlgorithm >( mSimplifyAlgorithmComboBox->itemData( mSimplifyAlgorithmComboBox->currentIndex() ).toInt() ) );
+  simplifyMethod.setSimplifyAlgorithm( static_cast< QgsVectorSimplifyMethod::SimplifyAlgorithm >( mSimplifyAlgorithmComboBox->currentData().toInt() ) );
   simplifyMethod.setThreshold( mSimplifyDrawingSpinBox->value() );
   simplifyMethod.setForceLocalOptimization( !mSimplifyDrawingAtProvider->isChecked() );
   simplifyMethod.setMaximumScale( 1.0 / mSimplifyMaximumScaleComboBox->scale() );

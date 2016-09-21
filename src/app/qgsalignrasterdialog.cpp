@@ -439,7 +439,7 @@ QString QgsAlignRasterLayerConfigDialog::outputFilename() const
 
 QgsAlignRaster::ResampleAlg QgsAlignRasterLayerConfigDialog::resampleMethod() const
 {
-  return static_cast< QgsAlignRaster::ResampleAlg >( cboResample->itemData( cboResample->currentIndex() ).toInt() );
+  return static_cast< QgsAlignRaster::ResampleAlg >( cboResample->currentData().toInt() );
 }
 
 bool QgsAlignRasterLayerConfigDialog::rescaleValues() const

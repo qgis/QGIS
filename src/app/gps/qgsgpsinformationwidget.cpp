@@ -260,7 +260,7 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
 #endif
 
   QSettings mySettings;
-  mySettings.setValue( "/gps/lastPort", mCboDevices->itemData( mCboDevices->currentIndex() ).toString() );
+  mySettings.setValue( "/gps/lastPort", mCboDevices->currentData().toString() );
   mySettings.setValue( "/gps/trackWidth", mSpinTrackWidth->value() );
   mySettings.setValue( "/gps/trackColor", mTrackColor );
   mySettings.setValue( "/gps/markerSize", mSliderMarkerSize->value() );
@@ -396,7 +396,7 @@ void QgsGPSInformationWidget::connectGps()
 
   if ( mRadUserPath->isChecked() )
   {
-    port = mCboDevices->itemData( mCboDevices->currentIndex() ).toString();
+    port = mCboDevices->currentData().toString();
 
     if ( port.isEmpty() )
     {

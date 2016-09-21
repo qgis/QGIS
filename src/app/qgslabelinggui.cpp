@@ -940,7 +940,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.dist = mLineDistanceSpnBx->value();
   lyr.distInMapUnits = ( mLineDistanceUnitWidget->unit() == QgsUnitTypes::RenderMapUnits );
   lyr.distMapUnitScale = mLineDistanceUnitWidget->getMapUnitScale();
-  lyr.offsetType = static_cast< QgsPalLayerSettings::OffsetType >( mOffsetTypeComboBox->itemData( mOffsetTypeComboBox->currentIndex() ).toInt() );
+  lyr.offsetType = static_cast< QgsPalLayerSettings::OffsetType >( mOffsetTypeComboBox->currentData().toInt() );
   lyr.quadOffset = ( QgsPalLayerSettings::QuadrantPosition )mQuadrantBtnGrp->checkedId();
   lyr.xOffset = mPointOffsetXSpinBox->value();
   lyr.yOffset = mPointOffsetYSpinBox->value();
@@ -1010,7 +1010,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.priority = mPrioritySlider->value();
   lyr.obstacle = mChkNoObstacle->isChecked() || mMode == ObstaclesOnly;
   lyr.obstacleFactor = mObstacleFactorSlider->value() / 50.0;
-  lyr.obstacleType = ( QgsPalLayerSettings::ObstacleType )mObstacleTypeComboBox->itemData( mObstacleTypeComboBox->currentIndex() ).toInt();
+  lyr.obstacleType = ( QgsPalLayerSettings::ObstacleType )mObstacleTypeComboBox->currentData().toInt();
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();
   lyr.mergeLines = chkMergeLines->isChecked();

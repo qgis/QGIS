@@ -123,7 +123,7 @@ QgsEditorWidgetConfig QgsRelationReferenceConfigDlg::config()
   myConfig.insert( "ShowForm", mCbxShowForm->isChecked() );
   myConfig.insert( "MapIdentification", mCbxMapIdentification->isEnabled() && mCbxMapIdentification->isChecked() );
   myConfig.insert( "ReadOnly", mCbxReadOnly->isChecked() );
-  myConfig.insert( "Relation", mComboRelation->itemData( mComboRelation->currentIndex() ) );
+  myConfig.insert( "Relation", mComboRelation->currentData() );
   myConfig.insert( "AllowAddFeatures", mCbxAllowAddFeatures->isChecked() );
 
   if ( mFilterGroupBox->isChecked() )

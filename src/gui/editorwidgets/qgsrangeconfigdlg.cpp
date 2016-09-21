@@ -87,7 +87,7 @@ QgsEditorWidgetConfig QgsRangeConfigDlg::config()
       break;
   }
 
-  cfg.insert( "Style", rangeWidget->itemData( rangeWidget->currentIndex() ).toString() );
+  cfg.insert( "Style", rangeWidget->currentData().toString() );
   cfg.insert( "AllowNull", allowNullCheckBox->isChecked() );
 
   if ( suffixLineEdit->text() != "" )

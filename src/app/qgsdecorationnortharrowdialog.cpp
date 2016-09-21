@@ -93,7 +93,7 @@ void QgsDecorationNorthArrowDialog::on_sliderRotation_valueChanged( int theInt )
 void QgsDecorationNorthArrowDialog::apply()
 {
   mDeco.mRotationInt = sliderRotation->value();
-  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->itemData( cboPlacement->currentIndex() ).toInt() ) );
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
   mDeco.mMarginUnit = wgtUnitSelection->unit();
   mDeco.setEnabled( grpEnable->isChecked() );
   mDeco.mAutomatic = cboxAutomatic->isChecked();

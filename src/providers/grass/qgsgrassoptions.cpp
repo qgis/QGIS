@@ -158,7 +158,7 @@ void QgsGrassOptions::saveOptions()
 
   // Browser
   settings.setValue( mImportSettingsPath + "/crsTransform",
-                     mCrsTransformationComboBox->itemData( mCrsTransformationComboBox->currentIndex() ).toInt() );
+                     mCrsTransformationComboBox->currentData().toInt() );
 
   settings.setValue( mImportSettingsPath + "/external", mImportExternalCheckBox->isChecked() );
 

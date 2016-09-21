@@ -3354,7 +3354,7 @@ void QgsGeometryGeneratorSymbolLayerWidget::updateExpression( const QString& str
 
 void QgsGeometryGeneratorSymbolLayerWidget::updateSymbolType()
 {
-  mLayer->setSymbolType( static_cast<QgsSymbol::SymbolType>( cbxGeometryType->itemData( cbxGeometryType->currentIndex() ).toInt() ) );
+  mLayer->setSymbolType( static_cast<QgsSymbol::SymbolType>( cbxGeometryType->currentData().toInt() ) );
 
   emit symbolChanged();
 }

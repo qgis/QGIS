@@ -961,6 +961,6 @@ void QgsColorEffectWidget::on_mGrayscaleCombo_currentIndexChanged( int index )
   if ( !mEffect )
     return;
 
-  mEffect->setGrayscaleMode(( QgsImageOperation::GrayscaleMode ) mGrayscaleCombo->itemData( mGrayscaleCombo->currentIndex() ).toInt() );
+  mEffect->setGrayscaleMode(( QgsImageOperation::GrayscaleMode ) mGrayscaleCombo->currentData().toInt() );
   emit changed();
 }

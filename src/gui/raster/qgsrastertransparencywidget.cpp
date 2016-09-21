@@ -402,7 +402,7 @@ void QgsRasterTransparencyWidget::apply()
   QgsRasterRenderer* rasterRenderer = mRasterLayer->renderer();
   if ( rasterRenderer )
   {
-    rasterRenderer->setAlphaBand( cboxTransparencyBand->itemData( cboxTransparencyBand->currentIndex() ).toInt() );
+    rasterRenderer->setAlphaBand( cboxTransparencyBand->currentData().toInt() );
 
     //Walk through each row in table and test value. If not valid set to 0.0 and continue building transparency list
     QgsRasterTransparency* rasterTransparency = new QgsRasterTransparency();

@@ -138,7 +138,7 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
   {
     if ( index.column() == QgsOracleTableModel::dbtmType )
     {
-      QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->itemData( cb->currentIndex() ).toInt();
+      QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->currentData().toInt();
 
       model->setData( index, QgsOracleTableModel::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != QgsWkbTypes::Unknown ? QgsOracleConn::displayStringForWkbType( type ) : tr( "Select..." ) );

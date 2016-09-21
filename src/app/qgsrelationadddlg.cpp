@@ -49,20 +49,20 @@ void QgsRelationAddDlg::addLayers( const QList< QgsVectorLayer* >& layers )
 
 QString QgsRelationAddDlg::referencingLayerId()
 {
-  return mCbxReferencingLayer->itemData( mCbxReferencingLayer->currentIndex() ).toString();
+  return mCbxReferencingLayer->currentData().toString();
 }
 
 QString QgsRelationAddDlg::referencedLayerId()
 {
-  return mCbxReferencedLayer->itemData( mCbxReferencedLayer->currentIndex() ).toString();
+  return mCbxReferencedLayer->currentData().toString();
 }
 
 QList< QPair< QString, QString > > QgsRelationAddDlg::references()
 {
   QList< QPair< QString, QString > > references;
 
-  QString referencingField = mCbxReferencingField->itemData( mCbxReferencingField->currentIndex() ).toString();
-  QString referencedField = mCbxReferencedField->itemData( mCbxReferencedField->currentIndex() ).toString();
+  QString referencingField = mCbxReferencingField->currentData().toString();
+  QString referencedField = mCbxReferencedField->currentData().toString();
 
   references.append( QPair<QString, QString> ( referencingField, referencedField ) );
 

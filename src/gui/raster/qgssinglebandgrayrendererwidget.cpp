@@ -90,7 +90,7 @@ QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
   {
     return nullptr;
   }
-  int band = mGrayBandComboBox->itemData( mGrayBandComboBox->currentIndex() ).toInt();
+  int band = mGrayBandComboBox->currentData().toInt();
 
   QgsContrastEnhancement* e = new QgsContrastEnhancement(( Qgis::DataType )(
         provider->dataType( band ) ) );
@@ -103,7 +103,7 @@ QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
   QgsSingleBandGrayRenderer* renderer = new QgsSingleBandGrayRenderer( provider, band );
   renderer->setContrastEnhancement( e );
 
-  renderer->setGradient(( QgsSingleBandGrayRenderer::Gradient ) mGradientComboBox->itemData( mGradientComboBox->currentIndex() ).toInt() );
+  renderer->setGradient(( QgsSingleBandGrayRenderer::Gradient ) mGradientComboBox->currentData().toInt() );
 
   return renderer;
 }

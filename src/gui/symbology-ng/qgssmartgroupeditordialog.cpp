@@ -49,7 +49,7 @@ void QgsSmartGroupCondition::destruct()
 
 QString QgsSmartGroupCondition::constraint()
 {
-  return mCondCombo->itemData( mCondCombo->currentIndex() ).toString();
+  return mCondCombo->currentData().toString();
 }
 
 QString QgsSmartGroupCondition::parameter()
@@ -153,7 +153,7 @@ QgsSmartConditionMap QgsSmartGroupEditorDialog::conditionMap()
 
 QString QgsSmartGroupEditorDialog::conditionOperator()
 {
-  return mAndOrCombo->itemData( mAndOrCombo->currentIndex() ).toString();
+  return mAndOrCombo->currentData().toString();
 }
 
 void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap& map )
