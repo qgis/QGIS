@@ -19,9 +19,11 @@
 #include "qgsspatialiteprovider.h"
 #include "qgssqliteexpressioncompiler.h"
 
-#include "qgsgeometry.h"
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
+#include <qgsgeometry.h>
+#include <qgslogger.h>
+#include <qgsmessagelog.h>
+#include <qgsjsonutils.h>
+
 #include <QSettings>
 
 QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
@@ -499,14 +501,16 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
       {
         if ( ic <= mRequest.subsetOfAttributes().size() )
         {
-          int attrIndex = mRequest.subsetOfAttributes()[ic-1];
-          feature.setAttribute( attrIndex, getFeatureAttribute( stmt, ic, mSource->mFields.at( attrIndex ).type() ) );
+          const int attrIndex = mRequest.subsetOfAttributes()[ic-1];
+          const QgsField field = mSource->mFields.at( attrIndex );
+          feature.setAttribute( attrIndex, getFeatureAttribute( stmt, ic, field.type(), field.subType() ) );
         }
       }
       else
       {
-        int attrIndex = ic - 1;
-        feature.setAttribute( attrIndex, getFeatureAttribute( stmt, ic, mSource->mFields.at( attrIndex ).type() ) );
+        const int attrIndex = ic - 1;
+        const QgsField field = mSource->mFields.at( attrIndex );
+        feature.setAttribute( attrIndex, getFeatureAttribute( stmt, ic, field.type(), field.subType() ) );
       }
     }
   }
@@ -514,7 +518,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
   return true;
 }
 
-QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt* stmt, int ic, QVariant::Type type )
+QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt* stmt, int ic, QVariant::Type type, QVariant::Type subType )
 {
   if ( sqlite3_column_type( stmt, ic ) == SQLITE_INTEGER )
   {
@@ -539,8 +543,14 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt* stmt, 
   if ( sqlite3_column_type( stmt, ic ) == SQLITE_TEXT )
   {
     // TEXT value
-    const char *txt = ( const char * ) sqlite3_column_text( stmt, ic );
-    return QString::fromUtf8( txt );
+    const QString txt = QString::fromUtf8(( const char * ) sqlite3_column_text( stmt, ic ) );
+    if ( type == QVariant::List || type == QVariant::StringList )
+    { // assume arrays are stored as JSON
+      QVariant result = QVariant( QgsJSONUtils::parseArray( txt, subType ) );
+      result.convert( type );
+      return result;
+    }
+    return txt;
   }
 
   // assuming NULL
