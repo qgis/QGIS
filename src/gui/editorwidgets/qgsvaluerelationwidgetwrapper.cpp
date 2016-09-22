@@ -16,7 +16,7 @@
 #include "qgsvaluerelationwidgetwrapper.h"
 
 #include "qgis.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvaluerelationwidgetfactory.h"
 #include "qgsvectorlayer.h"
@@ -197,8 +197,8 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
   if ( !layer )
     return cache;
 
-  int ki = layer->fieldNameIndex( config.value( "Key" ).toString() );
-  int vi = layer->fieldNameIndex( config.value( "Value" ).toString() );
+  int ki = layer->fields().lookupField( config.value( "Key" ).toString() );
+  int vi = layer->fields().lookupField( config.value( "Value" ).toString() );
 
   QgsFeatureRequest request;
 

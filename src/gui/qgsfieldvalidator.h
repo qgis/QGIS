@@ -23,7 +23,7 @@
 #include <QValidator>
 #include <QVariant>
 #include <QSettings>
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 /** \ingroup gui
  * \class QgsFieldValidator

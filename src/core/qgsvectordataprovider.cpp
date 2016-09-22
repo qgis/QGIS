@@ -26,7 +26,7 @@
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryfactory.h"
@@ -259,7 +259,7 @@ QString QgsVectorDataProvider::capabilitiesString() const
 
 int QgsVectorDataProvider::fieldNameIndex( const QString& fieldName ) const
 {
-  return fields().fieldNameIndex( fieldName );
+  return fields().lookupField( fieldName );
 }
 
 QMap<QString, int> QgsVectorDataProvider::fieldNameMap() const

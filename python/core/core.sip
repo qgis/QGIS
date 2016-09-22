@@ -55,6 +55,7 @@
 %Include qgsfeaturerequest.sip
 %Include qgsfeedback.sip
 %Include qgsfield.sip
+%Include qgsfields.sip
 %Include qgsgeometrysimplifier.sip
 %Include qgsgeometryvalidator.sip
 %Include qgsgml.sip

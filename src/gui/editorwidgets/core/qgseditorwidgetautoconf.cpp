@@ -31,7 +31,7 @@ class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
       const QMap<QString, QgsEditorWidgetFactory*> factories = QgsEditorWidgetRegistry::instance()->factories();
       for ( QMap<QString, QgsEditorWidgetFactory*>::const_iterator i = factories.begin(); i != factories.end(); ++i )
       {
-        const int index = vl->fieldNameIndex( fieldName );
+        const int index = vl->fields().lookupField( fieldName );
         if ( index >= 0 )
         {
           const int score = i.value()->fieldScore( vl, index );

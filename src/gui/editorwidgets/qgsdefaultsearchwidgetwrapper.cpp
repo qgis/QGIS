@@ -15,7 +15,7 @@
 
 #include "qgsdefaultsearchwidgetwrapper.h"
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfieldvalidator.h"
 #include "qgsexpression.h"
 #include <QSettings>

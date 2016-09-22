@@ -681,7 +681,7 @@ QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer* vlayer, const 
 
   QgsEditorWidgetFactory* factory = QgsEditorWidgetRegistry::instance()->factory( setup.type() );
 
-  int idx = vlayer->fieldNameIndex( fieldName );
+  int idx = vlayer->fields().lookupField( fieldName );
 
   if ( !factory )
     return value.toString();

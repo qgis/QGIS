@@ -17,7 +17,7 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
@@ -2866,10 +2866,10 @@ void QgsVectorFileWriter::addRendererAttributes( QgsVectorLayer* vl, QgsAttribut
     QList<QString> rendererAttributes = renderer->usedAttributes();
     for ( int i = 0; i < rendererAttributes.size(); ++i )
     {
-      int index = vl->fieldNameIndex( rendererAttributes.at( i ) );
+      int index = vl->fields().lookupField( rendererAttributes.at( i ) );
       if ( index != -1 )
       {
-        attList.push_back( vl->fieldNameIndex( rendererAttributes.at( i ) ) );
+        attList.push_back( vl->fields().lookupField( rendererAttributes.at( i ) ) );
       }
     }
   }

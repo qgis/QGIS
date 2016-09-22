@@ -782,7 +782,7 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
     if ( exp.isField() )
     {
       displayField = static_cast<const QgsExpression::NodeColumnRef*>( exp.rootNode() )->name();
-      displayFieldIdx = vLayer->fieldNameIndex( displayField );
+      displayFieldIdx = vLayer->fields().lookupField( displayField );
     }
 
     //attributes

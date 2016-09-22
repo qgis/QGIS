@@ -18,7 +18,7 @@
 #include <expat.h>
 #include "qgis.h"
 #include "qgserror.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include <list>
 #include <set>
 #include <stack>

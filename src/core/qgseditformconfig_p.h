@@ -18,7 +18,7 @@
 
 #include <QMap>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgseditformconfig.h"
 
 /// @cond PRIVATE

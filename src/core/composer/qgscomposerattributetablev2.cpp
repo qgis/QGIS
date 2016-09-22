@@ -330,7 +330,7 @@ void QgsComposerAttributeTableV2::setDisplayedFields( const QStringList& fields,
   {
     Q_FOREACH ( const QString& field, fields )
     {
-      int attrIdx = layerFields.fieldNameIndex( field );
+      int attrIdx = layerFields.lookupField( field );
       if ( attrIdx < 0 )
         continue;
 
@@ -373,7 +373,7 @@ void QgsComposerAttributeTableV2::restoreFieldAliasMap( const QMap<int, QString>
   QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
-    int attrIdx = source->fieldNameIndex(( *columnIt )->attribute() );
+    int attrIdx = source->fields().lookupField(( *columnIt )->attribute() );
     if ( map.contains( attrIdx ) )
     {
       ( *columnIt )->setHeading( map.value( attrIdx ) );
@@ -499,7 +499,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
     QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();
     for ( ; columnIt != mColumns.constEnd(); ++columnIt )
     {
-      int idx = layer->fieldNameIndex(( *columnIt )->attribute() );
+      int idx = layer->fields().lookupField(( *columnIt )->attribute() );
       if ( idx != -1 )
       {
         currentRow << replaceWrapChar( f.attributes().at( idx ) );

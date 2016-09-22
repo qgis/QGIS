@@ -1219,7 +1219,7 @@ void QgsAttributeForm::init()
     int row = 0;
     Q_FOREACH ( const QgsField& field, mLayer->fields().toList() )
     {
-      int idx = mLayer->fieldNameIndex( field.name() );
+      int idx = mLayer->fields().lookupField( field.name() );
       if ( idx < 0 )
         continue;
 
@@ -1512,7 +1512,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       if ( !fieldDef )
         break;
 
-      int fldIdx = vl->fieldNameIndex( fieldDef->name() );
+      int fldIdx = vl->fields().lookupField( fieldDef->name() );
       if ( fldIdx < vl->fields().count() && fldIdx >= 0 )
       {
         const QgsEditorWidgetSetup widgetSetup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, fieldDef->name() );
@@ -1717,7 +1717,7 @@ void QgsAttributeForm::createWrappers()
       {
         if ( field.name() == myWidget->objectName() )
         {
-          int idx = mLayer->fieldNameIndex( field.name() );
+          int idx = mLayer->fields().lookupField( field.name() );
 
           QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( mLayer, idx, myWidget, this, mContext );
           addWidgetWrapper( eww );

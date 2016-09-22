@@ -383,7 +383,7 @@ void QgsGraduatedSymbolRenderer::startRender( QgsRenderContext& context, const Q
   mCounting = context.rendererScale() == 0.0;
 
   // find out classification attribute index from name
-  mAttrNum = fields.fieldNameIndex( mAttrName );
+  mAttrNum = fields.lookupField( mAttrName );
 
   if ( mAttrNum == -1 )
   {
@@ -804,7 +804,7 @@ QgsGraduatedSymbolRenderer* QgsGraduatedSymbolRenderer::createRenderer(
   return r;
 }
 
-void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses )
+void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer* vlayer, Mode mode, int nclasses )
 {
   if ( mAttrName.isEmpty() )
     return;
@@ -822,7 +822,7 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
   double minimum;
   double maximum;
 
-  int attrNum = vlayer->fieldNameIndex( mAttrName );
+  int attrNum = vlayer->fields().lookupField( mAttrName );
 
   bool ok;
   if ( attrNum == -1 )

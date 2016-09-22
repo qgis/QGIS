@@ -46,7 +46,7 @@
 #include "qgsexpressionselectiondialog.h"
 #include "qgsfeaturelistmodel.h"
 #include "qgsrubberband.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsfieldproxymodel.h"
 
@@ -387,7 +387,7 @@ void QgsAttributeTableDialog::columnBoxInit()
 
   Q_FOREACH ( const QgsField& field, fields )
   {
-    int idx = mLayer->fieldNameIndex( field.name() );
+    int idx = mLayer->fields().lookupField( field.name() );
     if ( idx < 0 )
       continue;
 
@@ -524,7 +524,7 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   }
   QString fieldName = mFilterButton->defaultAction()->data().toString();
   // get the search widget
-  int fldIdx = mLayer->fieldNameIndex( fieldName );
+  int fldIdx = mLayer->fields().lookupField( fieldName );
   if ( fldIdx < 0 )
     return;
   const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, fieldName );

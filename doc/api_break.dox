@@ -746,6 +746,7 @@ None will need to be modified, as the method will return an empty geometry if th
 
 <ul>
 <li>All const methods which return a field from QgsFields now return a QgsField value, not a reference.</li>
+<li>fieldNameIndex has been renamed to lookupField. See the API documentation for details.</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsFieldExpressionWidget QgsFieldExpressionWidget
@@ -1414,6 +1415,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.</li>
 <li>Deleted attributeEditorElementFromDomElement
 <li>editFormConfig() returns a copy instead of direct access (Use setEditFormConfig to update)
 <li>Removed valueRelation(), replaced with QgsEditFormConfig::editorWidgetConfig
+<li>Removed fieldNameIndex(), use QgsFields::lookupField() or QgsFields::indexFromName() instead
 </ul>
 
 \subsection qgis_api_break_3_0_QgsVectorLayerEditBuffer QgsVectorLayerEditBuffer

@@ -24,7 +24,7 @@ email                : sherman at mrcc.com
 #include <QSet>
 #include <QExplicitlySharedDataPointer>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 class QgsGeometry;
 class QgsRectangle;

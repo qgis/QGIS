@@ -22,7 +22,7 @@
 #include <QSet>
 #include <QList>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfeature.h"
 
 class QgsGeometry;

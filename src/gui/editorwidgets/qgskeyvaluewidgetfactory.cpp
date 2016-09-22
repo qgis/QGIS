@@ -16,7 +16,7 @@
 #include "qgskeyvaluewidgetfactory.h"
 #include "qgskeyvaluewidgetwrapper.h"
 #include "qgsdummyconfigdlg.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsvectorlayer.h"
 
 #include <QVariant>

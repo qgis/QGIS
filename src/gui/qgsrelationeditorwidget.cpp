@@ -380,7 +380,7 @@ void QgsRelationEditorWidget::linkFeature()
       QMap<int, QVariant> keys;
       Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mRelation.fieldPairs() )
       {
-        int idx = mRelation.referencingLayer()->fieldNameIndex( fieldPair.referencingField() );
+        int idx = mRelation.referencingLayer()->fields().lookupField( fieldPair.referencingField() );
         QVariant val = mFeature.attribute( fieldPair.referencedField() );
         keys.insert( idx, val );
       }
@@ -455,7 +455,7 @@ void QgsRelationEditorWidget::unlinkFeature()
     QMap<int, QgsField> keyFields;
     Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mRelation.fieldPairs() )
     {
-      int idx = mRelation.referencingLayer()->fieldNameIndex( fieldPair.referencingField() );
+      int idx = mRelation.referencingLayer()->fields().lookupField( fieldPair.referencingField() );
       if ( idx < 0 )
       {
         QgsDebugMsg( QString( "referencing field %1 not found" ).arg( fieldPair.referencingField() ) );

@@ -7328,7 +7328,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
   QgsAttributeList pkAttrList = pasteVectorLayer->pkAttributeList();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    int dst = pasteVectorLayer->fieldNameIndex( fields.at( idx ).name() );
+    int dst = pasteVectorLayer->fields().lookupField( fields.at( idx ).name() );
     if ( dst < 0 )
       continue;
 

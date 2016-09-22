@@ -20,7 +20,7 @@
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
 #include "qgssymbol.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfeaturerequest.h"
 
 #include <QList>

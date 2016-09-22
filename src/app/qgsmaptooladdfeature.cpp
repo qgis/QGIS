@@ -18,7 +18,7 @@
 #include "qgsattributedialog.h"
 #include "qgscsexception.h"
 #include "qgscurvepolygon.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgslinestring.h"
 #include "qgsmultipoint.h"

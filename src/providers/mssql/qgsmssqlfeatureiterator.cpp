@@ -81,12 +81,10 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
   // ensure that all attributes required for expression filter are being fetched
   if ( subsetOfAttributes && request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    Q_FOREACH ( const QString& field, request.filterExpression()->referencedColumns() )
-    {
-      int attrIdx = mSource->mFields.fieldNameIndex( field );
-      if ( !attrs.contains( attrIdx ) )
-        attrs << attrIdx;
-    }
+    //ensure that all fields required for filter expressions are prepared
+    QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
+    attributeIndexes += attrs.toSet();
+    attrs = attributeIndexes.toList();
   }
 
   Q_FOREACH ( int i, attrs )

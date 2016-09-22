@@ -16,7 +16,7 @@
 #include "qgslistwidgetfactory.h"
 #include "qgslistwidgetwrapper.h"
 #include "qgsdummyconfigdlg.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsvectorlayer.h"
 #include "qgseditorwidgetregistry.h"
 

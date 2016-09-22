@@ -31,7 +31,7 @@
 #include <QRectF>
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgspoint.h"
 #include "qgsmapunitscale.h"
 #include "qgsstringutils.h"

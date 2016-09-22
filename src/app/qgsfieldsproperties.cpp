@@ -855,7 +855,7 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
   {
     case DesignerTreeItemData::Field:
     {
-      int idx = mLayer->fieldNameIndex( itemData.name() );
+      int idx = mLayer->fields().lookupField( itemData.name() );
       widgetDef = new QgsAttributeEditorField( itemData.name(), idx, parent );
       break;
     }

@@ -15,7 +15,7 @@
 
 #include "qgstexteditwrapper.h"
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfieldvalidator.h"
 #include "qgsfilterlineedit.h"
 

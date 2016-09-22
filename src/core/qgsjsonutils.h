@@ -19,7 +19,7 @@
 #include "qgsfeature.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 class QTextCodec;
 class QgsVectorLayer;

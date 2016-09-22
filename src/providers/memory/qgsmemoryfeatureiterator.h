@@ -17,7 +17,7 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgsexpressioncontext.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 
 class QgsMemoryProvider;

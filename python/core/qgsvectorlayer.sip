@@ -1190,9 +1190,6 @@ class QgsVectorLayer : QgsMapLayer
     /** Destroy active command and reverts all changes in it */
     void destroyEditCommand();
 
-    /** Returns the index of a field name or -1 if the field does not exist */
-    int fieldNameIndex( const QString& fieldName ) const;
-
     /** Editing vertex markers */
     enum VertexMarkerType
     {

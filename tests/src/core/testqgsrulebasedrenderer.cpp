@@ -67,7 +67,7 @@ class TestQgsRuleBasedRenderer: public QObject
     {
       // prepare features
       QgsVectorLayer* layer = new QgsVectorLayer( "point?field=fld:int", "x", "memory" );
-      int idx = layer->fieldNameIndex( "fld" );
+      int idx = layer->fields().indexFromName( "fld" );
       QVERIFY( idx != -1 );
       QgsFeature f1;
       f1.initAttributes( 1 );

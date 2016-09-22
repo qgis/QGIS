@@ -17,7 +17,7 @@
 
 #include "qgslogger.h"
 #include "qgsexpression.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"

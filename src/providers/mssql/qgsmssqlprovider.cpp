@@ -37,7 +37,7 @@
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
@@ -1833,7 +1833,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QStr
       QgsField fld = fields.at( i );
       if ( oldToNewAttrIdxMap && fld.name() == primaryKey )
       {
-        oldToNewAttrIdxMap->insert( fields.fieldNameIndex( fld.name() ), 0 );
+        oldToNewAttrIdxMap->insert( fields.lookupField( fld.name() ), 0 );
         continue;
       }
 
@@ -1854,7 +1854,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QStr
 
       flist.append( fld );
       if ( oldToNewAttrIdxMap )
-        oldToNewAttrIdxMap->insert( fields.fieldNameIndex( fld.name() ), offset++ );
+        oldToNewAttrIdxMap->insert( fields.lookupField( fld.name() ), offset++ );
     }
 
     if ( !provider->addAttributes( flist ) )

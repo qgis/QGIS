@@ -138,7 +138,7 @@ void QgsDualView::columnBoxInit()
 
   Q_FOREACH ( const QgsField& field, fields )
   {
-    int fieldIndex = mLayerCache->layer()->fieldNameIndex( field.name() );
+    int fieldIndex = mLayerCache->layer()->fields().lookupField( field.name() );
     if ( fieldIndex == -1 )
       continue;
 

@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include "qgsfeaturerequest.h"
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 
 #include <QStringList>
@@ -208,7 +208,7 @@ QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QStringList& 
 
   Q_FOREACH ( const QString& attrName, attrNames )
   {
-    int attrNum = fields.fieldNameIndex( attrName );
+    int attrNum = fields.lookupField( attrName );
     if ( attrNum != -1 && !mAttrs.contains( attrNum ) )
       mAttrs.append( attrNum );
   }

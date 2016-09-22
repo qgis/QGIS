@@ -22,7 +22,7 @@
 #include <QList>
 #include <QDomNode>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsexpression.h"
 
 /** \ingroup core

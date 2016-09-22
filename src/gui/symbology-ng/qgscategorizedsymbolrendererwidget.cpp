@@ -645,7 +645,7 @@ QgsColorRamp* QgsCategorizedSymbolRendererWidget::getColorRamp()
 void QgsCategorizedSymbolRendererWidget::addCategories()
 {
   QString attrName = mExpressionWidget->currentField();
-  int idx = mLayer->fieldNameIndex( attrName );
+  int idx = mLayer->fields().lookupField( attrName );
   QList<QVariant> unique_vals;
   if ( idx == -1 )
   {

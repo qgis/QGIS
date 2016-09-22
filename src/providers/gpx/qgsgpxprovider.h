@@ -22,7 +22,7 @@
 
 #include "qgsvectordataprovider.h"
 #include "gpsdata.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 class QgsFeature;
 class QgsField;

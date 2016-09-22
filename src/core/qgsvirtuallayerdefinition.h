@@ -17,8 +17,8 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUALLAYERDEFINITION_H
 #define QGSVIRTUALLAYERDEFINITION_H
 
-#include <qgsfield.h>
-#include <qgis.h>
+#include "qgsfields.h"
+#include "qgis.h"
 
 /** \ingroup core
  * Class to manipulate the definition of a virtual layer
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     void setGeometrySrid( long srid ) { mGeometrySrid = srid; }
 
     //! Get field definitions
-    const QgsFields& fields() const { return mFields; }
+    QgsFields fields() const { return mFields; }
     //! Set field definitions
     void setFields( const QgsFields& fields ) { mFields = fields; }
 

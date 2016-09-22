@@ -520,7 +520,7 @@ void TestVectorLayerJoinBuffer::testJoinLayerDefinitionFile()
   QCOMPARE( vLayer->vectorJoins().count(), 1 );
 
   // Check for joined field
-  QVERIFY( vLayer->fieldNameIndex( joinInfo.prefix + "value" ) >= 0 );
+  QVERIFY( vLayer->fields().lookupField( joinInfo.prefix + "value" ) >= 0 );
 }
 
 void TestVectorLayerJoinBuffer::testCacheUpdate_data()

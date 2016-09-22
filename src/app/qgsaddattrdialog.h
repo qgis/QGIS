@@ -20,7 +20,7 @@
 
 #include "ui_qgsaddattrdialogbase.h"
 #include "qgisgui.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 class QgsVectorLayer;
 

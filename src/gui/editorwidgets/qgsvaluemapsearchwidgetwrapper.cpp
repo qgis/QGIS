@@ -17,7 +17,7 @@
 #include "qgstexteditconfigdlg.h"
 #include "qgsvaluemapconfigdlg.h"
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfieldvalidator.h"
 
 #include <QSettings>

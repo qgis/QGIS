@@ -3086,7 +3086,7 @@ static QVariant fcnGetFeature( const QVariantList& values, const QgsExpressionCo
   }
 
   QString attribute = getStringValue( values.at( 1 ), parent );
-  int attributeId = vl->fieldNameIndex( attribute );
+  int attributeId = vl->fields().lookupField( attribute );
   if ( attributeId == -1 )
   {
     return QVariant();
@@ -3822,6 +3822,24 @@ QStringList QgsExpression::referencedColumns() const
   }
 
   return columns;
+}
+
+QSet<int> QgsExpression::referencedAttributeIndexes( const QgsFields& fields ) const
+{
+  QStringList referencedFields = d->mRootNode->referencedColumns();
+  QSet<int> referencedIndexes;
+
+  Q_FOREACH ( const QString& fieldName, referencedFields )
+  {
+    if ( fieldName == QgsFeatureRequest::AllAttributes )
+    {
+      referencedIndexes = fields.allAttributesList().toSet();
+      break;
+    }
+    referencedIndexes << fields.lookupField( fieldName );
+  }
+
+  return referencedIndexes;
 }
 
 bool QgsExpression::needsGeometry() const
@@ -4807,7 +4825,7 @@ QVariant QgsExpression::NodeColumnRef::eval( QgsExpression *parent, const QgsExp
     if ( context && context->hasVariable( QgsExpressionContext::EXPR_FIELDS ) )
     {
       QgsFields fields = qvariant_cast<QgsFields>( context->variable( QgsExpressionContext::EXPR_FIELDS ) );
-      index = fields.fieldNameIndex( mName );
+      index = fields.lookupField( mName );
     }
   }
 
@@ -4829,7 +4847,7 @@ bool QgsExpression::NodeColumnRef::prepare( QgsExpression *parent, const QgsExpr
 
   QgsFields fields = qvariant_cast<QgsFields>( context->variable( QgsExpressionContext::EXPR_FIELDS ) );
 
-  mIndex = fields.fieldNameIndex( mName );
+  mIndex = fields.lookupField( mName );
   if ( mIndex >= 0 )
   {
     return true;

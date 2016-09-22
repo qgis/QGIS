@@ -16,7 +16,7 @@
 #ifndef QGSMULTIEDITTOOLBUTTON_H
 #define QGSMULTIEDITTOOLBUTTON_H
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include <QToolButton>
 
 /** \ingroup gui

@@ -91,7 +91,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       {
         Q_FOREACH ( const QString& field, request.filterExpression()->referencedColumns() )
         {
-          int attrIdx = mFields.fieldNameIndex( field );
+          int attrIdx = mFields.lookupField( field );
           if ( !mAttributes.contains( attrIdx ) )
             mAttributes << attrIdx;
         }

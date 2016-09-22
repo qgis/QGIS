@@ -25,7 +25,7 @@
 #include <qlineedit.h>
 
 // Qgis includes
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayercombobox.h"
 

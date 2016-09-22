@@ -15,7 +15,7 @@
 
 #include "qgstexteditsearchwidgetwrapper.h"
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsvectorlayer.h"
 
 QgsTextEditSearchWidgetWrapper::QgsTextEditSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )

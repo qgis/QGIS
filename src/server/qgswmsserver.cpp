@@ -20,7 +20,7 @@
 #include "qgscapabilitiescache.h"
 #include "qgscsexception.h"
 #include "qgsdxfexport.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgslayertree.h"

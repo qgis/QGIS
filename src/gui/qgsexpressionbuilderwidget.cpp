@@ -330,7 +330,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString& fieldName, int 
 
   // TODO We should thread this so that we don't hold the user up if the layer is massive.
 
-  int fieldIndex = mLayer->fieldNameIndex( fieldName );
+  int fieldIndex = mLayer->fields().lookupField( fieldName );
 
   if ( fieldIndex < 0 )
     return;

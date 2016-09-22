@@ -20,7 +20,7 @@
 #include <QDomNode>
 #include <QPair>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 class QgsVectorLayer;
 class QgsFeatureIterator;

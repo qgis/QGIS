@@ -33,7 +33,7 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgspoint.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsrectangle.h"
 
 #include <QMessageBox>

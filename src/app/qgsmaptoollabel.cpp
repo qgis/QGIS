@@ -162,7 +162,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
     QString labelField = vlayer->customProperty( "labeling/fieldName" ).toString();
     if ( !labelField.isEmpty() )
     {
-      int labelFieldId = vlayer->fieldNameIndex( labelField );
+      int labelFieldId = vlayer->fields().lookupField( labelField );
       QgsFeature f;
       if ( vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mCurrentLabel.pos.featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
       {
@@ -434,7 +434,7 @@ int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::DataDefinedPro
 {
   QString fieldname = dataDefinedColumnName( p, labelSettings );
   if ( !fieldname.isEmpty() )
-    return vlayer->fieldNameIndex( fieldname );
+    return vlayer->fields().lookupField( fieldname );
   return -1;
 }
 
@@ -497,7 +497,7 @@ bool QgsMapToolLabel::layerIsRotatable( QgsVectorLayer* vlayer, int& rotationCol
 bool QgsMapToolLabel::labelIsRotatable( QgsVectorLayer* layer, const QgsPalLayerSettings& settings, int& rotationCol ) const
 {
   QString rColName = dataDefinedColumnName( QgsPalLayerSettings::Rotation, settings );
-  rotationCol = layer->fieldNameIndex( rColName );
+  rotationCol = layer->fields().lookupField( rColName );
   return rotationCol != -1;
 }
 
@@ -606,8 +606,8 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer* vlayer, const QgsPalLayerSe
   QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings );
   QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings );
   //return !xColName.isEmpty() && !yColName.isEmpty();
-  xCol = vlayer->fieldNameIndex( xColName );
-  yCol = vlayer->fieldNameIndex( yColName );
+  xCol = vlayer->fields().lookupField( xColName );
+  yCol = vlayer->fields().lookupField( yColName );
   return ( xCol != -1 && yCol != -1 );
 }
 
@@ -629,7 +629,7 @@ bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer* vlayer, int& showCol ) c
   {
     QString fieldname = dataDefinedColumnName( QgsPalLayerSettings::Show,
                         vlayer->labeling()->settings( vlayer, providerId ) );
-    showCol = vlayer->fieldNameIndex( fieldname );
+    showCol = vlayer->fields().lookupField( fieldname );
     if ( showCol != -1 )
       return true;
   }

@@ -212,14 +212,14 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
 
     QgsLineVectorLayerDirector * director =
       new QgsLineVectorLayerDirector( layer,
-                                      layer->fields().fieldNameIndex( mSettings->mDirection ),
+                                      layer->fields().lookupField( mSettings->mDirection ),
                                       mSettings->mFirstPointToLastPointDirectionVal,
                                       mSettings->mLastPointToFirstPointDirectionVal,
                                       mSettings->mBothDirectionVal,
                                       mSettings->mDefaultDirection
                                     );
     director->addProperter( new QgsDistanceArcProperter() );
-    director->addProperter( new RgSpeedProperter( layer->fields().fieldNameIndex( mSettings->mSpeed ),
+    director->addProperter( new RgSpeedProperter( layer->fields().lookupField( mSettings->mSpeed ),
                             mSettings->mDefaultSpeed, speedUnit.multipler() ) );
     return director;
   }

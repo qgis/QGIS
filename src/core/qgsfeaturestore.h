@@ -17,7 +17,7 @@
 
 #include "qgis.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
 #include <QList>
 #include <QMetaType>

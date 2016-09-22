@@ -98,7 +98,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, const QString& provid
     QString labelFieldName = vlayer->customProperty( "labeling/fieldName" ).toString();
     if ( !labelFieldName.isEmpty() )
     {
-      mCurLabelField = vlayer->fieldNameIndex( labelFieldName );
+      mCurLabelField = vlayer->fields().lookupField( labelFieldName );
       if ( mCurLabelField >= 0 )
       {
         mLabelTextLineEdit->setText( attributeValues.at( mCurLabelField ).toString() );
@@ -373,7 +373,7 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer* vlayer )
       continue; // can only modify attributes with an active data definition of a mapped field
     }
 
-    int ddIndx = vlayer->fieldNameIndex( ddField );
+    int ddIndx = vlayer->fields().lookupField( ddField );
     if ( ddIndx == -1 )
     {
       continue;

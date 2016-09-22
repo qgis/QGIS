@@ -20,7 +20,7 @@
 #include <QDateTime>
 #include <QObject>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 #include "qgsgrass.h"
 

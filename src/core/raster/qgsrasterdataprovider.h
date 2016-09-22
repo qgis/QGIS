@@ -31,7 +31,7 @@
 
 #include "qgscolorrampshader.h"
 #include "qgsdataprovider.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsraster.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterpyramid.h"
