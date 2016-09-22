@@ -114,7 +114,7 @@ QString QgsRendererCategoryV2::dump() const
   return QString( "%1::%2::%3:%4\n" ).arg( mValue.toString(), mLabel, mSymbol->dump() ).arg( mRender );
 }
 
-void QgsRendererCategoryV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+void QgsRendererCategoryV2::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
 {
   if ( !mSymbol.data() || props.value( "attribute", "" ).isEmpty() )
     return;
@@ -140,6 +140,9 @@ void QgsRendererCategoryV2::toSld( QDomDocument &doc, QDomElement &element, QgsS
                        .arg( attrName.replace( '\"', "\"\"" ),
                              mValue.toString().replace( '\'', "''" ) );
   QgsSymbolLayerV2Utils::createFunctionElement( doc, ruleElem, filterFunc );
+
+  // add the mix/max scale denoms if we got any from the callers
+  QgsSymbolLayerV2Utils::applyScaleDependency( doc, ruleElem, props );
 
   mSymbol->toSld( doc, ruleElem, props );
 }
@@ -519,17 +522,22 @@ QgsCategorizedSymbolRendererV2* QgsCategorizedSymbolRendererV2::clone() const
 
 void QgsCategorizedSymbolRendererV2::toSld( QDomDocument &doc, QDomElement &element ) const
 {
-  QgsStringMap props;
-  props[ "attribute" ] = mAttrName;
+  toSld( doc, element, QgsStringMap() );
+}
+
+void QgsCategorizedSymbolRendererV2::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
+{
+  QgsStringMap locProps( props );
+  locProps[ "attribute" ] = mAttrName;
   if ( mRotation.data() )
-    props[ "angle" ] = mRotation->expression();
+    locProps[ "angle" ] = mRotation->expression();
   if ( mSizeScale.data() )
-    props[ "scale" ] = mSizeScale->expression();
+    locProps[ "scale" ] = mSizeScale->expression();
 
   // create a Rule for each range
   for ( QgsCategoryList::const_iterator it = mCategories.constBegin(); it != mCategories.constEnd(); ++it )
   {
-    QgsStringMap catProps( props );
+    QgsStringMap catProps( locProps );
     it->toSld( doc, element, catProps );
   }
 }

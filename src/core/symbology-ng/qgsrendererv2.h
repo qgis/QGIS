@@ -238,7 +238,13 @@ class CORE_EXPORT QgsFeatureRendererV2
     Q_DECL_DEPRECATED virtual QDomElement writeSld( QDomDocument& doc, const QgsVectorLayer &layer ) const;
     //! create the SLD UserStyle element following the SLD v1.1 specs with the given name
     //! @note added in 2.8
-    virtual QDomElement writeSld( QDomDocument& doc, const QString& styleName ) const;
+    virtual QDomElement writeSld( QDomDocument& doc, const QString& styleName ) const
+    {
+      return writeSld( doc, styleName, QgsStringMap() );
+    }
+    //! create the SLD UserStyle element following the SLD v1.1 specs with the given name
+    //! @note added in 2.14
+    virtual QDomElement writeSld( QDomDocument& doc, const QString& styleName, const QgsStringMap& props ) const;
 
     /** Create a new renderer according to the information contained in
      * the UserStyle element of a SLD style document
@@ -254,7 +260,15 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const
-    { element.appendChild( doc.createComment( QString( "FeatureRendererV2 %1 not implemented yet" ).arg( type() ) ) ); }
+    {
+      toSld( doc, element, QgsStringMap() );
+    }
+    //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
+    virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const
+    {
+      Q_UNUSED( props );
+      element.appendChild( doc.createComment( QString( "FeatureRendererV2 %1 not implemented yet" ).arg( type() ) ) );
+    }
 
     //! return a list of symbology items for the legend
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );

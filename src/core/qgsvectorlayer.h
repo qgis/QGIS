@@ -935,7 +935,33 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool writeStyle( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const override;
 
+
+    /**
+     * Writes the symbology of the layer into the document provided in SLD 1.1 format
+     * @param node the node that will have the style element added to it.
+     * @param doc the document that will have the QDomNode added.
+     * @param errorMessage reference to string that will be updated with any error messages
+     * @return true in case of success
+     */
     bool writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const;
+
+    /**
+     * Writes the symbology of the layer into the document provided in SLD 1.1 format
+     * @param node the node that will have the style element added to it.
+     * @param doc the document that will have the QDomNode added.
+     * @param errorMessage reference to string that will be updated with any error messages
+     * @param props a open ended set of properties that can drive/inform the SLD encoding
+     * @return true in case of success
+     */
+    bool writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage, const QgsStringMap& props ) const;
+
+    /**
+     * Read the symbology of the layer according to the information contained in
+     * the UserStyle element of a SLD style document
+     * @param node the node that have the style element in it.
+     * @param errorMessage reference to string that will be updated with any error messages
+     * @return true in case of success
+     */
     bool readSld( const QDomNode& node, QString& errorMessage ) override;
 
     /**

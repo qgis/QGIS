@@ -10,56 +10,56 @@ class QgsSymbolLayerV2
   {
     case QgsSymbolV2::Marker:
       if (dynamic_cast<QgsEllipseSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsEllipseSymbolLayerV2;
+    sipType = sipType_QgsEllipseSymbolLayerV2;
       else if (dynamic_cast<QgsFontMarkerSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsFontMarkerSymbolLayerV2;
+    sipType = sipType_QgsFontMarkerSymbolLayerV2;
       else if (dynamic_cast<QgsSimpleMarkerSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsSimpleMarkerSymbolLayerV2;
+    sipType = sipType_QgsSimpleMarkerSymbolLayerV2;
       else if (dynamic_cast<QgsFilledMarkerSymbolLayer*>(sipCpp) != NULL)
-	sipType = sipType_QgsFilledMarkerSymbolLayer;
+    sipType = sipType_QgsFilledMarkerSymbolLayer;
       else if (dynamic_cast<QgsSvgMarkerSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsSvgMarkerSymbolLayerV2;
+    sipType = sipType_QgsSvgMarkerSymbolLayerV2;
       else if (dynamic_cast<QgsVectorFieldSymbolLayer*>(sipCpp) != NULL)
-	sipType = sipType_QgsVectorFieldSymbolLayer;
+    sipType = sipType_QgsVectorFieldSymbolLayer;
       else
-	sipType = sipType_QgsMarkerSymbolLayerV2;
+    sipType = sipType_QgsMarkerSymbolLayerV2;
       break;
 
     case QgsSymbolV2::Line:
       if (dynamic_cast<QgsMarkerLineSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsMarkerLineSymbolLayerV2;
+    sipType = sipType_QgsMarkerLineSymbolLayerV2;
       else if (dynamic_cast<QgsSimpleLineSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsSimpleLineSymbolLayerV2;
+    sipType = sipType_QgsSimpleLineSymbolLayerV2;
       else if (dynamic_cast<QgsArrowSymbolLayer*>(sipCpp) != NULL)
-	sipType = sipType_QgsArrowSymbolLayer;
+    sipType = sipType_QgsArrowSymbolLayer;
       else
-	sipType = sipType_QgsLineSymbolLayerV2;
+    sipType = sipType_QgsLineSymbolLayerV2;
       break;
 
     case QgsSymbolV2::Fill:
       if (dynamic_cast<QgsSimpleFillSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsSimpleFillSymbolLayerV2;
+    sipType = sipType_QgsSimpleFillSymbolLayerV2;
       else if (dynamic_cast<QgsImageFillSymbolLayer*>(sipCpp) != NULL)
       {
-	if (dynamic_cast<QgsLinePatternFillSymbolLayer*>(sipCpp) != NULL)
-	  sipType = sipType_QgsLinePatternFillSymbolLayer;
-	else if (dynamic_cast<QgsPointPatternFillSymbolLayer*>(sipCpp) != NULL)
-	  sipType = sipType_QgsPointPatternFillSymbolLayer;
-	else if (dynamic_cast<QgsSVGFillSymbolLayer*>(sipCpp) != NULL)
-	  sipType = sipType_QgsSVGFillSymbolLayer;
-	else if (dynamic_cast<QgsRasterFillSymbolLayer*>(sipCpp) != NULL)
-	  sipType = sipType_QgsRasterFillSymbolLayer;
-	else
-	  sipType = sipType_QgsImageFillSymbolLayer;
+    if (dynamic_cast<QgsLinePatternFillSymbolLayer*>(sipCpp) != NULL)
+      sipType = sipType_QgsLinePatternFillSymbolLayer;
+    else if (dynamic_cast<QgsPointPatternFillSymbolLayer*>(sipCpp) != NULL)
+      sipType = sipType_QgsPointPatternFillSymbolLayer;
+    else if (dynamic_cast<QgsSVGFillSymbolLayer*>(sipCpp) != NULL)
+      sipType = sipType_QgsSVGFillSymbolLayer;
+    else if (dynamic_cast<QgsRasterFillSymbolLayer*>(sipCpp) != NULL)
+      sipType = sipType_QgsRasterFillSymbolLayer;
+    else
+      sipType = sipType_QgsImageFillSymbolLayer;
       }
       else if (dynamic_cast<QgsCentroidFillSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsCentroidFillSymbolLayerV2;
+    sipType = sipType_QgsCentroidFillSymbolLayerV2;
       else if (dynamic_cast<QgsGradientFillSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsGradientFillSymbolLayerV2;
+    sipType = sipType_QgsGradientFillSymbolLayerV2;
       else if (dynamic_cast<QgsShapeburstFillSymbolLayerV2*>(sipCpp) != NULL)
-	sipType = sipType_QgsShapeburstFillSymbolLayerV2;
+    sipType = sipType_QgsShapeburstFillSymbolLayerV2;
       else
-	sipType = sipType_QgsFillSymbolLayerV2;
+    sipType = sipType_QgsFillSymbolLayerV2;
       break;
 
     case QgsSymbolV2::Hybrid:
@@ -111,6 +111,7 @@ class QgsSymbolLayerV2
      */
     virtual QgsSymbolLayerV2* clone() const = 0 /Factory/;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
@@ -527,6 +528,7 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
      */
     VerticalAnchorPoint verticalAnchorPoint() const;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     /** Writes the symbol layer definition as a SLD XML element.

@@ -334,39 +334,22 @@ QDomElement QgsRuleBasedRendererV2::Rule::save( QDomDocument& doc, QgsSymbolV2Ma
   return ruleElem;
 }
 
-void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
+void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const
 {
   // do not convert this rule if there are no symbols
   QgsRenderContext context;
   if ( symbols( context ).isEmpty() )
     return;
 
+  QgsStringMap locProps( props );
   if ( !mFilterExp.isEmpty() )
   {
-    if ( !props.value( "filter", "" ).isEmpty() )
-      props[ "filter" ] += " AND ";
-    props[ "filter" ] += mFilterExp;
+    if ( !locProps.value( "filter", "" ).isEmpty() )
+      locProps[ "filter" ] += " AND ";
+    locProps[ "filter" ] += mFilterExp;
   }
 
-  if ( mScaleMinDenom != 0 )
-  {
-    bool ok;
-    int parentScaleMinDenom = props.value( "scaleMinDenom", "0" ).toInt( &ok );
-    if ( !ok || parentScaleMinDenom <= 0 )
-      props[ "scaleMinDenom" ] = QString::number( mScaleMinDenom );
-    else
-      props[ "scaleMinDenom" ] = QString::number( qMax( parentScaleMinDenom, mScaleMinDenom ) );
-  }
-
-  if ( mScaleMaxDenom != 0 )
-  {
-    bool ok;
-    int parentScaleMaxDenom = props.value( "scaleMaxDenom", "0" ).toInt( &ok );
-    if ( !ok || parentScaleMaxDenom <= 0 )
-      props[ "scaleMaxDenom" ] = QString::number( mScaleMaxDenom );
-    else
-      props[ "scaleMaxDenom" ] = QString::number( qMin( parentScaleMaxDenom, mScaleMaxDenom ) );
-  }
+  QgsSymbolLayerV2Utils::mergeScaleDependencies( mScaleMinDenom, mScaleMaxDenom, locProps );
 
   if ( mSymbol )
   {
@@ -397,32 +380,20 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
       ruleElem.appendChild( descrElem );
     }
 
-    if ( !props.value( "filter", "" ).isEmpty() )
+    if ( !locProps.value( "filter", "" ).isEmpty() )
     {
-      QgsSymbolLayerV2Utils::createFunctionElement( doc, ruleElem, props.value( "filter", "" ) );
+      QgsSymbolLayerV2Utils::createFunctionElement( doc, ruleElem, locProps.value( "filter", "" ) );
     }
 
-    if ( !props.value( "scaleMinDenom", "" ).isEmpty() )
-    {
-      QDomElement scaleMinDenomElem = doc.createElement( "se:MinScaleDenominator" );
-      scaleMinDenomElem.appendChild( doc.createTextNode( props.value( "scaleMinDenom", "" ) ) );
-      ruleElem.appendChild( scaleMinDenomElem );
-    }
+    QgsSymbolLayerV2Utils::applyScaleDependency( doc, ruleElem, locProps );
 
-    if ( !props.value( "scaleMaxDenom", "" ).isEmpty() )
-    {
-      QDomElement scaleMaxDenomElem = doc.createElement( "se:MaxScaleDenominator" );
-      scaleMaxDenomElem.appendChild( doc.createTextNode( props.value( "scaleMaxDenom", "" ) ) );
-      ruleElem.appendChild( scaleMaxDenomElem );
-    }
-
-    mSymbol->toSld( doc, ruleElem, props );
+    mSymbol->toSld( doc, ruleElem, locProps );
   }
 
   // loop into childern rule list
   Q_FOREACH ( Rule* rule, mChildren )
   {
-    rule->toSld( doc, element, props );
+    rule->toSld( doc, element, locProps );
   }
 }
 
@@ -979,7 +950,12 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::clone() const
 
 void QgsRuleBasedRendererV2::toSld( QDomDocument& doc, QDomElement &element ) const
 {
-  mRootRule->toSld( doc, element, QgsStringMap() );
+  toSld( doc, element, QgsStringMap() );
+}
+
+void QgsRuleBasedRendererV2::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const
+{
+  mRootRule->toSld( doc, element, props );
 }
 
 // TODO: ideally this function should be removed in favor of legendSymbol(ogy)Items

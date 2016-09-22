@@ -61,6 +61,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     QgsSimpleLineSymbolLayerV2* clone() const override;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
@@ -196,6 +197,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     QgsMarkerLineSymbolLayerV2* clone() const override;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
 
     void setColor( const QColor& color ) override;

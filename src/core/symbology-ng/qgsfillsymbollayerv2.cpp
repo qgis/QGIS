@@ -352,11 +352,13 @@ void QgsSimpleFillSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
     // <Stroke>
     QDomElement strokeElem = doc.createElement( "se:Stroke" );
     symbolizerElem.appendChild( strokeElem );
-    QgsSymbolLayerV2Utils::lineToSld( doc, strokeElem, mBorderStyle, mBorderColor, mBorderWidth, &mPenJoinStyle );
+    double borderWidth = QgsSymbolLayerV2Utils::rescaleUom( mBorderWidth, mBorderWidthUnit, props );
+    QgsSymbolLayerV2Utils::lineToSld( doc, strokeElem, mBorderStyle, borderWidth, borderWidth, &mPenJoinStyle );
   }
 
   // <se:Displacement>
-  QgsSymbolLayerV2Utils::createDisplacementElement( doc, symbolizerElem, mOffset );
+  QPointF offset = QgsSymbolLayerV2Utils::rescaleUom( mOffset, mOffsetUnit, props );
+  QgsSymbolLayerV2Utils::createDisplacementElement( doc, symbolizerElem, offset );
 }
 
 QString QgsSimpleFillSymbolLayerV2::ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const
@@ -1778,6 +1780,7 @@ void QgsSVGFillSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit )
   mPatternWidthUnit = unit;
   mSvgOutlineWidthUnit = unit;
   mOutlineWidthUnit = unit;
+  mOutline->setOutputUnit( unit );
 }
 
 QgsSymbolV2::OutputUnit QgsSVGFillSymbolLayer::outputUnit() const
@@ -2088,7 +2091,8 @@ void QgsSVGFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, cons
 
   if ( !mSvgFilePath.isEmpty() )
   {
-    QgsSymbolLayerV2Utils::externalGraphicToSld( doc, graphicElem, mSvgFilePath, "image/svg+xml", mColor, mPatternWidth );
+    double partternWidth = QgsSymbolLayerV2Utils::rescaleUom( mPatternWidth, mPatternWidthUnit, props );
+    QgsSymbolLayerV2Utils::externalGraphicToSld( doc, graphicElem, mSvgFilePath, "image/svg+xml", mColor, partternWidth );
   }
   else
   {
@@ -2099,7 +2103,8 @@ void QgsSVGFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, cons
 
   if ( mSvgOutlineColor.isValid() || mSvgOutlineWidth >= 0 )
   {
-    QgsSymbolLayerV2Utils::lineToSld( doc, graphicElem, Qt::SolidLine, mSvgOutlineColor, mSvgOutlineWidth );
+    double svgOutlineWidth = QgsSymbolLayerV2Utils::rescaleUom( mSvgOutlineWidth, mSvgOutlineWidthUnit, props );
+    QgsSymbolLayerV2Utils::lineToSld( doc, graphicElem, Qt::SolidLine, mSvgOutlineColor, svgOutlineWidth );
   }
 
   // <Rotation>
@@ -2887,7 +2892,9 @@ void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &eleme
   //line properties must be inside the graphic definition
   QColor lineColor = mFillLineSymbol ? mFillLineSymbol->color() : QColor();
   double lineWidth = mFillLineSymbol ? mFillLineSymbol->width() : 0.0;
-  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, "horline", QColor(), lineColor, Qt::SolidLine, lineWidth, mDistance );
+  lineWidth = QgsSymbolLayerV2Utils::rescaleUom( lineWidth, mLineWidthUnit,  props );
+  double distance = QgsSymbolLayerV2Utils::rescaleUom( mDistance, mDistanceUnit,  props );
+  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, "horline", QColor(), lineColor, Qt::SolidLine, lineWidth, distance );
 
   // <Rotation>
   QString angleFunc;
@@ -2905,6 +2912,7 @@ void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &eleme
 
   // <se:Displacement>
   QPointF lineOffset( sin( mLineAngle ) * mOffset, cos( mLineAngle ) * mOffset );
+  lineOffset = QgsSymbolLayerV2Utils::rescaleUom( lineOffset, mOffsetUnit, props );
   QgsSymbolLayerV2Utils::createDisplacementElement( doc, graphicElem, lineOffset );
 }
 
@@ -3064,6 +3072,11 @@ void QgsPointPatternFillSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit
   mDistanceYUnit = unit;
   mDisplacementXUnit = unit;
   mDisplacementYUnit = unit;
+  if ( mMarkerSymbol )
+  {
+    mMarkerSymbol->setOutputUnit( unit );
+  }
+
 }
 
 QgsSymbolV2::OutputUnit QgsPointPatternFillSymbolLayer::outputUnit() const
@@ -3306,7 +3319,9 @@ void QgsPointPatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &elem
     fillElem.appendChild( graphicFillElem );
 
     // store distanceX, distanceY, displacementX, displacementY in a <VendorOption>
-    QString dist = QgsSymbolLayerV2Utils::encodePoint( QPointF( mDistanceX, mDistanceY ) );
+    double dx  = QgsSymbolLayerV2Utils::rescaleUom( mDistanceX, mDistanceXUnit, props );
+    double dy  = QgsSymbolLayerV2Utils::rescaleUom( mDistanceY, mDistanceYUnit, props );
+    QString dist = QgsSymbolLayerV2Utils::encodePoint( QPointF( dx, dy ) );
     QDomElement distanceElem = QgsSymbolLayerV2Utils::createVendorOptionElement( doc, "distance", dist );
     symbolizerElem.appendChild( distanceElem );
 

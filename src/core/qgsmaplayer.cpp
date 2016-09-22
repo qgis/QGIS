@@ -1460,7 +1460,6 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg )
   // Create the root element
   QDomElement root = myDocument.createElementNS( "http://www.opengis.net/sld", "StyledLayerDescriptor" );
   root.setAttribute( "version", "1.1.0" );
-  root.setAttribute( "units", "mm" ); // default qgsmaprenderer is Millimeters
   root.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" );
   root.setAttribute( "xmlns:ogc", "http://www.opengis.net/ogc" );
   root.setAttribute( "xmlns:se", "http://www.opengis.net/se" );
@@ -1480,7 +1479,13 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg )
     return;
   }
 
-  if ( !vlayer->writeSld( namedLayerNode, myDocument, errorMsg ) )
+  QgsStringMap props;
+  if ( hasScaleBasedVisibility() )
+  {
+    props[ "scaleMinDenom" ] = QString::number( mMinScale );
+    props[ "scaleMaxDenom" ] = QString::number( mMaxScale );
+  }
+  if ( !vlayer->writeSld( namedLayerNode, myDocument, errorMsg, props ) )
   {
     errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
     return;

@@ -40,6 +40,7 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     QgsEllipseSymbolLayerV2* clone() const override;
     QgsStringMap properties() const override;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const override;
     void writeSldMarker( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const override;
 
