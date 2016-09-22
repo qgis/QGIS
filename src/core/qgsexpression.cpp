@@ -3826,6 +3826,9 @@ QStringList QgsExpression::referencedColumns() const
 
 QSet<int> QgsExpression::referencedAttributeIndexes( const QgsFields& fields ) const
 {
+  if ( !d->mRootNode )
+    return QSet<int>();
+
   QStringList referencedFields = d->mRootNode->referencedColumns();
   QSet<int> referencedIndexes;
 
