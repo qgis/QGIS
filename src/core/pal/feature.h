@@ -183,7 +183,8 @@ namespace pal
        * @param orientation can be 0 for automatic calculation of orientation, or -1/+1 for a specific label orientation
        * @param index
        * @param distance distance to offset label along curve by
-       * @param flip
+       * @param reversed if true label is reversed from lefttoright to righttoleft
+       * @param flip if true label is placed on the other side of the line
        * @returns calculated label position
        */
       LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
