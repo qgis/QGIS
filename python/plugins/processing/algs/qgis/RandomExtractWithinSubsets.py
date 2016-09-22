@@ -71,7 +71,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
         field = self.getParameterValue(self.FIELD)
         method = self.getParameterValue(self.METHOD)
 
-        index = layer.fieldNameIndex(field)
+        index = layer.fields().lookupField(field)
 
         features = vector.features(layer)
         featureCount = len(features)

@@ -122,8 +122,8 @@ class PointDistance(GeoAlgorithm):
 
         index = vector.spatialindex(targetLayer)
 
-        inIdx = inLayer.fieldNameIndex(inField)
-        outIdx = targetLayer.fieldNameIndex(targetField)
+        inIdx = inLayer.fields().lookupField(inField)
+        outIdx = targetLayer.fields().lookupField(targetField)
 
         distArea = QgsDistanceArea()
 
@@ -162,7 +162,7 @@ class PointDistance(GeoAlgorithm):
                       nPoints, progress):
         index = vector.spatialindex(targetLayer)
 
-        inIdx = inLayer.fieldNameIndex(inField)
+        inIdx = inLayer.fields().lookupField(inField)
 
         distArea = QgsDistanceArea()
 

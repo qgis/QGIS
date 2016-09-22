@@ -62,8 +62,8 @@ class StatisticsByCategories(GeoAlgorithm):
         categoriesFieldName = self.getParameterValue(self.CATEGORIES_FIELD_NAME)
 
         output = self.getOutputFromName(self.OUTPUT)
-        valuesField = layer.fieldNameIndex(valuesFieldName)
-        categoriesField = layer.fieldNameIndex(categoriesFieldName)
+        valuesField = layer.fields().lookupField(valuesFieldName)
+        categoriesField = layer.fields().lookupField(categoriesFieldName)
 
         features = vector.features(layer)
         total = 100.0 / len(features)

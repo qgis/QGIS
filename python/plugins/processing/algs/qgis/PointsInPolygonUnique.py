@@ -65,7 +65,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
         fields = polyLayer.fields()
         fields.append(QgsField(fieldName, QVariant.Int))
 
-        classFieldIndex = pointLayer.fieldNameIndex(classFieldName)
+        classFieldIndex = pointLayer.fields().lookupField(classFieldName)
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
                                                          polyLayer.fields(), fieldName)
 

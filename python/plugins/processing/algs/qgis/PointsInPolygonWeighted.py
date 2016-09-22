@@ -68,7 +68,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
         pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
-        fieldIdx = pointLayer.fieldNameIndex(self.getParameterValue(self.WEIGHT))
+        fieldIdx = pointLayer.fields().lookupField(self.getParameterValue(self.WEIGHT))
 
         fields = polyLayer.fields()
         fields.append(QgsField(fieldName, QVariant.Int))

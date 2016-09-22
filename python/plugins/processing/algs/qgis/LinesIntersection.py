@@ -79,8 +79,8 @@ class LinesIntersection(GeoAlgorithm):
         fieldA = self.getParameterValue(self.FIELD_A)
         fieldB = self.getParameterValue(self.FIELD_B)
 
-        idxA = layerA.fieldNameIndex(fieldA)
-        idxB = layerB.fieldNameIndex(fieldB)
+        idxA = layerA.fields().lookupField(fieldA)
+        idxB = layerB.fields().lookupField(fieldB)
 
         fieldList = [layerA.fields()[idxA],
                      layerB.fields()[idxB]]

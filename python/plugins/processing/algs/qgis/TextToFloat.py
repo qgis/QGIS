@@ -53,7 +53,7 @@ class TextToFloat(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         fieldName = self.getParameterValue(self.FIELD)
-        idx = layer.fieldNameIndex(fieldName)
+        idx = layer.fields().lookupField(fieldName)
 
         fields = layer.fields()
         fields[idx] = QgsField(fieldName, QVariant.Double, '', 24, 15)

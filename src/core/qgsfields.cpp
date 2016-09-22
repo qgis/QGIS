@@ -173,7 +173,12 @@ int QgsFields::fieldOriginIndex( int fieldIdx ) const
   return d->fields[fieldIdx].originIndex;
 }
 
-int QgsFields::indexFromName( const QString &fieldName ) const
+int QgsFields::indexFromName( const QString& fieldName ) const
+{
+  return d->nameToIndex.value( fieldName, -1 );
+}
+
+int QgsFields::indexOf( const QString& fieldName ) const
 {
   return d->nameToIndex.value( fieldName, -1 );
 }

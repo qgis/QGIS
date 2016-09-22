@@ -86,7 +86,7 @@ class BasicStatisticsStrings(GeoAlgorithm):
 
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
 
-        index = layer.fieldNameIndex(fieldName)
+        index = layer.fields().lookupField(fieldName)
 
         sumValue = 0
         minValue = 0

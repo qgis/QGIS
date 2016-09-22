@@ -58,13 +58,13 @@ class TestPyQgsTabfileProvider(unittest.TestCase):
 
         f = next(vl.getFeatures(QgsFeatureRequest()))
 
-        date_idx = vl.fieldNameIndex('date')
+        date_idx = vl.fields().lookupField('date')
         assert isinstance(f.attributes()[date_idx], QDate)
         self.assertEqual(f.attributes()[date_idx], QDate(2004, 5, 3))
-        time_idx = vl.fieldNameIndex('time')
+        time_idx = vl.fields().lookupField('time')
         assert isinstance(f.attributes()[time_idx], QTime)
         self.assertEqual(f.attributes()[time_idx], QTime(13, 41, 00))
-        datetime_idx = vl.fieldNameIndex('date_time')
+        datetime_idx = vl.fields().lookupField('date_time')
         assert isinstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2004, 5, 3), QTime(13, 41, 00)))
 

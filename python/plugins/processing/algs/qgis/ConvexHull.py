@@ -78,7 +78,7 @@ class ConvexHull(GeoAlgorithm):
 
         f = QgsField('value', QVariant.String, '', 255)
         if useField:
-            index = layer.fieldNameIndex(fieldName)
+            index = layer.fields().lookupField(fieldName)
             fType = layer.fields()[index].type()
             if fType in [QVariant.Int, QVariant.UInt, QVariant.LongLong, QVariant.ULongLong]:
                 f.setType(fType)

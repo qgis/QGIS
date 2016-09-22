@@ -132,15 +132,15 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
 
-        date_idx = created_layer.fieldNameIndex('date_f')
+        date_idx = created_layer.fields().lookupField('date_f')
         self.assertIsInstance(f.attributes()[date_idx], QDate)
         self.assertEqual(f.attributes()[date_idx], QDate(2014, 3, 5))
-        time_idx = created_layer.fieldNameIndex('time_f')
+        time_idx = created_layer.fields().lookupField('time_f')
         #shapefiles do not support time types
         self.assertIsInstance(f.attributes()[time_idx], str)
         self.assertEqual(f.attributes()[time_idx], '13:45:22')
         #shapefiles do not support datetime types
-        datetime_idx = created_layer.fieldNameIndex('dt_f')
+        datetime_idx = created_layer.fields().lookupField('dt_f')
         self.assertIsInstance(f.attributes()[datetime_idx], str)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22)).toString("yyyy/MM/dd hh:mm:ss.zzz"))
 
@@ -185,13 +185,13 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
 
-        date_idx = created_layer.fieldNameIndex('date_f')
+        date_idx = created_layer.fields().lookupField('date_f')
         self.assertIsInstance(f.attributes()[date_idx], QDate)
         self.assertEqual(f.attributes()[date_idx], QDate(2014, 3, 5))
-        time_idx = created_layer.fieldNameIndex('time_f')
+        time_idx = created_layer.fields().lookupField('time_f')
         self.assertIsInstance(f.attributes()[time_idx], QTime)
         self.assertEqual(f.attributes()[time_idx], QTime(13, 45, 22))
-        datetime_idx = created_layer.fieldNameIndex('dt_f')
+        datetime_idx = created_layer.fields().lookupField('dt_f')
         self.assertIsInstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22)))
 
@@ -458,7 +458,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
 
-        int8_idx = created_layer.fieldNameIndex('int8')
+        int8_idx = created_layer.fields().lookupField('int8')
         self.assertEqual(f.attributes()[int8_idx], 2123456789)
 
     def testDefaultDatasetOptions(self):
