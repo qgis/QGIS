@@ -1169,28 +1169,18 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent* e )
 
 void QgsAdvancedDigitizingDockWidget::enable()
 {
-  if ( mMapCanvas->mapSettings().destinationCrs().isGeographic() )
-  {
-    mErrorLabel->setText( tr( "CAD tools can not be used on geographic coordinates. Change the coordinates system in the project properties." ) );
-    mErrorLabel->show();
-    mEnableAction->setEnabled( false );
-    setCadEnabled( false );
-  }
-  else
-  {
-    mEnableAction->setEnabled( true );
-    mErrorLabel->hide();
-    mCadWidget->show();
-    setMaximumHeight( 220 );
+  mEnableAction->setEnabled( true );
+  mErrorLabel->hide();
+  mCadWidget->show();
+  setMaximumHeight( 220 );
 
-    mCurrentMapToolSupportsCad = true;
+  mCurrentMapToolSupportsCad = true;
 
-    if ( mSessionActive && !isVisible() )
-    {
-      show();
-    }
-    setCadEnabled( mSessionActive );
+  if ( mSessionActive && !isVisible() )
+  {
+    show();
   }
+  setCadEnabled( mSessionActive );
 }
 
 void QgsAdvancedDigitizingDockWidget::disable()
