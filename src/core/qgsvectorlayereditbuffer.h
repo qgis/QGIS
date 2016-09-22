@@ -19,7 +19,7 @@
 #include <QSet>
 
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 
 class QgsVectorLayer;

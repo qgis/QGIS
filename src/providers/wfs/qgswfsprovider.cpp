@@ -18,7 +18,7 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
@@ -257,7 +257,7 @@ void QgsWFSProviderSQLColumnRefValidator::visit( const QgsSQLStatement::NodeColu
     }
 
     QgsFields tableFields = mMapTypenameToFields[typeName];
-    int idx = tableFields.fieldNameIndex( n.name() );
+    int idx = tableFields.lookupField( n.name() );
     if ( idx < 0 && mMapTypenameToGeometryAttribute[typeName] != n.name() )
     {
       mError = true;
@@ -595,7 +595,7 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
     else
     {
       const QgsFields tableFields = mapTypenameToFields[columnTableTypename];
-      int idx = tableFields.fieldNameIndex( columnRef->name() );
+      int idx = tableFields.lookupField( columnRef->name() );
       if ( idx < 0 )
       {
         QgsDebugMsg( QString( "Should not happen. Cannot find field for %1" ).arg( columnRef->name() ) );

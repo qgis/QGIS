@@ -213,8 +213,8 @@ void QgsVectorFieldSymbolLayer::startRender( QgsSymbolRenderContext& context )
   QgsFields fields = context.fields();
   if ( !fields.isEmpty() )
   {
-    mXIndex = fields.fieldNameIndex( mXAttribute );
-    mYIndex = fields.fieldNameIndex( mYAttribute );
+    mXIndex = fields.lookupField( mXAttribute );
+    mYIndex = fields.lookupField( mYAttribute );
   }
   else
   {

@@ -19,7 +19,7 @@
 #include <QAbstractItemModel>
 #include <QItemSelectionModel>
 #include <QComboBox>
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 class QgsVectorLayer;
 

@@ -15,7 +15,7 @@
 
 #include "qgscheckboxsearchwidgetwrapper.h"
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgscheckboxwidgetfactory.h"
 #include "qgsvectorlayer.h"
 

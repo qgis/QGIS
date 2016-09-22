@@ -111,7 +111,7 @@ QList<QgsRelation> QgsRelationManager::referencingRelations( const QgsVectorLaye
         bool containsField = false;
         Q_FOREACH ( const QgsRelation::FieldPair& fp, rel.fieldPairs() )
         {
-          if ( fieldIdx == layer->fieldNameIndex( fp.referencingField() ) )
+          if ( fieldIdx == layer->fields().lookupField( fp.referencingField() ) )
           {
             containsField = true;
             break;

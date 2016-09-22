@@ -22,7 +22,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgscoordinatereferencesystem.h"
 #include "geometry/qgswkbtypes.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 /**
  * @brief A provider reading features from a ArcGIS Feature Service

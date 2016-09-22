@@ -19,7 +19,7 @@
 
 #include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"

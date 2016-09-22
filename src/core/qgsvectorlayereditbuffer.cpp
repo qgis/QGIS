@@ -120,7 +120,7 @@ bool QgsVectorLayerEditBuffer::addFeature( QgsFeature& f )
   {
     return false;
   }
-  if ( L->mUpdatedFields.count() != f.attributes().count() )
+  if ( L->mFields.count() != f.attributes().count() )
     return false;
 
   // TODO: check correct geometry type

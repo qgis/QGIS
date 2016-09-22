@@ -22,7 +22,7 @@
 #include "qgsvectorlayerimport.h"
 #include <qgscoordinatereferencesystem.h>
 #include "qgsgeometry.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include <QtSql>
 
 /**

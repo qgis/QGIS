@@ -21,7 +21,7 @@
 #include <ui_qgsvectorlayersaveasdialogbase.h>
 #include <QDialog>
 #include "qgscontexthelp.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsvectorfilewriter.h"
 
 class QgsVectorLayer;

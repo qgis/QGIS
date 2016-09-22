@@ -19,7 +19,7 @@
 #include <QSettings>
 #include <QSharedPointer>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 class TestQgsFields: public QObject
 {
@@ -338,25 +338,25 @@ void TestQgsFields::indexFromName()
   fields.append( field3 );
 
   QCOMPARE( fields.indexFromName( QString( "bad" ) ), -1 );
-  QCOMPARE( fields.fieldNameIndex( QString( "bad" ) ), -1 );
+  QCOMPARE( fields.lookupField( QString( "bad" ) ), -1 );
   QCOMPARE( fields.indexFromName( QString( "testfield" ) ), 0 );
-  QCOMPARE( fields.fieldNameIndex( QString( "testfield" ) ), 0 );
+  QCOMPARE( fields.lookupField( QString( "testfield" ) ), 0 );
   QCOMPARE( fields.indexFromName( QString( "testfield3" ) ), 2 );
-  QCOMPARE( fields.fieldNameIndex( QString( "testfield3" ) ), 2 );
+  QCOMPARE( fields.lookupField( QString( "testfield3" ) ), 2 );
 
   //indexFromName is case sensitive, fieldNameIndex isn't
   QCOMPARE( fields.indexFromName( QString( "teStFiEld2" ) ), -1 );
-  QCOMPARE( fields.fieldNameIndex( QString( "teStFiEld2" ) ), 1 );
+  QCOMPARE( fields.lookupField( QString( "teStFiEld2" ) ), 1 );
 
   //test that fieldNameIndex prefers exact case matches over case insensitive matches
   QgsField sameNameDifferentCase( QString( "teStFielD" ) );
   fields.append( sameNameDifferentCase );
-  QCOMPARE( fields.fieldNameIndex( QString( "teStFielD" ) ), 3 );
+  QCOMPARE( fields.lookupField( QString( "teStFielD" ) ), 3 );
 
   //test that the alias is only matched with fieldNameIndex
   QCOMPARE( fields.indexFromName( "testfieldAlias" ), -1 );
-  QCOMPARE( fields.fieldNameIndex( "testfieldAlias" ), 0 );
-  QCOMPARE( fields.fieldNameIndex( "testfieldalias" ), 0 );
+  QCOMPARE( fields.lookupField( "testfieldAlias" ), 0 );
+  QCOMPARE( fields.lookupField( "testfieldalias" ), 0 );
 }
 
 void TestQgsFields::toList()

@@ -134,7 +134,7 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
       continue;
 
     // The new value for the mapping (field index or -1 for action column)
-    int newValue = ( columnConfig.type == QgsAttributeTableConfig::Action ) ? -1 : layer()->fieldNameIndex( columnConfig.name );
+    int newValue = ( columnConfig.type == QgsAttributeTableConfig::Action ) ? -1 : layer()->fields().lookupField( columnConfig.name );
     newColumnMapping << newValue;
   }
 

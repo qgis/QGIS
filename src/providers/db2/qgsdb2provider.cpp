@@ -1400,7 +1400,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
     {
       QgsField fld = fields.field( i );
       QgsDebugMsg( QString( "i: %1; fldIdx: %2; offset: %3" )
-                   .arg( i ).arg( fields.fieldNameIndex( fld.name() ) ).arg( offset ) );
+                   .arg( i ).arg( fields.lookupField( fld.name() ) ).arg( offset ) );
 
       if ( oldToNewAttrIdxMap && fld.name() == primaryKey )
       {
@@ -1426,7 +1426,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
 
       if ( oldToNewAttrIdxMap )
       {
-        oldToNewAttrIdxMap->insert( fields.fieldNameIndex( fld.name() ), offset++ );
+        oldToNewAttrIdxMap->insert( fields.lookupField( fld.name() ), offset++ );
       }
       attr2Create += ',' + db2Field.toUpper();
     }

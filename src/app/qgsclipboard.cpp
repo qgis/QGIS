@@ -29,7 +29,7 @@
 #include "qgsclipboard.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"

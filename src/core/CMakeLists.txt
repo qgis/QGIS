@@ -122,6 +122,7 @@ SET(QGIS_CORE_SRCS
   qgsfeaturerequest.cpp
   qgsfeaturestore.cpp
   qgsfield.cpp
+  qgsfields.cpp
   qgsfontutils.cpp
   qgsgeometrycache.cpp
   qgsgeometrysimplifier.cpp
@@ -637,6 +638,7 @@ SET(QGIS_CORE_HDRS
   qgsfeatureiterator.h
   qgsfeaturerequest.h
   qgsfeaturestore.h
+  qgsfields.h
   qgsfontutils.h
   qgsgeometrycache.h
   qgshistogram.h

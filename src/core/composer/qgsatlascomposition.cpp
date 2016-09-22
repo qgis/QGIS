@@ -178,7 +178,7 @@ int QgsAtlasComposition::updateFeatures()
   QgsFeature feat;
   mFeatureIds.clear();
   mFeatureKeys.clear();
-  int sortIdx = mCoverageLayer->fieldNameIndex( mSortKeyAttributeName );
+  int sortIdx = mCoverageLayer->fields().lookupField( mSortKeyAttributeName );
 
   while ( fit.nextFeature( feat ) )
   {

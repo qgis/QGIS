@@ -262,8 +262,8 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString& file )
     return false;
   }
 
-  int fieldFeatureId = layer->fieldNameIndex( "FeatureID" );
-  int fieldErrDesc = layer->fieldNameIndex( "ErrorDesc" );
+  int fieldFeatureId = layer->fields().lookupField( "FeatureID" );
+  int fieldErrDesc = layer->fields().lookupField( "ErrorDesc" );
   for ( int row = 0, nRows = ui.tableWidgetErrors->rowCount(); row < nRows; ++row )
   {
     QgsGeometryCheckError* error = ui.tableWidgetErrors->item( row, 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError*>();

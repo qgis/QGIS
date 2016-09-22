@@ -1,9 +1,10 @@
 /***************************************************************************
-                      qgsfeature_p.h
-                     ---------------
-Date                 : May-2015
-Copyright            : (C) 2015 by Nyall Dawson
-email                : nyall dot dawson at gmail dot com
+  qgsfields_p - %{Cpp:License:ClassName}
+
+ ---------------------
+ begin                : 22.9.2016
+ copyright            : (C) 2016 by Matthias Kuhn
+ email                : matthias@opengis.ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -12,9 +13,9 @@ email                : nyall dot dawson at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef QGSFIELDS_P_H
+#define QGSFIELDS_P_H
 
-#ifndef QGSFEATURE_PRIVATE_H
-#define QGSFEATURE_PRIVATE_H
 
 /// @cond PRIVATE
 
@@ -27,57 +28,40 @@ email                : nyall dot dawson at gmail dot com
 // version without notice, or even be removed.
 //
 
+#include <QSharedData>
+#include "qgsfields.h"
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
- * full unit tests in testqgsfeature.cpp.
+ * full unit tests in testqgsfields.cpp.
  * See details in QEP #17
  ****************************************************************************/
 
-#include "qgsfields.h"
-
-#include "qgsgeometry.h"
-
-class QgsFeaturePrivate : public QSharedData
+class CORE_EXPORT QgsFieldsPrivate : public QSharedData
 {
   public:
 
-    explicit QgsFeaturePrivate( QgsFeatureId id )
-        : fid( id )
-        , valid( false )
+    QgsFieldsPrivate()
     {
     }
 
-    QgsFeaturePrivate( const QgsFeaturePrivate& other )
+    QgsFieldsPrivate( const QgsFieldsPrivate& other )
         : QSharedData( other )
-        , fid( other.fid )
-        , attributes( other.attributes )
-        , geometry( other.geometry )
-        , valid( other.valid )
         , fields( other.fields )
+        , nameToIndex( other.nameToIndex )
     {
     }
 
-    ~QgsFeaturePrivate()
-    {
-    }
+    ~QgsFieldsPrivate() {}
 
-    //! Feature ID
-    QgsFeatureId fid;
+    //! internal storage of the container
+    QVector<QgsFields::Field> fields;
 
-    ///! Attributes accessed by field index
-    QgsAttributes attributes;
-
-    //! Geometry, may be empty if feature has no geometry
-    QgsGeometry geometry;
-
-    //! Flag to indicate if this feature is valid
-    bool valid;
-
-    //! Optional field map for name-based attribute lookups
-    QgsFields fields;
+    //! map for quick resolution of name to index
+    QHash<QString, int> nameToIndex;
 
 };
 
 /// @endcond
 
-#endif //QGSFEATURE_PRIVATE_H
+#endif // QGSFIELDS_P_H

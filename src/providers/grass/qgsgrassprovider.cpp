@@ -24,7 +24,7 @@
 #include "qgis.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgslinestring.h"
 #include "qgspointv2.h"
 #include "qgspolygon.h"

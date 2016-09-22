@@ -16,7 +16,7 @@
 #ifndef QGSRULEBASEDRENDERERV2_H
 #define QGSRULEBASEDRENDERERV2_H
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgis.h"
 

@@ -18,7 +18,7 @@
 #ifndef QGSDB2FEATUREITERATOR_H
 #define QGSDB2FEATUREITERATOR_H
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfeatureiterator.h"
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>

@@ -73,7 +73,7 @@ void QgsHeatmapRenderer::startRender( QgsRenderContext& context, const QgsFields
   }
 
   // find out classification attribute index from name
-  mWeightAttrNum = fields.fieldNameIndex( mWeightExpressionString );
+  mWeightAttrNum = fields.lookupField( mWeightExpressionString );
   if ( mWeightAttrNum == -1 )
   {
     mWeightExpression.reset( new QgsExpression( mWeightExpressionString ) );

@@ -105,12 +105,9 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
     {
       //ensure that all fields required for filter expressions are prepared
-      Q_FOREACH ( const QString& field, mRequest.filterExpression()->referencedColumns() )
-      {
-        int attrIdx = mSource->mFields.fieldNameIndex( field );
-        if ( !mRequest.subsetOfAttributes().contains( attrIdx ) )
-          mRequest.setSubsetOfAttributes( mRequest.subsetOfAttributes() << attrIdx );
-      }
+      QSet<int> attributeIndexes = mRequest.filterExpression()->referencedAttributeIndexes( mSource->mFields );
+      attributeIndexes += mRequest.subsetOfAttributes().toSet();
+      mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
     }
   }
 
@@ -129,7 +126,8 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     int nPendingFields = mSource->mFields.count();
     Q_FOREACH ( int attrIndex, subset )
     {
-      if ( attrIndex < 0 || attrIndex >= nPendingFields ) continue;
+      if ( attrIndex < 0 || attrIndex >= nPendingFields )
+        continue;
       if ( mSource->mFields.fieldOrigin( attrIndex ) == QgsFields::OriginProvider )
         providerSubset << mSource->mFields.fieldOriginIndex( attrIndex );
     }
@@ -143,7 +141,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     {
       Q_FOREACH ( const QString& attr, mProviderRequest.orderBy().usedAttributes() )
       {
-        providerSubset << mSource->mFields.fieldNameIndex( attr );
+        providerSubset << mSource->mFields.lookupField( attr );
       }
     }
 
@@ -154,7 +152,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   {
     Q_FOREACH ( const QString& field, mProviderRequest.filterExpression()->referencedColumns() )
     {
-      int idx = source->mFields.fieldNameIndex( field );
+      int idx = source->mFields.lookupField( field );
 
       // If there are fields in the expression which are not of origin provider, the provider will not be able to filter based on them.
       // In this case we disable the expression filter.
@@ -538,7 +536,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
 
   Q_FOREACH ( const QString& col, exp->referencedColumns() )
   {
-    int dependantFieldIdx = mSource->mFields.fieldNameIndex( col );
+    int dependantFieldIdx = mSource->mFields.lookupField( col );
     if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
     {
       mRequest.setSubsetOfAttributes( mRequest.subsetOfAttributes() << dependantFieldIdx );

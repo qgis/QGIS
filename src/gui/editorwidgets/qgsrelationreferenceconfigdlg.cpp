@@ -16,7 +16,7 @@
 #include "qgsrelationreferenceconfigdlg.h"
 
 #include "qgseditorwidgetfactory.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"

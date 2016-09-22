@@ -154,7 +154,7 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QStr
     else
     {
       // If we aren't an expression, we check to see if we can find the column.
-      if ( mFields.fieldNameIndex( lyr.fieldName ) == -1 )
+      if ( mFields.lookupField( lyr.fieldName ) == -1 )
       {
         return false;
       }
@@ -218,7 +218,7 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QStr
   lyr.rasterCompressFactor = context.rasterScaleFactor();
 
   // save the pal layer to our layer context (with some additional info)
-  lyr.fieldIndex = mFields.fieldNameIndex( lyr.fieldName );
+  lyr.fieldIndex = mFields.lookupField( lyr.fieldName );
 
   lyr.xform = &mapSettings.mapToPixel();
   lyr.ct = QgsCoordinateTransform();

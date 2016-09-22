@@ -21,7 +21,7 @@
 #include "ui_qgsidentifyresultsbase.h"
 #include "qgscontexthelp.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaptoolidentify.h"
 #include "qgswebview.h"

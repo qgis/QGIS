@@ -34,7 +34,7 @@ class QgsSingleSymbolRenderer;
 typedef QList<int> QgsAttributeList;
 
 #include "qgis.h"
-#include "qgsfield.h"  // QgsFields
+#include "qgsfields.h"  // QgsFields
 #include "qgsfeature.h"  // QgsFeatureIds
 #include "qgsfeatureiterator.h"
 #include "qgsvectorsimplifymethod.h"

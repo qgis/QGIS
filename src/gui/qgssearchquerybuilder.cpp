@@ -25,7 +25,7 @@
 #include <QTextStream>
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgssearchquerybuilder.h"
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"

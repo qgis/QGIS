@@ -597,7 +597,7 @@ QgsAttributeEditorElement* QgsEditFormConfig::attributeEditorElementFromDomEleme
   else if ( elem.tagName() == "attributeEditorField" )
   {
     QString name = elem.attribute( "name" );
-    int idx = d->mFields.fieldNameIndex( name );
+    int idx = d->mFields.lookupField( name );
     newElement = new QgsAttributeEditorField( name, idx, parent );
   }
   else if ( elem.tagName() == "attributeEditorRelation" )

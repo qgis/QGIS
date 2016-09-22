@@ -134,7 +134,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
   if ( !mFieldExpressionWidget->isExpression() )
   {
     QString field = mFieldExpressionWidget->currentField();
-    fieldType = mLayer->fields().field( mLayer->fields().fieldNameIndex( field ) ).type();
+    fieldType = mLayer->fields().field( mLayer->fields().lookupField( field ) ).type();
     if ( fieldType == QVariant::String || fieldType == QVariant::Date || fieldType == QVariant::DateTime )
     {
       isNumeric = false;

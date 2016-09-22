@@ -56,7 +56,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
 
   QScopedPointer<QgsExpression> expression;
 
-  int attrNum = mLayer->fieldNameIndex( fieldOrExpression );
+  int attrNum = mLayer->fields().lookupField( fieldOrExpression );
 
   if ( attrNum == -1 )
   {

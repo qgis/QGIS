@@ -2444,7 +2444,7 @@ class TestQgsExpression: public QObject
 
       // Let's remove the field referenced in the expression
       mPointsLayer->startEditing();
-      mPointsLayer->deleteAttribute( mPointsLayer->fieldNameIndex( "Pilots" ) );
+      mPointsLayer->deleteAttribute( mPointsLayer->fields().lookupField( "Pilots" ) );
 
       // Now the prepared expression is broken
       // The cached field index points to the index which now is

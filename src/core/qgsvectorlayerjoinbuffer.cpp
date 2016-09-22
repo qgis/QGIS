@@ -192,7 +192,7 @@ QVector<int> QgsVectorLayerJoinBuffer::joinSubsetIndices( QgsVectorLayer* joinLa
   for ( int i = 0; i < joinFieldsSubset.count(); ++i )
   {
     QString joinedFieldName = joinFieldsSubset.at( i );
-    int index = fields.fieldNameIndex( joinedFieldName );
+    int index = fields.lookupField( joinedFieldName );
     if ( index != -1 )
     {
       subsetIndices.append( index );

@@ -22,7 +22,7 @@
 #include "qgsrectangle.h"
 #include "qgsvectorlayerimport.h"
 #include "qgspostgresconn.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include <QSharedPointer>
 
 class QgsFeature;

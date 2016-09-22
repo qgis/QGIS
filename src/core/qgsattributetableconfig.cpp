@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsattributetableconfig.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include <QStringList>
 
 QgsAttributeTableConfig::QgsAttributeTableConfig()
@@ -65,7 +65,7 @@ void QgsAttributeTableConfig::update( const QgsFields& fields )
     const ColumnConfig& column = mColumns.at( i );
     if ( column.type == Field )
     {
-      if ( fields.fieldNameIndex( column.name ) == -1 )
+      if ( fields.lookupField( column.name ) == -1 )
       {
         mColumns.remove( i );
       }

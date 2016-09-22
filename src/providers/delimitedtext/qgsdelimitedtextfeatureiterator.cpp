@@ -145,13 +145,10 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && request.filterType() == QgsFeatureRequest::FilterExpression )
   {
     QgsAttributeList attrs = request.subsetOfAttributes();
-    Q_FOREACH ( const QString& field, request.filterExpression()->referencedColumns() )
-    {
-      int attrIdx = mSource->mFields.fieldNameIndex( field );
-      if ( !attrs.contains( attrIdx ) )
-        attrs << attrIdx;
-    }
-    mRequest.setSubsetOfAttributes( attrs );
+    //ensure that all fields required for filter expressions are prepared
+    QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
+    attributeIndexes += attrs.toSet();
+    mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
   }
 
   QgsDebugMsg( QString( "Iterator is scanning file: " ) + ( mMode == FileScan ? "Yes" : "No" ) );

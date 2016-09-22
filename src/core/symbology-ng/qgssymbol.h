@@ -22,7 +22,7 @@
 #include "qgsmapunitscale.h"
 #include "qgspointv2.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 class QColor;
 class QImage;

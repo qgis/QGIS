@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"

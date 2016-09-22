@@ -16,7 +16,7 @@
 #include "qgssearchwidgetwrapper.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 #include <QWidget>
 

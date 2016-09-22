@@ -18,7 +18,7 @@
 
 #include "qgsinterpolationdialog.h"
 #include "qgsinterpolatordialog.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgridfilewriter.h"
 #include "qgsidwinterpolatordialog.h"
 #include "qgstininterpolatordialog.h"

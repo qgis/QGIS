@@ -15,7 +15,7 @@ email                : sherman at mrcc.com
 
 #include "qgsfeature.h"
 #include "qgsfeature_p.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
 
@@ -274,7 +274,7 @@ QVariant QgsFeature::attribute( const QString& name ) const
 
 int QgsFeature::fieldNameIndex( const QString& fieldName ) const
 {
-  return d->fields.fieldNameIndex( fieldName );
+  return d->fields.lookupField( fieldName );
 }
 
 /***************************************************************************

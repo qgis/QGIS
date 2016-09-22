@@ -244,7 +244,7 @@ void QgsEditorWidgetRegistry::readMapLayer( QgsMapLayer* mapLayer, const QDomEle
 
     QString name = editTypeElement.attribute( "name" );
 
-    int idx = vectorLayer->fieldNameIndex( name );
+    int idx = vectorLayer->fields().lookupField( name );
     if ( idx == -1 )
       continue;
 

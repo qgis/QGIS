@@ -91,7 +91,7 @@ void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *m
   if ( !fcb )
     return;
 
-  model->setData( index, vl->fieldNameIndex( fcb->currentField() ) );
+  model->setData( index, vl->fields().lookupField( fcb->currentField() ) );
 }
 
 QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup* rootNode, QObject *parent )

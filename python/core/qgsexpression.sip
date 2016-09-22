@@ -53,6 +53,13 @@ class QgsExpression
      */
     QStringList referencedColumns() const;
 
+    /**
+     * Return a list of field name indexes obtained from the provided fields.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QSet<int> referencedAttributeIndexes( const QgsFields& fields ) const;
+
     //! Returns true if the expression uses feature geometry for some computation
     bool needsGeometry() const;
 

@@ -28,7 +28,7 @@ extern "C"
 #include "qgsvectordataprovider.h"
 #include "qgsrectangle.h"
 #include "qgsvectorlayerimport.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include <list>
 #include <queue>
 #include <fstream>

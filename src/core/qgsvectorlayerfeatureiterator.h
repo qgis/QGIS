@@ -16,7 +16,7 @@
 #define QGSVECTORLAYERFEATUREITERATOR_H
 
 #include "qgsfeatureiterator.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 #include <QSet>
 

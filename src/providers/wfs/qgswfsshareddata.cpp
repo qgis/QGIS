@@ -247,7 +247,7 @@ bool QgsWFSSharedData::createCache()
   // Only GDAL >= 2.0 can use an alternate geometry or FID field name
   // but QgsVectorFileWriter will refuse anyway to create a ogc_fid, so we will
   // do it manually
-  bool useReservedNames = cacheFields.fieldNameIndex( "ogc_fid" ) >= 0;
+  bool useReservedNames = cacheFields.lookupField( "ogc_fid" ) >= 0;
 #if GDAL_VERSION_MAJOR < 2
   if ( cacheFields.fieldNameIndex( "geometry" ) >= 0 )
     useReservedNames = true;

@@ -23,7 +23,7 @@
 #include <QDomDocument>
 
 #include "qgsexpressioncontext.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgscoordinatetransform.h"
 #include "qgssymbol.h"
 

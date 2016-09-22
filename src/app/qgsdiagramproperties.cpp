@@ -588,7 +588,7 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
   }
   else
   {
-    int attributeNumber = mLayer->fields().fieldNameIndex( sizeFieldNameOrExp );
+    int attributeNumber = mLayer->fields().lookupField( sizeFieldNameOrExp );
     maxValue = mLayer->maximumValue( attributeNumber ).toFloat();
   }
 
@@ -776,7 +776,7 @@ void QgsDiagramProperties::apply()
     }
     else
     {
-      int attributeNumber = mLayer->fields().fieldNameIndex( sizeFieldNameOrExp );
+      int attributeNumber = mLayer->fields().lookupField( sizeFieldNameOrExp );
       dr->setClassificationAttribute( attributeNumber );
     }
     dr->setDiagramSettings( ds );

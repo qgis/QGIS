@@ -32,7 +32,7 @@
 
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h" // QgsStringMap
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 class QPainter;
 class QSize;

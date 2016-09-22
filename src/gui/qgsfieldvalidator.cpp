@@ -27,7 +27,7 @@
 
 #include "qgslogger.h"
 #include "qgslonglongvalidator.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, const QString& defaultValue, const QString& dateFormat )
     : QValidator( parent )

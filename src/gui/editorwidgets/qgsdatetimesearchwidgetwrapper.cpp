@@ -15,7 +15,7 @@
 
 #include "qgsdatetimesearchwidgetwrapper.h"
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsdatetimeeditfactory.h"
 #include "qgsvectorlayer.h"
 #include "qgsdatetimeedit.h"

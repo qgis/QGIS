@@ -30,7 +30,6 @@
 #include <QString>
 #include <QVariant>
 #include <QSharedData>
-#include "qgsfield.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -110,38 +109,6 @@ class QgsFieldPrivate : public QSharedData
     QString defaultValueExpression;
 
     QgsEditorWidgetSetup editorWidgetSetup;
-};
-
-
-/***************************************************************************
- * This class is considered CRITICAL and any change MUST be accompanied with
- * full unit tests in testqgsfields.cpp.
- * See details in QEP #17
- ****************************************************************************/
-
-class CORE_EXPORT QgsFieldsPrivate : public QSharedData
-{
-  public:
-
-    QgsFieldsPrivate()
-    {
-    }
-
-    QgsFieldsPrivate( const QgsFieldsPrivate& other )
-        : QSharedData( other )
-        , fields( other.fields )
-        , nameToIndex( other.nameToIndex )
-    {
-    }
-
-    ~QgsFieldsPrivate() {}
-
-    //! internal storage of the container
-    QVector<QgsFields::Field> fields;
-
-    //! map for quick resolution of name to index
-    QHash<QString, int> nameToIndex;
-
 };
 
 /// @endcond

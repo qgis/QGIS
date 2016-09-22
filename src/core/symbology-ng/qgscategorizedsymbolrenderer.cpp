@@ -395,7 +395,7 @@ void QgsCategorizedSymbolRenderer::startRender( QgsRenderContext& context, const
   rebuildHash();
 
   // find out classification attribute index from name
-  mAttrNum = fields.fieldNameIndex( mAttrName );
+  mAttrNum = fields.lookupField( mAttrName );
   if ( mAttrNum == -1 )
   {
     mExpression.reset( new QgsExpression( mAttrName ) );
@@ -494,7 +494,7 @@ void QgsCategorizedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &elemen
 
 QString QgsCategorizedSymbolRenderer::filter( const QgsFields& fields )
 {
-  int attrNum = fields.fieldNameIndex( mAttrName );
+  int attrNum = fields.lookupField( mAttrName );
   bool isExpression = ( attrNum == -1 );
 
   bool hasDefault = false;

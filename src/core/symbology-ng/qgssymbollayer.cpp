@@ -179,7 +179,7 @@ QVariant QgsSymbolLayer::evaluateDataDefinedProperty( const QString& property, c
   }
   else if ( context.feature() && !dd->field().isEmpty() && !mFields.isEmpty() )
   {
-    int attributeIndex = mFields.fieldNameIndex( dd->field() );
+    int attributeIndex = mFields.lookupField( dd->field() );
     if ( attributeIndex >= 0 )
     {
       if ( ok )

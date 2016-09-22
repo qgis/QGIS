@@ -179,9 +179,18 @@ class CORE_EXPORT QgsExpression
      * all attributes from the layer are required for evaluation of the expression.
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
      *
+     * @see referencedAttributeIndexes()
+     *
      * TODO QGIS3: Return QSet<QString>
      */
     QStringList referencedColumns() const;
+
+    /**
+     * Return a list of field name indexes obtained from the provided fields.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QSet<int> referencedAttributeIndexes( const QgsFields& fields ) const;
 
     //! Returns true if the expression uses feature geometry for some computation
     bool needsGeometry() const;
@@ -294,13 +303,13 @@ class CORE_EXPORT QgsExpression
      * in the string with the result of its evaluation with the specified context
      *
      * Additional substitutions can be passed through the substitutionMap parameter
-     * @param action
-     * @param context expression context
-     * @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
+     * @param action The source string in which placeholders should be replaced.
+     * @param context Expression context
+     * @param distanceArea Optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
      * and area conversion
      * @note added in QGIS 2.12
      */
-    static QString replaceExpressionText( const QString &action, const QgsExpressionContext* context,
+    static QString replaceExpressionText( const QString& action, const QgsExpressionContext* context,
                                           const QgsDistanceArea* distanceArea = nullptr );
 
     /** Attempts to evaluate a text string as an expression to a resultant double
@@ -335,12 +344,12 @@ class CORE_EXPORT QgsExpression
       boAnd,
 
       // comparison
-      boEQ,  // =
-      boNE,  // <>
-      boLE,  // <=
-      boGE,  // >=
-      boLT,  // <
-      boGT,  // >
+      boEQ,  //!< =
+      boNE,  //!< <>
+      boLE,  //!< <=
+      boGE,  //!< >=
+      boLT,  //!< <
+      boGT,  //!< >
       boRegexp,
       boLike,
       boNotLike,

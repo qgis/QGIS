@@ -34,7 +34,7 @@ extern "C"
 #include "qgsapplication.h"
 #include "qgsexception.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include <qgsrectangle.h>
 #include <QFileSystemWatcher>
 #include <QProcess>

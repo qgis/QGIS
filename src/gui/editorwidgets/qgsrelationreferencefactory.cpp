@@ -138,7 +138,7 @@ QString QgsRelationReferenceFactory::representValue( QgsVectorLayer* vl, int fie
     QgsDebugMsg( "representValue() with inconsistent vl parameter w.r.t relation referencingLayer" );
     return value.toString();
   }
-  int referencingFieldIdx = referencingLayer->fieldNameIndex( relation.fieldPairs().at( 0 ).first );
+  int referencingFieldIdx = referencingLayer->fields().lookupField( relation.fieldPairs().at( 0 ).first );
   if ( referencingFieldIdx != fieldIdx )
   {
     QgsDebugMsg( "representValue() with inconsistent fieldIdx parameter w.r.t relation referencingFieldIdx" );
@@ -171,7 +171,7 @@ QString QgsRelationReferenceFactory::representValue( QgsVectorLayer* vl, int fie
   QString title = expr.evaluate( &context ).toString();
   if ( expr.hasEvalError() )
   {
-    int referencedFieldIdx = referencedLayer->fieldNameIndex( relation.fieldPairs().at( 0 ).second );
+    int referencedFieldIdx = referencedLayer->fields().lookupField( relation.fieldPairs().at( 0 ).second );
     title = feature.attribute( referencedFieldIdx ).toString();
   }
   return title;

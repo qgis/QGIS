@@ -17,7 +17,7 @@
 #include "qgsmemoryfeatureiterator.h"
 
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsspatialindex.h"

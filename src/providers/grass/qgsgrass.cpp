@@ -35,7 +35,7 @@
 #include "qgsapplication.h"
 #include "qgsconfig.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgslocalec.h"
 #include "qgslogger.h"
 #include "qgsproject.h"

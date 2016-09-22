@@ -39,7 +39,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
     {
       // find an uid name
       QString uid = "uid";
-      while ( fields.fieldNameIndex( uid ) != -1 )
+      while ( fields.lookupField( uid ) != -1 )
         uid += "_"; // add "_" each time this name already exists
 
       // add a column

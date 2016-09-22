@@ -22,7 +22,7 @@
 #include <QObject>
 #include <QPair>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfeature.h"
 
 extern "C"

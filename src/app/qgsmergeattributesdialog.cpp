@@ -21,7 +21,7 @@
 #include "qgsapplication.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgsfeatureiterator.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"

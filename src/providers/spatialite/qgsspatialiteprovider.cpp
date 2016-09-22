@@ -17,7 +17,7 @@ email                : a.furieri@lqt.it
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgsmessageoutput.h"
 #include "qgsrectangle.h"
@@ -961,7 +961,7 @@ void QgsSpatiaLiteProvider::determineViewPrimaryKey()
     if ( rows > 0 )
     {
       mPrimaryKey = results[1 * columns];
-      int idx = mAttributeFields.fieldNameIndex( mPrimaryKey );
+      int idx = mAttributeFields.lookupField( mPrimaryKey );
       if ( idx != -1 )
         mPrimaryKeyAttrs << idx;
     }
@@ -989,7 +989,7 @@ bool QgsSpatiaLiteProvider::hasTriggers()
 
 bool QgsSpatiaLiteProvider::hasRowid()
 {
-  if ( mAttributeFields.fieldNameIndex( "ROWID" ) >= 0 )
+  if ( mAttributeFields.lookupField( "ROWID" ) >= 0 )
     return false;
 
   // table without rowid column

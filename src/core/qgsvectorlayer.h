@@ -31,7 +31,7 @@
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgseditorwidgetconfig.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgssnapper.h"
 #include "qgsvectorsimplifymethod.h"
 #include "qgseditformconfig.h"
@@ -1128,7 +1128,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * @return A list of fields
      */
-    inline QgsFields fields() const { return mUpdatedFields; }
+    inline QgsFields fields() const { return mFields; }
 
     /**
      * Returns the list of fields of this layer.
@@ -1137,19 +1137,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * @return A list of fields
      */
-    inline QgsFields pendingFields() const { return mUpdatedFields; }
+    inline QgsFields pendingFields() const { return mFields; }
 
     /**
      * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
      * Alias for {@link attributeList()}
      */
-    inline QgsAttributeList pendingAllAttributesList() const { return mUpdatedFields.allAttributesList(); }
+    inline QgsAttributeList pendingAllAttributesList() const { return mFields.allAttributesList(); }
 
     /**
      * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
      * Alias for {@link attributeList()}
      */
-    inline QgsAttributeList attributeList() const { return mUpdatedFields.allAttributesList(); }
+    inline QgsAttributeList attributeList() const { return mFields.allAttributesList(); }
 
     /**
      * Returns list of attributes making up the primary key
@@ -1330,9 +1330,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /** Destroy active command and reverts all changes in it */
     void destroyEditCommand();
-
-    /** Returns the index of a field name or -1 if the field does not exist */
-    int fieldNameIndex( const QString& fieldName ) const;
 
     /** Editing vertex markers */
     enum VertexMarkerType
@@ -1917,7 +1914,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsFeatureIds mSelectedFeatureIds;
 
     /** Field map to commit */
-    QgsFields mUpdatedFields;
+    QgsFields mFields;
 
     /** Map that stores the aliases for attributes. Key is the attribute name and value the alias for that attribute*/
     QgsStringMap mAttributeAliasMap;

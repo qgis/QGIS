@@ -42,7 +42,7 @@ email                : sherman at mrcc.com
 #include "qgsdataitem.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerimport.h"
@@ -1350,7 +1350,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
   // is still returned to the caller
   for ( QMap< QString, QVariant::Type >::const_iterator it = mapFieldTypesToPatch.begin(); it != mapFieldTypesToPatch.end(); ++it )
   {
-    int idx = mAttributeFields.fieldNameIndex( it.key() );
+    int idx = mAttributeFields.lookupField( it.key() );
     if ( idx >= 0 )
       mAttributeFields[ idx ].setType( *it );
   }

@@ -23,7 +23,7 @@
 #include "qgsexpression.h"
 #include "qgsfeatureiterator.h"
 #include "qgsconditionalstyle.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayeractionregistry.h"
@@ -432,7 +432,7 @@ void QgsAttributeTableModel::fieldConditionalStyleChanged( const QString &fieldN
     return;
   }
 
-  int fieldIndex = mLayerCache->layer()->fieldNameIndex( fieldName );
+  int fieldIndex = mLayerCache->layer()->fields().lookupField( fieldName );
   if ( fieldIndex == -1 )
     return;
 
@@ -788,7 +788,7 @@ void QgsAttributeTableModel::prefetchSortData( const QString& expressionString )
   if ( mSortCacheExpression.isField() )
   {
     QString fieldName = static_cast<const QgsExpression::NodeColumnRef*>( mSortCacheExpression.rootNode() )->name();
-    mSortFieldIndex = mLayerCache->layer()->fieldNameIndex( fieldName );
+    mSortFieldIndex = mLayerCache->layer()->fields().lookupField( fieldName );
   }
 
   if ( mSortFieldIndex == -1 )
@@ -797,7 +797,7 @@ void QgsAttributeTableModel::prefetchSortData( const QString& expressionString )
 
     Q_FOREACH ( const QString& col, mSortCacheExpression.referencedColumns() )
     {
-      mSortCacheAttributes.append( mLayerCache->layer()->fieldNameIndex( col ) );
+      mSortCacheAttributes.append( mLayerCache->layer()->fields().lookupField( col ) );
     }
   }
   else

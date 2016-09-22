@@ -22,7 +22,7 @@
 #include <QMap>
 #include <QObject>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgscoordinatereferencesystem.h"
 
