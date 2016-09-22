@@ -30,7 +30,7 @@ import glob
 import shutil
 import tempfile
 
-from qgis.PyQt.QtCore import QSize, qDebug
+from qgis.PyQt.QtCore import QSize, qDebug, Qt
 from qgis.PyQt.QtGui import QFont, QColor
 
 from qgis.core import (
@@ -260,6 +260,7 @@ class TestQgsPalLabeling(unittest.TestCase):
         font.setPointSize(32)
         lyr.textFont = font
         lyr.textNamedStyle = 'Roman'
+        lyr.bufferJoinStyle = Qt.BevelJoin  # handle change of default join style
         return lyr
 
     @staticmethod
