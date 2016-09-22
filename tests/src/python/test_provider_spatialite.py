@@ -19,7 +19,7 @@ import sys
 import shutil
 import tempfile
 
-from qgis.core import QgsVectorLayer, QgsPoint, QgsFeature
+from qgis.core import QgsVectorLayer, QgsPoint, QgsFeature, QgsGeometry
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -346,6 +346,27 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(read_back['strings'], new_f['strings'])
         self.assertEqual(read_back['ints'], new_f['ints'])
         self.assertEqual(read_back['reals'], new_f['reals'])
+
+    # This test would fail. It would require turning on WAL
+    def XXXXXtestLocking(self):
+
+        temp_dbname = self.dbname + '.locking'
+        shutil.copy(self.dbname, temp_dbname)
+
+        vl = QgsVectorLayer("dbname=%s table=test_n (geometry)" % temp_dbname, "test_n", "spatialite")
+        self.assertTrue(vl.isValid())
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.changeGeometry(1, QgsGeometry.fromWkt('POLYGON((0 0,1 0,1 1,0 1,0 0))')))
+
+        # The iterator will take one extra connection
+        myiter = vl.getFeatures()
+
+        # Consume one feature but the iterator is still opened
+        f = next(myiter)
+        self.assertTrue(f.isValid())
+
+        self.assertTrue(vl.commitChanges())
 
 
 if __name__ == '__main__':
