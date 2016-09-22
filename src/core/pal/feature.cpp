@@ -1013,7 +1013,7 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
     {
       LabelInfo::CharacterInfo& ci = li->char_info[i];
       double start_x, start_y, end_x, end_y;
-      if ( nextCharPosition(ci.width, path_distances[index], path_positions, endindex, _distance, start_x, start_y, end_x, end_y ) == false )
+      if ( nextCharPosition( ci.width, path_distances[index], path_positions, endindex, _distance, start_x, start_y, end_x, end_y ) == false )
       {
         return nullptr;
       }
@@ -1060,7 +1060,7 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
     // grab the next character according to the orientation
     LabelInfo::CharacterInfo& ci = ( orientation > 0 ? li->char_info[i] : li->char_info[li->char_num-i-1] );
     double start_x, start_y, end_x, end_y;
-    if ( nextCharPosition(ci.width, path_distances[index], path_positions, index, distance, start_x, start_y, end_x, end_y ) == false )
+    if ( nextCharPosition( ci.width, path_distances[index], path_positions, index, distance, start_x, start_y, end_x, end_y ) == false )
     {
       delete slp;
       return nullptr;
