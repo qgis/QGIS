@@ -54,7 +54,7 @@ class EquivalentNumField(GeoAlgorithm):
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
-        fieldindex = vlayer.fieldNameIndex(fieldname)
+        fieldindex = vlayer.fields().lookupField(fieldname)
         fields = vlayer.fields()
         fields.append(QgsField('NUM_FIELD', QVariant.Int))
         writer = output.getVectorWriter(fields, vlayer.wkbType(),

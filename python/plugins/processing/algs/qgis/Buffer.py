@@ -35,7 +35,7 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve,
               segments, endCapStyle=1, joinStyle=1, mitreLimit=2):
 
     if useField:
-        field = layer.fieldNameIndex(field)
+        field = layer.fields().lookupField(field)
 
     outFeat = QgsFeature()
 

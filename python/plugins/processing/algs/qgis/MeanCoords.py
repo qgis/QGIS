@@ -79,12 +79,12 @@ class MeanCoords(GeoAlgorithm):
         if weightField is None:
             weightIndex = -1
         else:
-            weightIndex = layer.fieldNameIndex(weightField)
+            weightIndex = layer.fields().lookupField(weightField)
 
         if uniqueField is None:
             uniqueIndex = -1
         else:
-            uniqueIndex = layer.fieldNameIndex(uniqueField)
+            uniqueIndex = layer.fields().lookupField(uniqueField)
 
         fieldList = [QgsField('MEAN_X', QVariant.Double, '', 24, 15),
                      QgsField('MEAN_Y', QVariant.Double, '', 24, 15),

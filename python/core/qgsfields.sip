@@ -157,9 +157,10 @@ class QgsFields
 %End
 
     /**
-     * Look up field's index from the field name.
+     * Get the field index from the field name.
      * This method takes is case sensitive and only matches the data source
      * name of the field.
+     * Alias for indexOf
      *
      * @param fieldName The name of the field.
      *
@@ -167,6 +168,19 @@ class QgsFields
      * @see lookupField For a more tolerant alternative.
      */
     int indexFromName( const QString& fieldName ) const;
+
+    /**
+     * Get the field index from the field name.
+     * This method takes is case sensitive and only matches the data source
+     * name of the field.
+     *
+     * @param fieldName The name of the field.
+     *
+     * @return The field index if found or -1 in case it cannot be found.
+     * @see lookupField For a more tolerant alternative.
+     * @note Added in QGIS 3.0
+     */
+    int indexOf( const QString& fieldName ) const;
 
     /**
      * Look up field's index from the field name.

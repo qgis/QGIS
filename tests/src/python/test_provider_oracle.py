@@ -91,10 +91,10 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
         f = next(vl.getFeatures(QgsFeatureRequest()))
 
-        date_idx = vl.fieldNameIndex('date_field')
+        date_idx = vl.fields().lookupField('date_field')
         self.assertTrue(isinstance(f.attributes()[date_idx], QDate))
         self.assertEqual(f.attributes()[date_idx], QDate(2004, 3, 4))
-        datetime_idx = vl.fieldNameIndex('datetime_field')
+        datetime_idx = vl.fields().lookupField('datetime_field')
         self.assertTrue(isinstance(f.attributes()[datetime_idx], QDateTime))
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(
             QDate(2004, 3, 4), QTime(13, 41, 52)))

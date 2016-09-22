@@ -156,7 +156,7 @@ def resolveFieldIndex(layer, attr):
     if isinstance(attr, int):
         return attr
     else:
-        index = layer.fieldNameIndex(str(attr))
+        index = layer.fields().lookupField(attr)
         if index == -1:
             raise ValueError('Wrong field name')
         return index
@@ -236,7 +236,7 @@ def createUniqueFieldName(fieldName, fieldList):
 
 
 def findOrCreateField(layer, fieldList, fieldName, fieldLen=24, fieldPrec=15):
-    idx = layer.fieldNameIndex(fieldName)
+    idx = layer.fields().lookupField(fieldName)
     if idx == -1:
         fn = createUniqueFieldName(fieldName, fieldList)
         field = QgsField(fn, QVariant.Double, '', fieldLen, fieldPrec)

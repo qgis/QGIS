@@ -86,7 +86,7 @@ class SelectByAttribute(GeoAlgorithm):
 
         fields = layer.fields()
 
-        idx = layer.fieldNameIndex(fieldName)
+        idx = layer.fields().lookupField(fieldName)
         fieldType = fields[idx].type()
 
         if fieldType != QVariant.String and operator in self.OPERATORS[-2:]:

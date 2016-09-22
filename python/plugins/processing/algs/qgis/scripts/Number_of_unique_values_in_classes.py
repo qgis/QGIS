@@ -14,8 +14,8 @@ fields.append(QgsField('UNIQ_COUNT', QVariant.Int))
 writer = VectorWriter(N_unique_values, None, fields, layer.wkbType(),
                       layer.crs())
 
-class_field_index = layer.fieldNameIndex(class_field)
-value_field_index = layer.fieldNameIndex(value_field)
+class_field_index = layer.fields().lookupField(class_field)
+value_field_index = layer.fields().lookupField(value_field)
 
 outFeat = QgsFeature()
 classes = {}

@@ -127,7 +127,7 @@ class Dissolve(GeoAlgorithm):
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
         else:
-            field_indexes = [vlayerA.fieldNameIndex(f) for f in field_names.split(';')]
+            field_indexes = [vlayerA.fields().lookupField(f) for f in field_names.split(';')]
 
             attribute_dict = {}
             geometry_dict = defaultdict(lambda: [])

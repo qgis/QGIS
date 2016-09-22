@@ -75,7 +75,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
 
-        index = layer.fieldNameIndex(fieldName)
+        index = layer.fields().lookupField(fieldName)
         unique = vector.getUniqueValues(layer, index)
 
         current = 0
