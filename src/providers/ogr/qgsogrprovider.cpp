@@ -49,6 +49,13 @@ email                : sherman at mrcc.com
 #include "qgsvectorlayerimport.h"
 #include "qgslocalec.h"
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+#ifdef Q_OS_LINUX
+#include <sys/vfs.h>
+#endif
+
 static const QString TEXT_PROVIDER_KEY = "ogr";
 static const QString TEXT_PROVIDER_DESCRIPTION =
   QString( "OGR data provider" )
@@ -384,11 +391,14 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
 QgsOgrProvider::~QgsOgrProvider()
 {
-  close();
   QgsOgrConnPool::instance()->unref( dataSourceUri() );
   // We must also make sure to flush unusef cached connections so that
   // the file can be removed (#15137)
   QgsOgrConnPool::instance()->invalidateConnections( dataSourceUri() );
+
+  // Do that as last step for final cleanup that might be prevented by
+  // still opened datasets.
+  close();
 }
 
 QgsAbstractFeatureSource* QgsOgrProvider::featureSource() const
@@ -2905,6 +2915,125 @@ OGRDataSourceH QgsOgrProviderUtils::OGROpenWrapper( const char* pszPath, bool bU
   return hDS;
 }
 
+static bool IsLocalFile( const QString& path )
+{
+  QString dirName( QFileInfo( path ).absolutePath() );
+  // Start with the OS specific methods since the QT >= 5.4 method just
+  // return a string and not an enumerated type.
+#if defined(Q_OS_WIN)
+  if ( dirName.startsWith( "\\\\" ) )
+    return false;
+  if ( dirName.length() >= 3 && dirName[1] == ':' &&
+       ( dirName[2] == '\\' || dirName[2] == '/' ) )
+  {
+    dirName.resize( 3 );
+    return GetDriveType( dirName.toAscii().constData() ) != DRIVE_REMOTE;
+  }
+  return true;
+#elif defined(Q_OS_LINUX)
+  struct statfs sStatFS;
+  if ( statfs( dirName.toAscii().constData(), &sStatFS ) == 0 )
+  {
+    // Codes from http://man7.org/linux/man-pages/man2/statfs.2.html
+    if ( sStatFS.f_type == 0x6969 /* NFS */ ||
+         sStatFS.f_type == 0x517b /* SMB */ ||
+         sStatFS.f_type == 0xff534d42 /* CIFS */ )
+    {
+      return false;
+    }
+  }
+  return true;
+#elif QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+  QStorageInfo info( dirName );
+  QString fileSystem( info.fileSystemType() );
+  QgsDebugMsg( QString( "Filesystem for %1 is %2" ).arg( path ).arg( fileSystem ) );
+  return path != "nfs" && path != "smbfs";
+#else
+  return true;
+#endif
+}
+
+void QgsOgrProviderUtils::OGRDestroyWrapper( OGRDataSourceH ogrDataSource )
+{
+  if ( !ogrDataSource )
+    return;
+  OGRSFDriverH ogrDriver = OGR_DS_GetDriver( ogrDataSource );
+  QString ogrDriverName = OGR_Dr_GetName( ogrDriver );
+  QString datasetName( FROM8( OGR_DS_GetName( ogrDataSource ) ) );
+  if ( ogrDriverName == "GPKG" &&
+       IsLocalFile( datasetName ) &&
+       !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", NULL ) )
+  {
+    // We need to reset all iterators on layers, otherwise we will not
+    // be able to change journal_mode.
+    int layerCount = OGR_DS_GetLayerCount( ogrDataSource );
+    for ( int i = 0; i < layerCount; i ++ )
+    {
+      OGR_L_ResetReading( OGR_DS_GetLayer( ogrDataSource, i ) );
+    }
+
+    CPLPushErrorHandler( CPLQuietErrorHandler );
+    QgsDebugMsg( "GPKG: Trying to return to delete mode" );
+    bool bSuccess = false;
+    OGRLayerH hSqlLyr = OGR_DS_ExecuteSQL( ogrDataSource,
+                                           "PRAGMA journal_mode = delete",
+                                           NULL, NULL );
+    if ( hSqlLyr != NULL )
+    {
+      OGRFeatureH hFeat = OGR_L_GetNextFeature( hSqlLyr );
+      if ( hFeat != NULL )
+      {
+        const char* pszRet = OGR_F_GetFieldAsString( hFeat, 0 );
+        bSuccess = EQUAL( pszRet, "delete" );
+        QgsDebugMsg( QString( "Return: %1" ).arg( pszRet ) );
+        OGR_F_Destroy( hFeat );
+      }
+    }
+    else if ( CPLGetLastErrorType() != CE_None )
+    {
+      QgsDebugMsg( QString( "Return: %1" ).arg( CPLGetLastErrorMsg() ) );
+    }
+    OGR_DS_ReleaseResultSet( ogrDataSource, hSqlLyr );
+    CPLPopErrorHandler();
+    OGR_DS_Destroy( ogrDataSource );
+
+    // This may have not worked if the file was opened in read-only mode,
+    // so retry in update mode
+    if ( !bSuccess )
+    {
+      QgsDebugMsg( "GPKG: Trying again" );
+      CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "DELETE" );
+      ogrDataSource = OGROpen( TO8F( datasetName ), TRUE, NULL );
+      CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", NULL );
+      if ( ogrDataSource )
+      {
+#ifdef QGISDEBUG
+        CPLPushErrorHandler( CPLQuietErrorHandler );
+        OGRLayerH hSqlLyr = OGR_DS_ExecuteSQL( ogrDataSource,
+                                               "PRAGMA journal_mode",
+                                               NULL, NULL );
+        CPLPopErrorHandler();
+        if ( hSqlLyr != NULL )
+        {
+          OGRFeatureH hFeat = OGR_L_GetNextFeature( hSqlLyr );
+          if ( hFeat != NULL )
+          {
+            const char* pszRet = OGR_F_GetFieldAsString( hFeat, 0 );
+            QgsDebugMsg( QString( "Return: %1" ).arg( pszRet ) );
+            OGR_F_Destroy( hFeat );
+          }
+          OGR_DS_ReleaseResultSet( ogrDataSource, hSqlLyr );
+        }
+#endif
+        OGR_DS_Destroy( ogrDataSource );
+      }
+    }
+  }
+  else
+  {
+    OGR_DS_Destroy( ogrDataSource );
+  }
+}
 
 QByteArray QgsOgrProviderUtils::quotedIdentifier( QByteArray field, const QString& ogrDriverName )
 {
@@ -3140,7 +3269,22 @@ void QgsOgrProvider::open( OpenMode mode )
 
   // first try to open in update mode (unless specified otherwise)
   if ( !openReadOnly )
+  {
+    if ( QFileInfo( mFilePath ).suffix().compare( "gpkg", Qt::CaseInsensitive ) == 0 &&
+         IsLocalFile( mFilePath ) &&
+         !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", NULL ) &&
+         QSettings().value( "/qgis/walForSqlite3", true ).toBool() )
+    {
+      // For GeoPackage, we force opening of the file in WAL (Write Ahead Log)
+      // mode so as to avoid readers blocking writer(s), and vice-versa.
+      // https://www.sqlite.org/wal.html
+      // But only do that on a local file since WAL is advertized not to work
+      // on network shares
+      CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "WAL" );
+    }
     ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( mFilePath ), true, &ogrDriver );
+    CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", NULL );
+  }
 
   mValid = false;
   if ( ogrDataSource )
@@ -3270,7 +3414,7 @@ void QgsOgrProvider::close()
 
   if ( ogrDataSource )
   {
-    OGR_DS_Destroy( ogrDataSource );
+    QgsOgrProviderUtils::OGRDestroyWrapper( ogrDataSource );
   }
   ogrDataSource = nullptr;
   ogrLayer = nullptr;

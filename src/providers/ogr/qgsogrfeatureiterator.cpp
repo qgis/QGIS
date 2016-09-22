@@ -254,6 +254,12 @@ bool QgsOgrFeatureIterator::close()
 
   iteratorClosed();
 
+  // Will for example release SQLite3 statements
+  if ( ogrLayer )
+  {
+    OGR_L_ResetReading( ogrLayer );
+  }
+
   if ( mSubsetStringSet )
   {
     OGR_DS_ReleaseResultSet( mConn->ds, ogrLayer );
@@ -263,6 +269,7 @@ bool QgsOgrFeatureIterator::close()
     QgsOgrConnPool::instance()->releaseConnection( mConn );
 
   mConn = nullptr;
+  ogrLayer = nullptr;
 
   mClosed = true;
   return true;
