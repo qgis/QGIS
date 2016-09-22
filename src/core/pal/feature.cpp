@@ -1013,7 +1013,7 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
     {
       LabelInfo::CharacterInfo& ci = li->char_info[i];
       double start_x, start_y, end_x, end_y;
-      if ( nextCharPosition(ci.width, path_distances[index], path_positions, endindex, _distance, start_x, start_y, end_x, end_y) == false )
+      if ( nextCharPosition(ci.width, path_distances[index], path_positions, endindex, _distance, start_x, start_y, end_x, end_y ) == false )
       {
         return nullptr;
       }
@@ -1041,7 +1041,7 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
 
   LabelPosition* slp = nullptr;
   LabelPosition* slp_tmp = nullptr;
-  
+
   double old_x = path_positions->x[index-1];
   double old_y = path_positions->y[index-1];
 
@@ -1050,7 +1050,7 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
 
   double dx = new_x - old_x;
   double dy = new_y - old_y;
-  
+
   double angle = atan2( -dy, dx );
 
   for ( int i = 0; i < li->char_num; i++ )
@@ -1060,7 +1060,7 @@ LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, d
     // grab the next character according to the orientation
     LabelInfo::CharacterInfo& ci = ( orientation > 0 ? li->char_info[i] : li->char_info[li->char_num-i-1] );
     double start_x, start_y, end_x, end_y;
-    if ( nextCharPosition(ci.width, path_distances[index], path_positions, index, distance, start_x, start_y, end_x, end_y) == false )
+    if ( nextCharPosition(ci.width, path_distances[index], path_positions, index, distance, start_x, start_y, end_x, end_y ) == false )
     {
       delete slp;
       return nullptr;
@@ -1196,7 +1196,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
     bool flip = false;
     // placements may need to be reversed if using map orientation and the line has right-to-left direction
     bool reversed = false;
-    
+
     // an orientation of 0 means try both orientations and choose the best
     int orientation = 0;
     if ( !( flags & FLAG_MAP_ORIENTATION ) )
@@ -1214,7 +1214,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
     if ( slp->upsideDownCharCount() >= li->char_num / 2.0 )
     {
       // if labels should be shown upright then retry with the opposite orientation
-      if ( ( showUprightLabels() && !flip ) )
+      if (( showUprightLabels() && !flip ) )
       {
         delete slp;
         orientation = -orientation;
@@ -1766,8 +1766,8 @@ bool FeaturePart::showUprightLabels() const
   return uprightLabel;
 }
 
-bool FeaturePart::nextCharPosition(int charWidth, double segment_length, PointSet* path_positions, int& index, double& distance,
-  double& start_x, double& start_y, double& end_x, double& end_y) const
+bool FeaturePart::nextCharPosition( int charWidth, double segment_length, PointSet* path_positions, int& index, double& distance,
+                                    double& start_x, double& start_y, double& end_x, double& end_y ) const
 {
   // Coordinates this character will start at
   if ( qgsDoubleNear( segment_length, 0.0 ) )
