@@ -39,6 +39,10 @@ try:
     import configparser
 except ImportError:
     import configparser as configparser
+try:
+    from importlib import reload
+except ImportError:
+    from imp import reload
 import qgis.utils
 from qgis.core import Qgis, QgsNetworkAccessManager, QgsAuthManager, QgsWkbTypes
 from qgis.gui import QgsMessageBar
@@ -134,13 +138,13 @@ def removeDir(path):
         fltr = QDir.Dirs | QDir.Files | QDir.Hidden
         iterator = QDirIterator(path, fltr, QDirIterator.Subdirectories)
         while iterator.hasNext():
-            item = next(iterator)
+            item = iterator.next()
             if QFile(item).remove():
                 pass
         fltr = QDir.Dirs | QDir.Hidden
         iterator = QDirIterator(path, fltr, QDirIterator.Subdirectories)
         while iterator.hasNext():
-            item = next(iterator)
+            item = iterator.next()
             if QDir().rmpath(item):
                 pass
     if QFile(path).exists():
@@ -576,7 +580,7 @@ class Plugins(QObject):
             global errorDetails
             cp = configparser.ConfigParser()
             try:
-                cp.readfp(codecs.open(metadataFile, "r", "utf8"))
+                cp.read_file(codecs.open(metadataFile, "r", "utf8"))
                 return cp.get('general', fct)
             except Exception as e:
                 if not errorDetails:
@@ -713,7 +717,7 @@ class Plugins(QObject):
                 pluginDir.setFilter(QDir.AllDirs)
                 for key in pluginDir.entryList():
                     if key not in [".", ".."]:
-                        path = QDir.convertSeparators(pluginsPath + "/" + key)
+                        path = QDir.toNativeSeparators(pluginsPath + "/" + key)
                         # readOnly = not QFileInfo(pluginsPath).isWritable() # On windows testing the writable status isn't reliable.
                         readOnly = isTheSystemDir                            # Assume only the system plugins are not writable.
                         # only test those not yet loaded. Loaded plugins already proved they're o.k.

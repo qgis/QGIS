@@ -255,7 +255,7 @@ def findPlugins(path):
 
         try:
             f = codecs.open(metadataFile, "r", "utf8")
-            cp.readfp(f)
+            cp.read_file(f)
             f.close()
         except:
             cp = None
