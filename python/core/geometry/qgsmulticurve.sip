@@ -18,7 +18,7 @@ class QgsMultiCurve: public QgsGeometryCollection
     QString asJSON( int precision = 17 ) const;
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
-    virtual bool addGeometry( QgsAbstractGeometry* g );
+    virtual bool addGeometry( QgsAbstractGeometry* g /Transfer/ );
     /** Returns a geometry without curves. Caller takes ownership*/
     QgsAbstractGeometry* segmentize() const /Factory/;
 
