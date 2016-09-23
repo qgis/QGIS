@@ -580,7 +580,9 @@ class Plugins(QObject):
             global errorDetails
             cp = configparser.ConfigParser()
             try:
-                cp.read_file(codecs.open(metadataFile, "r", "utf8"))
+                f = codecs.open(metadataFile, "r", "utf8")
+                cp.read_file(f)
+                f.close()
                 return cp.get('general', fct)
             except Exception as e:
                 if not errorDetails:

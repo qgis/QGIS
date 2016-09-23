@@ -61,7 +61,9 @@ class StaticContext(object):
         """init"""
         self.ppath = os.path.dirname(os.path.abspath(__file__))
         self.metadata = configparser.ConfigParser()
-        self.metadata.readfp(open(os.path.join(self.ppath, 'metadata.txt')))
+        f = codecs.open(os.path.join(self.ppath, 'metadata.txt'), "r", "utf8")
+        self.metadata.read_file(f)
+        f.close()
 
 
 def get_ui_class(ui_file):
