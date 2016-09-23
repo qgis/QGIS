@@ -174,7 +174,8 @@ class TestQgsUnitTypes(unittest.TestCase):
         units = [QgsUnitTypes.RenderMillimeters,
                  QgsUnitTypes.RenderMapUnits,
                  QgsUnitTypes.RenderPixels,
-                 QgsUnitTypes.RenderPercentage]
+                 QgsUnitTypes.RenderPercentage,
+                 QgsUnitTypes.RenderPoints]
 
         for u in units:
             res, ok = QgsUnitTypes.decodeRenderUnit(QgsUnitTypes.encodeUnit(u))
