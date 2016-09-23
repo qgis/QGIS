@@ -254,9 +254,8 @@ def findPlugins(path):
         cp = configparser.ConfigParser()
 
         try:
-            f = codecs.open(metadataFile, "r", "utf8")
-            cp.read_file(f)
-            f.close()
+            with codecs.open(metadataFile, "r", "utf8") as f:
+                cp.read_file(f)
         except:
             cp = None
 

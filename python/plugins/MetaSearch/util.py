@@ -35,6 +35,7 @@ import configparser
 from gettext import gettext, ngettext
 import logging
 import os
+import codecs
 import webbrowser
 from xml.dom.minidom import parseString
 import xml.etree.ElementTree as etree
@@ -61,7 +62,8 @@ class StaticContext(object):
         """init"""
         self.ppath = os.path.dirname(os.path.abspath(__file__))
         self.metadata = configparser.ConfigParser()
-        self.metadata.readfp(open(os.path.join(self.ppath, 'metadata.txt')))
+        with codecs.open(os.path.join(self.ppath, 'metadata.txt'), "r", "utf8") as f:
+            self.metadata.read_file(f)
 
 
 def get_ui_class(ui_file):
