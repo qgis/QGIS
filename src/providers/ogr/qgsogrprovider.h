@@ -15,6 +15,9 @@ email                : sherman at mrcc.com
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSOGRPROVIDER_H
+#define QGSOGRPROVIDER_H
+
 #include "QTextCodec"
 
 #include "qgsrectangle.h"
@@ -387,4 +390,7 @@ class QgsOgrProviderUtils
     static QString quotedValue( const QVariant& value );
 
     static OGRDataSourceH OGROpenWrapper( const char* pszPath, bool bUpdate, OGRSFDriverH *phDriver );
+    static void OGRDestroyWrapper( OGRDataSourceH ogrDataSource );
 };
+
+#endif // QGSOGRPROVIDER_H

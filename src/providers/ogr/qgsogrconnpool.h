@@ -17,6 +17,7 @@
 #define QGSOGRCONNPOOL_H
 
 #include "qgsconnectionpool.h"
+#include "qgsogrprovider.h"
 #include <ogr_api.h>
 
 
@@ -43,7 +44,7 @@ inline void qgsConnectionPool_ConnectionCreate( QString connInfo, QgsOgrConn*& c
 
 inline void qgsConnectionPool_ConnectionDestroy( QgsOgrConn* c )
 {
-  OGR_DS_Destroy( c->ds );
+  QgsOgrProviderUtils::OGRDestroyWrapper( c->ds );
   delete c;
 }
 
