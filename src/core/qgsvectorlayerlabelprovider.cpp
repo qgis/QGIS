@@ -406,9 +406,17 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::Lab
 
   //font
   QFont dFont = lf->definedFont();
-  QgsDebugMsgLevel( QString( "PAL font tmpLyr: %1, Style: %2" ).arg( tmpLyr.textFont.toString(), tmpLyr.textFont.styleName() ), 4 );
+  QgsDebugMsgLevel( QString( "PAL font tmpLyr: %1, Style: %2" ).arg( tmpLyr.format().font().toString(), tmpLyr.format().font().styleName() ), 4 );
   QgsDebugMsgLevel( QString( "PAL font definedFont: %1, Style: %2" ).arg( dFont.toString(), dFont.styleName() ), 4 );
-  tmpLyr.textFont = dFont;
+
+  QgsTextFormat format = tmpLyr.format();
+  format.setFont( dFont );
+
+  // size has already been calculated and stored in the defined font - this calculated size
+  // is in pixels
+  format.setSize( dFont.pixelSize() );
+  format.setSizeUnit( QgsUnitTypes::RenderPixels );
+  tmpLyr.setFormat( format );
 
   if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiFollowPlacement )
   {
@@ -453,28 +461,32 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::Lab
   // Render the components of a label in reverse order
   //   (backgrounds -> text)
 
-  if ( tmpLyr.shadowDraw && tmpLyr.shadowUnder == QgsPalLayerSettings::ShadowLowest )
+  if ( tmpLyr.format().shadow().enabled() && tmpLyr.format().shadow().shadowPlacement() == QgsTextShadowSettings::ShadowLowest )
   {
-    if ( tmpLyr.shapeDraw )
+    QgsTextFormat format = tmpLyr.format();
+
+    if ( tmpLyr.format().background().enabled() )
     {
-      tmpLyr.shadowUnder = QgsPalLayerSettings::ShadowShape;
+      format.shadow().setShadowPlacement( QgsTextShadowSettings::ShadowShape );
     }
-    else if ( tmpLyr.bufferDraw )
+    else if ( tmpLyr.format().buffer().enabled() )
     {
-      tmpLyr.shadowUnder = QgsPalLayerSettings::ShadowBuffer;
+      format.shadow().setShadowPlacement( QgsTextShadowSettings::ShadowBuffer );
     }
     else
     {
-      tmpLyr.shadowUnder = QgsPalLayerSettings::ShadowText;
+      format.shadow().setShadowPlacement( QgsTextShadowSettings::ShadowText );
     }
+
+    tmpLyr.setFormat( format );
   }
 
-  if ( tmpLyr.shapeDraw )
+  if ( tmpLyr.format().background().enabled() )
   {
     drawLabelPrivate( label, context, tmpLyr, QgsPalLabeling::LabelShape );
   }
 
-  if ( tmpLyr.bufferDraw )
+  if ( tmpLyr.format().buffer().enabled() )
   {
     drawLabelPrivate( label, context, tmpLyr, QgsPalLabeling::LabelBuffer );
   }
@@ -695,7 +707,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
         //QgsDebugMsgLevel( QString( "xMultiLineOffset: %1" ).arg( xMultiLineOffset ), 4 );
       }
 
-      double yMultiLineOffset = ( lines - 1 - i ) * labelHeight * tmpLyr.multilineHeight;
+      double yMultiLineOffset = ( lines - 1 - i ) * labelHeight * tmpLyr.format().lineHeight();
       painter->translate( QPointF( xMultiLineOffset, - ascentOffset - yMultiLineOffset ) );
 
       component.setText( multiLineList.at( i ) );
@@ -714,14 +726,14 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
         // draw label's text, QPainterPath method
         QPainterPath path;
         path.setFillRule( Qt::WindingFill );
-        path.addText( 0, 0, tmpLyr.textFont, component.text() );
+        path.addText( 0, 0, tmpLyr.format().scaledFont( context ), component.text() );
 
         // store text's drawing in QPicture for drop shadow call
         QPicture textPict;
         QPainter textp;
         textp.begin( &textPict );
         textp.setPen( Qt::NoPen );
-        textp.setBrush( tmpLyr.textColor );
+        textp.setBrush( tmpLyr.format().color() );
         textp.drawPath( path );
         // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
         //       e.g. some capitalization options, but not others
@@ -730,7 +742,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
         //textp.drawText( 0, 0, component.text() );
         textp.end();
 
-        if ( tmpLyr.shadowDraw && tmpLyr.shadowUnder == QgsPalLayerSettings::ShadowText )
+        if ( tmpLyr.format().shadow().enabled() && tmpLyr.format().shadow().shadowPlacement() == QgsTextShadowSettings::ShadowText )
         {
           component.setPicture( &textPict );
           component.setPictureBuffer( 0.0 ); // no pen width to deal with
@@ -742,7 +754,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
         // paint the text
         if ( context.useAdvancedEffects() )
         {
-          painter->setCompositionMode( tmpLyr.blendMode );
+          painter->setCompositionMode( tmpLyr.format().blendMode() );
         }
 
         // scale for any print output or image saving @ specific dpi
@@ -757,8 +769,8 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
         else
         {
           // draw text as text (for SVG and PDF exports)
-          painter->setFont( tmpLyr.textFont );
-          painter->setPen( tmpLyr.textColor );
+          painter->setFont( tmpLyr.format().scaledFont( context ) );
+          painter->setPen( tmpLyr.format().color() );
           painter->setRenderHint( QPainter::TextAntialiasing );
           painter->drawText( 0, 0, component.text() );
         }

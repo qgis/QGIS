@@ -379,6 +379,19 @@ QPointF QgsSymbolLayerUtils::decodePoint( const QString& str )
   return QPointF( lst[0].toDouble(), lst[1].toDouble() );
 }
 
+QString QgsSymbolLayerUtils::encodeSize( QSizeF size )
+{
+  return QString( "%1,%2" ).arg( qgsDoubleToString( size.width() ), qgsDoubleToString( size.height() ) );
+}
+
+QSizeF QgsSymbolLayerUtils::decodeSize( const QString& string )
+{
+  QStringList lst = string.split( ',' );
+  if ( lst.count() != 2 )
+    return QSizeF( 0, 0 );
+  return QSizeF( lst[0].toDouble(), lst[1].toDouble() );
+}
+
 QString QgsSymbolLayerUtils::encodeMapUnitScale( const QgsMapUnitScale& mapUnitScale )
 {
   return QString( "%1,%2,%3,%4,%5,%6" ).arg( qgsDoubleToString( mapUnitScale.minScale ),
@@ -3285,6 +3298,37 @@ double QgsSymbolLayerUtils::convertToMapUnits( const QgsRenderContext &c, double
     case QgsUnitTypes::RenderPixels:
     {
       return size * mup;
+    }
+
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
+      //no sensible value
+      return 0.0;
+  }
+  return 0.0;
+}
+
+double QgsSymbolLayerUtils::convertFromMapUnits( const QgsRenderContext& context, double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit )
+{
+  double mup = context.mapToPixel().mapUnitsPerPixel();
+
+  switch ( outputUnit )
+  {
+    case QgsUnitTypes::RenderMapUnits:
+    {
+      return sizeInMapUnits;
+    }
+    case QgsUnitTypes::RenderMillimeters:
+    {
+      return sizeInMapUnits / ( context.scaleFactor() * context.rasterScaleFactor() * mup );
+    }
+    case QgsUnitTypes::RenderPoints:
+    {
+      return sizeInMapUnits / ( context.scaleFactor() * context.rasterScaleFactor() * mup / POINTS_TO_MM );
+    }
+    case QgsUnitTypes::RenderPixels:
+    {
+      return sizeInMapUnits / mup;
     }
 
     case QgsUnitTypes::RenderUnknownUnit:

@@ -41,6 +41,9 @@ class CORE_EXPORT QgsTextBufferSettings
 
     QgsTextBufferSettings();
 
+    /** Copy constructor.
+     * @param other source settings
+     */
     QgsTextBufferSettings( const QgsTextBufferSettings& other );
 
     /** Copy constructor.
@@ -911,10 +914,20 @@ class CORE_EXPORT QgsTextFormat
     /** Returns the font used for rendering text. Note that the size of the font
      * is not used, and size() should be called instead to determine the size
      * of rendered text.
+     * @see scaledFont()
      * @see setFont()
      * @see namedStyle()
      */
     QFont font() const;
+
+    /** Returns a font with the size scaled to match the format's size settings (including
+     * units and map unit scale) for a specified render context.
+     * @param context destination render context
+     * @returns font with scaled size
+     * @see font()
+     * @see size()
+     */
+    QFont scaledFont( const QgsRenderContext& context ) const;
 
     /** Sets the font used for rendering text. Note that the size of the font
      * is not used, and setSize() should be called instead to explicitly set the size
@@ -1052,6 +1065,24 @@ class CORE_EXPORT QgsTextFormat
      */
     QDomElement writeXml( QDomDocument& doc ) const;
 
+    /** Returns true if any component of the font format requires advanced effects
+     * such as blend modes, which require output in raster formats to be fully respected.
+     */
+    bool containsAdvancedEffects() const;
+
+    /** Returns true if the specified font was found on the system, or false
+     * if the font was not found and a replacement was used instead.
+     * @see resolvedFontFamily()
+     */
+    bool fontFound() const { return mTextFontFound; }
+
+    /** Returns the family for the resolved font, ie if the specified font
+     * was not found on the system this will return the name of the replacement
+     * font.
+     * @see fontFound()
+     */
+    QString resolvedFontFamily() const { return mTextFontFamily; }
+
   private:
 
     QgsTextBufferSettings mBufferSettings;
@@ -1062,6 +1093,34 @@ class CORE_EXPORT QgsTextFormat
     bool mTextFontFound;
 
     QSharedDataPointer<QgsTextSettingsPrivate> d;
+
+};
+
+
+class CORE_EXPORT QgsTextRenderer
+{
+  public:
+
+    /** Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
+     * @param size size to convert
+     * @param c rendercontext
+     * @param unit size units
+     * @param rasterfactor whether to consider oversampling
+     * @param mapUnitScale a mapUnitScale clamper
+     * @return font pixel size
+     */
+    static int sizeToPixel( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+
+    /** Calculates size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
+     * @param size size to convert
+     * @param c rendercontext
+     * @param unit size units
+     * @param rasterfactor whether to consider oversampling
+     * @param mapUnitScale a mapUnitScale clamper
+     * @return size that will render, as double
+     */
+    static double scaleToPixelContext( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+
 
 };
 

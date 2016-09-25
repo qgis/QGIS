@@ -35,13 +35,15 @@ void QgsLabelPreview::setTextColor( const QColor& color )
 
 void QgsLabelPreview::setBuffer( double size, const QColor& color, Qt::PenJoinStyle joinStyle, bool noFill )
 {
-  mTmpLyr.bufferSize = size * 88 / 25.4; //assume standard dpi for preview;
-  mTmpLyr.bufferSizeInMapUnits = false;
-  mTmpLyr.bufferColor = color;
-  mTmpLyr.bufferJoinStyle = joinStyle;
-  mTmpLyr.bufferNoFill = noFill;
+  QgsTextBufferSettings buffer = mFormat.buffer();
+  buffer.setSize( size * 88 / 25.4 ); //assume standard dpi for preview;
+  buffer.setSizeUnit( QgsUnitTypes::RenderMillimeters );
+  buffer.setColor( color );
+  buffer.setJoinStyle( joinStyle );
+  buffer.setFillBufferInterior( !noFill );
+  mFormat.setBuffer( buffer );
 
-  mTmpLyr.textFont = font();
+  mFormat.setFont( font() );
   update();
 }
 
@@ -52,28 +54,30 @@ void QgsLabelPreview::paintEvent( QPaintEvent *e )
 
   // TODO: draw all label components when this preview is an actual map canvas
   // for now, only preview label's text and buffer
-  mTmpLyr.shadowDraw = false;
+  mFormat.shadow().setEnabled( false );
 
   p.setRenderHint( QPainter::Antialiasing );
   p.setFont( font() );
   QFontMetrics fm( font() );
 
   // otherwise thin buffers don't look like those on canvas
-  if ( mTmpLyr.bufferSize != 0 && mTmpLyr.bufferSize < 1 )
-    mTmpLyr.bufferSize = 1;
+  if ( mFormat.buffer().size() != 0 && mFormat.buffer().size() < 1 )
+    mFormat.buffer().setSize( 1 );
 
   double xtrans = 0;
-  if ( mTmpLyr.bufferSize != 0 )
-    xtrans = mTmpLyr.bufferSize / 4;
+  if ( mFormat.buffer().size() != 0 )
+    xtrans = mFormat.buffer().size() / 4;
 
   p.translate( xtrans, fm.ascent() + 4 );
 
-  if ( mTmpLyr.bufferSize != 0 )
+  if ( mFormat.buffer().size() != 0 )
   {
     mContext.setPainter( &p );
     QgsLabelComponent component;
     component.setText( text() );
-    QgsPalLabeling::drawLabelBuffer( mContext, component, mTmpLyr );
+    QgsPalLayerSettings tmpLyr;
+    tmpLyr.setFormat( mFormat );
+    QgsPalLabeling::drawLabelBuffer( mContext, component, tmpLyr );
   }
 
   QPainterPath path;

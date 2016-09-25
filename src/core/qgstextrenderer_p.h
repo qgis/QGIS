@@ -46,7 +46,6 @@ class CORE_EXPORT QgsTextBufferSettingsPrivate : public QSharedData
         , sizeUnit( QgsUnitTypes::RenderMillimeters )
         , color( Qt::white )
         , fillBufferInterior( false )
-        , opacity( 1.0 )
         , joinStyle( Qt::RoundJoin )
         , blendMode( QPainter::CompositionMode_SourceOver )
     {
@@ -60,7 +59,6 @@ class CORE_EXPORT QgsTextBufferSettingsPrivate : public QSharedData
         , sizeMapUnitScale( other.sizeMapUnitScale )
         , color( other.color )
         , fillBufferInterior( other.fillBufferInterior )
-        , opacity( other.opacity )
         , joinStyle( other.joinStyle )
         , blendMode( other.blendMode )
     {
@@ -74,7 +72,6 @@ class CORE_EXPORT QgsTextBufferSettingsPrivate : public QSharedData
     QgsMapUnitScale sizeMapUnitScale;
     QColor color;
     bool fillBufferInterior;
-    double opacity;
     Qt::PenJoinStyle joinStyle;
     QPainter::CompositionMode blendMode;
 };
@@ -96,7 +93,6 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
         , offsetUnits( QgsUnitTypes::RenderMillimeters )
         , radii( QSizeF( 0.0, 0.0 ) )
         , radiiUnits( QgsUnitTypes::RenderMillimeters )
-        , opacity( 1.0 )
         , blendMode( QPainter::CompositionMode_SourceOver )
         , fillColor( Qt::white )
         , borderColor( Qt::darkGray )
@@ -123,7 +119,6 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
         , radii( other.radii )
         , radiiUnits( other.radiiUnits )
         , radiiMapUnitScale( other.radiiMapUnitScale )
-        , opacity( other.opacity )
         , blendMode( other.blendMode )
         , fillColor( other.fillColor )
         , borderColor( other.borderColor )
@@ -151,7 +146,6 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
     QSizeF radii;
     QgsUnitTypes::RenderUnit radiiUnits;
     QgsMapUnitScale radiiMapUnitScale;
-    double opacity;
     QPainter::CompositionMode blendMode;
     QColor fillColor;
     QColor borderColor;
@@ -177,11 +171,11 @@ class CORE_EXPORT QgsTextShadowSettingsPrivate : public QSharedData
         , radius( 1.5 )
         , radiusUnits( QgsUnitTypes::RenderMillimeters )
         , radiusAlphaOnly( false )
-        , opacity( 0.30 )
         , scale( 100 )
-        , color( Qt::black )
+        , color( QColor( 0, 0, 0, 76 ) )
         , blendMode( QPainter::CompositionMode_Multiply )
     {
+
     }
 
     QgsTextShadowSettingsPrivate( const QgsTextShadowSettingsPrivate& other )
@@ -197,7 +191,6 @@ class CORE_EXPORT QgsTextShadowSettingsPrivate : public QSharedData
         , radiusUnits( other.radiusUnits )
         , radiusMapUnitScale( other.radiusMapUnitScale )
         , radiusAlphaOnly( other.radiusAlphaOnly )
-        , opacity( other.opacity )
         , scale( other.scale )
         , color( other.color )
         , blendMode( other.blendMode )
@@ -217,7 +210,6 @@ class CORE_EXPORT QgsTextShadowSettingsPrivate : public QSharedData
     QgsUnitTypes::RenderUnit radiusUnits;
     QgsMapUnitScale radiusMapUnitScale;
     bool radiusAlphaOnly;
-    double opacity;
     int scale;
     QColor color;
     QPainter::CompositionMode blendMode;
@@ -233,8 +225,7 @@ class CORE_EXPORT QgsTextSettingsPrivate : public QSharedData
         , fontSizeUnits( QgsUnitTypes::RenderPoints )
         , fontSize( 10 )
         , textColor( Qt::black )
-        , opacity( 1.0 )
-        , blendMode( QPainter::CompositionMode_Multiply )
+        , blendMode( QPainter::CompositionMode_SourceOver )
         , multilineHeight( 1.0 )
     {
     }
@@ -247,7 +238,6 @@ class CORE_EXPORT QgsTextSettingsPrivate : public QSharedData
         , fontSizeMapUnitScale( other.fontSizeMapUnitScale )
         , fontSize( other.fontSize )
         , textColor( other.textColor )
-        , opacity( other.opacity )
         , blendMode( other.blendMode )
         , multilineHeight( other.multilineHeight )
     {
@@ -261,7 +251,6 @@ class CORE_EXPORT QgsTextSettingsPrivate : public QSharedData
     QgsMapUnitScale fontSizeMapUnitScale;
     double fontSize; //may differ from size in textFont due to units (eg size in map units)
     QColor textColor;
-    double opacity;
     QPainter::CompositionMode blendMode;
     double multilineHeight; //0.0 to 10.0, leading between lines as multiplyer of line height
 

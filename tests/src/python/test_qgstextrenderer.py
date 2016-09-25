@@ -21,7 +21,7 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsUnitTypes,
                        QgsMapUnitScale,
                        QgsVectorLayer)
-from qgis.PyQt.QtGui import (QColor, QPainter)
+from qgis.PyQt.QtGui import (QColor, QPainter, QFont)
 from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF)
 from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
 from qgis.testing import unittest, start_app
@@ -343,6 +343,65 @@ class PyQgsTextRenderer(unittest.TestCase):
         t = QgsTextFormat()
         t.readXml(parent)
         self.checkTextFormat(t)
+
+    def containsAdvancedEffects(self):
+        t = QgsTextFormat()
+        self.assertFalse(t.containsAdvancedEffects())
+        t.setBlendMode(QPainter.CompositionMode_DestinationAtop)
+        self.assertTrue(t.containsAdvancedEffects())
+
+        t = QgsTextFormat()
+        t.buffer().setBlendMode(QPainter.CompositionMode_DestinationAtop)
+        self.assertFalse(t.containsAdvancedEffects())
+        t.buffer().setEnabled(True)
+        self.assertTrue(t.containsAdvancedEffects())
+        t.buffer().setBlendMode(QPainter.CompositionMode_SourceOver)
+        self.assertFalse(t.containsAdvancedEffects())
+
+        t = QgsTextFormat()
+        t.background().setBlendMode(QPainter.CompositionMode_DestinationAtop)
+        self.assertFalse(t.containsAdvancedEffects())
+        t.background().setEnabled(True)
+        self.assertTrue(t.containsAdvancedEffects())
+        t.background().setBlendMode(QPainter.CompositionMode_SourceOver)
+        self.assertFalse(t.containsAdvancedEffects())
+
+        t = QgsTextFormat()
+        t.shadow().setBlendMode(QPainter.CompositionMode_DestinationAtop)
+        self.assertFalse(t.containsAdvancedEffects())
+        t.shadow().setEnabled(True)
+        self.assertTrue(t.containsAdvancedEffects())
+        t.shadow().setBlendMode(QPainter.CompositionMode_SourceOver)
+        self.assertFalse(t.containsAdvancedEffects())
+
+    def testFontFoundFromLayer(self):
+        layer = createEmptyLayer()
+        layer.setCustomProperty('labeling/fontFamily', 'asdasd')
+        f = QgsTextFormat()
+        f.readFromLayer(layer)
+        self.assertFalse(f.fontFound())
+
+        font = getTestFont()
+        layer.setCustomProperty('labeling/fontFamily', font.family())
+        f.readFromLayer(layer)
+        self.assertTrue(f.fontFound())
+
+    def testFontFoundFromXml(self):
+        doc = QDomDocument("testdoc")
+        f = QgsTextFormat()
+        elem = f.writeXml(doc)
+        elem.setAttribute('fontFamily', 'asdfasdfsadf')
+        parent = doc.createElement("parent")
+        parent.appendChild(elem)
+
+        f.readXml(parent)
+        self.assertFalse(f.fontFound())
+
+        font = getTestFont()
+        elem.setAttribute('fontFamily', font.family())
+        f.readXml(parent)
+        self.assertTrue(f.fontFound())
+
 
 if __name__ == '__main__':
     unittest.main()

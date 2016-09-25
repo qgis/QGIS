@@ -631,6 +631,11 @@ void QgsLabelingGui::init()
   else
     lyr.readFromLayer( mLayer );
 
+  QgsTextFormat format = lyr.format();
+  QgsTextBufferSettings buffer = format.buffer();
+  QgsTextBackgroundSettings background = format.background();
+  QgsTextShadowSettings shadow = format.shadow();
+
   blockInitSignals( true );
 
   mFieldExpressionWidget->setEnabled( mMode == Labels );
@@ -727,7 +732,7 @@ void QgsLabelingGui::init()
   mMaxCharAngleOutDSpinBox->setValue( qAbs( lyr.maxCurvedCharAngleOut ) );
 
   wrapCharacterEdit->setText( lyr.wrapChar );
-  mFontLineHeightSpinBox->setValue( lyr.multilineHeight );
+  mFontLineHeightSpinBox->setValue( format.lineHeight() );
   mFontMultiLineAlignComboBox->setCurrentIndex(( unsigned int ) lyr.multilineAlign );
   chkPreserveRotation->setChecked( lyr.preserveRotation );
 
@@ -740,15 +745,15 @@ void QgsLabelingGui::init()
   mScaleBasedVisibilityMaxSpnBx->setValue( lyr.scaleMax );
 
   // buffer
-  mBufferDrawChkBx->setChecked( lyr.bufferDraw );
-  spinBufferSize->setValue( lyr.bufferSize );
-  mBufferUnitWidget->setUnit( lyr.bufferSizeInMapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters );
-  mBufferUnitWidget->setMapUnitScale( lyr.bufferSizeMapUnitScale );
-  btnBufferColor->setColor( lyr.bufferColor );
-  mBufferTranspSpinBox->setValue( lyr.bufferTransp );
-  mBufferJoinStyleComboBox->setPenJoinStyle( lyr.bufferJoinStyle );
-  mBufferTranspFillChbx->setChecked( !lyr.bufferNoFill );
-  comboBufferBlendMode->setBlendMode( lyr.bufferBlendMode );
+  mBufferDrawChkBx->setChecked( buffer.enabled() );
+  spinBufferSize->setValue( buffer.size() );
+  mBufferUnitWidget->setUnit( buffer.sizeUnit() );
+  mBufferUnitWidget->setMapUnitScale( buffer.sizeMapUnitScale() );
+  btnBufferColor->setColor( buffer.color() );
+  mBufferTranspSpinBox->setValue( 100 - 100 * buffer.opacity() );
+  mBufferJoinStyleComboBox->setPenJoinStyle( buffer.joinStyle() );
+  mBufferTranspFillChbx->setChecked( buffer.fillBufferInterior() );
+  comboBufferBlendMode->setBlendMode( buffer.blendMode() );
 
   mFormatNumChkBx->setChecked( lyr.formatNumbers );
   mFormatNumDecimalsSpnBx->setValue( lyr.decimals );
@@ -760,32 +765,32 @@ void QgsLabelingGui::init()
   mMinPixelLimit = lyr.fontMinPixelSize; // ignored after first settings save
   mFontMinPixelSpinBox->setValue( lyr.fontMinPixelSize == 0 ? 3 : lyr.fontMinPixelSize );
   mFontMaxPixelSpinBox->setValue( lyr.fontMaxPixelSize );
-  mFontSizeUnitWidget->setUnit( lyr.fontSizeInMapUnits ? 1 : 0 );
-  mFontSizeUnitWidget->setMapUnitScale( lyr.fontSizeMapUnitScale );
+  mFontSizeUnitWidget->setUnit( format.sizeUnit() );
+  mFontSizeUnitWidget->setMapUnitScale( format.sizeMapUnitScale() );
 
   mZIndexSpinBox->setValue( lyr.zIndex );
 
-  mRefFont = lyr.textFont;
-  mFontSizeSpinBox->setValue( lyr.textFont.pointSizeF() );
-  btnTextColor->setColor( lyr.textColor );
-  mFontTranspSpinBox->setValue( lyr.textTransp );
-  comboBlendMode->setBlendMode( lyr.blendMode );
+  mRefFont = format.font();
+  mFontSizeSpinBox->setValue( format.font().pointSizeF() );
+  btnTextColor->setColor( format.color() );
+  mFontTranspSpinBox->setValue( 100 - 100 * format.opacity() );
+  comboBlendMode->setBlendMode( format.blendMode() );
 
-  mFontWordSpacingSpinBox->setValue( lyr.textFont.wordSpacing() );
-  mFontLetterSpacingSpinBox->setValue( lyr.textFont.letterSpacing() );
+  mFontWordSpacingSpinBox->setValue( format.font().wordSpacing() );
+  mFontLetterSpacingSpinBox->setValue( format.font().letterSpacing() );
 
-  QgsFontUtils::updateFontViaStyle( mRefFont, lyr.textNamedStyle );
+  QgsFontUtils::updateFontViaStyle( mRefFont, format.namedStyle() );
   updateFont( mRefFont );
 
   // show 'font not found' if substitution has occurred (should come after updateFont())
-  mFontMissingLabel->setVisible( !lyr.mTextFontFound );
-  if ( !lyr.mTextFontFound )
+  mFontMissingLabel->setVisible( !format.fontFound() );
+  if ( !format.fontFound() )
   {
     QString missingTxt = tr( "%1 not found. Default substituted." );
     QString txtPrepend = tr( "Chosen font" );
-    if ( !lyr.mTextFontFamily.isEmpty() )
+    if ( !format.resolvedFontFamily().isEmpty() )
     {
-      txtPrepend = QString( "'%1'" ).arg( lyr.mTextFontFamily );
+      txtPrepend = QString( "'%1'" ).arg( format.resolvedFontFamily() );
     }
     mFontMissingLabel->setText( missingTxt.arg( txtPrepend ) );
 
@@ -794,61 +799,61 @@ void QgsLabelingGui::init()
   }
 
   // shape background
-  mShapeDrawChkBx->setChecked( lyr.shapeDraw );
+  mShapeDrawChkBx->setChecked( background.enabled() );
   mShapeTypeCmbBx->blockSignals( true );
-  mShapeTypeCmbBx->setCurrentIndex( lyr.shapeType );
+  mShapeTypeCmbBx->setCurrentIndex( background.type() );
   mShapeTypeCmbBx->blockSignals( false );
-  mShapeSVGPathLineEdit->setText( lyr.shapeSVGFile );
+  mShapeSVGPathLineEdit->setText( background.svgFile() );
 
-  mShapeSizeCmbBx->setCurrentIndex( lyr.shapeSizeType );
-  mShapeSizeXSpnBx->setValue( lyr.shapeSize.x() );
-  mShapeSizeYSpnBx->setValue( lyr.shapeSize.y() );
-  mShapeSizeUnitWidget->setUnit( lyr.shapeSizeUnits == QgsPalLayerSettings::MapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters );
-  mShapeSizeUnitWidget->setMapUnitScale( lyr.shapeSizeMapUnitScale );
-  mShapeRotationCmbBx->setCurrentIndex( lyr.shapeRotationType );
-  mShapeRotationDblSpnBx->setEnabled( lyr.shapeRotationType != QgsPalLayerSettings::RotationSync );
-  mShapeRotationDDBtn->setEnabled( lyr.shapeRotationType != QgsPalLayerSettings::RotationSync );
-  mShapeRotationDblSpnBx->setValue( lyr.shapeRotation );
-  mShapeOffsetXSpnBx->setValue( lyr.shapeOffset.x() );
-  mShapeOffsetYSpnBx->setValue( lyr.shapeOffset.y() );
-  mShapeOffsetUnitWidget->setUnit( lyr.shapeOffsetUnits == QgsPalLayerSettings::MapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters );
-  mShapeOffsetUnitWidget->setMapUnitScale( lyr.shapeOffsetMapUnitScale );
-  mShapeRadiusXDbSpnBx->setValue( lyr.shapeRadii.x() );
-  mShapeRadiusYDbSpnBx->setValue( lyr.shapeRadii.y() );
-  mShapeRadiusUnitWidget->setUnit( lyr.shapeRadiiUnits - 1 );
-  mShapeRadiusUnitWidget->setMapUnitScale( lyr.shapeRadiiMapUnitScale );
+  mShapeSizeCmbBx->setCurrentIndex( background.sizeType() );
+  mShapeSizeXSpnBx->setValue( background.size().width() );
+  mShapeSizeYSpnBx->setValue( background.size().height() );
+  mShapeSizeUnitWidget->setUnit( background.sizeUnit() );
+  mShapeSizeUnitWidget->setMapUnitScale( background.sizeMapUnitScale() );
+  mShapeRotationCmbBx->setCurrentIndex( background.rotationType() );
+  mShapeRotationDblSpnBx->setEnabled( background.rotationType() != QgsTextBackgroundSettings::RotationSync );
+  mShapeRotationDDBtn->setEnabled( background.rotationType() != QgsTextBackgroundSettings::RotationSync );
+  mShapeRotationDblSpnBx->setValue( background.rotation() );
+  mShapeOffsetXSpnBx->setValue( background.offset().x() );
+  mShapeOffsetYSpnBx->setValue( background.offset().y() );
+  mShapeOffsetUnitWidget->setUnit( background.offsetUnit() );
+  mShapeOffsetUnitWidget->setMapUnitScale( background.offsetMapUnitScale() );
+  mShapeRadiusXDbSpnBx->setValue( background.radii().width() );
+  mShapeRadiusYDbSpnBx->setValue( background.radii().height() );
+  mShapeRadiusUnitWidget->setUnit( background.radiiUnit() );
+  mShapeRadiusUnitWidget->setMapUnitScale( background.radiiMapUnitScale() );
 
-  mShapeFillColorBtn->setColor( lyr.shapeFillColor );
-  mShapeBorderColorBtn->setColor( lyr.shapeBorderColor );
-  mShapeBorderWidthSpnBx->setValue( lyr.shapeBorderWidth );
-  mShapeBorderWidthUnitWidget->setUnit( lyr.shapeBorderWidthUnits == QgsPalLayerSettings::MapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters );
-  mShapeBorderWidthUnitWidget->setMapUnitScale( lyr.shapeBorderWidthMapUnitScale );
-  mShapePenStyleCmbBx->setPenJoinStyle( lyr.shapeJoinStyle );
+  mShapeFillColorBtn->setColor( background.fillColor() );
+  mShapeBorderColorBtn->setColor( background.borderColor() );
+  mShapeBorderWidthSpnBx->setValue( background.borderWidth() );
+  mShapeBorderWidthUnitWidget->setUnit( background.borderWidthUnit() );
+  mShapeBorderWidthUnitWidget->setMapUnitScale( background.borderWidthMapUnitScale() );
+  mShapePenStyleCmbBx->setPenJoinStyle( background.joinStyle() );
 
-  mShapeTranspSpinBox->setValue( lyr.shapeTransparency );
-  mShapeBlendCmbBx->setBlendMode( lyr.shapeBlendMode );
+  mShapeTranspSpinBox->setValue( 100 - background.opacity() * 100.0 );
+  mShapeBlendCmbBx->setBlendMode( background.blendMode() );
 
   mLoadSvgParams = false;
-  on_mShapeTypeCmbBx_currentIndexChanged( lyr.shapeType ); // force update of shape background gui
+  on_mShapeTypeCmbBx_currentIndexChanged( background.type() ); // force update of shape background gui
 
   // drop shadow
-  mShadowDrawChkBx->setChecked( lyr.shadowDraw );
-  mShadowUnderCmbBx->setCurrentIndex( lyr.shadowUnder );
-  mShadowOffsetAngleSpnBx->setValue( lyr.shadowOffsetAngle );
-  mShadowOffsetSpnBx->setValue( lyr.shadowOffsetDist );
-  mShadowOffsetUnitWidget->setUnit( lyr.shadowOffsetUnits == QgsPalLayerSettings::MapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters );
-  mShadowOffsetUnitWidget->setMapUnitScale( lyr.shadowOffsetMapUnitScale );
-  mShadowOffsetGlobalChkBx->setChecked( lyr.shadowOffsetGlobal );
+  mShadowDrawChkBx->setChecked( shadow.enabled() );
+  mShadowUnderCmbBx->setCurrentIndex( shadow.shadowPlacement() );
+  mShadowOffsetAngleSpnBx->setValue( shadow.offsetAngle() );
+  mShadowOffsetSpnBx->setValue( shadow.offsetDistance() );
+  mShadowOffsetUnitWidget->setUnit( shadow.offsetUnit() );
+  mShadowOffsetUnitWidget->setMapUnitScale( shadow.offsetMapUnitScale() );
+  mShadowOffsetGlobalChkBx->setChecked( shadow.offsetGlobal() );
 
-  mShadowRadiusDblSpnBx->setValue( lyr.shadowRadius );
-  mShadowRadiusUnitWidget->setUnit( lyr.shadowRadiusUnits == QgsPalLayerSettings::MapUnits ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters );
-  mShadowRadiusUnitWidget->setMapUnitScale( lyr.shadowRadiusMapUnitScale );
-  mShadowRadiusAlphaChkBx->setChecked( lyr.shadowRadiusAlphaOnly );
-  mShadowTranspSpnBx->setValue( lyr.shadowTransparency );
-  mShadowScaleSpnBx->setValue( lyr.shadowScale );
+  mShadowRadiusDblSpnBx->setValue( shadow.blurRadius() );
+  mShadowRadiusUnitWidget->setUnit( shadow.blurRadiusUnit() );
+  mShadowRadiusUnitWidget->setMapUnitScale( shadow.blurRadiusMapUnitScale() );
+  mShadowRadiusAlphaChkBx->setChecked( shadow.blurAlphaOnly() );
+  mShadowTranspSpnBx->setValue( 100 - shadow.opacity() * 100.0 );
+  mShadowScaleSpnBx->setValue( shadow.scale() );
 
-  mShadowColorBtn->setColor( lyr.shadowColor );
-  mShadowBlendCmbBx->setBlendMode( lyr.shadowBlendMode );
+  mShadowColorBtn->setColor( shadow.color() );
+  mShadowBlendCmbBx->setBlendMode( shadow.blendMode() );
 
   updatePlacementWidgets();
   updateLinePlacementOptions();
@@ -1012,11 +1017,6 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.repeatDistanceUnit = mRepeatDistanceUnitWidget->unit() == QgsUnitTypes::RenderMapUnits ? QgsPalLayerSettings::MapUnits : QgsPalLayerSettings::MM;
   lyr.repeatDistanceMapUnitScale = mRepeatDistanceUnitWidget->getMapUnitScale();
 
-  lyr.textColor = btnTextColor->color();
-  lyr.textFont = mRefFont;
-  lyr.textNamedStyle = mFontStyleComboBox->currentText();
-  lyr.textTransp = mFontTranspSpinBox->value();
-  lyr.blendMode = comboBlendMode->blendMode();
   lyr.previewBkgrdColor = mPreviewBackgroundBtn->color();
 
   lyr.priority = mPrioritySlider->value();
@@ -1033,60 +1033,77 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.useSubstitutions = mCheckBoxSubstituteText->isChecked();
   lyr.substitutions = mSubstitutions;
 
+  QgsTextFormat format;
+  format.setColor( btnTextColor->color() );
+  format.setFont( mRefFont );
+  format.setNamedStyle( mFontStyleComboBox->currentText() );
+  format.setOpacity( 1.0 - mFontTranspSpinBox->value() / 100.0 );
+  format.setBlendMode( comboBlendMode->blendMode() );
+  format.setSizeUnit( mFontSizeUnitWidget->unit() );
+  format.setSizeMapUnitScale( mFontSizeUnitWidget->getMapUnitScale() );
+  format.setLineHeight( mFontLineHeightSpinBox->value() );
+
   // buffer
-  lyr.bufferDraw = mBufferDrawChkBx->isChecked();
-  lyr.bufferSize = spinBufferSize->value();
-  lyr.bufferColor = btnBufferColor->color();
-  lyr.bufferTransp = mBufferTranspSpinBox->value();
-  lyr.bufferSizeInMapUnits = ( mBufferUnitWidget->unit() == QgsUnitTypes::RenderMapUnits );
-  lyr.bufferSizeMapUnitScale = mBufferUnitWidget->getMapUnitScale();
-  lyr.bufferJoinStyle = mBufferJoinStyleComboBox->penJoinStyle();
-  lyr.bufferNoFill = !mBufferTranspFillChbx->isChecked();
-  lyr.bufferBlendMode = comboBufferBlendMode->blendMode();
+  QgsTextBufferSettings buffer;
+  buffer.setEnabled( mBufferDrawChkBx->isChecked() );
+  buffer.setSize( spinBufferSize->value() );
+  buffer.setColor( btnBufferColor->color() );
+  buffer.setOpacity( 1.0 - mBufferTranspSpinBox->value() / 100.0 );
+  buffer.setSizeUnit( mBufferUnitWidget->unit() );
+  buffer.setSizeMapUnitScale( mBufferUnitWidget->getMapUnitScale() );
+  buffer.setJoinStyle( mBufferJoinStyleComboBox->penJoinStyle() );
+  buffer.setFillBufferInterior( mBufferTranspFillChbx->isChecked() );
+  buffer.setBlendMode( comboBufferBlendMode->blendMode() );
+  format.setBuffer( buffer );
 
   // shape background
-  lyr.shapeDraw = mShapeDrawChkBx->isChecked();
-  lyr.shapeType = ( QgsPalLayerSettings::ShapeType )mShapeTypeCmbBx->currentIndex();
-  lyr.shapeSVGFile = mShapeSVGPathLineEdit->text();
+  QgsTextBackgroundSettings background;
+  background.setEnabled( mShapeDrawChkBx->isChecked() );
+  background.setType(( QgsTextBackgroundSettings::ShapeType )mShapeTypeCmbBx->currentIndex() );
+  background.setSvgFile( mShapeSVGPathLineEdit->text() );
+  background.setSizeType(( QgsTextBackgroundSettings::SizeType )mShapeSizeCmbBx->currentIndex() );
+  background.setSize( QSizeF( mShapeSizeXSpnBx->value(), mShapeSizeYSpnBx->value() ) );
+  background.setSizeUnit( mShapeSizeUnitWidget->unit() );
+  background.setSizeMapUnitScale( mShapeSizeUnitWidget->getMapUnitScale() );
+  background.setRotationType(( QgsTextBackgroundSettings::RotationType )( mShapeRotationCmbBx->currentIndex() ) );
+  background.setRotation( mShapeRotationDblSpnBx->value() );
+  background.setOffset( QPointF( mShapeOffsetXSpnBx->value(), mShapeOffsetYSpnBx->value() ) );
+  background.setOffsetUnit( mShapeOffsetUnitWidget->unit() );
+  background.setOffsetMapUnitScale( mShapeOffsetUnitWidget->getMapUnitScale() );
+  background.setRadii( QSizeF( mShapeRadiusXDbSpnBx->value(), mShapeRadiusYDbSpnBx->value() ) );
+  background.setRadiiUnit( mShapeRadiusUnitWidget->unit() );
+  background.setRadiiMapUnitScale( mShapeRadiusUnitWidget->getMapUnitScale() );
 
-  lyr.shapeSizeType = ( QgsPalLayerSettings::SizeType )mShapeSizeCmbBx->currentIndex();
-  lyr.shapeSize = QPointF( mShapeSizeXSpnBx->value(), mShapeSizeYSpnBx->value() );
-  lyr.shapeSizeUnits = mShapeSizeUnitWidget->unit() == QgsUnitTypes::RenderMapUnits ? QgsPalLayerSettings::MapUnits : QgsPalLayerSettings::MM;
-  lyr.shapeSizeMapUnitScale = mShapeSizeUnitWidget->getMapUnitScale();
-  lyr.shapeRotationType = ( QgsPalLayerSettings::RotationType )( mShapeRotationCmbBx->currentIndex() );
-  lyr.shapeRotation = mShapeRotationDblSpnBx->value();
-  lyr.shapeOffset = QPointF( mShapeOffsetXSpnBx->value(), mShapeOffsetYSpnBx->value() );
-  lyr.shapeOffsetUnits =  mShapeOffsetUnitWidget->unit() == QgsUnitTypes::RenderMapUnits ? QgsPalLayerSettings::MapUnits : QgsPalLayerSettings::MM;
-  lyr.shapeOffsetMapUnitScale = mShapeOffsetUnitWidget->getMapUnitScale();
-  lyr.shapeRadii = QPointF( mShapeRadiusXDbSpnBx->value(), mShapeRadiusYDbSpnBx->value() );
-  lyr.shapeRadiiUnits = ( QgsPalLayerSettings::SizeUnit )( mShapeRadiusUnitWidget->getUnit() + 1 );
-  lyr.shapeRadiiMapUnitScale = mShapeRadiusUnitWidget->getMapUnitScale();
-
-  lyr.shapeFillColor = mShapeFillColorBtn->color();
-  lyr.shapeBorderColor = mShapeBorderColorBtn->color();
-  lyr.shapeBorderWidth = mShapeBorderWidthSpnBx->value();
-  lyr.shapeBorderWidthUnits = mShapeBorderWidthUnitWidget->unit() == QgsUnitTypes::RenderMapUnits ? QgsPalLayerSettings::MapUnits : QgsPalLayerSettings::MM;
-  lyr.shapeBorderWidthMapUnitScale = mShapeBorderWidthUnitWidget->getMapUnitScale();
-  lyr.shapeJoinStyle = mShapePenStyleCmbBx->penJoinStyle();
-  lyr.shapeTransparency = mShapeTranspSpinBox->value();
-  lyr.shapeBlendMode = mShapeBlendCmbBx->blendMode();
+  background.setFillColor( mShapeFillColorBtn->color() );
+  background.setBorderColor( mShapeBorderColorBtn->color() );
+  background.setBorderWidth( mShapeBorderWidthSpnBx->value() );
+  background.setBorderWidthUnit( mShapeBorderWidthUnitWidget->unit() );
+  background.setBorderWidthMapUnitScale( mShapeBorderWidthUnitWidget->getMapUnitScale() );
+  background.setJoinStyle( mShapePenStyleCmbBx->penJoinStyle() );
+  background.setOpacity( 1.0 - mShapeTranspSpinBox->value() / 100.0 );
+  background.setBlendMode( mShapeBlendCmbBx->blendMode() );
+  format.setBackground( background );
 
   // drop shadow
-  lyr.shadowDraw = mShadowDrawChkBx->isChecked();
-  lyr.shadowUnder = ( QgsPalLayerSettings::ShadowType )mShadowUnderCmbBx->currentIndex();
-  lyr.shadowOffsetAngle = mShadowOffsetAngleSpnBx->value();
-  lyr.shadowOffsetDist = mShadowOffsetSpnBx->value();
-  lyr.shadowOffsetUnits = mShadowOffsetUnitWidget->unit() == QgsUnitTypes::RenderMapUnits ? QgsPalLayerSettings::MapUnits : QgsPalLayerSettings::MM;
-  lyr.shadowOffsetMapUnitScale = mShadowOffsetUnitWidget->getMapUnitScale();
-  lyr.shadowOffsetGlobal = mShadowOffsetGlobalChkBx->isChecked();
-  lyr.shadowRadius = mShadowRadiusDblSpnBx->value();
-  lyr.shadowRadiusUnits = mShadowRadiusUnitWidget->unit() == QgsUnitTypes::RenderMapUnits ? QgsPalLayerSettings::MapUnits : QgsPalLayerSettings::MM;
-  lyr.shadowRadiusMapUnitScale = mShadowRadiusUnitWidget->getMapUnitScale();
-  lyr.shadowRadiusAlphaOnly = mShadowRadiusAlphaChkBx->isChecked();
-  lyr.shadowTransparency = mShadowTranspSpnBx->value();
-  lyr.shadowScale = mShadowScaleSpnBx->value();
-  lyr.shadowColor = mShadowColorBtn->color();
-  lyr.shadowBlendMode = mShadowBlendCmbBx->blendMode();
+  QgsTextShadowSettings shadow;
+  shadow.setEnabled( mShadowDrawChkBx->isChecked() );
+  shadow.setShadowPlacement(( QgsTextShadowSettings::ShadowPlacement )mShadowUnderCmbBx->currentIndex() );
+  shadow.setOffsetAngle( mShadowOffsetAngleSpnBx->value() );
+  shadow.setOffsetDistance( mShadowOffsetSpnBx->value() );
+  shadow.setOffsetUnit( mShadowOffsetUnitWidget->unit() );
+  shadow.setOffsetMapUnitScale( mShadowOffsetUnitWidget->getMapUnitScale() );
+  shadow.setOffsetGlobal( mShadowOffsetGlobalChkBx->isChecked() );
+  shadow.setBlurRadius( mShadowRadiusDblSpnBx->value() );
+  shadow.setBlurRadiusUnit( mShadowRadiusUnitWidget->unit() );
+  shadow.setBlurRadiusMapUnitScale( mShadowRadiusUnitWidget->getMapUnitScale() );
+  shadow.setBlurAlphaOnly( mShadowRadiusAlphaChkBx->isChecked() );
+  shadow.setOpacity( 1.0 - mShadowTranspSpnBx->value() / 100.0 );
+  shadow.setScale( mShadowScaleSpnBx->value() );
+  shadow.setColor( mShadowColorBtn->color() );
+  shadow.setBlendMode( mShadowBlendCmbBx->blendMode() );
+  format.setShadow( shadow );
+
+  lyr.setFormat( format );
 
   // format numbers
   lyr.formatNumbers = mFormatNumChkBx->isChecked();
@@ -1106,16 +1123,14 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   // lyr.maxCurvedCharAngleOut must be negative, but it is shown as positive spinbox in GUI
   lyr.maxCurvedCharAngleOut = -mMaxCharAngleOutDSpinBox->value();
 
+
   lyr.minFeatureSize = mMinSizeSpinBox->value();
   lyr.limitNumLabels = mLimitLabelChkBox->isChecked();
   lyr.maxNumLabels = mLimitLabelSpinBox->value();
-  lyr.fontSizeInMapUnits = ( mFontSizeUnitWidget->getUnit() == 1 );
-  lyr.fontSizeMapUnitScale = mFontSizeUnitWidget->getMapUnitScale();
   lyr.fontLimitPixelSize = mFontLimitPixelChkBox->isChecked();
   lyr.fontMinPixelSize = mFontMinPixelSpinBox->value();
   lyr.fontMaxPixelSize = mFontMaxPixelSpinBox->value();
   lyr.wrapChar = wrapCharacterEdit->text();
-  lyr.multilineHeight = mFontLineHeightSpinBox->value();
   lyr.multilineAlign = ( QgsPalLayerSettings::MultiLineAlign ) mFontMultiLineAlignComboBox->currentIndex();
   lyr.preserveRotation = chkPreserveRotation->isChecked();
 
@@ -1921,9 +1936,9 @@ void QgsLabelingGui::on_mCoordYDDBtn_dataDefinedActivated( bool active )
 void QgsLabelingGui::on_mShapeTypeCmbBx_currentIndexChanged( int index )
 {
   // shape background
-  bool isRect = (( QgsPalLayerSettings::ShapeType )index == QgsPalLayerSettings::ShapeRectangle
-                 || ( QgsPalLayerSettings::ShapeType )index == QgsPalLayerSettings::ShapeSquare );
-  bool isSVG = (( QgsPalLayerSettings::ShapeType )index == QgsPalLayerSettings::ShapeSVG );
+  bool isRect = (( QgsTextBackgroundSettings::ShapeType )index == QgsTextBackgroundSettings::ShapeRectangle
+                 || ( QgsTextBackgroundSettings::ShapeType )index == QgsTextBackgroundSettings::ShapeSquare );
+  bool isSVG = (( QgsTextBackgroundSettings::ShapeType )index == QgsTextBackgroundSettings::ShapeSVG );
 
   showBackgroundPenStyle( isRect );
   showBackgroundRadius( isRect );
@@ -2073,8 +2088,8 @@ void QgsLabelingGui::on_mShapeSVGParamsBtn_clicked()
 
 void QgsLabelingGui::on_mShapeRotationCmbBx_currentIndexChanged( int index )
 {
-  mShapeRotationDblSpnBx->setEnabled(( QgsPalLayerSettings::RotationType )index != QgsPalLayerSettings::RotationSync );
-  mShapeRotationDDBtn->setEnabled(( QgsPalLayerSettings::RotationType )index != QgsPalLayerSettings::RotationSync );
+  mShapeRotationDblSpnBx->setEnabled(( QgsTextBackgroundSettings::RotationType )index != QgsTextBackgroundSettings::RotationSync );
+  mShapeRotationDDBtn->setEnabled(( QgsTextBackgroundSettings::RotationType )index != QgsTextBackgroundSettings::RotationSync );
 }
 
 void QgsLabelingGui::on_mPreviewTextEdit_textChanged( const QString & text )
