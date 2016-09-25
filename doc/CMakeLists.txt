@@ -34,23 +34,16 @@ INSTALL (FILES ${SPONSOR_IMAGES} DESTINATION ${QGIS_DATA_DIR}/doc/images/project
 IF(WITH_APIDOC)
   FIND_PACKAGE(Doxygen 1.8.2 REQUIRED)
   IF(DOXYGEN_FOUND)
+    SET(QHP_FILES ${CMAKE_CURRENT_BINARY_DIR}/api/html/index.qhp)
 
     # Whether to generate QHP file
     SET (GENERATE_QHP FALSE CACHE BOOL "Determines whether to generate Qt QHP help from the QGIS API Docs")
     IF (GENERATE_QHP)
       SET(WITH_QHP YES)
+      SET(QHP_FILES ${QHP_FILES} ${CMAKE_CURRENT_BINARY_DIR}/api/qch/qgis.qch)
     ELSE(GENERATE_QHP)
       SET(WITH_QHP NO)
     ENDIF(GENERATE_QHP)
-
-    FIND_FILE(QT_TAG_FILE
-      NAMES qt4.tags qt4.tag qt.tags qt.tag
-      PATHS "${QT_DOC_DIR}"
-      DOC "Path to Qt documentation tag file (eg qt.tags)"
-    )
-    IF(QT_TAG_FILE)
-      SET(DOXYGEN_TAGS ${QT_TAG_FILE}=${QT_DOC_URL})
-    ENDIF(QT_TAG_FILE)
 
     SET(DOXYGEN_INPUT
       ${CMAKE_SOURCE_DIR}/doc
@@ -104,12 +97,11 @@ IF(WITH_APIDOC)
     STRING(REPLACE ";" " " DOXYGEN_INPUT "${DOXYGEN_INPUT}")
 
     CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake_templates/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-    ADD_CUSTOM_TARGET(apidoc ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/doxygen.stamp)
+    ADD_CUSTOM_TARGET(apidoc ALL DEPENDS ${QHP_FILES})
     ADD_CUSTOM_COMMAND(
-      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doxygen.stamp
+      OUTPUT ${QHP_FILES}
       DEPENDS ${DOXYGEN_FILES}
       COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-      COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/doxygen.stamp
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
       COMMENT "Generating API documentation" VERBATIM)
     INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api/html/ DESTINATION ${QGIS_DATA_DIR}/doc/api)

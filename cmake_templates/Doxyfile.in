@@ -939,13 +939,13 @@ GENERATE_QHP           = @WITH_QHP@
 # be used to specify the file name of the resulting .qch file.
 # The path specified is relative to the HTML output folder.
 
-QCH_FILE               =../qch/qgis.qch
+QCH_FILE               = ../qch/qgis.qch
 
 # The QHP_NAMESPACE tag specifies the namespace to use when generating
 # Qt Help Project output. For more information please see
 # http://doc.trolltech.com/qthelpproject.html#namespace
 
-QHP_NAMESPACE          = org.qgis.qgis2
+QHP_NAMESPACE          = org.qgis.qgis3
 
 # The QHP_VIRTUAL_FOLDER tag specifies the namespace to use when generating
 # Qt Help Project output. For more information please see
