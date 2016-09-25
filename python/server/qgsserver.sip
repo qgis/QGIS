@@ -162,16 +162,11 @@ class QgsServer
 %End
 
   public:
-    QgsServer();
-    ~QgsServer();
-    /** Server initialization: intialise QGIS ang QT core application.
-     * This method is automatically called by handleRequest if it wasn't
-     * explicitly called before
-     * @note Not available in Python bindings
+    /** Creates the server instance
+     * @param captureOutput set to false for stdout output (FCGI)
      */
-    //void init( int argc, char ** argv );
-    //! The following is mainly for python bindings, that do not pass argc/argv
-    void init();
+    QgsServer(  bool captureOutput = true );
+    ~QgsServer();
 
     /** Set environment variable
      * @param var environment variable name

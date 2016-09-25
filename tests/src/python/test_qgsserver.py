@@ -21,7 +21,7 @@ import urllib.error
 import email
 from io import StringIO
 from qgis.server import QgsServer
-from qgis.core import QgsMessageLog
+from qgis.core import QgsMessageLog, QgsApplication
 from qgis.testing import unittest
 from utilities import unitTestDataPath
 import osgeo.gdal
@@ -31,6 +31,14 @@ RE_STRIP_PATH = r'MAP=[^&]+|Content-Length: \d+'
 
 
 class TestQgsServer(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.app = QgsApplication([], False)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.app.exitQgis()
 
     def setUp(self):
         """Create the server instance"""
