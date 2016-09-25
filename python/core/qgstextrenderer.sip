@@ -992,4 +992,53 @@ class QgsTextFormat
      */
     QDomElement writeXml( QDomDocument& doc ) const;
 
+    /** Returns true if any component of the font format requires advanced effects
+     * such as blend modes, which require output in raster formats to be fully respected.
+     */
+    bool containsAdvancedEffects() const;
+
+    /** Returns true if the specified font was found on the system, or false
+     * if the font was not found and a replacement was used instead.
+     * @see resolvedFontFamily()
+     */
+    bool fontFound() const;
+
+    /** Returns the family for the resolved font, ie if the specified font
+     * was not found on the system this will return the name of the replacement
+     * font.
+     * @see fontFound()
+     */
+    QString resolvedFontFamily() const;
+
+};
+
+
+class QgsTextRenderer
+{
+%TypeHeaderCode
+#include <qgstextrenderer.h>
+%End
+
+  public:
+
+    /** Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
+     * @param size size to convert
+     * @param c rendercontext
+     * @param unit size units
+     * @param rasterfactor whether to consider oversampling
+     * @param mapUnitScale a mapUnitScale clamper
+     * @return font pixel size
+     */
+    static int sizeToPixel( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+
+    /** Calculates size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
+     * @param size size to convert
+     * @param c rendercontext
+     * @param unit size units
+     * @param rasterfactor whether to consider oversampling
+     * @param mapUnitScale a mapUnitScale clamper
+     * @return size that will render, as double
+     */
+    static double scaleToPixelContext( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+
 };

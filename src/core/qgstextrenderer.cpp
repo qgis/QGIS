@@ -123,12 +123,12 @@ void QgsTextBufferSettings::setFillBufferInterior( bool fill )
 
 double QgsTextBufferSettings::opacity() const
 {
-  return d->opacity;
+  return d->color.alphaF();
 }
 
 void QgsTextBufferSettings::setOpacity( double opacity )
 {
-  d->opacity = opacity;
+  d->color.setAlphaF( opacity );
 }
 
 Qt::PenJoinStyle QgsTextBufferSettings::joinStyle() const
@@ -197,11 +197,11 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer* layer )
   d->color = _readColor( layer, "labeling/bufferColor", Qt::white, false );
   if ( layer->customProperty( "labeling/bufferOpacity" ).toString().isEmpty() )
   {
-    d->opacity = 1 - layer->customProperty( "labeling/bufferTransp" ).toInt() / 100.0; //0 -100
+    d->color.setAlphaF( 1 - layer->customProperty( "labeling/bufferTransp" ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = layer->customProperty( "labeling/bufferOpacity" ).toDouble();
+    d->color.setAlphaF( layer->customProperty( "labeling/bufferOpacity" ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
                    static_cast< QgsPainting::BlendMode >( layer->customProperty( "labeling/bufferBlendMode", QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
@@ -218,7 +218,7 @@ void QgsTextBufferSettings::writeToLayer( QgsVectorLayer* layer ) const
   layer->setCustomProperty( "labeling/bufferSizeMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
   _writeColor( layer, "labeling/bufferColor", d->color );
   layer->setCustomProperty( "labeling/bufferNoFill", !d->fillBufferInterior );
-  layer->setCustomProperty( "labeling/bufferOpacity", d->opacity );
+  layer->setCustomProperty( "labeling/bufferOpacity", d->color.alphaF() );
   layer->setCustomProperty( "labeling/bufferJoinStyle", static_cast< unsigned int >( d->joinStyle ) );
   layer->setCustomProperty( "labeling/bufferBlendMode", QgsPainting::getBlendModeEnum( d->blendMode ) );
 }
@@ -270,11 +270,11 @@ void QgsTextBufferSettings::readXml( const QDomElement& elem )
 
   if ( !textBufferElem.hasAttribute( "bufferOpacity" ) )
   {
-    d->opacity = 1 - textBufferElem.attribute( "bufferTransp" ).toInt() / 100.0; //0 -100
+    d->color.setAlphaF( 1 - textBufferElem.attribute( "bufferTransp" ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = textBufferElem.attribute( "bufferOpacity" ).toDouble();
+    d->color.setAlphaF( textBufferElem.attribute( "bufferOpacity" ).toDouble() );
   }
 
   d->blendMode = QgsPainting::getCompositionMode(
@@ -293,7 +293,7 @@ QDomElement QgsTextBufferSettings::writeXml( QDomDocument& doc ) const
   textBufferElem.setAttribute( "bufferSizeMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
   textBufferElem.setAttribute( "bufferColor", QgsSymbolLayerUtils::encodeColor( d->color ) );
   textBufferElem.setAttribute( "bufferNoFill", !d->fillBufferInterior );
-  textBufferElem.setAttribute( "bufferOpacity", d->opacity );
+  textBufferElem.setAttribute( "bufferOpacity", d->color.alphaF() );
   textBufferElem.setAttribute( "bufferJoinStyle", static_cast< unsigned int >( d->joinStyle ) );
   textBufferElem.setAttribute( "bufferBlendMode", QgsPainting::getBlendModeEnum( d->blendMode ) );
   return textBufferElem;
@@ -478,12 +478,12 @@ void QgsTextBackgroundSettings::setRadiiMapUnitScale( const QgsMapUnitScale &sca
 
 double QgsTextBackgroundSettings::opacity() const
 {
-  return d->opacity;
+  return d->fillColor.alphaF();
 }
 
 void QgsTextBackgroundSettings::setOpacity( double opacity )
 {
-  d->opacity = opacity;
+  d->fillColor.setAlphaF( opacity );
 }
 
 QPainter::CompositionMode QgsTextBackgroundSettings::blendMode() const
@@ -660,11 +660,11 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer* layer )
 
   if ( layer->customProperty( "labeling/shapeOpacity" ).toString().isEmpty() )
   {
-    d->opacity = 1 - layer->customProperty( "labeling/shapeTransparency" ).toInt() / 100.0; //0 -100
+    d->fillColor.setAlphaF( 1 - layer->customProperty( "labeling/shapeTransparency" ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = layer->customProperty( "labeling/shapeOpacity" ).toDouble();
+    d->fillColor.setAlphaF( layer->customProperty( "labeling/shapeOpacity" ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
                    static_cast< QgsPainting::BlendMode >( layer->customProperty( "labeling/shapeBlendMode", QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
@@ -696,7 +696,7 @@ void QgsTextBackgroundSettings::writeToLayer( QgsVectorLayer* layer ) const
   layer->setCustomProperty( "labeling/shapeBorderWidthUnit", QgsUnitTypes::encodeUnit( d->borderWidthUnits ) );
   layer->setCustomProperty( "labeling/shapeBorderWidthMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->borderWidthMapUnitScale ) );
   layer->setCustomProperty( "labeling/shapeJoinStyle", static_cast< unsigned int >( d->joinStyle ) );
-  layer->setCustomProperty( "labeling/shapeOpacity", d->opacity );
+  layer->setCustomProperty( "labeling/shapeOpacity", d->fillColor.alphaF() );
   layer->setCustomProperty( "labeling/shapeBlendMode", QgsPainting::getBlendModeEnum( d->blendMode ) );
 }
 
@@ -804,11 +804,11 @@ void QgsTextBackgroundSettings::readXml( const QDomElement& elem )
 
   if ( !backgroundElem.hasAttribute( "shapeOpacity" ) )
   {
-    d->opacity = 1 - backgroundElem.attribute( "shapeTransparency" ).toInt() / 100.0; //0 -100
+    d->fillColor.setAlphaF( 1 - backgroundElem.attribute( "shapeTransparency" ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = backgroundElem.attribute( "shapeOpacity" ).toDouble();
+    d->fillColor.setAlphaF( backgroundElem.attribute( "shapeOpacity" ).toDouble() );
   }
 
   d->blendMode = QgsPainting::getCompositionMode(
@@ -843,7 +843,7 @@ QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument& doc ) const
   backgroundElem.setAttribute( "shapeBorderWidthUnit", QgsUnitTypes::encodeUnit( d->borderWidthUnits ) );
   backgroundElem.setAttribute( "shapeBorderWidthMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->borderWidthMapUnitScale ) );
   backgroundElem.setAttribute( "shapeJoinStyle", static_cast< unsigned int >( d->joinStyle ) );
-  backgroundElem.setAttribute( "shapeOpacity", d->opacity );
+  backgroundElem.setAttribute( "shapeOpacity", d->fillColor.alphaF() );
   backgroundElem.setAttribute( "shapeBlendMode", QgsPainting::getBlendModeEnum( d->blendMode ) );
   return backgroundElem;
 }
@@ -987,12 +987,12 @@ void QgsTextShadowSettings::setBlurAlphaOnly( bool alphaOnly )
 
 double QgsTextShadowSettings::opacity() const
 {
-  return d->opacity;
+  return d->color.alphaF();
 }
 
 void QgsTextShadowSettings::setOpacity( double opacity )
 {
-  d->opacity = opacity;
+  d->color.setAlphaF( opacity );
 }
 
 int QgsTextShadowSettings::scale() const
@@ -1077,11 +1077,11 @@ void QgsTextShadowSettings::readFromLayer( QgsVectorLayer* layer )
 
   if ( layer->customProperty( "labeling/shadowOpacity" ).toString().isEmpty() )
   {
-    d->opacity = 1 - layer->customProperty( "labeling/shadowTransparency" ).toInt() / 100.0; //0 -100
+    d->color.setAlphaF( 1 - layer->customProperty( "labeling/shadowTransparency" ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = layer->customProperty( "labeling/shadowOpacity" ).toDouble();
+    d->color.setAlphaF( layer->customProperty( "labeling/shadowOpacity" ).toDouble() );
   }
   d->scale = layer->customProperty( "labeling/shadowScale", QVariant( 100 ) ).toInt();
   d->color = _readColor( layer, "labeling/shadowColor", Qt::black, false );
@@ -1102,7 +1102,7 @@ void QgsTextShadowSettings::writeToLayer( QgsVectorLayer* layer ) const
   layer->setCustomProperty( "labeling/shadowRadiusUnit", QgsUnitTypes::encodeUnit( d->radiusUnits ) );
   layer->setCustomProperty( "labeling/shadowRadiusMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->radiusMapUnitScale ) );
   layer->setCustomProperty( "labeling/shadowRadiusAlphaOnly", d->radiusAlphaOnly );
-  layer->setCustomProperty( "labeling/shadowOpacity", d->opacity );
+  layer->setCustomProperty( "labeling/shadowOpacity", d->color.alphaF() );
   layer->setCustomProperty( "labeling/shadowScale", d->scale );
   _writeColor( layer, "labeling/shadowColor", d->color, false );
   layer->setCustomProperty( "labeling/shadowBlendMode", QgsPainting::getBlendModeEnum( d->blendMode ) );
@@ -1162,11 +1162,11 @@ void QgsTextShadowSettings::readXml( const QDomElement& elem )
 
   if ( !shadowElem.hasAttribute( "shadowOpacity" ) )
   {
-    d->opacity = 1 - shadowElem.attribute( "shadowTransparency" ).toInt() / 100.0; //0 -100
+    d->color.setAlphaF( 1 - shadowElem.attribute( "shadowTransparency" ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = shadowElem.attribute( "shadowOpacity" ).toDouble();
+    d->color.setAlphaF( shadowElem.attribute( "shadowOpacity" ).toDouble() );
   }
   d->scale = shadowElem.attribute( "shadowScale", "100" ).toInt();
   d->color = QgsSymbolLayerUtils::decodeColor( shadowElem.attribute( "shadowColor", QgsSymbolLayerUtils::encodeColor( Qt::black ) ) );
@@ -1188,7 +1188,7 @@ QDomElement QgsTextShadowSettings::writeXml( QDomDocument& doc ) const
   shadowElem.setAttribute( "shadowRadiusUnit", QgsUnitTypes::encodeUnit( d->radiusUnits ) );
   shadowElem.setAttribute( "shadowRadiusMapUnitScale", QgsSymbolLayerUtils::encodeMapUnitScale( d->radiusMapUnitScale ) );
   shadowElem.setAttribute( "shadowRadiusAlphaOnly", d->radiusAlphaOnly );
-  shadowElem.setAttribute( "shadowOpacity", d->opacity );
+  shadowElem.setAttribute( "shadowOpacity", d->color.alphaF() );
   shadowElem.setAttribute( "shadowScale", d->scale );
   shadowElem.setAttribute( "shadowColor", QgsSymbolLayerUtils::encodeColor( d->color ) );
   shadowElem.setAttribute( "shadowBlendMode", QgsPainting::getBlendModeEnum( d->blendMode ) );
@@ -1235,6 +1235,15 @@ QgsTextFormat::~QgsTextFormat()
 QFont QgsTextFormat::font() const
 {
   return d->textFont;
+}
+
+QFont QgsTextFormat::scaledFont( const QgsRenderContext& context ) const
+{
+  QFont font = d->textFont;
+  int fontPixelSize = QgsTextRenderer::sizeToPixel( d->fontSize, context, d->fontSizeUnits,
+                      true, d->fontSizeMapUnitScale );
+  font.setPixelSize( fontPixelSize );
+  return font;
 }
 
 void QgsTextFormat::setFont( const QFont &font )
@@ -1299,12 +1308,12 @@ void QgsTextFormat::setColor( const QColor &color )
 
 double QgsTextFormat::opacity() const
 {
-  return d->opacity;
+  return d->textColor.alphaF();
 }
 
 void QgsTextFormat::setOpacity( double opacity )
 {
-  d->opacity = opacity;
+  d->textColor.setAlphaF( opacity );
 }
 
 QPainter::CompositionMode QgsTextFormat::blendMode() const
@@ -1343,8 +1352,19 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer* layer )
     // for now, do not use matching algorithm for substitution if family not found, substitute default instead
     fontFamily = appFont.family();
   }
+  else
+  {
+    mTextFontFound = true;
+  }
 
-  d->fontSize = layer->customProperty( "labeling/fontSize" ).toDouble();
+  if ( !layer->customProperty( "labeling/fontSize" ).isValid() )
+  {
+    d->fontSize = appFont.pointSizeF();
+  }
+  else
+  {
+    d->fontSize = layer->customProperty( "labeling/fontSize" ).toDouble();
+  }
 
   if ( layer->customProperty( "labeling/fontSizeUnit" ).toString().isEmpty() )
   {
@@ -1353,7 +1373,10 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer* layer )
   }
   else
   {
-    d->fontSizeUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( "labeling/fontSizeUnit" ).toString() );
+    bool ok = false;
+    d->fontSizeUnits = QgsUnitTypes::decodeRenderUnit( layer->customProperty( "labeling/fontSizeUnit" ).toString(), &ok );
+    if ( !ok )
+      d->fontSizeUnits = QgsUnitTypes::RenderPoints;
   }
   if ( layer->customProperty( "labeling/fontSizeMapUnitScale" ).toString().isEmpty() )
   {
@@ -1378,11 +1401,11 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer* layer )
   d->textColor = _readColor( layer, "labeling/textColor", Qt::black, false );
   if ( layer->customProperty( "labeling/textOpacity" ).toString().isEmpty() )
   {
-    d->opacity = 1 - layer->customProperty( "labeling/textTransp" ).toInt() / 100.0; //0 -100
+    d->textColor.setAlphaF( 1 - layer->customProperty( "labeling/textTransp" ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = layer->customProperty( "labeling/textOpacity" ).toDouble();
+    d->textColor.setAlphaF( layer->customProperty( "labeling/textOpacity" ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
                    static_cast< QgsPainting::BlendMode >( layer->customProperty( "labeling/blendMode", QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
@@ -1408,7 +1431,7 @@ void QgsTextFormat::writeToLayer( QgsVectorLayer* layer ) const
   layer->setCustomProperty( "labeling/fontCapitals", static_cast< unsigned int >( d->textFont.capitalization() ) );
   layer->setCustomProperty( "labeling/fontLetterSpacing", d->textFont.letterSpacing() );
   layer->setCustomProperty( "labeling/fontWordSpacing", d->textFont.wordSpacing() );
-  layer->setCustomProperty( "labeling/textOpacity", d->opacity );
+  layer->setCustomProperty( "labeling/textOpacity", d->textColor.alphaF() );
   layer->setCustomProperty( "labeling/blendMode", QgsPainting::getBlendModeEnum( d->blendMode ) );
   layer->setCustomProperty( "labeling/multilineHeight", d->multilineHeight );
 
@@ -1434,8 +1457,20 @@ void QgsTextFormat::readXml( const QDomElement& elem )
     // for now, do not use matching algorithm for substitution if family not found, substitute default instead
     fontFamily = appFont.family();
   }
+  else
+  {
+    mTextFontFound = true;
+  }
 
-  d->fontSize = textStyleElem.attribute( "fontSize" ).toDouble();
+  if ( textStyleElem.hasAttribute( "fontSize" ) )
+  {
+    d->fontSize = textStyleElem.attribute( "fontSize" ).toDouble();
+  }
+  else
+  {
+    d->fontSize = appFont.pointSizeF();
+  }
+
   if ( !textStyleElem.hasAttribute( "fontSizeUnit" ) )
   {
     d->fontSizeUnits = textStyleElem.attribute( "fontSizeInMapUnits" ).toUInt() == 0 ? QgsUnitTypes::RenderPoints
@@ -1470,11 +1505,11 @@ void QgsTextFormat::readXml( const QDomElement& elem )
   d->textColor = QgsSymbolLayerUtils::decodeColor( textStyleElem.attribute( "textColor", QgsSymbolLayerUtils::encodeColor( Qt::black ) ) );
   if ( !textStyleElem.hasAttribute( "textOpacity" ) )
   {
-    d->opacity = 1 - textStyleElem.attribute( "textTransp" ).toInt() / 100.0; //0 -100
+    d->textColor.setAlphaF( 1 - textStyleElem.attribute( "textTransp" ).toInt() / 100.0 ); //0 -100
   }
   else
   {
-    d->opacity = textStyleElem.attribute( "textOpacity" ).toDouble();
+    d->textColor.setAlphaF( textStyleElem.attribute( "textOpacity" ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
                    static_cast< QgsPainting::BlendMode >( textStyleElem.attribute( "blendMode", QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
@@ -1532,7 +1567,7 @@ QDomElement QgsTextFormat::writeXml( QDomDocument& doc ) const
   textStyleElem.setAttribute( "fontCapitals", static_cast< unsigned int >( d->textFont.capitalization() ) );
   textStyleElem.setAttribute( "fontLetterSpacing", d->textFont.letterSpacing() );
   textStyleElem.setAttribute( "fontWordSpacing", d->textFont.wordSpacing() );
-  textStyleElem.setAttribute( "textOpacity", d->opacity );
+  textStyleElem.setAttribute( "textOpacity", d->textColor.alphaF() );
   textStyleElem.setAttribute( "blendMode", QgsPainting::getBlendModeEnum( d->blendMode ) );
   textStyleElem.setAttribute( "multilineHeight", d->multilineHeight );
 
@@ -1542,3 +1577,59 @@ QDomElement QgsTextFormat::writeXml( QDomDocument& doc ) const
   return textStyleElem;
 }
 
+bool QgsTextFormat::containsAdvancedEffects() const
+{
+  if ( d->blendMode != QPainter::CompositionMode_SourceOver )
+    return true;
+
+  if ( mBufferSettings.enabled() && mBufferSettings.blendMode() != QPainter::CompositionMode_SourceOver )
+    return true;
+
+  if ( mBackgroundSettings.enabled() && mBackgroundSettings.blendMode() != QPainter::CompositionMode_SourceOver )
+    return true;
+
+  if ( mShadowSettings.enabled() && mShadowSettings.blendMode() != QPainter::CompositionMode_SourceOver )
+    return true;
+
+  return false;
+}
+
+
+int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, bool rasterfactor, const QgsMapUnitScale& mapUnitScale )
+{
+  return static_cast< int >( scaleToPixelContext( size, c, unit, rasterfactor, mapUnitScale ) + 0.5 );
+}
+
+double QgsTextRenderer::scaleToPixelContext( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, bool rasterfactor, const QgsMapUnitScale& mapUnitScale )
+{
+  // if render context is that of device (i.e. not a scaled map), just return size
+  double mapUnitsPerPixel = mapUnitScale.computeMapUnitsPerPixel( c );
+
+  switch ( unit )
+  {
+    case QgsUnitTypes::RenderMapUnits:
+      if ( mapUnitsPerPixel > 0.0 )
+      {
+        size = size / mapUnitsPerPixel * ( rasterfactor ? c.rasterScaleFactor() : 1 );
+      }
+      break;
+
+    case QgsUnitTypes::RenderPixels:
+      //already in pixels
+      break;
+
+    case QgsUnitTypes::RenderMillimeters:
+      size *= c.scaleFactor() * ( rasterfactor ? c.rasterScaleFactor() : 1 );
+      break;
+
+    case QgsUnitTypes::RenderPoints:
+      size *= 0.352778 * c.scaleFactor() * ( rasterfactor ? c.rasterScaleFactor() : 1 );
+      break;
+
+    case QgsUnitTypes::RenderPercentage:
+    case QgsUnitTypes::RenderUnknownUnit:
+      // no sensible choice
+      break;
+  }
+  return size;
+}

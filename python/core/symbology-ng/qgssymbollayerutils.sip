@@ -39,8 +39,31 @@ class QgsSymbolLayerUtils
     static QString encodeSldBrushStyle( Qt::BrushStyle style );
     static Qt::BrushStyle decodeSldBrushStyle( const QString& str );
 
+    /** Encodes a QPointF to a string.
+     * @see decodePoint()
+     * @see encodeSize()
+     */
     static QString encodePoint( QPointF point );
-    static QPointF decodePoint( const QString& str );
+
+    /** Decodes a QSizeF from a string.
+     * @see encodePoint()
+     * @see decodeSize()
+     */
+    static QPointF decodePoint( const QString& string );
+
+    /** Encodes a QSizeF to a string.
+     * @see decodeSize()
+     * @see encodePoint()
+     * @note added in QGIS 3.0
+     */
+    static QString encodeSize( QSizeF size );
+
+    /** Decodes a QSizeF from a string.
+     * @see encodeSize()
+     * @see decodePoint()
+     * @note added in QGIS 3.0
+     */
+    static QSizeF decodeSize( const QString& string );
 
     static QString encodeMapUnitScale( const QgsMapUnitScale& mapUnitScale );
     static QgsMapUnitScale decodeMapUnitScale( const QString& str );
@@ -361,9 +384,20 @@ class QgsSymbolLayerUtils
      * @param unit units for specified size
      * @param scale map unit scale
      * @note added in QGIS 2.16
+     * @see convertFromMapUnits()
      * @see convertToPainterUnits()
      */
     static double convertToMapUnits( const QgsRenderContext&c, double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
+
+    /** Converts a size from map units to the specied units.
+     * @param context render context
+     * @param sizeInMapUnits size (in map units) to convert
+     * @param outputUnit output units
+     * @note added in QGIS 3.0
+     * @see convertToMapUnits()
+     */
+    static double convertFromMapUnits( const QgsRenderContext& context, double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit );
+
 
     /** Returns scale factor painter units -> pixel dimensions*/
     static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );

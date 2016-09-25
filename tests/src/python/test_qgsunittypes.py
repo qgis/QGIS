@@ -193,6 +193,17 @@ class TestQgsUnitTypes(unittest.TestCase):
         assert ok
         self.assertEqual(res, QgsUnitTypes.RenderPixels)
 
+        # check some aliases - used in data defined labeling
+        res, ok = QgsUnitTypes.decodeRenderUnit('MapUnits')
+        assert ok
+        self.assertEqual(res, QgsUnitTypes.RenderMapUnits)
+        res, ok = QgsUnitTypes.decodeRenderUnit('Percent')
+        assert ok
+        self.assertEqual(res, QgsUnitTypes.RenderPercentage)
+        res, ok = QgsUnitTypes.decodeRenderUnit('Points')
+        assert ok
+        self.assertEqual(res, QgsUnitTypes.RenderPoints)
+
     def testFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between units"""
 

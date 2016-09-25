@@ -1168,6 +1168,7 @@ bool QgsComposerMap::containsAdvancedEffects() const
 
   QStringList::const_iterator layer_it = layers.constBegin();
   QgsMapLayer* currentLayer = nullptr;
+  QgsTextFormat layerFormat;
 
   for ( ; layer_it != layers.constEnd(); ++layer_it )
   {
@@ -1194,14 +1195,9 @@ bool QgsComposerMap::containsAdvancedEffects() const
         if ( QgsPalLabeling::staticWillUseLayer( currentVectorLayer ) )
         {
           // Check all label blending properties
-          QgsPalLayerSettings layerSettings = QgsPalLayerSettings::fromLayer( currentVectorLayer );
-          if (( layerSettings.blendMode != QPainter::CompositionMode_SourceOver ) ||
-              ( layerSettings.bufferDraw && layerSettings.bufferBlendMode != QPainter::CompositionMode_SourceOver ) ||
-              ( layerSettings.shadowDraw && layerSettings.shadowBlendMode != QPainter::CompositionMode_SourceOver ) ||
-              ( layerSettings.shapeDraw && layerSettings.shapeBlendMode != QPainter::CompositionMode_SourceOver ) )
-          {
+          layerFormat.readFromLayer( currentVectorLayer );
+          if ( layerFormat.containsAdvancedEffects() )
             return true;
-          }
         }
       }
     }
