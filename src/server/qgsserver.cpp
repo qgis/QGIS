@@ -74,9 +74,10 @@ bool QgsServer::sCaptureOutput = true;
 
 QgsServer::QgsServer( bool captureOutput )
 {
-  // Must be already instanciated
-  if ( qApp == nullptr )
+  // QgsApplication must exist
+  if ( qobject_cast<QgsApplication*>( qApp ) == nullptr )
   {
+    qFatal( "A QgsApplication must exist before a QgsServer instance can be created." );
     abort();
   }
   sCaptureOutput = captureOutput;
