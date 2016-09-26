@@ -130,8 +130,18 @@ QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *
 
   updateUi();
 
-  // set effect as active item in the tree
-  QModelIndex newIndex = mEffectsList->model()->index( 0, 0 );
+  // set first selected effect as active item in the tree
+  int initialRow = 0;
+  for ( int i = 0; i < stack->count(); ++i )
+  {
+    // list shows effects in opposite order to stack
+    if ( stack->effect( stack->count() - i - 1 )->enabled() )
+    {
+      initialRow = i;
+      break;
+    }
+  }
+  QModelIndex newIndex = mEffectsList->model()->index( initialRow, 0 );
   mEffectsList->setCurrentIndex( newIndex );
 
   setPanelTitle( tr( "Effects Properties" ) );
