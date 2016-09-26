@@ -24,6 +24,7 @@ __revision__ = '$Format:%H$'
 import os
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from qgis.core import QgsApplication
 from qgis.server import QgsServer
 
 try:
@@ -31,6 +32,7 @@ try:
 except KeyError:
     QGIS_SERVER_DEFAULT_PORT = 8081
 
+qgs_app = QgsApplication([], False)
 qgs_server = QgsServer()
 
 
@@ -70,3 +72,4 @@ if __name__ == '__main__':
     print('Starting server on localhost:%s, use <Ctrl-C> to stop' %
           QGIS_SERVER_DEFAULT_PORT)
     server.serve_forever()
+    qgs_app.exitQgis()
