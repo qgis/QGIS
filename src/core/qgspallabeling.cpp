@@ -151,7 +151,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   bufferColor = Qt::white;
   bufferTransp = 0;
   bufferNoFill = false;
-  bufferJoinStyle = Qt::BevelJoin;
+  bufferJoinStyle = Qt::RoundJoin;
   bufferBlendMode = QPainter::CompositionMode_SourceOver;
 
   // shape background
@@ -909,7 +909,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   bufferTransp = layer->customProperty( "labeling/bufferTransp" ).toInt();
   bufferBlendMode = QgsMapRenderer::getCompositionMode(
                       static_cast< QgsMapRenderer::BlendMode >( layer->customProperty( "labeling/bufferBlendMode", QVariant( QgsMapRenderer::BlendNormal ) ).toUInt() ) );
-  bufferJoinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( "labeling/bufferJoinStyle", QVariant( Qt::BevelJoin ) ).toUInt() );
+  bufferJoinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( "labeling/bufferJoinStyle", QVariant( Qt::RoundJoin ) ).toUInt() );
   bufferNoFill = layer->customProperty( "labeling/bufferNoFill", QVariant( false ) ).toBool();
 
   // background
@@ -1371,7 +1371,7 @@ void QgsPalLayerSettings::readXml( QDomElement& elem )
   bufferTransp = textBufferElem.attribute( "bufferTransp" ).toInt();
   bufferBlendMode = QgsMapRenderer::getCompositionMode(
                       static_cast< QgsMapRenderer::BlendMode >( textBufferElem.attribute( "bufferBlendMode", QString::number( QgsMapRenderer::BlendNormal ) ).toUInt() ) );
-  bufferJoinStyle = static_cast< Qt::PenJoinStyle >( textBufferElem.attribute( "bufferJoinStyle", QString::number( Qt::BevelJoin ) ).toUInt() );
+  bufferJoinStyle = static_cast< Qt::PenJoinStyle >( textBufferElem.attribute( "bufferJoinStyle", QString::number( Qt::RoundJoin ) ).toUInt() );
   bufferNoFill = textBufferElem.attribute( "bufferNoFill", "0" ).toInt();
 
   // background
