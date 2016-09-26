@@ -183,9 +183,9 @@ bool QgsColorButtonV2::event( QEvent *e )
     int saturation = this->color().saturation();
     QString info = QString( "HEX: %1 \n"
                             "RGB: %2 \n"
-                            "HSV: %3,%4,%4" ).arg( name )
+                            "HSV: %3,%4,%5" ).arg( name )
                    .arg( QgsSymbolLayerV2Utils::encodeColor( this->color() ) )
-                   .arg( hue ).arg( value ).arg( saturation );
+                   .arg( hue ).arg( saturation ).arg( value );
     setToolTip( info );
   }
   return QToolButton::event( e );
