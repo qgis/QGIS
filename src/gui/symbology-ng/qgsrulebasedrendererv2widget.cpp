@@ -504,7 +504,7 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
     countMap[rule].duplicateCount = 0;
   }
 
-  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
+  QgsFeatureRequest req = QgsFeatureRequest().setFilterExpression( mRenderer->filter( mLayer->fields() ) );
 
   QgsRenderContext renderContext;
   renderContext.setRendererScale( 0 ); // ignore scale
@@ -525,8 +525,12 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
   context << QgsExpressionContextUtils::layerScope( mLayer );
 
   renderContext.setExpressionContext( context );
+  req.setExpressionContext( context );
 
   mRenderer->startRender( renderContext, mLayer->fields() );
+
+  req.setSubsetOfAttributes( mRenderer->usedAttributes(), mLayer->fields() );
+  QgsFeatureIterator fit = mLayer->getFeatures( req );
 
   int nFeatures = mLayer->featureCount();
   QProgressDialog p( tr( "Calculating feature count." ), tr( "Abort" ), 0, nFeatures );
@@ -703,19 +707,18 @@ void QgsRendererRulePropsDialog::testFilter()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QgsFeatureIterator fit = mLayer->getFeatures();
+  QgsFeatureRequest req = QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() )
+                          .setFlags( QgsFeatureRequest::NoGeometry )
+                          .setFilterExpression( editFilter->text() )
+                          .setExpressionContext( context );
+
+  QgsFeatureIterator fit = mLayer->getFeatures( req );
 
   int count = 0;
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    context.setFeature( f );
-
-    QVariant value = filter.evaluate( &context );
-    if ( value.toInt() != 0 )
-      count++;
-    if ( filter.hasEvalError() )
-      break;
+    count++;
   }
 
   QApplication::restoreOverrideCursor();
