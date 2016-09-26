@@ -38,6 +38,9 @@ QgsServerLogger::QgsServerLogger(): mLogFile( nullptr )
 {
   //logfile
   QString filePath = getenv( "QGIS_SERVER_LOG_FILE" );
+  if ( filePath.isEmpty() )
+    return;
+
   mLogFile.setFileName( filePath );
   if ( mLogFile.open( QIODevice::Append ) )
   {
