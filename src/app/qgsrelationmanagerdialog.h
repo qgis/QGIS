@@ -39,6 +39,7 @@ class APP_EXPORT QgsRelationManagerDialog : public QWidget, private Ui::QgsRelat
 
   public slots:
     void on_mBtnAddRelation_clicked();
+    void on_mBtnDiscoverRelations_clicked();
     void on_mBtnRemoveRelation_clicked();
 
   private:

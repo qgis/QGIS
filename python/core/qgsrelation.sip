@@ -172,6 +172,12 @@ class QgsRelation
     QString id() const;
 
     /**
+     * Generate a (project-wide) unique id for this relation
+     * @note added in QGIS 3.0
+     */
+    void generateId();
+
+    /**
      * Access the referencing (child) layer's id
      * This is the layer which has the field(s) which point to another layer
      *
@@ -240,6 +246,15 @@ class QgsRelation
      * @return true if the relation is valid
      */
     bool isValid() const;
+
+    /**
+     * Compares the two QgsRelation, ignoring the name and the ID.
+     *
+     * @param other The other relation
+     * @return true if they are similar
+     * @note added in QGIS 3.0
+     */
+    bool hasEqualDefinition( const QgsRelation& other ) const;
 
   protected:
     /**

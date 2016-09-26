@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsdiscoverrelationsdlg.h"
 #include "qgsrelationadddlg.h"
 #include "qgsrelationmanagerdialog.h"
 #include "qgsrelationmanager.h"
@@ -46,6 +47,7 @@ void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer* >& layers
 
 void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
 {
+  mRelationsTable->setSortingEnabled( false );
   int row = mRelationsTable->rowCount();
   mRelationsTable->insertRow( row );
 
@@ -53,7 +55,6 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   // Save relation in first column's item
   item->setData( Qt::UserRole, QVariant::fromValue<QgsRelation>( rel ) );
   mRelationsTable->setItem( row, 0, item );
-
 
   item = new QTableWidgetItem( rel.referencingLayer()->name() );
   item->setFlags( Qt::ItemIsEditable );
@@ -74,6 +75,7 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   item = new QTableWidgetItem( rel.id() );
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 5, item );
+  mRelationsTable->setSortingEnabled( true );
 }
 
 void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
@@ -115,6 +117,18 @@ void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
     relation.setRelationName( addDlg.relationName() );
 
     addRelation( relation );
+  }
+}
+
+void QgsRelationManagerDialog::on_mBtnDiscoverRelations_clicked()
+{
+  QgsDiscoverRelationsDlg discoverDlg( relations(), mLayers, this );
+  if ( discoverDlg.exec() )
+  {
+    Q_FOREACH ( const QgsRelation& relation, discoverDlg.relations() )
+    {
+      addRelation( relation );
+    }
   }
 }
 

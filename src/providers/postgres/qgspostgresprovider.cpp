@@ -24,6 +24,7 @@
 #include <qgsrectangle.h>
 #include <qgscoordinatereferencesystem.h>
 #include <qgseditformconfig.h>
+#include <qgsvectorlayer.h>
 
 #include <QMessageBox>
 
@@ -3905,6 +3906,84 @@ QVariant QgsPostgresProvider::convertValue( QVariant::Type type, QVariant::Type 
       return v;
     }
   }
+}
+
+QList<QgsVectorLayer*> QgsPostgresProvider::searchLayers( const QList<QgsVectorLayer*>& layers, const QString& connectionInfo, const QString& schema, const QString& tableName )
+{
+  QList<QgsVectorLayer*> result;
+  Q_FOREACH ( QgsVectorLayer* layer, layers )
+  {
+    const QgsPostgresProvider* pgProvider = qobject_cast<QgsPostgresProvider*>( layer->dataProvider() );
+    if ( pgProvider &&
+         pgProvider->mUri.connectionInfo( false ) == connectionInfo && pgProvider->mSchemaName == schema && pgProvider->mTableName == tableName )
+    {
+      result.append( layer );
+    }
+  }
+  return result;
+}
+
+QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const
+{
+  QList<QgsRelation> result;
+  QString sql(
+    "SELECT RC.CONSTRAINT_NAME, KCU1.COLUMN_NAME, KCU2.CONSTRAINT_SCHEMA, KCU2.TABLE_NAME, KCU2.COLUMN_NAME, KCU1.ORDINAL_POSITION "
+    "FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS RC "
+    "INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KCU1 "
+    "ON KCU1.CONSTRAINT_CATALOG = RC.CONSTRAINT_CATALOG AND KCU1.CONSTRAINT_SCHEMA = RC.CONSTRAINT_SCHEMA AND KCU1.CONSTRAINT_NAME = RC.CONSTRAINT_NAME "
+    "INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KCU2 "
+    "ON KCU2.CONSTRAINT_CATALOG = RC.UNIQUE_CONSTRAINT_CATALOG AND KCU2.CONSTRAINT_SCHEMA = RC.UNIQUE_CONSTRAINT_SCHEMA AND KCU2.CONSTRAINT_NAME = RC.UNIQUE_CONSTRAINT_NAME "
+    "AND KCU2.ORDINAL_POSITION = KCU1.ORDINAL_POSITION "
+    "WHERE KCU1.CONSTRAINT_SCHEMA=" + QgsPostgresConn::quotedValue( mSchemaName ) + " AND KCU1.TABLE_NAME=" + QgsPostgresConn::quotedValue( mTableName ) +
+    "ORDER BY KCU1.ORDINAL_POSITION"
+  );
+  QgsPostgresResult sqlResult( connectionRO()->PQexec( sql ) );
+  if ( sqlResult.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    QgsLogger::warning( "Error getting the foreign keys of " + mTableName );
+    return result;
+  }
+
+  int nbFound = 0;
+  for ( int row = 0; row < sqlResult.PQntuples(); ++row )
+  {
+    const QString name = sqlResult.PQgetvalue( row, 0 );
+    const QString fkColumn = sqlResult.PQgetvalue( row, 1 );
+    const QString refSchema = sqlResult.PQgetvalue( row, 2 );
+    const QString refTable = sqlResult.PQgetvalue( row, 3 );
+    const QString refColumn = sqlResult.PQgetvalue( row, 4 );
+    const QString position = sqlResult.PQgetvalue( row, 5 );
+    if ( position == "1" )
+    { // first reference field => try to find if we have layers for the referenced table
+      const QList<QgsVectorLayer*> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );
+      Q_FOREACH ( const QgsVectorLayer* foundLayer, foundLayers )
+      {
+        QgsRelation relation;
+        relation.setRelationName( name );
+        relation.setReferencingLayer( self->id() );
+        relation.setReferencedLayer( foundLayer->id() );
+        relation.addFieldPair( fkColumn, refColumn );
+        relation.generateId();
+        if ( relation.isValid() )
+        {
+          result.append( relation );
+          ++nbFound;
+        }
+        else
+        {
+          QgsLogger::warning( "Invalid relation for " + name );
+        }
+      }
+    }
+    else
+    { // multi reference field => add the field pair to all the referenced layers found
+      for ( int i = 0; i < nbFound; ++i )
+      {
+        result[result.size() - 1 - i].addFieldPair( fkColumn, refColumn );
+      }
+    }
+  }
+  return result;
 }
 
 /**
