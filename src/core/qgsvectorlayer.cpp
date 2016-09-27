@@ -2107,7 +2107,7 @@ bool QgsVectorLayer::addAttribute( const QgsField &field )
   return mEditBuffer->addAttribute( field );
 }
 
-void QgsVectorLayer::removeAttributeAlias( int attIndex )
+void QgsVectorLayer::removeFieldAlias( int attIndex )
 {
   if ( attIndex < 0 || attIndex >= fields().count() )
     return;
@@ -2123,15 +2123,15 @@ void QgsVectorLayer::removeAttributeAlias( int attIndex )
   }
 }
 
-bool QgsVectorLayer::renameAttribute( int attIndex, const QString& newName )
+bool QgsVectorLayer::renameAttribute( int index, const QString& newName )
 {
   if ( !mEditBuffer || !mDataProvider )
     return false;
 
-  return mEditBuffer->renameAttribute( attIndex, newName );
+  return mEditBuffer->renameAttribute( index, newName );
 }
 
-void QgsVectorLayer::setAttributeAlias( int attIndex, const QString& aliasString )
+void QgsVectorLayer::setFieldAlias( int attIndex, const QString& aliasString )
 {
   if ( attIndex < 0 || attIndex >= fields().count() )
     return;
@@ -2144,18 +2144,18 @@ void QgsVectorLayer::setAttributeAlias( int attIndex, const QString& aliasString
   emit layerModified(); // TODO[MD]: should have a different signal?
 }
 
-QString QgsVectorLayer::attributeAlias( int attributeIndex ) const
+QString QgsVectorLayer::attributeAlias( int index ) const
 {
-  if ( attributeIndex < 0 || attributeIndex >= fields().count() )
+  if ( index < 0 || index >= fields().count() )
     return QString();
 
-  return fields().at( attributeIndex ).alias();
+  return fields().at( index ).alias();
 }
 
-QString QgsVectorLayer::attributeDisplayName( int attributeIndex ) const
+QString QgsVectorLayer::attributeDisplayName( int index ) const
 {
-  if ( attributeIndex >= 0 && attributeIndex < mFields.count() )
-    return mFields.at( attributeIndex ).displayName();
+  if ( index >= 0 && index < mFields.count() )
+    return mFields.at( index ).displayName();
   else
     return QString();
 }

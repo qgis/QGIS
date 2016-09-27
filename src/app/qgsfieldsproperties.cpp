@@ -765,11 +765,11 @@ void QgsFieldsProperties::attributesListCellChanged( int row, int column )
     {
       if ( !aliasItem->text().trimmed().isEmpty() )
       {
-        mLayer->setAttributeAlias( idx, aliasItem->text() );
+        mLayer->setFieldAlias( idx, aliasItem->text() );
       }
       else
       {
-        mLayer->removeAttributeAlias( idx );
+        mLayer->removeFieldAlias( idx );
       }
     }
   }
