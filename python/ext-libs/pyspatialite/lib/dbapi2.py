@@ -50,7 +50,10 @@ def TimestampFromTicks(ticks):
 version_info = tuple([int(x) for x in version.split(".")])
 sqlite_version_info = tuple([int(x) for x in sqlite_version.split(".")])
 
-Binary = buffer
+# buffer is no longer supported is python 3
+# memoryview fit 2.7 and 3+
+# see https://docs.python.org/2/c-api/buffer.html
+Binary = memoryview
 
 def register_adapters_and_converters():
     def adapt_date(val):
