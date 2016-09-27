@@ -1078,21 +1078,21 @@ class QgsVectorLayer : QgsMapLayer
      *
      * @note Added in QGIS 3.0
      */
-    void setAttributeAlias( int index, const QString& aliasString );
+    void setFieldAlias( int index, const QString& aliasString );
 
     /**
      * Removes an alias (a display name) for attributes to display in dialogs
      *
      * @note Added in QGIS 3.0
      */
-    void removeAttributeAlias( int index );
+    void removeFieldAlias( int index );
 
     /** Renames an attribute field  (but does not commit it).
      * @param attIndex attribute index
      * @param newName new name of field
      * @note added in QGIS 2.16
      */
-    bool renameAttribute( int attIndex, const QString& newName );
+    bool renameAttribute( int index, const QString& newName );
 
     /**
      * Returns the alias of an attribute name or a null string if there is no alias.
@@ -1100,10 +1100,10 @@ class QgsVectorLayer : QgsMapLayer
      * @see {attributeDisplayName( int attributeIndex )} which returns the field name
      *      if no alias is defined.
      */
-    QString attributeAlias( int attributeIndex ) const;
+    QString attributeAlias( int index ) const;
 
     /** Convenience function that returns the attribute alias if defined or the field name else */
-    QString attributeDisplayName( int attributeIndex ) const;
+    QString attributeDisplayName( int index ) const;
 
     const QMap< QString, QString >& attributeAliases() const;
 

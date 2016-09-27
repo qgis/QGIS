@@ -1615,27 +1615,27 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertFalse(layer.attributeAlias(1))
         self.assertFalse(layer.attributeAlias(2))
 
-        layer.addAttributeAlias(0, "test")
+        layer.setFieldAlias(0, "test")
         self.assertEqual(layer.attributeAlias(0), "test")
         self.assertFalse(layer.attributeAlias(1))
         self.assertFalse(layer.attributeAlias(2))
         self.assertEqual(layer.fields().at(0).alias(), "test")
 
-        layer.addAttributeAlias(1, "test2")
+        layer.setFieldAlias(1, "test2")
         self.assertEqual(layer.attributeAlias(0), "test")
         self.assertEqual(layer.attributeAlias(1), "test2")
         self.assertFalse(layer.attributeAlias(2))
         self.assertEqual(layer.fields().at(0).alias(), "test")
         self.assertEqual(layer.fields().at(1).alias(), "test2")
 
-        layer.addAttributeAlias(1, None)
+        layer.setFieldAlias(1, None)
         self.assertEqual(layer.attributeAlias(0), "test")
         self.assertFalse(layer.attributeAlias(1))
         self.assertFalse(layer.attributeAlias(2))
         self.assertEqual(layer.fields().at(0).alias(), "test")
         self.assertFalse(layer.fields().at(1).alias())
 
-        layer.remAttributeAlias(0)
+        layer.removeFieldAlias(0)
         self.assertFalse(layer.attributeAlias(0))
         self.assertFalse(layer.attributeAlias(1))
         self.assertFalse(layer.attributeAlias(2))
@@ -1657,8 +1657,8 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertFalse(layer2.attributeAlias(1))
 
         # set some aliases
-        layer.addAttributeAlias(0, "test")
-        layer.addAttributeAlias(1, "test2")
+        layer.setFieldAlias(0, "test")
+        layer.setFieldAlias(1, "test2")
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("maplayer")

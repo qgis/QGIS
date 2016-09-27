@@ -1416,8 +1416,8 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.</li>
 <li>editFormConfig() returns a copy instead of direct access (Use setEditFormConfig to update)
 <li>Removed valueRelation(), replaced with QgsEditFormConfig::editorWidgetConfig
 <li>Removed fieldNameIndex(), use fields().lookupField() or fields().indexFromName() instead
-<li>Renamed addAttributeAlias() to setAttributeAlias()
-<li>Renamed remAttributeAlias() to removeAttributeAlias()
+<li>Renamed addAttributeAlias() to setFieldAlias()
+<li>Renamed remAttributeAlias() to removeFieldAlias()
 </ul>
 
 \subsection qgis_api_break_3_0_QgsVectorLayerEditBuffer QgsVectorLayerEditBuffer
