@@ -16,6 +16,8 @@
 #ifndef QGSEXPRESSIONSORTER_H
 #define QGSEXPRESSIONSORTER_H
 
+#include <QLocale>
+
 #include "qgsfeaturerequest.h"
 #include "qgsindexedfeature.h"
 
@@ -25,6 +27,10 @@ class QgsExpressionSorter
   public:
     explicit QgsExpressionSorter( const QList<QgsFeatureRequest::OrderByClause>& preparedOrderBys )
         : mPreparedOrderBys( preparedOrderBys )
+        // QString::localeAwareCompare() is case insensitive for common locales,
+        // but case sensitive for the C locale. So use an explicit case
+        // insensitive comparison in that later case to avoid test failures.
+        , mUseCaseInsensitiveComparison( QLocale::system().name() == QLocale::c().name() )
     {}
 
     bool operator()( const QgsIndexedFeature& f1, const QgsIndexedFeature& f2 ) const
@@ -106,10 +112,20 @@ class QgsExpressionSorter
           default:
             if ( 0 == v1.toString().localeAwareCompare( v2.toString() ) )
               continue;
-            if ( orderBy.ascending() )
-              return v1.toString().localeAwareCompare( v2.toString() ) < 0;
+            if ( mUseCaseInsensitiveComparison )
+            {
+              if ( orderBy.ascending() )
+                return v1.toString().compare( v2.toString(), Qt::CaseInsensitive ) < 0;
+              else
+                return v1.toString().compare( v2.toString(), Qt::CaseInsensitive ) > 0;
+            }
             else
-              return v1.toString().localeAwareCompare( v2.toString() ) > 0;
+            {
+              if ( orderBy.ascending() )
+                return v1.toString().localeAwareCompare( v2.toString() ) < 0;
+              else
+                return v1.toString().localeAwareCompare( v2.toString() ) > 0;
+            }
         }
       }
 
@@ -154,6 +170,7 @@ class QgsExpressionSorter
 
   private:
     QList<QgsFeatureRequest::OrderByClause> mPreparedOrderBys;
+    bool mUseCaseInsensitiveComparison;
 };
 
 /// @endcond
