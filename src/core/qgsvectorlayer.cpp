@@ -2107,7 +2107,7 @@ bool QgsVectorLayer::addAttribute( const QgsField &field )
   return mEditBuffer->addAttribute( field );
 }
 
-void QgsVectorLayer::remAttributeAlias( int attIndex )
+void QgsVectorLayer::removeAttributeAlias( int attIndex )
 {
   if ( attIndex < 0 || attIndex >= fields().count() )
     return;
@@ -2131,7 +2131,7 @@ bool QgsVectorLayer::renameAttribute( int attIndex, const QString& newName )
   return mEditBuffer->renameAttribute( attIndex, newName );
 }
 
-void QgsVectorLayer::addAttributeAlias( int attIndex, const QString& aliasString )
+void QgsVectorLayer::setAttributeAlias( int attIndex, const QString& aliasString )
 {
   if ( attIndex < 0 || attIndex >= fields().count() )
     return;
