@@ -727,7 +727,9 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
         QPainter textp;
         textp.begin( &textPict );
         textp.setPen( Qt::NoPen );
-        textp.setBrush( tmpLyr.format().color() );
+        QColor textColor = tmpLyr.format().color();
+        textColor.setAlphaF( tmpLyr.format().opacity() );
+        textp.setBrush( textColor );
         textp.drawPath( path );
         // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
         //       e.g. some capitalization options, but not others
@@ -764,7 +766,9 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
         {
           // draw text as text (for SVG and PDF exports)
           painter->setFont( tmpLyr.format().scaledFont( context ) );
-          painter->setPen( tmpLyr.format().color() );
+          QColor textColor = tmpLyr.format().color();
+          textColor.setAlphaF( tmpLyr.format().opacity() );
+          painter->setPen( textColor );
           painter->setRenderHint( QPainter::TextAntialiasing );
           painter->drawText( 0, 0, component.text() );
         }
