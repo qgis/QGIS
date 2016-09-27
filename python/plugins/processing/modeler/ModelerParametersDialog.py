@@ -33,10 +33,10 @@ from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
                                  QFrame, QPushButton, QSizePolicy, QVBoxLayout,
                                  QHBoxLayout, QTabWidget, QWidget, QScrollArea,
                                  QComboBox, QTableWidgetItem, QMessageBox,
-                                 QTextBrowser)
+                                 QTextBrowser, QToolButton, QMenu, QAction)
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
-from qgis.core import QgsNetworkAccessManager
+from qgis.core import QgsApplication, QgsNetworkAccessManager
 
 from qgis.gui import QgsMessageBar
 
@@ -58,10 +58,6 @@ from processing.modeler.ModelerAlgorithm import (ValueFromInput,
                                                  ValueFromOutput,
                                                  Algorithm,
                                                  ModelerOutput)
-
-
-from qgis.core import QgsApplication
-from qgis.PyQt.QtGui import QToolButton, QMenu, QAction
 
 
 class ModelerParametersDialog(QDialog):
@@ -226,8 +222,8 @@ class ModelerParametersDialog(QDialog):
         self.buttonBox.rejected.connect(self.cancelPressed)
         QMetaObject.connectSlotsByName(self)
 
-        for wrapper in self.wrappers.values():
-            wrapper.postInitialize(self.wrappers.values())
+        for wrapper in list(self.wrappers.values()):
+            wrapper.postInitialize(list(self.wrappers.values()))
 
     def requestFinished(self):
         """Change the webview HTML content"""
@@ -339,7 +335,7 @@ class ModelerParametersDialog(QDialog):
                 else:
                     value = param.default
                 self.wrappers[param.name].setValue(value)
-            for name, out in alg.outputs.items():
+            for name, out in list(alg.outputs.items()):
                 self.valueItems[name].setText(out.description)
 
             selected = []

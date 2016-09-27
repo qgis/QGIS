@@ -155,7 +155,7 @@ class GdalUtils(object):
             return 'ESRI Shapefile'
 
         formats = QgsVectorFileWriter.supportedFiltersAndFormats()
-        for k, v in formats.items():
+        for k, v in list(formats.items()):
             if ext in k:
                 return v
         return 'ESRI Shapefile'

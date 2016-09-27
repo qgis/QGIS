@@ -112,7 +112,7 @@ class ProcessingToolbox(BASE, WIDGET):
         if text:
             self.algorithmTree.expandAll()
             self.disabledWithMatchingAlgs = []
-            for providerName, provider in algList.algs.items():
+            for providerName, provider in list(algList.algs.items()):
                 name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
                 if not ProcessingConfig.getSetting(name):
                     for alg in list(provider.values()):

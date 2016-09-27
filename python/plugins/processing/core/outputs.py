@@ -398,7 +398,7 @@ def getOutputFromString(s):
     try:
         if "|" in s:
             tokens = s.split("|")
-            params = [t if unicode(t) != "None" else None for t in tokens[1:]]
+            params = [t if str(t) != "None" else None for t in tokens[1:]]
             clazz = getattr(sys.modules[__name__], tokens[0])
             return clazz(*params)
         else:

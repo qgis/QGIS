@@ -168,7 +168,7 @@ class gdal2tiles(GdalAlgorithm):
 
         parameters = {self.TITLE: '-t', self.COPYRIGHT: '-c',
                       self.GOOGLEKEY: '-g', self.BINGKEY: '-b'}
-        for arg, parameter in parameters.items():
+        for arg, parameter in list(parameters.items()):
             if self.getParameterValue(arg):
                 arguments.append(parameter)
                 arguments.append(self.getParameterValue(arg))

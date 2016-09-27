@@ -78,7 +78,7 @@ class ParametersPanel(BASE, WIDGET):
         self.initWidgets()
 
     def layerRegistryChanged(self, layers):
-        for wrapper in self.wrappers.values():
+        for wrapper in list(self.wrappers.values()):
             wrapper.refresh()
 
     def initWidgets(self):
@@ -154,8 +154,8 @@ class ParametersPanel(BASE, WIDGET):
                 self.checkBoxes[output.name] = check
             self.valueItems[output.name] = widget
 
-        for wrapper in self.wrappers.values():
-            wrapper.postInitialize(self.wrappers.values())
+        for wrapper in list(self.wrappers.values()):
+            wrapper.postInitialize(list(self.wrappers.values()))
 
     def buttonToggled(self, value):
         if value:

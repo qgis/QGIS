@@ -17,6 +17,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 
 __author__ = 'Arnaud Morvan'
@@ -121,7 +123,7 @@ class WidgetWrapper(QObject):
             pass
         if self.widget.isEditable():
             if value is not None:
-                self.widget.setEditText(unicode(value))
+                self.widget.setEditText(str(value))
         else:
             self.widget.setCurrentIndex(0)
 
@@ -214,7 +216,7 @@ class CrsWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_MODELER:
             self.setComboValue(value)
         else:
-            if isinstance(value, basestring):  # authId
+            if isinstance(value, str):  # authId
                 self.widget.crs = value
             else:
                 self.widget.crs = QgsCoordinateReferenceSystem(value).authid()
@@ -264,7 +266,7 @@ class ExtentWidgetWrapper(WidgetWrapper):
         else:
             idx = self.widget.findText(self.widget.currentText())
             if idx < 0:
-                s = unicode(self.widget.currentText()).strip()
+                s = str(self.widget.currentText()).strip()
                 if s:
                     try:
                         tokens = s.split(',')
@@ -294,7 +296,7 @@ class PointWidgetWrapper(WidgetWrapper):
             points = self.dialog.getAvailableValuesOfType(ParameterPoint)
             for p in points:
                 item.addItem(self.dialog.resolveValueDescription(p), p)
-            item.setEditText(unicode(self.param.default))
+            item.setEditText(str(self.param.default))
             return item
 
     def setValue(self, value):
@@ -309,7 +311,7 @@ class PointWidgetWrapper(WidgetWrapper):
         else:
             idx = self.widget.findText(self.widget.currentText())
             if idx < 0:
-                s = unicode(self.widget.currentText()).strip()
+                s = str(self.widget.currentText()).strip()
                 if s:
                     try:
                         tokens = s.split(',')
@@ -786,7 +788,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         self.setLayer(wrapper.value())
 
     def setLayer(self, layer):
-        if isinstance(layer, basestring):
+        if isinstance(layer, str):
             layer = dataobjects.getObjectFromUri(_resolveLayers(layer))
         self._layer = layer
         self.refreshItems()
@@ -813,7 +815,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         fieldNames = set()
         for field in self._layer.fields():
             if not fieldTypes or field.type() in fieldTypes:
-                fieldNames.add(unicode(field.name()))
+                fieldNames.add(str(field.name()))
         return sorted(list(fieldNames), key=cmp_to_key(locale.strcoll))
 
     def setValue(self, value):

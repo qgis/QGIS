@@ -28,8 +28,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget, QVBoxLayout
-from qgis.PyQt.QtGui import QCursor, QColor, QPalette, QSizePolicy
+from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget, QVBoxLayout, QSizePolicy
+from qgis.PyQt.QtGui import QCursor, QColor, QPalette
 
 from qgis.core import QgsMapLayerRegistry
 from qgis.gui import QgsMessageBar

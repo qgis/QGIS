@@ -329,7 +329,7 @@ class GeoAlgorithm(object):
         for param in self.parameters:
             try:
                 param.evaluate(self)
-            except ValueError, e:
+            except ValueError as e:
                 traceback.print_exc()
                 raise GeoAlgorithmExecutionException(str(e))
 
@@ -340,7 +340,7 @@ class GeoAlgorithm(object):
         try:
             for out in self.outputs:
                 out.resolveValue(self)
-        except ValueError, e:
+        except ValueError as e:
             raise GeoAlgorithmExecutionException(str(e))
 
     def setOutputCRS(self):

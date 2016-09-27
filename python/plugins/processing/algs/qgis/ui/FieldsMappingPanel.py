@@ -248,7 +248,7 @@ class FieldDelegate(QStyledItemDelegate):
         fieldType = FieldsMappingModel.columns[column]['type']
         if fieldType == QVariant.Type:
             editor = QComboBox(parent)
-            for key, text in FieldsMappingModel.fieldTypes.items():
+            for key, text in list(FieldsMappingModel.fieldTypes.items()):
                 editor.addItem(text, key)
 
         elif fieldType == QgsExpression:

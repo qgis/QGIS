@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2016'
@@ -70,4 +71,4 @@ class StringInputPanel(BASE, WIDGET):
         return self.leText.text()
 
     def setValue(self, value):
-        self.leText.setText(unicode(value))
+        self.leText.setText(str(value))

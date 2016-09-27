@@ -119,7 +119,7 @@ def _resolveLayers(value):
         return ";".join(inputlayers)
 
 
-class Parameter:
+class Parameter(object):
 
     """
     Base class for all parameters that a geoalgorithm might
@@ -200,7 +200,7 @@ class Parameter:
     def wrapper(self, dialog, row=0, col=0):
         wrapper = self.metadata.get('widget_wrapper', None)
         # wrapper metadata should be a class path
-        if isinstance(wrapper, basestring):
+        if isinstance(wrapper, str):
             tokens = wrapper.split('.')
             mod = __import__('.'.join(tokens[:-1]), fromlist=[tokens[-1]])
             wrapper = getattr(mod, tokens[-1])
@@ -830,7 +830,7 @@ class ParameterNumber(Parameter):
             self.value = None
             return True
 
-        if isinstance(n, basestring):
+        if isinstance(n, str):
             try:
                 v = self._evaluate(n)
                 self.value = float(v)
@@ -880,7 +880,7 @@ class ParameterNumber(Parameter):
         return result
 
     def evaluate(self, alg):
-        if isinstance(self.value, basestring) and bool(self.value):
+        if isinstance(self.value, str) and bool(self.value):
             self.value = self._evaluate(self.value)
 
     def _layerVariables(self, element, alg=None):
@@ -910,14 +910,14 @@ class ParameterNumber(Parameter):
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 variables.update(self._layerVariables(param))
 
-        for alg in model.algs.values():
+        for alg in list(model.algs.values()):
             for out in alg.algorithm.outputs:
                 if isinstance(out, OutputNumber):
                     variables["@%s_%s" % (alg.name, out.name)] = out.value
                 if isinstance(out, (OutputRaster, OutputVector)):
                     variables.update(self._layerVariables(out, alg))
-        for k, v in variables.iteritems():
-            value = value.replace(k, unicode(v))
+        for k, v in list(variables.items()):
+            value = value.replace(k, str(v))
 
         return value
 
@@ -927,7 +927,7 @@ class ParameterNumber(Parameter):
     def getValueAsCommandLineParameter(self):
         if self.value is None:
             return str(None)
-        if isinstance(self.value, basestring):
+        if isinstance(self.value, str):
             return '"%s"' + self.value
         return str(self.value)
 
@@ -1191,7 +1191,7 @@ class ParameterString(Parameter):
                 return ParameterString(name, descName, multiline=True, optional=isOptional)
 
     def evaluate(self, alg):
-        if isinstance(self.value, basestring) and bool(self.value) and self.evaluateExpressions:
+        if isinstance(self.value, str) and bool(self.value) and self.evaluateExpressions:
             exp = QgsExpression(self.value)
             if exp.hasParserError():
                 raise ValueError(self.tr("Error in parameter expression: ") + exp.parserErrorString())
@@ -1502,7 +1502,7 @@ class ParameterGeometryPredicate(Parameter):
         return True
 
 
-paramClasses = [c for c in sys.modules[__name__].__dict__.values() if isclass(c) and issubclass(c, Parameter)]
+paramClasses = [c for c in list(sys.modules[__name__].__dict__.values()) if isclass(c) and issubclass(c, Parameter)]
 
 
 def getParameterFromString(s):
@@ -1513,7 +1513,7 @@ def getParameterFromString(s):
             s = s[1:]
             isAdvanced = True
         tokens = s.split("|")
-        params = [t if unicode(t) != unicode(None) else None for t in tokens[1:]]
+        params = [t if str(t) != str(None) else None for t in tokens[1:]]
         try:
             clazz = getattr(sys.modules[__name__], tokens[0])
             param = clazz(*params)

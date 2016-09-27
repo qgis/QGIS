@@ -89,7 +89,7 @@ class ConcaveHull(GeoAlgorithm):
         counter = 50. / len(edges)
         i = 0
         ids = []
-        for id, max_len in edges.items():
+        for id, max_len in list(edges.items()):
             if max_len > alpha * max_length:
                 ids.append(id)
             progress.setPercentage(50 + i * counter)

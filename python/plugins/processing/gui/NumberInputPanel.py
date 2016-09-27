@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 from builtins import range
 
 __author__ = 'Victor Olaya'
@@ -103,7 +104,7 @@ class NumberInputPanel(BASE, WIDGET):
                     variables['%s_stddev' % name] = "Standard deviation of %s" % desc
 
         dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, 'generic', context)
-        for variable, desc in variables.iteritems():
+        for variable, desc in list(variables.items()):
             dlg.expressionBuilder().registerItem("Modeler", variable, "@" + variable, desc, highlightedItem=True)
         dlg.setWindowTitle(self.tr('Expression based input'))
         if dlg.exec_() == QDialog.Accepted:
@@ -119,7 +120,7 @@ class NumberInputPanel(BASE, WIDGET):
                 if isinstance(param, ParameterNumber):
                     if "@" + param.name in value:
                         values.append(ValueFromInput(param.name))
-            for alg in self.modelParametersDialog.model.algs.values():
+            for alg in list(self.modelParametersDialog.model.algs.values()):
                 for out in alg.algorithm.outputs:
                     if isinstance(out, OutputNumber) and "@%s_%s" % (alg.name, out.name) in value:
                         values.append(ValueFromOutput(alg.name, out.name))
@@ -131,4 +132,4 @@ class NumberInputPanel(BASE, WIDGET):
             return self.leText.text()
 
     def setValue(self, value):
-        self.leText.setText(unicode(value))
+        self.leText.setText(str(value))

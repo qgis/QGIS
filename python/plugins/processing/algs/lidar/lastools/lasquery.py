@@ -61,7 +61,7 @@ class lasquery(LAStoolsAlgorithm):
         layers = QgsMapLayerRegistry.instance().mapLayers()
 
         # loop over layers
-        for name, layer in layers.items():
+        for name, layer in list(layers.items()):
             layerType = layer.type()
             if layerType == QgsMapLayer.VectorLayer:
                 shp_file_name = layer.source()

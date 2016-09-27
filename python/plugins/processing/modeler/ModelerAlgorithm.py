@@ -116,7 +116,7 @@ class Algorithm(object):
         self.active = True
 
     def todict(self):
-        return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
+        return {k: v for k, v in list(self.__dict__.items()) if not k.startswith("_")}
 
     @property
     def algorithm(self):
@@ -205,7 +205,7 @@ class ValueFromOutput(object):
         return "outputs_%s['%s']" % (self.alg, self.output)
 
 
-class CompoundValue():
+class CompoundValue(object):
 
     def __init__(self, values=[], definition=""):
         self.values = values
@@ -401,12 +401,12 @@ class ModelerAlgorithm(GeoAlgorithm):
         return algs
 
     def setPositions(self, paramPos, algPos, outputsPos):
-        for param, pos in paramPos.items():
+        for param, pos in list(paramPos.items()):
             self.inputs[param].pos = pos
-        for alg, pos in algPos.items():
+        for alg, pos in list(algPos.items()):
             self.algs[alg].pos = pos
-        for alg, positions in outputsPos.items():
-            for output, pos in positions.items():
+        for alg, positions in list(outputsPos.items()):
+            for output, pos in list(positions.items()):
                 self.algs[alg].outputs[output].pos = pos
 
     def prepareAlgorithm(self, alg):
@@ -553,7 +553,7 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def todict(self):
         keys = ["inputs", "group", "name", "algs", "helpContent"]
-        return {k: v for k, v in self.__dict__.items() if k in keys}
+        return {k: v for k, v in list(self.__dict__.items()) if k in keys}
 
     def toJson(self):
         def todict(o):
@@ -587,7 +587,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 module = _import(moduleName)
                 clazz = getattr(module, className)
                 instance = clazz()
-                for k, v in values.items():
+                for k, v in list(values.items()):
                     instance.__dict__[k] = v
                 return instance
             except KeyError:
@@ -613,7 +613,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         for param in list(self.inputs.values()):
             s.append(param.param.getAsScriptCode())
         for alg in list(self.algs.values()):
-            for name, out in alg.outputs.items():
+            for name, out in list(alg.outputs.items()):
                 s.append('##%s=%s' % (safeName(out.description).lower(), alg.getOutputType(name)))
 
         executed = []

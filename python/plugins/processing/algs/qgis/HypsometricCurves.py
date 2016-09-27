@@ -197,7 +197,7 @@ class HypsometricCurves(GeoAlgorithm):
         else:
             multiplier = pX * pY
 
-        for k, v in out.items():
+        for k, v in list(out.items()):
             out[k] = v * multiplier
 
         prev = None

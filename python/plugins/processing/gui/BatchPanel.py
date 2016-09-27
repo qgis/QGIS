@@ -213,7 +213,7 @@ class BatchPanel(BASE, WIDGET):
                     return
             toSave.append({self.PARAMETERS: algParams, self.OUTPUTS: algOutputs})
 
-        filename = unicode(QFileDialog.getSaveFileName(self,
+        filename, __ = str(QFileDialog.getSaveFileName(self,
                                                        self.tr('Save batch'),
                                                        None,
                                                        self.tr('JSON files (*.json)')))
@@ -262,8 +262,8 @@ class BatchPanel(BASE, WIDGET):
             item.setCurrentIndex(0)
             self.tblParameters.setCellWidget(row, column, item)
 
-        for wrapper in wrappers.values():
-            wrapper.postInitialize(wrappers.values())
+        for wrapper in list(wrappers.values()):
+            wrapper.postInitialize(list(wrappers.values()))
 
     def removeRows(self):
         if self.tblParameters.rowCount() > 2:

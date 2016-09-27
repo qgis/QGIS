@@ -32,8 +32,8 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, QByteArray
-from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem
-from qgis.PyQt.QtGui import QIcon, QImage, QPainter, QSizePolicy
+from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem, QSizePolicy
+from qgis.PyQt.QtGui import QIcon, QImage, QPainter
 from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar
 from processing.core.ProcessingConfig import ProcessingConfig

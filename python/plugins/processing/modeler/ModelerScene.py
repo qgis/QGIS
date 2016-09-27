@@ -43,16 +43,16 @@ class ModelerScene(QGraphicsScene):
         self.setItemIndexMethod(QGraphicsScene.NoIndex)
 
     def getParameterPositions(self):
-        return {key: item.pos() for key, item in self.paramItems.items()}
+        return {key: item.pos() for key, item in list(self.paramItems.items())}
 
     def getAlgorithmPositions(self):
-        return {key: item.pos() for key, item in self.algItems.items()}
+        return {key: item.pos() for key, item in list(self.algItems.items())}
 
     def getOutputPositions(self):
         pos = {}
-        for algName, outputs in self.outputItems.items():
+        for algName, outputs in list(self.outputItems.items()):
             outputPos = {}
-            for (key, value) in outputs.items():
+            for (key, value) in list(outputs.items()):
                 if value is not None:
                     outputPos[key] = value.pos()
                 else:

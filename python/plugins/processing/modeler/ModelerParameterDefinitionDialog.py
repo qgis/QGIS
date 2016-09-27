@@ -187,7 +187,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 if self.param.isInteger:
                     default = int(math.floor(default))
                 if default:
-                    self.defaultTextBox.setText(unicode(default))
+                    self.defaultTextBox.setText(str(default))
             self.verticalLayout.addWidget(self.defaultTextBox)
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_STRING or
                 isinstance(self.param, ParameterString)):
@@ -291,20 +291,12 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_NUMBER or
                 isinstance(self.param, ParameterNumber)):
             try:
-<<<<<<< 8d5f46e6e491417b3449d4beca6ad490e6d2c5fe
-                vmin = str(self.minTextBox.text()).strip()
-=======
                 vmin = self.minTextBox.text().strip()
->>>>>>> [processing] UI improvement for defining model parameters
                 if vmin == '':
                     vmin = None
                 else:
                     vmin = float(vmin)
-<<<<<<< 8d5f46e6e491417b3449d4beca6ad490e6d2c5fe
-                vmax = str(self.maxTextBox.text()).strip()
-=======
                 vmax = self.maxTextBox.text().strip()
->>>>>>> [processing] UI improvement for defining model parameters
                 if vmax == '':
                     vmax = None
                 else:
@@ -318,15 +310,9 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_STRING or
                 isinstance(self.param, ParameterString)):
             self.param = ParameterString(name, description,
-<<<<<<< 8d5f46e6e491417b3449d4beca6ad490e6d2c5fe
                                          str(self.defaultTextBox.text()))
-        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_EXTENT or \
-                isinstance(self.param, ParameterExtent):
-=======
-                                         unicode(self.defaultTextBox.text()))
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_EXTENT or
                 isinstance(self.param, ParameterExtent)):
->>>>>>> [processing] UI improvement for defining model parameters
             self.param = ParameterExtent(name, description)
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_FILE or
                 isinstance(self.param, ParameterFile)):
@@ -335,19 +321,11 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_POINT or
                 isinstance(self.param, ParameterPoint)):
             self.param = ParameterPoint(name, description,
-<<<<<<< 8d5f46e6e491417b3449d4beca6ad490e6d2c5fe
                                         str(self.defaultTextBox.text()))
-        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_CRS or \
-                isinstance(self.param, ParameterCrs):
-            self.param = ParameterCrs(name, description, self.defaultTextBox.getValue(), self.yesNoCombo.currentIndex() == 1)
-        self.param.optional = self.yesNoCombo.currentIndex() == 1
-=======
-                                        unicode(self.defaultTextBox.text()))
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_CRS or
                 isinstance(self.param, ParameterCrs)):
             self.param = ParameterCrs(name, description, self.defaultTextBox.getValue())
         self.param.optional = self.requiredCheck.isChecked()
->>>>>>> [processing] UI improvement for defining model parameters
         self.close()
 
     def cancelPressed(self):

@@ -50,7 +50,7 @@ def loadShortHelp():
             return s.replace("{qgisdocs}", "https://docs.qgis.org/%s/%s/docs" % (version, locale))
         else:
             return None
-    h = {k: replace(v) for k, v in h.items()}
+    h = {k: replace(v) for k, v in list(h.items())}
     return h
 
 
