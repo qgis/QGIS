@@ -66,9 +66,19 @@ QVariant QgsTextEditWrapper::value() const
 
   QVariant res( v );
   if ( field().convertCompatible( res ) )
+  {
     return res;
+  }
+  else if ( field().type() == QVariant::String && field().length() > 0 )
+  {
+    // for string fields convertCompatible may return false due to field length limit - in this case just truncate
+    // input rather then discarding it entirely
+    return QVariant( v.left( field().length() ) );
+  }
   else
+  {
     return QVariant( field().type() );
+  }
 }
 
 QWidget* QgsTextEditWrapper::createWidget( QWidget* parent )
