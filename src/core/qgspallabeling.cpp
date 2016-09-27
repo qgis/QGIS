@@ -290,8 +290,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   mDataDefinedNames.insert( Show, QPair<QString, int>( "Show", 15 ) );
   mDataDefinedNames.insert( AlwaysShow, QPair<QString, int>( "AlwaysShow", 20 ) );
 
-  // temp stuff for when drawing label components (don't copy)
-  showingShadowRects = false;
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
@@ -302,7 +300,6 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
     , mFeaturesToLabel( 0 )
     , mFeatsSendingToPal( 0 )
     , mFeatsRegPal( 0 )
-    , showingShadowRects( false )
     , expression( nullptr )
 {
   *this = s;
@@ -3983,16 +3980,6 @@ void QgsPalLabeling::setShowingCandidates( bool showing )
   mEngine->setFlag( QgsLabelingEngine::DrawCandidates, showing );
 }
 
-bool QgsPalLabeling::isShowingShadowRectangles() const
-{
-  return mEngine->testFlag( QgsLabelingEngine::DrawShadowRects );
-}
-
-void QgsPalLabeling::setShowingShadowRectangles( bool showing )
-{
-  mEngine->setFlag( QgsLabelingEngine::DrawShadowRects, showing );
-}
-
 bool QgsPalLabeling::isShowingAllLabels() const
 {
   return mEngine->testFlag( QgsLabelingEngine::UseAllLabels );
@@ -4510,19 +4497,18 @@ void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
     QgsSymbolLayerUtils::blurImageInPlace( blurImg, blurImg.rect(), radius, shadow.blurAlphaOnly() );
   }
 
-  if ( tmpLyr.showingShadowRects ) // engine setting, not per layer
-  {
-    // debug rect for QImage shadow registration and clipping visualization
-    QPainter picti;
-    picti.begin( &blurImg );
-    picti.setBrush( Qt::Dense7Pattern );
-    QPen imgPen( QColor( 0, 0, 255, 255 ) );
-    imgPen.setWidth( 1 );
-    picti.setPen( imgPen );
-    picti.setOpacity( 0.1 );
-    picti.drawRect( 0, 0, blurImg.width(), blurImg.height() );
-    picti.end();
-  }
+#if 0
+  // debug rect for QImage shadow registration and clipping visualization
+  QPainter picti;
+  picti.begin( &blurImg );
+  picti.setBrush( Qt::Dense7Pattern );
+  QPen imgPen( QColor( 0, 0, 255, 255 ) );
+  imgPen.setWidth( 1 );
+  picti.setPen( imgPen );
+  picti.setOpacity( 0.1 );
+  picti.drawRect( 0, 0, blurImg.width(), blurImg.height() );
+  picti.end();
+#endif
 
   double offsetDist = QgsTextRenderer::scaleToPixelContext( shadow.offsetDistance(), context,
                       shadow.offsetUnit(), true, shadow.offsetMapUnitScale() );
@@ -4562,39 +4548,38 @@ void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
   p->restore();
 
   // debug rects
-  if ( tmpLyr.showingShadowRects ) // engine setting, not per layer
+#if 0
+  // draw debug rect for QImage painting registration
+  p->save();
+  p->setBrush( Qt::NoBrush );
+  QPen imgPen( QColor( 255, 0, 0, 10 ) );
+  imgPen.setWidth( 2 );
+  imgPen.setStyle( Qt::DashLine );
+  p->setPen( imgPen );
+  p->scale( scale, scale );
+  if ( component.useOrigin() )
   {
-    // draw debug rect for QImage painting registration
-    p->save();
-    p->setBrush( Qt::NoBrush );
-    QPen imgPen( QColor( 255, 0, 0, 10 ) );
-    imgPen.setWidth( 2 );
-    imgPen.setStyle( Qt::DashLine );
-    p->setPen( imgPen );
-    p->scale( scale, scale );
-    if ( component.useOrigin() )
-    {
-      p->translate( component.origin().x(), component.origin().y() );
-    }
-    p->translate( transPt );
-    p->translate( -imgOffset.x(),
-                  -imgOffset.y() );
-    p->drawRect( 0, 0, blurImg.width(), blurImg.height() );
-    p->restore();
-
-    // draw debug rect for passed in component dimensions
-    p->save();
-    p->setBrush( Qt::NoBrush );
-    QPen componentRectPen( QColor( 0, 255, 0, 70 ) );
-    componentRectPen.setWidth( 1 );
-    if ( component.useOrigin() )
-    {
-      p->translate( component.origin().x(), component.origin().y() );
-    }
-    p->setPen( componentRectPen );
-    p->drawRect( QRect( -xOffset, -componentHeight - yOffset, componentWidth, componentHeight ) );
-    p->restore();
+    p->translate( component.origin().x(), component.origin().y() );
   }
+  p->translate( transPt );
+  p->translate( -imgOffset.x(),
+                -imgOffset.y() );
+  p->drawRect( 0, 0, blurImg.width(), blurImg.height() );
+  p->restore();
+
+  // draw debug rect for passed in component dimensions
+  p->save();
+  p->setBrush( Qt::NoBrush );
+  QPen componentRectPen( QColor( 0, 255, 0, 70 ) );
+  componentRectPen.setWidth( 1 );
+  if ( component.useOrigin() )
+  {
+    p->translate( component.origin().x(), component.origin().y() );
+  }
+  p->setPen( componentRectPen );
+  p->drawRect( QRect( -xOffset, -componentHeight - yOffset, componentWidth, componentHeight ) );
+  p->restore();
+#endif
 }
 
 void QgsPalLabeling::loadEngineSettings()
@@ -4614,7 +4599,6 @@ void QgsPalLabeling::clearEngineSettings()
   QgsProject::instance()->removeEntry( "PAL", "/CandidatesLine" );
   QgsProject::instance()->removeEntry( "PAL", "/CandidatesPolygon" );
   QgsProject::instance()->removeEntry( "PAL", "/ShowingCandidates" );
-  QgsProject::instance()->removeEntry( "PAL", "/ShowingShadowRects" );
   QgsProject::instance()->removeEntry( "PAL", "/ShowingAllLabels" );
   QgsProject::instance()->removeEntry( "PAL", "/ShowingPartialsLabels" );
   QgsProject::instance()->removeEntry( "PAL", "/DrawOutlineLabels" );
@@ -4626,7 +4610,6 @@ QgsPalLabeling* QgsPalLabeling::clone()
   lbl->setShowingAllLabels( isShowingAllLabels() );
   lbl->setShowingCandidates( isShowingCandidates() );
   lbl->setDrawLabelRectOnly( drawLabelRectOnly() );
-  lbl->setShowingShadowRectangles( isShowingShadowRectangles() );
   lbl->setShowingPartialsLabels( isShowingPartialsLabels() );
   lbl->setDrawingOutlineLabels( isDrawingOutlineLabels() );
   return lbl;

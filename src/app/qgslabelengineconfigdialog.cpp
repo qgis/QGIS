@@ -43,7 +43,6 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget* parent )
 
   chkShowCandidates->setChecked( lbl.isShowingCandidates() );
   chkShowAllLabels->setChecked( lbl.isShowingAllLabels() );
-  mShadowDebugRectChkBox->setChecked( lbl.isShowingShadowRectangles() );
 
   chkShowPartialsLabels->setChecked( lbl.isShowingPartialsLabels() );
   mDrawOutlinesChkBox->setChecked( lbl.isDrawingOutlineLabels() );
@@ -62,7 +61,6 @@ void QgsLabelEngineConfigDialog::onOK()
                                 spinCandPolygon->value() );
 
   lbl.setShowingCandidates( chkShowCandidates->isChecked() );
-  lbl.setShowingShadowRectangles( mShadowDebugRectChkBox->isChecked() );
   lbl.setShowingAllLabels( chkShowAllLabels->isChecked() );
   lbl.setShowingPartialsLabels( chkShowPartialsLabels->isChecked() );
   lbl.setDrawingOutlineLabels( mDrawOutlinesChkBox->isChecked() );
@@ -81,7 +79,6 @@ void QgsLabelEngineConfigDialog::setDefaults()
   spinCandPolygon->setValue( p.getPolyP() );
   chkShowCandidates->setChecked( false );
   chkShowAllLabels->setChecked( false );
-  mShadowDebugRectChkBox->setChecked( false );
   chkShowPartialsLabels->setChecked( p.getShowPartial() );
   mDrawOutlinesChkBox->setChecked( true );
 }

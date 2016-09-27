@@ -456,8 +456,6 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext& context, pal::Lab
   // update tmpLyr with any data defined drop shadow values
   QgsPalLabeling::dataDefinedDropShadow( tmpLyr, ddValues );
 
-  tmpLyr.showingShadowRects = mEngine->testFlag( QgsLabelingEngine::DrawShadowRects );
-
   // Render the components of a label in reverse order
   //   (backgrounds -> text)
 

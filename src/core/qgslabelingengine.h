@@ -172,7 +172,6 @@ class CORE_EXPORT QgsLabelingEngine
       RenderOutlineLabels   = 1 << 3,  //!< Whether to render labels as text or outlines
       DrawLabelRectOnly     = 1 << 4,  //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
       DrawCandidates        = 1 << 5,  //!< Whether to draw rectangles of generated candidates (good for debugging)
-      DrawShadowRects       = 1 << 6,  //!< Whether to show debugging rectangles for drop shadows
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

@@ -658,8 +658,6 @@ class CORE_EXPORT QgsPalLayerSettings
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
 
-    bool showingShadowRects; // whether to show debug rectangles for drop shadows
-
   private:
 
     void readDataDefinedPropertyMap( QgsVectorLayer* layer, QDomElement* parentElem,
@@ -889,9 +887,6 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
     bool isShowingCandidates() const;
     void setShowingCandidates( bool showing );
-
-    bool isShowingShadowRectangles() const;
-    void setShowingShadowRectangles( bool showing );
 
     bool isShowingAllLabels() const;
     void setShowingAllLabels( bool showing );
