@@ -1073,17 +1073,25 @@ class QgsVectorLayer : QgsMapLayer
      */
     bool addAttribute( const QgsField &field );
 
-    /** Sets an alias (a display name) for attributes to display in dialogs */
-    void addAttributeAlias( int attIndex, const QString& aliasString );
+    /**
+     * Sets an alias (a display name) for attributes to display in dialogs
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setAttributeAlias( int index, const QString& aliasString );
 
-    /** Removes an alias (a display name) for attributes to display in dialogs */
-    void remAttributeAlias( int attIndex );
+    /**
+     * Removes an alias (a display name) for attributes to display in dialogs
+     *
+     * @note Added in QGIS 3.0
+     */
+    void removeAttributeAlias( int index );
 
     /** Renames an attribute field  (but does not commit it).
      * @param attIndex attribute index
      * @param newName new name of field
      * @note added in QGIS 2.16
-    */
+     */
     bool renameAttribute( int attIndex, const QString& newName );
 
     /**

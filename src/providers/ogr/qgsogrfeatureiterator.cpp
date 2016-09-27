@@ -84,7 +84,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
     //ensure that all fields required for filter expressions are prepared
     QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
     attributeIndexes += attrs.toSet();
-    mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
+    attrs = attributeIndexes.toList();
+    mRequest.setSubsetOfAttributes( attrs );
   }
   if ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() )
   {
