@@ -24,7 +24,7 @@ from utilities import unitTestDataPath
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 from qgis.server import QgsServer, QgsAccessControlFilter
-from qgis.core import QgsRenderChecker
+from qgis.core import QgsRenderChecker, QgsApplication
 from qgis.PyQt.QtCore import QSize
 import tempfile
 import urllib.request
