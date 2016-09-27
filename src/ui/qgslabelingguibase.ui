@@ -112,7 +112,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>482</width>
+               <width>486</width>
                <height>300</height>
               </rect>
              </property>
@@ -646,9 +646,9 @@
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-78</y>
-                       <width>448</width>
-                       <height>442</height>
+                       <y>0</y>
+                       <width>452</width>
+                       <height>387</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1439,8 +1439,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>448</width>
-                       <height>389</height>
+                       <width>466</width>
+                       <height>356</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -2074,8 +2074,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>464</width>
-                       <height>364</height>
+                       <width>466</width>
+                       <height>376</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2276,9 +2276,6 @@ font-style: italic;</string>
                                 <property name="enabled">
                                  <bool>true</bool>
                                 </property>
-                                <property name="alignment">
-                                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                                </property>
                                 <property name="suffix">
                                  <string> %</string>
                                 </property>
@@ -2459,8 +2456,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>454</width>
-                       <height>720</height>
+                       <width>452</width>
+                       <height>628</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -2756,9 +2753,6 @@ font-style: italic;</string>
                                <property name="enabled">
                                 <bool>true</bool>
                                </property>
-                               <property name="alignment">
-                                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                               </property>
                                <property name="suffix">
                                 <string> %</string>
                                </property>
@@ -3009,11 +3003,7 @@ font-style: italic;</string>
                                <number>0</number>
                               </property>
                               <item>
-                               <widget class="QLineEdit" name="mShapeSVGPathLineEdit">
-                                <property name="alignment">
-                                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                                </property>
-                               </widget>
+                               <widget class="QLineEdit" name="mShapeSVGPathLineEdit"/>
                               </item>
                               <item>
                                <widget class="QPushButton" name="mShapeSVGSelectorBtn">
@@ -3286,8 +3276,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>448</width>
-                       <height>447</height>
+                       <width>452</width>
+                       <height>398</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3626,9 +3616,6 @@ font-style: italic;</string>
                                <property name="enabled">
                                 <bool>true</bool>
                                </property>
-                               <property name="alignment">
-                                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                               </property>
                                <property name="suffix">
                                 <string> %</string>
                                </property>
@@ -3786,8 +3773,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>448</width>
-                       <height>917</height>
+                       <width>452</width>
+                       <height>839</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -5412,8 +5399,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>429</width>
-                       <height>799</height>
+                       <width>452</width>
+                       <height>731</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
