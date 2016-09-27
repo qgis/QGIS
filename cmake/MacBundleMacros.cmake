@@ -72,7 +72,7 @@ FUNCTION (COPY_FRAMEWORK FWPREFIX FWNAME FWDEST)
     # find current version
     # use python because pwd not working with WORKING_DIRECTORY param
     EXECUTE_PROCESS (
-        COMMAND python -c "import os.path\nprint os.path.realpath(\"${FWPREFIX}/${FWNAME}.framework/Versions/Current\")"
+        COMMAND python -c "import os.path\nprint(os.path.realpath(\"${FWPREFIX}/${FWNAME}.framework/Versions/Current\"))"
         OUTPUT_VARIABLE FWDIRPHYS
     )
     STRING (STRIP "${FWDIRPHYS}" FWDIRPHYS)
