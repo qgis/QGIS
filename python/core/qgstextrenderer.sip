@@ -856,6 +856,15 @@ class QgsTextFormat
      */
     QFont font() const;
 
+    /** Returns a font with the size scaled to match the format's size settings (including
+     * units and map unit scale) for a specified render context.
+     * @param context destination render context
+     * @returns font with scaled size
+     * @see font()
+     * @see size()
+     */
+    QFont scaledFont( const QgsRenderContext& context ) const;
+
     /** Sets the font used for rendering text. Note that the size of the font
      * is not used, and setSize() should be called instead to explicitly set the size
      * of rendered text.
@@ -1021,6 +1030,21 @@ class QgsTextRenderer
 
   public:
 
+    enum TextPart
+    {
+      Text,
+      Buffer,
+      Background,
+      Shadow
+    };
+
+    enum HAlignment
+    {
+      AlignLeft,
+      AlignCenter,
+      AlignRight,
+    };
+
     /** Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
      * @param size size to convert
      * @param c rendercontext
@@ -1041,4 +1065,63 @@ class QgsTextRenderer
      */
     static double scaleToPixelContext( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
 
+    /** Draws text within a rectangle using the specified settings.
+     * @param rect destination rectangle for text
+     * @param rotation text rotation
+     * @param textLines list of lines of text to draw
+     * @param context render context
+     * @param format text format
+     * @param drawAsOutlines set to false to render text as text. This allows outputs to
+     * formats like SVG to maintain text as text objects, but at the cost of degraded
+     * rendering and may result in side effects like misaligned text buffers.
+     */
+    static void drawText( const QRectF& rect, double rotation, HAlignment alignment, const QStringList& textLines,
+                          QgsRenderContext& context, const QgsTextFormat& format,
+                          bool drawAsOutlines = true );
+
+    /** Draws text at a point origin using the specified settings.
+     * @param point origin of text
+     * @param rotation text rotation
+     * @param textLines list of lines of text to draw
+     * @param context render context
+     * @param format text format
+     * @param drawAsOutlines set to false to render text as text. This allows outputs to
+     * formats like SVG to maintain text as text objects, but at the cost of degraded
+     * rendering and may result in side effects like misaligned text buffers.
+     */
+    static void drawText( const QPointF& point, double rotation, HAlignment alignment, const QStringList& textLines,
+                          QgsRenderContext& context, const QgsTextFormat& format,
+                          bool drawAsOutlines = true );
+
+    /** Draws a single component of rendered text using the specified settings.
+     * @param rect destination rectangle for text
+     * @param rotation text rotation
+     * @param textLines list of lines of text to draw
+     * @param context render context
+     * @param format text format
+     * @param part component of text to draw
+     * @param drawAsOutlines set to false to render text as text. This allows outputs to
+     * formats like SVG to maintain text as text objects, but at the cost of degraded
+     * rendering and may result in side effects like misaligned text buffers.
+     */
+    static void drawPart( const QRectF& rect, double rotation, HAlignment alignment, const QStringList& textLines,
+                          QgsRenderContext& context, const QgsTextFormat& format,
+                          TextPart part, bool drawAsOutlines = true );
+
+    /** Draws a single component of rendered text using the specified settings.
+     * @param origin origin for start of text. Y coordinate will be used as baseline.
+     * @param rotation text rotation
+     * @param textLines list of lines of text to draw
+     * @param context render context
+     * @param format text format
+     * @param part component of text to draw. Note that Shadow parts cannot be drawn
+     * individually and instead are drawn with their associated part (eg drawn together
+     * with the text or background parts)
+     * @param drawAsOutlines set to false to render text as text. This allows outputs to
+     * formats like SVG to maintain text as text objects, but at the cost of degraded
+     * rendering and may result in side effects like misaligned text buffers.
+     */
+    static void drawPart( const QPointF& origin, double rotation, HAlignment alignment, const QStringList& textLines,
+                          QgsRenderContext& context, const QgsTextFormat& format,
+                          TextPart part, bool drawAsOutlines = true );
 };

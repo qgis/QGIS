@@ -649,61 +649,6 @@ class QgsLabelCandidate
     double cost;
 };
 
-/** \ingroup core
-  * Maintains current state of more grainular and temporal values when creating/painting
-  * component parts of an individual label (e.g. buffer, background, shadow, etc.).
-  */
-class QgsLabelComponent
-{
-%TypeHeaderCode
-#include <qgspallabeling.h>
-%End
-
-  public:
-    QgsLabelComponent();
-
-    // methods
-
-    QString text() const;
-    void setText( const QString& text );
-
-    const QgsPoint& origin() const;
-    void setOrigin( const QgsPoint& point );
-
-    bool useOrigin() const;
-    void setUseOrigin( const bool use );
-
-    double rotation() const;
-    void setRotation( const double rotation );
-
-    double rotationOffset() const;
-    void setRotationOffset( const double rotation );
-
-    bool useRotation() const;
-    void setUseRotation( const bool use );
-
-    const QgsPoint& center() const;
-    void setCenter( const QgsPoint& point );
-
-    bool useCenter() const;
-    void setUseCenter( const bool use );
-
-    const QgsPoint& size() const;
-    void setSize( const QgsPoint& point );
-
-    const QgsPoint& offset() const;
-    void setOffset( const QgsPoint& point );
-
-    const QPicture* picture() const;
-    void setPicture( QPicture* picture );
-
-    double pictureBuffer() const;
-    void setPictureBuffer( const double buffer );
-
-    double dpiRatio() const;
-    void setDpiRatio( const double ratio );
-};
-
 
 /**
  * Class that stores computed placement from labeling engine.
@@ -736,14 +681,6 @@ class QgsPalLabeling : QgsLabelingEngineInterface
 %End
 
   public:
-    enum DrawLabelType
-    {
-      LabelText,
-      LabelBuffer,
-      LabelShape,
-      LabelSVG,
-      LabelShadow
-    };
 
     QgsPalLabeling();
     ~QgsPalLabeling();
@@ -829,18 +766,6 @@ class QgsPalLabeling : QgsLabelingEngineInterface
 
     //! @note not available in python bindings
     // void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
-
-    static void drawLabelBuffer( QgsRenderContext& context,
-                                 const QgsLabelComponent &component,
-                                 const QgsTextFormat& format );
-
-    static void drawLabelBackground( QgsRenderContext& context,
-                                     QgsLabelComponent component,
-                                     const QgsTextFormat& format );
-
-    static void drawLabelShadow( QgsRenderContext &context,
-                                 const QgsLabelComponent &component,
-                                 const QgsTextFormat& format );
 
     //! load/save engine settings to project file
     void loadEngineSettings();

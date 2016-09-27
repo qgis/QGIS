@@ -731,102 +731,7 @@ class CORE_EXPORT QgsLabelCandidate
     double cost;
 };
 
-/** \ingroup core
-  * Maintains current state of more grainular and temporal values when creating/painting
-  * component parts of an individual label (e.g. buffer, background, shadow, etc.).
-  */
-class CORE_EXPORT QgsLabelComponent
-{
-  public:
-    QgsLabelComponent()
-        : mText( QString() )
-        , mOrigin( QgsPoint() )
-        , mUseOrigin( false )
-        , mRotation( 0.0 )
-        , mRotationOffset( 0.0 )
-        , mUseRotation( false )
-        , mCenter( QgsPoint() )
-        , mUseCenter( false )
-        , mSize( QgsPoint() )
-        , mOffset( QgsPoint() )
-        , mPicture( nullptr )
-        , mPictureBuffer( 0.0 )
-        , mDpiRatio( 1.0 )
-    {}
 
-    // methods
-
-    QString text() const { return mText; }
-    void setText( const QString& text ) { mText = text; }
-
-    const QgsPoint& origin() const { return mOrigin; }
-    void setOrigin( const QgsPoint& point ) { mOrigin = point; }
-
-    bool useOrigin() const { return mUseOrigin; }
-    void setUseOrigin( const bool use ) { mUseOrigin = use; }
-
-    double rotation() const { return mRotation; }
-    void setRotation( const double rotation ) { mRotation = rotation; }
-
-    double rotationOffset() const { return mRotationOffset; }
-    void setRotationOffset( const double rotation ) { mRotationOffset = rotation; }
-
-    bool useRotation() const { return mUseRotation; }
-    void setUseRotation( const bool use ) { mUseRotation = use; }
-
-    const QgsPoint& center() const { return mCenter; }
-    void setCenter( const QgsPoint& point ) { mCenter = point; }
-
-    bool useCenter() const { return mUseCenter; }
-    void setUseCenter( const bool use ) { mUseCenter = use; }
-
-    const QgsPoint& size() const { return mSize; }
-    void setSize( const QgsPoint& point ) { mSize = point; }
-
-    const QgsPoint& offset() const { return mOffset; }
-    void setOffset( const QgsPoint& point ) { mOffset = point; }
-
-    const QPicture* picture() const { return mPicture; }
-    void setPicture( QPicture* picture ) { mPicture = picture; }
-
-    double pictureBuffer() const { return mPictureBuffer; }
-    void setPictureBuffer( const double buffer ) { mPictureBuffer = buffer; }
-
-    double dpiRatio() const { return mDpiRatio; }
-    void setDpiRatio( const double ratio ) { mDpiRatio = ratio; }
-
-  private:
-    // current label component text,
-    // e.g. single line in a multi-line label or charcater in curved labeling
-    QString mText;
-    // current origin point for painting (generally current painter rotation point)
-    QgsPoint mOrigin;
-    // whether to translate the painter to supplied origin
-    bool mUseOrigin;
-    // any rotation to be applied to painter (in radians)
-    double mRotation;
-    // any rotation to be applied to painter (in radians) after initial rotation
-    double mRotationOffset;
-    // whether to use the rotation to rotate the painter
-    bool mUseRotation;
-    // current center point of label compnent, after rotation
-    QgsPoint mCenter;
-    // whether to translate the painter to supplied origin based upon center
-    bool mUseCenter;
-    // width and height of label component, transformed and ready for painting
-    QgsPoint mSize;
-    // any translation offsets to be applied before painting, transformed and ready for painting
-    QgsPoint mOffset;
-
-    // a stored QPicture of painting for the component
-    QPicture* mPicture;
-    // buffer for component to accommodate graphic items ignored by QPicture,
-    // e.g. half-width of an applied QPen, which would extend beyond boundingRect() of QPicture
-    double mPictureBuffer;
-
-    // a ratio of native painter dpi and that of rendering context's painter
-    double mDpiRatio;
-};
 
 
 /** \ingroup core
@@ -861,14 +766,6 @@ class CORE_EXPORT QgsLabelingResults
 class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 {
   public:
-    enum DrawLabelType
-    {
-      LabelText = 0,
-      LabelBuffer,
-      LabelShape,
-      LabelSVG,
-      LabelShadow
-    };
 
     QgsPalLabeling();
     ~QgsPalLabeling();
@@ -954,18 +851,6 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
     //! @note not available in python bindings
     static void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform, QList<QgsLabelCandidate>* candidates = nullptr );
-
-    static void drawLabelBuffer( QgsRenderContext& context,
-                                 const QgsLabelComponent &component,
-                                 const QgsTextFormat& format );
-
-    static void drawLabelBackground( QgsRenderContext& context,
-                                     QgsLabelComponent component,
-                                     const QgsTextFormat& format );
-
-    static void drawLabelShadow( QgsRenderContext &context,
-                                 const QgsLabelComponent &component,
-                                 const QgsTextFormat& format );
 
     //! load/save engine settings to project file
     void loadEngineSettings();

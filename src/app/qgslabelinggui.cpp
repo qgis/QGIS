@@ -771,7 +771,7 @@ void QgsLabelingGui::init()
   mZIndexSpinBox->setValue( lyr.zIndex );
 
   mRefFont = format.font();
-  mFontSizeSpinBox->setValue( format.font().pointSizeF() );
+  mFontSizeSpinBox->setValue( format.size() );
   btnTextColor->setColor( format.color() );
   mFontTranspSpinBox->setValue( 100 - 100 * format.opacity() );
   comboBlendMode->setBlendMode( format.blendMode() );

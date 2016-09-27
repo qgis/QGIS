@@ -178,7 +178,7 @@ class CORE_EXPORT QgsTextShadowSettingsPrivate : public QSharedData
         , radiusUnits( QgsUnitTypes::RenderMillimeters )
         , radiusAlphaOnly( false )
         , scale( 100 )
-        , color( QColor( 0, 0, 0, 76 ) )
+        , color( QColor( 0, 0, 0 ) )
         , opacity( 0.7 )
         , blendMode( QPainter::CompositionMode_Multiply )
     {
