@@ -21,6 +21,7 @@
 #include "qgsunittypes.h"
 #include <QSharedData>
 #include <QPainter>
+#include <QPicture>
 
 class QgsTextBufferSettingsPrivate;
 class QgsTextBackgroundSettingsPrivate;
@@ -210,7 +211,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
     enum ShapeType
     {
       ShapeRectangle = 0, /*!< rectangle */
-      ShapeSquare, /*!< square */
+      ShapeSquare, /*!< square - buffered sizes only*/
       ShapeEllipse, /*!< ellipse */
       ShapeCircle, /*!< circle */
       ShapeSVG /*!< SVG file */
@@ -1096,10 +1097,33 @@ class CORE_EXPORT QgsTextFormat
 
 };
 
+/** \class QgsTextRenderer
+  * \ingroup core
+  * Handles rendering text using rich formatting options, including drop shadows, buffers
+  * and background shapes.
+  * \note added in QGIS 3.0
+ */
 
 class CORE_EXPORT QgsTextRenderer
 {
   public:
+
+    //! Components of text
+    enum TextPart
+    {
+      Text = 0, //!< Text component
+      Buffer, //!< Buffer component
+      Background, //!< Background shape
+      Shadow, //!< Drop shadow
+    };
+
+    //! Horizontal alignment
+    enum HAlignment
+    {
+      AlignLeft = 0, //!< Left align
+      AlignCenter, //!< Center align
+      AlignRight, //!< Right align
+    };
 
     /** Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
      * @param size size to convert
@@ -1120,6 +1144,157 @@ class CORE_EXPORT QgsTextRenderer
      * @return size that will render, as double
      */
     static double scaleToPixelContext( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+
+    /** Draws text within a rectangle using the specified settings.
+     * @param rect destination rectangle for text
+     * @param rotation text rotation
+     * @param alignment horizontal alignment
+     * @param textLines list of lines of text to draw
+     * @param context render context
+     * @param format text format
+     * @param drawAsOutlines set to false to render text as text. This allows outputs to
+     * formats like SVG to maintain text as text objects, but at the cost of degraded
+     * rendering and may result in side effects like misaligned text buffers.
+     */
+    static void drawText( const QRectF& rect, double rotation, HAlignment alignment, const QStringList& textLines,
+                          QgsRenderContext& context, const QgsTextFormat& format,
+                          bool drawAsOutlines = true );
+
+    /** Draws text at a point origin using the specified settings.
+     * @param point origin of text
+     * @param rotation text rotation
+     * @param alignment horizontal alignment
+     * @param textLines list of lines of text to draw
+     * @param context render context
+     * @param format text format
+     * @param drawAsOutlines set to false to render text as text. This allows outputs to
+     * formats like SVG to maintain text as text objects, but at the cost of degraded
+     * rendering and may result in side effects like misaligned text buffers.
+     */
+    static void drawText( const QPointF& point, double rotation, HAlignment alignment, const QStringList& textLines,
+                          QgsRenderContext& context, const QgsTextFormat& format,
+                          bool drawAsOutlines = true );
+
+    /** Draws a single component of rendered text using the specified settings.
+     * @param rect destination rectangle for text
+     * @param rotation text rotation
+     * @param alignment horizontal alignment
+     * @param textLines list of lines of text to draw
+     * @param context render context
+     * @param format text format
+     * @param part component of text to draw. Note that Shadow parts cannot be drawn
+     * individually and instead are drawn with their associated part (eg drawn together
+     * with the text or background parts)
+     * @param drawAsOutlines set to false to render text as text. This allows outputs to
+     * formats like SVG to maintain text as text objects, but at the cost of degraded
+     * rendering and may result in side effects like misaligned text buffers.
+     */
+    static void drawPart( const QRectF& rect, double rotation, HAlignment alignment, const QStringList& textLines,
+                          QgsRenderContext& context, const QgsTextFormat& format,
+                          TextPart part, bool drawAsOutlines = true );
+
+    /** Draws a single component of rendered text using the specified settings.
+     * @param origin origin for start of text. Y coordinate will be used as baseline.
+     * @param rotation text rotation
+     * @param alignment horizontal alignment
+     * @param textLines list of lines of text to draw
+     * @param context render context
+     * @param format text format
+     * @param part component of text to draw. Note that Shadow parts cannot be drawn
+     * individually and instead are drawn with their associated part (eg drawn together
+     * with the text or background parts)
+     * @param drawAsOutlines set to false to render text as text. This allows outputs to
+     * formats like SVG to maintain text as text objects, but at the cost of degraded
+     * rendering and may result in side effects like misaligned text buffers.
+     */
+    static void drawPart( const QPointF& origin, double rotation, HAlignment alignment, const QStringList& textLines,
+                          QgsRenderContext& context, const QgsTextFormat& format,
+                          TextPart part, bool drawAsOutlines = true );
+
+  private:
+
+    enum DrawMode
+    {
+      Rect = 0,
+      Point,
+      Label,
+    };
+
+    struct Component
+    {
+      Component()
+          : useOrigin( false )
+          , rotation( 0.0 )
+          , rotationOffset( 0.0 )
+          , pictureBuffer( 0.0 )
+          , dpiRatio( 1.0 )
+          , hAlign( AlignLeft )
+      {}
+
+      //! Component text
+      QString text;
+      //! Current origin point for painting (generally current painter rotation point)
+      QPointF origin;
+      //! Whether to translate the painter to supplied origin
+      bool useOrigin;
+      //! Any rotation to be applied to painter (in radians)
+      double rotation;
+      //! Any rotation to be applied to painter (in radians) after initial rotation
+      double rotationOffset;
+      //! Current center point of label component, after rotation
+      QPointF center;
+      //! Width and height of label component, transformed and ready for painting
+      QSizeF size;
+      //! Any translation offsets to be applied before painting, transformed and ready for painting
+      QPointF offset;
+      //! A stored QPicture of painting for the component
+      QPicture picture;
+      //! Buffer for component to accommodate graphic items ignored by QPicture,
+      //! e.g. half-width of an applied QPen, which would extend beyond boundingRect() of QPicture
+      double pictureBuffer;
+      //! A ratio of native painter dpi and that of rendering context's painter
+      double dpiRatio;
+      //! Horizontal alignment
+      HAlignment hAlign;
+    };
+
+    static void drawBuffer( QgsRenderContext& context,
+                            const Component &component,
+                            const QgsTextFormat& format );
+
+    static void drawBackground( QgsRenderContext& context,
+                                Component component,
+                                const QgsTextFormat& format,
+                                const QStringList& textLines,
+                                DrawMode mode = Rect );
+
+    static void drawShadow( QgsRenderContext &context,
+                            const Component &component,
+                            const QgsTextFormat& format );
+
+    static void drawText( QgsRenderContext &context,
+                          const Component &component,
+                          const QgsTextFormat& format );
+
+    static void drawTextInternal( TextPart drawType,
+                                  QgsRenderContext& context,
+                                  const QgsTextFormat& format,
+                                  const Component& component,
+                                  const QStringList& textLines,
+                                  const QFontMetricsF *fontMetrics,
+                                  HAlignment alignment,
+                                  bool drawAsOutlines,
+                                  DrawMode mode = Rect );
+
+    friend class QgsVectorLayerLabelProvider;
+    friend class QgsLabelPreview;
+
+    static QgsTextFormat updateShadowPosition( const QgsTextFormat& format );
+
+    static double textWidth( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines,
+                             QFontMetricsF* fm = 0 );
+    static double textHeight( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines, DrawMode mode,
+                              QFontMetricsF* fm = 0 );
 
 
 };

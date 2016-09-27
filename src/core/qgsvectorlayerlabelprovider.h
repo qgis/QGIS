@@ -95,7 +95,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! initialization method - called from constructors
     void init();
     //! Internal label drawing method
-    void drawLabelPrivate( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, QgsPalLabeling::DrawLabelType drawType, double dpiRatio = 1.0 ) const;
+    void drawLabelPrivate( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, QgsTextRenderer::TextPart drawType, double dpiRatio = 1.0 ) const;
 
   protected:
     //! Layer's labeling configuration

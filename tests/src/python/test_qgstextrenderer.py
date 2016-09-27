@@ -13,6 +13,7 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
+import os
 
 from qgis.core import (QgsTextBufferSettings,
                        QgsTextBackgroundSettings,
@@ -20,12 +21,17 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsTextFormat,
                        QgsUnitTypes,
                        QgsMapUnitScale,
-                       QgsVectorLayer)
-from qgis.PyQt.QtGui import (QColor, QPainter, QFont)
-from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF)
+                       QgsVectorLayer,
+                       QgsTextRenderer,
+                       QgsMapSettings,
+                       QgsRenderContext,
+                       QgsRectangle,
+                       QgsRenderChecker)
+from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen)
+from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir)
 from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
 from qgis.testing import unittest, start_app
-from utilities import getTestFont
+from utilities import getTestFont, svgSymbolsPath
 
 start_app()
 
@@ -37,6 +43,14 @@ def createEmptyLayer():
 
 
 class PyQgsTextRenderer(unittest.TestCase):
+
+    def setUp(self):
+        self.report = "<h1>Python QgsTextRenderer Tests</h1>\n"
+
+    def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
 
     def createBufferSettings(self):
         s = QgsTextBufferSettings()
@@ -401,6 +415,1227 @@ class PyQgsTextRenderer(unittest.TestCase):
         elem.setAttribute('fontFamily', font.family())
         f.readXml(parent)
         self.assertTrue(f.fontFound())
+
+    def imageCheck(self, name, reference_image, image):
+        self.report += "<h2>Render {}</h2>\n".format(name)
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsRenderChecker()
+        checker.setControlPathPrefix("text_renderer")
+        checker.setControlName(reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(2)
+        result = checker.compareImages(name, 20)
+        self.report += checker.report()
+        print(checker.report())
+        return result
+
+    def checkRender(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.AlignLeft,
+                    text=['test'],
+                    rect=QRectF(100, 100, 50, 250)):
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+        # to highlight rect on image
+        #painter.drawRect(rect)
+
+        if part is not None:
+            QgsTextRenderer.drawPart(rect,
+                                     angle,
+                                     alignment,
+                                     text,
+                                     context,
+                                     format,
+                                     part)
+        else:
+            QgsTextRenderer.drawText(rect,
+                                     angle,
+                                     alignment,
+                                     text,
+                                     context,
+                                     format)
+
+        painter.setFont(format.scaledFont(context))
+        painter.setPen(QPen(QColor(255, 0, 255, 200)))
+        # For comparison with QPainter's methods:
+        if alignment == QgsTextRenderer.AlignCenter:
+            align = Qt.AlignHCenter
+        elif alignment == QgsTextRenderer.AlignRight:
+            align = Qt.AlignRight
+        else:
+            align = Qt.AlignLeft
+        #painter.drawText(rect, align, '\n'.join(text))
+
+        painter.end()
+        return self.imageCheck(name, name, image)
+
+    def checkRenderPoint(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.AlignLeft,
+                         text=['test'],
+                         point=QPointF(100, 200)):
+        image = QImage(400, 400, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 50, 50))
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        image.fill(QColor(152, 219, 249))
+
+        painter.setBrush(QBrush(QColor(182, 239, 255)))
+        painter.setPen(Qt.NoPen)
+        # to highlight point on image
+        #painter.drawRect(QRectF(point.x() - 5, point.y() - 5, 10, 10))
+
+        if part is not None:
+            QgsTextRenderer.drawPart(point,
+                                     angle,
+                                     alignment,
+                                     text,
+                                     context,
+                                     format,
+                                     part)
+        else:
+            QgsTextRenderer.drawText(point,
+                                     angle,
+                                     alignment,
+                                     text,
+                                     context,
+                                     format)
+
+        painter.setFont(format.scaledFont(context))
+        painter.setPen(QPen(QColor(255, 0, 255, 200)))
+        # For comparison with QPainter's methods:
+        #painter.drawText(point, '\n'.join(text))
+
+        painter.end()
+        return self.imageCheck(name, name, image)
+
+    def testDrawBackgroundDisabled(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(False)
+        assert self.checkRender(format, 'background_disabled', QgsTextRenderer.Background)
+
+    def testDrawBackgroundRectangleFixedSizeMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'background_rect_mapunits', QgsTextRenderer.Background)
+
+    def testDrawBackgroundRectangleMultilineFixedSizeMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'background_rect_multiline_mapunits', QgsTextRenderer.Background,
+                                text=['test', 'multi', 'line'])
+
+    def testDrawBackgroundPointMultilineFixedSizeMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRenderPoint(format, 'background_point_multiline_mapunits', QgsTextRenderer.Background,
+                                     text=['test', 'multi', 'line'])
+
+    def testDrawBackgroundRectangleMultilineBufferMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(4, 2))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'background_rect_multiline_buffer_mapunits', QgsTextRenderer.Background,
+                                text=['test', 'multi', 'line'])
+
+    def testDrawBackgroundPointMultilineBufferMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(4, 2))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRenderPoint(format, 'background_point_multiline_buffer_mapunits', QgsTextRenderer.Background,
+                                     text=['test', 'multi', 'line'])
+
+    def testDrawBackgroundPointFixedSizeMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRenderPoint(format, 'background_point_mapunits', QgsTextRenderer.Background,
+                                     text=['Testy'])
+
+    def testDrawBackgroundRectangleCenterAlignFixedSizeMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'background_rect_center_mapunits', QgsTextRenderer.Background,
+                                alignment=QgsTextRenderer.AlignCenter)
+
+    def testDrawBackgroundPointCenterAlignFixedSizeMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRenderPoint(format, 'background_point_center_mapunits', QgsTextRenderer.Background,
+                                     alignment=QgsTextRenderer.AlignCenter)
+
+    def testDrawBackgroundRectangleRightAlignFixedSizeMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'background_rect_right_mapunits', QgsTextRenderer.Background,
+                                alignment=QgsTextRenderer.AlignRight)
+
+    def testDrawBackgroundPointRightAlignFixedSizeMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRenderPoint(format, 'background_point_right_mapunits', QgsTextRenderer.Background,
+                                     alignment=QgsTextRenderer.AlignRight)
+
+    def testDrawBackgroundRectangleFixedSizeMM(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 20))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'background_rect_mm', QgsTextRenderer.Background)
+
+    def testDrawBackgroundRectangleFixedSizePixels(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(60, 80))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderPixels)
+        assert self.checkRender(format, 'background_rect_pixels', QgsTextRenderer.Background)
+
+    def testDrawBackgroundRectBufferPixels(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
+        format.background().setSvgFile(svg)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 50))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderPixels)
+        assert self.checkRender(format, 'background_rect_buffer_pixels', QgsTextRenderer.Background,
+                                rect=QRectF(100, 100, 100, 100))
+
+    def testDrawBackgroundRectRightAlignBufferPixels(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
+        format.background().setSvgFile(svg)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 50))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderPixels)
+        assert self.checkRender(format, 'background_rect_right_buffer_pixels', QgsTextRenderer.Background,
+                                alignment=QgsTextRenderer.AlignRight,
+                                rect=QRectF(100, 100, 100, 100))
+
+    def testDrawBackgroundRectCenterAlignBufferPixels(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
+        format.background().setSvgFile(svg)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 50))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderPixels)
+        assert self.checkRender(format, 'background_rect_center_buffer_pixels', QgsTextRenderer.Background,
+                                alignment=QgsTextRenderer.AlignCenter,
+                                rect=QRectF(100, 100, 100, 100))
+
+    def testDrawBackgroundPointBufferPixels(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
+        format.background().setSvgFile(svg)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 50))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderPixels)
+        assert self.checkRenderPoint(format, 'background_point_buffer_pixels', QgsTextRenderer.Background,
+                                     point=QPointF(100, 100))
+
+    def testDrawBackgroundPointRightAlignBufferPixels(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
+        format.background().setSvgFile(svg)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 50))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderPixels)
+        assert self.checkRenderPoint(format, 'background_point_right_buffer_pixels', QgsTextRenderer.Background,
+                                     alignment=QgsTextRenderer.AlignRight,
+                                     point=QPointF(100, 100))
+
+    def testDrawBackgroundPointCenterAlignBufferPixels(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
+        format.background().setSvgFile(svg)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 50))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderPixels)
+        assert self.checkRenderPoint(format, 'background_point_center_buffer_pixels', QgsTextRenderer.Background,
+                                     alignment=QgsTextRenderer.AlignCenter,
+                                     point=QPointF(100, 100))
+
+    def testDrawBackgroundRectBufferMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
+        format.background().setSvgFile(svg)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(4, 6))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'background_rect_buffer_mapunits', QgsTextRenderer.Background,
+                                rect=QRectF(100, 100, 100, 100))
+
+    def testDrawBackgroundRectBufferMM(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
+        format.background().setSvgFile(svg)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(10, 16))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'background_rect_buffer_mm', QgsTextRenderer.Background,
+                                rect=QRectF(100, 100, 100, 100))
+
+    def testDrawBackgroundEllipse(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeEllipse)
+        format.background().setSize(QSizeF(60, 80))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderPixels)
+        assert self.checkRender(format, 'background_ellipse_pixels', QgsTextRenderer.Background)
+
+    def testDrawBackgroundSvgFixedPixels(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
+        format.background().setSvgFile(svg)
+        format.background().setType(QgsTextBackgroundSettings.ShapeSVG)
+        format.background().setSize(QSizeF(60, 80))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderPixels)
+        assert self.checkRender(format, 'background_svg_fixed_pixels', QgsTextRenderer.Background)
+
+    def testDrawBackgroundSvgFixedMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
+        format.background().setSvgFile(svg)
+        format.background().setType(QgsTextBackgroundSettings.ShapeSVG)
+        format.background().setSize(QSizeF(20, 20))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'background_svg_fixed_mapunits', QgsTextRenderer.Background)
+
+    def testDrawBackgroundSvgFixedMM(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
+        format.background().setSvgFile(svg)
+        format.background().setType(QgsTextBackgroundSettings.ShapeSVG)
+        format.background().setSize(QSizeF(30, 30))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'background_svg_fixed_mm', QgsTextRenderer.Background)
+
+    def testDrawBackgroundRotationSynced(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 20))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        format.background().setRotation(45)  # should be ignored
+        format.background().setRotationType(QgsTextBackgroundSettings.RotationSync)
+        assert self.checkRender(format, 'background_rotation_sync', QgsTextRenderer.Background, angle=20)
+
+    def testDrawBackgroundSvgBufferPixels(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
+        format.background().setSvgFile(svg)
+        format.background().setType(QgsTextBackgroundSettings.ShapeSVG)
+        format.background().setSize(QSizeF(30, 30))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderPixels)
+        assert self.checkRender(format, 'background_svg_buffer_pixels', QgsTextRenderer.Background,
+                                rect=QRectF(100, 100, 100, 100))
+
+    def testDrawBackgroundSvgBufferMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
+        format.background().setSvgFile(svg)
+        format.background().setType(QgsTextBackgroundSettings.ShapeSVG)
+        format.background().setSize(QSizeF(4, 4))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'background_svg_buffer_mapunits', QgsTextRenderer.Background,
+                                rect=QRectF(100, 100, 100, 100))
+
+    def testDrawBackgroundSvgBufferMM(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
+        format.background().setSvgFile(svg)
+        format.background().setType(QgsTextBackgroundSettings.ShapeSVG)
+        format.background().setSize(QSizeF(10, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'background_svg_buffer_mm', QgsTextRenderer.Background,
+                                rect=QRectF(100, 100, 100, 100))
+
+    def testDrawBackgroundRotationFixed(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 20))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        format.background().setRotation(45)
+        format.background().setRotationType(QgsTextBackgroundSettings.RotationFixed)
+        assert self.checkRender(format, 'background_rotation_fixed', QgsTextRenderer.Background, angle=20)
+
+    def testDrawRotationOffset(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 20))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        format.background().setRotation(45)
+        format.background().setRotationType(QgsTextBackgroundSettings.RotationOffset)
+        assert self.checkRender(format, 'background_rotation_offset', QgsTextRenderer.Background, angle=20)
+
+    def testDrawBackgroundOffsetMM(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 20))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        format.background().setOffset(QPointF(30, 20))
+        format.background().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'background_offset_mm', QgsTextRenderer.Background)
+
+    def testDrawBackgroundOffsetMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 20))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        format.background().setOffset(QPointF(10, 5))
+        format.background().setOffsetUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'background_offset_mapunits', QgsTextRenderer.Background)
+
+    def testDrawBackgroundRadiiMM(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 20))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        format.background().setRadii(QSizeF(6, 4))
+        format.background().setRadiiUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'background_radii_mm', QgsTextRenderer.Background)
+
+    def testDrawBackgroundRadiiMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 20))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        format.background().setRadii(QSizeF(3, 2))
+        format.background().setRadiiUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'background_radii_mapunits', QgsTextRenderer.Background)
+
+    def testDrawBackgroundOpacity(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 20))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setOpacity(0.6)
+        assert self.checkRender(format, 'background_opacity', QgsTextRenderer.Background)
+
+    def testDrawBackgroundFillColor(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 20))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setFillColor(QColor(50, 100, 50))
+        assert self.checkRender(format, 'background_fillcolor', QgsTextRenderer.Background)
+
+    def testDrawBackgroundOutline(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 20))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setBorderColor(QColor(50, 100, 50))
+        format.background().setBorderWidth(3)
+        format.background().setBorderWidthUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'background_outline', QgsTextRenderer.Background)
+
+    def testDrawText(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRender(format, 'text_bold', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawTextPoint(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRenderPoint(format, 'text_point_bold', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawTextNamedStyle(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        # need to call getTestFont to make sure font style is installed and ready to go
+        temp_font = getTestFont('Bold Oblique')
+        format.setFont(getTestFont())
+        format.setNamedStyle('Bold Oblique')
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRender(format, 'text_named_style', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawTextColor(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        assert self.checkRender(format, 'text_color', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawTextOpacity(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setOpacity(0.7)
+        assert self.checkRender(format, 'text_opacity', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawTextBlendMode(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(100, 100, 100))
+        format.setBlendMode(QPainter.CompositionMode_Difference)
+        assert self.checkRender(format, 'text_blend_mode', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawTextAngle(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRender(format, 'text_angled', QgsTextRenderer.Text, angle=90 / 180 * 3.141, text=['test'])
+
+    def testDrawTextMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(5)
+        format.setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'text_mapunits', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawTextPixels(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(50)
+        format.setSizeUnit(QgsUnitTypes.RenderPixels)
+        assert self.checkRender(format, 'text_pixels', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawMultiLineText(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRender(format, 'text_multiline', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
+
+    def testDrawMultiLineTextPoint(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRenderPoint(format, 'text_point_multiline', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
+
+    def testDrawLineHeightText(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setLineHeight(1.5)
+        assert self.checkRender(format, 'text_line_height', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
+
+    def testDrawBufferSizeMM(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(2)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_buffer_mm', QgsTextRenderer.Buffer, text=['test'])
+
+    def testDrawBufferDisabled(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(False)
+        assert self.checkRender(format, 'text_disabled_buffer', QgsTextRenderer.Buffer, text=['test'])
+
+    def testDrawBufferSizeMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(2)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'text_buffer_mapunits', QgsTextRenderer.Buffer, text=['test'])
+
+    def testDrawBufferSizePixels(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(10)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderPixels)
+        assert self.checkRender(format, 'text_buffer_pixels', QgsTextRenderer.Buffer, text=['test'])
+
+    def testDrawBufferColor(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(2)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        format.buffer().setColor(QColor(0, 255, 0))
+        assert self.checkRender(format, 'text_buffer_color', QgsTextRenderer.Buffer, text=['test'])
+
+    def testDrawBufferOpacity(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(2)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        format.buffer().setOpacity(0.5)
+        assert self.checkRender(format, 'text_buffer_opacity', QgsTextRenderer.Buffer, text=['test'])
+
+    def testDrawBufferFillInterior(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(2)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        format.buffer().setFillBufferInterior(True)
+        assert self.checkRender(format, 'text_buffer_interior', QgsTextRenderer.Buffer, text=['test'])
+
+    def testDrawShadow(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'shadow_enabled', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawShadowOffsetAngle(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetAngle(0)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'shadow_offset_angle', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawShadowOffsetMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(10)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'shadow_offset_mapunits', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawShadowOffsetPixels(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(10)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderPixels)
+        assert self.checkRender(format, 'shadow_offset_pixels', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawShadowBlurRadiusMM(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        format.shadow().setBlurRadius(1)
+        format.shadow().setBlurRadiusUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'shadow_radius_mm', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawShadowBlurRadiusMapUnits(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        format.shadow().setBlurRadius(3)
+        format.shadow().setBlurRadiusUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'shadow_radius_mapunits', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawShadowBlurRadiusPixels(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        format.shadow().setBlurRadius(3)
+        format.shadow().setBlurRadiusUnit(QgsUnitTypes.RenderPixels)
+        assert self.checkRender(format, 'shadow_radius_pixels', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawShadowOpacity(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setOpacity(0.5)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'shadow_opacity', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawShadowColor(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setColor(QColor(255, 255, 0))
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'shadow_color', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawShadowScale(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setScale(50)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'shadow_scale_50', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawShadowScaleUp(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.shadow().setScale(150)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'shadow_scale_150', QgsTextRenderer.Text, text=['test'])
+
+    def testDrawShadowBackgroundPlacement(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowShape)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'shadow_placement_background', QgsTextRenderer.Background, text=['test'])
+
+    def testDrawShadowBufferPlacement(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(255, 255, 255))
+        format.shadow().setEnabled(True)
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowBuffer)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(4)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'shadow_placement_buffer', QgsTextRenderer.Buffer, text=['test'])
+
+    def testDrawTextWithBuffer(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(4)
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_with_buffer', text=['test'], rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextWithBackground(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'text_with_background', text=['test'], rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextWithBufferAndBackground(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(4)
+        format.buffer().setColor(QColor(100, 255, 100))
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_with_buffer_and_background', text=['test'], rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextWithShadowAndBuffer(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.shadow().setEnabled(True)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        format.shadow().setColor(QColor(255, 100, 100))
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(4)
+        format.buffer().setColor(QColor(100, 255, 100))
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_with_shadow_and_buffer', text=['test'], rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextWithShadowBelowTextAndBuffer(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.shadow().setEnabled(True)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        format.shadow().setColor(QColor(255, 100, 100))
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(4)
+        format.buffer().setColor(QColor(100, 255, 100))
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_with_shadow_below_text_and_buffer', text=['test'], rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextWithBackgroundAndShadow(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.shadow().setEnabled(True)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        format.shadow().setColor(QColor(255, 100, 100))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'text_with_shadow_and_background', text=['test'], rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextWithShadowBelowTextAndBackground(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.shadow().setEnabled(True)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        format.shadow().setColor(QColor(255, 100, 100))
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        assert self.checkRender(format, 'text_with_shadow_below_text_and_background', text=['test'], rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextWithBackgroundBufferAndShadow(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.shadow().setEnabled(True)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        format.shadow().setColor(QColor(255, 100, 100))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(4)
+        format.buffer().setColor(QColor(100, 255, 100))
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_with_shadow_buffer_and_background', text=['test'], rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextWithBackgroundBufferAndShadowBelowText(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.shadow().setEnabled(True)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        format.shadow().setColor(QColor(255, 100, 100))
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowText)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(4)
+        format.buffer().setColor(QColor(100, 255, 100))
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_with_shadow_below_text_buffer_and_background', text=['test'],
+                                rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextWithBackgroundBufferAndShadowBelowBuffer(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.shadow().setEnabled(True)
+        format.shadow().setOpacity(1.0)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setOffsetUnit(QgsUnitTypes.RenderMillimeters)
+        format.shadow().setColor(QColor(255, 100, 100))
+        format.shadow().setShadowPlacement(QgsTextShadowSettings.ShadowBuffer)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(20, 10))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(4)
+        format.buffer().setColor(QColor(100, 255, 100))
+        format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_with_shadow_below_buffer_and_background', text=['test'],
+                                rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextRectMultilineRightAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRender(format, 'text_rect_multiline_right_aligned', text=['test', 'right', 'aligned'],
+                                alignment=QgsTextRenderer.AlignRight, rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextRectRightAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRender(format, 'text_rect_right_aligned', text=['test'],
+                                alignment=QgsTextRenderer.AlignRight, rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextRectMultilineCenterAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRender(format, 'text_rect_multiline_center_aligned', text=['test', 'c', 'aligned'],
+                                alignment=QgsTextRenderer.AlignCenter, rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextRectCenterAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRender(format, 'text_rect_center_aligned', text=['test'],
+                                alignment=QgsTextRenderer.AlignCenter, rect=QRectF(100, 100, 200, 100))
+
+    def testDrawTextPointMultilineRightAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRenderPoint(format, 'text_point_right_multiline_aligned', text=['test', 'right', 'aligned'],
+                                     alignment=QgsTextRenderer.AlignRight, point=QPointF(300, 200))
+
+    def testDrawTextPointMultilineCenterAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRenderPoint(format, 'text_point_center_multiline_aligned', text=['test', 'center', 'aligned'],
+                                     alignment=QgsTextRenderer.AlignCenter, point=QPointF(200, 200))
+
+    def testDrawTextPointRightAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRenderPoint(format, 'text_point_right_aligned', text=['test'],
+                                     alignment=QgsTextRenderer.AlignRight, point=QPointF(300, 200))
+
+    def testDrawTextPointCenterAlign(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRenderPoint(format, 'text_point_center_aligned', text=['test'],
+                                     alignment=QgsTextRenderer.AlignCenter, point=QPointF(200, 200))
 
 
 if __name__ == '__main__':
