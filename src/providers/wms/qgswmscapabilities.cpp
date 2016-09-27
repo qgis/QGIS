@@ -2010,8 +2010,8 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
 
           QgsDebugMsg( QString( "redirected getcapabilities: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ) );
           mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
-          
-		  if ( !mAuth.setAuthorizationReply( mCapabilitiesReply ) )
+
+          if ( !mAuth.setAuthorizationReply( mCapabilitiesReply ) )
           {
             mHttpCapabilitiesResponse.clear();
             mCapabilitiesReply->deleteLater();
@@ -2021,8 +2021,8 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
             emit downloadFinished();
             return;
           }
-		  
-		  connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
+
+          connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
           connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
           return;
         }

@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 import re
 from qgis.core import QGis, QgsProject, QgsVectorFileWriter, QgsMapLayer, QgsRasterLayer, \
-                        QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenceSystem
+    QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenceSystem
 from qgis.gui import QgsSublayersDialog
 from PyQt4.QtCore import QSettings
 from qgis.utils import iface

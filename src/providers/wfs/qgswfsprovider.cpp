@@ -1355,7 +1355,7 @@ bool QgsWFSProvider::sendTransactionDocument( const QDomDocument& doc, QDomDocum
                                tr( "WFS" ) );
     return false;
   }
-  
+
   QgsDebugMsg( "WFS transaction: " + doc.toByteArray( ) );
 
   connect( reply, SIGNAL( finished() ), this, SLOT( networkRequestFinished() ) );
