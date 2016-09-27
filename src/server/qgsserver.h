@@ -47,21 +47,11 @@
 class SERVER_EXPORT QgsServer
 {
   public:
-    /**
-     * Standard ctor for CGI/FCGI
-     * @note Not available in Python bindings
+    /** Creates the server instance
+     * @param captureOutput set to false for stdout output (FCGI)
      */
-    QgsServer( int & argc, char ** argv );
-    //! The following is mainly for python bindings, that do not pass argc/argv
-    QgsServer();
+    QgsServer( bool captureOutput = true );
     ~QgsServer();
-
-    /** Server initialization: intialise QGIS ang QT core application.
-     * @note Not available in Python bindings
-     */
-    static bool init( int & argc, char ** argv );
-    //! The following is mainly for python bindings, that do not pass argc/argv
-    static bool init();
 
     /** Set environment variable
      * @param var environment variable name
@@ -93,6 +83,9 @@ class SERVER_EXPORT QgsServer
 #endif
 
   private:
+
+    /** Server initialization */
+    static bool init();
 
     void saveEnvVars();
 
@@ -130,9 +123,6 @@ class SERVER_EXPORT QgsServer
 #endif
     //! Initialization must run once for all servers
     static bool sInitialised;
-    static char* sArgv[1];
-    static int sArgc;
-    static QgsApplication* sQgsApplication;
     static bool sCaptureOutput;
 
     /** Pass important environment variables to the fcgi processes*/
