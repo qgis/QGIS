@@ -515,10 +515,6 @@ class QgsPalLayerSettings
     //! Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index
     double zIndex;
 
-    //-- scale factors
-    double vectorScaleFactor; //scale factor painter units->pixels
-    double rasterCompressFactor; //pixel resolution scale factor
-
     // called from register feature hook
     void calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f = 0, QgsRenderContext* context = 0 );
 
@@ -836,15 +832,15 @@ class QgsPalLabeling : QgsLabelingEngineInterface
 
     static void drawLabelBuffer( QgsRenderContext& context,
                                  const QgsLabelComponent &component,
-                                 const QgsPalLayerSettings& tmpLyr );
+                                 const QgsTextFormat& format );
 
     static void drawLabelBackground( QgsRenderContext& context,
                                      QgsLabelComponent component,
-                                     const QgsPalLayerSettings& tmpLyr );
+                                     const QgsTextFormat& format );
 
     static void drawLabelShadow( QgsRenderContext &context,
                                  const QgsLabelComponent &component,
-                                 const QgsPalLayerSettings& tmpLyr );
+                                 const QgsTextFormat& format );
 
     //! load/save engine settings to project file
     void loadEngineSettings();

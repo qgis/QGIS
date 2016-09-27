@@ -213,10 +213,6 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QSet
   // TODO: ideally these (non-configuration) members should get out of QgsPalLayerSettings to here
   // (together with registerFeature() & related methods) and QgsPalLayerSettings just stores config
 
-  //raster and vector scale factors
-  lyr.vectorScaleFactor = context.scaleFactor();
-  lyr.rasterCompressFactor = context.rasterScaleFactor();
-
   // save the pal layer to our layer context (with some additional info)
   lyr.fieldIndex = mFields.lookupField( lyr.fieldName );
 
@@ -575,7 +571,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
     component.setCenter( centerPt );
     component.setSize( QgsPoint( label->getWidth(), label->getHeight() ) );
 
-    QgsPalLabeling::drawLabelBackground( context, component, tmpLyr );
+    QgsPalLabeling::drawLabelBackground( context, component, tmpLyr.format() );
   }
 
   else if ( drawType == QgsPalLabeling::LabelBuffer
@@ -689,7 +685,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
 
       // scale down painter: the font size has been multiplied by raster scale factor
       // to workaround a Qt font scaling bug with small font sizes
-      painter->scale( 1.0 / tmpLyr.rasterCompressFactor, 1.0 / tmpLyr.rasterCompressFactor );
+      painter->scale( 1.0 / context.rasterScaleFactor(), 1.0 / context.rasterScaleFactor() );
 
       // figure x offset for horizontal alignment of multiple lines
       double xMultiLineOffset = 0.0;
@@ -717,7 +713,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
       if ( drawType == QgsPalLabeling::LabelBuffer )
       {
         // draw label's buffer
-        QgsPalLabeling::drawLabelBuffer( context, component, tmpLyr );
+        QgsPalLabeling::drawLabelBuffer( context, component, tmpLyr.format() );
       }
       else
       {
@@ -746,7 +742,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
           component.setPictureBuffer( 0.0 ); // no pen width to deal with
           component.setOrigin( QgsPoint( 0.0, 0.0 ) );
 
-          QgsPalLabeling::drawLabelShadow( context, component, tmpLyr );
+          QgsPalLabeling::drawLabelShadow( context, component, tmpLyr.format() );
         }
 
         // paint the text
