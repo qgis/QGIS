@@ -444,7 +444,6 @@ class QgsPluginInstaller(QObject):
         """ edit repository connection """
         if not reposName:
             return
-        reposName = reposName.decode('utf-8')
         checkState = {False: Qt.Unchecked, True: Qt.Checked}
         dlg = QgsPluginInstallerRepositoryDialog(iface.mainWindow())
         dlg.editName.setText(reposName)
