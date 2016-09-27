@@ -519,6 +519,11 @@ class CORE_EXPORT QgsAuthManager : public QObject
     void authDatabaseChanged() const;
 
   public slots:
+#ifndef QT_NO_OPENSSL
+    /** Rebuild various SSL authentication caches */
+    bool rebuildSslCaches();
+#endif
+
     /** Clear all authentication configs from authentication method caches */
     void clearAllCachedConfigs();
 
