@@ -1979,6 +1979,8 @@ void QgsWmsCapabilitiesDownload::abort()
   mIsAborted = true;
   if ( mCapabilitiesReply )
   {
+    mCapabilitiesReply->close();
+    mCapabilitiesReply->abort();
     mCapabilitiesReply->deleteLater();
     mCapabilitiesReply = nullptr;
   }
