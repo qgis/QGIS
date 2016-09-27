@@ -175,10 +175,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   obstacleType = PolygonInterior;
   zIndex = 0.0;
 
-  // scale factors
-  vectorScaleFactor = 1.0;
-  rasterCompressFactor = 1.0;
-
   // data defined string and old-style index values
   // NOTE: in QPair use -1 for second value (other values are for old-style layer properties migration)
 
@@ -390,9 +386,6 @@ QgsPalLayerSettings& QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   }
   mDataDefinedNames = s.mDataDefinedNames;
 
-  // scale factors
-  vectorScaleFactor = s.vectorScaleFactor;
-  rasterCompressFactor = s.rasterCompressFactor;
   return *this;
 }
 
@@ -1431,7 +1424,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline
 
   h += fm->height() + static_cast< double >(( lines - 1 ) * labelHeight * multilineH );
-  h /= rasterCompressFactor;
+  h /= context->rasterScaleFactor();
 
   for ( int i = 0; i < lines; ++i )
   {
@@ -1441,7 +1434,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
       w = width;
     }
   }
-  w /= rasterCompressFactor;
+  w /= context->rasterScaleFactor();
 
 #if 0 // XXX strk
   QgsPoint ptSize = xform->toMapCoordinatesF( w, h );
@@ -2252,7 +2245,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   double topMargin = qMax( 0.25 * labelFontMetrics->ascent(), 0.0 );
   double bottomMargin = 1.0 + labelFontMetrics->descent();
   QgsLabelFeature::VisualMargin vm( topMargin, 0.0, bottomMargin, 0.0 );
-  vm *= xform->mapUnitsPerPixel() / rasterCompressFactor;
+  vm *= xform->mapUnitsPerPixel() / context.rasterScaleFactor();
   ( *labelFeature )->setVisualMargin( vm );
 
   // store the label's calculated font for later use during painting
@@ -2262,7 +2255,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   // TODO: only for placement which needs character info
   // account for any data defined font metrics adjustments
   lf->calculateInfo( placement == QgsPalLayerSettings::Curved || placement == QgsPalLayerSettings::PerimeterCurved,
-                     labelFontMetrics.data(), xform, rasterCompressFactor, maxcharanglein, maxcharangleout );
+                     labelFontMetrics.data(), xform, context.rasterScaleFactor(), maxcharanglein, maxcharangleout );
   // for labelFeature the LabelInfo is passed to feat when it is registered
 
   // TODO: allow layer-wide feature dist in PAL...?
@@ -2297,7 +2290,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
   }
   else //mm
   {
-    distance *= vectorScaleFactor;
+    distance *= context.scaleFactor();
   }
 
   // when using certain placement modes, we force a tiny minimum distance. This ensures that
@@ -4082,11 +4075,10 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* p
 
 void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
                                       const QgsLabelComponent& component,
-                                      const QgsPalLayerSettings& tmpLyr )
+                                      const QgsTextFormat& format )
 {
   QPainter* p = context.painter();
 
-  QgsTextFormat format = tmpLyr.format();
   QgsTextBufferSettings buffer = format.buffer();
 
   double penSize = QgsTextRenderer::scaleToPixelContext( buffer.size(), context,
@@ -4120,7 +4112,7 @@ void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
     bufferComponent.setOrigin( QgsPoint( 0.0, 0.0 ) );
     bufferComponent.setPicture( &buffPict );
     bufferComponent.setPictureBuffer( penSize / 2.0 );
-    drawLabelShadow( context, bufferComponent, tmpLyr );
+    drawLabelShadow( context, bufferComponent, format );
   }
 
   p->save();
@@ -4141,9 +4133,8 @@ void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
 
 void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     QgsLabelComponent component,
-    const QgsPalLayerSettings& tmpLyr )
+    const QgsTextFormat& format )
 {
-  QgsTextFormat format = tmpLyr.format();
   QgsTextBackgroundSettings background = format.background();
 
   QPainter* p = context.painter();
@@ -4274,7 +4265,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
       p->rotate( component.rotationOffset() );
       p->translate( -svgSize / 2, svgSize / 2 );
 
-      drawLabelShadow( context, component, tmpLyr );
+      drawLabelShadow( context, component, format );
       p->restore();
 
       delete svgShdwM;
@@ -4415,7 +4406,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
 
       component.setSize( QgsPoint( rect.width(), rect.height() ) );
       component.setOffset( QgsPoint( rect.width() / 2, -rect.height() / 2 ) );
-      drawLabelShadow( context, component, tmpLyr );
+      drawLabelShadow( context, component, format );
     }
 
     p->setOpacity( background.opacity() );
@@ -4434,14 +4425,13 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
 
 void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
                                       const QgsLabelComponent& component,
-                                      const QgsPalLayerSettings& tmpLyr )
+                                      const QgsTextFormat& format )
 {
+  QgsTextShadowSettings shadow = format.shadow();
+
   // incoming component sizes should be multiplied by rasterCompressFactor, as
   // this allows shadows to be created at paint device dpi (e.g. high resolution),
   // then scale device painter by 1.0 / rasterCompressFactor for output
-
-  QgsTextFormat format = tmpLyr.format();
-  QgsTextShadowSettings shadow = format.shadow();
 
   QPainter* p = context.painter();
   double componentWidth = component.size().x(), componentHeight = component.size().y();
@@ -4451,7 +4441,7 @@ void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
   // generate pixmap representation of label component drawing
   bool mapUnits = shadow.blurRadiusUnit() == QgsUnitTypes::RenderMapUnits;
   double radius = QgsTextRenderer::scaleToPixelContext( shadow.blurRadius(), context, shadow.blurRadiusUnit(), !mapUnits, shadow.blurRadiusMapUnitScale() );
-  radius /= ( mapUnits ? tmpLyr.vectorScaleFactor / component.dpiRatio() : 1 );
+  radius /= ( mapUnits ? context.scaleFactor() / component.dpiRatio() : 1 );
   radius = static_cast< int >( radius + 0.5 );
 
   // TODO: add labeling gui option to adjust blurBufferClippingScale to minimize pixels, or

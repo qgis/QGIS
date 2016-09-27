@@ -75,9 +75,7 @@ void QgsLabelPreview::paintEvent( QPaintEvent *e )
     mContext.setPainter( &p );
     QgsLabelComponent component;
     component.setText( text() );
-    QgsPalLayerSettings tmpLyr;
-    tmpLyr.setFormat( mFormat );
-    QgsPalLabeling::drawLabelBuffer( mContext, component, tmpLyr );
+    QgsPalLabeling::drawLabelBuffer( mContext, component, mFormat );
   }
 
   QPainterPath path;
