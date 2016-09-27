@@ -4087,10 +4087,12 @@ void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
   QPainterPath path;
   path.setFillRule( Qt::WindingFill );
   path.addText( 0, 0, format.scaledFont( context ), component.text() );
-  QPen pen( buffer.color() );
+  QColor bufferColor = buffer.color();
+  bufferColor.setAlphaF( buffer.opacity() );
+  QPen pen( bufferColor );
   pen.setWidthF( penSize );
   pen.setJoinStyle( buffer.joinStyle() );
-  QColor tmpColor( buffer.color() );
+  QColor tmpColor( bufferColor );
   // honor pref for whether to fill buffer interior
   if ( !buffer.fillBufferInterior() )
   {
@@ -4240,7 +4242,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
 
       QgsSymbolLayer* symShdwL = QgsSvgMarkerSymbolLayer::create( shdwmap );
       QgsSvgMarkerSymbolLayer* svgShdwM = static_cast<QgsSvgMarkerSymbolLayer*>( symShdwL );
-      QgsSymbolRenderContext svgShdwContext( shdwContext, QgsUnitTypes::RenderUnknownUnit, shadow.opacity() );
+      QgsSymbolRenderContext svgShdwContext( shdwContext, QgsUnitTypes::RenderUnknownUnit, background.opacity() );
 
       double svgSize = QgsTextRenderer::scaleToPixelContext( sizeOut, context, background.sizeUnit(),
                        true, background.sizeMapUnitScale() );
