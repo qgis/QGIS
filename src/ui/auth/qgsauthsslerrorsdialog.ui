@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>617</width>
+    <width>645</width>
     <height>710</height>
    </rect>
   </property>
@@ -109,6 +109,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QTextEdit" name="teSslErrorsMessages">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <spacer name="horizontalSpacer">
@@ -122,6 +129,20 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item>
+          <widget class="QToolButton" name="btnAddCainCAs">
+           <property name="text">
+            <string>Open</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>:/images/themes/default/mActionAdd.svg</normaloff>:/images/themes/default/mActionAdd.svg</iconset>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextBesideIcon</enum>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QToolButton" name="btnChainInfo">
@@ -138,7 +159,7 @@
             <string>Connection certificates</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../images/images.qrc">
+            <iconset>
              <normaloff>:/images/themes/default/propertyicons/metadata.svg</normaloff>:/images/themes/default/propertyicons/metadata.svg</iconset>
            </property>
            <property name="iconSize">
@@ -167,7 +188,7 @@
             <string>Connection trusted CAs</string>
            </property>
            <property name="icon">
-            <iconset resource="../../../images/images.qrc">
+            <iconset>
              <normaloff>:/images/themes/default/propertyicons/metadata.svg</normaloff>:/images/themes/default/propertyicons/metadata.svg</iconset>
            </property>
            <property name="iconSize">
@@ -275,8 +296,6 @@
   <tabstop>btnChainCAs</tabstop>
   <tabstop>grpbxSslConfig</tabstop>
  </tabstops>
- <resources>
-  <include location="../../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
