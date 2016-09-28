@@ -4343,9 +4343,33 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
         if ( mOp == boLike || mOp == boILike || mOp == boNotLike || mOp == boNotILike ) // change from LIKE syntax to regexp
         {
           QString esc_regexp = QRegExp::escape( regexp );
-          // XXX escape % and _  ???
-          esc_regexp.replace( '%', ".*" );
-          esc_regexp.replace( '_', '.' );
+          // manage escape % and _
+          if ( esc_regexp.startsWith( '%' ) )
+          {
+            esc_regexp.replace( 0, 1, ".*" );
+          }
+          QRegExp rx( "[^\\\\](%)" );
+          int pos = 0;
+          while (( pos = rx.indexIn( esc_regexp, pos ) ) != -1 )
+          {
+            esc_regexp.replace( pos + 1, 1, ".*" );
+            pos += 1;
+          }
+          rx.setPattern( "\\\\%" );
+          esc_regexp.replace( rx, "%" );
+          if ( esc_regexp.startsWith( '_' ) )
+          {
+            esc_regexp.replace( 0, 1, "." );
+          }
+          rx.setPattern( "[^\\\\](_)" );
+          pos = 0;
+          while (( pos = rx.indexIn( esc_regexp, pos ) ) != -1 )
+          {
+            esc_regexp.replace( pos + 1, 1, '.' );
+            pos += 1;
+          }
+          rx.setPattern( "\\\\_" );
+          esc_regexp.replace( rx, "_" );
           matches = QRegExp( esc_regexp, mOp == boLike || mOp == boNotLike ? Qt::CaseSensitive : Qt::CaseInsensitive ).exactMatch( str );
         }
         else
