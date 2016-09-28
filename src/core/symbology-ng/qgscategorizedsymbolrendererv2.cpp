@@ -162,9 +162,9 @@ QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2( const QString& a
   //trigger a detachment and copy of mCategories BUT that same method CAN be used to modify a symbol in place
   Q_FOREACH ( const QgsRendererCategoryV2& cat, categories )
   {
-    if ( cat.symbol() )
+    if ( !cat.symbol() )
     {
-      QgsDebugMsg( "invalid symbol in a category! ignoring..." );
+      QgsDebugMsg( QString( "invalid symbol in category %1 (%2)! ignoring..." ).arg( cat.value().toString(), cat.label() ) );
     }
     mCategories << cat;
   }
@@ -445,6 +445,12 @@ void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, con
       mTempSymbols[ cat.symbol()] = tempSymbol;
     }
   }
+
+  Q_FOREACH ( QgsSymbolV2 *symbol, mSymbolHash.values() )
+  {
+    symbol->startRender( context, &fields );
+  }
+
   return;
 }
 
@@ -453,6 +459,11 @@ void QgsCategorizedSymbolRendererV2::stopRender( QgsRenderContext& context )
   Q_FOREACH ( const QgsRendererCategoryV2& cat, mCategories )
   {
     cat.symbol()->stopRender( context );
+  }
+
+  Q_FOREACH ( QgsSymbolV2 *symbol, mSymbolHash.values() )
+  {
+    symbol->stopRender( context );
   }
 
   // cleanup mTempSymbols
