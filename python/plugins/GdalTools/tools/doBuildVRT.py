@@ -78,6 +78,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
     def onClosing(self):
         # disconnect from mapCanvas.layerChanged() signal
         self.disconnect(self.iface.mapCanvas(), SIGNAL("layersChanged()"), self.onVisibleLayersChanged)
+        self.disconnect(self.iface.mapCanvas(), SIGNAL("layersChanged()"), self.switchLayerMode)
         BasePluginWidget.onClosing(self)
 
     def onVisibleLayersChanged(self):
