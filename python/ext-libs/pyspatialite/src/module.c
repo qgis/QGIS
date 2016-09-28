@@ -329,7 +329,11 @@ static struct PyModuleDef _sqlite3module = {
 };
 #endif
 
+#if PY_MAJOR_VERSION < 3
 PyMODINIT_FUNC init_spatialite(void)
+#else
+PyMODINIT_FUNC PyInit__spatialite(void)
+#endif
 {
     PyObject *module, *dict;
     PyObject *tmp_obj;
