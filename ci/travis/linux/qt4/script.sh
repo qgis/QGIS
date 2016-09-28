@@ -24,4 +24,4 @@ if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
   chmod -R ugo-w ~/.ccache
 fi
 
-xvfb-run ctest -V -E 'qgis_openstreetmaptest|qgis_wcsprovidertest' -S ./qgis-test-travis.ctest --output-on-failure
+xvfb-run ctest -V -E 'qgis_openstreetmaptest|qgis_wcsprovidertest|qgis_ziplayertest' -S ./qgis-test-travis.ctest --output-on-failure
