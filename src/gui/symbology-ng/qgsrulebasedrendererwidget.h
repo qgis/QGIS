@@ -240,7 +240,16 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
     Q_OBJECT
 
   public:
+
+    /** Constructor for QgsRendererRulePropsDialog
+     * @param rule associated rule based renderer rule
+     * @param layer source vector layer
+     * @param style style collection
+     * @param parent parent widget
+     * @param context symbol widget context
+     */
     QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent = nullptr, const QgsSymbolWidgetContext& context = QgsSymbolWidgetContext() );
+
     ~QgsRendererRulePropsDialog();
 
     QgsRuleBasedRenderer::Rule* rule() { return mPropsWidget->rule(); }

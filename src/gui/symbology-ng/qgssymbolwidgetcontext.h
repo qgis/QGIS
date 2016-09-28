@@ -33,6 +33,9 @@ class GUI_EXPORT QgsSymbolWidgetContext
 
     QgsSymbolWidgetContext();
 
+    /** Copy constructor.
+     * @param other source QgsSymbolWidgetContext
+     */
     QgsSymbolWidgetContext( const QgsSymbolWidgetContext& other );
 
     QgsSymbolWidgetContext& operator=( const QgsSymbolWidgetContext& other );

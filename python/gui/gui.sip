@@ -234,6 +234,7 @@
 %Include symbology-ng/qgslayerpropertieswidget.sip
 %Include symbology-ng/qgsnullsymbolrendererwidget.sip
 %Include symbology-ng/qgspenstylecombobox.sip
+%Include symbology-ng/qgspointclusterrendererwidget.sip
 %Include symbology-ng/qgspointdisplacementrendererwidget.sip
 %Include symbology-ng/qgsrendererpropertiesdialog.sip
 %Include symbology-ng/qgsrendererwidget.sip

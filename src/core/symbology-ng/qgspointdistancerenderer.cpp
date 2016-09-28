@@ -350,6 +350,7 @@ QgsRectangle QgsPointDistanceRenderer::searchRect( const QgsPoint& p, double dis
 
 void QgsPointDistanceRenderer::printGroupInfo() const
 {
+#ifdef QGISDEBUG
   int nGroups = mClusteredGroups.size();
   QgsDebugMsg( "number of displacement groups:" + QString::number( nGroups ) );
   for ( int i = 0; i < nGroups; ++i )
@@ -360,6 +361,7 @@ void QgsPointDistanceRenderer::printGroupInfo() const
       QgsDebugMsg( FID_TO_STRING( feature.feature.id() ) );
     }
   }
+#endif
 }
 
 QString QgsPointDistanceRenderer::getLabel( const QgsFeature& feature ) const
