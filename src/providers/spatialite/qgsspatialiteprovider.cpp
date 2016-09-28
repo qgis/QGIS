@@ -31,6 +31,7 @@ email                : a.furieri@lqt.it
 #include "qgsspatialitefeatureiterator.h"
 
 #include <qgsjsonutils.h>
+#include <qgsvectorlayer.h>
 
 #include <QMessageBox>
 #include <QFileInfo>
@@ -5262,6 +5263,80 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
 QgsAttributeList QgsSpatiaLiteProvider::pkAttributeIndexes() const
 {
   return mPrimaryKeyAttrs;
+}
+
+QList<QgsVectorLayer*> QgsSpatiaLiteProvider::searchLayers( const QList<QgsVectorLayer*>& layers, const QString& connectionInfo, const QString& tableName )
+{
+  QList<QgsVectorLayer*> result;
+  Q_FOREACH ( QgsVectorLayer* layer, layers )
+  {
+    const QgsSpatiaLiteProvider* slProvider = qobject_cast<QgsSpatiaLiteProvider*>( layer->dataProvider() );
+    if ( slProvider && slProvider->mSqlitePath == connectionInfo && slProvider->mTableName == tableName )
+    {
+      result.append( layer );
+    }
+  }
+  return result;
+}
+
+
+QList<QgsRelation> QgsSpatiaLiteProvider::discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const
+{
+  QList<QgsRelation> output;
+  const QString sql = QString( "PRAGMA foreign_key_list(%1)" ).arg( QgsSpatiaLiteProvider::quotedIdentifier( mTableName ) );
+  char **results;
+  int rows;
+  int columns;
+  char *errMsg = nullptr;
+  int ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  if ( ret == SQLITE_OK )
+  {
+    int nbFound = 0;
+    for ( int row = 1; row <= rows; ++row )
+    {
+      const QString name = "fk_" + mTableName + "_" + QString::fromUtf8( results[row * columns + 0] );
+      const QString position = QString::fromUtf8( results[row * columns + 1] );
+      const QString refTable = QString::fromUtf8( results[row * columns + 2] );
+      const QString fkColumn = QString::fromUtf8( results[row * columns + 3] );
+      const QString refColumn = QString::fromUtf8( results[row * columns + 4] );
+      if ( position == "0" )
+      { // first reference field => try to find if we have layers for the referenced table
+        const QList<QgsVectorLayer*> foundLayers = searchLayers( layers, mSqlitePath, refTable );
+        Q_FOREACH ( const QgsVectorLayer* foundLayer, foundLayers )
+        {
+          QgsRelation relation;
+          relation.setRelationName( name );
+          relation.setReferencingLayer( self->id() );
+          relation.setReferencedLayer( foundLayer->id() );
+          relation.addFieldPair( fkColumn, refColumn );
+          relation.generateId();
+          if ( relation.isValid() )
+          {
+            output.append( relation );
+            ++nbFound;
+          }
+          else
+          {
+            QgsLogger::warning( "Invalid relation for " + name );
+          }
+        }
+      }
+      else
+      { // multi reference field => add the field pair to all the referenced layers found
+        for ( int i = 0; i < nbFound; ++i )
+        {
+          output[output.size() - 1 - i].addFieldPair( fkColumn, refColumn );
+        }
+      }
+    }
+    sqlite3_free_table( results );
+  }
+  else
+  {
+    QgsLogger::warning( QString( "SQLite error discovering relations: %1" ).arg( errMsg ) );
+    sqlite3_free( errMsg );
+  }
+  return output;
 }
 
 // ---------------------------------------------------------------------------
