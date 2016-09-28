@@ -482,9 +482,13 @@ class TestQgsExpression: public QObject
 
       // regexp, like
       QTest::newRow( "like 1" ) << "'hello' like '%ll_'" << false << QVariant( 1 );
-      QTest::newRow( "like 2" ) << "'hello' like 'lo'" << false << QVariant( 0 );
-      QTest::newRow( "like 3" ) << "'hello' like '%LO'" << false << QVariant( 0 );
+      QTest::newRow( "like 2" ) << "'hello' like '_el%'" << false << QVariant( 1 );
+      QTest::newRow( "like 3" ) << "'hello' like 'lo'" << false << QVariant( 0 );
+      QTest::newRow( "like 4" ) << "'hello' like '%LO'" << false << QVariant( 0 );
       QTest::newRow( "ilike" ) << "'hello' ilike '%LO'" << false << QVariant( 1 );
+      // the \\\\ is like \\ in the interface
+      QTest::newRow( "like escape 1" ) << "'1%' like '1\\\\%'" << false << QVariant( 1 );
+      QTest::newRow( "like escape 2" ) << "'1_' like '1\\\\%'" << false << QVariant( 0 );
       QTest::newRow( "regexp 1" ) << "'hello' ~ 'll'" << false << QVariant( 1 );
       QTest::newRow( "regexp 2" ) << "'hello' ~ '^ll'" << false << QVariant( 0 );
       QTest::newRow( "regexp 3" ) << "'hello' ~ 'llo$'" << false << QVariant( 1 );
