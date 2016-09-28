@@ -457,8 +457,8 @@ qgis:snappointstogrid: >
   This algorithm modifies the position of points in a vector layer, so they fall in the coordinates of a grid.
 
 
-qgis:splitlineswithlines: >
-  This algorithm split the lines in a line layer using the lines in another line layer to define the breaking points. Intersection between geometries in both layers are considered as split points.
+qgis:splitwithlines: >
+  This algorithm splits the lines or polygons in one layer using the lines in another layer to define the breaking points. Intersection between geometries in both layers are considered as split points.
 
 qgis:splitvectorlayer: >
   This algorithm takes a vector layer and an attribute and generates a set of vector layers in an outut folder. Each of the layers created in that folder contains all features from the input layer with the same value for the specified attribute.
