@@ -483,7 +483,10 @@ void QgsRuleBasedRendererWidget::refineRuleRangesAccepted( QgsPanelWidget *panel
 
 void QgsRuleBasedRendererWidget::ruleWidgetPanelAccepted( QgsPanelWidget *panel )
 {
-  QgsRendererRulePropsWidget* widget = qobject_cast<QgsRendererRulePropsWidget*>( panel );
+  QgsRendererRulePropsWidget *widget = qobject_cast<QgsRendererRulePropsWidget*>( panel );
+  if ( !widget )
+    return;
+
   widget->apply();
 
   // model should know about the change and emit dataChanged signal for the view

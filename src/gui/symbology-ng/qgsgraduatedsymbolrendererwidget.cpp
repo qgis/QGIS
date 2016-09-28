@@ -688,11 +688,11 @@ void QgsGraduatedSymbolRendererWidget::refreshRanges( bool reset )
 
 void QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *container )
 {
-  if ( container )
-  {
-    QgsSymbolSelectorWidget* dlg = qobject_cast<QgsSymbolSelectorWidget*>( container );
-    delete dlg->symbol();
-  }
+  QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget*>( container );
+  if ( !dlg )
+    return;
+
+  delete dlg->symbol();
 }
 
 void QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget()
