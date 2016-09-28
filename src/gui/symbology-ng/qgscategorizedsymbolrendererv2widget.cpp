@@ -1007,11 +1007,11 @@ void QgsCategorizedSymbolRendererV2Widget::matchToSymbolsFromXml()
 
 void QgsCategorizedSymbolRendererV2Widget::cleanUpSymbolSelector( QgsPanelWidget *container )
 {
-  if ( container )
-  {
-    QgsSymbolV2SelectorWidget* dlg = qobject_cast<QgsSymbolV2SelectorWidget*>( container );
-    delete dlg->symbol();
-  }
+  QgsSymbolV2SelectorWidget *dlg = qobject_cast<QgsSymbolV2SelectorWidget*>( container );
+  if ( !dlg )
+    return;
+
+  delete dlg->symbol();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::updateSymbolsFromWidget()
