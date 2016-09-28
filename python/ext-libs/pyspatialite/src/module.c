@@ -187,20 +187,16 @@ static PyObject* module_register_converter(PyObject* self, PyObject* args)
     PyObject* name = NULL;
     PyObject* callable;
     PyObject* retval = NULL;
-#if PY_MAJOR_VERSION >= 3
+
     _Py_IDENTIFIER(upper);
-#endif
 
     if (!PyArg_ParseTuple(args, "UO", &orig_name, &callable)) {
         return NULL;
     }
 
     /* convert the name to upper case */
-#if PY_MAJOR_VERSION < 3
-    name = PyObject_CallMethod(orig_name, "upper", "");
-#else
     name = _PyObject_CallMethodId(orig_name, &PyId_upper, "");
-#endif
+
     if (!name) {
         goto error;
     }
@@ -315,7 +311,6 @@ static IntConstantPair _int_constants[] = {
     {(char*)NULL, 0}
 };
 
-#if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef _sqlite3module = {
         PyModuleDef_HEAD_INIT,
         "_spatialite",
@@ -327,23 +322,14 @@ static struct PyModuleDef _sqlite3module = {
         NULL,
         NULL
 };
-#endif
 
-#if PY_MAJOR_VERSION < 3
-PyMODINIT_FUNC init_spatialite(void)
-#else
 PyMODINIT_FUNC PyInit__spatialite(void)
-#endif
 {
     PyObject *module, *dict;
     PyObject *tmp_obj;
     int i;
 
-#if PY_MAJOR_VERSION < 3
-    module = Py_InitModule("pyspatialite._spatialite", module_methods);
-#else
     module = PyModule_Create(&_sqlite3module);
-#endif
 
     if (!module ||
         (pysqlite_row_setup_types() < 0) ||
