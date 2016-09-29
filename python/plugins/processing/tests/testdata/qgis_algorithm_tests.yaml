@@ -191,9 +191,9 @@ tests:
         name: expected/basic_statistics_string.html
         type: file
 
-  # Split lines with lines considers two cases
-  # case 1: two different layers
-  - algorithm: qgis:splitlineswithlines
+  # Split with lines considers three cases
+  # case 1: two different line layers
+  - algorithm: qgis:splitwithlines
     name: Split lines with lines
     params:
       INPUT_A:
@@ -211,7 +211,7 @@ tests:
             precision: 7
 
   # case 2 split line layer with iself
-  - algorithm: qgis:splitlineswithlines
+  - algorithm: qgis:splitwithlines
     name: Split lines with same lines
     params:
       INPUT_A:
@@ -223,6 +223,24 @@ tests:
     results:
       OUTPUT:
         name: expected/lines_split_with_same_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+            
+    # case 3 split polygon layer with lines
+  - algorithm: qgis:splitwithlines
+    name: Split lines with same lines
+    params:
+      INPUT_A:
+        name: polys.gml
+        type: vector
+      INPUT_B:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/polys_split_with_lines.gml
         type: vector
         compare:
           geometry:
