@@ -2,7 +2,7 @@ Content-Length: 7368
 Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="utf-8"?>
-<WMS_Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:inspire_vs="http://inspire.ec.europa.eu/schemas/inspire_vs/1.0" xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0" version="1.3.0" xmlns="http://www.opengis.net/wms" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd http://www.qgis.org/wms http://inspire.ec.europa.eu/schemas/inspire_vs/1.0 http://inspire.ec.europa.eu/schemas/inspire_vs/1.0/inspire_vs.xsd http:?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test%2Bproject_inspire.qgs&amp;SERVICE=WMS&amp;REQUEST=GetSchemaExtension" xmlns:sld="http://www.opengis.net/sld" xmlns:qgs="http://www.qgis.org/wms">
+<WMS_Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:inspire_vs="http://inspire.ec.europa.eu/schemas/inspire_vs/1.0" xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0" version="1.3.0" xmlns="http://www.opengis.net/wms" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd http://www.qgis.org/wms http://inspire.ec.europa.eu/schemas/inspire_vs/1.0 http://inspire.ec.europa.eu/schemas/inspire_vs/1.0/inspire_vs.xsd http:?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test-project_inspire.qgs&amp;SERVICE=WMS&amp;REQUEST=GetSchemaExtension" xmlns:sld="http://www.opengis.net/sld" xmlns:qgs="http://www.qgis.org/wms">
  <Service>
   <Name>WMS</Name>
   <Title>QGIS TestProject</Title>
@@ -30,7 +30,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test%2Bproject_inspire.qgs&amp;"/>
+       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test-project_inspire.qgs&amp;"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -45,7 +45,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test%2Bproject_inspire.qgs&amp;"/>
+       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test-project_inspire.qgs&amp;"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -59,7 +59,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test%2Bproject_inspire.qgs&amp;"/>
+       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test-project_inspire.qgs&amp;"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -70,7 +70,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test%2Bproject_inspire.qgs&amp;"/>
+       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test-project_inspire.qgs&amp;"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -80,7 +80,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test%2Bproject_inspire.qgs&amp;"/>
+       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test-project_inspire.qgs&amp;"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -90,7 +90,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test%2Bproject_inspire.qgs&amp;"/>
+       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test-project_inspire.qgs&amp;"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -152,7 +152,7 @@ Content-Type: text/xml; charset=utf-8
      <Title>default</Title>
      <LegendURL>
       <Format>image/png</Format>
-      <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test%2Bproject_inspire.qgs&amp;&amp;SERVICE=WMS&amp;VERSION=1.3.0&amp;REQUEST=GetLegendGraphic&amp;LAYER=testlayer èé&amp;FORMAT=image/png&amp;STYLE=default&amp;SLD_VERSION=1.1.0"/>
+      <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test-project_inspire.qgs&amp;&amp;SERVICE=WMS&amp;VERSION=1.3.0&amp;REQUEST=GetLegendGraphic&amp;LAYER=testlayer èé&amp;FORMAT=image/png&amp;STYLE=default&amp;SLD_VERSION=1.1.0"/>
      </LegendURL>
     </Style>
    </Layer>

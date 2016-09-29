@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """
 Tests for WFS-T provider using QGIS Server through qgis_wrapped_server.py.
@@ -58,7 +59,11 @@ from qgis.testing import (
 try:
     QGIS_SERVER_WFST_DEFAULT_PORT = os.environ['QGIS_SERVER_WFST_DEFAULT_PORT']
 except:
-    QGIS_SERVER_WFST_DEFAULT_PORT = 8081
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(("", 0))
+    QGIS_SERVER_WFST_DEFAULT_PORT = s.getsockname()[1]
+    s.close()
 
 
 qgis_app = start_app()

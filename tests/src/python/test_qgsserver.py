@@ -30,10 +30,36 @@ import osgeo.gdal
 # Also strip all multi-attribute tags (Qt5 attr order is random)
 # FIXME: this is a temporary workaround to make the test pass, a more
 #        robust implementation must check for attributes too
-RE_STRIP_UNCHECKABLE = b'<LatLongBoundingBox [^>]*>|<sld:UserDefinedSymbolization [^>]*>|<Attribute [^>]*>|<Layer [^>]*>|MAP=[^"]+|Content-Length: \d+|<OnlineResource[^>]*>|<BoundingBox[^>]*>|<WMS_Capabilities[^>]*>|<WFS_Capabilities[^>]*>|<element[^>]*>|<schema [^>]*>|<import [^>]*>|<gml:coordinates [^>]*>'
+#RE_STRIP_UNCHECKABLE = b'<LatLongBoundingBox [^>]*>|<sld:UserDefinedSymbolization [^>]*>|<Attribute [^>]*>|<Layer [^>]*>|MAP=[^"]+|Content-Length: \d+|<OnlineResource[^>]*>|<BoundingBox[^>]*>|<WMS_Capabilities[^>]*>|<WFS_Capabilities[^>]*>|<element[^>]*>|<schema [^>]*>|<import [^>]*>|<gml:coordinates [^>]*>'
+RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
+RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
 
 
 class TestQgsServer(unittest.TestCase):
+
+    def assertXMLEqual(self, response, expected, msg=''):
+        """Compare XML line by line and sorted attributes"""
+        response_lines = response.splitlines()
+        expected_lines = expected.splitlines()
+        line_no = 1
+        for expected_line in expected_lines:
+            expected_line = expected_line.strip()
+            response_line = response_lines[line_no - 1].strip()
+            # Compare tag
+            try:
+                self.assertEqual(re.findall(b'<([^>\s]+)[ >]', expected_line)[0],
+                                 re.findall(b'<([^>\s]+)[ >]', response_line)[0], msg=msg + "\nTag mismatch on line %s: %s != %s" % (line_no, expected_line, response_line))
+            except IndexError:
+                self.assertEqual(expected_line, response_line, msg=msg + "\nTag line mismatch %s: %s != %s" % (line_no, expected_line, response_line))
+            #print("---->%s\t%s == %s" % (line_no, expected_line, response_line))
+            # Compare attributes
+            if re.match(RE_ATTRIBUTES, expected_line): # has attrs
+                expected_attrs = re.findall(RE_ATTRIBUTES, expected_line)
+                expected_attrs.sort()
+                response_attrs = re.findall(RE_ATTRIBUTES, response_line)
+                response_attrs.sort()
+                self.assertEqual(expected_attrs, response_attrs, msg=msg + "\nXML attributes differ at line {0}: {1} != {2}".format(line_no, expected_attrs, response_attrs))
+            line_no += 1
 
     @classmethod
     def setUpClass(cls):
@@ -170,7 +196,7 @@ class TestQgsServer(unittest.TestCase):
 
     # WMS tests
     def wms_request_compare(self, request, extra=None, reference_file=None):
-        project = self.testdata_path + "test+project.qgs"
+        project = self.testdata_path + "test_project.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.parse.quote(project), request)
@@ -202,7 +228,7 @@ class TestQgsServer(unittest.TestCase):
         if int(osgeo.gdal.VersionInfo()[:1]) < 2:
             expected = expected.replace(b'typeName="Integer64" precision="0" length="10" editType="TextEdit" type="qlonglong"', b'typeName="Integer" precision="0" length="10" editType="TextEdit" type="int"')
 
-        self.assertEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
+        self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
 
     def test_project_wms(self):
         """Test some WMS request"""
@@ -239,7 +265,7 @@ class TestQgsServer(unittest.TestCase):
 
     def wms_inspire_request_compare(self, request):
         """WMS INSPIRE tests"""
-        project = self.testdata_path + "test+project_inspire.qgs"
+        project = self.testdata_path + "test_project_inspire.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (urllib.parse.quote(project), request)
@@ -259,7 +285,7 @@ class TestQgsServer(unittest.TestCase):
         """
         response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
-        self.assertEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
+        self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
 
     def test_project_wms_inspire(self):
         """Test some WMS request"""
@@ -268,7 +294,7 @@ class TestQgsServer(unittest.TestCase):
 
     # WFS tests
     def wfs_request_compare(self, request):
-        project = self.testdata_path + "test+project_wfs.qgs"
+        project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
@@ -294,7 +320,7 @@ class TestQgsServer(unittest.TestCase):
         if int(osgeo.gdal.VersionInfo()[:1]) < 2:
             expected = expected.replace(b'<element type="long" name="id"/>', b'<element type="integer" name="id"/>')
 
-        self.assertEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
+        self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
 
     def test_project_wfs(self):
         """Test some WFS request"""
@@ -302,7 +328,7 @@ class TestQgsServer(unittest.TestCase):
             self.wfs_request_compare(request)
 
     def wfs_getfeature_compare(self, requestid, request):
-        project = self.testdata_path + "test+project_wfs.qgs"
+        project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
@@ -333,8 +359,8 @@ class TestQgsServer(unittest.TestCase):
         """
         response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
-        self.assertEqual(response, expected, msg="%s\n Expected:\n%s\n\n Response:\n%s"
-                                                 % (error_msg_header,
+        self.assertXMLEqual(response, expected, msg="%s\n Expected:\n%s\n\n Response:\n%s"
+                            % (error_msg_header,
                                                     str(expected, errors='replace'),
                                                     str(response, errors='replace')))
 
@@ -349,7 +375,7 @@ class TestQgsServer(unittest.TestCase):
             self.wfs_getfeature_compare(id, req)
 
     def wfs_getfeature_post_compare(self, requestid, request):
-        project = self.testdata_path + "test+project_wfs.qgs"
+        project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP={}'.format(urllib.parse.quote(project))
@@ -365,7 +391,6 @@ class TestQgsServer(unittest.TestCase):
             header, body,
         )
 
-    @unittest.skip
     def test_getfeature_post(self):
         template = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
@@ -392,20 +417,20 @@ class TestQgsServer(unittest.TestCase):
         for id, req in tests:
             self.wfs_getfeature_post_compare(id, req)
 
-    @unittest.skip
     def test_getLegendGraphics(self):
         """Test that does not return an exception but an image"""
         parms = {
-            'MAP': self.testdata_path + "test%2Bproject.qgs",
+            'MAP': self.testdata_path + "test_project.qgs",
             'SERVICE': 'WMS',
-            'VERSION': '1.0.0',
+            'VERSION': '1.3.0',
             'REQUEST': 'GetLegendGraphic',
             'FORMAT': 'image/png',
             #'WIDTH': '20', # optional
             #'HEIGHT': '20', # optional
-            'LAYER': 'testlayer+èé',
+            'LAYER': 'testlayer%20èé',
         }
         qs = '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
+        print(qs)
         h, r = self.server.handleRequest(qs)
         self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
         self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
