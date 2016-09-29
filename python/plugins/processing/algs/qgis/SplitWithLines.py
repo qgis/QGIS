@@ -72,7 +72,12 @@ class SplitWithLines(GeoAlgorithm):
 
         outFeat = QgsFeature()
         features = vector.features(layerA)
-        total = 100.0 / float(len(features))
+
+        if len(features) == 0:
+            total = 100
+        else:
+            total = 100.0 / float(len(features))
+
         allowedWkbTypes = [2, #WkbLineString
             3, # WkbPolygon
             -2147483646, #WkbLineString25D
