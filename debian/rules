@@ -53,7 +53,7 @@ QGIS_ABI=$(QGIS_MAJOR).$(QGIS_MINOR).$(QGIS_PATCH)
 GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
 GRASSVER=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1))
 
-WITH_GLOBE=$(shell dpkg --compare-versions "$$(dpkg-query -W --showformat='$${Version}' libosgearth-dev)" ge 2.7 && echo 1)
+WITH_GLOBE=$(shell dpkg --compare-versions "$$(dpkg-query -W --showformat='$${Version}' libosgearth-dev)" ge 2.7 && dpkg --compare-versions "$$(dpkg-query -W --showformat='$${Version}' libosgearth-dev)" lt 2.8 && echo 1)
 
 CMAKE_OPTS := \
 	-DBUILDNAME=$(DEB_BUILD_NAME) \
