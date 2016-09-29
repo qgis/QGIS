@@ -202,6 +202,7 @@ QgsFeature QgsMapToolNodeTool::getFeatureAtPoint( QgsMapMouseEvent* e )
 
   QgsFeatureRequest request;
   request.setFilterRect( QgsRectangle( e->mapPoint().x(), e->mapPoint().y(), e->mapPoint().x(), e->mapPoint().y() ) );
+  request.setFlags( QgsFeatureRequest::ExactIntersect );
   QgsFeatureIterator features = vlayer->getFeatures( request );
   features.nextFeature( feature );
 
