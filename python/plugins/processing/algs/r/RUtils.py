@@ -45,6 +45,8 @@ class RUtils(object):
     R_USE64 = 'R_USE64'
     R_LIBS_USER = 'R_LIBS_USER'
 
+    rscriptfilename = userFolder() + os.sep + 'processing_script.r'
+
     @staticmethod
     def RFolder():
         folder = ProcessingConfig.getSetting(RUtils.R_FOLDER)
@@ -108,7 +110,7 @@ class RUtils(object):
 
     @staticmethod
     def getRScriptFilename():
-        return userFolder() + os.sep + 'processing_script.r'
+        return RUtils.rscriptfilename
 
     @staticmethod
     def getConsoleOutputFilename():
@@ -116,6 +118,9 @@ class RUtils(object):
 
     @staticmethod
     def executeRAlgorithm(alg, progress):
+        # generate new R script file name in a temp folder
+        RUtils.rscriptfilename = getTempFilenameInTempFolder('processing_script.r')
+        # run commands
         RUtils.verboseCommands = alg.getVerboseCommands()
         RUtils.createRScriptFromRCommands(alg.getFullSetOfRCommands())
         if isWindows():
