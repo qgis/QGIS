@@ -80,22 +80,17 @@ class SplitWithLines(GeoAlgorithm):
         else:
             total = 100.0 / float(len(features))
 
-        allowedWkbTypes = [2, #WkbLineString
-            3, # WkbPolygon
-            -2147483646, #WkbLineString25D
-            -2147483645] # WkbPolygon25D
-        # MultiGeometries are not allowed because the result of a splitted ring is not clearly defined:
-        # 1) add both parts as new features
-        # 2) store one part as a new feature and the other one as ring of the multi geometry
-        # 2a) which part is which, seems arbitrary
-
         multiGeoms = 0 # how many multi geometries were encountered
 
         for current, inFeatA in enumerate(features):
             inGeom = inFeatA.geometry()
 
-            if allowedWkbTypes.count(inGeom.wkbType()) == 0:
+            if inGeom.isMultipart():
                 multiGeoms += 1
+                # MultiGeometries are not allowed because the result of a splitted part cannot be clearly defined:
+                # 1) add both new parts as new features
+                # 2) store one part as a new feature and the other one as part of the multi geometry
+                # 2a) which part should be which, seems arbitrary
             else:
                 attrsA = inFeatA.attributes()
                 outFeat.setAttributes(attrsA)
