@@ -8,7 +8,7 @@ and QGIS Server WFS/WMS that check if QGIS can use a stored auth manager auth
 configuration to access an HTTP Basic protected endpoint.
 
 
-From build dir, run: ctest -R PyQgsAuthManagerEnpointTest -V
+From build dir, run: ctest -R PyQgsAuthManagerEndpointTest -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

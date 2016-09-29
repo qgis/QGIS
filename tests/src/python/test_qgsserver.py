@@ -27,10 +27,6 @@ from utilities import unitTestDataPath
 import osgeo.gdal
 
 # Strip path and content length because path may vary
-# Also strip all multi-attribute tags (Qt5 attr order is random)
-# FIXME: this is a temporary workaround to make the test pass, a more
-#        robust implementation must check for attributes too
-#RE_STRIP_UNCHECKABLE = b'<LatLongBoundingBox [^>]*>|<sld:UserDefinedSymbolization [^>]*>|<Attribute [^>]*>|<Layer [^>]*>|MAP=[^"]+|Content-Length: \d+|<OnlineResource[^>]*>|<BoundingBox[^>]*>|<WMS_Capabilities[^>]*>|<WFS_Capabilities[^>]*>|<element[^>]*>|<schema [^>]*>|<import [^>]*>|<gml:coordinates [^>]*>'
 RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
 RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
 
