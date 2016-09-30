@@ -49,7 +49,7 @@ Build-Depends:
  pyqt5.qsci-dev, python3-nose2,
  python3-gdal, python3-yaml, python3-mock, python3-psycopg2, python3-future, python3-termcolor,
 #oracle# oracle-instantclient12.1-devel,
- locales
+ locales, ca-certificates
 Build-Conflicts: libqgis-dev, qgis-dev
 #sid stretch xenial#Standards-Version: 3.9.7
 #jessie#Standards-Version: 3.9.6
