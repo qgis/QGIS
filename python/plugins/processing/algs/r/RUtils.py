@@ -45,7 +45,7 @@ class RUtils(object):
     R_USE64 = 'R_USE64'
     R_LIBS_USER = 'R_LIBS_USER'
 
-    rscriptfilename = userFolder() + os.sep + 'processing_script.r'
+    rscriptfilename = os.path.join(userFolder(), 'processing_script.r')
 
     @staticmethod
     def RFolder():
@@ -129,8 +129,7 @@ class RUtils(object):
             else:
                 execDir = 'i386'
             command = [
-                RUtils.RFolder() + os.sep + 'bin' + os.sep + execDir + os.sep
-                + 'R.exe',
+                os.path.join(RUtils.RFolder(), 'bin', execDir, 'R.exe'),
                 'CMD',
                 'BATCH',
                 '--vanilla',
@@ -208,8 +207,7 @@ class RUtils(object):
                 execDir = 'x64'
             else:
                 execDir = 'i386'
-            command = [RUtils.RFolder() + os.sep + 'bin' + os.sep + execDir
-                       + os.sep + 'R.exe', '--version']
+            command = [os.path.join(RUtils.RFolder(), 'bin', execDir, 'R.exe'), '--version']
         else:
             command = ['R --version']
         proc = subprocess.Popen(
