@@ -6,6 +6,7 @@ PyQgsMapUnitScale
 PyQgsPalLabelingServer
 PyQgsRelationEditWidget
 PyQgsServer
+PyQgsAuthManagerEndpointTest
 PyQgsServerAccessControl
 PyQgsSipCoverage
 PyQgsSpatialiteProvider
