@@ -176,13 +176,41 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
     "</Filter>" )
   << QString( "POPULATION >= 100 AND POPULATION <= 200" );
 
-  // TODO: needs to handle different wildcards, single chars, escape chars
+  // handle different wildcards, single chars, escape chars
   QTest::newRow( "like" ) << QString(
     "<Filter>"
-    "<PropertyIsLike wildcard='*' singleChar='.' escape='!'>"
+    "<PropertyIsLike wildCard=\"%\" singleChar=\"_\" escape=\"\\\">"
     "<PropertyName>NAME</PropertyName><Literal>*QGIS*</Literal></PropertyIsLike>"
     "</Filter>" )
   << QString( "NAME LIKE '*QGIS*'" );
+  QTest::newRow( "ilike" ) << QString(
+    "<Filter>"
+    "<PropertyIsLike matchCase=\"false\" wildCard=\"%\" singleChar=\"_\" escape=\"\\\">"
+    "<PropertyName>NAME</PropertyName><Literal>*QGIS*</Literal></PropertyIsLike>"
+    "</Filter>" )
+  << QString( "NAME ILIKE '*QGIS*'" );
+
+  // different wildCards
+  QTest::newRow( "like wildCard" ) << QString(
+    "<Filter>"
+    "<PropertyIsLike wildCard='*' singleChar='.' escape=\"\\\">"
+    "<PropertyName>NAME</PropertyName><Literal>*%QGIS*\\*</Literal></PropertyIsLike>"
+    "</Filter>" )
+  << QString( "NAME LIKE '%\\\\%QGIS%*'" );
+  // different single chars
+  QTest::newRow( "like single char" ) << QString(
+    "<Filter>"
+    "<PropertyIsLike wildCard='*' singleChar='.' escape=\"\\\">"
+    "<PropertyName>NAME</PropertyName><Literal>._QGIS.\\.</Literal></PropertyIsLike>"
+    "</Filter>" )
+  << QString( "NAME LIKE '_\\\\_QGIS_.'" );
+  // different single chars
+  QTest::newRow( "like escape char" ) << QString(
+    "<Filter>"
+    "<PropertyIsLike wildCard=\"*\" singleChar=\".\" escape=\"!\">"
+    "<PropertyName>NAME</PropertyName><Literal>_QGIS.!.!!%QGIS*!*</Literal></PropertyIsLike>"
+    "</Filter>" )
+  << QString( "NAME LIKE '\\\\_QGIS_.!\\\\%QGIS%*'" );
 
   QTest::newRow( "is null" ) << QString(
     "<Filter>"
@@ -295,6 +323,22 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "<ogc:Literal>VALID</ogc:Literal>"
     "</ogc:PropertyIsEqualTo>"
     "</ogc:And>"
+    "</ogc:Filter>" );
+
+  QTest::newRow( "like" ) << QString( "NAME LIKE '*QGIS*'" ) << QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:PropertyIsLike singleChar=\"_\" escape=\"\\\" wildCard=\"%\">"
+    "<ogc:PropertyName>NAME</ogc:PropertyName>"
+    "<ogc:Literal>*QGIS*</ogc:Literal>"
+    "</ogc:PropertyIsLike>"
+    "</ogc:Filter>" );
+
+  QTest::newRow( "ilike" ) << QString( "NAME ILIKE '*QGIS*'" ) << QString(
+    "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+    "<ogc:PropertyIsLike matchCase=\"false\" singleChar=\"_\" escape=\"\\\" wildCard=\"%\">"
+    "<ogc:PropertyName>NAME</ogc:PropertyName>"
+    "<ogc:Literal>*QGIS*</ogc:Literal>"
+    "</ogc:PropertyIsLike>"
     "</ogc:Filter>" );
 
   QTest::newRow( "is null" ) << QString( "A IS NULL" ) << QString(
