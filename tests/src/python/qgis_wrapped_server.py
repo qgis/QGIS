@@ -5,6 +5,13 @@ QGIS Server HTTP wrapper
 This script launches a QGIS Server listening on port 8081 or on the port
 specified on the environment variable QGIS_SERVER_DEFAULT_PORT
 
+For testing purposes, HTTP Basic can be enabled by setting the following
+environment variables:
+
+  * QGIS_SERVER_HTTP_BASIC_AUTH (default not set, set to anything to enable)
+  * QGIS_SERVER_USERNAME (default ="username")
+  * QGIS_SERVER_PASSWORD (default ="password")
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -24,22 +31,56 @@ __revision__ = '$Format:%H$'
 import os
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from qgis.server import QgsServer
+from qgis.server import QgsServer, QgsServerFilter
 
 try:
     QGIS_SERVER_DEFAULT_PORT = int(os.environ['QGIS_SERVER_DEFAULT_PORT'])
 except KeyError:
     QGIS_SERVER_DEFAULT_PORT = 8081
 
+qgs_server = QgsServer()
+
+if os.environ.get('QGIS_SERVER_HTTP_BASIC_AUTH') is not None:
+    print('HTTP Basic Authorization Required username:%s password:%s' % (os.environ.get('QGIS_SERVER_USERNAME', 'username'), os.environ.get('QGIS_SERVER_PASSWORD', 'password')))
+    import base64
+
+    class HTTPBasicFilter(QgsServerFilter):
+
+        def responseComplete(self):
+            request = self.serverInterface().requestHandler()
+            if self.serverInterface().getEnv('HTTP_AUTHORIZATION'):
+                username, password = base64.b64decode(self.serverInterface().getEnv('HTTP_AUTHORIZATION')[6:]).split(':')
+                if (username == os.environ.get('QGIS_SERVER_USERNAME', 'username')
+                        and password == os.environ.get('QGIS_SERVER_PASSWORD', 'password')):
+                    return
+            # No auth ...
+            request.clearHeaders()
+            request.setHeader('Status', '401 Authorization required')
+            request.setHeader('WWW-Authenticate', 'Basic realm="QGIS Server"')
+            request.clearBody()
+            request.appendBody('<h1>Authorization required</h1>')
+
+    filter = HTTPBasicFilter(qgs_server.serverInterface())
+    qgs_server.serverInterface().registerFilter(filter)
+
 
 class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
+        # CGI vars:
+        for k, v in self.headers.items():
+            qgs_server.putenv('HTTP_%s' % k.replace(' ', '-').replace('-', '_').replace(' ', '-').upper(), v)
+        qgs_server.putenv('SERVER_PORT', str(self.server.server_port))
+        qgs_server.putenv('SERVER_NAME', self.server.server_name)
+        qgs_server.putenv('REQUEST_URI', self.path)
         parsed_path = urllib.parse.urlparse(self.path)
-        s = QgsServer()
-        headers, body = s.handleRequest(parsed_path.query)
-        self.send_response(200)
-        for k, v in [h.split(':') for h in headers.decode().split('\n') if h]:
+        headers, body = qgs_server.handleRequest(parsed_path.query)
+        headers_dict = dict(h.split(': ', 1) for h in headers.decode().split('\n') if h)
+        try:
+            self.send_response(int(headers_dict['Status'].split(' ')[0]))
+        except:
+            self.send_response(200)
+        for k, v in headers_dict.items():
             self.send_header(k, v)
         self.end_headers()
         self.wfile.write(body)

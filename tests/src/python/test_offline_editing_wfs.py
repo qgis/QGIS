@@ -51,9 +51,13 @@ from offlineditingtestbase import OfflineTestBase
 from qgis.PyQt.QtCore import QFileInfo
 
 try:
-    QGIS_SERVER_WFST_DEFAULT_PORT = os.environ['QGIS_SERVER_WFST_DEFAULT_PORT']
+    QGIS_SERVER_OFFLINE_EDITING_DEFAULT_PORT = os.environ['QGIS_SERVER_OFFLINE_EDITING_DEFAULT_PORT']
 except:
-    QGIS_SERVER_WFST_DEFAULT_PORT = 8081
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(("", 0))
+    QGIS_SERVER_OFFLINE_EDITING_DEFAULT_PORT = s.getsockname()[1]
+    s.close()
 
 
 qgis_app = start_app()
@@ -64,7 +68,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.port = QGIS_SERVER_WFST_DEFAULT_PORT
+        cls.port = QGIS_SERVER_OFFLINE_EDITING_DEFAULT_PORT
         # Create tmp folder
         cls.temp_path = tempfile.mkdtemp()
         cls.testdata_path = cls.temp_path + '/' + 'wfs_transactional' + '/'

@@ -150,7 +150,7 @@ class TestQgsServer(unittest.TestCase):
 
     # WMS tests
     def wms_request_compare(self, request, extra=None, reference_file=None):
-        project = self.testdata_path + "test+project.qgs"
+        project = self.testdata_path + "test_project.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.quote(project), request)
@@ -158,20 +158,25 @@ class TestQgsServer(unittest.TestCase):
             query_string += extra
         header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
         response = header + body
-        f = open(self.testdata_path + (request.lower() if not reference_file else reference_file) + '.txt')
+        reference_path = self.testdata_path + (request.lower() if not reference_file else reference_file) + '.txt'
+        f = open(reference_path)
         expected = f.read()
         f.close()
         # Store the output for debug or to regenerate the reference documents:
         """
+        f = open(reference_path, 'wb+')
+        f.write(response)
+        f.close()
+
         f = open(os.path.dirname(__file__) + '/expected.txt', 'w+')
         f.write(expected)
         f.close()
         f = open(os.path.dirname(__file__) + '/response.txt', 'w+')
         f.write(response)
         f.close()
-        #"""
-        response = re.sub(RE_STRIP_PATH, '', response)
-        expected = re.sub(RE_STRIP_PATH, '', expected)
+        """
+        response = re.sub(RE_STRIP_PATH, '*****', response)
+        expected = re.sub(RE_STRIP_PATH, '*****', expected)
 
         # for older GDAL versions (<2.0), id field will be integer type
         if int(osgeo.gdal.VersionInfo()[:1]) < 2:
@@ -214,7 +219,7 @@ class TestQgsServer(unittest.TestCase):
 
     def wms_inspire_request_compare(self, request):
         """WMS INSPIRE tests"""
-        project = self.testdata_path + "test+project_inspire.qgs"
+        project = self.testdata_path + "test_project_inspire.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (urllib.quote(project), request)
@@ -243,7 +248,7 @@ class TestQgsServer(unittest.TestCase):
 
     # WFS tests
     def wfs_request_compare(self, request):
-        project = self.testdata_path + "test+project_wfs.qgs"
+        project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.quote(project), request)
@@ -277,7 +282,7 @@ class TestQgsServer(unittest.TestCase):
             self.wfs_request_compare(request)
 
     def wfs_getfeature_compare(self, requestid, request):
-        project = self.testdata_path + "test+project_wfs.qgs"
+        project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.quote(project), request)
@@ -324,7 +329,7 @@ class TestQgsServer(unittest.TestCase):
             self.wfs_getfeature_compare(id, req)
 
     def wfs_getfeature_post_compare(self, requestid, request):
-        project = self.testdata_path + "test+project_wfs.qgs"
+        project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'MAP={}'.format(urllib.quote(project))
@@ -369,7 +374,7 @@ class TestQgsServer(unittest.TestCase):
     def test_getLegendGraphics(self):
         """Test that does not return an exception but an image"""
         parms = {
-            'MAP': self.testdata_path + "test%2Bproject.qgs",
+            'MAP': self.testdata_path + "test_project.qgs",
             'SERVICE': 'WMS',
             'VERSION': '1.0.0',
             'REQUEST': 'GetLegendGraphic',
