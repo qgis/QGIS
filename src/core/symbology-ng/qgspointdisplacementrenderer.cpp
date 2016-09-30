@@ -106,7 +106,10 @@ void QgsPointDisplacementRenderer::drawGroup( QPointF centerPoint, QgsRenderCont
   //draw symbols on the circle
   drawSymbols( group, context, symbolPositions );
   //and also the labels
-  drawLabels( centerPoint, symbolContext, labelPositions, group );
+  if ( mLabelIndex >= 0 )
+  {
+    drawLabels( centerPoint, symbolContext, labelPositions, group );
+  }
 }
 
 
