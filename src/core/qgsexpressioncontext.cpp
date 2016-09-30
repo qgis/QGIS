@@ -40,6 +40,8 @@ const QString QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT( "geometry_part_cou
 const QString QgsExpressionContext::EXPR_GEOMETRY_PART_NUM( "geometry_part_num" );
 const QString QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT( "geometry_point_count" );
 const QString QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM( "geometry_point_num" );
+const QString QgsExpressionContext::EXPR_CLUSTER_SIZE( "cluster_size" );
+const QString QgsExpressionContext::EXPR_CLUSTER_COLOR( "cluster_color" );
 
 //
 // QgsExpressionContextScope

@@ -35,7 +35,7 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, p
     ~QgsPointDisplacementRendererWidget();
 
     QgsFeatureRenderer* renderer() override;
-    void setMapCanvas( QgsMapCanvas* canvas ) override;
+    void setContext( const QgsSymbolWidgetContext& context ) override;
 
   private:
     QgsPointDisplacementRenderer* mRenderer;

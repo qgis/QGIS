@@ -1329,11 +1329,11 @@ QgsRuleBasedRenderer* QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
 
     r = new QgsRuleBasedRenderer( rootrule );
   }
-  else if ( renderer->type() == "pointDisplacement" )
+  else if ( renderer->type() == "pointDisplacement" || renderer->type() == "pointCluster" )
   {
-    const QgsPointDisplacementRenderer* pointDisplacementRenderer = dynamic_cast<const QgsPointDisplacementRenderer*>( renderer );
-    if ( pointDisplacementRenderer )
-      r = convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
+    const QgsPointDistanceRenderer* pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer*>( renderer );
+    if ( pointDistanceRenderer )
+      return convertFromRenderer( pointDistanceRenderer->embeddedRenderer() );
   }
   else if ( renderer->type() == "invertedPolygonRenderer" )
   {

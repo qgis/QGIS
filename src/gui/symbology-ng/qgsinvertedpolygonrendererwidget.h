@@ -47,7 +47,8 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, pr
 
     /** @returns the current feature renderer */
     virtual QgsFeatureRenderer* renderer() override;
-    void setMapCanvas( QgsMapCanvas* canvas ) override;
+
+    void setContext( const QgsSymbolWidgetContext& context ) override;
 
   protected:
     /** The mask renderer */

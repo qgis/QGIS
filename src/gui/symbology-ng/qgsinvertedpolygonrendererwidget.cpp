@@ -110,11 +110,11 @@ QgsFeatureRenderer* QgsInvertedPolygonRendererWidget::renderer()
   return mRenderer.data();
 }
 
-void QgsInvertedPolygonRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
+void QgsInvertedPolygonRendererWidget::setContext( const QgsSymbolWidgetContext& context )
 {
-  QgsRendererWidget::setMapCanvas( canvas );
+  QgsRendererWidget::setContext( context );
   if ( mEmbeddedRendererWidget )
-    mEmbeddedRendererWidget->setMapCanvas( canvas );
+    mEmbeddedRendererWidget->setContext( context );
 }
 
 void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged( int index )
@@ -125,7 +125,7 @@ void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged(
   {
     mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, const_cast<QgsFeatureRenderer*>( mRenderer->embeddedRenderer() )->clone() ) );
     connect( mEmbeddedRendererWidget.data(), SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
-    mEmbeddedRendererWidget->setMapCanvas( mMapCanvas );
+    mEmbeddedRendererWidget->setContext( mContext );
 
     if ( layout()->count() > 2 )
     {

@@ -109,7 +109,15 @@ class QgsRendererRulePropsWidget: QgsPanelWidget
 %End
 
   public:
-    QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = 0 );
+    /**
+       * Widget to edit the details of a rule based renderer rule.
+       * @param rule The rule to edit.
+       * @param layer The layer used to pull layer related information.
+       * @param style The active QGIS style.
+       * @param parent The parent widget.
+       * @param context the symbol widget context
+       */
+    QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent /TransferThis/ = 0, const QgsSymbolWidgetContext& context= QgsSymbolWidgetContext() );
     ~QgsRendererRulePropsWidget();
 
     QgsRuleBasedRenderer::Rule* rule();
@@ -129,7 +137,8 @@ class QgsRendererRulePropsDialog : QDialog
 %End
 
   public:
-    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = 0 );
+
+    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule* rule, QgsVectorLayer* layer, QgsStyle* style, QWidget* parent /TransferThis/ = 0, const QgsSymbolWidgetContext& context = QgsSymbolWidgetContext() );
     ~QgsRendererRulePropsDialog();
 
     QgsRuleBasedRenderer::Rule* rule();

@@ -80,11 +80,11 @@ QgsFeatureRenderer* QgsSingleSymbolRendererWidget::renderer()
   return mRenderer;
 }
 
-void QgsSingleSymbolRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
+void QgsSingleSymbolRendererWidget::setContext( const QgsSymbolWidgetContext& context )
 {
-  QgsRendererWidget::setMapCanvas( canvas );
+  QgsRendererWidget::setContext( context );
   if ( mSelector )
-    mSelector->setMapCanvas( canvas );
+    mSelector->setContext( context );
 }
 
 void QgsSingleSymbolRendererWidget::setDockMode( bool dockMode )

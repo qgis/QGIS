@@ -20,6 +20,7 @@
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgsrulebasedrenderer.h"
 #include "qgspointdisplacementrenderer.h"
+#include "qgspointclusterrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgsheatmaprenderer.h"
 #include "qgs25drenderer.h"
@@ -54,6 +55,13 @@ QgsRendererRegistry::QgsRendererRegistry()
   addRenderer( new QgsRendererMetadata( "pointDisplacement",
                                         QObject::tr( "Point displacement" ),
                                         QgsPointDisplacementRenderer::create,
+                                        QIcon(),
+                                        nullptr,
+                                        QgsRendererAbstractMetadata::PointLayer ) );
+
+  addRenderer( new QgsRendererMetadata( "pointCluster",
+                                        QObject::tr( "Point cluster" ),
+                                        QgsPointClusterRenderer::create,
                                         QIcon(),
                                         nullptr,
                                         QgsRendererAbstractMetadata::PointLayer ) );

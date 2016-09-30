@@ -49,7 +49,6 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, 
     , mClipFeaturesAction( nullptr )
     , mLayer( layer )
     , mMapCanvas( nullptr )
-    , mPresetExpressionContext( nullptr )
 {
   setupUi( this );
 
@@ -130,28 +129,23 @@ QgsSymbolsListWidget::~QgsSymbolsListWidget()
   btnAdvanced->menu()->removeAction( mClipFeaturesAction );
 }
 
-void QgsSymbolsListWidget::setMapCanvas( QgsMapCanvas* canvas )
+void QgsSymbolsListWidget::setContext( const QgsSymbolWidgetContext& context )
 {
-  mMapCanvas = canvas;
+  mContext = context;
   Q_FOREACH ( QgsUnitSelectionWidget* unitWidget, findChildren<QgsUnitSelectionWidget*>() )
   {
-    unitWidget->setMapCanvas( canvas );
+    unitWidget->setMapCanvas( mContext.mapCanvas() );
   }
   Q_FOREACH ( QgsDataDefinedButton* ddButton, findChildren<QgsDataDefinedButton*>() )
   {
     if ( ddButton->assistant() )
-      ddButton->assistant()->setMapCanvas( mMapCanvas );
+      ddButton->assistant()->setMapCanvas( mContext.mapCanvas() );
   }
 }
 
-const QgsMapCanvas*QgsSymbolsListWidget::mapCanvas() const
+QgsSymbolWidgetContext QgsSymbolsListWidget::context() const
 {
-  return mMapCanvas;
-}
-
-void QgsSymbolsListWidget::setExpressionContext( QgsExpressionContext *context )
-{
-  mPresetExpressionContext = context;
+  return mContext;
 }
 
 void QgsSymbolsListWidget::populateGroups( const QString& parent, const QString& prepend )
@@ -427,8 +421,8 @@ void QgsSymbolsListWidget::updateSymbolColor()
 
 QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
 {
-  if ( expressionContext() )
-    return QgsExpressionContext( *expressionContext() );
+  if ( mContext.expressionContext() )
+    return QgsExpressionContext( *mContext.expressionContext() );
 
   //otherwise create a default symbol context
   QgsExpressionContext expContext;
@@ -436,10 +430,10 @@ QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::atlasScope( nullptr );
 
-  if ( mapCanvas() )
+  if ( mContext.mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mapCanvas()->expressionContextScope() );
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
   }
   else
   {
@@ -447,6 +441,17 @@ QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
   }
 
   expContext << QgsExpressionContextUtils::layerScope( layer() );
+
+  // additional scopes
+  Q_FOREACH ( const QgsExpressionContextScope& scope, mContext.additionalExpressionContextScopes() )
+  {
+    expContext.appendScope( new QgsExpressionContextScope( scope ) );
+  }
+
+  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR
+                                      << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
+                                      << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
+                                      << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE );
 
   return expContext;
 }

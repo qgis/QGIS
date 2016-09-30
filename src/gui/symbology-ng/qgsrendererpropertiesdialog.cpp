@@ -23,6 +23,7 @@
 #include "qgsgraduatedsymbolrendererwidget.h"
 #include "qgsrulebasedrendererwidget.h"
 #include "qgspointdisplacementrendererwidget.h"
+#include "qgspointclusterrendererwidget.h"
 #include "qgsinvertedpolygonrendererwidget.h"
 #include "qgsheatmaprendererwidget.h"
 #include "qgs25drendererwidget.h"
@@ -73,6 +74,7 @@ static void _initRendererWidgetFunctions()
   _initRenderer( "graduatedSymbol", QgsGraduatedSymbolRendererWidget::create, "rendererGraduatedSymbol.svg" );
   _initRenderer( "RuleRenderer", QgsRuleBasedRendererWidget::create, "rendererRuleBasedSymbol.svg" );
   _initRenderer( "pointDisplacement", QgsPointDisplacementRendererWidget::create, "rendererPointDisplacementSymbol.svg" );
+  _initRenderer( "pointCluster", QgsPointClusterRendererWidget::create, "rendererPointClusterSymbol.svg" );
   _initRenderer( "invertedPolygonRenderer", QgsInvertedPolygonRendererWidget::create, "rendererInvertedSymbol.svg" );
   _initRenderer( "heatmapRenderer", QgsHeatmapRendererWidget::create, "rendererHeatmapSymbol.svg" );
   _initRenderer( "25dRenderer", Qgs25DRendererWidget::create, "renderer25dSymbol.svg" );
@@ -189,7 +191,11 @@ void QgsRendererPropertiesDialog::setMapCanvas( QgsMapCanvas* canvas )
 {
   mMapCanvas = canvas;
   if ( mActiveWidget )
-    mActiveWidget->setMapCanvas( mMapCanvas );
+  {
+    QgsSymbolWidgetContext context;
+    context.setMapCanvas( mMapCanvas );
+    mActiveWidget->setContext( context );
+  }
 }
 
 void QgsRendererPropertiesDialog::setDockMode( bool dockMode )
@@ -246,7 +252,11 @@ void QgsRendererPropertiesDialog::rendererChanged()
     if ( mActiveWidget->renderer() )
     {
       if ( mMapCanvas )
-        mActiveWidget->setMapCanvas( mMapCanvas );
+      {
+        QgsSymbolWidgetContext context;
+        context.setMapCanvas( mMapCanvas );
+        mActiveWidget->setContext( context );
+      }
       changeOrderBy( mActiveWidget->renderer()->orderBy(), mActiveWidget->renderer()->orderByEnabled() );
       connect( mActiveWidget, SIGNAL( layerVariablesChanged() ), this, SIGNAL( layerVariablesChanged() ) );
     }

@@ -88,13 +88,10 @@ static void _initWidgetFunctions()
 
 QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const QgsSymbol* symbol, const QgsVectorLayer* vl, QWidget* parent )
     : QgsPanelWidget( parent )
-    , mPresetExpressionContext( nullptr )
-    , mMapCanvas( nullptr )
+    , mLayer( layer )
+    , mSymbol( symbol )
+    , mVectorLayer( vl )
 {
-
-  mLayer = layer;
-  mSymbol = symbol;
-  mVectorLayer = vl;
 
   setupUi( this );
   // initialize the sub-widgets
@@ -126,27 +123,24 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const
   mEffectWidget->setPaintEffect( mLayer->paintEffect() );
 }
 
-void QgsLayerPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
+void QgsLayerPropertiesWidget::setContext( const QgsSymbolWidgetContext& context )
 {
-  mMapCanvas = canvas;
+  mContext = context;
+
   QgsSymbolLayerWidget* w = dynamic_cast< QgsSymbolLayerWidget* >( stackedWidget->currentWidget() );
   if ( w )
-    w->setMapCanvas( mMapCanvas );
+    w->setContext( mContext );
+}
+
+QgsSymbolWidgetContext QgsLayerPropertiesWidget::context() const
+{
+  return mContext;
 }
 
 void QgsLayerPropertiesWidget::setDockMode( bool dockMode )
 {
   QgsPanelWidget::setDockMode( dockMode );
   mEffectWidget->setDockMode( this->dockMode() );
-}
-
-void QgsLayerPropertiesWidget::setExpressionContext( QgsExpressionContext *context )
-{
-  mPresetExpressionContext = context;
-
-  QgsSymbolLayerWidget* w = dynamic_cast< QgsSymbolLayerWidget* >( stackedWidget->currentWidget() );
-  if ( w )
-    w->setExpressionContext( mPresetExpressionContext );
 }
 
 void QgsLayerPropertiesWidget::populateLayerTypes()
@@ -190,9 +184,7 @@ void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayer* layer )
     QgsSymbolLayerWidget* w = am->createSymbolLayerWidget( mVectorLayer );
     if ( w )
     {
-      w->setExpressionContext( mPresetExpressionContext );
-      if ( mMapCanvas )
-        w->setMapCanvas( mMapCanvas );
+      w->setContext( mContext );
       w->setSymbolLayer( layer );
       stackedWidget->addWidget( w );
       stackedWidget->setCurrentWidget( w );

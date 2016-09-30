@@ -18,6 +18,8 @@
 
 #include "ui_widget_symbolslist.h"
 
+#include "qgssymbolwidgetcontext.h"
+
 #include <QWidget>
 
 class QgsSymbol;
@@ -38,27 +40,18 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     //! Destructor
     virtual ~QgsSymbolsListWidget();
 
-    /** Returns the expression context used for the widget, if set. This expression context is used for
-     * evaluating data defined symbol properties and for populating based expression widgets in
-     * the list widget.
-     * @note added in QGIS 2.12
-     * @see setExpressionContext()
+    /** Sets the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+     * @param context symbol widget context
+     * @see context()
+     * @note added in QGIS 3.0
      */
-    QgsExpressionContext* expressionContext() const { return mPresetExpressionContext; }
+    void setContext( const QgsSymbolWidgetContext& context );
 
-    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
-     * map scale and other properties from the canvas.
-     * @param canvas map canvas
-     * @see mapCanvas()
-     * @note added in QGIS 2.12
+    /** Returns the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+     * @see setContext()
+     * @note added in QGIS 3.0
      */
-    virtual void setMapCanvas( QgsMapCanvas* canvas );
-
-    /** Returns the map canvas associated with the widget.
-     * @see setMapCanvas
-     * @note added in QGIS 2.12
-     */
-    const QgsMapCanvas* mapCanvas() const;
+    QgsSymbolWidgetContext context() const;
 
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
@@ -66,16 +59,6 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     const QgsVectorLayer* layer() const { return mLayer; }
 
   public slots:
-
-    /** Sets the optional expression context used for the widget. This expression context is used for
-     * evaluating data defined symbol properties and for populating based expression widgets in
-     * the properties widget.
-     * @param context expression context pointer. Ownership is not transferred and the object must
-     * be kept alive for the lifetime of the properties widget.
-     * @note added in QGIS 2.12
-     * @see expressionContext()
-     */
-    void setExpressionContext( QgsExpressionContext* context );
 
     void setSymbolFromStyle( const QModelIndex & index );
     void setSymbolColor( const QColor& color );
@@ -119,7 +102,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     /** Recursive function to create the group tree in the widget */
     void populateGroups( const QString& parent = "", const QString& prepend = "" );
 
-    QgsExpressionContext* mPresetExpressionContext;
+    QgsSymbolWidgetContext mContext;
 
     QgsExpressionContext createExpressionContext() const override;
 };

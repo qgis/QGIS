@@ -212,7 +212,6 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol* symbol, QgsStyle* s
     : QgsPanelWidget( parent )
     , mAdvancedMenu( nullptr )
     , mVectorLayer( vl )
-    , mMapCanvas( nullptr )
 {
 #ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
@@ -279,25 +278,26 @@ QMenu* QgsSymbolSelectorWidget::advancedMenu()
   return mAdvancedMenu;
 }
 
-void QgsSymbolSelectorWidget::setExpressionContext( QgsExpressionContext *context )
+void QgsSymbolSelectorWidget::setContext( const QgsSymbolWidgetContext& context )
 {
-  mPresetExpressionContext.reset( context );
-  layerChanged();
-  updatePreview();
-}
-
-void QgsSymbolSelectorWidget::setMapCanvas( QgsMapCanvas *canvas )
-{
-  mMapCanvas = canvas;
+  mContext = context;
 
   QWidget* widget = stackedWidget->currentWidget();
   QgsLayerPropertiesWidget* layerProp = dynamic_cast< QgsLayerPropertiesWidget* >( widget );
   QgsSymbolsListWidget* listWidget = dynamic_cast< QgsSymbolsListWidget* >( widget );
 
   if ( layerProp )
-    layerProp->setMapCanvas( canvas );
+    layerProp->setContext( context );
   if ( listWidget )
-    listWidget->setMapCanvas( canvas );
+    listWidget->setContext( context );
+
+  layerChanged();
+  updatePreview();
+}
+
+QgsSymbolWidgetContext QgsSymbolSelectorWidget::context() const
+{
+  return mContext;
 }
 
 void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol* symbol, SymbolLayerItem* parent )
@@ -359,7 +359,7 @@ void QgsSymbolSelectorWidget::updateUi()
 
 void QgsSymbolSelectorWidget::updatePreview()
 {
-  QImage preview = mSymbol->bigSymbolPreviewImage( mPresetExpressionContext.data() );
+  QImage preview = mSymbol->bigSymbolPreviewImage( mContext.expressionContext() );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
   // Hope this is a appropriate place
   emit symbolModified();
@@ -415,8 +415,7 @@ void QgsSymbolSelectorWidget::layerChanged()
     mDataDefineRestorer.reset( new DataDefinedRestorer( parent->symbol(), currentItem->layer() ) );
     QgsLayerPropertiesWidget *layerProp = new QgsLayerPropertiesWidget( currentItem->layer(), parent->symbol(), mVectorLayer );
     layerProp->setDockMode( this->dockMode() );
-    layerProp->setExpressionContext( mPresetExpressionContext.data() );
-    layerProp->setMapCanvas( mMapCanvas );
+    layerProp->setContext( mContext );
     setWidget( layerProp );
     connect( layerProp, SIGNAL( changed() ), mDataDefineRestorer.data(), SLOT( restore() ) );
     connect( layerProp, SIGNAL( changed() ), this, SLOT( updateLayerPreview() ) );
@@ -432,8 +431,7 @@ void QgsSymbolSelectorWidget::layerChanged()
     currentItem->symbol()->setLayer( mVectorLayer );
     // Now populate symbols of that type using the symbols list widget:
     QgsSymbolsListWidget *symbolsList = new QgsSymbolsListWidget( currentItem->symbol(), mStyle, mAdvancedMenu, this, mVectorLayer );
-    symbolsList->setExpressionContext( mPresetExpressionContext.data() );
-    symbolsList->setMapCanvas( mMapCanvas );
+    symbolsList->setContext( mContext );
 
     setWidget( symbolsList );
     connect( symbolsList, SIGNAL( changed() ), this, SLOT( symbolChanged() ) );
@@ -706,19 +704,14 @@ QMenu *QgsSymbolSelectorDialog::advancedMenu()
   return mSelectorWidget->advancedMenu();
 }
 
-void QgsSymbolSelectorDialog::setExpressionContext( QgsExpressionContext *context )
+void QgsSymbolSelectorDialog::setContext( const QgsSymbolWidgetContext& context )
 {
-  mSelectorWidget->setExpressionContext( context );
+  mContext = context;
 }
 
-QgsExpressionContext *QgsSymbolSelectorDialog::expressionContext() const
+QgsSymbolWidgetContext QgsSymbolSelectorDialog::context() const
 {
-  return mSelectorWidget->expressionContext();
-}
-
-void QgsSymbolSelectorDialog::setMapCanvas( QgsMapCanvas *canvas )
-{
-  mSelectorWidget->setMapCanvas( canvas );
+  return mContext;
 }
 
 QgsSymbol *QgsSymbolSelectorDialog::symbol()

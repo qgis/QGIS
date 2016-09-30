@@ -90,7 +90,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   QStringList::const_iterator it = rendererList.constBegin();
   for ( ; it != rendererList.constEnd(); ++it )
   {
-    if ( *it != "pointDisplacement" )
+    if ( *it != "pointDisplacement" && *it != "pointCluster" && *it != "heatmapRenderer" )
     {
       QgsRendererAbstractMetadata* m = QgsRendererRegistry::instance()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), *it );
@@ -158,11 +158,11 @@ QgsFeatureRenderer* QgsPointDisplacementRendererWidget::renderer()
   return mRenderer;
 }
 
-void QgsPointDisplacementRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
+void QgsPointDisplacementRendererWidget::setContext( const QgsSymbolWidgetContext& context )
 {
-  QgsRendererWidget::setMapCanvas( canvas );
+  QgsRendererWidget::setContext( context );
   if ( mDistanceUnitWidget )
-    mDistanceUnitWidget->setMapCanvas( canvas );
+    mDistanceUnitWidget->setMapCanvas( context.mapCanvas() );
 }
 
 void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChanged( const QString& text )
@@ -213,7 +213,18 @@ void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
   if ( m )
   {
     QgsRendererWidget* w = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
-    w->setMapCanvas( mMapCanvas );
+    w->setPanelTitle( tr( "Renderer settings" ) );
+
+    QgsSymbolWidgetContext context = mContext;
+
+    QgsExpressionContextScope scope;
+    scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "" );
+    scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0 );
+    QList< QgsExpressionContextScope > scopes = context.additionalExpressionContextScopes();
+    scopes << scope;
+    context.setAdditionalExpressionContextScopes( scopes );
+    w->setContext( context );
+
     connect( w, SIGNAL( widgetChanged() ), this, SLOT( updateRendererFromWidget() ) );
     openPanel( w );
   }
@@ -350,7 +361,18 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
   }
   QgsMarkerSymbol* markerSymbol = mRenderer->centerSymbol()->clone();
   QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( markerSymbol, QgsStyle::defaultStyle(), mLayer, this );
-  dlg->setMapCanvas( mMapCanvas );
+  dlg->setPanelTitle( tr( "Center symbol" ) );
+
+  QgsSymbolWidgetContext context = mContext;
+
+  QgsExpressionContextScope scope;
+  scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "" );
+  scope.setVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0 );
+  QList< QgsExpressionContextScope > scopes = context.additionalExpressionContextScopes();
+  scopes << scope;
+  context.setAdditionalExpressionContextScopes( scopes );
+  dlg->setContext( context );
+
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateCenterSymbolFromWidget() ) );
   connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
   openPanel( dlg );
