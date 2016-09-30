@@ -23,7 +23,7 @@ QgsComposerItemComboBox::QgsComposerItemComboBox( QWidget *parent, QgsCompositio
   setComposition( composition );
 
   setModelColumn( QgsComposerModel::ItemId );
-  connect( this, SIGNAL( activated( int ) ), this, SLOT( indexChanged( int ) ) );
+  connect( this, SIGNAL( currentIndexChanged( int ) ), this, SLOT( indexChanged( int ) ) );
   connect( mProxyModel, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
   connect( mProxyModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
 }
