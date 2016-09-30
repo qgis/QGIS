@@ -25,7 +25,7 @@ from utilities import unitTestDataPath
 import osgeo.gdal
 
 # Strip path and content length because path may vary
-RE_STRIP_PATH = r'MAP=[^&]+|Content-Length: \d+'
+RE_STRIP_PATH = r'MAP=[^&]+|Content-Length: \d+|<Attribute typeName="[^>]+'
 
 
 class TestQgsServer(unittest.TestCase):
