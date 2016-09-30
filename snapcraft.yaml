@@ -12,8 +12,8 @@ confinement: strict
 
 apps:
   qgis:
-    command: qgis
-    plugs: [home, network]
+    command: desktop-launch qgis
+    plugs: [home, network, unity7]
 
 parts:
   qgis:
