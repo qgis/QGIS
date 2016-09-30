@@ -41,7 +41,7 @@ endif
 
 QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"jessie stretch trusty xenial"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch xenial"))
 	DISTRIBUTION := sid
 endif
 
