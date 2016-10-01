@@ -22,6 +22,7 @@
 #include <QFontDatabase>
 #include <ui_qgslabelingguibase.h>
 #include "qgsstringutils.h"
+#include "qgspallabeling.h"
 
 class QgsVectorLayer;
 class QgsMapCanvas;
@@ -67,7 +68,6 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void updatePlacementWidgets();
     void updateSvgWidgets( const QString& svgPath );
 
-    void on_mPreviewSizeSlider_valueChanged( int i );
     void on_mFontSizeSpinBox_valueChanged( double d );
     void on_mFontCapitalsComboBox_currentIndexChanged( int index );
     void on_mFontFamilyCmbBx_currentFontChanged( const QFont& f );
@@ -150,6 +150,7 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void on_mShapeSVGPathLineEdit_textChanged( const QString& text );
     void updateLinePlacementOptions();
     void onSubstitutionsChanged( const QgsStringReplacementCollection& substitutions );
+    void previewScaleChanged( double scale );
 };
 
 #endif

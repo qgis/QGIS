@@ -161,6 +161,7 @@
 %Include qgstabwidget.sip
 %Include qgstablewidgetitem.sip
 %Include qgstextannotationitem.sip
+%Include qgstextpreview.sip
 %Include qgstrackedvectorlayertools.sip
 %Include qgstreewidgetitem.sip
 %Include qgsunitselectionwidget.sip
