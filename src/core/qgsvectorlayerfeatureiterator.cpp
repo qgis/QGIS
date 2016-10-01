@@ -534,14 +534,14 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
 
   Q_FOREACH ( const QString& col, exp->referencedColumns() )
   {
-    int dependantFieldIdx = mSource->mFields.fieldNameIndex( col );
+    int dependentFieldIdx = mSource->mFields.fieldNameIndex( col );
     if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
     {
-      mRequest.setSubsetOfAttributes( mRequest.subsetOfAttributes() << dependantFieldIdx );
+      mRequest.setSubsetOfAttributes( mRequest.subsetOfAttributes() << dependentFieldIdx );
     }
-    // also need to fetch this dependant field
-    if ( !mPreparedFields.contains( dependantFieldIdx ) && !mFieldsToPrepare.contains( dependantFieldIdx ) )
-      mFieldsToPrepare << dependantFieldIdx;
+    // also need to fetch this dependent field
+    if ( !mPreparedFields.contains( dependentFieldIdx ) && !mFieldsToPrepare.contains( dependentFieldIdx ) )
+      mFieldsToPrepare << dependentFieldIdx;
   }
 
   if ( exp->needsGeometry() )

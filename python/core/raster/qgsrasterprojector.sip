@@ -9,7 +9,7 @@ class QgsRasterProjector : QgsRasterInterface
 %End
 
   public:
-    /** Precison defines if each pixel is reprojected or approximate reprojection based
+    /** Precision defines if each pixel is reprojected or approximate reprojection based
      *  on an approximation matrix of reprojected points is used.
      */
     enum Precision

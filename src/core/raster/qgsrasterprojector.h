@@ -38,7 +38,7 @@ class QgsPoint;
 class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 {
   public:
-    /** Precison defines if each pixel is reprojected or approximate reprojection based
+    /** Precision defines if each pixel is reprojected or approximate reprojection based
      *  on an approximation matrix of reprojected points is used.
      */
     enum Precision

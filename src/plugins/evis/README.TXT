@@ -7,7 +7,7 @@ This plugin was originally written and distributed by the Center for Biodiversit
 http://biodiversityinformatics.amnh.org/open_source/evis/
 eVis was contributed to the QGIS project on 2009-07-01.
 
-eVis was started in 2007 with QGIS v0.7.0. It was our first experience with QGIS and QT. Since its early beginings, the QGIS API has under gone many changes and advances, and as a result there are still some old ideas in this code and much room for improvement. Were we to start this plugin now, we would have done it quite differently! There is still much room for imporovement. We hope the QGIS community will find eVis useful and extend its capabilities to make it even more robust.
+eVis was started in 2007 with QGIS v0.7.0. It was our first experience with QGIS and QT. Since its early beginnings, the QGIS API has under gone many changes and advances, and as a result there are still some old ideas in this code and much room for improvement. Were we to start this plugin now, we would have done it quite differently! There is still much room for improvement. We hope the QGIS community will find eVis useful and extend its capabilities to make it even more robust.
 
 
 
