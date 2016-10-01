@@ -108,7 +108,10 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual QgsGraduatedSymbolRendererV2* clone() const /Factory/;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
+    //! Writes the SLD element following the SLD v1.1 specs
+    virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
 
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities();

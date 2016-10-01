@@ -561,19 +561,24 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::clone() const
 
 void QgsGraduatedSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element ) const
 {
-  QgsStringMap props;
-  props[ "attribute" ] = mAttrName;
-  props[ "method" ] = graduatedMethodStr( mGraduatedMethod );
+  toSld( doc, element, QgsStringMap() );
+}
+
+void QgsGraduatedSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const
+{
+  QgsStringMap locProps( props );
+  locProps[ "attribute" ] = mAttrName;
+  locProps[ "method" ] = graduatedMethodStr( mGraduatedMethod );
   if ( mRotation.data() )
-    props[ "angle" ] = mRotation->expression();
+    locProps[ "angle" ] = mRotation->expression();
   if ( mSizeScale.data() )
-    props[ "scale" ] = mSizeScale->expression();
+    locProps[ "scale" ] = mSizeScale->expression();
 
   // create a Rule for each range
   bool first = true;
   for ( QgsRangeList::const_iterator it = mRanges.constBegin(); it != mRanges.constEnd(); ++it )
   {
-    QgsStringMap catProps( props );
+    QgsStringMap catProps( locProps );
     it->toSld( doc, element, catProps, first );
     first = false;
   }

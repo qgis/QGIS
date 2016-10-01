@@ -32,6 +32,7 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     virtual QgsSimpleFillSymbolLayerV2* clone() const /Factory/;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
@@ -661,6 +662,7 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
 
     virtual QgsSVGFillSymbolLayer* clone() const /Factory/;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     //getters and setters
@@ -720,6 +722,7 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
 
     virtual QgsLinePatternFillSymbolLayer* clone() const /Factory/;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     double estimateMaxBleed() const;
@@ -791,6 +794,7 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
 
     virtual QgsPointPatternFillSymbolLayer* clone() const /Factory/;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     double estimateMaxBleed() const;
@@ -879,6 +883,7 @@ class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     virtual QgsCentroidFillSymbolLayerV2* clone() const /Factory/;
 
+    //! Writes the SLD element following the SLD v1.1 specs
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
     void setColor( const QColor& color );
