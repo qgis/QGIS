@@ -200,6 +200,7 @@ QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
     , mRegionEdit( 0 )
 {
   QgsDebugMsg( "QgsGrassRegion()" );
+  QgsGrass::initRegion( &mWindow );
 
   setupUi( this );
   setAttribute( Qt::WA_DeleteOnClose );

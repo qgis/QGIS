@@ -313,7 +313,10 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     QgsAttributeEditorRelation( const QString& name, const QgsRelation& relation, QgsAttributeEditorElement* parent )
         : QgsAttributeEditorElement( AeTypeRelation, name, parent )
         , mRelationId( relation.id() )
-        , mRelation( relation ) {}
+        , mRelation( relation )
+        , mShowLinkButton( true )
+        , mShowUnlinkButton( true )
+    {}
 
     //! Destructor
     virtual ~QgsAttributeEditorRelation() {}

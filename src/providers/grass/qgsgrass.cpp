@@ -1686,13 +1686,13 @@ bool QgsGrass::writeRegion( const QString& gisbase,
                             const QString& location, const QString& mapset,
                             const struct Cell_head *window )
 {
-  QgsDebugMsg( QString( "n = %1 s = %2" ).arg( window->north ).arg( window->south ) );
-  QgsDebugMsg( QString( "e = %1 w = %2" ).arg( window->east ).arg( window->west ) );
-
   if ( !window )
   {
     return false;
   }
+
+  QgsDebugMsg( QString( "n = %1 s = %2" ).arg( window->north ).arg( window->south ) );
+  QgsDebugMsg( QString( "e = %1 w = %2" ).arg( window->east ).arg( window->west ) );
 
   QgsGrass::setMapset( gisbase, location, mapset );
 

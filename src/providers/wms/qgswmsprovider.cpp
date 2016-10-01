@@ -1218,6 +1218,7 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri )
     tm.tileWidth = tm.tileHeight = 256;
     tm.matrixWidth = tm.matrixHeight = 1 << zoom;
     tm.tres = xspan / ( tm.tileWidth * tm.matrixWidth );
+    tm.scaleDenom = 0.0;
 
     mCaps.mTileMatrixSets[tms.identifier].tileMatrices[tm.tres] = tm;
   }
@@ -3518,6 +3519,7 @@ QGISEXTERN bool isProvider()
 
 QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString& providerUri, const QUrl& url, const QgsWmsAuthorization& auth, QImage* image, QgsRasterBlockFeedback* feedback )
     : mProviderUri( providerUri )
+    , mCacheReply( nullptr )
     , mCachedImage( image )
     , mEventLoop( new QEventLoop )
     , mFeedback( feedback )

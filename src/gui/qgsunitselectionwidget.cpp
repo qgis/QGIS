@@ -125,6 +125,7 @@ QgsMapUnitScale QgsMapUnitScaleWidget::mapUnitScale() const
 
 QgsUnitSelectionWidget::QgsUnitSelectionWidget( QWidget *parent )
     : QWidget( parent )
+    , mCanvas( nullptr )
 {
   mMapUnitIdx = -1;
 

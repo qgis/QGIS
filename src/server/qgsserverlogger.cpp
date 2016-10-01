@@ -34,7 +34,9 @@ QgsServerLogger* QgsServerLogger::instance()
   return mInstance;
 }
 
-QgsServerLogger::QgsServerLogger(): mLogFile( nullptr )
+QgsServerLogger::QgsServerLogger()
+    : mLogFile( nullptr )
+    , mLogLevel( 3 )
 {
   //logfile
   QString filePath = getenv( "QGIS_SERVER_LOG_FILE" );
@@ -52,10 +54,6 @@ QgsServerLogger::QgsServerLogger(): mLogFile( nullptr )
   if ( logLevelChar )
   {
     mLogLevel = atoi( logLevelChar );
-  }
-  else
-  {
-    mLogLevel = 3;
   }
 
   connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ), this,
