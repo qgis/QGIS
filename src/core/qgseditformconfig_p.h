@@ -54,6 +54,11 @@ class QgsEditFormConfigPrivate : public QSharedData
         , mFields( o.mFields )
     {}
 
+    ~QgsEditFormConfigPrivate()
+    {
+      delete mInvisibleRootContainer;
+    }
+
     /** The invisible root container for attribute editors in the drag and drop designer */
     QgsAttributeEditorContainer* mInvisibleRootContainer;
 
