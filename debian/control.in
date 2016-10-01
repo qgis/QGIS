@@ -62,7 +62,7 @@ Build-Depends:
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
 #oracle# oracle-instantclient12.1-devel,
  spawn-fcgi, lighttpd, poppler-utils, locales, qt4-doc-html,
- libqt4-sql-sqlite, python-psycopg2
+ libqt4-sql-sqlite, python-psycopg2, ca-certificates
 Build-Conflicts: libqgis-dev, qgis-dev
 #sid stretch jessie vivid wily xenial#Standards-Version: 3.9.6
 #wheezy#Standards-Version: 3.9.3
