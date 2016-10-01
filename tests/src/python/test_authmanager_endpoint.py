@@ -144,7 +144,7 @@ class TestAuthManager(unittest.TestCase):
             'crs': 'EPSG:4326',
             'url': 'http://127.0.0.1:%s/?map=%s' % (cls.port, cls.project_path),
             'format': 'image/png',
-            # This is needed because of a really wierd implementation in QGIS Server, that
+            # This is needed because of a really weird implementation in QGIS Server, that
             # replaces _ in the the real layer name with spaces
             'layers': urllib.quote(layers.replace('_', ' ')),
             'styles': '',
