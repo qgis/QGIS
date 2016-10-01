@@ -107,7 +107,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
         factory = reg.factory("ValueMap")
         self.assertIsNotNone(factory)
 
-        # Tests with different value types occuring in the value map
+        # Tests with different value types occurring in the value map
         config = {'two': '2', 'twoandhalf': '2.5', 'NULL text': 'NULL',
                   'nothing': self.VALUEMAP_NULL_TEXT}
         self.assertEqual(factory.representValue(layer, 0, config, None, 2), 'two')

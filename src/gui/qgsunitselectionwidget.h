@@ -30,7 +30,7 @@ class QgsMapCanvas;
 /** \class QgsMapUnitScaleWidget
  * \ingroup gui
  * A widget which allows the user to choose the minimum and maximum scale of an object in map units
- * and millimetres. This widget is designed to allow users to edit the properties of a
+ * and millimeters. This widget is designed to allow users to edit the properties of a
  * QgsMapUnitScale object.
  * \note added in QGIS 3.0
  * \see QgsMapUnitScaleDialog
@@ -90,7 +90,7 @@ class GUI_EXPORT QgsMapUnitScaleWidget : public QgsPanelWidget, private Ui::QgsM
 /** \class QgsMapUnitScaleDialog
  * \ingroup gui
  * A dialog which allows the user to choose the minimum and maximum scale of an object in map units
- * and millimetres. This dialog is designed to allow users to edit the properties of a
+ * and millimeters. This dialog is designed to allow users to edit the properties of a
  * QgsMapUnitScale object.
  * \see QgsMapUnitScaleWidget
  * \see QgsUnitSelectionWidget
