@@ -1280,17 +1280,18 @@ void QgsOptions::saveOptions()
   if ( radPromptForProjection->isChecked() )
   {
     mSettings->setValue( "/Projections/defaultBehaviour", "prompt" );
+    mSettings->setValue( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID );
   }
   else if ( radUseProjectProjection->isChecked() )
   {
     mSettings->setValue( "/Projections/defaultBehaviour", "useProject" );
+    mSettings->setValue( "/Projections/layerDefaultCrs", mDefaultCrs.authid() );
   }
   else //assumes radUseGlobalProjection is checked
   {
     mSettings->setValue( "/Projections/defaultBehaviour", "useGlobal" );
+    mSettings->setValue( "/Projections/layerDefaultCrs", mLayerDefaultCrs.authid() );
   }
-
-  mSettings->setValue( "/Projections/layerDefaultCrs", mLayerDefaultCrs.authid() );
 
   // save 'on the fly' CRS transformation settings
   mSettings->setValue( "/Projections/otfTransformAutoEnable", radOtfAuto->isChecked() );
