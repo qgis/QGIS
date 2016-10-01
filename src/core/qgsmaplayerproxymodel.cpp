@@ -52,7 +52,7 @@ void QgsMapLayerProxyModel::setExceptedLayerIds( const QStringList& ids )
 {
   mExceptList.clear();
 
-  Q_FOREACH ( const QString& id, ids )
+for ( const QString& id : ids )
   {
     QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( id );
     if ( l )
@@ -65,7 +65,7 @@ QStringList QgsMapLayerProxyModel::exceptedLayerIds() const
 {
   QStringList lst;
 
-  Q_FOREACH ( QgsMapLayer* l, mExceptList )
+for ( QgsMapLayer* l : mExceptList )
     lst << l->id();
 
   return lst;

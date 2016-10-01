@@ -61,7 +61,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
   {
     QVector<QDomNode> sortedLayerNodes = depSorter.sortedLayerNodes();
     QVector<QDomNode> clonedSorted;
-    Q_FOREACH ( const QDomNode& node, sortedLayerNodes )
+  for ( const QDomNode& node : sortedLayerNodes )
     {
       clonedSorted << node.cloneNode();
     }
@@ -140,7 +140,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
   QList<QgsMapLayer*> layers = QgsMapLayer::fromLayerDefinition( doc, /*addToRegistry*/ true, loadInLegend );
 
   // Now that all layers are loaded, refresh the vectorjoins to get the joined fields
-  Q_FOREACH ( QgsMapLayer* layer, layers )
+for ( QgsMapLayer* layer : layers )
   {
     QgsVectorLayer* vlayer = dynamic_cast< QgsVectorLayer * >( layer );
     if ( vlayer )
@@ -151,7 +151,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
   }
 
   QList<QgsLayerTreeNode*> nodes = root->children();
-  Q_FOREACH ( QgsLayerTreeNode *node, nodes )
+for ( QgsLayerTreeNode *node : nodes )
     root->takeChild( node );
   delete root;
 
@@ -192,7 +192,7 @@ bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<Qg
   doc.appendChild( qgiselm );
   QList<QgsLayerTreeNode*> nodes = selectedTreeNodes;
   QgsLayerTreeGroup* root = new QgsLayerTreeGroup;
-  Q_FOREACH ( QgsLayerTreeNode* node, nodes )
+for ( QgsLayerTreeNode* node : nodes )
   {
     QgsLayerTreeNode* newnode = node->clone();
     root->addChildNode( newnode );
@@ -201,7 +201,7 @@ bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<Qg
 
   QDomElement layerselm = doc.createElement( "maplayers" );
   QList<QgsLayerTreeLayer*> layers = root->findLayers();
-  Q_FOREACH ( QgsLayerTreeLayer* layer, layers )
+for ( QgsLayerTreeLayer* layer : layers )
   {
     QDomElement layerelm = doc.createElement( "maplayer" );
     layer->layer()->writeLayerXml( layerelm, doc, relativeBasePath );
@@ -253,9 +253,9 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument& doc )
   }
 
   // check that all dependencies are present
-  Q_FOREACH ( const QVector< QString >& ids, dependencies )
+for ( const QVector< QString >& ids : dependencies )
   {
-    Q_FOREACH ( const QString& depId, ids )
+  for ( const QString& depId : ids )
     {
       if ( !dependencies.contains( depId ) )
       {
@@ -282,7 +282,7 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument& doc )
       QDomNode node = it->second;
       mHasCycle = true;
       bool resolved = true;
-      Q_FOREACH ( const QString& dep, dependencies[idToSort] )
+    for ( const QString& dep : dependencies[idToSort] )
       {
         if ( !sortedLayers.contains( dep ) )
         {

@@ -33,7 +33,7 @@ QgsRelationManager::QgsRelationManager( QgsProject* project )
 void QgsRelationManager::setRelations( const QList<QgsRelation>& relations )
 {
   mRelations.clear();
-  Q_FOREACH ( const QgsRelation& rel, relations )
+for ( const QgsRelation& rel : relations )
   {
     addRelation( rel );
   }
@@ -78,7 +78,7 @@ QList<QgsRelation> QgsRelationManager::relationsByName( const QString& name ) co
 {
   QList<QgsRelation> relations;
 
-  Q_FOREACH ( const QgsRelation& rel, mRelations )
+for ( const QgsRelation& rel : mRelations )
   {
     if ( QString::compare( rel.name(), name, Qt::CaseInsensitive ) == 0 )
       relations << rel;
@@ -102,14 +102,14 @@ QList<QgsRelation> QgsRelationManager::referencingRelations( const QgsVectorLaye
 
   QList<QgsRelation> relations;
 
-  Q_FOREACH ( const QgsRelation& rel, mRelations )
+for ( const QgsRelation& rel : mRelations )
   {
     if ( rel.referencingLayer() == layer )
     {
       if ( fieldIdx != -2 )
       {
         bool containsField = false;
-        Q_FOREACH ( const QgsRelation::FieldPair& fp, rel.fieldPairs() )
+      for ( const QgsRelation::FieldPair& fp : rel.fieldPairs() )
         {
           if ( fieldIdx == layer->fields().lookupField( fp.referencingField() ) )
           {
@@ -139,7 +139,7 @@ QList<QgsRelation> QgsRelationManager::referencedRelations( QgsVectorLayer* laye
 
   QList<QgsRelation> relations;
 
-  Q_FOREACH ( const QgsRelation& rel, mRelations )
+for ( const QgsRelation& rel : mRelations )
   {
     if ( rel.referencedLayer() == layer )
     {
@@ -187,7 +187,7 @@ void QgsRelationManager::writeProject( QDomDocument & doc )
   QDomElement relationsNode = doc.createElement( "relations" );
   qgisNode.appendChild( relationsNode );
 
-  Q_FOREACH ( const QgsRelation& relation, mRelations )
+for ( const QgsRelation& relation : mRelations )
   {
     relation.writeXml( relationsNode, doc );
   }
@@ -196,7 +196,7 @@ void QgsRelationManager::writeProject( QDomDocument & doc )
 void QgsRelationManager::layersRemoved( const QStringList& layers )
 {
   bool relationsChanged = false;
-  Q_FOREACH ( const QString& layer, layers )
+for ( const QString& layer : layers )
   {
     QMapIterator<QString, QgsRelation> it( mRelations );
 

@@ -176,7 +176,7 @@ void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest& featureRequ
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests
   if ( fids.count() < mCache.size() )
   {
-    Q_FOREACH ( QgsAbstractCacheIndex* idx, mCacheIndices )
+  for ( QgsAbstractCacheIndex* idx : mCacheIndices )
     {
       idx->requestCompleted( featureRequest, fids );
     }
@@ -185,7 +185,7 @@ void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest& featureRequ
 
 void QgsVectorLayerCache::featureRemoved( QgsFeatureId fid )
 {
-  Q_FOREACH ( QgsAbstractCacheIndex* idx, mCacheIndices )
+for ( QgsAbstractCacheIndex* idx : mCacheIndices )
   {
     idx->flushFeature( fid );
   }
@@ -235,7 +235,7 @@ void QgsVectorLayerCache::attributeDeleted( int field )
   QgsAttributeList attrs = mCachedAttributes;
   mCachedAttributes.clear();
 
-  Q_FOREACH ( int attr, attrs )
+for ( int attr : attrs )
   {
     if ( attr < field )
       mCachedAttributes << attr;
@@ -282,7 +282,7 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
     else
     {
       // Check if an index is able to deliver the requested features
-      Q_FOREACH ( QgsAbstractCacheIndex *idx, mCacheIndices )
+    for ( QgsAbstractCacheIndex *idx : mCacheIndices )
       {
         if ( idx->getCacheIterator( it, featureRequest ) )
         {
@@ -338,7 +338,7 @@ bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest& feat
   }
 
   // Check if we even cache the information requested
-  Q_FOREACH ( int attr, requestedAttributes )
+for ( int attr : requestedAttributes )
   {
     if ( !mCachedAttributes.contains( attr ) )
     {

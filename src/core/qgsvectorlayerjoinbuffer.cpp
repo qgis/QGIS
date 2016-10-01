@@ -36,7 +36,7 @@ QgsVectorLayerJoinBuffer::~QgsVectorLayerJoinBuffer()
 static QList<QgsVectorLayer*> _outEdges( QgsVectorLayer* vl )
 {
   QList<QgsVectorLayer*> lst;
-  Q_FOREACH ( const QgsVectorJoinInfo& info, vl->vectorJoins() )
+for ( const QgsVectorJoinInfo& info : vl->vectorJoins() )
   {
     if ( QgsVectorLayer* joinVl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( info.joinLayerId ) ) )
       lst << joinVl;
@@ -51,7 +51,7 @@ static bool _hasCycleDFS( QgsVectorLayer* n, QHash<QgsVectorLayer*, int>& mark )
   if ( mark.value( n ) == 0 ) // not visited
   {
     mark[n] = 1; // temporary
-    Q_FOREACH ( QgsVectorLayer* m, _outEdges( n ) )
+  for ( QgsVectorLayer* m : _outEdges( n ) )
     {
       if ( _hasCycleDFS( m, mark ) )
         return true;
@@ -305,7 +305,7 @@ void QgsVectorLayerJoinBuffer::writeXml( QDomNode& layer_node, QDomDocument& doc
     if ( joinIt->joinFieldNamesSubset() )
     {
       QDomElement subsetElem = document.createElement( "joinFieldsSubset" );
-      Q_FOREACH ( const QString& fieldName, *joinIt->joinFieldNamesSubset() )
+    for ( const QString& fieldName : *joinIt->joinFieldNamesSubset() )
       {
         QDomElement fieldElem = document.createElement( "field" );
         fieldElem.setAttribute( "name", fieldName );

@@ -60,7 +60,7 @@ QgsTransaction* QgsTransaction::create( const QStringList& layerIds )
   if ( !ts )
     return nullptr;
 
-  Q_FOREACH ( const QString& layerId, layerIds )
+for ( const QString& layerId : layerIds )
   {
     if ( !ts->addLayer( layerId ) )
     {
@@ -176,15 +176,15 @@ bool QgsTransaction::supportsTransaction( const QgsVectorLayer* layer )
 
 void QgsTransaction::onLayersDeleted( const QStringList& layerids )
 {
-  Q_FOREACH ( const QString& layerid, layerids )
-    Q_FOREACH ( QgsVectorLayer* l, mLayers )
+for ( const QString& layerid : layerids )
+  for ( QgsVectorLayer* l : mLayers )
       if ( l->id() == layerid )
         mLayers.remove( l );
 }
 
 void QgsTransaction::setLayerTransactionIds( QgsTransaction* transaction )
 {
-  Q_FOREACH ( QgsVectorLayer* vl, mLayers )
+for ( QgsVectorLayer* vl : mLayers )
   {
     if ( vl->dataProvider() )
     {

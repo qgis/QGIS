@@ -59,7 +59,7 @@ void QgsEditFormConfig::onRelationsLoaded()
 {
   QList<QgsAttributeEditorElement*> relations = d->mInvisibleRootContainer->findElements( QgsAttributeEditorElement::AeTypeRelation );
 
-  Q_FOREACH ( QgsAttributeEditorElement* relElem, relations )
+for ( QgsAttributeEditorElement* relElem : relations )
   {
     QgsAttributeEditorRelation* rel = dynamic_cast< QgsAttributeEditorRelation* >( relElem );
     if ( !rel )
@@ -633,7 +633,7 @@ QgsAttributeEditorElement* QgsAttributeEditorContainer::clone( QgsAttributeEdito
 {
   QgsAttributeEditorContainer* element = new QgsAttributeEditorContainer( name(), parent );
 
-  Q_FOREACH ( QgsAttributeEditorElement* child, children() )
+for ( QgsAttributeEditorElement* child : children() )
   {
     element->addChildElement( child->clone( element ) );
   }
@@ -651,7 +651,7 @@ void QgsAttributeEditorContainer::saveConfiguration( QDomElement& elem ) const
   elem.setAttribute( "visibilityExpressionEnabled", mVisibilityExpression.enabled() ? 1 : 0 );
   elem.setAttribute( "visibilityExpression", mVisibilityExpression->expression() );
 
-  Q_FOREACH ( QgsAttributeEditorElement* child, mChildren )
+for ( QgsAttributeEditorElement* child : mChildren )
   {
     QDomDocument doc = elem.ownerDocument();
     elem.appendChild( child->toDomElement( doc ) );

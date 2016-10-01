@@ -66,7 +66,7 @@ QSet<QgsVectorLayer*> QgsTransactionGroup::layers() const
 
 bool QgsTransactionGroup::modified() const
 {
-  Q_FOREACH ( QgsVectorLayer* layer, mLayers )
+for ( QgsVectorLayer* layer : mLayers )
   {
     if ( layer->isModified() )
       return true;
@@ -84,7 +84,7 @@ void QgsTransactionGroup::onEditingStarted()
   QString errorMsg;
   mTransaction->begin( errorMsg );
 
-  Q_FOREACH ( QgsVectorLayer* layer, mLayers )
+for ( QgsVectorLayer* layer : mLayers )
   {
     mTransaction->addLayer( layer );
     layer->startEditing();
@@ -110,7 +110,7 @@ void QgsTransactionGroup::onCommitChanges()
   QString errMsg;
   if ( mTransaction->commit( errMsg ) )
   {
-    Q_FOREACH ( QgsVectorLayer* layer, mLayers )
+  for ( QgsVectorLayer* layer : mLayers )
     {
       if ( layer != sender() )
         layer->commitChanges();
@@ -139,7 +139,7 @@ void QgsTransactionGroup::onRollback()
   QString errMsg;
   if ( mTransaction->rollback( errMsg ) )
   {
-    Q_FOREACH ( QgsVectorLayer* layer, mLayers )
+  for ( QgsVectorLayer* layer : mLayers )
     {
       if ( layer != triggeringLayer )
         layer->rollBack();
@@ -158,7 +158,7 @@ void QgsTransactionGroup::disableTransaction()
 {
   mTransaction.reset();
 
-  Q_FOREACH ( QgsVectorLayer* layer, mLayers )
+for ( QgsVectorLayer* layer : mLayers )
   {
     disconnect( layer, SIGNAL( beforeCommitChanges() ), this, SLOT( onCommitChanges() ) );
     disconnect( layer, SIGNAL( beforeRollBack() ), this, SLOT( onRollback() ) );

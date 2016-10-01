@@ -140,9 +140,9 @@ int QgsAbstractGeometry::nCoordinates() const
 {
   int nCoords = 0;
 
-  Q_FOREACH ( const QgsRingSequence &r, coordinateSequence() )
+for ( const QgsRingSequence& r : coordinateSequence() )
   {
-    Q_FOREACH ( const QgsPointSequence &p, r )
+  for ( const QgsPointSequence& p : r )
     {
       nCoords += p.size();
     }

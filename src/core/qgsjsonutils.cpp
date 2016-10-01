@@ -156,7 +156,7 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
     if ( vl && mIncludeRelatedAttributes )
     {
       QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( vl );
-      Q_FOREACH ( const QgsRelation& relation, relations )
+    for ( const QgsRelation& relation : relations )
       {
         if ( attributeCounter > 0 )
           properties += ",\n";
@@ -208,7 +208,7 @@ QString QgsJSONExporter::exportFeature( const QgsFeature& feature, const QVarian
 QString QgsJSONExporter::exportFeatures( const QgsFeatureList& features ) const
 {
   QStringList featureJSON;
-  Q_FOREACH ( const QgsFeature& feature, features )
+for ( const QgsFeature& feature : features )
   {
     featureJSON << exportFeature( feature );
   }
@@ -299,7 +299,7 @@ QVariantList QgsJSONUtils::parseArray( const QString& json, QVariant::Type type 
     QgsLogger::warning( QString( "Cannot parse json (%1) as array: %2" ).arg( error.errorString() ).arg( json ) );
     return result;
   }
-  Q_FOREACH ( const QJsonValue cur, jsonDoc.array() )
+for ( const QJsonValue cur : jsonDoc.array() )
   {
     QVariant curVariant = cur.toVariant();
     if ( curVariant.convert( type ) )

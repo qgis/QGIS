@@ -744,7 +744,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
     // also with parameters containing spaces (e.g. +nadgrids)
     // make sure result is trimmed (#5598)
     QStringList myParams;
-    Q_FOREACH ( const QString& param, myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
+    for ( const QString& param, myProj4String.split( QRegExp( "\\s+(?=\\+)" ) : QString::SkipEmptyParts ) )
     {
       QString arg = QString( "' '||parameters||' ' LIKE %1" ).arg( quotedValue( QString( "% %1 %" ).arg( param.trimmed() ) ) );
       if ( param.startsWith( "+datum=" ) )
@@ -774,7 +774,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &theProj4Strin
     {
       // Bugfix 8487 : test param lists are equal, except for +datum
       QStringList foundParams;
-      Q_FOREACH ( const QString& param, myRecord["parameters"].split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
+      for ( const QString& param, myRecord["parameters"].split( QRegExp( "\\s+(?=\\+)" ) : QString::SkipEmptyParts ) )
       {
         if ( !param.startsWith( "+datum=" ) )
           foundParams << param.trimmed();
@@ -1767,7 +1767,7 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 {
   OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
 
-  Q_FOREACH ( const QString& csv, QStringList() << "gcs.csv" << "pcs.csv" << "vertcs.csv" << "compdcs.csv" << "geoccs.csv" )
+for ( const QString& csv : QStringList() << "gcs.csv" << "pcs.csv" << "vertcs.csv" << "compdcs.csv" << "geoccs.csv" )
   {
     QString filename = CPLFindFile( "gdal", csv.toUtf8() );
 

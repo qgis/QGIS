@@ -60,7 +60,7 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
 {
   QStringList providersList = QgsProviderRegistry::instance()->providerList();
 
-  Q_FOREACH ( const QString& key, providersList )
+for ( const QString& key : providersList )
   {
     QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
     if ( !library )

@@ -43,7 +43,7 @@ QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( Qgs
 {
   QList<QgsAttributeEditorElement*> results;
 
-  Q_FOREACH ( QgsAttributeEditorElement* elem, mChildren )
+for ( QgsAttributeEditorElement* elem : mChildren )
   {
     if ( elem->type() == type )
     {

@@ -121,14 +121,14 @@ QgsRectangle QgsLineString::calculateBoundingBox() const
   double xmax = -std::numeric_limits<double>::max();
   double ymax = -std::numeric_limits<double>::max();
 
-  Q_FOREACH ( double x, mX )
+for ( double x : mX )
   {
     if ( x < xmin )
       xmin = x;
     if ( x > xmax )
       xmax = x;
   }
-  Q_FOREACH ( double y, mY )
+for ( double y : mY )
   {
     if ( y < ymin )
       ymin = y;

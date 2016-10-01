@@ -53,7 +53,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
       // iterate proxies factories and take first non empty list
-      Q_FOREACH ( QNetworkProxyFactory *f, nam->proxyFactories() )
+    for ( QNetworkProxyFactory *f : nam->proxyFactories() )
       {
         QList<QNetworkProxy> systemproxies = f->systemProxyForQuery( query );
         if ( !systemproxies.isEmpty() )
@@ -70,7 +70,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
 
       QString url = query.url().toString();
 
-      Q_FOREACH ( const QString& exclude, nam->excludeList() )
+    for ( const QString& exclude : nam->excludeList() )
       {
         if ( url.startsWith( exclude ) )
         {

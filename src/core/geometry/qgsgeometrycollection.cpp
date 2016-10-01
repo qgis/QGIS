@@ -149,7 +149,7 @@ int QgsGeometryCollection::dimension() const
 
 void QgsGeometryCollection::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
-  Q_FOREACH ( QgsAbstractGeometry* g, mGeometries )
+for ( QgsAbstractGeometry* g : mGeometries )
   {
     g->transform( ct, d, transformZ );
   }
@@ -158,7 +158,7 @@ void QgsGeometryCollection::transform( const QgsCoordinateTransform& ct, QgsCoor
 
 void QgsGeometryCollection::transform( const QTransform& t )
 {
-  Q_FOREACH ( QgsAbstractGeometry* g, mGeometries )
+for ( QgsAbstractGeometry* g : mGeometries )
   {
     g->transform( t );
   }
@@ -233,7 +233,7 @@ bool QgsGeometryCollection::fromWkt( const QString& wkt )
 int QgsGeometryCollection::wkbSize() const
 {
   int size = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+for ( const QgsAbstractGeometry* geom : mGeometries )
   {
     if ( geom )
     {
@@ -251,7 +251,7 @@ unsigned char* QgsGeometryCollection::asWkb( int& binarySize ) const
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   wkb << static_cast<quint32>( mGeometries.size() );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+for ( const QgsAbstractGeometry* geom : mGeometries )
   {
     int geomWkbLen = 0;
     if ( geom )
@@ -268,7 +268,7 @@ unsigned char* QgsGeometryCollection::asWkb( int& binarySize ) const
 QString QgsGeometryCollection::asWkt( int precision ) const
 {
   QString wkt = wktTypeStr() + " (";
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+for ( const QgsAbstractGeometry* geom : mGeometries )
   {
     QString childWkt = geom->asWkt( precision );
     if ( wktOmitChildType() )
@@ -288,7 +288,7 @@ QString QgsGeometryCollection::asWkt( int precision ) const
 QDomElement QgsGeometryCollection::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiGeometry = doc.createElementNS( ns, "MultiGeometry" );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+for ( const QgsAbstractGeometry* geom : mGeometries )
   {
     QDomElement elemGeometryMember = doc.createElementNS( ns, "geometryMember" );
     elemGeometryMember.appendChild( geom->asGML2( doc, precision, ns ) );
@@ -300,7 +300,7 @@ QDomElement QgsGeometryCollection::asGML2( QDomDocument& doc, int precision, con
 QDomElement QgsGeometryCollection::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
   QDomElement elemMultiGeometry = doc.createElementNS( ns, "MultiGeometry" );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+for ( const QgsAbstractGeometry* geom : mGeometries )
   {
     QDomElement elemGeometryMember = doc.createElementNS( ns, "geometryMember" );
     elemGeometryMember.appendChild( geom->asGML3( doc, precision, ns ) );
@@ -312,7 +312,7 @@ QDomElement QgsGeometryCollection::asGML3( QDomDocument& doc, int precision, con
 QString QgsGeometryCollection::asJSON( int precision ) const
 {
   QString json = "{\"type\": \"GeometryCollection\", \"geometries\": [";
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+for ( const QgsAbstractGeometry* geom : mGeometries )
   {
     json += geom->asJSON( precision ) + ", ";
   }
@@ -505,12 +505,12 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QList<Q
 
   QString defChildWkbType = QString( "%1%2%3 " ).arg( defaultChildWkbType, is3D() ? "Z" : "", isMeasure() ? "M" : "" );
 
-  Q_FOREACH ( const QString& childWkt, QgsGeometryUtils::wktGetChildBlocks( parts.second, defChildWkbType ) )
+for ( const QString& childWkt : QgsGeometryUtils::wktGetChildBlocks( parts.second, defChildWkbType ) )
   {
     QPair<QgsWkbTypes::Type, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
 
     bool success = false;
-    Q_FOREACH ( const QgsAbstractGeometry* geom, subtypes )
+  for ( const QgsAbstractGeometry* geom : subtypes )
     {
       if ( QgsWkbTypes::flatType( childParts.first ) == QgsWkbTypes::flatType( geom->wkbType() ) )
       {
@@ -535,7 +535,7 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QList<Q
   //if so, update the type dimensionality of the collection to match
   bool hasZ = false;
   bool hasM = false;
-  Q_FOREACH ( QgsAbstractGeometry* geom, mGeometries )
+for ( QgsAbstractGeometry* geom : mGeometries )
   {
     hasZ = hasZ || geom->is3D();
     hasM = hasM || geom->isMeasure();
@@ -604,7 +604,7 @@ bool QgsGeometryCollection::addZValue( double zValue )
 
   mWkbType = QgsWkbTypes::addZ( mWkbType );
 
-  Q_FOREACH ( QgsAbstractGeometry* geom, mGeometries )
+for ( QgsAbstractGeometry* geom : mGeometries )
   {
     geom->addZValue( zValue );
   }
@@ -619,7 +619,7 @@ bool QgsGeometryCollection::addMValue( double mValue )
 
   mWkbType = QgsWkbTypes::addM( mWkbType );
 
-  Q_FOREACH ( QgsAbstractGeometry* geom, mGeometries )
+for ( QgsAbstractGeometry* geom : mGeometries )
   {
     geom->addMValue( mValue );
   }
@@ -634,7 +634,7 @@ bool QgsGeometryCollection::dropZValue()
     return false;
 
   mWkbType = QgsWkbTypes::dropZ( mWkbType );
-  Q_FOREACH ( QgsAbstractGeometry* geom, mGeometries )
+for ( QgsAbstractGeometry* geom : mGeometries )
   {
     geom->dropZValue();
   }
@@ -648,7 +648,7 @@ bool QgsGeometryCollection::dropMValue()
     return false;
 
   mWkbType = QgsWkbTypes::dropM( mWkbType );
-  Q_FOREACH ( QgsAbstractGeometry* geom, mGeometries )
+for ( QgsAbstractGeometry* geom : mGeometries )
   {
     geom->dropMValue();
   }

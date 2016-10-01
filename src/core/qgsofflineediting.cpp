@@ -104,7 +104,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
       QMap<QString, QgsVectorJoinList > joinInfoBuffer;
       QMap<QString, QgsVectorLayer*> layerIdMapping;
 
-      Q_FOREACH ( const QString& layerId, layerIds )
+    for ( const QString& layerId : layerIds )
       {
         QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
@@ -161,7 +161,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
 
         if ( newLayer )
         {
-          Q_FOREACH ( QgsVectorJoinInfo join, it.value() )
+        for ( QgsVectorJoinInfo join : it.value() )
           {
             QgsVectorLayer* newJoinedLayer = layerIdMapping.value( join.joinLayerId );
             if ( newJoinedLayer )
@@ -495,7 +495,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
   // create table
   QString sql = QString( "CREATE TABLE '%1' (" ).arg( tableName );
   QString delim = "";
-  Q_FOREACH ( const QgsField& field, layer->dataProvider()->fields() )
+for ( const QgsField& field : layer->dataProvider()->fields() )
   {
     QString dataType = "";
     QVariant::Type type = field.type();

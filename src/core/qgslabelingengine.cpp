@@ -151,7 +151,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider* provider, Qgs
 
   QList<QgsLabelFeature*> features = provider->labelFeatures( context );
 
-  Q_FOREACH ( QgsLabelFeature* feature, features )
+for ( QgsLabelFeature* feature : features )
   {
     try
     {
@@ -166,7 +166,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider* provider, Qgs
   }
 
   // any sub-providers?
-  Q_FOREACH ( QgsAbstractLabelProvider* subProvider, provider->subProviders() )
+for ( QgsAbstractLabelProvider* subProvider : provider->subProviders() )
   {
     mSubProviders << subProvider;
     processProvider( subProvider, context, p );
@@ -209,7 +209,7 @@ void QgsLabelingEngine::run( QgsRenderContext& context )
 
 
   // for each provider: get labels and register them in PAL
-  Q_FOREACH ( QgsAbstractLabelProvider* provider, mProviders )
+for ( QgsAbstractLabelProvider* provider : mProviders )
   {
     processProvider( provider, context, p );
   }
@@ -401,7 +401,7 @@ QgsAbstractLabelProvider::QgsAbstractLabelProvider( const QString& layerId, cons
 QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<QgsPalLayerSettings::PredefinedPointPosition>& positions )
 {
   QStringList predefinedOrderString;
-  Q_FOREACH ( QgsPalLayerSettings::PredefinedPointPosition position, positions )
+for ( QgsPalLayerSettings::PredefinedPointPosition position : positions )
   {
     switch ( position )
     {
@@ -450,7 +450,7 @@ QVector<QgsPalLayerSettings::PredefinedPointPosition> QgsLabelingUtils::decodePr
 {
   QVector<QgsPalLayerSettings::PredefinedPointPosition> result;
   QStringList predefinedOrderList = positionString.split( ',' );
-  Q_FOREACH ( const QString& position, predefinedOrderList )
+for ( const QString& position : predefinedOrderList )
   {
     QString cleaned = position.trimmed().toUpper();
     if ( cleaned == "TL" )

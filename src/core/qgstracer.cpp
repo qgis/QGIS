@@ -129,7 +129,7 @@ QgsTracerGraph* makeGraph( const QVector<QgsPolyline>& edges )
   g->joinedVertices = 0;
   QHash<QgsPoint, int> point2vertex;
 
-  Q_FOREACH ( const QgsPolyline& line, edges )
+for ( const QgsPolyline& line : edges )
   {
     QgsPoint p1( line[0] );
     QgsPoint p2( line[line.count() - 1] );
@@ -383,7 +383,7 @@ void resetGraph( QgsTracerGraph& g )
   g.joinedVertices = 0;
 
   // fix vertices of deactivated edges
-  Q_FOREACH ( int eIdx, g.inactiveEdges )
+for ( int eIdx : g.inactiveEdges )
   {
     if ( eIdx >= g.e.count() )
       continue;
@@ -430,18 +430,18 @@ void extractLinework( const QgsGeometry& g, QgsMultiPolyline& mpl )
       break;
 
     case QgsWkbTypes::Polygon:
-      Q_FOREACH ( const QgsPolyline& ring, geom.asPolygon() )
+    for ( const QgsPolyline& ring : geom.asPolygon() )
         mpl << ring;
       break;
 
     case QgsWkbTypes::MultiLineString:
-      Q_FOREACH ( const QgsPolyline& linestring, geom.asMultiPolyline() )
+    for ( const QgsPolyline& linestring : geom.asMultiPolyline() )
         mpl << linestring;
       break;
 
     case QgsWkbTypes::MultiPolygon:
-      Q_FOREACH ( const QgsPolygon& polygon, geom.asMultiPolygon() )
-        Q_FOREACH ( const QgsPolyline& ring, polygon )
+    for ( const QgsPolygon& polygon : geom.asMultiPolygon() )
+      for ( const QgsPolyline& ring : polygon )
           mpl << ring;
       break;
 
@@ -480,7 +480,7 @@ bool QgsTracer::initGraph()
 
   t1.start();
   int featuresCounted = 0;
-  Q_FOREACH ( QgsVectorLayer* vl, mLayers )
+for ( QgsVectorLayer* vl : mLayers )
   {
     QgsCoordinateTransform ct( vl->crs(), mCRS );
 
@@ -581,7 +581,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer*>& layers )
   if ( mLayers == layers )
     return;
 
-  Q_FOREACH ( QgsVectorLayer* layer, mLayers )
+for ( QgsVectorLayer* layer : mLayers )
   {
     disconnect( layer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
     disconnect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
@@ -591,7 +591,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer*>& layers )
 
   mLayers = layers;
 
-  Q_FOREACH ( QgsVectorLayer* layer, mLayers )
+for ( QgsVectorLayer* layer : mLayers )
   {
     connect( layer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
     connect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );

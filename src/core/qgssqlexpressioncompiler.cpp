@@ -300,7 +300,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       QStringList list;
 
       Result inResult = Complete;
-      Q_FOREACH ( const QgsExpression::Node* ln, n->list()->list() )
+    for ( const QgsExpression::Node* ln : n->list()->list() )
       {
         QString s;
         Result r = compileNode( ln, s );

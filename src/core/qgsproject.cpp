@@ -636,7 +636,7 @@ bool QgsProject::_getMapLayers( const QDomDocument& doc, QList<QDomNode>& broken
   // They need to refresh join caches and symbology infos after all layers are loaded
   QList< QPair< QgsVectorLayer*, QDomElement > > vLayerList;
   int i = 0;
-  Q_FOREACH ( const QDomNode& node, sortedLayerNodes )
+for ( const QDomNode& node : sortedLayerNodes )
   {
     QDomElement element = node.toElement();
 
@@ -911,7 +911,7 @@ bool QgsProject::read()
 
 void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
 {
-  Q_FOREACH ( QgsLayerTreeNode *child, group->children() )
+for ( QgsLayerTreeNode *child : group->children() )
   {
     if ( QgsLayerTree::isGroup( child ) )
     {
@@ -926,7 +926,7 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
         if ( newGroup )
         {
           QList<QgsLayerTreeNode*> clonedChildren;
-          Q_FOREACH ( QgsLayerTreeNode *newGroupChild, newGroup->children() )
+        for ( QgsLayerTreeNode *newGroupChild : newGroup->children() )
             clonedChildren << newGroupChild->clone();
           delete newGroup;
 
@@ -965,7 +965,7 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
 {
   QMap<QString, QgsMapLayer*> existingMaps = QgsMapLayerRegistry::instance()->mapLayers();
 
-  Q_FOREACH ( QgsMapLayer* layer, layers )
+for ( QgsMapLayer* layer : layers )
   {
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
     if ( vlayer )
@@ -1032,7 +1032,7 @@ bool QgsProject::read( QDomNode &layerNode )
     // have to try to update joins for all layers now - a previously added layer may be dependent on this newly
     // added layer for joins
     QVector<QgsVectorLayer*> vectorLayers = QgsMapLayerRegistry::instance()->layers<QgsVectorLayer*>();
-    Q_FOREACH ( QgsVectorLayer* layer, vectorLayers )
+  for ( QgsVectorLayer* layer : vectorLayers )
     {
       processLayerJoins( layer );
     }
@@ -1897,7 +1897,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   QStringList thisProjectIdentifyDisabledLayers = nonIdentifiableLayers();
 
   // consider the layers might be identify disabled in its project
-  Q_FOREACH ( const QString& layerId, newGroup->findLayerIds() )
+for ( const QString& layerId : newGroup->findLayerIds() )
   {
     if ( embeddedIdentifyDisabledLayers.contains( layerId ) )
     {
@@ -1918,7 +1918,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
 
 void QgsProject::initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group )
 {
-  Q_FOREACH ( QgsLayerTreeNode *child, group->children() )
+for ( QgsLayerTreeNode *child : group->children() )
   {
     // all nodes in the subtree will have "embedded" custom property set
     child->setCustomProperty( "embedded", 1 );
@@ -2072,7 +2072,7 @@ bool QgsProject::evaluateDefaultValues() const
 
 void QgsProject::setEvaluateDefaultValues( bool evaluateDefaultValues )
 {
-  Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+for ( QgsMapLayer* layer : QgsMapLayerRegistry::instance()->mapLayers().values() )
   {
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
     if ( vl )
@@ -2155,7 +2155,7 @@ void QgsProject::setNonIdentifiableLayers( QList<QgsMapLayer*> layers )
   QStringList currentLayers = nonIdentifiableLayers();
 
   QStringList newLayers;
-  Q_FOREACH ( QgsMapLayer* l, layers )
+for ( QgsMapLayer* l : layers )
   {
     newLayers << l->id();
   }
@@ -2165,7 +2165,7 @@ void QgsProject::setNonIdentifiableLayers( QList<QgsMapLayer*> layers )
 
   QStringList disabledLayerIds;
 
-  Q_FOREACH ( QgsMapLayer* l, layers )
+for ( QgsMapLayer* l : layers )
   {
     disabledLayerIds << l->id();
   }

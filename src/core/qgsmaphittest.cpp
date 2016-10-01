@@ -56,7 +56,7 @@ void QgsMapHitTest::run()
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mSettings );
   context.setPainter( &painter ); // we are not going to draw anything, but we still need a working painter
 
-  Q_FOREACH ( const QString& layerID, mSettings.layers() )
+for ( const QString& layerID : mSettings.layers() )
   {
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) );
     if ( !vl || !vl->renderer() )
@@ -172,14 +172,14 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolSet& usedSymbols,
 
     //make sure we store string representation of symbol, not pointer
     //otherwise layer style override changes will delete original symbols and leave hanging pointers
-    Q_FOREACH ( const QString& legendKey, r->legendKeysForFeature( f, context ) )
+  for ( const QString& legendKey, r->legendKeysForFeature( f : context ) )
     {
       lUsedSymbolsRuleKey.insert( legendKey );
     }
 
     if ( moreSymbolsPerFeature )
     {
-      Q_FOREACH ( QgsSymbol* s, r->originalSymbolsForFeature( f, context ) )
+    for ( QgsSymbol* s, r->originalSymbolsForFeature( f : context ) )
       {
         if ( s )
           lUsedSymbols.insert( QgsSymbolLayerUtils::symbolProperties( s ) );

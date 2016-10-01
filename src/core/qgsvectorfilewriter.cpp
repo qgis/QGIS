@@ -232,7 +232,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     {
       QStringList allExts = metadata.ext.split( ' ', QString::SkipEmptyParts );
       bool found = false;
-      Q_FOREACH ( const QString& ext, allExts )
+    for ( const QString& ext : allExts )
       {
         if ( vectorFileName.endsWith( '.' + ext, Qt::CaseInsensitive ) )
         {
@@ -2197,7 +2197,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     attributes.clear();
   else if ( attributes.isEmpty() )
   {
-    Q_FOREACH ( int idx, layer->attributeList() )
+  for ( int idx : layer->attributeList() )
     {
       QgsField fld = layer->fields().at( idx );
       if ( layer->providerType() == "oracle" && fld.typeName().contains( "SDO_GEOMETRY" ) )
@@ -2209,7 +2209,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   QgsFields fields;
   if ( !attributes.isEmpty() )
   {
-    Q_FOREACH ( int attrIdx, attributes )
+  for ( int attrIdx : attributes )
     {
       fields.append( layer->fields().at( attrIdx ) );
     }
@@ -2444,7 +2444,7 @@ bool QgsVectorFileWriter::deleteShapeFile( const QString& theFileName )
   }
 
   bool ok = true;
-  Q_FOREACH ( const QString& file, dir.entryList( filter ) )
+for ( const QString& file : dir.entryList( filter ) )
   {
     QFile f( dir.canonicalPath() + '/' + file );
     if ( !f.remove() )
@@ -2544,7 +2544,7 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
     }
   }
 
-  Q_FOREACH ( const QString& drvName, writableDrivers )
+for ( const QString& drvName : writableDrivers )
   {
     MetaData metadata;
     if ( driverMetadata( drvName, metadata ) && !metadata.trLongName.isEmpty() )

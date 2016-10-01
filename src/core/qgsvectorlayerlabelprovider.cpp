@@ -175,7 +175,7 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QStr
       {
         QgsDebugMsgLevel( "Prepare error:" + exp->evalErrorString(), 4 );
       }
-      Q_FOREACH ( const QString& name, exp->referencedColumns() )
+    for ( const QString& name : exp->referencedColumns() )
       {
         QgsDebugMsgLevel( "REFERENCED COLUMN = " + name, 4 );
         attributeNames.append( name );
@@ -201,7 +201,7 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext& context, QStr
       QStringList cols = dd->referencedColumns( context.expressionContext() );
 
       //QgsDebugMsgLevel( QString( "Data defined referenced columns:" ) + cols.join( "," ), 4 );
-      Q_FOREACH ( const QString& name, cols )
+    for ( const QString& name : cols )
       {
         attributeNames.append( name );
       }
@@ -341,7 +341,7 @@ QgsGeometry* QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature& 
     context.mapToPixel().transformInPlace( x, y );
 
     QPointF pt( x, y );
-    Q_FOREACH ( QgsSymbol* symbol, symbols )
+  for ( QgsSymbol* symbol : symbols )
     {
       if ( symbol->type() == QgsSymbol::Marker )
       {

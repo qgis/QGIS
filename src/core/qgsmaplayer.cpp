@@ -788,7 +788,7 @@ QDomDocument QgsMapLayer::asLayerDefinition( const QList<QgsMapLayer *>& layers,
   QDomElement qgiselm = doc.createElement( "qlr" );
   doc.appendChild( qgiselm );
   QDomElement layerselm = doc.createElement( "maplayers" );
-  Q_FOREACH ( QgsMapLayer* layer, layers )
+for ( QgsMapLayer* layer : layers )
   {
     QDomElement layerelm = doc.createElement( "maplayer" );
     layer->writeLayerXml( layerelm, doc, relativeBasePath );
@@ -1689,7 +1689,7 @@ static QList<const QgsMapLayer*> _depOutEdges( const QgsMapLayer* vl, const QgsM
   QList<const QgsMapLayer*> lst;
   if ( vl == that )
   {
-    Q_FOREACH ( const QgsMapLayerDependency& dep, layers )
+  for ( const QgsMapLayerDependency& dep : layers )
     {
       if ( const QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( dep.layerId() ) )
         lst << l;
@@ -1697,7 +1697,7 @@ static QList<const QgsMapLayer*> _depOutEdges( const QgsMapLayer* vl, const QgsM
   }
   else
   {
-    Q_FOREACH ( const QgsMapLayerDependency& dep, vl->dependencies() )
+  for ( const QgsMapLayerDependency& dep : vl->dependencies() )
     {
       if ( const QgsMapLayer* l = QgsMapLayerRegistry::instance()->mapLayer( dep.layerId() ) )
         lst << l;
@@ -1713,7 +1713,7 @@ static bool _depHasCycleDFS( const QgsMapLayer* n, QHash<const QgsMapLayer*, int
   if ( mark.value( n ) == 0 ) // not visited
   {
     mark[n] = 1; // temporary
-    Q_FOREACH ( const QgsMapLayer* m, _depOutEdges( n, that, layers ) )
+  for ( const QgsMapLayer* m, _depOutEdges( n, that : layers ) )
     {
       if ( _depHasCycleDFS( m, mark, that, layers ) )
         return true;
@@ -1737,7 +1737,7 @@ QSet<QgsMapLayerDependency> QgsMapLayer::dependencies() const
 bool QgsMapLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
 {
   QSet<QgsMapLayerDependency> deps;
-  Q_FOREACH ( const QgsMapLayerDependency& dep, oDeps )
+for ( const QgsMapLayerDependency& dep : oDeps )
   {
     if ( dep.origin() == QgsMapLayerDependency::FromUser )
       deps << dep;

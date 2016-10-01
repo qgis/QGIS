@@ -160,22 +160,22 @@ const QgsSQLStatement::Node* QgsSQLStatement::rootNode() const
 
 void QgsSQLStatement::RecursiveVisitor::visit( const QgsSQLStatement::NodeSelect& n )
 {
-  Q_FOREACH ( QgsSQLStatement::NodeTableDef* table, n.tables() )
+for ( QgsSQLStatement::NodeTableDef* table : n.tables() )
   {
     table->accept( *this );
   }
-  Q_FOREACH ( QgsSQLStatement::NodeSelectedColumn* column, n.columns() )
+for ( QgsSQLStatement::NodeSelectedColumn* column : n.columns() )
   {
     column->accept( *this );
   }
-  Q_FOREACH ( QgsSQLStatement::NodeJoin* join, n.joins() )
+for ( QgsSQLStatement::NodeJoin* join : n.joins() )
   {
     join->accept( *this );
   }
   QgsSQLStatement::Node* where = n.where();
   if ( where )
     where->accept( *this );
-  Q_FOREACH ( QgsSQLStatement::NodeColumnSorted* column, n.orderBy() )
+for ( QgsSQLStatement::NodeColumnSorted* column : n.orderBy() )
   {
     column->accept( *this );
   }
@@ -231,7 +231,7 @@ bool QgsSQLStatement::doBasicValidationChecks( QString& errorMsgOut ) const
   QgsSQLStatementCollectTableNames v;
   mRootNode->accept( v );
 
-  Q_FOREACH ( QgsSQLStatementCollectTableNames::TableColumnPair pair, v.tableNamesReferenced )
+for ( QgsSQLStatementCollectTableNames::TableColumnPair pair : v.tableNamesReferenced )
   {
     if ( !v.tableNamesDeclared.contains( pair.first ) )
     {
@@ -250,7 +250,7 @@ bool QgsSQLStatement::doBasicValidationChecks( QString& errorMsgOut ) const
 QgsSQLStatement::NodeList* QgsSQLStatement::NodeList::clone() const
 {
   NodeList* nl = new NodeList;
-  Q_FOREACH ( Node* node, mList )
+for ( Node* node : mList )
   {
     nl->mList.append( node->clone() );
   }
@@ -262,7 +262,7 @@ QString QgsSQLStatement::NodeList::dump() const
 {
   QString msg;
   bool first = true;
-  Q_FOREACH ( Node* n, mList )
+for ( Node* n : mList )
   {
     if ( !first ) msg += ", ";
     else first = false;
@@ -552,7 +552,7 @@ QString QgsSQLStatement::NodeSelect::dump() const
   if ( mDistinct )
     ret += "DISTINCT ";
   bool bFirstColumn = true;
-  Q_FOREACH ( QgsSQLStatement::NodeSelectedColumn* column, mColumns )
+for ( QgsSQLStatement::NodeSelectedColumn* column : mColumns )
   {
     if ( !bFirstColumn )
       ret += ", ";
@@ -561,14 +561,14 @@ QString QgsSQLStatement::NodeSelect::dump() const
   }
   ret += " FROM ";
   bool bFirstTable = true;
-  Q_FOREACH ( QgsSQLStatement::NodeTableDef* table, mTableList )
+for ( QgsSQLStatement::NodeTableDef* table : mTableList )
   {
     if ( !bFirstTable )
       ret += ", ";
     bFirstTable = false;
     ret += table->dump();
   }
-  Q_FOREACH ( QgsSQLStatement::NodeJoin* join, mJoins )
+for ( QgsSQLStatement::NodeJoin* join : mJoins )
   {
     ret += ' ';
     ret += join->dump();
@@ -582,7 +582,7 @@ QString QgsSQLStatement::NodeSelect::dump() const
   {
     ret += " ORDER BY ";
     bool bFirst = true;
-    Q_FOREACH ( QgsSQLStatement::NodeColumnSorted* orderBy, mOrderBy )
+  for ( QgsSQLStatement::NodeColumnSorted* orderBy : mOrderBy )
     {
       if ( !bFirst )
         ret += ", ";
@@ -596,17 +596,17 @@ QString QgsSQLStatement::NodeSelect::dump() const
 QgsSQLStatement::Node* QgsSQLStatement::NodeSelect::clone() const
 {
   QList<QgsSQLStatement::NodeSelectedColumn*> newColumnList;
-  Q_FOREACH ( QgsSQLStatement::NodeSelectedColumn* column, mColumns )
+for ( QgsSQLStatement::NodeSelectedColumn* column : mColumns )
   {
     newColumnList.push_back( column->cloneThis() );
   }
   QList<QgsSQLStatement::NodeTableDef*> newTableList;
-  Q_FOREACH ( QgsSQLStatement::NodeTableDef* table, mTableList )
+for ( QgsSQLStatement::NodeTableDef* table : mTableList )
   {
     newTableList.push_back( table->cloneThis() );
   }
   QgsSQLStatement::NodeSelect* newSelect = new NodeSelect( newTableList, newColumnList, mDistinct );
-  Q_FOREACH ( QgsSQLStatement::NodeJoin* join, mJoins )
+for ( QgsSQLStatement::NodeJoin* join : mJoins )
   {
     newSelect->appendJoin( join->cloneThis() );
   }
@@ -615,7 +615,7 @@ QgsSQLStatement::Node* QgsSQLStatement::NodeSelect::clone() const
     newSelect->setWhere( mWhere->clone() );
   }
   QList<QgsSQLStatement::NodeColumnSorted*> newOrderByList;
-  Q_FOREACH ( QgsSQLStatement::NodeColumnSorted* columnSorted, mOrderBy )
+for ( QgsSQLStatement::NodeColumnSorted* columnSorted : mOrderBy )
   {
     newOrderByList.push_back( columnSorted->cloneThis() );
   }
@@ -644,7 +644,7 @@ QString QgsSQLStatement::NodeJoin::dump() const
   {
     ret += " USING (";
     bool first = true;
-    Q_FOREACH ( QString column, mUsingColumns )
+  for ( QString column : mUsingColumns )
     {
       if ( !first )
         ret += ", ";
