@@ -179,7 +179,7 @@ class OTBAlgorithm(GeoAlgorithm):
         path = OTBUtils.otbPath()
 
         commands = []
-        commands.append(path + os.sep + self.cliName)
+        commands.append(os.path.join(path, self.cliName))
 
         self.roiVectors = {}
         self.roiRasters = {}

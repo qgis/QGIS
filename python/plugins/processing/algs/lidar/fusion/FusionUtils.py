@@ -49,7 +49,7 @@ class FusionUtils(object):
     @staticmethod
     def tempFileListFilepath():
         filename = 'fusion_files_list.txt'
-        filepath = userFolder() + os.sep + filename
+        filepath = os.path.join(userFolder(), filename)
         return filepath
 
     @staticmethod

@@ -62,7 +62,7 @@ class Grass7Utils(object):
         GRASS_BATCH_JOB and then call GRASS and let it do the work
         '''
         filename = 'grass7_batch_job.sh'
-        batchfile = userFolder() + os.sep + filename
+        batchfile = os.path.join(userFolder(), filename)
         return batchfile
 
     @staticmethod
@@ -71,7 +71,7 @@ class Grass7Utils(object):
         GRASS and then uses grass commands
         '''
         filename = 'grass7_script.bat'
-        filename = userFolder() + os.sep + filename
+        filename = os.path.join(userFolder(), filename)
         return filename
 
     @staticmethod
@@ -133,8 +133,7 @@ class Grass7Utils(object):
             output.write('set GISRC=' + gisrc + '\n')
             output.write('set WINGISBASE=' + folder + '\n')
             output.write('set GISBASE=' + folder + '\n')
-            output.write('set GRASS_PROJSHARE=' + folder + os.sep + 'share'
-                         + os.sep + 'proj' + '\n')
+            output.write('set GRASS_PROJSHARE=' + os.path.join(folder, 'share', 'proj') + '\n')
             output.write('set GRASS_MESSAGE_FORMAT=plain\n')
 
             # Replacement code for etc/Init.bat
@@ -236,7 +235,7 @@ class Grass7Utils(object):
             Grass7Utils.createGrass7Script(commands)
             command = ['cmd.exe', '/C ', Grass7Utils.grassScriptFilename()]
         else:
-            gisrc = userFolder() + os.sep + 'processing.gisrc7'
+            gisrc = os.path.join(userFolder(), 'processing.gisrc7')
             env['GISRC'] = gisrc
             env['GRASS_MESSAGE_FORMAT'] = 'plain'
             env['GRASS_BATCH_JOB'] = Grass7Utils.grassBatchJobFilename()
@@ -245,12 +244,11 @@ class Grass7Utils(object):
             Grass7Utils.createGrass7BatchJobFileFromGrass7Commands(commands)
             os.chmod(Grass7Utils.grassBatchJobFilename(), stat.S_IEXEC
                      | stat.S_IREAD | stat.S_IWRITE)
-            if isMac() and os.path.exists(Grass7Utils.grassPath() + os.sep + '*grass.sh*'):
-                command = Grass7Utils.grassPath() + os.sep + '*grass.sh* ' \
-                    + Grass7Utils.grassMapsetFolder() + '/PERMANENT'
+            if isMac() and os.path.exists(os.path.join(Grass7Utils.grassPath(), '*grass.sh*')):
+                command = os.path.join(Grass7Utils.grassPath(), '*grass.sh*') + ' ' \
+                    + os.path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT')
             else:
-                command = 'grass70 ' + Grass7Utils.grassMapsetFolder() \
-                    + '/PERMANENT'
+                command = 'grass70 ' + os.path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT')
 
         return command, env
 

@@ -65,7 +65,7 @@ class GrassUtils(object):
         GRASS_BATCH_JOB and then call GRASS and let it do the work
         '''
         filename = 'grass_batch_job.sh'
-        batchfile = userFolder() + os.sep + filename
+        batchfile = os.path.join(userFolder(), filename)
         return batchfile
 
     @staticmethod
@@ -74,7 +74,7 @@ class GrassUtils(object):
         GRASS and then uses grass commands
         '''
         filename = 'grass_script.bat'
-        filename = userFolder() + os.sep + filename
+        filename = os.path.join(userFolder(), filename)
         return filename
 
     @staticmethod
@@ -132,7 +132,7 @@ class GrassUtils(object):
         shell = GrassUtils.grassWinShell()
 
         script = GrassUtils.grassScriptFilename()
-        gisrc = userFolder() + os.sep + 'processing.gisrc'
+        gisrc = os.path.join(userFolder(), 'processing.gisrc')
 
         encoding = locale.getpreferredencoding()
         # Temporary gisrc file
@@ -150,12 +150,10 @@ class GrassUtils(object):
         output.write('set HOME=' + os.path.expanduser('~') + '\n')
         output.write('set GISRC=' + gisrc + '\n')
         output.write('set GRASS_SH=' + shell + '\\bin\\sh.exe\n')
-        output.write('set PATH=' + shell + os.sep + 'bin;' + shell + os.sep
-                     + 'lib;' + '%PATH%\n')
+        output.write('set PATH=' + os.path.join(shell, 'bin') + ';' + os.path.join(shell, 'lib') + ';' + '%PATH%\n')
         output.write('set WINGISBASE=' + folder + '\n')
         output.write('set GISBASE=' + folder + '\n')
-        output.write('set GRASS_PROJSHARE=' + folder + os.sep + 'share'
-                     + os.sep + 'proj' + '\n')
+        output.write('set GRASS_PROJSHARE=' + os.path.join(folder, 'share', 'proj') + '\n')
         output.write('set GRASS_MESSAGE_FORMAT=gui\n')
 
         # Replacement code for etc/Init.bat
@@ -257,7 +255,7 @@ class GrassUtils(object):
             GrassUtils.createGrassScript(commands)
             command = ['cmd.exe', '/C ', GrassUtils.grassScriptFilename()]
         else:
-            gisrc = userFolder() + os.sep + 'processing.gisrc'
+            gisrc = os.path.join(userFolder(), 'processing.gisrc')
             env['GISRC'] = gisrc
             env['GRASS_MESSAGE_FORMAT'] = 'gui'
             env['GRASS_BATCH_JOB'] = GrassUtils.grassBatchJobFilename()
@@ -267,11 +265,10 @@ class GrassUtils(object):
             os.chmod(GrassUtils.grassBatchJobFilename(), stat.S_IEXEC
                      | stat.S_IREAD | stat.S_IWRITE)
             if isMac():
-                command = GrassUtils.grassPath() + os.sep + 'grass.sh ' \
-                    + GrassUtils.grassMapsetFolder() + '/PERMANENT'
+                command = os.path.join(GrassUtils.grassPath(), 'grass.sh') + ' ' \
+                    + os.path.join(GrassUtils.grassMapsetFolder(), 'PERMANENT')
             else:
-                command = 'grass64 ' + GrassUtils.grassMapsetFolder() \
-                    + '/PERMANENT'
+                command = 'grass64 ' + os.path.join(GrassUtils.grassMapsetFolder(), 'PERMANENT')
 
         return command, env
 
