@@ -34,11 +34,6 @@ ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
 	WITH_ORACLE=1
 endif
 
-ifneq (,$(findstring -server,$(DISTRIBUTION)))
-	DISTRIBUTION := $(subst -oracle,,$(DISTRIBUTION))
-	WITH_SERVER=1
-endif
-
 QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
 ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch xenial"))
@@ -83,8 +78,8 @@ CMAKE_OPTS := \
 	-DWITH_INTERNAL_NOSE2=FALSE \
         -DWITH_INTERNAL_SIX=FALSE \
 	-DWITH_GLOBE=FALSE \
-	-DWITH_SERVER=FALSE \
-	-DWITH_SERVER_PLUGINS=FALSE \
+	-DWITH_SERVER=TRUE \
+	-DWITH_SERVER_PLUGINS=TRUE \
 	-DWITH_QWTPOLAR=FALSE \
 	-DWITH_QSPATIALITE=TRUE \
 	-DWITH_PYSPATIALITE=TRUE \
@@ -112,12 +107,6 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	MAKEFLAGS += -j$(NUMJOBS)
 endif
 
-
-ifeq (,$(findstring $(DISTRIBUTION),"stretch sid xenial"))
-	CMAKE_OPTS += -DWITH_INTERNAL_FUTURE=TRUE
-else
-	CMAKE_OPTS += -DWITH_INTERNAL_FUTURE=FALSE
-endif
 
 ifneq (,$(WITH_GLOBE))
 	CMAKE_OPTS += -DWITH_GLOBE=TRUE
@@ -205,10 +194,6 @@ endif
 
 ifneq (,$(WITH_ORACLE))
 	CONTROL_EXPRESSIONS += oracle
-endif
-
-ifneq (,$(WITH_SERVER))
-	CONTROL_EXPRESSIONS += server
 endif
 
 define gentemplate

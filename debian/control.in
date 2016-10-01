@@ -185,17 +185,17 @@ Description: QGIS custom widgets for Qt Designer
  .
  This package contains a library to use specific QGIS widgets in Qt Designer.
 
-#server#Package: libqgis-server{QGIS_ABI}
-#server#Architecture: any
-#server#Depends:
-#server# ${shlibs:Depends},
-#server# ${misc:Depends}
-#server#Description: QGIS - shared server library
-#server# QGIS is a Geographic Information System (GIS) which manages, analyzes and
-#server# display databases of geographic information.
-#server# .
-#server# This package contains the shared server library.
-#server#
+Package: libqgis-server{QGIS_ABI}
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS - shared server library
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the shared server library.
+
 Package: libqgis-dev
 Architecture: any
 Section: libdevel
@@ -405,21 +405,21 @@ Description: collection of data providers to QGIS - architecture-independent fil
  .
  This package contains architecture-independent files for the QGIS providers.
 
-#server#Package: qgis-server
-#server#Architecture: any
-#server#Depends:
-#server# qgis-providers (= ${binary:Version}),
-#server# ${shlibs:Depends},
-#server# ${misc:Depends}
-#server#Conflicts: qgis-mapserver
-#server#Provides: qgis-mapserver
-#server#Replaces: qgis-mapserver
-#server#Description: QGIS server providing various OGC services
-#server# QGIS is a Geographic Information System (GIS) which manages, analyzes and
-#server# display databases of geographic information.
-#server# .
-#server# This package contains the QGIS server.
-#server#
+Package: qgis-server
+Architecture: any
+Depends:
+ qgis-providers (= ${binary:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
+Conflicts: qgis-mapserver
+Provides: qgis-mapserver
+Replaces: qgis-mapserver
+Description: QGIS server providing various OGC services
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the QGIS server.
+
 Package: qgis-api-doc
 Architecture: all
 Section: doc

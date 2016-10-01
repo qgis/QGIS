@@ -7,4 +7,4 @@ usr/lib/python*/*-packages/qgis/networkanalysis/*
 usr/lib/python*/*-packages/qgis/PyQt/*
 usr/lib/python*/*-packages/qgis/testing/*
 usr/lib/python*/*-packages/pyspatialite/*
-#server#usr/lib/python*/*-packages/qgis/server/*
+usr/lib/python*/*-packages/qgis/server/*
