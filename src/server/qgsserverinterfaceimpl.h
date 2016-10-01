@@ -46,7 +46,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
 
     void setRequestHandler( QgsRequestHandler* requestHandler ) override;
     void clearRequestHandler() override;
-    QgsCapabilitiesCache* capabiblitiesCache() override { return mCapabilitiesCache; }
+    QgsCapabilitiesCache* capabilitiesCache() override { return mCapabilitiesCache; }
     //! Return the QgsRequestHandler, to be used only in server plugins
     QgsRequestHandler*  requestHandler() override { return mRequestHandler; }
     void registerFilter( QgsServerFilter *filter, int priority = 0 ) override;

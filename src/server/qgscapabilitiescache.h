@@ -24,7 +24,8 @@
 #include <QObject>
 
 /** \ingroup server
- * A cache for capabilities xml documents (by configuration file path)*/
+ * A cache for capabilities xml documents (by configuration file path)
+ */
 class SERVER_EXPORT QgsCapabilitiesCache : public QObject
 {
     Q_OBJECT

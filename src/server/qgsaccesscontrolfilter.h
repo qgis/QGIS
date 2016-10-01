@@ -1,6 +1,8 @@
 /***************************************************************************
                           qgsaccesscontrolfilter.h
                           ------------------------
+ Access control interface for Qgis Server plugins
+
   begin                : 2015-05-19
   copyright            : (C) 2015 by Stéphane Brunner
   email                : stephane dot brunner at camptocamp dot org
@@ -40,6 +42,7 @@ class QgsFeature;
  *  * layerPermissions() - To give the general layer permissins (read / update / insert / delete)
  *  * authorizedLayerAttributes() - Tho filter the attributes (WMS/GetFeatureInfo, WFS/GetFeature)
  *  * allowToEdit() - (all WFS-T requests)
+ *  * cacheKey()
  */
 class SERVER_EXPORT QgsAccessControlFilter
 {

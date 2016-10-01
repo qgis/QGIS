@@ -1,7 +1,8 @@
 /***************************************************************************
-                          qgsseerversinterface.h
- Interface class for exposing functions in QGIS Server for use by plugins
-                             -------------------
+                          qgsserverinterface.h
+
+  Class defining the interface made available to QGIS Server plugins.
+  -------------------
   begin                : 2014-09-10
   copyright            : (C) 2014 by Alessandro Pasotti
   email                : a dot pasotti at itopen dot it
@@ -31,6 +32,12 @@
  * QgsServerInterface
  * Class defining interfaces exposed by QGIS Server and
  * made available to plugins.
+ *
+ * This class provides methods to access the request handler and
+ * the capabilties cache. A method to read the environment
+ * variables set in the main FCGI loop is also available.
+ * Plugins can add listeners (instances of QgsServerFilter) with
+ * a certain priority through the registerFilter( QgsServerFilter* , int) method.
  *
  */
 class SERVER_EXPORT QgsServerInterface
@@ -62,7 +69,7 @@ class SERVER_EXPORT QgsServerInterface
      * Get pointer to the capabiblities cache
      * @return QgsCapabilitiesCache
      */
-    virtual QgsCapabilitiesCache* capabiblitiesCache() = 0;
+    virtual QgsCapabilitiesCache* capabilitiesCache() = 0;
 
     /**
      * Get pointer to the request handler
@@ -88,11 +95,13 @@ class SERVER_EXPORT QgsServerInterface
      * @return QgsServerFiltersMap list of QgsServerFilter
      */
     virtual QgsServerFiltersMap filters() = 0;
+
     /** Register an access control filter
      * @param accessControl the access control to register
      * @param priority the priority used to order them
      */
     virtual void registerAccessControl( QgsAccessControlFilter* accessControl, int priority = 0 ) = 0;
+
     /** Gets the registred access control filters */
     virtual const QgsAccessControl* accessControls() const = 0;
 
@@ -122,9 +131,6 @@ class SERVER_EXPORT QgsServerInterface
      * @param path the path of the project which own the layers to be removed
      */
     virtual void removeProjectLayers( const QString& path ) = 0;
-
-
-
 
   private:
     QString mConfigFilePath;
