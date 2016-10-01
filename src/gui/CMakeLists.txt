@@ -308,6 +308,7 @@ SET(QGIS_GUI_SRCS
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
   qgstextannotationitem.cpp
+  qgstextpreview.cpp
   qgstrackedvectorlayertools.cpp
   qgstreewidgetitem.cpp
   qgsunitselectionwidget.cpp
@@ -461,6 +462,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgssublayersdialog.h
   qgstablewidgetbase.h
   qgstabwidget.h
+  qgstextpreview.h
   qgstreewidgetitem.h
   qgsunitselectionwidget.h
   qgsuserinputdockwidget.h

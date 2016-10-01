@@ -78,6 +78,10 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
 {
   setupUi( this );
 
+  mPreviewScaleComboBox->setMapCanvas( mMapCanvas );
+  mPreviewScaleComboBox->setShowCurrentScaleButton( true );
+  connect( mPreviewScaleComboBox, SIGNAL( scaleChanged( double ) ), this, SLOT( previewScaleChanged( double ) ) );
+
   mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
   Q_FOREACH ( QgsUnitSelectionWidget* unitWidget, findChildren<QgsUnitSelectionWidget*>() )
@@ -485,6 +489,12 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
 
   // set correct initial tab to match displayed setting page
   whileBlocking( mOptionsTab )->setCurrentIndex( mLabelStackedWidget->currentIndex() );
+
+  if ( mMapCanvas )
+  {
+    lblFontPreview->setMapUnits( mMapCanvas->mapSettings().mapUnits() );
+    mPreviewScaleComboBox->setScale( 1.0 / mMapCanvas->mapSettings().scale() );
+  }
 }
 
 void QgsLabelingGui::setDockMode( bool enabled )
@@ -958,7 +968,10 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.distInMapUnits = ( mLineDistanceUnitWidget->unit() == QgsUnitTypes::RenderMapUnits );
   lyr.distMapUnitScale = mLineDistanceUnitWidget->getMapUnitScale();
   lyr.offsetType = static_cast< QgsPalLayerSettings::OffsetType >( mOffsetTypeComboBox->currentData().toInt() );
-  lyr.quadOffset = ( QgsPalLayerSettings::QuadrantPosition )mQuadrantBtnGrp->checkedId();
+  if ( mQuadrantBtnGrp )
+  {
+    lyr.quadOffset = ( QgsPalLayerSettings::QuadrantPosition )mQuadrantBtnGrp->checkedId();
+  }
   lyr.xOffset = mPointOffsetXSpinBox->value();
   lyr.yOffset = mPointOffsetYSpinBox->value();
   lyr.labelOffsetInMapUnits = ( mPointOffsetUnitWidget->unit() == QgsUnitTypes::RenderMapUnits );
@@ -1036,6 +1049,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   QgsTextFormat format;
   format.setColor( btnTextColor->color() );
   format.setFont( mRefFont );
+  format.setSize( mFontSizeSpinBox->value() );
   format.setNamedStyle( mFontStyleComboBox->currentText() );
   format.setOpacity( 1.0 - mFontTranspSpinBox->value() / 100.0 );
   format.setBlendMode( comboBlendMode->blendMode() );
@@ -1115,9 +1129,14 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.leftDirectionSymbol = mDirectSymbLeftLineEdit->text();
   lyr.rightDirectionSymbol = mDirectSymbRightLineEdit->text();
   lyr.reverseDirectionSymbol = mDirectSymbRevChkBx->isChecked();
-  lyr.placeDirectionSymbol = ( QgsPalLayerSettings::DirectionSymbols )mDirectSymbBtnGrp->checkedId();
-
-  lyr.upsidedownLabels = ( QgsPalLayerSettings::UpsideDownLabels )mUpsidedownBtnGrp->checkedId();
+  if ( mDirectSymbBtnGrp )
+  {
+    lyr.placeDirectionSymbol = ( QgsPalLayerSettings::DirectionSymbols )mDirectSymbBtnGrp->checkedId();
+  }
+  if ( mUpsidedownBtnGrp )
+  {
+    lyr.upsidedownLabels = ( QgsPalLayerSettings::UpsideDownLabels )mUpsidedownBtnGrp->checkedId();
+  }
 
   lyr.maxCurvedCharAngleIn = mMaxCharAngleInDSpinBox->value();
   // lyr.maxCurvedCharAngleOut must be negative, but it is shown as positive spinbox in GUI
@@ -1590,78 +1609,12 @@ void QgsLabelingGui::updatePreview()
     return;
   }
 
+  QgsTextFormat format = layerSettings().format();
+
   scrollPreview();
-  lblFontPreview->setFont( mRefFont );
-  QFont previewFont = lblFontPreview->font();
-  double fontSize = mFontSizeSpinBox->value();
-  double previewRatio = mPreviewSize / fontSize;
-  double bufferSize = 0.0;
+  lblFontPreview->setFormat( format );
   QString grpboxtitle;
-  QString sampleTxt = tr( "Text/Buffer sample" );
-
-  if ( mFontSizeUnitWidget->getUnit() == 1 ) // map units
-  {
-    // TODO: maybe match current map zoom level instead?
-    previewFont.setPointSize( mPreviewSize );
-    mPreviewSizeSlider->setEnabled( true );
-    grpboxtitle = sampleTxt + tr( " @ %1 pts (using map units)" ).arg( mPreviewSize );
-
-    previewFont.setWordSpacing( previewRatio * mFontWordSpacingSpinBox->value() );
-    previewFont.setLetterSpacing( QFont::AbsoluteSpacing, previewRatio * mFontLetterSpacingSpinBox->value() );
-
-    if ( mBufferDrawChkBx->isChecked() )
-    {
-      if ( mBufferUnitWidget->unit() == QgsUnitTypes::RenderMapUnits )
-      {
-        bufferSize = previewRatio * spinBufferSize->value() / 3.527;
-      }
-      else // millimeters
-      {
-        grpboxtitle = sampleTxt + tr( " @ %1 pts (using map units, BUFFER IN MILLIMETERS)" ).arg( mPreviewSize );
-        bufferSize = spinBufferSize->value();
-      }
-    }
-  }
-  else // in points
-  {
-    if ( fontSize > 0 )
-      previewFont.setPointSize( fontSize );
-    mPreviewSizeSlider->setEnabled( false );
-    grpboxtitle = sampleTxt;
-
-    if ( mBufferDrawChkBx->isChecked() )
-    {
-      if ( mBufferUnitWidget->unit() == QgsUnitTypes::RenderMillimeters )
-      {
-        bufferSize = spinBufferSize->value();
-      }
-      else // map units
-      {
-        grpboxtitle = sampleTxt + tr( " (BUFFER NOT SHOWN, in map units)" );
-      }
-    }
-  }
-
-  lblFontPreview->setFont( previewFont );
   groupBox_mPreview->setTitle( grpboxtitle );
-
-  QColor prevColor = btnTextColor->color();
-  prevColor.setAlphaF(( 100.0 - ( double )( mFontTranspSpinBox->value() ) ) / 100.0 );
-  lblFontPreview->setTextColor( prevColor );
-
-  bool bufferNoFill = false;
-  if ( mBufferDrawChkBx->isChecked() && bufferSize != 0.0 )
-  {
-    QColor buffColor = btnBufferColor->color();
-    buffColor.setAlphaF(( 100.0 - ( double )( mBufferTranspSpinBox->value() ) ) / 100.0 );
-
-    bufferNoFill = !mBufferTranspFillChbx->isChecked();
-    lblFontPreview->setBuffer( bufferSize, buffColor, mBufferJoinStyleComboBox->penJoinStyle(), bufferNoFill );
-  }
-  else
-  {
-    lblFontPreview->setBuffer( 0, Qt::white, Qt::BevelJoin, bufferNoFill );
-  }
 }
 
 void QgsLabelingGui::scrollPreview()
@@ -1811,12 +1764,6 @@ void QgsLabelingGui::populateFontStyleComboBox()
   }
 
   mFontStyleComboBox->setCurrentIndex( curIndx );
-}
-
-void QgsLabelingGui::on_mPreviewSizeSlider_valueChanged( int i )
-{
-  mPreviewSize = i;
-  updatePreview();
 }
 
 void QgsLabelingGui::on_mFontSizeSpinBox_valueChanged( double d )
@@ -2011,6 +1958,11 @@ void QgsLabelingGui::onSubstitutionsChanged( const QgsStringReplacementCollectio
 {
   mSubstitutions = substitutions;
   emit widgetChanged();
+}
+
+void QgsLabelingGui::previewScaleChanged( double scale )
+{
+  lblFontPreview->setScale( scale );
 }
 
 void QgsLabelingGui::updateSvgWidgets( const QString& svgPath )
