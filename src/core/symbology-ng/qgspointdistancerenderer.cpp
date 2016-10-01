@@ -293,7 +293,7 @@ void QgsPointDistanceRenderer::startRender( QgsRenderContext& context, const Qgs
   }
   else
   {
-    mLabelIndex = fields.fieldNameIndex( mLabelAttributeName );
+    mLabelIndex = fields.lookupField( mLabelAttributeName );
   }
 
   if ( mMaxLabelScaleDenominator > 0 && context.rendererScale() > mMaxLabelScaleDenominator )
