@@ -243,7 +243,7 @@ class RAlgorithm(GeoAlgorithm):
                     found = True
                     break
             if found:
-                param = ParameterTableMultipleField(token, desc, field)
+                param = ParameterTableMultipleField(name, desc, field)
         elif token.lower().strip() == 'extent':
             param = ParameterExtent(name, desc)
         elif token.lower().strip() == 'point':
