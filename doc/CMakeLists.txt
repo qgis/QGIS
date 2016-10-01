@@ -75,14 +75,20 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/analysis/raster
       ${CMAKE_SOURCE_DIR}/src/analysis/vector
       ${CMAKE_SOURCE_DIR}/src/plugins
-      ${CMAKE_SOURCE_DIR}/src/server/qgsserver.h
-      ${CMAKE_SOURCE_DIR}/src/server/qgscapabilitiescache.h
-      ${CMAKE_SOURCE_DIR}/src/server/qgsmapserviceexception.h
-      ${CMAKE_SOURCE_DIR}/src/server/qgsrequesthandler.h
-      ${CMAKE_SOURCE_DIR}/src/server/qgsserverfilter.h
-      ${CMAKE_SOURCE_DIR}/src/server/qgsaccesscontrolfilter.h
-      ${CMAKE_SOURCE_DIR}/src/server/qgsserverinterface.h
     )
+
+    IF(WITH_SERVER_PLUGINS)
+      SET(DOXYGEN_INPUT
+        ${DOXYGEN_INPUT}
+        ${CMAKE_SOURCE_DIR}/src/server/qgsserver.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgscapabilitiescache.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsmapserviceexception.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsrequesthandler.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsserverfilter.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsaccesscontrolfilter.h
+        ${CMAKE_SOURCE_DIR}/src/server/qgsserverinterface.h
+      )
+    ENDIF(WITH_SERVER_PLUGINS)
 
     SET(DOXYGEN_FILE_PATTERNS *.h *.cpp *.dox)
 
