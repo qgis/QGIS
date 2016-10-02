@@ -24,6 +24,7 @@
 #include "qgslogger.h"
 #include "qgspoint.h"
 
+
 QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
                               double xc,
                               double yc,
@@ -54,6 +55,13 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel )
     , yMin( 0 )
 {
   updateMatrix();
+}
+
+QgsMapToPixel QgsMapToPixel::fromScale( double scale, QgsUnitTypes::DistanceUnit mapUnits, double dpi )
+{
+  double metresPerPixel = 25.4 / dpi / 1000.0;
+  double mapUnitsPerPixel = metresPerPixel * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mapUnits );
+  return QgsMapToPixel( mapUnitsPerPixel / scale );
 }
 
 QgsMapToPixel::QgsMapToPixel()

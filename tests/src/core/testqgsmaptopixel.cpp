@@ -20,6 +20,7 @@
 #include <qgsmaptopixel.h>
 #include <qgspoint.h>
 #include "qgslogger.h"
+#include "qgstestutils.h"
 
 class TestQgsMapToPixel: public QObject
 {
@@ -27,6 +28,7 @@ class TestQgsMapToPixel: public QObject
   private slots:
     void rotation();
     void getters();
+    void fromScale();
 };
 
 void TestQgsMapToPixel::rotation()
@@ -90,6 +92,18 @@ void TestQgsMapToPixel::getters()
   QCOMPARE( m2p.mapHeight(), 200 );
   QCOMPARE( m2p.mapWidth(), 20 );
   QCOMPARE( m2p.mapUnitsPerPixel(), 2.0 );
+}
+
+void TestQgsMapToPixel::fromScale()
+{
+  QgsMapToPixel m2p = QgsMapToPixel::fromScale( 0.001, QgsUnitTypes::DistanceMeters, 96.0 );
+  QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 0.264583, 0.000001 );
+  m2p = QgsMapToPixel::fromScale( 0.0001, QgsUnitTypes::DistanceMeters, 96.0 );
+  QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 2.645833, 0.000001 );
+  m2p = QgsMapToPixel::fromScale( 0.001, QgsUnitTypes::DistanceMeters, 72.0 );
+  QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 0.352778, 0.000001 );
+  m2p = QgsMapToPixel::fromScale( 0.001, QgsUnitTypes::DistanceKilometers, 96.0 );
+  QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 0.000265, 0.000001 );
 }
 
 QTEST_MAIN( TestQgsMapToPixel )
