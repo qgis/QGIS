@@ -73,13 +73,15 @@ void QgsComposerTableBackgroundColorsDialog::apply()
     composition->beginMultiFrameCommand( mComposerTable, tr( "Table background customisation" ), QgsComposerMultiFrameMergeCommand::TableCellStyle );
   }
 
-  Q_FOREACH ( QgsComposerTableV2::CellStyleGroup styleGroup, mCheckBoxMap.keys() )
+  QMap< QgsComposerTableV2::CellStyleGroup, QCheckBox* >::const_iterator checkBoxIt = mCheckBoxMap.constBegin();
+  for ( ; checkBoxIt != mCheckBoxMap.constEnd(); ++checkBoxIt )
   {
     QgsComposerTableStyle style;
-    style.enabled = mCheckBoxMap.value( styleGroup )->isChecked();
-    style.cellBackgroundColor = mColorButtonMap.value( styleGroup )->color();
+    style.enabled = checkBoxIt.value()->isChecked();
+    if ( QgsColorButton* button = mColorButtonMap.value( checkBoxIt.key() ) )
+      style.cellBackgroundColor = button->color();
 
-    mComposerTable->setCellStyle( styleGroup, style );
+    mComposerTable->setCellStyle( checkBoxIt.key(), style );
   }
 
   mComposerTable->setBackgroundColor( mDefaultColorButton->color() );

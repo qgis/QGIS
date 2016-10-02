@@ -142,8 +142,12 @@ bool QgsComposerTableV2::writeXml( QDomElement& elem, QDomDocument & doc, bool i
   {
     QString styleName = it.value();
     QDomElement styleElem = doc.createElement( styleName );
-    mCellStyles.value( it.key() )->writeXml( styleElem, doc );
-    stylesElem.appendChild( styleElem );
+    QgsComposerTableStyle* style = mCellStyles.value( it.key() );
+    if ( style )
+    {
+      style->writeXml( styleElem, doc );
+      stylesElem.appendChild( styleElem );
+    }
   }
   elem.appendChild( stylesElem );
 

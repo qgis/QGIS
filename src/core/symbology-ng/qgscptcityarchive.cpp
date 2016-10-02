@@ -115,8 +115,8 @@ QString QgsCptCityArchive::baseDir( QString archiveName )
   // search for matching archive in the registry
   if ( archiveName.isNull() )
     archiveName = DEFAULT_CPTCITY_ARCHIVE;
-  if ( mArchiveRegistry.contains( archiveName ) )
-    return mArchiveRegistry.value( archiveName )->baseDir();
+  if ( QgsCptCityArchive* archive = mArchiveRegistry.value( archiveName, nullptr ) )
+    return archive->baseDir();
   else
     return defaultBaseDir();
 }

@@ -166,13 +166,14 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
       double deltaX = curPos.x() - pressPos.x();
       double deltaY = curPos.y() - pressPos.y();
 
-      Q_FOREACH ( QgsFeatureId fid, mMoveRubberBands.keys() )
+      QMap<QgsFeatureId, QgsGeometryRubberBand*>::const_iterator moveBandsIt = mMoveRubberBands.constBegin();
+      for ( ; moveBandsIt != mMoveRubberBands.constEnd(); ++moveBandsIt )
       {
         typedef QPair<QgsVertexId, QgsPointV2> MoveVertex;
-        Q_FOREACH ( const MoveVertex& pair, mMoveVertices[fid] )
+        Q_FOREACH ( const MoveVertex& pair, mMoveVertices[ moveBandsIt.key()] )
         {
           QgsPointV2 newPos( pair.second.x() + deltaX, pair.second.y() + deltaY );
-          mMoveRubberBands.value( fid )->moveVertex( pair.first, newPos );
+          moveBandsIt.value()->moveVertex( pair.first, newPos );
         }
       }
     }

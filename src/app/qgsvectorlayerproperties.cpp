@@ -295,7 +295,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   mLayersDependenciesTreeGroup.reset( QgsProject::instance()->layerTreeRoot()->clone() );
   QgsLayerTreeLayer* layer = mLayersDependenciesTreeGroup->findLayer( mLayer->id() );
-  layer->parent()->takeChild( layer );
+  if ( layer )
+  {
+    layer->parent()->takeChild( layer );
+  }
   mLayersDependenciesTreeModel.reset( new QgsLayerTreeModel( mLayersDependenciesTreeGroup.data() ) );
   // use visibility as selection
   mLayersDependenciesTreeModel->setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
