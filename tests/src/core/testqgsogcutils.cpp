@@ -107,14 +107,14 @@ void TestQgsOgcUtils::testGeometryToGML()
   QVERIFY( !elemPoint.isNull() );
 
   doc.appendChild( elemPoint );
-  QCOMPARE( doc.toString( -1 ), QString( "<gml:Point><gml:coordinates cs=\",\" ts=\" \">111,222</gml:coordinates></gml:Point>" ) );
+  QCOMPARE( doc.toString( -1 ), QString( "<gml:Point><gml:coordinates ts=\" \" cs=\",\">111,222</gml:coordinates></gml:Point>" ) );
   doc.removeChild( elemPoint );
 
   QDomElement elemLine = QgsOgcUtils::geometryToGML( &geomLine, doc );
   QVERIFY( !elemLine.isNull() );
 
   doc.appendChild( elemLine );
-  QCOMPARE( doc.toString( -1 ), QString( "<gml:LineString><gml:coordinates cs=\",\" ts=\" \">111,222 222,222</gml:coordinates></gml:LineString>" ) );
+  QCOMPARE( doc.toString( -1 ), QString( "<gml:LineString><gml:coordinates ts=\" \" cs=\",\">111,222 222,222</gml:coordinates></gml:LineString>" ) );
   doc.removeChild( elemLine );
 
   // Test GML3
@@ -359,7 +359,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
     "<ogc:BBOX>"
     "<ogc:PropertyName>geometry</ogc:PropertyName>"
-    "<gml:Box><gml:coordinates cs=\",\" ts=\" \">5,6 5,6</gml:coordinates></gml:Box>"
+    "<gml:Box><gml:coordinates ts=\" \" cs=\",\">5,6 5,6</gml:coordinates></gml:Box>"
     "</ogc:BBOX>"
     "</ogc:Filter>" );
 
@@ -367,7 +367,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
     "<ogc:Intersects>"
     "<ogc:PropertyName>geometry</ogc:PropertyName>"
-    "<gml:Point><gml:coordinates cs=\",\" ts=\" \">5,6</gml:coordinates></gml:Point>"
+    "<gml:Point><gml:coordinates ts=\" \" cs=\",\">5,6</gml:coordinates></gml:Point>"
     "</ogc:Intersects>"
     "</ogc:Filter>" );
 
@@ -375,7 +375,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
     "<ogc:Contains>"
     "<ogc:PropertyName>geometry</ogc:PropertyName>"
-    "<Point><coordinates cs=\",\" ts=\" \">5,6</coordinates></Point>"
+    "<Point><coordinates ts=\" \" cs=\",\">5,6</coordinates></Point>"
     "</ogc:Contains>"
     "</ogc:Filter>" );
 }
@@ -726,7 +726,7 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter_data()
     "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
     "<ogc:Intersects>"
     "<ogc:PropertyName>geom</ogc:PropertyName>"
-    "<gml:Point><gml:coordinates cs=\",\" ts=\" \">5,6</gml:coordinates></gml:Point>"
+    "<gml:Point><gml:coordinates ts=\" \" cs=\",\">5,6</gml:coordinates></gml:Point>"
     "</ogc:Intersects>"
     "</ogc:Filter>" );
 
@@ -735,7 +735,7 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter_data()
     "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
     "<ogc:Contains>"
     "<ogc:PropertyName>geom</ogc:PropertyName>"
-    "<gml:Point xmlns:gml=\"http://www.opengis.net/gml\"><gml:coordinates xmlns:gml=\"http://www.opengis.net/gml\" cs=\",\" ts=\" \">5,6</gml:coordinates></gml:Point>"
+    "<gml:Point xmlns:gml=\"http://www.opengis.net/gml\"><gml:coordinates xmlns:gml=\"http://www.opengis.net/gml\" ts=\" \" cs=\",\">5,6</gml:coordinates></gml:Point>"
     "</ogc:Contains>"
     "</ogc:Filter>" );
 
