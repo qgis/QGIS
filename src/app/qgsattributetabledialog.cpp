@@ -185,6 +185,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mLayer, SIGNAL( featuresDeleted( QgsFeatureIds ) ), this, SLOT( updateTitle() ) );
   connect( mLayer, SIGNAL( attributeAdded( int ) ), this, SLOT( columnBoxInit() ) );
   connect( mLayer, SIGNAL( attributeDeleted( int ) ), this, SLOT( columnBoxInit() ) );
+  connect( mLayer, &QgsVectorLayer::readOnlyChanged, this, &QgsAttributeTableDialog::editingToggled );
 
   // connect table info to window
   connect( mMainView, SIGNAL( filterChanged() ), this, SLOT( updateTitle() ) );
@@ -235,7 +236,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mActionToggleEditing->blockSignals( true );
   mActionToggleEditing->setCheckable( true );
   mActionToggleEditing->setChecked( mLayer->isEditable() );
-  mActionToggleEditing->setEnabled(( canChangeAttributes || canDeleteFeatures || canAddAttributes || canDeleteAttributes || canAddFeatures ) && !mLayer->readOnly() );
   mActionToggleEditing->blockSignals( false );
 
   mActionSaveEdits->setEnabled( mActionToggleEditing->isEnabled() && mLayer->isEditable() );
@@ -761,6 +761,7 @@ void QgsAttributeTableDialog::editingToggled()
   mActionRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
   mActionDeleteSelected->setEnabled( canDeleteFeatures && mLayer->isEditable() );
   mActionAddFeature->setEnabled( canAddFeatures && mLayer->isEditable() );
+  mActionToggleEditing->setEnabled(( canChangeAttributes || canDeleteFeatures || canAddAttributes || canDeleteAttributes || canAddFeatures ) && !mLayer->readOnly() );
 
   mUpdateExpressionBox->setVisible( mLayer->isEditable() );
   if ( mLayer->isEditable() && mFieldCombo->currentIndex() == -1 )
