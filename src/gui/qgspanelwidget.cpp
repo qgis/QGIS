@@ -84,7 +84,7 @@ void QgsPanelWidget::openPanel( QgsPanelWidget* panel )
     dlg->layout()->addWidget( buttonBox );
     dlg->exec();
     settings.setValue( key, dlg->saveGeometry() );
-    emit panelAccepted( panel );
+    panel->acceptPanel();
   }
 }
 
