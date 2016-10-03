@@ -169,12 +169,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
   signals:
     /**
-     * Informs that editing mode has been toggled
-     * @param layer layer that has been toggled
-     */
-    void editingToggled( QgsMapLayer *layer );
-
-    /**
      * Informs that edits should be saved
      * @param layer layer whose edits are to be saved
      */
