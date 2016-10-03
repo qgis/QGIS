@@ -58,13 +58,9 @@ from qgis.testing import (
 )
 
 try:
-    QGIS_SERVER_WFST_DEFAULT_PORT = os.environ['QGIS_SERVER_WFST_DEFAULT_PORT']
+    QGIS_SERVER_WFST_PORT = os.environ['QGIS_SERVER_WFST_PORT']
 except:
-    import socket
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(("", 0))
-    QGIS_SERVER_WFST_DEFAULT_PORT = s.getsockname()[1]
-    s.close()
+    QGIS_SERVER_WFST_PORT = '0' # Auto
 
 
 qgis_app = start_app()
@@ -75,7 +71,7 @@ class TestWFST(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.port = QGIS_SERVER_WFST_DEFAULT_PORT
+        cls.port = QGIS_SERVER_WFST_PORT
         # Create tmp folder
         cls.temp_path = tempfile.mkdtemp()
         cls.testdata_path = cls.temp_path + '/' + 'wfs_transactional' + '/'

@@ -45,14 +45,12 @@ from qgis.testing import (
     unittest,
 )
 
+
 try:
-    QGIS_SERVER_AUTHMANAGER_DEFAULT_PORT = os.environ['QGIS_SERVER_AUTHMANAGER_DEFAULT_PORT']
+    QGIS_SERVER_ENDPOINT_PORT = os.environ['QGIS_SERVER_ENDPOINT_PORT']
 except:
-    import socket
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(("", 0))
-    QGIS_SERVER_AUTHMANAGER_DEFAULT_PORT = s.getsockname()[1]
-    s.close()
+    QGIS_SERVER_ENDPOINT_PORT = '0' # Auto
+
 
 QGIS_AUTH_DB_DIR_PATH = tempfile.mkdtemp()
 
@@ -67,7 +65,7 @@ class TestAuthManager(unittest.TestCase):
     def setUpClass(cls):
         """Run before all tests:
         Creates an auth configuration"""
-        cls.port = QGIS_SERVER_AUTHMANAGER_DEFAULT_PORT
+        cls.port = QGIS_SERVER_ENDPOINT_PORT
         # Clean env just to be sure
         env_vars = ['QUERY_STRING', 'QGIS_PROJECT_FILE']
         for ev in env_vars:

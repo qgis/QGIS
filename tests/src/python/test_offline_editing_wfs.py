@@ -48,9 +48,9 @@ from offlineditingtestbase import OfflineTestBase
 
 
 try:
-    QGIS_SERVER_WFST_DEFAULT_PORT = os.environ['QGIS_SERVER_WFST_DEFAULT_PORT']
+    QGIS_SERVER_OFFLINE_PORT = os.environ['QGIS_SERVER_OFFLINE_PORT']
 except:
-    QGIS_SERVER_WFST_DEFAULT_PORT = '0' # Auto
+    QGIS_SERVER_OFFLINE_PORT = '0' # Auto
 
 qgis_app = start_app()
 
@@ -63,7 +63,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.port = QGIS_SERVER_WFST_DEFAULT_PORT
+        cls.port = QGIS_SERVER_OFFLINE_PORT
         # Create tmp folder
         cls.temp_path = tempfile.mkdtemp()
         cls.testdata_path = cls.temp_path + '/' + 'wfs_transactional' + '/'
