@@ -100,9 +100,9 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == '__main__':
-    print('Starting server on %s:%s, use <Ctrl-C> to stop' %
-          (QGIS_SERVER_HOST, QGIS_SERVER_PORT))
     server = HTTPServer((QGIS_SERVER_HOST, QGIS_SERVER_PORT), Handler)
+    print('Starting server on %s:%s, use <Ctrl-C> to stop' %
+          (QGIS_SERVER_HOST, server.server_port), flush=True)
 
     def signal_handler(signal, frame):
         global qgs_app
