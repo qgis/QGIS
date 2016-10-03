@@ -66,6 +66,7 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
         , mPage( new QWebPage( this ) )
     {
       connect( this, SIGNAL( anchorClicked( const QUrl & ) ), this, SIGNAL( linkClicked( const QUrl & ) ) );
+      connect( this, SIGNAL( pageLoadFinished( bool ) ), mPage, SIGNAL( loadFinished( bool ) ) );
     }
 
     ~QgsWebView()
@@ -99,8 +100,15 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
       return new QgsWebView();
     }
 
-    void setContent( const QByteArray&, const QString&, const QUrl& )
+    void setContent( const QByteArray& data, const QString& contentType, const QUrl& )
     {
+      QString text = QString::fromUtf8( data );
+      if ( contentType == "text/html" )
+        setHtml( text );
+      else
+        setPlainText( text );
+
+      emit pageLoadFinished( true );
     }
 
     void print( QPrinter* )
@@ -109,6 +117,8 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
 
   signals:
     void linkClicked( const QUrl &link );
+
+    void pageLoadFinished( bool ok );
 
   private:
     QWebSettings *mSettings;
