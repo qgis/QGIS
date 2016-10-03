@@ -249,7 +249,7 @@ bool QgsWFSSharedData::createCache()
   // do it manually
   bool useReservedNames = cacheFields.lookupField( "ogc_fid" ) >= 0;
 #if GDAL_VERSION_MAJOR < 2
-  if ( cacheFields.fieldNameIndex( "geometry" ) >= 0 )
+  if ( cacheFields.lookupField( "geometry" ) >= 0 )
     useReservedNames = true;
 #endif
   if ( !useReservedNames )
