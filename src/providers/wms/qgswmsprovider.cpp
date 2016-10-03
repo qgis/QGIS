@@ -2977,7 +2977,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
             QString crsType = result.property( "crs" ).property( "type" ).toString();
             QString crsText;
             if ( crsType == "name" )
-              crsText = result.property( "crs" ).property( "name" ).toString();
+              crsText = result.property( "crs" ).property( "properties" ).property( "name" ).toString();
             else if ( crsType == "EPSG" )
               crsText = QString( "%1:%2" ).arg( crsType, result.property( "crs" ).property( "properties" ).property( "code" ).toString() );
             else
@@ -3072,6 +3072,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         catch ( const QString &err )
         {
           QgsDebugMsg( QString( "JSON error: %1\nResult: %2" ).arg( err, QString::fromUtf8( mIdentifyResultBodies.value( jsonPart ) ) ) );
+          results.insert( results.size(), err );  // string returned for format type "feature" means error
         }
 
         delete coordinateTransform;
