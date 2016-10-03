@@ -34,7 +34,7 @@ QgsVectorLayerLabelProvider *QgsRuleBasedLabelProvider::createProvider( QgsVecto
 
 bool QgsRuleBasedLabelProvider::prepare( const QgsRenderContext& context, QStringList& attributeNames )
 {
-  Q_FOREACH ( QgsVectorLayerLabelProvider* provider, mSubProviders )
+for ( QgsVectorLayerLabelProvider* provider : mSubProviders )
     provider->setEngine( mEngine );
 
   // populate sub-providers
@@ -51,7 +51,7 @@ void QgsRuleBasedLabelProvider::registerFeature( QgsFeature& feature, QgsRenderC
 QList<QgsAbstractLabelProvider*> QgsRuleBasedLabelProvider::subProviders()
 {
   QList<QgsAbstractLabelProvider*> lst;
-  Q_FOREACH ( QgsVectorLayerLabelProvider* subprovider, mSubProviders )
+for ( QgsVectorLayerLabelProvider* subprovider : mSubProviders )
     lst << subprovider;
   return lst;
 }
@@ -112,7 +112,7 @@ void QgsRuleBasedLabeling::Rule::initFilter()
 void QgsRuleBasedLabeling::Rule::updateElseRules()
 {
   mElseRules.clear();
-  Q_FOREACH ( Rule* rule, mChildren )
+for ( Rule* rule : mChildren )
   {
     if ( rule->isElse() )
       mElseRules << rule;
@@ -121,7 +121,7 @@ void QgsRuleBasedLabeling::Rule::updateElseRules()
 
 void QgsRuleBasedLabeling::Rule::subProviderIds( QStringList& list ) const
 {
-  Q_FOREACH ( const Rule* rule, mChildren )
+for ( const Rule* rule : mChildren )
   {
     if ( rule->settings() )
       list << rule->ruleKey();
@@ -159,7 +159,7 @@ const QgsRuleBasedLabeling::Rule* QgsRuleBasedLabeling::Rule::findRuleByKey( con
   if ( key == mRuleKey )
     return this;
 
-  Q_FOREACH ( Rule* rule, mChildren )
+for ( Rule* rule : mChildren )
   {
     const Rule* r = rule->findRuleByKey( key );
     if ( r )
@@ -174,7 +174,7 @@ QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::clone() const
   Rule* newrule = new Rule( s, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mDescription );
   newrule->setActive( mIsActive );
   // clone children
-  Q_FOREACH ( Rule* rule, mChildren )
+for ( Rule* rule : mChildren )
     newrule->appendChild( rule->clone() );
   return newrule;
 }
@@ -258,7 +258,7 @@ void QgsRuleBasedLabeling::Rule::createSubProviders( QgsVectorLayer* layer, QgsR
   }
 
   // call recursively
-  Q_FOREACH ( Rule* rule, mChildren )
+for ( Rule* rule : mChildren )
   {
     rule->createSubProviders( layer, subProviders, provider );
   }
@@ -283,7 +283,7 @@ void QgsRuleBasedLabeling::Rule::prepare( const QgsRenderContext& context, QStri
   }
 
   // call recursively
-  Q_FOREACH ( Rule* rule, mChildren )
+for ( Rule* rule : mChildren )
   {
     rule->prepare( context, attributeNames, subProviders );
   }
@@ -307,7 +307,7 @@ QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerF
   bool willRegisterSomething = false;
 
   // call recursively
-  Q_FOREACH ( Rule* rule, mChildren )
+for ( Rule* rule : mChildren )
   {
     // Don't process else rules yet
     if ( !rule->isElse() )
@@ -322,7 +322,7 @@ QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerF
   // If none of the rules passed then we jump into the else rules and process them.
   if ( !willRegisterSomething )
   {
-    Q_FOREACH ( Rule* rule, mElseRules )
+  for ( Rule* rule : mElseRules )
     {
       registered |= rule->registerFeature( feature, context, subProviders, obstacleGeometry ) != Filtered;
     }

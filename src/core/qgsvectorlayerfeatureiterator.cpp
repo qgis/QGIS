@@ -124,7 +124,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     QSet<int> providerSubset;
     QgsAttributeList subset = mProviderRequest.subsetOfAttributes();
     int nPendingFields = mSource->mFields.count();
-    Q_FOREACH ( int attrIndex, subset )
+  for ( int attrIndex : subset )
     {
       if ( attrIndex < 0 || attrIndex >= nPendingFields )
         continue;
@@ -139,7 +139,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     // and only modify the subset if we cannot.
     if ( !mProviderRequest.orderBy().isEmpty() )
     {
-      Q_FOREACH ( const QString& attr, mProviderRequest.orderBy().usedAttributes() )
+    for ( const QString& attr : mProviderRequest.orderBy().usedAttributes() )
       {
         providerSubset << mSource->mFields.lookupField( attr );
       }
@@ -150,7 +150,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
 
   if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    Q_FOREACH ( const QString& field, mProviderRequest.filterExpression()->referencedColumns() )
+  for ( const QString& field : mProviderRequest.filterExpression()->referencedColumns() )
     {
       int idx = source->mFields.lookupField( field );
 
@@ -534,7 +534,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   exp->prepare( mExpressionContext.data() );
   mExpressionFieldInfo.insert( fieldIdx, exp );
 
-  Q_FOREACH ( const QString& col, exp->referencedColumns() )
+for ( const QString& col : exp->referencedColumns() )
   {
     int dependentFieldIdx = mSource->mFields.lookupField( col );
     if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )

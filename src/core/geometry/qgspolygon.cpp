@@ -144,7 +144,7 @@ int QgsPolygonV2::wkbSize() const
     // Endianness and WkbType is not stored for LinearRings
     size += mExteriorRing->wkbSize() - ( sizeof( char ) + sizeof( quint32 ) );
   }
-  Q_FOREACH ( const QgsCurve* curve, mInteriorRings )
+for ( const QgsCurve* curve : mInteriorRings )
   {
     // Endianness and WkbType is not stored for LinearRings
     size += curve->wkbSize() - ( sizeof( char ) + sizeof( quint32 ) );
@@ -166,7 +166,7 @@ unsigned char* QgsPolygonV2::asWkb( int& binarySize ) const
     mExteriorRing->points( pts );
     QgsGeometryUtils::pointsToWKB( wkb, pts, mExteriorRing->is3D(), mExteriorRing->isMeasure() );
   }
-  Q_FOREACH ( const QgsCurve* curve, mInteriorRings )
+for ( const QgsCurve* curve : mInteriorRings )
   {
     QgsPointSequence pts;
     curve->points( pts );
@@ -235,7 +235,7 @@ void QgsPolygonV2::setExteriorRing( QgsCurve* ring )
   setZMTypeFromSubGeometry( ring, QgsWkbTypes::Polygon );
 
   //match dimensionality for rings
-  Q_FOREACH ( QgsCurve* ring, mInteriorRings )
+for ( QgsCurve* ring : mInteriorRings )
   {
     ring->convertTo( mExteriorRing->wkbType() );
   }

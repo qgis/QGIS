@@ -703,7 +703,7 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   long nFeatures = featureCount();
 
   QWidget* mainWindow = nullptr;
-  Q_FOREACH ( QWidget* widget, qApp->topLevelWidgets() )
+for ( QWidget* widget : qApp->topLevelWidgets() )
   {
     if ( widget->objectName() == "QgisApp" )
     {
@@ -1079,7 +1079,7 @@ bool QgsVectorLayer::deleteSelectedFeatures( int* deletedCount )
   int count = mSelectedFeatureIds.size();
   // Make a copy since deleteFeature modifies mSelectedFeatureIds
   QgsFeatureIds selectedFeatures( mSelectedFeatureIds );
-  Q_FOREACH ( QgsFeatureId fid, selectedFeatures )
+for ( QgsFeatureId fid : selectedFeatures )
   {
     deleted += deleteFeature( fid );  // removes from selection
   }
@@ -1634,7 +1634,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
   // dependencies
   QDomElement dependenciesElement = document.createElement( "layerDependencies" );
-  Q_FOREACH ( const QgsMapLayerDependency& dep, dependencies() )
+for ( const QgsMapLayerDependency& dep : dependencies() )
   {
     if ( dep.type() != QgsMapLayerDependency::PresenceDependency )
       continue;
@@ -1646,7 +1646,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
   //default expressions
   QDomElement defaultsElem = document.createElement( "defaults" );
-  Q_FOREACH ( const QgsField& field, mFields )
+for ( const QgsField& field : mFields )
   {
     QDomElement defaultElem = document.createElement( "default" );
     defaultElem.setAttribute( "field", field.name() );
@@ -1657,7 +1657,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
   // change dependencies
   QDomElement dataDependenciesElement = document.createElement( "dataDependencies" );
-  Q_FOREACH ( const QgsMapLayerDependency& dep, dependencies() )
+for ( const QgsMapLayerDependency& dep : dependencies() )
   {
     if ( dep.type() != QgsMapLayerDependency::DataDependency )
       continue;
@@ -1904,7 +1904,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
   //attribute aliases
   QDomElement aliasElem = doc.createElement( "aliases" );
-  Q_FOREACH ( const QgsField& field, mFields )
+for ( const QgsField& field : mFields )
   {
     QDomElement aliasEntryElem = doc.createElement( "alias" );
     aliasEntryElem.setAttribute( "field", field.name() );
@@ -2163,7 +2163,7 @@ QString QgsVectorLayer::attributeDisplayName( int index ) const
 QgsStringMap QgsVectorLayer::attributeAliases() const
 {
   QgsStringMap map;
-  Q_FOREACH ( const QgsField& field, fields() )
+for ( const QgsField& field : fields() )
   {
     if ( !field.alias().isEmpty() )
       map.insert( field.name(), field.alias() );
@@ -2197,7 +2197,7 @@ bool QgsVectorLayer::deleteAttributes( QList<int> attrs )
 
   qSort( attrs.begin(), attrs.end(), qGreater<int>() );
 
-  Q_FOREACH ( int attr, attrs )
+for ( int attr : attrs )
   {
     if ( deleteAttribute( attr ) )
     {
@@ -2380,7 +2380,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures() const
   {
     // for small amount of selected features, fetch them directly
     // because request with FilterFids would go iterate over the whole layer
-    Q_FOREACH ( QgsFeatureId fid, mSelectedFeatureIds )
+  for ( QgsFeatureId fid : mSelectedFeatureIds )
     {
       getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f );
       features << f;
@@ -2635,7 +2635,7 @@ QString QgsVectorLayer::displayExpression() const
   {
     QString idxName;
 
-    Q_FOREACH ( const QgsField& field, mFields )
+  for ( const QgsField& field : mFields )
     {
       QString fldName = field.name();
 
@@ -2985,7 +2985,7 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
       if ( mEditBuffer )
       {
         QSet<QString> vals;
-        Q_FOREACH ( const QVariant& v, uniqueValues )
+      for ( const QVariant& v : uniqueValues )
         {
           vals << v.toString();
         }
@@ -3358,7 +3358,7 @@ QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression,
     return values;
 
   bool convertOk;
-  Q_FOREACH ( const QVariant& value, variantValues )
+for ( const QVariant& value : variantValues )
   {
     double val = value.toDouble( &convertOk );
     if ( convertOk )
@@ -3764,7 +3764,7 @@ QString QgsVectorLayer::metadata() const
   {
     myMetadata += "<p class=\"glossy\">" + tr( "Primary key attributes" ) + "</p>\n";
     myMetadata += "<p>";
-    Q_FOREACH ( int idx, pkAttrList )
+  for ( int idx : pkAttrList )
     {
       myMetadata += fields().at( idx ).name() + ' ';
     }
@@ -4114,7 +4114,7 @@ QSet<QgsMapLayerDependency> QgsVectorLayer::dependencies() const
 bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
 {
   QSet<QgsMapLayerDependency> deps;
-  Q_FOREACH ( const QgsMapLayerDependency& dep, oDeps )
+for ( const QgsMapLayerDependency& dep : oDeps )
   {
     if ( dep.origin() == QgsMapLayerDependency::FromUser )
       deps << dep;
@@ -4125,7 +4125,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
   QSet<QgsMapLayerDependency> toAdd = deps - dependencies();
 
   // disconnect layers that are not present in the list of dependencies anymore
-  Q_FOREACH ( const QgsMapLayerDependency& dep, mDependencies )
+for ( const QgsMapLayerDependency& dep : mDependencies )
   {
     QgsVectorLayer* lyr = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( dep.layerId() ) );
     if ( lyr == nullptr )
@@ -4144,7 +4144,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
   emit dependenciesChanged();
 
   // connect to new layers
-  Q_FOREACH ( const QgsMapLayerDependency& dep, mDependencies )
+for ( const QgsMapLayerDependency& dep : mDependencies )
   {
     QgsVectorLayer* lyr = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( dep.layerId() ) );
     if ( lyr == nullptr )

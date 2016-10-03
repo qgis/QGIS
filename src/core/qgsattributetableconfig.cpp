@@ -80,7 +80,7 @@ void QgsAttributeTableConfig::update( const QgsFields& fields )
     }
   }
 
-  Q_FOREACH ( const QgsField& field, fields )
+for ( const QgsField& field : fields )
   {
     if ( !columns.contains( field.name() ) )
     {
@@ -106,7 +106,7 @@ void QgsAttributeTableConfig::update( const QgsFields& fields )
 
 bool QgsAttributeTableConfig::actionWidgetVisible() const
 {
-  Q_FOREACH ( const ColumnConfig& columnConfig, mColumns )
+for ( const ColumnConfig& columnConfig : mColumns )
   {
     if ( columnConfig.type == Action && columnConfig.hidden == false )
       return true;
@@ -258,7 +258,7 @@ void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
 
   QDomElement columnsElement  = doc.createElement( "columns" );
 
-  Q_FOREACH ( const ColumnConfig& column, mColumns )
+for ( const ColumnConfig& column : mColumns )
   {
     QDomElement columnElement = doc.createElement( "column" );
 

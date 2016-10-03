@@ -52,7 +52,7 @@ bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int th
 
   QVector<QgsDartMeasurement> dartMeasurements;
 
-  Q_FOREACH ( const QString& suffix, subDirs )
+for ( const QString& suffix : subDirs )
   {
     qDebug() << "Checking subdir " << suffix;
     bool result;
@@ -84,7 +84,7 @@ bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int th
 
   if ( !successful )
   {
-    Q_FOREACH ( const QgsDartMeasurement& measurement, dartMeasurements )
+  for ( const QgsDartMeasurement& measurement : dartMeasurements )
       measurement.send();
 
     QgsDartMeasurement msg( "Image not accepted by test", QgsDartMeasurement::Text, "This may be caused because the test is supposed to fail or rendering inconsistencies."

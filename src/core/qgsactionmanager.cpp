@@ -157,7 +157,7 @@ bool QgsActionManager::writeXml( QDomNode& layer_node, QDomDocument& doc ) const
   QDomElement aActions = doc.createElement( "attributeactions" );
   aActions.setAttribute( "default", mDefaultAction );
 
-  Q_FOREACH ( const QgsAction& action, mActions )
+for ( const QgsAction& action : mActions )
   {
     QDomElement actionSetting = doc.createElement( "actionsetting" );
     actionSetting.setAttribute( "type", action.type() );

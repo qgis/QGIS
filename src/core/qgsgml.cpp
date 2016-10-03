@@ -182,7 +182,7 @@ int QgsGml::getFeatures( const QByteArray &data, QgsWkbTypes::Type* wkbType, Qgs
 void QgsGml::fillMapsFromParser()
 {
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = mParser.getAndStealReadyFeatures();
-  Q_FOREACH ( const QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair& featPair, features )
+for ( const QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair& featPair : features )
   {
     QgsFeature* feat = featPair.first;
     const QString& gmlId = featPair.second;
@@ -410,7 +410,7 @@ QgsGmlStreamingParser::~QgsGmlStreamingParser()
   XML_ParserFree( mParser );
 
   // Normally a sane user of this class should have consumed everything...
-  Q_FOREACH ( QgsGmlFeaturePtrGmlIdPair featPair, mFeatureList )
+for ( QgsGmlFeaturePtrGmlIdPair featPair : mFeatureList )
   {
     delete featPair.first;
   }
@@ -1476,9 +1476,9 @@ int QgsGmlStreamingParser::createMultiPolygonFromFragments()
 int QgsGmlStreamingParser::totalWKBFragmentSize() const
 {
   int result = 0;
-  Q_FOREACH ( const QList<QgsWkbPtr> &list, mCurrentWKBFragments )
+for ( const QList<QgsWkbPtr> &list : mCurrentWKBFragments )
   {
-    Q_FOREACH ( const QgsWkbPtr &i, list )
+  for ( const QgsWkbPtr &i : list )
     {
       result += i.size();
     }

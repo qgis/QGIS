@@ -60,7 +60,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y )
 
   if ( !linesToProcess.empty() )
   {
-    Q_FOREACH ( QgsLineString* line, linesToProcess )
+  for ( QgsLineString* line : linesToProcess )
     {
       QTransform transform = QTransform::fromTranslate( x, y );
 

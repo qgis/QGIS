@@ -427,7 +427,7 @@ QgsStringReplacement QgsStringReplacement::fromProperties( const QgsStringMap& p
 QString QgsStringReplacementCollection::process( const QString& input ) const
 {
   QString result = input;
-  Q_FOREACH ( const QgsStringReplacement& r, mReplacements )
+for ( const QgsStringReplacement& r : mReplacements )
   {
     result = r.process( result );
   }
@@ -436,7 +436,7 @@ QString QgsStringReplacementCollection::process( const QString& input ) const
 
 void QgsStringReplacementCollection::writeXml( QDomElement& elem, QDomDocument& doc ) const
 {
-  Q_FOREACH ( const QgsStringReplacement& r, mReplacements )
+for ( const QgsStringReplacement& r : mReplacements )
   {
     QgsStringMap props = r.properties();
     QDomElement propEl = doc.createElement( "replacement" );

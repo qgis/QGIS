@@ -171,7 +171,7 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
   if ( !filePath().isEmpty() )
     url = QUrl::fromLocalFile( filePath() );
 
-  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer& l, sourceLayers() )
+for ( const QgsVirtualLayerDefinition::SourceLayer& l : sourceLayers() )
   {
     if ( l.isReferenced() )
       url.addQueryItem( "layer_ref", QString( "%1:%2" ).arg( l.reference(), l.name() ) );
@@ -201,7 +201,7 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
       url.addQueryItem( "geometry", geometryField() );
   }
 
-  Q_FOREACH ( const QgsField& f, fields() )
+for ( const QgsField& f : fields() )
   {
     if ( f.type() == QVariant::Int )
       url.addQueryItem( "field", f.name() + ":int" );
@@ -231,7 +231,7 @@ void QgsVirtualLayerDefinition::addSource( const QString& name, const QString& s
 
 bool QgsVirtualLayerDefinition::hasSourceLayer( const QString& name ) const
 {
-  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer& l, sourceLayers() )
+for ( const QgsVirtualLayerDefinition::SourceLayer& l : sourceLayers() )
   {
     if ( l.name() == name )
     {
@@ -243,7 +243,7 @@ bool QgsVirtualLayerDefinition::hasSourceLayer( const QString& name ) const
 
 bool QgsVirtualLayerDefinition::hasReferencedLayers() const
 {
-  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer& l, sourceLayers() )
+for ( const QgsVirtualLayerDefinition::SourceLayer& l : sourceLayers() )
   {
     if ( l.isReferenced() )
     {

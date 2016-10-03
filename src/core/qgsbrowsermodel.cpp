@@ -110,7 +110,7 @@ void QgsBrowserModel::addRootItems()
   }
 
   // add drives
-  Q_FOREACH ( const QFileInfo& drive, QDir::drives() )
+for ( const QFileInfo& drive : QDir::drives() )
   {
     QString path = drive.absolutePath();
 
@@ -133,7 +133,7 @@ void QgsBrowserModel::addRootItems()
   // container for displaying providers as sorted groups (by QgsDataProvider::DataCapability enum)
   QMap<int, QgsDataItem *> providerMap;
 
-  Q_FOREACH ( QgsDataItemProvider* pr, QgsDataItemProviderRegistry::instance()->providers() )
+for ( QgsDataItemProvider* pr : QgsDataItemProviderRegistry::instance()->providers() )
   {
     int capabilities = pr->capabilities();
     if ( capabilities == QgsDataProvider::NoDataCapabilities )
@@ -152,7 +152,7 @@ void QgsBrowserModel::addRootItems()
   }
 
   // add as sorted groups by QgsDataProvider::DataCapability enum
-  Q_FOREACH ( int key, providerMap.uniqueKeys() )
+for ( int key : providerMap.uniqueKeys() )
   {
     QList<QgsDataItem *> providerGroup = providerMap.values( key );
     if ( providerGroup.size() > 1 )
@@ -160,7 +160,7 @@ void QgsBrowserModel::addRootItems()
       qSort( providerGroup.begin(), providerGroup.end(), cmpByDataItemName_ );
     }
 
-    Q_FOREACH ( QgsDataItem * ditem, providerGroup )
+  for ( QgsDataItem * ditem : providerGroup )
     {
       mRootItems << ditem;
     }
@@ -169,7 +169,7 @@ void QgsBrowserModel::addRootItems()
 
 void QgsBrowserModel::removeRootItems()
 {
-  Q_FOREACH ( QgsDataItem* item, mRootItems )
+for ( QgsDataItem* item : mRootItems )
   {
     delete item;
   }
@@ -445,7 +445,7 @@ QStringList QgsBrowserModel::mimeTypes() const
 QMimeData * QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
 {
   QgsMimeDataUtils::UriList lst;
-  Q_FOREACH ( const QModelIndex &index, indexes )
+for ( const QModelIndex &index : indexes )
   {
     if ( index.isValid() )
     {

@@ -455,10 +455,10 @@ QSet<QString> QgsDiagramRenderer::referencedFields( const QgsExpressionContext &
   if ( !mDiagram )
     return referenced;
 
-  Q_FOREACH ( const QString& att, diagramAttributes() )
+for ( const QString& att : diagramAttributes() )
   {
     QgsExpression* expression = mDiagram->getExpression( att, context );
-    Q_FOREACH ( const QString& field, expression->referencedColumns() )
+  for ( const QString& field : expression->referencedColumns() )
     {
       referenced << field;
     }
@@ -629,7 +629,7 @@ QSet<QString> QgsLinearlyInterpolatedDiagramRenderer::referencedFields( const Qg
   if ( mInterpolationSettings.classificationAttributeIsExpression )
   {
     QgsExpression* expression = mDiagram->getExpression( mInterpolationSettings.classificationAttributeExpression, context );
-    Q_FOREACH ( const QString& field, expression->referencedColumns() )
+  for ( const QString& field : expression->referencedColumns() )
     {
       referenced << field;
     }
@@ -729,7 +729,7 @@ QList< QgsLayerTreeModelLegendNode* > QgsLinearlyInterpolatedDiagramRenderer::le
   if ( mShowSizeLegend && mDiagram && mSizeLegendSymbol.data() )
   {
     // add size legend
-    Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue, 4 ) )
+  for ( double v, QgsSymbolLayerUtils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue : 4 ) )
     {
       double size = mDiagram->legendSize( v, mSettings, mInterpolationSettings );
       QgsLegendSymbolItem si( mSizeLegendSymbol.data(), QString::number( v ), QString() );

@@ -58,7 +58,7 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QPainter* painter )
   qreal maxColumnWidth = 0;
   if ( mSettings.equalColumnWidth() )
   {
-    Q_FOREACH ( const Atom& atom, atomList )
+  for ( const Atom& atom : atomList )
     {
       maxColumnWidth = qMax( atom.size.width(), maxColumnWidth );
     }
@@ -75,7 +75,7 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QPainter* painter )
   double columnMaxHeight = 0;
   qreal columnWidth = 0;
   int column = 0;
-  Q_FOREACH ( const Atom& atom, atomList )
+for ( const Atom& atom : atomList )
   {
     if ( atom.column > column )
     {
@@ -152,7 +152,7 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
 
   if ( !parentGroup ) return atoms;
 
-  Q_FOREACH ( QgsLayerTreeNode* node, parentGroup->children() )
+for ( QgsLayerTreeNode* node : parentGroup->children() )
   {
     if ( QgsLayerTree::isGroup( node ) )
     {
@@ -266,7 +266,7 @@ void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
   // Divide atoms to columns
   double totalHeight = 0;
   qreal maxAtomHeight = 0;
-  Q_FOREACH ( const Atom& atom, atomList )
+for ( const Atom& atom : atomList )
   {
     totalHeight += spaceAboveAtom( atom );
     totalHeight += atom.size.height();
@@ -452,7 +452,7 @@ QSizeF QgsLegendRenderer::drawAtom( const Atom& atom, QPainter* painter, QPointF
 {
   bool first = true;
   QSizeF size = QSizeF( atom.size );
-  Q_FOREACH ( const Nucleon& nucleon, atom.nucleons )
+for ( const Nucleon& nucleon : atom.nucleons )
   {
     if ( QgsLayerTreeGroup* groupItem = qobject_cast<QgsLayerTreeGroup*>( nucleon.item ) )
     {

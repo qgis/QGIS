@@ -156,7 +156,7 @@ QStringList QgsExpressionContextScope::filteredVariableNames() const
 {
   QStringList allVariables = mVariables.keys();
   QStringList filtered;
-  Q_FOREACH ( const QString& variable, allVariables )
+for ( const QString& variable : allVariables )
   {
     if ( variable.startsWith( '_' ) )
       continue;
@@ -211,7 +211,7 @@ void QgsExpressionContextScope::setFields( const QgsFields &fields )
 
 QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext& other )
 {
-  Q_FOREACH ( const QgsExpressionContextScope* scope, other.mStack )
+for ( const QgsExpressionContextScope* scope : other.mStack )
   {
     mStack << new QgsExpressionContextScope( *scope );
   }
@@ -240,7 +240,7 @@ QgsExpressionContext& QgsExpressionContext::operator=( const QgsExpressionContex
 {
   qDeleteAll( mStack );
   mStack.clear();
-  Q_FOREACH ( const QgsExpressionContextScope* scope, other.mStack )
+for ( const QgsExpressionContextScope* scope : other.mStack )
   {
     mStack << new QgsExpressionContextScope( *scope );
   }
@@ -257,7 +257,7 @@ QgsExpressionContext::~QgsExpressionContext()
 
 bool QgsExpressionContext::hasVariable( const QString& name ) const
 {
-  Q_FOREACH ( const QgsExpressionContextScope* scope, mStack )
+for ( const QgsExpressionContextScope* scope : mStack )
   {
     if ( scope->hasVariable( name ) )
       return true;
@@ -334,7 +334,7 @@ int QgsExpressionContext::indexOfScope( QgsExpressionContextScope* scope ) const
 int QgsExpressionContext::indexOfScope( const QString& scopeName ) const
 {
   int index = 0;
-  Q_FOREACH ( const QgsExpressionContextScope* scope, mStack )
+for ( const QgsExpressionContextScope* scope : mStack )
   {
     if ( scope->name() == scopeName )
       return index;
@@ -347,7 +347,7 @@ int QgsExpressionContext::indexOfScope( const QString& scopeName ) const
 QStringList QgsExpressionContext::variableNames() const
 {
   QStringList names;
-  Q_FOREACH ( const QgsExpressionContextScope* scope, mStack )
+for ( const QgsExpressionContextScope* scope : mStack )
   {
     names << scope->variableNames();
   }
@@ -358,7 +358,7 @@ QStringList QgsExpressionContext::filteredVariableNames() const
 {
   QStringList allVariables = variableNames();
   QStringList filtered;
-  Q_FOREACH ( const QString& variable, allVariables )
+for ( const QString& variable : allVariables )
   {
     if ( variable.startsWith( '_' ) )
       continue;
@@ -372,7 +372,7 @@ QStringList QgsExpressionContext::filteredVariableNames() const
 
 bool QgsExpressionContext::isReadOnly( const QString& name ) const
 {
-  Q_FOREACH ( const QgsExpressionContextScope* scope, mStack )
+for ( const QgsExpressionContextScope* scope : mStack )
   {
     if ( scope->isReadOnly( name ) )
       return true;
@@ -382,7 +382,7 @@ bool QgsExpressionContext::isReadOnly( const QString& name ) const
 
 bool QgsExpressionContext::hasFunction( const QString &name ) const
 {
-  Q_FOREACH ( const QgsExpressionContextScope* scope, mStack )
+for ( const QgsExpressionContextScope* scope : mStack )
   {
     if ( scope->hasFunction( name ) )
       return true;
@@ -393,7 +393,7 @@ bool QgsExpressionContext::hasFunction( const QString &name ) const
 QStringList QgsExpressionContext::functionNames() const
 {
   QStringList result;
-  Q_FOREACH ( const QgsExpressionContextScope* scope, mStack )
+for ( const QgsExpressionContextScope* scope : mStack )
   {
     result << scope->functionNames();
   }
@@ -637,7 +637,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::projectScope()
   QStringList variableValues = project->readListEntry( "Variables", "/variableValues" );
 
   int varIndex = 0;
-  Q_FOREACH ( const QString& variableName, variableNames )
+for ( const QString& variableName : variableNames )
   {
     if ( varIndex >= variableValues.length() )
     {
@@ -705,7 +705,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( const QgsMapLa
   QStringList variableValues = layer->customProperty( "variableValues" ).toStringList();
 
   int varIndex = 0;
-  Q_FOREACH ( const QString& variableName, variableNames )
+for ( const QString& variableName : variableNames )
   {
     if ( varIndex >= variableValues.length() )
     {
@@ -816,7 +816,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::compositionScope( const Qg
   QStringList variableValues = composition->customProperty( "variableValues" ).toStringList();
 
   int varIndex = 0;
-  Q_FOREACH ( const QString& variableName, variableNames )
+for ( const QString& variableName : variableNames )
   {
     if ( varIndex >= variableValues.length() )
     {
@@ -920,7 +920,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::composerItemScope( const Q
   QStringList variableValues = composerItem->customProperty( "variableValues" ).toStringList();
 
   int varIndex = 0;
-  Q_FOREACH ( const QString& variableName, variableNames )
+for ( const QString& variableName : variableNames )
   {
     if ( varIndex >= variableValues.length() )
     {

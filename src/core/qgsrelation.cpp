@@ -98,7 +98,7 @@ void QgsRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
   elem.setAttribute( "referencingLayer", mReferencingLayerId );
   elem.setAttribute( "referencedLayer", mReferencedLayerId );
 
-  Q_FOREACH ( const FieldPair& fields, mFieldPairs )
+for ( const FieldPair& fields : mFieldPairs )
   {
     QDomElement referenceElem = doc.createElement( "fieldRef" );
     referenceElem.setAttribute( "referencingField", fields.first );
@@ -166,7 +166,7 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature& feature ) const
 {
   QStringList conditions;
 
-  Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mFieldPairs )
+for ( const QgsRelation::FieldPair& fieldPair : mFieldPairs )
   {
     int referencingIdx = referencingLayer()->fields().indexFromName( fieldPair.referencingField() );
     QgsField referencingField = referencingLayer()->fields().at( referencingIdx );
@@ -196,7 +196,7 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes&
 {
   QStringList conditions;
 
-  Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mFieldPairs )
+for ( const QgsRelation::FieldPair& fieldPair : mFieldPairs )
   {
     int referencedIdx = referencedLayer()->fields().indexFromName( fieldPair.referencedField() );
     int referencingIdx = referencingLayer()->fields().indexFromName( fieldPair.referencingField() );
@@ -277,7 +277,7 @@ QgsAttributeList QgsRelation::referencedFields() const
 {
   QgsAttributeList attrs;
 
-  Q_FOREACH ( const FieldPair& pair, mFieldPairs )
+for ( const FieldPair& pair : mFieldPairs )
   {
     attrs << mReferencedLayer->fields().lookupField( pair.second );
   }
@@ -288,7 +288,7 @@ QgsAttributeList QgsRelation::referencingFields() const
 {
   QgsAttributeList attrs;
 
-  Q_FOREACH ( const FieldPair& pair, mFieldPairs )
+for ( const FieldPair& pair : mFieldPairs )
   {
     attrs << mReferencingLayer->fields().lookupField( pair.first );
   }
@@ -335,7 +335,7 @@ void QgsRelation::updateRelationStatus()
         mValid = false;
       }
 
-      Q_FOREACH ( const FieldPair& fieldPair, mFieldPairs )
+    for ( const FieldPair& fieldPair : mFieldPairs )
       {
         if ( -1 == mReferencingLayer->fields().lookupField( fieldPair.first ) )
         {

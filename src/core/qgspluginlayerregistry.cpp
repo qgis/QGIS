@@ -108,7 +108,7 @@ bool QgsPluginLayerRegistry::removePluginLayerType( const QString& typeName )
 
   // remove all remaining layers of this type - to avoid invalid behaviour
   QList<QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers().values();
-  Q_FOREACH ( QgsMapLayer* layer, layers )
+for ( QgsMapLayer* layer : layers )
   {
     if ( layer->type() == QgsMapLayer::PluginLayer )
     {

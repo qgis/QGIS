@@ -334,7 +334,7 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs& jobs )
 
     if ( job.renderer )
     {
-      Q_FOREACH ( const QString& message, job.renderer->errors() )
+    for ( const QString& message : job.renderer->errors() )
         mErrors.append( Error( job.renderer->layerId(), message ) );
 
       delete job.renderer;
@@ -376,12 +376,12 @@ void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs& jobs )
     return;
 
   QMultiMap<int, QString> elapsed;
-  Q_FOREACH ( const LayerRenderJob& job, jobs )
+for ( const LayerRenderJob& job : jobs )
     elapsed.insert( job.renderingTime, job.layerId );
 
   QList<int> tt( elapsed.uniqueKeys() );
   qSort( tt.begin(), tt.end(), qGreater<int>() );
-  Q_FOREACH ( int t, tt )
+for ( int t : tt )
   {
     QgsMessageLog::logMessage( tr( "%1 ms: %2" ).arg( t ).arg( QStringList( elapsed.values( t ) ).join( ", " ) ), tr( "Rendering" ) );
   }

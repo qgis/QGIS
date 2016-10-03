@@ -102,7 +102,7 @@ static void _addLayerTreeNodeToUriList( QgsLayerTreeNode* node, QgsMimeDataUtils
 {
   if ( QgsLayerTree::isGroup( node ) )
   {
-    Q_FOREACH ( QgsLayerTreeNode* child, QgsLayerTree::toGroup( node )->children() )
+  for ( QgsLayerTreeNode* child : QgsLayerTree::toGroup( node )->children() )
       _addLayerTreeNodeToUriList( child, uris );
   }
   else if ( QgsLayerTree::isLayer( node ) )
@@ -138,7 +138,7 @@ static void _addLayerTreeNodeToUriList( QgsLayerTreeNode* node, QgsMimeDataUtils
 QByteArray QgsMimeDataUtils::layerTreeNodesToUriList( const QList<QgsLayerTreeNode *>& nodes )
 {
   UriList uris;
-  Q_FOREACH ( QgsLayerTreeNode* node, nodes )
+for ( QgsLayerTreeNode* node : nodes )
     _addLayerTreeNodeToUriList( node, uris );
   return uriListToByteArray( uris );
 }
@@ -146,7 +146,7 @@ QByteArray QgsMimeDataUtils::layerTreeNodesToUriList( const QList<QgsLayerTreeNo
 QString QgsMimeDataUtils::encode( const QStringList& items )
 {
   QString encoded;
-  Q_FOREACH ( const QString& item, items )
+for ( const QString& item : items )
   {
     QString str = item;
     str.replace( '\\', "\\\\" );
@@ -161,7 +161,7 @@ QStringList QgsMimeDataUtils::decode( const QString& encoded )
   QStringList items;
   QString item;
   bool inEscape = false;
-  Q_FOREACH ( QChar c, encoded )
+for ( QChar c : encoded )
   {
     if ( c == '\\' && inEscape )
     {
@@ -192,7 +192,7 @@ QByteArray QgsMimeDataUtils::uriListToByteArray( const QgsMimeDataUtils::UriList
   QByteArray encodedData;
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
-  Q_FOREACH ( const Uri& u, layers )
+for ( const Uri& u : layers )
   {
     stream << u.data();
   }

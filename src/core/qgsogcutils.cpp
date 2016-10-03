@@ -2347,7 +2347,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionInOperatorToOgcFilter( const QgsE
   QDomElement orElem = mDoc.createElement( mFilterPrefix + ":Or" );
   QDomElement leftNode = expressionNodeToOgcFilter( node->node() );
 
-  Q_FOREACH ( QgsExpression::Node* n, node->list()->list() )
+for ( QgsExpression::Node* n : node->list()->list() )
   {
     QDomElement listNode = expressionNodeToOgcFilter( n );
     if ( !mErrorMessage.isEmpty() )
@@ -2550,7 +2550,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
   // this is somehow wrong - we are just hoping that the other side supports the same functions as we do...
   QDomElement funcElem = mDoc.createElement( mFilterPrefix + ":Function" );
   funcElem.setAttribute( "name", fd->name() );
-  Q_FOREACH ( QgsExpression::Node* n, node->args()->list() )
+for ( QgsExpression::Node* n : node->args()->list() )
   {
     QDomElement childElem = expressionNodeToOgcFilter( n );
     if ( !mErrorMessage.isEmpty() )
@@ -2794,7 +2794,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   QDomElement orElem = mDoc.createElement( mFilterPrefix + ":Or" );
   QDomElement leftNode = toOgcFilter( node->node() );
 
-  Q_FOREACH ( QgsSQLStatement::Node* n, node->list()->list() )
+for ( QgsSQLStatement::Node* n : node->list()->list() )
   {
     QDomElement listNode = toOgcFilter( n );
     if ( !mErrorMessage.isEmpty() )
@@ -2846,7 +2846,7 @@ static QString mapBinarySpatialToOgc( const QString& name )
   QStringList spatialOps;
   spatialOps << "BBOX" << "Intersects" << "Contains" << "Crosses" << "Equals"
   << "Disjoint" << "Overlaps" << "Touches" << "Within";
-  Q_FOREACH ( QString op, spatialOps )
+for ( QString op : spatialOps )
   {
     if ( nameCompare.compare( op, Qt::CaseInsensitive ) == 0 )
       return op;
@@ -2874,7 +2874,7 @@ QString QgsOgcUtilsSQLStatementToFilter::getGeometryColumnSRSName( const QgsSQLS
   const QgsSQLStatement::NodeColumnRef* col = static_cast<const QgsSQLStatement::NodeColumnRef*>( node );
   if ( !col->tableName().isEmpty() )
   {
-    Q_FOREACH ( QgsOgcUtils::LayerProperties prop, mLayerProperties )
+  for ( QgsOgcUtils::LayerProperties prop : mLayerProperties )
     {
       if ( prop.mName.compare( mMapTableAliasToNames[col->tableName()], Qt::CaseInsensitive ) == 0 &&
            prop.mGeometryAttribute.compare( col->name(), Qt::CaseInsensitive ) == 0 )
@@ -3094,7 +3094,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
     //if( ogcName == "Intersects" && mFilterVersion == QgsOgcUtils::FILTER_OGC_1_0 )
     //  ogcName = "Intersect";
     QDomElement funcElem = mDoc.createElement( mFilterPrefix + ":" + ogcName );
-    Q_FOREACH ( QgsSQLStatement::Node* n, args )
+  for ( QgsSQLStatement::Node* n : args )
     {
       QDomElement childElem = toOgcFilter( n );
       if ( !mErrorMessage.isEmpty() )
@@ -3203,7 +3203,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   // Other function
   QDomElement funcElem = mDoc.createElement( mFilterPrefix + ":Function" );
   funcElem.setAttribute( "name", node->name() );
-  Q_FOREACH ( QgsSQLStatement::Node* n, node->args()->list() )
+for ( QgsSQLStatement::Node* n : node->args()->list() )
   {
     QDomElement childElem = toOgcFilter( n );
     if ( !mErrorMessage.isEmpty() )
@@ -3224,7 +3224,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   }
 
   QList<QDomElement> listElem;
-  Q_FOREACH ( QString columnName, node->usingColumns() )
+for ( QString columnName : node->usingColumns() )
   {
     QDomElement eqElem = mDoc.createElement( mFilterPrefix + ":PropertyIsEqualTo" );
     QDomElement propElem1 = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
@@ -3243,7 +3243,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   else if ( listElem.size() > 1 )
   {
     QDomElement andElem = mDoc.createElement( mFilterPrefix + ":And" );
-    Q_FOREACH ( QDomElement elem, listElem )
+  for ( QDomElement elem : listElem )
     {
       andElem.appendChild( elem );
     }
@@ -3277,18 +3277,18 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   }
 
   // Register all table name aliases
-  Q_FOREACH ( QgsSQLStatement::NodeTableDef* table, node->tables() )
+for ( QgsSQLStatement::NodeTableDef* table : node->tables() )
   {
     visit( table );
   }
-  Q_FOREACH ( QgsSQLStatement::NodeJoin* join, node->joins() )
+for ( QgsSQLStatement::NodeJoin* join : node->joins() )
   {
     visit( join->tableDef() );
   }
 
   // Process JOIN conditions
   QString leftTable = node->tables().last()->name();
-  Q_FOREACH ( QgsSQLStatement::NodeJoin* join, node->joins() )
+for ( QgsSQLStatement::NodeJoin* join : node->joins() )
   {
     QDomElement joinElem = toOgcFilter( join, leftTable );
     if ( !mErrorMessage.isEmpty() )
@@ -3314,7 +3314,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   else if ( listElem.size() > 1 )
   {
     QDomElement andElem = mDoc.createElement( mFilterPrefix + ":And" );
-    Q_FOREACH ( QDomElement elem, listElem )
+  for ( QDomElement elem : listElem )
     {
       andElem.appendChild( elem );
     }

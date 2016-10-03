@@ -50,7 +50,7 @@ QgsMapLayer * QgsMapLayerRegistry::mapLayer( const QString& theLayerId ) const
 QList<QgsMapLayer *> QgsMapLayerRegistry::mapLayersByName( const QString& layerName ) const
 {
   QList<QgsMapLayer *> myResultList;
-  Q_FOREACH ( QgsMapLayer* layer, mMapLayers )
+for ( QgsMapLayer* layer : mMapLayers )
   {
     if ( layer->name() == layerName )
     {
@@ -66,7 +66,7 @@ QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
   bool takeOwnership )
 {
   QList<QgsMapLayer *> myResultList;
-  Q_FOREACH ( QgsMapLayer* myLayer, theMapLayers )
+for ( QgsMapLayer* myLayer : theMapLayers )
   {
     if ( !myLayer || !myLayer->isValid() )
     {
@@ -109,7 +109,7 @@ QgsMapLayerRegistry::addMapLayer( QgsMapLayer* theMapLayer,
 void QgsMapLayerRegistry::removeMapLayers( const QStringList& theLayerIds )
 {
   QList<QgsMapLayer*> layers;
-  Q_FOREACH ( const QString &myId, theLayerIds )
+for ( const QString &myId : theLayerIds )
   {
     layers << mMapLayers.value( myId );
   }
@@ -125,7 +125,7 @@ void QgsMapLayerRegistry::removeMapLayers( const QList<QgsMapLayer*>& layers )
   QStringList layerIds;
   QList<QgsMapLayer*> layerList;
 
-  Q_FOREACH ( QgsMapLayer* layer, layers )
+for ( QgsMapLayer* layer : layers )
   {
     // check layer and the registry contains it
     if ( layer && mMapLayers.contains( layer->id() ) )
@@ -141,7 +141,7 @@ void QgsMapLayerRegistry::removeMapLayers( const QList<QgsMapLayer*>& layers )
   emit layersWillBeRemoved( layerIds );
   emit layersWillBeRemoved( layerList );
 
-  Q_FOREACH ( QgsMapLayer* lyr, layerList )
+for ( QgsMapLayer* lyr : layerList )
   {
     QString myId( lyr->id() );
     emit layerWillBeRemoved( myId );
@@ -179,7 +179,7 @@ void QgsMapLayerRegistry::removeAllMapLayers()
 
 void QgsMapLayerRegistry::reloadAllLayers()
 {
-  Q_FOREACH ( QgsMapLayer* layer, mMapLayers )
+for ( QgsMapLayer* layer : mMapLayers )
   {
     layer->reload();
   }

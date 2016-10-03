@@ -4029,7 +4029,7 @@ QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wr
   if ( !wrapCharacter.isEmpty() && wrapCharacter != QLatin1String( "\n" ) )
   {
     //wrap on both the wrapchr and new line characters
-    Q_FOREACH ( const QString& line, text.split( wrapCharacter ) )
+  for ( const QString& line : text.split( wrapCharacter ) )
     {
       multiLineSplit.append( line.split( '\n' ) );
     }

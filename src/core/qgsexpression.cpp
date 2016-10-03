@@ -1045,7 +1045,7 @@ static QVariant fcnToDateTime( const QVariantList& values, const QgsExpressionCo
 
 static QVariant fcnCoalesce( const QVariantList& values, const QgsExpressionContext*, QgsExpression* )
 {
-  Q_FOREACH ( const QVariant &value, values )
+for ( const QVariant &value : values )
   {
     if ( value.isNull() )
       continue;
@@ -1309,7 +1309,7 @@ static QVariant fcnAttribute( const QVariantList& values, const QgsExpressionCon
 static QVariant fcnConcat( const QVariantList& values, const QgsExpressionContext*, QgsExpression *parent )
 {
   QString concat;
-  Q_FOREACH ( const QVariant &value, values )
+for ( const QVariant &value : values )
   {
     concat += getStringValue( value, parent );
   }
@@ -1686,9 +1686,9 @@ static QVariant fcnNodesToPoints( const QVariantList& values, const QgsExpressio
 
   QgsMultiPointV2* mp = new QgsMultiPointV2();
 
-  Q_FOREACH ( const QgsRingSequence &part, geom.geometry()->coordinateSequence() )
+for ( const QgsRingSequence &part : geom.geometry()->coordinateSequence() )
   {
-    Q_FOREACH ( const QgsPointSequence &ring, part )
+  for ( const QgsPointSequence &ring : part )
     {
       bool skipLast = false;
       if ( ignoreClosing && ring.count() > 2 && ring.first() == ring.last() )
@@ -1717,7 +1717,7 @@ static QVariant fcnSegmentsToLines( const QVariantList& values, const QgsExpress
 
   //ok, now we have a complete list of segmentized lines from the geometry
   QgsMultiLineString* ml = new QgsMultiLineString();
-  Q_FOREACH ( QgsLineString* line, linesToProcess )
+for ( QgsLineString* line : linesToProcess )
   {
     for ( int i = 0; i < line->numPoints() - 1; ++i )
     {
@@ -1900,7 +1900,7 @@ static QVariant fcnMakeLine( const QVariantList& values, const QgsExpressionCont
   QgsLineString* lineString = new QgsLineString();
   lineString->clear();
 
-  Q_FOREACH ( const QVariant& value, values )
+for ( const QVariant& value : values )
   {
     QgsGeometry geom = getGeometry( value, parent );
     if ( geom.isEmpty() )
@@ -2604,7 +2604,7 @@ static QVariant fcnOrderParts( const QVariantList& values, const QgsExpressionCo
   while ( orderedGeom->partCount() )
     orderedGeom->removeGeometry( 0 );
 
-  Q_FOREACH ( const QgsFeature& feature, partFeatures )
+for ( const QgsFeature& feature : partFeatures )
   {
     orderedGeom->addGeometry( feature.geometry().geometry()->clone() );
   }
@@ -3264,7 +3264,7 @@ static QVariant fcnArrayRemoveAll( const QVariantList& values, const QgsExpressi
 static QVariant fcnArrayCat( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QVariantList list;
-  Q_FOREACH ( QVariant cur, values )
+for ( QVariant cur : values )
   {
     list += getListValue( cur, parent );
   }
@@ -3274,7 +3274,7 @@ static QVariant fcnArrayCat( const QVariantList& values, const QgsExpressionCont
 static QVariant fcnArrayIntersect( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   const QVariantList array1 = getListValue( values.at( 0 ), parent );
-  Q_FOREACH ( QVariant cur, getListValue( values.at( 1 ), parent ) ) if ( array1.contains( cur ) ) return QVariant( true );
+  for ( QVariant cur, getListValue( values.at( 1 ) : parent ) ) if ( array1.contains( cur ) ) return QVariant( true );
   return QVariant( false );
 }
 
@@ -3315,7 +3315,7 @@ static QVariant fcnMapInsert( const QVariantList& values, const QgsExpressionCon
 static QVariant fcnMapConcat( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QVariantMap result;
-  Q_FOREACH ( QVariant cur, values )
+for ( QVariant cur : values )
   {
     const QVariantMap curMap = getMapValue( cur, parent );
     for ( QVariantMap::const_iterator it = curMap.constBegin(); it != curMap.constEnd(); ++it )
@@ -3649,7 +3649,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     QgsExpressionContextUtils::registerContextFunctions();
 
     //QgsExpression has ownership of all built-in functions
-    Q_FOREACH ( QgsExpression::Function* func, gmFunctions )
+  for ( QgsExpression::Function* func : gmFunctions )
     {
       gmOwnedFunctions << func;
       gmBuiltinFunctions << func->name();
@@ -3736,7 +3736,7 @@ int QgsExpression::functionIndex( const QString &name )
   {
     if ( QString::compare( name, Functions()[i]->name(), Qt::CaseInsensitive ) == 0 )
       return i;
-    Q_FOREACH ( const QString& alias, Functions()[i]->aliases() )
+  for ( const QString& alias : Functions()[i]->aliases() )
     {
       if ( QString::compare( name, alias, Qt::CaseInsensitive ) == 0 )
         return i;
@@ -3832,7 +3832,7 @@ QSet<int> QgsExpression::referencedAttributeIndexes( const QgsFields& fields ) c
   QStringList referencedFields = d->mRootNode->referencedColumns();
   QSet<int> referencedIndexes;
 
-  Q_FOREACH ( const QString& fieldName, referencedFields )
+for ( const QString& fieldName : referencedFields )
   {
     if ( fieldName == QgsFeatureRequest::AllAttributes )
     {
@@ -4065,7 +4065,7 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
 QgsExpression::NodeList* QgsExpression::NodeList::clone() const
 {
   NodeList* nl = new NodeList;
-  Q_FOREACH ( Node* node, mList )
+for ( Node* node : mList )
   {
     nl->mList.append( node->clone() );
   }
@@ -4078,7 +4078,7 @@ QString QgsExpression::NodeList::dump() const
 {
   QString msg;
   bool first = true;
-  Q_FOREACH ( Node* n, mList )
+for ( Node* n : mList )
   {
     if ( !first ) msg += ", ";
     else first = false;
@@ -4627,7 +4627,7 @@ QVariant QgsExpression::NodeInOperator::eval( QgsExpression *parent, const QgsEx
 
   bool listHasNull = false;
 
-  Q_FOREACH ( Node* n, mList->list() )
+for ( Node* n : mList->list() )
   {
     QVariant v2 = n->eval( parent, context );
     ENSURE_NO_EVAL_ERROR;
@@ -4669,7 +4669,7 @@ QVariant QgsExpression::NodeInOperator::eval( QgsExpression *parent, const QgsEx
 bool QgsExpression::NodeInOperator::prepare( QgsExpression *parent, const QgsExpressionContext *context )
 {
   bool res = mNode->prepare( parent, context );
-  Q_FOREACH ( Node* n, mList->list() )
+for ( Node* n : mList->list() )
   {
     res = res && n->prepare( parent, context );
   }
@@ -4697,7 +4697,7 @@ QVariant QgsExpression::NodeFunction::eval( QgsExpression *parent, const QgsExpr
   QVariantList argValues;
   if ( mArgs )
   {
-    Q_FOREACH ( Node* n, mArgs->list() )
+  for ( Node* n : mArgs->list() )
     {
       QVariant v;
       if ( fd->lazyEval() )
@@ -4731,7 +4731,7 @@ bool QgsExpression::NodeFunction::prepare( QgsExpression *parent, const QgsExpre
   bool res = true;
   if ( mArgs && !fd->lazyEval() )
   {
-    Q_FOREACH ( Node* n, mArgs->list() )
+  for ( Node* n : mArgs->list() )
     {
       res = res && n->prepare( parent, context );
     }
@@ -4759,7 +4759,7 @@ QStringList QgsExpression::NodeFunction::referencedColumns() const
     return functionColumns;
   }
 
-  Q_FOREACH ( Node* n, mArgs->list() )
+for ( Node* n : mArgs->list() )
   {
     functionColumns.append( n->referencedColumns() );
   }
@@ -4877,7 +4877,7 @@ QgsExpression::Node*QgsExpression::NodeColumnRef::clone() const
 
 QVariant QgsExpression::NodeCondition::eval( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  Q_FOREACH ( WhenThen* cond, mConditions )
+for ( WhenThen* cond : mConditions )
   {
     QVariant vWhen = cond->mWhenExp->eval( parent, context );
     TVL tvl = getTVLValue( vWhen, parent );
@@ -4904,7 +4904,7 @@ QVariant QgsExpression::NodeCondition::eval( QgsExpression *parent, const QgsExp
 bool QgsExpression::NodeCondition::prepare( QgsExpression *parent, const QgsExpressionContext *context )
 {
   bool res;
-  Q_FOREACH ( WhenThen* cond, mConditions )
+for ( WhenThen* cond : mConditions )
   {
     res = cond->mWhenExp->prepare( parent, context )
           & cond->mThenExp->prepare( parent, context );
@@ -4920,7 +4920,7 @@ bool QgsExpression::NodeCondition::prepare( QgsExpression *parent, const QgsExpr
 QString QgsExpression::NodeCondition::dump() const
 {
   QString msg( "CASE" );
-  Q_FOREACH ( WhenThen* cond, mConditions )
+for ( WhenThen* cond : mConditions )
   {
     msg += QString( " WHEN %1 THEN %2" ).arg( cond->mWhenExp->dump(), cond->mThenExp->dump() );
   }
@@ -4933,7 +4933,7 @@ QString QgsExpression::NodeCondition::dump() const
 QStringList QgsExpression::NodeCondition::referencedColumns() const
 {
   QStringList lst;
-  Q_FOREACH ( WhenThen* cond, mConditions )
+for ( WhenThen* cond : mConditions )
   {
     lst += cond->mWhenExp->referencedColumns() + cond->mThenExp->referencedColumns();
   }
@@ -4946,7 +4946,7 @@ QStringList QgsExpression::NodeCondition::referencedColumns() const
 
 bool QgsExpression::NodeCondition::needsGeometry() const
 {
-  Q_FOREACH ( WhenThen* cond, mConditions )
+for ( WhenThen* cond : mConditions )
   {
     if ( cond->mWhenExp->needsGeometry() ||
          cond->mThenExp->needsGeometry() )
@@ -4962,7 +4962,7 @@ bool QgsExpression::NodeCondition::needsGeometry() const
 QgsExpression::Node* QgsExpression::NodeCondition::clone() const
 {
   WhenThenList conditions;
-  Q_FOREACH ( WhenThen* wt, mConditions )
+for ( WhenThen* wt : mConditions )
     conditions.append( new WhenThen( wt->mWhenExp->clone(), wt->mThenExp->clone() ) );
   return new NodeCondition( conditions, mElseExp ? mElseExp->clone() : nullptr );
 }
@@ -4987,7 +4987,7 @@ QString QgsExpression::helpText( QString name )
                         .arg( tr( "%1 %2" ).arg( f.mType, name ),
                               f.mDescription ) );
 
-  Q_FOREACH ( const HelpVariant &v, f.mVariants )
+for ( const HelpVariant &v : f.mVariants )
   {
     if ( f.mVariants.size() > 1 )
     {
@@ -5019,7 +5019,7 @@ QString QgsExpression::helpText( QString name )
         helpContents += '(';
 
         QString delim;
-        Q_FOREACH ( const HelpArg &a, v.mArguments )
+      for ( const HelpArg &a : v.mArguments )
         {
           helpContents += delim;
           delim = ", ";
@@ -5045,7 +5045,7 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QString( "<h4>%1</h4>\n<div class=\"arguments\">\n<table>" ).arg( tr( "Arguments" ) );
 
-      Q_FOREACH ( const HelpArg &a, v.mArguments )
+    for ( const HelpArg &a : v.mArguments )
       {
         if ( a.mSyntaxOnly )
           continue;
@@ -5060,7 +5060,7 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QString( "<h4>%1</h4>\n<div class=\"examples\">\n<ul>\n" ).arg( tr( "Examples" ) );
 
-      Q_FOREACH ( const HelpExample &e, v.mExamples )
+    for ( const HelpExample &e : v.mExamples )
       {
         helpContents += "<li><code>" + e.mExpression + "</code> &rarr; <code>" + e.mReturns + "</code>";
 

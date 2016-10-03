@@ -52,7 +52,7 @@ QgsMapLayerLegend* QgsMapLayerLegend::defaultPluginLegend( QgsPluginLayer* pl )
 void QgsMapLayerLegendUtils::setLegendNodeOrder( QgsLayerTreeLayer* nodeLayer, const QList<int>& order )
 {
   QStringList orderStr;
-  Q_FOREACH ( int id, order )
+for ( int id : order )
     orderStr << QString::number( id );
   QString str = orderStr.isEmpty() ? "empty" : orderStr.join( "," );
 
@@ -98,7 +98,7 @@ QList<int> QgsMapLayerLegendUtils::legendNodeOrder( QgsLayerTreeLayer* nodeLayer
   int numNodes = _originalLegendNodeCount( nodeLayer );
 
   QList<int> lst;
-  Q_FOREACH ( const QString& item, orderStr.split( ',' ) )
+for ( const QString& item : orderStr.split( ',' ) )
   {
     bool ok;
     int id = item.toInt( &ok );
@@ -136,7 +136,7 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer* nodeLa
 {
   // handle user labels
   int i = 0;
-  Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, nodes )
+for ( QgsLayerTreeModelLegendNode* legendNode : nodes )
   {
     QString userLabel = QgsMapLayerLegendUtils::legendNodeUserLabel( nodeLayer, i++ );
     if ( !userLabel.isNull() )
@@ -150,7 +150,7 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer* nodeLa
 
     QList<QgsLayerTreeModelLegendNode*> newOrder;
     QSet<int> usedIndices;
-    Q_FOREACH ( int idx, order )
+  for ( int idx : order )
     {
       if ( usedIndices.contains( idx ) )
       {
@@ -200,7 +200,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
     nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute() ) );
   }
 
-  Q_FOREACH ( const QgsLegendSymbolItem& i, r->legendSymbolItemsV2() )
+for ( const QgsLegendSymbolItem& i : r->legendSymbolItemsV2() )
   {
     QgsSymbolLegendNode * n = new QgsSymbolLegendNode( nodeLayer, i );
     nodes.append( n );
@@ -212,7 +212,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
 
   if ( mLayer->diagramsEnabled() )
   {
-    Q_FOREACH ( QgsLayerTreeModelLegendNode * i, mLayer->diagramRenderer()->legendItems( nodeLayer ) )
+  for ( QgsLayerTreeModelLegendNode * i : mLayer->diagramRenderer()->legendItems( nodeLayer ) )
     {
       nodes.append( i );
     }
@@ -288,7 +288,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultPluginLayerLegend::createLayerTree
     return nodes;
 
   typedef QPair<QString, QPixmap> XY;
-  Q_FOREACH ( const XY& item, symbologyList )
+for ( const XY& item : symbologyList )
   {
     nodes << new QgsSimpleLegendNode( nodeLayer, item.first, QIcon( item.second ) );
   }

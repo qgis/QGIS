@@ -47,13 +47,13 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
       def.setUid( uid );
     }
   }
-  Q_FOREACH ( const QgsField& f, layer->dataProvider()->fields() )
+for ( const QgsField& f : layer->dataProvider()->fields() )
   {
     columns << "t." + f.name();
   }
 
   int joinIdx = 0;
-  Q_FOREACH ( const QgsVectorJoinInfo& join, layer->vectorJoins() )
+for ( const QgsVectorJoinInfo& join : layer->vectorJoins() )
   {
     QString joinName = QString( "j%1" ).arg( ++joinIdx );
     QgsVectorLayer* joinedLayer = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join.joinLayerId ) );
@@ -64,14 +64,14 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
     leftJoins << QString( "LEFT JOIN %1 AS %2 ON t.\"%5\"=%2.\"%3\"" ).arg( join.joinLayerId, joinName, join.joinFieldName, join.targetFieldName );
     if ( join.joinFieldNamesSubset() )
     {
-      Q_FOREACH ( const QString& f, *join.joinFieldNamesSubset() )
+    for ( const QString& f : *join.joinFieldNamesSubset() )
       {
         columns << joinName + "." + f + " AS " + prefix + f;
       }
     }
     else
     {
-      Q_FOREACH ( const QgsField& f, joinedLayer->fields() )
+    for ( const QgsField& f : joinedLayer->fields() )
       {
         if ( f.name() == join.joinFieldName )
           continue;

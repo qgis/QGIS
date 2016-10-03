@@ -52,7 +52,7 @@ bool QgsConditionalLayerStyles::writeXml( QDomNode &node, QDomDocument &doc ) co
 {
   QDomElement stylesel = doc.createElement( "conditionalstyles" );
   QDomElement rowel = doc.createElement( "rowstyles" );
-  Q_FOREACH ( const QgsConditionalStyle& style, mRowStyles )
+for ( const QgsConditionalStyle& style : mRowStyles )
   {
     style.writeXml( rowel, doc );
   }
@@ -66,7 +66,7 @@ bool QgsConditionalLayerStyles::writeXml( QDomNode &node, QDomDocument &doc ) co
     QDomElement fieldel = doc.createElement( "fieldstyle" );
     fieldel.setAttribute( "fieldname", it.key() );
     QgsConditionalStyles styles = it.value();
-    Q_FOREACH ( const QgsConditionalStyle& style, styles )
+  for ( const QgsConditionalStyle& style : styles )
     {
       style.writeXml( fieldel, doc );
     }
@@ -241,7 +241,7 @@ bool QgsConditionalStyle::validTextColor() const
 QList<QgsConditionalStyle> QgsConditionalStyle::matchingConditionalStyles( const QList<QgsConditionalStyle>& styles, const QVariant& value, QgsExpressionContext& context )
 {
   QList<QgsConditionalStyle> matchingstyles;
-  Q_FOREACH ( const QgsConditionalStyle& style, styles )
+for ( const QgsConditionalStyle& style : styles )
   {
     if ( style.matches( value, context ) )
       matchingstyles.append( style );
@@ -251,7 +251,7 @@ QList<QgsConditionalStyle> QgsConditionalStyle::matchingConditionalStyles( const
 
 QgsConditionalStyle QgsConditionalStyle::matchingConditionalStyle( const QList<QgsConditionalStyle>& styles, const QVariant& value,  QgsExpressionContext& context )
 {
-  Q_FOREACH ( const QgsConditionalStyle& style, styles )
+for ( const QgsConditionalStyle& style : styles )
   {
     if ( style.matches( value, context ) )
       return style;
@@ -262,7 +262,7 @@ QgsConditionalStyle QgsConditionalStyle::matchingConditionalStyle( const QList<Q
 QgsConditionalStyle QgsConditionalStyle::compressStyles( const QList<QgsConditionalStyle>& styles )
 {
   QgsConditionalStyle style;
-  Q_FOREACH ( const QgsConditionalStyle& s, styles )
+for ( const QgsConditionalStyle& s : styles )
   {
     style.setFont( s.font() );
     if ( s.backgroundColor().isValid() && s.backgroundColor().alpha() != 0 )
