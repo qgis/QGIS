@@ -41,7 +41,7 @@ import subprocess
 from shutil import copytree, rmtree
 import tempfile
 from time import sleep
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, waitServer
 from qgis.core import (
     QgsVectorLayer,
     QgsFeature,
@@ -94,12 +94,12 @@ class TestWFST(unittest.TestCase):
         # Clear all test layers
         for ln in ['test_point', 'test_polygon', 'test_linestring']:
             cls._clearLayer(ln)
-        os.environ['QGIS_SERVER_DEFAULT_PORT'] = str(cls.port)
+        os.environ['QGIS_SERVER_PORT'] = str(cls.port)
         server_path = os.path.dirname(os.path.realpath(__file__)) + \
             '/qgis_wrapped_server.py'
         cls.server = subprocess.Popen([sys.executable, server_path],
                                       env=os.environ)
-        sleep(2)
+        assert waitServer('http://127.0.0.1:%s' % cls.port), "Server is not responding!"
 
     @classmethod
     def tearDownClass(cls):

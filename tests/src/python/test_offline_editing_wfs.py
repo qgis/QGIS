@@ -35,7 +35,7 @@ import subprocess
 from shutil import copytree, rmtree
 import tempfile
 from time import sleep
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, waitServer
 from qgis.core import QgsVectorLayer
 
 from qgis.testing import (
@@ -85,7 +85,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
                 pass
         # Clear all test layers
         cls._clearLayer(cls._getLayer('test_point'))
-        os.environ['QGIS_SERVER_DEFAULT_PORT'] = str(cls.port)
+        os.environ['QGIS_SERVER_PORT'] = str(cls.port)
         cls.server_path = os.path.dirname(os.path.realpath(__file__)) + \
             '/qgis_wrapped_server.py'
 
@@ -99,7 +99,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
         self.server = subprocess.Popen([sys.executable, self.server_path],
                                        env=os.environ)
         # Wait for the server process to start
-        sleep(2)
+        assert waitServer('http://127.0.0.1:%s' % self.port), "Server is not responding!"
         self._setUp()
 
     def tearDown(self):

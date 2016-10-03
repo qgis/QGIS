@@ -3,7 +3,8 @@
 QGIS Server HTTP wrapper
 
 This script launches a QGIS Server listening on port 8081 or on the port
-specified on the environment variable QGIS_SERVER_DEFAULT_PORT
+specified on the environment variable QGIS_SERVER_PORT
+QGIS_SERVER_HOST (defaults to 127.0.0.1)
 
 For testing purposes, HTTP Basic can be enabled by setting the following
 environment variables:
@@ -36,10 +37,8 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from qgis.core import QgsApplication
 from qgis.server import QgsServer
 
-try:
-    QGIS_SERVER_DEFAULT_PORT = int(os.environ['QGIS_SERVER_DEFAULT_PORT'])
-except KeyError:
-    QGIS_SERVER_DEFAULT_PORT = 8081
+QGIS_SERVER_PORT = int(os.environ.get('QGIS_SERVER_PORT', '8081'))
+QGIS_SERVER_HOST = os.environ.get('QGIS_SERVER_HOST', '127.0.0.1')
 
 qgs_app = QgsApplication([], False)
 qgs_server = QgsServer()
@@ -101,9 +100,9 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == '__main__':
-    server = HTTPServer(('localhost', QGIS_SERVER_DEFAULT_PORT), Handler)
-    print('Starting server on localhost:%s, use <Ctrl-C> to stop' %
-          QGIS_SERVER_DEFAULT_PORT)
+    print('Starting server on %s:%s, use <Ctrl-C> to stop' %
+          (QGIS_SERVER_HOST, QGIS_SERVER_PORT))
+    server = HTTPServer((QGIS_SERVER_HOST, QGIS_SERVER_PORT), Handler)
 
     def signal_handler(signal, frame):
         global qgs_app

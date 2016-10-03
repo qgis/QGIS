@@ -33,7 +33,7 @@ from time import sleep
 from urllib.parse import quote
 from shutil import rmtree
 
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, waitServer
 from qgis.core import (
     QgsAuthManager,
     QgsAuthMethodConfig,
@@ -92,12 +92,12 @@ class TestAuthManager(unittest.TestCase):
         os.environ['QGIS_SERVER_HTTP_BASIC_AUTH'] = '1'
         os.environ['QGIS_SERVER_USERNAME'] = cls.username
         os.environ['QGIS_SERVER_PASSWORD'] = cls.password
-        os.environ['QGIS_SERVER_DEFAULT_PORT'] = str(cls.port)
+        os.environ['QGIS_SERVER_PORT'] = str(cls.port)
         server_path = os.path.dirname(os.path.realpath(__file__)) + \
             '/qgis_wrapped_server.py'
         cls.server = subprocess.Popen([sys.executable, server_path],
                                       env=os.environ)
-        sleep(2)
+        assert waitServer('http://127.0.0.1:%s' % cls.port), "Server is not responding!"
 
     @classmethod
     def tearDownClass(cls):
