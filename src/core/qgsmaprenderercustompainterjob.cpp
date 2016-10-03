@@ -260,7 +260,9 @@ void QgsMapRendererCustomPainterJob::doRender()
     if ( job.img )
     {
       // If we flattened this layer for alternate blend modes, composite it now
+      mPainter->setOpacity( job.opacity );
       mPainter->drawImage( 0, 0, *job.img );
+      mPainter->setOpacity( 1.0 );
     }
 
   }

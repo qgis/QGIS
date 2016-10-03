@@ -46,6 +46,7 @@ struct LayerRenderJob
   QImage* img; // may be null if it is not necessary to draw to separate image (e.g. sequential rendering)
   QgsMapLayerRenderer* renderer; // must be deleted
   QPainter::CompositionMode blendMode;
+  double opacity;
   bool cached; // if true, img already contains cached image from previous rendering
   QString layerId;
   int renderingTime; //!< time it took to render the layer in ms (it is -1 if not rendered or still rendering)
