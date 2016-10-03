@@ -345,7 +345,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsvariantdelegate.h
   )
 
-SET (WITH_QWTPOLAR TRUE CACHE BOOL "Determines whether QwtPolar should be built")
+SET (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar should be built")
 
 IF (WITH_QWTPOLAR)
   ADD_DEFINITIONS(-DWITH_QWTPOLAR)
