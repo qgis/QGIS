@@ -135,46 +135,61 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
       QgsDataItem *layerItem = l.styles.size() == 1 ? this : new QgsDataCollectionItem( this, title, mPath + '/' + l.identifier );
       if ( layerItem != this )
       {
+        layerItem->setCapabilities( layerItem->capabilities2() & ~QgsDataItem::Fertile );
+        layerItem->setState( QgsDataItem::Populated );
         layerItem->setToolTip( title );
-        addChildItem( layerItem );
+        children << layerItem;
       }
 
       Q_FOREACH ( const QgsWmtsStyle &style, l.styles )
       {
         QString styleName = style.title.isEmpty() ? style.identifier : style.title;
         if ( layerItem == this )
-          styleName.prepend( title + " - " );
+          styleName = title;  // just one style so no need to display it
 
         QgsDataItem *styleItem = l.setLinks.size() == 1 ? layerItem : new QgsDataCollectionItem( layerItem, styleName, layerItem->path() + '/' + style.identifier );
         if ( styleItem != layerItem )
         {
+          styleItem->setCapabilities( styleItem->capabilities2() & ~QgsDataItem::Fertile );
+          styleItem->setState( QgsDataItem::Populated );
           styleItem->setToolTip( styleName );
-          layerItem->addChildItem( styleItem );
+          if ( layerItem == this )
+            children << styleItem;
+          else
+            layerItem->addChildItem( styleItem );
         }
 
         Q_FOREACH ( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
         {
           QString linkName = setLink.tileMatrixSet;
           if ( styleItem == layerItem )
-            linkName.prepend( styleName + " - " );
+            linkName = styleName;  // just one link so no need to display it
 
           QgsDataItem *linkItem = l.formats.size() == 1 ? styleItem : new QgsDataCollectionItem( styleItem, linkName, styleItem->path() + '/' + setLink.tileMatrixSet );
           if ( linkItem != styleItem )
           {
+            linkItem->setCapabilities( linkItem->capabilities2() & ~QgsDataItem::Fertile );
+            linkItem->setState( QgsDataItem::Populated );
             linkItem->setToolTip( linkName );
-            styleItem->addChildItem( linkItem );
+            if ( styleItem == this )
+              children << linkItem;
+            else
+              styleItem->addChildItem( linkItem );
           }
 
           Q_FOREACH ( const QString& format, l.formats )
           {
             QString name = format;
             if ( linkItem == styleItem )
-              name.prepend( linkName + " - " );
+              name = linkName;  // just one format so no need to display it
 
-            QgsDataItem *layerItem = new QgsWMTSLayerItem( linkItem, name, linkItem->path() + '/' + name, uri,
+            QgsDataItem *tileLayerItem = new QgsWMTSLayerItem( linkItem, name, linkItem->path() + '/' + name, uri,
                 l.identifier, format, style.identifier, setLink.tileMatrixSet, tileMatrixSets[ setLink.tileMatrixSet ].crs, title );
-            layerItem->setToolTip( name );
-            linkItem->addChildItem( layerItem );
+            tileLayerItem->setToolTip( name );
+            if ( linkItem == this )
+              children << tileLayerItem;
+            else
+              linkItem->addChildItem( tileLayerItem );
           }
         }
       }
