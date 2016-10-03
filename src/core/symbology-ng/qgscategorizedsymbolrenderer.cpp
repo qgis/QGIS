@@ -161,7 +161,7 @@ QgsCategorizedSymbolRenderer::QgsCategorizedSymbolRenderer( const QString& attrN
   //trigger a detachment and copy of mCategories BUT that same method CAN be used to modify a symbol in place
   Q_FOREACH ( const QgsRendererCategory& cat, categories )
   {
-    if ( cat.symbol() )
+    if ( !cat.symbol() )
     {
       QgsDebugMsg( "invalid symbol in a category! ignoring..." );
     }
