@@ -19,7 +19,7 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
 
     virtual void stopRender( QgsRenderContext& context );
 
-    virtual QList<QString> usedAttributes();
+    virtual QSet<QString> usedAttributes() const;
 
     QgsSymbol* symbol() const;
     void setSymbol( QgsSymbol* s /Transfer/ );

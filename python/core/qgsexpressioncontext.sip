@@ -17,7 +17,7 @@ class QgsScopedExpressionFunction : QgsExpression::Function
                                  const QString& group,
                                  const QString& helpText = QString(),
                                  bool usesGeometry = false,
-                                 const QStringList& referencedColumns = QStringList(),
+                                 const QSet<QString>& referencedColumns = QSet<QString>(),
                                  bool lazyEval = false,
                                  bool handlesNull = false,
                                  bool isContextual = true );

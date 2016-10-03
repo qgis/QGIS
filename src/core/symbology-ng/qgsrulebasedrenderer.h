@@ -421,7 +421,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     virtual QString filter( const QgsFields& fields = QgsFields() ) override;
 
-    virtual QList<QString> usedAttributes() override;
+    virtual QSet<QString> usedAttributes() const override;
 
     virtual bool filterNeedsGeometry() const override;
 

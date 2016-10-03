@@ -85,7 +85,7 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
      * @param attributeNames list of attribute names to which additional required attributes shall be added
      * @return Whether the preparation was successful - if not, the provider shall not be used
      */
-    virtual bool prepare( const QgsRenderContext& context, QStringList& attributeNames );
+    virtual bool prepare( const QgsRenderContext& context, QSet<QString>& attributeNames );
 
     /**
      * Register a feature for labeling as one or more QgsLabelFeature objects stored into mFeatures

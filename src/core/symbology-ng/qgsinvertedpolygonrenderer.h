@@ -71,7 +71,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     virtual QString dump() const override;
 
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QList<QString> usedAttributes() override;
+    virtual QSet<QString> usedAttributes() const override;
     /** Proxy that will call this method on the embedded renderer. */
     virtual Capabilities capabilities() override;
     /** Proxy that will call this method on the embedded renderer.

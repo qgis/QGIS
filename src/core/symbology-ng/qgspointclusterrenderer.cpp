@@ -157,11 +157,11 @@ QDomElement QgsPointClusterRenderer::save( QDomDocument& doc )
   return rendererElement;
 }
 
-QList<QString> QgsPointClusterRenderer::usedAttributes()
+QSet<QString> QgsPointClusterRenderer::usedAttributes() const
 {
-  QList<QString> attr = QgsPointDistanceRenderer::usedAttributes();
+  QSet<QString> attr = QgsPointDistanceRenderer::usedAttributes();
   if ( mClusterSymbol )
-    attr.append( mClusterSymbol->usedAttributes().toList() );
+    attr.unite( mClusterSymbol->usedAttributes() );
   return attr;
 }
 

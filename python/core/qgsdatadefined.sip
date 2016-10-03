@@ -128,7 +128,7 @@ class QgsDataDefined
      * @param context expression context, used for preparing the expression if required
      * @note added in QGIS 2.12
      */
-    QStringList referencedColumns( const QgsExpressionContext& context = QgsExpressionContext() );
+    QSet<QString> referencedColumns( const QgsExpressionContext& context = QgsExpressionContext() );
 
     /**
      * Get the field which this QgsDataDefined represents. Be aware that this may return

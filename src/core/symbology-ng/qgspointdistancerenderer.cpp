@@ -204,12 +204,12 @@ QString QgsPointDistanceRenderer::filter( const QgsFields& fields )
     return mRenderer->filter( fields );
 }
 
-QList<QString> QgsPointDistanceRenderer::usedAttributes()
+QSet<QString> QgsPointDistanceRenderer::usedAttributes() const
 {
-  QList<QString> attributeList;
+  QSet<QString> attributeList;
   if ( !mLabelAttributeName.isEmpty() )
   {
-    attributeList.push_back( mLabelAttributeName );
+    attributeList.insert( mLabelAttributeName );
   }
   if ( mRenderer )
   {

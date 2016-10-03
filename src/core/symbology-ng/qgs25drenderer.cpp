@@ -146,9 +146,9 @@ void Qgs25DRenderer::stopRender( QgsRenderContext& context )
   mSymbol->stopRender( context );
 }
 
-QList<QString> Qgs25DRenderer::usedAttributes()
+QSet<QString> Qgs25DRenderer::usedAttributes() const
 {
-  return mSymbol->usedAttributes().toList();
+  return mSymbol->usedAttributes();
 }
 
 QgsFeatureRenderer* Qgs25DRenderer::clone() const

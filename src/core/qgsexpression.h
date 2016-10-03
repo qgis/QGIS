@@ -183,7 +183,7 @@ class CORE_EXPORT QgsExpression
      *
      * TODO QGIS3: Return QSet<QString>
      */
-    QStringList referencedColumns() const;
+    QSet<QString> referencedColumns() const;
 
     /**
      * Return a list of field name indexes obtained from the provided fields.
@@ -451,7 +451,7 @@ class CORE_EXPORT QgsExpression
                   const QString& group,
                   const QString& helpText = QString(),
                   bool usesGeometry = false,
-                  const QStringList& referencedColumns = QStringList(),
+                  const QSet<QString>& referencedColumns = QSet<QString>(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false )
@@ -475,7 +475,7 @@ class CORE_EXPORT QgsExpression
                   const QString& group,
                   const QString& helpText = QString(),
                   bool usesGeometry = false,
-                  const QStringList& referencedColumns = QStringList(),
+                  const QSet<QString>& referencedColumns = QSet<QString>(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false )
@@ -534,7 +534,7 @@ class CORE_EXPORT QgsExpression
          * Functions are non lazy default and will be given the node return value when called **/
         bool lazyEval() const { return mLazyEval; }
 
-        virtual QStringList referencedColumns() const { return mReferencedColumns; }
+        virtual QSet<QString> referencedColumns() const { return mReferencedColumns; }
 
         /** Returns whether the function is only available if provided by a QgsExpressionContext object.
          * @note added in QGIS 2.12
@@ -566,7 +566,7 @@ class CORE_EXPORT QgsExpression
         bool mUsesGeometry;
         QString mGroup;
         QString mHelpText;
-        QStringList mReferencedColumns;
+        QSet<QString> mReferencedColumns;
         bool mLazyEval;
         bool mHandlesNull;
         bool mIsContextual; //if true function is only available through an expression context
@@ -588,7 +588,7 @@ class CORE_EXPORT QgsExpression
                         const QString& group,
                         const QString& helpText = QString(),
                         bool usesGeometry = false,
-                        const QStringList& referencedColumns = QStringList(),
+                        const QSet<QString>& referencedColumns = QSet<QString>(),
                         bool lazyEval = false,
                         const QStringList& aliases = QStringList(),
                         bool handlesNull = false )
@@ -605,7 +605,7 @@ class CORE_EXPORT QgsExpression
                         const QString& group,
                         const QString& helpText = QString(),
                         bool usesGeometry = false,
-                        const QStringList& referencedColumns = QStringList(),
+                        const QSet<QString>& referencedColumns = QSet<QString>(),
                         bool lazyEval = false,
                         const QStringList& aliases = QStringList(),
                         bool handlesNull = false )
@@ -775,7 +775,7 @@ class CORE_EXPORT QgsExpression
          *
          * @return A list of columns required to evaluate this expression
          */
-        virtual QStringList referencedColumns() const = 0;
+        virtual QSet<QString> referencedColumns() const = 0;
 
         /**
          * Abstract virtual method which returns if the geometry is required to evaluate
@@ -873,7 +873,7 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override { return mOperand->referencedColumns(); }
+        virtual QSet<QString> referencedColumns() const override { return mOperand->referencedColumns(); }
         virtual bool needsGeometry() const override { return mOperand->needsGeometry(); }
         virtual Node* clone() const override;
 
@@ -903,7 +903,7 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override;
+        virtual QSet<QString> referencedColumns() const override;
         virtual bool needsGeometry() const override;
         virtual Node* clone() const override;
 
@@ -947,7 +947,7 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override;
+        virtual QSet<QString> referencedColumns() const override;
         virtual bool needsGeometry() const override;
         virtual Node* clone() const override;
 
@@ -974,7 +974,7 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override;
+        virtual QSet<QString> referencedColumns() const override;
         virtual bool needsGeometry() const override;
         virtual Node* clone() const override;
 
@@ -1004,7 +1004,7 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override { return QStringList(); }
+        virtual QSet<QString> referencedColumns() const override { return QSet<QString>(); }
         virtual bool needsGeometry() const override { return false; }
         virtual Node* clone() const override;
 
@@ -1030,7 +1030,7 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override { return QStringList( mName ); }
+        virtual QSet<QString> referencedColumns() const override { return QSet<QString>() << mName; }
         virtual bool needsGeometry() const override { return false; }
 
         virtual Node* clone() const override;
@@ -1081,7 +1081,7 @@ class CORE_EXPORT QgsExpression
         virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override;
+        virtual QSet<QString> referencedColumns() const override;
         virtual bool needsGeometry() const override;
         virtual Node* clone() const override;
 

@@ -303,18 +303,18 @@ bool QgsSymbolLayer::isCompatibleWithSymbol( QgsSymbol* symbol ) const
 
 QSet<QString> QgsSymbolLayer::usedAttributes() const
 {
-  QStringList columns;
+  QSet<QString> columns;
 
   QMap< QString, QgsDataDefined* >::const_iterator ddIt = mDataDefinedProperties.constBegin();
   for ( ; ddIt != mDataDefinedProperties.constEnd(); ++ddIt )
   {
     if ( ddIt.value() && ddIt.value()->isActive() )
     {
-      columns.append( ddIt.value()->referencedColumns() );
+      columns.unite( ddIt.value()->referencedColumns() );
     }
   }
 
-  return columns.toSet();
+  return columns;
 }
 
 void QgsSymbolLayer::saveDataDefinedProperties( QgsStringMap& stringMap ) const

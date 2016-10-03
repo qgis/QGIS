@@ -51,7 +51,7 @@ class QgsExpression
      *
      * TODO QGIS3: Return QSet<QString>
      */
-    QStringList referencedColumns() const;
+    QSet<QString> referencedColumns() const;
 
     /**
      * Return a list of field name indexes obtained from the provided fields.
@@ -301,7 +301,7 @@ class QgsExpression
                   const QString& group,
                   const QString& helpText = QString(),
                   bool usesGeometry = false,
-                  const QStringList& referencedColumns = QStringList(),
+                  const QSet<QString>& referencedColumns = QSet<QString>(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false );
@@ -314,7 +314,7 @@ class QgsExpression
                   const QString& group,
                   const QString& helpText = QString(),
                   bool usesGeometry = false,
-                  const QStringList& referencedColumns = QStringList(),
+                  const QSet<QString>& referencedColumns = QSet<QString>(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false );
@@ -350,7 +350,7 @@ class QgsExpression
          */
         bool lazyEval() const;
 
-        virtual QStringList referencedColumns() const;
+        virtual QSet<QString> referencedColumns() const;
 
         /** Returns whether the function is only available if provided by a QgsExpressionContext object.
          * @note added in QGIS 2.12
@@ -517,7 +517,7 @@ class QgsExpression
          *
          * @return A list of columns required to evaluate this expression
          */
-        virtual QStringList referencedColumns() const = 0;
+        virtual QSet<QString> referencedColumns() const = 0;
 
         /**
          * Abstract virtual method which returns if the geometry is required to evaluate
@@ -596,7 +596,7 @@ class QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
-        virtual QStringList referencedColumns() const;
+        virtual QSet<QString> referencedColumns() const;
         virtual bool needsGeometry() const;
         virtual QgsExpression::Node* clone() const;
     };
@@ -616,7 +616,7 @@ class QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
-        virtual QStringList referencedColumns() const;
+        virtual QSet<QString> referencedColumns() const;
         virtual bool needsGeometry() const;
         virtual QgsExpression::Node* clone() const;
 
@@ -650,7 +650,7 @@ class QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
-        virtual QStringList referencedColumns() const;
+        virtual QSet<QString> referencedColumns() const;
         virtual bool needsGeometry() const;
         virtual QgsExpression::Node* clone() const;
     };
@@ -670,7 +670,7 @@ class QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
-        virtual QStringList referencedColumns() const;
+        virtual QSet<QString> referencedColumns() const;
         virtual bool needsGeometry() const;
         virtual QgsExpression::Node* clone() const;
 
@@ -692,7 +692,7 @@ class QgsExpression
         virtual QString dump() const;
         virtual QgsExpression::Node* clone() const;
 
-        virtual QStringList referencedColumns() const;
+        virtual QSet<QString> referencedColumns() const;
         virtual bool needsGeometry() const;
     };
 
@@ -709,7 +709,7 @@ class QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
-        virtual QStringList referencedColumns() const;
+        virtual QSet<QString> referencedColumns() const;
         virtual bool needsGeometry() const;
 
         virtual QgsExpression::Node* clone() const;
@@ -741,7 +741,7 @@ class QgsExpression
         virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
-        virtual QStringList referencedColumns() const;
+        virtual QSet<QString> referencedColumns() const;
         virtual bool needsGeometry() const;
         virtual QgsExpression::Node* clone() const;
     };
