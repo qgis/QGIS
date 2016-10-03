@@ -195,6 +195,7 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
     mActionDataTypes->setText( tr( "Field type: " ) + mDataTypesString );
   }
 
+  updateFieldLists();
   updateGui();
 }
 
