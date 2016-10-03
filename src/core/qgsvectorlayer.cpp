@@ -3306,9 +3306,9 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
   }
 
   QgsFeature f;
-  QStringList lst;
+  QSet<QString> lst;
   if ( expression.isNull() )
-    lst.append( fieldOrExpression );
+    lst.insert( fieldOrExpression );
   else
     lst = expression->referencedColumns();
 

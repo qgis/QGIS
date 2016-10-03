@@ -135,11 +135,11 @@ class CORE_EXPORT QgsLabelingEngineInterface
     //! clears data defined objects from PAL layer settings for a registered layer
     virtual void clearActiveLayer( const QString& layerID ) = 0;
     //! called when starting rendering of a layer
-    virtual int prepareLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx ) = 0;
+    virtual int prepareLayer( QgsVectorLayer* layer, QSet<QString>& attrNames, QgsRenderContext& ctx ) = 0;
 
     //! adds a diagram layer to the labeling engine
     //! @note added in QGIS 2.12
-    virtual int prepareDiagramLayer( QgsVectorLayer *layer, QStringList &attrNames, QgsRenderContext &ctx )
+    virtual int prepareDiagramLayer( QgsVectorLayer *layer, QSet<QString>& attrNames, QgsRenderContext &ctx )
     { Q_UNUSED( layer ); Q_UNUSED( attrNames ); Q_UNUSED( ctx ); return 0; }
 
     //! called for every feature
@@ -1037,10 +1037,10 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     //! clears data defined objects from PAL layer settings for a registered layer
     virtual void clearActiveLayer( const QString& layerID ) override;
     //! hook called when drawing layer before issuing select()
-    virtual int prepareLayer( QgsVectorLayer* layer, QStringList &attrNames, QgsRenderContext& ctx ) override;
+    virtual int prepareLayer( QgsVectorLayer* layer, QSet<QString>& attrNames, QgsRenderContext& ctx ) override;
     //! adds a diagram layer to the labeling engine
     //! @note added in QGIS 2.12
-    virtual int prepareDiagramLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx ) override;
+    virtual int prepareDiagramLayer( QgsVectorLayer* layer, QSet<QString>& attrNames, QgsRenderContext& ctx ) override;
 
     /** Register a feature for labelling.
      * @param layerID string identifying layer associated with label

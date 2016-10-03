@@ -187,7 +187,7 @@ QgsExpression *QgsDataDefined::expression()
   return d->expression;
 }
 
-QStringList QgsDataDefined::referencedColumns( const QgsExpressionContext& context )
+QSet<QString> QgsDataDefined::referencedColumns( const QgsExpressionContext& context )
 {
   if ( !d->exprRefColumns.isEmpty() )
   {

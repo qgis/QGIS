@@ -3427,43 +3427,43 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "scale_exp", 6, fcnExpScale, "Math" )
     << new StaticFunction( "floor", 1, fcnFloor, "Math" )
     << new StaticFunction( "ceil", 1, fcnCeil, "Math" )
-    << new StaticFunction( "pi", 0, fcnPi, "Math", QString(), false, QStringList(), false, QStringList() << "$pi" )
-    << new StaticFunction( "to_int", 1, fcnToInt, "Conversions", QString(), false, QStringList(), false, QStringList() << "toint" )
-    << new StaticFunction( "to_real", 1, fcnToReal, "Conversions", QString(), false, QStringList(), false, QStringList() << "toreal" )
-    << new StaticFunction( "to_string", 1, fcnToString, "Conversions", QString(), false, QStringList(), false, QStringList() << "tostring" )
-    << new StaticFunction( "to_datetime", 1, fcnToDateTime, "Conversions", QString(), false, QStringList(), false, QStringList() << "todatetime" )
-    << new StaticFunction( "to_date", 1, fcnToDate, "Conversions", QString(), false, QStringList(), false, QStringList() << "todate" )
-    << new StaticFunction( "to_time", 1, fcnToTime, "Conversions", QString(), false, QStringList(), false, QStringList() << "totime" )
-    << new StaticFunction( "to_interval", 1, fcnToInterval, "Conversions", QString(), false, QStringList(), false, QStringList() << "tointerval" )
-    << new StaticFunction( "coalesce", -1, fcnCoalesce, "Conditionals", QString(), false, QStringList(), false, QStringList(), true )
-    << new StaticFunction( "if", 3, fcnIf, "Conditionals", QString(), False, QStringList(), true )
+    << new StaticFunction( "pi", 0, fcnPi, "Math", QString(), false, QSet<QString>(), false, QStringList() << "$pi" )
+    << new StaticFunction( "to_int", 1, fcnToInt, "Conversions", QString(), false, QSet<QString>(), false, QStringList() << "toint" )
+    << new StaticFunction( "to_real", 1, fcnToReal, "Conversions", QString(), false, QSet<QString>(), false, QStringList() << "toreal" )
+    << new StaticFunction( "to_string", 1, fcnToString, "Conversions", QString(), false, QSet<QString>(), false, QStringList() << "tostring" )
+    << new StaticFunction( "to_datetime", 1, fcnToDateTime, "Conversions", QString(), false, QSet<QString>(), false, QStringList() << "todatetime" )
+    << new StaticFunction( "to_date", 1, fcnToDate, "Conversions", QString(), false, QSet<QString>(), false, QStringList() << "todate" )
+    << new StaticFunction( "to_time", 1, fcnToTime, "Conversions", QString(), false, QSet<QString>(), false, QStringList() << "totime" )
+    << new StaticFunction( "to_interval", 1, fcnToInterval, "Conversions", QString(), false, QSet<QString>(), false, QStringList() << "tointerval" )
+    << new StaticFunction( "coalesce", -1, fcnCoalesce, "Conditionals", QString(), false, QSet<QString>(), false, QStringList(), true )
+    << new StaticFunction( "if", 3, fcnIf, "Conditionals", QString(), False, QSet<QString>(), true )
     << new StaticFunction( "aggregate", ParameterList() << Parameter( "layer" ) << Parameter( "aggregate" ) << Parameter( "expression" )
-                           << Parameter( "filter", true ) << Parameter( "concatenator", true ), fcnAggregate, "Aggregates", QString(), false, QStringList(), true )
+                           << Parameter( "filter", true ) << Parameter( "concatenator", true ), fcnAggregate, "Aggregates", QString(), false, QSet<QString>(), true )
     << new StaticFunction( "relation_aggregate", ParameterList() << Parameter( "relation" ) << Parameter( "aggregate" ) << Parameter( "expression" ) << Parameter( "concatenator", true ),
-                           fcnAggregateRelation, "Aggregates", QString(), False, QStringList( QgsFeatureRequest::AllAttributes ), true )
+                           fcnAggregateRelation, "Aggregates", QString(), False, QSet<QString>() << QgsFeatureRequest::AllAttributes, true )
 
-    << new StaticFunction( "count", aggParams, fcnAggregateCount, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "count_distinct", aggParams, fcnAggregateCountDistinct, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "count_missing", aggParams, fcnAggregateCountMissing, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "minimum", aggParams, fcnAggregateMin, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "maximum", aggParams, fcnAggregateMax, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "sum", aggParams, fcnAggregateSum, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "mean", aggParams, fcnAggregateMean, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "median", aggParams, fcnAggregateMedian, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "stdev", aggParams, fcnAggregateStdev, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "range", aggParams, fcnAggregateRange, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "minority", aggParams, fcnAggregateMinority, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "majority", aggParams, fcnAggregateMajority, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "q1", aggParams, fcnAggregateQ1, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "q3", aggParams, fcnAggregateQ3, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "iqr", aggParams, fcnAggregateIQR, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "min_length", aggParams, fcnAggregateMinLength, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "max_length", aggParams, fcnAggregateMaxLength, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "collect", aggParams, fcnAggregateCollectGeometry, "Aggregates", QString(), False, QStringList(), true )
-    << new StaticFunction( "concatenate", aggParams << Parameter( "concatenator", true ), fcnAggregateStringConcat, "Aggregates", QString(), False, QStringList(), true )
+    << new StaticFunction( "count", aggParams, fcnAggregateCount, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "count_distinct", aggParams, fcnAggregateCountDistinct, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "count_missing", aggParams, fcnAggregateCountMissing, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "minimum", aggParams, fcnAggregateMin, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "maximum", aggParams, fcnAggregateMax, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "sum", aggParams, fcnAggregateSum, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "mean", aggParams, fcnAggregateMean, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "median", aggParams, fcnAggregateMedian, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "stdev", aggParams, fcnAggregateStdev, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "range", aggParams, fcnAggregateRange, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "minority", aggParams, fcnAggregateMinority, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "majority", aggParams, fcnAggregateMajority, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "q1", aggParams, fcnAggregateQ1, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "q3", aggParams, fcnAggregateQ3, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "iqr", aggParams, fcnAggregateIQR, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "min_length", aggParams, fcnAggregateMinLength, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "max_length", aggParams, fcnAggregateMaxLength, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "collect", aggParams, fcnAggregateCollectGeometry, "Aggregates", QString(), False, QSet<QString>(), true )
+    << new StaticFunction( "concatenate", aggParams << Parameter( "concatenator", true ), fcnAggregateStringConcat, "Aggregates", QString(), False, QSet<QString>(), true )
 
     << new StaticFunction( "regexp_match", 2, fcnRegexpMatch, "Conditionals" )
-    << new StaticFunction( "now", 0, fcnNow, "Date and Time", QString(), false, QStringList(), false, QStringList() << "$now" )
+    << new StaticFunction( "now", 0, fcnNow, "Date and Time", QString(), false, QSet<QString>(), false, QStringList() << "$now" )
     << new StaticFunction( "age", 2, fcnAge, "Date and Time" )
     << new StaticFunction( "year", 1, fcnYear, "Date and Time" )
     << new StaticFunction( "month", 1, fcnMonth, "Date and Time" )
@@ -3488,7 +3488,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "regexp_replace", 3, fcnRegexpReplace, "String" )
     << new StaticFunction( "regexp_substr", 2, fcnRegexpSubstr, "String" )
     << new StaticFunction( "substr", 3, fcnSubstr, "String" )
-    << new StaticFunction( "concat", -1, fcnConcat, "String", QString(), false, QStringList(), false, QStringList(), true )
+    << new StaticFunction( "concat", -1, fcnConcat, "String", QString(), false, QSet<QString>(), false, QStringList(), true )
     << new StaticFunction( "strpos", 2, fcnStrpos, "String" )
     << new StaticFunction( "left", 2, fcnLeft, "String" )
     << new StaticFunction( "right", 2, fcnRight, "String" )
@@ -3531,16 +3531,16 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "make_point_m", 3, fcnMakePointM, "GeometryGroup" )
     << new StaticFunction( "make_line", -1, fcnMakeLine, "GeometryGroup" )
     << new StaticFunction( "make_polygon", -1, fcnMakePolygon, "GeometryGroup" )
-    << new StaticFunction( "$x_at", 1, fcnXat, "GeometryGroup", QString(), true, QStringList(), false, QStringList() << "xat" << "x_at" )
-    << new StaticFunction( "$y_at", 1, fcnYat, "GeometryGroup", QString(), true, QStringList(), false, QStringList() << "yat" << "y_at" )
-    << new StaticFunction( "x_min", 1, fcnXMin, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "xmin" )
-    << new StaticFunction( "x_max", 1, fcnXMax, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "xmax" )
-    << new StaticFunction( "y_min", 1, fcnYMin, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "ymin" )
-    << new StaticFunction( "y_max", 1, fcnYMax, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "ymax" )
-    << new StaticFunction( "geom_from_wkt", 1, fcnGeomFromWKT, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "geomFromWKT" )
-    << new StaticFunction( "geom_from_gml", 1, fcnGeomFromGML, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "geomFromGML" )
+    << new StaticFunction( "$x_at", 1, fcnXat, "GeometryGroup", QString(), true, QSet<QString>(), false, QStringList() << "xat" << "x_at" )
+    << new StaticFunction( "$y_at", 1, fcnYat, "GeometryGroup", QString(), true, QSet<QString>(), false, QStringList() << "yat" << "y_at" )
+    << new StaticFunction( "x_min", 1, fcnXMin, "GeometryGroup", QString(), false, QSet<QString>(), false, QStringList() << "xmin" )
+    << new StaticFunction( "x_max", 1, fcnXMax, "GeometryGroup", QString(), false, QSet<QString>(), false, QStringList() << "xmax" )
+    << new StaticFunction( "y_min", 1, fcnYMin, "GeometryGroup", QString(), false, QSet<QString>(), false, QStringList() << "ymin" )
+    << new StaticFunction( "y_max", 1, fcnYMax, "GeometryGroup", QString(), false, QSet<QString>(), false, QStringList() << "ymax" )
+    << new StaticFunction( "geom_from_wkt", 1, fcnGeomFromWKT, "GeometryGroup", QString(), false, QSet<QString>(), false, QStringList() << "geomFromWKT" )
+    << new StaticFunction( "geom_from_gml", 1, fcnGeomFromGML, "GeometryGroup", QString(), false, QSet<QString>(), false, QStringList() << "geomFromGML" )
     << new StaticFunction( "relate", -1, fcnRelate, "GeometryGroup" )
-    << new StaticFunction( "intersects_bbox", 2, fcnBbox, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "bbox" )
+    << new StaticFunction( "intersects_bbox", 2, fcnBbox, "GeometryGroup", QString(), false, QSet<QString>(), false, QStringList() << "bbox" )
     << new StaticFunction( "disjoint", 2, fcnDisjoint, "GeometryGroup" )
     << new StaticFunction( "intersects", 2, fcnIntersects, "GeometryGroup" )
     << new StaticFunction( "touches", 2, fcnTouches, "GeometryGroup" )
@@ -3584,14 +3584,14 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "bounds_width", 1, fcnBoundsWidth, "GeometryGroup" )
     << new StaticFunction( "bounds_height", 1, fcnBoundsHeight, "GeometryGroup" )
     << new StaticFunction( "is_closed", 1, fcnIsClosed, "GeometryGroup" )
-    << new StaticFunction( "convex_hull", 1, fcnConvexHull, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "convexHull" )
+    << new StaticFunction( "convex_hull", 1, fcnConvexHull, "GeometryGroup", QString(), false, QSet<QString>(), false, QStringList() << "convexHull" )
     << new StaticFunction( "difference", 2, fcnDifference, "GeometryGroup" )
     << new StaticFunction( "distance", 2, fcnDistance, "GeometryGroup" )
     << new StaticFunction( "intersection", 2, fcnIntersection, "GeometryGroup" )
-    << new StaticFunction( "sym_difference", 2, fcnSymDifference, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "symDifference" )
+    << new StaticFunction( "sym_difference", 2, fcnSymDifference, "GeometryGroup", QString(), false, QSet<QString>(), false, QStringList() << "symDifference" )
     << new StaticFunction( "combine", 2, fcnCombine, "GeometryGroup" )
     << new StaticFunction( "union", 2, fcnCombine, "GeometryGroup" )
-    << new StaticFunction( "geom_to_wkt", -1, fcnGeomToWKT, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "geomToWKT" )
+    << new StaticFunction( "geom_to_wkt", -1, fcnGeomToWKT, "GeometryGroup", QString(), false, QSet<QString>(), false, QStringList() << "geomToWKT" )
     << new StaticFunction( "geometry", 1, fcnGetGeometry, "GeometryGroup", QString(), true )
     << new StaticFunction( "transform", 3, fcnTransformGeometry, "GeometryGroup" )
     << new StaticFunction( "extrude", 3, fcnExtrude, "GeometryGroup", QString() )
@@ -3610,16 +3610,16 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
                            << Parameter( "vertex" ), fcnDistanceToVertex, "GeometryGroup" )
     << new StaticFunction( "$id", 0, fcnFeatureId, "Record" )
     << new StaticFunction( "$currentfeature", 0, fcnFeature, "Record" )
-    << new StaticFunction( "uuid", 0, fcnUuid, "Record", QString(), false, QStringList(), false, QStringList() << "$uuid" )
-    << new StaticFunction( "get_feature", 3, fcnGetFeature, "Record", QString(), false, QStringList(), false, QStringList() << "getFeature" )
+    << new StaticFunction( "uuid", 0, fcnUuid, "Record", QString(), false, QSet<QString>(), false, QStringList() << "$uuid" )
+    << new StaticFunction( "get_feature", 3, fcnGetFeature, "Record", QString(), false, QSet<QString>(), false, QStringList() << "getFeature" )
     << new StaticFunction( "layer_property", 2, fcnGetLayerProperty, "General" )
     << new StaticFunction( "var", 1, fcnGetVariable, "General" )
 
     //return all attributes string for referencedColumns - this is caught by
     // QgsFeatureRequest::setSubsetOfAttributes and causes all attributes to be fetched by the
     // feature request
-    << new StaticFunction( "eval", 1, fcnEval, "General", QString(), true, QStringList( QgsFeatureRequest::AllAttributes ) )
-    << new StaticFunction( "attribute", 2, fcnAttribute, "Record", QString(), false, QStringList( QgsFeatureRequest::AllAttributes ) )
+    << new StaticFunction( "eval", 1, fcnEval, "General", QString(), true, QSet<QString>() << QgsFeatureRequest::AllAttributes )
+    << new StaticFunction( "attribute", 2, fcnAttribute, "Record", QString(), false, QSet<QString>() << QgsFeatureRequest::AllAttributes )
 
     // functions for arrays
     << new StaticFunction( "array", -1, fcnArray, "Arrays" )
@@ -3800,28 +3800,12 @@ bool QgsExpression::hasParserError() const { return !d->mParserErrorString.isNul
 
 QString QgsExpression::parserErrorString() const { return d->mParserErrorString; }
 
-QStringList QgsExpression::referencedColumns() const
+QSet<QString> QgsExpression::referencedColumns() const
 {
   if ( !d->mRootNode )
-    return QStringList();
+    return QSet<QString>();
 
-  QStringList columns = d->mRootNode->referencedColumns();
-
-  // filter out duplicates
-  for ( int i = 0; i < columns.count(); i++ )
-  {
-    QString col = columns.at( i );
-    for ( int j = i + 1; j < columns.count(); j++ )
-    {
-      if ( QString::compare( col, columns[j], Qt::CaseInsensitive ) == 0 )
-      {
-        // this column is repeated: remove it!
-        columns.removeAt( j-- );
-      }
-    }
-  }
-
-  return columns;
+  return d->mRootNode->referencedColumns();
 }
 
 bool QgsExpression::NodeInOperator::needsGeometry() const
@@ -3837,10 +3821,10 @@ QSet<int> QgsExpression::referencedAttributeIndexes( const QgsFields& fields ) c
   if ( !d->mRootNode )
     return QSet<int>();
 
-  QStringList referencedFields = d->mRootNode->referencedColumns();
+  const QSet<QString> referencedFields = d->mRootNode->referencedColumns();
   QSet<int> referencedIndexes;
 
-  Q_FOREACH ( const QString& fieldName, referencedFields )
+for ( const QString& fieldName : referencedFields )
   {
     if ( fieldName == QgsFeatureRequest::AllAttributes )
     {
@@ -4618,7 +4602,7 @@ QString QgsExpression::NodeBinaryOperator::dump() const
   return fmt.arg( mOpLeft->dump(), BinaryOperatorText[mOp], rdump );
 }
 
-QStringList QgsExpression::NodeBinaryOperator::referencedColumns() const
+QSet<QString> QgsExpression::NodeBinaryOperator::referencedColumns() const
 {
   return mOpLeft->referencedColumns() + mOpRight->referencedColumns();
 }
@@ -4626,11 +4610,6 @@ QStringList QgsExpression::NodeBinaryOperator::referencedColumns() const
 bool QgsExpression::NodeBinaryOperator::needsGeometry() const
 {
   return mOpLeft->needsGeometry() || mOpRight->needsGeometry();
-}
-
-void QgsExpression::NodeBinaryOperator::accept( QgsExpression::Visitor& v ) const
-{
-  v.visit( *this );
 }
 
 QgsExpression::Node* QgsExpression::NodeBinaryOperator::clone() const
@@ -4812,10 +4791,10 @@ QString QgsExpression::NodeFunction::dump() const
     return QString( "%1(%2)" ).arg( fd->name(), mArgs ? mArgs->dump() : QString() ); // function
 }
 
-QStringList QgsExpression::NodeFunction::referencedColumns() const
+QSet<QString> QgsExpression::NodeFunction::referencedColumns() const
 {
   Function* fd = Functions()[mFnIndex];
-  QStringList functionColumns = fd->referencedColumns();
+  QSet<QString> functionColumns = fd->referencedColumns();
 
   if ( !mArgs )
   {
@@ -4825,11 +4804,10 @@ QStringList QgsExpression::NodeFunction::referencedColumns() const
 
   Q_FOREACH ( Node* n, mArgs->list() )
   {
-    functionColumns.append( n->referencedColumns() );
+    functionColumns.unite( n->referencedColumns() );
   }
 
-  //remove duplicates and return
-  return functionColumns.toSet().toList();
+  return functionColumns;
 }
 
 bool QgsExpression::NodeFunction::needsGeometry() const
@@ -5078,9 +5056,9 @@ QString QgsExpression::NodeCondition::dump() const
   return msg;
 }
 
-QStringList QgsExpression::NodeCondition::referencedColumns() const
+QSet<QString> QgsExpression::NodeCondition::referencedColumns() const
 {
-  QStringList lst;
+  QSet<QString> lst;
   Q_FOREACH ( WhenThen* cond, mConditions )
   {
     lst += cond->mWhenExp->referencedColumns() + cond->mThenExp->referencedColumns();
@@ -5449,11 +5427,11 @@ const QgsExpression::Node* QgsExpression::rootNode() const
   return d->mRootNode;
 }
 
-QStringList QgsExpression::NodeInOperator::referencedColumns() const
+QSet<QString> QgsExpression::NodeInOperator::referencedColumns() const
 {
-  QStringList lst( mNode->referencedColumns() );
+  QSet<QString> lst( mNode->referencedColumns() );
   Q_FOREACH ( const Node* n, mList->list() )
-    lst.append( n->referencedColumns() );
+    lst.unite( n->referencedColumns() );
   return lst;
 }
 

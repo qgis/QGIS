@@ -59,7 +59,7 @@ class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
 
     virtual void stopRender( QgsRenderContext& context );
 
-    virtual QList<QString> usedAttributes();
+    virtual QSet<QString> usedAttributes() const;
 
     virtual QString dump() const;
 

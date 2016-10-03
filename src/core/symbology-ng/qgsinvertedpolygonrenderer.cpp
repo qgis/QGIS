@@ -464,11 +464,11 @@ QgsFeatureRenderer::Capabilities QgsInvertedPolygonRenderer::capabilities()
   return mSubRenderer->capabilities();
 }
 
-QList<QString> QgsInvertedPolygonRenderer::usedAttributes()
+QSet<QString> QgsInvertedPolygonRenderer::usedAttributes() const
 {
   if ( !mSubRenderer )
   {
-    return QList<QString>();
+    return QSet<QString>();
   }
   return mSubRenderer->usedAttributes();
 }

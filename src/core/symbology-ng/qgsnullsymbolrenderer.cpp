@@ -84,9 +84,9 @@ bool QgsNullSymbolRenderer::willRenderFeature( QgsFeature&, QgsRenderContext& )
   return true;
 }
 
-QList<QString> QgsNullSymbolRenderer::usedAttributes()
+QSet<QString> QgsNullSymbolRenderer::usedAttributes() const
 {
-  return QList<QString>();
+  return QSet<QString>();
 }
 
 QString QgsNullSymbolRenderer::dump() const

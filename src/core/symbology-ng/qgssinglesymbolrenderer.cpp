@@ -72,11 +72,12 @@ void QgsSingleSymbolRenderer::stopRender( QgsRenderContext& context )
   mSymbol->stopRender( context );
 }
 
-QList<QString> QgsSingleSymbolRenderer::usedAttributes()
+QSet<QString> QgsSingleSymbolRenderer::usedAttributes() const
 {
   QSet<QString> attributes;
-  if ( mSymbol.data() ) attributes.unite( mSymbol->usedAttributes() );
-  return attributes.toList();
+  if ( mSymbol.data() )
+    attributes.unite( mSymbol->usedAttributes() );
+  return attributes;
 }
 
 QgsSymbol* QgsSingleSymbolRenderer::symbol() const

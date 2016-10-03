@@ -39,7 +39,7 @@ class QgsInvertedPolygonRenderer : QgsFeatureRenderer
     virtual QString dump() const;
 
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QList<QString> usedAttributes();
+    virtual QSet<QString> usedAttributes() const;
     /** Proxy that will call this method on the embedded renderer. */
     virtual QgsFeatureRenderer::Capabilities capabilities();
     /** Proxy that will call this method on the embedded renderer.

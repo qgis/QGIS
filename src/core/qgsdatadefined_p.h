@@ -80,7 +80,7 @@ class QgsDataDefinedPrivate : public QSharedData
     QString field;
 
     bool expressionPrepared;
-    QStringList exprRefColumns;
+    QSet<QString> exprRefColumns;
 };
 
 /// @endcond

@@ -140,7 +140,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context ) override;
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
     virtual void stopRender( QgsRenderContext& context ) override;
-    virtual QList<QString> usedAttributes() override;
+    virtual QSet<QString> usedAttributes() const override;
     virtual QString dump() const override;
     virtual QgsGraduatedSymbolRenderer* clone() const override;
     virtual void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props = QgsStringMap() ) const override;

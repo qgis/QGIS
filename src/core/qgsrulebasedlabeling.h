@@ -238,7 +238,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         void subProviderIds( QStringList& list ) const;
 
         //! call prepare() on sub-providers and populate attributeNames
-        void prepare( const QgsRenderContext& context, QStringList& attributeNames, RuleToProviderMap& subProviders );
+        void prepare( const QgsRenderContext& context, QSet<QString>& attributeNames, RuleToProviderMap& subProviders );
 
         //! register individual features
         RegisterResult registerFeature( QgsFeature& feature, QgsRenderContext& context, RuleToProviderMap& subProviders, QgsGeometry* obstacleGeometry = nullptr );
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 
     // reimplemented
 
-    virtual bool prepare( const QgsRenderContext& context, QStringList& attributeNames ) override;
+    virtual bool prepare( const QgsRenderContext& context, QSet<QString>& attributeNames ) override;
 
     virtual void registerFeature( QgsFeature& feature, QgsRenderContext& context, QgsGeometry* obstacleGeometry = nullptr ) override;
 

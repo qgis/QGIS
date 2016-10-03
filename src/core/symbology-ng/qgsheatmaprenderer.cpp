@@ -384,7 +384,7 @@ QgsSymbolList QgsHeatmapRenderer::symbols( QgsRenderContext& )
   return QgsSymbolList();
 }
 
-QList<QString> QgsHeatmapRenderer::usedAttributes()
+QSet<QString> QgsHeatmapRenderer::usedAttributes() const
 {
   QSet<QString> attributes;
 
@@ -396,9 +396,9 @@ QList<QString> QgsHeatmapRenderer::usedAttributes()
 
   QgsExpression testExpr( mWeightExpressionString );
   if ( !testExpr.hasParserError() )
-    attributes.unite( testExpr.referencedColumns().toSet() );
+    attributes.unite( testExpr.referencedColumns() );
 
-  return attributes.toList();
+  return attributes;
 }
 
 QgsHeatmapRenderer* QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )

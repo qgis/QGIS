@@ -185,7 +185,7 @@ QSet<QString> QgsRuleBasedRenderer::Rule::usedAttributes() const
   // attributes needed by this rule
   QSet<QString> attrs;
   if ( mFilter )
-    attrs.unite( mFilter->referencedColumns().toSet() );
+    attrs.unite( mFilter->referencedColumns() );
   if ( mSymbol )
     attrs.unite( mSymbol->usedAttributes() );
 
@@ -910,10 +910,9 @@ QString QgsRuleBasedRenderer::filter( const QgsFields& )
   return mFilter;
 }
 
-QList<QString> QgsRuleBasedRenderer::usedAttributes()
+QSet<QString> QgsRuleBasedRenderer::usedAttributes() const
 {
-  QSet<QString> attrs = mRootRule->usedAttributes();
-  return attrs.toList();
+  return mRootRule->usedAttributes();
 }
 
 bool QgsRuleBasedRenderer::filterNeedsGeometry() const
