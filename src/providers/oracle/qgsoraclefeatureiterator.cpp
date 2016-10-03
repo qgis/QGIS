@@ -51,7 +51,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
     {
       Q_FOREACH ( const QString& field, mRequest.filterExpression()->referencedColumns() )
       {
-        int attrIdx = mSource->mFields.fieldNameIndex( field );
+        int attrIdx = mSource->mFields.lookupField( field );
         if ( !mAttributeList.contains( attrIdx ) )
           mAttributeList << attrIdx;
       }
