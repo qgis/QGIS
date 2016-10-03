@@ -3824,6 +3824,14 @@ QStringList QgsExpression::referencedColumns() const
   return columns;
 }
 
+bool QgsExpression::NodeInOperator::needsGeometry() const
+{
+  bool needs = false;
+  Q_FOREACH ( Node* n, mList->list() )
+    needs |= n->needsGeometry();
+  return needs;
+}
+
 QSet<int> QgsExpression::referencedAttributeIndexes( const QgsFields& fields ) const
 {
   if ( !d->mRootNode )
@@ -4061,6 +4069,13 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
 
 ///////////////////////////////////////////////
 // nodes
+
+void QgsExpression::NodeList::append( QgsExpression::NamedNode* node )
+{
+  mList.append( node->node );
+  mNameList.append( node->name.toLower() );
+  mHasNamedNodes = true;
+}
 
 QgsExpression::NodeList* QgsExpression::NodeList::clone() const
 {
@@ -4609,6 +4624,21 @@ QString QgsExpression::NodeBinaryOperator::dump() const
   return fmt.arg( mOpLeft->dump(), BinaryOperatorText[mOp], rdump );
 }
 
+QStringList QgsExpression::NodeBinaryOperator::referencedColumns() const
+{
+  return mOpLeft->referencedColumns() + mOpRight->referencedColumns();
+}
+
+bool QgsExpression::NodeBinaryOperator::needsGeometry() const
+{
+  return mOpLeft->needsGeometry() || mOpRight->needsGeometry();
+}
+
+void QgsExpression::NodeBinaryOperator::accept( QgsExpression::Visitor& v ) const
+{
+  v.visit( *this );
+}
+
 QgsExpression::Node* QgsExpression::NodeBinaryOperator::clone() const
 {
   return new NodeBinaryOperator( mOp, mOpLeft->clone(), mOpRight->clone() );
@@ -4724,6 +4754,46 @@ QVariant QgsExpression::NodeFunction::eval( QgsExpression *parent, const QgsExpr
   return res;
 }
 
+QgsExpression::NodeFunction::NodeFunction( int fnIndex, QgsExpression::NodeList* args )
+    : mFnIndex( fnIndex )
+{
+  const ParameterList& functionParams = Functions()[mFnIndex]->parameters();
+  if ( !args || functionParams.isEmpty() )
+  {
+    // no parameters, or function does not support them
+    mArgs = args;
+  }
+  else
+  {
+    mArgs = new NodeList();
+
+    int idx = 0;
+    //first loop through unnamed arguments
+    while ( idx < args->names().size() && args->names().at( idx ).isEmpty() )
+    {
+      mArgs->append( args->list().at( idx )->clone() );
+      idx++;
+    }
+
+    //next copy named parameters in order expected by function
+    for ( ; idx < functionParams.count(); ++idx )
+    {
+      int nodeIdx = args->names().indexOf( functionParams.at( idx ).name().toLower() );
+      if ( nodeIdx < 0 )
+      {
+        //parameter not found - insert default value for parameter
+        mArgs->append( new NodeLiteral( functionParams.at( idx ).defaultValue() ) );
+      }
+      else
+      {
+        mArgs->append( args->list().at( nodeIdx )->clone() );
+      }
+    }
+
+    delete args;
+  }
+}
+
 bool QgsExpression::NodeFunction::prepare( QgsExpression *parent, const QgsExpressionContext *context )
 {
   Function* fd = Functions()[mFnIndex];
@@ -4768,9 +4838,93 @@ QStringList QgsExpression::NodeFunction::referencedColumns() const
   return functionColumns.toSet().toList();
 }
 
+bool QgsExpression::NodeFunction::needsGeometry() const
+{
+  bool needs = Functions()[mFnIndex]->usesGeometry();
+  if ( mArgs )
+  {
+    Q_FOREACH ( Node* n, mArgs->list() )
+      needs |= n->needsGeometry();
+  }
+  return needs;
+}
+
 QgsExpression::Node* QgsExpression::NodeFunction::clone() const
 {
   return new NodeFunction( mFnIndex, mArgs ? mArgs->clone() : nullptr );
+}
+
+bool QgsExpression::NodeFunction::validateParams( int fnIndex, QgsExpression::NodeList* args, QString& error )
+{
+  if ( !args || !args->hasNamedNodes() )
+    return true;
+
+  const ParameterList& functionParams = Functions()[fnIndex]->parameters();
+  if ( functionParams.isEmpty() )
+  {
+    error = QString( "%1 does not supported named parameters" ).arg( Functions()[fnIndex]->name() );
+    return false;
+  }
+  else
+  {
+    QSet< int > providedArgs;
+    QSet< int > handledArgs;
+    int idx = 0;
+    //first loop through unnamed arguments
+    while ( args->names().at( idx ).isEmpty() )
+    {
+      providedArgs << idx;
+      handledArgs << idx;
+      idx++;
+    }
+
+    //next check named parameters
+    for ( ; idx < functionParams.count(); ++idx )
+    {
+      int nodeIdx = args->names().indexOf( functionParams.at( idx ).name().toLower() );
+      if ( nodeIdx < 0 )
+      {
+        if ( !functionParams.at( idx ).optional() )
+        {
+          error = QString( "No value specified for parameter '%1' for %2" ).arg( functionParams.at( idx ).name(), Functions()[fnIndex]->name() );
+          return false;
+        }
+      }
+      else
+      {
+        if ( providedArgs.contains( idx ) )
+        {
+          error = QString( "Duplicate parameter specified for '%1' for %2" ).arg( functionParams.at( idx ).name(), Functions()[fnIndex]->name() );
+          return false;
+        }
+      }
+      providedArgs << idx;
+      handledArgs << nodeIdx;
+    }
+
+    //last check for bad names
+    idx = 0;
+    Q_FOREACH ( const QString& name, args->names() )
+    {
+      if ( !name.isEmpty() && !functionParams.contains( name ) )
+      {
+        error = QString( "Invalid parameter name '%1' for %2" ).arg( name, Functions()[fnIndex]->name() );
+        return false;
+      }
+      if ( !name.isEmpty() && !handledArgs.contains( idx ) )
+      {
+        int functionIdx = functionParams.indexOf( name );
+        if ( providedArgs.contains( functionIdx ) )
+        {
+          error = QString( "Duplicate parameter specified for '%1' for %2" ).arg( functionParams.at( functionIdx ).name(), Functions()[fnIndex]->name() );
+          return false;
+        }
+      }
+      idx++;
+    }
+
+  }
+  return true;
 }
 
 //
@@ -5299,4 +5453,20 @@ QString QgsExpression::formatPreviewString( const QVariant& value )
 const QgsExpression::Node* QgsExpression::rootNode() const
 {
   return d->mRootNode;
+}
+
+QStringList QgsExpression::NodeInOperator::referencedColumns() const
+{
+  QStringList lst( mNode->referencedColumns() );
+  Q_FOREACH ( const Node* n, mList->list() )
+    lst.append( n->referencedColumns() );
+  return lst;
+}
+
+bool QgsExpression::Function::operator==( const QgsExpression::Function& other ) const
+{
+  if ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 )
+    return true;
+
+  return false;
 }
