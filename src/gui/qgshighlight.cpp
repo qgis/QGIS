@@ -282,65 +282,62 @@ void QgsHighlight::paint( QPainter* p )
     p->setPen( mPen );
     p->setBrush( mBrush );
 
-    switch ( mGeometry->wkbType() )
+    switch ( mGeometry->type() )
     {
-      case QgsWkbTypes::Point:
-      case QgsWkbTypes::Point25D:
+      case QgsWkbTypes::PointGeometry:
       {
-        paintPoint( p, mGeometry->asPoint() );
-      }
-      break;
-
-      case QgsWkbTypes::MultiPoint:
-      case QgsWkbTypes::MultiPoint25D:
-      {
-        QgsMultiPoint m = mGeometry->asMultiPoint();
-        for ( int i = 0; i < m.size(); i++ )
+        if ( !mGeometry->isMultipart() )
         {
-          paintPoint( p, m[i] );
+          paintPoint( p, mGeometry->asPoint() );
+        }
+        else
+        {
+          QgsMultiPoint m = mGeometry->asMultiPoint();
+          for ( int i = 0; i < m.size(); i++ )
+          {
+            paintPoint( p, m[i] );
+          }
         }
       }
       break;
 
-      case QgsWkbTypes::LineString:
-      case QgsWkbTypes::LineString25D:
+      case QgsWkbTypes::LineGeometry:
       {
-        paintLine( p, mGeometry->asPolyline() );
-      }
-      break;
-
-      case QgsWkbTypes::MultiLineString:
-      case QgsWkbTypes::MultiLineString25D:
-      {
-        QgsMultiPolyline m = mGeometry->asMultiPolyline();
-
-        for ( int i = 0; i < m.size(); i++ )
+        if ( !mGeometry->isMultipart() )
         {
-          paintLine( p, m[i] );
+          paintLine( p, mGeometry->asPolyline() );
         }
-      }
-      break;
-
-      case QgsWkbTypes::Polygon:
-      case QgsWkbTypes::Polygon25D:
-      {
-        paintPolygon( p, mGeometry->asPolygon() );
-      }
-      break;
-
-      case QgsWkbTypes::MultiPolygon:
-      case QgsWkbTypes::MultiPolygon25D:
-      {
-        QgsMultiPolygon m = mGeometry->asMultiPolygon();
-        for ( int i = 0; i < m.size(); i++ )
+        else
         {
-          paintPolygon( p, m[i] );
-        }
-      }
-      break;
+          QgsMultiPolyline m = mGeometry->asMultiPolyline();
 
-      case QgsWkbTypes::Unknown:
-      default:
+          for ( int i = 0; i < m.size(); i++ )
+          {
+            paintLine( p, m[i] );
+          }
+        }
+        break;
+      }
+
+      case QgsWkbTypes::PolygonGeometry:
+      {
+        if ( !mGeometry->isMultipart() )
+        {
+          paintPolygon( p, mGeometry->asPolygon() );
+        }
+        else
+        {
+          QgsMultiPolygon m = mGeometry->asMultiPolygon();
+          for ( int i = 0; i < m.size(); i++ )
+          {
+            paintPolygon( p, m[i] );
+          }
+        }
+        break;
+      }
+
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
         return;
     }
   }
