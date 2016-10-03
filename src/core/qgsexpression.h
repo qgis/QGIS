@@ -555,13 +555,7 @@ class CORE_EXPORT QgsExpression
          */
         virtual QVariant func( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) = 0;
 
-        bool operator==( const Function& other ) const
-        {
-          if ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 )
-            return true;
-
-          return false;
-        }
+        bool operator==( const Function& other ) const;
 
         virtual bool handlesNull() const { return mHandlesNull; }
 
@@ -849,7 +843,7 @@ class CORE_EXPORT QgsExpression
         /** Adds a named node. Takes ownership of the provided node.
          * @note added in QGIS 2.16
         */
-        void append( NamedNode* node ) { mList.append( node->node ); mNameList.append( node->name.toLower() ); mHasNamedNodes = true; }
+        void append( NamedNode* node );
 
         /** Returns the number of nodes in the list.
          */
@@ -929,9 +923,9 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override { return mOpLeft->referencedColumns() + mOpRight->referencedColumns(); }
-        virtual bool needsGeometry() const override { return mOpLeft->needsGeometry() || mOpRight->needsGeometry(); }
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
+        virtual QStringList referencedColumns() const override;
+        virtual bool needsGeometry() const override;
+        virtual void accept( Visitor& v ) const override;
         virtual Node* clone() const override;
 
         int precedence() const;
@@ -974,8 +968,8 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override { QStringList lst( mNode->referencedColumns() ); Q_FOREACH ( const Node* n, mList->list() ) lst.append( n->referencedColumns() ); return lst; }
-        virtual bool needsGeometry() const override { bool needs = false; Q_FOREACH ( Node* n, mList->list() ) needs |= n->needsGeometry(); return needs; }
+        virtual QStringList referencedColumns() const override;
+        virtual bool needsGeometry() const override;
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
 
@@ -990,44 +984,7 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeFunction : public Node
     {
       public:
-        NodeFunction( int fnIndex, NodeList* args ) : mFnIndex( fnIndex )
-        {
-          const ParameterList& functionParams = Functions()[mFnIndex]->parameters();
-          if ( !args || functionParams.isEmpty() )
-          {
-            // no parameters, or function does not support them
-            mArgs = args;
-          }
-          else
-          {
-            mArgs = new NodeList();
-
-            int idx = 0;
-            //first loop through unnamed arguments
-            while ( idx < args->names().size() && args->names().at( idx ).isEmpty() )
-            {
-              mArgs->append( args->list().at( idx )->clone() );
-              idx++;
-            }
-
-            //next copy named parameters in order expected by function
-            for ( ; idx < functionParams.count(); ++idx )
-            {
-              int nodeIdx = args->names().indexOf( functionParams.at( idx ).name().toLower() );
-              if ( nodeIdx < 0 )
-              {
-                //parameter not found - insert default value for parameter
-                mArgs->append( new NodeLiteral( functionParams.at( idx ).defaultValue() ) );
-              }
-              else
-              {
-                mArgs->append( args->list().at( nodeIdx )->clone() );
-              }
-            }
-
-            delete args;
-          }
-        }
+        NodeFunction( int fnIndex, NodeList* args );
 
         virtual ~NodeFunction() { delete mArgs; }
 
@@ -1040,83 +997,12 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const override;
 
         virtual QStringList referencedColumns() const override;
-        virtual bool needsGeometry() const override { bool needs = Functions()[mFnIndex]->usesGeometry(); if ( mArgs ) { Q_FOREACH ( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
+        virtual bool needsGeometry() const override;
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
 
         //! Tests whether the provided argument list is valid for the matching function
-        static bool validateParams( int fnIndex, NodeList* args, QString& error )
-        {
-          if ( !args || !args->hasNamedNodes() )
-            return true;
-
-          const ParameterList& functionParams = Functions()[fnIndex]->parameters();
-          if ( functionParams.isEmpty() )
-          {
-            error = QString( "%1 does not supported named parameters" ).arg( Functions()[fnIndex]->name() );
-            return false;
-          }
-          else
-          {
-            QSet< int > providedArgs;
-            QSet< int > handledArgs;
-            int idx = 0;
-            //first loop through unnamed arguments
-            while ( args->names().at( idx ).isEmpty() )
-            {
-              providedArgs << idx;
-              handledArgs << idx;
-              idx++;
-            }
-
-            //next check named parameters
-            for ( ; idx < functionParams.count(); ++idx )
-            {
-              int nodeIdx = args->names().indexOf( functionParams.at( idx ).name().toLower() );
-              if ( nodeIdx < 0 )
-              {
-                if ( !functionParams.at( idx ).optional() )
-                {
-                  error = QString( "No value specified for parameter '%1' for %2" ).arg( functionParams.at( idx ).name(), Functions()[fnIndex]->name() );
-                  return false;
-                }
-              }
-              else
-              {
-                if ( providedArgs.contains( idx ) )
-                {
-                  error = QString( "Duplicate parameter specified for '%1' for %2" ).arg( functionParams.at( idx ).name(), Functions()[fnIndex]->name() );
-                  return false;
-                }
-              }
-              providedArgs << idx;
-              handledArgs << nodeIdx;
-            }
-
-            //last check for bad names
-            idx = 0;
-            Q_FOREACH ( const QString& name, args->names() )
-            {
-              if ( !name.isEmpty() && !functionParams.contains( name ) )
-              {
-                error = QString( "Invalid parameter name '%1' for %2" ).arg( name, Functions()[fnIndex]->name() );
-                return false;
-              }
-              if ( !name.isEmpty() && !handledArgs.contains( idx ) )
-              {
-                int functionIdx = functionParams.indexOf( name );
-                if ( providedArgs.contains( functionIdx ) )
-                {
-                  error = QString( "Duplicate parameter specified for '%1' for %2" ).arg( functionParams.at( functionIdx ).name(), Functions()[fnIndex]->name() );
-                  return false;
-                }
-              }
-              idx++;
-            }
-
-          }
-          return true;
-        }
+        static bool validateParams( int fnIndex, NodeList* args, QString& error );
 
       protected:
         int mFnIndex;
@@ -1379,6 +1265,8 @@ class CORE_EXPORT QgsExpression
 
     friend class QgsOgcUtils;
 };
+
+
 
 Q_DECLARE_METATYPE( QgsExpression::Node* )
 
