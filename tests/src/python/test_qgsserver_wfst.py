@@ -37,6 +37,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import sys
+import re
 import subprocess
 from shutil import copytree, rmtree
 import tempfile
@@ -98,13 +99,18 @@ class TestWFST(unittest.TestCase):
         server_path = os.path.dirname(os.path.realpath(__file__)) + \
             '/qgis_wrapped_server.py'
         cls.server = subprocess.Popen([sys.executable, server_path],
-                                      env=os.environ)
+                                      env=os.environ, stdout=subprocess.PIPE)
+        line = cls.server.stdout.readline()
+        cls.port = int(re.findall(b':(\d+)', line)[0])
+        assert cls.port != 0
+        # Wait for the server process to start
         assert waitServer('http://127.0.0.1:%s' % cls.port), "Server is not responding!"
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
         cls.server.terminate()
+        cls.server.wait()
         del cls.server
         # Clear all test layers
         for ln in ['test_point', 'test_polygon', 'test_linestring']:
