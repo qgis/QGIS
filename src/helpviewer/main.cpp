@@ -33,7 +33,7 @@ int main( int argc, char ** argv )
   // Set up the QSettings environment must be done after qapp is created
   QCoreApplication::setOrganizationName( "QGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );
-  QCoreApplication::setApplicationName( "QGIS2" );
+  QCoreApplication::setApplicationName( "QGIS3" );
 
   QString myTranslationCode = "";
 

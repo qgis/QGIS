@@ -7,7 +7,7 @@
 	<key>CFBundleName</key>
 	<string>QGIS Browser</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.qgis.qgis2_browser</string>
+	<string>org.qgis.qgis3_browser</string>
 	<key>CFBundleExecutable</key>
 	<string>QGIS Browser</string>
 	<key>CFBundlePackageType</key>

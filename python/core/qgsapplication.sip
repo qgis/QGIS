@@ -124,7 +124,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static void setUITheme( const QString &themeName );
 
     /**
-     * @brief All themes found in ~/.qgis2/themes folder.
+     * @brief All themes found in ~/.qgis3/themes folder.
      * The path is to the root folder for the theme
      * @note Valid theme folders must contain a style.qss file.
      * @return A hash of theme name and theme path. Valid theme folders contain style.qss

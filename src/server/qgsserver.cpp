@@ -364,7 +364,7 @@ bool QgsServer::init( )
   QgsApplication::createDB(); //init qgis.db (e.g. necessary for user crs)
 
   // Instantiate authentication system
-  //   creates or uses qgis-auth.db in ~/.qgis2/ or directory defined by QGIS_AUTH_DB_DIR_PATH env variable
+  //   creates or uses qgis-auth.db in ~/.qgis3/ or directory defined by QGIS_AUTH_DB_DIR_PATH env variable
   //   set the master password as first line of file defined by QGIS_AUTH_PASSWORD_FILE env variable
   //   (QGIS_AUTH_PASSWORD_FILE variable removed from environment after accessing)
   QgsAuthManager::instance()->init( QgsApplication::pluginPath() );

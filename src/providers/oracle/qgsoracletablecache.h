@@ -28,7 +28,7 @@ email                : wonder.sk at gmail dot com
  * This class contains routines for local caching of listing of layers, so the add Oracle
  * layer dialog does not need to discover the tables every time the user wants to add a layer.
  *
- * The cached entries are stored in SQLite database in QGIS user directory (usually ~/.qgis2).
+ * The cached entries are stored in SQLite database in QGIS user directory (usually ~/.qgis3).
  * The database can be used for other data sources, too. Each saved connection's list is stored
  * in one table "oracle_xyz" (where xyz is the name of the connection). There is one meta table
  * "meta_oracle" which has a list of cached connections and the combination of flags used for

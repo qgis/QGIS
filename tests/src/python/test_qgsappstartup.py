@@ -101,7 +101,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
         subdir = 'QGIS'  # Linux
         if sys.platform[:3] == 'dar':  # Mac
             subdir = 'qgis.org'
-        ini = os.path.join(subdir, 'QGIS2.ini')
+        ini = os.path.join(subdir, 'QGIS.ini')
         for p in ['test_opts', 'test opts', 'test_optsé€']:
             self.doTestStartup(option="--optionspath",
                                testDir=os.path.join(self.TMP_DIR, p),

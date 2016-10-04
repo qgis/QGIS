@@ -49,7 +49,7 @@ options(
         home=BASEDIR,
         plugin=path(BASEDIR),
         ui=path(BASEDIR) / 'plugin' / PLUGIN_NAME / 'ui',
-        install=path('%s/.qgis2/python/plugins/MetaSearch' % USERDIR),
+        install=path('%s/.qgis3/python/plugins/MetaSearch' % USERDIR),
         ext_libs=path('plugin/MetaSearch/ext-libs'),
         tmp=path(path('%s/MetaSearch-dist' % USERDIR)),
         version=VERSION
@@ -86,7 +86,7 @@ def clean():
 def install():
     """install plugin into user QGIS environment"""
 
-    plugins_dir = path(USERDIR) / '.qgis2/python/plugins'
+    plugins_dir = path(USERDIR) / '.qgis3/python/plugins'
 
     if os.path.exists(options.base.install):
         if os.path.islink(options.base.install):
