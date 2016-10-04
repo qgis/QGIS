@@ -171,7 +171,8 @@ class BatchPanel(BASE, WIDGET):
         else:
             item = QLineEdit()
             try:
-                item.setText(unicode(param.default))
+                if param.default:
+                    item.setText(unicode(param.default))
             except:
                 pass
 
@@ -346,12 +347,12 @@ class BatchPanel(BASE, WIDGET):
             self.tblParameters.setCellWidget(row, column, item)
 
     def removeRows(self):
-        #~ self.tblParameters.setUpdatesEnabled(False)
-        #~ indexes = self.tblParameters.selectionModel().selectedIndexes()
-        #~ indexes.sort()
-        #~ for i in reversed(indexes):
-            #~ self.tblParameters.model().removeRow(i.row())
-        #~ self.tblParameters.setUpdatesEnabled(True)
+        # ~ self.tblParameters.setUpdatesEnabled(False)
+        # ~ indexes = self.tblParameters.selectionModel().selectedIndexes()
+        # ~ indexes.sort()
+        # ~ for i in reversed(indexes):
+            # ~ self.tblParameters.model().removeRow(i.row())
+        # ~ self.tblParameters.setUpdatesEnabled(True)
         if self.tblParameters.rowCount() > 2:
             self.tblParameters.setRowCount(self.tblParameters.rowCount() - 1)
 

@@ -151,10 +151,11 @@ class Algorithm():
                     return unicode(value)
             params.append(_toString(value))
         for out in self.algorithm.outputs:
-            if out.name in self.outputs:
-                params.append(safeName(self.outputs[out.name].description).lower())
-            else:
-                params.append(str(None))
+            if not out.hidden:
+                if out.name in self.outputs:
+                    params.append(safeName(self.outputs[out.name].description).lower())
+                else:
+                    params.append(str(None))
         s.append("outputs_%s=processing.runalg('%s', %s)" % (self.name, self.consoleName, ",".join(params)))
         return s
 
@@ -209,7 +210,11 @@ class ModelerAlgorithm(GeoAlgorithm):
     def getCopy(self):
         newone = ModelerAlgorithm()
         newone.provider = self.provider
-        newone.algs = copy.deepcopy(self.algs)
+
+        newone.algs = {}
+        for algname, alg in self.algs.iteritems():
+            newone.algs[algname] = Algorithm()
+            newone.algs[algname].__dict__.update(copy.deepcopy(alg.todict()))
         newone.inputs = copy.deepcopy(self.inputs)
         newone.defineCharacteristics()
         newone.name = self.name

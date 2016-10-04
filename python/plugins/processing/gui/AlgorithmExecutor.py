@@ -49,7 +49,8 @@ def runalg(alg, progress=None):
         return True
     except GeoAlgorithmExecutionException as e:
         ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)
-        progress.error(e.msg)
+        if progress is not None:
+            progress.error(e.msg)
         return False
 
 
@@ -87,7 +88,7 @@ def runalgIterating(alg, paramToIter, progress):
             out.value = filename
         progress.setText(tr('Executing iteration %s/%s...' % (unicode(i), unicode(len(filelist)))))
         progress.setPercentage(i * 100 / len(filelist))
-        if runalg(alg):
+        if runalg(alg, progress):
             handleAlgorithmResults(alg, None, False)
         else:
             return False

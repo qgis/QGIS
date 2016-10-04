@@ -486,7 +486,8 @@ class GeoAlgorithm:
         for param in self.parameters:
             s += '\t' + unicode(param) + '\n'
         for out in self.outputs:
-            s += '\t' + unicode(out) + '\n'
+            if not out.hidden:
+                s += '\t' + unicode(out) + '\n'
         s += '\n'
         return s
 
