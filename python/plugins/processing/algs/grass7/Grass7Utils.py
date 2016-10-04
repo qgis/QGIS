@@ -244,8 +244,8 @@ class Grass7Utils(object):
             Grass7Utils.createGrass7BatchJobFileFromGrass7Commands(commands)
             os.chmod(Grass7Utils.grassBatchJobFilename(), stat.S_IEXEC
                      | stat.S_IREAD | stat.S_IWRITE)
-            if isMac() and os.path.exists(os.path.join(Grass7Utils.grassPath(), '*grass.sh*')):
-                command = os.path.join(Grass7Utils.grassPath(), '*grass.sh*') + ' ' \
+            if isMac() and os.path.exists(os.path.join(Grass7Utils.grassPath(), 'grass.sh')):
+                command = os.path.join(Grass7Utils.grassPath(), 'grass.sh') + ' ' \
                     + os.path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT')
             else:
                 command = 'grass70 ' + os.path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT')
