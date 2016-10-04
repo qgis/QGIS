@@ -715,7 +715,7 @@ QStringList QgsApplication::svgPaths()
   }
 
   myPathList << ABISYM( mDefaultSvgPaths );
-  return myPathList;
+  return myPathList.toSet().toList();
 }
 
 /*!
