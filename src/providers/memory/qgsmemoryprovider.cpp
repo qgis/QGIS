@@ -47,7 +47,14 @@ QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
     geometry = url.path();
   }
 
-  mWkbType = QgsWkbTypes::parseType( geometry );
+  if ( geometry.toLower() == "none" )
+  {
+    mWkbType = QgsWkbTypes::NoGeometry;
+  }
+  else
+  {
+    mWkbType = QgsWkbTypes::parseType( geometry );
+  }
 
   if ( url.hasQueryItem( "crs" ) )
   {
