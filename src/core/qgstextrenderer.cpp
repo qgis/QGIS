@@ -1627,6 +1627,14 @@ double QgsTextRenderer::scaleToPixelContext( double size, const QgsRenderContext
       {
         size = size / mapUnitsPerPixel * ( rasterfactor ? c.rasterScaleFactor() : 1 );
       }
+      if ( unit == QgsUnitTypes::RenderMapUnits )
+      {
+        //check max/min size
+        if ( mapUnitScale.minSizeMMEnabled )
+          size = qMax( size, mapUnitScale.minSizeMM * c.scaleFactor() );
+        if ( mapUnitScale.maxSizeMMEnabled )
+          size = qMin( size, mapUnitScale.maxSizeMM * c.scaleFactor() );
+      }
       break;
 
     case QgsUnitTypes::RenderPixels:
