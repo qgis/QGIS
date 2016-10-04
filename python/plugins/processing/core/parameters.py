@@ -30,6 +30,7 @@ __revision__ = '$Format:%H$'
 
 import sys
 import os
+import math
 from inspect import isclass
 from copy import deepcopy
 import numbers
@@ -834,6 +835,8 @@ class ParameterNumber(Parameter):
             try:
                 v = self._evaluate(n)
                 self.value = float(v)
+                if self.isInteger:
+                    self.value = int(math.floor(self.value))
                 return True
             except:
                 return False
@@ -877,7 +880,10 @@ class ParameterNumber(Parameter):
         result = exp.evaluate(_expressionContext())
         if exp.hasEvalError():
             raise ValueError("Error evaluating parameter expression: " + exp.evalErrorString())
-        return result
+        if self.isInteger:
+            return math.floor(result)
+        else:
+            return result
 
     def evaluate(self, alg):
         if isinstance(self.value, str) and bool(self.value):
