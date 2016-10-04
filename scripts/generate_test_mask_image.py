@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -35,12 +35,12 @@ import sys
 import argparse
 from PyQt5.QtGui import QImage, QColor, qRed, qBlue, qGreen, qAlpha, qRgb
 import struct
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import glob
 
 
 def error(msg):
-    print msg
+    print(msg)
     sys.exit(1)
 
 
@@ -53,9 +53,9 @@ def colorDiff(c1, c2):
 
 
 def imageFromPath(path):
-    if (path[:7] == 'http://' or path[:7] == 'file://'):
+    if (path[:7] == 'http://' or path[:7] == 'file://' or path[:8] == 'https://'):
         #fetch remote image
-        data = urllib2.urlopen(path).read()
+        data = urllib.request.urlopen(path).read()
         image = QImage()
         image.loadFromData(data)
     else:
@@ -88,7 +88,7 @@ def getControlImagePath(path):
         error('No matching control images found for {}'.format(path))
 
     found_image = filtered_images[0]
-    print 'Found matching control image: {}'.format(found_image)
+    print('Found matching control image: {}'.format(found_image))
     return found_image
 
 
@@ -101,10 +101,10 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
     if not rendered_image:
         error('Could not read rendered image {}'.format(rendered_image_path))
     if not rendered_image.width() == control_image.width() or not rendered_image.height() == control_image.height():
-        print ('Size mismatch - control image is {}x{}, rendered image is {}x{}'.format(control_image.width(),
+        print(('Size mismatch - control image is {}x{}, rendered image is {}x{}'.format(control_image.width(),
                                                                                         control_image.height(),
                                                                                         rendered_image.width(),
-                                                                                        rendered_image.height()))
+                                                                                        rendered_image.height())))
 
     max_width = min(rendered_image.width(), control_image.width())
     max_height = min(rendered_image.height(), control_image.height())
@@ -112,19 +112,19 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
     #read current mask, if it exist
     mask_image = imageFromPath(mask_image_path)
     if mask_image.isNull():
-        print 'Mask image does not exist, creating {}'.format(mask_image_path)
+        print('Mask image does not exist, creating {}'.format(mask_image_path))
         mask_image = QImage(control_image.width(), control_image.height(), QImage.Format_ARGB32)
         mask_image.fill(QColor(0, 0, 0))
 
     #loop through pixels in rendered image and compare
     mismatch_count = 0
     linebytes = max_width * 4
-    for y in xrange(max_height):
+    for y in range(max_height):
         control_scanline = control_image.constScanLine(y).asstring(linebytes)
         rendered_scanline = rendered_image.constScanLine(y).asstring(linebytes)
         mask_scanline = mask_image.scanLine(y).asstring(linebytes)
 
-        for x in xrange(max_width):
+        for x in range(max_width):
             currentTolerance = qRed(struct.unpack('I', mask_scanline[x * 4:x * 4 + 4])[0])
 
             if currentTolerance == 255:
@@ -143,9 +143,9 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
     if mismatch_count:
         #update mask
         mask_image.save(mask_image_path, "png")
-        print 'Updated {} pixels in {}'.format(mismatch_count, mask_image_path)
+        print('Updated {} pixels in {}'.format(mismatch_count, mask_image_path))
     else:
-        print 'No mismatches in {}'.format(mask_image_path)
+        print('No mismatches in {}'.format(mask_image_path))
 
 parser = argparse.ArgumentParser() # OptionParser("usage: %prog control_image rendered_image mask_image")
 parser.add_argument('control_image')
