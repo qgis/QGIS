@@ -280,11 +280,26 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="iconSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
        <property name="flow">
         <enum>QListView::LeftToRight</enum>
        </property>
+       <property name="resizeMode">
+        <enum>QListView::Adjust</enum>
+       </property>
        <property name="layoutMode">
         <enum>QListView::Batched</enum>
+       </property>
+       <property name="gridSize">
+        <size>
+         <width>36</width>
+         <height>36</height>
+        </size>
        </property>
        <property name="viewMode">
         <enum>QListView::IconMode</enum>

@@ -34,6 +34,7 @@
 #include "qgsstylev2.h" //for symbol selector dialog
 #include "qgsmapcanvas.h"
 #include "qgsapplication.h"
+#include "qgssvgselectorwidget.h"
 
 #include "qgslogger.h"
 #include "qgssizescalewidget.h"
@@ -1821,8 +1822,11 @@ QgsSvgMarkerSymbolLayerV2Widget::~QgsSvgMarkerSymbolLayerV2Widget()
 
 void QgsSvgMarkerSymbolLayerV2Widget::populateList()
 {
-  QgsSvgGroupsModel* g = new QgsSvgGroupsModel( viewGroups );
+  QAbstractItemModel* oldModel = viewGroups->model();
+  QgsSvgSelectorGroupsModel* g = new QgsSvgSelectorGroupsModel( viewGroups );
   viewGroups->setModel( g );
+  delete oldModel;
+
   // Set the tree expanded at the first level
   int rows = g->rowCount( g->indexFromItem( g->invisibleRootItem() ) );
   for ( int i = 0; i < rows; i++ )
@@ -1831,19 +1835,22 @@ void QgsSvgMarkerSymbolLayerV2Widget::populateList()
   }
 
   // Initally load the icons in the List view without any grouping
-  QgsSvgListModel* m = new QgsSvgListModel( viewImages );
+  oldModel = viewImages->model();
+  QgsSvgSelectorListModel* m = new QgsSvgSelectorListModel( viewImages );
   viewImages->setModel( m );
+  delete oldModel;
 }
 
 void QgsSvgMarkerSymbolLayerV2Widget::populateIcons( const QModelIndex& idx )
 {
   QString path = idx.data( Qt::UserRole + 1 ).toString();
 
-  QgsSvgListModel* m = new QgsSvgListModel( viewImages, path );
+  QAbstractItemModel* oldModel = viewImages->model();
+  QgsSvgSelectorListModel* m = new QgsSvgSelectorListModel( viewImages, path );
   viewImages->setModel( m );
+  delete oldModel;
 
   connect( viewImages->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setName( const QModelIndex& ) ) );
-  emit changed();
 }
 
 void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLayerV2* layer )
@@ -2304,8 +2311,11 @@ void QgsSVGFillSymbolLayerWidget::setFile( const QModelIndex& item )
 
 void QgsSVGFillSymbolLayerWidget::insertIcons()
 {
-  QgsSvgGroupsModel* g = new QgsSvgGroupsModel( mSvgTreeView );
+  QAbstractItemModel* oldModel = mSvgTreeView->model();
+  QgsSvgSelectorGroupsModel* g = new QgsSvgSelectorGroupsModel( mSvgTreeView );
   mSvgTreeView->setModel( g );
+  delete oldModel;
+
   // Set the tree expanded at the first level
   int rows = g->rowCount( g->indexFromItem( g->invisibleRootItem() ) );
   for ( int i = 0; i < rows; i++ )
@@ -2313,19 +2323,22 @@ void QgsSVGFillSymbolLayerWidget::insertIcons()
     mSvgTreeView->setExpanded( g->indexFromItem( g->item( i ) ), true );
   }
 
-  QgsSvgListModel* m = new QgsSvgListModel( mSvgListView );
+  oldModel = mSvgListView->model();
+  QgsSvgSelectorListModel* m = new QgsSvgSelectorListModel( mSvgListView );
   mSvgListView->setModel( m );
+  delete oldModel;
 }
 
 void QgsSVGFillSymbolLayerWidget::populateIcons( const QModelIndex& idx )
 {
   QString path = idx.data( Qt::UserRole + 1 ).toString();
 
-  QgsSvgListModel* m = new QgsSvgListModel( mSvgListView, path );
+  QAbstractItemModel* oldModel = mSvgListView->model();
+  QgsSvgSelectorListModel* m = new QgsSvgSelectorListModel( mSvgListView, path );
   mSvgListView->setModel( m );
+  delete oldModel;
 
   connect( mSvgListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setFile( const QModelIndex& ) ) );
-  emit changed();
 }
 
 
@@ -3220,129 +3233,6 @@ void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
   p.end();
   mLabelImagePreview->setPixmap( QPixmap::fromImage( previewImage ) );
 }
-
-
-/// @cond PRIVATE
-
-QgsSvgListModel::QgsSvgListModel( QObject* parent ) : QAbstractListModel( parent )
-{
-  mSvgFiles = QgsSymbolLayerV2Utils::listSvgFiles();
-}
-
-QgsSvgListModel::QgsSvgListModel( QObject* parent, const QString& path ) : QAbstractListModel( parent )
-{
-  mSvgFiles = QgsSymbolLayerV2Utils::listSvgFilesAt( path );
-}
-
-int QgsSvgListModel::rowCount( const QModelIndex& parent ) const
-{
-  Q_UNUSED( parent );
-  return mSvgFiles.count();
-}
-
-QVariant QgsSvgListModel::data( const QModelIndex& index, int role ) const
-{
-  QString entry = mSvgFiles.at( index.row() );
-
-  if ( role == Qt::DecorationRole ) // icon
-  {
-    QPixmap pixmap;
-    if ( !QPixmapCache::find( entry, pixmap ) )
-    {
-      // render SVG file
-      QColor fill, outline;
-      double outlineWidth, fillOpacity, outlineOpacity;
-      bool fillParam, fillOpacityParam, outlineParam, outlineWidthParam, outlineOpacityParam;
-      bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false,
-                                 hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
-      QgsSvgCache::instance()->containsParams( entry, fillParam, hasDefaultFillColor, fill,
-          fillOpacityParam, hasDefaultFillOpacity, fillOpacity,
-          outlineParam, hasDefaultOutlineColor, outline,
-          outlineWidthParam, hasDefaultOutlineWidth, outlineWidth,
-          outlineOpacityParam, hasDefaultOutlineOpacity, outlineOpacity );
-
-      //if defaults not set in symbol, use these values
-      if ( !hasDefaultFillColor )
-        fill = QColor( 200, 200, 200 );
-      fill.setAlphaF( hasDefaultFillOpacity ? fillOpacity : 1.0 );
-      if ( !hasDefaultOutlineColor )
-        outline = Qt::black;
-      outline.setAlphaF( hasDefaultOutlineOpacity ? outlineOpacity : 1.0 );
-      if ( !hasDefaultOutlineWidth )
-        outlineWidth = 0.6;
-
-      bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-      const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
-      pixmap = QPixmap::fromImage( img );
-      QPixmapCache::insert( entry, pixmap );
-    }
-
-    return pixmap;
-  }
-  else if ( role == Qt::UserRole || role == Qt::ToolTipRole )
-  {
-    return entry;
-  }
-
-  return QVariant();
-}
-
-
-QgsSvgGroupsModel::QgsSvgGroupsModel( QObject* parent ) : QStandardItemModel( parent )
-{
-  QStringList svgPaths = QgsApplication::svgPaths();
-  QStandardItem *parentItem = invisibleRootItem();
-
-  for ( int i = 0; i < svgPaths.size(); i++ )
-  {
-    QDir dir( svgPaths[i] );
-    QStandardItem *baseGroup;
-
-    if ( dir.path().contains( QgsApplication::pkgDataPath() ) )
-    {
-      baseGroup = new QStandardItem( QString( "App Symbols" ) );
-    }
-    else if ( dir.path().contains( QgsApplication::qgisSettingsDirPath() ) )
-    {
-      baseGroup = new QStandardItem( QString( "User Symbols" ) );
-    }
-    else
-    {
-      baseGroup = new QStandardItem( dir.dirName() );
-    }
-    baseGroup->setData( QVariant( svgPaths[i] ) );
-    baseGroup->setEditable( false );
-    baseGroup->setCheckable( false );
-    baseGroup->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
-    baseGroup->setToolTip( dir.path() );
-    parentItem->appendRow( baseGroup );
-    createTree( baseGroup );
-    QgsDebugMsg( QString( "SVG base path %1: %2" ).arg( i ).arg( baseGroup->data().toString() ) );
-  }
-}
-
-void QgsSvgGroupsModel::createTree( QStandardItem*& parentGroup )
-{
-  QDir parentDir( parentGroup->data().toString() );
-  Q_FOREACH ( const QString& item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
-  {
-    QStandardItem* group = new QStandardItem( item );
-    group->setData( QVariant( parentDir.path() + '/' + item ) );
-    group->setEditable( false );
-    group->setCheckable( false );
-    group->setToolTip( parentDir.path() + '/' + item );
-    group->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
-    parentGroup->appendRow( group );
-    createTree( group );
-  }
-}
-
-
-/// @endcond
-
-
-
-
 
 
 QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
