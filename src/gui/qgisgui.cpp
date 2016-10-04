@@ -144,7 +144,7 @@ namespace QgisGui
     // allow for selection of more than one file
     fileDialog->setFileMode( QFileDialog::AnyFile );
     fileDialog->setAcceptMode( QFileDialog::AcceptSave );
-    fileDialog->setConfirmOverwrite( true );
+    fileDialog->setOption( QFileDialog::DontConfirmOverwrite, false );
 
     if ( !selectedFilter.isEmpty() )     // set the filter to the last one used
     {

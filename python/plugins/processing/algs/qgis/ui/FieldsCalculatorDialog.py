@@ -146,7 +146,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
                                            lastEncoding)
         fileDialog.setFileMode(QFileDialog.AnyFile)
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
-        fileDialog.setConfirmOverwrite(True)
+        fileDialog.setOption(QFileDialog.DontConfirmOverwrite, False)
         if fileDialog.exec_() == QDialog.Accepted:
             files = fileDialog.selectedFiles()
             encoding = str(fileDialog.encoding())
