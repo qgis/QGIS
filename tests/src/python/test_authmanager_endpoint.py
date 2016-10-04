@@ -17,6 +17,7 @@ the Free Software Foundation; either version 2 of the License, or
 """
 import os
 import sys
+import re
 import subprocess
 import tempfile
 import random
@@ -29,10 +30,9 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from time import sleep
 from shutil import rmtree
 
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, waitServer
 from qgis.core import (
     QgsAuthManager,
     QgsAuthMethodConfig,
@@ -45,13 +45,10 @@ from qgis.testing import (
 )
 
 try:
-    QGIS_SERVER_AUTHMANAGER_DEFAULT_PORT = os.environ['QGIS_SERVER_AUTHMANAGER_DEFAULT_PORT']
+    QGIS_SERVER_ENDPOINT_PORT = os.environ['QGIS_SERVER_ENDPOINT_PORT']
 except:
-    import socket
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(("", 0))
-    QGIS_SERVER_AUTHMANAGER_DEFAULT_PORT = s.getsockname()[1]
-    s.close()
+    QGIS_SERVER_ENDPOINT_PORT = '0' # Auto
+
 
 QGIS_AUTH_DB_DIR_PATH = tempfile.mkdtemp()
 
@@ -66,7 +63,7 @@ class TestAuthManager(unittest.TestCase):
     def setUpClass(cls):
         """Run before all tests:
         Creates an auth configuration"""
-        cls.port = QGIS_SERVER_AUTHMANAGER_DEFAULT_PORT
+        cls.port = QGIS_SERVER_ENDPOINT_PORT
         # Clean env just to be sure
         env_vars = ['QUERY_STRING', 'QGIS_PROJECT_FILE']
         for ev in env_vars:
@@ -91,12 +88,17 @@ class TestAuthManager(unittest.TestCase):
         os.environ['QGIS_SERVER_HTTP_BASIC_AUTH'] = '1'
         os.environ['QGIS_SERVER_USERNAME'] = cls.username
         os.environ['QGIS_SERVER_PASSWORD'] = cls.password
-        os.environ['QGIS_SERVER_DEFAULT_PORT'] = str(cls.port)
+        os.environ['QGIS_SERVER_PORT'] = str(cls.port)
         server_path = os.path.dirname(os.path.realpath(__file__)) + \
             '/qgis_wrapped_server.py'
         cls.server = subprocess.Popen([sys.executable, server_path],
-                                      env=os.environ)
-        sleep(2)
+                                      env=os.environ, stdout=subprocess.PIPE)
+
+        line = cls.server.stdout.readline()
+        cls.port = int(re.findall(b':(\d+)', line)[0])
+        assert cls.port != 0
+        # Wait for the server process to start
+        assert waitServer('http://127.0.0.1:%s' % cls.port), "Server is not responding! http://127.0.0.1:%s" % cls.port
 
     @classmethod
     def tearDownClass(cls):

@@ -62,7 +62,7 @@ class OfflineTestBase(object):
     def _tearDown(self):
         """Called by tearDown: run after each test."""
         # Clear test layers
-        self._clearLayer('test_point')
+        self._clearLayer(self._getLayer('test_point'))
 
     @classmethod
     def _compareFeature(cls, layer, attributes):
@@ -71,11 +71,10 @@ class OfflineTestBase(object):
         return f['name'] == attributes[1] and f.geometry().asPoint().toString() == attributes[2].toString()
 
     @classmethod
-    def _clearLayer(cls, layer_name):
+    def _clearLayer(cls, layer):
         """
         Delete all features from the backend layer
         """
-        layer = cls._getLayer(layer_name)
         layer.startEditing()
         layer.deleteFeatures([f.id() for f in layer.getFeatures()])
         layer.commitChanges()
