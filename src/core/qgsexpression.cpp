@@ -3976,12 +3976,6 @@ void QgsExpression::setAreaUnits( QgsUnitTypes::AreaUnit unit )
   d->mAreaUnit = unit;
 }
 
-void QgsExpression::acceptVisitor( QgsExpression::Visitor& v ) const
-{
-  if ( d->mRootNode )
-    d->mRootNode->accept( v );
-}
-
 QString QgsExpression::replaceExpressionText( const QString &action, const QgsExpressionContext *context, const QgsDistanceArea *distanceArea )
 {
   QString expr_action;
