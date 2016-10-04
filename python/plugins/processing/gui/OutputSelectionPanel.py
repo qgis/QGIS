@@ -175,7 +175,7 @@ class OutputSelectionPanel(BASE, WIDGET):
             self, self.tr('Save Spatialite'), path, fileFilter, encoding)
         fileDialog.setFileMode(QFileDialog.AnyFile)
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
-        fileDialog.setConfirmOverwrite(False)
+        fileDialog.setOption(QFileDialog.DontConfirmOverwrite, True)
 
         if fileDialog.exec_() == QDialog.Accepted:
             files = fileDialog.selectedFiles()
@@ -212,7 +212,7 @@ class OutputSelectionPanel(BASE, WIDGET):
             self, self.tr('Save file'), path, fileFilter, encoding)
         fileDialog.setFileMode(QFileDialog.AnyFile)
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
-        fileDialog.setConfirmOverwrite(True)
+        fileDialog.setOption(QFileDialog.DontConfirmOverwrite, False)
 
         if fileDialog.exec_() == QDialog.Accepted:
             files = fileDialog.selectedFiles()
