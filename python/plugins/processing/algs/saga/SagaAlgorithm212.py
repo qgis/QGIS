@@ -72,6 +72,7 @@ class SagaAlgorithm212(GeoAlgorithm):
         self.allowUnmatchingGridExtents = False
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
+        self._icon = None
 
     def getCopy(self):
         newone = SagaAlgorithm212(self.descriptionFile)
@@ -79,7 +80,9 @@ class SagaAlgorithm212(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
+        if self._icon is None:
+            self._icon = QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
+        return self._icon
 
     def defineCharacteristicsFromFile(self):
         lines = open(self.descriptionFile)

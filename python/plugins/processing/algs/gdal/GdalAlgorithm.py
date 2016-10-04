@@ -41,8 +41,14 @@ pluginPath = os.path.normpath(os.path.join(
 
 class GdalAlgorithm(GeoAlgorithm):
 
+    def __init__(self):
+        GeoAlgorithm.__init__(self)
+        self._icon = None
+
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdal.svg'))
+        if self._icon is None:
+            self._icon = QIcon(os.path.join(pluginPath, 'images', 'gdal.svg'))
+        return self._icon
 
     def getCustomParametersDialog(self):
         return GdalAlgorithmDialog(self)

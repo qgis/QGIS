@@ -59,6 +59,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
         GeoAlgorithm.__init__(self)
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
+        self._icon = None
 
     def getCopy(self):
         newone = TauDEMAlgorithm(self.descriptionFile)
@@ -66,7 +67,9 @@ class TauDEMAlgorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'taudem.svg'))
+        if self._icon is None:
+            self._icon = QIcon(os.path.join(pluginPath, 'images', 'taudem.svg'))
+        return self._icon
 
     def defineCharacteristicsFromFile(self):
         with codecs.open(self.descriptionFile, encoding='utf-8') as f:

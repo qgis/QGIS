@@ -61,6 +61,9 @@ from processing.tools.system import isWindows
 from processing.script.WrongScriptException import WrongScriptException
 from .RUtils import RUtils
 
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
 
 class RAlgorithm(GeoAlgorithm):
 
@@ -80,9 +83,12 @@ class RAlgorithm(GeoAlgorithm):
             self.defineCharacteristicsFromScript()
         if descriptionFile is not None:
             self.defineCharacteristicsFromFile()
+        self._icon = None
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/r.svg')
+        if self._icon is None:
+            self._icon = QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
+        return self._icon
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
