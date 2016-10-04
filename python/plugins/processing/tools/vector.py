@@ -203,7 +203,7 @@ def spatialindex(layer):
     request = QgsFeatureRequest()
     request.setSubsetOfAttributes([])
     if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED) \
-        and layer.selectedFeatureCount() > 0:
+            and layer.selectedFeatureCount() > 0:
         idx = layer.selectedFeaturesIterator(request)
     else:
         idx = QgsSpatialIndex(layer.getFeatures(request))
