@@ -66,6 +66,7 @@ class NumberInputPanel(BASE, WIDGET):
 
     def showExpressionsBuilder(self):
         context = self.param.expressionContext()
+        dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, 'generic', context)
         if self.modelParametersDialog is not None:
             context.popScope()
             values = self.modelParametersDialog.getAvailableValuesOfType(ParameterNumber, OutputNumber)
@@ -102,10 +103,8 @@ class NumberInputPanel(BASE, WIDGET):
                     variables['%s_max' % name] = "Maximum value of %s" % desc
                     variables['%s_avg' % name] = "Mean value of %s" % desc
                     variables['%s_stddev' % name] = "Standard deviation of %s" % desc
-
-        dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, 'generic', context)
-        for variable, desc in list(variables.items()):
-            dlg.expressionBuilder().registerItem("Modeler", variable, "@" + variable, desc, highlightedItem=True)
+            for variable, desc in variables.iteritems():
+                dlg.expressionBuilder().registerItem("Modeler", variable, "@" + variable, desc, highlightedItem=True)
         dlg.setWindowTitle(self.tr('Expression based input'))
         if dlg.exec_() == QDialog.Accepted:
             exp = QgsExpression(dlg.expressionText())
