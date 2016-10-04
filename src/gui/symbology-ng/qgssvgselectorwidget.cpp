@@ -133,7 +133,7 @@ void QgsSvgSelectorLoader::loadImages( const QString& path )
 
     // we need to avoid spamming the model with notifications about new svgs, so foundSvgs
     // is only emitted for blocks of SVGs (otherwise the view goes all flickery)
-    if ( mTimer.elapsed() > mTimerThreshold )
+    if ( mTimer.elapsed() > mTimerThreshold && !mQueuedSvgs.isEmpty() )
     {
       emit foundSvgs( mQueuedSvgs );
       mQueuedSvgs.clear();
