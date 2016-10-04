@@ -18,7 +18,10 @@ import sys
 import glob
 import platform
 import tempfile
-from urllib2 import urlopen, HTTPError
+try:
+    from urllib2 import urlopen, HTTPError
+except ImportError:
+    from urllib.request import urlopen, HTTPError
 
 from qgis.PyQt.QtCore import QDir
 
