@@ -24,13 +24,13 @@
 #include "qgsstringutils.h"
 
 /** \class QgsSubstitutionListWidget
- * \ingroup app
+ * \ingroup gui
  * A widget which allows users to specify a list of substitutions to apply to a string, with
  * options for exporting and importing substitution lists.
  * \note added in QGIS 3.0
  * \see QgsSubstitutionListDialog
  */
-class APP_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::QgsSubstitutionListWidgetBase
+class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::QgsSubstitutionListWidgetBase
 {
     Q_OBJECT
     Q_PROPERTY( QgsStringReplacementCollection substitutions READ substitutions WRITE setSubstitutions NOTIFY substitutionsChanged )
@@ -73,12 +73,13 @@ class APP_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
 };
 
 /** \class QgsSubstitutionListDialog
- * \ingroup app
+ * \ingroup gui
  * A dialog which allows users to specify a list of substitutions to apply to a string, with
  * options for exporting and importing substitution lists.
+ * \note added in QGIS 3.0
  * \see QgsSubstitutionListWidget
 */
-class APP_EXPORT QgsSubstitutionListDialog : public QDialog
+class GUI_EXPORT QgsSubstitutionListDialog : public QDialog
 {
     Q_OBJECT
     Q_PROPERTY( QgsStringReplacementCollection substitutions READ substitutions WRITE setSubstitutions )
