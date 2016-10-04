@@ -715,8 +715,6 @@ class CORE_EXPORT QgsExpression
 
     //////
 
-    class Visitor; // visitor interface is defined below
-
     enum NodeType
     {
       ntUnaryOperator,
@@ -794,23 +792,6 @@ class CORE_EXPORT QgsExpression
          * @return true if a geometry is required to evaluate this expression
          */
         virtual bool needsGeometry() const = 0;
-
-        /**
-         * Support the visitor pattern.
-         *
-         * For any implementation this should look like
-         *
-         * C++:
-         *
-         *     v.visit( *this );
-         *
-         * Python:
-         *
-         *     v.visit( self)
-         *
-         * @param v A visitor that visits this node.
-         */
-        virtual void accept( Visitor& v ) const = 0;
     };
 
     //! Named node
@@ -900,7 +881,6 @@ class CORE_EXPORT QgsExpression
 
         virtual QStringList referencedColumns() const override { return mOperand->referencedColumns(); }
         virtual bool needsGeometry() const override { return mOperand->needsGeometry(); }
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
 
       protected:
@@ -931,7 +911,6 @@ class CORE_EXPORT QgsExpression
 
         virtual QStringList referencedColumns() const override { return mOpLeft->referencedColumns() + mOpRight->referencedColumns(); }
         virtual bool needsGeometry() const override { return mOpLeft->needsGeometry() || mOpRight->needsGeometry(); }
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
 
         int precedence() const;
@@ -976,7 +955,6 @@ class CORE_EXPORT QgsExpression
 
         virtual QStringList referencedColumns() const override { QStringList lst( mNode->referencedColumns() ); Q_FOREACH ( const Node* n, mList->list() ) lst.append( n->referencedColumns() ); return lst; }
         virtual bool needsGeometry() const override { bool needs = false; Q_FOREACH ( Node* n, mList->list() ) needs |= n->needsGeometry(); return needs; }
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
 
       protected:
@@ -1041,7 +1019,6 @@ class CORE_EXPORT QgsExpression
 
         virtual QStringList referencedColumns() const override;
         virtual bool needsGeometry() const override { bool needs = Functions()[mFnIndex]->usesGeometry(); if ( mArgs ) { Q_FOREACH ( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
 
         //! Tests whether the provided argument list is valid for the matching function
@@ -1143,7 +1120,6 @@ class CORE_EXPORT QgsExpression
 
         virtual QStringList referencedColumns() const override { return QStringList(); }
         virtual bool needsGeometry() const override { return false; }
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
 
       protected:
@@ -1171,7 +1147,6 @@ class CORE_EXPORT QgsExpression
         virtual QStringList referencedColumns() const override { return QStringList( mName ); }
         virtual bool needsGeometry() const override { return false; }
 
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
 
       protected:
@@ -1222,34 +1197,12 @@ class CORE_EXPORT QgsExpression
 
         virtual QStringList referencedColumns() const override;
         virtual bool needsGeometry() const override;
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
 
       protected:
         WhenThenList mConditions;
         Node* mElseExp;
     };
-
-    //////
-
-    /** \ingroup core
-     * Support for visitor pattern - algorithms dealing with the expressions
-        may be implemented without modifying the Node classes */
-    class CORE_EXPORT Visitor
-    {
-      public:
-        virtual ~Visitor() {}
-        virtual void visit( const NodeUnaryOperator& n ) = 0;
-        virtual void visit( const NodeBinaryOperator& n ) = 0;
-        virtual void visit( const NodeInOperator& n ) = 0;
-        virtual void visit( const NodeFunction& n ) = 0;
-        virtual void visit( const NodeLiteral& n ) = 0;
-        virtual void visit( const NodeColumnRef& n ) = 0;
-        virtual void visit( const NodeCondition& n ) = 0;
-    };
-
-    /** Entry function for the visitor pattern */
-    void acceptVisitor( Visitor& v ) const;
 
     /** Returns the help text for a specified function.
      * @param name function name
