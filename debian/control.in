@@ -6,14 +6,14 @@ Priority: optional
 Build-Depends:
  bison,
  cmake (>= 2.8),
-#sid stretch jessie trusty xenial# debhelper (>= 9),
-#sid stretch jessie trusty xenial# dh-python,
+ debhelper (>= 9),
+ dh-python,
  flex,
  grass-dev,
  libexpat1-dev,
  libfcgi-dev,
-#sid stretch jessie trusty xenial# libgdal-dev (>= 1.10.1-0~),
-#jessie trusty# libgsl0-dev,
+ libgdal-dev (>= 1.11),
+#trusty# libgsl0-dev,
 #sid stretch xenial# libgsl-dev,
  libgeos-dev (>= 3.0.0),
  libpq-dev,
@@ -40,12 +40,10 @@ Build-Depends:
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
 #sid# libosgearth-dev,
 #oracle# oracle-instantclient12.1-devel,
- locales, ca-certificates
+ locales, ca-certificates, ninja-build
 Build-Conflicts: libqgis-dev, qgis-dev
 #sid stretch xenial#Standards-Version: 3.9.7
-#jessie#Standards-Version: 3.9.6
 #trusty#Standards-Version: 3.8.4
-#sid stretch jessie#X-Python-Version: >= 2.7, << 2.8
 #trusty xenial#XS-Python-Version: current
 Vcs-Browser: https://github.com/qgis/QGIS/
 Vcs-Git: https://github.com/qgis/QGIS.git
@@ -202,9 +200,9 @@ Section: libdevel
 Depends:
  grass-dev,
  libexpat1-dev,
-#sid stretch jessie trusty xenial# libgdal-dev (>= 1.10.1-0~),
+ libgdal-dev (>= 1.11),
  libgeos-dev (>= 3.0.0),
-#jessie trusty# libgsl0-dev,
+#trusty# libgsl0-dev,
 #sid stretch xenial# libgsl-dev,
  libpq-dev,
  libproj-dev,
