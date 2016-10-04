@@ -51,6 +51,7 @@ void QgsSvgSelectorLoader::run()
 {
   mCancelled = false;
   mQueuedSvgs.clear();
+  mTraversedPaths.clear();
 
   // start with a small initial timeout (ms)
   mTimerThreshold = 10;
@@ -92,9 +93,17 @@ void QgsSvgSelectorLoader::loadPath( const QString& path )
   }
   else
   {
+    QDir dir( path );
+
+    //guard against circular symbolic links
+    QString canonicalPath = dir.canonicalPath();
+    if ( mTraversedPaths.contains( canonicalPath ) )
+      return;
+
+    mTraversedPaths.insert( canonicalPath );
+
     loadImages( path );
 
-    QDir dir( path );
     Q_FOREACH ( const QString& item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
     {
       if ( mCancelled )
@@ -159,6 +168,7 @@ QgsSvgGroupLoader::~QgsSvgGroupLoader()
 void QgsSvgGroupLoader::run()
 {
   mCancelled = false;
+  mTraversedPaths.clear();
 
   while ( !mCancelled && !mParentPaths.isEmpty() )
   {
@@ -176,6 +186,13 @@ void QgsSvgGroupLoader::stop()
 void QgsSvgGroupLoader::loadGroup( const QString& parentPath )
 {
   QDir parentDir( parentPath );
+
+  //guard against circular symbolic links
+  QString canonicalPath = parentDir.canonicalPath();
+  if ( mTraversedPaths.contains( canonicalPath ) )
+    return;
+
+  mTraversedPaths.insert( canonicalPath );
 
   Q_FOREACH ( const QString& item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
   {

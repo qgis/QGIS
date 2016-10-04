@@ -91,6 +91,7 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
 
     QElapsedTimer mTimer;
     int mTimerThreshold;
+    QSet< QString > mTraversedPaths;
 
     void loadPath( const QString& path );
     void loadImages( const QString& path );
@@ -145,6 +146,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
 
     QStringList mParentPaths;
     bool mCancelled;
+    QSet< QString > mTraversedPaths;
 
     void loadGroup( const QString& parentPath );
 
