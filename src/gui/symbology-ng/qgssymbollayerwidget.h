@@ -707,39 +707,6 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerWidget : public QgsSymbolLayerWidget,
 };
 
 
-///@cond PRIVATE
-
-class QgsSvgListModel : public QAbstractListModel
-{
-    Q_OBJECT
-
-  public:
-    explicit QgsSvgListModel( QObject* parent );
-
-    // Constructor to create model for icons in a specific path
-    QgsSvgListModel( QObject* parent, const QString& path );
-
-    int rowCount( const QModelIndex & parent = QModelIndex() ) const override;
-
-    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override;
-
-  protected:
-    QStringList mSvgFiles;
-};
-
-class QgsSvgGroupsModel : public QStandardItemModel
-{
-    Q_OBJECT
-
-  public:
-    explicit QgsSvgGroupsModel( QObject* parent );
-
-  private:
-    void createTree( QStandardItem* &parentGroup );
-};
-
-///@endcond
-
 #include "ui_qgsgeometrygeneratorwidgetbase.h"
 
 class QgsGeometryGeneratorSymbolLayer;

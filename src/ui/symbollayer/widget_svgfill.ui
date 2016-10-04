@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>270</width>
+    <width>300</width>
     <height>459</height>
    </rect>
   </property>
@@ -280,11 +280,26 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="iconSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
        <property name="flow">
         <enum>QListView::LeftToRight</enum>
        </property>
+       <property name="resizeMode">
+        <enum>QListView::Adjust</enum>
+       </property>
        <property name="layoutMode">
         <enum>QListView::Batched</enum>
+       </property>
+       <property name="gridSize">
+        <size>
+         <width>36</width>
+         <height>36</height>
+        </size>
        </property>
        <property name="viewMode">
         <enum>QListView::IconMode</enum>
@@ -307,12 +322,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsDataDefinedButton</class>
    <extends>QToolButton</extends>
    <header>qgsdatadefinedbutton.h</header>
@@ -326,6 +335,12 @@
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
