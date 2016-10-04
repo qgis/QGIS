@@ -232,7 +232,7 @@ tests:
             
     # case 3 split polygon layer with lines
   - algorithm: qgis:splitwithlines
-    name: Split lines with same lines
+    name: Split polygons with lines
     params:
       INPUT_A:
         name: polys.gml
