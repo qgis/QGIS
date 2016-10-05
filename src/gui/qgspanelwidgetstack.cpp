@@ -32,7 +32,7 @@ QgsPanelWidgetStack::QgsPanelWidgetStack( QWidget *parent )
   connect( mBackButton, SIGNAL( pressed() ), this, SLOT( acceptCurrentPanel() ) );
 }
 
-void QgsPanelWidgetStack::addMainPanel( QgsPanelWidget *panel )
+void QgsPanelWidgetStack::setMainPanel( QgsPanelWidget *panel )
 {
   // TODO Don't allow adding another main widget or else that would be strange for the user.
   connect( panel, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( showPanel( QgsPanelWidget* ) ),
@@ -43,12 +43,12 @@ void QgsPanelWidgetStack::addMainPanel( QgsPanelWidget *panel )
   mStackedWidget->setCurrentIndex( 0 );
 }
 
-QgsPanelWidget *QgsPanelWidgetStack::mainWidget()
+QgsPanelWidget *QgsPanelWidgetStack::mainPanel()
 {
   return qobject_cast<QgsPanelWidget*>( mStackedWidget->widget( 0 ) );
 }
 
-QgsPanelWidget *QgsPanelWidgetStack::takeMainWidget()
+QgsPanelWidget *QgsPanelWidgetStack::takeMainPanel()
 {
   QWidget* widget = mStackedWidget->widget( 0 );
   mStackedWidget->removeWidget( widget );
