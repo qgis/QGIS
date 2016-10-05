@@ -706,9 +706,6 @@ void QgsMapCanvas::refreshMap()
 
   stopRendering(); // if any...
 
-  // from now on we can accept refresh requests again
-  mRefreshScheduled = false;
-
   //build the expression context
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
@@ -740,6 +737,14 @@ void QgsMapCanvas::refreshMap()
   mJob->setRequestedGeometryCacheForLayers( layersForGeometryCache );
 
   mJob->start();
+
+  // from now on we can accept refresh requests again
+  // this must be reset only after the job has been started, because
+  // some providers (yes, it's you WCS and AMS!) during preparation
+  // do network requests and start an internal event loop, which may
+  // end up calling refresh() and would schedule another refresh,
+  // deleting the one we have just started.
+  mRefreshScheduled = false;
 
   mMapUpdateTimer.start();
 
