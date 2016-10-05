@@ -66,6 +66,8 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      * Removes the main panel widget from the stack and transfers ownsership to the
      * caller.
      * @return The main widget that is set in the stack.
+     * @note Calling this will clear out any current stacked panels by accepting
+     * each panel in turn.
      * @see mainPanel()
      * @see setMainPanel()
      */
@@ -77,13 +79,28 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      */
     void clear();
 
+    /**
+     * Returns the panel currently shown in the stack.
+     * @note added in QGIS 3.0
+     */
+    QgsPanelWidget* currentPanel();
+
   public slots:
     /**
      * Accept the current active widget in the stack.
      *
      * Calls the panelAccepeted signal on the active widget.
+     * @see acceptAllPanels()
      */
     void acceptCurrentPanel();
+
+    /**
+     * Accepts all panel widgets open in the stack in turn until until only the mainPanel()
+     * remains.
+     * @see acceptCurrentPanel();
+     * @note added in QGIS 3.0
+     */
+    void acceptAllPanels();
 
     /**
      * Show a panel in the stack widget. Will connect to the panels showPanel event to handle
