@@ -15,7 +15,7 @@
   <parameter>
     <parameter_type source_parameter_type="ParameterType_InputFilename">ParameterFile</parameter_type>
     <key>instats</key>
-    <name>XML file of Trainig shapefile containing mean and variance of each feature.</name>
+    <name>XML file of Training shapefile containing mean and variance of each feature.</name>
     <description>XML file containing mean and variance of each feature.</description>
     <isFolder />
     <optional>False</optional>
@@ -23,7 +23,7 @@
   <parameter>
     <parameter_type source_parameter_type="ParameterType_OutputFilename">OutputFile</parameter_type>
     <key>outsvm</key>
-    <name>Output model filename(txt).</name>
+    <name>Output model filename (.txt).</name>
     <description>Output model filename.</description>
   </parameter>
   <parameter>
