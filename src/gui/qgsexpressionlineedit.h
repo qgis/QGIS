@@ -54,35 +54,44 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
      */
     explicit QgsExpressionLineEdit( QWidget *parent = nullptr );
 
-    /** Sets the title used in the expression builder dialog
+    /**
+     * Sets the title used in the expression builder dialog
      * @param title dialog title
      * @see expressionDialogTitle()
      */
     void setExpressionDialogTitle( const QString& title );
 
-    /** Returns the title used for the expression dialog.
+    /**
+     * Returns the title used for the expression dialog.
      * @see setExpressionDialogTitle()
      */
     QString expressionDialogTitle() const { return mExpressionDialogTitle; }
 
-    /** Sets whether the widget should show a multiline text editor.
+    /**
+     * Sets whether the widget should show a multiline text editor.
      * @param multiLine set to true to show multiline editor, or false
      * to show single line editor (the default).
      */
     void setMultiLine( bool multiLine );
 
-    /** Set the geometry calculator used in the expression dialog.
+    /**
+     * Set the geometry calculator used in the expression dialog.
      * @param distanceArea calculator
      */
     void setGeomCalculator( const QgsDistanceArea &distanceArea );
 
-    /** Sets a layer associated with the widget. Required in order to get the fields and values
-      * from the layer.
-      * @param layer vector layer
-      */
+    /**
+     * Sets a layer associated with the widget. Required in order to get the fields and values
+     * from the layer.
+     * This will also automatically register the layer as expression context generator if
+     * no generator has been set before or the previous layer has been used as generator.
+     *
+     * @see registerExpressionContextGenerator
+     */
     void setLayer( QgsVectorLayer* layer );
 
-    /** Returns the current expression shown in the widget.
+    /**
+     * Returns the current expression shown in the widget.
      * @see setExpression()
      */
     QString expression() const;
@@ -110,16 +119,19 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
 
   public slots:
 
-    /** Sets the current expression to show in the widget.
+    /**
+     * Sets the current expression to show in the widget.
      * @param expression expression string
      * @see expression()
      */
     void setExpression( const QString& expression );
 
   protected:
+
     void changeEvent( QEvent* event ) override;
 
   private slots:
+
     //! When the expression is edited by the user in the line edit, it will be checked for validity
     void expressionEdited( const QString& expression );
     void expressionEdited();
