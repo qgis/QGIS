@@ -27,9 +27,9 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
 {
     Q_OBJECT
   public:
-    QgsEncodingFileDialog( QWidget * parent = nullptr,
-                           const QString & caption = QString(), const QString & directory = QString(),
-                           const QString & filter = QString(), const QString & encoding = QString() );
+    QgsEncodingFileDialog( QWidget* parent = nullptr,
+                           const QString& caption = QString(), const QString& directory = QString(),
+                           const QString& filter = QString(), const QString& encoding = QString() );
     ~QgsEncodingFileDialog();
     /** Returns a string describing the chosen encoding*/
     QString encoding() const;
