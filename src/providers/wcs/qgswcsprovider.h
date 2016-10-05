@@ -443,6 +443,8 @@ class QgsWcsDownloadHandler : public QObject
     QString mWcsVersion;
     QgsError& mCachedError;
 
+    QgsRasterBlockFeedback* mFeedback;
+
     static int sErrors; // this should be ideally per-provider...?
 };
 

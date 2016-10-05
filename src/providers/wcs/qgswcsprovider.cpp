@@ -1653,7 +1653,18 @@ QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorizati
     , mCachedData( cachedData )
     , mWcsVersion( wcsVersion )
     , mCachedError( cachedError )
+    , mFeedback( feedback )
 {
+  if ( feedback )
+  {
+    connect( feedback, SIGNAL( cancelled() ), this, SLOT( cancelled() ), Qt::QueuedConnection );
+
+    // rendering could have been cancelled before we started to listen to cancelled() signal
+    // so let's check before doing the download and maybe quit prematurely
+    if ( feedback->isCancelled() )
+      return;
+  }
+
   QNetworkRequest request( url );
   if ( !mAuth.setAuthorization( request ) )
   {
@@ -1676,9 +1687,6 @@ QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorizati
   }
   connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
   connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
-
-  if ( feedback )
-    connect( feedback, SIGNAL( cancelled() ), this, SLOT( cancelled() ), Qt::QueuedConnection );
 }
 
 QgsWcsDownloadHandler::~QgsWcsDownloadHandler()
@@ -1688,6 +1696,9 @@ QgsWcsDownloadHandler::~QgsWcsDownloadHandler()
 
 void QgsWcsDownloadHandler::blockingDownload()
 {
+  if ( mFeedback && mFeedback->isCancelled() )
+    return; // nothing to do
+
   mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
 
   Q_ASSERT( !mCacheReply );
