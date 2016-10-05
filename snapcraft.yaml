@@ -66,4 +66,4 @@ parts:
     stage-packages:
       - pyqt5-dev
       - python3-pyqt5
-      - pyton3-pyqt5.qsci
+      - python3-pyqt5.qsci
