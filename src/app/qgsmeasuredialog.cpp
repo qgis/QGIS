@@ -213,16 +213,24 @@ void QgsMeasureDialog::removeLastPoint()
     //remove final row
     delete mTable->takeTopLevelItem( mTable->topLevelItemCount() - 1 );
 
-    QgsPoint p1( mTool->points().last() );
-    double d = mDa.measureLine( p1, mLastMousePoint );
-
     mTotal = mDa.measureLine( mTool->points() );
-    editTotal->setText( formatDistance( mTotal + d ) );
 
-    d = convertLength( d, mDistanceUnits );
+    if ( !mTool->done() )
+    {
+      // need to add the distance for the temporary mouse cursor point
+      QgsPoint p1( mTool->points().last() );
+      double d = mDa.measureLine( p1, mLastMousePoint );
 
-    QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
-    item->setText( 0, QLocale::system().toString( d, 'f', mDecimalPlaces ) );
+      d = convertLength( d, mDistanceUnits );
+
+      QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
+      item->setText( 0, QLocale::system().toString( d, 'f', mDecimalPlaces ) );
+      editTotal->setText( formatDistance( mTotal + d ) );
+    }
+    else
+    {
+      editTotal->setText( formatDistance( mTotal ) );
+    }
   }
 }
 
