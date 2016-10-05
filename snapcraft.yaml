@@ -50,14 +50,9 @@ parts:
       - pyqt5-dev-tools
       - qttools5-dev-tools
       - qt5-default
-      - python3-future
-      - python3-pyqt5.qtsql
-      - python3-psycopg2
       - coreutils
       - libqt5sql5-sqlite
       - libqca-qt5-2-plugins
-      - python3-gdal
-      - python3-yaml
     stage-packages:
       - python3-sip
       - python3-sip-dev
@@ -65,5 +60,10 @@ parts:
     plugin: nil
     stage-packages:
       - pyqt5-dev
+      - python3-future
+      - python3-gdal
+      - python3-psycopg2
       - python3-pyqt5
       - python3-pyqt5.qsci
+      - python3-pyqt5.qtsql
+      - python3-yaml
