@@ -16,13 +16,13 @@
     <parameter_type source_parameter_type="ParameterType_OutputFilename">OutputFile</parameter_type>
     <key>outstats</key>
     <name>Output filename XML file containing mean and variance of each feature.</name>
-    <description>XML file containing mean and variance of each feature(.csv format)</description>
+    <description>XML file containing mean and variance of each feature (.csv format)</description>
     <optional>.xml</optional>
   </parameter>
   <parameter>
     <parameter_type source_parameter_type="ParameterType_StringList">ParameterString</parameter_type>
     <key>feat</key>
-    <name>List of feield names in Input seg polygon to consider for statistics e.g. "keyword" "keyword2"</name>
+    <name>List of field names in Input segmentation polygon to consider for statistics e.g. "keyword" "keyword2"</name>
     <description>List of features to consider for statistics.</description>
     <options />
     <default />
