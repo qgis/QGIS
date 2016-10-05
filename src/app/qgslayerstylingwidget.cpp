@@ -226,7 +226,7 @@ void QgsLayerStylingWidget::apply()
 
   QString undoName = "Style Change";
 
-  QWidget* current = mWidgetStack->mainWidget();
+  QWidget* current = mWidgetStack->mainPanel();
 
   bool styleWasChanged = false;
   if ( QgsLabelingWidget* widget = qobject_cast<QgsLabelingWidget*>( current ) )
@@ -307,7 +307,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
   mStackedWidget->setCurrentIndex( mLayerPage );
 
-  QgsPanelWidget* current = mWidgetStack->takeMainWidget();
+  QgsPanelWidget* current = mWidgetStack->takeMainPanel();
   if ( current )
   {
     if ( QgsLabelingWidget* widget = qobject_cast<QgsLabelingWidget*>( current ) )
@@ -334,15 +334,14 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     if ( panel )
     {
       connect( panel, SIGNAL( widgetChanged( QgsPanelWidget* ) ), this, SLOT( autoApply() ) );
-      panel->setDockMode( true );
-      mWidgetStack->addMainPanel( panel );
+      mWidgetStack->setMainPanel( panel );
     }
   }
 
   // The last widget is always the undo stack.
   if ( row == mOptionsListWidget->count() - 1 )
   {
-    mWidgetStack->addMainPanel( mUndoWidget );
+    mWidgetStack->setMainPanel( mUndoWidget );
   }
   else if ( mCurrentLayer->type() == QgsMapLayer::VectorLayer )
   {
@@ -359,7 +358,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         QgsPanelWidgetWrapper* wrapper = new QgsPanelWidgetWrapper( styleWidget, mStackedWidget );
         wrapper->setDockMode( true );
         connect( styleWidget, SIGNAL( showPanel( QgsPanelWidget* ) ), wrapper, SLOT( openPanel( QgsPanelWidget* ) ) );
-        mWidgetStack->addMainPanel( wrapper );
+        mWidgetStack->setMainPanel( wrapper );
         break;
       }
       case 1: // Labels
@@ -371,7 +370,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           connect( mLabelingWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
         }
         mLabelingWidget->setLayer( vlayer );
-        mWidgetStack->addMainPanel( mLabelingWidget );
+        mWidgetStack->setMainPanel( mLabelingWidget );
         break;
       }
       default:
@@ -388,14 +387,14 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetStack );
         mRasterStyleWidget->setDockMode( true );
         connect( mRasterStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
-        mWidgetStack->addMainPanel( mRasterStyleWidget );
+        mWidgetStack->setMainPanel( mRasterStyleWidget );
         break;
       case 1: // Transparency
       {
         QgsRasterTransparencyWidget* transwidget = new QgsRasterTransparencyWidget( rlayer, mMapCanvas, mWidgetStack );
         transwidget->setDockMode( true );
         connect( transwidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
-        mWidgetStack->addMainPanel( transwidget );
+        mWidgetStack->setMainPanel( transwidget );
         break;
       }
       case 2: // Histogram
@@ -417,7 +416,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           widget->setRendererWidget( name, mRasterStyleWidget->currentRenderWidget() );
           widget->setDockMode( true );
 
-          mWidgetStack->addMainPanel( widget );
+          mWidgetStack->setMainPanel( widget );
         }
         break;
       }
