@@ -1376,3 +1376,40 @@ void QgsTextFormatWidget::enableDataDefinedAlignment( bool enable )
 }
 
 
+//
+// QgsTextFormatDialog
+//
+
+QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat& format, QgsMapCanvas* mapCanvas, QWidget* parent, Qt::WindowFlags fl )
+    : QDialog( parent, fl )
+{
+  setWindowTitle( tr( "Text settings" ) );
+
+  mFormatWidget = new QgsTextFormatWidget( format, mapCanvas, this );
+  mFormatWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
+
+  QVBoxLayout *layout = new QVBoxLayout( this );
+  layout->addWidget( mFormatWidget );
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
+  layout->addWidget( buttonBox );
+
+  setLayout( layout );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/TextFormatDialog/geometry" ).toByteArray() );
+
+  connect( buttonBox->button( QDialogButtonBox::Ok ), SIGNAL( clicked() ), this, SLOT( accept() ) );
+  connect( buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL( clicked() ), this, SLOT( reject() ) );
+}
+
+QgsTextFormatDialog::~QgsTextFormatDialog()
+{
+  QSettings settings;
+  settings.setValue( "/Windows/TextFormatDialog/geometry", saveGeometry() );
+}
+
+QgsTextFormat QgsTextFormatDialog::format() const
+{
+  return mFormatWidget->format();
+}
