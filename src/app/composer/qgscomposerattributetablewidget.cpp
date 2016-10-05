@@ -39,6 +39,7 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
     , mFrame( frame )
 {
   setupUi( this );
+  setPanelTitle( tr( "Table properties" ) );
 
   blockAllSignals( true );
 

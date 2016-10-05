@@ -47,6 +47,7 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
     , mLegend( legend )
 {
   setupUi( this );
+  setPanelTitle( tr( "Legend properties" ) );
 
   // setup icons
   mAddToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );

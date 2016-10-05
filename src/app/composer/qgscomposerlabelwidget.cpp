@@ -29,6 +29,7 @@
 QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QgsComposerItemBaseWidget( nullptr, label ), mComposerLabel( label )
 {
   setupUi( this );
+  setPanelTitle( tr( "Label properties" ) );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, label );

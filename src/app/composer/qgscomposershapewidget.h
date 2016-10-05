@@ -49,6 +49,8 @@ class QgsComposerShapeWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
 
     /** Enables or disables the rounded radius spin box based on shape type*/
     void toggleRadiusSpin( const QString& shapeText );
+    void updateSymbolFromWidget();
+    void cleanUpSymbolSelector( QgsPanelWidget* container );
 };
 
 #endif // QGSCOMPOSERSHAPEWIDGET_H

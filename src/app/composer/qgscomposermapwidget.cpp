@@ -48,6 +48,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
     , mComposerMap( composerMap )
 {
   setupUi( this );
+  setPanelTitle( tr( "Map properties" ) );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerMap );

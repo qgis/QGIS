@@ -27,6 +27,8 @@
 QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar ): QgsComposerItemBaseWidget( nullptr, scaleBar ), mComposerScaleBar( scaleBar )
 {
   setupUi( this );
+  setPanelTitle( tr( "Scalebar properties" ) );
+
   connectUpdateSignal();
 
   //add widget for general composer item properties

@@ -36,6 +36,7 @@
 QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QgsComposerItemBaseWidget( nullptr, picture ), mPicture( picture ), mPreviewsLoaded( false )
 {
   setupUi( this );
+  setPanelTitle( tr( "Picture properties" ) );
 
   mFillColorButton->setAllowAlpha( true );
   mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );

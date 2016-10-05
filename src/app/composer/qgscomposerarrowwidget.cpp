@@ -28,6 +28,7 @@
 QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QgsComposerItemBaseWidget( nullptr, arrow ), mArrow( arrow )
 {
   setupUi( this );
+  setPanelTitle( tr( "Arrow properties" ) );
   mRadioButtonGroup = new QButtonGroup( this );
   mRadioButtonGroup->addButton( mDefaultMarkerRadioButton );
   mRadioButtonGroup->addButton( mNoMarkerRadioButton );
