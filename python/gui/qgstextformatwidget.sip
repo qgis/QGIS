@@ -14,7 +14,7 @@
  * @note Added in QGIS 3.0
  */
 
-class QgsTextFormatWidget : public QgsPanelWidget
+class QgsTextFormatWidget : QWidget
 {
 %TypeHeaderCode
   #include <qgstextformatwidget.h>
@@ -85,4 +85,37 @@ class QgsTextFormatWidget : public QgsPanelWidget
 
     //! Updates label placement options to reflect current state of widget
     void updatePlacementWidgets();
+};
+
+/** \class QgsTextFormatDialog
+ * \ingroup gui
+ * A simple dialog for customising text formatting settings.
+ *
+ * QgsTextFormatDialog provides a dialog for controlling the appearance of text rendered
+ * using QgsTextRenderer. The dialog includes all settings contained within
+ * a QgsTextFormat, including shadow, background and buffer.
+ *
+ * @note Added in QGIS 3.0
+ */
+
+class QgsTextFormatDialog : QDialog
+{
+%TypeHeaderCode
+  #include <qgstextformatwidget.h>
+%End
+  public:
+
+    /** Constructor for QgsTextFormatDialog.
+     * @param format initial format settings to show in dialog
+     * @param mapCanvas optional associated map canvas
+     * @param parent parent widget
+     * @param fl window flags for dialog
+     */
+    QgsTextFormatDialog( const QgsTextFormat& format, QgsMapCanvas* mapCanvas = nullptr, QWidget* parent /TransferThis/ = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+
+    virtual ~QgsTextFormatDialog();
+
+    /** Returns the current formatting settings defined by the widget.
+     */
+    QgsTextFormat format() const;
 };

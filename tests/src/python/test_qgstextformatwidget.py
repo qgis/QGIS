@@ -21,7 +21,7 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsTextFormat,
                        QgsUnitTypes,
                        QgsMapUnitScale)
-from qgis.gui import (QgsTextFormatWidget)
+from qgis.gui import (QgsTextFormatWidget, QgsTextFormatDialog)
 from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen)
 from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir)
 from qgis.testing import unittest, start_app
@@ -184,6 +184,11 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         w = QgsTextFormatWidget(s)
         self.checkTextFormat(w.format())
 
+    def testDialogSettings(self):
+        # test that dialog correctly sets and returns matching settings
+        s = self.createFormatSettings()
+        d = QgsTextFormatDialog(s)
+        self.checkTextFormat(d.format())
 
 if __name__ == '__main__':
     unittest.main()

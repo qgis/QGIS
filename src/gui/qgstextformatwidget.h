@@ -20,6 +20,7 @@
 #include <ui_qgstextformatwidgetbase.h>
 #include "qgstextrenderer.h"
 #include "qgsstringutils.h"
+#include "qgisgui.h"
 #include <QFontDatabase>
 
 class QgsMapCanvas;
@@ -31,7 +32,7 @@ class QgsCharacterSelectorDialog;
  * A widget for customising text formatting settings.
  *
  * QgsTextFormatWidget provides a widget for controlling the appearance of text rendered
- * using QgsTextRenderer. The preview includes all settings contained within
+ * using QgsTextRenderer. The widget includes all settings contained within
  * a QgsTextFormat, including shadow, background and buffer.
  *
  * Additionally, the widget can handle labeling settings due to the large overlap between
@@ -191,6 +192,43 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     void updatePreview();
     void scrollPreview();
     void updateSvgWidgets( const QString& svgPath );
+};
+
+
+/** \class QgsTextFormatDialog
+ * \ingroup gui
+ * A simple dialog for customising text formatting settings.
+ *
+ * QgsTextFormatDialog provides a dialog for controlling the appearance of text rendered
+ * using QgsTextRenderer. The dialog includes all settings contained within
+ * a QgsTextFormat, including shadow, background and buffer.
+ *
+ * @note Added in QGIS 3.0
+ */
+
+class GUI_EXPORT QgsTextFormatDialog : public QDialog
+{
+    Q_OBJECT
+
+  public:
+
+    /** Constructor for QgsTextFormatDialog.
+     * @param format initial format settings to show in dialog
+     * @param mapCanvas optional associated map canvas
+     * @param parent parent widget
+     * @param fl window flags for dialog
+     */
+    QgsTextFormatDialog( const QgsTextFormat& format, QgsMapCanvas* mapCanvas = nullptr, QWidget* parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+
+    virtual ~QgsTextFormatDialog();
+
+    /** Returns the current formatting settings defined by the widget.
+     */
+    QgsTextFormat format() const;
+
+  private:
+
+    QgsTextFormatWidget* mFormatWidget;
 };
 
 #endif //QGSTEXTFORMATWIDGET_H
