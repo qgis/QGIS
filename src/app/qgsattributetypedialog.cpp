@@ -69,8 +69,6 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
     isFieldEditableCheckBox->setEnabled( false );
   }
 
-  mExpressionWidget->setLayer( vl );
-
   connect( mExpressionWidget, SIGNAL( expressionChanged( QString ) ), this, SLOT( defaultExpressionChanged() ) );
 
   QSettings settings;
