@@ -181,6 +181,7 @@ class GeoDB:
                  passwd=None, service=None, uri=None):
         # Regular expression for identifiers without need to quote them
         self.re_ident_ok = re.compile(r"^\w+$")
+        port = str(port)
 
         if uri:
             self.uri = uri
@@ -194,7 +195,7 @@ class GeoDB:
         conninfo = self.uri.connectionInfo(False)
         err = None
         for i in range(4):
-            expandedConnInfo = uri.connectionInfo(True)
+            expandedConnInfo = self.uri.connectionInfo(True)
             try:
                 self.con = psycopg2.connect(expandedConnInfo.encode('utf-8'))
                 if err is not None:
