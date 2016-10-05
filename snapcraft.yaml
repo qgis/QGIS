@@ -19,7 +19,7 @@ parts:
   qgis:
     source: .
     plugin: cmake
-    after: [desktop-qt5]
+    after: [desktop-qt5, python-deps]
     build-packages:
       - git
       - build-essential
@@ -53,3 +53,17 @@ parts:
       - python3-future
       - python3-pyqt5.qtsql
       - python3-psycopg2
+      - coreutils
+      - libqt5sql5-sqlite
+      - libqca-qt5-2-plugins
+      - python3-gdal
+      - python3-yaml
+    stage-packages:
+      - python3-sip
+      - python3-sip-dev
+  python-deps:
+    plugin: nil
+    stage-packages:
+      - pyqt5-dev
+      - python3-pyqt5
+      - pyton3-pyqt5.qsci
