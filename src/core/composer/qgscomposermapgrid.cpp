@@ -224,7 +224,9 @@ void QgsComposerMapGrid::init()
   QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
   if ( !defaultFontString.isEmpty() )
   {
-    mGridAnnotationFont.setFamily( defaultFontString );
+    QFont font;
+    font.setFamily( defaultFontString );
+    mAnnotationFormat.setFont( font );
   }
 
   createDefaultGridLineSymbol();
@@ -331,6 +333,7 @@ bool QgsComposerMapGrid::writeXml( QDomElement& elem, QDomDocument& doc ) const
   mapGridElem.setAttribute( "bottomAnnotationDirection", mBottomGridAnnotationDirection );
   mapGridElem.setAttribute( "frameAnnotationDistance", QString::number( mAnnotationFrameDistance ) );
   mapGridElem.appendChild( QgsFontUtils::toXmlElement( mGridAnnotationFont, doc, "annotationFontProperties" ) );
+  mapGridElem.appendChild( mAnnotationFormat.writeXml( doc ) );
   mapGridElem.setAttribute( "annotationFontColor", QgsSymbolLayerUtils::encodeColor( mGridAnnotationFontColor ) );
   mapGridElem.setAttribute( "annotationPrecision", mGridAnnotationPrecision );
   mapGridElem.setAttribute( "unit", mGridUnit );
@@ -425,11 +428,20 @@ bool QgsComposerMapGrid::readXml( const QDomElement& itemElem, const QDomDocumen
   mTopGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( "topAnnotationDirection", "0" ).toInt() );
   mBottomGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( "bottomAnnotationDirection", "0" ).toInt() );
   mAnnotationFrameDistance = itemElem.attribute( "frameAnnotationDistance", "0" ).toDouble();
-  if ( !QgsFontUtils::setFromXmlChildNode( mGridAnnotationFont, itemElem, "annotationFontProperties" ) )
+  mAnnotationFormat.readXml( itemElem );
+  if ( itemElem.firstChildElement( "text-style" ).isNull() )
   {
-    mGridAnnotationFont.fromString( itemElem.attribute( "annotationFont", "" ) );
+    QFont font;
+    if ( !QgsFontUtils::setFromXmlChildNode( font, itemElem, "annotationFontProperties" ) )
+    {
+      font.fromString( itemElem.attribute( "annotationFont", "" ) );
+    }
+    mAnnotationFormat.setFont( font );
+    mAnnotationFormat.setSize( font.pointSizeF() );
+    mAnnotationFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+    mAnnotationFormat.setColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "annotationFontColor", "0,0,0,255" ) ) );
   }
-  mGridAnnotationFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "annotationFontColor", "0,0,0,255" ) );
+
   mGridAnnotationPrecision = itemElem.attribute( "annotationPrecision", "3" ).toInt();
   int gridUnitInt =  itemElem.attribute( "unit", QString::number( MapUnit ) ).toInt();
   mGridUnit = ( gridUnitInt <= static_cast< int >( CM ) ) ? static_cast< GridUnit >( gridUnitInt ) : MapUnit;
@@ -680,7 +692,7 @@ void QgsComposerMapGrid::draw( QPainter* p )
 
   if ( mShowGridAnnotation )
   {
-    drawCoordinateAnnotations( p, horizontalLines, verticalLines, context.expressionContext() );
+    drawCoordinateAnnotations( context, horizontalLines, verticalLines, context.expressionContext() );
   }
 }
 
@@ -1055,7 +1067,7 @@ void QgsComposerMapGrid::drawGridFrameLineBorder( QPainter* p, QgsComposerMapGri
   }
 }
 
-void QgsComposerMapGrid::drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, QgsExpressionContext &expressionContext,
+void QgsComposerMapGrid::drawCoordinateAnnotations( QgsRenderContext& context, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, QgsExpressionContext &expressionContext,
     GridExtension* extension ) const
 {
   QString currentAnnotationString;
@@ -1063,20 +1075,20 @@ void QgsComposerMapGrid::drawCoordinateAnnotations( QPainter* p, const QList< QP
   for ( ; it != hLines.constEnd(); ++it )
   {
     currentAnnotationString = gridAnnotationString( it->first, QgsComposerMapGrid::Latitude, expressionContext );
-    drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString, QgsComposerMapGrid::Latitude, extension );
-    drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString, QgsComposerMapGrid::Latitude, extension );
+    drawCoordinateAnnotation( context, it->second.p1(), currentAnnotationString, QgsComposerMapGrid::Latitude, extension );
+    drawCoordinateAnnotation( context, it->second.p2(), currentAnnotationString, QgsComposerMapGrid::Latitude, extension );
   }
 
   it = vLines.constBegin();
   for ( ; it != vLines.constEnd(); ++it )
   {
     currentAnnotationString =  gridAnnotationString( it->first, QgsComposerMapGrid::Longitude, expressionContext );
-    drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString, QgsComposerMapGrid::Longitude, extension );
-    drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString, QgsComposerMapGrid::Longitude, extension );
+    drawCoordinateAnnotation( context, it->second.p1(), currentAnnotationString, QgsComposerMapGrid::Longitude, extension );
+    drawCoordinateAnnotation( context, it->second.p2(), currentAnnotationString, QgsComposerMapGrid::Longitude, extension );
   }
 }
 
-void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, QPointF pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension ) const
+void QgsComposerMapGrid::drawCoordinateAnnotation( QgsRenderContext& context, QPointF pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension ) const
 {
   if ( !mComposerMap )
   {
@@ -1390,24 +1402,28 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, QPointF pos, QSt
     }
   }
 
-  if ( extension || !p )
+  if ( extension || !context.painter() )
     return;
 
-  drawAnnotation( p, QPointF( xpos, ypos ), rotation, annotationString );
+  drawAnnotation( context, QPointF( xpos, ypos ), rotation, annotationString );
 }
 
-void QgsComposerMapGrid::drawAnnotation( QPainter* p, QPointF pos, int rotation, const QString& annotationText ) const
+void QgsComposerMapGrid::drawAnnotation( QgsRenderContext& context, QPointF pos, int rotation, const QString& annotationText ) const
 {
   if ( !mComposerMap )
   {
     return;
   }
 
-  p->save();
-  p->translate( pos );
-  p->rotate( rotation );
-  QgsComposerUtils::drawText( p, QPointF( 0, 0 ), annotationText, mGridAnnotationFont, mGridAnnotationFontColor );
-  p->restore();
+  context.painter()->save();
+  context.painter()->translate( pos );
+  context.painter()->rotate( rotation );
+  //QgsComposerUtils::drawText( p, QPointF( 0, 0 ), annotationText, mGridAnnotationFont, mGridAnnotationFontColor );
+  double dotsPerMM = context.painter()->device()->logicalDpiX() / 25.4;
+  context.painter()->scale( 1 / dotsPerMM, 1 / dotsPerMM ); //scale painter from mm to dots
+
+  QgsTextRenderer::drawText( QPointF( 0, 0 ), 0, QgsTextRenderer::AlignLeft, QStringList() << annotationText, context, mAnnotationFormat );
+  context.painter()->restore();
 }
 
 QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGrid::AnnotationCoordinate coord, QgsExpressionContext &expressionContext ) const
@@ -2092,7 +2108,7 @@ void QgsComposerMapGrid::calculateMaxExtension( double& top, double& right, doub
 
   if ( mShowGridAnnotation )
   {
-    drawCoordinateAnnotations( nullptr, horizontalLines, verticalLines, context.expressionContext(), &extension );
+    drawCoordinateAnnotations( context, horizontalLines, verticalLines, context.expressionContext(), &extension );
   }
 
   top = extension.top;

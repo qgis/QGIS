@@ -26,6 +26,7 @@
 #include "qgscomposition.h"
 #include "qgsmapsettings.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgstextformatwidget.h"
 
 QgsComposerMapGridWidget::QgsComposerMapGridWidget( QgsComposerMapGrid* mapGrid, QgsComposerMap* composerMap )
     : QgsComposerItemBaseWidget( nullptr, mapGrid )
@@ -623,6 +624,33 @@ void QgsComposerMapGridWidget::updateGridMarkerSymbolMarker()
   }
 }
 
+void QgsComposerMapGridWidget::updateGridAnnotationTextFormat()
+{
+  if ( !mComposerMapGrid || !mComposerMap )
+  {
+    return;
+  }
+
+  QgsTextFormatPanelWidget* w = qobject_cast<QgsTextFormatPanelWidget*>( sender() );
+  mComposerMapGrid->setAnnotationTextFormat( w->format() );
+  mComposerMap->updateBoundingRect();
+  mComposerMap->update();
+}
+
+void QgsComposerMapGridWidget::cleanUpGridAnnotationTextFormat( QgsPanelWidget* container )
+{
+  QgsTextFormatPanelWidget* w = qobject_cast<QgsTextFormatPanelWidget*>( container );
+  if ( !w )
+    return;
+
+  if ( !mComposerMapGrid || !mComposerMap )
+  {
+    return;
+  }
+
+  mComposerMap->endCommand();
+}
+
 void QgsComposerMapGridWidget::on_mGridLineStyleButton_clicked()
 {
   if ( !mComposerMapGrid || !mComposerMap )
@@ -1167,16 +1195,14 @@ void QgsComposerMapGridWidget::on_mAnnotationFontButton_clicked()
     return;
   }
 
-  bool ok;
-  QFont newFont = QgisGui::getFont( ok, mComposerMapGrid->annotationFont() );
-  if ( ok )
-  {
-    mComposerMap->beginCommand( tr( "Annotation font changed" ) );
-    mComposerMapGrid->setAnnotationFont( newFont );
-    mComposerMap->updateBoundingRect();
-    mComposerMap->update();
-    mComposerMap->endCommand();
-  }
+  QgsTextFormatPanelWidget* w = new QgsTextFormatPanelWidget( mComposerMapGrid->annotationTextFormat() );
+  w->setPanelTitle( tr( "Annotation text" ) );
+
+  connect( w, SIGNAL( widgetChanged() ), this, SLOT( updateGridAnnotationTextFormat() ) );
+  connect( w, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpGridAnnotationTextFormat( QgsPanelWidget* ) ) );
+  openPanel( w );
+
+  mComposerMap->beginCommand( tr( "Annotation font changed" ) );
 }
 
 void QgsComposerMapGridWidget::on_mAnnotationFontColorButton_colorChanged( const QColor& color )

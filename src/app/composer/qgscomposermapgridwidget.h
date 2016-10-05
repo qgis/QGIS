@@ -109,6 +109,8 @@ class QgsComposerMapGridWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     void cleanUpGridLineStyleSelector( QgsPanelWidget* container );
     void updateGridMarkerStyleFromWidget();
     void cleanUpGridMarkerStyleSelector( QgsPanelWidget* container );
+    void updateGridAnnotationTextFormat();
+    void cleanUpGridAnnotationTextFormat( QgsPanelWidget* container );
 
   private:
     QgsComposerMap* mComposerMap;
