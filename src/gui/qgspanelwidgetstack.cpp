@@ -50,6 +50,9 @@ QgsPanelWidget *QgsPanelWidgetStack::mainPanel()
 
 QgsPanelWidget *QgsPanelWidgetStack::takeMainPanel()
 {
+  // clear out the current stack
+  acceptAllPanels();
+
   QWidget* widget = mStackedWidget->widget( 0 );
   mStackedWidget->removeWidget( widget );
   return qobject_cast<QgsPanelWidget*>( widget );
@@ -57,7 +60,7 @@ QgsPanelWidget *QgsPanelWidgetStack::takeMainPanel()
 
 void QgsPanelWidgetStack::clear()
 {
-  for ( int i = mStackedWidget->count(); i >= 0; i-- )
+  for ( int i = mStackedWidget->count() - 1; i >= 0; i-- )
   {
     if ( QgsPanelWidget* panelWidget = qobject_cast<QgsPanelWidget*>( mStackedWidget->widget( i ) ) )
     {
@@ -79,14 +82,36 @@ void QgsPanelWidgetStack::clear()
   this->updateBreadcrumb();
 }
 
+QgsPanelWidget* QgsPanelWidgetStack::currentPanel()
+{
+  return qobject_cast<QgsPanelWidget*>( mStackedWidget->currentWidget() );
+}
+
 void QgsPanelWidgetStack::acceptCurrentPanel()
 {
   // You can't accept the main panel.
-  if ( mStackedWidget->currentIndex() == 0 )
+  if ( mStackedWidget->currentIndex() <= 0 )
     return;
 
-  QgsPanelWidget* widget = qobject_cast<QgsPanelWidget*>( mStackedWidget->currentWidget() );
+  QgsPanelWidget* widget = currentPanel();
   widget->acceptPanel();
+}
+
+void QgsPanelWidgetStack::acceptAllPanels()
+{
+  //avoid messy multiple redraws
+  setUpdatesEnabled( false );
+  mStackedWidget->setUpdatesEnabled( false );
+
+  for ( int i = mStackedWidget->count() - 1; i > 0; --i )
+  {
+    if ( QgsPanelWidget* panelWidget = qobject_cast<QgsPanelWidget*>( mStackedWidget->widget( i ) ) )
+    {
+      panelWidget->acceptPanel();
+    }
+  }
+  setUpdatesEnabled( true );
+  mStackedWidget->setUpdatesEnabled( true );
 }
 
 void QgsPanelWidgetStack::showPanel( QgsPanelWidget *panel )
