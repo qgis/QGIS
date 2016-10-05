@@ -1869,6 +1869,10 @@ void QgsTextRenderer::drawBuffer( QgsRenderContext& context, const QgsTextRender
   {
     p->setCompositionMode( buffer.blendMode() );
   }
+  if ( context.flags() & QgsRenderContext::Antialiasing )
+  {
+    p->setRenderHint( QPainter::Antialiasing );
+  }
 
   // scale for any print output or image saving @ specific dpi
   p->scale( component.dpiRatio, component.dpiRatio );
@@ -2103,6 +2107,10 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
       p->translate( QPointF( xoff, yoff ) );
       p->rotate( component.rotationOffset );
       p->translate( -sizeOut / 2, sizeOut / 2 );
+      if ( context.flags() & QgsRenderContext::Antialiasing )
+      {
+        p->setRenderHint( QPainter::Antialiasing );
+      }
 
       drawShadow( context, component, format );
       p->restore();
@@ -2120,6 +2128,10 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
     if ( context.useAdvancedEffects() )
     {
       p->setCompositionMode( background.blendMode() );
+    }
+    if ( context.flags() & QgsRenderContext::Antialiasing )
+    {
+      p->setRenderHint( QPainter::Antialiasing );
     }
     p->translate( component.center.x(), component.center.y() );
     p->rotate( component.rotation );
@@ -2185,6 +2197,10 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
       return;
 
     p->save();
+    if ( context.flags() & QgsRenderContext::Antialiasing )
+    {
+      p->setRenderHint( QPainter::Antialiasing );
+    }
     p->translate( QPointF( component.center.x(), component.center.y() ) );
     p->rotate( component.rotation );
     double xoff = QgsTextRenderer::scaleToPixelContext( background.offset().x(), context, background.offsetUnit(), false, background.offsetMapUnitScale() );
@@ -2353,7 +2369,11 @@ void QgsTextRenderer::drawShadow( QgsRenderContext& context, const QgsTextRender
                    -offsetDist * sin( angleRad + M_PI / 2 ) );
 
   p->save();
-  p->setRenderHints( QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
+  p->setRenderHint( QPainter::SmoothPixmapTransform );
+  if ( context.flags() & QgsRenderContext::Antialiasing )
+  {
+    p->setRenderHint( QPainter::Antialiasing );
+  }
   if ( context.useAdvancedEffects() )
   {
     p->setCompositionMode( shadow.blendMode() );
@@ -2456,6 +2476,10 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
   Q_FOREACH ( const QString& line, textLines )
   {
     context.painter()->save();
+    if ( context.flags() & QgsRenderContext::Antialiasing )
+    {
+      context.painter()->setRenderHint( QPainter::Antialiasing );
+    }
     context.painter()->translate( component.origin );
     if ( !qgsDoubleNear( component.rotation, 0.0 ) )
       context.painter()->rotate( -component.rotation * 180 / M_PI );
