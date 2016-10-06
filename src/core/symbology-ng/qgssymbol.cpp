@@ -47,6 +47,7 @@
 #include <QSvgGenerator>
 
 #include <cmath>
+#include <map>
 
 inline
 QgsDataDefined* rotateWholeSymbol( double additionalRotation, const QgsDataDefined& dd )
@@ -842,30 +843,49 @@ void QgsSymbol::renderFeature( const QgsFeature& feature, QgsRenderContext& cont
       const QgsGeometryCollection& geomCollection = dynamic_cast<const QgsGeometryCollection&>( *segmentizedGeometry.geometry() );
       const unsigned int num = geomCollection.numGeometries();
 
+      // Sort components by approximate area (probably a bit faster than using
+      // area() )
+      std::map<double, QList<unsigned int> > mapAreaToPartNum;
       for ( unsigned int i = 0; i < num; ++i )
       {
-        mSymbolRenderContext->setGeometryPartNum( i + 1 );
-        mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1 );
-
-        context.setGeometry( geomCollection.geometryN( i ) );
         const QgsPolygonV2& polygon = dynamic_cast<const QgsPolygonV2&>( *geomCollection.geometryN( i ) );
-        _getPolygon( pts, holes, context, polygon, !tileMapRendering && clipFeaturesToExtent() );
-        static_cast<QgsFillSymbol*>( this )->renderPolygon( pts, ( !holes.isEmpty() ? &holes : nullptr ), &feature, context, layer, selected );
+        const QgsRectangle r( polygon.boundingBox() );
+        mapAreaToPartNum[ r.width() * r.height()] << i;
+      }
 
-        if ( drawVertexMarker && !usingSegmentizedGeometry )
+      // Draw starting with larger parts down to smaller parts, so that in
+      // case of a part being incorrectly inside another part, it is drawn
+      // on top of it (#15419)
+      std::map<double, QList<unsigned int> >::const_reverse_iterator iter = mapAreaToPartNum.rbegin();
+      for ( ; iter != mapAreaToPartNum.rend(); ++iter )
+      {
+        const QList<unsigned int>& listPartIndex = iter->second;
+        for ( int idx = 0; idx < listPartIndex.size(); ++idx )
         {
-          if ( i == 0 )
-          {
-            markers = pts;
-          }
-          else
-          {
-            markers << pts;
-          }
+          const unsigned i = listPartIndex[idx];
+          mSymbolRenderContext->setGeometryPartNum( i + 1 );
+          mSymbolRenderContext->expressionContextScope()->setVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1 );
 
-          Q_FOREACH ( const QPolygonF& hole, holes )
+          context.setGeometry( geomCollection.geometryN( i ) );
+          const QgsPolygonV2& polygon = dynamic_cast<const QgsPolygonV2&>( *geomCollection.geometryN( i ) );
+          _getPolygon( pts, holes, context, polygon, !tileMapRendering && clipFeaturesToExtent() );
+          static_cast<QgsFillSymbol*>( this )->renderPolygon( pts, ( !holes.isEmpty() ? &holes : nullptr ), &feature, context, layer, selected );
+
+          if ( drawVertexMarker && !usingSegmentizedGeometry )
           {
-            markers << hole;
+            if ( i == 0 )
+            {
+              markers = pts;
+            }
+            else
+            {
+              markers << pts;
+            }
+
+            Q_FOREACH ( const QPolygonF& hole, holes )
+            {
+              markers << hole;
+            }
           }
         }
       }
