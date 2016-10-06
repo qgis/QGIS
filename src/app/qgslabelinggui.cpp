@@ -351,6 +351,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   << mLineDistanceDDBtn
   << mLineDistanceSpnBx
   << mLineDistanceUnitDDBtn
+  << mLineDistanceUnitWidget
   << mMaxCharAngleDDBtn
   << mMaxCharAngleInDSpinBox
   << mMaxCharAngleOutDSpinBox
@@ -364,6 +365,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   << mPointAngleSpinBox
   << mPointOffsetDDBtn
   << mPointOffsetUnitsDDBtn
+  << mPointOffsetUnitWidget
   << mPointOffsetXSpinBox
   << mPointOffsetYSpinBox
   << mPointPositionOrderDDBtn
@@ -375,6 +377,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   << mRepeatDistanceDDBtn
   << mRepeatDistanceSpinBox
   << mRepeatDistanceUnitDDBtn
+  << mRepeatDistanceUnitWidget
   << mScaleBasedVisibilityChkBx
   << mScaleBasedVisibilityDDBtn
   << mScaleBasedVisibilityMaxDDBtn
@@ -393,10 +396,12 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   << mShadowOffsetGlobalChkBx
   << mShadowOffsetSpnBx
   << mShadowOffsetUnitsDDBtn
+  << mShadowOffsetUnitWidget
   << mShadowRadiusAlphaChkBx
   << mShadowRadiusDDBtn
   << mShadowRadiusDblSpnBx
   << mShadowRadiusUnitsDDBtn
+  << mShadowRadiusUnitWidget
   << mShadowScaleDDBtn
   << mShadowScaleSpnBx
   << mShadowTranspDDBtn
@@ -410,6 +415,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   << mShapeBorderUnitsDDBtn
   << mShapeBorderWidthDDBtn
   << mShapeBorderWidthSpnBx
+  << mShapeBorderWidthUnitWidget
   << mShapeDrawChkBx
   << mShapeDrawDDBtn
   << mShapeFillColorBtn
@@ -418,6 +424,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   << mShapeOffsetUnitsDDBtn
   << mShapeOffsetXSpnBx
   << mShapeOffsetYSpnBx
+  << mShapeOffsetUnitWidget
   << mShapePenStyleCmbBx
   << mShapePenStyleDDBtn
   << mShapeRadiusDDBtn
@@ -428,11 +435,13 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   << mShapeRotationDDBtn
   << mShapeRotationDblSpnBx
   << mShapeRotationTypeDDBtn
+  << mShapeRadiusUnitWidget
   << mShapeSVGPathDDBtn
   << mShapeSVGPathLineEdit
   << mShapeSizeCmbBx
   << mShapeSizeTypeDDBtn
   << mShapeSizeUnitsDDBtn
+  << mShapeSizeUnitWidget
   << mShapeSizeXDDBtn
   << mShapeSizeXSpnBx
   << mShapeSizeYDDBtn
@@ -503,6 +512,10 @@ void QgsLabelingGui::connectValueChanged( QList<QWidget *> widgets, const char *
     else if ( QgsFieldExpressionWidget* w = qobject_cast<QgsFieldExpressionWidget*>( widget ) )
     {
       connect( w, SIGNAL( fieldChanged( QString ) ), this,  slot );
+    }
+    else if ( QgsUnitSelectionWidget* w = qobject_cast<QgsUnitSelectionWidget*>( widget ) )
+    {
+      connect( w, SIGNAL( changed() ), this,  slot );
     }
     else if ( QComboBox* w = qobject_cast<QComboBox*>( widget ) )
     {
