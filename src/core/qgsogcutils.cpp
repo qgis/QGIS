@@ -1666,6 +1666,10 @@ static int binaryOperatorFromTagName( const QString& tagName )
 
 static QString binaryOperatorToTagName( QgsExpression::BinaryOperator op )
 {
+  if ( op == QgsExpression::boILike )
+  {
+    return "PropertyIsLike";
+  }
   return binaryOperatorsTagNamesMap().key( op, QString() );
 }
 
@@ -1752,6 +1756,11 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
     return nullptr;
   }
 
+  if ( op == QgsExpression::boLike && element.hasAttribute( "matchCase" ) && element.attribute( "matchCase" ) == "false" )
+  {
+    op = QgsExpression::boILike;
+  }
+
   QDomElement operandElem = element.firstChildElement();
   QgsExpression::Node *expr = nodeFromOgcFilter( operandElem, errorMessage ), *leftOp = expr;
   if ( !expr )
@@ -1770,6 +1779,64 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
         errorMessage = QObject::tr( "invalid right operand for '%1' binary operator" ).arg( element.tagName() );
       delete expr;
       return nullptr;
+    }
+
+    if ( op == QgsExpression::boLike || op == QgsExpression::boILike )
+    {
+      QString wildCard;
+      if ( element.hasAttribute( "wildCard" ) )
+      {
+        wildCard = element.attribute( "wildCard" );
+      }
+      QString singleChar;
+      if ( element.hasAttribute( "singleChar" ) )
+      {
+        singleChar = element.attribute( "singleChar" );
+      }
+      QString escape = "\\";
+      if ( element.hasAttribute( "escape" ) )
+      {
+        escape = element.attribute( "escape" );
+      }
+      // replace
+      QString oprValue = static_cast<const QgsExpression::NodeLiteral*>( opRight )->value().toString();
+      if ( !wildCard.isEmpty() && wildCard != "%" )
+      {
+        oprValue.replace( '%', "\\%" );
+        if ( oprValue.startsWith( wildCard ) )
+        {
+          oprValue.replace( 0, 1, "%" );
+        }
+        QRegExp rx( "[^" + QRegExp::escape( escape ) + "](" + QRegExp::escape( wildCard ) + ")" );
+        int pos = 0;
+        while (( pos = rx.indexIn( oprValue, pos ) ) != -1 )
+        {
+          oprValue.replace( pos + 1, 1, "%" );
+          pos += 1;
+        }
+        oprValue.replace( escape + wildCard, wildCard );
+      }
+      if ( !singleChar.isEmpty() && singleChar != "_" )
+      {
+        oprValue.replace( '_', "\\_" );
+        if ( oprValue.startsWith( singleChar ) )
+        {
+          oprValue.replace( 0, 1, "_" );
+        }
+        QRegExp rx( "[^" + QRegExp::escape( escape ) + "](" + QRegExp::escape( singleChar ) + ")" );
+        int pos = 0;
+        while (( pos = rx.indexIn( oprValue, pos ) ) != -1 )
+        {
+          oprValue.replace( pos + 1, 1, "_" );
+          pos += 1;
+        }
+        oprValue.replace( escape + singleChar, singleChar );
+      }
+      if ( !escape.isEmpty() && escape != "\\" )
+      {
+        oprValue.replace( escape + escape, escape );
+      }
+      opRight = new QgsExpression::NodeLiteral( oprValue );
     }
 
     expr = new QgsExpression::NodeBinaryOperator( static_cast< QgsExpression::BinaryOperator >( op ), expr, opRight );
@@ -2289,13 +2356,13 @@ QDomElement QgsOgcUtilsExprToFilter::expressionBinaryOperatorToOgcFilter( const 
     if ( op == QgsExpression::boILike )
       boElem.setAttribute( "matchCase", "false" );
 
-    // setup wildcards to <ogc:PropertyIsLike>
+    // setup wildCards to <ogc:PropertyIsLike>
     boElem.setAttribute( "wildCard", "%" );
-    boElem.setAttribute( "singleChar", "?" );
+    boElem.setAttribute( "singleChar", "_" );
     if ( mFilterVersion == QgsOgcUtils::FILTER_OGC_1_0 )
-      boElem.setAttribute( "escape", "!" );
+      boElem.setAttribute( "escape", "\\" );
     else
-      boElem.setAttribute( "escapeChar", "!" );
+      boElem.setAttribute( "escapeChar", "\\" );
   }
 
   boElem.appendChild( leftElem );
@@ -2712,6 +2779,8 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
     opText = "PropertyIsGreaterThan";
   else if ( op == QgsSQLStatement::boLike )
     opText = "PropertyIsLike";
+  else if ( op == QgsSQLStatement::boILike )
+    opText = "PropertyIsLike";
 
   if ( opText.isEmpty() )
   {
@@ -2727,13 +2796,13 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
     if ( op == QgsSQLStatement::boILike )
       boElem.setAttribute( "matchCase", "false" );
 
-    // setup wildcards to <ogc:PropertyIsLike>
+    // setup wildCards to <ogc:PropertyIsLike>
     boElem.setAttribute( "wildCard", "%" );
-    boElem.setAttribute( "singleChar", "?" );
+    boElem.setAttribute( "singleChar", "_" );
     if ( mFilterVersion == QgsOgcUtils::FILTER_OGC_1_0 )
-      boElem.setAttribute( "escape", "!" );
+      boElem.setAttribute( "escape", "\\" );
     else
-      boElem.setAttribute( "escapeChar", "!" );
+      boElem.setAttribute( "escapeChar", "\\" );
   }
 
   boElem.appendChild( leftElem );
