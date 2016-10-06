@@ -1437,7 +1437,9 @@ bool QgsWFSProvider::getCapabilities()
   if ( mShared->mCaps.version.isEmpty() )
   {
     QgsWfsCapabilities getCapabilities( mShared->mURI.uri( false ) );
-    if ( !getCapabilities.requestCapabilities( true ) )
+    const bool synchronous = true;
+    const bool forceRefresh = false;
+    if ( !getCapabilities.requestCapabilities( synchronous, forceRefresh ) )
     {
       QgsMessageLog::logMessage( tr( "GetCapabilities failed for url %1: %2" ).
                                  arg( dataSourceUri() ).arg( getCapabilities.errorMessage() ), tr( "WFS" ) );
