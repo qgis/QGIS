@@ -161,6 +161,7 @@ from .PointsAlongGeometry import PointsAlongGeometry
 from .Aspect import Aspect
 from .Slope import Slope
 from .Ruggedness import Ruggedness
+from .Hillshade import Hillshade
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -217,7 +218,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         BoundingBox(), Boundary(), PointOnSurface(),
                         OffsetLine(), PolygonCentroids(), Translate(),
                         SingleSidedBuffer(), PointsAlongGeometry(),
-                        Aspect(), Slope(), Ruggedness(),
+                        Aspect(), Slope(), Ruggedness(), Hillshade(),
                         ]
 
         if hasMatplotlib:
