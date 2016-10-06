@@ -116,6 +116,13 @@ bool QgsWfsRequest::sendGET( const QUrl& url, bool synchronous, bool forceRefres
   }
 
   mReply = QgsNetworkAccessManager::instance()->get( request );
+  if ( !mUri.auth().setAuthorizationReply( mReply ) )
+  {
+    mErrorCode = QgsWfsRequest::NetworkError;
+    mErrorMessage = errorMessageFailedAuth();
+    QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
+    return false;
+  }
   connect( mReply, SIGNAL( finished() ), this, SLOT( replyFinished() ) );
   connect( mReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( replyProgress( qint64, qint64 ) ) );
 
@@ -160,6 +167,13 @@ bool QgsWfsRequest::sendPOST( const QUrl& url, const QString& contentTypeHeader,
   request.setHeader( QNetworkRequest::ContentTypeHeader, contentTypeHeader );
 
   mReply = QgsNetworkAccessManager::instance()->post( request, data );
+  if ( !mUri.auth().setAuthorizationReply( mReply ) )
+  {
+    mErrorCode = QgsWfsRequest::NetworkError;
+    mErrorMessage = errorMessageFailedAuth();
+    QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
+    return false;
+  }
   connect( mReply, SIGNAL( finished() ), this, SLOT( replyFinished() ) );
   connect( mReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( replyProgress( qint64, qint64 ) ) );
 
@@ -243,6 +257,15 @@ void QgsWfsRequest::replyFinished()
 
           QgsDebugMsg( QString( "redirected: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ) );
           mReply = QgsNetworkAccessManager::instance()->get( request );
+          if ( !mUri.auth().setAuthorizationReply( mReply ) )
+          {
+            mResponse.clear();
+            mErrorMessage = errorMessageFailedAuth();
+            mErrorCode = QgsWfsRequest::NetworkError;
+            QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
+            emit downloadFinished();
+            return;
+          }
           connect( mReply, SIGNAL( finished() ), this, SLOT( replyFinished() ) );
           connect( mReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( replyProgress( qint64, qint64 ) ) );
           return;

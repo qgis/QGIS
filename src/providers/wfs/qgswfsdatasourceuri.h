@@ -32,7 +32,7 @@ struct QgsWFSAuthorization
       , mAuthCfg( authcfg )
   {}
 
-  //! set authorization header
+  //! update authorization for request
   bool setAuthorization( QNetworkRequest &request ) const
   {
     if ( !mAuthCfg.isEmpty() ) // must be non-empty value
@@ -42,6 +42,16 @@ struct QgsWFSAuthorization
     else if ( !mUserName.isNull() || !mPassword.isNull() ) // allow empty values
     {
       request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName, mPassword ).toLatin1().toBase64() );
+    }
+    return true;
+  }
+
+  //! update authorization for reply
+  bool setAuthorizationReply( QNetworkReply *reply ) const
+  {
+    if ( !mAuthCfg.isEmpty() )
+    {
+      return QgsAuthManager::instance()->updateNetworkReply( reply, mAuthCfg );
     }
     return true;
   }
