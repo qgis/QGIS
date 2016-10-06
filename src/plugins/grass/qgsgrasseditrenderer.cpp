@@ -173,7 +173,7 @@ void QgsGrassEditRenderer::stopRender( QgsRenderContext& context )
   mMarkerRenderer->stopRender( context );
 }
 
-QSet<QString> QgsGrassEditRenderer::usedAttributes()
+QSet<QString> QgsGrassEditRenderer::usedAttributes() const
 {
   return mLineRenderer->usedAttributes();
 }
