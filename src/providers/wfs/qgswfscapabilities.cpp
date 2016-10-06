@@ -36,7 +36,7 @@ QgsWFSCapabilities::~QgsWFSCapabilities()
 {
 }
 
-bool QgsWFSCapabilities::requestCapabilities( bool synchronous )
+bool QgsWFSCapabilities::requestCapabilities( bool synchronous, bool forceRefresh )
 {
   QUrl url( baseURL() );
   url.addQueryItem( "REQUEST", "GetCapabilities" );
@@ -48,7 +48,7 @@ bool QgsWFSCapabilities::requestCapabilities( bool synchronous )
   else
     url.addQueryItem( "VERSION", version );
 
-  if ( !sendGET( url, synchronous, false ) )
+  if ( !sendGET( url, synchronous, forceRefresh ) )
   {
     emit gotCapabilities();
     return false;

@@ -62,7 +62,9 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
 
   QgsWFSCapabilities capabilities( mUri );
 
-  capabilities.requestCapabilities( true );
+  const bool synchronous = true;
+  const bool forceRefresh = false;
+  capabilities.requestCapabilities( synchronous, forceRefresh );
 
   QVector<QgsDataItem*> layers;
   if ( capabilities.errorCode() == QgsWFSCapabilities::NoError )
