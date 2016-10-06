@@ -113,6 +113,13 @@ void QgsMeasureDialog::unitsChanged( int index )
   mTable->clear();
   mTotal = 0.;
   updateUi();
+
+  if ( !mTool->done() )
+  {
+    // re-add temporary mouse cursor position
+    addPoint( mLastMousePoint );
+    mouseMove( mLastMousePoint );
+  }
 }
 
 void QgsMeasureDialog::restart()
