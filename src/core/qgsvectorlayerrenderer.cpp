@@ -53,7 +53,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
     , mDiagrams( false )
     , mLabelProvider( nullptr )
     , mDiagramProvider( nullptr )
-    , mLayerTransparency( 0 )
 {
   mSource = new QgsVectorLayerFeatureSource( layer );
 
@@ -64,7 +63,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
 
   mGeometryType = layer->geometryType();
 
-  mLayerTransparency = layer->layerTransparency();
   mFeatureBlendMode = layer->featureBlendMode();
 
   mSimplifyMethod = layer->simplifyMethod();
@@ -260,18 +258,6 @@ bool QgsVectorLayerRenderer::render()
   if ( usingEffect )
   {
     mRendererV2->paintEffect()->end( mContext );
-  }
-
-  //apply layer transparency for vector layers
-  if ( mContext.useAdvancedEffects() && mLayerTransparency != 0 )
-  {
-    // a layer transparency has been set, so update the alpha for the flattened layer
-    // by combining it with the layer transparency
-    QColor transparentFillColor = QColor( 0, 0, 0, 255 - ( 255 * mLayerTransparency / 100 ) );
-    // use destination in composition mode to merge source's alpha with destination
-    mContext.painter()->setCompositionMode( QPainter::CompositionMode_DestinationIn );
-    mContext.painter()->fillRect( 0, 0, mContext.painter()->device()->width(),
-                                  mContext.painter()->device()->height(), transparentFillColor );
   }
 
   return true;

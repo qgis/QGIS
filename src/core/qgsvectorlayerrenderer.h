@@ -136,7 +136,6 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     //! may be null. no need to delete: if exists it is owned by labeling engine
     QgsVectorLayerDiagramProvider* mDiagramProvider;
 
-    int mLayerTransparency;
     QPainter::CompositionMode mFeatureBlendMode;
 
     QgsVectorSimplifyMethod mSimplifyMethod;
