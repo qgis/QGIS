@@ -310,7 +310,12 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
                         qgsDoubleToString( mShared->mRect.yMaximum() ) ) );
     // Some servers like Geomedia need the srsname to be explictly appended
     // otherwise they are confused and do not interpret it properly
-    bbox += "," + mShared->srsName();
+    if ( !mShared->mWFSVersion.startsWith( "1.0" ) )
+    {
+      // but it is illegal in WFS 1.0 and some servers definitely not like
+      // it. See #15464
+      bbox += "," + mShared->srsName();
+    }
     getFeatureUrl.addQueryItem( "BBOX",  bbox );
   }
   else if ( !mShared->mWFSFilter.isEmpty() )
