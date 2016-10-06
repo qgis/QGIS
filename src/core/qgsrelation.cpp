@@ -248,6 +248,16 @@ QString QgsRelation::id() const
   return mRelationId;
 }
 
+void QgsRelation::generateId()
+{
+  mRelationId = QString( "%1_%2_%3_%4" )
+                .arg( referencingLayerId(),
+                      mFieldPairs.at( 0 ).referencingField(),
+                      referencedLayerId(),
+                      mFieldPairs.at( 0 ).referencedField() );
+  updateRelationStatus();
+}
+
 QString QgsRelation::referencingLayerId() const
 {
   return mReferencingLayerId;
@@ -299,6 +309,11 @@ QgsAttributeList QgsRelation::referencingFields() const
 bool QgsRelation::isValid() const
 {
   return mValid;
+}
+
+bool QgsRelation::hasEqualDefinition( const QgsRelation& other ) const
+{
+  return mReferencedLayerId == other.mReferencedLayerId && mReferencingLayerId == other.mReferencingLayerId && mFieldPairs == other.mFieldPairs;
 }
 
 void QgsRelation::updateRelationStatus()

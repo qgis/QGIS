@@ -53,15 +53,15 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layer
-        cls.vl_b = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."books" sql=', 'test', 'postgres')
-        cls.vl_a = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."authors" sql=', 'test', 'postgres')
-        cls.vl_link = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."books_authors" sql=', 'test', 'postgres')
+        cls.vl_b = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."books" sql=', 'books', 'postgres')
+        cls.vl_a = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."authors" sql=', 'authors', 'postgres')
+        cls.vl_link = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."books_authors" sql=', 'books_authors', 'postgres')
 
         QgsMapLayerRegistry.instance().addMapLayer(cls.vl_b)
         QgsMapLayerRegistry.instance().addMapLayer(cls.vl_a)
         QgsMapLayerRegistry.instance().addMapLayer(cls.vl_link)
 
-        relMgr = QgsProject.instance().relationManager()
+        cls.relMgr = QgsProject.instance().relationManager()
 
         cls.rel_a = QgsRelation()
         cls.rel_a.setReferencingLayer(cls.vl_link.id())
@@ -69,7 +69,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         cls.rel_a.addFieldPair('fk_author', 'pk')
         cls.rel_a.setRelationId('rel_a')
         assert(cls.rel_a.isValid())
-        relMgr.addRelation(cls.rel_a)
+        cls.relMgr.addRelation(cls.rel_a)
 
         cls.rel_b = QgsRelation()
         cls.rel_b.setReferencingLayer(cls.vl_link.id())
@@ -77,7 +77,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         cls.rel_b.addFieldPair('fk_book', 'pk')
         cls.rel_b.setRelationId('rel_b')
         assert(cls.rel_b.isValid())
-        relMgr.addRelation(cls.rel_b)
+        cls.relMgr.addRelation(cls.rel_b)
 
         # Our mock QgsVectorLayerTools, that allow injecting data where user input is expected
         cls.vltools = VlTools()
@@ -125,7 +125,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
 
         self.assertEqual(self.table_view.model().rowCount(), 4)
 
-    @unittest.expectedFailure(os.environ['QT_VERSION'] == '4' and os.environ['TRAVIS_OS_NAME'] == 'linux') # It's probably not related to this variables at all, but that's the closest we can get to the real source of this problem at the moment...
+    @unittest.expectedFailure(os.environ.get('QT_VERSION', '5') == '4' and os.environ.get('TRAVIS_OS_NAME', '') == 'linux') # It's probably not related to this variables at all, but that's the closest we can get to the real source of this problem at the moment...
     def test_add_feature(self):
         """
         Check if a new related feature is added
@@ -200,6 +200,31 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         self.assertEqual(2, len([f for f in self.vl_link.getFeatures()]))
 
         self.assertEqual(2, self.table_view.model().rowCount())
+
+    def test_discover_relations(self):
+        """
+        Test the automatic discovery of relations
+        """
+        relations = self.relMgr.discoverRelations([], [self.vl_a, self.vl_b, self.vl_link])
+        relations = {r.name(): r for r in relations}
+        self.assertEqual({'books_authors_fk_book_fkey', 'books_authors_fk_author_fkey'}, set(relations.keys()))
+
+        ba2b = relations['books_authors_fk_book_fkey']
+        self.assertTrue(ba2b.isValid())
+        self.assertEqual('books_authors', ba2b.referencingLayer().name())
+        self.assertEqual('books', ba2b.referencedLayer().name())
+        self.assertEqual([0], ba2b.referencingFields())
+        self.assertEqual([0], ba2b.referencedFields())
+
+        ba2a = relations['books_authors_fk_author_fkey']
+        self.assertTrue(ba2a.isValid())
+        self.assertEqual('books_authors', ba2a.referencingLayer().name())
+        self.assertEqual('authors', ba2a.referencedLayer().name())
+        self.assertEqual([1], ba2a.referencingFields())
+        self.assertEqual([0], ba2a.referencedFields())
+
+        self.assertEqual([], self.relMgr.discoverRelations([self.rel_a, self.rel_b], [self.vl_a, self.vl_b, self.vl_link]))
+        self.assertEqual(1, len(self.relMgr.discoverRelations([], [self.vl_a, self.vl_link])))
 
     def startTransaction(self):
         """

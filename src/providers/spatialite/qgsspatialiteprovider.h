@@ -209,6 +209,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     void invalidateConnections( const QString& connection ) override;
 
+    QList<QgsRelation> discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const override;
+
     // static functions
     static void convertToGeosWKB( const unsigned char *blob, int blob_size,
                                   unsigned char **wkb, int *geom_size );
@@ -290,6 +292,11 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     //! get SpatiaLite version string
     QString spatialiteVersion();
+
+    /**
+     * Search all the layers using the given table.
+     */
+    static QList<QgsVectorLayer*> searchLayers( const QList<QgsVectorLayer*>& layers, const QString& connectionInfo, const QString& tableName );
 
     QgsFields mAttributeFields;
 

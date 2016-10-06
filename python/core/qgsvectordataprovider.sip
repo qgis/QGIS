@@ -371,6 +371,15 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 
+    /**
+     * Discover the available relations with the given layers.
+     * @param self the layer using this data provider.
+     * @param layers the other layers.
+     * @return the list of N-1 relations from this provider.
+     * @note added in QGIS 3.0
+     */
+    virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const;
+
   signals:
     /** Signals an error in this provider */
     void raiseError( const QString& msg );
