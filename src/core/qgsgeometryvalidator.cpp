@@ -147,11 +147,31 @@ void QgsGeometryValidator::validatePolyline( int i, QgsPolyline line, bool ring 
       if ( !intersectLines( line[j], v, line[k], w, s ) )
         continue;
 
-      double d = -distLine2Point( line[j], v.perpVector(), s );
+      double d = 0.0;
+      try
+      {
+        d = -distLine2Point( line[j], v.perpVector(), s );
+      }
+      catch ( QgsException & e )
+      {
+        Q_UNUSED( e );
+        QgsDebugMsg( "Error validating: " + e.what() );
+        continue;
+      }
       if ( d < 0 || d > vl )
         continue;
 
-      d = -distLine2Point( line[k], w.perpVector(), s );
+      try
+      {
+        d = -distLine2Point( line[k], w.perpVector(), s );
+      }
+      catch ( QgsException & e )
+      {
+        Q_UNUSED( e );
+        QgsDebugMsg( "Error validating: " + e.what() );
+        continue;
+      }
+
       if ( d <= 0 || d >= w.length() )
         continue;
 
