@@ -2279,7 +2279,7 @@ Acts on currently active editable layer</string>
   </action>
   <action name="mActionPasteAsNewMemoryVector">
    <property name="text">
-    <string>New Temporary Scratch Layer...</string>
+    <string>Temporary Scratch Layer...</string>
    </property>
    <property name="toolTip">
     <string>Paste features in clipboard into a new temporary scratch layer.</string>
