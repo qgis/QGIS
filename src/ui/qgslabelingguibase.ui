@@ -991,9 +991,6 @@
                            <property name="text">
                             <string>Color</string>
                            </property>
-                           <property name="alignment">
-                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                           </property>
                           </widget>
                          </item>
                          <item row="5" column="2">
@@ -2276,9 +2273,6 @@ font-style: italic;</string>
                                 <property name="enabled">
                                  <bool>true</bool>
                                 </property>
-                                <property name="alignment">
-                                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                                </property>
                                 <property name="suffix">
                                  <string> %</string>
                                 </property>
@@ -2756,9 +2750,6 @@ font-style: italic;</string>
                                <property name="enabled">
                                 <bool>true</bool>
                                </property>
-                               <property name="alignment">
-                                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                               </property>
                                <property name="suffix">
                                 <string> %</string>
                                </property>
@@ -3009,11 +3000,7 @@ font-style: italic;</string>
                                <number>0</number>
                               </property>
                               <item>
-                               <widget class="QLineEdit" name="mShapeSVGPathLineEdit">
-                                <property name="alignment">
-                                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                                </property>
-                               </widget>
+                               <widget class="QLineEdit" name="mShapeSVGPathLineEdit"/>
                               </item>
                               <item>
                                <widget class="QPushButton" name="mShapeSVGSelectorBtn">
@@ -3625,9 +3612,6 @@ font-style: italic;</string>
                               <widget class="QgsSpinBox" name="mShadowTranspSpnBx">
                                <property name="enabled">
                                 <bool>true</bool>
-                               </property>
-                               <property name="alignment">
-                                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                                </property>
                                <property name="suffix">
                                 <string> %</string>
