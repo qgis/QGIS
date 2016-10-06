@@ -2803,35 +2803,14 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
           ydiff = yd;
         }
 
-        //project xPos and yPos from layer to map CRS
-        double z = 0;
-        if ( ct )
+        //project xPos and yPos from layer to map CRS, handle rotation
+        QgsGeometry ddPoint( new QgsPointV2( xPos, yPos ) );
+        if ( QgsPalLabeling::geometryRequiresPreparation( &ddPoint, context, ct ) )
         {
-          try
-          {
-            ct->transformInPlace( xPos, yPos, z );
-          }
-          catch ( QgsCsException &e )
-          {
-            Q_UNUSED( e );
-            QgsDebugMsgLevel( QString( "Ignoring feature %1 due transformation exception on data-defined position" ).arg( f.id() ), 4 );
-            return;
-          }
-        }
-
-        //rotate position with map if data-defined
-        if ( dataDefinedPosition && m2p.mapRotation() )
-        {
-          const QgsPoint& center = context.extent().center();
-          QTransform t = QTransform::fromTranslate( center.x(), center.y() );
-          t.rotate( -m2p.mapRotation() );
-          t.translate( -center.x(), -center.y() );
-          qreal xPosR, yPosR;
-          qreal xPos_qreal = xPos, yPos_qreal = yPos;
-          t.map( xPos_qreal, yPos_qreal, &xPosR, &yPosR );
-          xPos = xPosR;
-          yPos = yPosR;
-
+          QgsGeometry* newPoint = QgsPalLabeling::prepareGeometry( &ddPoint, context, ct );
+          xPos = static_cast< QgsPointV2* >( newPoint->geometry() )->x();
+          yPos = static_cast< QgsPointV2* >( newPoint->geometry() )->y();
+          delete newPoint;
         }
 
         xPos += xdiff;
