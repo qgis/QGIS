@@ -462,6 +462,31 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         assert not vl.dataProvider().deleteFeatures([0])
 
+        # Test with restrictToRequestBBOX=1
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631&BBOX=400000,5400000,450000,5500000'), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs"
+                       xmlns:gml="http://www.opengis.net/gml"
+                       xmlns:my="http://my">
+  <gml:boundedBy><gml:null>unknown</gml:null></gml:boundedBy>
+  <gml:featureMember>
+    <my:typename fid="typename.0">
+      <my:geometry>
+          <gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:coordinates decimal="." cs="," ts=" ">426858,5427937</gml:coordinates></gml:Point>
+      </my:geometry>
+      <my:INTFIELD>100</my:INTFIELD>
+    </my:typename>
+  </gml:featureMember>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0' retrictToRequestBBOX=1", 'test', 'WFS')
+
+        extent = QgsRectangle(400000.0, 5400000.0, 450000.0, 5500000.0)
+        request = QgsFeatureRequest().setFilterRect(extent)
+        values = [f['INTFIELD'] for f in vl.getFeatures(request)]
+        self.assertEqual(values, [100])
+
     def testWFS10_latlongboundingbox_in_WGS84(self):
         """Test WFS 1.0 with non conformatn LatLongBoundingBox"""
 
