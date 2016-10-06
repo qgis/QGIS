@@ -28,6 +28,7 @@
 QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QgsComposerItemBaseWidget( nullptr, arrow ), mArrow( arrow )
 {
   setupUi( this );
+  setPanelTitle( tr( "Arrow properties" ) );
   mRadioButtonGroup = new QButtonGroup( this );
   mRadioButtonGroup->addButton( mDefaultMarkerRadioButton );
   mRadioButtonGroup->addButton( mNoMarkerRadioButton );
@@ -98,7 +99,7 @@ void QgsComposerArrowWidget::on_mArrowHeadFillColorButton_colorChanged( const QC
     return;
   }
 
-  mArrow->beginCommand( tr( "Arrow head fill color" ) );
+  mArrow->beginCommand( tr( "Arrow head fill color" ), QgsComposerMergeCommand::ArrowHeadFillColor );
   mArrow->setArrowHeadFillColor( newColor );
   mArrow->update();
   mArrow->endCommand();
@@ -111,7 +112,7 @@ void QgsComposerArrowWidget::on_mArrowHeadOutlineColorButton_colorChanged( const
     return;
   }
 
-  mArrow->beginCommand( tr( "Arrow head outline color" ) );
+  mArrow->beginCommand( tr( "Arrow head outline color" ), QgsComposerMergeCommand::ArrowHeadOutlineColor );
   mArrow->setArrowHeadOutlineColor( newColor );
   mArrow->update();
   mArrow->endCommand();

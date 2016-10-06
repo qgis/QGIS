@@ -27,6 +27,8 @@
 QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar ): QgsComposerItemBaseWidget( nullptr, scaleBar ), mComposerScaleBar( scaleBar )
 {
   setupUi( this );
+  setPanelTitle( tr( "Scalebar properties" ) );
+
   connectUpdateSignal();
 
   //add widget for general composer item properties
@@ -261,7 +263,7 @@ void QgsComposerScaleBarWidget::on_mFontColorButton_colorChanged( const QColor& 
     return;
   }
 
-  mComposerScaleBar->beginCommand( tr( "Scalebar font color changed" ) );
+  mComposerScaleBar->beginCommand( tr( "Scalebar font color changed" ), QgsComposerMergeCommand::ScaleBarFontColor );
   disconnectUpdateSignal();
   mComposerScaleBar->setFontColor( newColor );
   mComposerScaleBar->update();
@@ -276,7 +278,7 @@ void QgsComposerScaleBarWidget::on_mFillColorButton_colorChanged( const QColor& 
     return;
   }
 
-  mComposerScaleBar->beginCommand( tr( "Scalebar color changed" ) );
+  mComposerScaleBar->beginCommand( tr( "Scalebar color changed" ), QgsComposerMergeCommand::ScaleBarFillColor );
   disconnectUpdateSignal();
   QBrush newBrush = mComposerScaleBar->brush();
   newBrush.setColor( newColor );
@@ -293,7 +295,7 @@ void QgsComposerScaleBarWidget::on_mFillColor2Button_colorChanged( const QColor 
     return;
   }
 
-  mComposerScaleBar->beginCommand( tr( "Scalebar secondary color changed" ) );
+  mComposerScaleBar->beginCommand( tr( "Scalebar secondary color changed" ), QgsComposerMergeCommand::ScaleBarFill2Color );
   disconnectUpdateSignal();
   QBrush newBrush = mComposerScaleBar->brush2();
   newBrush.setColor( newColor );
@@ -310,7 +312,7 @@ void QgsComposerScaleBarWidget::on_mStrokeColorButton_colorChanged( const QColor
     return;
   }
 
-  mComposerScaleBar->beginCommand( tr( "Scalebar line color changed" ) );
+  mComposerScaleBar->beginCommand( tr( "Scalebar line color changed" ), QgsComposerMergeCommand::ScaleBarStrokeColor );
   disconnectUpdateSignal();
   QPen newPen = mComposerScaleBar->pen();
   newPen.setColor( newColor );
