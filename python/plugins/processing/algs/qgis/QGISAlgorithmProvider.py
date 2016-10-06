@@ -160,6 +160,7 @@ from .SingleSidedBuffer import SingleSidedBuffer
 from .PointsAlongGeometry import PointsAlongGeometry
 from .Aspect import Aspect
 from .Slope import Slope
+from .Ruggedness import Ruggedness
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -216,7 +217,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         BoundingBox(), Boundary(), PointOnSurface(),
                         OffsetLine(), PolygonCentroids(), Translate(),
                         SingleSidedBuffer(), PointsAlongGeometry(),
-                        Aspect(), Slope(),
+                        Aspect(), Slope(), Ruggedness(),
                         ]
 
         if hasMatplotlib:
