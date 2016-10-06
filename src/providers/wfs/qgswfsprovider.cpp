@@ -1249,8 +1249,15 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc,
   for ( int i = 0; i < attributeNodeList.size(); ++i )
   {
     QDomElement attributeElement = attributeNodeList.at( i ).toElement();
+
     //attribute name
     QString name = attributeElement.attribute( "name" );
+    // Some servers like http://ogi.state.ok.us/geoserver/wfs on layer ogi:doq_centroids
+    // return attribute names padded with spaces. See http://hub.qgis.org/issues/3426
+    // I'm not completely sure how legal this
+    // is but this validates with Xerces 3.1, and its schema analyzer does also the trimming.
+    name = name.trimmed();
+
     //attribute type
     QString type = attributeElement.attribute( "type" );
     if ( type.isEmpty() )
