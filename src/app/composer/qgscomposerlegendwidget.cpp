@@ -406,7 +406,7 @@ void QgsComposerLegendWidget::on_mFontColorButton_colorChanged( const QColor& ne
     return;
   }
 
-  mLegend->beginCommand( tr( "Legend font color changed" ) );
+  mLegend->beginCommand( tr( "Legend font color changed" ), QgsComposerMergeCommand::LegendFontColor );
   mLegend->setFontColor( newFontColor );
   mLegend->update();
   mLegend->endCommand();
@@ -624,7 +624,7 @@ void QgsComposerLegendWidget::on_mRasterBorderColorButton_colorChanged( const QC
     return;
   }
 
-  mLegend->beginCommand( tr( "Legend raster border color" ) );
+  mLegend->beginCommand( tr( "Legend raster border color" ), QgsComposerMergeCommand::LegendRasterBorderColor );
   mLegend->setRasterBorderColor( newColor );
   mLegend->update();
   mLegend->endCommand();

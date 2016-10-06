@@ -210,7 +210,7 @@ void QgsComposerItemWidget::on_mFrameColorButton_colorChanged( const QColor& new
   {
     return;
   }
-  mItem->beginCommand( tr( "Frame color changed" ) );
+  mItem->beginCommand( tr( "Frame color changed" ), QgsComposerMergeCommand::ItemOutlineColor );
   mItem->setFrameOutlineColor( newFrameColor );
   mItem->update();
   mItem->endCommand();
@@ -230,7 +230,7 @@ void QgsComposerItemWidget::on_mBackgroundColorButton_colorChanged( const QColor
   {
     return;
   }
-  mItem->beginCommand( tr( "Background color changed" ) );
+  mItem->beginCommand( tr( "Background color changed" ), QgsComposerMergeCommand::ItemBackgroundColor );
   mItem->setBackgroundColor( newBackgroundColor );
 
   //if the item is a composer map, we need to regenerate the map image

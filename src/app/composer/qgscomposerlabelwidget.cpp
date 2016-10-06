@@ -125,7 +125,7 @@ void QgsComposerLabelWidget::on_mFontColorButton_colorChanged( const QColor &new
     return;
   }
 
-  mComposerLabel->beginCommand( tr( "Label color changed" ) );
+  mComposerLabel->beginCommand( tr( "Label color changed" ), QgsComposerMergeCommand::ComposerLabelFontColor );
   mComposerLabel->setFontColor( newLabelColor );
   mComposerLabel->update();
   mComposerLabel->endCommand();

@@ -1730,7 +1730,7 @@ void QgsComposerMapWidget::on_mGridFramePenColorButton_colorChanged( const QColo
     return;
   }
 
-  mComposerMap->beginCommand( tr( "Grid frame color changed" ) );
+  mComposerMap->beginCommand( tr( "Grid frame color changed" ), QgsComposerMergeCommand::ComposerMapGridFramePenColor );
   grid->setFramePenColor( newColor );
   mComposerMap->update();
   mComposerMap->endCommand();
@@ -1744,7 +1744,7 @@ void QgsComposerMapWidget::on_mGridFrameFill1ColorButton_colorChanged( const QCo
     return;
   }
 
-  mComposerMap->beginCommand( tr( "Grid frame first fill color changed" ) );
+  mComposerMap->beginCommand( tr( "Grid frame first fill color changed" ), QgsComposerMergeCommand::ComposerMapGridFrameFill1Color );
   grid->setFrameFillColor1( newColor );
   mComposerMap->update();
   mComposerMap->endCommand();
@@ -1758,7 +1758,7 @@ void QgsComposerMapWidget::on_mGridFrameFill2ColorButton_colorChanged( const QCo
     return;
   }
 
-  mComposerMap->beginCommand( tr( "Grid frame second fill color changed" ) );
+  mComposerMap->beginCommand( tr( "Grid frame second fill color changed" ), QgsComposerMergeCommand::ComposerMapGridFrameFill2Color );
   grid->setFrameFillColor2( newColor );
   mComposerMap->update();
   mComposerMap->endCommand();
@@ -2077,7 +2077,7 @@ void QgsComposerMapWidget::on_mAnnotationFontColorButton_colorChanged( const QCo
     return;
   }
 
-  mComposerMap->beginCommand( tr( "Annotation color changed" ) );
+  mComposerMap->beginCommand( tr( "Annotation color changed" ), QgsComposerMergeCommand::ComposerMapGridAnnotationFontColor );
   grid->setAnnotationFontColor( color );
   mComposerMap->update();
   mComposerMap->endCommand();
