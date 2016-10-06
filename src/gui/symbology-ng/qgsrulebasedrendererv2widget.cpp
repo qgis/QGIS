@@ -517,8 +517,6 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
     countMap[rule].duplicateCount = 0;
   }
 
-  QgsFeatureRequest req = QgsFeatureRequest().setFilterExpression( mRenderer->filter( mLayer->fields() ) );
-
   QgsRenderContext renderContext;
   renderContext.setRendererScale( 0 ); // ignore scale
 
@@ -538,10 +536,11 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
   context << QgsExpressionContextUtils::layerScope( mLayer );
 
   renderContext.setExpressionContext( context );
-  req.setExpressionContext( context );
 
   mRenderer->startRender( renderContext, mLayer->fields() );
-
+  // QgsRuleBasedRenderer::filter must be called after startRender
+  QgsFeatureRequest req = QgsFeatureRequest().setFilterExpression( mRenderer->filter( mLayer->fields() ) );
+  req.setExpressionContext( context );
   req.setSubsetOfAttributes( mRenderer->usedAttributes(), mLayer->fields() );
   QgsFeatureIterator fit = mLayer->getFeatures( req );
 
