@@ -153,6 +153,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
             self.inSelector.setLayer(None)
             return
 
-        ncodec = QTextCodec.codecForName(self.lastEncoding)
+        # GDAL Python3 bindings return fields as str and not bytes
+        # so no recoding is needed. But this assumes that the underlying
+        # OGR driver always return a Unicode string. hum...
+        #ncodec = QTextCodec.codecForName(self.lastEncoding)
         for name in names:
-            self.attributeComboBox.addItem(ncodec.toUnicode(name))
+            self.attributeComboBox.addItem(name)
+            #self.attributeComboBox.addItem(ncodec.toUnicode(name))
