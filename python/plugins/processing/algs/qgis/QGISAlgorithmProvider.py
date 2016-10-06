@@ -158,6 +158,7 @@ from .PolygonCentroids import PolygonCentroids
 from .Translate import Translate
 from .SingleSidedBuffer import SingleSidedBuffer
 from .PointsAlongGeometry import PointsAlongGeometry
+from .Aspect import Aspect
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -212,9 +213,9 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RectanglesOvalsDiamondsVariable(),
                         RectanglesOvalsDiamondsFixed(), MergeLines(),
                         BoundingBox(), Boundary(), PointOnSurface(),
-                        OffsetLine(), PolygonCentroids(),
-                        Translate(), SingleSidedBuffer(),
-                        PointsAlongGeometry()
+                        OffsetLine(), PolygonCentroids(), Translate(),
+                        SingleSidedBuffer(), PointsAlongGeometry(),
+                        Aspect(),
                         ]
 
         if hasMatplotlib:
