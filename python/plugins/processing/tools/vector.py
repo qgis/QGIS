@@ -52,17 +52,6 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.tools import dataobjects, spatialite, postgis
 
 
-GEOM_TYPE_MAP = {
-    QgsWkbTypes.NullGeometry: 'none',
-    QgsWkbTypes.Point: 'Point',
-    QgsWkbTypes.LineString: 'LineString',
-    QgsWkbTypes.Polygon: 'Polygon',
-    QgsWkbTypes.MultiPoint: 'MultiPoint',
-    QgsWkbTypes.MultiLineString: 'MultiLineString',
-    QgsWkbTypes.MultiPolygon: 'MultiPolygon',
-}
-
-
 TYPE_MAP = {
     str: QVariant.String,
     float: QVariant.Double,
@@ -561,7 +550,7 @@ class VectorWriter(object):
         if self.destination.startswith(self.MEMORY_LAYER_PREFIX):
             self.isNotFileBased = True
 
-            uri = GEOM_TYPE_MAP[geometryType] + "?uuid=" + str(uuid.uuid4())
+            uri = QgsWkbTypes.displayString(geometryType) + "?uuid=" + str(uuid.uuid4())
             if crs.isValid():
                 uri += '&crs=' + crs.authid()
             fieldsdesc = []
@@ -608,7 +597,7 @@ class VectorWriter(object):
             if geometryType != QgsWkbTypes.NullGeometry:
                 _runSQL("SELECT AddGeometryColumn('{schema}', '{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
                     table=uri.table().lower(), schema=uri.schema(), srid=crs.authid().split(":")[-1],
-                    typmod=GEOM_TYPE_MAP[geometryType].upper()))
+                    typmod=QgsWkbTypes.displayString(geometryType).upper()))
 
             self.layer = QgsVectorLayer(uri.uri(), uri.table(), "postgres")
             self.writer = self.layer.dataProvider()
@@ -640,7 +629,7 @@ class VectorWriter(object):
             if geometryType != QgsWkbTypes.NullGeometry:
                 _runSQL("SELECT AddGeometryColumn('{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
                     table=uri.table().lower(), srid=crs.authid().split(":")[-1],
-                    typmod=GEOM_TYPE_MAP[geometryType].upper()))
+                    typmod=QgsWkbTypes.displayString(geometryType).upper()))
 
             self.layer = QgsVectorLayer(uri.uri(), uri.table(), "spatialite")
             self.writer = self.layer.dataProvider()

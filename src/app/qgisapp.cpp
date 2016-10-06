@@ -7505,7 +7505,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
     if ( !feature.hasGeometry() )
       continue;
 
-    QgsWkbTypes::Type type = QgsWkbTypes::flatType( feature.geometry().wkbType() );
+    QgsWkbTypes::Type type = feature.geometry().wkbType();
 
     if ( type == QgsWkbTypes::Unknown || type == QgsWkbTypes::NoGeometry )
       continue;
@@ -7535,7 +7535,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
 
   QgsWkbTypes::Type wkbType = !typeCounts.isEmpty() ? typeCounts.keys().value( 0 ) : QgsWkbTypes::NoGeometry;
 
-  QString typeName = wkbType != QgsWkbTypes::NoGeometry ? QString( QgsWkbTypes::displayString( wkbType ) ).remove( "WKB" ) : "none";
+  QString typeName = wkbType != QgsWkbTypes::NoGeometry ? QgsWkbTypes::displayString( wkbType ) : "none";
 
   if ( features.isEmpty() )
   {
@@ -7590,7 +7590,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
     if ( !feature.hasGeometry() )
       continue;
 
-    QgsWkbTypes::Type type = QgsWkbTypes::flatType( feature.geometry().wkbType() );
+    QgsWkbTypes::Type type = feature.geometry().wkbType();
     if ( type == QgsWkbTypes::Unknown || type == QgsWkbTypes::NoGeometry )
       continue;
 
