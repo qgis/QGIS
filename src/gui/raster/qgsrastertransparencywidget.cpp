@@ -64,10 +64,6 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
 
 QgsRasterTransparencyWidget::~QgsRasterTransparencyWidget()
 {
-  if ( mPixelSelectorTool )
-  {
-    delete mPixelSelectorTool;
-  }
 }
 
 void QgsRasterTransparencyWidget::syncToLayer()
