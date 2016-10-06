@@ -268,8 +268,7 @@ void QgsLayerStylingWidget::apply()
   {
     emit styleChanged( mCurrentLayer );
     QgsProject::instance()->setDirty( true );
-    mMapCanvas->clearCache();
-    mMapCanvas->refresh();
+    mCurrentLayer->triggerRepaint();
   }
   connect( mCurrentLayer, SIGNAL( styleChanged() ), this, SLOT( updateCurrentWidgetLayer() ) );
 }
