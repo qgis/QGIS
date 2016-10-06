@@ -17,6 +17,12 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import zip
+from builtins import str
+from builtins import range
+from builtins import object
 __author__ = 'Julien Malik, Oscar Picas'
 __copyright__ = '(C) 2013, CS Systemes d\'information  (CS SI)'
 # This will get replaced with a git SHA1 when you do a git archive
@@ -28,16 +34,20 @@ from string import Template
 import os
 import traceback
 
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 
 from processing.otb.OTBHelper import get_OTB_log
 
+
 class LowerTemplate(Template):
+
     def safe_substitute(self, param):
         ret = super(LowerTemplate, self).safe_substitute(param).lower()
         return ret
 
+
 class MakefileParser(object):
+
     def __init__(self):
         self.maxDiff = None
         self.parser = SafeConfigParser()
@@ -45,7 +55,7 @@ class MakefileParser(object):
         if not os.path.exists('otbcfg.ini'):
             raise Exception("OTB_SOURCE_DIR and OTB_BINARY_DIR must be specified in the file otbcfg.ini")
 
-        self.root_dir = self.parser.get('otb','checkout_dir')
+        self.root_dir = self.parser.get('otb', 'checkout_dir')
         if not os.path.exists(self.root_dir):
             raise Exception("Check otbcfg.ini : OTB_SOURCE_DIR and OTB_BINARY_DIR must be specified there")
         self.build_dir = self.parser.get('otb', 'build_dir')
@@ -69,16 +79,16 @@ class MakefileParser(object):
 
                 the_sets = [each for each in output if 'Command' in str(type(each)) and "SET" in each.name.upper()]
                 the_sets = {key.body[0].contents: [thing.contents for thing in key.body[1:]] for key in the_sets}
-                the_sets = {key : " ".join(the_sets[key]) for key in the_sets}
+                the_sets = {key: " ".join(the_sets[key]) for key in the_sets}
 
-                the_strings = set([each.body[-1].contents for each in output if 'Command' in str(type(each)) and "STRING" in each.name.upper()] )
+                the_strings = set([each.body[-1].contents for each in output if 'Command' in str(type(each)) and "STRING" in each.name.upper()])
 
                 def mini_clean(item):
                     if item.startswith('"') and item.endswith('"') and " " not in item:
                         return item[1:-1]
                     return item
 
-                the_sets = {key : mini_clean(the_sets[key]) for key in the_sets}
+                the_sets = {key: mini_clean(the_sets[key]) for key in the_sets}
 
                 def templatize(item):
                     if "$" in item:
@@ -89,7 +99,7 @@ class MakefileParser(object):
                     if key in the_strings:
                         the_sets[key] = the_sets[key].lower()
 
-                the_sets = {key : templatize(the_sets[key]) for key in the_sets}
+                the_sets = {key: templatize(the_sets[key]) for key in the_sets}
 
                 for path in the_paths:
                     target_file = the_paths[path][1]
@@ -99,7 +109,7 @@ class MakefileParser(object):
 
                     try:
                         provided[path] = find_file(target_file)
-                    except Exception, e:
+                    except Exception as e:
                         for each in suggested_paths:
                             st = Template(each)
                             pac = os.path.abspath(st.safe_substitute(provided))
@@ -111,9 +121,9 @@ class MakefileParser(object):
                 provided.update(the_sets)
 
                 return provided
-        except Exception, e:
+        except Exception as e:
             traceback.print_exc()
-            self.fail(e.message)
+            self.fail(str(e))
 
     def add_make(self, previous_context, new_file):
         input = open(new_file).read()
@@ -210,9 +220,9 @@ class MakefileParser(object):
             while '$' in the_string:
                 try:
                     the_string = Template(the_string).substitute(neo_dict)
-                except KeyError, e:
-                    self.logger.warning("Key %s is not found in makefiles" % e.message)
-                    neo_dict[e.message] = ""
+                except KeyError as e:
+                    self.logger.warning("Key %s is not found in makefiles" % str(e))
+                    neo_dict[str(e)] = ""
 
         if 'string.Template' in the_string:
             raise Exception("Unexpected toString call in %s" % the_string)
@@ -232,7 +242,7 @@ class MakefileParser(object):
         result.extend(["otbcli_%s" % each for each in itemz[1]])
 
         if len(result[0]) == 7:
-            raise Exception("App name is empty !")
+            raise Exception("App name is empty!")
 
         result.extend(itemz[2])
         result.append("-testenv")
@@ -245,9 +255,9 @@ class MakefileParser(object):
             while '$' in the_string:
                 try:
                     the_string = Template(the_string).substitute(neo_dict)
-                except KeyError, e:
-                    self.logger.warning("Key %s is not found in makefiles" % e.message)
-                    neo_dict[e.message] = ""
+                except KeyError as e:
+                    self.logger.warning("Key %s is not found in makefiles" % str(e))
+                    neo_dict[str(e)] = ""
 
         if 'string.Template' in the_string:
             raise Exception("Unexpected toString call in %s" % the_string)
@@ -277,9 +287,9 @@ class MakefileParser(object):
             while '$' in the_string:
                 try:
                     the_string = Template(the_string).substitute(neo_dict)
-                except KeyError, e:
-                    self.logger.warning("Key %s is not found in makefiles" % e.message)
-                    neo_dict[e.message] = ""
+                except KeyError as e:
+                    self.logger.warning("Key %s is not found in makefiles" % str(e))
+                    neo_dict[str(e)] = ""
 
         if 'string.Template' in the_string:
             raise Exception("Unexpected toString call in %s" % the_string)
@@ -300,7 +310,7 @@ class MakefileParser(object):
             intermediate_makefiles = []
             path = makefile.split(os.sep)[len(self.root_dir.split(os.sep)):-1]
             for ind in range(len(path)):
-                tmp_path = path[:ind+1]
+                tmp_path = path[:ind + 1]
                 tmp_path.append("CMakeLists.txt")
                 tmp_path = os.sep.join(tmp_path)
                 candidate_makefile = os.path.join(self.root_dir, tmp_path)
@@ -344,14 +354,14 @@ class MakefileParser(object):
                         values = [each[1:-1].lower() for each in iteration[1:]]
                         contexts[key] = values
 
-                    keyorder = contexts.keys()
+                    keyorder = list(contexts.keys())
                     import itertools
-                    pool = [each for each in itertools.product(*contexts.values())]
+                    pool = [each for each in itertools.product(*list(contexts.values()))]
 
                     import copy
                     for poolinstance in pool:
                         neo_dict = copy.deepcopy(dict_for_algo[makefile])
-                        zipped = zip(keyorder, poolinstance)
+                        zipped = list(zip(keyorder, poolinstance))
                         for each in zipped:
                             neo_dict[each[0]] = each[1]
 
@@ -375,13 +385,14 @@ class MakefileParser(object):
 
         return tests
 
+
 def autoresolve(a_dict):
     def as_template(item, b_dict):
         if hasattr(item, 'safe_substitute'):
             return item.safe_substitute(b_dict)
         ate = Template(item)
         return ate.safe_substitute(b_dict)
-    templatized = {key: as_template(a_dict[key], a_dict) for key in a_dict.keys() }
+    templatized = {key: as_template(a_dict[key], a_dict) for key in list(a_dict.keys())}
     return templatized
 
 
@@ -393,6 +404,7 @@ def find_file(file_name, base_dir=os.curdir):
                 return os.path.join(root, name)
     raise Exception("File not found %s" % file_name)
 
+
 def find_files(file_name, base_dir=os.curdir):
     import os
     result = []
@@ -401,6 +413,7 @@ def find_files(file_name, base_dir=os.curdir):
             if name == file_name:
                 result.append(os.path.join(root, name))
     return result
+
 
 def resolve_dict(adia, adib):
     init = len(adia)

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgshtmlannotationdialog.h"
+#include "qgshtmlannotationitem.h"
 #include "qgsannotationwidget.h"
 #include "qgsvectorlayer.h"
 #include <QFileDialog>
@@ -20,12 +21,13 @@
 #include <QGraphicsScene>
 
 QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsHtmlAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
-    : QDialog( parent, f ), mItem( item ), mEmbeddedWidget( 0 )
+    : QDialog( parent, f )
+    , mItem( item )
+    , mEmbeddedWidget( nullptr )
 {
   setupUi( this );
   setWindowTitle( tr( "HTML annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
-  mEmbeddedWidget->show();
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
@@ -74,7 +76,11 @@ void QgsHtmlAnnotationDialog::on_mBrowseToolButton_clicked()
   {
     directory = fi.absolutePath();
   }
-  QString filename = QFileDialog::getOpenFileName( 0, tr( "html" ), directory, "HTML (*.html *.htm);;All files (*.*)" );
+  else
+  {
+    directory = QDir::homePath();
+  }
+  QString filename = QFileDialog::getOpenFileName( nullptr, tr( "html" ), directory, "HTML (*.html *.htm);;All files (*.*)" );
   mFileLineEdit->setText( filename );
 }
 
@@ -86,6 +92,14 @@ void QgsHtmlAnnotationDialog::deleteItem()
     scene->removeItem( mItem );
   }
   delete mItem;
-  mItem = 0;
+  mItem = nullptr;
+}
+
+void QgsHtmlAnnotationDialog::on_mButtonBox_clicked( QAbstractButton* button )
+{
+  if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
+  {
+    applySettingsToItem();
+  }
 }
 

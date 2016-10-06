@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
+from builtins import object
 
 __author__ = 'Victor Olaya  and Alexander Bruy'
 __date__ = 'February 2013'
@@ -29,15 +32,16 @@ import struct
 import numpy
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 
 def scanraster(layer, progress):
-    filename = unicode(layer.source())
+    filename = str(layer.source())
     dataset = gdal.Open(filename, GA_ReadOnly)
     band = dataset.GetRasterBand(1)
     nodata = band.GetNoDataValue()
     bandtype = gdal.GetDataTypeName(band.DataType)
-    for y in xrange(band.YSize):
+    for y in range(band.YSize):
         progress.setPercentage(y / float(band.YSize) * 100)
         scanline = band.ReadRaster(0, y, band.XSize, 1, band.XSize, 1,
                                    band.DataType)
@@ -64,8 +68,14 @@ def scanraster(layer, progress):
 
 
 def mapToPixel(mX, mY, geoTransform):
-    (pX, pY) = gdal.ApplyGeoTransform(
-        gdal.InvGeoTransform(geoTransform)[1], mX, mY)
+    try:
+        # GDAL 1.x
+        (pX, pY) = gdal.ApplyGeoTransform(
+            gdal.InvGeoTransform(geoTransform)[1], mX, mY)
+    except TypeError:
+        # GDAL 2.x
+        (pX, pY) = gdal.ApplyGeoTransform(
+            gdal.InvGeoTransform(geoTransform), mX, mY)
     return (int(pX), int(pY))
 
 
@@ -73,22 +83,23 @@ def pixelToMap(pX, pY, geoTransform):
     return gdal.ApplyGeoTransform(geoTransform, pX + 0.5, pY + 0.5)
 
 
-class RasterWriter:
+class RasterWriter(object):
 
     NODATA = -99999.0
 
     def __init__(self, fileName, minx, miny, maxx, maxy, cellsize,
-                 nbands, crs):
+                 nbands, crs, geotransform=None):
         self.fileName = fileName
         self.nx = int((maxx - minx) / float(cellsize))
         self.ny = int((maxy - miny) / float(cellsize))
         self.nbands = nbands
-        self.matrix = numpy.ones(shape=(self.ny, self.nx), dtype=numpy.float32)
-        self.matrix[:] = self.NODATA
+        self.matrix = numpy.empty(shape=(self.ny, self.nx), dtype=numpy.float32)
+        self.matrix.fill(self.NODATA)
         self.cellsize = cellsize
         self.crs = crs
         self.minx = minx
         self.maxy = maxy
+        self.geotransform = geotransform
 
     def setValue(self, value, x, y, band=0):
         try:
@@ -108,7 +119,10 @@ class RasterWriter:
         dst_ds = driver.Create(self.fileName, self.nx, self.ny, 1,
                                gdal.GDT_Float32)
         dst_ds.SetProjection(str(self.crs.toWkt()))
-        dst_ds.SetGeoTransform([self.minx, self.cellsize, 0,
-                                self.maxy, self.cellsize, 0])
+        if self.geotransform is None:
+            dst_ds.SetGeoTransform([self.minx, self.cellsize, 0,
+                                    self.maxy, self.cellsize, 0])
+        else:
+            dst_ds.SetGeoTransform(self.geotransform)
         dst_ds.GetRasterBand(1).WriteArray(self.matrix)
         dst_ds = None

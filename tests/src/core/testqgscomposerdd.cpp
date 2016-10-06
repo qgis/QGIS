@@ -19,14 +19,13 @@
 #include "qgscomposition.h"
 #include "qgscomposermap.h"
 #include "qgscomposertexttable.h"
-#include "qgscomposerattributetable.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmapsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfeature.h"
-#include "qgssymbolv2.h"
-#include "qgssinglesymbolrendererv2.h"
+#include "qgssymbol.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgsdatadefined.h"
 
 #include <QObject>
@@ -39,6 +38,7 @@ class TestQgsComposerDD : public QObject
   public:
     TestQgsComposerDD()
         : mComposition( 0 )
+        , mMapSettings( 0 )
         , mVectorLayer( 0 )
         , mAtlasMap( 0 )
         , mAtlas( 0 )
@@ -53,8 +53,8 @@ class TestQgsComposerDD : public QObject
     void ddEvaluate(); //test setting/evaluating data defined value
 
   private:
-    QgsComposition* mComposition;
-    QgsMapSettings mMapSettings;
+    QgsComposition *mComposition;
+    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsComposerMap* mAtlasMap;
     QgsAtlasComposition* mAtlas;
@@ -66,8 +66,10 @@ void TestQgsComposerDD::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "france_parts.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/france_parts.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
@@ -79,23 +81,23 @@ void TestQgsComposerDD::initTestCase()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
-  mMapSettings.setCrsTransformEnabled( true );
-  mMapSettings.setMapUnits( QGis::Meters );
+  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setCrsTransformEnabled( true );
+  mMapSettings->setMapUnits( QgsUnitTypes::DistanceMeters );
 
   // select epsg:2154
   QgsCoordinateReferenceSystem crs;
   crs.createFromSrid( 2154 );
-  mMapSettings.setDestinationCrs( crs );
-  mComposition = new QgsComposition( mMapSettings );
+  mMapSettings->setDestinationCrs( crs );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   // fix the renderer, fill with green
   QgsStringMap props;
   props.insert( "color", "0,127,0" );
-  QgsFillSymbolV2* fillSymbol = QgsFillSymbolV2::createSimple( props );
-  QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( fillSymbol );
-  mVectorLayer->setRendererV2( renderer );
+  QgsFillSymbol* fillSymbol = QgsFillSymbol::createSimple( props );
+  QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( fillSymbol );
+  mVectorLayer->setRenderer( renderer );
 
   // the atlas map
   mAtlasMap = new QgsComposerMap( mComposition, 20, 20, 130, 130 );
@@ -114,8 +116,9 @@ void TestQgsComposerDD::initTestCase()
 void TestQgsComposerDD::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -146,4 +149,3 @@ void TestQgsComposerDD::ddEvaluate()
 
 QTEST_MAIN( TestQgsComposerDD )
 #include "testqgscomposerdd.moc"
-

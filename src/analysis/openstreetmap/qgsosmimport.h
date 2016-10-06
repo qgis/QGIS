@@ -23,7 +23,7 @@
 
 class QXmlStreamReader;
 
-/**
+/** \ingroup analysis
  * @brief The QgsOSMXmlImport class imports OpenStreetMap XML format to our topological representation
  * in a SQLite database (see QgsOSMDatabase for details).
  *
@@ -60,6 +60,8 @@ class ANALYSIS_EXPORT QgsOSMXmlImport : public QObject
 
     bool createDatabase();
     bool closeDatabase();
+
+    //! @note not available in Python bindings
     void deleteStatement( sqlite3_stmt*& stmt );
 
     bool createIndexes();

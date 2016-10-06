@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2012'
@@ -26,7 +29,9 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import QIcon
+import codecs
+
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -42,7 +47,10 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import getParameterFromString
 from processing.core.outputs import getOutputFromString
 
-from TauDEMUtils import TauDEMUtils
+from .TauDEMUtils import TauDEMUtils
+
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
 class TauDEMAlgorithm(GeoAlgorithm):
@@ -51,6 +59,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
         GeoAlgorithm.__init__(self)
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
+        self._icon = None
 
     def getCopy(self):
         newone = TauDEMAlgorithm(self.descriptionFile)
@@ -58,32 +67,35 @@ class TauDEMAlgorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
+        if self._icon is None:
+            self._icon = QIcon(os.path.join(pluginPath, 'images', 'taudem.svg'))
+        return self._icon
 
     def defineCharacteristicsFromFile(self):
-        lines = open(self.descriptionFile)
-        line = lines.readline().strip('\n').strip()
-        self.name = line
-        line = lines.readline().strip('\n').strip()
-        self.cmdName = line
-        line = lines.readline().strip('\n').strip()
-        self.group = line
+        with codecs.open(self.descriptionFile, encoding='utf-8') as f:
+            line = f.readline().strip('\n').strip()
+            self.name = line
+            self.i18n_name = self.tr(line)
+            line = f.readline().strip('\n').strip()
+            self.cmdName = line
+            line = f.readline().strip('\n').strip()
+            self.group = line
+            self.i18n_group = self.tr(line)
 
-        line = lines.readline().strip('\n').strip()
-        while line != '':
-            try:
-                line = line.strip('\n').strip()
-                if line.startswith('Parameter'):
-                    param = getParameterFromString(line)
-                    self.addParameter(param)
-                else:
-                    self.addOutput(getOutputFromString(line))
-                line = lines.readline().strip('\n').strip()
-            except Exception, e:
-                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                    self.tr('Could not load TauDEM algorithm: %s\n%s' % (self.descriptionFile, line)))
-                raise e
-        lines.close()
+            line = f.readline().strip('\n').strip()
+            while line != '':
+                try:
+                    line = line.strip('\n').strip()
+                    if line.startswith('Parameter'):
+                        param = getParameterFromString(line)
+                        self.addParameter(param)
+                    else:
+                        self.addOutput(getOutputFromString(line))
+                    line = f.readline().strip('\n').strip()
+                except Exception as e:
+                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                           self.tr('Could not load TauDEM algorithm: {}\n{}'.format(self.descriptionFile, line)))
+                    raise e
 
     def processAlgorithm(self, progress):
         commands = []

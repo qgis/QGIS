@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+
+  <mime-type type="application/x-qgis-project">
+    <comment>QGIS Project</comment>
+    <comment xml:lang="de">QGIS-Projekt</comment>
+    <sub-class-of type="application/xml"/>
+    <alias type="application/x-qgis"/>
+    <magic priority="50">
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
+        <match type="string" offset="0:256" value="&lt;qgis projectname"/>
+      </match>
+    </magic>
+    <glob pattern="*.qgs"/>
+  </mime-type>
+
+  <mime-type type="application/x-qgis-layer-settings">
+    <comment>QGIS layer settings</comment>
+    <comment xml:lang="de">QGIS-Layereinstellungen</comment>
+    <sub-class-of type="application/xml"/>
+    <magic priority="50">
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
+        <match type="string" offset="0:256" value="&lt;qgis version"/>
+      </match>
+    </magic>
+    <glob pattern="*.qml"/>
+  </mime-type>
+
+  <mime-type type="application/x-qgis-layer-definition">
+    <comment>QGIS layer definition</comment>
+    <comment xml:lang="de">QGIS-Layerdefinition</comment>
+    <sub-class-of type="application/xml"/>
+    <icon name="qgis-qlr"/>
+    <magic priority="50">
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
+        <match type="string" offset="0:256" value="&lt;qgis version"/>
+      </match>
+    </magic>
+    <glob pattern="*.qlr"/>
+  </mime-type>
+
+  <mime-type type="application/x-qgis-composer-template">
+    <comment>QGIS composer template</comment>
+    <comment xml:lang="de">QGIS-Druckzusammenstellungsvorlage</comment>
+    <sub-class-of type="application/xml"/>
+    <icon name="qgis-qpt"/>
+    <magic priority="50">
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
+        <match type="string" offset="0:256" value="&lt;qgis version"/>
+      </match>
+    </magic>
+    <glob pattern="*.qpt"/>
+  </mime-type>
+
+</mime-info>

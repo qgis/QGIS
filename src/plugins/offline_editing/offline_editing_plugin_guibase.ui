@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>435</width>
-    <height>270</height>
+    <width>590</width>
+    <height>570</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,8 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -65,7 +64,7 @@
        <item>
         <widget class="QPushButton" name="mSelectAllButton">
          <property name="text">
-          <string>select all</string>
+          <string>Select all</string>
          </property>
         </widget>
        </item>
@@ -85,13 +84,20 @@
        <item>
         <widget class="QPushButton" name="mUnselectAllButton">
          <property name="text">
-          <string>unselect all</string>
+          <string>Deselect all</string>
          </property>
         </widget>
        </item>
       </layout>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mOnlySelectedCheckBox">
+     <property name="text">
+      <string>Only synchronize selected features if a selection is present</string>
+     </property>
+    </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">

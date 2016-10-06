@@ -1,4 +1,19 @@
+/***************************************************************************
+    qgspointsample.cpp
+    ---------------------
+    begin                : July 2013
+    copyright            : (C) 2013 by Marco Hugentobler
+    email                : marco dot hugentobler at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgspointsample.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsspatialindex.h"
 #include "qgsvectorfilewriter.h"
@@ -7,18 +22,14 @@
 #include "mersenne-twister.h"
 
 
-QgsPointSample::QgsPointSample( QgsVectorLayer* inputLayer, const QString& outputLayer, QString nPointsAttribute, QString minDistAttribute ): mInputLayer( inputLayer ),
+QgsPointSample::QgsPointSample( QgsVectorLayer* inputLayer, const QString& outputLayer, const QString& nPointsAttribute, const QString& minDistAttribute ): mInputLayer( inputLayer ),
     mOutputLayer( outputLayer ), mNumberOfPointsAttribute( nPointsAttribute ), mMinDistanceAttribute( minDistAttribute ), mNCreatedPoints( 0 )
 {
 }
 
 QgsPointSample::QgsPointSample()
-    : mInputLayer( NULL )
+    : mInputLayer( nullptr )
     , mNCreatedPoints( 0 )
-{
-}
-
-QgsPointSample::~QgsPointSample()
 {
 }
 
@@ -32,7 +43,7 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
     return 1;
   }
 
-  if ( mInputLayer->geometryType() != QGis::Polygon )
+  if ( mInputLayer->geometryType() != QgsWkbTypes::PolygonGeometry )
   {
     return 2;
   }
@@ -50,8 +61,8 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
   outputFields.append( QgsField( "stratum_id", QVariant::Int ) );
   QgsVectorFileWriter writer( mOutputLayer, "UTF-8",
                               outputFields,
-                              QGis::WKBPoint,
-                              &( mInputLayer->crs() ) );
+                              QgsWkbTypes::Point,
+                              mInputLayer->crs() );
 
   //check if creation of output layer successfull
   if ( writer.hasError() != QgsVectorFileWriter::NoError )
@@ -67,7 +78,7 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
   mNCreatedPoints = 0;
 
   QgsFeatureIterator fIt = mInputLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes(
-                             QStringList() << mNumberOfPointsAttribute << mMinDistanceAttribute, mInputLayer->pendingFields() ) );
+                             QStringList() << mNumberOfPointsAttribute << mMinDistanceAttribute, mInputLayer->fields() ) );
   while ( fIt.nextFeature( fet ) )
   {
     nPoints = fet.attribute( mNumberOfPointsAttribute ).toInt();
@@ -83,13 +94,11 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
 
 void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWriter& writer, int nPoints, double minDistance )
 {
-  QgsGeometry* geom = inputFeature.geometry();
-  if ( !geom )
-  {
+  if ( !inputFeature.hasGeometry() )
     return;
-  }
 
-  QgsRectangle geomRect = geom->boundingBox();
+  QgsGeometry geom = inputFeature.geometry();
+  QgsRectangle geomRect = geom.boundingBox();
   if ( geomRect.isEmpty() )
   {
     return;
@@ -110,8 +119,8 @@ void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWri
     randX = (( double )mt_rand() / MD_RAND_MAX ) * geomRect.width() + geomRect.xMinimum();
     randY = (( double )mt_rand() / MD_RAND_MAX ) * geomRect.height() + geomRect.yMinimum();
     QgsPoint randPoint( randX, randY );
-    QgsGeometry* ptGeom = QgsGeometry::fromPoint( randPoint );
-    if ( ptGeom->within( geom ) && checkMinDistance( randPoint, sIndex, minDistance, pointMapForFeature ) )
+    QgsGeometry ptGeom = QgsGeometry::fromPoint( randPoint );
+    if ( ptGeom.within( geom ) && checkMinDistance( randPoint, sIndex, minDistance, pointMapForFeature ) )
     {
       //add feature to writer
       QgsFeature f( mNCreatedPoints );
@@ -124,10 +133,6 @@ void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWri
       pointMapForFeature.insert( mNCreatedPoints, randPoint );
       ++points;
       ++mNCreatedPoints;
-    }
-    else
-    {
-      delete ptGeom;
     }
     ++nIterations;
   }

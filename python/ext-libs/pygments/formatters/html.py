@@ -5,18 +5,20 @@
 
     Formatter for HTML output.
 
-    :copyright: Copyright 2006-2013 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2015 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
+
+from __future__ import print_function
 
 import os
 import sys
 import os.path
-import StringIO
 
 from pygments.formatter import Formatter
 from pygments.token import Token, Text, STANDARD_TYPES
-from pygments.util import get_bool_opt, get_int_opt, get_list_opt, bytes
+from pygments.util import get_bool_opt, get_int_opt, get_list_opt, \
+    StringIO, string_types, iteritems
 
 try:
     import ctags
@@ -34,20 +36,10 @@ _escape_html_table = {
     ord("'"): u'&#39;',
 }
 
+
 def escape_html(text, table=_escape_html_table):
     """Escape &, <, > as well as single and double quotes for HTML."""
     return text.translate(table)
-
-def get_random_id():
-    """Return a random id for javascript fields."""
-    from random import random
-    from time import time
-    try:
-        from hashlib import sha1 as sha
-    except ImportError:
-        import sha
-        sha = sha.new
-    return sha('%s|%s' % (random(), time())).hexdigest()
 
 
 def _get_ttype_class(ttype):
@@ -148,7 +140,7 @@ class HtmlFormatter(Formatter):
 
     When `tagsfile` is set to the path of a ctags index file, it is used to
     generate hyperlinks from names to their definition.  You must enable
-    `anchorlines` and run ctags with the `-n` option for this to work.  The
+    `lineanchors` and run ctags with the `-n` option for this to work.  The
     `python-ctags` module from PyPI must be installed to use this feature;
     otherwise a `RuntimeError` will be raised.
 
@@ -218,29 +210,34 @@ class HtmlFormatter(Formatter):
         If you set this option, the default selector for `get_style_defs()`
         will be this class.
 
-        *New in Pygments 0.9:* If you select the ``'table'`` line numbers, the
-        wrapping table will have a CSS class of this string plus ``'table'``,
-        the default is accordingly ``'highlighttable'``.
+        .. versionadded:: 0.9
+           If you select the ``'table'`` line numbers, the wrapping table will
+           have a CSS class of this string plus ``'table'``, the default is
+           accordingly ``'highlighttable'``.
 
     `cssstyles`
         Inline CSS styles for the wrapping ``<div>`` tag (default: ``''``).
 
     `prestyles`
-        Inline CSS styles for the ``<pre>`` tag (default: ``''``).  *New in
-        Pygments 0.11.*
+        Inline CSS styles for the ``<pre>`` tag (default: ``''``).
+
+        .. versionadded:: 0.11
 
     `cssfile`
         If the `full` option is true and this option is given, it must be the
         name of an external file. If the filename does not include an absolute
         path, the file's path will be assumed to be relative to the main output
         file's path, if the latter can be found. The stylesheet is then written
-        to this file instead of the HTML file. *New in Pygments 0.6.*
+        to this file instead of the HTML file.
+
+        .. versionadded:: 0.6
 
     `noclobber_cssfile`
         If `cssfile` is given and the specified file exists, the css file will
         not be overwritten. This allows the use of the `full` option in
         combination with a user specified css file. Default is ``False``.
-        *New in Pygments 1.1.*
+
+        .. versionadded:: 1.1
 
     `linenos`
         If set to ``'table'``, output line numbers as a table with two cells,
@@ -263,7 +260,9 @@ class HtmlFormatter(Formatter):
         125%``).
 
     `hl_lines`
-        Specify a list of lines to be highlighted.  *New in Pygments 0.11.*
+        Specify a list of lines to be highlighted.
+
+        .. versionadded:: 0.11
 
     `linenostart`
         The line number for the first line (default: ``1``).
@@ -279,24 +278,30 @@ class HtmlFormatter(Formatter):
         If set to ``True``, the formatter won't output the background color
         for the wrapping element (this automatically defaults to ``False``
         when there is no wrapping element [eg: no argument for the
-        `get_syntax_defs` method given]) (default: ``False``). *New in
-        Pygments 0.6.*
+        `get_syntax_defs` method given]) (default: ``False``).
+
+        .. versionadded:: 0.6
 
     `lineseparator`
         This string is output between lines of code. It defaults to ``"\n"``,
         which is enough to break a line inside ``<pre>`` tags, but you can
-        e.g. set it to ``"<br>"`` to get HTML line breaks. *New in Pygments
-        0.7.*
+        e.g. set it to ``"<br>"`` to get HTML line breaks.
+
+        .. versionadded:: 0.7
 
     `lineanchors`
         If set to a nonempty string, e.g. ``foo``, the formatter will wrap each
         output line in an anchor tag with a ``name`` of ``foo-linenumber``.
-        This allows easy linking to certain lines. *New in Pygments 0.9.*
+        This allows easy linking to certain lines.
+
+        .. versionadded:: 0.9
 
     `linespans`
         If set to a nonempty string, e.g. ``foo``, the formatter will wrap each
         output line in a span tag with an ``id`` of ``foo-linenumber``.
-        This allows easy access to lines via javascript. *New in Pygments 1.6.*
+        This allows easy access to lines via javascript.
+
+        .. versionadded:: 1.6
 
     `anchorlinenos`
         If set to `True`, will wrap line numbers in <a> tags. Used in
@@ -306,18 +311,26 @@ class HtmlFormatter(Formatter):
         If set to the path of a ctags file, wrap names in anchor tags that
         link to their definitions. `lineanchors` should be used, and the
         tags file should specify line numbers (see the `-n` option to ctags).
-        *New in Pygments 1.6.*
+
+        .. versionadded:: 1.6
 
     `tagurlformat`
         A string formatting pattern used to generate links to ctags definitions.
         Available variables are `%(path)s`, `%(fname)s` and `%(fext)s`.
         Defaults to an empty string, resulting in just `#prefix-number` links.
-        *New in Pygments 1.6.*
+
+        .. versionadded:: 1.6
+
+    `filename`
+        A string used to generate a filename when rendering <pre> blocks,
+        for example if displaying source code.
+
+        .. versionadded:: 2.1
 
 
     **Subclassing the HTML formatter**
 
-    *New in Pygments 0.7.*
+    .. versionadded:: 0.7
 
     The HTML formatter is now built in a way that allows easy subclassing, thus
     customizing the output HTML code. The `format()` method calls
@@ -381,6 +394,7 @@ class HtmlFormatter(Formatter):
         self.noclobber_cssfile = get_bool_opt(options, 'noclobber_cssfile', False)
         self.tagsfile = self._decodeifneeded(options.get('tagsfile', ''))
         self.tagurlformat = self._decodeifneeded(options.get('tagurlformat', ''))
+        self.filename = self._decodeifneeded(options.get('filename', ''))
 
         if self.tagsfile:
             if not ctags:
@@ -421,6 +435,15 @@ class HtmlFormatter(Formatter):
             return self.classprefix + ttypeclass
         return ''
 
+    def _get_css_classes(self, ttype):
+        """Return the css classes of this token type prefixed with
+        the classprefix option."""
+        cls = self._get_css_class(ttype)
+        while ttype not in STANDARD_TYPES:
+            ttype = ttype.parent
+            cls = self._get_css_class(ttype) + ' ' + cls
+        return cls
+
     def _create_stylesheet(self):
         t2c = self.ttype2class = {Token: ''}
         c2s = self.class2style = {}
@@ -453,7 +476,7 @@ class HtmlFormatter(Formatter):
         """
         if arg is None:
             arg = ('cssclass' in self.options and '.'+self.cssclass or '')
-        if isinstance(arg, basestring):
+        if isinstance(arg, string_types):
             args = [arg]
         else:
             args = list(arg)
@@ -467,7 +490,7 @@ class HtmlFormatter(Formatter):
             return ', '.join(tmp)
 
         styles = [(level, ttype, cls, style)
-                  for cls, (style, ttype, level) in self.class2style.iteritems()
+                  for cls, (style, ttype, level) in iteritems(self.class2style)
                   if cls and style]
         styles.sort()
         lines = ['%s { %s } /* %s */' % (prefix(cls), style, repr(ttype)[6:])
@@ -505,36 +528,37 @@ class HtmlFormatter(Formatter):
                     cssfilename = os.path.join(os.path.dirname(filename),
                                                self.cssfile)
                 except AttributeError:
-                    print >>sys.stderr, 'Note: Cannot determine output file name, ' \
-                          'using current directory as base for the CSS file name'
+                    print('Note: Cannot determine output file name, '
+                          'using current directory as base for the CSS file name',
+                          file=sys.stderr)
                     cssfilename = self.cssfile
             # write CSS file only if noclobber_cssfile isn't given as an option.
             try:
                 if not os.path.exists(cssfilename) or not self.noclobber_cssfile:
                     cf = open(cssfilename, "w")
                     cf.write(CSSFILE_TEMPLATE %
-                            {'styledefs': self.get_style_defs('body')})
+                             {'styledefs': self.get_style_defs('body')})
                     cf.close()
-            except IOError, err:
+            except IOError as err:
                 err.strerror = 'Error writing CSS file: ' + err.strerror
                 raise
 
             yield 0, (DOC_HEADER_EXTERNALCSS %
-                      dict(title     = self.title,
-                           cssfile   = self.cssfile,
-                           encoding  = self.encoding))
+                      dict(title=self.title,
+                           cssfile=self.cssfile,
+                           encoding=self.encoding))
         else:
             yield 0, (DOC_HEADER %
-                      dict(title     = self.title,
-                           styledefs = self.get_style_defs('body'),
-                           encoding  = self.encoding))
+                      dict(title=self.title,
+                           styledefs=self.get_style_defs('body'),
+                           encoding=self.encoding))
 
         for t, line in inner:
             yield t, line
         yield 0, DOC_FOOTER
 
     def _wrap_tablelinenos(self, inner):
-        dummyoutfile = StringIO.StringIO()
+        dummyoutfile = StringIO()
         lncount = 0
         for t, line in inner:
             if t:
@@ -606,35 +630,35 @@ class HtmlFormatter(Formatter):
         if self.noclasses:
             if sp:
                 for t, line in lines:
-                    if num%sp == 0:
+                    if num % sp == 0:
                         style = 'background-color: #ffffc0; padding: 0 5px 0 5px'
                     else:
                         style = 'background-color: #f0f0f0; padding: 0 5px 0 5px'
-                    yield 1, '<span style="%s">%*s</span> ' % (
-                        style, mw, (num%st and ' ' or num)) + line
+                    yield 1, '<span style="%s">%*s </span>' % (
+                        style, mw, (num % st and ' ' or num)) + line
                     num += 1
             else:
                 for t, line in lines:
                     yield 1, ('<span style="background-color: #f0f0f0; '
-                              'padding: 0 5px 0 5px">%*s</span> ' % (
-                              mw, (num%st and ' ' or num)) + line)
+                              'padding: 0 5px 0 5px">%*s </span>' % (
+                                  mw, (num % st and ' ' or num)) + line)
                     num += 1
         elif sp:
             for t, line in lines:
-                yield 1, '<span class="lineno%s">%*s</span> ' % (
-                    num%sp == 0 and ' special' or '', mw,
-                    (num%st and ' ' or num)) + line
+                yield 1, '<span class="lineno%s">%*s </span>' % (
+                    num % sp == 0 and ' special' or '', mw,
+                    (num % st and ' ' or num)) + line
                 num += 1
         else:
             for t, line in lines:
-                yield 1, '<span class="lineno">%*s</span> ' % (
-                    mw, (num%st and ' ' or num)) + line
+                yield 1, '<span class="lineno">%*s </span>' % (
+                    mw, (num % st and ' ' or num)) + line
                 num += 1
 
     def _wrap_lineanchors(self, inner):
         s = self.lineanchors
-        i = self.linenostart - 1 # subtract 1 since we have to increment i
-                                 # *before* yielding
+        # subtract 1 since we have to increment i *before* yielding
+        i = self.linenostart - 1
         for t, line in inner:
             if t:
                 i += 1
@@ -655,14 +679,14 @@ class HtmlFormatter(Formatter):
     def _wrap_div(self, inner):
         style = []
         if (self.noclasses and not self.nobackground and
-            self.style.background_color is not None):
+                self.style.background_color is not None):
             style.append('background: %s' % (self.style.background_color,))
         if self.cssstyles:
             style.append(self.cssstyles)
         style = '; '.join(style)
 
-        yield 0, ('<div' + (self.cssclass and ' class="%s"' % self.cssclass)
-                  + (style and (' style="%s"' % style)) + '>')
+        yield 0, ('<div' + (self.cssclass and ' class="%s"' % self.cssclass) +
+                  (style and (' style="%s"' % style)) + '>')
         for tup in inner:
             yield tup
         yield 0, '</div>\n'
@@ -675,7 +699,12 @@ class HtmlFormatter(Formatter):
             style.append('line-height: 125%')
         style = '; '.join(style)
 
-        yield 0, ('<pre' + (style and ' style="%s"' % style) + '>')
+        if self.filename:
+            yield 0, ('<span class="filename">' + self.filename + '</span>')
+
+        # the empty span here is to keep leading empty lines from being
+        # ignored by HTML parsers
+        yield 0, ('<pre' + (style and ' style="%s"' % style) + '><span></span>')
         for tup in inner:
             yield tup
         yield 0, '</pre>'
@@ -694,7 +723,7 @@ class HtmlFormatter(Formatter):
         tagsfile = self.tagsfile
 
         lspan = ''
-        line = ''
+        line = []
         for ttype, value in tokensource:
             if nocls:
                 cclass = getcls(ttype)
@@ -703,7 +732,7 @@ class HtmlFormatter(Formatter):
                     cclass = getcls(ttype)
                 cspan = cclass and '<span style="%s">' % c2s[cclass][0] or ''
             else:
-                cls = self._get_css_class(ttype)
+                cls = self._get_css_classes(ttype)
                 cspan = cls and '<span class="%s">' % cls or ''
 
             parts = value.translate(escape_table).split('\n')
@@ -725,30 +754,31 @@ class HtmlFormatter(Formatter):
             for part in parts[:-1]:
                 if line:
                     if lspan != cspan:
-                        line += (lspan and '</span>') + cspan + part + \
-                                (cspan and '</span>') + lsep
-                    else: # both are the same
-                        line += part + (lspan and '</span>') + lsep
-                    yield 1, line
-                    line = ''
+                        line.extend(((lspan and '</span>'), cspan, part,
+                                     (cspan and '</span>'), lsep))
+                    else:  # both are the same
+                        line.extend((part, (lspan and '</span>'), lsep))
+                    yield 1, ''.join(line)
+                    line = []
                 elif part:
-                    yield 1, cspan + part + (cspan and '</span>') + lsep
+                    yield 1, ''.join((cspan, part, (cspan and '</span>'), lsep))
                 else:
                     yield 1, lsep
             # for the last line
             if line and parts[-1]:
                 if lspan != cspan:
-                    line += (lspan and '</span>') + cspan + parts[-1]
+                    line.extend(((lspan and '</span>'), cspan, parts[-1]))
                     lspan = cspan
                 else:
-                    line += parts[-1]
+                    line.append(parts[-1])
             elif parts[-1]:
-                line = cspan + parts[-1]
+                line = [cspan, parts[-1]]
                 lspan = cspan
             # else we neither have to open a new span nor set lspan
 
         if line:
-            yield 1, line + (lspan and '</span>') + lsep
+            line.extend(((lspan and '</span>'), lsep))
+            yield 1, ''.join(line)
 
     def _lookup_ctag(self, token):
         entry = ctags.TagEntry()
@@ -767,7 +797,7 @@ class HtmlFormatter(Formatter):
         for i, (t, value) in enumerate(tokensource):
             if t != 1:
                 yield t, value
-            if i + 1 in hls: # i + 1 because Python indexes start at 0
+            if i + 1 in hls:  # i + 1 because Python indexes start at 0
                 if self.noclasses:
                     style = ''
                     if self.style.highlight_color is not None:

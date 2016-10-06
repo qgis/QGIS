@@ -22,7 +22,7 @@
 class QgsRasterLayer;
 class QgsVectorLayer;
 
-/**A class that creates map layer from <RemoteRDS> or <RemoteVDS> tags*/
+/** A class that creates map layer from <RemoteRDS> or <RemoteVDS> tags*/
 class QgsRemoteDataSourceBuilder: public QgsMSLayerBuilder
 {
   public:
@@ -31,12 +31,12 @@ class QgsRemoteDataSourceBuilder: public QgsMSLayerBuilder
     QgsMapLayer* createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const override;
 
   private:
-    /**Creates a raster layer from a <RemoteRDS>. This function loads the data into a temporary file and creates a rasterlayer from it. Returns a 0 pointer in case of error*/
+    /** Creates a raster layer from a <RemoteRDS>. This function loads the data into a temporary file and creates a rasterlayer from it. Returns a 0 pointer in case of error*/
     QgsRasterLayer* rasterLayerFromRemoteRDS( const QDomElement& remoteRDSElem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const;
-    /**Saves the vector data into a temporary file and creates a vector layer. Returns a 0 pointer in case of error*/
+    /** Saves the vector data into a temporary file and creates a vector layer. Returns a 0 pointer in case of error*/
     QgsVectorLayer* vectorLayerFromRemoteVDS( const QDomElement& remoteVDSElem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const;
 
-    /**Loads data from http or ftp
+    /** Loads data from http or ftp
      @return 0 in case of success*/
     int loadData( const QString& url, QByteArray& data ) const;
 };

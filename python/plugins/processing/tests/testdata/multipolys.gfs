@@ -1,0 +1,32 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>multipolys</Name>
+    <ElementPath>multipolys</ElementPath>
+    <!--MULTIPOLYGON-->
+    <GeometryType>6</GeometryType>
+    <SRSName>EPSG:4326</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>4</FeatureCount>
+      <ExtentXMin>0.00000</ExtentXMin>
+      <ExtentXMax>9.00000</ExtentXMax>
+      <ExtentYMin>-1.00000</ExtentYMin>
+      <ExtentYMax>6.00000</ExtentYMax>
+    </DatasetSpecificInfo>
+    <PropertyDefn>
+      <Name>Bname</Name>
+      <ElementPath>Bname</ElementPath>
+      <Type>String</Type>
+      <Width>4</Width>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>Bintval</Name>
+      <ElementPath>Bintval</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>Bfloatval</Name>
+      <ElementPath>Bfloatval</ElementPath>
+      <Type>Real</Type>
+    </PropertyDefn>
+  </GMLFeatureClass>
+</GMLFeatureClassList>

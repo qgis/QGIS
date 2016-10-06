@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,6 +26,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from qgis.PyQt.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterString
@@ -33,6 +38,8 @@ from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class proximity(GdalAlgorithm):
@@ -50,30 +57,33 @@ class proximity(GdalAlgorithm):
 
     DISTUNITS = ['GEO', 'PIXEL']
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'proximity.png'))
+
     def commandLineName(self):
         return "gdalogr:proximity"
 
     def defineCharacteristics(self):
-        self.name = 'Proximity (raster distance)'
-        self.group = '[GDAL] Analysis'
+        self.name, self.i18n_name = self.trAlgorithm('Proximity (raster distance)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterRaster(self.INPUT,
-            self.tr('Input layer'), False))
+                                          self.tr('Input layer'), False))
         self.addParameter(ParameterString(self.VALUES,
-            self.tr('Values'), ''))
+                                          self.tr('Values'), ''))
         self.addParameter(ParameterSelection(self.UNITS,
-            self.tr('Distance units'), self.DISTUNITS, 0))
+                                             self.tr('Distance units'), self.DISTUNITS, 0))
         self.addParameter(ParameterNumber(self.MAX_DIST,
-            self.tr('Max distance (negative value to ignore)'), -1, 9999, -1))
+                                          self.tr('Max distance (negative value to ignore)'), -1, 9999, -1))
         self.addParameter(ParameterNumber(self.NODATA,
-            self.tr('Nodata (negative value to ignore)'), -1, 9999, -1))
+                                          self.tr('Nodata (negative value to ignore)'), -1, 9999, -1))
         self.addParameter(ParameterNumber(self.BUF_VAL,
-            self.tr('Fixed buf value (negative value to ignore)'),
-            -1, 9999, -1))
+                                          self.tr('Fixed buf value (negative value to ignore)'),
+                                          -1, 9999, -1))
         self.addParameter(ParameterSelection(self.RTYPE,
-            self.tr('Output raster type'), self.TYPE, 5))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
+                                             self.tr('Output raster type'), self.TYPE, 5))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Distance')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         output = self.getOutputValue(self.OUTPUT)
 
         arguments = []
@@ -116,4 +126,4 @@ class proximity(GdalAlgorithm):
             commands = ['gdal_proximity.py',
                         GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

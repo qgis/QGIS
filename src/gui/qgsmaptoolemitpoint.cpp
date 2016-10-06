@@ -24,18 +24,18 @@ QgsMapToolEmitPoint::QgsMapToolEmitPoint( QgsMapCanvas* canvas )
 {
 }
 
-void QgsMapToolEmitPoint::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolEmitPoint::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolEmitPoint::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolEmitPoint::canvasPressEvent( QgsMapMouseEvent* e )
 {
   QgsPoint pnt = toMapCoordinates( e->pos() );
   emit canvasClicked( pnt, e->button() );
 }
 
-void QgsMapToolEmitPoint::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolEmitPoint::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }

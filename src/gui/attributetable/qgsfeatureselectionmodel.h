@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsfeatureselectionmodel.h
+    ---------------------
+    begin                : April 2013
+    copyright            : (C) 2013 by Matthias Kuhn
+    email                : matthias at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSFEATURESELECTIONMODEL_H
 #define QGSFEATURESELECTIONMODEL_H
 
@@ -9,6 +23,9 @@ class QgsVectorLayer;
 class QgsFeatureModel;
 class QgsIFeatureSelectionManager;
 
+/** \ingroup gui
+ * \class QgsFeatureSelectionModel
+ */
 class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
 {
     Q_OBJECT
@@ -51,7 +68,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      *
      * @param indexes The model indexes which need to be repainted
      */
-    void requestRepaint( QModelIndexList indexes );
+    void requestRepaint( const QModelIndexList& indexes );
 
     /**
      * Request a repaint of the visible items of connected views.
@@ -80,12 +97,12 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      * @param selection  The QItemSelection which will be selected
      * @param command    The command to apply. Select, Deselect and ClearAndSelect are processed.
      */
-    virtual void selectFeatures( const QItemSelection &selection, SelectionFlags command );
+    virtual void selectFeatures( const QItemSelection &selection, const SelectionFlags& command );
 
     virtual void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
 
   private slots:
-    virtual void layerSelectionChanged( QgsFeatureIds selected, QgsFeatureIds deselected, bool clearAndSelect );
+    virtual void layerSelectionChanged( const QgsFeatureIds& selected, const QgsFeatureIds& deselected, bool clearAndSelect );
 
   private:
     QModelIndexList expandIndexToRow( const QModelIndex& index ) const;

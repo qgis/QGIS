@@ -38,7 +38,9 @@ void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
 
 int main( int argc, char ** argv )
 {
-  QgsApplication a( argc, argv, false );
+  QCoreApplication app( argc, argv );
+
+  QgsApplication::init();
 
   if ( !QgsApplication::isRunningFromBuildDir() )
   {

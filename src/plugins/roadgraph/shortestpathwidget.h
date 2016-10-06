@@ -12,11 +12,9 @@
 #ifndef ROADGRAPHPLUGIN_SHORTESTPATHDLG_H
 #define ROADGRAPHPLUGIN_SHORTESTPATHDLG_H
 
-// QT includes
-#include <QDockWidget>
-
 // Qgis includes
 #include <qgspoint.h>
+#include "qgsdockwidget.h"
 
 // standard includes
 
@@ -41,7 +39,7 @@ class QgsGraph;
  * \class VrpPluginShortestPathDlg
  * \brief This class implement user interface for finding shortest path between two points.
  */
-class RgShortestPathWidget : public QDockWidget
+class RgShortestPathWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:

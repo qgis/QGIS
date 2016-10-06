@@ -27,7 +27,7 @@
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
-  FilterExcludePoint( const QgsPoint& p ) : mPoint( p ) {}
+  explicit FilterExcludePoint( const QgsPoint& p ) : mPoint( p ) {}
 
   bool acceptMatch( const QgsPointLocator::Match& match ) { return match.point() != mPoint; }
 
@@ -36,7 +36,10 @@ struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 
 struct FilterExcludeEdge : public QgsPointLocator::MatchFilter
 {
-  FilterExcludeEdge( const QgsPoint& p1, const QgsPoint& p2 ) : mP1( p1 ), mP2( p2 ) {}
+  FilterExcludeEdge( const QgsPoint& p1, const QgsPoint& p2 )
+      : mP1( p1 )
+      , mP2( p2 )
+  {}
 
   bool acceptMatch( const QgsPointLocator::Match& match )
   {
@@ -82,7 +85,8 @@ class TestQgsPointLocator : public QObject
       QgsPolyline polyline;
       polyline << QgsPoint( 0, 1 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 );
       polygon << polyline;
-      ff.setGeometry( QgsGeometry::fromPolygon( polygon ) );
+      QgsGeometry ffGeom = QgsGeometry::fromPolygon( polygon );
+      ff.setGeometry( ffGeom );
       QgsFeatureList flist;
       flist << ff;
       mVL->dataProvider()->addFeatures( flist );
@@ -199,7 +203,8 @@ class TestQgsPointLocator : public QObject
       QgsPolyline polyline;
       polyline << QgsPoint( 10, 11 ) << QgsPoint( 11, 10 ) << QgsPoint( 11, 11 ) << QgsPoint( 10, 11 );
       polygon << polyline;
-      ff.setGeometry( QgsGeometry::fromPolygon( polygon ) );
+      QgsGeometry ffGeom = QgsGeometry::fromPolygon( polygon ) ;
+      ff.setGeometry( ffGeom );
       QgsFeatureList flist;
       flist << ff;
       bool resA = mVL->addFeature( ff );
@@ -216,9 +221,9 @@ class TestQgsPointLocator : public QObject
       QVERIFY( mAddA.count() == 1 );
 
       // change geometry
-      QgsGeometry* newGeom = new QgsGeometry( *ff.geometry() );
+      QgsGeometry* newGeom = new QgsGeometry( ff.geometry() );
       newGeom->moveVertex( 10, 10, 2 ); // change 11,11 to 10,10
-      mVL->changeGeometry( ff.id(), newGeom );
+      mVL->changeGeometry( ff.id(), *newGeom );
       delete newGeom;
 
       // verify it is changed in the point locator
@@ -261,4 +266,3 @@ class TestQgsPointLocator : public QObject
 QTEST_MAIN( TestQgsPointLocator )
 
 #include "testqgspointlocator.moc"
-

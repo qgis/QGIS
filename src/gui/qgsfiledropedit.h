@@ -23,8 +23,10 @@
  */
 class GUI_EXPORT QgsFileDropEdit: public QLineEdit
 {
+    Q_OBJECT
+
   public:
-    QgsFileDropEdit( QWidget *parent = 0 );
+    QgsFileDropEdit( QWidget *parent = nullptr );
     virtual ~QgsFileDropEdit();
 
     bool isDirOnly() const { return mDirOnly; }
@@ -33,7 +35,7 @@ class GUI_EXPORT QgsFileDropEdit: public QLineEdit
     bool isFileOnly() const { return mFileOnly; }
     void setFileOnly( bool isFileOnly );
 
-    const QString& suffixFilter() const { return mSuffix; }
+    QString suffixFilter() const { return mSuffix; }
     void setSuffixFilter( const QString& suffix );
 
   protected:

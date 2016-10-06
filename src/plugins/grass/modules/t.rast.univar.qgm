@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Calculates univariate statistics from the non-null cells for each registered raster map of a space time raster dataset" module="t.rast.univar">
+	<option key="input"/>
+	<option key="where"/>
+	<flag key="e" hidden="no"/>
+	<option key="separator" advanced="yes"/>
+	<flag key="s" hidden="no" advanced="yes"/>
+</qgisgrassmodule>

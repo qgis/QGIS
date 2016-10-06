@@ -4,8 +4,10 @@
 <qgisgrassmodule label="Export vector to various formats (OGR library)" module="v.out.ogr">
 	<option key="input" layeroption="layer" typeoption="type" />
 	<option key="format"/>
-	<file key="dsn" type="new" label="Name for new vector file (specify file extension)" />
-	<option key="olayer" answer="default" hidden="yes" />
+	<file key="dsn" type="new" label="Name for new vector file (specify file extension)" version_max="6.4"/>
+	<file key="output" type="new" label="Name for new vector file (specify file extension)" version_min="7.0"/>
+	<option key="olayer" answer="default" hidden="yes" version_max="6.4"/>
+	<option key="output_layer" answer="default" hidden="yes" version_min="7.0"/>
 	<flag key="e" answer="on" hidden="yes" />
 	<flag key="c" answer="on" hidden="no" label="Write only features link to a record"/>
 </qgisgrassmodule>

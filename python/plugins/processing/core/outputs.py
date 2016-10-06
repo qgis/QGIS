@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 ***************************************************************************
     Output.py
@@ -14,6 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
+from builtins import object
+
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -24,16 +30,21 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import sys
-from PyQt4.QtCore import QCoreApplication, QSettings
+
+from qgis.PyQt.QtCore import QCoreApplication, QSettings
+
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, getTempFilenameInTempFolder
 from processing.tools.vector import VectorWriter, TableWriter
 from processing.tools import dataobjects
 
+
 def getOutputFromString(s):
     tokens = s.split("|")
-    params = [t if unicode(t) != "None" else None for t in tokens[1:]]
+    params = [t if str(t) != "None" else None for t in tokens[1:]]
     clazz = getattr(sys.modules[__name__], tokens[0])
     return clazz(*params)
+
 
 class Output(object):
 
@@ -52,7 +63,7 @@ class Output(object):
         # in a vector layer). In the case of layers, hidden outputs are
         # not loaded into QGIS after the algorithm is executed. Other
         # outputs not representing layers or tables should always be hidden.
-        self.hidden = unicode(hidden).lower() == unicode(True).lower()
+        self.hidden = str(hidden).lower() == str(True).lower()
 
         # This value indicates whether the output has to be opened
         # after being produced by the algorithm or not
@@ -63,16 +74,16 @@ class Output(object):
 
     def getValueAsCommandLineParameter(self):
         if self.value is None:
-            return unicode(None)
+            return str(None)
         else:
             if not isWindows():
-                return '"' + unicode(self.value) + '"'
+                return '"' + str(self.value) + '"'
             else:
-                return '"' + unicode(self.value).replace('\\', '\\\\') + '"'
+                return '"' + str(self.value).replace('\\', '\\\\') + '"'
 
     def setValue(self, value):
         try:
-            if value is not None and isinstance(value, basestring):
+            if value is not None and isinstance(value, str):
                 value = value.strip()
             self.value = value
             return True
@@ -102,13 +113,22 @@ class OutputExtent(Output):
 
     def setValue(self, value):
         try:
-            if value is not None and isinstance(value, basestring):
+            if value is not None and isinstance(value, str):
                 value = value.strip()
             else:
-                self.value = ','.join([unicode(v) for v in value])
+                self.value = ','.join([str(v) for v in value])
             return True
         except:
             return False
+
+
+class OutputCrs(Output):
+
+    def __init__(self, name='', description=''):
+        self.name = name
+        self.description = description
+        self.value = None
+        self.hidden = True
 
 
 class OutputFile(Output):
@@ -150,19 +170,16 @@ class OutputRaster(Output):
     compatible = None
 
     def getFileFilter(self, alg):
-        providerExts = alg.provider.getSupportedOutputRasterLayerExtensions()
-        if providerExts == ['tif']:
-            # use default extensions
-            exts = dataobjects.getSupportedOutputRasterLayerExtensions()
-        else:
-            # use extensions given by the algorithm provider
-            exts = providerExts
+        exts = dataobjects.getSupportedOutputRasterLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = self.tr('%s files(*.%s)', 'OutputRaster') % (exts[i].upper(), exts[i].lower())
+            exts[i] = self.tr('%s files (*.%s)', 'OutputVector') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self, alg):
-        return alg.provider.getSupportedOutputRasterLayerExtensions()[0]
+        supported = alg.provider.getSupportedOutputRasterLayerExtensions()
+        default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT)
+        ext = default if default in supported else supported[0]
+        return ext
 
     def getCompatibleFileName(self, alg):
         """
@@ -249,14 +266,41 @@ class OutputVector(Output):
     encoding = None
     compatible = None
 
-    def getFileFilter(self, alg):
+    def __init__(self, name='', description='', hidden=False, base_input=None, datatype=[-1]):
+        Output.__init__(self, name, description, hidden)
+        self.base_input = base_input
+        self.base_layer = None
+        if isinstance(datatype, int):
+            datatype = [datatype]
+        elif isinstance(datatype, str):
+            datatype = [int(t) for t in datatype.split(',')]
+        self.datatype = datatype
+
+    def hasGeometry(self):
+        if self.base_layer is None:
+            return True
+        return dataobjects.canUseVectorLayer(self.base_layer, [-1])
+
+    def getSupportedOutputVectorLayerExtensions(self):
         exts = dataobjects.getSupportedOutputVectorLayerExtensions()
+        if not self.hasGeometry():
+            exts = ['dbf'] + [ext for ext in exts if ext in VectorWriter.nogeometry_extensions]
+        return exts
+
+    def getFileFilter(self, alg):
+        exts = self.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
             exts[i] = self.tr('%s files (*.%s)', 'OutputVector') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self, alg):
-        return alg.provider.getSupportedOutputVectorLayerExtensions()[0]
+        supported = alg.provider.getSupportedOutputVectorLayerExtensions()
+        if self.hasGeometry():
+            default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT)
+        else:
+            default = 'dbf'
+        ext = default if default in supported else supported[0]
+        return ext
 
     def getCompatibleFileName(self, alg):
         """Returns a filename that is compatible with the algorithm
@@ -267,7 +311,6 @@ class OutputVector(Output):
         temporary file with a supported file format, to be used to
         generate the output result.
         """
-
         ext = self.value[self.value.rfind('.') + 1:]
         if ext in alg.provider.getSupportedOutputVectorLayerExtensions():
             return self.value
@@ -302,5 +345,9 @@ class OutputVector(Output):
 
         w = VectorWriter(self.value, self.encoding, fields, geomType,
                          crs, options)
-        self.memoryLayer = w.memLayer
+        self.layer = w.layer
+        self.value = w.destination
         return w
+
+    def dataType(self):
+        return dataobjects.vectorDataType(self)

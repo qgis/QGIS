@@ -1,0 +1,6 @@
+Polygon Clipping
+shapes_polygons
+ParameterVector|CLIP|Clip features|2|False
+ParameterVector|S_INPUT|Input features|-1|False
+OutputVector|S_OUTPUT|Output features
+Hardcoded|-MULTIPLE 0

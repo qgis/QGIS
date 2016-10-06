@@ -1,0 +1,6 @@
+Proximity Grid
+grid_tools
+ParameterRaster|FEATURES|Features|False
+OutputRaster|DISTANCE|Distance
+OutputRaster|DIRECTION|Direction
+OutputRaster|ALLOCATION|Allocation

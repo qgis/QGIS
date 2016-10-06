@@ -17,6 +17,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -26,12 +27,18 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from qgis.PyQt.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class rgb2pct(GdalAlgorithm):
@@ -40,17 +47,19 @@ class rgb2pct(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
     NCOLORS = 'NCOLORS'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', '24-to-8-bits.png'))
 
     def defineCharacteristics(self):
-        self.name = 'RGB to PCT'
-        self.group = '[GDAL] Conversion'
+        self.name, self.i18n_name = self.trAlgorithm('RGB to PCT')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
         self.addParameter(ParameterRaster(rgb2pct.INPUT,
-            self.tr('Input layer'), False))
+                                          self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(rgb2pct.NCOLORS,
-            self.tr('Number of colors'), 1, None, 2))
-        self.addOutput(OutputRaster(rgb2pct.OUTPUT, self.tr('Output layer')))
+                                          self.tr('Number of colors'), 1, None, 2))
+        self.addOutput(OutputRaster(rgb2pct.OUTPUT, self.tr('RGB to PCT')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = []
         arguments.append('-n')
         arguments.append(str(self.getParameterValue(rgb2pct.NCOLORS)))
@@ -66,4 +75,4 @@ class rgb2pct(GdalAlgorithm):
         else:
             commands = ['rgb2pct.py', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

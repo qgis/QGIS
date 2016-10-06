@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 8.5.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,10 +15,13 @@
 
 #include "qgstexteditconfigdlg.h"
 
+#include "qgseditorwidgetconfig.h"
 QgsTextEditConfigDlg::QgsTextEditConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
     : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
+  connect( mIsMultiline, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mUseHtml, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
 }
 
 

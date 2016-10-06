@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'April 2013'
@@ -27,10 +28,11 @@ import types
 import os
 import imp
 
-from PyQt4.QtCore import Qt, QSize
-from PyQt4.QtGui import QDialog, QLabel, QSpacerItem, QHBoxLayout, QVBoxLayout, QSizePolicy, QComboBox, QCompleter, QSortFilterProxyModel
+from qgis.PyQt.QtCore import Qt, QSize
+from qgis.PyQt.QtWidgets import QDialog, QLabel, QSpacerItem, QHBoxLayout, QVBoxLayout, QSizePolicy, QComboBox, QCompleter
+from qgis.PyQt.QtCore import QSortFilterProxyModel
 from qgis.utils import iface
-from processing.core.Processing import Processing
+from processing.core.alglist import algList
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.tools.system import userFolder, mkdir
@@ -41,6 +43,7 @@ HEIGHT = 60
 
 
 class CommanderWindow(QDialog):
+
     def __init__(self, parent, canvas):
         self.canvas = canvas
         QDialog.__init__(self, parent, Qt.FramelessWindowHint)
@@ -48,7 +51,7 @@ class CommanderWindow(QDialog):
         self.initGui()
 
     def commandsFolder(self):
-        folder = unicode(os.path.join(userFolder(), 'commander'))
+        folder = str(os.path.join(userFolder(), 'commander'))
         mkdir(folder)
         return os.path.abspath(folder)
 
@@ -80,7 +83,7 @@ class CommanderWindow(QDialog):
         self.vlayout.setSpacing(2)
         self.vlayout.setMargin(0)
         self.vlayout.addSpacerItem(QSpacerItem(0, OFFSET,
-                QSizePolicy.Maximum, QSizePolicy.Expanding))
+                                               QSizePolicy.Maximum, QSizePolicy.Expanding))
         self.hlayout = QHBoxLayout()
         self.hlayout.addWidget(self.label)
         self.vlayout.addLayout(self.hlayout)
@@ -88,7 +91,7 @@ class CommanderWindow(QDialog):
         self.hlayout2.addWidget(self.combo)
         self.vlayout.addLayout(self.hlayout2)
         self.vlayout.addSpacerItem(QSpacerItem(0, OFFSET,
-                QSizePolicy.Maximum, QSizePolicy.Expanding))
+                                               QSizePolicy.Maximum, QSizePolicy.Expanding))
         self.setLayout(self.vlayout)
         self.combo.lineEdit().returnPressed.connect(self.run)
         self.prepareGui()
@@ -97,25 +100,23 @@ class CommanderWindow(QDialog):
         self.combo.clear()
 
         # Add algorithms
-        for providerName in Processing.algs.keys():
-            provider = Processing.algs[providerName]
-            algs = provider.values()
-            for alg in algs:
-                self.combo.addItem('Processing algorithm: ' + alg.name)
+        for provider in list(algList.algs.values()):
+            for alg in provider:
+                self.combo.addItem('Processing algorithm: ' + alg)
 
         # Add functions
         for command in dir(self.commands):
             if isinstance(self.commands.__dict__.get(command),
-                    types.FunctionType):
+                          types.FunctionType):
                 self.combo.addItem('Command: ' + command)
 
-        #Add menu entries
+        # Add menu entries
         menuActions = []
         actions = iface.mainWindow().menuBar().actions()
         for action in actions:
             menuActions.extend(self.getActions(action))
         for action in menuActions:
-            self.combo.addItem('Menu action: ' + unicode(action.text()))
+            self.combo.addItem('Menu action: ' + str(action.text()))
 
     def prepareGui(self):
         self.combo.setEditText('')
@@ -149,10 +150,10 @@ class CommanderWindow(QDialog):
         return menuActions
 
     def run(self):
-        s = unicode(self.combo.currentText())
+        s = str(self.combo.currentText())
         if s.startswith('Processing algorithm: '):
             algName = s[len('Processing algorithm: '):]
-            alg = Processing.getAlgorithmFromFullName(algName)
+            alg = algList.getAlgorithm(algName)
             if alg is not None:
                 self.close()
                 self.runAlgorithm(alg)
@@ -161,9 +162,9 @@ class CommanderWindow(QDialog):
             try:
                 self.runCommand(command)
                 self.close()
-            except Exception, e:
+            except Exception as e:
                 self.label.setVisible(True)
-                self.label.setText('Error:' + unicode(e))
+                self.label.setText('Error:' + str(e))
 
         elif s.startswith('Menu action: '):
             actionName = s[len('Menu action: '):]
@@ -180,9 +181,9 @@ class CommanderWindow(QDialog):
             try:
                 self.runCommand(s)
                 self.close()
-            except Exception, e:
+            except Exception as e:
                 self.label.setVisible(True)
-                self.label.setText('Error:' + unicode(e))
+                self.label.setText('Error:' + str(e))
 
     def runCommand(self, command):
         tokens = command.split(' ')
@@ -224,6 +225,7 @@ class CommanderWindow(QDialog):
 
 
 class ExtendedComboBox(QComboBox):
+
     def __init__(self, parent=None):
         super(ExtendedComboBox, self).__init__(parent)
 
@@ -237,4 +239,4 @@ class ExtendedComboBox(QComboBox):
         self.completer.popup().setStyleSheet('min-height: 150px')
         self.completer.popup().setAlternatingRowColors(True)
         self.setCompleter(self.completer)
-        self.lineEdit().textEdited[unicode].connect(self.pFilterModel.setFilterFixedString)
+        self.lineEdit().textEdited[str].connect(self.pFilterModel.setFilterFixedString)

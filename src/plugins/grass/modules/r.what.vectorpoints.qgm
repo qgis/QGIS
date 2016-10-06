@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Query rasters on their category values and labels" module="r.what">
+	<flag key="n" />
+	<flag key="f" />
+	<flag key="c" />
+	<flag key="i" />
+	<option key="map" />
+	<option key="points" />
+	<file key="output" type="new"/>
+	<option key="cache" advanced="yes"/>
+	<option key="null_value" advanced="yes" />
+	<option key="separator" advanced="yes" />
+</qgisgrassmodule>

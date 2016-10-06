@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = "Niccolo' Marchi"
 __date__ = 'May 2014'
@@ -30,8 +33,8 @@ from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputFile
-from FusionAlgorithm import FusionAlgorithm
-from FusionUtils import FusionUtils
+from .FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
 
 
 class ASCII2DTM(FusionAlgorithm):
@@ -45,8 +48,8 @@ class ASCII2DTM(FusionAlgorithm):
     ZONE = 'ZONE'
 
     def defineCharacteristics(self):
-        self.name = 'ASCII to DTM'
-        self.group = 'Conversion'
+        self.name, self.i18n_name = self.trAlgorithm('ASCII to DTM')
+        self.group, self.i18n_group = self.trAlgorithm('Conversion')
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input ESRI ASCII layer')))
         self.addParameter(ParameterSelection(

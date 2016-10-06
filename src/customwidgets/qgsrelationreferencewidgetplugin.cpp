@@ -42,7 +42,7 @@ QString QgsRelationReferenceWidgetPlugin::includeFile() const
 
 QIcon QgsRelationReferenceWidgetPlugin::icon() const
 {
-  return QIcon();
+  return QIcon( ":/images/icons/qgis-icon-60x60.png" );
 }
 
 bool QgsRelationReferenceWidgetPlugin::isContainer() const

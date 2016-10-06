@@ -29,13 +29,15 @@
 
 #include "qgsgeometrycache.h"
 
+class QgsLabelingEngine;
 class QgsLabelingResults;
 class QgsMapLayerRenderer;
 class QgsMapRendererCache;
 class QgsPalLabeling;
 
 
-/** Structure keeping low-level rendering job information.
+/** \ingroup core
+ * Structure keeping low-level rendering job information.
  * @note not part of public API!
  */
 struct LayerRenderJob
@@ -44,14 +46,16 @@ struct LayerRenderJob
   QImage* img; // may be null if it is not necessary to draw to separate image (e.g. sequential rendering)
   QgsMapLayerRenderer* renderer; // must be deleted
   QPainter::CompositionMode blendMode;
+  double opacity;
   bool cached; // if true, img already contains cached image from previous rendering
   QString layerId;
+  int renderingTime; //!< time it took to render the layer in ms (it is -1 if not rendered or still rendering)
 };
 
 typedef QList<LayerRenderJob> LayerRenderJobs;
 
 
-/**
+/** \ingroup core
  * Abstract base class for map rendering implementations.
  *
  * The API is designed in a way that rendering is done asynchronously, therefore
@@ -103,7 +107,10 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     struct Error
     {
-      Error( const QString& lid, const QString& msg ) : layerID( lid ), message( msg ) {}
+      Error( const QString& lid, const QString& msg )
+          : layerID( lid )
+          , message( msg )
+      {}
 
       QString layerID;
       QString message;
@@ -134,6 +141,14 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     const QgsMapSettings& mapSettings() const;
 
   signals:
+    /**
+     * Emitted when the layers are rendered.
+     * Rendering labels is not yet done. If the fully rendered layer including labels is required use
+     * finished() instead.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void renderingLayersFinished();
 
     //! emitted when asynchronous rendering is finished (or canceled).
     void finished();
@@ -146,21 +161,23 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * source CRS coordinates, and if it was split, returns true, and
      * also sets the contents of the r2 parameter
      */
-    static bool reprojectToLayerExtent( const QgsCoordinateTransform* ct, bool layerCrsGeographic, QgsRectangle& extent, QgsRectangle& r2 );
+    static bool reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform &ct, QgsRectangle &extent, QgsRectangle &r2 );
 
     //! @note not available in python bindings
-    LayerRenderJobs prepareJobs( QPainter* painter, QgsPalLabeling* labelingEngine );
+    LayerRenderJobs prepareJobs( QPainter* painter, QgsLabelingEngine* labelingEngine2 );
 
     //! @note not available in python bindings
     void cleanupJobs( LayerRenderJobs& jobs );
+
+    //! @note not available in python bindings
+    void logRenderingTime( const LayerRenderJobs& jobs );
 
     static QImage composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs );
 
     bool needTemporaryImage( QgsMapLayer* ml );
 
-    static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine, QPainter* painter );
-    static void drawOldLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext );
-    static void drawNewLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine );
+    //! @note not available in Python bindings
+    static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsLabelingEngine* labelingEngine2, QPainter* painter );
 
     //! called when rendering has finished to update all layers' geometry caches
     void updateLayerGeometryCaches();
@@ -180,13 +197,16 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 };
 
 
-/** Intermediate base class adding functionality that allows client to query the rendered image.
+/** \ingroup core
+ * Intermediate base class adding functionality that allows client to query the rendered image.
  *  The image can be queried even while the rendering is still in progress to get intermediate result
  *
  * @note added in 2.4
  */
 class CORE_EXPORT QgsMapRendererQImageJob : public QgsMapRendererJob
 {
+    Q_OBJECT
+
   public:
     QgsMapRendererQImageJob( const QgsMapSettings& settings );
 

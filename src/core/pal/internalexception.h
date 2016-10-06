@@ -27,10 +27,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef INTERNAL_EXCEPTION_H
 #define INTERNAL_EXCEPTION_H
 
@@ -40,12 +36,14 @@ namespace pal
 {
 
   /** \brief Various Exceptions
+   * \ingroup core
    */
   class InternalException
   {
     public:
 
       /** \brief Thrown when something is added in a Full set
+       * \ingroup core
       */
       class Full : public std::exception
       {
@@ -56,6 +54,7 @@ namespace pal
       };
 
       /** \brief Thrown when trying to access an empty dada set
+       * \ingroup core
       */
       class Empty : public std::exception
       {
@@ -66,6 +65,7 @@ namespace pal
       };
 
       /** \brief Thrown when a geometry type is not like expected
+       * \ingroup core
       */
       class WrongGeometry : public std::exception
       {
@@ -76,6 +76,7 @@ namespace pal
       };
 
       /** \brief Thrown when a geometry type is not like expected
+       * \ingroup core
       */
       class UnknownGeometry : public std::exception
       {
@@ -86,7 +87,8 @@ namespace pal
       };
 
 
-      /** \brief Throw an exception when it's impossible to compute labelPOsition
+      /** \brief Throw an exception when it's impossible to compute labelPosition
+       * \ingroup core
       */
       class NoLabelPosition : public std::exception
       {

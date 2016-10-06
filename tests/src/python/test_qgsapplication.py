@@ -11,17 +11,18 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
-from utilities import getQgisTestApp, unittest
+import qgis  # NOQA
+from qgis.testing import start_app, unittest
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+
+QGISAPP = start_app()
 
 
 class TestPyQgsApplication(unittest.TestCase):
 
     def testInvalidThemeName(self):
         """Check using an invalid theme will fallback to  'default'"""
-        QGISAPP.setThemeName('fooobar')
+        QGISAPP.setUITheme('fooobar')
         myExpectedResult = 'default'
         myResult = QGISAPP.themeName()
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %

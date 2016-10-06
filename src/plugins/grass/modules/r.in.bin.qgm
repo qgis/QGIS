@@ -5,7 +5,7 @@
 	<file key="input" type="old" filters="Binary (*.bin)" />
 	<option key="bytes" />
 	<option key="anull" />
-	<option key="output" filters="(*.bin)"/>
+	<option key="output" />
 	<flag key="f" answer="off" />
 	<flag key="d" answer="off" />
 	<flag key="s" answer="off" />

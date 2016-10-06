@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -29,8 +31,8 @@ import os
 import otbApplication
 from qgis.core import QgsApplication
 
-outputpath = unicode(QgsApplication.qgisSettingsDirPath()
-                     + 'python/plugins/processing/otb/description')
+outputpath = str(QgsApplication.qgisSettingsDirPath()
+                 + 'python/plugins/processing/otb/description')
 endl = os.linesep
 
 
@@ -55,7 +57,8 @@ def generate_all_app_descriptors():
 
 
 def generate_app_descriptor(appliname):
-    print appliname
+    # fix_print_with_import
+    print(appliname)
 
     appInstance = otbApplication.Registry.CreateApplication(appliname)
     appInstance.UpdateParameters()  # TODO need this ?

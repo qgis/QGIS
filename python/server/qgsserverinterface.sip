@@ -1,7 +1,7 @@
 /***************************************************************************
                           qgsserverinterface.sip
 
-  Class defining the interface made available to server plugins.
+  Class defining the interface made available to QGIS Server plugins.
   -------------------
   begin                : 2014-09-10
   copyright            : (C) 2014 by Alessandro Pasotti
@@ -18,18 +18,23 @@
  ***************************************************************************/
 
 /**
- * \class QgsServerInterface
- * \brief Class defining the interface made available to server plugins.
+ * \ingroup server
+ * QgsServerInterface
+ * Class defining interfaces exposed by QGIS Server and
+ * made available to plugins.
  *
  * This class provides methods to access the request handler and
  * the capabilties cache. A method to read the environment
  * variables set in the main FCGI loop is also available.
  * Plugins can add listeners (instances of QgsServerFilter) with
  * a certain priority through the registerFilter( QgsServerFilter* , int) method.
+ *
  */
 
 
 typedef QMultiMap<int, QgsServerFilter*> QgsServerFiltersMap;
+
+
 
 class QgsServerInterface
 {
@@ -38,23 +43,89 @@ class QgsServerInterface
 %End
 
   public:
-    /**Returns the current request handler*/
-    virtual QgsRequestHandler* requestHandler( ) = 0 /KeepReference/;
-    /**Returns the capabilities cache*/
-    virtual QgsCapabilitiesCache* capabiblitiesCache() = 0 /KeepReference/;
-    // Tansfer ownership to avoid garbage collector to call dtor
-    /** Register a filter with the given priority. The filter's requestReady()
-     * and responseReady() methods will be called from the loop*/
+    /**
+     * Set the request handler
+     * @param requestHandler request handler
+     * @note not available in Python bindings
+     */
+    // virtual void setRequestHandler( QgsRequestHandler* requestHandler ) = 0;
+
+    /**
+     * Clear the request handler
+     *
+     * @note not available in python bindings
+     */
+    // virtual void clearRequestHandler() = 0;
+
+    /**
+     * Get pointer to the capabiblities cache
+     * @return QgsCapabilitiesCache
+     */
+    virtual QgsCapabilitiesCache* capabilitiesCache() = 0 /KeepReference/;
+
+    /**
+     * Get pointer to the request handler
+     * @return QgsRequestHandler
+     */
+    virtual QgsRequestHandler* requestHandler() = 0 /KeepReference/;
+
+    /**
+     * Register a QgsServerFilter
+     * @param filter the QgsServerFilter to add
+     * @param priority an optional priority for the filter order
+     */
     virtual void registerFilter( QgsServerFilter* filter /Transfer/, int priority = 0 ) = 0;
-    /**Return an environment variable set by FCGI*/
+
+    /**
+     * Set the filters map
+     * @param filters the QgsServerFiltersMap
+     */
+    virtual void setFilters( QgsServerFiltersMap* filters /Transfer/) = 0;
+
+    /**
+     * Return the list of current QgsServerFilter
+     * @return QgsServerFiltersMap list of QgsServerFilter
+     */
+    virtual QgsServerFiltersMap filters() = 0;
+
+    /** Register an access control filter
+     * @param accessControl the access control to register
+     * @param priority the priority used to order them
+     */
+    virtual void registerAccessControl( QgsAccessControlFilter* accessControl /Transfer/, int priority = 0 ) = 0;
+
+    /** Gets the registred access control filters */
+    virtual const QgsAccessControl* accessControls() const = 0;
+
+    //! Return an enrironment variable, used to pass  environment variables to python
     virtual QString getEnv(const QString& name ) const = 0;
-    // Commented because of problems with typedef QgsServerFiltersMap, provided
-    // methods to alter the filters map into QgsRequestHandler API
-    // virtual QgsServerFiltersMap filters( ) = 0;
 
-private:
+    /**
+     * Return the configuration file path
+     * @return QString containing the configuration file path
+     */
+    virtual QString configFilePath() = 0;
+
+    /**
+     * Set the configuration file path
+     * @param configFilePath QString with the configuration file path
+     */
+    virtual void setConfigFilePath( const QString& configFilePath) = 0;
+
+    /**
+     * Remove entry from config cache
+     * @param path the path of the file to remove
+     */
+    virtual void removeConfigCacheEntry( const QString& path ) = 0;
+
+    /**
+     * Remove entries from layer cache
+     * @param path the path of the project which own the layers to be removed
+     */
+    virtual void removeProjectLayers( const QString& path ) = 0;
+
+  private:
     /** Constructor */
-    QgsServerInterface( );
-
+    QgsServerInterface();
 };
 

@@ -51,11 +51,14 @@ QString QgsError::message( QgsErrorMessage::Format theFormat ) const
 {
   QString str;
 
+#ifdef QGISDEBUG
   QString srcUrl;
+#endif
+
 #if defined(QGISDEBUG) && defined(QGS_GIT_REMOTE_URL)
   // TODO: verify if we are not ahead to origin (remote hash does not exist)
   //       and there are no local not commited changes
-  QString hash = QString( QGis::QGIS_DEV_VERSION );
+  QString hash = QString( Qgis::QGIS_DEV_VERSION );
   QString remote = QString( QGS_GIT_REMOTE_URL );
   if ( !hash.isEmpty() && !remote.isEmpty() && remote.contains( "github.com" ) )
   {
@@ -64,7 +67,7 @@ QString QgsError::message( QgsErrorMessage::Format theFormat ) const
   }
 #endif
 
-  foreach ( QgsErrorMessage m, mMessageList )
+  Q_FOREACH ( const QgsErrorMessage& m, mMessageList )
   {
 #ifdef QGISDEBUG
     QString file;
@@ -80,11 +83,11 @@ QString QgsError::message( QgsErrorMessage::Format theFormat ) const
     {
       if ( !str.isEmpty() )
       {
-        str += "\n"; // new message
+        str += '\n'; // new message
       }
       if ( !m.tag().isEmpty() )
       {
-        str += m.tag() + " ";
+        str += m.tag() + ' ';
       }
       str += m.message();
 #ifdef QGISDEBUG
@@ -110,8 +113,8 @@ QString QgsError::message( QgsErrorMessage::Format theFormat ) const
       QString location = QString( "%1 : %2 : %3" ).arg( file ).arg( m.line() ).arg( m.function() );
       if ( !srcUrl.isEmpty() )
       {
-        QString url = QString( "%1/%2#L%3" ).arg( srcUrl ).arg( file ).arg( m.line() );
-        str += QString( "<br>(<a href='%1'>%2</a>)" ).arg( url ).arg( location );
+        QString url = QString( "%1/%2#L%3" ).arg( srcUrl, file ).arg( m.line() );
+        str += QString( "<br>(<a href='%1'>%2</a>)" ).arg( url, location );
       }
       else
       {

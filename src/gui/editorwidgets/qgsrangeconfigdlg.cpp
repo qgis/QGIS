@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,19 +17,20 @@
 
 #include "qgsvectorlayer.h"
 
-QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent ) :
-    QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent )
+    : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
   QString text;
 
-  switch ( vl->pendingFields()[fieldIdx].type() )
+  switch ( vl->fields().at( fieldIdx ).type() )
   {
     case QVariant::Int:
     case QVariant::LongLong:
+    case QVariant::Double:
     {
-      rangeStackedWidget->setCurrentIndex( 0 );
+      rangeStackedWidget->setCurrentIndex( vl->fields().at( fieldIdx ).type() == QVariant::Double ? 1 : 0 );
 
       rangeWidget->clear();
       rangeWidget->addItem( tr( "Editable" ), "SpinBox" );
@@ -39,42 +40,35 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget 
       QVariant min = vl->minimumValue( fieldIdx );
       QVariant max = vl->maximumValue( fieldIdx );
 
-      text = tr( "Current minimum for this value is %1 and current maximum is %2." ).arg( min.toString() ).arg( max.toString() );
-      break;
-    }
-
-    case QVariant::Double:
-    {
-      rangeStackedWidget->setCurrentIndex( 1 );
-
-      rangeWidget->clear();
-      rangeWidget->addItem( tr( "Editable" ), "SpinBox" );
-      rangeWidget->addItem( tr( "Slider" ), "Slider" );
-
-      QVariant min = vl->minimumValue( fieldIdx );
-      QVariant max = vl->maximumValue( fieldIdx );
-
-      text = tr( "Current minimum for this value is %1 and current maximum is %2." ).arg( min.toString() ).arg( max.toString() );
+      text = tr( "Current minimum for this value is %1 and current maximum is %2." ).arg( min.toString(), max.toString() );
       break;
     }
 
     default:
-    {
       text = tr( "Attribute has no integer or real type, therefore range is not usable." );
       break;
-    }
   }
 
   valuesLabel->setText( text );
 
   connect( rangeWidget, SIGNAL( currentIndexChanged( int ) ), this, SLOT( rangeWidgetChanged( int ) ) );
+
+  connect( minimumSpinBox, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );
+  connect( maximumSpinBox, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );
+  connect( stepSpinBox, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );
+  connect( minimumDoubleSpinBox, SIGNAL( valueChanged( double ) ), this, SIGNAL( changed() ) );
+  connect( maximumDoubleSpinBox, SIGNAL( valueChanged( double ) ), this, SIGNAL( changed() ) );
+  connect( stepDoubleSpinBox, SIGNAL( valueChanged( double ) ), this, SIGNAL( changed() ) );
+  connect( rangeWidget, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( changed() ) );
+  connect( allowNullCheckBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( suffixLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( changed() ) );
 }
 
 QgsEditorWidgetConfig QgsRangeConfigDlg::config()
 {
   QgsEditorWidgetConfig cfg;
 
-  switch ( layer()->pendingFields()[field()].type() )
+  switch ( layer()->fields().at( field() ).type() )
   {
     case QVariant::Int:
     case QVariant::LongLong:
@@ -93,7 +87,7 @@ QgsEditorWidgetConfig QgsRangeConfigDlg::config()
       break;
   }
 
-  cfg.insert( "Style", rangeWidget->itemData( rangeWidget->currentIndex() ).toString() );
+  cfg.insert( "Style", rangeWidget->currentData().toString() );
   cfg.insert( "AllowNull", allowNullCheckBox->isChecked() );
 
   if ( suffixLineEdit->text() != "" )
@@ -106,12 +100,12 @@ QgsEditorWidgetConfig QgsRangeConfigDlg::config()
 
 void QgsRangeConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
 {
-  minimumDoubleSpinBox->setValue( config.value( "Min", 0.0 ).toDouble() );
-  maximumDoubleSpinBox->setValue( config.value( "Max", 5.0 ).toDouble() );
+  minimumDoubleSpinBox->setValue( config.value( "Min", -std::numeric_limits<double>::max() ).toDouble() );
+  maximumDoubleSpinBox->setValue( config.value( "Max", std::numeric_limits<double>::max() ).toDouble() );
   stepDoubleSpinBox->setValue( config.value( "Step", 1.0 ).toDouble() );
 
-  minimumSpinBox->setValue( config.value( "Min", 0 ).toInt() );
-  maximumSpinBox->setValue( config.value( "Max", 5 ).toInt() );
+  minimumSpinBox->setValue( config.value( "Min", std::numeric_limits<int>::min() ).toInt() );
+  maximumSpinBox->setValue( config.value( "Max", std::numeric_limits<int>::max() ).toInt() );
   stepSpinBox->setValue( config.value( "Step", 1 ).toInt() );
 
   rangeWidget->setCurrentIndex( rangeWidget->findData( config.value( "Style", "SpinBox" ) ) );

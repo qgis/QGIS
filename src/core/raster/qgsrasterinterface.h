@@ -23,18 +23,58 @@
 #include <QCoreApplication> // for tr()
 #include <QImage>
 
-#include "qgslogger.h"
+#include "qgsfeedback.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterblock.h"
 #include "qgsrasterhistogram.h"
 #include "qgsrectangle.h"
 
 /** \ingroup core
+ * Feedback object tailored for raster block reading.
+ *
+ * @note added in QGIS 3.0
+ */
+class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
+{
+  public:
+    //! Construct a new raster block feedback object
+    QgsRasterBlockFeedback( QObject* parent = nullptr ) : QgsFeedback( parent ), mPreviewOnly( false ), mRenderPartialOutput( false ) {}
+
+    //! May be emitted by raster data provider to indicate that some partial data are available
+    //! and a new preview image may be produced
+    virtual void onNewData() {}
+
+    //! Whether the raster provider should return only data that are already available
+    //! without waiting for full result. By default this flag is not enabled.
+    //! @see setPreviewOnly()
+    bool isPreviewOnly() const { return mPreviewOnly; }
+    //! set flag whether the block request is for preview purposes only
+    //! @see isPreviewOnly()
+    void setPreviewOnly( bool preview ) { mPreviewOnly = preview; }
+
+    //! Whether our painter is drawing to a temporary image used just by this layer
+    //! @see setRenderPartialOutput()
+    bool renderPartialOutput() const { return mRenderPartialOutput; }
+    //! Set whether our painter is drawing to a temporary image used just by this layer
+    //! @see renderPartialOutput()
+    void setRenderPartialOutput( bool enable ) { mRenderPartialOutput = enable; }
+
+  private:
+    //! Whether the raster provider should return only data that are already available
+    //! without waiting for full result
+    bool mPreviewOnly;
+
+    //! Whether our painter is drawing to a temporary image used just by this layer
+    bool mRenderPartialOutput;
+};
+
+
+/** \ingroup core
  * Base class for processing filters like renderers, reprojector, resampler etc.
  */
 class CORE_EXPORT QgsRasterInterface
 {
-    Q_DECLARE_TR_FUNCTIONS( QgsRasterInterface );
+    Q_DECLARE_TR_FUNCTIONS( QgsRasterInterface )
 
   public:
     //! If you add to this, please also add to capabilitiesString()
@@ -52,7 +92,7 @@ class CORE_EXPORT QgsRasterInterface
       IdentifyFeature  = 1 << 9, // WMS GML -> feature
     };
 
-    QgsRasterInterface( QgsRasterInterface * input = 0 );
+    QgsRasterInterface( QgsRasterInterface * input = nullptr );
 
     virtual ~QgsRasterInterface();
 
@@ -71,17 +111,17 @@ class CORE_EXPORT QgsRasterInterface
     QString capabilitiesString() const;
 
     /** Returns data type for the band specified by number */
-    virtual QGis::DataType dataType( int bandNo ) const = 0;
+    virtual Qgis::DataType dataType( int bandNo ) const = 0;
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType */
-    virtual QGis::DataType srcDataType( int bandNo ) const { if ( mInput ) return mInput->srcDataType( bandNo ); else return QGis::UnknownDataType; };
+    virtual Qgis::DataType sourceDataType( int bandNo ) const { return mInput ? mInput->sourceDataType( bandNo ) : Qgis::UnknownDataType; }
 
     /**
      * Get the extent of the interface.
      * @return QgsRectangle containing the extent of the layer
      */
-    virtual QgsRectangle extent() { if ( mInput ) return mInput->extent(); else return QgsRectangle(); }
+    virtual QgsRectangle extent() const { return mInput ? mInput->extent() : QgsRectangle(); }
 
     int dataTypeSize( int bandNo ) { return QgsRasterBlock::typeSize( dataType( bandNo ) ); }
 
@@ -89,17 +129,17 @@ class CORE_EXPORT QgsRasterInterface
     virtual int bandCount() const = 0;
 
     /** Get block size */
-    virtual int xBlockSize() const { if ( mInput ) return mInput->xBlockSize(); else return 0; }
-    virtual int yBlockSize() const { if ( mInput ) return mInput->yBlockSize(); else return 0; }
+    virtual int xBlockSize() const { return mInput ? mInput->xBlockSize() : 0; }
+    virtual int yBlockSize() const { return mInput ? mInput->yBlockSize() : 0; }
 
     /** Get raster size */
-    virtual int xSize() const { if ( mInput ) return mInput->xSize(); else return 0; }
-    virtual int ySize() const { if ( mInput ) return mInput->ySize(); else return 0; }
+    virtual int xSize() const { return mInput ? mInput->xSize() : 0; }
+    virtual int ySize() const { return mInput ? mInput->ySize() : 0; }
 
     /** \brief helper function to create zero padded band names */
     virtual QString generateBandName( int theBandNumber ) const
     {
-      return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber, 1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) );
+      return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber, 1 + static_cast< int >( log10( static_cast< double >( bandCount() ) ) ), 10, QChar( '0' ) );
     }
 
     /** Read block of data using given extent and size.
@@ -109,8 +149,9 @@ class CORE_EXPORT QgsRasterInterface
      * @param extent extent of block
      * @param width pixel width of block
      * @param height pixel height of block
+     * @param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) = 0;
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */
@@ -129,15 +170,20 @@ class CORE_EXPORT QgsRasterInterface
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      */
-    virtual const QgsRasterInterface *srcInput() const
+    virtual const QgsRasterInterface *sourceInput() const
     {
-      QgsDebugMsg( "Entered" );
-      return mInput ? mInput->srcInput() : this;
+      QgsDebugMsgLevel( "Entered", 4 );
+      return mInput ? mInput->sourceInput() : this;
     }
-    virtual QgsRasterInterface * srcInput()
+
+    /** Get source / raw input, the first in pipe, usually provider.
+     *  It may be used to get info about original data, e.g. resolution to decide
+     *  resampling etc.
+     */
+    virtual QgsRasterInterface * sourceInput()
     {
-      QgsDebugMsg( "Entered" );
-      return mInput ? mInput->srcInput() : this;
+      QgsDebugMsgLevel( "Entered", 4 );
+      return mInput ? mInput->sourceInput() : this;
     }
 
     /** \brief Get band statistics.
@@ -208,9 +254,9 @@ class CORE_EXPORT QgsRasterInterface
                                 int theSampleSize = 0 );
 
     /** Write base class members to xml. */
-    virtual void writeXML( QDomDocument& doc, QDomElement& parentElem ) const { Q_UNUSED( doc ); Q_UNUSED( parentElem ); }
+    virtual void writeXml( QDomDocument& doc, QDomElement& parentElem ) const { Q_UNUSED( doc ); Q_UNUSED( parentElem ); }
     /** Sets base class members from xml. Usually called from create() methods of subclasses */
-    virtual void readXML( const QDomElement& filterElem ) { Q_UNUSED( filterElem ); }
+    virtual void readXml( const QDomElement& filterElem ) { Q_UNUSED( filterElem ); }
 
   protected:
     // QgsRasterInterface used as input
@@ -241,6 +287,9 @@ class CORE_EXPORT QgsRasterInterface
                          int theStats = QgsRasterBandStats::All,
                          const QgsRectangle & theExtent = QgsRectangle(),
                          int theBinCount = 0 );
+
+  private:
+    Q_DISABLE_COPY( QgsRasterInterface )   // there is clone() for copying
 };
 
 #endif

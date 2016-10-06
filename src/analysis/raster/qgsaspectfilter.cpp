@@ -17,8 +17,8 @@
 
 #include "qgsaspectfilter.h"
 
-QgsAspectFilter::QgsAspectFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat ) :
-    QgsDerivativeFilter( inputFile, outputFile, outputFormat )
+QgsAspectFilter::QgsAspectFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat )
+    : QgsDerivativeFilter( inputFile, outputFile, outputFormat )
 {
 
 }

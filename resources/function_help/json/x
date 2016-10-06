@@ -1,0 +1,9 @@
+{
+  "name": "x",
+  "type": "function",
+  "description": "Returns the x coordinate of a point geometry, or the x-coordinate of the centroid for a non-point geometry.",
+  "arguments": [ {"arg":"geom","description":"a geometry"}],
+  "examples": [ { "expression":"x( geom_from_wkt( 'POINT(2 5)' ) )", "returns":"2"},
+  { "expression":"x( $geometry )", "returns":"x coordinate of the current feature's centroid"}
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "var",
+  "type": "function",
+  "description": "Returns the value stored within a specified variable.",
+  "arguments": [ {"arg":"name","description":"a variable name"}],
+  "examples": [ { "expression":"var('qgis_version')", "returns":"'2.12'"}
+  ]
+}

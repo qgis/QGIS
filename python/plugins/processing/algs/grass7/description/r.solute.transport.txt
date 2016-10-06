@@ -1,0 +1,31 @@
+r.solute.transport
+Numerical calculation program for transient, confined and unconfined solute transport in two dimensions
+Raster (r.*)
+ParameterRaster|c|The initial concentration in [kg/m^3]|False
+ParameterRaster|phead|The piezometric head in [m]|False
+ParameterRaster|hc_x|The x-part of the hydraulic conductivity tensor in [m/s]|False
+ParameterRaster|hc_y|The y-part of the hydraulic conductivity tensor in [m/s]|False
+ParameterRaster|status|The status for each cell, = 0 - inactive cell, 1 - active cell, 2 - dirichlet- and 3 - transfer boundary condition|False
+ParameterRaster|diff_x|The x-part of the diffusion tensor in [m^2/s]|False
+ParameterRaster|diff_y|The y-part of the diffusion tensor in [m^2/s]|False
+ParameterRaster|q|Groundwater sources and sinks in [m^3/s]|True
+ParameterRaster|cin|Concentration sources and sinks bounded to a water source or sink in [kg/s]|True
+ParameterRaster|cs|Concentration of inner sources and inner sinks in [kg/s] (i.e. a chemical reaction)|False
+ParameterRaster|rd|Retardation factor [-]|False
+ParameterRaster|nf|Effective porosity [-]|False
+ParameterRaster|top|Top surface of the aquifer in [m]|False
+ParameterRaster|bottom|Bottom surface of the aquifer in [m]|False
+ParameterRaster|vx|Calculate and store the groundwater filter velocity vector part in x direction [m/s]|True
+ParameterRaster|vy|Calculate and store the groundwater filter velocity vector part in y direction [m/s]|True
+ParameterNumber|dtime|Calculation time (in seconds)|0.0|None|86400.0|True
+ParameterNumber|maxit|Maximum number of iteration used to solve the linear equation system|1|None|10000|True
+ParameterNumber|error|Error break criteria for iterative solver|0.0|None|0.000001|True
+ParameterSelection|solver|The type of solver which should solve the linear equation system|gauss;lu;jacobi;sor;bicgstab|4
+ParameterNumber|relax|The relaxation parameter used by the jacobi and sor solver for speedup or stabilizing|0.0|None|1.0|True
+ParameterNumber|al|The longditudinal dispersivity length. [m]|0.0|None|0.0|True
+ParameterNumber|at|The transversal dispersivity length. [m]|0.0|None|0.0|True
+ParameterNumber|loops|Use this number of time loops if the CFL flag is off. The timestep will become dt/loops.|0.0|None|1.0|True
+ParameterSelection|stab|Set the flow stabilizing scheme (full or exponential upwinding).|full;exp|0
+*ParameterBoolean|-c|Use the Courant-Friedrichs-Lewy criteria for time step calculation|False
+*ParameterBoolean|-f|Use a full filled quadratic linear equation system, default is a sparse linear equation system.|False
+OutputRaster|output|Solute Transport

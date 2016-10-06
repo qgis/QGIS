@@ -86,10 +86,10 @@ void TestQgsDoubleSpinBox::expression()
   QCOMPARE( spinBox->valueFromText( QString( "5+2" ) ), 7.0 );
   spinBox->setClearValue( 3.0 );
   spinBox->setShowClearButton( true );
-  QCOMPARE( spinBox->valueFromText( QString( "" ) ), 3.0 ); //clearing should set to clearValue
+  QCOMPARE( spinBox->valueFromText( QString() ), 3.0 ); //clearing should set to clearValue
   spinBox->setShowClearButton( false );
   spinBox->setValue( 8.0 );
-  QCOMPARE( spinBox->valueFromText( QString( "" ) ), 8.0 ); //if no clear button, clearing should set to previous value
+  QCOMPARE( spinBox->valueFromText( QString() ), 8.0 ); //if no clear button, clearing should set to previous value
   spinBox->setShowClearButton( true );
   spinBox->setValue( 4.0 );
   QCOMPARE( spinBox->valueFromText( QString( "5/" ) ), 4.0 ); //invalid expression should reset to previous value
@@ -106,7 +106,7 @@ void TestQgsDoubleSpinBox::expression()
   QCOMPARE( spinBox->valueFromText( QString( "5+2mm" ) ), 7.0 );
   spinBox->setClearValue( 3.0 );
   QCOMPARE( spinBox->valueFromText( QString( "mm" ) ), 3.0 ); //clearing should set to clearValue
-  QCOMPARE( spinBox->valueFromText( QString( "" ) ), 3.0 );
+  QCOMPARE( spinBox->valueFromText( QString() ), 3.0 );
   spinBox->setValue( 4.0 );
   QCOMPARE( spinBox->valueFromText( QString( "5/mm" ) ), 4.0 ); //invalid expression should reset to previous value
 
@@ -123,7 +123,7 @@ void TestQgsDoubleSpinBox::expression()
   QCOMPARE( spinBox->valueFromText( QString( "mm5+2" ) ), 7.0 );
   spinBox->setClearValue( 3.0 );
   QCOMPARE( spinBox->valueFromText( QString( "mm" ) ), 3.0 ); //clearing should set to clearValue
-  QCOMPARE( spinBox->valueFromText( QString( "" ) ), 3.0 );
+  QCOMPARE( spinBox->valueFromText( QString() ), 3.0 );
   spinBox->setValue( 4.0 );
   QCOMPARE( spinBox->valueFromText( QString( "mm5/" ) ), 4.0 ); //invalid expression should reset to previous value
 
@@ -137,7 +137,7 @@ void TestQgsDoubleSpinBox::expression()
   QCOMPARE( spinBox->valueFromText( QString( "mm5+2ll" ) ), 7.0 );
   spinBox->setClearValue( 3.0 );
   QCOMPARE( spinBox->valueFromText( QString( "mmll" ) ), 3.0 ); //clearing should set to clearValue
-  QCOMPARE( spinBox->valueFromText( QString( "" ) ), 3.0 );
+  QCOMPARE( spinBox->valueFromText( QString() ), 3.0 );
   spinBox->setValue( 4.0 );
   QCOMPARE( spinBox->valueFromText( QString( "mm5/ll" ) ), 4.0 ); //invalid expression should reset to previous value
 

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'August 2013'
@@ -26,8 +27,16 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import numpy
-from qgis.core import QgsRectangle, QgsGeometry, QgsFeature
+
+try:
+    from scipy.stats.mstats import mode
+    hasSciPy = True
+except:
+    hasSciPy = False
+
 from osgeo import gdal, ogr, osr
+from qgis.core import QgsRectangle, QgsGeometry, QgsFeature
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterRaster
@@ -49,21 +58,21 @@ class ZonalStatistics(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
     def defineCharacteristics(self):
-        self.name = 'Zonal Statistics'
-        self.group = 'Raster tools'
+        self.name, self.i18n_name = self.trAlgorithm('Zonal Statistics')
+        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
 
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
-            self.tr('Raster layer')))
+                                          self.tr('Raster layer')))
         self.addParameter(ParameterNumber(self.RASTER_BAND,
-            self.tr('Raster band'), 1, 999, 1))
+                                          self.tr('Raster band'), 1, 999, 1))
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
-            self.tr('Vector layer containing zones'),
-            [ParameterVector.VECTOR_TYPE_POLYGON]))
+                                          self.tr('Vector layer containing zones'),
+                                          [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterString(self.COLUMN_PREFIX,
-            self.tr('Output column prefix'), '_'))
+                                          self.tr('Output column prefix'), '_'))
         self.addParameter(ParameterBoolean(self.GLOBAL_EXTENT,
-            self.tr('Load whole raster in memory')))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+                                           self.tr('Load whole raster in memory')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Zonal statistics'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, progress):
         """ Based on code by Matthew Perry
@@ -72,7 +81,7 @@ class ZonalStatistics(GeoAlgorithm):
 
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
 
-        rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
+        rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
         bandNumber = self.getParameterValue(self.RASTER_BAND)
         columnPrefix = self.getParameterValue(self.COLUMN_PREFIX)
         useGlobalExtent = self.getParameterValue(self.GLOBAL_EXTENT)
@@ -110,6 +119,7 @@ class ZonalStatistics(GeoAlgorithm):
 
             srcOffset = (startColumn, startRow, width, height)
             srcArray = rasterBand.ReadAsArray(*srcOffset)
+            srcArray = srcArray * rasterBand.GetScale() + rasterBand.GetOffset()
 
             newGeoTransform = (
                 geoTransform[0] + srcOffset[0] * geoTransform[1],
@@ -123,41 +133,42 @@ class ZonalStatistics(GeoAlgorithm):
         memVectorDriver = ogr.GetDriverByName('Memory')
         memRasterDriver = gdal.GetDriverByName('MEM')
 
-        fields = layer.pendingFields()
+        fields = layer.fields()
         (idxMin, fields) = vector.findOrCreateField(layer, fields,
-                columnPrefix + 'min', 21, 6)
+                                                    columnPrefix + 'min', 21, 6)
         (idxMax, fields) = vector.findOrCreateField(layer, fields,
-                columnPrefix + 'max', 21, 6)
+                                                    columnPrefix + 'max', 21, 6)
         (idxSum, fields) = vector.findOrCreateField(layer, fields,
-                columnPrefix + 'sum', 21, 6)
+                                                    columnPrefix + 'sum', 21, 6)
         (idxCount, fields) = vector.findOrCreateField(layer, fields,
-                columnPrefix + 'count', 21, 6)
+                                                      columnPrefix + 'count', 21, 6)
         (idxMean, fields) = vector.findOrCreateField(layer, fields,
-                columnPrefix + 'mean', 21, 6)
+                                                     columnPrefix + 'mean', 21, 6)
         (idxStd, fields) = vector.findOrCreateField(layer, fields,
-                columnPrefix + 'std', 21, 6)
+                                                    columnPrefix + 'std', 21, 6)
         (idxUnique, fields) = vector.findOrCreateField(layer, fields,
-                columnPrefix + 'unique', 21, 6)
+                                                       columnPrefix + 'unique', 21, 6)
         (idxRange, fields) = vector.findOrCreateField(layer, fields,
-                columnPrefix + 'range', 21, 6)
-        (idxVar, fields) = vector.findOrCreateField(layer, fields, columnPrefix
-                + 'var', 21, 6)
-
-        # idxMedian, fields = ftools_utils.findOrCreateField(layer, fields,
-        #        columnPrefix + "median", 21, 6)
+                                                      columnPrefix + 'range', 21, 6)
+        (idxVar, fields) = vector.findOrCreateField(layer, fields,
+                                                    columnPrefix + 'var', 21, 6)
+        (idxMedian, fields) = vector.findOrCreateField(layer, fields,
+                                                       columnPrefix + 'median', 21, 6)
+        if hasSciPy:
+            (idxMode, fields) = vector.findOrCreateField(layer, fields,
+                                                         columnPrefix + 'mode', 21, 6)
 
         writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
-            fields.toList(), layer.dataProvider().geometryType(), layer.crs())
+            fields.toList(), layer.wkbType(), layer.crs())
 
         outFeat = QgsFeature()
 
         outFeat.initAttributes(len(fields))
         outFeat.setFields(fields)
 
-        current = 0
         features = vector.features(layer)
         total = 100.0 / len(features)
-        for f in features:
+        for current, f in enumerate(features):
             geom = f.geometry()
 
             intersectedGeom = rasterGeom.intersection(geom)
@@ -182,6 +193,7 @@ class ZonalStatistics(GeoAlgorithm):
 
                 srcOffset = (startColumn, startRow, width, height)
                 srcArray = rasterBand.ReadAsArray(*srcOffset)
+                srcArray = srcArray * rasterBand.GetScale() + rasterBand.GetOffset()
 
                 newGeoTransform = (
                     geoTransform[0] + srcOffset[0] * geoTransform[1],
@@ -203,29 +215,39 @@ class ZonalStatistics(GeoAlgorithm):
 
             # Rasterize it
             rasterizedDS = memRasterDriver.Create('', srcOffset[2],
-                    srcOffset[3], 1, gdal.GDT_Byte)
+                                                  srcOffset[3], 1, gdal.GDT_Byte)
             rasterizedDS.SetGeoTransform(newGeoTransform)
             gdal.RasterizeLayer(rasterizedDS, [1], memLayer, burn_values=[1])
             rasterizedArray = rasterizedDS.ReadAsArray()
 
             srcArray = numpy.nan_to_num(srcArray)
             masked = numpy.ma.MaskedArray(srcArray,
-                    mask=numpy.logical_or(srcArray == noData,
-                    numpy.logical_not(rasterizedArray)))
+                                          mask=numpy.logical_or(srcArray == noData,
+                                                                numpy.logical_not(rasterizedArray)))
 
             outFeat.setGeometry(geom)
 
             attrs = f.attributes()
-            attrs.insert(idxMin, float(masked.min()))
-            attrs.insert(idxMax, float(masked.max()))
-            attrs.insert(idxSum, float(masked.sum()))
+            v = float(masked.min())
+            attrs.insert(idxMin, None if numpy.isnan(v) else v)
+            v = float(masked.max())
+            attrs.insert(idxMax, None if numpy.isnan(v) else v)
+            v = float(masked.sum())
+            attrs.insert(idxSum, None if numpy.isnan(v) else v)
             attrs.insert(idxCount, int(masked.count()))
-            attrs.insert(idxMean, float(masked.mean()))
-            attrs.insert(idxStd, float(masked.std()))
+            v = float(masked.mean())
+            attrs.insert(idxMean, None if numpy.isnan(v) else v)
+            v = float(masked.std())
+            attrs.insert(idxStd, None if numpy.isnan(v) else v)
             attrs.insert(idxUnique, numpy.unique(masked.compressed()).size)
-            attrs.insert(idxRange, float(masked.max()) - float(masked.min()))
-            attrs.insert(idxVar, float(masked.var()))
-            # attrs.insert(idxMedian, float(masked.median()))
+            v = float(masked.max()) - float(masked.min())
+            attrs.insert(idxRange, None if numpy.isnan(v) else v)
+            v = float(masked.var())
+            attrs.insert(idxVar, None if numpy.isnan(v) else v)
+            v = float(numpy.ma.median(masked))
+            attrs.insert(idxMedian, None if numpy.isnan(v) else v)
+            if hasSciPy:
+                attrs.insert(idxMode, float(mode(masked, axis=None)[0][0]))
 
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
@@ -233,7 +255,6 @@ class ZonalStatistics(GeoAlgorithm):
             memVDS = None
             rasterizedDS = None
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         rasterDS = None

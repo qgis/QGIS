@@ -1,0 +1,7 @@
+r.li.patchnum
+Calculates patch number index on a raster map, using a 4 neighbour algorithm.
+Raster (r.*)
+ParameterRaster|input|Name of input raster map|False
+ParameterString|config_txt|Landscape structure configuration|None|True|True
+ParameterFile|config|Landscape structure configuration file|False|True
+OutputRaster|output|Patch Number

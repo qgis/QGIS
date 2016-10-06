@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Extracts a subset of a space time 3D raster dataset" module="t.rast3d.extract">
+	<option key="input"/>
+	<option key="output"/>
+	<option key="basename"/>
+	<option key="where"/>
+	<option key="expression"/>
+	<option key="nprocs" advanced="yes"/>
+	<flag key="n" hidden="no" advanced="yes"/>
+</qgisgrassmodule>

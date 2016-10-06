@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -26,8 +29,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import json
 
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -42,16 +46,23 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterTableMultipleField
 from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterPoint
 from processing.core.outputs import OutputTable
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputFile
+from processing.tools import dataobjects
 from processing.tools.system import isWindows
 from processing.script.WrongScriptException import WrongScriptException
-from RUtils import RUtils
+from .RUtils import RUtils
+
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
 class RAlgorithm(GeoAlgorithm):
@@ -72,20 +83,23 @@ class RAlgorithm(GeoAlgorithm):
             self.defineCharacteristicsFromScript()
         if descriptionFile is not None:
             self.defineCharacteristicsFromFile()
+        self._icon = None
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/r.png')
+        if self._icon is None:
+            self._icon = QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
+        return self._icon
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
-        self.name = '[Unnamed algorithm]'
-        self.group = 'User R scripts'
+        self.name, self.i18n_name = self.trAlgorithm('[Unnamed algorithm]')
+        self.group, self.i18n_group = self.trAlgorithm('User R scripts')
         self.parseDescription(iter(lines))
 
     def defineCharacteristicsFromFile(self):
         filename = os.path.basename(self.descriptionFile)
         self.name = filename[:filename.rfind('.')].replace('_', ' ')
-        self.group = 'User R scripts'
+        self.group, self.i18n_group = self.trAlgorithm('User R scripts')
         with open(self.descriptionFile, 'r') as f:
             lines = [line.strip() for line in f]
         self.parseDescription(iter(lines))
@@ -149,62 +163,24 @@ class RAlgorithm(GeoAlgorithm):
         tokens = line.split('=')
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == 'group':
-            self.group = tokens[0]
+            self.group = self.i18n_group = tokens[0]
             return
-        if tokens[1].lower().strip().startswith('raster'):
-            param = ParameterRaster(tokens[0], desc, False)
-        elif tokens[1].lower().strip() == 'vector':
-            param = ParameterVector(tokens[0], desc,
-                                    [ParameterVector.VECTOR_TYPE_ANY])
-        elif tokens[1].lower().strip() == 'table':
-            param = ParameterTable(tokens[0], desc, False)
-        elif tokens[1].lower().strip().startswith('multiple raster'):
-            param = ParameterMultipleInput(tokens[0], desc,
-                                           ParameterMultipleInput.TYPE_RASTER)
-            param.optional = False
-        elif tokens[1].lower().strip() == 'multiple vector':
-            param = ParameterMultipleInput(tokens[0], desc,
-                                           ParameterMultipleInput.TYPE_VECTOR_ANY)
-            param.optional = False
-        elif tokens[1].lower().strip().startswith('selection'):
-            options = tokens[1].strip()[len('selection'):].split(';')
-            param = ParameterSelection(tokens[0], desc, options)
-        elif tokens[1].lower().strip().startswith('boolean'):
-            default = tokens[1].strip()[len('boolean') + 1:]
-            param = ParameterBoolean(tokens[0], desc, default)
-        elif tokens[1].lower().strip().startswith('number'):
-            try:
-                default = float(tokens[1].strip()[len('number') + 1:])
-                param = ParameterNumber(tokens[0], desc, default=default)
-            except:
-                raise WrongScriptException(
-                    self.tr('Could not load R script: %s.\n Problem with line %s' % (self.descriptionFile, line)))
-        elif tokens[1].lower().strip().startswith('field'):
-            field = tokens[1].strip()[len('field') + 1:]
-            found = False
-            for p in self.parameters:
-                if p.name == field:
-                    found = True
-                    break
-            if found:
-                param = ParameterTableField(tokens[0], tokens[0], field)
-        elif tokens[1].lower().strip() == 'extent':
-            param = ParameterExtent(tokens[0], desc)
-        elif tokens[1].lower().strip() == 'file':
-            param = ParameterFile(tokens[0], desc, False)
-        elif tokens[1].lower().strip() == 'folder':
-            param = ParameterFile(tokens[0], desc, True)
-        elif tokens[1].lower().strip().startswith('string'):
-            default = tokens[1].strip()[len('string') + 1:]
-            param = ParameterString(tokens[0], desc, default)
-        elif tokens[1].lower().strip().startswith('output raster'):
-            out = OutputRaster()
-        elif tokens[1].lower().strip().startswith('output vector'):
-            out = OutputVector()
-        elif tokens[1].lower().strip().startswith('output table'):
-            out = OutputTable()
-        elif tokens[1].lower().strip().startswith('output file'):
-            out = OutputFile()
+        if tokens[1].lower().strip() == 'name':
+            self.name = self.i18n_name = tokens[0]
+            return
+
+        if tokens[1].lower().strip().startswith('output'):
+            outToken = tokens[1].strip()[len('output') + 1:]
+            out = self.processOutputParameterToken(outToken)
+
+        elif tokens[1].lower().strip().startswith('optional'):
+            optToken = tokens[1].strip()[len('optional') + 1:]
+            param = self.processInputParameterToken(optToken, tokens[0])
+            if param:
+                param.optional = True
+
+        else:
+            param = self.processInputParameterToken(tokens[1], tokens[0])
 
         if param is not None:
             self.addParameter(param)
@@ -215,6 +191,111 @@ class RAlgorithm(GeoAlgorithm):
         else:
             raise WrongScriptException(
                 self.tr('Could not load R script: %s.\n Problem with line %s' % (self.descriptionFile, line)))
+
+    def processInputParameterToken(self, token, name):
+        param = None
+
+        desc = self.createDescriptiveName(name)
+
+        if token.lower().strip().startswith('raster'):
+            param = ParameterRaster(name, desc, False)
+        elif token.lower().strip() == 'vector':
+            param = ParameterVector(name, desc,
+                                    [dataobjects.TYPE_VECTOR_ANY])
+        elif token.lower().strip() == 'vector point':
+            param = ParameterVector(name, desc,
+                                    [dataobjects.TYPE_VECTOR_POINT])
+        elif token.lower().strip() == 'vector line':
+            param = ParameterVector(name, desc,
+                                    [dataobjects.TYPE_VECTOR_LINE])
+        elif token.lower().strip() == 'vector polygon':
+            param = ParameterVector(name, desc,
+                                    [dataobjects.TYPE_VECTOR_POLYGON])
+        elif token.lower().strip() == 'table':
+            param = ParameterTable(name, desc, False)
+        elif token.lower().strip().startswith('multiple raster'):
+            param = ParameterMultipleInput(name, desc,
+                                           dataobjects.TYPE_RASTER)
+            param.optional = False
+        elif token.lower().strip() == 'multiple vector':
+            param = ParameterMultipleInput(name, desc,
+                                           dataobjects.TYPE_VECTOR_ANY)
+            param.optional = False
+        elif token.lower().strip().startswith('selection'):
+            options = token.strip()[len('selection'):].split(';')
+            param = ParameterSelection(name, desc, options)
+        elif token.lower().strip().startswith('boolean'):
+            default = token.strip()[len('boolean') + 1:]
+            if default:
+                param = ParameterBoolean(name, desc, default)
+            else:
+                param = ParameterBoolean(name, desc)
+        elif token.lower().strip().startswith('number'):
+            default = token.strip()[len('number') + 1:]
+            if default:
+                param = ParameterNumber(name, desc, default=default)
+            else:
+                param = ParameterNumber(name, desc)
+        elif token.lower().strip().startswith('field'):
+            field = token.strip()[len('field') + 1:]
+            found = False
+            for p in self.parameters:
+                if p.name == field:
+                    found = True
+                    break
+            if found:
+                param = ParameterTableField(name, desc, field)
+        elif token.lower().strip().startswith('multiple field'):
+            field = token.strip()[len('multiple field') + 1:]
+            found = False
+            for p in self.parameters:
+                if p.name == field:
+                    found = True
+                    break
+            if found:
+                param = ParameterTableMultipleField(token, desc, field)
+        elif token.lower().strip() == 'extent':
+            param = ParameterExtent(name, desc)
+        elif token.lower().strip() == 'point':
+            param = ParameterPoint(name, desc)
+        elif token.lower().strip() == 'file':
+            param = ParameterFile(name, desc, False)
+        elif token.lower().strip() == 'folder':
+            param = ParameterFile(name, desc, True)
+        elif token.lower().strip().startswith('string'):
+            default = token.strip()[len('string') + 1:]
+            if default:
+                param = ParameterString(name, desc, default)
+            else:
+                param = ParameterString(name, desc)
+        elif token.lower().strip().startswith('longstring'):
+            default = token.strip()[len('longstring') + 1:]
+            if default:
+                param = ParameterString(name, desc, default, multiline=True)
+            else:
+                param = ParameterString(name, desc, multiline=True)
+        elif token.lower().strip() == 'crs':
+            default = token.strip()[len('crs') + 1:]
+            if default:
+                param = ParameterCrs(name, desc, default)
+            else:
+                param = ParameterCrs(name, desc)
+
+        return param
+
+    def processOutputParameterToken(self, token):
+        out = None
+
+        if token.lower().strip().startswith('raster'):
+            out = OutputRaster()
+        elif token.lower().strip().startswith('vector'):
+            out = OutputVector()
+        elif token.lower().strip().startswith('table'):
+            out = OutputTable()
+        elif token.lower().strip().startswith('file'):
+            out = OutputFile()
+
+        return out
 
     def processAlgorithm(self, progress):
         if isWindows():
@@ -263,7 +344,7 @@ class RAlgorithm(GeoAlgorithm):
                         value = value + '.tif'
                     commands.append('writeGDAL(' + out.name + ',"' + value
                                     + '")')
-            if isinstance(out, OutputVector):
+            elif isinstance(out, OutputVector):
                 value = out.value
                 if not value.endswith('shp'):
                     value = value + '.shp'
@@ -272,6 +353,10 @@ class RAlgorithm(GeoAlgorithm):
                 filename = filename[:-4]
                 commands.append('writeOGR(' + out.name + ',"' + value + '","'
                                 + filename + '", driver="ESRI Shapefile")')
+            elif isinstance(out, OutputTable):
+                value = out.value
+                value = value.replace('\\', '/')
+                commands.append('write.csv(' + out.name + ',"' + value + '")')
 
         if self.showPlots:
             commands.append('dev.off()')
@@ -285,6 +370,8 @@ class RAlgorithm(GeoAlgorithm):
         commands.append('options("repos"="http://cran.at.r-project.org/")')
 
         # Try to install packages if needed
+        if isWindows():
+            commands.append('.libPaths(\"' + str(RUtils.RLibs()).replace('\\', '/') + '\")')
         packages = RUtils.getRequiredPackages(self.script)
         packages.extend(['rgdal', 'raster'])
         for p in packages:
@@ -296,42 +383,70 @@ class RAlgorithm(GeoAlgorithm):
 
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
-                value = param.value
-                value = value.replace('\\', '/')
-                if self.passFileNames:
-                    commands.append(param.name + ' = "' + value + '"')
-                elif self.useRasterPackage:
-                    commands.append(param.name + ' = ' + 'brick("' + value
-                                    + '")')
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
                 else:
-                    commands.append(param.name + ' = ' + 'readGDAL("' + value
-                                    + '")')
-            if isinstance(param, ParameterVector):
-                value = param.getSafeExportedLayer()
-                value = value.replace('\\', '/')
-                filename = os.path.basename(value)
-                filename = filename[:-4]
-                folder = os.path.dirname(value)
-                if self.passFileNames:
-                    commands.append(param.name + ' = "' + value + '"')
+                    value = param.value
+                    value = value.replace('\\', '/')
+                    if self.passFileNames:
+                        commands.append(param.name + ' = "' + value + '"')
+                    elif self.useRasterPackage:
+                        commands.append(param.name + ' = ' + 'brick("' + value
+                                        + '")')
+                    else:
+                        commands.append(param.name + ' = ' + 'readGDAL("' + value
+                                        + '")')
+            elif isinstance(param, ParameterVector):
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
                 else:
-                    commands.append(param.name + ' = readOGR("' + folder
-                                    + '",layer="' + filename + '")')
-            if isinstance(param, ParameterTable):
-                value = param.value
-                if not value.lower().endswith('csv'):
-                    raise GeoAlgorithmExecutionException(
-                        'Unsupported input file format.\n' + value)
-                if self.passFileNames:
-                    commands.append(param.name + ' = "' + value + '"')
+                    value = param.getSafeExportedLayer()
+                    value = value.replace('\\', '/')
+                    filename = os.path.basename(value)
+                    filename = filename[:-4]
+                    folder = os.path.dirname(value)
+                    if self.passFileNames:
+                        commands.append(param.name + ' = "' + value + '"')
+                    else:
+                        commands.append(param.name + ' = readOGR("' + folder
+                                        + '",layer="' + filename + '")')
+            elif isinstance(param, ParameterTable):
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
                 else:
-                    commands.append(param.name + ' <- read.csv("' + value
-                                    + '", head=TRUE, sep=",")')
-            elif isinstance(param, (ParameterTableField, ParameterString,
-                            ParameterFile)):
-                commands.append(param.name + '="' + param.value + '"')
+                    value = param.value
+                    if not value.lower().endswith('csv'):
+                        raise GeoAlgorithmExecutionException(
+                            'Unsupported input file format.\n' + value)
+                    if self.passFileNames:
+                        commands.append(param.name + ' = "' + value + '"')
+                    else:
+                        commands.append(param.name + ' <- read.csv("' + value
+                                        + '", head=TRUE, sep=",")')
+            elif isinstance(param, ParameterExtent):
+                if param.value:
+                    tokens = str(param.value).split(',')
+                    # Extent from raster package is "xmin, xmax, ymin, ymax" like in Processing
+                    # http://www.inside-r.org/packages/cran/raster/docs/Extent
+                    commands.append(param.name + ' = extent(' + tokens[0] + ',' + tokens[1] + ',' + tokens[2] + ',' + tokens[3] + ')')
+                else:
+                    commands.append(param.name + ' = NULL')
+            elif isinstance(param, ParameterCrs):
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
+                else:
+                    commands.append(param.name + ' = "' + param.value + '"')
+            elif isinstance(param, (ParameterTableField, ParameterTableMultipleField, ParameterString,
+                                    ParameterFile)):
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
+                else:
+                    commands.append(param.name + '="' + param.value + '"')
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
-                commands.append(param.name + '=' + str(param.value))
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
+                else:
+                    commands.append(param.name + '=' + str(param.value))
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     commands.append(param.name + '=TRUE')
@@ -339,7 +454,7 @@ class RAlgorithm(GeoAlgorithm):
                     commands.append(param.name + '=FALSE')
             elif isinstance(param, ParameterMultipleInput):
                 iLayer = 0
-                if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                if param.datatype == dataobjects.TYPE_RASTER:
                     layers = param.value.split(';')
                     for layer in layers:
                         layer = layer.replace('\\', '/')
@@ -396,11 +511,41 @@ class RAlgorithm(GeoAlgorithm):
         return self.commands
 
     def help(self):
-        helpfile = unicode(self.descriptionFile) + '.help'
+        helpfile = str(self.descriptionFile) + '.help'
         if os.path.exists(helpfile):
             return True, getHtmlFromHelpFile(self, helpfile)
         else:
             return False, None
+
+    def shortHelp(self):
+        if self.descriptionFile is None:
+            return None
+        helpFile = str(self.descriptionFile) + '.help'
+        if os.path.exists(helpFile):
+            with open(helpFile) as f:
+                try:
+                    descriptions = json.load(f)
+                    if 'ALG_DESC' in descriptions:
+                        return self._formatHelp(str(descriptions['ALG_DESC']))
+                except:
+                    return None
+        return None
+
+    def getParameterDescriptions(self):
+        descs = {}
+        if self.descriptionFile is None:
+            return descs
+        helpFile = str(self.descriptionFile) + '.help'
+        if os.path.exists(helpFile):
+            with open(helpFile) as f:
+                try:
+                    descriptions = json.load(f)
+                    for param in self.parameters:
+                        if param.name in descriptions:
+                            descs[param.name] = str(descriptions[param.name])
+                except:
+                    return descs
+        return descs
 
     def checkBeforeOpeningParametersDialog(self):
         msg = RUtils.checkRIsInstalled()
@@ -412,28 +557,3 @@ class RAlgorithm(GeoAlgorithm):
                 '<p><a href="http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html">Click here</a> '
                 'to know more about how to install and configure R to be used with QGIS</p>')
             return html
-
-    def getPostProcessingErrorMessage(self, wrongLayers):
-        html = GeoAlgorithm.getPostProcessingErrorMessage(self, wrongLayers)
-        msg = RUtils.checkRIsInstalled(True)
-        html += self.tr(
-            '<p>This algorithm requires R to be run. A test to check if '
-            'R is correctly installed and configured in your system has '
-            'been performed, with the following result:</p><ul><i>')
-        if msg is None:
-            html += self.tr(
-                'R seems to be correctly installed and configured</i></li></ul>'
-                '<p>The script you have executed needs the following packages:</p><ul>')
-            packages = RUtils.getRequiredPackages(self.script)
-            for p in packages:
-                html += '<li>' + p + '</li>'
-            html += self.tr(
-                '</ul><p>Make sure they are installed in your R '
-                'environment before trying to execute this script.</p>')
-        else:
-            html += msg + '</i></li></ul>'
-            html += self.tr(
-                '<p><a href= "http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html">Click here</a> '
-                'to know more about how to install and configure R to be used with QGIS</p>')
-
-        return html

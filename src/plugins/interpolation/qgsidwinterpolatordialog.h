@@ -21,7 +21,7 @@
 #include "ui_qgsidwinterpolatordialogbase.h"
 #include "qgsinterpolatordialog.h"
 
-/**A class that takes the input parameter for inverse distance weighting*/
+/** A class that takes the input parameter for inverse distance weighting*/
 class QgsIDWInterpolatorDialog: public QgsInterpolatorDialog, private Ui::QgsIDWInterpolatorDialogBase
 {
     Q_OBJECT
@@ -30,7 +30,7 @@ class QgsIDWInterpolatorDialog: public QgsInterpolatorDialog, private Ui::QgsIDW
 
     ~QgsIDWInterpolatorDialog();
 
-    /**Creates an IDW interpolator with the specified distance coefficient
+    /** Creates an IDW interpolator with the specified distance coefficient
      @return 0 in case of error*/
     QgsInterpolator* createInterpolator() const override;
 };

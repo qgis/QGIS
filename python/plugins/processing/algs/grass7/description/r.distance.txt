@@ -1,0 +1,10 @@
+r.distance
+Locates the closest points between objects in two raster maps.
+Raster (r.*)
+ParameterMultipleInput|map|Name of two input raster for computing inter-class distances|3|False
+ParameterString|separator|Field separator (Special characters: pipe, comma, space, tab, newline)|:|False|True
+ParameterSelection|sort|Sort output by distance|asc;desc
+*ParameterBoolean|-l|Include category labels in the output|False|True
+*ParameterBoolean|-o|Report zero distance if rasters are overlapping|False|True
+*ParameterBoolean|-n|Report null objects as *|False|True
+OutputFile|output|Distance

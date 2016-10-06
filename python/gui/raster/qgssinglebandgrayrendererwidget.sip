@@ -10,13 +10,14 @@ class QgsSingleBandGrayRendererWidget: QgsRasterRendererWidget
     static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) /Factory/;
 
     QgsRasterRenderer* renderer();
+    void setMapCanvas( QgsMapCanvas* canvas );
 
     void setFromRenderer( const QgsRasterRenderer* r );
 
     QString min( int index = 0 );
     QString max( int index = 0 );
-    void setMin( QString value, int index = 0 );
-    void setMax( QString value, int index = 0 );
+    void setMin( const QString& value, int index = 0 );
+    void setMax( const QString& value, int index = 0 );
     int selectedBand( int index = 0 );
 
   public slots:

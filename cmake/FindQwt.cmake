@@ -4,28 +4,32 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 #
-# Once run this will define: 
-# 
+# Once run this will define:
+#
 # QWT_FOUND       = system has QWT lib
 # QWT_LIBRARY     = full path to the QWT library
-# QWT_INCLUDE_DIR = where to find headers 
+# QWT_INCLUDE_DIR = where to find headers
 #
 
 
 FIND_PATH(QWT_INCLUDE_DIR NAMES qwt.h PATHS
   /usr/include
   /usr/local/include
-  "$ENV{LIB_DIR}/include" 
-  "$ENV{INCLUDE}" 
+  "$ENV{LIB_DIR}/include"
+  "$ENV{INCLUDE}"
   PATH_SUFFIXES qwt-qt4 qwt qwt5 qwt6
   )
 
-FIND_LIBRARY(QWT_LIBRARY NAMES qwt qwt5 qwt6 qwt-qt4 qwt5-qt4 PATHS
-  /usr/lib
-  /usr/local/lib
-  "$ENV{LIB_DIR}/lib" 
-  "$ENV{LIB}" 
-  )
+set(QWT_LIBRARY_NAMES qwt-qt5 qwt6-qt5)
+
+find_library(QWT_LIBRARY
+  NAMES ${QWT_LIBRARY_NAMES}
+  PATHS
+    /usr/lib
+    /usr/local/lib
+    "$ENV{LIB_DIR}/lib"
+    "$ENV{LIB}"
+)
 
 IF (QWT_INCLUDE_DIR AND QWT_LIBRARY)
   SET(QWT_FOUND TRUE)

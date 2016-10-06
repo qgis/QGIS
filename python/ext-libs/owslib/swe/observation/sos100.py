@@ -1,7 +1,12 @@
+from __future__ import (absolute_import, division, print_function)
+
 import cgi
 from owslib.etree import etree
 from datetime import datetime
-from urllib import urlencode
+try:                    # Python 3
+    from urllib.parse import urlencode
+except ImportError:     # Python 2
+    from urllib import urlencode
 from owslib import ows
 from owslib.crs import Crs
 from owslib.fes import FilterCapabilities
@@ -10,7 +15,7 @@ from owslib.namespaces import Namespaces
 
 def get_namespaces():
     n = Namespaces()
-    ns = n.get_namespaces(["ogc","sml","gml","sos","swe","xlink"])
+    ns = n.get_namespaces(["ogc","sa","sml","gml","sos","swe","xlink"])
     ns["ows"] = n.get_namespace("ows110")
     return ns
 namespaces = get_namespaces()
@@ -30,10 +35,10 @@ class SensorObservationService_1_0_0(object):
 
     def __getitem__(self,id):
         ''' check contents dictionary to allow dict like access to service observational offerings'''
-        if name in self.__getattribute__('contents').keys():
+        if id in self.__getattribute__('contents').keys():
             return self.__getattribute__('contents')[id]
         else:
-            raise KeyError, "No Observational Offering with id: %s" % id
+            raise KeyError("No Observational Offering with id: %s" % id)
 
     def __init__(self, url, version='1.0.0', xml=None, username=None, password=None):
         """Initialize."""
@@ -67,17 +72,17 @@ class SensorObservationService_1_0_0(object):
         raise KeyError("No operation named %s" % name)
 
     def _build_metadata(self):
-        """ 
+        """
             Set up capabilities metadata objects
         """
         # ows:ServiceIdentification metadata
         service_id_element = self._capabilities.find(nspath_eval('ows:ServiceIdentification', namespaces))
         self.identification = ows.ServiceIdentification(service_id_element)
-        
+
         # ows:ServiceProvider metadata
         service_provider_element = self._capabilities.find(nspath_eval('ows:ServiceProvider', namespaces))
         self.provider = ows.ServiceProvider(service_provider_element)
-            
+
         # ows:OperationsMetadata metadata
         self.operations=[]
         for elem in self._capabilities.findall(nspath_eval('ows:OperationsMetadata/ows:Operation', namespaces)):
@@ -116,14 +121,22 @@ class SensorObservationService_1_0_0(object):
         assert isinstance(procedure, str)
         request['procedure'] = procedure
 
+        url_kwargs = {}
+        if 'timeout' in kwargs:
+            url_kwargs['timeout'] = kwargs.pop('timeout') # Client specified timeout value
+
         # Optional Fields
         if kwargs:
             for kw in kwargs:
                 request[kw]=kwargs[kw]
-       
-        data = urlencode(request)        
 
-        response = openURL(base_url, data, method, username=self.username, password=self.password).read()
+        data = urlencode(request)
+
+
+        response = openURL(base_url, data, method, username=self.username, password=self.password, **url_kwargs).read()
+
+
+
         tr = etree.fromstring(response)
 
         if tr.tag == nspath_eval("ows:ExceptionReport", namespaces):
@@ -135,6 +148,7 @@ class SensorObservationService_1_0_0(object):
                                 offerings=None,
                                 observedProperties=None,
                                 eventTime=None,
+                                procedure=None,
                                 method='Get',
                                 **kwargs):
         """
@@ -169,32 +183,40 @@ class SensorObservationService_1_0_0(object):
         if eventTime is not None:
             request['eventTime'] = eventTime
 
+        url_kwargs = {}
+        if 'timeout' in kwargs:
+            url_kwargs['timeout'] = kwargs.pop('timeout') # Client specified timeout value
+
+        if procedure is not None:
+            request['procedure'] = procedure
+
         if kwargs:
             for kw in kwargs:
                 request[kw]=kwargs[kw]
 
-        data = urlencode(request)        
+        data = urlencode(request)
 
-        response = openURL(base_url, data, method, username=self.username, password=self.password).read()
+        response = openURL(base_url, data, method, username=self.username,
+                           password=self.password, **url_kwargs).read()
         try:
             tr = etree.fromstring(response)
             if tr.tag == nspath_eval("ows:ExceptionReport", namespaces):
                 raise ows.ExceptionReport(tr)
             else:
-                return response                
+                return response
         except ows.ExceptionReport:
             raise
         except BaseException:
             return response
 
-    def get_operation_by_name(self, name): 
+    def get_operation_by_name(self, name):
         """
             Return a Operation item by name, case insensitive
         """
         for item in self.operations:
             if item.name.lower() == name.lower():
                 return item
-        raise KeyError, "No Operation named %s" % name
+        raise KeyError("No Operation named %s" % name)
 
 class SosObservationOffering(object):
     def __init__(self, element):
@@ -216,7 +238,7 @@ class SosObservationOffering(object):
             # (left, bottom, right, top) in self.bbox_srs units
             self.bbox = (float(lower_left_corner[1]), float(lower_left_corner[0]), float(upper_right_corner[1]), float(upper_right_corner[0]))
             self.bbox_srs = Crs(testXMLValue(envelope.attrib.get('srsName'), True))
-        except Exception, err:
+        except Exception:
             self.bbox = None
             self.bbox_srs = None
 
@@ -254,7 +276,10 @@ class SosObservationOffering(object):
 
     def __str__(self):
         return 'Offering id: %s, name: %s' % (self.id, self.name)
-        
+
+    def __repr__(self):
+        return "<SosObservationOffering '%s'>" % self.name
+
 class SosCapabilitiesReader(object):
     def __init__(self, version="1.0.0", url=None, username=None, password=None):
         self.version = version
@@ -301,7 +326,6 @@ class SosCapabilitiesReader(object):
 
             st should be an XML capabilities document
         """
-        if not isinstance(st, str):
-            raise ValueError("String must be of type string, not %s" % type(st))
+        if not isinstance(st, bytes):
+            raise ValueError("String must be of type bytes, not %s" % type(st))
         return etree.fromstring(st)
-

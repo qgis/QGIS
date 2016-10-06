@@ -17,13 +17,16 @@
 #ifndef QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H
 #define QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H
 
-#include "qgsgeometry.h"
-#include "qgscoordinatetransform.h"
-#include "qgsmaptopixel.h"
-
+#include "qgis.h"
 #include "qgsgeometrysimplifier.h"
+#include <QPolygonF>
 
-/**
+class QgsAbstractGeometry;
+class QgsWkbPtr;
+class QgsConstWkbPtr;
+
+
+/** \ingroup core
  * Implementation of GeometrySimplifier using the "MapToPixel" algorithm
  *
  * Simplifies a geometry removing points within of the maximum distance difference that defines the MapToPixel info of a RenderContext request.
@@ -32,7 +35,16 @@
 class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 {
   public:
-    QgsMapToPixelSimplifier( int simplifyFlags, double tolerance );
+    //! Types of simplification algorithms that can be used
+    enum SimplifyAlgorithm
+    {
+      Distance    = 0, //!< The simplification uses the distance between points to remove duplicate points
+      SnapToGrid  = 1, //!< The simplification uses a grid (similar to ST_SnapToGrid) to remove duplicate points
+      Visvalingam = 2, //!< The simplification gives each point in a line an importance weighting, so that least important points are removed first
+    };
+
+    //! Constructor
+    QgsMapToPixelSimplifier( int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm = Distance );
     virtual ~QgsMapToPixelSimplifier();
 
     //! Applicable simplification flags
@@ -44,12 +56,15 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     };
 
   private:
-    //! Simplify the WKB-geometry using the specified tolerance
-    static bool simplifyWkbGeometry( int simplifyFlags, QGis::WkbType wkbType, unsigned char* sourceWkb, size_t sourceWkbSize, unsigned char* targetWkb, size_t& targetWkbSize, const QgsRectangle& envelope, double map2pixelTol, bool writeHeader = true, bool isaLinearRing = false );
+    //! Simplify the geometry using the specified tolerance
+    static QgsGeometry simplifyGeometry( int simplifyFlags, SimplifyAlgorithm simplifyAlgorithm, QgsWkbTypes::Type wkbType, const QgsAbstractGeometry& geometry, const QgsRectangle &envelope, double map2pixelTol, bool isaLinearRing );
 
   protected:
     //! Current simplification flags
     int mSimplifyFlags;
+
+    //! Current algorithm
+    SimplifyAlgorithm mSimplifyAlgorithm;
 
     //! Distance tolerance for the simplification
     double mTolerance;
@@ -57,14 +72,25 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     //! Returns the squared 2D-distance of the vector defined by the two points specified
     static float calculateLengthSquared2D( double x1, double y1, double x2, double y2 );
 
+    //! Returns whether the points belong to the same grid
+    static bool equalSnapToGrid( double x1, double y1, double x2, double y2, double gridOriginX, double gridOriginY, float gridInverseSizeXY );
+
   public:
+    //! Gets the simplification hints of the vector layer managed
     int simplifyFlags() const { return mSimplifyFlags; }
+    //! Sets the simplification hints of the vector layer managed
     void setSimplifyFlags( int simplifyFlags ) { mSimplifyFlags = simplifyFlags; }
 
+    //! Gets the local simplification algorithm of the vector layer managed
+    SimplifyAlgorithm simplifyAlgorithm() const { return mSimplifyAlgorithm; }
+    //! Sets the local simplification algorithm of the vector layer managed
+    void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm ) { mSimplifyAlgorithm = simplifyAlgorithm; }
+
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry* simplify( QgsGeometry* geometry ) const override;
-    //! Simplifies the specified geometry
-    virtual bool simplifyGeometry( QgsGeometry* geometry ) const override;
+    virtual QgsGeometry simplify( const QgsGeometry& geometry ) const override;
+
+    //! Sets the tolerance of the vector layer managed
+    void setTolerance( double value ) { mTolerance = value; }
 
     // MapToPixel simplification helper methods
   public:
@@ -77,10 +103,6 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     {
       return isGeneralizableByMapBoundingBox( envelope, mTolerance );
     }
-
-    //! Simplifies the geometry when is applied the specified map2pixel context
-    static bool simplifyGeometry( QgsGeometry* geometry, int simplifyFlags, double tolerance );
-
 };
 
 #endif // QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H

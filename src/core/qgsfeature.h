@@ -20,293 +20,321 @@ email                : sherman at mrcc.com
 #include <QString>
 #include <QVariant>
 #include <QList>
-#include <QHash>
 #include <QVector>
 #include <QSet>
+#include <QExplicitlySharedDataPointer>
+
+#include "qgsfields.h"
 
 class QgsGeometry;
 class QgsRectangle;
 class QgsFeature;
-class QgsFields;
+class QgsFeaturePrivate;
 
 // feature id class (currently 64 bit)
-#if 0
-#include <limits>
-
-class QgsFeatureId
-{
-  public:
-    QgsFeatureId( qint64 id = 0 ) : mId( id ) {}
-    QgsFeatureId( QString str ) : mId( str.toLongLong() ) {}
-    QgsFeatureId &operator=( const QgsFeatureId &other ) { mId = other.mId; return *this; }
-    QgsFeatureId &operator++() { mId++; return *this; }
-    QgsFeatureId operator++( int ) { QgsFeatureId pId = mId; ++( *this ); return pId; }
-
-    bool operator==( const QgsFeatureId &id ) const { return mId == id.mId; }
-    bool operator!=( const QgsFeatureId &id ) const { return mId != id.mId; }
-    bool operator<( const QgsFeatureId &id ) const { return mId < id.mId; }
-    bool operator>( const QgsFeatureId &id ) const { return mId > id.mId; }
-    operator QString() const { return QString::number( mId ); }
-
-    bool isNew() const
-    {
-      return mId < 0;
-    }
-
-    qint64 toLongLong() const
-    {
-      return mId;
-    }
-
-  private:
-    qint64 mId;
-
-    friend uint qHash( const QgsFeatureId &id );
-};
-
-inline uint qHash( const QgsFeatureId &id )
-{
-  return qHash( id.mId );
-}
-
-#define FID_IS_NEW(fid)     (fid).isNew()
-#define FID_TO_NUMBER(fid)  (fid).toLongLong()
-#define FID_TO_STRING(fid)  static_cast<QString>(fid)
-#define STRING_TO_FID(str)  QgsFeatureId(str)
-#endif
 
 // 64 bit feature ids
-#if 1
 typedef qint64 QgsFeatureId;
 #define FID_IS_NEW(fid)     (fid<0)
 #define FID_TO_NUMBER(fid)  static_cast<qint64>(fid)
 #define FID_TO_STRING(fid)  QString::number( fid )
 #define STRING_TO_FID(str)  (str).toLongLong()
-#endif
-
-// 32 bit feature ids
-#if 0
-typedef int QgsFeatureId;
-#define FID_IS_NEW(fid)     (fid<0)
-#define FID_TO_NUMBER(fid)  static_cast<int>(fid)
-#define FID_TO_STRING(fid)  QString::number( fid )
-#define STRING_TO_FID(str)  (str).toLong()
-#endif
-
 
 // key = field index, value = field value
 typedef QMap<int, QVariant> QgsAttributeMap;
 
-typedef QVector<QVariant> QgsAttributes;
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
+/** \ingroup core
+ * A vector of attributes. Mostly equal to QVector<QVariant>.
+ */
+class CORE_EXPORT QgsAttributes : public QVector<QVariant>
+{
+  public:
+    QgsAttributes()
+        : QVector<QVariant>()
+    {}
+    /**
+     * Create a new vector of attributes with the given size
+     *
+     * @param size Number of attributes
+     */
+    QgsAttributes( int size )
+        : QVector<QVariant>( size )
+    {}
+    /**
+     * Constructs a vector with an initial size of size elements. Each element is initialized with value.
+     * @param size Number of elements
+     * @param v    Initial value
+     */
+    QgsAttributes( int size, const QVariant& v )
+        : QVector<QVariant>( size, v )
+    {}
+
+    /**
+     * Copies another vector of attributes
+     * @param v Attributes to copy
+     */
+    QgsAttributes( const QVector<QVariant>& v )
+        : QVector<QVariant>( v )
+    {}
+
+    /**
+     * @brief Compares two vectors of attributes.
+     * They are considered equal if all their members contain the same value and NULL flag.
+     * This was introduced because the default Qt implementation of QVariant comparison does not
+     * handle NULL values for certain types (like int).
+     *
+     * @param v The attributes to compare
+     * @return True if v is equal
+     */
+    bool operator==( const QgsAttributes &v ) const
+    {
+      if ( size() != v.size() )
+        return false;
+      const QVariant* b = constData();
+      const QVariant* i = b + size();
+      const QVariant* j = v.constData() + size();
+      while ( i != b )
+        if ( !( *--i == *--j && i->isNull() == j->isNull() ) )
+          return false;
+      return true;
+    }
+
+    inline bool operator!=( const QgsAttributes &v ) const { return !( *this == v ); }
+};
 
 class QgsField;
 
-#include "qgsfield.h"
-
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 /** \ingroup core
  * The feature class encapsulates a single feature including its id,
  * geometry and a list of field/values attributes.
- *
+ * \note QgsFeature objects are implicitly shared.
  * @author Gary E.Sherman
  */
 class CORE_EXPORT QgsFeature
 {
+    Q_GADGET
+
+    Q_PROPERTY( QgsFeatureId id READ id WRITE setId )
+    Q_PROPERTY( QgsAttributes attributes READ attributes WRITE setAttributes )
+    Q_PROPERTY( QgsFields fields READ fields WRITE setFields )
+
   public:
-    //! Constructor
+
+    /** Constructor for QgsFeature
+     * @param id feature id
+     */
     QgsFeature( QgsFeatureId id = QgsFeatureId() );
 
+    /** Constructor for QgsFeature
+     * @param fields feature's fields
+     * @param id feature id
+     */
     QgsFeature( const QgsFields& fields, QgsFeatureId id = QgsFeatureId() );
 
-    /** copy ctor needed due to internal pointer */
-    QgsFeature( const QgsFeature & rhs );
+    /** Copy constructor
+     */
+    QgsFeature( const QgsFeature& rhs );
 
-    /** assignment operator needed due to internal pointer */
-    QgsFeature & operator=( QgsFeature const & rhs );
-
-    //! Destructor
-    ~QgsFeature();
+    /** Assignment operator
+     */
+    QgsFeature& operator=( const QgsFeature& rhs );
 
     /**
-     * Get the feature id for this feature
-     * @return Feature id
+     * Compares two features
+     */
+    bool operator==( const QgsFeature& other ) const;
+
+    /**
+     * Compares two features
+     */
+    bool operator!=( const QgsFeature& other ) const;
+
+
+    //! Destructor
+    virtual ~QgsFeature();
+
+    /** Get the feature ID for this feature.
+     * @returns feature ID
+     * @see setFeatureId
      */
     QgsFeatureId id() const;
 
-    /**
-     * Set the feature id for this feature
-     * @param id Feature id
+    /** Sets the feature ID for this feature.
+     * @param id feature id
+     * @see id
      */
     void setFeatureId( QgsFeatureId id );
 
-    const QgsAttributes& attributes() const { return mAttributes; }
-    QgsAttributes& attributes() { return mAttributes; }
-    void setAttributes( const QgsAttributes& attrs ) { mAttributes = attrs; }
+    /** Sets the feature ID for this feature.
+     * @param id feature id
+     * @see id
+     */
+    void setId( QgsFeatureId id );
 
-    /**
-     * Set an attribute by id
-     *
-     * @param field  The index of the field to set
-     * @param attr   The value of the attribute
-     *
-     * @return false, if the field id does not exist
-     *
+    /** Returns the feature's attributes.
+     * @link attributes @endlink method.
+     * @returns list of feature's attributes
+     * @see setAttributes
+     * @note added in QGIS 2.9
+     */
+    QgsAttributes attributes() const;
+
+    /** Sets the feature's attributes.
+     * @param attrs attribute list
+     * @see setAttribute
+     * @see attributes
+     */
+    void setAttributes( const QgsAttributes& attrs );
+
+    /** Set an attribute's value by field index.
+     * @param field the index of the field to set
+     * @param attr the value of the attribute
+     * @return false, if the field index does not exist
      * @note For Python: raises a KeyError exception instead of returning false
+     * @see setAttributes
      */
     bool setAttribute( int field, const QVariant& attr );
 
-    /**
-     * Initialize this feature with the given number of fields. Discard any previously set attribute data.
+    /** Initialize this feature with the given number of fields. Discard any previously set attribute data.
      * @param fieldCount Number of fields to initialize
      */
     void initAttributes( int fieldCount );
 
-    /**
-     * Deletes an attribute and its value
-     *
-     * @param field The index of the field
-     *
+    /** Deletes an attribute and its value.
+     * @param field the index of the field
+     * @see setAttribute
      * @note For Python: raises a KeyError exception if the field is not found
      */
     void deleteAttribute( int field );
 
-    /**
-     * Return the validity of this feature. This is normally set by
+    /** Returns the validity of this feature. This is normally set by
      * the provider to indicate some problem that makes the feature
      * invalid or to indicate a null feature.
+     * @see setValid
      */
     bool isValid() const;
 
-    /**
-     * Set the validity of the feature.
+    /** Sets the validity of the feature.
+     * @param validity set to true if feature is valid
+     * @see isValid
      */
     void setValid( bool validity );
 
-    /**
-     * Get the geometry object associated with this feature
+    /** Returns true if the feature has an associated geometry.
+     * @see geometry()
+     * @note added in QGIS 3.0.
      */
-    QgsGeometry *geometry() const;
+    bool hasGeometry() const;
 
-    /**
-     * Get the geometry object associated with this feature
-     * The caller assumes responsibility for the QgsGeometry*'s destruction.
+    /** Returns the geometry associated with this feature. If the feature has no geometry,
+     * an empty QgsGeometry object will be returned.
+     * @see hasGeometry()
+     * @see setGeometry()
      */
-    QgsGeometry *geometryAndOwnership();
+    QgsGeometry geometry() const;
 
-    /** Set this feature's geometry from another QgsGeometry object (deep copy)
+    /** Set the feature's geometry.
+     * @param geometry new feature geometry
+     * @see geometry()
+     * @see clearGeometry()
      */
-    void setGeometry( const QgsGeometry& geom );
+    void setGeometry( const QgsGeometry& geometry );
 
-    /** Set this feature's geometry (takes geometry ownership)
-     * @note not available in python bindings
+    /** Removes any geometry associated with the feature.
+     * @see setGeometry()
+     * @see hasGeometry()
+     * @note added in QGIS 3.0
      */
-    void setGeometry( QgsGeometry* geom );
+    void clearGeometry();
 
-    /**
-     * Set this feature's geometry from WKB
-     *
-     * This feature assumes responsibility for destroying geom.
-     */
-    void setGeometryAndOwnership( unsigned char * geom, size_t length );
-
-    /** Assign a field map with the feature to allow attribute access by attribute name
-     *
-     *  @param fields         The attribute fields which this feature holds. When used from python, make sure
-     *                        a copy of the fields is held by python, as ownership stays there.
-     *                        I.e. Do not call feature.setFields( myDataProvider.fields() ) but instead call
-     *                        myFields = myDataProvider.fields()
-     *                        feature.setFields( myFields )
+    /** Assign a field map with the feature to allow attribute access by attribute name.
+     *  @param fields The attribute fields which this feature holds
      *  @param initAttributes If true, attributes are initialized. Clears any data previously assigned.
      *                        C++: Defaults to false
      *                        Python: Defaults to true
-     *
-     * TODO: QGIS3 - take reference, not pointer
+     * @note added in QGIS 2.9
+     * @see fields
      */
-    void setFields( const QgsFields* fields, bool initAttributes = false );
+    void setFields( const QgsFields& fields, bool initAttributes = false );
 
-    /** Get associated field map.
-     *
-     * TODO: QGIS 3 - return reference or value, not pointer
+    /** Returns the field map associated with the feature.
+     * @see setFields
      */
-    const QgsFields* fields() const { return &mFields; }
+    QgsFields fields() const;
 
     /** Insert a value into attribute. Returns false if attribute name could not be converted to index.
-     *  Field map must be associated to make this work.
-     *
+     *  Field map must be associated using @link setFields @endlink before this method can be used.
      *  @param name The name of the field to set
      *  @param value The value to set
-     *
      *  @return false if attribute name could not be converted to index (C++ only)
-     *
      *  @note For Python: raises a KeyError exception instead of returning false
+     *  @see setFields
      */
-    bool setAttribute( const QString& name, QVariant value );
+    bool setAttribute( const QString& name, const QVariant& value );
 
-    /** Remove an attribute value.
-     *  Returns false if attribute name could not be converted to index.
-     *  Field map must be associated to make this work.
-     *
+    /** Removes an attribute value by field name. Field map must be associated using @link setFields @endlink
+     *  before this method can be used.
      *  @param name The name of the field to delete
-     *
      *  @return false if attribute name could not be converted to index (C++ only)
-     *
      *  @note For Python: raises a KeyError exception instead of returning false
+     *  @see setFields
      */
     bool deleteAttribute( const QString& name );
 
-    /** Lookup attribute value from attribute name.
-     *  Returns invalid variant if attribute name could not be converted to index (C++ only)
-     *  Field map must be associated to make this work.
-     *
+    /** Lookup attribute value from attribute name. Field map must be associated using @link setFields @endlink
+     *  before this method can be used.
      *  @param name The name of the attribute to get
-     *
      *  @return The value of the attribute (C++: Invalid variant if no such name exists )
-     *
      *  @note For Python: raises a KeyError exception if field is not found
+     *  @see setFields
      */
     QVariant attribute( const QString& name ) const;
 
-    /** Lookup attribute value from its index. Returns invalid variant if the index does not exist.
-     *
+    /** Lookup attribute value from its index. Field map must be associated using @link setFields @endlink
+     *  before this method can be used.
      *  @param fieldIdx The index of the attribute to get
-     *
      *  @return The value of the attribute (C++: Invalid variant if no such index exists )
-     *
      *  @note For Python: raises a KeyError exception if field is not found
+     *  @see setFields
      */
     QVariant attribute( int fieldIdx ) const;
 
-    /** Utility method to get attribute index from name. Returns -1 if field does not exist or field map is not associated.
-     *  Field map must be associated to make this work.
+    /** Utility method to get attribute index from name. Field map must be associated using @link setFields @endlink
+     *  before this method can be used.
+     *  @param fieldName name of field to get attribute index of
+     *  @returns -1 if field does not exist or field map is not associated.
+     *  @see setFields
      */
     int fieldNameIndex( const QString& fieldName ) const;
 
+    //! Allows direct construction of QVariants from features.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
   private:
 
-    //! feature id
-    QgsFeatureId mFid;
-
-    /** attributes accessed by field index */
-    QgsAttributes mAttributes;
-
-    /** pointer to geometry in binary WKB format
-
-       This is usually set by a call to OGRGeometry::exportToWkb()
-     */
-    QgsGeometry *mGeometry;
-
-    /** Indicator if the mGeometry is owned by this QgsFeature.
-        If so, this QgsFeature takes responsibility for the mGeometry's destruction.
-     */
-    bool mOwnsGeometry;
-
-    //! Flag to indicate if this feature is valid
-    bool mValid;
-
-    //! Optional field map for name-based attribute lookups
-    QgsFields mFields;
+    QExplicitlySharedDataPointer<QgsFeaturePrivate> d;
 
 }; // class QgsFeature
+
+/** Writes the feature to stream out. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsFeature& feature );
+/** Reads a feature from stream in into feature. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsFeature& feature );
 
 // key = feature id, value = changed attributes
 typedef QMap<QgsFeatureId, QgsAttributeMap> QgsChangedAttributesMap;

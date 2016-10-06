@@ -23,7 +23,7 @@
 
 QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer* layer )
     : mLayer( layer )
-    , mOverriddenOriginalStyle( 0 )
+    , mOverriddenOriginalStyle( nullptr )
 {
   reset();
 }
@@ -56,7 +56,7 @@ void QgsMapLayerStyleManager::writeXml( QDomElement& mgrElement ) const
   QDomDocument doc = mgrElement.ownerDocument();
   mgrElement.setAttribute( "current", mCurrentStyle );
 
-  foreach ( const QString& name, styles() )
+  Q_FOREACH ( const QString& name, styles() )
   {
     QDomElement ch = doc.createElement( "map-layer-style" );
     ch.setAttribute( "name", name );
@@ -166,6 +166,7 @@ bool QgsMapLayerStyleManager::setOverrideStyle( const QString& styleDef )
   if ( mOverriddenOriginalStyle )
     return false; // cannot override the style more than once!
 
+  mLayer->blockSignals( true );
   if ( mStyles.contains( styleDef ) )
   {
     mOverriddenOriginalStyle = new QgsMapLayerStyle;
@@ -183,8 +184,9 @@ bool QgsMapLayerStyleManager::setOverrideStyle( const QString& styleDef )
     QgsMapLayerStyle overrideStyle( styleDef );
     overrideStyle.writeToLayer( mLayer );
   }
+  mLayer->blockSignals( false );
 
-  return false;
+  return true;
 }
 
 bool QgsMapLayerStyleManager::restoreOverrideStyle()
@@ -192,9 +194,12 @@ bool QgsMapLayerStyleManager::restoreOverrideStyle()
   if ( !mOverriddenOriginalStyle )
     return false;
 
+  mLayer->blockSignals( true );
   mOverriddenOriginalStyle->writeToLayer( mLayer );
+  mLayer->blockSignals( false );
+
   delete mOverriddenOriginalStyle;
-  mOverriddenOriginalStyle = 0;
+  mOverriddenOriginalStyle = nullptr;
   return true;
 }
 

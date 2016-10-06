@@ -4,7 +4,7 @@
 ***************************************************************************
     txt2las.py
     ---------------------
-    Date                 : September 2013
+    Date                 : September 2013 and May 2016
     Copyright            : (C) 2013 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
@@ -24,13 +27,14 @@ __copyright__ = '(C) 2013, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterSelection
+
 
 class txt2las(LAStoolsAlgorithm):
 
@@ -51,30 +55,33 @@ class txt2las(LAStoolsAlgorithm):
     SP = "SP"
 
     def defineCharacteristics(self):
-        self.name = "txt2las"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('txt2las')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParameter(ParameterFile(txt2las.INPUT,
-            self.tr("Input ASCII file")))
+                                        self.tr("Input ASCII file")))
         self.addParameter(ParameterString(txt2las.PARSE,
-            self.tr("parse lines as", "xyz")))
+                                          self.tr("parse lines as", "xyz")))
         self.addParameter(ParameterNumber(txt2las.SKIP,
-            self.tr("skip the first n lines"), 0, None, 0))
+                                          self.tr("skip the first n lines"), 0, None, 0))
         self.addParameter(ParameterNumber(txt2las.SCALE_FACTOR_XY,
-            self.tr("resolution of x and y coordinate"), 0, None, 0.01))
+                                          self.tr("resolution of x and y coordinate"), 0, None, 0.01))
         self.addParameter(ParameterNumber(txt2las.SCALE_FACTOR_Z,
-            self.tr("resolution of z coordinate"), 0, None, 0.01))
+                                          self.tr("resolution of z coordinate"), 0, None, 0.01))
         self.addParameter(ParameterSelection(txt2las.PROJECTION,
-            self.tr("projection"), txt2las.PROJECTIONS, 0))
+                                             self.tr("projection"), txt2las.PROJECTIONS, 0))
         self.addParameter(ParameterSelection(txt2las.UTM,
-            self.tr("utm zone"), txt2las.UTM_ZONES, 0))
+                                             self.tr("utm zone"), txt2las.UTM_ZONES, 0))
         self.addParameter(ParameterSelection(txt2las.SP,
-            self.tr("state plane code"), txt2las.STATE_PLANES, 0))
+                                             self.tr("state plane code"), txt2las.STATE_PLANES, 0))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "txt2las")]
+        if (LAStoolsUtils.hasWine()):
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "txt2las.exe")]
+        else:
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "txt2las")]
         self.addParametersVerboseCommands(commands)
         commands.append("-i")
         commands.append(self.getParameterValue(txt2las.INPUT))

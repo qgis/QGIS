@@ -23,10 +23,12 @@
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
 #include <QProcess>
+#include <QTextCodec>
 #include <QMessageBox>
 
 QgsRunProcess::QgsRunProcess( const QString& action, bool capture )
-    : mProcess( NULL ), mOutput( NULL )
+    : mProcess( nullptr )
+    , mOutput( nullptr )
 {
   // Make up a string from the command and arguments that we'll use
   // for display purposes
@@ -67,7 +69,7 @@ QgsRunProcess::QgsRunProcess( const QString& action, bool capture )
   {
     if ( ! mProcess->startDetached( action ) ) // let the program run by itself
     {
-      QMessageBox::critical( 0, tr( "Action" ),
+      QMessageBox::critical( nullptr, tr( "Action" ),
                              tr( "Unable to run command\n%1" ).arg( action ),
                              QMessageBox::Ok, Qt::NoButton );
     }
@@ -90,7 +92,9 @@ void QgsRunProcess::die()
 
 void QgsRunProcess::stdoutAvailable()
 {
-  QString line( mProcess->readAllStandardOutput() );
+  QByteArray bytes( mProcess->readAllStandardOutput() );
+  QTextCodec *codec = QTextCodec::codecForLocale();
+  QString line( codec->toUnicode( bytes ) );
 
   // Add the new output to the dialog box
   mOutput->appendMessage( line );
@@ -98,7 +102,9 @@ void QgsRunProcess::stdoutAvailable()
 
 void QgsRunProcess::stderrAvailable()
 {
-  QString line( mProcess->readAllStandardError() );
+  QByteArray bytes( mProcess->readAllStandardOutput() );
+  QTextCodec *codec = QTextCodec::codecForLocale();
+  QString line( codec->toUnicode( bytes ) );
 
   // Add the new output to the dialog box, but color it red
   mOutput->appendMessage( "<font color=red>" + line + "</font>" );
@@ -113,7 +119,7 @@ void QgsRunProcess::processExit( int, QProcess::ExitStatus )
   // (unless it was never created in the first case, which is what the
   // test against 0 is for).
 
-  if ( mOutput != 0 )
+  if ( mOutput )
   {
     mOutput->appendMessage( "<b>" + tr( "Done" ) + "</b>" );
   }
@@ -133,7 +139,7 @@ void QgsRunProcess::dialogGone()
   // class being called after it has been deleted (Qt seems not to be
   // disconnecting them itself)
 
-  mOutput = 0;
+  mOutput = nullptr;
 
   disconnect( mProcess, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( processError( QProcess::ProcessError ) ) );
   disconnect( mProcess, SIGNAL( readyReadStandardOutput() ), this, SLOT( stdoutAvailable() ) );

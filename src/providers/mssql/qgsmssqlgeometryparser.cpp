@@ -117,8 +117,8 @@ ShapeType (1 byte)
 /************************************************************************/
 
 QgsMssqlGeometryParser::QgsMssqlGeometryParser()
-    : pszData( NULL )
-    , pszWkb( NULL )
+    : pszData( nullptr )
+    , pszWkb( nullptr )
     , nWkbLen( 0 )
     , nWkbMaxLen( 100 )
     , chByteOrder( QgsApplication::endian() )
@@ -217,9 +217,9 @@ void QgsMssqlGeometryParser::CopyPoint( int iPoint )
   // copy type
   int wkbType;
   if ( chProps & SP_HASZVALUES )
-    wkbType = QGis::WKBPoint25D;
+    wkbType = QgsWkbTypes::Point25D;
   else
-    wkbType = QGis::WKBPoint;
+    wkbType = QgsWkbTypes::Point;
   CopyBytes( &wkbType, 4 );
   // copy coordinates
   CopyCoordinates( iPoint );
@@ -257,9 +257,9 @@ void QgsMssqlGeometryParser::ReadMultiPoint( int iShape )
   // copy type
   int wkbType;
   if ( chProps & SP_HASZVALUES )
-    wkbType = QGis::WKBMultiPoint25D;
+    wkbType = QgsWkbTypes::MultiPoint25D;
   else
-    wkbType = QGis::WKBMultiPoint;
+    wkbType = QgsWkbTypes::MultiPoint;
   CopyBytes( &wkbType, 4 );
   // copy point count
   CopyBytes( &iCount, 4 );
@@ -293,9 +293,9 @@ void QgsMssqlGeometryParser::ReadLineString( int iShape )
   // copy type
   int wkbType;
   if ( chProps & SP_HASZVALUES )
-    wkbType = QGis::WKBLineString25D;
+    wkbType = QgsWkbTypes::LineString25D;
   else
-    wkbType = QGis::WKBLineString;
+    wkbType = QgsWkbTypes::LineString;
   CopyBytes( &wkbType, 4 );
   // copy length
   CopyBytes( &iCount, 4 );
@@ -324,9 +324,9 @@ void QgsMssqlGeometryParser::ReadMultiLineString( int iShape )
   // copy type
   int wkbType;
   if ( chProps & SP_HASZVALUES )
-    wkbType = QGis::WKBMultiLineString25D;
+    wkbType = QgsWkbTypes::MultiLineString25D;
   else
-    wkbType = QGis::WKBMultiLineString;
+    wkbType = QgsWkbTypes::MultiLineString;
   CopyBytes( &wkbType, 4 );
   // copy length
   CopyBytes( &iCount, 4 );
@@ -357,9 +357,9 @@ void QgsMssqlGeometryParser::ReadPolygon( int iShape )
   // copy type
   int wkbType;
   if ( chProps & SP_HASZVALUES )
-    wkbType = QGis::WKBPolygon25D;
+    wkbType = QgsWkbTypes::Polygon25D;
   else
-    wkbType = QGis::WKBPolygon;
+    wkbType = QgsWkbTypes::Polygon;
   CopyBytes( &wkbType, 4 );
   // copy ring count
   CopyBytes( &iCount, 4 );
@@ -391,7 +391,7 @@ void QgsMssqlGeometryParser::ReadPolygon( int iShape )
 void QgsMssqlGeometryParser::ReadMultiPolygon( int iShape )
 {
   int i;
-  int iCount = nNumShapes - iShape - 1;;
+  int iCount = nNumShapes - iShape - 1;
   if ( iCount <= 0 )
     return;
   // copy byte order
@@ -399,9 +399,9 @@ void QgsMssqlGeometryParser::ReadMultiPolygon( int iShape )
   // copy type
   int wkbType;
   if ( chProps & SP_HASZVALUES )
-    wkbType = QGis::WKBMultiPolygon25D;
+    wkbType = QgsWkbTypes::MultiPolygon25D;
   else
-    wkbType = QGis::WKBMultiPolygon;
+    wkbType = QgsWkbTypes::MultiPolygon;
   CopyBytes( &wkbType, 4 );
   // copy poly count
   CopyBytes( &iCount, 4 );
@@ -423,13 +423,13 @@ void QgsMssqlGeometryParser::ReadMultiPolygon( int iShape )
 void QgsMssqlGeometryParser::ReadGeometryCollection( int iShape )
 {
   int i;
-  int iCount = nNumShapes - iShape - 1;;
+  int iCount = nNumShapes - iShape - 1;
   if ( iCount <= 0 )
     return;
   // copy byte order
   CopyBytes( &chByteOrder, 1 );
   // copy type
-  int wkbType = QGis::WKBUnknown;;
+  int wkbType = QgsWkbTypes::Unknown;
   CopyBytes( &wkbType, 4 );
   // copy geom count
   CopyBytes( &iCount, 4 );
@@ -475,7 +475,7 @@ unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput
   {
     QgsDebugMsg( "ParseSqlGeometry not enough data" );
     DumpMemoryToLog( "Not enough data", pszInput, nLen );
-    return NULL;
+    return nullptr;
   }
 
   pszData = pszInput;
@@ -488,14 +488,14 @@ unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput
   {
     QgsDebugMsg( "ParseSqlGeometry corrupt data" );
     DumpMemoryToLog( "Corrupt data", pszInput, nLen );
-    return NULL;
+    return nullptr;
   }
 
   chProps = ReadByte( 5 );
 
-  if ( chProps & SP_HASMVALUES )
+  if ( chProps & SP_HASZVALUES && chProps & SP_HASMVALUES )
     nPointSize = 32;
-  else if ( chProps & SP_HASZVALUES )
+  else if ( chProps & SP_HASZVALUES || chProps & SP_HASMVALUES )
     nPointSize = 24;
   else
     nPointSize = 16;
@@ -517,7 +517,7 @@ unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput
       delete [] pszWkb;
       QgsDebugMsg( "ParseSqlGeometry not enough data" );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
-      return NULL;
+      return nullptr;
     }
 
     CopyPoint( 0 );
@@ -533,7 +533,7 @@ unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput
       delete [] pszWkb;
       QgsDebugMsg( "ParseSqlGeometry not enough data" );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
-      return NULL;
+      return nullptr;
     }
 
     // copy byte order
@@ -541,9 +541,9 @@ unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput
     // copy type
     int wkbType;
     if ( chProps & SP_HASZVALUES )
-      wkbType = QGis::WKBLineString25D;
+      wkbType = QgsWkbTypes::LineString25D;
     else
-      wkbType = QGis::WKBLineString;
+      wkbType = QgsWkbTypes::LineString;
     CopyBytes( &wkbType, 4 );
     // copy point count
     int iCount = 2;
@@ -560,7 +560,7 @@ unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput
     if ( nNumPoints <= 0 )
     {
       delete [] pszWkb;
-      return NULL;
+      return nullptr;
     }
 
     // position of the point array
@@ -574,7 +574,7 @@ unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput
       delete [] pszWkb;
       QgsDebugMsg( "ParseSqlGeometry not enough data" );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
-      return NULL;
+      return nullptr;
     }
 
     nNumFigures = ReadInt32( nFigurePos - 4 );
@@ -582,7 +582,7 @@ unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput
     if ( nNumFigures <= 0 )
     {
       delete [] pszWkb;
-      return NULL;
+      return nullptr;
     }
 
     // position of the shapes
@@ -593,7 +593,7 @@ unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput
       delete [] pszWkb;
       QgsDebugMsg( "ParseSqlGeometry not enough data" );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
-      return NULL;
+      return nullptr;
     }
 
     nNumShapes = ReadInt32( nShapePos - 4 );
@@ -603,13 +603,13 @@ unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput
       delete [] pszWkb;
       QgsDebugMsg( "ParseSqlGeometry not enough data" );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
-      return NULL;
+      return nullptr;
     }
 
     if ( nNumShapes <= 0 )
     {
       delete [] pszWkb;
-      return NULL;
+      return nullptr;
     }
 
     // pick up the root shape
@@ -618,7 +618,7 @@ unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput
       delete [] pszWkb;
       QgsDebugMsg( "ParseSqlGeometry corrupt data" );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
-      return NULL;
+      return nullptr;
     }
 
     // determine the shape type
@@ -649,7 +649,7 @@ unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput
         delete [] pszWkb;
         QgsDebugMsg( "ParseSqlGeometry unsupported geometry type" );
         DumpMemoryToLog( "Unsupported geometry type", pszInput, nLen );
-        return NULL;
+        return nullptr;
     }
   }
 

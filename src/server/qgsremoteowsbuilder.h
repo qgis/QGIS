@@ -24,22 +24,22 @@
 class QgsRasterLayer;
 class QgsVectorLayer;
 
-/**Creates QGIS maplayers from <RemoteOWS> sld tags*/
+/** Creates QGIS maplayers from <RemoteOWS> sld tags*/
 class QgsRemoteOWSBuilder: public QgsMSLayerBuilder
 {
   public:
-    QgsRemoteOWSBuilder( const QMap<QString, QString>& parameterMap );
+    explicit QgsRemoteOWSBuilder( const QMap<QString, QString>& parameterMap );
     ~QgsRemoteOWSBuilder();
 
     QgsMapLayer* createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const override;
 
   private:
     QgsRemoteOWSBuilder(); //forbidden
-    /**Creates a wms layer from a complete wms url (using http get). Returns 0 in case of error*/
+    /** Creates a wms layer from a complete wms url (using http get). Returns 0 in case of error*/
     QgsRasterLayer* wmsLayerFromUrl( const QString& url, const QString& layerName, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const;
-    /**Creates a temporary file such that the gdal library can read from wcs*/
+    /** Creates a temporary file such that the gdal library can read from wcs*/
     QgsRasterLayer* wcsLayerFromUrl( const QString& url, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const;
-    /**Creates sos layer by analizing server url and LayerSensorObservationConstraints*/
+    /** Creates sos layer by analizing server url and LayerSensorObservationConstraints*/
     QgsVectorLayer* sosLayer( const QDomElement& remoteOWSElem, const QString& url, const QString& layerName, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const;
 
     QMap<QString, QString> mParameterMap;

@@ -21,12 +21,13 @@
 
 #include <QNetworkReply>
 
-/**
+/** \ingroup core
   \brief Multipart QNetworkReply parser.
 
   It seams that Qt does not have currently support for multipart reply
   and it is not even possible to create QNetworkReply from raw data
   so we need a class for multipart QNetworkReply parsing.
+  \note not available in Python bindings
 
 */
 

@@ -27,7 +27,7 @@
 #
 ###############################################################################
 
-from PyQt4.QtGui import QDialog
+from qgis.PyQt.QtWidgets import QDialog
 
 from MetaSearch.util import get_ui_class
 
@@ -35,7 +35,9 @@ BASE_CLASS = get_ui_class('recorddialog.ui')
 
 
 class RecordDialog(QDialog, BASE_CLASS):
+
     """Record Metadata Dialogue"""
+
     def __init__(self):
         """init"""
 

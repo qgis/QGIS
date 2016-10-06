@@ -1,0 +1,13 @@
+{
+  "name": "+",
+  "type": "operator",
+  "description": "Addition of two values. If one of the values is NULL the result will be NULL.",
+  "arguments": [
+        { "arg": "a", "description": "value" },
+        { "arg": "b", "description": "value" }
+  ],
+  "examples": [
+	{ "expression":"5 + 4", "returns":"9"},
+	{ "expression":"5 + NULL", "returns":"NULL"}
+  ]
+}

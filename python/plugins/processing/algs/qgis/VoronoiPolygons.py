@@ -25,17 +25,22 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from sets import Set
+import os
 
-from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint
+from qgis.PyQt.QtGui import QIcon
+
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
-import voronoi
 from processing.tools import dataobjects, vector
+
+from . import voronoi
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class VoronoiPolygons(GeoAlgorithm):
@@ -44,16 +49,19 @@ class VoronoiPolygons(GeoAlgorithm):
     BUFFER = 'BUFFER'
     OUTPUT = 'OUTPUT'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'voronoi.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Voronoi polygons'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Voronoi polygons')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterNumber(self.BUFFER,
-            self.tr('Buffer region'), 0.0, 100.0, 0.0))
+                                          self.tr('Buffer region'), 0.0, 100.0, 0.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Voronoi polygons')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Voronoi polygons'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
@@ -61,9 +69,8 @@ class VoronoiPolygons(GeoAlgorithm):
         buf = self.getParameterValue(self.BUFFER)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), QGis.WKBPolygon, layer.crs())
+            layer.fields().toList(), QgsWkbTypes.Polygon, layer.crs())
 
-        inFeat = QgsFeature()
         outFeat = QgsFeature()
         extent = layer.extent()
         extraX = extent.height() * (buf / 100.0)
@@ -76,33 +83,35 @@ class VoronoiPolygons(GeoAlgorithm):
         ptNdx = -1
 
         features = vector.features(layer)
-        for inFeat in features:
-            geom = QgsGeometry(inFeat.geometry())
+        total = 100.0 / len(features)
+        for current, inFeat in enumerate(features):
+            geom = inFeat.geometry()
             point = geom.asPoint()
             x = point.x() - extent.xMinimum()
             y = point.y() - extent.yMinimum()
             pts.append((x, y))
             ptNdx += 1
             ptDict[ptNdx] = inFeat.id()
+            progress.setPercentage(int(current * total))
 
         if len(pts) < 3:
             raise GeoAlgorithmExecutionException(
                 self.tr('Input file should contain at least 3 points. Choose '
                         'another file and try again.'))
 
-        uniqueSet = Set(item for item in pts)
+        uniqueSet = set(item for item in pts)
         ids = [pts.index(item) for item in uniqueSet]
         sl = voronoi.SiteList([voronoi.Site(i[0], i[1], sitenum=j) for (j,
-                              i) in enumerate(uniqueSet)])
+                                                                        i) in enumerate(uniqueSet)])
         voronoi.voronoi(sl, c)
         inFeat = QgsFeature()
 
         current = 0
-        total = 100.0 / float(len(c.polygons))
+        total = 100.0 / len(c.polygons)
 
-        for (site, edges) in c.polygons.iteritems():
+        for (site, edges) in c.polygons.items():
             request = QgsFeatureRequest().setFilterFid(ptDict[ids[site]])
-            inFeat = layer.getFeatures(request).next()
+            inFeat = next(layer.getFeatures(request))
             lines = self.clip_voronoi(edges, c, width, height, extent, extraX, extraY)
 
             geom = QgsGeometry.fromMultiPoint(lines)
@@ -223,9 +232,9 @@ class VoronoiPolygons(GeoAlgorithm):
                 )
             if x1 or x2 or y1 or y2:
                 lines.append(QgsPoint(x1 + extent.xMinimum(), y1
-                             + extent.yMinimum()))
+                                      + extent.yMinimum()))
                 lines.append(QgsPoint(x2 + extent.xMinimum(), y2
-                             + extent.yMinimum()))
+                                      + extent.yMinimum()))
                 if 0 - exX in (x1, x2):
                     hasXMin = True
                 if 0 - exY in (y1, y2):
@@ -237,15 +246,15 @@ class VoronoiPolygons(GeoAlgorithm):
         if hasXMin:
             if hasYMax:
                 lines.append(QgsPoint(extent.xMinimum() - exX, height
-                             + extent.yMinimum() + exY))
+                                      + extent.yMinimum() + exY))
             if hasYMin:
                 lines.append(QgsPoint(extent.xMinimum() - exX,
-                             extent.yMinimum() - exY))
+                                      extent.yMinimum() - exY))
         if hasXMax:
             if hasYMax:
                 lines.append(QgsPoint(width + extent.xMinimum() + exX, height
-                             + extent.yMinimum() + exY))
+                                      + extent.yMinimum() + exY))
             if hasYMin:
                 lines.append(QgsPoint(width + extent.xMinimum() + exX,
-                             extent.yMinimum() - exY))
+                                      extent.yMinimum() - exY))
         return lines

@@ -2,17 +2,20 @@
 ##input=vector
 ##class_field=field input
 ##value_field=field input
-##output=output vector
+##N_unique_values=output vector
+
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import QgsFeature, QgsField
+from processing.tools.vector import VectorWriter
 
 layer = processing.getObject(input)
-provider = layer.dataProvider()
-fields = provider.fields()
+fields = layer.fields()
 fields.append(QgsField('UNIQ_COUNT', QVariant.Int))
-writer = processing.VectorWriter(output, None, fields, provider.geometryType(),
+writer = VectorWriter(N_unique_values, None, fields, layer.wkbType(),
                       layer.crs())
 
-class_field_index = layer.fieldNameIndex(class_field)
-value_field_index = layer.fieldNameIndex(value_field)
+class_field_index = layer.fields().lookupField(class_field)
+value_field_index = layer.fields().lookupField(value_field)
 
 outFeat = QgsFeature()
 classes = {}

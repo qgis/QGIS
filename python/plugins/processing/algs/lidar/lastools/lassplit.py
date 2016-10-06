@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'March 2014'
@@ -24,11 +27,12 @@ __copyright__ = '(C) 2014, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
+
 
 class lassplit(LAStoolsAlgorithm):
 
@@ -38,16 +42,16 @@ class lassplit(LAStoolsAlgorithm):
     INTERVAL = "INTERVAL"
 
     def defineCharacteristics(self):
-        self.name = "lassplit"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lassplit')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(lassplit.DIGITS,
-            self.tr("number of digits for file names"), 0, None, 5))
+                                          self.tr("number of digits for file names"), 0, None, 5))
         self.addParameter(ParameterSelection(lassplit.OPERATION,
-            self.tr("how to split"), lassplit.OPERATIONS, 0))
+                                             self.tr("how to split"), lassplit.OPERATIONS, 0))
         self.addParameter(ParameterNumber(lassplit.INTERVAL,
-            self.tr("interval or number"), 0, None, 5))
+                                          self.tr("interval or number"), 0, None, 5))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

@@ -54,6 +54,11 @@ class QgsLayerTreeView : QTreeView
     //! Get current group node. If a layer is current node, the function will return parent group. May be null.
     QgsLayerTreeGroup* currentGroupNode() const;
 
+    /** Get current legend node. May be null if current node is not a legend node.
+     * @note added in QGIS 2.14
+     */
+    QgsLayerTreeModelLegendNode* currentLegendNode() const;
+
     //! Return list of selected nodes
     //! @arg skipInternal If true, will ignore nodes which have an ancestor in the selection
     QList<QgsLayerTreeNode*> selectedNodes( bool skipInternal = false ) const;
@@ -77,6 +82,17 @@ class QgsLayerTreeView : QTreeView
     void updateExpandedStateFromNode( QgsLayerTreeNode* node );
 
     QgsMapLayer* layerForIndex( const QModelIndex& index ) const;
+
+  protected slots:
+
+    void modelRowsInserted( const QModelIndex& index, int start, int end );
+    void modelRowsRemoved();
+
+    void updateExpandedStateToNode( const QModelIndex& index );
+
+    void onCurrentChanged();
+    void onExpandedChanged( QgsLayerTreeNode* node, bool expanded );
+    void onModelReset();
 };
 
 

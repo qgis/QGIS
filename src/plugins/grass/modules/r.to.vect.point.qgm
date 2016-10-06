@@ -4,6 +4,7 @@
 <qgisgrassmodule label="Convert raster to vector points" module="r.to.vect">
 	<option key="input" />
 	<option key="output" />
-	<option key="feature" answer="point" hidden="yes" />
+	<option key="feature" answer="point" hidden="yes" version_max="6.4"/>
+	<option key="type" answer="point" hidden="yes" version_min="7.0"/>
 	<flag key="s" answer="on" hidden="yes" />
 </qgisgrassmodule>

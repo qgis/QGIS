@@ -33,7 +33,6 @@
 #include <qgisinterface.h>
 #include <qgsrubberband.h>
 #include <qgsmaptopixel.h>
-#include <qgsmaprenderer.h>
 #include <qgsfeature.h>
 #include <qgsapplication.h>
 #include <qgsvectorlayer.h>
@@ -54,7 +53,9 @@
 
 //standard includes
 
-RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin *thePlugin )   : QDockWidget( theParent ), mPlugin( thePlugin )
+RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin *thePlugin )
+    : QgsDockWidget( theParent )
+    , mPlugin( thePlugin )
 {
   setWindowTitle( tr( "Shortest path" ) );
   setObjectName( "ShortestPathDock" );
@@ -64,8 +65,10 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   setWidget( myWidget );
 
   QVBoxLayout *v = new QVBoxLayout( myWidget );
-  QHBoxLayout *h = NULL;
-  QLabel *l = NULL;
+  v->setMargin( 0 );
+  v->setContentsMargins( 0, 0, 0, 0 );
+  QHBoxLayout *h = nullptr;
+  QLabel *l = nullptr;
 
   l = new QLabel( tr( "Start" ), myWidget );
   v->addWidget( l );
@@ -154,15 +157,15 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   connect( mCalculate, SIGNAL( clicked( bool ) ), this, SLOT( findingPath() ) );
   connect( mClear, SIGNAL( clicked( bool ) ), this, SLOT( clear() ) );
 
-  mrbFrontPoint = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QGis::Polygon );
+  mrbFrontPoint = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QgsWkbTypes::PolygonGeometry );
   mrbFrontPoint->setColor( QColor( 0, 255, 0, 65 ) );
   mrbFrontPoint->setWidth( 2 );
 
-  mrbBackPoint = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QGis::Polygon );
+  mrbBackPoint = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QgsWkbTypes::PolygonGeometry );
   mrbBackPoint->setColor( QColor( 255, 0, 0, 65 ) );
   mrbBackPoint->setWidth( 2 );
 
-  mrbPath = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QGis::Line );
+  mrbPath = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QgsWkbTypes::LineGeometry );
   mrbPath->setWidth( 2 );
 
   connect( mPlugin->iface()->mapCanvas(), SIGNAL( extentsChanged() ), this, SLOT( mapCanvasExtentsChanged() ) );
@@ -170,12 +173,6 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
 } //RgShortestPathWidget::RgShortestPathWidget()
 RgShortestPathWidget::~RgShortestPathWidget()
 {
-  delete mFrontPointMapTool;
-  delete mBackPointMapTool;
-
-  delete mrbFrontPoint;
-  delete mrbBackPoint;
-  delete mrbPath;
 } //RgShortestPathWidget::~RgShortestPathWidget()
 
 void RgShortestPathWidget::mapCanvasExtentsChanged()
@@ -195,13 +192,13 @@ void RgShortestPathWidget::onSelectFrontPoint()
 void RgShortestPathWidget::setFrontPoint( const QgsPoint& pt )
 {
   mPlugin->iface()->mapCanvas()->unsetMapTool( mFrontPointMapTool );
-  mFrontPointLineEdit->setText( QString( "(" ) + QString().setNum( pt.x() ) + QString( "," ) +
-                                QString().setNum( pt.y() ) + QString( ")" ) );
+  mFrontPointLineEdit->setText( QString( "(%1, %2)" ).arg( QString::number( pt.x(), 'f' ),
+                                QString::number( pt.y(), 'f' ) ) );
   mFrontPoint = pt;
 
   double mupp = mPlugin->iface()->mapCanvas()->getCoordinateTransform()->mapUnitsPerPixel() * 2;
 
-  mrbFrontPoint->reset( QGis::Polygon );
+  mrbFrontPoint->reset( QgsWkbTypes::PolygonGeometry );
   mrbFrontPoint->addPoint( QgsPoint( pt.x() - mupp, pt.y() - mupp ), false );
   mrbFrontPoint->addPoint( QgsPoint( pt.x() + mupp, pt.y() - mupp ), false );
   mrbFrontPoint->addPoint( QgsPoint( pt.x() + mupp, pt.y() + mupp ), false );
@@ -219,12 +216,12 @@ void RgShortestPathWidget::setBackPoint( const QgsPoint& pt )
   mPlugin->iface()->mapCanvas()->unsetMapTool( mBackPointMapTool );
 
   mBackPoint = pt;
-  mBackPointLineEdit->setText( QString( "(" ) + QString().setNum( pt.x() ) + QString( "," ) +
-                               QString().setNum( pt.y() ) + QString( ")" ) );
+  mBackPointLineEdit->setText( QString( "(%1, %2)" ).arg( QString::number( pt.x(), 'f' ),
+                               QString::number( pt.y(), 'f' ) ) );
 
   double mupp = mPlugin->iface()->mapCanvas()->getCoordinateTransform()->mapUnitsPerPixel() * 2;
 
-  mrbBackPoint->reset( QGis::Polygon );
+  mrbBackPoint->reset( QgsWkbTypes::PolygonGeometry );
   mrbBackPoint->addPoint( QgsPoint( pt.x() - mupp, pt.y() - mupp ), false );
   mrbBackPoint->addPoint( QgsPoint( pt.x() + mupp, pt.y() - mupp ), false );
   mrbBackPoint->addPoint( QgsPoint( pt.x() + mupp, pt.y() + mupp ), false );
@@ -237,7 +234,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
   if ( mFrontPointLineEdit->text().isNull() || mBackPointLineEdit->text().isNull() )
   {
     QMessageBox::critical( this, tr( "Point not selected" ), tr( "First, select start and stop points." ) );
-    return NULL;
+    return nullptr;
   }
 
   QgsGraphBuilder builder(
@@ -246,10 +243,10 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
     mPlugin->topologyToleranceFactor() );
   {
     const QgsGraphDirector *director = mPlugin->director();
-    if ( director == NULL )
+    if ( !director )
     {
-      QMessageBox::critical( this, tr( "Plugin isn't configured" ), tr( "Plugin isn't configured!" ) );
-      return NULL;
+      QMessageBox::critical( this, tr( "Plugin isn't configured" ), tr( "Plugin isn't configured! Please go to the Vector menu, Road Graph, Settings option to configure it." ) );
+      return nullptr;
     }
     connect( director, SIGNAL( buildProgress( int, int ) ), mPlugin->iface()->mainWindow(), SLOT( showProgress( int, int ) ) );
     connect( director, SIGNAL( buildMessage( QString ) ), mPlugin->iface()->mainWindow(), SLOT( showStatusMessage( QString ) ) );
@@ -270,12 +267,12 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
   if ( p1 == QgsPoint( 0.0, 0.0 ) )
   {
     QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Start point doesn't tie to the road!" ) );
-    return NULL;
+    return nullptr;
   }
   if ( p2 == QgsPoint( 0.0, 0.0 ) )
   {
     QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Stop point doesn't tie to the road!" ) );
-    return NULL;
+    return nullptr;
   }
 
   QgsGraph *graph = builder.graph();
@@ -291,7 +288,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
     );
 
     delete graph;
-    return NULL;
+    return nullptr;
   }
 
   int criterionNum = 0;
@@ -308,7 +305,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
     );
 
     delete graph;
-    return NULL;
+    return nullptr;
   }
 
 
@@ -319,7 +316,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
   {
     delete shortestpathTree;
     QMessageBox::critical( this, tr( "Path not found" ), tr( "Path not found" ) );
-    return NULL;
+    return nullptr;
   }
   return shortestpathTree;
 }
@@ -328,16 +325,16 @@ void RgShortestPathWidget::findingPath()
 {
   QgsPoint p1, p2;
   QgsGraph *path = getPath( p1, p2 );
-  if ( path == NULL )
+  if ( !path )
     return;
 
-  mrbPath->reset( QGis::Line );
+  mrbPath->reset( QgsWkbTypes::LineGeometry );
   double time = 0.0;
   double cost = 0.0;
 
   int startVertexIdx = path->findVertex( p1 );
   int stopVertexIdx  = path->findVertex( p2 );
-  QList< QgsPoint > p;
+  QVector< QgsPoint > p;
   while ( startVertexIdx != stopVertexIdx )
   {
     if ( stopVertexIdx < 0 )
@@ -356,7 +353,7 @@ void RgShortestPathWidget::findingPath()
     stopVertexIdx = e.outVertex();
   }
   p.push_front( p1 );
-  QList< QgsPoint>::iterator it;
+  QVector< QgsPoint>::iterator it;
   for ( it = p.begin(); it != p.end(); ++it )
   {
     mrbPath->addPoint( *it );
@@ -376,10 +373,10 @@ void RgShortestPathWidget::findingPath()
 void RgShortestPathWidget::clear()
 {
   mFrontPointLineEdit->setText( QString() );
-  mrbFrontPoint->reset( QGis::Polygon );
+  mrbFrontPoint->reset( QgsWkbTypes::PolygonGeometry );
   mBackPointLineEdit->setText( QString() );
-  mrbBackPoint->reset( QGis::Polygon );
-  mrbPath->reset( QGis::Line );
+  mrbBackPoint->reset( QgsWkbTypes::PolygonGeometry );
+  mrbPath->reset( QgsWkbTypes::LineGeometry );
   mPathCostLineEdit->setText( QString() );
   mPathTimeLineEdit->setText( QString() );
 }
@@ -391,12 +388,12 @@ void RgShortestPathWidget::exportPath()
     return;
 
   QgsVectorLayer *vl = dlg.mapLayer();
-  if ( vl == NULL )
+  if ( !vl )
     return;
 
   QgsPoint p1, p2;
   QgsGraph *path = getPath( p1, p2 );
-  if ( path == NULL )
+  if ( !path )
     return;
 
   QgsCoordinateTransform ct( mPlugin->iface()->mapCanvas()->mapSettings().destinationCrs(),
@@ -431,7 +428,7 @@ void RgShortestPathWidget::exportPath()
   p.push_front( ct.transform( p1 ) );
 
   QgsFeature f;
-  f.initAttributes( vl->pendingFields().count() );
+  f.initAttributes( vl->fields().count() );
   f.setGeometry( QgsGeometry::fromPolyline( p ) );
   f.setAttribute( 0, cost / distanceUnit.multipler() );
   f.setAttribute( 1, time / timeUnit.multipler() );

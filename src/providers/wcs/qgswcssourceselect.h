@@ -34,7 +34,7 @@
 class QgisApp;
 class QgsDataProvider;
 class QButtonGroup;
-class QgsNumericSortTreeWidgetItem;
+class QgsTreeWidgetItem;
 class QDomDocument;
 class QDomElement;
 
@@ -53,7 +53,7 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
 
   public:
     //! Constructor
-    QgsWCSSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsWCSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsWCSSourceSelect();
 
@@ -77,7 +77,7 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
     void updateButtons() override;
     QList<QgsOWSSourceSelect::SupportedFormat> providerFormats() override;
     QStringList selectedLayersFormats() override;
-    QStringList selectedLayersCRSs() override;
+    QStringList selectedLayersCrses() override;
     QStringList selectedLayersTimes() override;
 };
 #endif // QGSWCSSOURCESELECT_H

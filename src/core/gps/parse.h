@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __NMEA_PARSE_H__
-#define __NMEA_PARSE_H__
+#ifndef NMEA_PARSE_H
+#define NMEA_PARSE_H
 
 #include "sentence.h"
 
@@ -53,4 +53,4 @@ extern "C"
 }
 #endif
 
-#endif /* __NMEA_PARSE_H__ */
+#endif /* NMEA_PARSE_H */

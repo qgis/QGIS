@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import chr
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,8 +28,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import Qt, QObject, QMetaObject, SIGNAL
-from PyQt4.QtGui import QDialogButtonBox, QTextEdit, QLineEdit, QVBoxLayout
+from qgis.PyQt.QtCore import Qt, QMetaObject
+from qgis.PyQt.QtWidgets import QDialogButtonBox, QTextEdit, QLineEdit, QVBoxLayout
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -42,6 +45,7 @@ NUMBER = 'NUMBER'
 RESULT = 'RESULT'
 AVAILABLE_VARIABLES = 10
 
+
 class CalculatorModelerAlgorithm(GeoAlgorithm):
 
     def defineCharacteristics(self):
@@ -50,12 +54,12 @@ class CalculatorModelerAlgorithm(GeoAlgorithm):
         self.name = self.tr('Calculator', 'CalculatorModelerAlgorithm')
         self.group = self.tr('Modeler-only tools', 'CalculatorModelerAlgorithm')
         self.addParameter(ParameterString(FORMULA,
-            self.tr('Formula', 'CalculatorModelerAlgorithm'), ''))
+                                          self.tr('Formula', 'CalculatorModelerAlgorithm'), ''))
         for i in range(AVAILABLE_VARIABLES):
             self.addParameter(ParameterNumber(NUMBER
-                              + str(i), 'dummy'))
+                                              + str(i), 'dummy', optional=True))
         self.addOutput(OutputNumber(RESULT,
-            self.tr('Result', 'CalculatorModelerAlgorithm')))
+                                    self.tr('Result', 'CalculatorModelerAlgorithm')))
 
     def processAlgorithm(self, progress):
         formula = self.getParameterValue(FORMULA)
@@ -70,8 +74,8 @@ class CalculatorModelerAlgorithm(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Wrong formula: %s', 'CalculatorModelerAlgorithm') % formula)
 
-    def getCustomModelerParametersDialog(self, modelAlg, algIndex=None):
-        return CalculatorModelerParametersDialog(self, modelAlg, algIndex)
+    def getCustomModelerParametersDialog(self, modelAlg, algName=None):
+        return CalculatorModelerParametersDialog(self, modelAlg, algName)
 
 
 class CalculatorModelerParametersDialog(ModelerParametersDialog):
@@ -83,11 +87,11 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
         self.buttonBox = QDialogButtonBox()
         self.buttonBox.setOrientation(Qt.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel
-                | QDialogButtonBox.Ok)
+                                          | QDialogButtonBox.Ok)
         self.infoText = QTextEdit()
         numbers = self.getAvailableValuesOfType(ParameterNumber, OutputNumber)
         text = self.tr('You can refer to model values in your formula, using '
-            'single-letter variables, as follows:\n', 'CalculatorModelerParametersDialog')
+                       'single-letter variables, as follows:\n', 'CalculatorModelerParametersDialog')
         ichar = 97
         if numbers:
             for number in numbers:
@@ -100,6 +104,9 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
         self.formulaText = QLineEdit()
         if hasattr(self.formulaText, 'setPlaceholderText'):
             self.formulaText.setPlaceholderText(self.tr('[Enter your formula here]', 'CalculatorModelerParametersDialog'))
+        if self._algName is not None:
+            alg = self.model.algs[self._algName]
+            self.formulaText.setText(alg.params[FORMULA])
         self.setWindowTitle(self.tr('Calculator', 'CalculatorModelerParametersDialog'))
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setSpacing(2)
@@ -108,8 +115,8 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
         self.verticalLayout.addWidget(self.formulaText)
         self.verticalLayout.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout)
-        QObject.connect(self.buttonBox, SIGNAL('accepted()'), self.okPressed)
-        QObject.connect(self.buttonBox, SIGNAL('rejected()'), self.cancelPressed)
+        self.buttonBox.accepted.connect(self.okPressed)
+        self.buttonBox.rejected.connect(self.cancelPressed)
         QMetaObject.connectSlotsByName(self)
 
     def createAlgorithm(self):
@@ -120,7 +127,7 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
         formula = self.formulaText.text()
         alg.params[FORMULA] = formula
 
-        for i in xrange(AVAILABLE_VARIABLES):
+        for i in range(AVAILABLE_VARIABLES):
             paramname = NUMBER + str(i)
             alg.params[paramname] = None
 

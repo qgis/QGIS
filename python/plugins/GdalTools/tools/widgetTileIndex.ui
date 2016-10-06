@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>181</height>
+    <height>153</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,13 +69,6 @@
     </layout>
    </item>
    <item>
-    <widget class="QCheckBox" name="absolutePathCheck">
-     <property name="text">
-      <string>Write absolute path</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QCheckBox" name="skipDifferentProjCheck">
      <property name="text">
       <string>Skip files with different projection ref</string>
@@ -88,7 +81,7 @@
   <customwidget>
    <class>GdalToolsInOutSelector</class>
    <extends>QWidget</extends>
-   <header>inOutSelector</header>
+   <header>.inOutSelector</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

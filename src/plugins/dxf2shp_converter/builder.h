@@ -30,7 +30,7 @@
 class Builder: public DL_CreationAdapter
 {
   public:
-    Builder( QString theFname, int theShapefileType, bool theConvertText, bool theConvertInserts );
+    Builder( const QString& theFname, int theShapefileType, bool theConvertText, bool theConvertInserts );
     ~Builder();
 
     void FinalizeAnyPolyline();

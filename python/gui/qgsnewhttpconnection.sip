@@ -6,7 +6,7 @@ class QgsNewHttpConnection : QDialog
 
   public:
     //! Constructor
-    QgsNewHttpConnection( QWidget *parent /TransferThis/ = 0, const QString& baseKey = "/Qgis/connections-wms/", const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewHttpConnection( QWidget *parent /TransferThis/ = 0, const QString& baseKey = "/Qgis/connections-wms/", const QString& connName = QString::null, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsNewHttpConnection();
   public slots:

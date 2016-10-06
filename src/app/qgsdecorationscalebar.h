@@ -33,7 +33,7 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
     Q_OBJECT
   public:
     //! Constructor
-    QgsDecorationScaleBar( QObject* parent = NULL );
+    QgsDecorationScaleBar( QObject* parent = nullptr );
     //! Destructor
     virtual ~ QgsDecorationScaleBar();
 
@@ -50,9 +50,6 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
 
   private:
 
-    //! Placement of the scale bar. An index and the translated text
-    int mPlacementIndex;
-    QStringList mPlacementLabels;
     //! The size preferred size of the scale bar
     int mPreferredSize;
     //! Should we snap to integer times power of 10?
@@ -62,6 +59,9 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
     QStringList mStyleLabels;
     //! The scale bar color
     QColor mColor;
+    //! Margin percentage values
+    int mMarginHorizontal;
+    int mMarginVertical;
 
     friend class QgsDecorationScaleBarDialog;
 };

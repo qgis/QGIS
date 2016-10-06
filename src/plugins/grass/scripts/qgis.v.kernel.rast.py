@@ -67,15 +67,16 @@ try:
 except ImportError:
     import grass
 except:
-    raise Exception ("Cannot find 'grass' Python module. Python is supported by GRASS from version >= 6.4" )
+    raise Exception("Cannot find 'grass' Python module. Python is supported by GRASS from version >= 6.4")
+
 
 def main():
     input = options['input']
     output = options['output']
     stddeviation = options['stddeviation']
 
-    if grass.run_command('v.kernel', input=input, stddeviation=stddeviation, output=output ) != 0:
-         grass.fatal("Cannot run v.kernel.")
+    if grass.run_command('v.kernel', input=input, stddeviation=stddeviation, output=output) != 0:
+        grass.fatal("Cannot run v.kernel.")
 
 if __name__ == "__main__":
     options, flags = grass.parser()

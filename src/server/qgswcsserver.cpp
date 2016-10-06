@@ -16,13 +16,14 @@
  ***************************************************************************/
 #include "qgswcsserver.h"
 #include "qgswcsprojectparser.h"
-#include "qgscrscache.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterpipe.h"
 #include "qgsrasterprojector.h"
 #include "qgsrasterfilewriter.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
+#include "qgsaccesscontrol.h"
 
 #include <QTemporaryFile>
 #include <QUrl>
@@ -37,16 +38,39 @@ static const QString WCS_NAMESPACE = "http://www.opengis.net/wcs";
 static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 static const QString OGC_NAMESPACE = "http://www.opengis.net/ogc";
 
-QgsWCSServer::QgsWCSServer( const QString& configFilePath, QMap<QString, QString> &parameters, QgsWCSProjectParser* pp,
-                            QgsRequestHandler* rh )
-    : QgsOWSServer( configFilePath, parameters, rh )
-    , mConfigParser( pp )
+QgsWCSServer::QgsWCSServer(
+  const QString& configFilePath
+  , QMap<QString, QString> &parameters
+  , QgsWCSProjectParser* pp
+  , QgsRequestHandler* rh
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  , const QgsAccessControl* accessControl
+#endif
+)
+    : QgsOWSServer(
+      configFilePath
+      , parameters
+      , rh
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , accessControl
+#endif
+    )
+    , mConfigParser(
+      pp
+    )
 {
 }
 
 QgsWCSServer::QgsWCSServer()
-    : QgsOWSServer( QString(), QMap<QString, QString>(), 0 )
-    , mConfigParser( 0 )
+    : QgsOWSServer(
+      QString()
+      , QMap<QString, QString>()
+      , nullptr
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      , nullptr
+#endif
+    )
+    , mConfigParser( nullptr )
 {
 }
 
@@ -227,15 +251,15 @@ QDomDocument QgsWCSServer::describeCoverage()
   //defining coverage name
   QString coveName = "";
   //read COVERAGE
-  QMap<QString, QString>::const_iterator cove_name_it = mParameters.find( "COVERAGE" );
-  if ( cove_name_it != mParameters.end() )
+  QMap<QString, QString>::const_iterator cove_name_it = mParameters.constFind( "COVERAGE" );
+  if ( cove_name_it != mParameters.constEnd() )
   {
     coveName = cove_name_it.value();
   }
   if ( coveName == "" )
   {
-    QMap<QString, QString>::const_iterator cove_name_it = mParameters.find( "IDENTIFIER" );
-    if ( cove_name_it != mParameters.end() )
+    QMap<QString, QString>::const_iterator cove_name_it = mParameters.constFind( "IDENTIFIER" );
+    if ( cove_name_it != mParameters.constEnd() )
     {
       coveName = cove_name_it.value();
     }
@@ -255,15 +279,15 @@ QByteArray* QgsWCSServer::getCoverage()
   //defining coverage name
   QString coveName = "";
   //read COVERAGE
-  QMap<QString, QString>::const_iterator cove_name_it = mParameters.find( "COVERAGE" );
-  if ( cove_name_it != mParameters.end() )
+  QMap<QString, QString>::const_iterator cove_name_it = mParameters.constFind( "COVERAGE" );
+  if ( cove_name_it != mParameters.constEnd() )
   {
     coveName = cove_name_it.value();
   }
   if ( coveName == "" )
   {
-    QMap<QString, QString>::const_iterator cove_name_it = mParameters.find( "IDENTIFIER" );
-    if ( cove_name_it != mParameters.end() )
+    QMap<QString, QString>::const_iterator cove_name_it = mParameters.constFind( "IDENTIFIER" );
+    if ( cove_name_it != mParameters.constEnd() )
     {
       coveName = cove_name_it.value();
     }
@@ -290,10 +314,13 @@ QByteArray* QgsWCSServer::getCoverage()
   QString crs = "";
 
   // read BBOX
-  QMap<QString, QString>::const_iterator bbIt = mParameters.find( "BBOX" );
-  if ( bbIt == mParameters.end() )
+  QMap<QString, QString>::const_iterator bbIt = mParameters.constFind( "BBOX" );
+  if ( bbIt == mParameters.constEnd() )
   {
-    minx = 0; miny = 0; maxx = 0; maxy = 0;
+    minx = 0;
+    miny = 0;
+    maxx = 0;
+    maxy = 0;
   }
   else
   {
@@ -340,7 +367,7 @@ QByteArray* QgsWCSServer::getCoverage()
     throw QgsMapServiceException( "RequestNotWellFormed", mErrors.join( ". " ) );
   }
 
-  QgsCoordinateReferenceSystem requestCRS = QgsCRSCache::instance()->crsByAuthId( crs );
+  QgsCoordinateReferenceSystem requestCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
   if ( !requestCRS.isValid() )
   {
     mErrors << QString( "Could not create request CRS" );
@@ -353,12 +380,19 @@ QByteArray* QgsWCSServer::getCoverage()
   QgsRasterLayer* rLayer = dynamic_cast<QgsRasterLayer*>( layer );
   if ( rLayer && wcsLayersId.contains( rLayer->id() ) )
   {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    if ( !mAccessControl->layerReadPermission( rLayer ) )
+    {
+      throw QgsMapServiceException( "Security", "You are not allowed to access to this coverage" );
+    }
+#endif
+
     // RESPONSE_CRS
     QgsCoordinateReferenceSystem responseCRS = rLayer->crs();
     crs = mParameters.value( "RESPONSE_CRS", "" );
     if ( crs != "" )
     {
-      responseCRS = QgsCRSCache::instance()->crsByAuthId( crs );
+      responseCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
       if ( !responseCRS.isValid() )
       {
         responseCRS = rLayer->crs();
@@ -388,7 +422,7 @@ QByteArray* QgsWCSServer::getCoverage()
     if ( responseCRS != rLayer->crs() )
     {
       QgsRasterProjector * projector = new QgsRasterProjector;
-      projector->setCRS( rLayer->crs(), responseCRS );
+      projector->setCrs( rLayer->crs(), responseCRS );
       if ( !pipe->insert( 2, projector ) )
       {
         mErrors << QString( "Cannot set pipe projector" );
@@ -403,13 +437,13 @@ QByteArray* QgsWCSServer::getCoverage()
       throw QgsMapServiceException( "RequestNotWellFormed", mErrors.join( ". " ) );
     }
     delete pipe;
-    QByteArray* ba = 0;
+    QByteArray* ba = nullptr;
     ba = new QByteArray();
     *ba = tempFile.readAll();
 
     return ba;
   }
-  return 0;
+  return nullptr;
 }
 
 QString QgsWCSServer::serviceUrl() const

@@ -30,7 +30,7 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
     Q_OBJECT
 
   public:
-    QgisAppStyleSheet( QObject * parent = 0 );
+    QgisAppStyleSheet( QObject * parent = nullptr );
     ~QgisAppStyleSheet();
 
     /** Return changeable options built from settings and/or defaults */

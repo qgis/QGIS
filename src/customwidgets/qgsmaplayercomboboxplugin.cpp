@@ -42,7 +42,7 @@ QString QgsMapLayerComboBoxPlugin::includeFile() const
 
 QIcon QgsMapLayerComboBoxPlugin::icon() const
 {
-  return QIcon();
+  return QIcon( ":/images/icons/qgis-icon-60x60.png" );
 }
 
 bool QgsMapLayerComboBoxPlugin::isContainer() const

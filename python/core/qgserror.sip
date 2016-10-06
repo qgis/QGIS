@@ -71,7 +71,7 @@ class QgsError
      */
     QString message( QgsErrorMessage::Format theFormat = QgsErrorMessage::Html ) const;
 
-    /** Short error descriprion, usually the first error in chain, the real error.
+    /** Short error description, usually the first error in chain, the real error.
      *  @return error description
      */
     QString summary() const;

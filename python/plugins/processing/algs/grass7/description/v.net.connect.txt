@@ -1,0 +1,9 @@
+v.net
+v.net.connect - Connects points to nearest arcs in a network
+Vector (v.*)
+ParameterVector|input|Input vector line layer (arcs)|1|False
+ParameterVector|points|Input vector point layer (nodes)|0|False
+Hardcoded|operation=connect
+ParameterNumber|threshold|Threshold for connection distance|None|None|50.0
+*ParameterBoolean|-s|Snap points to network|False
+OutputVector|output|Network

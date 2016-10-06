@@ -1,0 +1,12 @@
+{
+  "name": "map_concat",
+  "type": "function",
+  "description": "Returns a map containing all the entries of the given map. If two maps contain the same key, the value of the second map is taken.",
+  "variableLenArguments": true,
+  "arguments": [
+    {"arg":"map1", "syntaxOnly": true},
+    {"arg":"map2", "syntaxOnly": true},
+    {"arg":"map", "descOnly": true, "description":"a map"}],
+  "examples": [ { "expression":"map_concat(map('1','one', '2','overridden'),map('2','two', '3','three'))", "returns":"map: 1: 'one, 2: 'two', 3: 'three'"}
+  ]
+}

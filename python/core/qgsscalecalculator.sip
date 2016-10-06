@@ -1,7 +1,6 @@
 
-/**
- * \class QgsScaleCalculator
- * \brief Calculates scale for a given combination of canvas size, map extent,
+/** \ingroup core
+ * Calculates scale for a given combination of canvas size, map extent,
  * and monitor dpi.
  */
 class QgsScaleCalculator
@@ -9,20 +8,15 @@ class QgsScaleCalculator
 %TypeHeaderCode
 #include <qgsscalecalculator.h>
 %End
-
   public:
 
     /**
      * Constructor
      * @param dpi Monitor resolution in dots per inch
-     * @param mapUnits Units of the data on the map. Must match a value from the
-     * QGis::UnitType enum (Meters, Feet, Degrees)
+     * @param mapUnits Units of the data on the map
      */
     QgsScaleCalculator( double dpi = 0,
-                        QGis::UnitType mapUnits = QGis::Meters );
-
-    //! Destructor
-    ~QgsScaleCalculator();
+                        QgsUnitTypes::DistanceUnit mapUnits = QgsUnitTypes::DistanceMeters );
 
     /**
      * Set the dpi to be used in scale calculations
@@ -40,10 +34,10 @@ class QgsScaleCalculator
      * Set the map units
      * @param mapUnits Units of the data on the map. Must match a value from the
      */
-    void setMapUnits( QGis::UnitType mapUnits );
+    void setMapUnits( QgsUnitTypes::DistanceUnit mapUnits );
 
     /** Returns current map units */
-    QGis::UnitType mapUnits() const;
+    QgsUnitTypes::DistanceUnit mapUnits() const;
 
     /**
      * Calculate the scale denominator

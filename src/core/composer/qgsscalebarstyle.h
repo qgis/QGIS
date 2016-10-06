@@ -23,7 +23,7 @@
 class QgsComposerScaleBar;
 class QPainter;
 
-/** \ingroup MapComposer
+/** \ingroup core
  * Abstraction of composer scale bar style. Subclasses draw themselves, have the
 possibility to implement custom labeling and calculate corresponding box size.
 */
@@ -33,13 +33,17 @@ class CORE_EXPORT QgsScaleBarStyle
     QgsScaleBarStyle( const QgsComposerScaleBar* bar );
     virtual ~QgsScaleBarStyle();
 
-    /**Draws the style
+    /** Draws the style
      @param p painter object
      @param xOffset offset to account for centered labeling*/
     virtual void draw( QPainter* p, double xOffset = 0 ) const = 0; //to do by every subclass
     virtual void drawLabels( QPainter* p ) const; //default implementation provided
     virtual QRectF calculateBoxSize() const; //default implementation provided
-    virtual QString name() const = 0; //return name of the style
+    /**
+     * Get a name for this style.
+     * Needs to be remiplmeented by subclasses.
+     */
+    virtual QString name() const = 0;
 
   private:
     QgsScaleBarStyle(); //default constructor forbidden

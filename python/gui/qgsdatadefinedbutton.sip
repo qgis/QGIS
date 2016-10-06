@@ -1,4 +1,41 @@
-class QgsDataDefinedButton :  QToolButton
+/** \ingroup gui
+ * \class QgsDataDefinedAssistant
+ * An assistant (wizard) dialog, accessible from a QgsDataDefinedButton.
+ * Can be used to guide users through creation of an expression for the
+ * data defined button.
+ * @note added in 2.10
+ */
+class QgsDataDefinedAssistant: QDialog
+{
+%TypeHeaderCode
+#include <qgsdatadefinedbutton.h>
+%End
+  public:
+    QgsDataDefinedAssistant();
+
+    virtual QgsDataDefined dataDefined() const = 0;
+
+    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+     * map scale and other properties from the canvas.
+     * @param canvas map canvas
+     * @see mapCanvas()
+     * @note added in QGIS 2.12
+     */
+    virtual void setMapCanvas( QgsMapCanvas* canvas );
+
+    /** Returns the map canvas associated with the widget.
+     * @see setMapCanvas
+     * @note added in QGIS 2.12
+     */
+    const QgsMapCanvas* mapCanvas() const;
+
+};
+
+/** \ingroup gui
+ * \class QgsDataDefinedButton
+ * A button for defining data source field mappings or expressions.
+ */
+class QgsDataDefinedButton : QToolButton
 {
 %TypeHeaderCode
 #include <qgsdatadefinedbutton.h>
@@ -25,8 +62,8 @@ class QgsDataDefinedButton :  QToolButton
     QgsDataDefinedButton( QWidget* parent /TransferThis/ = 0,
                           const QgsVectorLayer* vl = 0,
                           const QgsDataDefined* datadefined = 0,
-                          DataTypes datatypes = AnyType,
-                          QString description = "" );
+                          const DataTypes& datatypes = AnyType,
+                          const QString& description = QString() );
     ~QgsDataDefinedButton();
 
     /**
@@ -39,20 +76,40 @@ class QgsDataDefinedButton :  QToolButton
      */
     void init( const QgsVectorLayer* vl,
                const QgsDataDefined* datadefined = 0,
-               DataTypes datatypes = AnyType,
-               QString description = QString( "" ) );
+               const DataTypes& datatypes = AnyType,
+               const QString& description = QString() );
 
     QMap< QString, QString > definedProperty() const;
+
+    /** Updates a QgsDataDefined with the current settings from the button
+     * @param dd QgsDataDefined to update
+     * @note added in QGIS 2.9
+     */
+    void updateDataDefined( QgsDataDefined* dd ) const;
+
+    /** Returns a QgsDataDefined which reflects the current settings from the
+     * button.
+     * @note added in QGIS 2.9
+     * @see updateDataDefined
+     */
+    QgsDataDefined currentDataDefined() const;
+
+    /** Sets the vector layer associated with the button. This controls which fields are
+     * displayed within the widget's pop up menu.
+     * @param layer vector layer
+     * @note added in QGIS 3.0
+     */
+    void setVectorLayer( QgsVectorLayer* layer );
 
     /**
      * Whether the current data definition or expression is to be used
      */
-    bool isActive();
+    bool isActive() const;
 
     /**
      * Whether the current expression is to be used instead of field mapping
      */
-    bool useExpression();
+    bool useExpression() const;
 
     /**
      * The current defined expression
@@ -94,7 +151,7 @@ class QgsDataDefinedButton :  QToolButton
     /**
      * Register list of sibling widgets that get disabled/enabled when data definition or expression is set/unset
      */
-    void registerEnabledWidgets( QList<QWidget*> wdgts );
+    void registerEnabledWidgets( const QList<QWidget*>& wdgts );
 
     /**
      * Register a sibling widget that gets disabled/enabled when data definition or expression is set/unset
@@ -116,7 +173,7 @@ class QgsDataDefinedButton :  QToolButton
     /**
      * Register list of sibling widgets that get checked when data definition or expression is active
      */
-    void registerCheckedWidgets( QList<QWidget*> wdgts );
+    void registerCheckedWidgets( const QList<QWidget*>& wdgts );
 
     /**
      * Register a sibling widget that get checked when data definition or expression is active
@@ -136,9 +193,36 @@ class QgsDataDefinedButton :  QToolButton
     void clearCheckedWidgets();
 
     /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for the button.
+     * @param generator A QgsExpressionContextGenerator class that will be used to
+     *                  create an expression context when required.
+     * @note added in QGIS 3.0
+     */
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator* generator );
+
+    /**
+     * Sets an assistant used to define the data defined object properties.
+     * Ownership of the assistant is transferred to the widget.
+     * @param title menu title for the assistant
+     * @param assistant data defined assistant. Set to null to remove the assistant
+     * option from the button.
+     * @note added in 2.10
+     * @see assistant()
+     */
+    void setAssistant( const QString& title, QgsDataDefinedAssistant * assistant /Transfer/ );
+
+    /** Returns the assistant used to defined the data defined object properties, if set.
+     * @see setAssistant()
+     * @note added in QGIS 2.12
+     */
+    QgsDataDefinedAssistant* assistant();
+
+    /**
      * Common descriptions for expected input values
      */
     static QString trString();
+    static QString charDesc();
     static QString boolDesc();
     static QString anyStringDesc();
     static QString intDesc();
@@ -213,12 +297,12 @@ class QgsDataDefinedButton :  QToolButton
     /**
      * Set the current defined expression
      */
-    void setExpression( QString exp );
+    void setExpression( const QString& exp );
 
     /**
      * Set the current defined field
      */
-    void setField( QString field );
+    void setField( const QString& field );
 
 };
 

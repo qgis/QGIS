@@ -1,0 +1,14 @@
+{
+  "name": "IS NOT",
+  "type": "operator",
+  "description": "Returns 1 if a is not the same as b.",
+  "arguments": [
+	{"arg":"a","description":"value"},
+	{"arg":"b","description":"value"}
+  ],
+  "examples": [
+	{ "expression":"'a' IS NOT 'b'", "returns":"1"},
+	{ "expression":"'a' IS NOT 'a'", "returns":"0"},
+	{ "expression":"4 IS NOT 2+2", "returns":"0"}
+  ]
+}

@@ -2,9 +2,11 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Export raster to POVRAY height-field file" module="r.out.pov">
-	<option key="map" />
+	<option key="map" version_max="6.4"/>
+	<option key="input" version_min="7.0"/>
 	<option key="hftype" />
 	<option key="bias" />
 	<option key="scale" />
-	<file key="tga" type="new" />
+	<file key="tga" type="new" version_max="6.4"/>
+	<file key="output" type="new" version_min="7.0"/>
 </qgisgrassmodule>

@@ -6,57 +6,45 @@ Priority: optional
 Build-Depends:
  bison,
  cmake (>= 2.8),
-#sid jessie wheezy saucy sid-oracle trusty utopic vivid# debhelper (>= 9),
-#precise# debhelper (>= 7),
+ debhelper (>= 9),
+ dh-python,
  flex,
- grass-dev (<< 7),
+ grass-dev,
  libexpat1-dev,
  libfcgi-dev,
-#sid jessie sid-oracle trusty utopic vivid# libgdal-dev (>= 1.10.1-0~),
-#precise# libgdal-dev (>= 1.9.0) | libgdal1-dev (<< 1.9.0),
-#saucy# libgdal-dev (>= 1.9.0),
-#wheezy# libgdal1-dev,
+ libgdal-dev (>= 1.11),
+#trusty# libgsl0-dev,
+#sid stretch xenial# libgsl-dev,
  libgeos-dev (>= 3.0.0),
- libgsl0-dev,
  libpq-dev,
  libproj-dev,
- libqt4-dev (>= 4.7.0),
- libqt4-opengl-dev,
- libqtwebkit-dev,
-#sid jessie wheezy sid-oracle# libqwt-dev,
-#precise saucy trusty utopic vivid# libqwt5-qt4-dev,
  libspatialite-dev,
  libsqlite3-dev,
  libspatialindex-dev,
+ qtbase5-dev, qttools5-dev-tools, qttools5-dev, qtscript5-dev, qtpositioning5-dev,
+ libqt5svg5-dev, libqt5xmlpatterns5-dev, libqt5webkit5-dev, libqt5opengl5-dev, libqt5sql5-sqlite, libqt5scintilla2-dev,
+ libqwt-qt5-dev, libqca-qt5-2-dev, libqca-qt5-2-plugins,
+ python3-dev, python3-all-dev, python3-sip, python3-sip-dev,
+ pyqt5-dev-tools, pyqt5-dev, pyqt5.qsci-dev,
+ python3-pyqt5, python3-pyqt5.qsci, python3-pyqt5.qtsql, python3-pyqt5.qtsvg,
+ python3-gdal,
+ python3-nose2, python3-yaml, python3-mock, python3-psycopg2, python3-future, python3-termcolor,
  pkg-config,
- pyqt4-dev-tools,
- python-qscintilla2,
-#precise saucy wheezy# python,
-#precise saucy# python-central (>= 0.5),
-#saucy wheezy# python-dev,
-#saucy# libpython2.7-dev,
-#sid jessie sid-oracle trusty utopic vivid# python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~),
-#sid jessie wheezy precise saucy sid-oracle trusty utopic vivid# python-qt4 (>= 4.1.0), python-qt4-dev,
-#sid# pyqt4.qsci-dev,
- python-sip (>= 4.5.0),
- python-sip-dev (>= 4.5.0),
- libosgearth-dev,
- libopenscenegraph-dev,
- libqscintilla2-dev,
  git,
- doxygen,
- graphviz,
  txt2tags,
+ doxygen,
+ gdal-bin,
+ spawn-fcgi, lighttpd, poppler-utils,
+ graphviz,
  xvfb, xauth,
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
-#sid-oracle# oracle-instantclient11.2-devel,
- spawn-fcgi, lighttpd, poppler-utils, locales
+#sid# libosgearth-dev,
+#oracle# oracle-instantclient12.1-devel,
+ locales, ca-certificates, ninja-build
 Build-Conflicts: libqgis-dev, qgis-dev
-#sid jessie sid-oracle vivid#Standards-Version: 3.9.6
-#wheezy#Standards-Version: 3.9.3
-#precise saucy trusty utopic#Standards-Version: 3.8.4
-#sid jessie sid-oracle#X-Python-Version: >= 2.7, << 2.8
-#wheezy precise saucy trusty utopic vivid#XS-Python-Version: current
+#sid stretch xenial#Standards-Version: 3.9.7
+#trusty#Standards-Version: 3.8.4
+#trusty xenial#XS-Python-Version: current
 Vcs-Browser: https://github.com/qgis/QGIS/
 Vcs-Git: https://github.com/qgis/QGIS.git
 Homepage: http://qgis.org/
@@ -66,11 +54,12 @@ Architecture: any
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
+ python-qgis (= ${binary:Version}),
  qgis-providers (= ${binary:Version}),
  qgis-common (= ${source:Version})
 Recommends:
+#globe# qgis-plugin-globe,
  qgis-plugin-grass,
- qgis-plugin-globe,
  python-qgis
 Suggests: gpsbabel
 Conflicts: uim-qt3
@@ -85,7 +74,10 @@ Description: Geographic Information System (GIS)
 
 Package: qgis-common
 Architecture: all
-Depends: ${misc:Depends}
+Depends:
+  libjs-jquery,
+  libjs-leaflet,
+  ${misc:Depends}
 Description: QGIS - architecture-independent data
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -93,13 +85,25 @@ Description: QGIS - architecture-independent data
  This package contains architecture-independent supporting data files for use
  with QGIS.
 
-Package: libqgis-core{QGIS_ABI}
+Package: libqgis-app{QGIS_ABI}
 Architecture: any
 Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
 Replaces: libqgis{QGIS_ABI}
+Description: QGIS - shared app library
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the shared app library.
+
+Package: libqgis-core{QGIS_ABI}
+Architecture: any
+Section: libs
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
 Description: QGIS - shared core library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -112,7 +116,6 @@ Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
-Replaces: libqgis{QGIS_ABI}
 Description: QGIS - shared gui library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -125,7 +128,6 @@ Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
-Replaces: libqgis{QGIS_ABI}
 Description: QGIS - shared analysis library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -138,20 +140,18 @@ Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
-Replaces: libqgis{QGIS_ABI}
 Description: QGIS - shared network analysis library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
  This package contains the shared network analysis library.
 
-Package: libqgisgrass{QGIS_ABI}
+Package: libqgisgrass{GRASSVER}-{QGIS_ABI}
 Architecture: any
 Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
-Replaces: libqgis{QGIS_ABI}
 Description: QGIS - shared grass library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -174,21 +174,9 @@ Description: QGIS - shared Python library
 Package: libqgis-customwidgets
 Architecture: any
 Depends:
- qt4-designer,
+ qttools5-dev-tools,
  ${shlibs:Depends},
  ${misc:Depends}
-Replaces:
- libqgis-customwidgets2.4.0,
- libqgis-customwidgets2.6.0,
- libqgis-customwidgets2.6.1
-Conflicts:
- libqgis-customwidgets2.4.0,
- libqgis-customwidgets2.6.0,
- libqgis-customwidgets2.6.1
-Provides:
- libqgis-customwidgets2.4.0,
- libqgis-customwidgets2.6.0,
- libqgis-customwidgets2.6.1
 Description: QGIS custom widgets for Qt Designer
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -210,33 +198,39 @@ Package: libqgis-dev
 Architecture: any
 Section: libdevel
 Depends:
- grass-dev (<< 7),
+ grass-dev,
  libexpat1-dev,
-#sid jessie sid-oracle trusty utopic vivid# libgdal-dev (>= 1.10.1-0~),
-#precise# libgdal-dev (>= 1.9.0) | libgdal1-dev (<< 1.9.0),
-#saucy# libgdal-dev (>= 1.9.0),
-#wheezy# libgdal1-dev,
+ libgdal-dev (>= 1.11),
  libgeos-dev (>= 3.0.0),
- libgsl0-dev,
+#trusty# libgsl0-dev,
+#sid stretch xenial# libgsl-dev,
  libpq-dev,
  libproj-dev,
+ libqgis-app{QGIS_ABI} (= ${binary:Version}),
  libqgis-core{QGIS_ABI} (= ${binary:Version}),
  libqgis-gui{QGIS_ABI} (= ${binary:Version}),
  libqgis-analysis{QGIS_ABI} (= ${binary:Version}),
  libqgis-networkanalysis{QGIS_ABI} (= ${binary:Version}),
- libqgis-server{QGIS_ABI} (= ${binary:Version}),
- libqgisgrass{QGIS_ABI} (= ${binary:Version}),
+ libqgisgrass{GRASSVER}-{QGIS_ABI} (= ${binary:Version}),
  libqgispython{QGIS_ABI} (= ${binary:Version}),
- libqt4-dev (>= 4.7.0),
  libsqlite3-dev,
- python-qt4 (>= 4.1.0),
- python-qt4-dev (>= 4.1.0),
- qt4-designer,
+ qtbase5-dev, python3-pyqt5, qttools5-dev,
+ libqt5svg5-dev, pyqt5.qsci-dev,
+ libqca-qt5-2-dev,
+ python3-dev,
+ libqt5scintilla2-dev,
+ libqt5webkit5-dev,
+ libqca-qt5-2-dev,
+ libqwt-qt5-dev,
+ qtscript5-dev,
+ qtpositioning5-dev,
+ pyqt5-dev-tools,
+ python3-pyqt5,
+ python3-pyqt5.qtsql,
+ python3-pyqt5.qsci,
  ${misc:Depends}
 Recommends: libqgis-customwidgets
 Provides: qgis-dev
-Replaces:
- libqgis1-dev
 Description: QGIS - development files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -244,26 +238,56 @@ Description: QGIS - development files
  This package contains the headers and libraries needed to develop plugins for
  QGIS.
 
+Package: qgis-dbg
+Architecture: any
+Section: debug
+Priority: extra
+Depends:
+ libqgis-app{QGIS_ABI} (= ${binary:Version}),
+ libqgis-core{QGIS_ABI} (= ${binary:Version}),
+ libqgis-gui{QGIS_ABI} (= ${binary:Version}),
+ libqgis-analysis{QGIS_ABI} (= ${binary:Version}),
+ libqgis-networkanalysis{QGIS_ABI} (= ${binary:Version}),
+ libqgisgrass{GRASSVER}-{QGIS_ABI} (= ${binary:Version}),
+ libqgispython{QGIS_ABI} (= ${binary:Version}),
+ ${misc:Depends}
+Suggests: gdb
+Description: QGIS - debugging symbols
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains debugging symbols.
+
+Package: qgis-provider-grass
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: GRASS provider for QGIS
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This provider enables GRASS data access in QGIS.
+
 Package: qgis-plugin-grass
 Architecture: any
 Depends:
  qgis (= ${binary:Version}),
  qgis-plugin-grass-common (= ${source:Version}),
+ qgis-provider-grass (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends},
-#!precise# grass-core (<< 7)
-#precise# grass (<< 7)
+ grass-core
 Description: GRASS plugin for QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This plugin enables GRASS data access in the QGIS geographic data viewer.
+ This plugin enables GRASS data access in QGIS.
 
 Package: qgis-plugin-grass-common
 Architecture: all
 Depends:
-#sid jessie saucy sid-oracle trusty# python2.7,
-#wheezy precise# python,
+ ${python:Depends},
  ${misc:Depends}
 Breaks: qgis-common (<< 1.5)
 Replaces: qgis-common (<< 1.5)
@@ -274,55 +298,59 @@ Description: GRASS plugin for QGIS - architecture-independent data
  This package contains architecture-independent supporting data files for use
  with the QGIS GRASS plugin.
 
-Package: qgis-plugin-globe
-Architecture: any
-Depends:
- qgis (= ${binary:Version}),
- qgis-plugin-globe-common (= ${source:Version}),
- ${shlibs:Depends},
- ${misc:Depends}
-Description: OSG globe plugin for QGIS
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This plugin enables 3D viewing using OSG globe in the QGIS.
-
-Package: qgis-plugin-globe-common
-Architecture: all
-Depends:
- osgearth-data,
- ${misc:Depends}
-Description: OSG globe plugin for QGIS - architecture-independent data
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This package contains architecture-independent supporting data files for use
- with the QGIS GLOBE plugin.
-
+#globe#Package: qgis-plugin-globe
+#globe#Architecture: any
+#globe#Depends:
+#globe# qgis (= ${binary:Version}),
+#globe# qgis-plugin-globe-common (= ${source:Version}),
+#globe# openscenegraph-plugin-osgearth,
+#globe# ${shlibs:Depends},
+#globe# ${misc:Depends}
+#globe#Description: OSG globe plugin for QGIS
+#globe# QGIS is a Geographic Information System (GIS) which manages, analyzes and
+#globe# display databases of geographic information.
+#globe# .
+#globe# This plugin enables 3D viewing using OSG globe in the QGIS.
+#globe#
+#globe#Package: qgis-plugin-globe-common
+#globe#Architecture: all
+#globe#Depends:
+#globe# osgearth-data,
+#globe# ${misc:Depends}
+#globe#Description: OSG globe plugin for QGIS - architecture-independent data
+#globe# QGIS is a Geographic Information System (GIS) which manages, analyzes and
+#globe# display databases of geographic information.
+#globe# .
+#globe# This package contains architecture-independent supporting data files for use
+#globe# with the QGIS GLOBE plugin.
+#globe#
 Package: python-qgis
 Architecture: any
 Section: python
 Depends:
- python-qt4,
- python-sip,
+ python3-pyqt5,
+ python3-pyqt5.qtsql,
+ python3-sip,
  python-qgis-common (= ${source:Version}),
- python-psycopg2,
- python-qscintilla2,
- python-httplib2,
- python-jinja2,
- python-markupsafe,
- python-pygments,
- python-dateutil,
- python-tz,
- python-six,
-#sid jessie trusty utopic vivid sid-oracle# python-pyspatialite,
+ python3-psycopg2,
+ python3-pyqt5.qsci,
+ python3-httplib2,
+ python3-jinja2,
+ python3-markupsafe,
+ python3-pygments,
+ python3-requests,
+ python3-dateutil,
+ python3-tz,
+ python3-six,
+ python3-yaml,
+ python3-future,
  libqgispython{QGIS_ABI},
  ${shlibs:Depends},
  ${python:Depends},
  ${misc:Depends},
  ${sip:Depends}
 Provides: ${python:Provides}
-#wheezy precise#XB-Python-Version: ${python:Versions}
+Recommends: liblwgeom-dev
 Description: Python bindings to QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -335,8 +363,9 @@ Section: python
 Provides: ${python:Provides}
 Depends:
  gdal-bin,
- python-gdal,
- python-matplotlib,
+ python3-gdal,
+ python3-matplotlib,
+ python3-shapely,
  libqgis-customwidgets,
  ${misc:Depends}
 XB-Python-Version: ${python:Versions}
@@ -352,7 +381,7 @@ Architecture: any
 Pre-Depends: ${misc:Pre-Depends}
 Depends:
  qgis-providers-common (= ${source:Version}),
- libqt4-sql-sqlite,
+ libqt5sql5-sqlite, libqca-qt5-2-plugins,
  ${shlibs:Depends},
  ${misc:Depends}
 Breaks: qgis (<= 1.6)
@@ -395,19 +424,21 @@ Section: doc
 Depends:
  libjs-jquery,
  ${misc:Depends}
+Recommends:
+ qt5-doc-html
 Description: QGIS API documentation
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
  This package contains the QGIS API documentation.
 
-#sid-oracle#Package: qgis-oracle-provider
-#sid-oracle#Architecture: any
-#sid-oracle#Depends: ${shlibs:Depends}, ${misc:Depends}
-#sid-oracle#Section: contrib/database
-#sid-oracle#Description: QGIS oracle provider
-#sid-oracle# QGIS is a Geographic Information System (GIS) which manages, analyzes and
-#sid-oracle# display databases of geographic information.
-#sid-oracle# .
-#sid-oracle# This package contains the QGIS oracle provider.
-#sid-oracle#
+#oracle#Package: qgis-oracle-provider
+#oracle#Architecture: any
+#oracle#Depends: ${shlibs:Depends}, ${misc:Depends}
+#oracle#Section: contrib/database
+#oracle#Description: QGIS oracle provider
+#oracle# QGIS is a Geographic Information System (GIS) which manages, analyzes and
+#oracle# display databases of geographic information.
+#oracle# .
+#oracle# This package contains the QGIS oracle provider.
+#oracle#

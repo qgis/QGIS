@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 21.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 
 /**
  * This class manages all known edit widget factories
@@ -30,6 +31,29 @@ class QgsEditorWidgetRegistry : QObject
      * @return The one and only instance of the editor widget registry
      */
     static QgsEditorWidgetRegistry* instance();
+
+    /**
+     * Registers all the default widgets.
+     * Only call this once on startup of an application.
+     *
+     * @param mapCanvas  Specify a map canvas with which the widgets (relation reference) work
+     * @param messageBar Specify a message bar on which messages by widgets will be shown while working with the map canvas
+     *
+     * @note Added in QGIS 2.8
+     * @note Not required for plugins, the QGIS application does that already
+     */
+    static void initEditors( QgsMapCanvas* mapCanvas = 0, QgsMessageBar* messageBar = 0 );
+
+    /**
+     * Find the best editor widget and its configuration for a given field.
+     *
+     * @param vl        The vector layer for which this widget will be created
+     * @param fieldIdx  The field index on the specified layer for which this widget will be created
+     *
+     * @return The id of the widget type to use and its config
+     */
+    QgsEditorWidgetSetup findBest( const QgsVectorLayer* vl, const QString& fieldName ) const;
+
 
     /**
      * Create an attribute editor widget wrapper of a given type for a given field.
@@ -52,6 +76,13 @@ class QgsEditorWidgetRegistry : QObject
                                     QWidget* editor,
                                     QWidget* parent /TransferThis/,
                                     const QgsAttributeEditorContext& context = QgsAttributeEditorContext() ) /Factory/;
+
+    QgsSearchWidgetWrapper* createSearchWidget( const QString& widgetId,
+        QgsVectorLayer* vl,
+        int fieldIdx,
+        const QgsEditorWidgetConfig& config,
+        QWidget* parent /TransferThis/,
+        const QgsAttributeEditorContext& context = QgsAttributeEditorContext() ) /Factory/;
 
     /**
      * Creates a configuration widget
@@ -97,4 +128,11 @@ class QgsEditorWidgetRegistry : QObject
      * @return true, if successful, false, if the widgetId is already in use or widgetFactory is NULL
      */
     bool registerWidget( const QString& widgetId, QgsEditorWidgetFactory* widgetFactory /Transfer/ );
+
+     /**
+     * Register a new auto-conf plugin.
+     *
+     * @param plugin The plugin (ownership is transfered)
+     */
+    void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin* plugin );
 };

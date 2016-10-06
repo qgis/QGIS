@@ -35,25 +35,25 @@ class QgsRasterMatrix
       opSIGN
     };
 
-    /**Takes ownership of data array*/
+    /** Takes ownership of data array*/
     QgsRasterMatrix();
     //! @note note available in python bindings
     // QgsRasterMatrix( int nCols, int nRows, float* data, double nodataValue );
     QgsRasterMatrix( const QgsRasterMatrix& m );
     ~QgsRasterMatrix();
 
-    /**Returns true if matrix is 1x1 (=scalar number)*/
+    /** Returns true if matrix is 1x1 (=scalar number)*/
     bool isNumber() const;
     double number() const;
 
-    /**Returns data array (but not ownership)*/
+    /** Returns data array (but not ownership)*/
     //! @note not available in python bindings
-    // float* data();
-    /**Returns data and ownership. Sets data and nrows, ncols of this matrix to 0*/
+    // double* data();
+    /** Returns data and ownership. Sets data and nrows, ncols of this matrix to 0*/
     //! @note not available in python bindings
-    // float* takeData();
+    // double* takeData();
 
-    void setData( int cols, int rows, float* data, double nodataValue );
+    void setData( int cols, int rows, double* data, double nodataValue );
 
     int nColumns() const;
     int nRows() const;
@@ -62,9 +62,9 @@ class QgsRasterMatrix
     void setNodataValue( double d );
 
     // QgsRasterMatrix& operator=( const QgsRasterMatrix& m );
-    /**Adds another matrix to this one*/
+    /** Adds another matrix to this one*/
     bool add( const QgsRasterMatrix& other );
-    /**Subtracts another matrix from this one*/
+    /** Subtracts another matrix from this one*/
     bool subtract( const QgsRasterMatrix& other );
     bool multiply( const QgsRasterMatrix& other );
     bool divide( const QgsRasterMatrix& other );
@@ -86,4 +86,6 @@ class QgsRasterMatrix
     bool tangens();
     bool atangens();
     bool changeSign();
+    bool log();
+    bool log10();
 };

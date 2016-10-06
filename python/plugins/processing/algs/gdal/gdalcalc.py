@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giovanni Manghi'
 __date__ = 'January 2015'
@@ -28,16 +29,13 @@ __revision__ = '$Format:%H$'
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputRaster
 
 from processing.tools.system import isWindows
 
 from processing.algs.gdal.GdalUtils import GdalUtils
+
 
 class gdalcalc(GdalAlgorithm):
 
@@ -62,50 +60,54 @@ class gdalcalc(GdalAlgorithm):
     #DEBUG = 'DEBUG'
 
     def defineCharacteristics(self):
-        self.name = 'Raster calculator'
-        self.group = '[GDAL] Miscellaneous'
+        self.name, self.i18n_name = self.trAlgorithm('Raster calculator')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
         self.addParameter(ParameterRaster(
             self.INPUT_A, self.tr('Input layer A'), False))
         self.addParameter(ParameterString(self.BAND_A,
-            self.tr('Number of raster band for raster A'), '1', optional=True))
+                                          self.tr('Number of raster band for raster A'), '1', optional=True))
         self.addParameter(ParameterRaster(
             self.INPUT_B, self.tr('Input layer B'), True))
         self.addParameter(ParameterString(self.BAND_B,
-            self.tr('Number of raster band for raster B'), '1', optional=True))
+                                          self.tr('Number of raster band for raster B'), '1', optional=True))
         self.addParameter(ParameterRaster(
             self.INPUT_C, self.tr('Input layer C'), True))
         self.addParameter(ParameterString(self.BAND_C,
-            self.tr('Number of raster band for raster C'), '1', optional=True))
+                                          self.tr('Number of raster band for raster C'), '1', optional=True))
         self.addParameter(ParameterRaster(
             self.INPUT_D, self.tr('Input layer D'), True))
         self.addParameter(ParameterString(self.BAND_D,
-            self.tr('Number of raster band for raster D'), '1', optional=True))
+                                          self.tr('Number of raster band for raster D'), '1', optional=True))
         self.addParameter(ParameterRaster(
             self.INPUT_E, self.tr('Input layer E'), True))
         self.addParameter(ParameterString(self.BAND_E,
-            self.tr('Number of raster band for raster E'), '1', optional=True))
+                                          self.tr('Number of raster band for raster E'), '1', optional=True))
         self.addParameter(ParameterRaster(
             self.INPUT_F, self.tr('Input layer F'), True))
         self.addParameter(ParameterString(self.BAND_F,
-            self.tr('Number of raster band for raster F'), '1', optional=True))
+                                          self.tr('Number of raster band for raster F'), '1', optional=True))
         self.addParameter(ParameterString(self.FORMULA,
-            self.tr('Calculation in gdalnumeric syntax using +-/* or any numpy array functions (i.e. logical_and())'), 'A*2', optional=False))
+                                          self.tr('Calculation in gdalnumeric syntax using +-/* or any numpy array functions (i.e. logical_and())'), 'A*2', optional=False))
         self.addParameter(ParameterString(self.NO_DATA,
-            self.tr('Set output nodata value'), '-9999'))
+                                          self.tr('Set output nodata value'), '', optional=True))
         self.addParameter(ParameterSelection(self.RTYPE,
-            self.tr('Output raster type'), self.TYPE, 5))
+                                             self.tr('Output raster type'), self.TYPE, 5))
         #self.addParameter(ParameterBoolean(
         #    self.DEBUG, self.tr('Print debugging information'), False))
         self.addParameter(ParameterString(self.EXTRA,
-            self.tr('Additional creation parameters'), '', optional=True))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
+                                          self.tr('Additional creation parameters'), '', optional=True))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Calculated')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         out = self.getOutputValue(self.OUTPUT)
-        extra = str(self.getParameterValue(self.EXTRA))
+        extra = self.getParameterValue(self.EXTRA)
+        if extra is not None:
+            extra = str(extra)
         #debug = self.getParameterValue(self.DEBUG)
         formula = self.getParameterValue(self.FORMULA)
-        noData = str(self.getParameterValue(self.NO_DATA))
+        noData = self.getParameterValue(self.NO_DATA)
+        if noData is not None:
+            noData = str(noData)
 
         arguments = []
         arguments.append('--calc')
@@ -114,10 +116,10 @@ class gdalcalc(GdalAlgorithm):
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
         arguments.append('--type')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-        if len(noData) > 0:
+        if noData and len(noData) > 0:
             arguments.append('--NoDataValue')
             arguments.append(noData)
-        if len(extra) > 0:
+        if extra and len(extra) > 0:
             arguments.append(extra)
         #if debug:
         #    arguments.append('--debug')
@@ -154,6 +156,6 @@ class gdalcalc(GdalAlgorithm):
         arguments.append(out)
 
         if isWindows():
-            GdalUtils.runGdal(['gdal_calc',  GdalUtils.escapeAndJoin(arguments)], progress)
+            return ['gdal_calc', GdalUtils.escapeAndJoin(arguments)]
         else:
-            GdalUtils.runGdal(['gdal_calc.py', GdalUtils.escapeAndJoin(arguments)], progress)
+            return ['gdal_calc.py', GdalUtils.escapeAndJoin(arguments)]

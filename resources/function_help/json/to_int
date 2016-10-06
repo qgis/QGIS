@@ -1,0 +1,8 @@
+{
+  "name": "to_int",
+  "type": "function",
+  "description": "Converts a string to integer number. Nothing is returned if a value cannot be converted to integer (e.g '123asd' is invalid).",
+  "arguments": [ {"arg":"string","description":"string to convert to integer number"}],
+  "examples": [ { "expression":"to_int('123')", "returns":"123"}
+  ]
+}

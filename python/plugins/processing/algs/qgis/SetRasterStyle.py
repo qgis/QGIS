@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtXml import QDomDocument
+from qgis.PyQt.QtXml import QDomDocument
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterFile
@@ -36,21 +36,21 @@ from processing.core.outputs import OutputRaster
 from processing.tools import dataobjects
 from qgis.utils import iface
 
+
 class SetRasterStyle(GeoAlgorithm):
 
     INPUT = 'INPUT'
     STYLE = 'STYLE'
     OUTPUT = 'OUTPUT'
 
-
     def defineCharacteristics(self):
-        self.name = 'Set style for raster layer'
-        self.group = 'Raster general tools'
+        self.name, self.i18n_name = self.trAlgorithm('Set style for raster layer')
+        self.group, self.i18n_group = self.trAlgorithm('Raster general tools')
         self.addParameter(ParameterRaster(self.INPUT,
-            self.tr('Raster layer')))
+                                          self.tr('Raster layer')))
         self.addParameter(ParameterFile(self.STYLE,
-            self.tr('Style file'), False, False, 'qml'))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Styled layer'), True))
+                                        self.tr('Style file'), False, False, 'qml'))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Styled'), True))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
@@ -69,4 +69,4 @@ class SetRasterStyle(GeoAlgorithm):
             layer.readSymbology(n, '')
             self.setOutputValue(self.OUTPUT, filename)
             iface.mapCanvas().refresh()
-            iface.legendInterface().refreshLayerSymbology(layer)
+            iface.legendInterface().refreshLayerLegend(layer)

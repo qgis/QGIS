@@ -27,6 +27,6 @@ This dialog allows you to define the settings for a connection to a PostgreSQL/P
 
 <li> <label>Also list tables with no geometry</label>  Indicates that tables without geometry should also be listed by default.
 
-<li> <label>Use estimated table metadata</label> When initializing layers, various queries may be needed to establish the characteristics of the geometries stored in the database table.  When this option is checked, these queries examine only a sample of the rows and use the table statistics, rather than the entire table.  This can drastically speed up operations on large datasets, but may result in incorrect characterization of layers (eg. the <font color="red">feature count</font> of filtered layers will not be accurately determined).
+<li> <label>Use estimated table metadata</label> When initializing layers, various queries may be needed to establish the characteristics of the geometries stored in the database table.  When this option is checked, these queries examine only a sample of the rows and use the table statistics, rather than the entire table.  This can drastically speed up operations on large datasets, but may result in incorrect characterization of layers (eg. the <font color="red">feature count</font> of filtered layers will not be accurately determined) and may even cause strange behaviour in case columns that are supposed to be unique actually are not.
 
 </ul>

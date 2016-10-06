@@ -17,7 +17,7 @@
 	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
-<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M521.488,260.782L521.488,260.782L319.217,58.512
+<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" d="M521.488,260.782L521.488,260.782L319.217,58.512
 	c-16.137-16.136-42.298-16.136-58.435,0L58.512,260.782c-16.136,16.137-16.136,42.298,0,58.435l202.271,202.271
 	c16.136,16.137,42.297,16.137,58.434,0l202.271-202.271C537.623,303.08,537.625,276.919,521.488,260.782z"/>
 </svg>

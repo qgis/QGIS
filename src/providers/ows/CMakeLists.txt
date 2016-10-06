@@ -9,11 +9,17 @@ SET(OWS_MOC_HDRS
 
 INCLUDE_DIRECTORIES (
   ../../core
+  ../../core/geometry
+  ../../core/auth
   ../../gui
+  ../../gui/auth
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
 )
+INCLUDE_DIRECTORIES(SYSTEM
+  ${PROJ_INCLUDE_DIR}
+)
 
-QT4_WRAP_CPP(OWS_MOC_SRCS ${OWS_MOC_HDRS})
+QT5_WRAP_CPP(OWS_MOC_SRCS ${OWS_MOC_HDRS})
 ADD_LIBRARY (owsprovider MODULE ${OWS_SRCS} ${OWS_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES (owsprovider

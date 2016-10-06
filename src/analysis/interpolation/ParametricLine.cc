@@ -47,7 +47,7 @@ void ParametricLine::calcPoint( float t, Point3D *p )
 ParametricLine* ParametricLine::getParent() const
 {
   QgsDebugMsg( "warning, derive a class from ParametricLine" );
-  return 0;
+  return nullptr;
 }
 
 void ParametricLine::remove( int i )
@@ -78,11 +78,11 @@ const Point3D* ParametricLine::getControlPoint( int number ) const
 {
   Q_UNUSED( number );
   QgsDebugMsg( "warning, derive a class from ParametricLine" );
-  return 0;
+  return nullptr;
 }
 
 const QVector<Point3D*>* ParametricLine::getControlPoly() const
 {
   QgsDebugMsg( "warning, derive a class from ParametricLine" );
-  return 0;
+  return nullptr;
 }

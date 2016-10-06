@@ -1,0 +1,61 @@
+==================================================
+QGIS server
+==================================================
+
+QGIS server allows you to publish your QGIS projects as Web Map
+Services (WMS). Simply layout your map in QGIS. The WMS will look
+exactly the same, because QGIS server uses the same libraries for
+rendering, as the desktop application does.
+
+A sample configuration file for Httpd is installed under
+/etc/httpd/conf.d/qgis-server.conf.
+
+This configuration expects QGIS project files under /var/www/wms. To
+use it, reload the Httpd configuration and place the files you want to
+publish in this directory.
+
+A getCapabilities request looks like this:
+
+http://localhost/wms/my_qgis_project?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0
+
+QGIS project is "/var/www/wms/my_qgis_project.qgs". The sample
+configuration automatically adds the project file extension for you.
+
+The actual data can stay where it is. Make sure QGIS server can
+access the project file and don't forget to let Httpd reload its
+configuration before sending your requests!
+
+Please fill in the metadata tab for your QGIS project.
+
+You can easily test your WMS by adding it as a WMS layer in QGIS.
+
+==================================================
+
+The traditional QGIS server configuration is less comfortable and
+I don't encourage it, unless you have a good reason to use it:
+
+This approach only allows for a single map service.
+
+It uses two configuration files, that must be located in the same
+directory as the FCGI binary:
+
+ - admin.sld
+ - wms_metadata.xml
+
+"admin.sld" uses extended SLD syntax (Style Layer Descriptor) to
+describe symbolization of data.
+
+"wms_metadata.xml" supplies metadata for your WMS. You may also use this
+file with the kind of configuration mentioned on top. But if you want to
+serve different projects, and metadata varies between them, that file
+won't work for you. Please see above for how to define project specific
+metadata!
+
+Both configuration files are included as documentation.
+
+==================================================
+
+Further information: http://karlinapp.ethz.ch/qgis_wms
+
+    Volker Fröhlich
+    volker27@gmx.at

@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 30.5.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,8 +23,10 @@
  * or a feature is added.
  */
 
-class QgsGuiVectorLayerTools : public QgsVectorLayerTools, public QObject
+class QgsGuiVectorLayerTools : public QObject, public QgsVectorLayerTools
 {
+    Q_OBJECT
+
   public:
     QgsGuiVectorLayerTools();
 
@@ -37,7 +39,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools, public QObject
      *
      * @return                True in case of success, False if the operation failed/was aborted
      */
-    bool addFeature( QgsVectorLayer *layer, QgsAttributeMap defaultValues, const QgsGeometry &defaultGeometry ) const override;
+    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap& defaultValues, const QgsGeometry &defaultGeometry, QgsFeature* feat = nullptr ) const override;
 
     /**
      * This should be called, whenever a vector layer should be switched to edit mode. If successful

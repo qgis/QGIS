@@ -20,7 +20,7 @@ class QgsDataItem;
 
 class QString;
 
-/**
+/** \ingroup core
  * This is the interface for those who want to add custom data items to the browser tree.
  *
  * The method createDataItem() is ever called only if capabilities() return non-zero value.

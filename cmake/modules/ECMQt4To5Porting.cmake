@@ -30,7 +30,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #=============================================================================
 
-# The automoc_qt4 macro is superceded by CMAKE_AUTOMOC from CMake 2.8.6
+# The automoc_qt4 macro is superceeded by CMAKE_AUTOMOC from CMake 2.8.6
 # A Qt 5 version is not provided by CMake or Qt.
 
 include(MacroAddFileDependencies)
@@ -189,7 +189,7 @@ list(APPEND QT_QTWEBKIT_LIBRARY ${Qt5WebKitWidgets_LIBRARIES})
 set(QT_QTDECLARATIVE_LIBRARIES ${Qt5Quick1_LIBRARIES})
 set(QT_QTDECLARATIVE_LIBRARY ${Qt5Quick1_LIBRARIES})
 
-set(QT_LRELEASE_EXECUTABLE lrelease-qt5)
+Find_Program(QT_LRELEASE_EXECUTABLE NAMES lrelease-qt5 lrelease)
 set(QT_LUPDATE_EXECUTABLE lupdate-qt5)
 
 set(QT_INSTALL_PREFIX ${_qt5Core_install_prefix})

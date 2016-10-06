@@ -1,0 +1,8 @@
+{
+  "name": "bounds_height",
+  "type": "function",
+  "description": "Returns the height of the bounding box of a geometry. Calculations are in the Spatial Reference System of this geometry.",
+  "arguments": [ {"arg":"geom","description":"a geometry"}],
+  "examples": [ { "expression":"bounds_height($geometry)", "returns":"height of bounding box of $geometry"}]
+}
+

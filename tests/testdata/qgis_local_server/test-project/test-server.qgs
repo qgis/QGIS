@@ -37,7 +37,7 @@
             </filegroup>
         </legendlayer>
     </legend>
-    <projectlayers layercount="2">
+    <projectlayers>
         <maplayer minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" geometry="Polygon" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
             <id>aoi20130902095858570</id>
             <datasource>dbname='./features_v3.sqlite' table="aoi" (geometry) sql=</datasource>

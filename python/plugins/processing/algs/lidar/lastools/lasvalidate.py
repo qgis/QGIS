@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
 
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
@@ -24,11 +26,12 @@ __copyright__ = '(C) 2013, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputFile
+
 
 class lasvalidate(LAStoolsAlgorithm):
 
@@ -36,11 +39,11 @@ class lasvalidate(LAStoolsAlgorithm):
     OUTPUT = "OUTPUT"
 
     def defineCharacteristics(self):
-        self.name = "lasvalidate"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasvalidate')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersPointInputGUI()
         self.addParameter(ParameterBoolean(lasvalidate.ONE_REPORT_PER_FILE,
-            self.tr("save report to '*_LVS.xml'"), False))
+                                           self.tr("save report to '*_LVS.xml'"), False))
         self.addOutput(OutputFile(lasvalidate.OUTPUT, self.tr("Output XML file")))
         self.addParametersAdditionalGUI()
 

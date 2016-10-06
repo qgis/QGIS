@@ -25,11 +25,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis, QgsFeature, QgsGeometry
+import os
+import math
+
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
+
+from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsField
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class ExtractNodes(GeoAlgorithm):
@@ -37,42 +46,53 @@ class ExtractNodes(GeoAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'extract_nodes.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Extract nodes'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Extract nodes')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'),
-            [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'),
+                                          [dataobjects.TYPE_VECTOR_POLYGON,
+                                           dataobjects.TYPE_VECTOR_LINE]))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Nodes'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
 
+        fields = layer.fields()
+        fields.append(QgsField('node_index', QVariant.Int))
+        fields.append(QgsField('distance', QVariant.Double))
+        fields.append(QgsField('angle', QVariant.Double))
+
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), QGis.WKBPoint, layer.crs())
+            fields, QgsWkbTypes.Point, layer.crs())
 
-        outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        outGeom = QgsGeometry()
-
-        current = 0
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-        for f in features:
-            inGeom = f.geometry()
-            attrs = f.attributes()
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
+            input_geometry = f.geometry()
+            if not input_geometry:
+                writer.addFeature(f)
+            else:
+                points = vector.extractPoints(input_geometry)
 
-            points = vector.extractPoints(inGeom)
-            outFeat.setAttributes(attrs)
+                for i, point in enumerate(points):
+                    distance = input_geometry.distanceToVertex(i)
+                    angle = math.degrees(input_geometry.angleAtVertex(i))
+                    attrs = f.attributes()
+                    attrs.append(i)
+                    attrs.append(distance)
+                    attrs.append(angle)
+                    output_feature = QgsFeature()
+                    output_feature.setAttributes(attrs)
+                    output_feature.setGeometry(QgsGeometry.fromPoint(point))
+                    writer.addFeature(output_feature)
 
-            for i in points:
-                outFeat.setGeometry(outGeom.fromPoint(i))
-                writer.addFeature(outFeat)
-
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

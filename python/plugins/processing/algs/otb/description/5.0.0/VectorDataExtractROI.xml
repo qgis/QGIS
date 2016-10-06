@@ -1,0 +1,38 @@
+<root>
+  <key>VectorDataExtractROI</key>
+  <exec>otbcli_VectorDataExtractROI</exec>
+  <longname>VectorData Extract ROI</longname>
+  <group>Vector Data Manipulation</group>
+  <description>Perform an extract ROI on the input vector data according to the input image extent</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputVectorData">ParameterVector</parameter_type>
+    <key>io.vd</key>
+    <name>Input Vector data</name>
+    <description>Input vector data</description>
+    <shapetype />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>io.in</key>
+    <name>Support image</name>
+    <description>Support image that specifies the extracted region</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputVectorData">OutputVector</parameter_type>
+    <key>io.out</key>
+    <name>Output Vector data</name>
+    <description>Output extracted vector data</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>elev.default</key>
+    <name>Default elevation</name>
+    <description>This parameter allows setting the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+</root>

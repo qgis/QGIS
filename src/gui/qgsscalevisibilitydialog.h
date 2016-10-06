@@ -19,14 +19,18 @@
 #include <QDialog>
 #include <QGroupBox>
 
-#include "qgsscalerangewidget.h"
+class QgsMapCanvas;
+class QgsScaleRangeWidget;
 
+/** \ingroup gui
+ * \class QgsScaleVisibilityDialog
+ */
 class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
 {
     Q_OBJECT
 
   public:
-    explicit QgsScaleVisibilityDialog( QWidget *parent = 0, QString title = QString(), QgsMapCanvas* mapCanvas = 0 );
+    explicit QgsScaleVisibilityDialog( QWidget *parent = nullptr, const QString& title = QString(), QgsMapCanvas* mapCanvas = nullptr );
 
     //! return if scale visibilty is enabled
     bool hasScaleVisibility();

@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Agresta S. Coop - www.agresta.org'
 __date__ = 'June 2014'
@@ -27,8 +30,8 @@ import os
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputFile
-from FusionUtils import FusionUtils
-from FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
+from .FusionAlgorithm import FusionAlgorithm
 
 
 class Catalog(FusionAlgorithm):
@@ -41,10 +44,10 @@ class Catalog(FusionAlgorithm):
     ADVANCED_MODIFIERS = 'ADVANCED_MODIFIERS'
 
     def defineCharacteristics(self):
-        self.name = 'Catalog'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Catalog')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addOutput(OutputFile(self.OUTPUT, self.tr('Output files')))
         density = ParameterString(
             self.DENSITY,
@@ -69,7 +72,6 @@ class Catalog(FusionAlgorithm):
             self.tr('Additional modifiers'), '', False, True)
         advanced_modifiers.isAdvanced = True
         self.addParameter(advanced_modifiers)
-
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'Catalog.exe')]

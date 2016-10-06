@@ -1,0 +1,7 @@
+{
+  "name": "num_rings",
+  "type": "function",
+  "description": "Returns the number of rings (including exterior rings) in a polygon or geometry collection, or null if the input geometry is not a polygon or collection.",
+  "arguments": [ {"arg":"geometry","description":"input geometry"} ],
+  "examples": [ { "expression":"num_rings(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1),(-0.1 -0.1, 0.4 0, 0.4 0.2, 0 0.2, -0.1 -0.1))'))", "returns":"2"}]
+}

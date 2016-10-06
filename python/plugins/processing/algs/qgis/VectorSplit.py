@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2014'
@@ -27,6 +28,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.PyQt.QtGui import QIcon
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -34,19 +37,25 @@ from processing.core.outputs import OutputDirectory
 from processing.tools import dataobjects, vector
 from processing.tools.system import mkdir
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
+
 class VectorSplit(GeoAlgorithm):
 
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'split_layer.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Split vector layer'
-        self.group = 'Vector general tools'
+        self.name, self.i18n_name = self.trAlgorithm('Split vector layer')
+        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Unique ID field'), self.INPUT))
+                                              self.tr('Unique ID field'), self.INPUT))
 
         self.addOutput(OutputDirectory(self.OUTPUT, self.tr('Output directory')))
 
@@ -58,18 +67,18 @@ class VectorSplit(GeoAlgorithm):
 
         mkdir(directory)
 
-        fieldIndex = layer.fieldNameIndex(fieldName)
+        fieldIndex = layer.fields().lookupField(fieldName)
         uniqueValues = vector.uniqueValues(layer, fieldIndex)
         baseName = os.path.join(directory, '{0}_{1}'.format(layer.name(), fieldName))
 
-        fields = layer.pendingFields()
-        crs = layer.dataProvider().crs()
+        fields = layer.fields()
+        crs = layer.crs()
         geomType = layer.wkbType()
 
         total = 100.0 / len(uniqueValues)
 
-        for count, i in enumerate(uniqueValues):
-            fName = u'{0}_{1}.shp'.format(baseName, unicode(i).strip())
+        for current, i in enumerate(uniqueValues):
+            fName = u'{0}_{1}.shp'.format(baseName, str(i).strip())
 
             writer = vector.VectorWriter(fName, None, fields, geomType, crs)
             for f in vector.features(layer):
@@ -77,4 +86,4 @@ class VectorSplit(GeoAlgorithm):
                     writer.addFeature(f)
             del writer
 
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))

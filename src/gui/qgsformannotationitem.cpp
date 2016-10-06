@@ -16,8 +16,11 @@
  ***************************************************************************/
 
 #include "qgsformannotationitem.h"
-#include "qgsattributeeditor.h"
+#include "qgsattributeeditorcontext.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgseditorwidgetwrapper.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
@@ -34,8 +37,12 @@
 #include <QWidget>
 
 QgsFormAnnotationItem::QgsFormAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer, bool hasFeature, int feature )
-    : QgsAnnotationItem( canvas ), mWidgetContainer( 0 ), mDesignerWidget( 0 ), mVectorLayer( vlayer ),
-    mHasAssociatedFeature( hasFeature ), mFeature( feature )
+    : QgsAnnotationItem( canvas )
+    , mWidgetContainer( nullptr )
+    , mDesignerWidget( nullptr )
+    , mVectorLayer( vlayer )
+    , mHasAssociatedFeature( hasFeature )
+    , mFeature( feature )
 {
   mWidgetContainer = new QGraphicsProxyWidget( this );
   mWidgetContainer->setData( 0, "AnnotationItem" ); //mark embedded widget as belonging to an annotation item (composer knows it needs to be printed)
@@ -58,7 +65,7 @@ QgsFormAnnotationItem::~QgsFormAnnotationItem()
 void QgsFormAnnotationItem::setDesignerForm( const QString& uiFile )
 {
   mDesignerForm = uiFile;
-  mWidgetContainer->setWidget( 0 );
+  mWidgetContainer->setWidget( nullptr );
   delete mDesignerWidget;
   mDesignerWidget = createDesignerWidget( uiFile );
   if ( mDesignerWidget )
@@ -74,31 +81,36 @@ QWidget* QgsFormAnnotationItem::createDesignerWidget( const QString& filePath )
   QFile file( filePath );
   if ( !file.open( QFile::ReadOnly ) )
   {
-    return 0;
+    return nullptr;
   }
 
   QUiLoader loader;
   QFileInfo fi( file );
   loader.setWorkingDirectory( fi.dir() );
-  QWidget* widget = loader.load( &file, 0 );
+  QWidget* widget = loader.load( &file, nullptr );
   file.close();
 
   //get feature and set attribute information
+  QgsAttributeEditorContext context;
   if ( mVectorLayer && mHasAssociatedFeature )
   {
     QgsFeature f;
     if ( mVectorLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeature ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
     {
-      const QgsFields& fields = mVectorLayer->pendingFields();
-      const QgsAttributes& attrs = f.attributes();
+      const QgsFields& fields = mVectorLayer->fields();
+      QgsAttributes attrs = f.attributes();
       for ( int i = 0; i < attrs.count(); ++i )
       {
         if ( i < fields.count() )
         {
-          QWidget* attWidget = widget->findChild<QWidget*>( fields[i].name() );
+          QWidget* attWidget = widget->findChild<QWidget*>( fields.at( i ).name() );
           if ( attWidget )
           {
-            QgsAttributeEditor::createAttributeEditor( widget, attWidget, mVectorLayer, i, attrs[i] );
+            QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( mVectorLayer, i, attWidget, widget, context );
+            if ( eww )
+            {
+              eww->setValue( attrs.at( i ) );
+            }
           }
         }
       }
@@ -168,7 +180,7 @@ QSizeF QgsFormAnnotationItem::preferredFrameSize() const
   }
 }
 
-void QgsFormAnnotationItem::writeXML( QDomDocument& doc ) const
+void QgsFormAnnotationItem::writeXml( QDomDocument& doc ) const
 {
   QDomElement documentElem = doc.documentElement();
   if ( documentElem.isNull() )
@@ -184,13 +196,13 @@ void QgsFormAnnotationItem::writeXML( QDomDocument& doc ) const
   formAnnotationElem.setAttribute( "hasFeature", mHasAssociatedFeature );
   formAnnotationElem.setAttribute( "feature", mFeature );
   formAnnotationElem.setAttribute( "designerForm", mDesignerForm );
-  _writeXML( doc, formAnnotationElem );
+  _writeXml( doc, formAnnotationElem );
   documentElem.appendChild( formAnnotationElem );
 }
 
-void QgsFormAnnotationItem::readXML( const QDomDocument& doc, const QDomElement& itemElem )
+void QgsFormAnnotationItem::readXml( const QDomDocument& doc, const QDomElement& itemElem )
 {
-  mVectorLayer = 0;
+  mVectorLayer = nullptr;
   if ( itemElem.hasAttribute( "vectorLayer" ) )
   {
     mVectorLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( itemElem.attribute( "vectorLayer", "" ) ) );
@@ -207,7 +219,7 @@ void QgsFormAnnotationItem::readXML( const QDomDocument& doc, const QDomElement&
   QDomElement annotationElem = itemElem.firstChildElement( "AnnotationItem" );
   if ( !annotationElem.isNull() )
   {
-    _readXML( doc, annotationElem );
+    _readXml( doc, annotationElem );
   }
 
   mDesignerWidget = createDesignerWidget( mDesignerForm );
@@ -247,7 +259,7 @@ void QgsFormAnnotationItem::setFeatureForMapPosition()
   mFeature = currentFeatureId;
 
   //create new embedded widget
-  mWidgetContainer->setWidget( 0 );
+  mWidgetContainer->setWidget( nullptr );
   delete mDesignerWidget;
   mDesignerWidget = createDesignerWidget( mDesignerForm );
   if ( mDesignerWidget )

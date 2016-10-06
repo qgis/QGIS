@@ -1,0 +1,29 @@
+ +----------------------------------------------------------------------------+
+ | Map:      tmp14669386814521              Date: Sun Jun 26 12:58:01 2016    |
+ | Mapset:   PERMANENT                      Login of Creator: medspx          |
+ | Location: temp_location                                                    |
+ | DataBase: /tmp/processingd1287b3c04994d8a8ed29b67a67c13bb/grassdata        |
+ | Title:     ( tmp14669386814521 )                                           |
+ | Timestamp: none                                                            |
+ |----------------------------------------------------------------------------|
+ |                                                                            |
+ |   Type of Map:  raster               Number of Categories: 0               |
+ |   Data Type:    FCELL                                                      |
+ |   Rows:         109                                                        |
+ |   Columns:      139                                                        |
+ |   Total Cells:  15151                                                      |
+ |        Projection: unnamed                                                 |
+ |            N:    6693700    S:    6682800   Res:   100                     |
+ |            E:     358400    W:     344500   Res:   100                     |
+ |   Range of data:    min = -303  max = 14847                                |
+ |                                                                            |
+ |   Data Description:                                                        |
+ |    gnr par r.external                                                      |
+ |                                                                            |
+ |   Comments:                                                                |
+ |    r.external --overwrite -o input="/home/medspx/projects/QGIS/code/pyt\   |
+ |    hon/plugins/processing/tests/testdata/custom/grass7/float_raster.tif\   |
+ |    " output="tmp14669386814521" band=1                                     |
+ |                                                                            |
+ +----------------------------------------------------------------------------+
+

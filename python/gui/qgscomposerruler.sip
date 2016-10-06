@@ -16,7 +16,7 @@ class QgsComposerRuler : QWidget
     QSize minimumSizeHint() const;
 
     void setSceneTransform( const QTransform& transform );
-    void updateMarker( const QPointF& pos );
+    void updateMarker( QPointF pos );
 
     void setComposition( QgsComposition* c );
     QgsComposition* composition();
@@ -28,4 +28,8 @@ class QgsComposerRuler : QWidget
     void mouseMoveEvent( QMouseEvent* event );
     void mouseReleaseEvent( QMouseEvent* event );
     void mousePressEvent( QMouseEvent* event );
+
+  signals:
+    /** Is emitted when mouse cursor coordinates change*/
+    void cursorPosChanged( QPointF );
 };

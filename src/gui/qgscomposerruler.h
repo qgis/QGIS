@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgscomposerruler.h
+    ---------------------
+    begin                : January 2013
+    copyright            : (C) 2013 by Marco Hugentobler
+    email                : marco dot hugentobler at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSCOMPOSERRULER_H
 #define QGSCOMPOSERRULER_H
 
@@ -6,7 +20,9 @@
 class QgsComposition;
 class QGraphicsLineItem;
 
-/**A class to show paper scale and the current cursor position*/
+/** \ingroup gui
+ * A class to show paper scale and the current cursor position
+*/
 class GUI_EXPORT QgsComposerRuler: public QWidget
 {
     Q_OBJECT
@@ -24,7 +40,7 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     QSize minimumSizeHint() const override;
 
     void setSceneTransform( const QTransform& transform );
-    void updateMarker( const QPointF& pos ) { mMarkerPos = pos; repaint(); }
+    void updateMarker( QPointF pos ) { mMarkerPos = pos; repaint(); }
 
     void setComposition( QgsComposition* c ) { mComposition = c; }
     QgsComposition* composition() { return mComposition; }
@@ -58,7 +74,7 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     int mTextBaseline;
     int mMinSpacingVerticalLabels;
 
-    void setSnapLinePosition( const QPointF& pos );
+    void setSnapLinePosition( QPointF pos );
 
     //calculate optimum labeled units for ruler so that labels are a good distance apart
     int optimumScale( double minPixelDiff, int &magnitude, int &multiple );
@@ -79,7 +95,7 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     void drawMarkerPos( QPainter *painter );
 
   signals:
-    /**Is emitted when mouse cursor coordinates change*/
+    /** Is emitted when mouse cursor coordinates change*/
     void cursorPosChanged( QPointF );
 
 };

@@ -25,9 +25,27 @@ class QgsVectorSimplifyMethod
     typedef QFlags<QgsVectorSimplifyMethod::SimplifyHint> SimplifyHints;
 
     /** Sets the simplification hints of the vector layer managed */
-    void setSimplifyHints( QFlags<QgsVectorSimplifyMethod::SimplifyHint> simplifyHints );
+    void setSimplifyHints( const QFlags<QgsVectorSimplifyMethod::SimplifyHint>& simplifyHints );
     /** Gets the simplification hints of the vector layer managed */
     QFlags<QgsVectorSimplifyMethod::SimplifyHint> simplifyHints() const;
+
+    /** Types of local simplification algorithms that can be used */
+    enum SimplifyAlgorithm
+    {
+      Distance    = 0, //!< The simplification uses the distance between points to remove duplicate points
+      SnapToGrid  = 1, //!< The simplification uses a grid (similar to ST_SnapToGrid) to remove duplicate points
+      Visvalingam = 2, //!< The simplification gives each point in a line an importance weighting, so that least important points are removed first
+    };
+
+    /** Sets the local simplification algorithm of the vector layer managed */
+    void setSimplifyAlgorithm( const SimplifyAlgorithm& simplifyAlgorithm );
+    /** Gets the local simplification algorithm of the vector layer managed */
+    SimplifyAlgorithm simplifyAlgorithm() const;
+
+    /** Sets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal */
+    void setTolerance( double tolerance );
+    /** Gets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal */
+    double tolerance() const;
 
     /** Sets the simplification threshold of the vector layer managed */
     void setThreshold( float threshold );

@@ -1,80 +1,107 @@
-class QgsPointDisplacementRenderer : QgsFeatureRendererV2
+/** \class QgsPointDisplacementRenderer
+ * \ingroup core
+ * A renderer that automatically displaces points with the same geographic location.
+*/
+class QgsPointDisplacementRenderer : QgsPointDistanceRenderer
 {
 %TypeHeaderCode
 #include <qgspointdisplacementrenderer.h>
 %End
   public:
-    QgsPointDisplacementRenderer( const QString& labelAttributeName = "" );
-    ~QgsPointDisplacementRenderer();
 
-    QgsFeatureRendererV2* clone() const /Factory/;
+    /** Placement methods for dispersing points
+     */
+    enum Placement
+    {
+      Ring, /*!< Place points in a single ring around group*/
+      ConcentricRings /*!< Place points in concentric rings around group*/
+    };
 
-    virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
+    /** Constructor for QgsPointDisplacementRenderer.
+     * @param labelAttributeName optional attribute name for labeling points
+     */
+    QgsPointDisplacementRenderer( const QString& labelAttributeName = QString() );
 
-    /**Reimplemented from QgsFeatureRendererV2*/
-    bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
-
-    QgsSymbolV2* symbolForFeature( QgsFeature& feature );
-
-    void startRender( QgsRenderContext& context, const QgsFields& fields );
-
+    virtual QgsPointDisplacementRenderer* clone() const /Factory/;
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
     void stopRender( QgsRenderContext& context );
-
-    QList<QString> usedAttributes();
-    QgsSymbolV2List symbols();
-
-    //! create a renderer from XML element
-    static QgsFeatureRendererV2* create( QDomElement& symbologyElem ) /Factory/;
     QDomElement save( QDomDocument& doc );
+    virtual QSet<QString> usedAttributes() const;
 
-    QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
+    //! Create a renderer from XML element
+    static QgsFeatureRenderer* create( QDomElement& symbologyElem ) /Factory/;
 
-    //! @note not available in python bindings
-    // QgsLegendSymbolList legendSymbolItems();
+    /** Sets the line width for the displacement group circle.
+     * @param width line width in mm
+     * @see circleWidth()
+     * @see setCircleColor()
+     */
+    void setCircleWidth( double width );
 
-    void setLabelAttributeName( const QString& name );
-    QString labelAttributeName() const;
-
-    /**Sets embedded renderer (takes ownership)*/
-    void setEmbeddedRenderer( QgsFeatureRendererV2* r /Transfer/ );
-    QgsFeatureRendererV2* embeddedRenderer();
-
-    //! not available in python bindings
-    //! @deprecated since 2.4
-    // void setDisplacementGroups( const QList<QMap<QgsFeatureId, QgsFeature> >& list );
-
-    void setLabelFont( const QFont& f );
-    QFont labelFont() const;
-
-    void setCircleWidth( double w );
+    /** Returns the line width for the displacement group circle in mm.
+     * @see setCircleWidth()
+     * @see circleColor()
+     */
     double circleWidth() const;
 
-    void setCircleColor( const QColor& c );
+    /** Sets the color used for drawing the displacement group circle.
+     * @param color circle color
+     * @see circleColor()
+     * @see setCircleWidth()
+     */
+    void setCircleColor( const QColor& color );
+
+    /** Returns the color used for drawing the displacement group circle.
+     * @see setCircleColor()
+     * @see circleWidth()
+     */
     QColor circleColor() const;
 
-    void setLabelColor( const QColor& c );
-    QColor labelColor() const;
+    /** Sets a factor for increasing the ring size of displacement groups.
+     * @param distance addition factor
+     * @see circleRadiusAddition()
+     */
+    void setCircleRadiusAddition( double distance );
 
-    void setCircleRadiusAddition( double d );
+    /** Returns the factor for increasing the ring size of displacement groups.
+     * @see setCircleRadiusAddition()
+     */
     double circleRadiusAddition() const;
 
-    void setMaxLabelScaleDenominator( double d );
-    double maxLabelScaleDenominator() const;
+    /** Returns the placement method used for dispersing the points.
+     * @see setPlacement()
+     * @note added in QGIS 2.12
+     */
+    Placement placement() const;
 
-    /**Returns the symbol for the center of a displacement group (but _not_ ownership of the symbol)*/
-    QgsMarkerSymbolV2* centerSymbol();
-    /**Sets the center symbol (takes ownership)*/
-    void setCenterSymbol( QgsMarkerSymbolV2* symbol /Transfer/ );
+    /** Sets the placement method used for dispersing the points.
+     * @param placement placement method
+     * @see placement()
+     * @note added in QGIS 2.12
+     */
+    void setPlacement( Placement placement );
 
-    void setTolerance( double t );
-    double tolerance() const;
+    /** Returns the symbol for the center of a displacement group (but not ownership of the symbol).
+     * @see setCenterSymbol()
+    */
+    QgsMarkerSymbol* centerSymbol();
 
-    //! creates a QgsPointDisplacementRenderer from an existing renderer.
-    //! @note added in 2.5
-    //! @returns a new renderer if the conversion was possible, otherwise 0.
-    static QgsPointDisplacementRenderer* convertFromRenderer(const QgsFeatureRendererV2 *renderer ) /Factory/;
+    /** Sets the center symbol for a displacement group.
+     * @param symbol new center symbol. Ownership is transferred to the renderer.
+     * @see centerSymbol()
+    */
+    void setCenterSymbol( QgsMarkerSymbol* symbol /Transfer/ );
+
+    /** Creates a QgsPointDisplacementRenderer from an existing renderer.
+     * @note added in 2.5
+     * @returns a new renderer if the conversion was possible, otherwise nullptr.
+     */
+    static QgsPointDisplacementRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 
   private:
     QgsPointDisplacementRenderer( const QgsPointDisplacementRenderer & );
     QgsPointDisplacementRenderer & operator=( const QgsPointDisplacementRenderer & );
+
+    void drawGroup( QPointF centerPoint, QgsRenderContext& context, const QgsPointDistanceRenderer::ClusteredGroup& group );
+
 };

@@ -272,7 +272,7 @@ void ModelMoveCommand::doCommand()
         d = m_destRow - ( m_endRow - m_startRow ) + 1;
     }
 
-    foreach ( const qint64 id, l )
+    Q_FOREACH ( const qint64 id, l )
     {
       m_model->m_childItems[destParent.internalId()][column].insert( d++, id );
     }

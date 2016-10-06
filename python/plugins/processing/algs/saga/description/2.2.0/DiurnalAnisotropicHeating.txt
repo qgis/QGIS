@@ -1,0 +1,5 @@
+Diurnal Anisotropic Heating
+ta_morphometry
+ParameterRaster|DEM|Elevation|False
+ParameterNumber|ALPHA_MAX|Alpha Max (Degree)|None|None|202.5
+OutputRaster|DAH|Diurnal Anisotropic Heating

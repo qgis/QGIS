@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Samples the input space time dataset(s) with a sample space time dataset and print the result to stdout" module="t.sample">
+	<option key="inputs"/>
+	<option key="sample"/>
+	<option key="intype"/>
+	<option key="samtype"/>
+	<option key="method"/>
+	<option key="separator" advanced="yes"/>
+	<flag key="c" hidden="no" advanced="yes"/>
+	<flag key="s" hidden="no" advanced="yes"/>
+</qgisgrassmodule>

@@ -1,0 +1,12 @@
+{
+  "name": "NOT",
+  "type": "operator",
+  "description": "Negates a condition.",
+  "arguments": [
+	{"arg":"a","description":"condition"}
+  ],
+  "examples": [
+	{ "expression":"NOT 1", "returns":"0"},
+	{ "expression":"NOT 0", "returns":"1"}
+  ]
+}

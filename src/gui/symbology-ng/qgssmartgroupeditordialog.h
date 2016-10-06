@@ -18,12 +18,15 @@
 
 #include "ui_qgssmartgroupconditionwidget.h"
 
+/** \ingroup gui
+ * \class QgsSmartGroupCondition
+ */
 class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGroupConditionWidget
 {
     Q_OBJECT
 
   public:
-    QgsSmartGroupCondition( int id,  QWidget *parent = NULL );
+    QgsSmartGroupCondition( int id,  QWidget *parent = nullptr );
 
     //! returns the constraint key
     QString constraint();
@@ -32,10 +35,10 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
     QString parameter();
 
     //! sets the given constraint
-    void setConstraint( QString constraint );
+    void setConstraint( const QString& constraint );
 
     //! sets the given param
-    void setParameter( QString param );
+    void setParameter( const QString& param );
 
     //! sets the remove button hidden state to 'hide'
     void hideRemoveButton( bool hide );
@@ -57,14 +60,17 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
 #include "ui_qgssmartgroupeditordialogbase.h"
 //#include "qgscontexthelp.h"
 
-#include "qgsstylev2.h" //for QgsSmartConditionMap
+#include "qgsstyle.h" //for QgsSmartConditionMap
 
+/** \ingroup gui
+ * \class QgsSmartGroupEditorDialog
+ */
 class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmartGroupEditorDialogBase
 {
     Q_OBJECT
 
   public:
-    QgsSmartGroupEditorDialog( QgsStyleV2* style, QWidget* parent = NULL );
+    QgsSmartGroupEditorDialog( QgsStyle* style, QWidget* parent = nullptr );
     ~QgsSmartGroupEditorDialog();
 
     //! returns the value from mNameLineEdit
@@ -79,13 +85,13 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
 
     //! sets up the GUI for the given conditionmap
     //! @note not available in python bindings
-    void setConditionMap( QgsSmartConditionMap );
+    void setConditionMap( const QgsSmartConditionMap& );
 
     //! sets the operator AND/OR
-    void setOperator( QString );
+    void setOperator( const QString& );
 
     //! sets the smart group Name
-    void setSmartgroupName( QString );
+    void setSmartgroupName( const QString& );
 
   public slots:
 
@@ -98,7 +104,7 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
     void on_buttonBox_accepted();
 
   protected:
-    QgsStyleV2* mStyle;
+    QgsStyle* mStyle;
     // layout of the mConditionsBox
     QGridLayout *mLayout;
     // counter for the number of conditions

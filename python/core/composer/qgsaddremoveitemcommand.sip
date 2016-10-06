@@ -1,5 +1,4 @@
-/** \ingroup MapComposer
-A composer command class for adding / removing composer items. If mState == Removed, the command owns the item*/
+/** A composer command class for adding / removing composer items. If mState == Removed, the command owns the item*/
 class QgsAddRemoveItemCommand: QObject, QUndoCommand
 {
 %TypeHeaderCode

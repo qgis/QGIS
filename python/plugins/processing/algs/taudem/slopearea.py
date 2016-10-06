@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2012'
@@ -27,7 +30,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -38,7 +41,7 @@ from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 
-from TauDEMUtils import TauDEMUtils
+from .TauDEMUtils import TauDEMUtils
 
 
 class SlopeArea(GeoAlgorithm):
@@ -51,24 +54,24 @@ class SlopeArea(GeoAlgorithm):
     SLOPE_AREA_GRID = 'SLOPE_AREA_GRID'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
 
     def defineCharacteristics(self):
-        self.name = 'Slope Area Combination'
+        self.name, self.i18n_name = self.trAlgorithm('Slope Area Combination')
         self.cmdName = 'slopearea'
-        self.group = 'Stream Network Analysis tools'
+        self.group, self.i18n_group = self.trAlgorithm('Stream Network Analysis tools')
 
         self.addParameter(ParameterRaster(self.SLOPE_GRID,
-            self.tr('Slope Grid'), False))
+                                          self.tr('Slope Grid'), False))
         self.addParameter(ParameterRaster(self.AREA_GRID,
-            self.tr('Contributing Area Grid'), False))
+                                          self.tr('Contributing Area Grid'), False))
         self.addParameter(ParameterNumber(self.SLOPE_EXPONENT,
-            self.tr('Slope Exponent'), 0, None, 2))
+                                          self.tr('Slope Exponent'), 0, None, 2))
         self.addParameter(ParameterNumber(self.AREA_EXPONENT,
-            self.tr('Area Exponent'), 0, None, 1))
+                                          self.tr('Area Exponent'), 0, None, 1))
 
         self.addOutput(OutputRaster(self.SLOPE_AREA_GRID,
-            self.tr('Slope Area Grid')))
+                                    self.tr('Slope Area Grid')))
 
     def processAlgorithm(self, progress):
         commands = []

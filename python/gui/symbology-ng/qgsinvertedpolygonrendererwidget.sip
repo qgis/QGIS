@@ -1,23 +1,24 @@
-class QgsInvertedPolygonRendererWidget : QgsRendererV2Widget
+class QgsInvertedPolygonRendererWidget : QgsRendererWidget
 {
 %TypeHeaderCode
 #include <qgsinvertedpolygonrendererwidget.h>
 %End
   public:
-    /** static creation method
+    /** Static creation method
      * @param layer the layer where this renderer is applied
      * @param style
      * @param renderer the mask renderer (will take ownership)
      */
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) /Factory/;
 
     /** Constructor
      * @param layer the layer where this renderer is applied
      * @param style
      * @param renderer the mask renderer (will take ownership)
      */
-    QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
     /** @returns the current feature renderer */
-    virtual QgsFeatureRendererV2* renderer();
+    virtual QgsFeatureRenderer* renderer();
+    virtual void setContext( const QgsSymbolWidgetContext& context );
 };

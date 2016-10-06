@@ -37,7 +37,7 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
      * QGIS when it attempts to instantiate the plugin.
      * @param qI Pointer to the QgisInterface object
      */
-    QgsCompassPlugin( QgisInterface * );
+    explicit QgsCompassPlugin( QgisInterface * );
     /**
      * Virtual function to return the name of the plugin. The name will be used when presenting a list
      * of installable plugins to the user

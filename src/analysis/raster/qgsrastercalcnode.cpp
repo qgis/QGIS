@@ -13,24 +13,39 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrastercalcnode.h"
+#include "qgsrasterblock.h"
+#include "qgsrastermatrix.h"
 #include <cfloat>
 
 QgsRasterCalcNode::QgsRasterCalcNode()
     : mType( tNumber )
-    , mLeft( 0 )
-    , mRight( 0 )
+    , mLeft( nullptr )
+    , mRight( nullptr )
     , mNumber( 0 )
+    , mMatrix( nullptr )
     , mOperator( opNONE )
 {
 }
 
 QgsRasterCalcNode::QgsRasterCalcNode( double number )
     : mType( tNumber )
-    , mLeft( 0 )
-    , mRight( 0 )
+    , mLeft( nullptr )
+    , mRight( nullptr )
     , mNumber( number )
+    , mMatrix( nullptr )
     , mOperator( opNONE )
 {
+}
+
+QgsRasterCalcNode::QgsRasterCalcNode( QgsRasterMatrix* matrix )
+    : mType( tMatrix )
+    , mLeft( nullptr )
+    , mRight( nullptr )
+    , mNumber( 0 )
+    , mMatrix( matrix )
+    , mOperator( opNONE )
+{
+
 }
 
 QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode* left, QgsRasterCalcNode* right )
@@ -38,16 +53,18 @@ QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode* left, QgsR
     , mLeft( left )
     , mRight( right )
     , mNumber( 0 )
+    , mMatrix( nullptr )
     , mOperator( op )
 {
 }
 
 QgsRasterCalcNode::QgsRasterCalcNode( const QString& rasterName )
     : mType( tRasterRef )
-    , mLeft( 0 )
-    , mRight( 0 )
+    , mLeft( nullptr )
+    , mRight( nullptr )
     , mNumber( 0 )
     , mRasterName( rasterName )
+    , mMatrix( nullptr )
     , mOperator( opNONE )
 {
   if ( mRasterName.startsWith( '"' ) && mRasterName.endsWith( '"' ) )
@@ -66,34 +83,50 @@ QgsRasterCalcNode::~QgsRasterCalcNode()
   }
 }
 
-bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, QgsRasterMatrix& result ) const
+bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock* >& rasterData, QgsRasterMatrix& result, int row ) const
 {
   //if type is raster ref: return a copy of the corresponding matrix
 
   //if type is operator, call the proper matrix operations
   if ( mType == tRasterRef )
   {
-    QMap<QString, QgsRasterMatrix*>::iterator it = rasterData.find( mRasterName );
+    QMap<QString, QgsRasterBlock*>::iterator it = rasterData.find( mRasterName );
     if ( it == rasterData.end() )
     {
       return false;
     }
 
-    int nEntries = ( *it )->nColumns() * ( *it )->nRows();
-    float* data = new float[nEntries];
-    memcpy( data, ( *it )->data(), nEntries * sizeof( float ) );
-    result.setData(( *it )->nColumns(), ( *it )->nRows(), data, ( *it )->nodataValue() );
+    int nRows = ( row >= 0 ? 1 : ( *it )->height() );
+    int startRow = ( row >= 0 ? row : 0 );
+    int endRow = startRow + nRows;
+    int nCols = ( *it )->width();
+    int nEntries = nCols * nRows;
+    double* data = new double[nEntries];
+
+    //convert input raster values to double, also convert input no data to result no data
+
+    int outRow = 0;
+    for ( int dataRow = startRow; dataRow < endRow ; ++dataRow, ++outRow )
+    {
+      for ( int dataCol = 0; dataCol < nCols; ++dataCol )
+      {
+        data[ dataCol + nCols * outRow] = ( *it )->isNoData( dataRow , dataCol ) ? result.nodataValue() : ( *it )->value( dataRow, dataCol );
+      }
+    }
+    result.setData( nCols, nRows, data, result.nodataValue() );
     return true;
   }
   else if ( mType == tOperator )
   {
     QgsRasterMatrix leftMatrix, rightMatrix;
-    QgsRasterMatrix resultMatrix;
-    if ( !mLeft || !mLeft->calculate( rasterData, leftMatrix ) )
+    leftMatrix.setNodataValue( result.nodataValue() );
+    rightMatrix.setNodataValue( result.nodataValue() );
+
+    if ( !mLeft || !mLeft->calculate( rasterData, leftMatrix, row ) )
     {
       return false;
     }
-    if ( mRight && !mRight->calculate( rasterData, rightMatrix ) )
+    if ( mRight && !mRight->calculate( rasterData, rightMatrix, row ) )
     {
       return false;
     }
@@ -163,6 +196,12 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
       case opSIGN:
         leftMatrix.changeSign();
         break;
+      case opLOG:
+        leftMatrix.log();
+        break;
+      case opLOG10:
+        leftMatrix.log10();
+        break;
       default:
         return false;
     }
@@ -173,9 +212,20 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
   }
   else if ( mType == tNumber )
   {
-    float* data = new float[1];
+    double* data = new double[1];
     data[0] = mNumber;
-    result.setData( 1, 1, data, -FLT_MAX );
+    result.setData( 1, 1, data, result.nodataValue() );
+    return true;
+  }
+  else if ( mType == tMatrix )
+  {
+    int nEntries = mMatrix->nColumns() * mMatrix->nRows();
+    double* data = new double[nEntries];
+    for ( int i = 0; i < nEntries; ++i )
+    {
+      data[i] = mMatrix->data()[i] == mMatrix->nodataValue() ? result.nodataValue() : mMatrix->data()[i];
+    }
+    result.setData( mMatrix->nColumns(), mMatrix->nRows(), data, result.nodataValue() );
     return true;
   }
   return false;

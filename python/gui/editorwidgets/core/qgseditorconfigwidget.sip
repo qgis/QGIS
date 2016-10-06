@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 24.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -38,5 +38,12 @@ class QgsEditorConfigWidget : QWidget
 
     virtual QgsEditorWidgetConfig config() = 0;
     virtual void setConfig( const QgsEditorWidgetConfig& config ) = 0;
+
+  signals:
+
+    /** Emitted when the configuration of the widget is changed.
+     * @note added in QGIS 3.0
+     */
+    void changed();
 };
 

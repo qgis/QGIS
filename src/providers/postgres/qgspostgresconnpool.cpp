@@ -14,14 +14,22 @@
  ***************************************************************************/
 
 #include "qgspostgresconnpool.h"
-
 #include "qgspostgresconn.h"
+#include "qgslogger.h"
 
+QgsPostgresConnPool* QgsPostgresConnPool::sInstance = nullptr;
 
 QgsPostgresConnPool* QgsPostgresConnPool::instance()
 {
-  static QgsPostgresConnPool sInstance;
-  return &sInstance;
+  if ( !sInstance )
+    sInstance = new QgsPostgresConnPool();
+  return sInstance;
+}
+
+void QgsPostgresConnPool::cleanupInstance()
+{
+  delete sInstance;
+  sInstance = nullptr;
 }
 
 QgsPostgresConnPool::QgsPostgresConnPool() : QgsConnectionPool<QgsPostgresConn*, QgsPostgresConnPoolGroup>()

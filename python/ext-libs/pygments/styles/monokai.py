@@ -7,7 +7,7 @@
 
     http://www.monokai.nl/blog/2006/07/15/textmate-color-theme/
 
-    :copyright: Copyright 2006-2013 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2015 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
@@ -93,14 +93,14 @@ class MonokaiStyle(Style):
         String.Symbol:             "",        # class: 'ss'
 
         Generic:                   "",        # class: 'g'
-        Generic.Deleted:           "",        # class: 'gd',
+        Generic.Deleted:           "#f92672", # class: 'gd',
         Generic.Emph:              "italic",  # class: 'ge'
         Generic.Error:             "",        # class: 'gr'
         Generic.Heading:           "",        # class: 'gh'
-        Generic.Inserted:          "",        # class: 'gi'
+        Generic.Inserted:          "#a6e22e", # class: 'gi'
         Generic.Output:            "",        # class: 'go'
         Generic.Prompt:            "",        # class: 'gp'
         Generic.Strong:            "bold",    # class: 'gs'
-        Generic.Subheading:        "",        # class: 'gu'
+        Generic.Subheading:        "#75715e", # class: 'gu'
         Generic.Traceback:         "",        # class: 'gt'
     }

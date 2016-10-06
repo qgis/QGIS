@@ -18,19 +18,20 @@
 #include "qgsannotationitem.h"
 #include "qgsmapcanvas.h"
 #include "qgsrendercontext.h"
-#include "qgssymbollayerv2utils.h"
-#include "qgssymbolv2.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbol.h"
 #include <QPainter>
 #include <QPen>
 
 QgsAnnotationItem::QgsAnnotationItem( QgsMapCanvas* mapCanvas )
     : QgsMapCanvasItem( mapCanvas )
     , mMapPositionFixed( true )
+    , mMapPositionCrs( QgsCoordinateReferenceSystem() )
     , mOffsetFromReferencePoint( QPointF( 50, -50 ) )
     , mBalloonSegment( -1 )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
-  mMarkerSymbol = new QgsMarkerSymbolV2();
+  mMarkerSymbol = new QgsMarkerSymbol();
   mFrameBorderWidth = 1.0;
   mFrameColor = QColor( 0, 0, 0 );
   mFrameBackgroundColor = QColor( 255, 255, 255 );
@@ -42,7 +43,7 @@ QgsAnnotationItem::~QgsAnnotationItem()
   delete mMarkerSymbol;
 }
 
-void QgsAnnotationItem::setMarkerSymbol( QgsMarkerSymbolV2* symbol )
+void QgsAnnotationItem::setMarkerSymbol( QgsMarkerSymbol* symbol )
 {
   delete mMarkerSymbol;
   mMarkerSymbol = symbol;
@@ -52,10 +53,29 @@ void QgsAnnotationItem::setMarkerSymbol( QgsMarkerSymbolV2* symbol )
 void QgsAnnotationItem::setMapPosition( const QgsPoint& pos )
 {
   mMapPosition = pos;
+
   setPos( toCanvasCoordinates( mMapPosition ) );
+  setMapPositionCrs( mMapCanvas->mapSettings().destinationCrs() );
 }
 
-void QgsAnnotationItem::setOffsetFromReferencePoint( const QPointF& offset )
+QPointF QgsAnnotationItem::relativePosition() const
+{
+  double x = pos().x() / mMapCanvas->width();
+  double y = pos().y() / mMapCanvas->height();
+  return QPointF( x, y );
+}
+
+double QgsAnnotationItem::scaleFactor() const
+{
+  return 1.0 / mMapCanvas->logicalDpiX() * 25.4;
+}
+
+void QgsAnnotationItem::setMapPositionCrs( const QgsCoordinateReferenceSystem& crs )
+{
+  mMapPositionCrs = crs;
+}
+
+void QgsAnnotationItem::setOffsetFromReferencePoint( QPointF offset )
 {
   mOffsetFromReferencePoint = offset;
   updateBoundingRect();
@@ -85,7 +105,8 @@ void QgsAnnotationItem::updatePosition()
 {
   if ( mMapPositionFixed )
   {
-    setPos( toCanvasCoordinates( mMapPosition ) );
+    QgsCoordinateTransform t( mMapPositionCrs, mMapCanvas->mapSettings().destinationCrs() );
+    setPos( toCanvasCoordinates( t.transform( mMapPosition ) ) );
   }
   else
   {
@@ -132,7 +153,10 @@ void QgsAnnotationItem::updateBalloon()
 
   //edge list
   QList<QLineF> segmentList;
-  segmentList << segment( 0 ); segmentList << segment( 1 ); segmentList << segment( 2 ); segmentList << segment( 3 );
+  segmentList << segment( 0 );
+  segmentList << segment( 1 );
+  segmentList << segment( 2 );
+  segmentList << segment( 3 );
 
   //find  closest edge / closest edge point
   double minEdgeDist = DBL_MAX;
@@ -174,7 +198,7 @@ void QgsAnnotationItem::updateBalloon()
   mBalloonSegmentPoint2 = pointOnLineWithDistance( mBalloonSegmentPoint1, minEdge.p2(), 10 );
 }
 
-void QgsAnnotationItem::drawFrame( QPainter* p )
+void QgsAnnotationItem::drawFrame( QPainter* p ) const
 {
   QPen framePen( mFrameColor );
   framePen.setWidthF( mFrameBorderWidth );
@@ -200,7 +224,7 @@ void QgsAnnotationItem::drawFrame( QPainter* p )
   p->drawPolygon( poly );
 }
 
-void QgsAnnotationItem::setFrameSize( const QSizeF& size )
+void QgsAnnotationItem::setFrameSize( QSizeF size )
 {
   QSizeF frameSize = minimumFrameSize().expandedTo( size ); //don't allow frame sizes below minimum
   mFrameSize = frameSize;
@@ -208,7 +232,7 @@ void QgsAnnotationItem::setFrameSize( const QSizeF& size )
   updateBalloon();
 }
 
-void QgsAnnotationItem::drawMarkerSymbol( QPainter* p )
+void QgsAnnotationItem::drawMarkerSymbol( QPainter* p ) const
 {
   if ( !p )
   {
@@ -224,12 +248,12 @@ void QgsAnnotationItem::drawMarkerSymbol( QPainter* p )
   if ( mMarkerSymbol )
   {
     mMarkerSymbol->startRender( renderContext );
-    mMarkerSymbol->renderPoint( QPointF( 0, 0 ), 0, renderContext );
+    mMarkerSymbol->renderPoint( QPointF( 0, 0 ), nullptr, renderContext );
     mMarkerSymbol->stopRender( renderContext );
   }
 }
 
-void QgsAnnotationItem::drawSelectionBoxes( QPainter* p )
+void QgsAnnotationItem::drawSelectionBoxes( QPainter* p ) const
 {
   if ( !p )
   {
@@ -251,7 +275,7 @@ void QgsAnnotationItem::drawSelectionBoxes( QPainter* p )
   p->drawRect( QRectF( mBoundingRect.left(), mBoundingRect.bottom() - handlerSize, handlerSize, handlerSize ) );
 }
 
-QLineF QgsAnnotationItem::segment( int index )
+QLineF QgsAnnotationItem::segment( int index ) const
 {
   switch ( index )
   {
@@ -272,7 +296,7 @@ QLineF QgsAnnotationItem::segment( int index )
   }
 }
 
-QPointF QgsAnnotationItem::pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const
+QPointF QgsAnnotationItem::pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance ) const
 {
   double dx = directionPoint.x() - startPoint.x();
   double dy = directionPoint.y() - startPoint.y();
@@ -281,7 +305,7 @@ QPointF QgsAnnotationItem::pointOnLineWithDistance( const QPointF& startPoint, c
   return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }
 
-QgsAnnotationItem::MouseMoveAction QgsAnnotationItem::moveActionForPosition( const QPointF& pos ) const
+QgsAnnotationItem::MouseMoveAction QgsAnnotationItem::moveActionForPosition( QPointF pos ) const
 {
   QPointF itemPos = mapFromScene( pos );
 
@@ -382,7 +406,7 @@ double QgsAnnotationItem::scaledSymbolSize() const
   return dpmm * mMarkerSymbol->size();
 }
 
-void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) const
+void QgsAnnotationItem::_writeXml( QDomDocument& doc, QDomElement& itemElem ) const
 {
   if ( itemElem.isNull() )
   {
@@ -392,14 +416,16 @@ void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) co
   annotationElem.setAttribute( "mapPositionFixed", mMapPositionFixed );
   annotationElem.setAttribute( "mapPosX", qgsDoubleToString( mMapPosition.x() ) );
   annotationElem.setAttribute( "mapPosY", qgsDoubleToString( mMapPosition.y() ) );
+  if ( mMapPositionCrs.isValid() )
+    mMapPositionCrs.writeXml( annotationElem, doc );
   annotationElem.setAttribute( "offsetX", qgsDoubleToString( mOffsetFromReferencePoint.x() ) );
   annotationElem.setAttribute( "offsetY", qgsDoubleToString( mOffsetFromReferencePoint.y() ) );
-  annotationElem.setAttribute( "frameWidth", QString::number( mFrameSize.width() ) );
-  annotationElem.setAttribute( "frameHeight", QString::number( mFrameSize.height() ) );
+  annotationElem.setAttribute( "frameWidth", qgsDoubleToString( mFrameSize.width() ) );
+  annotationElem.setAttribute( "frameHeight", qgsDoubleToString( mFrameSize.height() ) );
   QPointF canvasPos = pos();
   annotationElem.setAttribute( "canvasPosX", qgsDoubleToString( canvasPos.x() ) );
   annotationElem.setAttribute( "canvasPosY", qgsDoubleToString( canvasPos.y() ) );
-  annotationElem.setAttribute( "frameBorderWidth", QString::number( mFrameBorderWidth ) );
+  annotationElem.setAttribute( "frameBorderWidth", qgsDoubleToString( mFrameBorderWidth ) );
   annotationElem.setAttribute( "frameColor", mFrameColor.name() );
   annotationElem.setAttribute( "frameColorAlpha", mFrameColor.alpha() );
   annotationElem.setAttribute( "frameBackgroundColor", mFrameBackgroundColor.name() );
@@ -407,7 +433,7 @@ void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) co
   annotationElem.setAttribute( "visible", isVisible() );
   if ( mMarkerSymbol )
   {
-    QDomElement symbolElem = QgsSymbolLayerV2Utils::saveSymbol( "marker symbol", mMarkerSymbol, doc );
+    QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( "marker symbol", mMarkerSymbol, doc );
     if ( !symbolElem.isNull() )
     {
       annotationElem.appendChild( symbolElem );
@@ -416,7 +442,7 @@ void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) co
   itemElem.appendChild( annotationElem );
 }
 
-void QgsAnnotationItem::_readXML( const QDomDocument& doc, const QDomElement& annotationElem )
+void QgsAnnotationItem::_readXml( const QDomDocument& doc, const QDomElement& annotationElem )
 {
   Q_UNUSED( doc );
   if ( annotationElem.isNull() )
@@ -431,6 +457,12 @@ void QgsAnnotationItem::_readXML( const QDomDocument& doc, const QDomElement& an
   mapPos.setX( annotationElem.attribute( "mapPosX", "0" ).toDouble() );
   mapPos.setY( annotationElem.attribute( "mapPosY", "0" ).toDouble() );
   mMapPosition = mapPos;
+
+  if ( !mMapPositionCrs.readXml( annotationElem ) )
+  {
+    mMapPositionCrs = mMapCanvas->mapSettings().destinationCrs();
+  }
+
   mFrameBorderWidth = annotationElem.attribute( "frameBorderWidth", "0.5" ).toDouble();
   mFrameColor.setNamedColor( annotationElem.attribute( "frameColor", "#000000" ) );
   mFrameColor.setAlpha( annotationElem.attribute( "frameColorAlpha", "255" ).toInt() );
@@ -447,7 +479,7 @@ void QgsAnnotationItem::_readXML( const QDomDocument& doc, const QDomElement& an
   QDomElement symbolElem = annotationElem.firstChildElement( "symbol" );
   if ( !symbolElem.isNull() )
   {
-    QgsMarkerSymbolV2* symbol = QgsSymbolLayerV2Utils::loadSymbol<QgsMarkerSymbolV2>( symbolElem );
+    QgsMarkerSymbol* symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem );
     if ( symbol )
     {
       delete mMarkerSymbol;
@@ -457,4 +489,20 @@ void QgsAnnotationItem::_readXML( const QDomDocument& doc, const QDomElement& an
 
   updateBoundingRect();
   updateBalloon();
+}
+
+void QgsAnnotationItem::setItemData( int role, const QVariant& value )
+{
+  setData( role, value );
+}
+
+void QgsAnnotationItem::paint( QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* )
+{
+  // maintain API compatibility, if annotation item subclasses only implement the paint( QPainter* ) override
+  paint( painter );
+}
+
+void QgsAnnotationItem::paint( QPainter* painter )
+{
+  Q_UNUSED( painter );
 }

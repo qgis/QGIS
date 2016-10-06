@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2012'
@@ -27,7 +30,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -39,7 +42,9 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 
-from TauDEMUtils import TauDEMUtils
+from processing.tools import dataobjects
+
+from .TauDEMUtils import TauDEMUtils
 
 
 class GridNet(GeoAlgorithm):
@@ -54,29 +59,29 @@ class GridNet(GeoAlgorithm):
     STRAHLER_GRID = 'STRAHLER_GRID'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
 
     def defineCharacteristics(self):
-        self.name = 'Grid Network'
+        self.name, self.i18n_name = self.trAlgorithm('Grid Network')
         self.cmdName = 'gridnet'
-        self.group = 'Basic Grid Analysis tools'
+        self.group, self.i18n_group = self.trAlgorithm('Basic Grid Analysis tools')
 
         self.addParameter(ParameterRaster(self.D8_FLOW_DIR_GRID,
-            self.tr('D8 Flow Direction Grid'), False))
+                                          self.tr('D8 Flow Direction Grid'), False))
         self.addParameter(ParameterVector(self.OUTLETS_SHAPE,
-            self.tr('Outlets Shapefile'),
-            [ParameterVector.VECTOR_TYPE_POINT], True))
+                                          self.tr('Outlets Shapefile'),
+                                          [dataobjects.TYPE_VECTOR_POINT], True))
         self.addParameter(ParameterRaster(self.MASK_GRID,
-            self.tr('Mask Grid'), True))
+                                          self.tr('Mask Grid'), True))
         self.addParameter(ParameterNumber(self.THRESHOLD,
-            self.tr('Mask Threshold'), 0, None, 100))
+                                          self.tr('Mask Threshold'), 0, None, 100))
 
         self.addOutput(OutputRaster(self.LONGEST_LEN_GRID,
-            self.tr('Longest Upslope Length Grid')))
+                                    self.tr('Longest Upslope Length Grid')))
         self.addOutput(OutputRaster(self.TOTAL_LEN_GRID,
-            self.tr('Total Upslope Length Grid')))
+                                    self.tr('Total Upslope Length Grid')))
         self.addOutput(OutputRaster(self.STRAHLER_GRID,
-            self.tr('Strahler Network Order Grid')))
+                                    self.tr('Strahler Network Order Grid')))
 
     def processAlgorithm(self, progress):
         commands = []

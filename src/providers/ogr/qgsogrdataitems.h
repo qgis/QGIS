@@ -27,9 +27,10 @@ class QgsOgrLayerItem : public QgsLayerItem
     ~QgsOgrLayerItem();
 
     bool setCrs( QgsCoordinateReferenceSystem crs ) override;
-    Capability capabilities() override;
+
     QString layerName() const override;
 };
+
 
 class QgsOgrDataCollectionItem : public QgsDataCollectionItem
 {

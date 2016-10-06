@@ -36,7 +36,7 @@ class DummyColorScheme : public QgsColorScheme
                                            const QColor &baseColor = QColor() ) override
     {
       QList< QPair< QColor, QString> > colors;
-      if ( context == QString( "testscheme" ) )
+      if ( context == "testscheme" )
       {
         colors << qMakePair( QColor( 255, 255, 0 ), QString( "schemetest" ) );
       }
@@ -165,6 +165,7 @@ void TestQgsColorSchemeRegistry::removeScheme()
   QVERIFY( registry->schemes().length() == 0 );
   //try removing a scheme not in the registry
   QVERIFY( !registry->removeColorScheme( recentScheme ) );
+  delete recentScheme;
 }
 
 void TestQgsColorSchemeRegistry::matchingSchemes()

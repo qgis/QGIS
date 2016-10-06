@@ -7,4 +7,4 @@ ParameterSelection|upload|Values describing the relation between two nearest fea
 ParameterTableField|column|Column where values specified by 'upload' option will be uploaded|to|-1|False
 ParameterTableField|to_column|Column name of nearest feature|to|-1|False
 ParameterBoolean|-a|Calculate distances to all features within the threshold|False
-OutputVector|output|Output layer
+OutputVector|output|Distance

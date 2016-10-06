@@ -1,0 +1,995 @@
+# See ../README.md for a description of the file format
+
+tests:
+  - name: Centroid # Human readable identifier
+    algorithm: qgis:polygoncentroids # Algorithm name
+    params: # A list of parameters (only 1 here)
+      - type: vector    # Param is a vector layer
+        name: polys.gml # file name
+    results: # A map of results (only one here)
+      OUTPUT_LAYER:
+        type: vector   # Expected result is a vector layer
+        name: expected/polys_centroid.gml # The relative filepath from the processing testdata directory
+        compare:
+          geometry:
+            precision: 7
+
+  - name: Delete Holes
+    algorithm: qgis:deleteholes
+    params:
+    - name: polys.gml
+      type: vector
+    results:
+      OUTPUT:
+        name: expected/polys_deleteholes.gml
+        type: vector
+
+  - algorithm: qgis:clip
+    name: Clip lines by polygons
+    params:
+      INPUT:
+        name: custom/lines2.gml
+        type: vector
+      OVERLAY:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_lines_by_polygon.gml
+        type: vector
+
+
+  - algorithm: qgis:clip
+    name: Clip lines by multipolygon
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      OVERLAY:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_lines_by_multipolygon.gml
+        type: vector
+
+  - algorithm: qgis:clip
+    name: Clip polygons by multipolygons
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      OVERLAY:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_polys_by_multipolygon.gml
+        type: vector
+
+  - algorithm: qgis:clip
+    name: Clip multipolygons by polygons
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      OVERLAY:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_multipolygons_by_polygons.gml
+        type: vector
+
+  - algorithm: qgis:clip
+    name: Clip points by polygons
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      OVERLAY:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_points_by_polygons.gml
+        type: vector
+
+  - algorithm: qgis:clip
+    name: Clip points by multipolygons
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      OVERLAY:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/clip_points_by_multipolygons.gml
+        type: vector
+
+
+  # These datasets should produce a geometry collection and not a polygon only
+  # dataset. If the algorithm is fixed, a new test should be introduced to
+  # check this behavior.
+  # This test should stay in place because for shapefiles there should always
+  # be a polygon result created since it does not support geometry collections.
+  - name: Intersection (Collection Fallback)
+    algorithm: qgis:intersection
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      INPUT2:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/intersection_collection_fallback.shp
+        type: vector
+
+  - name: Densify geometries
+    algorithm: qgis:densifygeometries
+    params:
+    - name: multipolys.gml
+      type: vector
+    - '4'
+    results:
+      OUTPUT:
+        name: expected/multipolys_densify.gml
+        type: vector
+
+  - name: Polygons to Lines
+    algorithm: qgis:polygonstolines
+    params:
+    - name: multipolys.gml
+      type: vector
+    results:
+      OUTPUT:
+        name: expected/polys_to_lines.gml
+        type: vector
+
+  - algorithm: qgis:basicstatisticsfornumericfields
+    name: Test (qgis:basicstatisticsfornumericfields)
+    params:
+    - name: multipolys.gml
+      type: vector
+    - 'Bfloatval'
+    results:
+      OUTPUT_HTML_FILE:
+        name: basic_statistics_numeric_float.html
+        type: regex
+        rules:
+          - 'Analyzed layer: multipolys.gml'
+          - 'Analyzed field: Bfloatval'
+          - 'Count: 3'
+          - 'Unique values: 3'
+          - 'Minimum value: -0.123'
+          - 'Maximum value: 0.123'
+          - 'Range: 0.246'
+          - 'Sum: 0.0'
+          - 'Mean value: 0.0'
+          - 'Median value: 0.0'
+          - 'Standard deviation: 0.100429079454'
+          - 'Coefficient of Variation: 0'
+          - 'Minority \(rarest occurring value\): -0.123'
+          - 'Majority \(most frequently occurring value\): -0.123'
+          - 'First quartile: -0.0615'
+          - 'Third quartile: 0.0615'
+          - 'NULL \(missing\) values: 1'
+          - 'Interquartile Range \(IQR\): 0.123'
+
+  - algorithm: qgis:basicstatisticsfortextfields
+    name: Test (qgis:basicstatisticsfortextfields)
+    params:
+    - name: multipolys.gml
+      type: vector
+    - 'Bname'
+    results:
+      OUTPUT_HTML_FILE:
+        name: expected/basic_statistics_string.html
+        type: file
+
+  # Split lines with lines considers two cases
+  # case 1: two different layers
+  - algorithm: qgis:splitlineswithlines
+    name: Split lines with lines
+    params:
+      INPUT_A:
+        name: lines.gml
+        type: vector
+      INPUT_B:
+        name: custom/lines2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_split_with_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  # case 2 split line layer with iself
+  - algorithm: qgis:splitlineswithlines
+    name: Split lines with same lines
+    params:
+      INPUT_A:
+        name: custom/lines2.gml
+        type: vector
+      INPUT_B:
+        name: custom/lines2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_split_with_same_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:addautoincrementalfield
+    name: Add autoincremental field
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/autoincrement_field.gml
+        type: vector
+
+  # Eliminate sliver polygons
+  # case 1: merge with largest area
+  - algorithm: qgis:eliminatesliverpolygons
+    name: Eliminate sliver polygons largest area
+    params:
+      ATTRIBUTE: 'fid'
+      COMPARISON: '0'
+      COMPARISONVALUE: 'polys.5'
+      INPUT:
+        name: polys.gml
+        type: vector
+      KEEPSELECTION: 'False'
+      MODE: '0'
+    results:
+      OUTPUT:
+        name: expected/eliminate_largest_area.gml
+        type: vector
+
+  # case 2: merge with smallest area
+  - algorithm: qgis:eliminatesliverpolygons
+    name: Eliminate sliver polygons smallest area
+    params:
+      ATTRIBUTE: 'fid'
+      COMPARISON: '0'
+      COMPARISONVALUE: 'polys.5'
+      INPUT:
+        name: polys.gml
+        type: vector
+      KEEPSELECTION: 'False'
+      MODE: '1'
+    results:
+      OUTPUT:
+        name: expected/eliminate_smallest_area.gml
+        type: vector
+
+  # case 3: merge with longest common boundary
+  - algorithm: qgis:eliminatesliverpolygons
+    name: Eliminate sliver polygons largest area
+    params:
+      ATTRIBUTE: 'fid'
+      COMPARISON: '0'
+      COMPARISONVALUE: 'polys.5'
+      INPUT:
+        name: polys.gml
+        type: vector
+      KEEPSELECTION: 'False'
+      MODE: '2'
+    results:
+      OUTPUT:
+        name: expected/eliminate_largest_area.gml
+        type: vector
+
+  - algorithm: qgis:dissolve
+    name: Dissolve using field
+    params:
+      DISSOLVE_ALL: false
+      FIELD: name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/dissolve_field.gml
+        type: vector
+
+  - algorithm: qgis:dissolve
+    name: Dissolve using two fields
+    params:
+      DISSOLVE_ALL: false
+      FIELD: intval;name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/dissolve_two_fields.gml
+        type: vector
+
+  - name: Dissolve with geometries reported as valid but as invalid with isGeosValid
+    algorithm: qgis:dissolve
+    params:
+      DISSOLVE_ALL: 'True'
+      FIELD: None
+      INPUT:
+        name: custom/innerRingTouchesOuterRing.gml
+        type: vector
+    results:
+      OUTPUT:
+        type: vector
+        name: expected/innerRingTouchesOuterRing_output.gml
+        compare:
+          geometry:
+            precision: 5
+
+  - name: Dissolve with NULL geometries
+    algorithm: qgis:dissolve
+    params:
+      DISSOLVE_ALL: 'True'
+      FIELD: None
+      INPUT:
+        name: custom/nullGeometryDissolve.gml
+        type: vector
+    results:
+      OUTPUT:
+        type: vector
+        name: expected/nullGeometryDissolve_output.gml
+        compare:
+          geometry:
+            precision: 7
+
+  - name: Dissolve with invalid geometries
+    algorithm: qgis:dissolve
+    params:
+      DISSOLVE_ALL: 'True'
+      FIELD: None
+      INPUT:
+        name: custom/PolygonDissolveTest.gml
+        type: vector
+    results:
+      OUTPUT:
+        type: vector
+        name: expected/PolygonDissolveTest_output.gml
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:fixeddistancebuffer
+    name: Basic polygon buffer
+    params:
+      DISSOLVE: 'False'
+      DISTANCE: 0.5
+      INPUT:
+        name: polys.gml
+        type: vector
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/buffer_polys.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:fixeddistancebuffer
+    name: Polygon buffer with dissolve
+    params:
+      DISSOLVE: 'True'
+      DISTANCE: 0.5
+      INPUT:
+        name: polys.gml
+        type: vector
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/buffer_polys_dissolve.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:rectanglesovalsdiamondsfixed
+    name: Create fixed distance rectange buffers around points
+    params:
+      HEIGHT: 0.25
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+      ROTATION: 45
+      SEGMENTS: 36
+      SHAPE: 0
+      WIDTH: 0.5
+    results:
+      OUTPUT_LAYER:
+        name: expected/rectanglesovalsdiamondsfixed.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:mergelines
+    name: Merge lines algorithm
+    params:
+      INPUT_LAYER:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/merge_lines.gml
+        type: vector
+
+  - algorithm: qgis:multiparttosingleparts
+    name: Multiparts to singleparts
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/multi_to_single.gml
+        type: vector
+
+  - algorithm: qgis:boundingboxes
+    name: Bounding boxes for lines
+    params:
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/lines_bounds.gml
+        type: vector
+
+  - algorithm: qgis:boundingboxes
+    name: Bounding boxes for multilines
+    params:
+      INPUT_LAYER:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/multiline_bounds.gml
+        type: vector
+
+  - algorithm: qgis:boundingboxes
+    name: Bounding boxes for multipolygons
+    params:
+      INPUT_LAYER:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/multipoly_bounds.gml
+        type: vector
+
+  - algorithm: qgis:boundingboxes
+    name: Bounding boxes for points
+    params:
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/point_bounds.gml
+        type: vector
+
+  - algorithm: qgis:boundingboxes
+    name: Bounding boxes for polygons
+    params:
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/poly_bounds.gml
+        type: vector
+
+  - algorithm: qgis:boundingboxes
+    name: Bounding boxes for multipoints
+    params:
+      INPUT_LAYER:
+        name: multipoints.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/multipoint_bounds.gml
+        type: vector
+
+  - algorithm: qgis:boundary
+    name: Polygon boundary
+    params:
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/poly_boundary.gml
+        type: vector
+
+  - algorithm: qgis:boundary
+    name: Multipoly boundary
+    params:
+      INPUT_LAYER:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/multipoly_boundary.gml
+        type: vector
+
+  - algorithm: qgis:boundary
+    name: Line boundary
+    params:
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/lines_boundary.gml
+        type: vector
+
+  - algorithm: qgis:boundary
+    name: Multiline boundary
+    params:
+      INPUT_LAYER:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/multiline_boundary.gml
+        type: vector
+
+  - algorithm: qgis:pointonsurface
+    name: Point on polygon surface
+    params:
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/point_on_poly.gml
+        type: vector
+
+  - algorithm: qgis:pointonsurface
+    name: Point on multipoint surface
+    params:
+      INPUT_LAYER:
+        name: multipoints.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/point_on_multipoint.gml
+        type: vector
+
+  - algorithm: qgis:pointonsurface
+    name: Point on line surface
+    params:
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/point_on_line.gml
+        type: vector
+
+  - algorithm: qgis:offsetline
+    name: Offset line positive
+    params:
+      DISTANCE: 1.0
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+    results:
+      OUTPUT_LAYER:
+        name: expected/line_offset_round_positive.gml
+        type: vector
+
+  - algorithm: qgis:offsetline
+    name: Offset line negative
+    params:
+      DISTANCE: -1.0
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+    results:
+      OUTPUT_LAYER:
+        name: expected/line_offset_round_negative.gml
+        type: vector
+
+  - algorithm: qgis:offsetline
+    name: Offset line mitre
+    params:
+      DISTANCE: 1.0
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '1'
+      MITRE_LIMIT: 2
+      SEGMENTS: 4
+    results:
+      OUTPUT_LAYER:
+        name: expected/line_offset_mitre.gml
+        type: vector
+
+  - algorithm: qgis:offsetline
+    name: Offset line bevel
+    params:
+      DISTANCE: 1.0
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '2'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+    results:
+      OUTPUT_LAYER:
+        name: expected/line_offset_bevel.gml
+        type: vector
+
+  - algorithm: qgis:offsetline
+    name: Offset multilines
+    params:
+      DISTANCE: 1.0
+      INPUT_LAYER:
+        name: multilines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+    results:
+      OUTPUT_LAYER:
+        name: expected/multiline_offset.gml
+        type: vector
+
+  - algorithm: qgis:fixeddistancebuffer
+    name: Buffer polygons using bevel
+    params:
+      DISSOLVE: false
+      DISTANCE: 1.0
+      END_CAP_STYLE: '0'
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN_STYLE: '2'
+      MITRE_LIMIT: 2
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/buffer_polys_bevel.gml
+        type: vector
+
+  - algorithm: qgis:fixeddistancebuffer
+    name: Buffer polygons using mitre
+    params:
+      DISSOLVE: false
+      DISTANCE: 1.0
+      END_CAP_STYLE: '0'
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN_STYLE: '1'
+      MITRE_LIMIT: 2
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/buffer_polys_mitre.gml
+        type: vector
+
+  - algorithm: qgis:fixeddistancebuffer
+    name: Buffer lines
+    params:
+      DISSOLVE: false
+      DISTANCE: 1.0
+      END_CAP_STYLE: '0'
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/buffer_lines.gml
+        type: vector
+
+  - algorithm: qgis:fixeddistancebuffer
+    name: Buffer lines (flat)
+    params:
+      DISSOLVE: false
+      DISTANCE: 1.0
+      END_CAP_STYLE: '1'
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/buffer_lines_flat.gml
+        type: vector
+
+  - algorithm: qgis:fixeddistancebuffer
+    name: Buffer lines (square)
+    params:
+      DISSOLVE: false
+      DISTANCE: 1.0
+      END_CAP_STYLE: '2'
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/buffer_lines_square.gml
+        type: vector
+
+  - algorithm: qgis:centroids
+    name: Test (qgis:centroids)
+    params:
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_lines.gml
+        type: vector
+
+  - algorithm: qgis:centroids
+    name: Test (qgis:centroids)
+    params:
+      INPUT_LAYER:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_multilines.gml
+        type: vector
+
+  - algorithm: qgis:centroids
+    name: Test (qgis:centroids)
+    params:
+      INPUT_LAYER:
+        name: multipoints.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_multipoint.gml
+        type: vector
+
+  - algorithm: qgis:centroids
+    name: Test (qgis:centroids)
+    params:
+      INPUT_LAYER:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_multipolys.gml
+        type: vector
+
+  - algorithm: qgis:centroids
+    name: Test (qgis:centroids)
+    params:
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_points.gml
+        type: vector
+
+  - algorithm: qgis:centroids
+    name: Test (qgis:centroids)
+    params:
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_polys.gml
+        type: vector
+
+  - algorithm: qgis:translategeometry
+    name: Lines translated
+    params:
+      DELTA_X: 0.1
+      DELTA_Y: -0.2
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/lines_translated.gml
+        type: vector
+
+
+  - algorithm: qgis:singlesidedbuffer
+    name: Single sided buffer lines (left, round)
+    params:
+      DISTANCE: 1.0
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '0'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+      SIDE: '0'
+    results:
+      OUTPUT_LAYER:
+        name: expected/single_sided_buffer_line.gml
+        type: vector
+
+  - algorithm: qgis:singlesidedbuffer
+    name: Single sided buffer lines (Right, mitre)
+    params:
+      DISTANCE: 1.0
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: '1'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+      SIDE: '1'
+    results:
+      OUTPUT_LAYER:
+        name: expected/single_sided_buffer_line_mitre.gml
+        type: vector
+
+  - algorithm: qgis:singlesidedbuffer
+    name: Single sided buffer multiline (bevel)
+    params:
+      DISTANCE: 1.0
+      INPUT_LAYER:
+        name: multilines.gml
+        type: vector
+      JOIN_STYLE: '2'
+      MITRE_LIMIT: 2
+      SEGMENTS: 8
+      SIDE: '0'
+    results:
+      OUTPUT_LAYER:
+        name: expected/single_sided_buffer_multiline_bevel.gml
+        type: vector
+
+
+  - algorithm: qgis:extractnodes
+    name: Test (qgis:extractnodes)
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_nodes_multipolys.gml
+        type: vector
+
+  - algorithm: qgis:extractnodes
+    name: Test (qgis:extractnodes)
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_nodes_polys.gml
+        type: vector
+
+  - algorithm: qgis:extractnodes
+    name: Test (qgis:extractnodes)
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_nodes_multilines.gml
+        type: vector
+
+  - algorithm: qgis:extractnodes
+    name: Test (qgis:extractnodes)
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_nodes_lines.gml
+        type: vector
+
+  - algorithm: qgis:simplifygeometries
+    name: Simplify (lines)
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/simplify_lines.gml
+        type: vector
+
+  - algorithm: qgis:simplifygeometries
+    name: Simplify (multilines)
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/simplify_multilines.gml
+        type: vector
+
+  - algorithm: qgis:simplifygeometries
+    name: Simplify (visval)
+    params:
+      INPUT:
+        name: simplify_lines.gml
+        type: vector
+      METHOD: '2'
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/simplify_vis_lines.gml
+        type: vector
+
+  - algorithm: qgis:simplifygeometries
+    name: Simplify (grid)
+    params:
+      INPUT:
+        name: simplify_lines.gml
+        type: vector
+      METHOD: '1'
+      TOLERANCE: 5.0
+    results:
+      OUTPUT:
+        name: expected/simplify_grid_lines.gml
+        type: vector
+
+  - algorithm: qgis:smoothgeometry
+    name: Smooth (lines)
+    params:
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      ITERATIONS: 1
+      MAX_ANGLE: 180.0
+      OFFSET: 0.25
+    results:
+      OUTPUT_LAYER:
+        name: expected/smoothed_lines.gml
+        type: vector
+
+  - algorithm: qgis:smoothgeometry
+    name: Smooth (lines, with max angle)
+    params:
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      ITERATIONS: 1
+      MAX_ANGLE: 60.0
+      OFFSET: 0.25
+    results:
+      OUTPUT_LAYER:
+        name: expected/smoothed_lines_max_angle.gml
+        type: vector

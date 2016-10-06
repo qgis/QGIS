@@ -4,7 +4,7 @@
 ***************************************************************************
     txt2lasPro.py
     ---------------------
-    Date                 : October 2014
+    Date                 : October 2014 and May 2016
     Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'October 2014'
@@ -24,12 +27,13 @@ __copyright__ = '(C) 2014, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
+
 
 class txt2lasPro(LAStoolsAlgorithm):
 
@@ -49,23 +53,23 @@ class txt2lasPro(LAStoolsAlgorithm):
     SP = "SP"
 
     def defineCharacteristics(self):
-        self.name = "txt2lasPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('txt2lasPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersGenericInputFolderGUI("*.txt")
         self.addParameter(ParameterString(txt2lasPro.PARSE,
-            self.tr("parse lines as"), "xyz"))
+                                          self.tr("parse lines as"), "xyz"))
         self.addParameter(ParameterNumber(txt2lasPro.SKIP,
-            self.tr("skip the first n lines"), 0, None, 0))
+                                          self.tr("skip the first n lines"), 0, None, 0))
         self.addParameter(ParameterNumber(txt2lasPro.SCALE_FACTOR_XY,
-            self.tr("resolution of x and y coordinate"), 0, None, 0.01))
+                                          self.tr("resolution of x and y coordinate"), 0, None, 0.01))
         self.addParameter(ParameterNumber(txt2lasPro.SCALE_FACTOR_Z,
-            self.tr("resolution of z coordinate"), 0, None, 0.01))
+                                          self.tr("resolution of z coordinate"), 0, None, 0.01))
         self.addParameter(ParameterSelection(txt2lasPro.PROJECTION,
-            self.tr("projection"), txt2lasPro.PROJECTIONS, 0))
+                                             self.tr("projection"), txt2lasPro.PROJECTIONS, 0))
         self.addParameter(ParameterSelection(txt2lasPro.UTM,
-            self.tr("utm zone"), txt2lasPro.UTM_ZONES, 0))
+                                             self.tr("utm zone"), txt2lasPro.UTM_ZONES, 0))
         self.addParameter(ParameterSelection(txt2lasPro.SP,
-            self.tr("state plane code"), txt2lasPro.STATE_PLANES, 0))
+                                             self.tr("state plane code"), txt2lasPro.STATE_PLANES, 0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -74,7 +78,10 @@ class txt2lasPro(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "txt2las")]
+        if (LAStoolsUtils.hasWine()):
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "txt2las.exe")]
+        else:
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "txt2las")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
         parse_string = self.getParameterValue(txt2lasPro.PARSE)

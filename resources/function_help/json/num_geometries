@@ -1,0 +1,7 @@
+{
+  "name": "num_geometries",
+  "type": "function",
+  "description": "Returns the number of geometries in a geometry collection, or null if the input geometry is not a collection.",
+  "arguments": [ {"arg":"geometry","description":"geometry collection"} ],
+  "examples": [ { "expression":"num_geometries(geom_from_wkt('GEOMETRYCOLLECTION(POINT(0 1), POINT(0 0), POINT(1 0), POINT(1 1))'))'),3))", "returns":"4"}]
+}

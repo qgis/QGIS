@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>348</width>
-    <height>266</height>
+    <height>304</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,19 +25,25 @@
      <property name="sizeConstraint">
       <enum>QLayout::SetNoConstraint</enum>
      </property>
-     <item row="0" column="0" colspan="2">
-      <widget class="QCheckBox" name="inputSelLayersCheck">
+     <item row="10" column="0" colspan="2">
+      <widget class="QCheckBox" name="allowProjDiffCheck">
        <property name="text">
-        <string>Use visible raster layers for input</string>
+        <string>Allow projection difference</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="0" colspan="2">
-      <widget class="QCheckBox" name="inputDirCheck">
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Choose input directory instead of files</string>
+        <string>&amp;Output file</string>
+       </property>
+       <property name="buddy">
+        <cstring>outSelector</cstring>
        </property>
       </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="GdalToolsInOutSelector" name="inSelector" native="true"/>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label">
@@ -49,20 +55,34 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
-      <widget class="QCheckBox" name="recurseCheck">
+     <item row="8" column="0">
+      <widget class="QCheckBox" name="separateCheck">
        <property name="text">
-        <string>Recurse subdirectories</string>
+        <string>Se&amp;parate</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_2">
+     <item row="1" column="0" colspan="2">
+      <widget class="QCheckBox" name="inputDirCheck">
        <property name="text">
-        <string>&amp;Output file</string>
+        <string>Choose input directory instead of files</string>
        </property>
-       <property name="buddy">
-        <cstring>outSelector</cstring>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="GdalToolsInOutSelector" name="outSelector" native="true"/>
+     </item>
+     <item row="7" column="0">
+      <widget class="QCheckBox" name="targetSRSCheck">
+       <property name="text">
+        <string>Target SRS</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" colspan="2">
+      <widget class="QCheckBox" name="inputSelLayersCheck">
+       <property name="text">
+        <string>Use visible raster layers for input</string>
        </property>
       </widget>
      </item>
@@ -108,33 +128,31 @@
        </property>
       </widget>
      </item>
+     <item row="3" column="1">
+      <widget class="QCheckBox" name="recurseCheck">
+       <property name="text">
+        <string>Recurse subdirectories</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLineEdit" name="targetSRSEdit"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="selectTargetSRSButton">
+         <property name="text">
+          <string>Select</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
      <item row="6" column="1">
-      <widget class="QSpinBox" name="srcNoDataSpin">
-       <property name="minimum">
-        <number>-100000</number>
-       </property>
-       <property name="maximum">
-        <number>65000</number>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QCheckBox" name="separateCheck">
+      <widget class="QLineEdit" name="noDataEdit">
        <property name="text">
-        <string>Se&amp;parate</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="GdalToolsInOutSelector" name="inSelector" native="true"/>
-     </item>
-     <item row="4" column="1">
-      <widget class="GdalToolsInOutSelector" name="outSelector" native="true"/>
-     </item>
-     <item row="8" column="0" colspan="2">
-      <widget class="QCheckBox" name="allowProjDiffCheck">
-       <property name="text">
-        <string>Allow projection difference</string>
+        <string>0</string>
        </property>
       </widget>
      </item>
@@ -146,7 +164,7 @@
   <customwidget>
    <class>GdalToolsInOutSelector</class>
    <extends>QWidget</extends>
-   <header>inOutSelector</header>
+   <header>.inOutSelector</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

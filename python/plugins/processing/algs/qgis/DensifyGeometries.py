@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
@@ -25,13 +26,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis, QgsFeature, QgsGeometry, QgsPoint
+import os
+
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class DensifyGeometries(GeoAlgorithm):
@@ -41,42 +46,40 @@ class DensifyGeometries(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Densify geometries'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Densify geometries')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'),
-            [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'),
+                                          [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.VERTICES,
-            self.tr('Vertices to add'), 1, 10000000, 1))
+                                          self.tr('Vertices to add'), 1, 10000000, 1))
 
         self.addOutput(OutputVector(self.OUTPUT,
-            self.tr('Densified layer')))
+                                    self.tr('Densified')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         vertices = self.getParameterValue(self.VERTICES)
 
-        isPolygon = layer.geometryType() == QGis.Polygon
+        isPolygon = layer.geometryType() == QgsWkbTypes.PolygonGeometry
 
         writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
+            self.OUTPUT).getVectorWriter(layer.fields().toList(),
                                          layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-        current = 0
-        for f in features:
-            featGeometry = QgsGeometry(f.geometry())
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
+            featGeometry = f.geometry()
             attrs = f.attributes()
             newGeometry = self.densifyGeometry(featGeometry, int(vertices),
-                    isPolygon)
+                                               isPolygon)
             feature = QgsFeature()
             feature.setGeometry(newGeometry)
             feature.setAttributes(attrs)
             writer.addFeature(feature)
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer
@@ -110,15 +113,12 @@ class DensifyGeometries(GeoAlgorithm):
 
     def densify(self, polyline, pointsNumber):
         output = []
-        if pointsNumber != 1:
-            multiplier = 1.0 / float(pointsNumber + 1)
-        else:
-            multiplier = 1
-        for i in xrange(len(polyline) - 1):
+        multiplier = 1.0 / float(pointsNumber + 1)
+        for i in range(len(polyline) - 1):
             p1 = polyline[i]
             p2 = polyline[i + 1]
             output.append(p1)
-            for j in xrange(pointsNumber):
+            for j in range(pointsNumber):
                 delta = multiplier * (j + 1)
                 x = p1.x() + delta * (p2.x() - p1.x())
                 y = p1.y() + delta * (p2.y() - p1.y())

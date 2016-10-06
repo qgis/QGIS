@@ -23,9 +23,11 @@
 #include <QColor>
 #include <QDate>
 #include <QTime>
+#include <QLocale>
 #include <QDateTime>
 #include "qgsconfig.h"
 #include "qgslogger.h"
+#include "geometry/qgswkbtypes.h"
 
 #include <ogr_api.h>
 
@@ -33,25 +35,25 @@
 //
 
 // Version string
-const char* QGis::QGIS_VERSION = VERSION;
+QString Qgis::QGIS_VERSION( QString::fromUtf8( VERSION ) );
 
 // development version
-const char* QGis::QGIS_DEV_VERSION = QGSVERSION;
+const char* Qgis::QGIS_DEV_VERSION = QGSVERSION;
 
 // Version number used for comparing versions using the
 // "Check QGIS Version" function
-const int QGis::QGIS_VERSION_INT = VERSION_INT;
+const int Qgis::QGIS_VERSION_INT = VERSION_INT;
 
 // Release name
-const char* QGis::QGIS_RELEASE_NAME = RELEASE_NAME;
+QString Qgis::QGIS_RELEASE_NAME( QString::fromUtf8( RELEASE_NAME ) );
 
 #if GDAL_VERSION_NUM >= 1800
-const CORE_EXPORT QString GEOPROJ4 = "+proj=longlat +datum=WGS84 +no_defs";
+const QString GEOPROJ4 = "+proj=longlat +datum=WGS84 +no_defs";
 #else
-const CORE_EXPORT QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+const QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 #endif
 
-const CORE_EXPORT QString GEOWKT =
+const QString GEOWKT =
   "GEOGCS[\"WGS 84\", "
   "  DATUM[\"WGS_1984\", "
   "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
@@ -64,124 +66,40 @@ const CORE_EXPORT QString GEOWKT =
   "  AXIS[\"Long\",EAST], "
   "  AUTHORITY[\"EPSG\",4326]]";
 
-const CORE_EXPORT QString PROJECT_SCALES =
+const QString PROJECT_SCALES =
   "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
   "1:10000,1:5000,1:2500,1:1000,1:500";
 
-const CORE_EXPORT QString GEO_EPSG_CRS_AUTHID = "EPSG:4326";
+const QString GEO_EPSG_CRS_AUTHID = "EPSG:4326";
 
-const CORE_EXPORT QString GEO_NONE = "NONE";
+const QString GEO_NONE = "NONE";
 
-const double QGis::DEFAULT_IDENTIFY_RADIUS = 0.5;
-const double QGis::DEFAULT_SEARCH_RADIUS_MM = 2.;
+const double Qgis::DEFAULT_SEARCH_RADIUS_MM = 2.;
 
 //! Default threshold between map coordinates and device coordinates for map2pixel simplification
-const float QGis::DEFAULT_MAPTOPIXEL_THRESHOLD = 1.0f;
+const float Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD = 1.0f;
 
-const QColor QGis::DEFAULT_HIGHLIGHT_COLOR = QColor( 255, 0, 0, 128 );
+const QColor Qgis::DEFAULT_HIGHLIGHT_COLOR = QColor( 255, 0, 0, 128 );
 
-double QGis::DEFAULT_HIGHLIGHT_BUFFER_MM = 0.5;
+double Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM = 0.5;
 
-double QGis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM = 1.0;
+double Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM = 1.0;
 
-// description strings for units
-// Order must match enum indices
-const char* QGis::qgisUnitTypes[] =
+double Qgis::SCALE_PRECISION = 0.9999999999;
+
+
+double qgsPermissiveToDouble( QString string, bool &ok )
 {
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "meters" ),
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "feet" ),
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" ),
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "<unknown>" ),
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" ),
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" ),
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" ),
-  QT_TRANSLATE_NOOP( "QGis::UnitType", "nautical miles" )
-};
-
-QGis::UnitType QGis::fromLiteral( QString literal, QGis::UnitType defaultType )
-{
-  for ( unsigned int i = 0; i < ( sizeof( qgisUnitTypes ) / sizeof( qgisUnitTypes[0] ) ); i++ )
-  {
-    if ( literal == qgisUnitTypes[ i ] )
-    {
-      return static_cast<UnitType>( i );
-    }
-  }
-  return defaultType;
+  //remove any thousands separators
+  string.remove( QLocale::system().groupSeparator() );
+  return QLocale::system().toDouble( string, &ok );
 }
 
-QString QGis::toLiteral( QGis::UnitType unit )
+int qgsPermissiveToInt( QString string, bool &ok )
 {
-  return QString( qgisUnitTypes[ static_cast<int>( unit )] );
-}
-
-QString QGis::tr( QGis::UnitType unit )
-{
-  return QCoreApplication::translate( "QGis::UnitType", qPrintable( toLiteral( unit ) ) );
-}
-
-QGis::UnitType QGis::fromTr( QString literal, QGis::UnitType defaultType )
-{
-  for ( unsigned int i = 0; i < ( sizeof( qgisUnitTypes ) / sizeof( qgisUnitTypes[0] ) ); i++ )
-  {
-    if ( literal == QGis::tr( static_cast<UnitType>( i ) ) )
-    {
-      return static_cast<UnitType>( i );
-    }
-  }
-  return defaultType;
-}
-
-double QGis::fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit )
-{
-#define DEGREE_TO_METER 111319.49079327358
-#define FEET_TO_METER 0.3048
-#define NMILE_TO_METER 1852.0
-
-  // Unify degree units
-  if ( fromUnit == QGis::DecimalDegrees || fromUnit == QGis::DegreesMinutesSeconds || fromUnit == QGis::DegreesDecimalMinutes )
-    fromUnit = QGis::Degrees;
-  if ( toUnit == QGis::DecimalDegrees || toUnit == QGis::DegreesMinutesSeconds || toUnit == QGis::DegreesDecimalMinutes )
-    toUnit = QGis::Degrees;
-
-  // Calculate the conversion factor between the specified units
-  if ( fromUnit != toUnit && fromUnit != QGis::UnknownUnit && toUnit != QGis::UnknownUnit )
-  {
-    switch ( fromUnit )
-    {
-      case QGis::Meters:
-      {
-        if ( toUnit == QGis::Feet ) return 1.0 / FEET_TO_METER;
-        if ( toUnit == QGis::Degrees ) return 1.0 / DEGREE_TO_METER;
-        if ( toUnit == QGis::NauticalMiles ) return 1.0 / NMILE_TO_METER;
-        break;
-      }
-      case QGis::Feet:
-      {
-        if ( toUnit == QGis::Meters ) return FEET_TO_METER;
-        if ( toUnit == QGis::Degrees ) return FEET_TO_METER / DEGREE_TO_METER;
-        if ( toUnit == QGis::NauticalMiles ) return FEET_TO_METER / NMILE_TO_METER;
-        break;
-      }
-      case QGis::Degrees:
-      {
-        if ( toUnit == QGis::Meters ) return DEGREE_TO_METER;
-        if ( toUnit == QGis::Feet ) return DEGREE_TO_METER / FEET_TO_METER;
-        if ( toUnit == QGis::NauticalMiles ) return DEGREE_TO_METER / NMILE_TO_METER;
-        break;
-      }
-      case QGis::NauticalMiles:
-      {
-        if ( toUnit == QGis::Meters ) return NMILE_TO_METER;
-        if ( toUnit == QGis::Feet ) return NMILE_TO_METER / FEET_TO_METER;
-        if ( toUnit == QGis::Degrees ) return NMILE_TO_METER / DEGREE_TO_METER;
-        break;
-      }
-      case QGis::UnknownUnit:
-        break;
-    }
-  }
-  return 1.0;
+  //remove any thousands separators
+  string.remove( QLocale::system().groupSeparator() );
+  return QLocale::system().toInt( string, &ok );
 }
 
 void *qgsMalloc( size_t size )
@@ -189,10 +107,10 @@ void *qgsMalloc( size_t size )
   if ( size == 0 || long( size ) < 0 )
   {
     QgsDebugMsg( QString( "Negative or zero size %1." ).arg( size ) );
-    return NULL;
+    return nullptr;
   }
   void *p = malloc( size );
-  if ( p == NULL )
+  if ( !p )
   {
     QgsDebugMsg( QString( "Allocation of %1 bytes failed." ).arg( size ) );
   }
@@ -204,10 +122,10 @@ void *qgsCalloc( size_t nmemb, size_t size )
   if ( nmemb == 0 || long( nmemb ) < 0 || size == 0 || long( size ) < 0 )
   {
     QgsDebugMsg( QString( "Negative or zero nmemb %1 or size %2." ).arg( nmemb ).arg( size ) );
-    return NULL;
+    return nullptr;
   }
   void *p = qgsMalloc( nmemb * size );
-  if ( p != NULL )
+  if ( p )
   {
     memset( p, 0, nmemb * size );
   }
@@ -221,6 +139,14 @@ void qgsFree( void *ptr )
 
 bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs )
 {
+  // invalid < NULL < any value
+  if ( !lhs.isValid() )
+    return rhs.isValid();
+  else if ( lhs.isNull() )
+    return rhs.isValid() && !rhs.isNull();
+  else if ( !rhs.isValid() || rhs.isNull() )
+    return false;
+
   switch ( lhs.type() )
   {
     case QVariant::Int:
@@ -241,6 +167,39 @@ bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs )
       return lhs.toTime() < rhs.toTime();
     case QVariant::DateTime:
       return lhs.toDateTime() < rhs.toDateTime();
+    case QVariant::Bool:
+      return lhs.toBool() < rhs.toBool();
+
+    case QVariant::List:
+    {
+      const QList<QVariant> &lhsl = lhs.toList();
+      const QList<QVariant> &rhsl = rhs.toList();
+
+      int i, n = qMin( lhsl.size(), rhsl.size() );
+      for ( i = 0; i < n && lhsl[i].type() == rhsl[i].type() && lhsl[i].isNull() == rhsl[i].isNull() && lhsl[i] == rhsl[i]; i++ )
+        ;
+
+      if ( i == n )
+        return lhsl.size() < rhsl.size();
+      else
+        return qgsVariantLessThan( lhsl[i], rhsl[i] );
+    }
+
+    case QVariant::StringList:
+    {
+      const QStringList &lhsl = lhs.toStringList();
+      const QStringList &rhsl = rhs.toStringList();
+
+      int i, n = qMin( lhsl.size(), rhsl.size() );
+      for ( i = 0; i < n && lhsl[i] == rhsl[i]; i++ )
+        ;
+
+      if ( i == n )
+        return lhsl.size() < rhsl.size();
+      else
+        return lhsl[i] < rhsl[i];
+    }
+
     default:
       return QString::localeAwareCompare( lhs.toString(), rhs.toString() ) < 0;
   }
@@ -251,7 +210,7 @@ bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs )
   return ! qgsVariantLessThan( lhs, rhs );
 }
 
-QString qgsVsiPrefix( QString path )
+QString qgsVsiPrefix( const QString& path )
 {
   if ( path.startsWith( "/vsizip/", Qt::CaseInsensitive ) ||
        path.endsWith( ".zip", Qt::CaseInsensitive ) )

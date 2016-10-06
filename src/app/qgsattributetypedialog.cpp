@@ -43,9 +43,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
     , mFieldIdx( fieldIdx )
 {
   setupUi( this );
-  setWindowTitle( tr( "Edit Widget Properties - %1 (%2)" ).arg( vl->pendingFields()[fieldIdx].name() ).arg( vl->name() ) );
-
-  connect( selectionListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( setStackPage( int ) ) );
+  setWindowTitle( tr( "Edit Widget Properties - %1 (%2)" ).arg( vl->fields().at( fieldIdx ).name(), vl->name() ) );
 
   QMapIterator<QString, QgsEditorWidgetFactory*> it( QgsEditorWidgetRegistry::instance()->factories() );
   while ( it.hasNext() )
@@ -65,14 +63,18 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   selectionListWidget->setMaximumWidth( selectionListWidget->sizeHintForColumn( 0 )
                                         + 2 );
 
-  if ( vl->pendingFields().fieldOrigin( fieldIdx ) == QgsFields::OriginJoin ||
-       vl->pendingFields().fieldOrigin( fieldIdx ) == QgsFields::OriginExpression )
+  if ( vl->fields().fieldOrigin( fieldIdx ) == QgsFields::OriginJoin ||
+       vl->fields().fieldOrigin( fieldIdx ) == QgsFields::OriginExpression )
   {
     isFieldEditableCheckBox->setEnabled( false );
   }
 
+  connect( mExpressionWidget, SIGNAL( expressionChanged( QString ) ), this, SLOT( defaultExpressionChanged() ) );
+
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/QgsAttributeTypeDialog/geometry" ).toByteArray() );
+
+  constraintExpressionWidget->setLayer( vl );
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
@@ -80,10 +82,10 @@ QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
   QSettings settings;
   settings.setValue( "/Windows/QgsAttributeTypeDialog/geometry", saveGeometry() );
 
-  qDeleteAll( mEditorConfigWidgets.values() );
+  qDeleteAll( mEditorConfigWidgets );
 }
 
-const QString QgsAttributeTypeDialog::editorWidgetV2Type()
+const QString QgsAttributeTypeDialog::editorWidgetType()
 {
   QListWidgetItem* item = selectionListWidget->currentItem();
   if ( item )
@@ -96,7 +98,7 @@ const QString QgsAttributeTypeDialog::editorWidgetV2Type()
   }
 }
 
-const QString QgsAttributeTypeDialog::editorWidgetV2Text()
+const QString QgsAttributeTypeDialog::editorWidgetText()
 {
   QListWidgetItem* item = selectionListWidget->currentItem();
   if ( item )
@@ -109,7 +111,7 @@ const QString QgsAttributeTypeDialog::editorWidgetV2Text()
   }
 }
 
-const QgsEditorWidgetConfig QgsAttributeTypeDialog::editorWidgetV2Config()
+const QgsEditorWidgetConfig QgsAttributeTypeDialog::editorWidgetConfig()
 {
   QListWidgetItem* item = selectionListWidget->currentItem();
   if ( item )
@@ -125,7 +127,7 @@ const QgsEditorWidgetConfig QgsAttributeTypeDialog::editorWidgetV2Config()
   return QgsEditorWidgetConfig();
 }
 
-void QgsAttributeTypeDialog::setWidgetV2Type( const QString& type )
+void QgsAttributeTypeDialog::setWidgetType( const QString& type )
 {
   for ( int i = 0; i < selectionListWidget->count(); i++ )
   {
@@ -147,32 +149,76 @@ void QgsAttributeTypeDialog::setWidgetV2Type( const QString& type )
 
     if ( cfgWdg )
     {
-      cfgWdg->setConfig( mWidgetV2Config );
+      cfgWdg->setConfig( mWidgetConfig );
 
       stackedWidget->addWidget( cfgWdg );
       stackedWidget->setCurrentWidget( cfgWdg );
       mEditorConfigWidgets.insert( type, cfgWdg );
+      connect( cfgWdg, SIGNAL( changed() ), this, SLOT( defaultExpressionChanged() ) );
     }
     else
     {
       QgsDebugMsg( "Oops, couldn't create editor widget config dialog..." );
     }
   }
+
+  //update default expression preview
+  defaultExpressionChanged();
 }
 
-void QgsAttributeTypeDialog::setWidgetV2Config( const QgsEditorWidgetConfig& config )
+void QgsAttributeTypeDialog::setWidgetConfig( const QgsEditorWidgetConfig& config )
 {
-  mWidgetV2Config = config;
+  mWidgetConfig = config;
 }
 
-bool QgsAttributeTypeDialog::fieldEditable()
+bool QgsAttributeTypeDialog::fieldEditable() const
 {
   return isFieldEditableCheckBox->isChecked();
 }
 
-bool QgsAttributeTypeDialog::labelOnTop()
+void QgsAttributeTypeDialog::setNotNull( bool notNull )
+{
+  notNullCheckBox->setChecked( notNull );
+}
+
+bool QgsAttributeTypeDialog::labelOnTop() const
 {
   return labelOnTopCheckBox->isChecked();
+}
+
+void QgsAttributeTypeDialog::setConstraintExpressionDescription( const QString &desc )
+{
+  leConstraintExpressionDescription->setText( desc );
+}
+
+QString QgsAttributeTypeDialog::constraintExpressionDescription()
+{
+  return leConstraintExpressionDescription->text();
+}
+
+bool QgsAttributeTypeDialog::notNull() const
+{
+  return notNullCheckBox->isChecked();
+}
+
+void QgsAttributeTypeDialog::setConstraintExpression( const QString &str )
+{
+  constraintExpressionWidget->setField( str );
+}
+
+QString QgsAttributeTypeDialog::defaultValueExpression() const
+{
+  return mExpressionWidget->expression();
+}
+
+void QgsAttributeTypeDialog::setDefaultValueExpression( const QString& expression )
+{
+  mExpressionWidget->setExpression( expression );
+}
+
+QString QgsAttributeTypeDialog::constraintExpression() const
+{
+  return constraintExpressionWidget->asExpression();
 }
 
 void QgsAttributeTypeDialog::setFieldEditable( bool editable )
@@ -189,5 +235,52 @@ void QgsAttributeTypeDialog::on_selectionListWidget_currentRowChanged( int index
 {
   const QString editType = selectionListWidget->item( index )->data( Qt::UserRole ).toString();
 
-  setWidgetV2Type( editType );
+  setWidgetType( editType );
+}
+
+void QgsAttributeTypeDialog::defaultExpressionChanged()
+{
+  QString expression = mExpressionWidget->expression();
+  if ( expression.isEmpty() )
+  {
+    mDefaultPreviewLabel->setText( QString() );
+    return;
+  }
+
+  QgsExpressionContext context = mLayer->createExpressionContext();
+
+  if ( !mPreviewFeature.isValid() )
+  {
+    // get first feature
+    QgsFeatureIterator it = mLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) );
+    it.nextFeature( mPreviewFeature );
+  }
+
+  context.setFeature( mPreviewFeature );
+
+  QgsExpression exp = QgsExpression( expression );
+  exp.prepare( &context );
+
+  if ( exp.hasParserError() )
+  {
+    mDefaultPreviewLabel->setText( "<i>" + exp.parserErrorString() + "</i>" );
+    return;
+  }
+
+  QVariant val = exp.evaluate( &context );
+  if ( exp.hasEvalError() )
+  {
+    mDefaultPreviewLabel->setText( "<i>" + exp.evalErrorString() + "</i>" );
+    return;
+  }
+
+  QString previewText = val.toString();
+
+  QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( editorWidgetType() );
+  if ( factory )
+  {
+    previewText = factory->representValue( mLayer, mFieldIdx, editorWidgetConfig(), QVariant(), val );
+  }
+
+  mDefaultPreviewLabel->setText( "<i>" + previewText + "</i>" );
 }

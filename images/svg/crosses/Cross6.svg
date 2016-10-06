@@ -6,11 +6,11 @@
 ]>
 <svg  width="84.676pt" height="85.03pt" viewBox="0 0 84.676 85.03" xml:space="preserve">
 	<g id="Layer_x0020_1" style="&st0;">
-		<path d="M83.968,7.248H0.708v70.18h83.261V7.248z"/>
-		<path d="M77.428,0.707H7.248v83.261h70.181V0.707z"/>
+		<path d="M83.968,7.248H0.708v70.18h83.261V7.248z" stroke="param(fill)" stroke-opacity="param(fill-opacity)" />
+		<path d="M77.428,0.707H7.248v83.261h70.181V0.707z" stroke="param(fill)" stroke-opacity="param(fill-opacity)"/>
 		<g style="&st1;">
-			<path d="M77.605,84.323L0.884,7.602l6.364-6.364l76.722,76.721l-6.364,6.364z"/>
-			<path d="M7.248,83.969l-6.541-6.541L77.428,0.707l6.54,6.541L7.248,83.969z"/>
+			<path d="M77.605,84.323L0.884,7.602l6.364-6.364l76.722,76.721l-6.364,6.364z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width) 0"/>
+			<path d="M7.248,83.969l-6.541-6.541L77.428,0.707l6.54,6.541L7.248,83.969z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width) 0"/>
 		</g>
 	</g>
 </svg>

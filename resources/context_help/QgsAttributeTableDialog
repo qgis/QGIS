@@ -1,7 +1,7 @@
 <h3>Attribute table</h3>
 The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking <label>Open attribute table in a dock window</label> in <label>Settings > Options > Data Sources</label>.<p>
 
-The number of total number of layer features, filtered features and selected features is printed on the window header.<p>
+The total number of layer features, filtered features and selected features is printed on the window header.<p>
 At the bottom right of the dialog, you can choose whether to display features in a form or in a table.<p>
 <p>
 <a href="#Selecting">Selecting</a><br/>

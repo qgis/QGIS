@@ -1,0 +1,8 @@
+{
+  "name": "array_intersect",
+  "type": "function",
+  "description": "Returns true if any element of array1 exists in array2.",
+  "arguments": [ {"arg":"array1","description":"an array"},
+                 {"arg":"array2","description":"another array"}],
+  "examples": [ { "expression":"array_intersect(array(1,2,3,4),array(4,0,2,5))", "returns":"true"}]
+}

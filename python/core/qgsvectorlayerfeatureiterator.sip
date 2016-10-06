@@ -26,16 +26,28 @@ class QgsVectorLayerFeatureIterator : QgsAbstractFeatureIterator
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
-    void rewindEditBuffer();
-    void prepareJoins();
-    void prepareExpressions();
-    bool fetchNextAddedFeature( QgsFeature& f );
-    bool fetchNextChangedGeomFeature( QgsFeature& f );
-    bool fetchNextChangedAttributeFeature( QgsFeature& f );
-    void useAddedFeature( const QgsFeature& src, QgsFeature& f );
-    void useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry& geom, QgsFeature& f );
-    bool nextFeatureFid( QgsFeature& f );
-    void addJoinedAttributes( QgsFeature &f );
+
+    //! @note not available in Python bindings
+    //void rewindEditBuffer();
+    //! @note not available in Python bindings
+    //void prepareJoins();
+    //! @note not available in Python bindings
+    //void prepareExpressions();
+    //! @note not available in Python bindings
+    //bool fetchNextAddedFeature( QgsFeature& f );
+    //! @note not available in Python bindings
+    //bool fetchNextChangedGeomFeature( QgsFeature& f );
+    //! @note not available in Python bindings
+    //bool fetchNextChangedAttributeFeature( QgsFeature& f );
+    //! @note not available in Python bindings
+    //void useAddedFeature( const QgsFeature& src, QgsFeature& f );
+    //! @note not available in Python bindings
+    //void useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry& geom, QgsFeature& f );
+    //! @note not available in Python bindings
+    //bool nextFeatureFid( QgsFeature& f );
+    //! @note not available in Python bindings
+    //void addJoinedAttributes( QgsFeature &f );
+
     /**
      * Adds attributes that don't source from the provider but are added inside QGIS
      * Includes
@@ -43,14 +55,19 @@ class QgsVectorLayerFeatureIterator : QgsAbstractFeatureIterator
      *  - Expression fields
      *
      * @param f The feature will be modified
+     * @note not available in Python bindings
      */
-    void addVirtualAttributes( QgsFeature &f );
+    //void addVirtualAttributes( QgsFeature &f );
 
-    /** Update feature with uncommited attribute updates */
-    void updateChangedAttributes( QgsFeature& f );
+    /** Update feature with uncommited attribute updates.
+     * @note not available in Python bindings
+     */
+    //void updateChangedAttributes( QgsFeature& f );
 
-    /** Update feature with uncommited geometry updates */
-    void updateFeatureGeometry( QgsFeature& f );
+    /** Update feature with uncommited geometry updates.
+     * @note not available in Python bindings
+     */
+    //void updateFeatureGeometry( QgsFeature& f );
 
   private:
     QgsVectorLayerFeatureIterator();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsCptCityColorRampV2DialogBase</class>
- <widget class="QDialog" name="QgsCptCityColorRampV2DialogBase">
+ <class>QgsCptCityColorRampDialogBase</class>
+ <widget class="QDialog" name="QgsCptCityColorRampDialogBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -547,7 +547,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>QgsCptCityColorRampV2DialogBase</receiver>
+   <receiver>QgsCptCityColorRampDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -563,7 +563,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>QgsCptCityColorRampV2DialogBase</receiver>
+   <receiver>QgsCptCityColorRampDialogBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

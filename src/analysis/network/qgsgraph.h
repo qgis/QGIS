@@ -53,7 +53,7 @@ class ANALYSIS_EXPORT QgsGraphArc
     QVariant property( int propertyIndex ) const;
 
     /**
-     * get array of proertyes
+     * get array of properties
      */
     QVector< QVariant > properties() const;
 
@@ -132,8 +132,6 @@ class ANALYSIS_EXPORT QgsGraph
 {
   public:
     QgsGraph();
-
-    ~QgsGraph();
 
     // begin graph constructing methods
     /**

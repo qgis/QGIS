@@ -25,15 +25,17 @@
 #include <QLayout>
 #include <QTextCodec>
 
-QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget * parent,
-    const QString & caption, const QString & directory,
-    const QString & filter, const QString & encoding )
+QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget* parent,
+    const QString& caption, const QString& directory,
+    const QString& filter, const QString& encoding )
     : QFileDialog( parent, caption, directory, filter )
 {
   mCancelAll       = false;
-  mCancelAllButton = 0;
+  mCancelAllButton = nullptr;
   mEncodingComboBox = new QComboBox( this );
   QLabel* l = new QLabel( tr( "Encoding:" ), this );
+
+  setOption( QFileDialog::DontUseNativeDialog );
   layout()->addWidget( l );
   layout()->addWidget( mEncodingComboBox );
 
@@ -90,7 +92,7 @@ void QgsEncodingFileDialog::addCancelAll()
 {
   if ( ! mCancelAllButton )
   {
-    mCancelAllButton = new QPushButton( tr( "Cancel &All" ), NULL );
+    mCancelAllButton = new QPushButton( tr( "Cancel &All" ), nullptr );
     layout()->addWidget( mCancelAllButton ); // Ownership transfered, no need to delete later on
     connect( mCancelAllButton, SIGNAL( clicked() ), this, SLOT( pbnCancelAll_clicked() ) );
   }

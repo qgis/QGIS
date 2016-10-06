@@ -2,3 +2,7 @@ IF (ENABLE_TESTS)
   ADD_SUBDIRECTORY(src)
   ADD_SUBDIRECTORY(bench)
 ENDIF (ENABLE_TESTS)
+
+IF(WITH_ASTYLE)
+  ADD_TEST(qgis_indentation ${CMAKE_SOURCE_DIR}/scripts/verify-indentation.sh)
+ENDIF(WITH_ASTYLE)

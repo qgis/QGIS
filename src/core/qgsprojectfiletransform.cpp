@@ -28,6 +28,8 @@
 #include <cstdlib>
 #include "qgsproject.h"
 #include "qgsprojectproperty.h"
+#include "qgsrasterbandstats.h"
+#include "qgsrasterdataprovider.h"
 
 typedef QgsProjectVersion PFV;
 
@@ -59,7 +61,7 @@ QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] =
   {PFV( 2, 2, 0 ), PFV( 2, 3, 0 ), &QgsProjectFileTransform::transform2200to2300},
 };
 
-bool QgsProjectFileTransform::updateRevision( QgsProjectVersion newVersion )
+bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion& newVersion )
 {
   Q_UNUSED( newVersion );
   bool returnValue = false;
@@ -204,7 +206,6 @@ void QgsProjectFileTransform::transform081to090()
 
 void QgsProjectFileTransform::transform091to0100()
 {
-  QgsDebugMsg( "entering" );
   if ( ! mDom.isNull() )
   {
     // Insert transforms here!
@@ -296,7 +297,7 @@ void QgsProjectFileTransform::transform0100to0110()
 
       //replace old text node
       QDomNode pointSizeTextNode = currentPointSizeElem.firstChild();
-      QDomText newPointSizeText = mDom.createTextNode( QString::number(( int )pointSize ) );
+      QDomText newPointSizeText = mDom.createTextNode( QString::number( static_cast< int >( pointSize ) ) );
       currentPointSizeElem.replaceChild( newPointSizeText, pointSizeTextNode );
     }
   }
@@ -355,7 +356,7 @@ void QgsProjectFileTransform::transform0110to1000()
         int fieldNumber = classificationFieldElem.text().toInt();
         if ( fieldNumber >= 0 && fieldNumber < theFields.count() )
         {
-          QDomText fieldName = mDom.createTextNode( theFields[fieldNumber].name() );
+          QDomText fieldName = mDom.createTextNode( theFields.at( fieldNumber ).name() );
           QDomNode nameNode = classificationFieldElem.firstChild();
           classificationFieldElem.replaceChild( fieldName, nameNode );
         }
@@ -396,7 +397,7 @@ void QgsProjectFileTransform::transform1100to1200()
     units << "0";
 
   QgsPropertyValue value( units );
-  value.writeXML( "LayerSnappingToleranceUnitList", digitizing, mDom );
+  value.writeXml( "LayerSnappingToleranceUnitList", digitizing, mDom );
 }
 
 void QgsProjectFileTransform::transform1400to1500()
@@ -444,7 +445,7 @@ void QgsProjectFileTransform::transform1400to1500()
       }
 
       QDomElement classificationElement;
-      if ( vectorClassificationList.size() > 0 ) //we guess it is a vector layer
+      if ( !vectorClassificationList.isEmpty() ) //we guess it is a vector layer
       {
         classificationElement = mDom.createElement( "VectorClassificationItem" );
       }
@@ -477,7 +478,7 @@ void QgsProjectFileTransform::transform1800to1900()
     QgsRasterLayer rasterLayer;
     // TODO: We have to use more data from project file to read the layer it correctly,
     // OTOH, we should not read it until it was converted
-    rasterLayer.readLayerXML( layerNode.toElement() );
+    rasterLayer.readLayerXml( layerNode.toElement() );
     convertRasterProperties( mDom, layerNode, rasterPropertiesElem, &rasterLayer );
   }
 
@@ -588,7 +589,7 @@ void QgsProjectFileTransform::transform1800to1900()
           QDomElement propElem = propList.at( k ).toElement();
           if ( propElem.attribute( "k" ) == "color" || propElem.attribute( "k" ) == "color_border" )
           {
-            propElem.setAttribute( "v", propElem.attribute( "v" ).section( ",", 0, 2 ) + ",255" );
+            propElem.setAttribute( "v", propElem.attribute( "v" ).section( ',', 0, 2 ) + ",255" );
           }
         }
       }
@@ -681,7 +682,7 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNo
       QDomElement colorRampEntryElem = colorRampEntryList.at( i ).toElement();
       QString strValue = colorRampEntryElem.attribute( "value" );
       double value = strValue.toDouble();
-      if ( value < 0 || value > 10000 || value != ( int )value )
+      if ( value < 0 || value > 10000 || !qgsDoubleNear( value, static_cast< int >( value ) ) )
       {
         QgsDebugMsg( QString( "forcing SingleBandPseudoColor value = %1" ).arg( value ) );
         drawingStyle = "SingleBandPseudoColor";
@@ -783,7 +784,7 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNo
     {
       colorRampEntryElem = colorRampEntryList.at( i ).toElement();
       QDomElement newPaletteElem = doc.createElement( "paletteEntry" );
-      value = ( int )( colorRampEntryElem.attribute( "value" ).toDouble() );
+      value = static_cast< int >( colorRampEntryElem.attribute( "value" ).toDouble() );
       newPaletteElem.setAttribute( "value", value );
       red = colorRampEntryElem.attribute( "red" ).toInt();
       green = colorRampEntryElem.attribute( "green" ).toInt();

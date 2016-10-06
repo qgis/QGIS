@@ -17,6 +17,7 @@
 
 #include "qgspalettedrendererwidget.h"
 #include "qgspalettedrasterrenderer.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgscolordialog.h"
 #include <QColorDialog>
@@ -41,6 +42,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer* layer, con
     }
 
     setFromRenderer( mRasterLayer->renderer() );
+    connect( mBandComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
   }
 }
 
@@ -64,7 +66,7 @@ QgsRasterRenderer* QgsPalettedRendererWidget::renderer()
       labels[i] = label;
     }
   }
-  int bandNumber = mBandComboBox->itemData( mBandComboBox->currentIndex() ).toInt();
+  int bandNumber = mBandComboBox->currentData().toInt();
   return new QgsPalettedRasterRenderer( mRasterLayer->dataProvider(), bandNumber, colorArray, nColors, labels );
 }
 
@@ -73,10 +75,11 @@ void QgsPalettedRendererWidget::on_mTreeWidget_itemDoubleClicked( QTreeWidgetIte
   if ( column == 1 && item ) //change item color
   {
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    QColor c = QgsColorDialogV2::getColor( item->background( column ).color(), 0 );
+    QColor c = QgsColorDialog::getColor( item->background( column ).color(), nullptr );
     if ( c.isValid() )
     {
       item->setBackground( column, QBrush( c ) );
+      emit widgetChanged();
     }
   }
   else if ( column == 2 && item )
@@ -108,7 +111,7 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
     QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
     if ( provider )
     {
-      QList<QgsColorRampShader::ColorRampItem> itemList = provider->colorTable( mBandComboBox->itemData( mBandComboBox->currentIndex() ).toInt() );
+      QList<QgsColorRampShader::ColorRampItem> itemList = provider->colorTable( mBandComboBox->currentData().toInt() );
       QList<QgsColorRampShader::ColorRampItem>::const_iterator itemIt = itemList.constBegin();
       int index = 0;
       for ( ; itemIt != itemList.constEnd(); ++itemIt )

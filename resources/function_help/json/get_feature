@@ -1,0 +1,9 @@
+{
+  "name": "get_feature",
+  "type": "function",
+  "description": "Returns the first feature of a layer matching a given attribute value.",
+  "arguments": [ {"arg":"layer","description":"layer name or ID"},
+                 {"arg":"attribute","description":"attribute name"},
+                 {"arg":"value","description":"attribute value to match"}],
+  "examples": [ { "expression":"get_feature('streets','name','main st')", "returns":"first feature found in \"streets\" layer with \"main st\" value in the \"name\" field"}]
+}

@@ -1,0 +1,2 @@
+libqgisgrass{GRASSVER}-{QGIS_ABI}: hardening-no-fortify-functions usr/lib/libqgisgrass{GRASSVER}.so.{QGIS_ABI}
+libqgisgrass{GRASSVER}-{QGIS_ABI}: no-symbols-control-file usr/lib/libqgisgrass{GRASSVER}.so.{QGIS_ABI}

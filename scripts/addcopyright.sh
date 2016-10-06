@@ -16,6 +16,8 @@
 
 # licensecheck -r src
 
+export LC_TIME=C
+
 set -e
 
 if [ $# -gt 0 ]; then
@@ -143,6 +145,76 @@ for i in $FILES; do
 	timlinux|"Tim Sutton")
 		authorname="Tim Sutton"
 		authoremail="tim at linfiniti dot com"
+		;;
+
+	"Matthias Kuhn")
+		authorname="Matthias Kuhn"
+		authoremail="matthias at opengis dot ch"
+		;;
+
+	"Emilio Loi")
+		authorname="Emilio Loi"
+		authoremail="loi at faunalia dot it"
+		;;
+
+	"Nathan Woodrow"|Nathan)
+		authorname="Nathan Woodrow"
+		authoremail="woodrow dot nathan at gmail dot com"
+		;;
+
+	"Sandro Mani")
+		authorname="Sandro Mani"
+		authoremail="smani at sourcepole dot ch"
+		;;
+
+	"Chris Crook")
+		authorname="Chris Crook"
+		authoremail="ccrook at linz dot govt dot nz"
+		;;
+
+	"Hugo Mercier")
+		authorname="Hugo Mercier"
+		authoremail="hugo dot mercier at oslandia dot com"
+		;;
+
+	"Larry Shaffer")
+		authorname="Larry Shaffer"
+		authoremail="larrys at dakotacarto dot com"
+		;;
+
+	"Victor Olaya"|volaya)
+		authorname="Victor Olaya"
+		authoremail="volayaf at gmail dot com"
+		;;
+
+	elpaso)
+		authorname="Alessandro Pasotti"
+		authoremail="elpaso at itopen dot it"
+		;;
+
+        "Patrick Valsecchi")
+		authorname="Patrick Valsecchi"
+		authoremail="patrick dot valsecchi at camptocamp dot com"
+		;;
+
+	"Stéphane Brunner")
+		authorname="Stéphane Brunner"
+		authoremail="stephane dot brunner at camptocamp dot com"
+		;;
+
+	"ersts")
+		authorname="Peter Ersts"
+		authoremail="ersts at amnh dot org"
+		;;
+
+	"Etienne Tourigny")
+		authorname="Etienne Tourigny"
+		authoremail="etourigny dot dev at gmail dot com"
+		;;
+
+	"Nyall Dawson")
+		authorname="Nyall Dawson"
+		authoremail="nyall dot dawson at gmail dot com"
 		;;
 
 	*)

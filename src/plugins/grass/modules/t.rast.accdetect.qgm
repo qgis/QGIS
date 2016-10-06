@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Detects accumulation patterns in temporally accumulated space time raster datasets created by t.rast.accumulate" module="t.rast.accdetect">
+	<option key="input"/>
+	<option key="basename"/>
+	<option key="occurrence"/>
+	<option key="indicator" advanced="yes"/>
+	<option key="minimum" advanced="yes"/>
+	<option key="maximum" advanced="yes"/>
+	<option key="start"/>
+	<option key="stop" advanced="yes"/>
+	<option key="cycle"/>
+	<option key="offset" advanced="yes"/>
+	<option key="range" advanced="yes"/>
+	<option key="staend" advanced="yes"/>
+	<flag key="r" hidden="no" advanced="yes"/>
+	<flag key="n" hidden="no" advanced="yes"/>
+</qgisgrassmodule>

@@ -26,11 +26,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os.path
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.modeler.CalculatorModelerAlgorithm import CalculatorModelerAlgorithm
 from processing.modeler.RasterLayerBoundsAlgorithm import RasterLayerBoundsAlgorithm
 from processing.modeler.VectorLayerBoundsAlgorithm import VectorLayerBoundsAlgorithm
+from processing.modeler.RasterLayerCrsAlgorithm import RasterLayerCrsAlgorithm
+from processing.modeler.VectorLayerCrsAlgorithm import VectorLayerCrsAlgorithm
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
 class ModelerOnlyAlgorithmProvider(AlgorithmProvider):
@@ -45,11 +49,13 @@ class ModelerOnlyAlgorithmProvider(AlgorithmProvider):
         return self.tr('Modeler-only tools', 'ModelerOnlyAlgorithmProvider')
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/model.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
 
     def _loadAlgorithms(self):
         self.algs = [CalculatorModelerAlgorithm(),
                      RasterLayerBoundsAlgorithm(),
-                     VectorLayerBoundsAlgorithm()]
+                     VectorLayerBoundsAlgorithm(),
+                     RasterLayerCrsAlgorithm(),
+                     VectorLayerCrsAlgorithm()]
         for alg in self.algs:
             alg.provider = self

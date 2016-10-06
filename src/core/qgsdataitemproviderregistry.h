@@ -16,21 +16,21 @@
 #ifndef QGSDATAITEMPROVIDERREGISTRY_H
 #define QGSDATAITEMPROVIDERREGISTRY_H
 
-#include "qgssingleton.h"
-
 #include <QList>
 
 class QgsDataItemProvider;
 
-/**
+/** \ingroup core
  * This singleton class keeps a list of data item providers that may add items to the browser tree.
  * When created, it automatically adds providers from provider plugins (e.g. PostGIS, WMS, ...)
  *
  * @note added in 2.10
  */
-class CORE_EXPORT QgsDataItemProviderRegistry : public QgsSingleton<QgsDataItemProviderRegistry>
+class CORE_EXPORT QgsDataItemProviderRegistry
 {
   public:
+    static QgsDataItemProviderRegistry* instance();
+
     ~QgsDataItemProviderRegistry();
 
     //! Get list of available providers
@@ -45,10 +45,11 @@ class CORE_EXPORT QgsDataItemProviderRegistry : public QgsSingleton<QgsDataItemP
   private:
     QgsDataItemProviderRegistry();
 
-    friend class QgsSingleton<QgsDataItemProviderRegistry>; // Let QgsSingleton access private constructor
-
     //! available providers. this class owns the pointers
     QList<QgsDataItemProvider*> mProviders;
+
+    QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry& rh );
+    QgsDataItemProviderRegistry& operator=( const QgsDataItemProviderRegistry& rh );
 };
 
 #endif // QGSDATAITEMPROVIDERREGISTRY_H

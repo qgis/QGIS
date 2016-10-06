@@ -16,9 +16,10 @@ class CharacterWidget : QWidget
     void updateStyle( const QString &fontStyle );
     void updateFontMerging( bool enable );
     void updateColumns( int cols );
+    void setCharacter( QChar character );
 
   signals:
-    void characterSelected( const QChar &character );
+    void characterSelected( QChar character );
 
   protected:
     void mouseMoveEvent( QMouseEvent *event );

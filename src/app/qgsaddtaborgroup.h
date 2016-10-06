@@ -33,16 +33,20 @@ class APP_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroup
     typedef QPair<QString, QTreeWidgetItem*> TabPair;
 
   public:
-    QgsAddTabOrGroup( QgsVectorLayer *lyr, QList< TabPair > tabList, QWidget *parent = 0 );
+    QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList<TabPair>& tabList, QWidget *parent = nullptr );
     ~QgsAddTabOrGroup();
 
     QString name();
 
     QTreeWidgetItem* tab();
 
+    int columnCount() const;
+
     bool tabButtonIsChecked();
 
-  public slots:
+    virtual void accept() override;
+
+  private slots:
     void on_mGroupButton_toggled( bool checked );
     void on_mTabButton_toggled( bool checked );
 

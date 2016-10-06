@@ -20,6 +20,7 @@
 
 class QgsMapToPixel;
 class QgsRasterBlock;
+class QgsRasterBlockFeedback;
 class QgsRasterInterface;
 class QgsRasterProjector;
 struct QgsRasterViewPort;
@@ -32,17 +33,17 @@ class CORE_EXPORT QgsRasterIterator
   public:
 
     QgsRasterIterator( QgsRasterInterface* input );
-    ~QgsRasterIterator();
 
-    /**Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns false.
+    /** Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns false.
       @param bandNumber number of raster band to read
       @param nCols number of columns
       @param nRows number of rows
       @param extent area to read
+      @param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
-    void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle& extent );
+    void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle& extent, QgsRasterBlockFeedback* feedback = nullptr );
 
-    /**Fetches next part of raster data, caller takes ownership of the block and
+    /** Fetches next part of raster data, caller takes ownership of the block and
        caller should delete the block.
        @param bandNumber band to read
        @param nCols number of columns on output device
@@ -80,11 +81,12 @@ class CORE_EXPORT QgsRasterIterator
     QgsRasterInterface* mInput;
     QMap<int, RasterPartInfo> mRasterPartInfos;
     QgsRectangle mExtent;
+    QgsRasterBlockFeedback* mFeedback;
 
     int mMaximumTileWidth;
     int mMaximumTileHeight;
 
-    /**Remove part into and release memory*/
+    /** Remove part into and release memory*/
     void removePartInfo( int bandNumber );
 };
 

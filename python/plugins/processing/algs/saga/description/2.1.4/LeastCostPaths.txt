@@ -1,0 +1,7 @@
+Least Cost Paths
+grid_analysis
+ParameterVector|SOURCE|Source Point(s)|0|False
+ParameterRaster|DEM|Accumulated cost|False
+ParameterMultipleInput|VALUES|Values|3|True
+OutputVector|POINTS|Profile (points)
+OutputVector|LINE|Profile (lines)

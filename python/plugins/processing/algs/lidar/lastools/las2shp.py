@@ -16,6 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+
 
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
@@ -24,12 +28,13 @@ __copyright__ = '(C) 2013, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputFile
+from processing.core.outputs import OutputVector
+
 
 class las2shp(LAStoolsAlgorithm):
 
@@ -38,16 +43,16 @@ class las2shp(LAStoolsAlgorithm):
     OUTPUT = "OUTPUT"
 
     def defineCharacteristics(self):
-        self.name = "las2shp"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('las2shp')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterBoolean(las2shp.POINT_Z,
-            self.tr("use PointZ instead of MultiPointZ"), False))
+                                           self.tr("use PointZ instead of MultiPointZ"), False))
         self.addParameter(ParameterNumber(las2shp.RECORD_SIZE,
-            self.tr("number of points per record"), 0, None, 1024))
-        self.addOutput(OutputFile(las2shp.OUTPUT,
-            self.tr("Output SHP file")))
+                                          self.tr("number of points per record"), 0, None, 1024))
+        self.addOutput(OutputVector(las2shp.OUTPUT,
+                                    self.tr("Output SHP file")))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
@@ -63,5 +68,4 @@ class las2shp(LAStoolsAlgorithm):
         commands.append("-o")
         commands.append(self.getOutputValue(las2shp.OUTPUT))
         self.addParametersAdditionalCommands(commands)
-
         LAStoolsUtils.runLAStools(commands, progress)

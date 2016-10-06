@@ -27,8 +27,8 @@
 #
 ###############################################################################
 
-from PyQt4.QtCore import QSettings
-from PyQt4.QtGui import QDialog, QMessageBox
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
 from MetaSearch.util import get_ui_class
 
@@ -36,7 +36,9 @@ BASE_CLASS = get_ui_class('newconnectiondialog.ui')
 
 
 class NewConnectionDialog(QDialog, BASE_CLASS):
+
     """Dialogue to add a new CSW entry"""
+
     def __init__(self, conn_name=None):
         """init"""
 

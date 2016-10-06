@@ -12,24 +12,29 @@ class QgsSingleBandGrayRenderer: QgsRasterRenderer
 
     QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand );
     ~QgsSingleBandGrayRenderer();
-    QgsRasterInterface * clone() const /Factory/;
+    virtual QgsSingleBandGrayRenderer * clone() const /Factory/;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) / Factory /;
 
     int grayBand() const;
     void setGrayBand( int band );
     const QgsContrastEnhancement* contrastEnhancement() const;
-    /**Takes ownership*/
+    /** Takes ownership*/
     void setContrastEnhancement( QgsContrastEnhancement* ce /Transfer/ );
 
     void setGradient( Gradient theGradient );
     Gradient gradient() const;
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 
     QList<int> usesBands() const;
+
+  private:
+
+    QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer& );
+    const QgsSingleBandGrayRenderer& operator=( const QgsSingleBandGrayRenderer& );
 };

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>532</width>
+    <width>323</width>
     <height>386</height>
    </rect>
   </property>
@@ -147,7 +147,7 @@
     </widget>
    </item>
    <item row="3" column="1" colspan="2">
-    <widget class="QgsFieldExpressionWidget" name="mWeightExpressionWidget">
+    <widget class="QgsFieldExpressionWidget" name="mWeightExpressionWidget" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -162,9 +162,6 @@
      </property>
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
-     </property>
-     <property name="filters">
-      <set>QgsFieldProxyModel::Numeric</set>
      </property>
     </widget>
    </item>
@@ -210,15 +207,15 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfieldexpressionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

@@ -1,0 +1,8 @@
+{
+  "name": "y_min",
+  "type": "function",
+  "description": "Returns the minimum y coordinate of a geometry. Calculations are in the spatial reference system of this geometry.",
+  "arguments": [ {"arg":"geom","description":"a geometry"}],
+  "examples": [ { "expression":"y_min( geom_from_wkt( 'LINESTRING(2 5, 3 6, 4 8)') )", "returns":"5"}
+  ]
+}

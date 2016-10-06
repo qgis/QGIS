@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Outputs basic information about a raster map" module="r.info">
+	<option key="map"/>
+	<flag key="h"/>
+	<flag key="e" version_min="7"/>
+</qgisgrassmodule>

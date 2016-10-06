@@ -4,7 +4,7 @@
 ***************************************************************************
     lasclassifyPro.py
     ---------------------
-    Date                 : October 2014
+    Date                 : October 2014 and May 2016
     Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -24,15 +24,18 @@ __copyright__ = '(C) 2014, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
+
 
 class lasclassifyPro(LAStoolsAlgorithm):
 
     def defineCharacteristics(self):
-        self.name = "lasclassifyPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasclassifyPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
+        self.addParametersIgnoreClass1GUI()
+        self.addParametersIgnoreClass2GUI()
         self.addParametersHorizontalAndVerticalFeetGUI()
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
@@ -45,6 +48,8 @@ class lasclassifyPro(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasclassify")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
+        self.addParametersIgnoreClass1Commands(commands)
+        self.addParametersIgnoreClass2Commands(commands)
         self.addParametersHorizontalAndVerticalFeetCommands(commands)
         self.addParametersOutputDirectoryCommands(commands)
         self.addParametersOutputAppendixCommands(commands)

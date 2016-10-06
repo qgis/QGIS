@@ -9,20 +9,42 @@ class QgsDataProvider : QObject
 %ConvertToSubClassCode
     if (sipCpp->inherits("QgsVectorDataProvider"))
     {
-        sipClass = sipClass_QgsVectorDataProvider;
+        sipType = sipType_QgsVectorDataProvider;
     }
     else if (sipCpp->inherits("QgsRasterDataProvider"))
     {
-	sipClass = sipClass_QgsRasterDataProvider;
+	sipType = sipType_QgsRasterDataProvider;
     }
     else
     {
-        sipClass = 0;
+        sipType = 0;
     }
 %End
 
 
   public:
+
+    enum DataCapability
+    {
+      NoDataCapabilities,
+      File,
+      Dir,
+      Database,
+      Net
+    };
+
+    /**
+     * Properties are used to pass custom configuration options into data providers.
+     * This enum defines a list of custom properties which can be used on different
+     * providers. It depends on the provider, which properties are supported.
+     * In addition to these default properties, providers can add their custom properties
+     * starting from CustomData.
+     */
+    enum ProviderProperty
+    {
+      EvaluateDefaultValues,       //!< Evaluate default values on provider side when calling QgsVectorDataProvider::defaultValue( int index ) rather than on commit.
+      CustomData   = 3000          //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
+    };
 
     QgsDataProvider( const QString & uri = "" );
 
@@ -32,12 +54,11 @@ class QgsDataProvider : QObject
     virtual ~QgsDataProvider();
 
 
-    /*! Get the QgsCoordinateReferenceSystem for this layer
-     * @note Must be reimplemented by each provider.
-     * If the provider isn't capable of returning
-     * its projection an empty srs will be return, ti will return 0
+    /* Returns the coordinate system for the data source.
+     * If the provider isn't capable of returning its projection then an invalid
+     * QgsCoordinateReferenceSystem will be returned.
      */
-    virtual QgsCoordinateReferenceSystem crs() = 0;
+    virtual QgsCoordinateReferenceSystem crs() const = 0;
 
 
     /**
@@ -50,27 +71,31 @@ class QgsDataProvider : QObject
     /**
      * Get the data source specification. This may be a path or database
      * connection string
+     * @param expandAuthConfig Whether to expand any assigned authentication configuration
      * @return data source specification
+     * @note The default authentication configuration expansion is FALSE. This keeps credentials
+     * out of layer data source URIs and project files. Expansion should be specifically done
+     * only when needed within a provider
      */
-    virtual QString dataSourceUri() const;
+    virtual QString dataSourceUri( bool expandAuthConfig = true ) const;
 
 
     /**
-     * Get the extent of the layer
+     * Returns the extent of the layer.
      * @return QgsRectangle containing the extent of the layer
      */
-    virtual QgsRectangle extent() = 0;
+    virtual QgsRectangle extent() const = 0;
 
 
     /**
      * Returns true if this is a valid layer. It is up to individual providers
-     * to determine what constitutes a valid layer
+     * to determine what constitutes a valid layer.
      */
-    virtual bool isValid() = 0;
+    virtual bool isValid() const = 0;
 
 
     /**
-     * Update the extents of the layer. Not implemented by default
+     * Update the extents of the layer. Not implemented by default.
      */
     virtual void updateExtents();
 
@@ -81,10 +106,10 @@ class QgsDataProvider : QObject
      * that can be used by the data provider to create a subset.
      * Must be implemented in the dataprovider.
      */
-    virtual bool setSubsetString( QString subset, bool updateFeatureCount = true );
+    virtual bool setSubsetString( const QString& subset, bool updateFeatureCount = true );
 
-    /** provider supports setting of subset strings */
-    virtual bool supportsSubsetString();
+    /** Returns true if the provider supports setting of subset strings. */
+    virtual bool supportsSubsetString() const;
 
     /**
      * Returns the subset definition string (typically sql) currently in
@@ -92,7 +117,7 @@ class QgsDataProvider : QObject
      * Must be overridden in the dataprovider, otherwise returns a null
      * QString.
      */
-    virtual QString subsetString();
+    virtual QString subsetString() const;
 
 
     /**
@@ -134,65 +159,62 @@ class QgsDataProvider : QObject
     virtual void setSubLayerVisibility( const QString &name, bool vis );
 
 
-    /** return a provider name
-
-    Essentially just returns the provider key.  Should be used to build file
-    dialogs so that providers can be shown with their supported types. Thus
-    if more than one provider supports a given format, the user is able to
-    select a specific provider to open that file.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
+    /** Return a provider name
+     *
+     * Essentially just returns the provider key.  Should be used to build file
+     * dialogs so that providers can be shown with their supported types. Thus
+     * if more than one provider supports a given format, the user is able to
+     * select a specific provider to open that file.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
+     */
     virtual QString name() const = 0;
 
 
-    /** return description
-
-      Return a terse string describing what the provider is.
-
-      @note
-
-      Instead of being pure virtual, might be better to generalize this
-      behavior and presume that none of the sub-classes are going to do
-      anything strange with regards to their name or description?
-
+    /** Return description
+     *
+     * Return a terse string describing what the provider is.
+     *
+     * @note
+     *
+     * Instead of being pure virtual, might be better to generalize this
+     * behavior and presume that none of the sub-classes are going to do
+     * anything strange with regards to their name or description?
+     *
      */
     virtual QString description() const = 0;
 
 
-    /** return vector file filter string
-
-      Returns a string suitable for a QFileDialog of vector file formats
-      supported by the data provider.  Naturally this will be an empty string
-      for those data providers that do not deal with plain files, such as
-      databases and servers.
-
-      @note
-
-      It'd be nice to eventually be raster/vector neutral.
-    */
+    /** Return vector file filter string
+     *
+     * Returns a string suitable for a QFileDialog of vector file formats
+     * supported by the data provider.  Naturally this will be an empty string
+     * for those data providers that do not deal with plain files, such as
+     * databases and servers.
+     *
+     * @note It'd be nice to eventually be raster/vector neutral.
+     *
+     */
     virtual QString fileVectorFilters() const;
 
 
-    /** return raster file filter string
-
-      Returns a string suitable for a QFileDialog of raster file formats
-      supported by the data provider.  Naturally this will be an empty string
-      for those data providers that do not deal with plain files, such as
-      databases and servers.
-
-      @note
-
-      It'd be nice to eventually be raster/vector neutral.
-    */
+    /** Return raster file filter string
+     *
+     * Returns a string suitable for a QFileDialog of raster file formats
+     * supported by the data provider.  Naturally this will be an empty string
+     * for those data providers that do not deal with plain files, such as
+     * databases and servers.
+     *
+     * @note It'd be nice to eventually be raster/vector neutral.
+     */
     virtual QString fileRasterFilters() const;
 
-    /**Reloads the data from the source. Needs to be implemented by providers with data caches to
+    /** Reloads the data from the source. Needs to be implemented by providers with data caches to
       synchronize with changes in the data source*/
     virtual void reloadData();
 
@@ -208,6 +230,84 @@ class QgsDataProvider : QObject
      */
     virtual QgsError error() const;
 
+    /** Invalidate connections corresponding to specified name
+     * @note added in QGIS 2.16
+     */
+    virtual void invalidateConnections( const QString& connection );
+
+    /** Enter update mode.
+     *
+     * This is aimed at providers that can open differently the connection to
+     * the datasource, according it to be in update mode or in read-only mode.
+     * A call to this method shall be balanced with a call to leaveUpdateMode(),
+     * if this method returns true.
+     *
+     * Most providers will have an empty implementation for that method.
+     *
+     * For backward compatibility, providers that implement enterUpdateMode() should
+     * still make sure to allow editing operations to work even if enterUpdateMode()
+     * is not explicitly called.
+     *
+     * Several successive calls to enterUpdateMode() can be done. So there is
+     * a concept of stack of calls that must be handled by the provider. Only the first
+     * call to enterUpdateMode() will really turn update mode on.
+     *
+     * @return true in case of success (or no-op implementation), false in case of failure
+     *
+     * @note added in QGIS 2.16
+     */
+    virtual bool enterUpdateMode();
+
+    /** Leave update mode.
+     *
+     * This is aimed at providers that can open differently the connection to
+     * the datasource, according it to be in update mode or in read-only mode.
+     * This method shall be balanced with a successful call to enterUpdateMode().
+     *
+     * Most providers will have an empty implementation for that method.
+     *
+     * Several successive calls to enterUpdateMode() can be done. So there is
+     * a concept of stack of calls that must be handled by the provider. Only the last
+     * call to leaveUpdateMode() will really turn update mode off.
+     *
+     * @return true in case of success (or no-op implementation), false in case of failure
+     *
+     * @note added in QGIS 2.16
+     */
+    virtual bool leaveUpdateMode();
+
+    /**
+     * Allows setting arbitrary properties on the provider.
+     * It depends on the provider which properties are supported.
+     *
+     * @note added in 2.16
+     */
+    void setProviderProperty( ProviderProperty property, const QVariant& value );
+
+    /**
+     * Allows setting arbitrary properties on the provider.
+     * It depends on the provider which properties are supported.
+     *
+     * @note added in 2.16
+     */
+    // void setProviderProperty( int property, const QVariant& value );
+
+    /**
+     * Get the current value of a certain provider property.
+     * It depends on the provider which properties are supported.
+     *
+     * @note added in 2.16
+     */
+    QVariant providerProperty( ProviderProperty property, const QVariant& defaultValue = QVariant() ) const;
+
+    /**
+     * Get the current value of a certain provider property.
+     * It depends on the provider which properties are supported.
+     *
+     * @note added in 2.16
+     */
+    // QVariant providerProperty( int property , const QVariant& defaultValue ) const;
+
   signals:
 
     /**
@@ -220,6 +320,9 @@ class QgsDataProvider : QObject
     /**
      *   This is emitted whenever an asynchronous operation has finished
      *   and the data should be redrawn
+     *
+     *   When emitted from a QgsVectorDataProvider, any cached information such as
+     *   feature ids should be invalidated.
      */
     void dataChanged();
 
@@ -229,4 +332,11 @@ class QgsDataProvider : QObject
      */
     void dataChanged( int changed );
 
+  protected:
+
+    /** Add error message */
+    void appendError( const QgsErrorMessage & theMessage );
+
+    /** Set error message */
+    void setError( const QgsError & theError );
 };

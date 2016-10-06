@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2012'
@@ -27,7 +30,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -39,7 +42,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputRaster
 
-from TauDEMUtils import TauDEMUtils
+from .TauDEMUtils import TauDEMUtils
 
 
 class DinfDistUp(GeoAlgorithm):
@@ -66,30 +69,30 @@ class DinfDistUp(GeoAlgorithm):
     }
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
 
     def defineCharacteristics(self):
-        self.name = 'D-Infinity Distance Up'
+        self.name, self.i18n_name = self.trAlgorithm('D-Infinity Distance Up')
         self.cmdName = 'dinfdistup'
-        self.group = 'Specialized Grid Analysis tools'
+        self.group, self.i18n_group = self.trAlgorithm('Specialized Grid Analysis tools')
 
         self.addParameter(ParameterRaster(self.DINF_FLOW_DIR_GRID,
-            self.tr('D-Infinity Flow Direction Grid'), False))
+                                          self.tr('D-Infinity Flow Direction Grid'), False))
         self.addParameter(ParameterRaster(self.PIT_FILLED_GRID,
-            self.tr('Pit Filled Elevation Grid'), False))
+                                          self.tr('Pit Filled Elevation Grid'), False))
         self.addParameter(ParameterRaster(self.SLOPE_GRID,
-            self.tr('Slope Grid'), False))
+                                          self.tr('Slope Grid'), False))
         self.addParameter(ParameterSelection(self.STAT_METHOD,
-            self.tr('Statistical Method'), self.STATISTICS, 2))
+                                             self.tr('Statistical Method'), self.STATISTICS, 2))
         self.addParameter(ParameterSelection(self.DIST_METHOD,
-            self.tr('Distance Method'), self.DISTANCE, 1))
+                                             self.tr('Distance Method'), self.DISTANCE, 1))
         self.addParameter(ParameterNumber(self.THRESHOLD,
-            self.tr('Proportion Threshold'), 0, None, 0.5))
+                                          self.tr('Proportion Threshold'), 0, None, 0.5))
         self.addParameter(ParameterBoolean(self.EDGE_CONTAM,
-            self.tr('Check for edge contamination'), True))
+                                           self.tr('Check for edge contamination'), True))
 
         self.addOutput(OutputRaster(self.DIST_UP_GRID,
-            self.tr('D-Infinity Distance Up')))
+                                    self.tr('D-Infinity Distance Up')))
 
     def processAlgorithm(self, progress):
         commands = []

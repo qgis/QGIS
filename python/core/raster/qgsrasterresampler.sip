@@ -9,11 +9,11 @@ class QgsRasterResampler
 
 %ConvertToSubClassCode
   if (dynamic_cast<QgsBilinearRasterResampler*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsBilinearRasterResampler;
+    sipType = sipType_QgsBilinearRasterResampler;
   else if (dynamic_cast<QgsCubicRasterResampler*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsCubicRasterResampler;
+    sipType = sipType_QgsCubicRasterResampler;
   else
-    sipClass = 0;
+    sipType = 0;
 %End
 
   public:

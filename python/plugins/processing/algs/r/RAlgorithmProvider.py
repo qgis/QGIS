@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,18 +28,23 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
+
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.gui.EditScriptAction import EditScriptAction
 from processing.gui.DeleteScriptAction import DeleteScriptAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
-from RUtils import RUtils
-from RAlgorithm import RAlgorithm
 from processing.script.WrongScriptException import WrongScriptException
+from processing.gui.GetScriptsAndModels import GetRScriptsAction
 from processing.tools.system import isWindows
-#import processing.resources_rc
+
+from .RUtils import RUtils
+from .RAlgorithm import RAlgorithm
+
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
 class RAlgorithmProvider(AlgorithmProvider):
@@ -47,7 +53,8 @@ class RAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.__init__(self)
         self.activate = False
         self.actions.append(CreateNewScriptAction(
-            self.tr('Create new R script'), CreateNewScriptAction.SCRIPT_R))
+            'Create new R script', CreateNewScriptAction.SCRIPT_R))
+        self.actions.append(GetRScriptsAction())
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_R),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_R)]
@@ -55,12 +62,18 @@ class RAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         ProcessingConfig.addSetting(Setting(
-            self.getDescription(),
-            RUtils.RSCRIPTS_FOLDER, self.tr('R Scripts folder'), RUtils.RScriptsFolder()))
+            self.getDescription(), RUtils.RSCRIPTS_FOLDER,
+            self.tr('R Scripts folder'), RUtils.defaultRScriptsFolder(),
+            valuetype=Setting.MULTIPLE_FOLDERS))
         if isWindows():
             ProcessingConfig.addSetting(Setting(
                 self.getDescription(),
-                RUtils.R_FOLDER, self.tr('R folder'), RUtils.RFolder()))
+                RUtils.R_FOLDER, self.tr('R folder'), RUtils.RFolder(),
+                valuetype=Setting.FOLDER))
+            ProcessingConfig.addSetting(Setting(
+                self.getDescription(),
+                RUtils.R_LIBS_USER, self.tr('R user library folder'),
+                RUtils.RLibs(), valuetype=Setting.FOLDER))
             ProcessingConfig.addSetting(Setting(
                 self.getDescription(),
                 RUtils.R_USE64, self.tr('Use 64 bit version'), False))
@@ -70,10 +83,11 @@ class RAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.removeSetting(RUtils.RSCRIPTS_FOLDER)
         if isWindows():
             ProcessingConfig.removeSetting(RUtils.R_FOLDER)
+            ProcessingConfig.removeSetting(RUtils.R_LIBS_USER)
             ProcessingConfig.removeSetting(RUtils.R_USE64)
 
     def getIcon(self):
-        return QIcon(':/processing/images/r.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
 
     def getDescription(self):
         return 'R scripts'
@@ -82,8 +96,11 @@ class RAlgorithmProvider(AlgorithmProvider):
         return 'r'
 
     def _loadAlgorithms(self):
-        folder = RUtils.RScriptsFolder()
-        self.loadFromFolder(folder)
+        folders = RUtils.RScriptsFolders()
+        self.algs = []
+        for f in folders:
+            self.loadFromFolder(f)
+
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         self.loadFromFolder(folder)
 
@@ -98,9 +115,9 @@ class RAlgorithmProvider(AlgorithmProvider):
                         alg = RAlgorithm(fullpath)
                         if alg.name.strip() != '':
                             self.algs.append(alg)
-                    except WrongScriptException, e:
+                    except WrongScriptException as e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
-                    except Exception, e:
+                    except Exception as e:
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
-                            self.tr('Could not load R script: %s\n%s' % (descriptionFile, unicode(e))))
+                            self.tr('Could not load R script: %s\n%s' % (descriptionFile, str(e))))

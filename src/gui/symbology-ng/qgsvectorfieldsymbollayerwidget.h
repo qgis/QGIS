@@ -15,23 +15,26 @@
 #ifndef QGSVECTORFIELDSYMBOLLAYERWIDGET_H
 #define QGSVECTORFIELDSYMBOLLAYERWIDGET_H
 
-#include "qgssymbollayerv2widget.h"
+#include "qgssymbollayerwidget.h"
 #include "ui_widget_vectorfield.h"
 
 class QgsVectorFieldSymbolLayer;
 
-class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerV2Widget, private Ui::WidgetVectorFieldBase
+/** \ingroup gui
+ * \class QgsVectorFieldSymbolLayerWidget
+ */
+class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::WidgetVectorFieldBase
 {
     Q_OBJECT
   public:
-    QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = 0 );
+    QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
     ~QgsVectorFieldSymbolLayerWidget();
 
-    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsVectorFieldSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsVectorFieldSymbolLayerWidget( vl ); }
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) override;
-    virtual QgsSymbolLayerV2* symbolLayer() override;
+    virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
+    virtual QgsSymbolLayer* symbolLayer() override;
 
   protected:
     QgsVectorFieldSymbolLayer* mLayer;
@@ -47,7 +50,7 @@ class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerV2Widget,
     void on_mRadiansRadioButton_toggled( bool checked );
     void on_mClockwiseFromNorthRadioButton_toggled( bool checked );
     void on_mCounterclockwiseFromEastRadioButton_toggled( bool checked );
-    void on_mDistanceUnitComboBox_currentIndexChanged( int index );
+    void on_mDistanceUnitWidget_changed();
 };
 
 #endif // QGSVECTORFIELDSYMBOLLAYERWIDGET_H

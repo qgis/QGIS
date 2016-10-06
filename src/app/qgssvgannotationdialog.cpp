@@ -23,12 +23,11 @@
 #include <QGraphicsScene>
 
 QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ):
-    QDialog( parent, f ), mItem( item ), mEmbeddedWidget( 0 )
+    QDialog( parent, f ), mItem( item ), mEmbeddedWidget( nullptr )
 {
   setupUi( this );
   setWindowTitle( tr( "SVG annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
-  mEmbeddedWidget->show();
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
@@ -43,7 +42,7 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWid
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
 }
 
-QgsSvgAnnotationDialog::QgsSvgAnnotationDialog(): QDialog(), mItem( 0 ), mEmbeddedWidget( 0 )
+QgsSvgAnnotationDialog::QgsSvgAnnotationDialog(): QDialog(), mItem( nullptr ), mEmbeddedWidget( nullptr )
 {
 
 }
@@ -61,7 +60,7 @@ void QgsSvgAnnotationDialog::on_mBrowseToolButton_clicked()
   {
     directory = fi.absolutePath();
   }
-  QString filename = QFileDialog::getOpenFileName( 0, tr( "Select SVG file" ), directory, tr( "SVG files" ) + " (*.svg)" );
+  QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Select SVG file" ), directory, tr( "SVG files" ) + " (*.svg)" );
   mFileLineEdit->setText( filename );
 }
 
@@ -88,5 +87,13 @@ void QgsSvgAnnotationDialog::deleteItem()
     scene->removeItem( mItem );
   }
   delete mItem;
-  mItem = 0;
+  mItem = nullptr;
+}
+
+void QgsSvgAnnotationDialog::on_mButtonBox_clicked( QAbstractButton* button )
+{
+  if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
+  {
+    applySettingsToItem();
+  }
 }

@@ -52,6 +52,15 @@ enum SDO_GTYPE_TT
 class QOCISpatialGeometry : public QSharedData
 {
   public:
+    QOCISpatialGeometry()
+        : isNull( true )
+        , gtype( -1 )
+        , srid( -1 )
+        , x( 0.0 )
+        , y( 0.0 )
+        , z( 0.0 )
+    {}
+
     bool isNull;
     int gtype;
     int srid;

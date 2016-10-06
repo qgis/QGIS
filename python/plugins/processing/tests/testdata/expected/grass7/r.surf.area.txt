@@ -1,0 +1,6 @@
+Null value area ignored in calculation: 1510000.000000
+Plan area used in calculation: 149040000.000000
+Surface area calculation(low, high, avg):
+	143171894.810657 143200607.945173 143186251.377915
+Current region plan area: 151510000.000000
+Estimated region Surface Area: 145559238.769913

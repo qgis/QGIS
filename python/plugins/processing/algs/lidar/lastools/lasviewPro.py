@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'October 2014'
@@ -24,11 +27,12 @@ __copyright__ = '(C) 2014, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
+
 
 class lasviewPro(LAStoolsAlgorithm):
 
@@ -41,16 +45,16 @@ class lasviewPro(LAStoolsAlgorithm):
     COLORINGS = ["default", "classification", "elevation1", "elevation2", "intensity", "return", "flightline", "rgb"]
 
     def defineCharacteristics(self):
-        self.name = "lasviewPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasviewPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParameter(ParameterNumber(lasviewPro.POINTS,
-            self.tr("max number of points sampled"), 100000, 20000000, 5000000))
+                                          self.tr("max number of points sampled"), 100000, 20000000, 5000000))
         self.addParameter(ParameterSelection(lasviewPro.COLORING,
-            self.tr("color by"), lasviewPro.COLORINGS, 0))
+                                             self.tr("color by"), lasviewPro.COLORINGS, 0))
         self.addParameter(ParameterSelection(lasviewPro.SIZE,
-            self.tr("window size (x y) in pixels"), lasviewPro.SIZES, 0))
+                                             self.tr("window size (x y) in pixels"), lasviewPro.SIZES, 0))
         self.addParametersAdditionalGUI()
         self.addParametersVerboseGUI()
 

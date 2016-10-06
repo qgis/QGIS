@@ -1,0 +1,7 @@
+v.net.visibility
+Performs visibility graph construction.
+Vector (v.*)
+ParameterVector|input|Input vector line layer (arcs)|-1|False
+*ParameterString|coordinates|Coordinates||False|True
+*ParameterVector|visibility|Input vector line layer containing visable points|1|True
+OutputVector|output|Network_Visibility

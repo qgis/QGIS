@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
@@ -28,13 +29,18 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.PyQt.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputRaster
+from processing.tools import dataobjects
 from processing.algs.gdal.GdalUtils import GdalUtils
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class GridNearest(GdalAlgorithm):
@@ -50,35 +56,38 @@ class GridNearest(GdalAlgorithm):
 
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
+
     def commandLineName(self):
         return "gdalogr:gridnearestneighbor"
 
     def defineCharacteristics(self):
-        self.name = 'Grid (Nearest neighbor)'
-        self.group = '[GDAL] Analysis'
+        self.name, self.i18n_name = self.trAlgorithm('Grid (Nearest neighbor)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.Z_FIELD,
-            self.tr('Z field'), self.INPUT,
-            ParameterTableField.DATA_TYPE_NUMBER, True))
+                                              self.tr('Z field'), self.INPUT,
+                                              ParameterTableField.DATA_TYPE_NUMBER, True))
         self.addParameter(ParameterNumber(self.RADIUS_1,
-            self.tr('Radius 1'), 0.0, 99999999.999999, 0.0))
+                                          self.tr('Radius 1'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterNumber(self.RADIUS_2,
-            self.tr('Radius 2'), 0.0, 99999999.999999, 0.0))
+                                          self.tr('Radius 2'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterNumber(self.ANGLE,
-            self.tr('Angle'), 0.0, 359.0, 0.0))
+                                          self.tr('Angle'), 0.0, 359.0, 0.0))
         self.addParameter(ParameterNumber(self.NODATA,
-            self.tr('Nodata'), 0.0, 99999999.999999, 0.0))
+                                          self.tr('Nodata'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterSelection(self.RTYPE,
-            self.tr('Output raster type'), self.TYPE, 5))
+                                             self.tr('Output raster type'), self.TYPE, 5))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Interpolated nearest neighbor')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = ['-l']
         arguments.append(
             os.path.basename(os.path.splitext(
-                unicode(self.getParameterValue(self.INPUT)))[0]))
+                str(self.getParameterValue(self.INPUT)))[0]))
 
         fieldName = self.getParameterValue(self.Z_FIELD)
         if fieldName is not None and fieldName != '':
@@ -95,8 +104,7 @@ class GridNearest(GdalAlgorithm):
         arguments.append(params)
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-        arguments.append(unicode(self.getParameterValue(self.INPUT)))
-        arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
+        arguments.append(str(self.getParameterValue(self.INPUT)))
+        arguments.append(str(self.getOutputValue(self.OUTPUT)))
 
-        GdalUtils.runGdal(['gdal_grid',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdal_grid', GdalUtils.escapeAndJoin(arguments)]

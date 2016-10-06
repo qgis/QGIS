@@ -34,27 +34,29 @@
     The ``tests/examplefiles`` contains a few test files with data to be
     parsed by these lexers.
 
-    :copyright: Copyright 2006-2013 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2015 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 import re
 
-from pygments.lexer import Lexer, RegexLexer, do_insertions, bygroups
+from pygments.lexer import Lexer, RegexLexer, do_insertions, bygroups, words
 from pygments.token import Punctuation, \
-     Text, Comment, Operator, Keyword, Name, String, Number, Generic
+    Text, Comment, Operator, Keyword, Name, String, Number, Generic
 from pygments.lexers import get_lexer_by_name, ClassNotFound
+from pygments.util import iteritems
 
 from pygments.lexers._postgres_builtins import KEYWORDS, DATATYPES, \
-     PSEUDO_TYPES, PLPGSQL_KEYWORDS
+    PSEUDO_TYPES, PLPGSQL_KEYWORDS
 
 
 __all__ = ['PostgresLexer', 'PlPgsqlLexer', 'PostgresConsoleLexer',
-           'SqlLexer', 'MySqlLexer', 'SqliteConsoleLexer']
+           'SqlLexer', 'MySqlLexer', 'SqliteConsoleLexer', 'RqlLexer']
 
 line_re  = re.compile('.*?\n')
 
 language_re = re.compile(r"\s+LANGUAGE\s+'?(\w+)'?", re.IGNORECASE)
+
 
 def language_callback(lexer, match):
     """Parse the content of a $-string using a lexer
@@ -101,7 +103,7 @@ class PostgresBase(object):
         if lang.lower() == 'sql':
             return get_lexer_by_name('postgresql', **self.options)
 
-        tries = [ lang ]
+        tries = [lang]
         if lang.startswith('pl'):
             tries.append(lang[2:])
         if lang.endswith('u'):
@@ -124,7 +126,7 @@ class PostgresLexer(PostgresBase, RegexLexer):
     """
     Lexer for the PostgreSQL dialect of SQL.
 
-    *New in Pygments 1.5.*
+    .. versionadded:: 1.5
     """
 
     name = 'PostgreSQL SQL dialect'
@@ -137,30 +139,40 @@ class PostgresLexer(PostgresBase, RegexLexer):
             (r'\s+', Text),
             (r'--.*?\n', Comment.Single),
             (r'/\*', Comment.Multiline, 'multiline-comments'),
-            (r'(' + '|'.join([s.replace(" ", "\s+")
-                for s in DATATYPES + PSEUDO_TYPES])
-                  + r')\b', Name.Builtin),
-            (r'(' + '|'.join(KEYWORDS) + r')\b', Keyword),
+            (r'(' + '|'.join(s.replace(" ", "\s+")
+                             for s in DATATYPES + PSEUDO_TYPES)
+             + r')\b', Name.Builtin),
+            (words(KEYWORDS, suffix=r'\b'), Keyword),
             (r'[+*/<>=~!@#%^&|`?-]+', Operator),
             (r'::', Operator),  # cast
             (r'\$\d+', Name.Variable),
             (r'([0-9]*\.[0-9]*|[0-9]+)(e[+-]?[0-9]+)?', Number.Float),
             (r'[0-9]+', Number.Integer),
-            (r"(E|U&)?'(''|[^'])*'", String.Single),
-            (r'(U&)?"(""|[^"])*"', String.Name), # quoted identifier
-            (r'(?s)(\$[^\$]*\$)(.*?)(\1)', language_callback),
-            (r'[a-zA-Z_][a-zA-Z0-9_]*', Name),
+            (r"(E|U&)?'", String.Single, 'string'),
+            (r'(U&)?"', String.Name, 'quoted-ident'),  # quoted identifier
+            (r'(?s)(\$[^$]*\$)(.*?)(\1)', language_callback),
+            (r'[a-z_]\w*', Name),
 
             # psql variable in SQL
-            (r""":(['"]?)[a-z][a-z0-9_]*\b\1""", Name.Variable),
+            (r""":(['"]?)[a-z]\w*\b\1""", Name.Variable),
 
-            (r'[;:()\[\]\{\},\.]', Punctuation),
+            (r'[;:()\[\]{},.]', Punctuation),
         ],
         'multiline-comments': [
             (r'/\*', Comment.Multiline, 'multiline-comments'),
             (r'\*/', Comment.Multiline, '#pop'),
-            (r'[^/\*]+', Comment.Multiline),
+            (r'[^/*]+', Comment.Multiline),
             (r'[/*]', Comment.Multiline)
+        ],
+        'string': [
+            (r"[^']+", String.Single),
+            (r"''", String.Single),
+            (r"'", String.Single, '#pop'),
+        ],
+        'quoted-ident': [
+            (r'[^"]+', String.Name),
+            (r'""', String.Name),
+            (r'"', String.Name, '#pop'),
         ],
     }
 
@@ -169,20 +181,20 @@ class PlPgsqlLexer(PostgresBase, RegexLexer):
     """
     Handle the extra syntax in Pl/pgSQL language.
 
-    *New in Pygments 1.5.*
+    .. versionadded:: 1.5
     """
     name = 'PL/pgSQL'
     aliases = ['plpgsql']
     mimetypes = ['text/x-plpgsql']
 
     flags = re.IGNORECASE
-    tokens = dict((k, l[:]) for (k, l) in PostgresLexer.tokens.iteritems())
+    tokens = dict((k, l[:]) for (k, l) in iteritems(PostgresLexer.tokens))
 
     # extend the keywords list
     for i, pattern in enumerate(tokens['root']):
         if pattern[1] == Keyword:
             tokens['root'][i] = (
-                r'(' + '|'.join(KEYWORDS + PLPGSQL_KEYWORDS) + r')\b',
+                words(KEYWORDS + PLPGSQL_KEYWORDS, suffix=r'\b'),
                 Keyword)
             del i
             break
@@ -191,10 +203,10 @@ class PlPgsqlLexer(PostgresBase, RegexLexer):
 
     # Add specific PL/pgSQL rules (before the SQL ones)
     tokens['root'][:0] = [
-        (r'\%[a-z][a-z0-9_]*\b', Name.Builtin),     # actually, a datatype
+        (r'\%[a-z]\w*\b', Name.Builtin),     # actually, a datatype
         (r':=', Operator),
-        (r'\<\<[a-z][a-z0-9_]*\>\>', Name.Label),
-        (r'\#[a-z][a-z0-9_]*\b', Keyword.Pseudo),   # #variable_conflict
+        (r'\<\<[a-z]\w*\>\>', Name.Label),
+        (r'\#[a-z]\w*\b', Keyword.Pseudo),   # #variable_conflict
     ]
 
 
@@ -210,7 +222,7 @@ class PsqlRegexLexer(PostgresBase, RegexLexer):
     aliases = []    # not public
 
     flags = re.IGNORECASE
-    tokens = dict((k, l[:]) for (k, l) in PostgresLexer.tokens.iteritems())
+    tokens = dict((k, l[:]) for (k, l) in iteritems(PostgresLexer.tokens))
 
     tokens['root'].append(
         (r'\\[^\s]+', Keyword.Pseudo, 'psql-command'))
@@ -218,7 +230,7 @@ class PsqlRegexLexer(PostgresBase, RegexLexer):
         (r'\n', Text, 'root'),
         (r'\s+', Text),
         (r'\\[^\s]+', Keyword.Pseudo),
-        (r""":(['"]?)[a-z][a-z0-9_]*\b\1""", Name.Variable),
+        (r""":(['"]?)[a-z]\w*\b\1""", Name.Variable),
         (r"'(''|[^'])*'", String.Single),
         (r"`([^`])*`", String.Backtick),
         (r"[^\s]+", String.Symbol),
@@ -239,24 +251,28 @@ class lookahead(object):
     def __init__(self, x):
         self.iter = iter(x)
         self._nextitem = None
+
     def __iter__(self):
         return self
+
     def send(self, i):
         self._nextitem = i
         return i
-    def next(self):
+
+    def __next__(self):
         if self._nextitem is not None:
             ni = self._nextitem
             self._nextitem = None
             return ni
-        return self.iter.next()
+        return next(self.iter)
+    next = __next__
 
 
 class PostgresConsoleLexer(Lexer):
     """
     Lexer for psql sessions.
 
-    *New in Pygments 1.5.*
+    .. versionadded:: 1.5
     """
 
     name = 'PostgreSQL console (psql)'
@@ -277,7 +293,7 @@ class PostgresConsoleLexer(Lexer):
             insertions = []
             while 1:
                 try:
-                    line = lines.next()
+                    line = next(lines)
                 except StopIteration:
                     # allow the emission of partially collected items
                     # the repl loop will be broken below
@@ -303,18 +319,18 @@ class PostgresConsoleLexer(Lexer):
                 # TODO: better handle multiline comments at the end with
                 # a lexer with an external state?
                 if re_psql_command.match(curcode) \
-                or re_end_command.search(curcode):
+                   or re_end_command.search(curcode):
                     break
 
             # Emit the combined stream of command and prompt(s)
             for item in do_insertions(insertions,
-                    sql.get_tokens_unprocessed(curcode)):
+                                      sql.get_tokens_unprocessed(curcode)):
                 yield item
 
             # Emit the output lines
             out_token = Generic.Output
             while 1:
-                line = lines.next()
+                line = next(lines)
                 mprompt = re_prompt.match(line)
                 if mprompt is not None:
                     # push the line back to have it processed by the prompt
@@ -324,7 +340,7 @@ class PostgresConsoleLexer(Lexer):
                 mmsg = re_message.match(line)
                 if mmsg is not None:
                     if mmsg.group(1).startswith("ERROR") \
-                    or mmsg.group(1).startswith("FATAL"):
+                       or mmsg.group(1).startswith("FATAL"):
                         out_token = Generic.Error
                     yield (mmsg.start(1), Generic.Strong, mmsg.group(1))
                     yield (mmsg.start(2), out_token, mmsg.group(2))
@@ -349,97 +365,100 @@ class SqlLexer(RegexLexer):
             (r'\s+', Text),
             (r'--.*?\n', Comment.Single),
             (r'/\*', Comment.Multiline, 'multiline-comments'),
-            (r'(ABORT|ABS|ABSOLUTE|ACCESS|ADA|ADD|ADMIN|AFTER|AGGREGATE|'
-             r'ALIAS|ALL|ALLOCATE|ALTER|ANALYSE|ANALYZE|AND|ANY|ARE|AS|'
-             r'ASC|ASENSITIVE|ASSERTION|ASSIGNMENT|ASYMMETRIC|AT|ATOMIC|'
-             r'AUTHORIZATION|AVG|BACKWARD|BEFORE|BEGIN|BETWEEN|BITVAR|'
-             r'BIT_LENGTH|BOTH|BREADTH|BY|C|CACHE|CALL|CALLED|CARDINALITY|'
-             r'CASCADE|CASCADED|CASE|CAST|CATALOG|CATALOG_NAME|CHAIN|'
-             r'CHARACTERISTICS|CHARACTER_LENGTH|CHARACTER_SET_CATALOG|'
-             r'CHARACTER_SET_NAME|CHARACTER_SET_SCHEMA|CHAR_LENGTH|CHECK|'
-             r'CHECKED|CHECKPOINT|CLASS|CLASS_ORIGIN|CLOB|CLOSE|CLUSTER|'
-             r'COALSECE|COBOL|COLLATE|COLLATION|COLLATION_CATALOG|'
-             r'COLLATION_NAME|COLLATION_SCHEMA|COLUMN|COLUMN_NAME|'
-             r'COMMAND_FUNCTION|COMMAND_FUNCTION_CODE|COMMENT|COMMIT|'
-             r'COMMITTED|COMPLETION|CONDITION_NUMBER|CONNECT|CONNECTION|'
-             r'CONNECTION_NAME|CONSTRAINT|CONSTRAINTS|CONSTRAINT_CATALOG|'
-             r'CONSTRAINT_NAME|CONSTRAINT_SCHEMA|CONSTRUCTOR|CONTAINS|'
-             r'CONTINUE|CONVERSION|CONVERT|COPY|CORRESPONTING|COUNT|'
-             r'CREATE|CREATEDB|CREATEUSER|CROSS|CUBE|CURRENT|CURRENT_DATE|'
-             r'CURRENT_PATH|CURRENT_ROLE|CURRENT_TIME|CURRENT_TIMESTAMP|'
-             r'CURRENT_USER|CURSOR|CURSOR_NAME|CYCLE|DATA|DATABASE|'
-             r'DATETIME_INTERVAL_CODE|DATETIME_INTERVAL_PRECISION|DAY|'
-             r'DEALLOCATE|DECLARE|DEFAULT|DEFAULTS|DEFERRABLE|DEFERRED|'
-             r'DEFINED|DEFINER|DELETE|DELIMITER|DELIMITERS|DEREF|DESC|'
-             r'DESCRIBE|DESCRIPTOR|DESTROY|DESTRUCTOR|DETERMINISTIC|'
-             r'DIAGNOSTICS|DICTIONARY|DISCONNECT|DISPATCH|DISTINCT|DO|'
-             r'DOMAIN|DROP|DYNAMIC|DYNAMIC_FUNCTION|DYNAMIC_FUNCTION_CODE|'
-             r'EACH|ELSE|ENCODING|ENCRYPTED|END|END-EXEC|EQUALS|ESCAPE|EVERY|'
-             r'EXCEPT|ESCEPTION|EXCLUDING|EXCLUSIVE|EXEC|EXECUTE|EXISTING|'
-             r'EXISTS|EXPLAIN|EXTERNAL|EXTRACT|FALSE|FETCH|FINAL|FIRST|FOR|'
-             r'FORCE|FOREIGN|FORTRAN|FORWARD|FOUND|FREE|FREEZE|FROM|FULL|'
-             r'FUNCTION|G|GENERAL|GENERATED|GET|GLOBAL|GO|GOTO|GRANT|GRANTED|'
-             r'GROUP|GROUPING|HANDLER|HAVING|HIERARCHY|HOLD|HOST|IDENTITY|'
-             r'IGNORE|ILIKE|IMMEDIATE|IMMUTABLE|IMPLEMENTATION|IMPLICIT|IN|'
-             r'INCLUDING|INCREMENT|INDEX|INDITCATOR|INFIX|INHERITS|INITIALIZE|'
-             r'INITIALLY|INNER|INOUT|INPUT|INSENSITIVE|INSERT|INSTANTIABLE|'
-             r'INSTEAD|INTERSECT|INTO|INVOKER|IS|ISNULL|ISOLATION|ITERATE|JOIN|'
-             r'KEY|KEY_MEMBER|KEY_TYPE|LANCOMPILER|LANGUAGE|LARGE|LAST|'
-             r'LATERAL|LEADING|LEFT|LENGTH|LESS|LEVEL|LIKE|LIMIT|LISTEN|LOAD|'
-             r'LOCAL|LOCALTIME|LOCALTIMESTAMP|LOCATION|LOCATOR|LOCK|LOWER|'
-             r'MAP|MATCH|MAX|MAXVALUE|MESSAGE_LENGTH|MESSAGE_OCTET_LENGTH|'
-             r'MESSAGE_TEXT|METHOD|MIN|MINUTE|MINVALUE|MOD|MODE|MODIFIES|'
-             r'MODIFY|MONTH|MORE|MOVE|MUMPS|NAMES|NATIONAL|NATURAL|NCHAR|'
-             r'NCLOB|NEW|NEXT|NO|NOCREATEDB|NOCREATEUSER|NONE|NOT|NOTHING|'
-             r'NOTIFY|NOTNULL|NULL|NULLABLE|NULLIF|OBJECT|OCTET_LENGTH|OF|OFF|'
-             r'OFFSET|OIDS|OLD|ON|ONLY|OPEN|OPERATION|OPERATOR|OPTION|OPTIONS|'
-             r'OR|ORDER|ORDINALITY|OUT|OUTER|OUTPUT|OVERLAPS|OVERLAY|OVERRIDING|'
-             r'OWNER|PAD|PARAMETER|PARAMETERS|PARAMETER_MODE|PARAMATER_NAME|'
-             r'PARAMATER_ORDINAL_POSITION|PARAMETER_SPECIFIC_CATALOG|'
-             r'PARAMETER_SPECIFIC_NAME|PARAMATER_SPECIFIC_SCHEMA|PARTIAL|'
-             r'PASCAL|PENDANT|PLACING|PLI|POSITION|POSTFIX|PRECISION|PREFIX|'
-             r'PREORDER|PREPARE|PRESERVE|PRIMARY|PRIOR|PRIVILEGES|PROCEDURAL|'
-             r'PROCEDURE|PUBLIC|READ|READS|RECHECK|RECURSIVE|REF|REFERENCES|'
-             r'REFERENCING|REINDEX|RELATIVE|RENAME|REPEATABLE|REPLACE|RESET|'
-             r'RESTART|RESTRICT|RESULT|RETURN|RETURNED_LENGTH|'
-             r'RETURNED_OCTET_LENGTH|RETURNED_SQLSTATE|RETURNS|REVOKE|RIGHT|'
-             r'ROLE|ROLLBACK|ROLLUP|ROUTINE|ROUTINE_CATALOG|ROUTINE_NAME|'
-             r'ROUTINE_SCHEMA|ROW|ROWS|ROW_COUNT|RULE|SAVE_POINT|SCALE|SCHEMA|'
-             r'SCHEMA_NAME|SCOPE|SCROLL|SEARCH|SECOND|SECURITY|SELECT|SELF|'
-             r'SENSITIVE|SERIALIZABLE|SERVER_NAME|SESSION|SESSION_USER|SET|'
-             r'SETOF|SETS|SHARE|SHOW|SIMILAR|SIMPLE|SIZE|SOME|SOURCE|SPACE|'
-             r'SPECIFIC|SPECIFICTYPE|SPECIFIC_NAME|SQL|SQLCODE|SQLERROR|'
-             r'SQLEXCEPTION|SQLSTATE|SQLWARNINIG|STABLE|START|STATE|STATEMENT|'
-             r'STATIC|STATISTICS|STDIN|STDOUT|STORAGE|STRICT|STRUCTURE|STYPE|'
-             r'SUBCLASS_ORIGIN|SUBLIST|SUBSTRING|SUM|SYMMETRIC|SYSID|SYSTEM|'
-             r'SYSTEM_USER|TABLE|TABLE_NAME| TEMP|TEMPLATE|TEMPORARY|TERMINATE|'
-             r'THAN|THEN|TIMESTAMP|TIMEZONE_HOUR|TIMEZONE_MINUTE|TO|TOAST|'
-             r'TRAILING|TRANSATION|TRANSACTIONS_COMMITTED|'
-             r'TRANSACTIONS_ROLLED_BACK|TRANSATION_ACTIVE|TRANSFORM|'
-             r'TRANSFORMS|TRANSLATE|TRANSLATION|TREAT|TRIGGER|TRIGGER_CATALOG|'
-             r'TRIGGER_NAME|TRIGGER_SCHEMA|TRIM|TRUE|TRUNCATE|TRUSTED|TYPE|'
-             r'UNCOMMITTED|UNDER|UNENCRYPTED|UNION|UNIQUE|UNKNOWN|UNLISTEN|'
-             r'UNNAMED|UNNEST|UNTIL|UPDATE|UPPER|USAGE|USER|'
-             r'USER_DEFINED_TYPE_CATALOG|USER_DEFINED_TYPE_NAME|'
-             r'USER_DEFINED_TYPE_SCHEMA|USING|VACUUM|VALID|VALIDATOR|VALUES|'
-             r'VARIABLE|VERBOSE|VERSION|VIEW|VOLATILE|WHEN|WHENEVER|WHERE|'
-             r'WITH|WITHOUT|WORK|WRITE|YEAR|ZONE)\b', Keyword),
-            (r'(ARRAY|BIGINT|BINARY|BIT|BLOB|BOOLEAN|CHAR|CHARACTER|DATE|'
-             r'DEC|DECIMAL|FLOAT|INT|INTEGER|INTERVAL|NUMBER|NUMERIC|REAL|'
-             r'SERIAL|SMALLINT|VARCHAR|VARYING|INT8|SERIAL8|TEXT)\b',
+            (words((
+                'ABORT', 'ABS', 'ABSOLUTE', 'ACCESS', 'ADA', 'ADD', 'ADMIN', 'AFTER', 'AGGREGATE',
+                'ALIAS', 'ALL', 'ALLOCATE', 'ALTER', 'ANALYSE', 'ANALYZE', 'AND', 'ANY', 'ARE', 'AS',
+                'ASC', 'ASENSITIVE', 'ASSERTION', 'ASSIGNMENT', 'ASYMMETRIC', 'AT', 'ATOMIC',
+                'AUTHORIZATION', 'AVG', 'BACKWARD', 'BEFORE', 'BEGIN', 'BETWEEN', 'BITVAR',
+                'BIT_LENGTH', 'BOTH', 'BREADTH', 'BY', 'C', 'CACHE', 'CALL', 'CALLED', 'CARDINALITY',
+                'CASCADE', 'CASCADED', 'CASE', 'CAST', 'CATALOG', 'CATALOG_NAME', 'CHAIN',
+                'CHARACTERISTICS', 'CHARACTER_LENGTH', 'CHARACTER_SET_CATALOG',
+                'CHARACTER_SET_NAME', 'CHARACTER_SET_SCHEMA', 'CHAR_LENGTH', 'CHECK',
+                'CHECKED', 'CHECKPOINT', 'CLASS', 'CLASS_ORIGIN', 'CLOB', 'CLOSE', 'CLUSTER',
+                'COALSECE', 'COBOL', 'COLLATE', 'COLLATION', 'COLLATION_CATALOG',
+                'COLLATION_NAME', 'COLLATION_SCHEMA', 'COLUMN', 'COLUMN_NAME',
+                'COMMAND_FUNCTION', 'COMMAND_FUNCTION_CODE', 'COMMENT', 'COMMIT',
+                'COMMITTED', 'COMPLETION', 'CONDITION_NUMBER', 'CONNECT', 'CONNECTION',
+                'CONNECTION_NAME', 'CONSTRAINT', 'CONSTRAINTS', 'CONSTRAINT_CATALOG',
+                'CONSTRAINT_NAME', 'CONSTRAINT_SCHEMA', 'CONSTRUCTOR', 'CONTAINS',
+                'CONTINUE', 'CONVERSION', 'CONVERT', 'COPY', 'CORRESPONTING', 'COUNT',
+                'CREATE', 'CREATEDB', 'CREATEUSER', 'CROSS', 'CUBE', 'CURRENT', 'CURRENT_DATE',
+                'CURRENT_PATH', 'CURRENT_ROLE', 'CURRENT_TIME', 'CURRENT_TIMESTAMP',
+                'CURRENT_USER', 'CURSOR', 'CURSOR_NAME', 'CYCLE', 'DATA', 'DATABASE',
+                'DATETIME_INTERVAL_CODE', 'DATETIME_INTERVAL_PRECISION', 'DAY',
+                'DEALLOCATE', 'DECLARE', 'DEFAULT', 'DEFAULTS', 'DEFERRABLE', 'DEFERRED',
+                'DEFINED', 'DEFINER', 'DELETE', 'DELIMITER', 'DELIMITERS', 'DEREF', 'DESC',
+                'DESCRIBE', 'DESCRIPTOR', 'DESTROY', 'DESTRUCTOR', 'DETERMINISTIC',
+                'DIAGNOSTICS', 'DICTIONARY', 'DISCONNECT', 'DISPATCH', 'DISTINCT', 'DO',
+                'DOMAIN', 'DROP', 'DYNAMIC', 'DYNAMIC_FUNCTION', 'DYNAMIC_FUNCTION_CODE', 'EACH',
+                'ELSE', 'ELSIF', 'ENCODING', 'ENCRYPTED', 'END', 'END-EXEC', 'EQUALS', 'ESCAPE', 'EVERY',
+                'EXCEPTION', 'EXCEPT', 'EXCLUDING', 'EXCLUSIVE', 'EXEC', 'EXECUTE', 'EXISTING',
+                'EXISTS', 'EXPLAIN', 'EXTERNAL', 'EXTRACT', 'FALSE', 'FETCH', 'FINAL', 'FIRST', 'FOR',
+                'FORCE', 'FOREIGN', 'FORTRAN', 'FORWARD', 'FOUND', 'FREE', 'FREEZE', 'FROM', 'FULL',
+                'FUNCTION', 'G', 'GENERAL', 'GENERATED', 'GET', 'GLOBAL', 'GO', 'GOTO', 'GRANT', 'GRANTED',
+                'GROUP', 'GROUPING', 'HANDLER', 'HAVING', 'HIERARCHY', 'HOLD', 'HOST', 'IDENTITY', 'IF',
+                'IGNORE', 'ILIKE', 'IMMEDIATE', 'IMMUTABLE', 'IMPLEMENTATION', 'IMPLICIT', 'IN',
+                'INCLUDING', 'INCREMENT', 'INDEX', 'INDITCATOR', 'INFIX', 'INHERITS', 'INITIALIZE',
+                'INITIALLY', 'INNER', 'INOUT', 'INPUT', 'INSENSITIVE', 'INSERT', 'INSTANTIABLE',
+                'INSTEAD', 'INTERSECT', 'INTO', 'INVOKER', 'IS', 'ISNULL', 'ISOLATION', 'ITERATE', 'JOIN',
+                'KEY', 'KEY_MEMBER', 'KEY_TYPE', 'LANCOMPILER', 'LANGUAGE', 'LARGE', 'LAST',
+                'LATERAL', 'LEADING', 'LEFT', 'LENGTH', 'LESS', 'LEVEL', 'LIKE', 'LIMIT', 'LISTEN', 'LOAD',
+                'LOCAL', 'LOCALTIME', 'LOCALTIMESTAMP', 'LOCATION', 'LOCATOR', 'LOCK', 'LOWER',
+                'MAP', 'MATCH', 'MAX', 'MAXVALUE', 'MESSAGE_LENGTH', 'MESSAGE_OCTET_LENGTH',
+                'MESSAGE_TEXT', 'METHOD', 'MIN', 'MINUTE', 'MINVALUE', 'MOD', 'MODE', 'MODIFIES',
+                'MODIFY', 'MONTH', 'MORE', 'MOVE', 'MUMPS', 'NAMES', 'NATIONAL', 'NATURAL', 'NCHAR',
+                'NCLOB', 'NEW', 'NEXT', 'NO', 'NOCREATEDB', 'NOCREATEUSER', 'NONE', 'NOT', 'NOTHING',
+                'NOTIFY', 'NOTNULL', 'NULL', 'NULLABLE', 'NULLIF', 'OBJECT', 'OCTET_LENGTH', 'OF', 'OFF',
+                'OFFSET', 'OIDS', 'OLD', 'ON', 'ONLY', 'OPEN', 'OPERATION', 'OPERATOR', 'OPTION', 'OPTIONS',
+                'OR', 'ORDER', 'ORDINALITY', 'OUT', 'OUTER', 'OUTPUT', 'OVERLAPS', 'OVERLAY', 'OVERRIDING',
+                'OWNER', 'PAD', 'PARAMETER', 'PARAMETERS', 'PARAMETER_MODE', 'PARAMATER_NAME',
+                'PARAMATER_ORDINAL_POSITION', 'PARAMETER_SPECIFIC_CATALOG',
+                'PARAMETER_SPECIFIC_NAME', 'PARAMATER_SPECIFIC_SCHEMA', 'PARTIAL',
+                'PASCAL', 'PENDANT', 'PLACING', 'PLI', 'POSITION', 'POSTFIX', 'PRECISION', 'PREFIX',
+                'PREORDER', 'PREPARE', 'PRESERVE', 'PRIMARY', 'PRIOR', 'PRIVILEGES', 'PROCEDURAL',
+                'PROCEDURE', 'PUBLIC', 'READ', 'READS', 'RECHECK', 'RECURSIVE', 'REF', 'REFERENCES',
+                'REFERENCING', 'REINDEX', 'RELATIVE', 'RENAME', 'REPEATABLE', 'REPLACE', 'RESET',
+                'RESTART', 'RESTRICT', 'RESULT', 'RETURN', 'RETURNED_LENGTH',
+                'RETURNED_OCTET_LENGTH', 'RETURNED_SQLSTATE', 'RETURNS', 'REVOKE', 'RIGHT',
+                'ROLE', 'ROLLBACK', 'ROLLUP', 'ROUTINE', 'ROUTINE_CATALOG', 'ROUTINE_NAME',
+                'ROUTINE_SCHEMA', 'ROW', 'ROWS', 'ROW_COUNT', 'RULE', 'SAVE_POINT', 'SCALE', 'SCHEMA',
+                'SCHEMA_NAME', 'SCOPE', 'SCROLL', 'SEARCH', 'SECOND', 'SECURITY', 'SELECT', 'SELF',
+                'SENSITIVE', 'SERIALIZABLE', 'SERVER_NAME', 'SESSION', 'SESSION_USER', 'SET',
+                'SETOF', 'SETS', 'SHARE', 'SHOW', 'SIMILAR', 'SIMPLE', 'SIZE', 'SOME', 'SOURCE', 'SPACE',
+                'SPECIFIC', 'SPECIFICTYPE', 'SPECIFIC_NAME', 'SQL', 'SQLCODE', 'SQLERROR',
+                'SQLEXCEPTION', 'SQLSTATE', 'SQLWARNINIG', 'STABLE', 'START', 'STATE', 'STATEMENT',
+                'STATIC', 'STATISTICS', 'STDIN', 'STDOUT', 'STORAGE', 'STRICT', 'STRUCTURE', 'STYPE',
+                'SUBCLASS_ORIGIN', 'SUBLIST', 'SUBSTRING', 'SUM', 'SYMMETRIC', 'SYSID', 'SYSTEM',
+                'SYSTEM_USER', 'TABLE', 'TABLE_NAME', ' TEMP', 'TEMPLATE', 'TEMPORARY', 'TERMINATE',
+                'THAN', 'THEN', 'TIMESTAMP', 'TIMEZONE_HOUR', 'TIMEZONE_MINUTE', 'TO', 'TOAST',
+                'TRAILING', 'TRANSATION', 'TRANSACTIONS_COMMITTED',
+                'TRANSACTIONS_ROLLED_BACK', 'TRANSATION_ACTIVE', 'TRANSFORM',
+                'TRANSFORMS', 'TRANSLATE', 'TRANSLATION', 'TREAT', 'TRIGGER', 'TRIGGER_CATALOG',
+                'TRIGGER_NAME', 'TRIGGER_SCHEMA', 'TRIM', 'TRUE', 'TRUNCATE', 'TRUSTED', 'TYPE',
+                'UNCOMMITTED', 'UNDER', 'UNENCRYPTED', 'UNION', 'UNIQUE', 'UNKNOWN', 'UNLISTEN',
+                'UNNAMED', 'UNNEST', 'UNTIL', 'UPDATE', 'UPPER', 'USAGE', 'USER',
+                'USER_DEFINED_TYPE_CATALOG', 'USER_DEFINED_TYPE_NAME',
+                'USER_DEFINED_TYPE_SCHEMA', 'USING', 'VACUUM', 'VALID', 'VALIDATOR', 'VALUES',
+                'VARIABLE', 'VERBOSE', 'VERSION', 'VIEW', 'VOLATILE', 'WHEN', 'WHENEVER', 'WHERE',
+                'WITH', 'WITHOUT', 'WORK', 'WRITE', 'YEAR', 'ZONE'), suffix=r'\b'),
+             Keyword),
+            (words((
+                'ARRAY', 'BIGINT', 'BINARY', 'BIT', 'BLOB', 'BOOLEAN', 'CHAR', 'CHARACTER', 'DATE',
+                'DEC', 'DECIMAL', 'FLOAT', 'INT', 'INTEGER', 'INTERVAL', 'NUMBER', 'NUMERIC', 'REAL',
+                'SERIAL', 'SMALLINT', 'VARCHAR', 'VARYING', 'INT8', 'SERIAL8', 'TEXT'), suffix=r'\b'),
              Name.Builtin),
             (r'[+*/<>=~!@#%^&|`?-]', Operator),
             (r'[0-9]+', Number.Integer),
             # TODO: Backslash escapes?
             (r"'(''|[^'])*'", String.Single),
-            (r'"(""|[^"])*"', String.Symbol), # not a real string literal in ANSI SQL
-            (r'[a-zA-Z_][a-zA-Z0-9_]*', Name),
-            (r'[;:()\[\],\.]', Punctuation)
+            (r'"(""|[^"])*"', String.Symbol),  # not a real string literal in ANSI SQL
+            (r'[a-z_][\w$]*', Name),  # allow $s in strings for Oracle
+            (r'[;:()\[\],.]', Punctuation)
         ],
         'multiline-comments': [
             (r'/\*', Comment.Multiline, 'multiline-comments'),
             (r'\*/', Comment.Multiline, '#pop'),
-            (r'[^/\*]+', Comment.Multiline),
+            (r'[^/*]+', Comment.Multiline),
             (r'[/*]', Comment.Multiline)
         ]
     }
@@ -462,10 +481,9 @@ class MySqlLexer(RegexLexer):
             (r'/\*', Comment.Multiline, 'multiline-comments'),
             (r'[0-9]+', Number.Integer),
             (r'[0-9]*\.[0-9]+(e[+-][0-9]+)', Number.Float),
-            # TODO: add backslash escapes
-            (r"'(''|[^'])*'", String.Single),
-            (r'"(""|[^"])*"', String.Double),
-            (r"`(``|[^`])*`", String.Symbol),
+            (r"'(\\\\|\\'|''|[^'])*'", String.Single),
+            (r'"(\\\\|\\"|""|[^"])*"', String.Double),
+            (r"`(\\\\|\\`|``|[^`])*`", String.Symbol),
             (r'[+*/<>=~!@#%^&|`?-]', Operator),
             (r'\b(tinyint|smallint|mediumint|int|integer|bigint|date|'
              r'datetime|time|bit|bool|tinytext|mediumtext|longtext|text|'
@@ -481,8 +499,8 @@ class MySqlLexer(RegexLexer):
              r'day_hour|day_microsecond|day_minute|day_second|dec|decimal|'
              r'declare|default|delayed|delete|desc|describe|deterministic|'
              r'distinct|distinctrow|div|double|drop|dual|each|else|elseif|'
-             r'enclosed|escaped|exists|exit|explain|fetch|float|float4|float8'
-             r'|for|force|foreign|from|fulltext|grant|group|having|'
+             r'enclosed|escaped|exists|exit|explain|fetch|flush|float|float4|'
+             r'float8|for|force|foreign|from|fulltext|grant|group|having|'
              r'high_priority|hour_microsecond|hour_minute|hour_second|if|'
              r'ignore|in|index|infile|inner|inout|insensitive|insert|int|'
              r'int1|int2|int3|int4|int8|integer|interval|into|is|iterate|'
@@ -504,16 +522,16 @@ class MySqlLexer(RegexLexer):
             # TODO: this list is not complete
             (r'\b(auto_increment|engine|charset|tables)\b', Keyword.Pseudo),
             (r'(true|false|null)', Name.Constant),
-            (r'([a-zA-Z_][a-zA-Z0-9_]*)(\s*)(\()',
+            (r'([a-z_]\w*)(\s*)(\()',
              bygroups(Name.Function, Text, Punctuation)),
-            (r'[a-zA-Z_][a-zA-Z0-9_]*', Name),
-            (r'@[A-Za-z0-9]*[._]*[A-Za-z0-9]*', Name.Variable),
-            (r'[;:()\[\],\.]', Punctuation)
+            (r'[a-z_]\w*', Name),
+            (r'@[a-z0-9]*[._]*[a-z0-9]*', Name.Variable),
+            (r'[;:()\[\],.]', Punctuation)
         ],
         'multiline-comments': [
             (r'/\*', Comment.Multiline, 'multiline-comments'),
             (r'\*/', Comment.Multiline, '#pop'),
-            (r'[^/\*]+', Comment.Multiline),
+            (r'[^/*]+', Comment.Multiline),
             (r'[/*]', Comment.Multiline)
         ]
     }
@@ -523,7 +541,7 @@ class SqliteConsoleLexer(Lexer):
     """
     Lexer for example sessions using sqlite3.
 
-    *New in Pygments 0.11.*
+    .. versionadded:: 0.11
     """
 
     name = 'sqlite3con'
@@ -557,3 +575,34 @@ class SqliteConsoleLexer(Lexer):
             for item in do_insertions(insertions,
                                       sql.get_tokens_unprocessed(curcode)):
                 yield item
+
+
+class RqlLexer(RegexLexer):
+    """
+    Lexer for Relation Query Language.
+
+    `RQL <http://www.logilab.org/project/rql>`_
+
+    .. versionadded:: 2.0
+    """
+    name = 'RQL'
+    aliases = ['rql']
+    filenames = ['*.rql']
+    mimetypes = ['text/x-rql']
+
+    flags = re.IGNORECASE
+    tokens = {
+        'root': [
+            (r'\s+', Text),
+            (r'(DELETE|SET|INSERT|UNION|DISTINCT|WITH|WHERE|BEING|OR'
+             r'|AND|NOT|GROUPBY|HAVING|ORDERBY|ASC|DESC|LIMIT|OFFSET'
+             r'|TODAY|NOW|TRUE|FALSE|NULL|EXISTS)\b', Keyword),
+            (r'[+*/<>=%-]', Operator),
+            (r'(Any|is|instance_of|CWEType|CWRelation)\b', Name.Builtin),
+            (r'[0-9]+', Number.Integer),
+            (r'[A-Z_]\w*\??', Name),
+            (r"'(''|[^'])*'", String.Single),
+            (r'"(""|[^"])*"', String.Single),
+            (r'[;:()\[\],.]', Punctuation)
+        ],
+    }

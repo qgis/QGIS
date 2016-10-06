@@ -20,6 +20,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'March 2014'
@@ -28,18 +31,19 @@ __copyright__ = '(C) 2014, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
+from .LAStoolsUtils import LAStoolsUtils
 from processing.core.parameters import ParameterExtent
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 from qgis.core import QgsMapLayer, QgsMapLayerRegistry
+
 
 class lasquery(LAStoolsAlgorithm):
 
     AOI = "AOI"
 
     def defineCharacteristics(self):
-        self.name = "lasquery"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasquery')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParameter(ParameterExtent(self.AOI, self.tr('area of interest')))
         self.addParametersAdditionalGUI()
@@ -57,7 +61,7 @@ class lasquery(LAStoolsAlgorithm):
         layers = QgsMapLayerRegistry.instance().mapLayers()
 
         # loop over layers
-        for name,layer in layers.iteritems():
+        for name, layer in layers.items():
             layerType = layer.type()
             if layerType == QgsMapLayer.VectorLayer:
                 shp_file_name = layer.source()

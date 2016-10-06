@@ -68,5 +68,8 @@ while($file = <I>) {
 close I;
 
 foreach (sort keys %labels) {
+	s/\\/\\\\/g;
+	s/"/\\"/g;
+	s/\n/\\n/g;
 	print "translate( \"grasslabel\", \"$_\" );\n";
 }

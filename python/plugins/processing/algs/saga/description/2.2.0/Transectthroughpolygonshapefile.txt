@@ -1,0 +1,6 @@
+Transect through polygon shapefile
+shapes_transect
+ParameterVector|TRANSECT|Line Transect(s)|1|False
+ParameterVector|THEME|Theme|-1|False
+ParameterTableField|THEME_FIELD|Theme Field|THEME|-1|False
+OutputTable|TRANSECT_RESULT|Result table

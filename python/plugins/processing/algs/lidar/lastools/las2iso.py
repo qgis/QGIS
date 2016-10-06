@@ -20,6 +20,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,10 +31,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterNumber
+
 
 class las2iso(LAStoolsAlgorithm):
 
@@ -42,23 +46,23 @@ class las2iso(LAStoolsAlgorithm):
     CLEAN = "CLEAN"
 
     def defineCharacteristics(self):
-        self.name = "las2iso"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('las2iso')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(las2iso.SMOOTH,
-            self.tr("smooth underlying TIN"), 0, None, 0))
+                                          self.tr("smooth underlying TIN"), 0, None, 0))
         self.addParameter(ParameterNumber(las2iso.ISO_EVERY,
-            self.tr("extract isoline with a spacing of"), 0, None, 10.0))
+                                          self.tr("extract isoline with a spacing of"), 0, None, 10.0))
         self.addParameter(ParameterNumber(las2iso.CLEAN,
-            self.tr("clean isolines shorter than (0 = do not clean)"),
-            None, None, 0.0))
+                                          self.tr("clean isolines shorter than (0 = do not clean)"),
+                                          None, None, 0.0))
         self.addParameter(ParameterNumber(las2iso.SIMPLIFY_LENGTH,
-            self.tr("simplify segments shorter than (0 = do not simplify)"),
-            None, None, 0.0))
+                                          self.tr("simplify segments shorter than (0 = do not simplify)"),
+                                          None, None, 0.0))
         self.addParameter(ParameterNumber(las2iso.SIMPLIFY_AREA,
-            self.tr("simplify segments pairs with area less than (0 = do not simplify)"),
-            None, None, 0.0))
+                                          self.tr("simplify segments pairs with area less than (0 = do not simplify)"),
+                                          None, None, 0.0))
         self.addParametersVectorOutputGUI()
         self.addParametersAdditionalGUI()
 

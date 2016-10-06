@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -30,8 +33,8 @@ from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputTable
-from FusionUtils import FusionUtils
-from FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
+from .FusionAlgorithm import FusionAlgorithm
 
 
 class CanopyMaxima(FusionAlgorithm):
@@ -45,8 +48,8 @@ class CanopyMaxima(FusionAlgorithm):
     PARAM_C = 'PARAM_C'
 
     def defineCharacteristics(self):
-        self.name = 'Canopy Maxima'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Canopy Maxima')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input FUSION canopy height model')))
         self.addParameter(ParameterFile(

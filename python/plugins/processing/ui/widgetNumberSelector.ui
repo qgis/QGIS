@@ -21,7 +21,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QDoubleSpinBox" name="spnValue">
+    <widget class="QgsDoubleSpinBox" name="spnValue">
      <property name="decimals">
       <number>6</number>
      </property>
@@ -45,6 +45,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgis.gui</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

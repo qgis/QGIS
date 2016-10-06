@@ -5,6 +5,7 @@
 	<option key="input" />
 	<option key="ew_res" />
 	<option key="ns_res" />
-	<option key="elev" />
+	<option key="elev" version_max="6.4"/>
+	<option key="elevation" version_min="7.0"/>
 	<flag key="t" />
 </qgisgrassmodule>

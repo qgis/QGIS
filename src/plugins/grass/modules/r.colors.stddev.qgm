@@ -2,7 +2,8 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Set color rules based on stddev from a map's mean value" module="r.colors.stddev">
-	<option key="input" />
-	<flag key="b" />
-	<flag key="z" />
+    <option key="input" version_max="6.4"/>
+    <option key="map" version_min="7.0"/>
+    <flag key="b" />
+    <flag key="z" />
 </qgisgrassmodule>

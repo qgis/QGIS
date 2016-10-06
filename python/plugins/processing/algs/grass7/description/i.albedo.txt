@@ -1,0 +1,11 @@
+i.albedo
+Computes broad band albedo from surface reflectance. 
+Imagery (i.*)
+ParameterMultipleInput|input|Name of input raster maps|3|False
+ParameterBoolean|-m|MODIS (7 input bands:1,2,3,4,5,6,7)|False
+ParameterBoolean|-n|NOAA AVHRR (2 input bands:1,2)|False
+ParameterBoolean|-l|Landsat 5+7 (6 input bands:1,2,3,4,5,7)|False
+ParameterBoolean|-a|ASTER (6 input bands:1,3,5,6,8,9)|False
+ParameterBoolean|-c|Aggressive mode (Landsat)|False
+ParameterBoolean|-d|Soft mode (MODIS)|False
+OutputRaster|output|Albedo

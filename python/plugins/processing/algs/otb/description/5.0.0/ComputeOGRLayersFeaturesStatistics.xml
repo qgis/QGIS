@@ -1,0 +1,31 @@
+<root>
+  <key>ComputeOGRLayersFeaturesStatistics</key>
+  <exec>otbcli_ComputeOGRLayersFeaturesStatistics</exec>
+  <longname>ComputeOGRLayersFeaturesStatistics</longname>
+  <group>Segmentation</group>
+  <description>Compute statistics of the features in a set of OGR Layers</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputFilename">ParameterFile</parameter_type>
+    <key>inshp</key>
+    <name>Name of the input shapefile</name>
+    <description>Name of the input shapefile</description>
+    <isFolder />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputFilename">ParameterFile</parameter_type>
+    <key>outstats</key>
+    <name>XML file containing mean and variance of each feature.</name>
+    <description>XML file containing mean and variance of each feature.</description>
+    <isFolder />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_StringList">ParameterString</parameter_type>
+    <key>feat</key>
+    <name>List of features to consider for statistics.</name>
+    <description>List of features to consider for statistics.</description>
+    <options />
+    <default />
+  </parameter>
+</root>

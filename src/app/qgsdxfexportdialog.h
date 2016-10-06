@@ -19,8 +19,8 @@
 #define QGSDXFEXPORTDIALOG_H
 
 #include "ui_qgsdxfexportdialogbase.h"
-#include "qgsdxfexport.h"
 #include "qgslayertreemodel.h"
+#include "qgsdxfexport.h"
 
 #include <QList>
 #include <QPair>
@@ -34,7 +34,7 @@ class FieldSelectorDelegate : public QItemDelegate
 {
     Q_OBJECT
   public:
-    FieldSelectorDelegate( QObject *parent = 0 );
+    explicit FieldSelectorDelegate( QObject *parent = nullptr );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
@@ -45,10 +45,11 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
 {
     Q_OBJECT
   public:
-    QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
+    QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
     ~QgsVectorLayerAndAttributeModel();
 
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
@@ -76,7 +77,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
 {
     Q_OBJECT
   public:
-    QgsDxfExportDialog( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsDxfExportDialog( QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsDxfExportDialog();
 
     QList< QPair<QgsVectorLayer *, int> > layers() const;
@@ -85,10 +86,12 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     QgsDxfExport::SymbologyExport symbologyMode() const;
     QString saveFile() const;
     bool exportMapExtent() const;
+    bool layerTitleAsName() const;
     QString encoding() const;
+    QgsCoordinateReferenceSystem crs() const;
 
   public slots:
-    /** change the selection of layers in the list */
+    /** Change the selection of layers in the list */
     void selectAll();
     void unSelectAll();
 
@@ -97,11 +100,14 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     void setOkEnabled();
     void saveSettings();
     void on_mVisibilityPresets_currentIndexChanged( int index );
+    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
 
   private:
     void cleanGroup( QgsLayerTreeNode *node );
     QgsLayerTreeGroup *mLayerTreeGroup;
     FieldSelectorDelegate *mFieldSelectorDelegate;
+
+    QgsCoordinateReferenceSystem mCRS;
 };
 
 #endif // QGSDXFEXPORTDIALOG_H

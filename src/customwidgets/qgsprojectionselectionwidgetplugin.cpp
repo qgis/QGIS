@@ -42,7 +42,7 @@ QString QgsProjectionSelectionWidgetPlugin::includeFile() const
 
 QIcon QgsProjectionSelectionWidgetPlugin::icon() const
 {
-  return QIcon();
+  return QIcon( ":/images/icons/qgis-icon-60x60.png" );
 }
 
 bool QgsProjectionSelectionWidgetPlugin::isContainer() const

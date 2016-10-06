@@ -19,12 +19,13 @@ email                : ersts@amnh.org
 #include "qgslogger.h"
 #include "qgscolorrampshader.h"
 #include "qgsrastershader.h"
+#include "qgsrasterblock.h"
 #include <QDomDocument>
 #include <QDomElement>
 
 QgsRasterShader::QgsRasterShader( double theMinimumValue, double theMaximumValue )
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsgLevel( "called.", 4 );
 
   mMinimumValue = theMinimumValue;
   mMaximumValue = theMaximumValue;
@@ -48,7 +49,7 @@ QgsRasterShader::~QgsRasterShader()
 */
 bool QgsRasterShader::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int *theReturnAlpha )
 {
-  if ( 0 != mRasterShaderFunction )
+  if ( mRasterShaderFunction )
   {
     return mRasterShaderFunction->shade( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue, theReturnAlpha );
   }
@@ -71,7 +72,7 @@ bool QgsRasterShader::shade( double theValue, int* theReturnRedValue, int* theRe
 */
 bool QgsRasterShader::shade( double theRedValue, double theGreenValue, double theBlueValue, double theAlphaValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int* theReturnAlphaValue )
 {
-  if ( 0 != mRasterShaderFunction )
+  if ( mRasterShaderFunction )
   {
     return mRasterShaderFunction->shade( theRedValue, theGreenValue, theBlueValue, theAlphaValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue, theReturnAlphaValue );
   }
@@ -86,12 +87,12 @@ bool QgsRasterShader::shade( double theRedValue, double theGreenValue, double th
 */
 void QgsRasterShader::setRasterShaderFunction( QgsRasterShaderFunction* theFunction )
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsgLevel( "called.", 4 );
 
   if ( mRasterShaderFunction == theFunction )
     return;
 
-  if ( 0 != theFunction )
+  if ( theFunction )
   {
     delete mRasterShaderFunction;
     mRasterShaderFunction = theFunction;
@@ -105,10 +106,10 @@ void QgsRasterShader::setRasterShaderFunction( QgsRasterShaderFunction* theFunct
 */
 void QgsRasterShader::setMaximumValue( double theValue )
 {
-  QgsDebugMsg( "Value = " + QString::number( theValue ) );
+  QgsDebugMsgLevel( "Value = " + QString::number( theValue ), 4 );
 
   mMaximumValue = theValue;
-  if ( 0 != mRasterShaderFunction )
+  if ( mRasterShaderFunction )
   {
     mRasterShaderFunction->setMaximumValue( theValue );
   }
@@ -121,16 +122,16 @@ void QgsRasterShader::setMaximumValue( double theValue )
 */
 void QgsRasterShader::setMinimumValue( double theValue )
 {
-  QgsDebugMsg( "Value = " + QString::number( theValue ) );
+  QgsDebugMsgLevel( "Value = " + QString::number( theValue ), 4 );
 
   mMinimumValue = theValue;
-  if ( 0 != mRasterShaderFunction )
+  if ( mRasterShaderFunction )
   {
     mRasterShaderFunction->setMinimumValue( theValue );
   }
 }
 
-void QgsRasterShader::writeXML( QDomDocument& doc, QDomElement& parent ) const
+void QgsRasterShader::writeXml( QDomDocument& doc, QDomElement& parent ) const
 {
   if ( parent.isNull() || !mRasterShaderFunction )
   {
@@ -151,7 +152,7 @@ void QgsRasterShader::writeXML( QDomDocument& doc, QDomElement& parent ) const
     {
       QDomElement itemElem = doc.createElement( "item" );
       itemElem.setAttribute( "label", itemIt->label );
-      itemElem.setAttribute( "value", QString::number( itemIt->value ) );
+      itemElem.setAttribute( "value", QgsRasterBlock::printValue( itemIt->value ) );
       itemElem.setAttribute( "color", itemIt->color.name() );
       itemElem.setAttribute( "alpha", itemIt->color.alpha() );
       colorRampShaderElem.appendChild( itemElem );
@@ -161,7 +162,7 @@ void QgsRasterShader::writeXML( QDomDocument& doc, QDomElement& parent ) const
   parent.appendChild( rasterShaderElem );
 }
 
-void QgsRasterShader::readXML( const QDomElement& elem )
+void QgsRasterShader::readXml( const QDomElement& elem )
 {
   //only colorrampshader
   QDomElement colorRampShaderElem = elem.firstChildElement( "colorrampshader" );
@@ -178,6 +179,7 @@ void QgsRasterShader::readXML( const QDomElement& elem )
     QColor itemColor;
 
     QDomNodeList itemNodeList = colorRampShaderElem.elementsByTagName( "item" );
+    itemList.reserve( itemNodeList.size() );
     for ( int i = 0; i < itemNodeList.size(); ++i )
     {
       itemElem = itemNodeList.at( i ).toElement();

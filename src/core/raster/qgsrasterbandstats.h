@@ -23,7 +23,6 @@
 
 #include <limits>
 
-#include "qgscolorrampshader.h"
 #include "qgsrectangle.h"
 
 /** \ingroup core
@@ -62,7 +61,7 @@ class CORE_EXPORT QgsRasterBandStats
       bandNumber = 1;
     }
 
-    /*! Compares region, size etc. not collected statistics */
+    /** Compares region, size etc. not collected statistics */
     bool contains( const QgsRasterBandStats &s ) const
     {
       return ( s.bandNumber == bandNumber &&

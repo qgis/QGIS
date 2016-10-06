@@ -7,7 +7,7 @@
  * a coordinate system identifier e.g. from a plugin you might do this
  * to get an epsg code:
  * \code
- * QgsGenericProjectionSelector mySelector( mQGisIface->mainWindow() );
+ * QgsGenericProjectionSelector mySelector( mQgisIface->mainWindow() );
  * mySelector.setSelectedEpsg( mEpsgId );
  * if ( mySelector.exec() )
  * {
@@ -29,7 +29,7 @@ class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectio
      * Constructor
      */
     QgsGenericProjectionSelector( QWidget *parent /TransferThis/ = 0,
-                                  Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+                                  const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
 
     //! Destructor
     ~QgsGenericProjectionSelector();
@@ -42,9 +42,9 @@ class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectio
     long selectedCrsId();
     QString selectedAuthId();
 
-    void setSelectedCrsName( QString theName );
+    void setSelectedCrsName( const QString& theName );
     void setSelectedCrsId( long theID );
-    void setSelectedAuthId( QString authId );
+    void setSelectedAuthId( const QString& authId );
 
     void on_mButtonBox_helpRequested();
 
@@ -60,5 +60,5 @@ class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectio
      *
      * \warning This function's behaviour is undefined if it is called after the dialog is shown.
      */
-    void setOgcWmsCrsFilter( QSet<QString> crsFilter );
+    void setOgcWmsCrsFilter( const QSet<QString>& crsFilter );
 };

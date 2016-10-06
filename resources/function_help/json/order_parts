@@ -1,0 +1,20 @@
+{
+  "name": "order_parts",
+  "type": "function",
+  "description": "Orders the parts of a MultiGeometry by a given criteria",
+  "arguments": [
+    {"arg":"geom","description":"a multi-type geometry"},
+    {"arg":"orderby","description":"an expression string defining the order criteria"},
+    {"arg":"ascending","description":"boolean, True for ascending, False for descending"}
+  ],
+  "examples": [
+    {
+      "expression":"order_parts(geom_from_wkt('MultiPolygon (((1 1, 5 1, 5 5, 1 5, 1 1)),((1 1, 9 1, 9 9, 1 9, 1 1)))'), 'area($geometry)', False)",
+      "returns":"MultiPolygon (((1 1, 9 1, 9 9, 1 9, 1 1)),((1 1, 5 1, 5 5, 1 5, 1 1)))"
+    },
+    {
+      "expression":"order_parts(geom_from_wkt('LineString(1 2, 3 2, 4 3)'), '1', True)",
+      "returns":"LineString(1 2, 3 2, 4 3)"
+    }
+  ]
+}

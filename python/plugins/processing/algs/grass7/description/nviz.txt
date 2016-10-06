@@ -1,5 +1,5 @@
 nviz
-nviz - Visualization and animation tool for GRASS data.
+Visualization and animation tool for GRASS data.
 Visualization(NVIZ)
 ParameterMultipleInput|elevation|Name of elevation raster map|3|False
 ParameterMultipleInput|color|Name of raster map(s) for Color|3|False

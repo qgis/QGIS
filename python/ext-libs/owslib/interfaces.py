@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 
 # Follows the 4 aspects of service metadata
 
@@ -59,7 +61,7 @@ class IService(IServiceMetadata):
     url = property("""Online resource URL (string)""")
 
 
-# 3 specific service types are described below: WMS, WFS, and WCS
+# specific service types are described below: WMS, WFS, WCS, SOS and WPS
 
 class IWebMapService(IService):
     """Abstraction for an OGC Web Map Service (WMS).
@@ -113,6 +115,29 @@ class ISensorObservationService(IService):
         """Make a request to the SOS, returns an XML document wrapped in a 
         Python file object."""
 
+class IWebProcessingService(IService):
+    """
+    Abstract interface for an OGC Web Processing Service (WPS).
+    """
+    
+    def getcapabilities(**kw):
+        """
+        Makes a GetCapabilities request to the remote WPS server,
+        returns an XML document wrapped in a python file-like object.
+        """
+    
+    def describeprocess(**kw):
+        """
+        Makes a DescribeProcess request to the remote WPS server,
+        returns a Process object containing all the process metadata.
+        """
+        
+    def execute(**kw):
+        """
+        Submits an Execute request to the remote WPS server,
+        returns a WPSExecution object, which can be used to monitor the status of the job, and ultimately retrieve the result.
+        """
+        
 # Second level metadata interfaces
 
 class IOperationMetadata:

@@ -20,6 +20,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
@@ -28,11 +32,12 @@ __copyright__ = '(C) 2013, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
+
 
 class lasview(LAStoolsAlgorithm):
 
@@ -45,16 +50,16 @@ class lasview(LAStoolsAlgorithm):
     COLORINGS = ["default", "classification", "elevation1", "elevation2", "intensity", "return", "flightline", "rgb"]
 
     def defineCharacteristics(self):
-        self.name = "lasview"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasview')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(lasview.POINTS,
-            self.tr("max number of points sampled"), 100000, 20000000, 5000000))
+                                          self.tr("max number of points sampled"), 100000, 20000000, 5000000))
         self.addParameter(ParameterSelection(lasview.COLORING,
-            self.tr("color by"), lasview.COLORINGS, 0))
+                                             self.tr("color by"), lasview.COLORINGS, 0))
         self.addParameter(ParameterSelection(lasview.SIZE,
-            self.tr("window size (x y) in pixels"), lasview.SIZES, 0))
+                                             self.tr("window size (x y) in pixels"), lasview.SIZES, 0))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
@@ -71,5 +76,6 @@ class lasview(LAStoolsAlgorithm):
             commands.append("-win " + lasview.SIZES[size])
         self.addParametersAdditionalCommands(commands)
 
-        print commands
+        # fix_print_with_import
+        print(commands)
         LAStoolsUtils.runLAStools(commands, progress)

@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'October 2014'
@@ -24,28 +27,29 @@ __copyright__ = '(C) 2014, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
+
 
 class lasoveragePro(LAStoolsAlgorithm):
 
     CHECK_STEP = "CHECK_STEP"
     OPERATION = "OPERATION"
-    OPERATIONS= ["classify as overlap", "flag as withheld", "remove from output"]
+    OPERATIONS = ["classify as overlap", "flag as withheld", "remove from output"]
 
     def defineCharacteristics(self):
-        self.name = "lasoveragePro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasoveragePro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersHorizontalFeetGUI()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParameter(ParameterNumber(lasoveragePro.CHECK_STEP,
-            self.tr("size of grid used for scan angle check"), 0, None, 1.0))
+                                          self.tr("size of grid used for scan angle check"), 0, None, 1.0))
         self.addParameter(ParameterSelection(lasoveragePro.OPERATION,
-            self.tr("mode of operation"), lasoveragePro.OPERATIONS, 0))
+                                             self.tr("mode of operation"), lasoveragePro.OPERATIONS, 0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()

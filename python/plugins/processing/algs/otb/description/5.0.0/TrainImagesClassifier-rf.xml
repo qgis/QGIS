@@ -1,0 +1,188 @@
+<root>
+  <key>TrainImagesClassifier-rf</key>
+  <exec>otbcli_TrainImagesClassifier</exec>
+  <longname>TrainImagesClassifier (rf)</longname>
+  <group>Learning</group>
+  <description>Train a classifier from multiple pairs of images and training vector data.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImageList">ParameterMultipleInput</parameter_type>
+    <key>io.il</key>
+    <name>Input Image List</name>
+    <description>A list of input images.</description>
+    <datatype />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputVectorDataList">ParameterMultipleInput</parameter_type>
+    <key>io.vd</key>
+    <name>Input Vector Data List</name>
+    <description>A list of vector data to select the training samples.</description>
+    <datatype />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputFilename">ParameterFile</parameter_type>
+    <key>io.imstat</key>
+    <name>Input XML image statistics file</name>
+    <description>Input XML file containing the mean and the standard deviation of the input images.</description>
+    <isFolder />
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputFilename">OutputFile</parameter_type>
+    <key>io.confmatout</key>
+    <name>Output confusion matrix</name>
+    <description>Output file containing the confusion matrix (.csv format).</description>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputFilename">OutputFile</parameter_type>
+    <key>io.out</key>
+    <name>Output model</name>
+    <description>Output file containing the model estimated (.txt format).</description>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>elev.default</key>
+    <name>Default elevation</name>
+    <description>This parameter allows setting the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>sample.mt</key>
+    <name>Maximum training sample size per class</name>
+    <description>Maximum size per class (in pixels) of the training sample list (default = 1000) (no limit = -1). If equal to -1, then the maximal size of the available training sample list per class will be equal to the surface area of the smallest class multiplied by the training sample ratio.</description>
+    <minValue />
+    <maxValue />
+    <default>1000</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>sample.mv</key>
+    <name>Maximum validation sample size per class</name>
+    <description>Maximum size per class (in pixels) of the validation sample list (default = 1000) (no limit = -1). If equal to -1, then the maximal size of the available validation sample list per class will be equal to the surface area of the smallest class multiplied by the validation sample ratio.</description>
+    <minValue />
+    <maxValue />
+    <default>1000</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>sample.bm</key>
+    <name>Bound sample number by minimum</name>
+    <description>Bound the number of samples for each class by the number of available samples by the smaller class. Proportions between training and validation are respected. Default is true (=1).</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Empty">ParameterBoolean</parameter_type>
+    <key>sample.edg</key>
+    <name>On edge pixel inclusion</name>
+    <description>Takes pixels on polygon edge into consideration when building training and validation samples.</description>
+    <default>True</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>sample.vtr</key>
+    <name>Training and validation sample ratio</name>
+    <description>Ratio between training and validation samples (0.0 = all training, 1.0 = all validation) (default = 0.5).</description>
+    <minValue />
+    <maxValue />
+    <default>0.5</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_String">ParameterString</parameter_type>
+    <key>sample.vfn</key>
+    <name>Name of the discrimination field</name>
+    <description>Name of the field used to discriminate class labels in the input vector data files.</description>
+    <default>Class</default>
+    <multiline />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>classifier</key>
+    <name>Classifier to use for the training</name>
+    <description>Choice of the classifier to use for the training.</description>
+    <options>
+      <choices>
+        <choice>rf</choice>
+        </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>classifier.rf.max</key>
+    <name>Maximum depth of the tree</name>
+    <description>The depth of the tree. A low value will likely underfit and conversely a high value will likely overfit. The optimal value can be obtained using cross validation or other suitable methods.</description>
+    <minValue />
+    <maxValue />
+    <default>5</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>classifier.rf.min</key>
+    <name>Minimum number of samples in each node</name>
+    <description>If the number of samples in a node is smaller than this parameter, then the node will not be split. A reasonable value is a small percentage of the total data e.g. 1 percent.</description>
+    <minValue />
+    <maxValue />
+    <default>10</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>classifier.rf.ra</key>
+    <name>Termination Criteria for regression tree</name>
+    <description>If all absolute differences between an estimated value in a node and the values of the train samples in this node are smaller than this regression accuracy parameter, then the node will not be split.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>classifier.rf.cat</key>
+    <name>Cluster possible values of a categorical variable into K &lt;= cat clusters to find a suboptimal split</name>
+    <description>Cluster possible values of a categorical variable into K &lt;= cat clusters to find a suboptimal split.</description>
+    <minValue />
+    <maxValue />
+    <default>10</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>classifier.rf.var</key>
+    <name>Size of the randomly selected subset of features at each tree node</name>
+    <description>The size of the subset of features, randomly selected at each tree node, that are used to find the best split(s). If you set it to 0, then the size will be set to the square root of the total number of features.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>classifier.rf.nbtrees</key>
+    <name>Maximum number of trees in the forest</name>
+    <description>The maximum number of trees in the forest. Typically, the more trees you have, the better the accuracy. However, the improvement in accuracy generally diminishes and reaches an asymptote for a certain number of trees. Also to keep in mind, increasing the number of trees increases the prediction time linearly.</description>
+    <minValue />
+    <maxValue />
+    <default>100</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>classifier.rf.acc</key>
+    <name>Sufficient accuracy (OOB error)</name>
+    <description>Sufficient accuracy (OOB error).</description>
+    <minValue />
+    <maxValue />
+    <default>0.01</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>rand</key>
+    <name>set user defined seed</name>
+    <description>Set specific seed. with integer value.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+</root>

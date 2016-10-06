@@ -1,4 +1,4 @@
-# Find QScintilla2 PyQt4 module
+# Find QScintilla2 PyQt module
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 # QScintilla2 website: http://www.riverbankcomputing.co.uk/software/qscintilla/
@@ -8,7 +8,7 @@
 #
 # This file defines the following variables:
 #
-# QSCI_FOUND - system has QScintilla2 PyQt4 module
+# QSCI_FOUND - system has QScintilla2 PyQt module
 #
 # QSCI_MOD_VERSION_STR - The version of Qsci module as a human readable string.
 #
@@ -23,7 +23,9 @@ ELSE(EXISTS QSCI_MOD_VERSION_STR)
 
   FIND_FILE(_find_qsci_py FindQsci.py PATHS ${CMAKE_MODULE_PATH})
 
-  EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} ${_find_qsci_py} OUTPUT_VARIABLE qsci_ver)
+  SET(QSCI_VER 5)
+
+  EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} ${_find_qsci_py} ${QSCI_VER} OUTPUT_VARIABLE qsci_ver)
 
   IF(qsci_ver)
     STRING(REGEX REPLACE "^qsci_version_str:([^\n]+).*$" "\\1" QSCI_MOD_VERSION_STR ${qsci_ver})
@@ -32,16 +34,16 @@ ELSE(EXISTS QSCI_MOD_VERSION_STR)
 
   IF(QSCI_FOUND)
     FIND_PATH(QSCI_SIP_DIR
-      NAMES Qsci/qscimod4.sip
-      PATHS ${PYQT4_SIP_DIR}
+      NAMES Qsci/qscimod5.sip
+      PATHS ${PYQT5_SIP_DIR}
     )
 
     IF(NOT QSCI_FIND_QUIETLY)
-      MESSAGE(STATUS "Found QScintilla2 PyQt4 module: ${QSCI_MOD_VERSION_STR}")
+      MESSAGE(STATUS "Found QScintilla2 PyQt module: ${QSCI_MOD_VERSION_STR}")
     ENDIF(NOT QSCI_FIND_QUIETLY)
   ELSE(QSCI_FOUND)
     IF(QSCI_FIND_REQUIRED)
-      MESSAGE(FATAL_ERROR "Could not find QScintilla2 PyQt4 module")
+      MESSAGE(FATAL_ERROR "Could not find QScintilla2 PyQt module")
     ENDIF(QSCI_FIND_REQUIRED)
   ENDIF(QSCI_FOUND)
 

@@ -1,0 +1,5 @@
+Grid Cell Index
+grid_tools
+ParameterRaster|GRID|Input Grid|False
+ParameterSelection|ORDER|Index|[0] ascending;[1] descending|0
+OutputRaster|INDEX|Sorted Grid

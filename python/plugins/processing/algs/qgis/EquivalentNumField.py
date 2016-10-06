@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QVariant
-from qgis.core import QgsField, QgsFeature, QgsGeometry
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import QgsField, QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -40,42 +40,42 @@ class EquivalentNumField(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
 
+    def defineCharacteristics(self):
+        self.name, self.i18n_name = self.trAlgorithm('Add unique value index field')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+        self.addParameter(ParameterVector(self.INPUT,
+                                          self.tr('Input layer')))
+        self.addParameter(ParameterTableField(self.FIELD,
+                                              self.tr('Class field'), self.INPUT))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Layer with index field')))
+
     def processAlgorithm(self, progress):
         fieldname = self.getParameterValue(self.FIELD)
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
-        vprovider = vlayer.dataProvider()
-        fieldindex = vlayer.fieldNameIndex(fieldname)
-        fields = vprovider.fields()
+        fieldindex = vlayer.fields().lookupField(fieldname)
+        fields = vlayer.fields()
         fields.append(QgsField('NUM_FIELD', QVariant.Int))
-        writer = output.getVectorWriter(fields, vprovider.geometryType(),
-                vlayer.crs())
+        writer = output.getVectorWriter(fields, vlayer.wkbType(),
+                                        vlayer.crs())
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        nElement = 0
         classes = {}
+
         features = vector.features(vlayer)
-        nFeat = len(features)
-        for feature in features:
-            progress.setPercentage(int(100 * nElement / nFeat))
-            nElement += 1
+        total = 100.0 / len(features)
+        for current, feature in enumerate(features):
+            progress.setPercentage(int(current * total))
             inGeom = feature.geometry()
             outFeat.setGeometry(inGeom)
             atMap = feature.attributes()
             clazz = atMap[fieldindex]
+
             if clazz not in classes:
-                classes[clazz] = len(classes.keys())
+                classes[clazz] = len(list(classes.keys()))
+
             atMap.append(classes[clazz])
             outFeat.setAttributes(atMap)
             writer.addFeature(outFeat)
-        del writer
 
-    def defineCharacteristics(self):
-        self.name = 'Create equivalent numerical field'
-        self.group = 'Vector table tools'
-        self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(self.FIELD,
-            self.tr('Class field'), self.INPUT))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        del writer

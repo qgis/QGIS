@@ -210,21 +210,21 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint* p
   }
 }
 
-bool QgsResidualPlotItem::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsResidualPlotItem::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
   Q_UNUSED( elem );
   Q_UNUSED( doc );
   return false;
 }
 
-bool QgsResidualPlotItem::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsResidualPlotItem::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   Q_UNUSED( itemElem );
   Q_UNUSED( doc );
   return false;
 }
 
-double QgsResidualPlotItem::dist( const QPointF& p1, const QPointF& p2 ) const
+double QgsResidualPlotItem::dist( QPointF p1, QPointF p2 ) const
 {
   double dx = p2.x() - p1.x();
   double dy = p2.y() - p1.y();

@@ -27,10 +27,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef PAL_EXCEPTION_H
 #define PAL_EXCEPTION_H
 
@@ -41,12 +37,14 @@ namespace pal
 {
 
   /** \brief Various Exceptions
+   * \ingroup core
    */
   class PalException
   {
     public:
 
       /** \brief Thrown when a feature is not yet implemented
+       * \ingroup core
       */
       class NotImplemented : public std::exception
       {
@@ -57,6 +55,7 @@ namespace pal
       };
 
       /** \brief Try to access an unknown feature
+       * \ingroup core
       */
       class UnknownFeature : public std::exception
       {
@@ -67,6 +66,7 @@ namespace pal
       };
 
       /** \brief Try to access an unknown layer
+       * \ingroup core
       */
       class UnknownLayer : public std::exception
       {
@@ -77,6 +77,7 @@ namespace pal
       };
 
       /** \brief layer already exists
+       * \ingroup core
       */
       class LayerExists : public std::exception
       {
@@ -87,6 +88,7 @@ namespace pal
       };
 
       /** \brief features already exists
+       * \ingroup core
       */
       class FeatureExists : public std::exception
       {
@@ -96,7 +98,8 @@ namespace pal
           }
       };
 
-      /** \brief thrown when a value is not in the valid scale range
+      /** \brief thrown when a value is not in the valid scale range\
+       * \ingroup core
        *
        *  It can be thrown by :
        *

@@ -1,3 +1,6 @@
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
@@ -24,10 +27,15 @@
 #
 ###############################################################################
 
-import ConfigParser
+#avoid PendingDeprecationWarning from PyQt4.uic
+import warnings
+warnings.filterwarnings("ignore", category=PendingDeprecationWarning)
+
+import configparser
 from gettext import gettext, ngettext
 import logging
 import os
+import codecs
 import webbrowser
 from xml.dom.minidom import parseString
 import xml.etree.ElementTree as etree
@@ -36,24 +44,26 @@ from jinja2 import Environment, FileSystemLoader
 from pygments import highlight
 from pygments.lexers import XmlLexer
 from pygments.formatters import HtmlFormatter
-from PyQt4.QtCore import QSettings
-from PyQt4.QtGui import QMessageBox
-from PyQt4.uic import loadUiType
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.uic import loadUiType
 
-from qgis.core import QGis
+from qgis.core import Qgis, QgsWkbTypes
 
 
 LOGGER = logging.getLogger('MetaSearch')
 
 
 class StaticContext(object):
+
     """base configuration / scaffolding"""
 
     def __init__(self):
         """init"""
         self.ppath = os.path.dirname(os.path.abspath(__file__))
-        self.metadata = ConfigParser.ConfigParser()
-        self.metadata.readfp(open(os.path.join(self.ppath, 'metadata.txt')))
+        self.metadata = configparser.ConfigParser()
+        with codecs.open(os.path.join(self.ppath, 'metadata.txt'), "r", "utf8") as f:
+            self.metadata.read_file(f)
 
 
 def get_ui_class(ui_file):
@@ -84,10 +94,10 @@ def get_connections_from_file(parent, filename):
         if doc.tag != 'qgsCSWConnections':
             error = 1
             msg = parent.tr('Invalid CSW connections XML.')
-    except etree.ParseError, err:
+    except etree.ParseError as err:
         error = 1
         msg = parent.tr('Cannot parse XML file: %s' % err)
-    except IOError, err:
+    except IOError as err:
         error = 1
         msg = parent.tr('Cannot open file: %s' % err)
 
@@ -128,7 +138,7 @@ def get_help_url():
     """return QGIS MetaSearch help documentation link"""
 
     locale_name = QSettings().value('locale/userLocale')[0:2]
-    version = QGis.QGIS_VERSION[:3]
+    version = Qgis.QGIS_VERSION.rsplit('.', 1)[0]
 
     path = '%s/%s/docs/user_manual/plugins/plugins_metasearch.html' % \
            (version, locale_name)
@@ -146,3 +156,19 @@ def normalize_text(text):
     """tidy up string"""
 
     return text.replace('\n', '')
+
+
+def serialize_string(input_string):
+    """apply a serial counter to a string"""
+
+    s = input_string.strip().split()
+
+    last_token = s[-1]
+    all_other_tokens_as_string = input_string.replace(last_token, '')
+
+    if last_token.isdigit():
+        value = '%s%s' % (all_other_tokens_as_string, int(last_token) + 1)
+    else:
+        value = '%s 1' % input_string
+
+    return value

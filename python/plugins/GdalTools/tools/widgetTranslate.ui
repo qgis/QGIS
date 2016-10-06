@@ -282,7 +282,7 @@ The 'gray' value (from GDAL 1.7.0) enables to expand a dataset with a color tabl
   <customwidget>
    <class>GdalToolsInOutSelector</class>
    <extends>QWidget</extends>
-   <header>inOutSelector</header>
+   <header>.inOutSelector</header>
    <container>1</container>
   </customwidget>
   <customwidget>

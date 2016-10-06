@@ -26,7 +26,7 @@ QgsNumericScaleBarStyle::QgsNumericScaleBarStyle( QgsComposerScaleBar* bar ): Qg
 
 }
 
-QgsNumericScaleBarStyle::QgsNumericScaleBarStyle(): QgsScaleBarStyle( 0 ), mLastScaleBarWidth( 0 )
+QgsNumericScaleBarStyle::QgsNumericScaleBarStyle(): QgsScaleBarStyle( nullptr ), mLastScaleBarWidth( 0 )
 {
 
 }
@@ -100,7 +100,7 @@ QRectF QgsNumericScaleBarStyle::calculateBoxSize() const
                  + 2 * mScaleBar->pen().width() + textWidth,
                  textHeight + 2 * mScaleBar->boxContentSpace() );
 
-  if ( mLastScaleBarWidth != rect.width() && mLastScaleBarWidth > 0 && rect.width() > 0 )
+  if ( !qgsDoubleNear( mLastScaleBarWidth, rect.width() ) && mLastScaleBarWidth > 0 && rect.width() > 0 )
   {
     //hack to move scale bar the left / right in order to keep the bar alignment
     const_cast<QgsComposerScaleBar*>( mScaleBar )->correctXPositionAlignment( mLastScaleBarWidth, rect.width() );

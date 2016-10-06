@@ -20,6 +20,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -33,8 +36,8 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputFile
-from FusionAlgorithm import FusionAlgorithm
-from FusionUtils import FusionUtils
+from .FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
 from processing.core.parameters import ParameterString
 
 
@@ -55,10 +58,10 @@ class GridSurfaceCreate(FusionAlgorithm):
     ADVANCED_MODIFIERS = 'ADVANCED_MODIFIERS'
 
     def defineCharacteristics(self):
-        self.name = 'Grid Surface Create'
-        self.group = 'Surface'
+        self.name, self.i18n_name = self.trAlgorithm('Grid Surface Create')
+        self.group, self.i18n_group = self.trAlgorithm('Surface')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterNumber(
             self.CELLSIZE, self.tr('Cellsize'), 0, None, 10.0))
         self.addParameter(ParameterSelection(

@@ -2,6 +2,8 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Calculate raster surface area" module="r.surf.area">
-	<option key="input" />
+	<option key="input" version_max="6"/>
+	<option key="map" version_min="7"/>
 	<option key="vscale" />
+	<option key="units" version_min="7"/>
 </qgisgrassmodule>

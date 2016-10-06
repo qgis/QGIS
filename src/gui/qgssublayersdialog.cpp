@@ -22,9 +22,12 @@
 #include <QPushButton>
 
 
-QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, QString name,
+QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString& name,
                                         QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl ), mName( name )
+    : QDialog( parent, fl )
+    , mName( name )
+    , mShowCount( false )
+    , mShowType( false )
 {
   setupUi( this );
 
@@ -33,6 +36,8 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, QString name,
     setWindowTitle( tr( "Select vector layers to add..." ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                   << tr( "Number of features" ) << tr( "Geometry type" ) );
+    mShowCount = true;
+    mShowType = true;
   }
   else if ( providerType == QgsSublayersDialog::Gdal )
   {
@@ -44,6 +49,7 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, QString name,
     setWindowTitle( tr( "Select layers to add..." ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                   << tr( "Type" ) );
+    mShowType = true;
   }
 
   // add a "Select All" button - would be nicer with an icon
@@ -64,47 +70,54 @@ QgsSublayersDialog::~QgsSublayersDialog()
                      layersTable->header()->saveState() );
 }
 
-QStringList QgsSublayersDialog::selectionNames()
+static bool _isLayerIdUnique( int layerId, QTreeWidget* layersTable )
 {
-  QStringList list;
+  int count = 0;
+  for ( int j = 0; j < layersTable->topLevelItemCount(); j++ )
+  {
+    if ( layersTable->topLevelItem( j )->text( 0 ).toInt() == layerId )
+    {
+      count++;
+    }
+  }
+  return count == 1;
+}
+
+QgsSublayersDialog::LayerDefinitionList QgsSublayersDialog::selection()
+{
+  LayerDefinitionList list;
   for ( int i = 0; i < layersTable->selectedItems().size(); i++ )
   {
-    // If there are more sub layers of the same name (virtual for geometry types),
-    // add geometry type
+    QTreeWidgetItem* item = layersTable->selectedItems().at( i );
 
-    QString name = layersTable->selectedItems().at( i )->text( 1 );
-    int count = 0;
-    for ( int j = 0; j < layersTable->topLevelItemCount(); j++ )
+    LayerDefinition def;
+    def.layerId = item->text( 0 ).toInt();
+    def.layerName = item->text( 1 );
+    if ( mShowType )
     {
-      if ( layersTable->topLevelItem( j )->text( 1 ) == name )
-      {
-        count++;
-      }
+      // If there are more sub layers of the same name (virtual for geometry types),
+      // add geometry type
+      if ( !_isLayerIdUnique( def.layerId, layersTable ) )
+        def.type = item->text( mShowCount ? 3 : 2 );
     }
-    if ( count > 1 )
-    {
-      name += ":" + layersTable->selectedItems().at( i )->text( 3 );
-    }
-    list << name;
+
+    list << def;
   }
   return list;
 }
 
-QList<int> QgsSublayersDialog::selectionIndexes()
-{
-  QList<int> list;
-  for ( int i = 0; i < layersTable->selectedItems().size(); i++ )
-  {
-    list << layersTable->selectedItems().at( i )->text( 0 ).toInt();
-  }
-  return list;
-}
 
-void QgsSublayersDialog::populateLayerTable( QStringList theList, QString delim )
+void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefinitionList& list )
 {
-  foreach ( QString item, theList )
+  Q_FOREACH ( const LayerDefinition& item, list )
   {
-    layersTable->addTopLevelItem( new QTreeWidgetItem( item.split( delim ) ) );
+    QStringList elements;
+    elements << QString::number( item.layerId ) << item.layerName;
+    if ( mShowCount )
+      elements << QString::number( item.count );
+    if ( mShowType )
+      elements << item.type;
+    layersTable->addTopLevelItem( new QTreeWidgetItem( elements ) );
   }
 
   // resize columns
@@ -150,10 +163,13 @@ int QgsSublayersDialog::exec()
     return QDialog::Accepted;
   }
 
+  layersTable->sortByColumn( 1, Qt::AscendingOrder );
+  layersTable->setSortingEnabled( true );
+
   // if we got here, disable override cursor, open dialog and return result
   // TODO add override cursor where it is missing (e.g. when opening via "Add Raster")
   QCursor cursor;
-  bool overrideCursor = ( QApplication::overrideCursor() != 0 );
+  bool overrideCursor = nullptr != QApplication::overrideCursor();
   if ( overrideCursor )
   {
     cursor = QCursor( * QApplication::overrideCursor() );

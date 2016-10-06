@@ -98,6 +98,14 @@ class QgsMapRendererJob : QObject
     const QgsMapSettings& mapSettings() const;
 
   signals:
+    /**
+     * Emitted when the layers are rendered.
+     * Rendering labels is not yet done. If the fully rendered layer including labels is required use
+     * finished() instead.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void renderingLayersFinished();
 
     //! emitted when asynchronous rendering is finished (or canceled).
     void finished();
@@ -110,10 +118,10 @@ class QgsMapRendererJob : QObject
      * source CRS coordinates, and if it was split, returns true, and
      * also sets the contents of the r2 parameter
      */
-    static bool reprojectToLayerExtent( const QgsCoordinateTransform* ct, bool layerCrsGeographic, QgsRectangle& extent, QgsRectangle& r2 );
+    static bool reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform& ct, QgsRectangle &extent, QgsRectangle &r2 );
 
     //! @note not available in python bindings
-    // LayerRenderJobs prepareJobs( QPainter* painter, QgsPalLabeling* labelingEngine );
+    // LayerRenderJobs prepareJobs( QPainter* painter, QgsLabelingEngine* labelingEngine2 );
 
     //! @note not available in python bindings
     // void cleanupJobs( LayerRenderJobs& jobs );
@@ -122,9 +130,8 @@ class QgsMapRendererJob : QObject
 
     bool needTemporaryImage( QgsMapLayer* ml );
 
-    static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine, QPainter* painter );
-    static void drawOldLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext );
-    static void drawNewLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsPalLabeling* labelingEngine );
+    //! @note not available in Python bindings
+    // static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsLabelingEngine* labelingEngine2, QPainter* painter );
 
     //! called when rendering has finished to update all layers' geometry caches
     void updateLayerGeometryCaches();

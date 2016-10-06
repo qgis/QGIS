@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -30,19 +32,26 @@ import time
 import sys
 import uuid
 
-from PyQt4.QtCore import QFileInfo, QDir
+from qgis.PyQt.QtCore import QDir
 from qgis.core import QgsApplication
 
 numExported = 1
 
 
 def userFolder():
-    userDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() \
-        + '/processing'
+    userDir = os.path.join(QgsApplication.qgisSettingsDirPath(), 'processing')
     if not QDir(userDir).exists():
         QDir().mkpath(userDir)
 
-    return unicode(QDir.toNativeSeparators(userDir))
+    return str(QDir.toNativeSeparators(userDir))
+
+
+def defaultOutputFolder():
+    folder = os.path.join(userFolder(), 'outputs')
+    if not QDir(folder).exists():
+        QDir().mkpath(folder)
+
+    return str(QDir.toNativeSeparators(folder))
 
 
 def isWindows():
@@ -52,13 +61,15 @@ def isWindows():
 def isMac():
     return sys.platform == 'darwin'
 
+_tempFolderSuffix = uuid.uuid4().hex
+
 
 def tempFolder():
-    tempDir = os.path.join(unicode(QDir.tempPath()), 'processing')
+    tempDir = os.path.join(str(QDir.tempPath()), 'processing' + _tempFolderSuffix)
     if not QDir(tempDir).exists():
         QDir().mkpath(tempDir)
 
-    return unicode(os.path.abspath(tempDir))
+    return str(os.path.abspath(tempDir))
 
 
 def setTempOutput(out, alg):
@@ -86,7 +97,7 @@ def getTempFilenameInTempFolder(basename):
     """
 
     path = tempFolder()
-    path = os.path.join(path, str(uuid.uuid4()).replace('-', ''))
+    path = os.path.join(path, uuid.uuid4().hex)
     mkdir(path)
     basename = removeInvalidChars(basename)
     filename = os.path.join(path, basename)
@@ -98,7 +109,7 @@ def getTempDirInTempFolder():
     """
 
     path = tempFolder()
-    path = os.path.join(path, str(uuid.uuid4()).replace('-', ''))
+    path = os.path.join(path, uuid.uuid4().hex)
     mkdir(path)
     return path
 

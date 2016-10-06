@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
@@ -36,6 +38,8 @@ from processing.core.outputs import OutputRaster
 from processing.tools.system import isWindows
 
 from processing.algs.gdal.GdalUtils import GdalUtils
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class fillnodata(GdalAlgorithm):
@@ -49,24 +53,24 @@ class fillnodata(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Fill nodata'
-        self.group = '[GDAL] Analysis'
+        self.name, self.i18n_name = self.trAlgorithm('Fill nodata')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterRaster(
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.DISTANCE,
-            self.tr('Search distance'), 0, 9999, 100))
+                                          self.tr('Search distance'), 0, 9999, 100))
         self.addParameter(ParameterNumber(self.ITERATIONS,
-            self.tr('Smooth iterations'), 0, 9999, 0))
+                                          self.tr('Smooth iterations'), 0, 9999, 0))
         self.addParameter(ParameterNumber(self.BAND,
-            self.tr('Band to operate on'), 1, 9999, 1))
+                                          self.tr('Band to operate on'), 1, 9999, 1))
         self.addParameter(ParameterRaster(self.MASK,
-            self.tr('Validity mask'), True))
+                                          self.tr('Validity mask'), True))
         self.addParameter(ParameterBoolean(self.NO_DEFAULT_MASK,
-            self.tr('Do not use default validity mask'), False))
+                                           self.tr('Do not use default validity mask'), False))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Filled')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         output = self.getOutputValue(self.OUTPUT)
 
         arguments = []
@@ -102,4 +106,4 @@ class fillnodata(GdalAlgorithm):
             commands = ['gdal_fillnodata.py',
                         GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

@@ -15,19 +15,22 @@
 
 #include "qgsmaptooldeletepart.h"
 
+#include "qgsfeatureiterator.h"
 #include "qgsmapcanvas.h"
 #include "qgsvertexmarker.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
+#include "qgsrubberband.h"
 #include "qgssnappingutils.h"
 #include "qgstolerance.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 
 QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
-    , vlayer( NULL )
-    , mRubberBand( 0 )
+    , vlayer( nullptr )
+    , mRubberBand( nullptr )
     , mPressedFid( 0 )
     , mPressedPartNum( 0 )
 {
@@ -39,18 +42,18 @@ QgsMapToolDeletePart::~QgsMapToolDeletePart()
   delete mRubberBand;
 }
 
-void QgsMapToolDeletePart::canvasMoveEvent( QMouseEvent *e )
+void QgsMapToolDeletePart::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
   //nothing to do
 }
 
-void QgsMapToolDeletePart::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent* e )
 {
   mPressedFid = -1;
   mPressedPartNum = -1;
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
 
   QgsMapLayer* currentLayer = mCanvas->currentLayer();
   if ( !currentLayer )
@@ -69,25 +72,24 @@ void QgsMapToolDeletePart::canvasPressEvent( QMouseEvent *e )
     return;
   }
 
-  QgsGeometry* geomPart = partUnderPoint( e->pos(), mPressedFid, mPressedPartNum );
+  QgsGeometry geomPart = partUnderPoint( e->pos(), mPressedFid, mPressedPartNum );
 
   if ( mPressedFid != -1 )
   {
-    mRubberBand = createRubberBand( vlayer->geometryType() );
+    mRubberBand = createRubberBand( vlayer->geometryType() ) ;
 
     mRubberBand->setToGeometry( geomPart, vlayer );
     mRubberBand->show();
   }
 
-  delete geomPart;
 }
 
-void QgsMapToolDeletePart::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 
   delete mRubberBand;
-  mRubberBand = 0;
+  mRubberBand = nullptr;
 
   if ( !vlayer || !vlayer->isEditable() )
   {
@@ -99,14 +101,14 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QMouseEvent *e )
 
   QgsFeature f;
   vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mPressedFid ) ).nextFeature( f );
-  QgsGeometry* g = f.geometry();
+  QgsGeometry g = f.geometry();
 
-  if ( g->deletePart( mPressedPartNum ) )
+  if ( g.deletePart( mPressedPartNum ) )
   {
     vlayer->beginEditCommand( tr( "Part of multipart feature deleted" ) );
     vlayer->changeGeometry( f.id(), g );
     vlayer->endEditCommand();
-    mCanvas->refresh();
+    vlayer->triggerRepaint();
   }
   else
   {
@@ -115,15 +117,15 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QMouseEvent *e )
   return;
 }
 
-QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fid, int& partNum )
+QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fid, int& partNum )
 {
   QgsFeature f;
-  QgsGeometry* geomPart = new QgsGeometry();
+  QgsGeometry geomPart;
 
   switch ( vlayer->geometryType() )
   {
-    case QGis::Point:
-    case QGis::Line:
+    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::LineGeometry:
     {
       QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Vertex | QgsPointLocator::Edge );
       if ( !match.isValid() )
@@ -131,18 +133,21 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
 
       int snapVertex = match.vertexIndex();
       vlayer->getFeatures( QgsFeatureRequest().setFilterFid( match.featureId() ) ).nextFeature( f );
-      QgsGeometry* g = f.geometry();
-      if ( !g->isMultipart() )
-        return geomPart;
-      if ( g->wkbType() == QGis::WKBMultiPoint || g->wkbType() == QGis::WKBMultiPoint25D )
+      QgsGeometry g = f.geometry();
+      if ( !g.isMultipart() )
+      {
+        fid = match.featureId();
+        return QgsGeometry::fromPoint( match.point() );
+      }
+      if ( g.wkbType() == QgsWkbTypes::MultiPoint || g.wkbType() == QgsWkbTypes::MultiPoint25D )
       {
         fid = match.featureId();
         partNum = snapVertex;
         return QgsGeometry::fromPoint( match.point() );
       }
-      if ( g->wkbType() == QGis::WKBMultiLineString || g->wkbType() == QGis::WKBMultiLineString25D )
+      if ( g.wkbType() == QgsWkbTypes::MultiLineString || g.wkbType() == QgsWkbTypes::MultiLineString25D )
       {
-        QgsMultiPolyline mline = g->asMultiPolyline();
+        QgsMultiPolyline mline = g.asMultiPolyline();
         for ( int part = 0; part < mline.count(); part++ )
         {
           if ( snapVertex < mline[part].count() )
@@ -156,7 +161,7 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
       }
       break;
     }
-    case QGis::Polygon:
+    case QgsWkbTypes::PolygonGeometry:
     {
       QgsPoint layerCoords = toLayerCoordinates( vlayer, point );
       double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
@@ -164,17 +169,20 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
                                layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
       QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ) );
       fit.nextFeature( f );
-      QgsGeometry* g = f.geometry();
-      if ( !g )
+      QgsGeometry g = f.geometry();
+      if ( g.isEmpty() )
         return geomPart;
-      if ( !g->isMultipart() )
+      if ( !g.isMultipart() )
+      {
+        fid = f.id();
         return geomPart;
-      QgsMultiPolygon mpolygon = g->asMultiPolygon();
+      }
+      QgsMultiPolygon mpolygon = g.asMultiPolygon();
       for ( int part = 0; part < mpolygon.count(); part++ ) // go through the polygons
       {
         const QgsPolygon& polygon = mpolygon[part];
-        QgsGeometry* partGeo = QgsGeometry::fromPolygon( polygon );
-        if ( partGeo->contains( &layerCoords ) )
+        QgsGeometry partGeo = QgsGeometry::fromPolygon( polygon );
+        if ( partGeo.contains( &layerCoords ) )
         {
           fid = f.id();
           partNum = part;

@@ -94,7 +94,7 @@ QextSerialEnumerator::~QextSerialEnumerator( )
         {
           QString port = "\\\\.\\COM" + QString::number(i);
 
-          HANDLE hPort = ::CreateFile(port.toAscii(), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
+          HANDLE hPort = ::CreateFile(port.toLatin1(), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
           if( hPort == INVALID_HANDLE_VALUE )
             continue;
 
@@ -166,7 +166,7 @@ QextSerialEnumerator::~QextSerialEnumerator( )
             {
                 PDEV_BROADCAST_DEVICEINTERFACE pDevInf = (PDEV_BROADCAST_DEVICEINTERFACE)pHdr;
                  // delimiters are different across APIs...change to backslash.  ugh.
-                QString deviceID = TCHARToQString(pDevInf->dbcc_name).toUpper().replace("#", "\\");
+                QString deviceID = TCHARToQString(pDevInf->dbcc_name).toUpper().replace('#', "\\");
 
                 matchAndDispatchChangedDevice(deviceID, GUID_DEVCLASS_PORTS, wParam);
             }

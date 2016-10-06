@@ -8,7 +8,7 @@
     Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
     ---------------------
-    Date                 : April 2014
+    Date                 : April 2014 and May 2016
     Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -20,6 +20,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,10 +31,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
+from qgis.PyQt import QtGui
 from processing.core.GeoAlgorithm import GeoAlgorithm
 
-from LAStoolsUtils import LAStoolsUtils
+from .LAStoolsUtils import LAStoolsUtils
 
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterBoolean
@@ -41,6 +44,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputFile
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector
+
 
 class LAStoolsAlgorithm(GeoAlgorithm):
 
@@ -69,12 +73,14 @@ class LAStoolsAlgorithm(GeoAlgorithm):
     FILES_ARE_FLIGHTLINES = "FILES_ARE_FLIGHTLINES"
     APPLY_FILE_SOURCE_ID = "APPLY_FILE_SOURCE_ID"
     STEP = "STEP"
+
     FILTER_RETURN_CLASS_FLAGS1 = "FILTER_RETURN_CLASS_FLAGS1"
     FILTER_RETURN_CLASS_FLAGS2 = "FILTER_RETURN_CLASS_FLAGS2"
     FILTER_RETURN_CLASS_FLAGS3 = "FILTER_RETURN_CLASS_FLAGS3"
     FILTERS_RETURN_CLASS_FLAGS = ["---", "keep_last", "keep_first", "keep_middle", "keep_single", "drop_single",
                                   "keep_double", "keep_class 2", "keep_class 2 8", "keep_class 8", "keep_class 6",
-                                  "keep_class 9", "keep_class 3 4 5", "keep_class 2 6", "drop_class 7", "drop_withheld", "drop_synthetic"]
+                                  "keep_class 9", "keep_class 3 4 5", "keep_class 3", "keep_class 4", "keep_class 5",
+                                  "keep_class 2 6", "drop_class 7", "drop_withheld", "drop_synthetic"]
     FILTER_COORDS_INTENSITY1 = "FILTER_COORDS_INTENSITY1"
     FILTER_COORDS_INTENSITY2 = "FILTER_COORDS_INTENSITY2"
     FILTER_COORDS_INTENSITY3 = "FILTER_COORDS_INTENSITY3"
@@ -86,7 +92,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
                                 "drop_gps_time_below", "drop_scan_angle_above", "drop_scan_angle_below", "keep_point_source",
                                 "drop_point_source", "drop_point_source_above", "drop_point_source_below", "keep_user_data",
                                 "drop_user_data", "drop_user_data_above", "drop_user_data_below", "keep_every_nth",
-                                "keep_random_fraction", "thin_with_grid" ]
+                                "keep_random_fraction", "thin_with_grid"]
 
     TRANSFORM_COORDINATE1 = "TRANSFORM_COORDINATE1"
     TRANSFORM_COORDINATE2 = "TRANSFORM_COORDINATE2"
@@ -98,9 +104,13 @@ class LAStoolsAlgorithm(GeoAlgorithm):
     TRANSFORM_OTHER2 = "TRANSFORM_OTHER2"
     TRANSFORM_OTHER1_ARG = "TRANSFORM_OTHER1_ARG"
     TRANSFORM_OTHER2_ARG = "TRANSFORM_OTHER2_ARG"
-    TRANSFORM_OTHERS = ["---", "scale_intensity", "translate_intensity",  "clamp_intensity_above", "clamp_intensity_below",
+    TRANSFORM_OTHERS = ["---", "scale_intensity", "translate_intensity", "clamp_intensity_above", "clamp_intensity_below",
                         "scale_scan_angle", "translate_scan_angle", "translate_gps_time", "set_classification", "set_user_data",
-                        "set_point_source", "scale_rgb_up", "scale_rgb_down", "repair_zero_returns" ]
+                        "set_point_source", "scale_rgb_up", "scale_rgb_down", "repair_zero_returns"]
+
+    IGNORE_CLASS1 = "IGNORE_CLASS1"
+    IGNORE_CLASS2 = "IGNORE_CLASS2"
+    IGNORE_CLASSES = ["---", "unclassified (1)", "ground (2)", "veg low (3)", "veg mid (4)", "veg high (5)", "buildings (6)", "noise (7)", "keypoint (8)", "water (9)"]
 
     def getIcon(self):
         filepath = os.path.dirname(__file__) + "/../../../images/tool.png"
@@ -138,7 +148,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         input = self.getParameterValue(LAStoolsAlgorithm.INPUT_LASLAZ)
         if input is not None:
             commands.append("-i")
-            commands.append(input)
+            commands.append('"' + input + '"')
 
     def addParametersPointInputFolderGUI(self):
         self.addParameter(ParameterFile(LAStoolsAlgorithm.INPUT_DIRECTORY, self.tr("input directory"), True, False))
@@ -231,7 +241,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         output = self.getOutputValue(LAStoolsAlgorithm.OUTPUT_LASLAZ)
         if output is not None:
             commands.append("-o")
-            commands.append(output)
+            commands.append('"' + output + '"')
 
     def addParametersPointOutputFormatGUI(self):
         self.addParameter(ParameterSelection(LAStoolsAlgorithm.OUTPUT_POINT_FORMAT, self.tr("output format"), LAStoolsAlgorithm.OUTPUT_POINT_FORMATS, 0))
@@ -278,7 +288,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
             commands.append(odir)
 
     def addParametersOutputAppendixGUI(self):
-        self.addParameter(ParameterString(LAStoolsAlgorithm.OUTPUT_APPENDIX, self.tr("output appendix")))
+        self.addParameter(ParameterString(LAStoolsAlgorithm.OUTPUT_APPENDIX, self.tr("output appendix"), optional=True))
 
     def addParametersOutputAppendixCommands(self, commands):
         odix = self.getParameterValue(LAStoolsAlgorithm.OUTPUT_APPENDIX)
@@ -299,10 +309,10 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         idir = self.getParameterValue(LAStoolsAlgorithm.TEMPORARY_DIRECTORY)
         if idir != "":
             commands.append("-i")
-            commands.append(idir+'\\'+files)
+            commands.append(idir + '\\' + files)
 
     def addParametersAdditionalGUI(self):
-        self.addParameter(ParameterString(LAStoolsAlgorithm.ADDITIONAL_OPTIONS, self.tr("additional command line parameter(s)")))
+        self.addParameter(ParameterString(LAStoolsAlgorithm.ADDITIONAL_OPTIONS, self.tr("additional command line parameter(s)"), optional=True))
 
     def addParametersAdditionalCommands(self, commands):
         additional_options = self.getParameterValue(LAStoolsAlgorithm.ADDITIONAL_OPTIONS).split()
@@ -361,9 +371,9 @@ class LAStoolsAlgorithm(GeoAlgorithm):
 
     def addParametersTransform1CoordinateGUI(self):
         self.addParameter(ParameterSelection(LAStoolsAlgorithm.TRANSFORM_COORDINATE1,
-            self.tr("transform (coordinates)"), LAStoolsAlgorithm.TRANSFORM_COORDINATES, 0))
+                                             self.tr("transform (coordinates)"), LAStoolsAlgorithm.TRANSFORM_COORDINATES, 0))
         self.addParameter(ParameterString(LAStoolsAlgorithm.TRANSFORM_COORDINATE1_ARG,
-            self.tr("value for transform (coordinates)")))
+                                          self.tr("value for transform (coordinates)")))
 
     def addParametersTransform1CoordinateCommands(self, commands):
         transform1 = self.getParameterValue(LAStoolsAlgorithm.TRANSFORM_COORDINATE1)
@@ -374,9 +384,9 @@ class LAStoolsAlgorithm(GeoAlgorithm):
 
     def addParametersTransform2CoordinateGUI(self):
         self.addParameter(ParameterSelection(LAStoolsAlgorithm.TRANSFORM_COORDINATE2,
-            self.tr("second transform (coordinates)"), LAStoolsAlgorithm.TRANSFORM_COORDINATES, 0))
+                                             self.tr("second transform (coordinates)"), LAStoolsAlgorithm.TRANSFORM_COORDINATES, 0))
         self.addParameter(ParameterString(LAStoolsAlgorithm.TRANSFORM_COORDINATE2_ARG,
-            self.tr("value for second transform (coordinates)")))
+                                          self.tr("value for second transform (coordinates)")))
 
     def addParametersTransform2CoordinateCommands(self, commands):
         transform2 = self.getParameterValue(LAStoolsAlgorithm.TRANSFORM_COORDINATE2)
@@ -387,9 +397,9 @@ class LAStoolsAlgorithm(GeoAlgorithm):
 
     def addParametersTransform1OtherGUI(self):
         self.addParameter(ParameterSelection(LAStoolsAlgorithm.TRANSFORM_OTHER1,
-            self.tr("transform (intensities, scan angles, GPS times, ...)"), LAStoolsAlgorithm.TRANSFORM_OTHERS, 0))
+                                             self.tr("transform (intensities, scan angles, GPS times, ...)"), LAStoolsAlgorithm.TRANSFORM_OTHERS, 0))
         self.addParameter(ParameterString(LAStoolsAlgorithm.TRANSFORM_OTHER1_ARG,
-            self.tr("value for transform (intensities, scan angles, GPS times, ...)")))
+                                          self.tr("value for transform (intensities, scan angles, GPS times, ...)")))
 
     def addParametersTransform1OtherCommands(self, commands):
         transform1 = self.getParameterValue(LAStoolsAlgorithm.TRANSFORM_OTHER1)
@@ -401,9 +411,9 @@ class LAStoolsAlgorithm(GeoAlgorithm):
 
     def addParametersTransform2OtherGUI(self):
         self.addParameter(ParameterSelection(LAStoolsAlgorithm.TRANSFORM_OTHER2,
-            self.tr("second transform (intensities, scan angles, GPS times, ...)"), LAStoolsAlgorithm.TRANSFORM_OTHERS, 0))
+                                             self.tr("second transform (intensities, scan angles, GPS times, ...)"), LAStoolsAlgorithm.TRANSFORM_OTHERS, 0))
         self.addParameter(ParameterString(LAStoolsAlgorithm.TRANSFORM_OTHER2_ARG,
-            self.tr("value for second transform (intensities, scan angles, GPS times, ...)")))
+                                          self.tr("value for second transform (intensities, scan angles, GPS times, ...)")))
 
     def addParametersTransform2OtherCommands(self, commands):
         transform2 = self.getParameterValue(LAStoolsAlgorithm.TRANSFORM_OTHER2)
@@ -412,3 +422,23 @@ class LAStoolsAlgorithm(GeoAlgorithm):
             commands.append("-" + LAStoolsAlgorithm.TRANSFORM_OTHERS[transform2])
             if transform2 < 11 and transform2_arg is not None:
                 commands.append(transform2_arg)
+
+    def addParametersIgnoreClass1GUI(self):
+        self.addParameter(ParameterSelection(LAStoolsAlgorithm.IGNORE_CLASS1,
+                                             self.tr("ignore points with this classification"), LAStoolsAlgorithm.IGNORE_CLASSES, 0))
+
+    def addParametersIgnoreClass1Commands(self, commands):
+        ignore1 = self.getParameterValue(LAStoolsAlgorithm.IGNORE_CLASS1)
+        if ignore1 != 0:
+            commands.append("-ignore_class")
+            commands.append(str(ignore1))
+
+    def addParametersIgnoreClass2GUI(self):
+        self.addParameter(ParameterSelection(LAStoolsAlgorithm.IGNORE_CLASS2,
+                                             self.tr("also ignore points with this classification"), LAStoolsAlgorithm.IGNORE_CLASSES, 0))
+
+    def addParametersIgnoreClass2Commands(self, commands):
+        ignore2 = self.getParameterValue(LAStoolsAlgorithm.IGNORE_CLASS2)
+        if ignore2 != 0:
+            commands.append("-ignore_class")
+            commands.append(str(ignore2))

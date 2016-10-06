@@ -10,6 +10,10 @@ IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
   ADD_DEFINITIONS(-DQGSMSDEBUG=1)
 ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 
+IF (ENABLE_TESTS)
+   ADD_DEFINITIONS(-DENABLE_MS_TESTS=1)
+ENDIF (ENABLE_TESTS)
+
 ########################################################
 # Files
 
@@ -18,15 +22,17 @@ SET ( qgis_mapserv_SRCS
   qgscapabilitiescache.cpp
   qgsconfigcache.cpp
   qgshttprequesthandler.cpp
+#  qgshttptransaction.cpp
   qgsgetrequesthandler.cpp
   qgspostrequesthandler.cpp
   qgssoaprequesthandler.cpp
+  qgsowsserver.cpp
   qgswmsserver.cpp
   qgswfsserver.cpp
   qgswcsserver.cpp
   qgsmapserviceexception.cpp
+  qgsmaprenderer.cpp
   qgsmslayercache.cpp
-  qgsftptransaction.cpp
   qgsmslayerbuilder.cpp
   qgshostedvdsbuilder.cpp
   qgsinterpolationlayerbuilder.cpp
@@ -41,21 +47,37 @@ SET ( qgis_mapserv_SRCS
   qgswmsconfigparser.cpp
   qgswmsprojectparser.cpp
   qgsserverprojectparser.cpp
+  qgsserverstreamingdevice.cpp
   qgssldconfigparser.cpp
   qgsconfigparserutils.cpp
+  qgsserver.cpp
+)
+IF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
+  SET (qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
+    qgsftptransaction.cpp
   )
+ENDIF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
+
 
 # SET (qgis_mapserv_UIS
 # none used
 # )
 
 SET (qgis_mapserv_MOC_HDRS
-  qgsftptransaction.h
   qgscapabilitiescache.h
   qgsconfigcache.h
+#  qgshttptransaction.h
+  qgsmaprenderer.h
   qgsmslayercache.h
   qgsserverlogger.h
+  qgsserverstreamingdevice.h
 )
+
+IF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
+  SET (qgis_mapserv_MOC_HDRS ${qgis_mapserv_MOC_HDRS}
+    qgsftptransaction.h
+  )
+ENDIF("${Qt5Network_VERSION}" VERSION_LESS "5.0.0")
 
 SET (qgis_mapserv_RCCS
   # not used
@@ -70,23 +92,30 @@ SET (qgis_mapserv_RCCS
 
 SET(qgis_mapserv_MOC_HDRS ${qgis_mapserv_MOC_HDRS})
 
+
+IF (WITH_SERVER_PLUGINS)
 SET(qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
     qgsserverplugins.cpp
     qgsserverinterface.cpp
     qgsserverfilter.cpp
+    qgsaccesscontrolfilter.cpp
+    qgsaccesscontrol.cpp
     qgsserverinterfaceimpl.cpp
 )
+ENDIF (WITH_SERVER_PLUGINS)
 
-IF (WIN32)
-  IF (MSVC)
-    ADD_DEFINITIONS("-DSERVER_EXPORT=${DLLEXPORT}")
-  ELSE (MSVC)
-    ADD_DEFINITIONS("-USERVER_EXPORT \"-DSERVER_EXPORT=${DLLEXPORT}\"")
-  ENDIF (MSVC)
-ENDIF (WIN32)
+REMOVE_DEFINITIONS("-DSERVER_EXPORT=${DLLIMPORT}")
+ADD_DEFINITIONS("\"-DSERVER_EXPORT=${DLLEXPORT}\"")
 
 
-QT4_WRAP_CPP(qgis_mapserv_MOC_SRCS ${qgis_mapserv_MOC_HDRS})
+QT5_WRAP_CPP(qgis_mapserv_MOC_SRCS ${qgis_mapserv_MOC_HDRS})
+
+IF(MSVC)
+  SET_SOURCE_FILES_PROPERTIES(${qgis_mapserv_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4512 /wd4996" )
+ELSE(MSVC)
+  SET_SOURCE_FILES_PROPERTIES(${qgis_mapserv_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
+ENDIF(MSVC)
+
 
 ADD_LIBRARY(qgis_server SHARED ${qgis_mapserv_SRCS} ${qgis_mapserv_MOC_SRCS} ${qgis_mapserv_HDRS} ${qgis_mapserv_MOC_HDRS})
 
@@ -102,18 +131,24 @@ TARGET_LINK_LIBRARIES(qgis_server
   qgis_core
   qgis_gui
   qgis_analysis
-  qgispython
   ${PROJ_LIBRARY}
   ${FCGI_LIBRARY}
   ${POSTGRES_LIBRARY}
   ${GDAL_LIBRARY}
+  ${QCA_LIBRARY}
 )
+
+IF (WITH_BINDINGS)
+    TARGET_LINK_LIBRARIES(qgis_server
+      qgispython
+    )
+ENDIF(WITH_BINDINGS)
 
 IF (APPLE)
   SET_TARGET_PROPERTIES(qgis_server PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
 ENDIF (APPLE)
 
-IF (WITH_SERVER_PLUGINS)
+
 # install
 
 INSTALL(TARGETS qgis_server
@@ -127,16 +162,16 @@ INCLUDE_DIRECTORIES(
     ../python
 )
 
-ENDIF (WITH_SERVER_PLUGINS) # end qgis_server library
+# end qgis_server library
 
-QT4_WRAP_UI (qgis_mapserv_UIS_H  ${qgis_mapserv_UIS})
+QT5_WRAP_UI (qgis_mapserv_UIS_H  ${qgis_mapserv_UIS})
 
 
-QT4_ADD_RESOURCES(qgis_mapserv_RCC_SRCS ${qgis_mapserv_RCCS})
+QT5_ADD_RESOURCES(qgis_mapserv_RCC_SRCS ${qgis_mapserv_RCCS})
 
 # add test resources, e.g. standard test font
 SET(qgis_mapserv_TESTRCCS ../../tests/testdata/testdata.qrc)
-QT4_ADD_RESOURCES(qgis_mapserv_TESTRCC_SRCS ${qgis_mapserv_TESTRCCS})
+QT5_ADD_RESOURCES(qgis_mapserv_TESTRCC_SRCS ${qgis_mapserv_TESTRCCS})
 
 ADD_EXECUTABLE(qgis_mapserv.fcgi
   ${qgis_mapserv_SRCS}
@@ -146,16 +181,26 @@ ADD_EXECUTABLE(qgis_mapserv.fcgi
   ${qgis_mapserv_TESTRCC_SRCS}
   )
 
-INCLUDE_DIRECTORIES(
+INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${FCGI_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
+)
+INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${QGIS_INCLUDE_DIR}
+  ${QCA_INCLUDE_DIR}
+)
+INCLUDE_DIRECTORIES(
   ../core
+  ../core/auth
+  ../core/dxf
+  ../core/geometry
   ../core/raster
   ../core/symbology-ng
   ../core/composer
@@ -176,6 +221,7 @@ TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
   ${FCGI_LIBRARY}
   ${POSTGRES_LIBRARY}
   ${GDAL_LIBRARY}
+  ${QCA_LIBRARY}
 )
 
 ########################################################

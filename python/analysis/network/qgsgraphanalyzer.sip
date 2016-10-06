@@ -32,7 +32,7 @@ class QgsGraphAnalyzer
       int i;
       for ( i = 0; i < costResult.size(); ++i )
       {
-        PyObject *Int = PyInt_FromLong( treeResult[i] );
+        PyObject *Int = PyLong_FromLong( treeResult[i] );
         PyList_SET_ITEM( l1, i, Int );
         PyObject *Float = PyFloat_FromDouble( costResult[i] );
         PyList_SET_ITEM( l2, i, Float );

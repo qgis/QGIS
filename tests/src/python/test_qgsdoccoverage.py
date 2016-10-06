@@ -8,114 +8,82 @@ the Free Software Foundation; either version 2 of the License, or
 """
 __author__ = 'Nyall Dawson'
 __date__ = '01/02/2015'
-__copyright__ = 'Copyright 2015, The QGIS Project'
+__copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
 import os
-import glob
+import sys
+from qgis.testing import unittest
+from termcolor import colored
 
-from utilities import (TestCase,
-                       unittest)
+from utilities import DoxygenParser
+from acceptable_missing_doc import ACCEPTABLE_MISSING_DOCS, ACCEPTABLE_MISSING_ADDED_NOTE, ACCEPTABLE_MISSING_BRIEF
 
-try:
-    import xml.etree.cElementTree as ET
-except ImportError:
-    import xml.etree.ElementTree as ET
-
-from PyQt4.QtCore import qDebug
-
-# DOCUMENTATION THRESHOLD
-#
-# The minimum coverage of public/protected member functions in QGIS api
-#
-# DON'T LOWER THIS THRESHOLD UNLESS MEMBERS HAVE BEEN REMOVED FROM THE API
-# (changes which raise this threshold are welcomed though!)
-
-ACCEPTABLE_COVERAGE = 52.673
+# TO regenerate the list:
+# uncomment the lines under the `# GEN LIST`
+# $ export PYTHONPATH=build/output/python
+# $ export QGIS_PREFIX_PATH=build/output
+# $ python tests/src/python/test_qgsdoccoverage.py
+# copy the output to the file:
+# tests/src/python/acceptable_missing_doc.py
+# in `ACCEPTABLE_MISSING_DOCS = { <past> }`.
 
 
-def elemIsDocumentableClass(elem):
-    if not elem.get('kind') == 'class':
-        return False
-
-    #public or protected classes should be documented
-    return elem.get('prot') in ('public','protected')
-
-def elemIsDocumentableMember(elem):
-    if elem.get('kind') == 'variable':
-        return False
-
-    #only public or protected members should be documented
-    if not elem.get('prot') in ('public','protected'):
-        return False
-
-    #ignore reimplemented methods
-    #use two different tests, as doxygen will not detect reimplemented qt methods
-    if elem.find('reimplements') is not None:
-        return False
-    args = elem.find('argsstring')
-    if args is not None and args.text and ' override' in args.text:
-        return False
-
-    #ignore destructor
-    name = elem.find('name')
-    if name is not None and name.text and name.text.startswith('~'):
-        return False
-
-    return True
-
-
-def memberIsDocumented(m):
-    for doc_type in ('inbodydescription','briefdescription','detaileddescription'):
-        doc = m.find(doc_type)
-        if doc is not None and list(doc):
-            return True
-    return False
-
-def parseClassElem(e):
-    documentable_members = 0
-    documented_members = 0
-    for m in e.getiterator('memberdef'):
-        if elemIsDocumentableMember(m):
-            documentable_members += 1
-            if memberIsDocumented(m):
-                documented_members += 1
-    return documentable_members, documented_members
-
-def parseFile(f):
-    documentable_members = 0
-    documented_members = 0
-    for event, elem in ET.iterparse(f):
-        if event == 'end' and elem.tag == 'compounddef':
-            if elemIsDocumentableClass(elem):
-                members, documented = parseClassElem(elem)
-                documentable_members += members
-                documented_members += documented
-            elem.clear()
-    return documentable_members, documented_members
-
-
-def parseDocs(path):
-    documentable_members = 0
-    documented_members = 0
-    for f in glob.glob(os.path.join(path,'*.xml')):
-        members, documented = parseFile( f )
-        documentable_members += members
-        documented_members += documented
-
-    return 100.0 * documented_members / documentable_members
-
-class TestQgsDocCoverage(TestCase):
+class TestQgsDocCoverage(unittest.TestCase):
 
     def testCoverage(self):
+        print('CTEST_FULL_OUTPUT')
         prefixPath = os.environ['QGIS_PREFIX_PATH']
-        docPath = os.path.join(prefixPath, '..', 'doc', 'api', 'xml' )
+        docPath = os.path.join(prefixPath, '..', 'doc', 'api', 'xml')
+        parser = DoxygenParser(docPath, ACCEPTABLE_MISSING_DOCS, ACCEPTABLE_MISSING_ADDED_NOTE, ACCEPTABLE_MISSING_BRIEF)
 
-        coverage = parseDocs(docPath)
-        print "Documentation coverage {}".format(coverage)
+        coverage = 100.0 * parser.documented_members / parser.documentable_members
+        missing = parser.documentable_members - parser.documented_members
 
-        assert coverage >= ACCEPTABLE_COVERAGE, 'Minimum coverage: %f\nActual coverage: %f\n' % (ACCEPTABLE_COVERAGE, coverage)
+        print("---------------------------------")
+        print(("{} total documentable members".format(parser.documentable_members)))
+        print(("{} total contain valid documentation".format(parser.documented_members)))
+        print(("Total documentation coverage {}%".format(coverage)))
+        print("---------------------------------")
+        print(("{} members missing documentation".format(missing)))
+        print("---------------------------------")
+        print("Unacceptable missing documentation:")
+
+        if parser.undocumented_members:
+            for cls, props in list(parser.undocumented_members.items()):
+                print(('\n\nClass {}, {}/{} members documented\n'.format(colored(cls, 'yellow'), props['documented'], props['members'])))
+                for mem in props['missing_members']:
+                    print((colored('  ' + mem, 'yellow', attrs=['bold'])))
+
+        # self.assertEquals(len(parser.undocumented_string), 0, 'FAIL: new undocumented members have been introduced, please add documentation for these members')
+
+        if parser.classes_missing_group:
+            print("---------------------------------")
+            print('\n')
+            print((colored('{} classes have been added without Doxygen group tag ("\ingroup"):'.format(len(parser.classes_missing_group)), 'yellow')))
+            print('')
+            print(('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_group])))
+
+        if parser.classes_missing_version_added:
+            print("---------------------------------")
+            print('\n')
+            print((colored('{} classes have been added without a version added doxygen note ("@note added in QGIS x.xx"):'.format(len(parser.classes_missing_version_added)), 'yellow')))
+            print('')
+            print(('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_version_added])))
+
+        if parser.classes_missing_brief:
+            print("---------------------------------")
+            print('\n')
+            print((colored('{} classes have been added without at least a brief description:'.format(len(parser.classes_missing_brief)), 'yellow')))
+            print('')
+            print(('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_brief])))
+
+        sys.stdout.flush()
+        self.assertTrue(not parser.undocumented_members, 'Undocumented members found')
+        self.assertTrue(not parser.classes_missing_group, 'Classes without \group tag found')
+        self.assertTrue(not parser.classes_missing_version_added, 'Classes without version added note found')
+        self.assertTrue(not parser.classes_missing_brief, 'Classes without brief description found')
 
 
 if __name__ == '__main__':

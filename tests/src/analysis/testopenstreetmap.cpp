@@ -72,7 +72,7 @@ void TestOpenStreetMap::download()
   // start download
   QgsOSMDownload download;
   download.setQuery( QgsOSMDownload::queryFromRect( rect ) );
-  download.setOutputFileName( "/tmp/dl-test.osm" );
+  download.setOutputFileName( QDir::tempPath() + "/dl-test.osm" );
   bool res = download.start();
   QVERIFY( res );
 
@@ -95,7 +95,7 @@ void TestOpenStreetMap::download()
 
 void TestOpenStreetMap::importAndQueries()
 {
-  QString dbFilename = "/tmp/testdata.db";
+  QString dbFilename =  QDir::tempPath() + "/testdata.db";
   QString xmlFilename = TEST_DATA_DIR "/openstreetmap/testdata.xml";
 
   QgsOSMXmlImport import( xmlFilename, dbFilename );
@@ -148,8 +148,8 @@ void TestOpenStreetMap::importAndQueries()
   QgsOSMWay w = db.way( 32137532 );
   QCOMPARE( w.isValid(), true );
   QCOMPARE( w.nodes().count(), 5 );
-  QCOMPARE( w.nodes()[0], ( qint64 )360769661 );
-  QCOMPARE( w.nodes()[1], ( qint64 )360769664 );
+  QCOMPARE( w.nodes().at( 0 ), ( qint64 )360769661 );
+  QCOMPARE( w.nodes().at( 1 ), ( qint64 )360769664 );
 
   QgsOSMWay wNot = db.way( 1234567 );
   QCOMPARE( wNot.isValid(), false );

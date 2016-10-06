@@ -12,13 +12,13 @@ class QgsFieldExpressionWidget : QWidget
     explicit QgsFieldExpressionWidget( QWidget *parent /TransferThis/ = 0 );
 
     //! define the title used in the expression dialog
-    void setExpressionDialogTitle( QString title );
+    void setExpressionDialogTitle( const QString& title );
 
     //! return the title used for the expression dialog
     const QString expressionDialogTitle();
 
     //! setFilters allows fitering according to the type of field
-    void setFilters( QgsFieldProxyModel::Filters filters );
+    void setFilters( const QgsFieldProxyModel::Filters& filters );
 
     void setLeftHandButtonStyle( bool isLeft );
 
@@ -46,15 +46,42 @@ class QgsFieldExpressionWidget : QWidget
       */
     QString currentText() const;
 
+    /** Returns the currently selected field or expression. If a field is currently selected, the returned
+     * value will be converted to a valid expression referencing this field (ie enclosing the field name with
+     * appropriate quotations).
+     * @note added in QGIS 2.14
+     */
+    QString asExpression() const;
+
+    /**
+     * Returns the currently selected field or expression. If a field is currently selected, the returned
+     * value will be converted to a valid expression referencing this field (ie enclosing the field name with
+     * appropriate quotations).
+     *
+     * Alias for asExpression()
+     *
+     * @note added in QGIS 3.0
+     */
+    QString expression() const;
+
     //! Returns the currently used layer
     QgsVectorLayer* layer() const;
 
+    /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for the widget.
+     * @param generator A QgsExpressionContextGenerator class that will be used to
+     *                  create an expression context when required.
+     * @note added in QGIS 3.0
+     */
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator* generator );
+
   signals:
     //! the signal is emitted when the currently selected field changes
-    void fieldChanged( QString fieldName );
+    void fieldChanged( const QString& fieldName );
 
     //! fieldChanged signal with indication of the validity of the expression
-    void fieldChanged( QString fieldName, bool isValid );
+    void fieldChanged( const QString& fieldName, bool isValid );
 
 //    void returnPressed();
 
@@ -65,15 +92,26 @@ class QgsFieldExpressionWidget : QWidget
     //! convenience slot to connect QgsMapLayerComboBox layer signal
     void setLayer( QgsMapLayer* layer );
 
+    //! sets the current row in the widget
+    void setRow( int row );
+
     //! sets the current field or expression in the widget
     void setField( const QString &fieldName );
+
+    /**
+     * Sets the current expression text and if applicable also the field.
+     * Alias for setField.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setExpression( const QString& expression );
 
   protected slots:
     //! open the expression dialog to edit the current or add a new expression
     void editExpression();
 
     //! when expression is edited by the user in the line edit, it will be checked for validity
-    void expressionEdited( const QString expression );
+    void expressionEdited( const QString& expression );
 
     //! when expression has been edited (finished) it will be added to the model
     void expressionEditingFinished();
@@ -85,9 +123,9 @@ class QgsFieldExpressionWidget : QWidget
      * @param expression if expression is given it will be evaluated for the given string, otherwise it takes
      * current expression from the model
      */
-    void updateLineEditStyle( const QString expression = QString() );
+    void updateLineEditStyle( const QString& expression = QString() );
 
-    bool isExpressionValid( const QString expressionStr );
+    bool isExpressionValid( const QString& expressionStr );
 
   protected:
     void changeEvent( QEvent* event );

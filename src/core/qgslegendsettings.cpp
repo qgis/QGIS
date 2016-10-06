@@ -30,6 +30,9 @@ QgsLegendSettings::QgsLegendSettings()
     , mColumnCount( 1 )
     , mSplitLayer( false )
     , mEqualColumnWidth( false )
+    , mRasterSymbolBorder( true )
+    , mRasterBorderColor( Qt::black )
+    , mRasterBorderWidth( 0.0 )
     , mMmPerMapUnit( 1 )
     , mUseAdvancedEffects( true )
     , mMapScale( 1 )
@@ -47,7 +50,7 @@ QgsLegendSettings::QgsLegendSettings()
   rstyle( QgsComposerLegendStyle::SymbolLabel ).rfont().setPointSizeF( 12.0 );
 }
 
-QStringList QgsLegendSettings::splitStringForWrapping( QString stringToSplt ) const
+QStringList QgsLegendSettings::splitStringForWrapping( const QString& stringToSplt ) const
 {
   QStringList list;
   // If the string contains nothing then just return the string without spliting.
@@ -110,7 +113,7 @@ double QgsLegendSettings::textWidthMillimeters( const QFont& font, const QString
   return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
 }
 
-double QgsLegendSettings::fontHeightCharacterMM( const QFont& font, const QChar& c ) const
+double QgsLegendSettings::fontHeightCharacterMM( const QFont& font, QChar c ) const
 {
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetricsF fontMetrics( metricsFont );

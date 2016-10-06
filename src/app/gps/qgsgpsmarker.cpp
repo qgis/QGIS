@@ -18,14 +18,13 @@
 #include "qgsgpsmarker.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
-
+#include "qgscsexception.h"
 
 QgsGpsMarker::QgsGpsMarker( QgsMapCanvas* mapCanvas )
     : QgsMapCanvasItem( mapCanvas )
 {
   mSize = 16;
-  mWgs84CRS.createFromOgcWmsCrs( "EPSG:4326" );
+  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( "EPSG:4326" );
   mSvg.load( QString( ":/images/north_arrows/gpsarrow2.svg" ) );
   if ( ! mSvg.isValid() )
   {

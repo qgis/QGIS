@@ -20,12 +20,14 @@
 #include "qgsgcplist.h"
 #include "qgsrectangle.h"
 
-/**A composer item to visualise the distribution of georeference residuals. For the visualisation,
+/** A composer item to visualise the distribution of georeference residuals. For the visualisation,
 the length of the residual arrows are scaled*/
 class QgsResidualPlotItem: public QgsComposerItem
 {
+    Q_OBJECT
+
   public:
-    QgsResidualPlotItem( QgsComposition* c );
+    explicit QgsResidualPlotItem( QgsComposition* c );
     ~QgsResidualPlotItem();
 
     /** \brief Reimplementation of QCanvasItem::paint*/
@@ -40,22 +42,22 @@ class QgsResidualPlotItem: public QgsComposerItem
     void setConvertScaleToMapUnits( bool convert ) { mConvertScaleToMapUnits = convert; }
     bool convertScaleToMapUnits() const { return mConvertScaleToMapUnits; }
 
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
   private:
     //gcp list
     QgsGCPList mGCPList;
 
     QgsRectangle mExtent;
-    /**True if the scale bar units should be converted to map units. This can be done for transformation where the scaling in all directions is the same (helmert)*/
+    /** True if the scale bar units should be converted to map units. This can be done for transformation where the scaling in all directions is the same (helmert)*/
     bool mConvertScaleToMapUnits;
 
-    /**Calculates maximal possible mm to pixel ratio such that the residual arrow is still inside the frame*/
+    /** Calculates maximal possible mm to pixel ratio such that the residual arrow is still inside the frame*/
     double maxMMToPixelRatioForGCP( const QgsGeorefDataPoint* p, double pixelXMM, double pixelYMM );
 
-    /**Returns distance between two points*/
-    double dist( const QPointF& p1, const QPointF& p2 ) const;
+    /** Returns distance between two points*/
+    double dist( QPointF p1, QPointF p2 ) const;
 };
 
 #endif // QGSRESIDUALPLOTITEM_H

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
@@ -28,8 +29,8 @@ __revision__ = '$Format:%H$'
 import os
 from datetime import datetime
 
-from PyQt4.QtCore import QVariant
-from qgis.core import QGis, QgsFeature, QgsFields, QgsField, QgsGeometry, QgsDistanceArea
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import Qgis, QgsFeature, QgsFields, QgsField, QgsGeometry, QgsDistanceArea, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -51,20 +52,20 @@ class PointsToPaths(GeoAlgorithm):
     OUTPUT_TEXT = 'OUTPUT_TEXT'
 
     def defineCharacteristics(self):
-        self.name = 'Points to path'
-        self.group = 'Vector creation tools'
+        self.name, self.i18n_name = self.trAlgorithm('Points to path')
+        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterVector(self.VECTOR,
-            self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input point layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.GROUP_FIELD,
-            self.tr('Group field'), self.VECTOR))
+                                              self.tr('Group field'), self.VECTOR))
         self.addParameter(ParameterTableField(self.ORDER_FIELD,
-            self.tr('Order field'), self.VECTOR))
+                                              self.tr('Order field'), self.VECTOR))
         self.addParameter(ParameterString(self.DATE_FORMAT,
-            self.tr('Date format (if order field is DateTime)'), '', optional=True))
+                                          self.tr('Date format (if order field is DateTime)'), '', optional=True))
         #self.addParameter(ParameterNumber(
         #    self.GAP_PERIOD,
         #    'Gap period (if order field is DateTime)', 0, 60, 0))
-        self.addOutput(OutputVector(self.OUTPUT_LINES, self.tr('Paths')))
+        self.addOutput(OutputVector(self.OUTPUT_LINES, self.tr('Paths'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputDirectory(self.OUTPUT_TEXT, self.tr('Directory')))
 
     def processAlgorithm(self, progress):
@@ -72,7 +73,7 @@ class PointsToPaths(GeoAlgorithm):
             self.getParameterValue(self.VECTOR))
         groupField = self.getParameterValue(self.GROUP_FIELD)
         orderField = self.getParameterValue(self.ORDER_FIELD)
-        dateFormat = unicode(self.getParameterValue(self.DATE_FORMAT))
+        dateFormat = str(self.getParameterValue(self.DATE_FORMAT))
         #gap = int(self.getParameterValue(self.GAP_PERIOD))
         dirName = self.getOutputValue(self.OUTPUT_TEXT)
 
@@ -81,31 +82,31 @@ class PointsToPaths(GeoAlgorithm):
         fields.append(QgsField('begin', QVariant.String, '', 254, 0))
         fields.append(QgsField('end', QVariant.String, '', 254, 0))
         writer = self.getOutputFromName(self.OUTPUT_LINES).getVectorWriter(
-            fields, QGis.WKBLineString, layer.dataProvider().crs())
+            fields, QgsWkbTypes.LineString, layer.crs())
 
         points = dict()
         features = vector.features(layer)
         total = 100.0 / len(features)
-        for count, f in enumerate(features):
+        for current, f in enumerate(features):
             point = f.geometry().asPoint()
             group = f[groupField]
             order = f[orderField]
             if dateFormat != '':
-                order = datetime.strptime(unicode(order), dateFormat)
+                order = datetime.strptime(str(order), dateFormat)
             if group in points:
                 points[group].append((order, point))
             else:
                 points[group] = [(order, point)]
 
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         progress.setPercentage(0)
 
         da = QgsDistanceArea()
 
-        count = 0
+        current = 0
         total = 100.0 / len(points)
-        for group, vertices in points.iteritems():
+        for group, vertices in points.items():
             vertices.sort()
             f = QgsFeature()
             f.initAttributes(len(fields))
@@ -131,16 +132,16 @@ class PointsToPaths(GeoAlgorithm):
                     fl.write('survey=Polygonal\n')
                     fl.write('[data]\n')
                 else:
-                    angle = line[i-1].azimuth(line[i])
-                    distance = da.measureLine(line[i-1], line[i])
+                    angle = line[i - 1].azimuth(line[i])
+                    distance = da.measureLine(line[i - 1], line[i])
                     fl.write('%f;%f;90\n' % (angle, distance))
 
                 i += 1
 
             f.setGeometry(QgsGeometry.fromPolyline(line))
             writer.addFeature(f)
-            count += 1
-            progress.setPercentage(int(count * total))
+            current += 1
+            progress.setPercentage(int(current * total))
 
         del writer
         fl.close()

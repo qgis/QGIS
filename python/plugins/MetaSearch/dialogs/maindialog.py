@@ -1,3 +1,8 @@
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import str
+from builtins import range
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
@@ -29,12 +34,11 @@
 
 import json
 import os.path
-from urllib2 import build_opener, install_opener, ProxyHandler
+from urllib.request import build_opener, install_opener, ProxyHandler
 
-from PyQt4.QtCore import QSettings, Qt, SIGNAL, SLOT
-from PyQt4.QtGui import (QApplication, QColor, QCursor, QDialog,
-                         QDialogButtonBox, QMessageBox, QTreeWidgetItem,
-                         QWidget)
+from qgis.PyQt.QtCore import QSettings, Qt
+from qgis.PyQt.QtWidgets import QApplication, QDialog, QDialogButtonBox, QMessageBox, QTreeWidgetItem, QWidget
+from qgis.PyQt.QtGui import QColor, QCursor
 
 from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform, QgsGeometry, QgsPoint,
@@ -52,13 +56,16 @@ from MetaSearch.dialogs.recorddialog import RecordDialog
 from MetaSearch.dialogs.xmldialog import XMLDialog
 from MetaSearch.util import (get_connections_from_file, get_ui_class,
                              get_help_url, highlight_xml, normalize_text,
-                             open_url, render_template, StaticContext)
+                             open_url, render_template, serialize_string,
+                             StaticContext)
 
 BASE_CLASS = get_ui_class('maindialog.ui')
 
 
 class MetaSearchDialog(QDialog, BASE_CLASS):
+
     """main dialogue"""
+
     def __init__(self, iface):
         """init window"""
 
@@ -124,6 +131,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.btnAddToWcs.clicked.connect(self.add_to_ows)
         self.btnShowXml.clicked.connect(self.show_xml)
 
+        # settings
+        self.radioTitleAsk.clicked.connect(self.set_ows_save_title_ask)
+        self.radioTitleNoAsk.clicked.connect(self.set_ows_save_title_no_ask)
+        self.radioTempName.clicked.connect(self.set_ows_save_temp_name)
+
         self.manageGui()
 
     def manageGui(self):
@@ -141,6 +153,16 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.set_bbox_global()
 
         self.reset_buttons()
+
+        # get preferred connection save strategy from settings and set it
+        save_strat = self.settings.value('/MetaSearch/ows_save_strategy',
+                                         'title_ask')
+        if save_strat == 'temp_name':
+            self.radioTempName.setChecked(True)
+        elif save_strat == 'title_no_ask':
+            self.radioTitleNoAsk.setChecked(True)
+        else:
+            self.radioTitleAsk.setChecked(True)
 
         # install proxy handler if specified in QGIS settings
         self.install_proxy()
@@ -450,12 +472,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         try:
             self.catalog.getrecords2(constraints=self.constraints,
                                      maxrecords=self.maxrecords, esn='full')
-        except ExceptionReport, err:
+        except ExceptionReport as err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Search error'),
                                 self.tr('Search error: %s') % err)
             return
-        except Exception, err:
+        except Exception as err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Connection error'),
                                 self.tr('Connection error: %s') % err)
@@ -523,7 +545,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         identifier = get_item_data(item, 'identifier')
         try:
             record = self.catalog.records[identifier]
-        except KeyError, err:
+        except KeyError as err:
             QMessageBox.warning(self,
                                 self.tr('Record parsing error'),
                                 'Unable to locate record identifier')
@@ -534,13 +556,13 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             points = bbox_to_polygon(record.bbox)
             if points is not None:
                 src = QgsCoordinateReferenceSystem(4326)
-                dst = self.map.mapRenderer().destinationCrs()
+                dst = self.map.mapSettings().destinationCrs()
                 geom = QgsGeometry.fromPolygon(points)
                 if src.postgisSrid() != dst.postgisSrid():
                     ctr = QgsCoordinateTransform(src, dst)
                     try:
                         geom.transform(ctr)
-                    except Exception, err:
+                    except Exception as err:
                         QMessageBox.warning(
                             self,
                             self.tr('Coordinate Transformation Error'),
@@ -568,9 +590,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             if link_type is not None:
                 link_type = link_type.upper()
 
-            wmswmst_link_types = map(str.upper, link_types.WMSWMST_LINK_TYPES)
-            wfs_link_types = map(str.upper, link_types.WFS_LINK_TYPES)
-            wcs_link_types = map(str.upper, link_types.WCS_LINK_TYPES)
+            wmswmst_link_types = list(map(str.upper, link_types.WMSWMST_LINK_TYPES))
+            wfs_link_types = list(map(str.upper, link_types.WFS_LINK_TYPES))
+            wcs_link_types = list(map(str.upper, link_types.WCS_LINK_TYPES))
 
             # if the link type exists, and it is one of the acceptable
             # interactive link types, then set
@@ -630,12 +652,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             self.catalog.getrecords2(constraints=self.constraints,
                                      maxrecords=self.maxrecords,
                                      startposition=self.startfrom, esn='full')
-        except ExceptionReport, err:
+        except ExceptionReport as err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Search error'),
                                 self.tr('Search error: %s') % err)
             return
-        except Exception, err:
+        except Exception as err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Connection error'),
                                 self.tr('Connection error: %s') % err)
@@ -647,6 +669,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
     def add_to_ows(self):
         """add to OWS provider connection list"""
+
+        conn_name_matches = []
 
         item = self.treeRecords.currentItem()
 
@@ -678,13 +702,24 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         keys = self.settings.childGroups()
         self.settings.endGroup()
 
+        for key in keys:
+            if key.startswith(sname):
+                conn_name_matches.append(key)
+        if conn_name_matches:
+            sname = conn_name_matches[-1]
+
         # check for duplicates
-        if sname in keys:
-            msg = self.tr('Connection %s exists. Overwrite?') % sname
-            res = QMessageBox.warning(self, self.tr('Saving server'), msg,
-                                      QMessageBox.Yes | QMessageBox.No)
-            if res != QMessageBox.Yes:
-                return
+        if sname in keys:  # duplicate found
+            if self.radioTitleAsk.isChecked():  # ask to overwrite
+                msg = self.tr('Connection %s exists. Overwrite?') % sname
+                res = QMessageBox.warning(self, self.tr('Saving server'), msg,
+                                          QMessageBox.Yes | QMessageBox.No)
+                if res != QMessageBox.Yes:  # assign new name with serial
+                    sname = serialize_string(sname)
+            elif self.radioTitleNoAsk.isChecked():  # don't ask to overwrite
+                pass
+            elif self.radioTempName.isChecked():  # use temp name
+                sname = serialize_string(sname)
 
         # no dups detected or overwrite is allowed
         self.settings.beginGroup('/Qgis/connections-%s' % stype[1])
@@ -699,25 +734,15 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         # connect dialog signals to iface slots
         if service_type == 'OGC:WMS/OGC:WMTS':
-            ows_provider.connect(
-                ows_provider,
-                SIGNAL('addRasterLayer(QString, QString, QString)'),
-                self.iface, SLOT('addRasterLayer(QString, QString, QString)'))
+            ows_provider.addRasterLayer.connect(self.iface.addRasterLayer)
             conn_cmb = ows_provider.findChild(QWidget, 'cmbConnections')
             connect = 'on_btnConnect_clicked'
         elif service_type == 'OGC:WFS':
-            ows_provider.connect(
-                ows_provider,
-                SIGNAL('addWfsLayer(QString, QString)'),
-                self.iface.mainWindow(),
-                SLOT('addWfsLayer(QString, QString)'))
+            ows_provider.addWfsLayer.connect(self.iface.mainWindow().addWfsLayer)
             conn_cmb = ows_provider.findChild(QWidget, 'cmbConnections')
             connect = 'connectToServer'
         elif service_type == 'OGC:WCS':
-            ows_provider.connect(
-                ows_provider,
-                SIGNAL('addRasterLayer(QString, QString, QString)'),
-                self.iface, SLOT('addRasterLayer(QString, QString, QString)'))
+            ows_provider.addRasterLayer.connect(self.iface.addRasterLayer)
             conn_cmb = ows_provider.findChild(QWidget, 'mConnectionsComboBox')
             connect = 'on_mConnectButton_clicked'
         ows_provider.setModal(False)
@@ -749,12 +774,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout)
             cat.getrecordbyid(
                 [self.catalog.records[identifier].identifier])
-        except ExceptionReport, err:
+        except ExceptionReport as err:
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('GetRecords error'),
                                 self.tr('Error getting response: %s') % err)
             return
-        except KeyError, err:
+        except KeyError as err:
             QMessageBox.warning(self,
                                 self.tr('Record parsing error'),
                                 'Unable to locate record identifier')
@@ -827,11 +852,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             self.catalog = CatalogueServiceWeb(self.catalog_url,
                                                timeout=self.timeout)
             return True
-        except ExceptionReport, err:
+        except ExceptionReport as err:
             msg = self.tr('Error connecting to service: %s') % err
-        except ValueError, err:
+        except ValueError as err:
             msg = self.tr('Value Error: %s') % err
-        except Exception, err:
+        except Exception as err:
             msg = self.tr('Unknown Error: %s') % err
 
         QMessageBox.warning(self, self.tr('CSW Connection error'), msg)

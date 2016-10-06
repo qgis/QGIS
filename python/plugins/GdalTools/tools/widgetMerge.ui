@@ -84,7 +84,7 @@
    <item>
     <widget class="QCheckBox" name="separateCheck">
      <property name="text">
-      <string>Layer stack</string>
+      <string>Place each input file into a separate band</string>
      </property>
     </widget>
    </item>
@@ -138,7 +138,7 @@
   <customwidget>
    <class>GdalToolsInOutSelector</class>
    <extends>QWidget</extends>
-   <header>inOutSelector</header>
+   <header>.inOutSelector</header>
    <container>1</container>
   </customwidget>
   <customwidget>

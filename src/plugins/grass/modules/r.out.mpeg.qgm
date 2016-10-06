@@ -3,7 +3,8 @@
 
 <qgisgrassmodule label="Export raster series to MPEG movie" module="r.out.mpeg">
 	<file key="view1" label="Type in map names separated by a comma" />
-	<option key="qual" />
+	<option key="qual" version_max="6.4"/>
+	<option key="quality" version_min="7.0"/>
 	<flag key="c" />
 	<file key="output" type="new" filters="MPEG (*.mpg)" />
 </qgisgrassmodule>

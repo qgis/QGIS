@@ -19,23 +19,26 @@
 #define QGSPOINTDISPLACEMENTRENDERERWIDGET_H
 
 #include "ui_qgspointdisplacementrendererwidgetbase.h"
-#include "qgsrendererv2widget.h"
+#include "qgsrendererwidget.h"
 
 class QgsPointDisplacementRenderer;
 
-class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererV2Widget, private Ui::QgsPointDisplacementRendererWidgetBase
+/** \ingroup gui
+ * \class QgsPointDisplacementRendererWidget
+ */
+class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, private Ui::QgsPointDisplacementRendererWidgetBase
 {
     Q_OBJECT
   public:
-    static QgsRendererV2Widget* create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
-    QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
     ~QgsPointDisplacementRendererWidget();
 
-    QgsFeatureRendererV2* renderer() override;
+    QgsFeatureRenderer* renderer() override;
+    void setContext( const QgsSymbolWidgetContext& context ) override;
 
   private:
     QgsPointDisplacementRenderer* mRenderer;
-    QgsRendererV2Widget* mEmbeddedRendererWidget;
 
     void blockAllSignals( bool block );
     void updateCenterIcon();
@@ -44,16 +47,21 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererV2Widget,
   private slots:
     void on_mLabelFieldComboBox_currentIndexChanged( const QString& text );
     void on_mRendererComboBox_currentIndexChanged( int index );
+    void on_mPlacementComboBox_currentIndexChanged( int index );
     void on_mLabelFontButton_clicked();
     void on_mCircleWidthSpinBox_valueChanged( double d );
     void on_mCircleColorButton_colorChanged( const QColor& newColor );
     void on_mDistanceSpinBox_valueChanged( double d );
+    void on_mDistanceUnitWidget_changed();
     void on_mLabelColorButton_colorChanged( const QColor& newColor );
     void on_mCircleModificationSpinBox_valueChanged( double d );
     void on_mScaleDependentLabelsCheckBox_stateChanged( int state );
     void on_mMaxScaleDenominatorEdit_textChanged( const QString & text );
     void on_mCenterSymbolPushButton_clicked();
     void on_mRendererSettingsButton_clicked();
+    void updateCenterSymbolFromWidget();
+    void cleanUpSymbolSelector( QgsPanelWidget* container );
+    void updateRendererFromWidget();
 };
 
 #endif // QGSPOINTDISPLACEMENTRENDERERWIDGET_H

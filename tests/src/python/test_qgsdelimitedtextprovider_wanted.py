@@ -1,2167 +1,2451 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    test_qgsdelimitedtextprovider_wanted.py
+    ---------------------
+    Date                 : May 2013
+    Copyright            : (C) 2013 by Chris Crook
+    Email                : ccrook at linz dot govt dot nz
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Chris Crook'
+__date__ = 'May 2013'
+__copyright__ = '(C) 2013, Chris Crook'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 
 def test_002_load_csv_file():
-    wanted={}
-    wanted['uri']=u'file://test.csv?geomType=none&type=csv'
-    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Basic unquoted record',
-            'data': u'Some data',
-            'info': u'Some info',
-            'field_5': u'NULL',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://test.csv?geomType=none&type=csv'
+    wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Basic unquoted record',
+            'data': 'Some data',
+            'info': 'Some info',
+            'field_5': 'NULL',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        3L: {
-            'id': u'2',
-            'description': u'Quoted field',
-            'data': u'Quoted data',
-            'info': u'Unquoted',
-            'field_5': u'NULL',
-            '#fid': 3L,
+        3: {
+            'id': '2',
+            'description': 'Quoted field',
+            'data': 'Quoted data',
+            'info': 'Unquoted',
+            'field_5': 'NULL',
+            '#fid': 3,
             '#geometry': 'None',
         },
-        4L: {
-            'id': u'3',
-            'description': u'Escaped quotes',
-            'data': u'Quoted "citation" data',
-            'info': u'Unquoted',
-            'field_5': u'NULL',
-            '#fid': 4L,
+        4: {
+            'id': '3',
+            'description': 'Escaped quotes',
+            'data': 'Quoted "citation" data',
+            'info': 'Unquoted',
+            'field_5': 'NULL',
+            '#fid': 4,
             '#geometry': 'None',
         },
-        5L: {
-            'id': u'4',
-            'description': u'Quoted newlines',
-            'data': u'Line 1\nLine 2\n\nLine 4',
-            'info': u'No data',
-            'field_5': u'NULL',
-            '#fid': 5L,
+        5: {
+            'id': '4',
+            'description': 'Quoted newlines',
+            'data': 'Line 1\nLine 2\n\nLine 4',
+            'info': 'No data',
+            'field_5': 'NULL',
+            '#fid': 5,
             '#geometry': 'None',
         },
-        9L: {
-            'id': u'5',
-            'description': u'Extra fields',
-            'data': u'data',
-            'info': u'info',
-            'field_5': u'message',
-            '#fid': 9L,
+        9: {
+            'id': '5',
+            'description': 'Extra fields',
+            'data': 'data',
+            'info': 'info',
+            'field_5': 'message',
+            '#fid': 9,
             '#geometry': 'None',
         },
-        10L: {
-            'id': u'6',
-            'description': u'Missing fields',
-            'data': u'NULL',
-            'info': u'NULL',
-            'field_5': u'NULL',
-            '#fid': 10L,
+        10: {
+            'id': '6',
+            'description': 'Missing fields',
+            'data': 'NULL',
+            'info': 'NULL',
+            'field_5': 'NULL',
+            '#fid': 10,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_003_field_naming():
-    wanted={}
-    wanted['uri']=u'file://testfields.csv?geomType=none&type=csv'
-    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Generation of field names',
-            'data': u'Some data',
-            'field_4': u'Some info',
-            'data_2': u'NULL',
-            'field_6': u'NULL',
-            'field_7': u'NULL',
-            'field_3_1': u'NULL',
-            'data_1': u'NULL',
-            'field_10': u'NULL',
-            'field_11': u'NULL',
-            'field_12': u'last data',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://testfields.csv?geomType=none&type=csv'
+    wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Generation of field names',
+            'data': 'Some data',
+            'field_4': 'Some info',
+            'data_2': 'NULL',
+            '28_1': 'NULL',
+            '24.5': 'NULL',
+            'field_3_1': 'NULL',
+            'data_1': 'NULL',
+            'field_10': 'NULL',
+            'field_11': 'NULL',
+            'field_12': 'last data',
+            '#fid': 2,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_004_max_fields():
-    wanted={}
-    wanted['uri']=u'file://testfields.csv?geomType=none&maxFields=7&type=csv'
-    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Generation of field names',
-            'data': u'Some data',
-            'field_4': u'Some info',
-            'data_1': u'NULL',
-            'field_6': u'NULL',
-            'field_7': u'NULL',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://testfields.csv?geomType=none&maxFields=7&type=csv'
+    wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Generation of field names',
+            'data': 'Some data',
+            'field_4': 'Some info',
+            'data_1': 'NULL',
+            '28_1': 'NULL',
+            '24.5': 'NULL',
+            '#fid': 2,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_005_load_whitespace():
-    wanted={}
-    wanted['uri']=u'file://test.space?geomType=none&type=whitespace'
-    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Simple_whitespace_file',
-            'data': u'data1',
-            'info': u'info1',
-            'field_5': u'NULL',
-            'field_6': u'NULL',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://test.space?geomType=none&type=whitespace'
+    wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Simple_whitespace_file',
+            'data': 'data1',
+            'info': 'info1',
+            'field_5': 'NULL',
+            'field_6': 'NULL',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        3L: {
-            'id': u'2',
-            'description': u'Whitespace_at_start_of_line',
-            'data': u'data2',
-            'info': u'info2',
-            'field_5': u'NULL',
-            'field_6': u'NULL',
-            '#fid': 3L,
+        3: {
+            'id': '2',
+            'description': 'Whitespace_at_start_of_line',
+            'data': 'data2',
+            'info': 'info2',
+            'field_5': 'NULL',
+            'field_6': 'NULL',
+            '#fid': 3,
             '#geometry': 'None',
         },
-        4L: {
-            'id': u'3',
-            'description': u'Tab_whitespace',
-            'data': u'data3',
-            'info': u'info3',
-            'field_5': u'NULL',
-            'field_6': u'NULL',
-            '#fid': 4L,
+        4: {
+            'id': '3',
+            'description': 'Tab_whitespace',
+            'data': 'data3',
+            'info': 'info3',
+            'field_5': 'NULL',
+            'field_6': 'NULL',
+            '#fid': 4,
             '#geometry': 'None',
         },
-        5L: {
-            'id': u'4',
-            'description': u'Multiple_whitespace_characters',
-            'data': u'data4',
-            'info': u'info4',
-            'field_5': u'NULL',
-            'field_6': u'NULL',
-            '#fid': 5L,
+        5: {
+            'id': '4',
+            'description': 'Multiple_whitespace_characters',
+            'data': 'data4',
+            'info': 'info4',
+            'field_5': 'NULL',
+            'field_6': 'NULL',
+            '#fid': 5,
             '#geometry': 'None',
         },
-        6L: {
-            'id': u'5',
-            'description': u'Extra_fields',
-            'data': u'data5',
-            'info': u'info5',
-            'field_5': u'message5',
-            'field_6': u'rubbish5',
-            '#fid': 6L,
+        6: {
+            'id': '5',
+            'description': 'Extra_fields',
+            'data': 'data5',
+            'info': 'info5',
+            'field_5': 'message5',
+            'field_6': 'rubbish5',
+            '#fid': 6,
             '#geometry': 'None',
         },
-        7L: {
-            'id': u'6',
-            'description': u'Missing_fields',
-            'data': u'NULL',
-            'info': u'NULL',
-            'field_5': u'NULL',
-            'field_6': u'NULL',
-            '#fid': 7L,
+        7: {
+            'id': '6',
+            'description': 'Missing_fields',
+            'data': 'NULL',
+            'info': 'NULL',
+            'field_5': 'NULL',
+            'field_6': 'NULL',
+            '#fid': 7,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_006_quote_escape():
-    wanted={}
-    wanted['uri']=u'file://test.pipe?geomType=none&quote="&delimiter=|&escape=\\'
-    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Using pipe delimiter',
-            'data': u'data 1',
-            'info': u'info 1',
-            'field_5': u'NULL',
-            'field_6': u'NULL',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://test.pipe?geomType=none&quote="&delimiter=|&escape=\\'
+    wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Using pipe delimiter',
+            'data': 'data 1',
+            'info': 'info 1',
+            'field_5': 'NULL',
+            'field_6': 'NULL',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        3L: {
-            'id': u'2',
-            'description': u'Using backslash escape on pipe',
-            'data': u'data 2 | piped',
-            'info': u'info2',
-            'field_5': u'NULL',
-            'field_6': u'NULL',
-            '#fid': 3L,
+        3: {
+            'id': '2',
+            'description': 'Using backslash escape on pipe',
+            'data': 'data 2 | piped',
+            'info': 'info2',
+            'field_5': 'NULL',
+            'field_6': 'NULL',
+            '#fid': 3,
             '#geometry': 'None',
         },
-        4L: {
-            'id': u'3',
-            'description': u'Backslash escaped newline',
-            'data': u'data3 \nline2 \nline3',
-            'info': u'info3',
-            'field_5': u'NULL',
-            'field_6': u'NULL',
-            '#fid': 4L,
+        4: {
+            'id': '3',
+            'description': 'Backslash escaped newline',
+            'data': 'data3 \nline2 \nline3',
+            'info': 'info3',
+            'field_5': 'NULL',
+            'field_6': 'NULL',
+            '#fid': 4,
             '#geometry': 'None',
         },
-        7L: {
-            'id': u'4',
-            'description': u'Empty field',
-            'data': u'NULL',
-            'info': u'info4',
-            'field_5': u'NULL',
-            'field_6': u'NULL',
-            '#fid': 7L,
+        7: {
+            'id': '4',
+            'description': 'Empty field',
+            'data': 'NULL',
+            'info': 'info4',
+            'field_5': 'NULL',
+            'field_6': 'NULL',
+            '#fid': 7,
             '#geometry': 'None',
         },
-        8L: {
-            'id': u'5',
-            'description': u'Quoted field',
-            'data': u'More | piped data',
-            'info': u'info5',
-            'field_5': u'NULL',
-            'field_6': u'NULL',
-            '#fid': 8L,
+        8: {
+            'id': '5',
+            'description': 'Quoted field',
+            'data': 'More | piped data',
+            'info': 'info5',
+            'field_5': 'NULL',
+            'field_6': 'NULL',
+            '#fid': 8,
             '#geometry': 'None',
         },
-        9L: {
-            'id': u'6',
-            'description': u'Escaped quote',
-            'data': u'Field "citation" ',
-            'info': u'info6',
-            'field_5': u'NULL',
-            'field_6': u'NULL',
-            '#fid': 9L,
+        9: {
+            'id': '6',
+            'description': 'Escaped quote',
+            'data': 'Field "citation" ',
+            'info': 'info6',
+            'field_5': 'NULL',
+            'field_6': 'NULL',
+            '#fid': 9,
             '#geometry': 'None',
         },
-        10L: {
-            'id': u'7',
-            'description': u'Missing fields',
-            'data': u'NULL',
-            'info': u'NULL',
-            'field_5': u'NULL',
-            'field_6': u'NULL',
-            '#fid': 10L,
+        10: {
+            'id': '7',
+            'description': 'Missing fields',
+            'data': 'NULL',
+            'info': 'NULL',
+            'field_5': 'NULL',
+            'field_6': 'NULL',
+            '#fid': 10,
             '#geometry': 'None',
         },
-        11L: {
-            'id': u'8',
-            'description': u'Extra fields',
-            'data': u'data8',
-            'info': u'info8',
-            'field_5': u'message8',
-            'field_6': u'more',
-            '#fid': 11L,
+        11: {
+            'id': '8',
+            'description': 'Extra fields',
+            'data': 'data8',
+            'info': 'info8',
+            'field_5': 'message8',
+            'field_6': 'more',
+            '#fid': 11,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_007_multiple_quote():
-    wanted={}
-    wanted['uri']=u'file://test.quote?geomType=none&quote=\'"&type=csv&escape="\''
-    wanted['fieldTypes']=['integer', 'text', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Multiple quotes 1',
-            'data': u'Quoted,data1',
-            'info': u'info1',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://test.quote?geomType=none&quote=\'"&type=csv&escape="\''
+    wanted['fieldTypes'] = ['integer', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Multiple quotes 1',
+            'data': 'Quoted,data1',
+            'info': 'info1',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        3L: {
-            'id': u'2',
-            'description': u'Multiple quotes 2',
-            'data': u'Quoted,data2',
-            'info': u'info2',
-            '#fid': 3L,
+        3: {
+            'id': '2',
+            'description': 'Multiple quotes 2',
+            'data': 'Quoted,data2',
+            'info': 'info2',
+            '#fid': 3,
             '#geometry': 'None',
         },
-        4L: {
-            'id': u'3',
-            'description': u'Leading and following whitespace',
-            'data': u'Quoted, data3',
-            'info': u'info3',
-            '#fid': 4L,
+        4: {
+            'id': '3',
+            'description': 'Leading and following whitespace',
+            'data': 'Quoted, data3',
+            'info': 'info3',
+            '#fid': 4,
             '#geometry': 'None',
         },
-        5L: {
-            'id': u'4',
-            'description': u'Embedded quotes 1',
-            'data': u'Quoted \'\'"\'\' data4',
-            'info': u'info4',
-            '#fid': 5L,
+        5: {
+            'id': '4',
+            'description': 'Embedded quotes 1',
+            'data': 'Quoted \'\'"\'\' data4',
+            'info': 'info4',
+            '#fid': 5,
             '#geometry': 'None',
         },
-        6L: {
-            'id': u'5',
-            'description': u'Embedded quotes 2',
-            'data': u'Quoted \'""\' data5',
-            'info': u'info5',
-            '#fid': 6L,
+        6: {
+            'id': '5',
+            'description': 'Embedded quotes 2',
+            'data': 'Quoted \'""\' data5',
+            'info': 'info5',
+            '#fid': 6,
             '#geometry': 'None',
         },
-        10L: {
-            'id': u'9',
-            'description': u'Final record',
-            'data': u'date9',
-            'info': u'info9',
-            '#fid': 10L,
+        10: {
+            'id': '9',
+            'description': 'Final record',
+            'data': 'date9',
+            'info': 'info9',
+            '#fid': 10,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[
-        u'Errors in file test.quote',
-        u'3 records discarded due to invalid format',
-        u'The following lines were not loaded into QGIS due to errors:',
-        u'Invalid record format at line 7',
-        u'Invalid record format at line 8',
-        u'Invalid record format at line 9',
+    wanted['log'] = [
+        'Errors in file test.quote',
+        '3 records discarded due to invalid format',
+        'The following lines were not loaded into QGIS due to errors:',
+        'Invalid record format at line 7',
+        'Invalid record format at line 8',
+        'Invalid record format at line 9',
     ]
     return wanted
 
 
 def test_008_badly_formed_quotes():
-    wanted={}
-    wanted['uri']=u'file://test.badquote?geomType=none&quote="&type=csv&escape="'
-    wanted['fieldTypes']=['integer', 'text', 'text', 'text']
-    wanted['data']={
-        4L: {
-            'id': u'3',
-            'description': u'Recovered after unclosed quore',
-            'data': u'Data ok',
-            'info': u'inf3',
-            '#fid': 4L,
+    wanted = {}
+    wanted['uri'] = 'file://test.badquote?geomType=none&quote="&type=csv&escape="'
+    wanted['fieldTypes'] = ['integer', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        4: {
+            'id': '3',
+            'description': 'Recovered after unclosed quore',
+            'data': 'Data ok',
+            'info': 'inf3',
+            '#fid': 4,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[
-        u'Errors in file test.badquote',
-        u'2 records discarded due to invalid format',
-        u'The following lines were not loaded into QGIS due to errors:',
-        u'Invalid record format at line 2',
-        u'Invalid record format at line 5',
+    wanted['log'] = [
+        'Errors in file test.badquote',
+        '2 records discarded due to invalid format',
+        'The following lines were not loaded into QGIS due to errors:',
+        'Invalid record format at line 2',
+        'Invalid record format at line 5',
     ]
     return wanted
 
 
 def test_009_skip_lines():
-    wanted={}
-    wanted['uri']=u'file://test2.csv?geomType=none&skipLines=2&type=csv&useHeader=no'
-    wanted['fieldTypes']=['integer', 'text', 'text']
-    wanted['data']={
-        3L: {
-            'id': u'3',
-            'description': u'Less data',
-            'field_1': u'3',
-            'field_2': u'Less data',
-            'field_3': u'data3',
-            '#fid': 3L,
+    wanted = {}
+    wanted['uri'] = 'file://test2.csv?geomType=none&skipLines=2&type=csv&useHeader=no'
+    wanted['fieldTypes'] = ['integer', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        3: {
+            'id': '3',
+            'description': 'Less data',
+            'field_1': '3',
+            'field_2': 'Less data',
+            'field_3': 'data3',
+            '#fid': 3,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_010_read_coordinates():
-    wanted={}
-    wanted['uri']=u'file://testpt.csv?yField=geom_y&xField=geom_x&type=csv'
-    wanted['fieldTypes']=['integer', 'text', 'double', 'double']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Basic point',
-            'geom_x': u'10.5',
-            'geom_y': u'20.82',
-            '#fid': 2L,
-            '#geometry': 'POINT(10.5 20.82)',
+    wanted = {}
+    wanted['uri'] = 'file://testpt.csv?yField=geom_y&xField=geom_x&type=csv'
+    wanted['fieldTypes'] = ['integer', 'text', 'double', 'double']
+    wanted['geometryType'] = 0
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Basic point',
+            'geom_x': '10.5',
+            'geom_y': '20.82',
+            '#fid': 2,
+            '#geometry': 'Point (10.5 20.82)',
         },
-        3L: {
-            'id': u'2',
-            'description': u'Integer point',
-            'geom_x': u'11.0',
-            'geom_y': u'22.0',
-            '#fid': 3L,
-            '#geometry': 'POINT(11.0 22.0)',
+        3: {
+            'id': '2',
+            'description': 'Integer point',
+            'geom_x': '11.0',
+            'geom_y': '22.0',
+            '#fid': 3,
+            '#geometry': 'Point (11 22)',
         },
-        5L: {
-            'id': u'4',
-            'description': u'Final point',
-            'geom_x': u'13.0',
-            'geom_y': u'23.0',
-            '#fid': 5L,
-            '#geometry': 'POINT(13.0 23.0)',
+        5: {
+            'id': '4',
+            'description': 'Final point',
+            'geom_x': '13.0',
+            'geom_y': '23.0',
+            '#fid': 5,
+            '#geometry': 'Point (13 23)',
         },
     }
-    wanted['log']=[
-        u'Errors in file testpt.csv',
-        u'1 records discarded due to invalid geometry definitions',
-        u'The following lines were not loaded into QGIS due to errors:',
-        u'Invalid X or Y fields at line 4',
+    wanted['log'] = [
+        'Errors in file testpt.csv',
+        '1 records discarded due to invalid geometry definitions',
+        'The following lines were not loaded into QGIS due to errors:',
+        'Invalid X or Y fields at line 4',
     ]
     return wanted
 
 
 def test_011_read_wkt():
-    wanted={}
-    wanted['uri']=u'file://testwkt.csv?delimiter=|&type=csv&wktField=geom_wkt'
-    wanted['fieldTypes']=['integer', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Point wkt',
-            '#fid': 2L,
-            '#geometry': 'POINT(10.0 20.0)',
+    wanted = {}
+    wanted['uri'] = 'file://testwkt.csv?delimiter=|&type=csv&wktField=geom_wkt'
+    wanted['fieldTypes'] = ['integer', 'text']
+    wanted['geometryType'] = 0
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Point wkt',
+            '#fid': 2,
+            '#geometry': 'Point (10 20)',
         },
-        3L: {
-            'id': u'2',
-            'description': u'Multipoint wkt',
-            '#fid': 3L,
-            '#geometry': 'MULTIPOINT(10.0 20.0, 11.0 21.0)',
+        3: {
+            'id': '2',
+            'description': 'Multipoint wkt',
+            '#fid': 3,
+            '#geometry': 'MultiPoint ((10 20),(11 21))',
         },
-        9L: {
-            'id': u'8',
-            'description': u'EWKT prefix',
-            '#fid': 9L,
-            '#geometry': 'POINT(10.0 10.0)',
+        9: {
+            'id': '8',
+            'description': 'EWKT prefix',
+            '#fid': 9,
+            '#geometry': 'Point (10 10)',
         },
-        10L: {
-            'id': u'9',
-            'description': u'Informix prefix',
-            '#fid': 10L,
-            '#geometry': 'POINT(10.0 10.0)',
+        10: {
+            'id': '9',
+            'description': 'Informix prefix',
+            '#fid': 10,
+            '#geometry': 'Point (10 10)',
         },
-        11L: {
-            'id': u'10',
-            'description': u'Measure in point',
-            '#fid': 11L,
-            '#geometry': 'POINT(10.0 20.0)',
+        11: {
+            'id': '10',
+            'description': 'Measure in point',
+            '#fid': 11,
+            '#geometry': 'PointM (10 20 30)',
         },
     }
-    wanted['log']=[
-        u'Errors in file testwkt.csv',
-        u'1 records discarded due to invalid geometry definitions',
-        u'7 records discarded due to incompatible geometry types',
-        u'The following lines were not loaded into QGIS due to errors:',
-        u'Invalid WKT at line 8',
+    wanted['log'] = [
+        'Errors in file testwkt.csv',
+        '1 records discarded due to invalid geometry definitions',
+        '10 records discarded due to incompatible geometry types',
+        'The following lines were not loaded into QGIS due to errors:',
+        'Invalid WKT at line 8',
     ]
     return wanted
 
 
 def test_012_read_wkt_point():
-    wanted={}
-    wanted['uri']=u'file://testwkt.csv?geomType=point&delimiter=|&type=csv&wktField=geom_wkt'
-    wanted['fieldTypes']=['integer', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Point wkt',
-            '#fid': 2L,
-            '#geometry': 'POINT(10.0 20.0)',
+    wanted = {}
+    wanted['uri'] = 'file://testwkt.csv?geomType=point&delimiter=|&type=csv&wktField=geom_wkt'
+    wanted['fieldTypes'] = ['integer', 'text']
+    wanted['geometryType'] = 0
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Point wkt',
+            '#fid': 2,
+            '#geometry': 'Point (10 20)',
         },
-        3L: {
-            'id': u'2',
-            'description': u'Multipoint wkt',
-            '#fid': 3L,
-            '#geometry': 'MULTIPOINT(10.0 20.0, 11.0 21.0)',
+        3: {
+            'id': '2',
+            'description': 'Multipoint wkt',
+            '#fid': 3,
+            '#geometry': 'MultiPoint ((10 20),(11 21))',
         },
-        9L: {
-            'id': u'8',
-            'description': u'EWKT prefix',
-            '#fid': 9L,
-            '#geometry': 'POINT(10.0 10.0)',
+        9: {
+            'id': '8',
+            'description': 'EWKT prefix',
+            '#fid': 9,
+            '#geometry': 'Point (10 10)',
         },
-        10L: {
-            'id': u'9',
-            'description': u'Informix prefix',
-            '#fid': 10L,
-            '#geometry': 'POINT(10.0 10.0)',
+        10: {
+            'id': '9',
+            'description': 'Informix prefix',
+            '#fid': 10,
+            '#geometry': 'Point (10 10)',
         },
-        11L: {
-            'id': u'10',
-            'description': u'Measure in point',
-            '#fid': 11L,
-            '#geometry': 'POINT(10.0 20.0)',
+        11: {
+            'id': '10',
+            'description': 'Measure in point',
+            '#fid': 11,
+            '#geometry': 'PointM (10 20 30)',
         },
     }
-    wanted['log']=[
-        u'Errors in file testwkt.csv',
-        u'1 records discarded due to invalid geometry definitions',
-        u'7 records discarded due to incompatible geometry types',
-        u'The following lines were not loaded into QGIS due to errors:',
-        u'Invalid WKT at line 8',
+    wanted['log'] = [
+        'Errors in file testwkt.csv',
+        '1 records discarded due to invalid geometry definitions',
+        '10 records discarded due to incompatible geometry types',
+        'The following lines were not loaded into QGIS due to errors:',
+        'Invalid WKT at line 8',
     ]
     return wanted
 
 
 def test_013_read_wkt_line():
-    wanted={}
-    wanted['uri']=u'file://testwkt.csv?geomType=line&delimiter=|&type=csv&wktField=geom_wkt'
-    wanted['fieldTypes']=['integer', 'text']
-    wanted['data']={
-        4L: {
-            'id': u'3',
-            'description': u'Linestring wkt',
-            '#fid': 4L,
-            '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
+    wanted = {}
+    wanted['uri'] = 'file://testwkt.csv?geomType=line&delimiter=|&type=csv&wktField=geom_wkt'
+    wanted['fieldTypes'] = ['integer', 'text']
+    wanted['geometryType'] = 1
+    wanted['data'] = {
+        4: {
+            'id': '3',
+            'description': 'Linestring wkt',
+            '#fid': 4,
+            '#geometry': 'LineString (10 20, 11 21)',
         },
-        5L: {
-            'id': u'4',
-            'description': u'Multiline string wkt',
-            '#fid': 5L,
-            '#geometry': 'MULTILINESTRING((10.0 20.0, 11.0 21.0), (20.0 30.0, 21.0 31.0))',
+        5: {
+            'id': '4',
+            'description': 'Multiline string wkt',
+            '#fid': 5,
+            '#geometry': 'MultiLineString ((10 20, 11 21), (20 30, 21 31))',
         },
-        12L: {
-            'id': u'11',
-            'description': u'Measure in line',
-            '#fid': 12L,
-            '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
+        12: {
+            'id': '11',
+            'description': 'Measure in line',
+            '#fid': 12,
+            '#geometry': 'LineStringM (10 20 30, 11 21 31)',
         },
-        13L: {
-            'id': u'12',
-            'description': u'Z in line',
-            '#fid': 13L,
-            '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
+        13: {
+            'id': '12',
+            'description': 'Z in line',
+            '#fid': 13,
+            '#geometry': 'LineStringZ (10 20 30, 11 21 31)',
         },
-        14L: {
-            'id': u'13',
-            'description': u'Measure and Z in line',
-            '#fid': 14L,
-            '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
+        14: {
+            'id': '13',
+            'description': 'Measure and Z in line',
+            '#fid': 14,
+            '#geometry': 'LineStringZM (10 20 30 40, 11 21 31 41)',
+        },
+        15: {
+            'id': '14',
+            'description': 'CircularString',
+            '#fid': 15,
+            '#geometry': 'CircularString (268 415, 227 505, 227 406)',
+        },
+        17: {
+            'id': '16',
+            'description': 'CompoundCurve',
+            '#fid': 17,
+            '#geometry': 'CompoundCurve ((5 3, 5 13), CircularString(5 13, 7 15, 9 13), (9 13, 9 3), CircularString(9 3, 7 1, 5 3))',
         },
     }
-    wanted['log']=[
-        u'Errors in file testwkt.csv',
-        u'1 records discarded due to invalid geometry definitions',
-        u'7 records discarded due to incompatible geometry types',
-        u'The following lines were not loaded into QGIS due to errors:',
-        u'Invalid WKT at line 8',
+    wanted['log'] = [
+        'Errors in file testwkt.csv',
+        '1 records discarded due to invalid geometry definitions',
+        '8 records discarded due to incompatible geometry types',
+        'The following lines were not loaded into QGIS due to errors:',
+        'Invalid WKT at line 8',
     ]
     return wanted
 
 
 def test_014_read_wkt_polygon():
-    wanted={}
-    wanted['uri']=u'file://testwkt.csv?geomType=polygon&delimiter=|&type=csv&wktField=geom_wkt'
-    wanted['fieldTypes']=['integer', 'text']
-    wanted['data']={
-        6L: {
-            'id': u'5',
-            'description': u'Polygon wkt',
-            '#fid': 6L,
-            '#geometry': 'POLYGON((10.0 10.0,10.0 20.0,20.0 20.0,20.0 10.0,10.0 10.0),(14.0 14.0,14.0 16.0,16.0 16.0,14.0 14.0))',
+    wanted = {}
+    wanted['uri'] = 'file://testwkt.csv?geomType=polygon&delimiter=|&type=csv&wktField=geom_wkt'
+    wanted['fieldTypes'] = ['integer', 'text']
+    wanted['geometryType'] = 2
+    wanted['data'] = {
+        6: {
+            'id': '5',
+            'description': 'Polygon wkt',
+            '#fid': 6,
+            '#geometry': 'Polygon ((10 10,10 20,20 20,20 10,10 10),(14 14,14 16,16 16,14 14))',
         },
-        7L: {
-            'id': u'6',
-            'description': u'MultiPolygon wkt',
-            '#fid': 7L,
-            '#geometry': 'MULTIPOLYGON(((10.0 10.0,10.0 20.0,20.0 20.0,20.0 10.0,10.0 10.0),(14.0 14.0,14.0 16.0,16.0 16.0,14.0 14.0)),((30.0 30.0,30.0 35.0,35.0 35.0,30.0 30.0)))',
+        7: {
+            'id': '6',
+            'description': 'MultiPolygon wkt',
+            '#fid': 7,
+            '#geometry': 'MultiPolygon (((10 10,10 20,20 20,20 10,10 10),(14 14,14 16,16 16,14 14)),((30 30,30 35,35 35,30 30)))',
+        },
+        16: {
+            'id': '15',
+            'description': 'CurvePolygon',
+            '#fid': 16,
+            '#geometry': 'CurvePolygon (CircularString (1 3, 3 5, 4 7, 7 3, 1 3))',
         },
     }
-    wanted['log']=[
-        u'Errors in file testwkt.csv',
-        u'1 records discarded due to invalid geometry definitions',
-        u'10 records discarded due to incompatible geometry types',
-        u'The following lines were not loaded into QGIS due to errors:',
-        u'Invalid WKT at line 8',
+    wanted['log'] = [
+        'Errors in file testwkt.csv',
+        '1 records discarded due to invalid geometry definitions',
+        '12 records discarded due to incompatible geometry types',
+        'The following lines were not loaded into QGIS due to errors:',
+        'Invalid WKT at line 8',
     ]
     return wanted
 
 
 def test_015_read_dms_xy():
-    wanted={}
-    wanted['uri']=u'file://testdms.csv?yField=lat&xField=lon&type=csv&xyDms=yes'
-    wanted['fieldTypes']=['integer', 'text', 'text', 'text']
-    wanted['data']={
-        3L: {
-            'id': u'1',
-            'description': u'Basic DMS string',
-            'lon': u'1 5 30.6',
-            'lat': u'35 51 20',
-            '#fid': 3L,
-            '#geometry': 'POINT(1.09183333 35.85555556)',
+    wanted = {}
+    wanted['uri'] = 'file://testdms.csv?yField=lat&xField=lon&type=csv&xyDms=yes'
+    wanted['fieldTypes'] = ['integer', 'text', 'text', 'text']
+    wanted['geometryType'] = 0
+    wanted['data'] = {
+        3: {
+            'id': '1',
+            'description': 'Basic DMS string',
+            'lon': '1 5 30.6',
+            'lat': '35 51 20',
+            '#fid': 3,
+            '#geometry': 'Point (1.09183333 35.85555556)',
         },
-        4L: {
-            'id': u'2',
-            'description': u'Basic DMS string 2',
-            'lon': u'1 05 30.6005',
-            'lat': u'035 51 20',
-            '#fid': 4L,
-            '#geometry': 'POINT(1.09183347 35.85555556)',
+        4: {
+            'id': '2',
+            'description': 'Basic DMS string 2',
+            'lon': '1 05 30.6005',
+            'lat': '035 51 20',
+            '#fid': 4,
+            '#geometry': 'Point (1.09183347 35.85555556)',
         },
-        5L: {
-            'id': u'3',
-            'description': u'Basic DMS string 3',
-            'lon': u'1 05 30.6',
-            'lat': u'35 59 9.99',
-            '#fid': 5L,
-            '#geometry': 'POINT(1.09183333 35.98610833)',
+        5: {
+            'id': '3',
+            'description': 'Basic DMS string 3',
+            'lon': '1 05 30.6',
+            'lat': '35 59 9.99',
+            '#fid': 5,
+            '#geometry': 'Point (1.09183333 35.98610833)',
         },
-        7L: {
-            'id': u'4',
-            'description': u'Prefix sign 1',
-            'lon': u'n1 05 30.6',
-            'lat': u'e035 51 20',
-            '#fid': 7L,
-            '#geometry': 'POINT(1.09183333 35.85555556)',
+        7: {
+            'id': '4',
+            'description': 'Prefix sign 1',
+            'lon': 'n1 05 30.6',
+            'lat': 'e035 51 20',
+            '#fid': 7,
+            '#geometry': 'Point (1.09183333 35.85555556)',
         },
-        8L: {
-            'id': u'5',
-            'description': u'Prefix sign 2',
-            'lon': u'N1 05 30.6',
-            'lat': u'E035 51 20',
-            '#fid': 8L,
-            '#geometry': 'POINT(1.09183333 35.85555556)',
+        8: {
+            'id': '5',
+            'description': 'Prefix sign 2',
+            'lon': 'N1 05 30.6',
+            'lat': 'E035 51 20',
+            '#fid': 8,
+            '#geometry': 'Point (1.09183333 35.85555556)',
         },
-        9L: {
-            'id': u'6',
-            'description': u'Prefix sign 3',
-            'lon': u'N 1 05 30.6',
-            'lat': u'E 035 51 20',
-            '#fid': 9L,
-            '#geometry': 'POINT(1.09183333 35.85555556)',
+        9: {
+            'id': '6',
+            'description': 'Prefix sign 3',
+            'lon': 'N 1 05 30.6',
+            'lat': 'E 035 51 20',
+            '#fid': 9,
+            '#geometry': 'Point (1.09183333 35.85555556)',
         },
-        10L: {
-            'id': u'7',
-            'description': u'Prefix sign 4',
-            'lon': u'S1 05 30.6',
-            'lat': u'W035 51 20',
-            '#fid': 10L,
-            '#geometry': 'POINT(-1.09183333 -35.85555556)',
+        10: {
+            'id': '7',
+            'description': 'Prefix sign 4',
+            'lon': 'S1 05 30.6',
+            'lat': 'W035 51 20',
+            '#fid': 10,
+            '#geometry': 'Point (-1.09183333 -35.85555556)',
         },
-        11L: {
-            'id': u'8',
-            'description': u'Prefix sign 5',
-            'lon': u'+1 05 30.6',
-            'lat': u'+035 51 20',
-            '#fid': 11L,
-            '#geometry': 'POINT(1.09183333 35.85555556)',
+        11: {
+            'id': '8',
+            'description': 'Prefix sign 5',
+            'lon': '+1 05 30.6',
+            'lat': '+035 51 20',
+            '#fid': 11,
+            '#geometry': 'Point (1.09183333 35.85555556)',
         },
-        12L: {
-            'id': u'9',
-            'description': u'Prefix sign 6',
-            'lon': u'-1 05 30.6',
-            'lat': u'-035 51 20',
-            '#fid': 12L,
-            '#geometry': 'POINT(-1.09183333 -35.85555556)',
+        12: {
+            'id': '9',
+            'description': 'Prefix sign 6',
+            'lon': '-1 05 30.6',
+            'lat': '-035 51 20',
+            '#fid': 12,
+            '#geometry': 'Point (-1.09183333 -35.85555556)',
         },
-        14L: {
-            'id': u'10',
-            'description': u'Postfix sign 1',
-            'lon': u'1 05 30.6n',
-            'lat': u'035 51 20e',
-            '#fid': 14L,
-            '#geometry': 'POINT(1.09183333 35.85555556)',
+        14: {
+            'id': '10',
+            'description': 'Postfix sign 1',
+            'lon': '1 05 30.6n',
+            'lat': '035 51 20e',
+            '#fid': 14,
+            '#geometry': 'Point (1.09183333 35.85555556)',
         },
-        15L: {
-            'id': u'11',
-            'description': u'Postfix sign 2',
-            'lon': u'1 05 30.6N',
-            'lat': u'035 51 20E',
-            '#fid': 15L,
-            '#geometry': 'POINT(1.09183333 35.85555556)',
+        15: {
+            'id': '11',
+            'description': 'Postfix sign 2',
+            'lon': '1 05 30.6N',
+            'lat': '035 51 20E',
+            '#fid': 15,
+            '#geometry': 'Point (1.09183333 35.85555556)',
         },
-        16L: {
-            'id': u'12',
-            'description': u'Postfix sign 3',
-            'lon': u'1 05 30.6 N',
-            'lat': u'035 51 20 E',
-            '#fid': 16L,
-            '#geometry': 'POINT(1.09183333 35.85555556)',
+        16: {
+            'id': '12',
+            'description': 'Postfix sign 3',
+            'lon': '1 05 30.6 N',
+            'lat': '035 51 20 E',
+            '#fid': 16,
+            '#geometry': 'Point (1.09183333 35.85555556)',
         },
-        17L: {
-            'id': u'13',
-            'description': u'Postfix sign 4',
-            'lon': u'1 05 30.6S',
-            'lat': u'035 51 20W',
-            '#fid': 17L,
-            '#geometry': 'POINT(-1.09183333 -35.85555556)',
+        17: {
+            'id': '13',
+            'description': 'Postfix sign 4',
+            'lon': '1 05 30.6S',
+            'lat': '035 51 20W',
+            '#fid': 17,
+            '#geometry': 'Point (-1.09183333 -35.85555556)',
         },
-        18L: {
-            'id': u'14',
-            'description': u'Postfix sign 5',
-            'lon': u'1 05 30.6+',
-            'lat': u'035 51 20+',
-            '#fid': 18L,
-            '#geometry': 'POINT(1.09183333 35.85555556)',
+        18: {
+            'id': '14',
+            'description': 'Postfix sign 5',
+            'lon': '1 05 30.6+',
+            'lat': '035 51 20+',
+            '#fid': 18,
+            '#geometry': 'Point (1.09183333 35.85555556)',
         },
-        19L: {
-            'id': u'15',
-            'description': u'Postfix sign 6',
-            'lon': u'1 05 30.6-',
-            'lat': u'035 51 20-',
-            '#fid': 19L,
-            '#geometry': 'POINT(-1.09183333 -35.85555556)',
+        19: {
+            'id': '15',
+            'description': 'Postfix sign 6',
+            'lon': '1 05 30.6-',
+            'lat': '035 51 20-',
+            '#fid': 19,
+            '#geometry': 'Point (-1.09183333 -35.85555556)',
         },
-        21L: {
-            'id': u'16',
-            'description': u'Leading and trailing blanks 1',
-            'lon': u'   1 05 30.6',
-            'lat': u'035 51 20   ',
-            '#fid': 21L,
-            '#geometry': 'POINT(1.09183333 35.85555556)',
+        21: {
+            'id': '16',
+            'description': 'Leading and trailing blanks 1',
+            'lon': '   1 05 30.6',
+            'lat': '035 51 20   ',
+            '#fid': 21,
+            '#geometry': 'Point (1.09183333 35.85555556)',
         },
-        22L: {
-            'id': u'17',
-            'description': u'Leading and trailing blanks 2',
-            'lon': u' N  1 05 30.6',
-            'lat': u'035 51 20 E  ',
-            '#fid': 22L,
-            '#geometry': 'POINT(1.09183333 35.85555556)',
+        22: {
+            'id': '17',
+            'description': 'Leading and trailing blanks 2',
+            'lon': ' N  1 05 30.6',
+            'lat': '035 51 20 E  ',
+            '#fid': 22,
+            '#geometry': 'Point (1.09183333 35.85555556)',
         },
-        24L: {
-            'id': u'18',
-            'description': u'Alternative characters for D,M,S',
-            'lon': u'1d05m30.6s S',
-            'lat': u"35d51'20",
-            '#fid': 24L,
-            '#geometry': 'POINT(-1.09183333 35.85555556)',
+        24: {
+            'id': '18',
+            'description': 'Alternative characters for D,M,S',
+            'lon': '1d05m30.6s S',
+            'lat': "35d51'20",
+            '#fid': 24,
+            '#geometry': 'Point (-1.09183333 35.85555556)',
         },
-        25L: {
-            'id': u'19',
-            'description': u'Degrees/minutes format',
-            'lon': u'1 05.23',
-            'lat': u'4 55.03',
-            '#fid': 25L,
-            '#geometry': 'POINT(1.08716667 4.91716667)',
+        25: {
+            'id': '19',
+            'description': 'Degrees/minutes format',
+            'lon': '1 05.23',
+            'lat': '4 55.03',
+            '#fid': 25,
+            '#geometry': 'Point (1.08716667 4.91716667)',
         },
     }
-    wanted['log']=[
-        u'Errors in file testdms.csv',
-        u'5 records discarded due to invalid geometry definitions',
-        u'The following lines were not loaded into QGIS due to errors:',
-        u'Invalid X or Y fields at line 27',
-        u'Invalid X or Y fields at line 28',
-        u'Invalid X or Y fields at line 29',
-        u'Invalid X or Y fields at line 30',
-        u'Invalid X or Y fields at line 31',
+    wanted['log'] = [
+        'Errors in file testdms.csv',
+        '5 records discarded due to invalid geometry definitions',
+        'The following lines were not loaded into QGIS due to errors:',
+        'Invalid X or Y fields at line 27',
+        'Invalid X or Y fields at line 28',
+        'Invalid X or Y fields at line 29',
+        'Invalid X or Y fields at line 30',
+        'Invalid X or Y fields at line 31',
     ]
     return wanted
 
 
 def test_016_decimal_point():
-    wanted={}
-    wanted['uri']=u'file://testdp.csv?yField=geom_y&xField=geom_x&type=csv&delimiter=;&decimalPoint=,'
-    wanted['fieldTypes']=['integer', 'text', 'double', 'double', 'double', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Comma as decimal point 1',
-            'geom_x': u'10.0',
-            'geom_y': u'20.0',
-            'other': u'30.0',
-            'text field': u'Field with , in it',
-            '#fid': 2L,
-            '#geometry': 'POINT(10.0 20.0)',
+    wanted = {}
+    wanted['uri'] = 'file://testdp.csv?yField=geom_y&xField=geom_x&type=csv&delimiter=;&decimalPoint=,'
+    wanted['fieldTypes'] = ['integer', 'text', 'double', 'double', 'double', 'text']
+    wanted['geometryType'] = 0
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Comma as decimal point 1',
+            'geom_x': '10.0',
+            'geom_y': '20.0',
+            'other': '30.0',
+            'text field': 'Field with , in it',
+            '#fid': 2,
+            '#geometry': 'Point (10 20)',
         },
-        3L: {
-            'id': u'2',
-            'description': u'Comma as decimal point 2',
-            'geom_x': u'12.0',
-            'geom_y': u'25.003',
-            'other': u'-38.55',
-            'text field': u'Plain text field',
-            '#fid': 3L,
-            '#geometry': 'POINT(12.0 25.003)',
+        3: {
+            'id': '2',
+            'description': 'Comma as decimal point 2',
+            'geom_x': '12.0',
+            'geom_y': '25.003',
+            'other': '-38.55',
+            'text field': 'Plain text field',
+            '#fid': 3,
+            '#geometry': 'Point (12 25.003)',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_017_regular_expression_1():
-    wanted={}
-    wanted['uri']=u'file://testre.txt?geomType=none&trimFields=Y&delimiter=RE(?:GEXP)?&type=regexp'
-    wanted['fieldTypes']=['integer', 'text', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Basic regular expression test',
-            'data': u'data1',
-            'info': u'info',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://testre.txt?geomType=none&trimFields=Y&delimiter=RE(?:GEXP)?&type=regexp'
+    wanted['fieldTypes'] = ['integer', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Basic regular expression test',
+            'data': 'data1',
+            'info': 'info',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        3L: {
-            'id': u'2',
-            'description': u'Basic regular expression test 2',
-            'data': u'data2',
-            'info': u'info2',
-            '#fid': 3L,
+        3: {
+            'id': '2',
+            'description': 'Basic regular expression test 2',
+            'data': 'data2',
+            'info': 'info2',
+            '#fid': 3,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_018_regular_expression_2():
-    wanted={}
-    wanted['uri']=u'file://testre.txt?geomType=none&trimFields=Y&delimiter=(RE)(GEXP)?&type=regexp'
-    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'RE': u'RE',
-            'GEXP': u'GEXP',
-            'description': u'RE',
-            'RE_1': u'RE',
-            'GEXP_1': u'GEXP',
-            'data': u'data1',
-            'RE_2': u'RE',
-            'GEXP_2': u'GEXP',
-            'info': u'info',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://testre.txt?geomType=none&trimFields=Y&delimiter=(RE)(GEXP)?&type=regexp'
+    wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'RE': 'RE',
+            'GEXP': 'GEXP',
+            'description': 'RE',
+            'RE_1': 'RE',
+            'GEXP_1': 'GEXP',
+            'data': 'data1',
+            'RE_2': 'RE',
+            'GEXP_2': 'GEXP',
+            'info': 'info',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        3L: {
-            'id': u'2',
-            'RE': u'RE',
-            'GEXP': u'GEXP',
-            'description': u'RE',
-            'RE_1': u'RE',
-            'GEXP_1': u'NULL',
-            'data': u'data2',
-            'RE_2': u'RE',
-            'GEXP_2': u'NULL',
-            'info': u'info2',
-            '#fid': 3L,
+        3: {
+            'id': '2',
+            'RE': 'RE',
+            'GEXP': 'GEXP',
+            'description': 'RE',
+            'RE_1': 'RE',
+            'GEXP_1': 'NULL',
+            'data': 'data2',
+            'RE_2': 'RE',
+            'GEXP_2': 'NULL',
+            'info': 'info2',
+            '#fid': 3,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_019_regular_expression_3():
-    wanted={}
-    wanted['uri']=u'file://testre2.txt?geomType=none&trimFields=Y&delimiter=^(.{5})(.{30})(.{5,})&type=regexp'
-    wanted['fieldTypes']=['integer', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Anchored regexp',
-            'information': u'Some data',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://testre2.txt?geomType=none&trimFields=Y&delimiter=^(.{5})(.{30})(.{5,})&type=regexp'
+    wanted['fieldTypes'] = ['integer', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Anchored regexp',
+            'information': 'Some data',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        4L: {
-            'id': u'3',
-            'description': u'Anchored regexp recovered',
-            'information': u'Some data',
-            '#fid': 4L,
+        4: {
+            'id': '3',
+            'description': 'Anchored regexp recovered',
+            'information': 'Some data',
+            '#fid': 4,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[
-        u'Errors in file testre2.txt',
-        u'1 records discarded due to invalid format',
-        u'The following lines were not loaded into QGIS due to errors:',
-        u'Invalid record format at line 3',
+    wanted['log'] = [
+        'Errors in file testre2.txt',
+        '1 records discarded due to invalid format',
+        'The following lines were not loaded into QGIS due to errors:',
+        'Invalid record format at line 3',
     ]
     return wanted
 
 
 def test_020_regular_expression_4():
-    wanted={}
-    wanted['uri']=u'file://testre3.txt?geomType=none&delimiter=x?&type=regexp'
-    wanted['fieldTypes']=['text', 'text', 'text', 'text', 'text', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'f',
-            'description': u'i',
-            's': u'f',
-            'm': u'i',
-            'a': u'.',
-            'l': u'.',
-            'l_1': u'i',
-            'field_6': u'l',
-            'field_7': u'e',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://testre3.txt?geomType=none&delimiter=x?&type=regexp'
+    wanted['fieldTypes'] = ['text', 'text', 'text', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': 'f',
+            'description': 'i',
+            's': 'f',
+            'm': 'i',
+            'a': '.',
+            'l': '.',
+            'l_1': 'i',
+            'field_6': 'l',
+            'field_7': 'e',
+            '#fid': 2,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_021_regular_expression_5():
-    wanted={}
-    wanted['uri']=u'file://testre3.txt?geomType=none&delimiter=\\b&type=regexp'
-    wanted['fieldTypes']=['text', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'fi',
-            'description': u'..',
-            'small': u'fi',
-            'field_2': u'..',
-            'field_3': u'ile',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://testre3.txt?geomType=none&delimiter=\\b&type=regexp'
+    wanted['fieldTypes'] = ['text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': 'fi',
+            'description': '..',
+            'small': 'fi',
+            'field_2': '..',
+            'field_3': 'ile',
+            '#fid': 2,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_022_utf8_encoded_file():
-    wanted={}
-    wanted['uri']=u'file://testutf8.csv?geomType=none&delimiter=|&type=csv&encoding=utf-8'
-    wanted['fieldTypes']=['integer', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Correctly read UTF8 encoding',
-            'name': u'Field has \u0101cc\xe8nt\xe9d text',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://testutf8.csv?geomType=none&delimiter=|&type=csv&encoding=utf-8'
+    wanted['fieldTypes'] = ['integer', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Correctly read UTF8 encoding',
+            'name': 'Field has \u0101cc\xe8nt\xe9d text',
+            '#fid': 2,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_023_latin1_encoded_file():
-    wanted={}
-    wanted['uri']=u'file://testlatin1.csv?geomType=none&delimiter=|&type=csv&encoding=latin1'
-    wanted['fieldTypes']=['integer', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Correctly read latin1 encoding',
-            'name': u'This test is \xa9',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://testlatin1.csv?geomType=none&delimiter=|&type=csv&encoding=latin1'
+    wanted['fieldTypes'] = ['integer', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Correctly read latin1 encoding',
+            'name': 'This test is \xa9',
+            '#fid': 2,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_024_filter_rect_xy():
-    wanted={}
-    wanted['uri']=u'file://testextpt.txt?yField=y&delimiter=|&type=csv&xField=x'
-    wanted['fieldTypes']=['integer', 'text', 'integer', 'integer']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Inside',
-            'x': u'15',
-            'y': u'35',
-            '#fid': 2L,
-            '#geometry': 'POINT(15.0 35.0)',
+    wanted = {}
+    wanted['uri'] = 'file://testextpt.txt?yField=y&delimiter=|&type=csv&xField=x'
+    wanted['fieldTypes'] = ['integer', 'text', 'integer', 'integer']
+    wanted['geometryType'] = 0
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Inside',
+            'x': '15',
+            'y': '35',
+            '#fid': 2,
+            '#geometry': 'Point (15 35)',
         },
-        10L: {
-            'id': u'9',
-            'description': u'Inside 2',
-            'x': u'25',
-            'y': u'45',
-            '#fid': 10L,
-            '#geometry': 'POINT(25.0 45.0)',
+        10: {
+            'id': '9',
+            'description': 'Inside 2',
+            'x': '25',
+            'y': '45',
+            '#fid': 10,
+            '#geometry': 'Point (25 45)',
         },
-        1002L: {
-            'id': u'1',
-            'description': u'Inside',
-            'x': u'15',
-            'y': u'35',
-            '#fid': 2L,
-            '#geometry': 'POINT(15.0 35.0)',
+        1002: {
+            'id': '1',
+            'description': 'Inside',
+            'x': '15',
+            'y': '35',
+            '#fid': 2,
+            '#geometry': 'Point (15 35)',
         },
-        1010L: {
-            'id': u'9',
-            'description': u'Inside 2',
-            'x': u'25',
-            'y': u'45',
-            '#fid': 10L,
-            '#geometry': 'POINT(25.0 45.0)',
+        1010: {
+            'id': '9',
+            'description': 'Inside 2',
+            'x': '25',
+            'y': '45',
+            '#fid': 10,
+            '#geometry': 'Point (25 45)',
         },
     }
-    wanted['log']=[
+    wanted['log'] = [
         'Request 2 did not return any data',
     ]
     return wanted
 
 
 def test_025_filter_rect_wkt():
-    wanted={}
-    wanted['uri']=u'file://testextw.txt?delimiter=|&type=csv&wktField=wkt'
-    wanted['fieldTypes']=['integer', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Inside',
-            '#fid': 2L,
-            '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
+    wanted = {}
+    wanted['uri'] = 'file://testextw.txt?delimiter=|&type=csv&wktField=wkt'
+    wanted['fieldTypes'] = ['integer', 'text']
+    wanted['geometryType'] = 1
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Inside',
+            '#fid': 2,
+            '#geometry': 'LineString (12 32, 28 48)',
         },
-        4L: {
-            'id': u'3',
-            'description': u'Crossing',
-            '#fid': 4L,
-            '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
+        4: {
+            'id': '3',
+            'description': 'Crossing',
+            '#fid': 4,
+            '#geometry': 'LineString (5 30, 30 55)',
         },
-        5L: {
-            'id': u'4',
-            'description': u'Bounding box overlap',
-            '#fid': 5L,
-            '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
+        5: {
+            'id': '4',
+            'description': 'Bounding box overlap',
+            '#fid': 5,
+            '#geometry': 'LineString (5 30, 5 55, 30 55)',
         },
-        6L: {
-            'id': u'5',
-            'description': u'Crossing 2',
-            '#fid': 6L,
-            '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
+        6: {
+            'id': '5',
+            'description': 'Crossing 2',
+            '#fid': 6,
+            '#geometry': 'LineString (25 35, 35 35)',
         },
-        7L: {
-            'id': u'6',
-            'description': u'Bounding box overlap 2',
-            '#fid': 7L,
-            '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
+        7: {
+            'id': '6',
+            'description': 'Bounding box overlap 2',
+            '#fid': 7,
+            '#geometry': 'LineString (28 29, 31 29, 31 33)',
         },
-        1002L: {
-            'id': u'1',
-            'description': u'Inside',
-            '#fid': 2L,
-            '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
+        1002: {
+            'id': '1',
+            'description': 'Inside',
+            '#fid': 2,
+            '#geometry': 'LineString (12 32, 28 48)',
         },
-        1004L: {
-            'id': u'3',
-            'description': u'Crossing',
-            '#fid': 4L,
-            '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
+        1004: {
+            'id': '3',
+            'description': 'Crossing',
+            '#fid': 4,
+            '#geometry': 'LineString (5 30, 30 55)',
         },
-        1006L: {
-            'id': u'5',
-            'description': u'Crossing 2',
-            '#fid': 6L,
-            '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
+        1006: {
+            'id': '5',
+            'description': 'Crossing 2',
+            '#fid': 6,
+            '#geometry': 'LineString (25 35, 35 35)',
         },
     }
-    wanted['log']=[
+    wanted['log'] = [
         'Request 2 did not return any data',
     ]
     return wanted
 
 
 def test_026_filter_fid():
-    wanted={}
-    wanted['uri']=u'file://test.csv?geomType=none&type=csv'
-    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text']
-    wanted['data']={
-        3L: {
-            'id': u'2',
-            'description': u'Quoted field',
-            'data': u'Quoted data',
-            'info': u'Unquoted',
-            'field_5': u'NULL',
-            '#fid': 3L,
+    wanted = {}
+    wanted['uri'] = 'file://test.csv?geomType=none&type=csv'
+    wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        3: {
+            'id': '2',
+            'description': 'Quoted field',
+            'data': 'Quoted data',
+            'info': 'Unquoted',
+            'field_5': 'NULL',
+            '#fid': 3,
             '#geometry': 'None',
         },
-        1009L: {
-            'id': u'5',
-            'description': u'Extra fields',
-            'data': u'data',
-            'info': u'info',
-            'field_5': u'message',
-            '#fid': 9L,
+        1009: {
+            'id': '5',
+            'description': 'Extra fields',
+            'data': 'data',
+            'info': 'info',
+            'field_5': 'message',
+            '#fid': 9,
             '#geometry': 'None',
         },
-        3003L: {
-            'id': u'2',
-            'description': u'Quoted field',
-            'data': u'Quoted data',
-            'info': u'Unquoted',
-            'field_5': u'NULL',
-            '#fid': 3L,
+        3003: {
+            'id': '2',
+            'description': 'Quoted field',
+            'data': 'Quoted data',
+            'info': 'Unquoted',
+            'field_5': 'NULL',
+            '#fid': 3,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[
+    wanted['log'] = [
         'Request 2 did not return any data',
     ]
     return wanted
 
 
 def test_027_filter_attributes():
-    wanted={}
-    wanted['uri']=u'file://test.csv?geomType=none&type=csv'
-    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'None',
-            'description': u'Basic unquoted record',
-            'data': u'None',
-            'info': u'Some info',
-            'field_5': u'None',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://test.csv?geomType=none&type=csv'
+    wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': 'None',
+            'description': 'Basic unquoted record',
+            'data': 'None',
+            'info': 'Some info',
+            'field_5': 'None',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        3L: {
-            'id': u'None',
-            'description': u'Quoted field',
-            'data': u'None',
-            'info': u'Unquoted',
-            'field_5': u'None',
-            '#fid': 3L,
+        3: {
+            'id': 'None',
+            'description': 'Quoted field',
+            'data': 'None',
+            'info': 'Unquoted',
+            'field_5': 'None',
+            '#fid': 3,
             '#geometry': 'None',
         },
-        4L: {
-            'id': u'None',
-            'description': u'Escaped quotes',
-            'data': u'None',
-            'info': u'Unquoted',
-            'field_5': u'None',
-            '#fid': 4L,
+        4: {
+            'id': 'None',
+            'description': 'Escaped quotes',
+            'data': 'None',
+            'info': 'Unquoted',
+            'field_5': 'None',
+            '#fid': 4,
             '#geometry': 'None',
         },
-        5L: {
-            'id': u'None',
-            'description': u'Quoted newlines',
-            'data': u'None',
-            'info': u'No data',
-            'field_5': u'None',
-            '#fid': 5L,
+        5: {
+            'id': 'None',
+            'description': 'Quoted newlines',
+            'data': 'None',
+            'info': 'No data',
+            'field_5': 'None',
+            '#fid': 5,
             '#geometry': 'None',
         },
-        9L: {
-            'id': u'None',
-            'description': u'Extra fields',
-            'data': u'None',
-            'info': u'info',
-            'field_5': u'None',
-            '#fid': 9L,
+        9: {
+            'id': 'None',
+            'description': 'Extra fields',
+            'data': 'None',
+            'info': 'info',
+            'field_5': 'None',
+            '#fid': 9,
             '#geometry': 'None',
         },
-        10L: {
-            'id': u'None',
-            'description': u'Missing fields',
-            'data': u'None',
-            'info': u'NULL',
-            'field_5': u'None',
-            '#fid': 10L,
+        10: {
+            'id': 'None',
+            'description': 'Missing fields',
+            'data': 'None',
+            'info': 'NULL',
+            'field_5': 'None',
+            '#fid': 10,
             '#geometry': 'None',
         },
-        1009L: {
-            'id': u'5',
-            'description': u'Extra fields',
-            'data': u'data',
-            'info': u'info',
-            'field_5': u'message',
-            '#fid': 9L,
+        1009: {
+            'id': '5',
+            'description': 'Extra fields',
+            'data': 'data',
+            'info': 'info',
+            'field_5': 'message',
+            '#fid': 9,
             '#geometry': 'None',
         },
-        2009L: {
-            'id': u'None',
-            'description': u'Extra fields',
-            'data': u'None',
-            'info': u'info',
-            'field_5': u'None',
-            '#fid': 9L,
+        2009: {
+            'id': 'None',
+            'description': 'Extra fields',
+            'data': 'None',
+            'info': 'info',
+            'field_5': 'None',
+            '#fid': 9,
             '#geometry': 'None',
         },
-        3009L: {
-            'id': u'None',
-            'description': u'Extra fields',
-            'data': u'None',
-            'info': u'info',
-            'field_5': u'None',
-            '#fid': 9L,
+        3009: {
+            'id': 'None',
+            'description': 'Extra fields',
+            'data': 'None',
+            'info': 'info',
+            'field_5': 'None',
+            '#fid': 9,
             '#geometry': 'None',
         },
-        4009L: {
-            'id': u'None',
-            'description': u'Extra fields',
-            'data': u'None',
-            'info': u'info',
-            'field_5': u'None',
-            '#fid': 9L,
+        4009: {
+            'id': 'None',
+            'description': 'Extra fields',
+            'data': 'None',
+            'info': 'info',
+            'field_5': 'None',
+            '#fid': 9,
             '#geometry': 'None',
         },
-        5009L: {
-            'id': u'None',
-            'description': u'None',
-            'data': u'None',
-            'info': u'None',
-            'field_5': u'None',
-            '#fid': 9L,
+        5009: {
+            'id': 'None',
+            'description': 'None',
+            'data': 'None',
+            'info': 'None',
+            'field_5': 'None',
+            '#fid': 9,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_028_substring_test():
-    wanted={}
-    wanted['uri']=u'file://test.csv?geomType=none&type=csv&subset=id%20%25%202%20%3D%201'
-    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Basic unquoted record',
-            'data': u'Some data',
-            'info': u'Some info',
-            'field_5': u'NULL',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://test.csv?geomType=none&type=csv&subset=id%20%25%202%20%3D%201'
+    wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Basic unquoted record',
+            'data': 'Some data',
+            'info': 'Some info',
+            'field_5': 'NULL',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        4L: {
-            'id': u'3',
-            'description': u'Escaped quotes',
-            'data': u'Quoted "citation" data',
-            'info': u'Unquoted',
-            'field_5': u'NULL',
-            '#fid': 4L,
+        4: {
+            'id': '3',
+            'description': 'Escaped quotes',
+            'data': 'Quoted "citation" data',
+            'info': 'Unquoted',
+            'field_5': 'NULL',
+            '#fid': 4,
             '#geometry': 'None',
         },
-        9L: {
-            'id': u'5',
-            'description': u'Extra fields',
-            'data': u'data',
-            'info': u'info',
-            'field_5': u'message',
-            '#fid': 9L,
+        9: {
+            'id': '5',
+            'description': 'Extra fields',
+            'data': 'data',
+            'info': 'info',
+            'field_5': 'message',
+            '#fid': 9,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_029_file_watcher():
-    wanted={}
-    wanted['uri']=u'file://file?geomType=none&type=csv&watchFile=yes'
-    wanted['fieldTypes']=['integer', 'text']
-    wanted['data']={
-        3L: {
-            'id': u'2',
-            'description': u'pooh',
-            'name': u'pooh',
-            '#fid': 3L,
+    wanted = {}
+    wanted['uri'] = 'file://file?geomType=none&type=csv&watchFile=yes'
+    wanted['fieldTypes'] = ['integer', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        3: {
+            'id': '2',
+            'description': 'pooh',
+            'name': 'pooh',
+            '#fid': 3,
             '#geometry': 'None',
         },
-        1002L: {
-            'id': u'1',
-            'description': u'rabbit',
-            'name': u'rabbit',
-            '#fid': 2L,
+        1002: {
+            'id': '1',
+            'description': 'rabbit',
+            'name': 'rabbit',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        1003L: {
-            'id': u'2',
-            'description': u'pooh',
-            'name': u'pooh',
-            '#fid': 3L,
+        1003: {
+            'id': '2',
+            'description': 'pooh',
+            'name': 'pooh',
+            '#fid': 3,
             '#geometry': 'None',
         },
-        4003L: {
-            'id': u'2',
-            'description': u'pooh',
-            'name': u'pooh',
-            '#fid': 3L,
+        4003: {
+            'id': '2',
+            'description': 'pooh',
+            'name': 'pooh',
+            '#fid': 3,
             '#geometry': 'None',
         },
-        5004L: {
-            'id': u'3',
-            'description': u'tigger',
-            'name': u'tigger',
-            '#fid': 4L,
+        5004: {
+            'id': '3',
+            'description': 'tigger',
+            'name': 'tigger',
+            '#fid': 4,
             '#geometry': 'None',
         },
-        6002L: {
-            'id': u'1',
-            'description': u'rabbit',
-            'name': u'rabbit',
-            '#fid': 2L,
+        6002: {
+            'id': '1',
+            'description': 'rabbit',
+            'name': 'rabbit',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        6003L: {
-            'id': u'2',
-            'description': u'pooh',
-            'name': u'pooh',
-            '#fid': 3L,
+        6003: {
+            'id': '2',
+            'description': 'pooh',
+            'name': 'pooh',
+            '#fid': 3,
             '#geometry': 'None',
         },
-        6004L: {
-            'id': u'3',
-            'description': u'tigger',
-            'name': u'tigger',
-            '#fid': 4L,
+        6004: {
+            'id': '3',
+            'description': 'tigger',
+            'name': 'tigger',
+            '#fid': 4,
             '#geometry': 'None',
         },
-        9002L: {
-            'id': u'5',
-            'description': u'toad',
-            'name': u'toad',
-            '#fid': 2L,
+        9002: {
+            'id': '5',
+            'description': 'toad',
+            'name': 'toad',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        10002L: {
-            'id': u'5',
-            'description': u'toad',
-            'name': u'toad',
-            '#fid': 2L,
+        10002: {
+            'id': '5',
+            'description': 'toad',
+            'name': 'toad',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        10003L: {
-            'id': u'6',
-            'description': u'mole',
-            'name': u'mole',
-            '#fid': 3L,
+        10003: {
+            'id': '6',
+            'description': 'mole',
+            'name': 'mole',
+            '#fid': 3,
             '#geometry': 'None',
         },
-        10004L: {
-            'id': u'7',
-            'description': u'badger',
-            'name': u'badger',
-            '#fid': 4L,
+        10004: {
+            'id': '7',
+            'description': 'badger',
+            'name': 'badger',
+            '#fid': 4,
             '#geometry': 'None',
         },
-        16002L: {
-            'id': u'5',
-            'description': u'toad',
-            'name': u'toad',
-            '#fid': 2L,
+        16002: {
+            'id': '5',
+            'description': 'toad',
+            'name': 'toad',
+            '#fid': 2,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[
+    wanted['log'] = [
         'Request 2 did not return any data',
         'Request 7 did not return any data',
         'Request 11 did not return any data',
         'Request 13 did not return any data',
         'Request 14 did not return any data',
-        u'Errors in file temp_file',
-        u'The file has been updated by another application - reloading',
-        u'Errors in file temp_file',
-        u'The file has been updated by another application - reloading',
-        u'Errors in file temp_file',
-        u'The file has been updated by another application - reloading',
+        'Errors in file temp_file',
+        'The file has been updated by another application - reloading',
+        'Errors in file temp_file',
+        'The file has been updated by another application - reloading',
+        'Errors in file temp_file',
+        'The file has been updated by another application - reloading',
     ]
     return wanted
 
 
 def test_030_filter_rect_xy_spatial_index():
-    wanted={}
-    wanted['uri']=u'file://testextpt.txt?spatialIndex=Y&yField=y&delimiter=|&type=csv&xField=x'
-    wanted['fieldTypes']=['integer', 'text', 'integer', 'integer']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Inside',
-            'x': u'15',
-            'y': u'35',
-            '#fid': 2L,
-            '#geometry': 'POINT(15.0 35.0)',
+    wanted = {}
+    wanted['uri'] = 'file://testextpt.txt?spatialIndex=Y&yField=y&delimiter=|&type=csv&xField=x'
+    wanted['fieldTypes'] = ['integer', 'text', 'integer', 'integer']
+    wanted['geometryType'] = 0
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Inside',
+            'x': '15',
+            'y': '35',
+            '#fid': 2,
+            '#geometry': 'Point (15 35)',
         },
-        10L: {
-            'id': u'9',
-            'description': u'Inside 2',
-            'x': u'25',
-            'y': u'45',
-            '#fid': 10L,
-            '#geometry': 'POINT(25.0 45.0)',
+        10: {
+            'id': '9',
+            'description': 'Inside 2',
+            'x': '25',
+            'y': '45',
+            '#fid': 10,
+            '#geometry': 'Point (25 45)',
         },
-        1002L: {
-            'id': u'1',
-            'description': u'Inside',
-            'x': u'15',
-            'y': u'35',
-            '#fid': 2L,
-            '#geometry': 'POINT(15.0 35.0)',
+        1002: {
+            'id': '1',
+            'description': 'Inside',
+            'x': '15',
+            'y': '35',
+            '#fid': 2,
+            '#geometry': 'Point (15 35)',
         },
-        1010L: {
-            'id': u'9',
-            'description': u'Inside 2',
-            'x': u'25',
-            'y': u'45',
-            '#fid': 10L,
-            '#geometry': 'POINT(25.0 45.0)',
+        1010: {
+            'id': '9',
+            'description': 'Inside 2',
+            'x': '25',
+            'y': '45',
+            '#fid': 10,
+            '#geometry': 'Point (25 45)',
         },
-        3002L: {
-            'id': u'1',
-            'description': u'Inside',
-            'x': u'15',
-            'y': u'35',
-            '#fid': 2L,
-            '#geometry': 'POINT(15.0 35.0)',
+        3002: {
+            'id': '1',
+            'description': 'Inside',
+            'x': '15',
+            'y': '35',
+            '#fid': 2,
+            '#geometry': 'Point (15 35)',
         },
-        3003L: {
-            'id': u'2',
-            'description': u'Outside 1',
-            'x': u'5',
-            'y': u'35',
-            '#fid': 3L,
-            '#geometry': 'POINT(5.0 35.0)',
+        3003: {
+            'id': '2',
+            'description': 'Outside 1',
+            'x': '5',
+            'y': '35',
+            '#fid': 3,
+            '#geometry': 'Point (5 35)',
         },
-        3004L: {
-            'id': u'3',
-            'description': u'Outside 2',
-            'x': u'5',
-            'y': u'55',
-            '#fid': 4L,
-            '#geometry': 'POINT(5.0 55.0)',
+        3004: {
+            'id': '3',
+            'description': 'Outside 2',
+            'x': '5',
+            'y': '55',
+            '#fid': 4,
+            '#geometry': 'Point (5 55)',
         },
-        3005L: {
-            'id': u'4',
-            'description': u'Outside 3',
-            'x': u'15',
-            'y': u'55',
-            '#fid': 5L,
-            '#geometry': 'POINT(15.0 55.0)',
+        3005: {
+            'id': '4',
+            'description': 'Outside 3',
+            'x': '15',
+            'y': '55',
+            '#fid': 5,
+            '#geometry': 'Point (15 55)',
         },
-        3006L: {
-            'id': u'5',
-            'description': u'Outside 4',
-            'x': u'35',
-            'y': u'55',
-            '#fid': 6L,
-            '#geometry': 'POINT(35.0 55.0)',
+        3006: {
+            'id': '5',
+            'description': 'Outside 4',
+            'x': '35',
+            'y': '55',
+            '#fid': 6,
+            '#geometry': 'Point (35 55)',
         },
-        3007L: {
-            'id': u'6',
-            'description': u'Outside 5',
-            'x': u'35',
-            'y': u'45',
-            '#fid': 7L,
-            '#geometry': 'POINT(35.0 45.0)',
+        3007: {
+            'id': '6',
+            'description': 'Outside 5',
+            'x': '35',
+            'y': '45',
+            '#fid': 7,
+            '#geometry': 'Point (35 45)',
         },
-        3008L: {
-            'id': u'7',
-            'description': u'Outside 7',
-            'x': u'35',
-            'y': u'25',
-            '#fid': 8L,
-            '#geometry': 'POINT(35.0 25.0)',
+        3008: {
+            'id': '7',
+            'description': 'Outside 7',
+            'x': '35',
+            'y': '25',
+            '#fid': 8,
+            '#geometry': 'Point (35 25)',
         },
-        3009L: {
-            'id': u'8',
-            'description': u'Outside 8',
-            'x': u'15',
-            'y': u'25',
-            '#fid': 9L,
-            '#geometry': 'POINT(15.0 25.0)',
+        3009: {
+            'id': '8',
+            'description': 'Outside 8',
+            'x': '15',
+            'y': '25',
+            '#fid': 9,
+            '#geometry': 'Point (15 25)',
         },
-        3010L: {
-            'id': u'9',
-            'description': u'Inside 2',
-            'x': u'25',
-            'y': u'45',
-            '#fid': 10L,
-            '#geometry': 'POINT(25.0 45.0)',
+        3010: {
+            'id': '9',
+            'description': 'Inside 2',
+            'x': '25',
+            'y': '45',
+            '#fid': 10,
+            '#geometry': 'Point (25 45)',
         },
-        4002L: {
-            'id': u'1',
-            'description': u'Inside',
-            'x': u'15',
-            'y': u'35',
-            '#fid': 2L,
-            '#geometry': 'POINT(15.0 35.0)',
+        4002: {
+            'id': '1',
+            'description': 'Inside',
+            'x': '15',
+            'y': '35',
+            '#fid': 2,
+            '#geometry': 'Point (15 35)',
         },
-        4003L: {
-            'id': u'2',
-            'description': u'Outside 1',
-            'x': u'5',
-            'y': u'35',
-            '#fid': 3L,
-            '#geometry': 'POINT(5.0 35.0)',
+        4003: {
+            'id': '2',
+            'description': 'Outside 1',
+            'x': '5',
+            'y': '35',
+            '#fid': 3,
+            '#geometry': 'Point (5 35)',
         },
-        4004L: {
-            'id': u'3',
-            'description': u'Outside 2',
-            'x': u'5',
-            'y': u'55',
-            '#fid': 4L,
-            '#geometry': 'POINT(5.0 55.0)',
+        4004: {
+            'id': '3',
+            'description': 'Outside 2',
+            'x': '5',
+            'y': '55',
+            '#fid': 4,
+            '#geometry': 'Point (5 55)',
         },
-        4005L: {
-            'id': u'4',
-            'description': u'Outside 3',
-            'x': u'15',
-            'y': u'55',
-            '#fid': 5L,
-            '#geometry': 'POINT(15.0 55.0)',
+        4005: {
+            'id': '4',
+            'description': 'Outside 3',
+            'x': '15',
+            'y': '55',
+            '#fid': 5,
+            '#geometry': 'Point (15 55)',
         },
-        4006L: {
-            'id': u'5',
-            'description': u'Outside 4',
-            'x': u'35',
-            'y': u'55',
-            '#fid': 6L,
-            '#geometry': 'POINT(35.0 55.0)',
+        4006: {
+            'id': '5',
+            'description': 'Outside 4',
+            'x': '35',
+            'y': '55',
+            '#fid': 6,
+            '#geometry': 'Point (35 55)',
         },
-        4007L: {
-            'id': u'6',
-            'description': u'Outside 5',
-            'x': u'35',
-            'y': u'45',
-            '#fid': 7L,
-            '#geometry': 'POINT(35.0 45.0)',
+        4007: {
+            'id': '6',
+            'description': 'Outside 5',
+            'x': '35',
+            'y': '45',
+            '#fid': 7,
+            '#geometry': 'Point (35 45)',
         },
-        4008L: {
-            'id': u'7',
-            'description': u'Outside 7',
-            'x': u'35',
-            'y': u'25',
-            '#fid': 8L,
-            '#geometry': 'POINT(35.0 25.0)',
+        4008: {
+            'id': '7',
+            'description': 'Outside 7',
+            'x': '35',
+            'y': '25',
+            '#fid': 8,
+            '#geometry': 'Point (35 25)',
         },
-        4009L: {
-            'id': u'8',
-            'description': u'Outside 8',
-            'x': u'15',
-            'y': u'25',
-            '#fid': 9L,
-            '#geometry': 'POINT(15.0 25.0)',
+        4009: {
+            'id': '8',
+            'description': 'Outside 8',
+            'x': '15',
+            'y': '25',
+            '#fid': 9,
+            '#geometry': 'Point (15 25)',
         },
-        4010L: {
-            'id': u'9',
-            'description': u'Inside 2',
-            'x': u'25',
-            'y': u'45',
-            '#fid': 10L,
-            '#geometry': 'POINT(25.0 45.0)',
+        4010: {
+            'id': '9',
+            'description': 'Inside 2',
+            'x': '25',
+            'y': '45',
+            '#fid': 10,
+            '#geometry': 'Point (25 45)',
         },
     }
-    wanted['log']=[
+    wanted['log'] = [
         'Request 2 did not return any data',
     ]
     return wanted
 
 
 def test_031_filter_rect_wkt_spatial_index():
-    wanted={}
-    wanted['uri']=u'file://testextw.txt?spatialIndex=Y&delimiter=|&type=csv&wktField=wkt'
-    wanted['fieldTypes']=['integer', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Inside',
-            '#fid': 2L,
-            '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
+    wanted = {}
+    wanted['uri'] = 'file://testextw.txt?spatialIndex=Y&delimiter=|&type=csv&wktField=wkt'
+    wanted['fieldTypes'] = ['integer', 'text']
+    wanted['geometryType'] = 1
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Inside',
+            '#fid': 2,
+            '#geometry': 'LineString (12 32, 28 48)',
         },
-        4L: {
-            'id': u'3',
-            'description': u'Crossing',
-            '#fid': 4L,
-            '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
+        4: {
+            'id': '3',
+            'description': 'Crossing',
+            '#fid': 4,
+            '#geometry': 'LineString (5 30, 30 55)',
         },
-        5L: {
-            'id': u'4',
-            'description': u'Bounding box overlap',
-            '#fid': 5L,
-            '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
+        5: {
+            'id': '4',
+            'description': 'Bounding box overlap',
+            '#fid': 5,
+            '#geometry': 'LineString (5 30, 5 55, 30 55)',
         },
-        6L: {
-            'id': u'5',
-            'description': u'Crossing 2',
-            '#fid': 6L,
-            '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
+        6: {
+            'id': '5',
+            'description': 'Crossing 2',
+            '#fid': 6,
+            '#geometry': 'LineString (25 35, 35 35)',
         },
-        7L: {
-            'id': u'6',
-            'description': u'Bounding box overlap 2',
-            '#fid': 7L,
-            '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
+        7: {
+            'id': '6',
+            'description': 'Bounding box overlap 2',
+            '#fid': 7,
+            '#geometry': 'LineString (28 29, 31 29, 31 33)',
         },
-        1002L: {
-            'id': u'1',
-            'description': u'Inside',
-            '#fid': 2L,
-            '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
+        1002: {
+            'id': '1',
+            'description': 'Inside',
+            '#fid': 2,
+            '#geometry': 'LineString (12 32, 28 48)',
         },
-        1004L: {
-            'id': u'3',
-            'description': u'Crossing',
-            '#fid': 4L,
-            '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
+        1004: {
+            'id': '3',
+            'description': 'Crossing',
+            '#fid': 4,
+            '#geometry': 'LineString (5 30, 30 55)',
         },
-        1006L: {
-            'id': u'5',
-            'description': u'Crossing 2',
-            '#fid': 6L,
-            '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
+        1006: {
+            'id': '5',
+            'description': 'Crossing 2',
+            '#fid': 6,
+            '#geometry': 'LineString (25 35, 35 35)',
         },
-        3002L: {
-            'id': u'1',
-            'description': u'Inside',
-            '#fid': 2L,
-            '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
+        3002: {
+            'id': '1',
+            'description': 'Inside',
+            '#fid': 2,
+            '#geometry': 'LineString (12 32, 28 48)',
         },
-        3003L: {
-            'id': u'2',
-            'description': u'Outside',
-            '#fid': 3L,
-            '#geometry': 'LINESTRING(0.0 0.0, 0.0 10.0)',
+        3003: {
+            'id': '2',
+            'description': 'Outside',
+            '#fid': 3,
+            '#geometry': 'LineString (0 0, 0 10)',
         },
-        3004L: {
-            'id': u'3',
-            'description': u'Crossing',
-            '#fid': 4L,
-            '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
+        3004: {
+            'id': '3',
+            'description': 'Crossing',
+            '#fid': 4,
+            '#geometry': 'LineString (5 30, 30 55)',
         },
-        3005L: {
-            'id': u'4',
-            'description': u'Bounding box overlap',
-            '#fid': 5L,
-            '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
+        3005: {
+            'id': '4',
+            'description': 'Bounding box overlap',
+            '#fid': 5,
+            '#geometry': 'LineString (5 30, 5 55, 30 55)',
         },
-        3006L: {
-            'id': u'5',
-            'description': u'Crossing 2',
-            '#fid': 6L,
-            '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
+        3006: {
+            'id': '5',
+            'description': 'Crossing 2',
+            '#fid': 6,
+            '#geometry': 'LineString (25 35, 35 35)',
         },
-        3007L: {
-            'id': u'6',
-            'description': u'Bounding box overlap 2',
-            '#fid': 7L,
-            '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
+        3007: {
+            'id': '6',
+            'description': 'Bounding box overlap 2',
+            '#fid': 7,
+            '#geometry': 'LineString (28 29, 31 29, 31 33)',
         },
-        4002L: {
-            'id': u'1',
-            'description': u'Inside',
-            '#fid': 2L,
-            '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
+        4002: {
+            'id': '1',
+            'description': 'Inside',
+            '#fid': 2,
+            '#geometry': 'LineString (12 32, 28 48)',
         },
-        4003L: {
-            'id': u'2',
-            'description': u'Outside',
-            '#fid': 3L,
-            '#geometry': 'LINESTRING(0.0 0.0, 0.0 10.0)',
+        4003: {
+            'id': '2',
+            'description': 'Outside',
+            '#fid': 3,
+            '#geometry': 'LineString (0 0, 0 10)',
         },
-        4004L: {
-            'id': u'3',
-            'description': u'Crossing',
-            '#fid': 4L,
-            '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
+        4004: {
+            'id': '3',
+            'description': 'Crossing',
+            '#fid': 4,
+            '#geometry': 'LineString (5 30, 30 55)',
         },
-        4005L: {
-            'id': u'4',
-            'description': u'Bounding box overlap',
-            '#fid': 5L,
-            '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
+        4005: {
+            'id': '4',
+            'description': 'Bounding box overlap',
+            '#fid': 5,
+            '#geometry': 'LineString (5 30, 5 55, 30 55)',
         },
-        4006L: {
-            'id': u'5',
-            'description': u'Crossing 2',
-            '#fid': 6L,
-            '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
+        4006: {
+            'id': '5',
+            'description': 'Crossing 2',
+            '#fid': 6,
+            '#geometry': 'LineString (25 35, 35 35)',
         },
-        4007L: {
-            'id': u'6',
-            'description': u'Bounding box overlap 2',
-            '#fid': 7L,
-            '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
+        4007: {
+            'id': '6',
+            'description': 'Bounding box overlap 2',
+            '#fid': 7,
+            '#geometry': 'LineString (28 29, 31 29, 31 33)',
         },
     }
-    wanted['log']=[
+    wanted['log'] = [
         'Request 2 did not return any data',
     ]
     return wanted
 
 
 def test_032_filter_rect_wkt_create_spatial_index():
-    wanted={}
-    wanted['uri']=u'file://testextw.txt?delimiter=|&type=csv&wktField=wkt'
-    wanted['fieldTypes']=['integer', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Inside',
-            '#fid': 2L,
-            '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
+    wanted = {}
+    wanted['uri'] = 'file://testextw.txt?delimiter=|&type=csv&wktField=wkt'
+    wanted['fieldTypes'] = ['integer', 'text']
+    wanted['geometryType'] = 1
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Inside',
+            '#fid': 2,
+            '#geometry': 'LineString (12 32, 28 48)',
         },
-        4L: {
-            'id': u'3',
-            'description': u'Crossing',
-            '#fid': 4L,
-            '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
+        4: {
+            'id': '3',
+            'description': 'Crossing',
+            '#fid': 4,
+            '#geometry': 'LineString (5 30, 30 55)',
         },
-        5L: {
-            'id': u'4',
-            'description': u'Bounding box overlap',
-            '#fid': 5L,
-            '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
+        5: {
+            'id': '4',
+            'description': 'Bounding box overlap',
+            '#fid': 5,
+            '#geometry': 'LineString (5 30, 5 55, 30 55)',
         },
-        6L: {
-            'id': u'5',
-            'description': u'Crossing 2',
-            '#fid': 6L,
-            '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
+        6: {
+            'id': '5',
+            'description': 'Crossing 2',
+            '#fid': 6,
+            '#geometry': 'LineString (25 35, 35 35)',
         },
-        7L: {
-            'id': u'6',
-            'description': u'Bounding box overlap 2',
-            '#fid': 7L,
-            '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
+        7: {
+            'id': '6',
+            'description': 'Bounding box overlap 2',
+            '#fid': 7,
+            '#geometry': 'LineString (28 29, 31 29, 31 33)',
         },
-        1002L: {
-            'id': u'1',
-            'description': u'Inside',
-            '#fid': 2L,
-            '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
+        1002: {
+            'id': '1',
+            'description': 'Inside',
+            '#fid': 2,
+            '#geometry': 'LineString (12 32, 28 48)',
         },
-        1003L: {
-            'id': u'2',
-            'description': u'Outside',
-            '#fid': 3L,
-            '#geometry': 'LINESTRING(0.0 0.0, 0.0 10.0)',
+        1003: {
+            'id': '2',
+            'description': 'Outside',
+            '#fid': 3,
+            '#geometry': 'LineString (0 0, 0 10)',
         },
-        1004L: {
-            'id': u'3',
-            'description': u'Crossing',
-            '#fid': 4L,
-            '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
+        1004: {
+            'id': '3',
+            'description': 'Crossing',
+            '#fid': 4,
+            '#geometry': 'LineString (5 30, 30 55)',
         },
-        1005L: {
-            'id': u'4',
-            'description': u'Bounding box overlap',
-            '#fid': 5L,
-            '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
+        1005: {
+            'id': '4',
+            'description': 'Bounding box overlap',
+            '#fid': 5,
+            '#geometry': 'LineString (5 30, 5 55, 30 55)',
         },
-        1006L: {
-            'id': u'5',
-            'description': u'Crossing 2',
-            '#fid': 6L,
-            '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
+        1006: {
+            'id': '5',
+            'description': 'Crossing 2',
+            '#fid': 6,
+            '#geometry': 'LineString (25 35, 35 35)',
         },
-        1007L: {
-            'id': u'6',
-            'description': u'Bounding box overlap 2',
-            '#fid': 7L,
-            '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
+        1007: {
+            'id': '6',
+            'description': 'Bounding box overlap 2',
+            '#fid': 7,
+            '#geometry': 'LineString (28 29, 31 29, 31 33)',
         },
-        3002L: {
-            'id': u'1',
-            'description': u'Inside',
-            '#fid': 2L,
-            '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
+        3002: {
+            'id': '1',
+            'description': 'Inside',
+            '#fid': 2,
+            '#geometry': 'LineString (12 32, 28 48)',
         },
-        3004L: {
-            'id': u'3',
-            'description': u'Crossing',
-            '#fid': 4L,
-            '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
+        3004: {
+            'id': '3',
+            'description': 'Crossing',
+            '#fid': 4,
+            '#geometry': 'LineString (5 30, 30 55)',
         },
-        3005L: {
-            'id': u'4',
-            'description': u'Bounding box overlap',
-            '#fid': 5L,
-            '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
+        3005: {
+            'id': '4',
+            'description': 'Bounding box overlap',
+            '#fid': 5,
+            '#geometry': 'LineString (5 30, 5 55, 30 55)',
         },
-        3006L: {
-            'id': u'5',
-            'description': u'Crossing 2',
-            '#fid': 6L,
-            '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
+        3006: {
+            'id': '5',
+            'description': 'Crossing 2',
+            '#fid': 6,
+            '#geometry': 'LineString (25 35, 35 35)',
         },
-        3007L: {
-            'id': u'6',
-            'description': u'Bounding box overlap 2',
-            '#fid': 7L,
-            '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
+        3007: {
+            'id': '6',
+            'description': 'Bounding box overlap 2',
+            '#fid': 7,
+            '#geometry': 'LineString (28 29, 31 29, 31 33)',
         },
-        4002L: {
-            'id': u'1',
-            'description': u'Inside',
-            '#fid': 2L,
-            '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
+        4002: {
+            'id': '1',
+            'description': 'Inside',
+            '#fid': 2,
+            '#geometry': 'LineString (12 32, 28 48)',
         },
-        4004L: {
-            'id': u'3',
-            'description': u'Crossing',
-            '#fid': 4L,
-            '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
+        4004: {
+            'id': '3',
+            'description': 'Crossing',
+            '#fid': 4,
+            '#geometry': 'LineString (5 30, 30 55)',
         },
-        4006L: {
-            'id': u'5',
-            'description': u'Crossing 2',
-            '#fid': 6L,
-            '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
+        4006: {
+            'id': '5',
+            'description': 'Crossing 2',
+            '#fid': 6,
+            '#geometry': 'LineString (25 35, 35 35)',
         },
-        6002L: {
-            'id': u'1',
-            'description': u'Inside',
-            '#fid': 2L,
-            '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
+        6002: {
+            'id': '1',
+            'description': 'Inside',
+            '#fid': 2,
+            '#geometry': 'LineString (12 32, 28 48)',
         },
-        6003L: {
-            'id': u'2',
-            'description': u'Outside',
-            '#fid': 3L,
-            '#geometry': 'LINESTRING(0.0 0.0, 0.0 10.0)',
+        6003: {
+            'id': '2',
+            'description': 'Outside',
+            '#fid': 3,
+            '#geometry': 'LineString (0 0, 0 10)',
         },
-        6004L: {
-            'id': u'3',
-            'description': u'Crossing',
-            '#fid': 4L,
-            '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
+        6004: {
+            'id': '3',
+            'description': 'Crossing',
+            '#fid': 4,
+            '#geometry': 'LineString (5 30, 30 55)',
         },
-        6005L: {
-            'id': u'4',
-            'description': u'Bounding box overlap',
-            '#fid': 5L,
-            '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
+        6005: {
+            'id': '4',
+            'description': 'Bounding box overlap',
+            '#fid': 5,
+            '#geometry': 'LineString (5 30, 5 55, 30 55)',
         },
-        6006L: {
-            'id': u'5',
-            'description': u'Crossing 2',
-            '#fid': 6L,
-            '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
+        6006: {
+            'id': '5',
+            'description': 'Crossing 2',
+            '#fid': 6,
+            '#geometry': 'LineString (25 35, 35 35)',
         },
-        6007L: {
-            'id': u'6',
-            'description': u'Bounding box overlap 2',
-            '#fid': 7L,
-            '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
+        6007: {
+            'id': '6',
+            'description': 'Bounding box overlap 2',
+            '#fid': 7,
+            '#geometry': 'LineString (28 29, 31 29, 31 33)',
         },
-        7002L: {
-            'id': u'1',
-            'description': u'Inside',
-            '#fid': 2L,
-            '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
+        7002: {
+            'id': '1',
+            'description': 'Inside',
+            '#fid': 2,
+            '#geometry': 'LineString (12 32, 28 48)',
         },
-        7003L: {
-            'id': u'2',
-            'description': u'Outside',
-            '#fid': 3L,
-            '#geometry': 'LINESTRING(0.0 0.0, 0.0 10.0)',
+        7003: {
+            'id': '2',
+            'description': 'Outside',
+            '#fid': 3,
+            '#geometry': 'LineString (0 0, 0 10)',
         },
-        7004L: {
-            'id': u'3',
-            'description': u'Crossing',
-            '#fid': 4L,
-            '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
+        7004: {
+            'id': '3',
+            'description': 'Crossing',
+            '#fid': 4,
+            '#geometry': 'LineString (5 30, 30 55)',
         },
-        7005L: {
-            'id': u'4',
-            'description': u'Bounding box overlap',
-            '#fid': 5L,
-            '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
+        7005: {
+            'id': '4',
+            'description': 'Bounding box overlap',
+            '#fid': 5,
+            '#geometry': 'LineString (5 30, 5 55, 30 55)',
         },
-        7006L: {
-            'id': u'5',
-            'description': u'Crossing 2',
-            '#fid': 6L,
-            '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
+        7006: {
+            'id': '5',
+            'description': 'Crossing 2',
+            '#fid': 6,
+            '#geometry': 'LineString (25 35, 35 35)',
         },
-        7007L: {
-            'id': u'6',
-            'description': u'Bounding box overlap 2',
-            '#fid': 7L,
-            '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
+        7007: {
+            'id': '6',
+            'description': 'Bounding box overlap 2',
+            '#fid': 7,
+            '#geometry': 'LineString (28 29, 31 29, 31 33)',
         },
     }
-    wanted['log']=[
+    wanted['log'] = [
         'Request 5 did not return any data',
     ]
     return wanted
 
 
 def test_033_reset_subset_string():
-    wanted={}
-    wanted['uri']=u'file://test.csv?geomType=none&type=csv'
-    wanted['fieldTypes']=['integer', 'text', 'text', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Basic unquoted record',
-            'data': u'Some data',
-            'info': u'Some info',
-            'field_5': u'NULL',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://test.csv?geomType=none&type=csv'
+    wanted['fieldTypes'] = ['integer', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Basic unquoted record',
+            'data': 'Some data',
+            'info': 'Some info',
+            'field_5': 'NULL',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        3L: {
-            'id': u'2',
-            'description': u'Quoted field',
-            'data': u'Quoted data',
-            'info': u'Unquoted',
-            'field_5': u'NULL',
-            '#fid': 3L,
+        3: {
+            'id': '2',
+            'description': 'Quoted field',
+            'data': 'Quoted data',
+            'info': 'Unquoted',
+            'field_5': 'NULL',
+            '#fid': 3,
             '#geometry': 'None',
         },
-        4L: {
-            'id': u'3',
-            'description': u'Escaped quotes',
-            'data': u'Quoted "citation" data',
-            'info': u'Unquoted',
-            'field_5': u'NULL',
-            '#fid': 4L,
+        4: {
+            'id': '3',
+            'description': 'Escaped quotes',
+            'data': 'Quoted "citation" data',
+            'info': 'Unquoted',
+            'field_5': 'NULL',
+            '#fid': 4,
             '#geometry': 'None',
         },
-        5L: {
-            'id': u'4',
-            'description': u'Quoted newlines',
-            'data': u'Line 1\nLine 2\n\nLine 4',
-            'info': u'No data',
-            'field_5': u'NULL',
-            '#fid': 5L,
+        5: {
+            'id': '4',
+            'description': 'Quoted newlines',
+            'data': 'Line 1\nLine 2\n\nLine 4',
+            'info': 'No data',
+            'field_5': 'NULL',
+            '#fid': 5,
             '#geometry': 'None',
         },
-        9L: {
-            'id': u'5',
-            'description': u'Extra fields',
-            'data': u'data',
-            'info': u'info',
-            'field_5': u'message',
-            '#fid': 9L,
+        9: {
+            'id': '5',
+            'description': 'Extra fields',
+            'data': 'data',
+            'info': 'info',
+            'field_5': 'message',
+            '#fid': 9,
             '#geometry': 'None',
         },
-        10L: {
-            'id': u'6',
-            'description': u'Missing fields',
-            'data': u'NULL',
-            'info': u'NULL',
-            'field_5': u'NULL',
-            '#fid': 10L,
+        10: {
+            'id': '6',
+            'description': 'Missing fields',
+            'data': 'NULL',
+            'info': 'NULL',
+            'field_5': 'NULL',
+            '#fid': 10,
             '#geometry': 'None',
         },
-        2002L: {
-            'id': u'1',
-            'description': u'Basic unquoted record',
-            'data': u'Some data',
-            'info': u'Some info',
-            'field_5': u'NULL',
-            '#fid': 2L,
+        2002: {
+            'id': '1',
+            'description': 'Basic unquoted record',
+            'data': 'Some data',
+            'info': 'Some info',
+            'field_5': 'NULL',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        2004L: {
-            'id': u'3',
-            'description': u'Escaped quotes',
-            'data': u'Quoted "citation" data',
-            'info': u'Unquoted',
-            'field_5': u'NULL',
-            '#fid': 4L,
+        2004: {
+            'id': '3',
+            'description': 'Escaped quotes',
+            'data': 'Quoted "citation" data',
+            'info': 'Unquoted',
+            'field_5': 'NULL',
+            '#fid': 4,
             '#geometry': 'None',
         },
-        2009L: {
-            'id': u'5',
-            'description': u'Extra fields',
-            'data': u'data',
-            'info': u'info',
-            'field_5': u'message',
-            '#fid': 9L,
+        2009: {
+            'id': '5',
+            'description': 'Extra fields',
+            'data': 'data',
+            'info': 'info',
+            'field_5': 'message',
+            '#fid': 9,
             '#geometry': 'None',
         },
-        4010L: {
-            'id': u'6',
-            'description': u'Missing fields',
-            'data': u'NULL',
-            'info': u'NULL',
-            'field_5': u'NULL',
-            '#fid': 10L,
+        4010: {
+            'id': '6',
+            'description': 'Missing fields',
+            'data': 'NULL',
+            'info': 'NULL',
+            'field_5': 'NULL',
+            '#fid': 10,
             '#geometry': 'None',
         },
-        6004L: {
-            'id': u'3',
-            'description': u'Escaped quotes',
-            'data': u'Quoted "citation" data',
-            'info': u'Unquoted',
-            'field_5': u'NULL',
-            '#fid': 4L,
+        6004: {
+            'id': '3',
+            'description': 'Escaped quotes',
+            'data': 'Quoted "citation" data',
+            'info': 'Unquoted',
+            'field_5': 'NULL',
+            '#fid': 4,
             '#geometry': 'None',
         },
-        8002L: {
-            'id': u'1',
-            'description': u'Basic unquoted record',
-            'data': u'Some data',
-            'info': u'Some info',
-            'field_5': u'NULL',
-            '#fid': 2L,
+        8002: {
+            'id': '1',
+            'description': 'Basic unquoted record',
+            'data': 'Some data',
+            'info': 'Some info',
+            'field_5': 'NULL',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        8004L: {
-            'id': u'3',
-            'description': u'Escaped quotes',
-            'data': u'Quoted "citation" data',
-            'info': u'Unquoted',
-            'field_5': u'NULL',
-            '#fid': 4L,
+        8004: {
+            'id': '3',
+            'description': 'Escaped quotes',
+            'data': 'Quoted "citation" data',
+            'info': 'Unquoted',
+            'field_5': 'NULL',
+            '#fid': 4,
             '#geometry': 'None',
         },
-        8009L: {
-            'id': u'5',
-            'description': u'Extra fields',
-            'data': u'data',
-            'info': u'info',
-            'field_5': u'message',
-            '#fid': 9L,
+        8009: {
+            'id': '5',
+            'description': 'Extra fields',
+            'data': 'data',
+            'info': 'info',
+            'field_5': 'message',
+            '#fid': 9,
             '#geometry': 'None',
         },
-        10003L: {
-            'id': u'2',
-            'description': u'Quoted field',
-            'data': u'Quoted data',
-            'info': u'Unquoted',
-            'field_5': u'NULL',
-            '#fid': 3L,
+        10003: {
+            'id': '2',
+            'description': 'Quoted field',
+            'data': 'Quoted data',
+            'info': 'Unquoted',
+            'field_5': 'NULL',
+            '#fid': 3,
             '#geometry': 'None',
         },
-        10005L: {
-            'id': u'4',
-            'description': u'Quoted newlines',
-            'data': u'Line 1\nLine 2\n\nLine 4',
-            'info': u'No data',
-            'field_5': u'NULL',
-            '#fid': 5L,
+        10005: {
+            'id': '4',
+            'description': 'Quoted newlines',
+            'data': 'Line 1\nLine 2\n\nLine 4',
+            'info': 'No data',
+            'field_5': 'NULL',
+            '#fid': 5,
             '#geometry': 'None',
         },
-        10010L: {
-            'id': u'6',
-            'description': u'Missing fields',
-            'data': u'NULL',
-            'info': u'NULL',
-            'field_5': u'NULL',
-            '#fid': 10L,
+        10010: {
+            'id': '6',
+            'description': 'Missing fields',
+            'data': 'NULL',
+            'info': 'NULL',
+            'field_5': 'NULL',
+            '#fid': 10,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_034_csvt_file():
-    wanted={}
-    wanted['uri']=u'file://testcsvt.csv?geomType=none&type=csv'
-    wanted['fieldTypes']=['integer', 'text', 'integer', 'double', 'text', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Test csvt 1',
-            'f1': u'1',
-            'f2': u'1.2',
-            'f3': u'01',
-            'f4': u'text',
-            'f5': u'times',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://testcsvt.csv?geomType=none&type=csv'
+    wanted['fieldTypes'] = ['integer', 'text', 'integer', 'double', 'text', 'text', 'text', 'text', 'text', 'text', 'longlong', 'longlong']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Test csvt 1',
+            'fint': '1',
+            'freal': '1.2',
+            'fstr': '1',
+            'fstr_1': 'text',
+            'fdatetime': '2015-03-02T12:30:00',
+            'fdate': '2014-12-30',
+            'ftime': '23:55',
+            'flong': '-456',
+            'flonglong': '-678',
+            'field_12': 'NULL',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        3L: {
-            'id': u'2',
-            'description': u'Test csvt 2',
-            'f1': u'3',
-            'f2': u'1.5',
-            'f3': u'99',
-            'f4': u'23.5',
-            'f5': u'80',
-            '#fid': 3L,
+        3: {
+            'id': '2',
+            'description': 'Test csvt 2',
+            'fint': '3',
+            'freal': '1.5',
+            'fstr': '99',
+            'fstr_1': '23.5',
+            'fdatetime': '80',
+            'fdate': '2015-03-28',
+            'ftime': '2014-12-30',
+            'flong': '01:55',
+            'flonglong': '9189304972279762602',
+            'field_12': '-3123724580211819352',
+            '#fid': 3,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_035_csvt_file2():
-    wanted={}
-    wanted['uri']=u'file://testcsvt2.txt?geomType=none&delimiter=|&type=csv'
-    wanted['fieldTypes']=['integer', 'text', 'integer', 'double', 'integer', 'text', 'integer']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Test csvt 1',
-            'f1': u'1',
-            'f2': u'1.2',
-            'f3': u'1',
-            'f4': u'text',
-            'f5': u'NULL',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://testcsvt2.txt?geomType=none&delimiter=|&type=csv'
+    wanted['fieldTypes'] = ['integer', 'text', 'integer', 'double', 'integer', 'text', 'integer']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Test csvt 1',
+            'f1': '1',
+            'f2': '1.2',
+            'f3': '1',
+            'f4': 'text',
+            'f5': 'NULL',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        3L: {
-            'id': u'2',
-            'description': u'Test csvt 2',
-            'f1': u'3',
-            'f2': u'1.5',
-            'f3': u'99',
-            'f4': u'23.5',
-            'f5': u'80',
-            '#fid': 3L,
+        3: {
+            'id': '2',
+            'description': 'Test csvt 2',
+            'f1': '3',
+            'f2': '1.5',
+            'f3': '99',
+            'f4': '23.5',
+            'f5': '80',
+            '#fid': 3,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
     return wanted
 
 
 def test_036_csvt_file_invalid_types():
-    wanted={}
-    wanted['uri']=u'file://testcsvt3.csv?geomType=none&type=csv'
-    wanted['fieldTypes']=['integer', 'text', 'integer', 'double', 'integer', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Test csvt 1',
-            'f1': u'1',
-            'f2': u'1.2',
-            'f3': u'1',
-            'f4': u'text',
-            'f5': u'times',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://testcsvt3.csv?geomType=none&type=csv'
+    wanted['fieldTypes'] = ['integer', 'text', 'integer', 'double', 'integer', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Test csvt 1',
+            'f1': '1',
+            'f2': '1.2',
+            'f3': '1',
+            'f4': 'text',
+            'f5': 'times',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        3L: {
-            'id': u'2',
-            'description': u'Test csvt 2',
-            'f1': u'3',
-            'f2': u'1.5',
-            'f3': u'99',
-            'f4': u'23.5',
-            'f5': u'80',
-            '#fid': 3L,
+        3: {
+            'id': '2',
+            'description': 'Test csvt 2',
+            'f1': '3',
+            'f2': '1.5',
+            'f3': '99',
+            'f4': '23.5',
+            'f5': '80',
+            '#fid': 3,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[
-        u'Errors in file testcsvt3.csv',
-        u'File type string in testcsvt3.csvt is not correctly formatted',
+    wanted['log'] = [
+        'Errors in file testcsvt3.csv',
+        'File type string in testcsvt3.csvt is not correctly formatted',
     ]
     return wanted
 
 
 def test_037_csvt_file_invalid_file():
-    wanted={}
-    wanted['uri']=u'file://testcsvt4.csv?geomType=none&type=csv'
-    wanted['fieldTypes']=['integer', 'text', 'integer', 'double', 'integer', 'text', 'text']
-    wanted['data']={
-        2L: {
-            'id': u'1',
-            'description': u'Test csvt 1',
-            'f1': u'1',
-            'f2': u'1.2',
-            'f3': u'1',
-            'f4': u'text',
-            'f5': u'times',
-            '#fid': 2L,
+    wanted = {}
+    wanted['uri'] = 'file://testcsvt4.csv?geomType=none&type=csv'
+    wanted['fieldTypes'] = ['integer', 'text', 'integer', 'double', 'integer', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'Test csvt 1',
+            'f1': '1',
+            'f2': '1.2',
+            'f3': '1',
+            'f4': 'text',
+            'f5': 'times',
+            '#fid': 2,
             '#geometry': 'None',
         },
-        3L: {
-            'id': u'2',
-            'description': u'Test csvt 2',
-            'f1': u'3',
-            'f2': u'1.5',
-            'f3': u'99',
-            'f4': u'23.5',
-            'f5': u'80',
-            '#fid': 3L,
+        3: {
+            'id': '2',
+            'description': 'Test csvt 2',
+            'f1': '3',
+            'f2': '1.5',
+            'f3': '99',
+            'f4': '23.5',
+            'f5': '80',
+            '#fid': 3,
             '#geometry': 'None',
         },
     }
-    wanted['log']=[]
+    wanted['log'] = []
+    return wanted
+
+
+def test_038_type_inference():
+    wanted = {}
+    wanted['uri'] = 'file://testtypes.csv?yField=lat&xField=lon&type=csv'
+    wanted['fieldTypes'] = ['text', 'double', 'double', 'text', 'text', 'integer', 'longlong', 'double', 'text']
+    wanted['geometryType'] = 0
+    wanted['data'] = {
+        2: {
+            'id': 'line1',
+            'description': '1.0',
+            'lon': '1.0',
+            'lat': '1.0',
+            'empty': 'NULL',
+            'text': 'NULL',
+            'int': '0',
+            'longlong': '0',
+            'real': 'NULL',
+            'text2': '1',
+            '#fid': 2,
+            '#geometry': 'Point (1 1)',
+        },
+        3: {
+            'id': 'line2',
+            'description': '1.0',
+            'lon': '1.0',
+            'lat': '5.0',
+            'empty': 'NULL',
+            'text': '1',
+            'int': 'NULL',
+            'longlong': '9189304972279762602',
+            'real': '1.3',
+            'text2': '-4',
+            '#fid': 3,
+            '#geometry': 'Point (1 5)',
+        },
+        4: {
+            'id': 'line3',
+            'description': '5.0',
+            'lon': '5.0',
+            'lat': '5.0',
+            'empty': 'NULL',
+            'text': '1xx',
+            'int': '2',
+            'longlong': '345',
+            'real': '2.0',
+            'text2': '1x',
+            '#fid': 4,
+            '#geometry': 'Point (5 5)',
+        },
+        5: {
+            'id': 'line4',
+            'description': '5.0',
+            'lon': '5.0',
+            'lat': '1.0',
+            'empty': 'NULL',
+            'text': 'A string',
+            'int': '-3456',
+            'longlong': '-3123724580211819352',
+            'real': '-123.56',
+            'text2': 'NULL',
+            '#fid': 5,
+            '#geometry': 'Point (5 1)',
+        },
+        6: {
+            'id': 'line5',
+            'description': '3.0',
+            'lon': '3.0',
+            'lat': '1.0',
+            'empty': 'NULL',
+            'text': 'NULL',
+            'int': 'NULL',
+            'longlong': 'NULL',
+            'real': '0.00023',
+            'text2': '23',
+            '#fid': 6,
+            '#geometry': 'Point (3 1)',
+        },
+        7: {
+            'id': 'line6',
+            'description': '1.0',
+            'lon': '1.0',
+            'lat': '3.0',
+            'empty': 'NULL',
+            'text': '1.5',
+            'int': '9',
+            'longlong': '42',
+            'real': '99.0',
+            'text2': '0',
+            '#fid': 7,
+            '#geometry': 'Point (1 3)',
+        },
+    }
+    wanted['log'] = []
+    return wanted
+
+
+def test_039_issue_13749():
+    wanted = {}
+    wanted['uri'] = 'file://test13749.csv?yField=geom_y&xField=geom_x&type=csv'
+    wanted['fieldTypes'] = ['integer', 'text', 'double', 'double']
+    wanted['geometryType'] = 0
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': 'No geom',
+            'geom_x': 'NULL',
+            'geom_y': 'NULL',
+            '#fid': 2,
+            '#geometry': 'None',
+        },
+        3: {
+            'id': '2',
+            'description': 'Point1',
+            'geom_x': '11.0',
+            'geom_y': '22.0',
+            '#fid': 3,
+            '#geometry': 'Point (11 22)',
+        },
+        4: {
+            'id': '3',
+            'description': 'Point2',
+            'geom_x': '15.0',
+            'geom_y': '23.0',
+            '#fid': 4,
+            '#geometry': 'Point (15 23)',
+        },
+        5: {
+            'id': '4',
+            'description': 'Point3',
+            'geom_x': '13.0',
+            'geom_y': '23.0',
+            '#fid': 5,
+            '#geometry': 'Point (13 23)',
+        },
+    }
+    wanted['log'] = [
+        'Errors in file test13749.csv',
+        '1 records have missing geometry definitions',
+    ]
+    return wanted
+
+
+def test_040_issue_14666():
+    wanted = {}
+    wanted['uri'] = 'file://test14666.csv?yField=y&xField=x&type=csv&delimiter=\\t'
+    wanted['fieldTypes'] = ['integer', 'double', 'double']
+    wanted['geometryType'] = 0
+    wanted['data'] = {
+        2: {
+            'id': '1',
+            'description': '7.15417',
+            'x': '7.15417',
+            'y': '50.680622',
+            '#fid': 2,
+            '#geometry': 'Point (7.1541699999999997 50.68062199999999962)',
+        },
+        3: {
+            'id': '2',
+            'description': '7.119219',
+            'x': '7.119219',
+            'y': '50.739814',
+            '#fid': 3,
+            '#geometry': 'Point (7.11921900000000019 50.73981400000000264)',
+        },
+        4: {
+            'id': '3',
+            'description': 'NULL',
+            'x': 'NULL',
+            'y': 'NULL',
+            '#fid': 4,
+            '#geometry': 'None',
+        },
+        5: {
+            'id': '4',
+            'description': 'NULL',
+            'x': 'NULL',
+            'y': 'NULL',
+            '#fid': 5,
+            '#geometry': 'None',
+        },
+        6: {
+            'id': '5',
+            'description': '7.129229',
+            'x': '7.129229',
+            'y': '50.703692',
+            '#fid': 6,
+            '#geometry': 'Point (7.12922899999999959 50.70369199999999665)',
+        },
+    }
+    wanted['log'] = [
+        'Errors in file test14666.csv',
+        '2 records have missing geometry definitions',
+    ]
     return wanted

@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsmapcanvassnappingutils.cpp
+    ---------------------
+    begin                : December 2014
+    copyright            : (C) 2014 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsmapcanvassnappingutils.h"
 
 #include "qgsmapcanvas.h"
@@ -9,7 +23,7 @@
 QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas* canvas, QObject* parent )
     : QgsSnappingUtils( parent )
     , mCanvas( canvas )
-    , mProgress( NULL )
+    , mProgress( nullptr )
 {
   connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
   connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
@@ -38,11 +52,14 @@ void QgsMapCanvasSnappingUtils::prepareIndexStarting( int count )
 
 void QgsMapCanvasSnappingUtils::prepareIndexProgress( int index )
 {
+  if ( !mProgress )
+    return;
+
   mProgress->setValue( index );
   if ( index == mProgress->maximum() )
   {
     delete mProgress;
-    mProgress = 0;
+    mProgress = nullptr;
     QApplication::restoreOverrideCursor();
   }
 }

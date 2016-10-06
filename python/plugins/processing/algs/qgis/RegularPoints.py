@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2014'
@@ -25,11 +26,14 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
 from random import seed, uniform
 from math import sqrt
 
-from PyQt4.QtCore import QVariant
-from qgis.core import QGis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import (Qgis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsWkbTypes,
+                       QgsGeometry, QgsPoint)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -37,6 +41,9 @@ from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
+from processing.tools import dataobjects
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class RegularPoints(GeoAlgorithm):
@@ -48,21 +55,24 @@ class RegularPoints(GeoAlgorithm):
     IS_SPACING = 'IS_SPACING'
     OUTPUT = 'OUTPUT'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'regular_points.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Regular points'
-        self.group = 'Vector creation tools'
+        self.name, self.i18n_name = self.trAlgorithm('Regular points')
+        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
 
         self.addParameter(ParameterExtent(self.EXTENT,
-            self.tr('Input extent')))
+                                          self.tr('Input extent')))
         self.addParameter(ParameterNumber(self.SPACING,
-            self.tr('Point spacing/count'), 0.0001, 999999999.999999999, 0.0001))
+                                          self.tr('Point spacing/count'), 0.0001, 999999999.999999999, 0.0001))
         self.addParameter(ParameterNumber(self.INSET,
-            self.tr('Initial inset from corner (LH side)'), 0.0, 9999.9999, 0.0))
+                                          self.tr('Initial inset from corner (LH side)'), 0.0, 9999.9999, 0.0))
         self.addParameter(ParameterBoolean(self.RANDOMIZE,
-            self.tr('Apply random offset to point spacing'), False))
+                                           self.tr('Apply random offset to point spacing'), False))
         self.addParameter(ParameterBoolean(self.IS_SPACING,
-            self.tr('Use point spacing'), True))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Regular points')))
+                                           self.tr('Use point spacing'), True))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Regular points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, progress):
         extent = str(self.getParameterValue(self.EXTENT)).split(',')
@@ -80,7 +90,7 @@ class RegularPoints(GeoAlgorithm):
         mapCRS = iface.mapCanvas().mapSettings().destinationCrs()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QGis.WKBPoint, mapCRS)
+            fields, QgsWkbTypes.Point, mapCRS)
 
         if randomize:
             seed()
@@ -96,7 +106,7 @@ class RegularPoints(GeoAlgorithm):
         f.setFields(fields)
 
         count = 0
-        total = 100.00 / (area / pSpacing)
+        total = 100.0 / (area / pSpacing)
         y = extent.yMaximum() - inset
         while y >= extent.yMinimum():
             x = extent.xMinimum() + inset
@@ -114,6 +124,6 @@ class RegularPoints(GeoAlgorithm):
                     writer.addFeature(f)
                     x += pSpacing
                     count += 1
-                    progress.setPercentage(int(count* total))
+                    progress.setPercentage(int(count * total))
             y = y - pSpacing
         del writer

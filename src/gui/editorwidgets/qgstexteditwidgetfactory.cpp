@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,6 +17,7 @@
 
 #include "qgstexteditwrapper.h"
 #include "qgstexteditconfigdlg.h"
+#include "qgstexteditsearchwidgetwrapper.h"
 
 QgsTextEditWidgetFactory::QgsTextEditWidgetFactory( const QString& name )
     : QgsEditorWidgetFactory( name )
@@ -26,6 +27,11 @@ QgsTextEditWidgetFactory::QgsTextEditWidgetFactory( const QString& name )
 QgsEditorWidgetWrapper* QgsTextEditWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
   return new QgsTextEditWrapper( vl, fieldIdx, editor, parent );
+}
+
+QgsSearchWidgetWrapper*QgsTextEditWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+{
+  return new QgsTextEditSearchWidgetWrapper( vl, fieldIdx, parent );
 }
 
 QgsEditorConfigWidget* QgsTextEditWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
@@ -55,4 +61,11 @@ QgsEditorWidgetConfig QgsTextEditWidgetFactory::readConfig( const QDomElement& c
   cfg.insert( "UseHtml", configElement.attribute( "UseHtml", "0" ) == "1" );
 
   return cfg;
+}
+
+unsigned int QgsTextEditWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
+{
+  Q_UNUSED( vl )
+  Q_UNUSED( fieldIdx )
+  return 10;
 }

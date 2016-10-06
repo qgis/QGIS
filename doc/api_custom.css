@@ -1,0 +1,228 @@
+body {
+    background-color: #fff;
+}
+
+.title {
+	font: 400 18px/28px Roboto,sans-serif;
+	font-size: 250%;
+	font-weight: normal;
+    line-height: 1.25em;
+}
+
+a.el {
+    font-weight: normal;
+}
+
+td.memItemRight a.el:first-of-type {
+	font-weight: bold;
+}
+
+div.contents {
+    width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.contents > p {
+    padding-left: 0.5em;
+    font-size: 120%;
+}
+
+address.footer {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+hr.footer {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1em;
+}
+
+table.memberdecls {
+    width: 100%;
+}
+
+.mdescLeft, .mdescRight,
+.memItemLeft, .memItemRight,
+.memTemplItemLeft, .memTemplItemRight, .memTemplParams {
+	background-color: inherit;
+	padding: 10px 0 10px 8px;
+}
+
+.memItemLeft a {
+    font-weight: normal;
+}
+
+.memname {
+    font-weight: normal;
+}
+
+.memname tr:first-of-type {
+    font-size: 150%;
+}
+
+.memproto, dl.reflist dt {
+    border-top: inherit;
+    border-right: inherit;
+    font-weight: inherit;
+    text-shadow: inherit;
+    background-image:inherit;
+    background-repeat:inherit;
+    box-shadow: inherit;
+    border-top-right-radius: inherit;
+    border-top-left-radius: inherit;
+    -moz-box-shadow: inherit;
+    -moz-border-radius-topright: inherit;
+    -moz-border-radius-topleft: inherit;
+    -webkit-box-shadow: inherit;
+    -webkit-border-top-right-radius: inherit;
+    -webkit-border-top-left-radius: inherit;
+}
+
+.memdoc, dl.reflist dd {
+    margin-bottom: 1em;
+    border-bottom: inherit;      
+    border-right: inherit; 
+    background-color: inherit;
+    border-top-width: inherit;
+    background-image:inherit;
+    background-repeat:inherit;
+    background-color: inherit;
+    border-bottom-left-radius: inherit;
+    border-bottom-right-radius: inherit;
+    box-shadow: inherit;
+    -moz-border-radius-bottomleft: inherit;
+    -moz-border-radius-bottomright: inherit;
+    -moz-box-shadow: inherit;
+    -webkit-border-bottom-left-radius: inherit;
+    -webkit-border-bottom-right-radius: inherit;
+    -webkit-box-shadow: inherit;
+}
+
+table.fieldtable {
+    -moz-box-shadow: inherit;
+    -webkit-box-shadow: inherit;
+    box-shadow: inherit;
+}
+
+.fieldtable th {
+    background-image:inherit;
+    background-repeat:inherit;
+    background-color: inherit;
+    -moz-border-radius-topleft: inherit;
+    -moz-border-radius-topright: inherit;
+    -webkit-border-top-left-radius: inherit;
+    -webkit-border-top-right-radius: inherit;
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+}
+
+.navpath ul {
+	font-size: inherit;
+	background-image:inherit;
+	background-repeat:inherit;
+	background-position: inherit;
+	color:inherit;
+	border:inherit;
+	overflow:inherit;
+	margin:inherit;
+	padding:inherit;
+}
+
+.navpath li {
+	background-image:inherit;
+	background-repeat:inherit;
+	background-position:inherit;
+	color:inherit;
+}
+
+.navpath li.navelem + li.navelem:before {
+    content: '>';
+}
+
+.navpath li.navelem a {
+    display: inline-block;
+    padding-left: 10px;
+}
+
+.navpath li.footer {
+    list-style-type:inherit;
+    float:inherit;
+    padding-left:inherit;
+    padding-right:inherit;
+    background-image:inherit;
+    background-repeat:inherit;
+    background-position:inherit;
+    color:inherit;
+    font-size: inherit;
+}
+
+div.header {
+	margin:  0px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    background-image:inherit;
+    background-repeat:inherit;
+}
+
+#titlearea {
+	margin-left: auto;
+	margin-right: auto;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+	width: 80%;
+}
+
+div.qindex, div.navpath {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* To overwrite tabs.css */
+.tabs, .tabs2, .tabs3 {
+    background-image: inherit;
+    width: 80%;
+    background-color: #e3f2e1;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tabs2 {
+    background-color: #f3f7f2;
+}
+
+.tablist li {
+    background-image: inherit;
+}
+
+.tablist a {
+    background-image: inherit;
+    color: #0d7200;
+    border-right: 1px solid #129300;
+}
+
+.tablist a:hover {
+    background-image: inherit;
+    background-color: #129300;
+}
+
+.tablist li.current a {
+    background-image: inherit;
+    background-color: #0d7200;
+}
+/* /tabs.css */
+
+/* To override search/search.css */
+#MSearchBox {
+    right: 10%;
+}
+
+#MSearchField {
+    position: inherit;
+}
+/* /search.css */

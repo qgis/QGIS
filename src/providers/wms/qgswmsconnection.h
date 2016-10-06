@@ -31,21 +31,21 @@ class QgsWMSConnection : public QObject
 
   public:
     //! Constructor
-    QgsWMSConnection( QString theConnName );
+    explicit QgsWMSConnection( const QString& theConnName );
     //! Destructor
     ~QgsWMSConnection();
 
     static QStringList connectionList();
 
-    static void deleteConnection( QString name );
+    static void deleteConnection( const QString& name );
 
     static QString selectedConnection();
-    static void setSelectedConnection( QString name );
+    static void setSelectedConnection( const QString& name );
 
   public:
     QString mConnName;
-    QgsDataSourceURI uri();
-    QgsDataSourceURI mUri;
+    QgsDataSourceUri uri();
+    QgsDataSourceUri mUri;
 };
 
 #endif // QGSWMSCONNECTION_H

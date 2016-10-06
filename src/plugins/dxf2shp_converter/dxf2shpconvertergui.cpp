@@ -143,7 +143,7 @@ void dxf2shpConverterGui::getInputFileName()
   QSettings settings;
   QString s = QFileDialog::getOpenFileName( this,
               tr( "Choose a DXF file to open" ),
-              settings.value( "/Plugin-DXF/text_path", "./" ).toString(),
+              settings.value( "/Plugin-DXF/text_path", QDir::homePath() ).toString(),
               tr( "DXF files" ) + " (*.dxf)" );
 
   if ( !s.isEmpty() )
@@ -158,12 +158,12 @@ void dxf2shpConverterGui::getOutputDir()
   QSettings settings;
   QString s = QFileDialog::getSaveFileName( this,
               tr( "Choose a file name to save to" ),
-              settings.value( "/UI/lastShapefileDir", "./" ).toString(),
+              settings.value( "/UI/lastShapefileDir", QDir::homePath() ).toString(),
               tr( "Shapefile" ) + " (*.shp)" );
 
   if ( !s.isEmpty() )
   {
-    if ( !s.toLower().endsWith( ".shp" ) )
+    if ( !s.endsWith( ".shp", Qt::CaseInsensitive ) )
     {
       s += ".shp";
     }

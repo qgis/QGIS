@@ -26,8 +26,8 @@ class APP_EXPORT QgsAbout : public QgsOptionsDialogBase, private Ui::QgsAbout
   public:
     QgsAbout( QWidget *parent );
     ~QgsAbout();
-    void setVersion( QString v );
-    static QString fileSystemSafe( QString string );
+    void setVersion( const QString& v );
+    static QString fileSystemSafe( const QString& string );
 
   private:
     void setWhatsNew();
@@ -35,12 +35,11 @@ class APP_EXPORT QgsAbout : public QgsOptionsDialogBase, private Ui::QgsAbout
     void setPluginInfo();
     void setDevelopersMap();
     void init();
-    void openUrl( QString url );
 
   private slots:
     void on_btnQgisUser_clicked();
     void on_btnQgisHome_clicked();
-    void on_developersMapView_linkClicked( const QUrl &url );
+    void openUrl( const QUrl &url );
 };
 
 #endif

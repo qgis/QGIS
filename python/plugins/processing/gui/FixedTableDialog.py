@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,15 +27,21 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import QDialog, QPushButton, QAbstractItemView, QDialogButtonBox, QStandardItemModel, QStandardItem
+import os
 
-from processing.ui.ui_DlgFixedTable import Ui_DlgFixedTable
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QDialog, QPushButton, QAbstractItemView, QDialogButtonBox
+from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgFixedTable.ui'))
 
 
-class FixedTableDialog(QDialog, Ui_DlgFixedTable):
+class FixedTableDialog(BASE, WIDGET):
 
     def __init__(self, param, table):
-        QDialog.__init__(self)
+        super(FixedTableDialog, self).__init__(None)
         self.setupUi(self)
 
         self.tblView.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -57,7 +65,7 @@ class FixedTableDialog(QDialog, Ui_DlgFixedTable):
         self.btnRemove.clicked.connect(lambda: self.removeRows())
         self.btnRemoveAll.clicked.connect(lambda: self.removeRows(True))
 
-        if not self.param.fixedNumOfRows:
+        if self.param.fixedNumOfRows:
             self.btnAdd.setEnabled(False)
             self.btnRemove.setEnabled(False)
             self.btnRemoveAll.setEnabled(False)
@@ -73,8 +81,8 @@ class FixedTableDialog(QDialog, Ui_DlgFixedTable):
         model.setHorizontalHeaderLabels(self.param.cols)
 
         # Populate table
-        for i in xrange(rows):
-            for j in xrange(cols):
+        for i in range(rows):
+            for j in range(cols):
                 item = QStandardItem(table[i][j])
                 model.setItem(i, j, item)
         self.tblView.setModel(model)
@@ -83,10 +91,10 @@ class FixedTableDialog(QDialog, Ui_DlgFixedTable):
         cols = self.tblView.model().columnCount()
         rows = self.tblView.model().rowCount()
         self.rettable = []
-        for i in xrange(rows):
+        for i in range(rows):
             self.rettable.append(list())
-            for j in xrange(cols):
-                self.rettable[i].append(unicode(self.tblView.model().item(i, j).text()))
+            for j in range(cols):
+                self.rettable[i].append(str(self.tblView.model().item(i, j).text()))
         QDialog.accept(self)
 
     def reject(self):
@@ -97,13 +105,12 @@ class FixedTableDialog(QDialog, Ui_DlgFixedTable):
             self.tblView.model().clear()
             self.tblView.model().setHorizontalHeaderLabels(self.param.cols)
         else:
-            indexes = self.tblView.selectionModel().selectedRows()
-            indexes.sort()
+            indexes = sorted(self.tblView.selectionModel().selectedRows())
             self.tblView.setUpdatesEnabled(False)
             for i in reversed(indexes):
                 self.tblView.model().removeRows(i.row(), 1)
             self.tblView.setUpdatesEnabled(True)
 
     def addRow(self):
-        items = [QStandardItem('0') for i in xrange(self.tblView.model().columnCount())]
+        items = [QStandardItem('0') for i in range(self.tblView.model().columnCount())]
         self.tblView.model().appendRow(items)

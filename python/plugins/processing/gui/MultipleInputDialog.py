@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,16 +26,22 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QStandardItemModel, QStandardItem
+import os
 
-from processing.ui.ui_DlgMultipleSelection import Ui_DlgMultipleSelection
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox
+from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgMultipleSelection.ui'))
 
 
-class MultipleInputDialog(QDialog, Ui_DlgMultipleSelection):
+class MultipleInputDialog(BASE, WIDGET):
 
     def __init__(self, options, selectedoptions=None):
-        QDialog.__init__(self)
+        super(MultipleInputDialog, self).__init__(None)
         self.setupUi(self)
 
         self.lstLayers.setSelectionMode(QAbstractItemView.NoSelection)
@@ -72,7 +79,7 @@ class MultipleInputDialog(QDialog, Ui_DlgMultipleSelection):
     def accept(self):
         self.selectedoptions = []
         model = self.lstLayers.model()
-        for i in xrange(model.rowCount()):
+        for i in range(model.rowCount()):
             item = model.item(i)
             if item.checkState() == Qt.Checked:
                 self.selectedoptions.append(i)
@@ -84,13 +91,13 @@ class MultipleInputDialog(QDialog, Ui_DlgMultipleSelection):
 
     def selectAll(self, value):
         model = self.lstLayers.model()
-        for i in xrange(model.rowCount()):
+        for i in range(model.rowCount()):
             item = model.item(i)
             item.setCheckState(Qt.Checked if value else Qt.Unchecked)
 
     def toggleSelection(self):
         model = self.lstLayers.model()
-        for i in xrange(model.rowCount()):
+        for i in range(model.rowCount()):
             item = model.item(i)
             checked = item.checkState() == Qt.Checked
             item.setCheckState(Qt.Unchecked if checked else Qt.Checked)

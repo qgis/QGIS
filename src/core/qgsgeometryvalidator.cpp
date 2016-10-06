@@ -20,7 +20,7 @@ email                : jef at norbit dot de
 
 #include <QSettings>
 
-QgsGeometryValidator::QgsGeometryValidator( QgsGeometry *g, QList<QgsGeometry::Error> *errors )
+QgsGeometryValidator::QgsGeometryValidator( const QgsGeometry *g, QList<QgsGeometry::Error> *errors )
     : QThread()
     , mErrors( errors )
     , mStop( false )
@@ -62,7 +62,9 @@ void QgsGeometryValidator::checkRingIntersections(
         if ( d >= 0 && d <= v.length() )
         {
           d = -distLine2Point( ring1[j], w.perpVector(), s );
-          if ( d > 0 && d < w.length() )
+          if ( d > 0 && d < w.length() &&
+               ring0[i+1] != ring1[j+1] && ring0[i+1] != ring1[j] &&
+               ring0[i+0] != ring1[j+1] && ring0[i+0] != ring1[j] )
           {
             QString msg = QObject::tr( "segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7" )
                           .arg( i0 ).arg( i ).arg( p0 )
@@ -145,11 +147,31 @@ void QgsGeometryValidator::validatePolyline( int i, QgsPolyline line, bool ring 
       if ( !intersectLines( line[j], v, line[k], w, s ) )
         continue;
 
-      double d = -distLine2Point( line[j], v.perpVector(), s );
+      double d = 0.0;
+      try
+      {
+        d = -distLine2Point( line[j], v.perpVector(), s );
+      }
+      catch ( QgsException & e )
+      {
+        Q_UNUSED( e );
+        QgsDebugMsg( "Error validating: " + e.what() );
+        continue;
+      }
       if ( d < 0 || d > vl )
         continue;
 
-      d = -distLine2Point( line[k], w.perpVector(), s );
+      try
+      {
+        d = -distLine2Point( line[k], w.perpVector(), s );
+      }
+      catch ( QgsException & e )
+      {
+        Q_UNUSED( e );
+        QgsDebugMsg( "Error validating: " + e.what() );
+        continue;
+      }
+
       if ( d <= 0 || d >= w.length() )
         continue;
 
@@ -194,12 +216,10 @@ void QgsGeometryValidator::validatePolygon( int idx, const QgsPolygon &polygon )
 void QgsGeometryValidator::run()
 {
   mErrorCount = 0;
-#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
-    ( (GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR>=3) || GEOS_VERSION_MAJOR>3)
   QSettings settings;
   if ( settings.value( "/qgis/digitizing/validate_geometries", 1 ).toInt() == 2 )
   {
-    char *r = 0;
+    char *r = nullptr;
     const GEOSGeometry *g0 = mG.asGeos();
     GEOSContextHandle_t handle = QgsGeometry::getGEOSHandler();
     if ( !g0 )
@@ -208,7 +228,7 @@ void QgsGeometryValidator::run()
     }
     else
     {
-      GEOSGeometry *g1 = 0;
+      GEOSGeometry *g1 = nullptr;
       if ( GEOSisValidDetail_r( handle, g0, GEOSVALID_ALLOW_SELFTOUCHING_RING_FORMING_HOLE, &r, &g1 ) != 1 )
       {
         if ( g1 )
@@ -239,114 +259,98 @@ void QgsGeometryValidator::run()
 
     return;
   }
-#endif
 
   QgsDebugMsg( "validation thread started." );
 
-  switch ( mG.wkbType() )
+  QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( mG.wkbType() );
+  //if ( flatType == QgsWkbTypes::Point || flatType == QgsWkbTypes::MultiPoint )
+  //    break;
+  if ( flatType == QgsWkbTypes::LineString )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
-      break;
-
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-      validatePolyline( 0, mG.asPolyline() );
-      break;
-
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    validatePolyline( 0, mG.asPolyline() );
+  }
+  else if ( flatType == QgsWkbTypes::MultiLineString )
+  {
+    QgsMultiPolyline mp = mG.asMultiPolyline();
+    for ( int i = 0; !mStop && i < mp.size(); i++ )
+      validatePolyline( i, mp[i] );
+  }
+  else if ( flatType == QgsWkbTypes::Polygon )
+  {
+    validatePolygon( 0, mG.asPolygon() );
+  }
+  else if ( flatType == QgsWkbTypes::MultiPolygon )
+  {
+    QgsMultiPolygon mp = mG.asMultiPolygon();
+    for ( int i = 0; !mStop && i < mp.size(); i++ )
     {
-      QgsMultiPolyline mp = mG.asMultiPolyline();
-      for ( int i = 0; !mStop && i < mp.size(); i++ )
-        validatePolyline( i, mp[i] );
+      validatePolygon( i, mp[i] );
     }
-    break;
 
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
+    for ( int i = 0; !mStop && i < mp.size(); i++ )
     {
-      validatePolygon( 0, mG.asPolygon() );
-    }
-    break;
-
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
-    {
-      QgsMultiPolygon mp = mG.asMultiPolygon();
-      for ( int i = 0; !mStop && i < mp.size(); i++ )
+      if ( mp[i].isEmpty() )
       {
-        validatePolygon( i, mp[i] );
+        emit errorFound( QgsGeometry::Error( QObject::tr( "polygon %1 has no rings" ).arg( i ) ) );
+        mErrorCount++;
+        continue;
       }
 
-      for ( int i = 0; !mStop && i < mp.size(); i++ )
+      for ( int j = i + 1;  !mStop && j < mp.size(); j++ )
       {
-        if ( mp[i].isEmpty() )
-        {
-          emit errorFound( QgsGeometry::Error( QObject::tr( "polygon %1 has no rings" ).arg( i ) ) );
-          mErrorCount++;
+        if ( mp[j].isEmpty() )
           continue;
-        }
 
-        for ( int j = i + 1;  !mStop && j < mp.size(); j++ )
+        if ( ringInRing( mp[i][0], mp[j][0] ) )
         {
-          if ( mp[j].isEmpty() )
-            continue;
-
-          if ( ringInRing( mp[i][0], mp[j][0] ) )
-          {
-            emit errorFound( QgsGeometry::Error( QObject::tr( "polygon %1 inside polygon %2" ).arg( i ).arg( j ) ) );
-            mErrorCount++;
-          }
-          else if ( ringInRing( mp[j][0], mp[i][0] ) )
-          {
-            emit errorFound( QgsGeometry::Error( QObject::tr( "polygon %1 inside polygon %2" ).arg( j ).arg( i ) ) );
-            mErrorCount++;
-          }
-          else
-          {
-            checkRingIntersections( i, 0, mp[i][0], j, 0, mp[j][0] );
-          }
+          emit errorFound( QgsGeometry::Error( QObject::tr( "polygon %1 inside polygon %2" ).arg( i ).arg( j ) ) );
+          mErrorCount++;
+        }
+        else if ( ringInRing( mp[j][0], mp[i][0] ) )
+        {
+          emit errorFound( QgsGeometry::Error( QObject::tr( "polygon %1 inside polygon %2" ).arg( j ).arg( i ) ) );
+          mErrorCount++;
+        }
+        else
+        {
+          checkRingIntersections( i, 0, mp[i][0], j, 0, mp[j][0] );
         }
       }
     }
-    break;
+  }
 
-    case QGis::WKBNoGeometry:
-    case QGis::WKBUnknown:
-      QgsDebugMsg( QObject::tr( "Unknown geometry type" ) );
-      emit errorFound( QgsGeometry::Error( QObject::tr( "Unknown geometry type %1" ).arg( mG.wkbType() ) ) );
-      mErrorCount++;
-      break;
+  else if ( flatType == QgsWkbTypes::Unknown )
+  {
+    QgsDebugMsg( QObject::tr( "Unknown geometry type" ) );
+    emit errorFound( QgsGeometry::Error( QObject::tr( "Unknown geometry type %1" ).arg( mG.wkbType() ) ) );
+    mErrorCount++;
   }
 
   QgsDebugMsg( "validation finished." );
 
   if ( mStop )
   {
-    emit errorFound( QObject::tr( "Geometry validation was aborted." ) );
+    emit errorFound( QgsGeometry::Error( QObject::tr( "Geometry validation was aborted." ) ) );
   }
   else if ( mErrorCount > 0 )
   {
-    emit errorFound( QObject::tr( "Geometry has %1 errors." ).arg( mErrorCount ) );
+    emit errorFound( QgsGeometry::Error( QObject::tr( "Geometry has %1 errors." ).arg( mErrorCount ) ) );
   }
 #if 0
   else
   {
-    emit errorFound( QObject::tr( "Geometry is valid." ) );
+    emit errorFound( QgsGeometry::Error( QObject::tr( "Geometry is valid." ) ) );
   }
 #endif
 }
 
-void QgsGeometryValidator::addError( QgsGeometry::Error e )
+void QgsGeometryValidator::addError( const QgsGeometry::Error& e )
 {
   if ( mErrors )
     *mErrors << e;
 }
 
-void QgsGeometryValidator::validateGeometry( QgsGeometry *g, QList<QgsGeometry::Error> &errors )
+void QgsGeometryValidator::validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors )
 {
   QgsGeometryValidator *gv = new QgsGeometryValidator( g, &errors );
   connect( gv, SIGNAL( errorFound( QgsGeometry::Error ) ), gv, SLOT( addError( QgsGeometry::Error ) ) );
@@ -359,9 +363,9 @@ void QgsGeometryValidator::validateGeometry( QgsGeometry *g, QList<QgsGeometry::
 // return >0  => q lies left of the line
 //        <0  => q lies right of the line
 //
-double QgsGeometryValidator::distLine2Point( QgsPoint p, QgsVector v, QgsPoint q )
+double QgsGeometryValidator::distLine2Point( const QgsPoint& p, QgsVector v, const QgsPoint& q )
 {
-  if ( v.length() == 0 )
+  if ( qgsDoubleNear( v.length(), 0 ) )
   {
     throw QgsException( QObject::tr( "invalid line" ) );
   }
@@ -369,11 +373,11 @@ double QgsGeometryValidator::distLine2Point( QgsPoint p, QgsVector v, QgsPoint q
   return ( v.x()*( q.y() - p.y() ) - v.y()*( q.x() - p.x() ) ) / v.length();
 }
 
-bool QgsGeometryValidator::intersectLines( QgsPoint p, QgsVector v, QgsPoint q, QgsVector w, QgsPoint &s )
+bool QgsGeometryValidator::intersectLines( const QgsPoint& p, QgsVector v, const QgsPoint& q, QgsVector w, QgsPoint &s )
 {
   double d = v.y() * w.x() - v.x() * w.y();
 
-  if ( d == 0 )
+  if ( qgsDoubleNear( d, 0 ) )
     return false;
 
   double dx = q.x() - p.x();
@@ -392,7 +396,7 @@ bool QgsGeometryValidator::pointInRing( const QgsPolyline &ring, const QgsPoint 
 
   for ( int i = 0; !mStop && i < ring.size(); i++ )
   {
-    if ( ring[i].x() == p.x() && ring[i].y() == p.y() )
+    if ( qgsDoubleNear( ring[i].x(), p.x() ) && qgsDoubleNear( ring[i].y(), p.y() ) )
       return true;
 
     if (( ring[i].y() < p.y() && ring[j].y() >= p.y() ) ||

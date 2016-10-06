@@ -1,0 +1,21 @@
+Content-Length: 360
+Content-Type: text/html; charset=utf-8
+
+<HEAD>
+<TITLE> GetFeatureInfo results </TITLE>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+</HEAD>
+<BODY>
+<TABLE border=1 width=100%>
+<TR><TH width=25%>Layer</TH><TD>testlayer èé</TD></TR>
+</BR><TABLE border=1 width=100%>
+<TR><TH>Feature</TH><TD>2</TD></TR>
+<TR><TH>id</TH><TD>3</TD></TR>
+<TR><TH>name</TH><TD>three</TD></TR>
+<TR><TH>utf8nameè</TH><TD>three èé↓</TD></TR>
+<TR><TH>geometry</TH><TD>Point (913204.9128 5606011.4565)</TD></TR>
+</TABLE>
+</BR>
+</TABLE>
+<BR></BR>
+</BODY>

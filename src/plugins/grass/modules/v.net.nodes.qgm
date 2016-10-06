@@ -2,8 +2,10 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Create nodes on network" module="v.net">
-	<option key="input" layeroption="alayer" typemask="line,boundary" />
-	<option key="nlayer"/>
+	<option key="input" layeroption="alayer" typemask="line,boundary" version_max="6"/>
+	<option key="input" layeroption="arc_layer" typemask="line,boundary" version_min="7"/>
+	<option key="nlayer" version_max="6"/>
+	<option key="node_layer" version_min="7"/>
 	<option key="operation" answer="nodes" hidden="yes" />
 	<option key="output" />
 </qgisgrassmodule>

@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -30,26 +32,21 @@ from processing.tools.system import userFolder, mkdir
 from processing.core.ProcessingConfig import ProcessingConfig
 
 
-class ModelerUtils:
-
-    allAlgs = {}
-    providers = {}
+class ModelerUtils(object):
 
     MODELS_FOLDER = 'MODELS_FOLDER'
     ACTIVATE_MODELS = 'ACTIVATE_MODELS'
 
     @staticmethod
-    def modelsFolder():
-        folder = ProcessingConfig.getSetting(ModelerUtils.MODELS_FOLDER)
-        if folder is None:
-            folder = unicode(os.path.join(userFolder(), 'models'))
+    def defaultModelsFolder():
+        folder = str(os.path.join(userFolder(), 'models'))
         mkdir(folder)
-
         return os.path.abspath(folder)
 
     @staticmethod
-    def getAlgorithm(name):
-        for provider in ModelerUtils.allAlgs.values():
-            if name in provider:
-                return provider[name]
-        return None
+    def modelsFolders():
+        folder = ProcessingConfig.getSetting(ModelerUtils.MODELS_FOLDER)
+        if folder is not None:
+            return folder.split(';')
+        else:
+            return [ModelerUtils.defaultModelsFolder()]

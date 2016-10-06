@@ -25,12 +25,12 @@ Point3D& Point3D::operator=( const Point3D & p )
   return ( *this );
 }
 
-bool Point3D::operator==( const Point3D& p )
+bool Point3D::operator==( const Point3D& p ) const
 {
   return ( mX == p.getX() && mY == p.getY() && mZ == p.getZ() );
 }
 
-bool Point3D::operator!=( const Point3D& p )
+bool Point3D::operator!=( const Point3D& p ) const
 {
   return ( !(( *this ) == p ) );
 }

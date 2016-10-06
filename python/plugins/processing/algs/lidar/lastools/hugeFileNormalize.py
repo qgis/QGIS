@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'May 2014'
@@ -24,12 +27,13 @@ __copyright__ = '(C) 2014, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
+
 
 class hugeFileNormalize(LAStoolsAlgorithm):
 
@@ -42,21 +46,21 @@ class hugeFileNormalize(LAStoolsAlgorithm):
     GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine"]
 
     def defineCharacteristics(self):
-        self.name = "hugeFileNormalize"
-        self.group = "LAStools Pipelines"
+        self.name, self.i18n_name = self.trAlgorithm('hugeFileNormalize')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Pipelines')
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(hugeFileNormalize.TILE_SIZE,
-            self.tr("tile size (side length of square tile)"),
-            0, None, 1000.0))
+                                          self.tr("tile size (side length of square tile)"),
+                                          0, None, 1000.0))
         self.addParameter(ParameterNumber(hugeFileNormalize.BUFFER,
-            self.tr("buffer around each tile (avoids edge artifacts)"),
-            0, None, 25.0))
+                                          self.tr("buffer around each tile (avoids edge artifacts)"),
+                                          0, None, 25.0))
         self.addParameter(ParameterBoolean(hugeFileNormalize.AIRBORNE,
-            self.tr("airborne LiDAR"), True))
+                                           self.tr("airborne LiDAR"), True))
         self.addParameter(ParameterSelection(hugeFileNormalize.TERRAIN,
-            self.tr("terrain type"), hugeFileNormalize.TERRAINS, 1))
+                                             self.tr("terrain type"), hugeFileNormalize.TERRAINS, 1))
         self.addParameter(ParameterSelection(hugeFileNormalize.GRANULARITY,
-            self.tr("preprocessing"), hugeFileNormalize.GRANULARITIES, 1))
+                                             self.tr("preprocessing"), hugeFileNormalize.GRANULARITIES, 1))
         self.addParametersTemporaryDirectoryGUI()
         self.addParametersPointOutputGUI()
         self.addParametersCoresGUI()

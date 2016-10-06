@@ -1,0 +1,13 @@
+{
+  "name": "make_line",
+  "type": "function",
+  "description": "Creates a line geometry from a series of point geometries.",
+  "variableLenArguments": true,
+  "arguments": [
+	{"arg":"point1", "syntaxOnly": true},
+	{"arg":"point2", "syntaxOnly": true},
+	{"arg":"point", "descOnly": true, "description":"a point geometry"}],
+  "examples": [ { "expression":"geom_to_wkt(make_line(make_point(2,4),make_point(3,5)))", "returns":"'LineString (2 4, 3 5)'"},
+    { "expression":"geom_to_wkt(make_line(make_point(2,4),make_point(3,5),make_point(9,7)))", "returns":"'LineString (2 4, 3 5, 9 7)'"}
+    ]
+}

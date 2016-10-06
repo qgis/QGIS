@@ -8,8 +8,10 @@ class QgsCredentials
     //! virtual destructor
     virtual ~QgsCredentials();
 
-    bool get( QString realm, QString &username /In,Out/, QString &password /In,Out/, QString message = QString::null );
-    void put( QString realm, QString username, QString password );
+    bool get( const QString& realm, QString &username /In,Out/, QString &password /In,Out/, const QString& message = QString::null );
+    void put( const QString& realm, const QString& username, const QString& password );
+
+    bool getMasterPassword( QString &password /In,Out/, bool stored = false );
 
     //! retrieves instance
     static QgsCredentials *instance();
@@ -38,7 +40,10 @@ class QgsCredentials
     QgsCredentials();
 
     //! request a password
-    virtual bool request( QString realm, QString &username /In,Out/, QString &password /In,Out/, QString message = QString::null ) = 0;
+    virtual bool request( const QString& realm, QString &username /In,Out/, QString &password /In,Out/, const QString& message = QString::null ) = 0;
+
+    //! request a master password
+    virtual bool requestMasterPassword( QString &password /In,Out/, bool stored = false ) = 0;
 
     //! register instance
     void setInstance( QgsCredentials *theInstance );
@@ -50,6 +55,30 @@ class QgsCredentials
 
 /**
 \brief Default implementation of credentials interface
+
+This class doesn't prompt or return credentials
+*/
+class QgsCredentialsNone : QObject, QgsCredentials
+{
+%TypeHeaderCode
+#include <qgscredentials.h>
+%End
+
+  public:
+    QgsCredentialsNone();
+
+  signals:
+    //! signals that object will be destroyed and shouldn't be used anymore
+    void destroyed();
+
+  protected:
+    virtual bool request( const QString& realm, QString &username /In,Out/, QString &password /In,Out/, const QString& message = QString::null );
+    virtual bool requestMasterPassword( QString &password /In,Out/, bool stored = false );
+};
+
+
+/**
+\brief Implementation of credentials interface for the console
 
 This class outputs message to the standard output and retrieves input from
 standard input. Therefore it won't be the right choice for apps without
@@ -69,5 +98,6 @@ class QgsCredentialsConsole : QObject, QgsCredentials
     void destroyed();
 
   protected:
-    virtual bool request( QString realm, QString &username /In,Out/, QString &password /In,Out/, QString message = QString::null );
+    virtual bool request( const QString& realm, QString &username /In,Out/, QString &password /In,Out/, const QString& message = QString::null );
+    virtual bool requestMasterPassword( QString &password /In,Out/, bool stored = false );
 };

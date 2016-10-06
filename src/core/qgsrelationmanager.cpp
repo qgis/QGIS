@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 1.3.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
 QgsRelationManager::QgsRelationManager( QgsProject* project )
@@ -33,7 +34,7 @@ QgsRelationManager::QgsRelationManager( QgsProject* project )
 void QgsRelationManager::setRelations( const QList<QgsRelation>& relations )
 {
   mRelations.clear();
-  foreach ( const QgsRelation& rel, relations )
+  Q_FOREACH ( const QgsRelation& rel, relations )
   {
     addRelation( rel );
   }
@@ -52,7 +53,8 @@ void QgsRelationManager::addRelation( const QgsRelation& relation )
 
   mRelations.insert( relation.id(), relation );
 
-  mProject->dirty( true );
+  if ( mProject )
+    mProject->setDirty( true );
   emit changed();
 }
 
@@ -73,13 +75,26 @@ QgsRelation QgsRelationManager::relation( const QString& id ) const
   return mRelations.value( id );
 }
 
+QList<QgsRelation> QgsRelationManager::relationsByName( const QString& name ) const
+{
+  QList<QgsRelation> relations;
+
+  Q_FOREACH ( const QgsRelation& rel, mRelations )
+  {
+    if ( QString::compare( rel.name(), name, Qt::CaseInsensitive ) == 0 )
+      relations << rel;
+  }
+
+  return relations;
+}
+
 void QgsRelationManager::clear()
 {
   mRelations.clear();
   emit changed();
 }
 
-QList<QgsRelation> QgsRelationManager::referencingRelations( QgsVectorLayer* layer, int fieldIdx ) const
+QList<QgsRelation> QgsRelationManager::referencingRelations( const QgsVectorLayer* layer, int fieldIdx ) const
 {
   if ( !layer )
   {
@@ -88,16 +103,16 @@ QList<QgsRelation> QgsRelationManager::referencingRelations( QgsVectorLayer* lay
 
   QList<QgsRelation> relations;
 
-  foreach ( const QgsRelation& rel, mRelations )
+  Q_FOREACH ( const QgsRelation& rel, mRelations )
   {
     if ( rel.referencingLayer() == layer )
     {
       if ( fieldIdx != -2 )
       {
         bool containsField = false;
-        foreach ( const QgsRelation::FieldPair& fp, rel.fieldPairs() )
+        Q_FOREACH ( const QgsRelation::FieldPair& fp, rel.fieldPairs() )
         {
-          if ( fieldIdx == layer->fieldNameIndex( fp.referencingField() ) )
+          if ( fieldIdx == layer->fields().lookupField( fp.referencingField() ) )
           {
             containsField = true;
             break;
@@ -125,7 +140,7 @@ QList<QgsRelation> QgsRelationManager::referencedRelations( QgsVectorLayer* laye
 
   QList<QgsRelation> relations;
 
-  foreach ( const QgsRelation& rel, mRelations )
+  Q_FOREACH ( const QgsRelation& rel, mRelations )
   {
     if ( rel.referencedLayer() == layer )
     {
@@ -148,7 +163,7 @@ void QgsRelationManager::readProject( const QDomDocument & doc )
     int relCount = relationNodes.count();
     for ( int i = 0; i < relCount; ++i )
     {
-      addRelation( QgsRelation::createFromXML( relationNodes.at( i ) ) );
+      addRelation( QgsRelation::createFromXml( relationNodes.at( i ) ) );
     }
   }
   else
@@ -173,9 +188,9 @@ void QgsRelationManager::writeProject( QDomDocument & doc )
   QDomElement relationsNode = doc.createElement( "relations" );
   qgisNode.appendChild( relationsNode );
 
-  foreach ( const QgsRelation& relation, mRelations )
+  Q_FOREACH ( const QgsRelation& relation, mRelations )
   {
-    relation.writeXML( relationsNode, doc );
+    relation.writeXml( relationsNode, doc );
   }
 }
 
@@ -202,4 +217,29 @@ void QgsRelationManager::layersRemoved( const QStringList& layers )
   {
     emit changed();
   }
+}
+
+static bool hasRelationWithEqualDefinition( const QList<QgsRelation>& existingRelations, const QgsRelation& relation )
+{
+  Q_FOREACH ( const QgsRelation& cur, existingRelations )
+  {
+    if ( cur.hasEqualDefinition( relation ) ) return true;
+  }
+  return false;
+}
+
+QList<QgsRelation> QgsRelationManager::discoverRelations( const QList<QgsRelation>& existingRelations, const QList<QgsVectorLayer*>& layers )
+{
+  QList<QgsRelation> result;
+  Q_FOREACH ( const QgsVectorLayer* layer, layers )
+  {
+    Q_FOREACH ( const QgsRelation& relation, layer->dataProvider()->discoverRelations( layer, layers ) )
+    {
+      if ( !hasRelationWithEqualDefinition( existingRelations, relation ) )
+      {
+        result.append( relation );
+      }
+    }
+  }
+  return result;
 }

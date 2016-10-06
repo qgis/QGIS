@@ -1,0 +1,6 @@
+v.build
+v.build.check - Checks for topological errors.
+Vector (v.*)
+ParameterVector|map|Name of vector map|-1|False
+Hardcoded|-e
+OutputVector|error|Topological errors

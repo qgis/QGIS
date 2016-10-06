@@ -1,0 +1,5 @@
+result
+*.tar.gz
+local.cfg
+version.cfg
+qgis.spec

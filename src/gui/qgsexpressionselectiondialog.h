@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 24.1.2013
     Copyright            : (C) 2013 by Matthias kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,10 +17,9 @@
 #define QGSEXPRESSIONSELECTIONDIALOG_H
 
 #include <QDialog>
-#include "qgsdistancearea.h"
 #include "ui_qgsexpressionselectiondialogbase.h"
 
-/**
+/** \ingroup gui
  * This class offers a dialog to change feature selections.
  * To do so, a QgsExpressionBuilderWidget is shown in a dialog.
  * It offers the possibilities to create a new selection, add to the current selection
@@ -37,7 +36,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
      * @param startText A default expression text to be applied (Defaults to empty)
      * @param parent parent object (owner)
      */
-    QgsExpressionSelectionDialog( QgsVectorLayer* layer, QString startText = QString(), QWidget* parent = 0 );
+    QgsExpressionSelectionDialog( QgsVectorLayer* layer, const QString& startText = QString(), QWidget* parent = nullptr );
 
     /**
      * The builder widget that is used by the dialog
@@ -66,7 +65,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     void on_mActionSelect_triggered();
     void on_mActionAddToSelection_triggered();
     void on_mActionRemoveFromSelection_triggered();
-    void on_mActionSelectInstersect_triggered();
+    void on_mActionSelectIntersect_triggered();
     void on_mPbnClose_clicked();
 
   protected:

@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'October 2014'
@@ -24,13 +27,14 @@ __copyright__ = '(C) 2014, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
+
 
 class lascanopyPro(LAStoolsAlgorithm):
 
@@ -56,40 +60,40 @@ class lascanopyPro(LAStoolsAlgorithm):
     FILES_ARE_PLOTS = "FILES_ARE_PLOTS"
 
     def defineCharacteristics(self):
-        self.name = "lascanopyPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lascanopyPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersPointInputMergedGUI()
         self.addParameter(ParameterNumber(lascanopyPro.PLOT_SIZE,
-            self.tr("square plot size"), 0, None, 20))
+                                          self.tr("square plot size"), 0, None, 20))
         self.addParameter(ParameterNumber(lascanopyPro.HEIGHT_CUTOFF,
-            self.tr("height cutoff / breast height"), 0, None, 1.37))
+                                          self.tr("height cutoff / breast height"), 0, None, 1.37))
         self.addParameter(ParameterSelection(lascanopyPro.PRODUCT1,
-            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+                                             self.tr("create"), lascanopyPro.PRODUCTS, 0))
         self.addParameter(ParameterSelection(lascanopyPro.PRODUCT2,
-            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+                                             self.tr("create"), lascanopyPro.PRODUCTS, 0))
         self.addParameter(ParameterSelection(lascanopyPro.PRODUCT3,
-            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+                                             self.tr("create"), lascanopyPro.PRODUCTS, 0))
         self.addParameter(ParameterSelection(lascanopyPro.PRODUCT4,
-            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+                                             self.tr("create"), lascanopyPro.PRODUCTS, 0))
         self.addParameter(ParameterSelection(lascanopyPro.PRODUCT5,
-            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+                                             self.tr("create"), lascanopyPro.PRODUCTS, 0))
         self.addParameter(ParameterSelection(lascanopyPro.PRODUCT6,
-            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+                                             self.tr("create"), lascanopyPro.PRODUCTS, 0))
         self.addParameter(ParameterSelection(lascanopyPro.PRODUCT7,
-            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+                                             self.tr("create"), lascanopyPro.PRODUCTS, 0))
         self.addParameter(ParameterSelection(lascanopyPro.PRODUCT8,
-            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+                                             self.tr("create"), lascanopyPro.PRODUCTS, 0))
         self.addParameter(ParameterSelection(lascanopyPro.PRODUCT9,
-            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+                                             self.tr("create"), lascanopyPro.PRODUCTS, 0))
         self.addParameter(ParameterString(lascanopyPro.COUNTS,
-            self.tr("count rasters (e.g. 2.0 5.0 10.0 20.0)"), ""))
+                                          self.tr("count rasters (e.g. 2.0 5.0 10.0 20.0)"), ""))
         self.addParameter(ParameterString(lascanopyPro.DENSITIES,
-            self.tr("density rasters (e.g. 2.0 5.0 10.0 20.0)"), ""))
+                                          self.tr("density rasters (e.g. 2.0 5.0 10.0 20.0)"), ""))
         self.addParameter(ParameterBoolean(lascanopyPro.USE_TILE_BB,
-            self.tr("use tile bounding box (after tiling with buffer)"), False))
+                                           self.tr("use tile bounding box (after tiling with buffer)"), False))
         self.addParameter(ParameterBoolean(lascanopyPro.FILES_ARE_PLOTS,
-            self.tr("input file is single plot"), False))
+                                           self.tr("input file is single plot"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersRasterOutputFormatGUI()

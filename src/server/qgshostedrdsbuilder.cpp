@@ -21,6 +21,7 @@
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
 #include "qgscoordinatereferencesystem.h"
+
 #include <QDomElement>
 
 QgsHostedRDSBuilder::QgsHostedRDSBuilder(): QgsMSLayerBuilder()
@@ -40,23 +41,22 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
     bool allowCaching ) const
 {
   Q_UNUSED( filesToRemove );
-  QgsDebugMsg( "entering." );
 
   if ( elem.isNull() )
   {
-    return 0;
+    return nullptr;
   }
 
   QString uri = elem.attribute( "uri", "not found" );
   if ( uri == "not found" )
   {
     QgsDebugMsg( "Uri not found" );
-    return 0;
+    return nullptr;
   }
   else
   {
     QgsDebugMsg( "Trying to get hostedrds layer from cache with uri: " + uri );
-    QgsRasterLayer* rl = 0;
+    QgsRasterLayer* rl = nullptr;
     if ( allowCaching )
     {
       rl = dynamic_cast<QgsRasterLayer*>( QgsMSLayerCache::instance()->searchLayer( uri, layerName ) );
@@ -88,8 +88,7 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
         if ( conversionOk )
         {
           //set spatial ref sys
-          QgsCoordinateReferenceSystem srs;
-          srs.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
+          QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgnr ) );
           rl->setCrs( srs );
         }
       }

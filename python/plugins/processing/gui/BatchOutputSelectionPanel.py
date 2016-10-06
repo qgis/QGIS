@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -26,9 +29,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import re
 
-from PyQt4.QtGui import QWidget, QPushButton, QLineEdit, QHBoxLayout, QSizePolicy, QFileDialog
-from PyQt4.QtCore import QSettings
+from qgis.PyQt.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout, QSizePolicy, QFileDialog
+from qgis.PyQt.QtCore import QSettings
 
 from processing.gui.AutofillDialog import AutofillDialog
 from processing.core.parameters import ParameterMultipleInput
@@ -56,6 +60,7 @@ class BatchOutputSelectionPanel(QWidget):
         self.horizontalLayout.setMargin(0)
         self.text = QLineEdit()
         self.text.setText('')
+        self.text.setMinimumWidth(300)
         self.text.setSizePolicy(QSizePolicy.Expanding,
                                 QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.text)
@@ -73,13 +78,19 @@ class BatchOutputSelectionPanel(QWidget):
         filefilter = self.output.getFileFilter(self.alg)
         settings = QSettings()
         if settings.contains('/Processing/LastBatchOutputPath'):
-            path = unicode(settings.value('/Processing/LastBatchOutputPath'))
+            path = str(settings.value('/Processing/LastBatchOutputPath'))
         else:
             path = ''
-        filename = QFileDialog.getSaveFileName(self, self.tr('Save file'), path,
-                filefilter)
+        filename, selectedFileFilter = QFileDialog.getSaveFileName(self,
+                                                                   self.tr('Save file'), path, filefilter)
+        # fix_print_with_import
+        print(filename, selectedFileFilter)
         if filename:
-            filename = unicode(filename)
+            if not filename.lower().endswith(
+                    tuple(re.findall("\*(\.[a-z]{1,10})", filefilter))):
+                ext = re.search("\*(\.[a-z]{1,10})", selectedFileFilter)
+                if ext:
+                    filename += ext.group(1)
             settings.setValue('/Processing/LastBatchOutputPath', os.path.dirname(filename))
             dlg = AutofillDialog(self.alg)
             dlg.exec_()
@@ -87,38 +98,38 @@ class BatchOutputSelectionPanel(QWidget):
                 try:
                     if dlg.mode == AutofillDialog.DO_NOT_AUTOFILL:
                         self.table.cellWidget(self.row,
-                                self.col).setValue(filename)
+                                              self.col).setValue(filename)
                     elif dlg.mode == AutofillDialog.FILL_WITH_NUMBERS:
                         n = self.table.rowCount() - self.row
                         for i in range(n):
                             name = filename[:filename.rfind('.')] \
                                 + str(i + 1) + filename[filename.rfind('.'):]
                             self.table.cellWidget(i + self.row,
-                                    self.col).setValue(name)
+                                                  self.col).setValue(name)
                     elif dlg.mode == AutofillDialog.FILL_WITH_PARAMETER:
                         n = self.table.rowCount() - self.row
                         for i in range(n):
                             widget = self.table.cellWidget(i + self.row,
-                                    dlg.param)
+                                                           dlg.param)
                             param = self.alg.parameters[dlg.param]
                             if isinstance(param, (ParameterRaster,
-                                    ParameterVector, ParameterTable,
-                                    ParameterMultipleInput)):
-                                s = unicode(widget.getText())
+                                                  ParameterVector, ParameterTable,
+                                                  ParameterMultipleInput)):
+                                s = str(widget.getText())
                                 s = os.path.basename(s)
                                 s = os.path.splitext(s)[0]
                             elif isinstance(param, ParameterBoolean):
                                 s = str(widget.currentIndex() == 0)
                             elif isinstance(param, ParameterSelection):
-                                s = unicode(widget.currentText())
+                                s = str(widget.currentText())
                             elif isinstance(param, ParameterFixedTable):
-                                s = unicode(widget.table)
+                                s = str(widget.table)
                             else:
-                                s = unicode(widget.text())
+                                s = str(widget.text())
                             name = filename[:filename.rfind('.')] + s \
                                 + filename[filename.rfind('.'):]
                             self.table.cellWidget(i + self.row,
-                                    self.col).setValue(name)
+                                                  self.col).setValue(name)
                 except:
                     pass
 
@@ -126,12 +137,12 @@ class BatchOutputSelectionPanel(QWidget):
 
         settings = QSettings()
         if settings.contains('/Processing/LastBatchOutputPath'):
-            lastDir = unicode(settings.value('/Processing/LastBatchOutputPath'))
+            lastDir = str(settings.value('/Processing/LastBatchOutputPath'))
         else:
             lastDir = ''
 
         dirName = QFileDialog.getExistingDirectory(self,
-            self.tr('Select directory'), lastDir, QFileDialog.ShowDirsOnly)
+                                                   self.tr('Select directory'), lastDir, QFileDialog.ShowDirsOnly)
 
         if dirName:
             self.table.cellWidget(self.row, self.col).setValue(dirName)
@@ -141,4 +152,4 @@ class BatchOutputSelectionPanel(QWidget):
         return self.text.setText(text)
 
     def getValue(self):
-        return unicode(self.text.text())
+        return str(self.text.text())

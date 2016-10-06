@@ -1,0 +1,8 @@
+{
+  "name": "array_contains",
+  "type": "function",
+  "description": "Returns true if an array contains the given value.",
+  "arguments": [ {"arg":"array","description":"an array"},
+                 {"arg":"value","description":"the value to search"}],
+  "examples": [ { "expression":"array_contains(array(1,2,3),2)", "returns":"true"}]
+}

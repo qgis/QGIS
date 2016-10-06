@@ -37,7 +37,7 @@
 
 PyObject* pysqlite_Error, *pysqlite_Warning, *pysqlite_InterfaceError, *pysqlite_DatabaseError,
     *pysqlite_InternalError, *pysqlite_OperationalError, *pysqlite_ProgrammingError,
-    *pysqlite_IntegrityError, *pysqlite_DataError, *pysqlite_NotSupportedError, *pysqlite_OptimizedUnicode;
+    *pysqlite_IntegrityError, *pysqlite_DataError, *pysqlite_NotSupportedError;
 
 PyObject* converters;
 int _enable_callback_tracebacks;
@@ -50,21 +50,28 @@ static PyObject* module_connect(PyObject* self, PyObject* args, PyObject*
      * C-level, so this code is redundant with the one in connection_init in
      * connection.c and must always be copied from there ... */
 
-    static char *kwlist[] = {"database", "timeout", "detect_types", "isolation_level", "check_same_thread", "factory", "cached_statements", NULL, NULL};
-    PyObject* database;
+    static char *kwlist[] = {
+        "database", "timeout", "detect_types", "isolation_level",
+        "check_same_thread", "factory", "cached_statements", "uri",
+        NULL
+    };
+    char* database;
     int detect_types = 0;
     PyObject* isolation_level;
     PyObject* factory = NULL;
     int check_same_thread = 1;
     int cached_statements;
+    int uri = 0;
     double timeout = 5.0;
 
     PyObject* result;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|diOiOi", kwlist,
-                                     &database, &timeout, &detect_types, &isolation_level, &check_same_thread, &factory, &cached_statements))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|diOiOip", kwlist,
+                                     &database, &timeout, &detect_types,
+                                     &isolation_level, &check_same_thread,
+                                     &factory, &cached_statements, &uri))
     {
-        return NULL; 
+        return NULL;
     }
 
     if (factory == NULL) {
@@ -77,7 +84,8 @@ static PyObject* module_connect(PyObject* self, PyObject* args, PyObject*
 }
 
 PyDoc_STRVAR(module_connect_doc,
-"connect(database[, timeout, isolation_level, detect_types, factory])\n\
+"connect(database[, timeout, detect_types, isolation_level,\n\
+        check_same_thread, factory, cached_statements, uri])\n\
 \n\
 Opens a connection to the SQLite database file *database*. You can use\n\
 \":memory:\" to open a database connection to a database that resides in\n\
@@ -93,7 +101,7 @@ static PyObject* module_complete(PyObject* self, PyObject* args, PyObject*
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s", kwlist, &statement))
     {
-        return NULL; 
+        return NULL;
     }
 
     if (sqlite3_complete(statement)) {
@@ -122,7 +130,7 @@ static PyObject* module_enable_shared_cache(PyObject* self, PyObject* args, PyOb
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i", kwlist, &do_enable))
     {
-        return NULL; 
+        return NULL;
     }
 
     rc = sqlite3_enable_shared_cache(do_enable);
@@ -155,8 +163,8 @@ static PyObject* module_register_adapter(PyObject* self, PyObject* args)
 
     /* a basic type is adapted; there's a performance optimization if that's not the case
      * (99 % of all usages) */
-    if (type == &PyInt_Type || type == &PyLong_Type || type == &PyFloat_Type
-            || type == &PyString_Type || type == &PyUnicode_Type || type == &PyBuffer_Type) {
+    if (type == &PyLong_Type || type == &PyFloat_Type
+            || type == &PyUnicode_Type || type == &PyByteArray_Type) {
         pysqlite_BaseTypeAdapted = 1;
     }
 
@@ -179,13 +187,20 @@ static PyObject* module_register_converter(PyObject* self, PyObject* args)
     PyObject* name = NULL;
     PyObject* callable;
     PyObject* retval = NULL;
+#if PY_MAJOR_VERSION >= 3
+    _Py_IDENTIFIER(upper);
+#endif
 
-    if (!PyArg_ParseTuple(args, "SO", &orig_name, &callable)) {
+    if (!PyArg_ParseTuple(args, "UO", &orig_name, &callable)) {
         return NULL;
     }
 
     /* convert the name to upper case */
+#if PY_MAJOR_VERSION < 3
     name = PyObject_CallMethod(orig_name, "upper", "");
+#else
+    name = _PyObject_CallMethodId(orig_name, &PyId_upper, "");
+#endif
     if (!name) {
         goto error;
     }
@@ -300,13 +315,35 @@ static IntConstantPair _int_constants[] = {
     {(char*)NULL, 0}
 };
 
+#if PY_MAJOR_VERSION >= 3
+static struct PyModuleDef _sqlite3module = {
+        PyModuleDef_HEAD_INIT,
+        "_spatialite",
+        NULL,
+        -1,
+        module_methods,
+        NULL,
+        NULL,
+        NULL,
+        NULL
+};
+#endif
+
+#if PY_MAJOR_VERSION < 3
 PyMODINIT_FUNC init_spatialite(void)
+#else
+PyMODINIT_FUNC PyInit__spatialite(void)
+#endif
 {
     PyObject *module, *dict;
     PyObject *tmp_obj;
     int i;
 
+#if PY_MAJOR_VERSION < 3
     module = Py_InitModule("pyspatialite._spatialite", module_methods);
+#else
+    module = PyModule_Create(&_sqlite3module);
+#endif
 
     if (!module ||
         (pysqlite_row_setup_types() < 0) ||
@@ -316,7 +353,8 @@ PyMODINIT_FUNC init_spatialite(void)
         (pysqlite_statement_setup_types() < 0) ||
         (pysqlite_prepare_protocol_setup_types() < 0)
        ) {
-        return;
+        Py_XDECREF(module);
+        return NULL;
     }
 
     Py_INCREF(&pysqlite_ConnectionType);
@@ -338,12 +376,12 @@ PyMODINIT_FUNC init_spatialite(void)
 
     /*** Create DB-API Exception hierarchy */
 
-    if (!(pysqlite_Error = PyErr_NewException(MODULE_NAME ".Error", PyExc_StandardError, NULL))) {
+    if (!(pysqlite_Error = PyErr_NewException(MODULE_NAME ".Error", PyExc_Exception, NULL))) {
         goto error;
     }
     PyDict_SetItemString(dict, "Error", pysqlite_Error);
 
-    if (!(pysqlite_Warning = PyErr_NewException(MODULE_NAME ".Warning", PyExc_StandardError, NULL))) {
+    if (!(pysqlite_Warning = PyErr_NewException(MODULE_NAME ".Warning", PyExc_Exception, NULL))) {
         goto error;
     }
     PyDict_SetItemString(dict, "Warning", pysqlite_Warning);
@@ -392,17 +430,17 @@ PyMODINIT_FUNC init_spatialite(void)
     }
     PyDict_SetItemString(dict, "NotSupportedError", pysqlite_NotSupportedError);
 
-    /* We just need "something" unique for pysqlite_OptimizedUnicode. It does not really
-     * need to be a string subclass. Just anything that can act as a special
-     * marker for us. So I pulled PyCell_Type out of my magic hat.
-     */
-    Py_INCREF((PyObject*)&PyCell_Type);
-    pysqlite_OptimizedUnicode = (PyObject*)&PyCell_Type;
-    PyDict_SetItemString(dict, "OptimizedUnicode", pysqlite_OptimizedUnicode);
+    /* In Python 2.x, setting Connection.text_factory to
+       OptimizedUnicode caused Unicode objects to be returned for
+       non-ASCII data and bytestrings to be returned for ASCII data.
+       Now OptimizedUnicode is an alias for str, so it has no
+       effect. */
+    Py_INCREF((PyObject*)&PyUnicode_Type);
+    PyDict_SetItemString(dict, "OptimizedUnicode", (PyObject*)&PyUnicode_Type);
 
     /* Set integer constants */
     for (i = 0; _int_constants[i].constant_name != 0; i++) {
-        tmp_obj = PyInt_FromLong(_int_constants[i].constant_value);
+        tmp_obj = PyLong_FromLong(_int_constants[i].constant_value);
         if (!tmp_obj) {
             goto error;
         }
@@ -410,13 +448,13 @@ PyMODINIT_FUNC init_spatialite(void)
         Py_DECREF(tmp_obj);
     }
 
-    if (!(tmp_obj = PyString_FromString(PYSPATIALITE_VERSION))) {
+    if (!(tmp_obj = PyUnicode_FromString(PYSPATIALITE_VERSION))) {
         goto error;
     }
     PyDict_SetItemString(dict, "version", tmp_obj);
     Py_DECREF(tmp_obj);
 
-    if (!(tmp_obj = PyString_FromString(sqlite3_libversion()))) {
+    if (!(tmp_obj = PyUnicode_FromString(sqlite3_libversion()))) {
         goto error;
     }
     PyDict_SetItemString(dict, "sqlite_version", tmp_obj);
@@ -434,7 +472,7 @@ PyMODINIT_FUNC init_spatialite(void)
 
     /* Original comment from _bsddb.c in the Python core. This is also still
      * needed nowadays for Python 2.3/2.4.
-     * 
+     *
      * PyEval_InitThreads is called here due to a quirk in python 1.5
      * - 2.2.1 (at least) according to Russell Williamson <merel@wt.net>:
      * The global interpreter lock is not initialized until the first
@@ -452,6 +490,9 @@ PyMODINIT_FUNC init_spatialite(void)
 error:
     if (PyErr_Occurred())
     {
-        PyErr_SetString(PyExc_ImportError, "pyspatialite._spatialite: init failed");
+        PyErr_SetString(PyExc_ImportError, MODULE_NAME ": init failed");
+        Py_DECREF(module);
+        module = NULL;
     }
+    return module;
 }

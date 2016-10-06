@@ -23,75 +23,72 @@ __copyright__ = '(C) 2011, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import SIGNAL
-from PyQt4.QtGui import QWidget
+from qgis.PyQt.QtWidgets import QWidget
 
-from ui_widgetTileIndex import Ui_GdalToolsWidget as Ui_Widget
-from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
-import GdalTools_utils as Utils
+from .ui_widgetTileIndex import Ui_GdalToolsWidget as Ui_Widget
+from .widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
+from . import GdalTools_utils as Utils
 
-class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
 
-  def __init__( self, iface ):
-      QWidget.__init__( self )
-      self.iface = iface
+class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
-      self.setupUi( self )
-      BasePluginWidget.__init__( self, self.iface, "gdaltindex" )
+    def __init__(self, iface):
+        QWidget.__init__(self)
+        self.iface = iface
 
-      self.inSelector.setType( self.inSelector.FILE )
-      self.outSelector.setType( self.outSelector.FILE )
+        self.setupUi(self)
+        BasePluginWidget.__init__(self, self.iface, "gdaltindex")
 
-      self.setParamsStatus([
-          ( self.inSelector, SIGNAL( "filenameChanged()" ) ),
-          #( self.recurseCheck, SIGNAL( "stateChanged( int )" ),
-          ( self.outSelector, SIGNAL( "filenameChanged()" ) ),
-          ( self.indexFieldEdit, SIGNAL( "textChanged( const QString & )" ), self.indexFieldCheck),
-          ( self.absolutePathCheck, SIGNAL( "stateChanged( int )" ), None, 1500 ),
-          ( self.skipDifferentProjCheck, SIGNAL( "stateChanged( int )" ), None, 1500 )
-      ])
+        self.inSelector.setType(self.inSelector.FILE)
+        self.outSelector.setType(self.outSelector.FILE)
 
-      self.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputDirEdit )
-      self.connect( self.outSelector, SIGNAL( "selectClicked()" ), self.fillOutputFileEdit )
+        self.setParamsStatus([
+            (self.inSelector, "filenameChanged"),
+            #( self.recurseCheck, "stateChanged" ),
+            (self.outSelector, "filenameChanged"),
+            (self.indexFieldEdit, "textChanged", self.indexFieldCheck),
+            (self.skipDifferentProjCheck, "stateChanged", None, 1500)
+        ])
 
-  def fillInputDirEdit( self ):
-      inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with raster files" ))
-      if not inputDir:
-        return
-      self.inSelector.setFilename( inputDir )
+        self.inSelector.selectClicked.connect(self.fillInputDirEdit)
+        self.outSelector.selectClicked.connect(self.fillOutputFileEdit)
 
-  def fillOutputFileEdit( self ):
-      lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
-      outputFile, encoding = Utils.FileDialog.getSaveFileName( self, self.tr( "Select where to save the TileIndex output" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter, True )
-      if not outputFile:
-        return
-      Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
+    def fillInputDirEdit(self):
+        inputDir = Utils.FileDialog.getExistingDirectory(self, self.tr("Select the input directory with raster files"))
+        if not inputDir:
+            return
+        self.inSelector.setFilename(inputDir)
 
-      self.outputFormat = Utils.fillVectorOutputFormat( lastUsedFilter, outputFile )
-      self.outSelector.setFilename( outputFile )
-      self.lastEncoding = encoding
+    def fillOutputFileEdit(self):
+        lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
+        outputFile, encoding = Utils.FileDialog.getSaveFileName(self, self.tr("Select where to save the TileIndex output"), Utils.FileFilter.allVectorsFilter(), lastUsedFilter, True)
+        if not outputFile:
+            return
+        Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
 
-  def getArguments( self ):
-      arguments = []
-      if self.indexFieldCheck.isChecked() and self.indexFieldEdit.text():
-        arguments.append("-tileindex")
-        arguments.append(self.indexFieldEdit.text())
-      if self.absolutePathCheck.isChecked():
-        arguments.append("-write_absolute_path")
-      if self.skipDifferentProjCheck.isChecked():
-        arguments.append("-skip_different_projection")
-      arguments.append(self.getOutputFileName())
-      arguments.extend(Utils.getRasterFiles( self.getInputFileName(), self.recurseCheck.isChecked() ))
-      return arguments
+        self.outputFormat = Utils.fillVectorOutputFormat(lastUsedFilter, outputFile)
+        self.outSelector.setFilename(outputFile)
+        self.lastEncoding = encoding
 
-  def getOutputFileName( self ):
-      return self.outSelector.filename()
+    def getArguments(self):
+        arguments = []
+        if self.indexFieldCheck.isChecked() and self.indexFieldEdit.text():
+            arguments.append("-tileindex")
+            arguments.append(self.indexFieldEdit.text())
+        if self.skipDifferentProjCheck.isChecked():
+            arguments.append("-skip_different_projection")
+        arguments.append(self.getOutputFileName())
+        arguments.extend(Utils.getRasterFiles(self.getInputFileName(), self.recurseCheck.isChecked()))
+        return arguments
 
-  def getInputFileName( self ):
-      return self.inSelector.filename()
+    def getOutputFileName(self):
+        return self.outSelector.filename()
 
-  def addLayerIntoCanvas( self, fileInfo ):
-      vl = self.iface.addVectorLayer( fileInfo.filePath(), fileInfo.baseName(), "ogr" )
-      if vl is not None and vl.isValid():
-        if hasattr( self, 'lastEncoding' ):
-          vl.setProviderEncoding( self.lastEncoding )
+    def getInputFileName(self):
+        return self.inSelector.filename()
+
+    def addLayerIntoCanvas(self, fileInfo):
+        vl = self.iface.addVectorLayer(fileInfo.filePath(), fileInfo.baseName(), "ogr")
+        if vl is not None and vl.isValid():
+            if hasattr(self, 'lastEncoding'):
+                vl.setProviderEncoding(self.lastEncoding)

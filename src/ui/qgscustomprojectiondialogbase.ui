@@ -41,9 +41,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-35</y>
-        <width>520</width>
-        <height>646</height>
+        <y>0</y>
+        <width>536</width>
+        <height>615</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
@@ -109,6 +109,10 @@
                 <property name="text">
                  <string/>
                 </property>
+                <property name="icon">
+                 <iconset resource="../../images/images.qrc">
+                  <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                </property>
                </widget>
               </item>
               <item>
@@ -118,6 +122,10 @@
                 </property>
                 <property name="text">
                  <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../images/images.qrc">
+                  <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                 </property>
                </widget>
               </item>
@@ -193,7 +201,7 @@
          <property name="title">
           <string>Test</string>
          </property>
-         <property name="collapsed" stdset="0">
+         <property name="collapsed">
           <bool>true</bool>
          </property>
          <layout class="QGridLayout">

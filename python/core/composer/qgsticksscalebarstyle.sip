@@ -16,7 +16,7 @@ class QgsTicksScaleBarStyle: QgsScaleBarStyle
 
     QString name() const;
 
-    /*! draw method
+    /** Draw method
      @param p painter object
      @param xOffset offset
      */

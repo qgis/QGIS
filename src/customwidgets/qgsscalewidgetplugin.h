@@ -16,8 +16,15 @@
 #ifndef QGSSCALEWIDGETPLUGIN_H
 #define QGSSCALEWIDGETPLUGIN_H
 
+
+#include <QtGlobal>
+#if QT_VERSION < 0x050000
+#include <QDesignerCustomWidgetCollectionInterface>
 #include <QDesignerExportWidget>
-#include <QDesignerCustomWidgetInterface>
+#else
+#include <QtUiPlugin/QDesignerCustomWidgetInterface>
+#include <QtUiPlugin/QDesignerExportWidget>
+#endif
 
 
 class CUSTOMWIDGETS_EXPORT QgsScaleWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface

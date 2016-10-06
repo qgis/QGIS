@@ -19,19 +19,19 @@
 #include "qgscomposershape.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
-#include "qgsstylev2.h"
-#include "qgssymbolv2selectordialog.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgsstyle.h"
+#include "qgssymbolselectordialog.h"
+#include "qgssymbollayerutils.h"
 #include <QColorDialog>
 
-QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape ): QgsComposerItemBaseWidget( 0, composerShape ), mComposerShape( composerShape )
+QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape ): QgsComposerItemBaseWidget( nullptr, composerShape ), mComposerShape( composerShape )
 {
   setupUi( this );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerShape );
 
-  //shapes don't use background or frame, since the symbol style is set through a QgsSymbolV2SelectorDialog
+  //shapes don't use background or frame, since the symbol style is set through a QgsSymbolSelectorDialog
   itemPropertiesWidget->showBackgroundGroup( false );
   itemPropertiesWidget->showFrameGroup( false );
 
@@ -107,8 +107,12 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
   // use the atlas coverage layer, if any
   QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
-  QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( mComposerShape->shapeStyleSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer, this );
+  QgsFillSymbol* newSymbol = mComposerShape->shapeStyleSymbol()->clone();
+  QgsExpressionContext context = mComposerShape->createExpressionContext();
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), coverageLayer, this );
+  QgsSymbolWidgetContext symbolContext;
+  symbolContext.setExpressionContext( &context );
+  d.setContext( symbolContext );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -117,10 +121,7 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
     updateShapeStyle();
     mComposerShape->endCommand();
   }
-  else
-  {
-    delete newSymbol;
-  }
+  delete newSymbol;
 }
 
 void QgsComposerShapeWidget::updateShapeStyle()
@@ -128,7 +129,7 @@ void QgsComposerShapeWidget::updateShapeStyle()
   if ( mComposerShape )
   {
     mComposerShape->refreshSymbol();
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerShape->shapeStyleSymbol(), mShapeStyleButton->iconSize() );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mComposerShape->shapeStyleSymbol(), mShapeStyleButton->iconSize() );
     mShapeStyleButton->setIcon( icon );
   }
 }

@@ -4,10 +4,12 @@
 <qgisgrassmodule label="Display list of category values found in raster" module="r.describe">
 	<flag key="1" />
 	<flag key="r" />
+	<flag key="n" />
 	<flag key="d" />
 	<flag key="i" />
-	<flag key="q" />
+	<flag key="q" version_max="6"/>
 	<option key="map" />
-	<option key="nv" />
+	<option key="nv" version_max="6"/>
+	<option key="null_value" version_min="7"/>
 	<option key="nsteps" />
 </qgisgrassmodule>

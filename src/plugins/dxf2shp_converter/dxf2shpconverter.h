@@ -47,7 +47,7 @@ class dxf2shpConverter: public QObject, public QgisPlugin
      * QGIS when it attempts to instantiate the plugin.
      * @param theInterface Pointer to the QgisInterface object.
      */
-    dxf2shpConverter( QgisInterface *theInterface );
+    explicit dxf2shpConverter( QgisInterface *theInterface );
     //! Destructor
     virtual ~dxf2shpConverter();
 
@@ -61,9 +61,9 @@ class dxf2shpConverter: public QObject, public QgisPlugin
     //! show the help document
     void help();
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( QString theThemeName );
+    void setCurrentTheme( const QString& theThemeName );
 
-    void addMyLayer( QString, QString );
+    void addMyLayer( const QString&, const QString& );
 
   private:
 

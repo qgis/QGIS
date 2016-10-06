@@ -16,6 +16,13 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import str
+from builtins import range
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
@@ -25,54 +32,77 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import re
+import os
 import csv
 import uuid
 import codecs
-import cStringIO
+import io
 
-from PyQt4.QtCore import QVariant, QSettings
-from qgis.core import QGis, QgsFields, QgsField, QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer, QgsVectorFileWriter, QgsDistanceArea
+import psycopg2
+
+from qgis.PyQt.QtCore import QVariant, QSettings
+from qgis.core import (Qgis, QgsFields, QgsField, QgsGeometry, QgsRectangle, QgsWkbTypes,
+                       QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer,
+                       QgsVectorFileWriter, QgsDistanceArea, QgsDataSourceUri, QgsCredentials,
+                       QgsFeatureRequest, QgsWkbTypes)
+
 from processing.core.ProcessingConfig import ProcessingConfig
-
-
-GEOM_TYPE_MAP = {
-    QGis.WKBPoint: 'Point',
-    QGis.WKBLineString: 'LineString',
-    QGis.WKBPolygon: 'Polygon',
-    QGis.WKBMultiPoint: 'MultiPoint',
-    QGis.WKBMultiLineString: 'MultiLineString',
-    QGis.WKBMultiPolygon: 'MultiPolygon',
-}
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.tools import dataobjects, spatialite, postgis
 
 
 TYPE_MAP = {
-    str : QVariant.String,
+    str: QVariant.String,
     float: QVariant.Double,
     int: QVariant.Int,
     bool: QVariant.Bool
 }
 
+TYPE_MAP_MEMORY_LAYER = {
+    QVariant.String: "string",
+    QVariant.Double: "double",
+    QVariant.Int: "integer",
+    QVariant.Date: "date",
+    QVariant.DateTime: "datetime",
+    QVariant.Time: "time"
+}
 
-def features(layer):
+TYPE_MAP_POSTGIS_LAYER = {
+    QVariant.String: "VARCHAR",
+    QVariant.Double: "REAL",
+    QVariant.Int: "INTEGER",
+    QVariant.Bool: "BOOLEAN"
+}
+
+TYPE_MAP_SPATIALITE_LAYER = {
+    QVariant.String: "VARCHAR",
+    QVariant.Double: "REAL",
+    QVariant.Int: "INTEGER",
+    QVariant.Bool: "INTEGER"
+}
+
+
+def features(layer, request=QgsFeatureRequest()):
     """This returns an iterator over features in a vector layer,
     considering the selection that might exist in the layer, and the
     configuration that indicates whether to use only selected feature
     or all of them.
 
-    This should be used by algorithms instead of calling the QGis API
+    This should be used by algorithms instead of calling the Qgis API
     directly, to ensure a consistent behaviour across algorithms.
     """
-    class Features:
+    class Features(object):
 
-        def __init__(self, layer):
+        def __init__(self, layer, request):
             self.layer = layer
             self.selection = False
-            self.iter = layer.getFeatures()
-            if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED):
-                selected = layer.selectedFeatures()
-                if len(selected) > 0:
-                    self.selection = True
-                    self.iter = iter(selected)
+            if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)\
+                    and layer.selectedFeatureCount() > 0:
+                self.iter = layer.selectedFeaturesIterator(request)
+                self.selection = True
+            else:
+                self.iter = layer.getFeatures(request)
 
         def __iter__(self):
             return self.iter
@@ -83,7 +113,7 @@ def features(layer):
             else:
                 return int(self.layer.featureCount())
 
-    return Features(layer)
+    return Features(layer, request)
 
 
 def uniqueValues(layer, attribute):
@@ -115,7 +145,7 @@ def resolveFieldIndex(layer, attr):
     if isinstance(attr, int):
         return attr
     else:
-        index = layer.fieldNameIndex(unicode(attr))
+        index = layer.fields().lookupField(attr)
         if index == -1:
             raise ValueError('Wrong field name')
         return index
@@ -147,17 +177,17 @@ def values(layer, *attributes):
     return ret
 
 
-def testForUniqueness( fieldList1, fieldList2 ):
+def testForUniqueness(fieldList1, fieldList2):
     '''Returns a modified version of fieldList2, removing naming
     collisions with fieldList1.'''
     changed = True
     while changed:
         changed = False
-        for i in range(0,len(fieldList1)):
-            for j in range(0,len(fieldList2)):
+        for i in range(0, len(fieldList1)):
+            for j in range(0, len(fieldList2)):
                 if fieldList1[i].name() == fieldList2[j].name():
                     field = fieldList2[j]
-                    name = createUniqueFieldName( field.name(), fieldList1 )
+                    name = createUniqueFieldName(field.name(), fieldList1)
                     fieldList2[j] = QgsField(name, field.type(), len=field.length(), prec=field.precision(), comment=field.comment())
                     changed = True
     return fieldList2
@@ -166,10 +196,7 @@ def testForUniqueness( fieldList1, fieldList2 ):
 def spatialindex(layer):
     """Creates a spatial index for the passed vector layer.
     """
-    idx = QgsSpatialIndex()
-    feats = features(layer)
-    for ft in feats:
-        idx.insertFeature(ft)
+    idx = QgsSpatialIndex(layer.getFeatures())
     return idx
 
 
@@ -177,7 +204,7 @@ def createUniqueFieldName(fieldName, fieldList):
     def nextname(name):
         num = 1
         while True:
-            returnname ='{name}_{num}'.format(name=name[:8], num=num)
+            returnname = '{name}_{num}'.format(name=name[:8], num=num)
             yield returnname
             num += 1
 
@@ -198,7 +225,7 @@ def createUniqueFieldName(fieldName, fieldList):
 
 
 def findOrCreateField(layer, fieldList, fieldName, fieldLen=24, fieldPrec=15):
-    idx = layer.fieldNameIndex(fieldName)
+    idx = layer.fields().lookupField(fieldName)
     if idx == -1:
         fn = createUniqueFieldName(fieldName, fieldList)
         field = QgsField(fn, QVariant.Double, '', fieldLen, fieldPrec)
@@ -210,19 +237,19 @@ def findOrCreateField(layer, fieldList, fieldName, fieldLen=24, fieldPrec=15):
 
 def extractPoints(geom):
     points = []
-    if geom.type() == QGis.Point:
+    if geom.type() == QgsWkbTypes.PointGeometry:
         if geom.isMultipart():
             points = geom.asMultiPoint()
         else:
             points.append(geom.asPoint())
-    elif geom.type() == QGis.Line:
+    elif geom.type() == QgsWkbTypes.LineGeometry:
         if geom.isMultipart():
             lines = geom.asMultiPolyline()
             for line in lines:
                 points.extend(line)
         else:
             points = geom.asPolyline()
-    elif geom.type() == QGis.Polygon:
+    elif geom.type() == QgsWkbTypes.PolygonGeometry:
         if geom.isMultipart():
             polygons = geom.asMultiPolygon()
             for poly in polygons:
@@ -242,11 +269,11 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
     # 1 - project CRS
     # 2 - ellipsoidal
 
-    if geom.wkbType() in [QGis.WKBPoint, QGis.WKBPoint25D]:
+    if geom.wkbType() in [QgsWkbTypes.Point, QgsWkbTypes.Point25D]:
         pt = geom.asPoint()
         attr1 = pt.x()
         attr2 = pt.y()
-    elif geom.wkbType() in [QGis.WKBMultiPoint, QGis.WKBMultiPoint25D]:
+    elif geom.wkbType() in [QgsWkbTypes.MultiPoint, QgsWkbTypes.MultiPoint25D]:
         pt = geom.asMultiPoint()
         attr1 = pt[0].x()
         attr2 = pt[0].y()
@@ -258,10 +285,11 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
             measure.setEllipsoid(ellips)
             measure.setEllipsoidalMode(True)
 
-        attr1 = measure.measure(geom)
-        if geom.type() == QGis.Polygon:
+        if geom.type() == QgsWkbTypes.PolygonGeometry:
+            attr1 = measure.measureArea(geom)
             attr2 = measure.measurePerimeter(geom)
         else:
+            attr1 = measure.measureLength(geom)
             attr2 = None
 
     return (attr1, attr2)
@@ -284,18 +312,18 @@ def combineVectorFields(layerA, layerB):
     """Create single field map from two input field maps.
     """
     fields = []
-    fieldsA = layerA.pendingFields()
+    fieldsA = layerA.fields()
     fields.extend(fieldsA)
-    namesA = [unicode(f.name()).lower() for f in fieldsA]
-    fieldsB = layerB.pendingFields()
+    namesA = [str(f.name()).lower() for f in fieldsA]
+    fieldsB = layerB.fields()
     for field in fieldsB:
-        name = unicode(field.name()).lower()
+        name = str(field.name()).lower()
         if name in namesA:
             idx = 2
-            newName = name + '_' + unicode(idx)
+            newName = name + '_' + str(idx)
             while newName in namesA:
                 idx += 1
-                newName = name + '_' + unicode(idx)
+                newName = name + '_' + str(idx)
             field = QgsField(newName, field.type(), field.typeName())
         fields.append(field)
 
@@ -316,11 +344,11 @@ def duplicateInMemory(layer, newName='', addToRegistry=False):
 
     if layer.type() == QgsMapLayer.VectorLayer:
         geomType = layer.geometryType()
-        if geomType == QGis.Point:
+        if geomType == QgsWkbTypes.PointGeometry:
             strType = 'Point'
-        elif geomType == QGis.Line:
+        elif geomType == QgsWkbTypes.LineGeometry:
             strType = 'Line'
-        elif geomType == QGis.Polygon:
+        elif geomType == QgsWkbTypes.PolygonGeometry:
             strType = 'Polygon'
         else:
             raise RuntimeError('Layer is whether Point nor Line nor Polygon')
@@ -334,7 +362,7 @@ def duplicateInMemory(layer, newName='', addToRegistry=False):
     memProvider = memLayer.dataProvider()
 
     provider = layer.dataProvider()
-    fields = provider.fields().toList()
+    fields = layer.fields().toList()
     memProvider.addAttributes(fields)
     memLayer.updateFields()
 
@@ -369,76 +397,286 @@ def checkMinDistance(point, index, distance, points):
     return True
 
 
-def _fieldName(f):
-    if isinstance(f, basestring):
-        return f
-    return f.name()
-
-
 def _toQgsField(f):
     if isinstance(f, QgsField):
         return f
     return QgsField(f[0], TYPE_MAP.get(f[1], QVariant.String))
 
 
-class VectorWriter:
+def snapToPrecision(geom, precision):
+    snapped = QgsGeometry(geom)
+    if precision == 0.0:
+        return snapped
+
+    i = 0
+    p = snapped.vertexAt(i)
+    while p.x() != 0.0 and p.y() != 0.0:
+        x = round(p.x() / precision, 0) * precision
+        y = round(p.y() / precision, 0) * precision
+        snapped.moveVertex(x, y, i)
+        i = i + 1
+        p = snapped.vertexAt(i)
+    return snapped
+
+
+def bufferedBoundingBox(bbox, buffer_size):
+    if buffer_size == 0.0:
+        return QgsRectangle(bbox)
+
+    return QgsRectangle(
+        bbox.xMinimum() - buffer_size,
+        bbox.yMinimum() - buffer_size,
+        bbox.xMaximum() + buffer_size,
+        bbox.yMaximum() + buffer_size)
+
+
+def ogrConnectionString(uri):
+    """Generates OGR connection sting from layer source
+    """
+    ogrstr = None
+
+    layer = dataobjects.getObjectFromUri(uri, False)
+    if layer is None:
+        return '"' + uri + '"'
+    provider = layer.dataProvider().name()
+    if provider == 'spatialite':
+        # dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
+        regex = re.compile("dbname='(.+)'")
+        r = regex.search(str(layer.source()))
+        ogrstr = r.groups()[0]
+    elif provider == 'postgres':
+        # dbname='ktryjh_iuuqef' host=spacialdb.com port=9999
+        # user='ktryjh_iuuqef' password='xyqwer' sslmode=disable
+        # key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON
+        # table="t4" (geom) sql=
+        dsUri = QgsDataSourceUri(layer.dataProvider().dataSourceUri())
+        conninfo = dsUri.connectionInfo()
+        conn = None
+        ok = False
+        while not conn:
+            try:
+                conn = psycopg2.connect(dsUri.connectionInfo())
+            except psycopg2.OperationalError:
+                (ok, user, passwd) = QgsCredentials.instance().get(conninfo, dsUri.username(), dsUri.password())
+                if not ok:
+                    break
+
+                dsUri.setUsername(user)
+                dsUri.setPassword(passwd)
+
+        if not conn:
+            raise RuntimeError('Could not connect to PostgreSQL database - check connection info')
+
+        if ok:
+            QgsCredentials.instance().put(conninfo, user, passwd)
+
+        ogrstr = "PG:%s" % dsUri.connectionInfo()
+    elif provider == "oracle":
+        # OCI:user/password@host:port/service:table
+        dsUri = QgsDataSourceUri(layer.dataProvider().dataSourceUri())
+        ogrstr = "OCI:"
+        if dsUri.username() != "":
+            ogrstr += dsUri.username()
+            if dsUri.password() != "":
+                ogrstr += "/" + dsUri.password()
+            delim = "@"
+
+        if dsUri.host() != "":
+            ogrstr += delim + dsUri.host()
+            delim = ""
+            if dsUri.port() != "" and dsUri.port() != '1521':
+                ogrstr += ":" + dsUri.port()
+            ogrstr += "/"
+            if dsUri.database() != "":
+                ogrstr += dsUri.database()
+        elif dsUri.database() != "":
+            ogrstr += delim + dsUri.database()
+
+        if ogrstr == "OCI:":
+            raise RuntimeError('Invalid oracle data source - check connection info')
+
+        ogrstr += ":"
+        if dsUri.schema() != "":
+            ogrstr += dsUri.schema() + "."
+
+        ogrstr += dsUri.table()
+    else:
+        ogrstr = str(layer.source()).split("|")[0]
+
+    return '"' + ogrstr + '"'
+
+
+def ogrLayerName(uri):
+    if 'host' in uri:
+        regex = re.compile('(table=")(.+?)(\.)(.+?)"')
+        r = regex.search(uri)
+        return '"' + r.groups()[1] + '.' + r.groups()[3] + '"'
+    elif 'dbname' in uri:
+        regex = re.compile('(table=")(.+?)"')
+        r = regex.search(uri)
+        return r.groups()[1]
+    elif 'layername' in uri:
+        regex = re.compile('(layername=)(.*)')
+        r = regex.search(uri)
+        return r.groups()[1]
+    else:
+        return os.path.basename(os.path.splitext(uri)[0])
+
+
+class VectorWriter(object):
 
     MEMORY_LAYER_PREFIX = 'memory:'
+    POSTGIS_LAYER_PREFIX = 'postgis:'
+    SPATIALITE_LAYER_PREFIX = 'spatialite:'
 
-    def __init__(self, fileName, encoding, fields, geometryType,
+    nogeometry_extensions = [
+        u'csv',
+        u'dbf',
+        u'ods',
+        u'xlsx',
+    ]
+
+    def __init__(self, destination, encoding, fields, geometryType,
                  crs, options=None):
-        self.fileName = fileName
-        self.isMemory = False
-        self.memLayer = None
+        self.destination = destination
+        self.isNotFileBased = False
+        self.layer = None
         self.writer = None
 
         if encoding is None:
             settings = QSettings()
             encoding = settings.value('/Processing/encoding', 'System', type=str)
 
-        if self.fileName.startswith(self.MEMORY_LAYER_PREFIX):
-            self.isMemory = True
+        if self.destination.startswith(self.MEMORY_LAYER_PREFIX):
+            self.isNotFileBased = True
 
-            uri = GEOM_TYPE_MAP[geometryType] + "?uuid=" + str(uuid.uuid4())
+            uri = QgsWkbTypes.displayString(geometryType) + "?uuid=" + str(uuid.uuid4())
             if crs.isValid():
                 uri += '&crs=' + crs.authid()
-
-            fieldsdesc = ['field=' + _fieldName(f) for f in fields]
+            fieldsdesc = []
+            for f in fields:
+                qgsfield = _toQgsField(f)
+                fieldsdesc.append('field=%s:%s' % (qgsfield.name(),
+                                                   TYPE_MAP_MEMORY_LAYER.get(qgsfield.type(), "string")))
             if fieldsdesc:
-              uri += '&' + '&'.join(fieldsdesc)
+                uri += '&' + '&'.join(fieldsdesc)
 
-            self.memLayer = QgsVectorLayer(uri, self.fileName, 'memory')
-            self.writer = self.memLayer.dataProvider()
+            self.layer = QgsVectorLayer(uri, self.destination, 'memory')
+            self.writer = self.layer.dataProvider()
+        elif self.destination.startswith(self.POSTGIS_LAYER_PREFIX):
+            self.isNotFileBased = True
+            uri = QgsDataSourceUri(self.destination[len(self.POSTGIS_LAYER_PREFIX):])
+            connInfo = uri.connectionInfo()
+            (success, user, passwd) = QgsCredentials.instance().get(connInfo, None, None)
+            if success:
+                QgsCredentials.instance().put(connInfo, user, passwd)
+            else:
+                raise GeoAlgorithmExecutionException("Couldn't connect to database")
+            # fix_print_with_import
+            print(uri.uri())
+            try:
+                db = postgis.GeoDB(host=uri.host(), port=int(uri.port()),
+                                   dbname=uri.database(), user=user, passwd=passwd)
+            except postgis.DbError as e:
+                raise GeoAlgorithmExecutionException(
+                    "Couldn't connect to database:\n%s" % e.message)
+
+            def _runSQL(sql):
+                try:
+                    db._exec_sql_and_commit(str(sql))
+                except postgis.DbError as e:
+                    raise GeoAlgorithmExecutionException(
+                        'Error creating output PostGIS table:\n%s' % e.message)
+
+            fields = [_toQgsField(f) for f in fields]
+            fieldsdesc = ",".join('%s %s' % (f.name(),
+                                             TYPE_MAP_POSTGIS_LAYER.get(f.type(), "VARCHAR"))
+                                  for f in fields)
+
+            _runSQL("CREATE TABLE %s.%s (%s)" % (uri.schema(), uri.table().lower(), fieldsdesc))
+            if geometryType != QgsWkbTypes.NullGeometry:
+                _runSQL("SELECT AddGeometryColumn('{schema}', '{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
+                    table=uri.table().lower(), schema=uri.schema(), srid=crs.authid().split(":")[-1],
+                    typmod=QgsWkbTypes.displayString(geometryType).upper()))
+
+            self.layer = QgsVectorLayer(uri.uri(), uri.table(), "postgres")
+            self.writer = self.layer.dataProvider()
+        elif self.destination.startswith(self.SPATIALITE_LAYER_PREFIX):
+            self.isNotFileBased = True
+            uri = QgsDataSourceUri(self.destination[len(self.SPATIALITE_LAYER_PREFIX):])
+            # fix_print_with_import
+            print(uri.uri())
+            try:
+                db = spatialite.GeoDB(uri=uri)
+            except spatialite.DbError as e:
+                raise GeoAlgorithmExecutionException(
+                    "Couldn't connect to database:\n%s" % e.message)
+
+            def _runSQL(sql):
+                try:
+                    db._exec_sql_and_commit(str(sql))
+                except spatialite.DbError as e:
+                    raise GeoAlgorithmExecutionException(
+                        'Error creating output Spatialite table:\n%s' % str(e))
+
+            fields = [_toQgsField(f) for f in fields]
+            fieldsdesc = ",".join('%s %s' % (f.name(),
+                                             TYPE_MAP_SPATIALITE_LAYER.get(f.type(), "VARCHAR"))
+                                  for f in fields)
+
+            _runSQL("DROP TABLE IF EXISTS %s" % uri.table().lower())
+            _runSQL("CREATE TABLE %s (%s)" % (uri.table().lower(), fieldsdesc))
+            if geometryType != QgsWkbTypes.NullGeometry:
+                _runSQL("SELECT AddGeometryColumn('{table}', 'the_geom', {srid}, '{typmod}', 2)".format(
+                    table=uri.table().lower(), srid=crs.authid().split(":")[-1],
+                    typmod=QgsWkbTypes.displayString(geometryType).upper()))
+
+            self.layer = QgsVectorLayer(uri.uri(), uri.table(), "spatialite")
+            self.writer = self.layer.dataProvider()
         else:
             formats = QgsVectorFileWriter.supportedFiltersAndFormats()
             OGRCodes = {}
-            for (key, value) in formats.items():
-                extension = unicode(key)
+            for (key, value) in list(formats.items()):
+                extension = str(key)
                 extension = extension[extension.find('*.') + 2:]
                 extension = extension[:extension.find(' ')]
                 OGRCodes[extension] = value
+            OGRCodes['dbf'] = "DBF file"
 
-            extension = self.fileName[self.fileName.rfind('.') + 1:]
+            extension = self.destination[self.destination.rfind('.') + 1:]
+
             if extension not in OGRCodes:
                 extension = 'shp'
-                self.filename = self.filename + 'shp'
+                self.destination = self.destination + '.shp'
+
+            if geometryType == QgsWkbTypes.NoGeometry:
+                if extension == 'shp':
+                    extension = 'dbf'
+                    self.destination = self.destination[:self.destination.rfind('.')] + '.dbf'
+                if extension not in self.nogeometry_extensions:
+                    raise GeoAlgorithmExecutionException(
+                        "Unsupported format for tables with no geometry")
 
             qgsfields = QgsFields()
             for field in fields:
                 qgsfields.append(_toQgsField(field))
 
-            self.writer = QgsVectorFileWriter(
-                self.fileName, encoding,
-                qgsfields, geometryType, crs, OGRCodes[extension])
+            # use default dataset/layer options
+            dataset_options = QgsVectorFileWriter.defaultDatasetOptions(OGRCodes[extension])
+            layer_options = QgsVectorFileWriter.defaultLayerOptions(OGRCodes[extension])
+
+            self.writer = QgsVectorFileWriter(self.destination, encoding,
+                                              qgsfields, geometryType, crs, OGRCodes[extension],
+                                              dataset_options, layer_options)
 
     def addFeature(self, feature):
-        if self.isMemory:
+        if self.isNotFileBased:
             self.writer.addFeatures([feature])
         else:
             self.writer.addFeature(feature)
 
 
-class TableWriter:
+class TableWriter(object):
 
     def __init__(self, fileName, encoding, fields):
         self.fileName = fileName
@@ -465,16 +703,16 @@ class TableWriter:
             self.writer.writerows(records)
 
 
-class UnicodeWriter:
+class UnicodeWriter(object):
 
     def __init__(self, f, dialect=csv.excel, encoding='utf-8', **kwds):
-        self.queue = cStringIO.StringIO()
+        self.queue = io.StringIO()
         self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
         self.stream = f
         self.encoder = codecs.getincrementalencoder(encoding)()
 
     def writerow(self, row):
-        row = map(unicode, row)
+        row = list(map(str, row))
         try:
             self.writer.writerow([s.encode('utf-8') for s in row])
         except:

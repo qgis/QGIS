@@ -31,7 +31,7 @@ QgsProjectBadLayerGuiHandler::QgsProjectBadLayerGuiHandler()
 
 bool QgsProjectBadLayerGuiHandler::mIgnore = false;
 
-void QgsProjectBadLayerGuiHandler::handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom )
+void QgsProjectBadLayerGuiHandler::handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom )
 {
   Q_UNUSED( projectDom );
 
@@ -227,8 +227,8 @@ bool QgsProjectBadLayerGuiHandler::findMissingFile( QString const & fileFilters,
   QStringList selectedFiles;
   QString enc;
   QString title = QObject::tr( "Where is '%1' (original location: %2)?" )
-                  .arg( originalDataSource.fileName() )
-                  .arg( originalDataSource.absoluteFilePath() );
+                  .arg( originalDataSource.fileName(),
+                        originalDataSource.absoluteFilePath() );
 
   bool retVal = QgisGui::openFilesRememberingFilter( memoryQualifier,
                 myFileFilters,

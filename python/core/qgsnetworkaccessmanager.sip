@@ -60,7 +60,8 @@ class QgsNetworkAccessManager : QNetworkAccessManager
     //! Setup the NAM according to the user's settings
     void setupDefaultProxyAndCache();
 
-    bool useSystemProxy();
+    //! return whether the system proxy should be used
+    bool useSystemProxy() const;
 
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );

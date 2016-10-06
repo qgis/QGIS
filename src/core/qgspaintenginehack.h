@@ -16,7 +16,9 @@
 
 #include <QPaintEngine>
 
-// Hack to workaround Qt #5114 by disabling PatternTransform
+/** \ingroup core
+ * Hack to workaround Qt #5114 by disabling PatternTransform
+ */
 class CORE_EXPORT QgsPaintEngineHack : public QPaintEngine
 {
   public:

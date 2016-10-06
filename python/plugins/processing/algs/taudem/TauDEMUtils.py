@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2012'
@@ -28,7 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 import subprocess
 
-from PyQt4.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -36,7 +37,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import isMac
 
 
-class TauDEMUtils:
+class TauDEMUtils(object):
 
     TAUDEM_FOLDER = 'TAUDEM_FOLDER'
     TAUDEM_MULTIFILE_FOLDER = 'TAUDEM_MULTIFILE_FOLDER'
@@ -53,27 +54,11 @@ class TauDEMUtils:
 
         if isMac():
             testfolder = os.path.join(QgsApplication.prefixPath(), 'bin')
-            if os.path.exists(os.path.join(testfolder, 'slopearea')):
+            if os.path.exists(os.path.join(testfolder, 'pitremove')):
                 folder = testfolder
             else:
                 testfolder = '/usr/local/bin'
-                if os.path.exists(os.path.join(testfolder, 'slopearea')):
-                    folder = testfolder
-        return folder
-
-    @staticmethod
-    def taudemMultifilePath():
-        folder = ProcessingConfig.getSetting(TauDEMUtils.TAUDEM_MULTIFILE_FOLDER)
-        if folder is None:
-            folder = ''
-
-        if isMac():
-            testfolder = os.path.join(QgsApplication.prefixPath(), 'bin')
-            if os.path.exists(os.path.join(testfolder, 'slopearea')):
-                folder = testfolder
-            else:
-                testfolder = '/usr/local/bin'
-                if os.path.exists(os.path.join(testfolder, 'slopearea')):
+                if os.path.exists(os.path.join(testfolder, 'pitremove')):
                     folder = testfolder
         return folder
 

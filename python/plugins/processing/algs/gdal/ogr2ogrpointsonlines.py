@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giovanni Manghi'
 __date__ = 'January 2015'
@@ -28,15 +29,17 @@ __revision__ = '$Format:%H$'
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
 
-from processing.tools.system import isWindows
-
-from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-class Ogr2OgrPointsOnLines(OgrAlgorithm):
+from processing.tools import dataobjects
+from processing.tools.system import isWindows
+from processing.tools.vector import ogrConnectionString, ogrLayerName
+
+
+class Ogr2OgrPointsOnLines(GdalAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
@@ -45,39 +48,39 @@ class Ogr2OgrPointsOnLines(OgrAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def defineCharacteristics(self):
-        self.name = 'Create points along lines'
-        self.group = '[OGR] Geoprocessing'
+        self.name, self.i18n_name = self.trAlgorithm('Create points along lines')
+        self.group, self.i18n_group = self.trAlgorithm('[OGR] Geoprocessing')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE], False))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE], False))
         self.addParameter(ParameterString(self.GEOMETRY,
-            self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
-            'geometry', optional=False))
+                                          self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
+                                          'geometry', optional=False))
         self.addParameter(ParameterNumber(self.DISTANCE,
-            self.tr('Distance from line start represented as fraction of line length'), 0, 1, 0.5))
+                                          self.tr('Distance from line start represented as fraction of line length'), 0, 1, 0.5))
         self.addParameter(ParameterString(self.OPTIONS,
-            self.tr('Additional creation options (see ogr2ogr manual)'),
-            '', optional=True))
+                                          self.tr('Additional creation options (see ogr2ogr manual)'),
+                                          '', optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points along lines'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
-        layername = "'" + self.ogrLayerName(inLayer) + "'"
-        distance = unicode(self.getParameterValue(self.DISTANCE))
-        geometry = unicode(self.getParameterValue(self.GEOMETRY))
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        layername = "'" + ogrLayerName(inLayer) + "'"
+        distance = str(self.getParameterValue(self.DISTANCE))
+        geometry = str(self.getParameterValue(self.GEOMETRY))
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
-        output = self.ogrConnectionString(outFile)
-        options = unicode(self.getParameterValue(self.OPTIONS))
+        output = ogrConnectionString(outFile)
+        options = str(self.getParameterValue(self.OPTIONS))
 
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(self.ogrLayerName(inLayer))
+        arguments.append(ogrLayerName(inLayer))
 
         arguments.append('-dialect sqlite -sql "SELECT ST_Line_Interpolate_Point(')
         arguments.append(geometry)
@@ -98,4 +101,7 @@ class Ogr2OgrPointsOnLines(OgrAlgorithm):
         else:
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands
+
+    def commandName(self):
+        return "ogr2ogr"

@@ -30,7 +30,7 @@
 #include "rulesDialog.h"
 #include "topolTest.h"
 
-rulesDialog::rulesDialog( QMap<QString, TopologyRule> testMap, QgisInterface *theQgisIface, QWidget *parent )
+rulesDialog::rulesDialog( const QMap<QString, TopologyRule>& testMap, QgisInterface *theQgisIface, QWidget *parent )
     : QDialog( parent ), Ui::rulesDialog()
 {
   setupUi( this );
@@ -45,8 +45,8 @@ rulesDialog::rulesDialog( QMap<QString, TopologyRule> testMap, QgisInterface *th
   mRulesTable->setSelectionBehavior( QAbstractItemView::SelectRows );
   mRuleBox->addItems( mTestConfMap.keys() );
 
-  mAddTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
-  mDeleteTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
+  mAddTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
+  mDeleteTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
 
   connect( mAddTestButton, SIGNAL( clicked() ), this, SLOT( addRule() ) );
   connect( mAddTestButton, SIGNAL( clicked() ), mRulesTable, SLOT( resizeColumnsToContents() ) );
@@ -94,7 +94,7 @@ void rulesDialog::readTest( int index, QgsMapLayerRegistry* layerRegistry )
   if ( !( QgsVectorLayer* )layerRegistry->mapLayers().contains( layer1Id ) )
     return;
 
-  l1 = ( QgsVectorLayer* )layerRegistry->mapLayers()[layer1Id];
+  l1 = ( QgsVectorLayer* )layerRegistry->mapLayer( layer1Id );
   if ( !l1 )
     return;
 
@@ -108,7 +108,7 @@ void rulesDialog::readTest( int index, QgsMapLayerRegistry* layerRegistry )
       return;
     else
     {
-      l2 = ( QgsVectorLayer* )layerRegistry->mapLayers()[layer2Id];
+      l2 = ( QgsVectorLayer* )layerRegistry->mapLayer( layer2Id );
       layer2Name = l2->name();
     }
   }
@@ -175,7 +175,7 @@ void rulesDialog::showControls( const QString& testName )
     mLayer2Box->setVisible( true );
     for ( int i = 0; i < layerList.count(); ++i )
     {
-      QgsVectorLayer* v1 = ( QgsVectorLayer* )layerRegistry->mapLayers()[layerList[i]];
+      QgsVectorLayer* v1 = ( QgsVectorLayer* )layerRegistry->mapLayer( layerList[i] );
 
       if ( !v1 )
       {
@@ -266,11 +266,11 @@ void rulesDialog::addRule()
   // add layer ids to hidden columns
   // -1 for "No layer" string
   if ( mTestConfMap[test].useSecondLayer )
-    layer2ID = mLayer2Box->itemData( mLayer2Box->currentIndex() ).toString();
+    layer2ID = mLayer2Box->currentData().toString();
   else
     layer2ID = tr( "No layer" );
 
-  layer1ID =  mLayer1Box->itemData( mLayer1Box->currentIndex() ).toString();
+  layer1ID =  mLayer1Box->currentData().toString();
 
   //TODO: use setItemData (or something like that) instead of hidden columns
   newItem = new QTableWidgetItem( layer1ID );
@@ -316,10 +316,10 @@ void rulesDialog::updateRuleItems( const QString &layerName )
     return;
   }
 
-  QString layerId = mLayer1Box->itemData( mLayer1Box->currentIndex() ).toString();
+  QString layerId = mLayer1Box->currentData().toString();
 
   QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
-  QgsVectorLayer* vlayer = ( QgsVectorLayer* )layerRegistry->mapLayers()[layerId];
+  QgsVectorLayer* vlayer = ( QgsVectorLayer* )layerRegistry->mapLayer( layerId );
 
   if ( !vlayer )
   {
@@ -329,7 +329,7 @@ void rulesDialog::updateRuleItems( const QString &layerName )
 
   for ( QMap<QString, TopologyRule>::iterator it = mTestConfMap.begin(); it != mTestConfMap.end(); ++it )
   {
-    TopologyRule rule = it.value();
+    TopologyRule& rule = it.value();
     if ( rule.layer1AcceptsType( vlayer->geometryType() ) )
     {
       mRuleBox->addItem( it.key() );
@@ -353,7 +353,7 @@ void rulesDialog::initGui()
   mLayer1Box->blockSignals( true );
   for ( int i = 0; i < layerList.size(); ++i )
   {
-    QgsVectorLayer* v1 = ( QgsVectorLayer* )layerRegistry->mapLayers()[layerList[i]];
+    QgsVectorLayer* v1 = ( QgsVectorLayer* )layerRegistry->mapLayer( layerList[i] );
     qDebug() << "layerid = " + layerList[i];
 
     // add layer name to the layer combo boxes

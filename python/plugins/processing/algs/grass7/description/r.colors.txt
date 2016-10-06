@@ -1,0 +1,16 @@
+r.colors
+Creates/modifies the color table associated with a raster map.
+Raster (r.*)
+ParameterMultipleInput|map|Name of raster maps(s)|3|False
+ParameterSelection|color|Name of color table|not selected;aspect;aspectcolr;bcyr;bgyr;blues;byg;byr;celsius;corine;curvature;differences;elevation;etopo2;evi;fahrenheit;gdd;greens;grey;grey.eq;grey.log;grey1.0;grey255;gyr;haxby;kelvin;ndvi;ndwi;oranges;population;population_dens;precipitation;precipitation_daily;precipitation_monthly;rainbow;ramp;random;reds;rstcurv;ryb;ryg;sepia;slope;srtm;srtm_plus;terrain;wave|0|False|True
+ParameterString|rules_txt|Color rules|None|True|True
+ParameterFile|rules|Color rules file|False|True
+ParameterRaster|raster|Raster map from which to copy color table|True
+ParameterBoolean|-r|Remove existing color table|False
+ParameterBoolean|-w|Only write new color table if it does not already exist|False
+ParameterBoolean|-n|Invert colors|False
+ParameterBoolean|-g|Logarithmic scaling|False
+ParameterBoolean|-a|Logarithmic-absolute scaling|False
+ParameterBoolean|-e|Histogram equalization|False
+OutputDirectory|output_dir|Output Directory
+

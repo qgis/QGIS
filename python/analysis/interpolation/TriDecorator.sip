@@ -1,27 +1,26 @@
-/**Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
+/** Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
 class TriDecorator : Triangulation
 {
 %TypeHeaderCode
-#include "Triangulation.h"
+#include <TriDecorator.h>
 %End
 
   public:
     TriDecorator();
-    TriDecorator( Triangulation* t );
+    explicit TriDecorator( Triangulation* t );
     virtual ~TriDecorator();
     virtual void addLine( Line3D* line, bool breakline );
     virtual int addPoint( Point3D* p );
-    /**Adds an association to a triangulation*/
+    /** Adds an association to a triangulation*/
     virtual void addTriangulation( Triangulation* t );
-    /**Performs a consistency check, remove this later*/
+    /** Performs a consistency check, remove this later*/
     virtual void performConsistencyTest();
     virtual bool calcNormal( double x, double y, Vector3D* result );
     virtual bool calcPoint( double x, double y, Point3D* result );
     virtual Point3D* getPoint( unsigned int i ) const;
     virtual int getNumberOfPoints() const;
-    //! @note not available in python bindings
-    // bool getTriangle( double x, double y, Point3D* p1, int* n1, Point3D* p2, int* n2, Point3D* p3, int* n3 );
-    bool getTriangle( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3 );
+    bool getTriangle( double x, double y, Point3D* p1, int* n1 /Out/, Point3D* p2 /Out/, int* n2 /Out/, Point3D* p3 /Out/, int* n3 /Out/ );
+    bool getTriangle( double x, double y, Point3D* p1 /Out/, Point3D* p2 /Out/, Point3D* p3 /Out/ );
     virtual int getOppositePoint( int p1, int p2 );
     virtual QList<int>* getSurroundingTriangles( int pointno );
     virtual double getXMax() const;

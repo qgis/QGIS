@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 11.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,6 +19,8 @@ QgsWebViewWidgetConfigDlg::QgsWebViewWidgetConfigDlg( QgsVectorLayer* vl, int fi
     :  QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
+  connect( sbWidgetHeight, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );
+  connect( sbWidgetWidth, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );
 }
 
 QgsEditorWidgetConfig QgsWebViewWidgetConfigDlg::config()

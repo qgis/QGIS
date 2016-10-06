@@ -69,5 +69,5 @@ class QgsLayerTreeMapCanvasBridge : QObject
     void nodeAddedChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
     void nodeRemovedChildren();
     void nodeVisibilityChanged();
-    void nodeCustomPropertyChanged( QgsLayerTreeNode* node, QString key );
+    void nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key );
 };

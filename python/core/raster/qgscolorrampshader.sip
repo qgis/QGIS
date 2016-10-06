@@ -16,7 +16,7 @@ class QgsColorRampShader : QgsRasterShaderFunction
       //! default constructor
       ColorRampItem();
       //! convenience constructor
-      ColorRampItem( double val, QColor col, QString lbl = QString() );
+      ColorRampItem( double val, const QColor& col, const QString& lbl = QString() );
 
       QString label;
       double value;
@@ -26,11 +26,12 @@ class QgsColorRampShader : QgsRasterShaderFunction
       bool operator<( const QgsColorRampShader::ColorRampItem& other ) const;
     };
 
+    /** Supported methods for color interpolation. */
     enum ColorRamp_TYPE
     {
-      INTERPOLATED,
-      DISCRETE,
-      EXACT
+      INTERPOLATED, //!< Interpolates the color between two class breaks linearly.
+      DISCRETE,     //!< Assigns the color of the higher class for every pixel between two class breaks.
+      EXACT         //!< Assigns the color of the exact matching value in the color ramp item list
     };
 
     /** \brief Get the custom colormap*/
@@ -42,9 +43,6 @@ class QgsColorRampShader : QgsRasterShaderFunction
     /** \brief Get the color ramp type as a string */
     QString colorRampTypeAsQString();
 
-    /** \brief Get the maximum size the color cache can be*/
-    int maximumColorCacheSize();
-
     /** \brief Set custom colormap */
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ); //TODO: sort on set
 
@@ -52,10 +50,7 @@ class QgsColorRampShader : QgsRasterShaderFunction
     void setColorRampType( QgsColorRampShader::ColorRamp_TYPE theColorRampType );
 
     /** \brief Set the color ramp type*/
-    void setColorRampType( QString );
-
-    /** \brief Set the maximum size the color cache can be */
-    void setMaximumColorCacheSize( int theSize );
+    void setColorRampType( const QString& theType );
 
     /** \brief Generates and new RGB value based on one input value */
     bool shade( double, int* /Out/, int* /Out/, int* /Out/, int* /Out/ );
@@ -65,6 +60,14 @@ class QgsColorRampShader : QgsRasterShaderFunction
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 
+    /** Sets whether the shader should not render values out of range.
+     * @param clip set to true to clip values which are out of range.
+     * @see clip()
+     */
     void setClip( bool clip );
+
+    /** Returns whether the shader will clip values which are out of range.
+     * @see setClip()
+     */
     bool clip() const;
 };

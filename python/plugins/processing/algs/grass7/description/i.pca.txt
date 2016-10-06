@@ -1,0 +1,10 @@
+i.pca
+Principal components analysis (PCA) for image processing.
+Imagery (i.*)
+ParameterMultipleInput|input|Name of two or more input raster maps|3|False
+ParameterString|rescale|Rescaling range for output maps. For no rescaling use 0,0|0,255|False|True
+ParameterNumber|percent|Cumulative percent importance for filtering|50.0|99.0|99.0|True
+*ParameterBoolean|-n|Normalize (center and scale) input maps|False
+*ParameterBoolean|-f|Output will be filtered input bands|False
+OutputDirectory|output|Output Directory
+

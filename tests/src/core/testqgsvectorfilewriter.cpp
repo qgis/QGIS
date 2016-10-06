@@ -16,20 +16,22 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
-#include <iostream>
-
 #include <QApplication>
 
-#include <qgsvectorlayer.h> //defines QgsFieldMap 
-#include <qgsvectorfilewriter.h> //logic for writing shpfiles
-#include <qgsfeature.h> //we will need to pass a bunch of these for each rec
-#include <qgsgeometry.h> //each feature needs a geometry
-#include <qgspoint.h> //we will use point geometry
-#include <qgscoordinatereferencesystem.h> //needed for creating a srs
-#include <qgsapplication.h> //search path for srs.db
-#include <qgsfield.h>
-#include <qgis.h> //defines GEOWkt
+#include "qgsvectorlayer.h" //defines QgsFieldMap
+#include "qgsvectorfilewriter.h" //logic for writing shpfiles
+#include "qgsfeature.h" //we will need to pass a bunch of these for each rec
+#include "qgsgeometry.h" //each feature needs a geometry
+#include "qgspoint.h" //we will use point geometry
+#include "qgscoordinatereferencesystem.h" //needed for creating a srs
+#include "qgsapplication.h" //search path for srs.db
+#include "qgslogger.h"
+#include "qgsfield.h"
+#include "qgis.h" //defines GEOWkt
+
+#if defined(linux)
+#include <langinfo.h>
+#endif
 
 /** \ingroup UnitTests
  * This is a unit test for the QgsVectorFileWriter class.
@@ -63,6 +65,7 @@ class TestQgsVectorFileWriter: public QObject
     void initTestCase();// will be called before the first testfunction is executed.
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
     /** This method tests writing a point to a shapefile */
     void createPoint();
@@ -74,6 +77,8 @@ class TestQgsVectorFileWriter: public QObject
     void polygonGridTest();
     /** As above but using a projected CRS*/
     void projectedPlygonGridTest();
+    /** This is a regression test ticket 1141 (broken Polish characters support since r8592) http://hub.qgis.org/issues/1141 */
+    void regression1141();
 
   private:
     // a little util fn used by all tests
@@ -115,6 +120,12 @@ void TestQgsVectorFileWriter::initTestCase()
   mPoint3 = QgsPoint( 15.0, 12.0 );
 }
 
+void TestQgsVectorFileWriter::cleanupTestCase()
+{
+  // Runs after all tests are done
+  QgsApplication::exitQgis();
+}
+
 
 void TestQgsVectorFileWriter::createPoint()
 {
@@ -128,16 +139,13 @@ void TestQgsVectorFileWriter::createPoint()
   QgsVectorFileWriter myWriter( myFileName,
                                 mEncoding,
                                 mFields,
-                                QGis::WKBPoint,
-                                &mCRS );
+                                QgsWkbTypes::Point,
+                                mCRS );
   //
   // Create a feature
   //
   //
-  // NOTE: don't delete this pointer again -
-  // ownership is passed to the feature which will
-  // delete it in its dtor!
-  QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( mPoint1 );
+  QgsGeometry mypPointGeometry = QgsGeometry::fromPoint( mPoint1 );
   QgsFeature myFeature;
   myFeature.setGeometry( mypPointGeometry );
   myFeature.initAttributes( 1 );
@@ -174,18 +182,14 @@ void TestQgsVectorFileWriter::createLine()
   QgsVectorFileWriter myWriter( myFileName,
                                 mEncoding,
                                 mFields,
-                                QGis::WKBLineString,
-                                &mCRS );
+                                QgsWkbTypes::LineString,
+                                mCRS );
   //
   // Create a feature
   //
   QgsPolyline myPolyline;
   myPolyline << mPoint1 << mPoint2 << mPoint3;
-  //
-  // NOTE: don't delete this pointer again -
-  // ownership is passed to the feature which will
-  // delete it in its dtor!
-  QgsGeometry * mypLineGeometry = QgsGeometry::fromPolyline( myPolyline );
+  QgsGeometry mypLineGeometry = QgsGeometry::fromPolyline( myPolyline );
   QgsFeature myFeature;
   myFeature.setGeometry( mypLineGeometry );
   myFeature.initAttributes( 1 );
@@ -223,8 +227,8 @@ void TestQgsVectorFileWriter::createPolygon()
   QgsVectorFileWriter myWriter( myFileName,
                                 mEncoding,
                                 mFields,
-                                QGis::WKBPolygon,
-                                &mCRS );
+                                QgsWkbTypes::Polygon,
+                                mCRS );
   //
   // Create a polygon feature
   //
@@ -235,10 +239,7 @@ void TestQgsVectorFileWriter::createPolygon()
   //polygon: first item of the list is outer ring,
   // inner rings (if any) start from second item
   //
-  // NOTE: don't delete this pointer again -
-  // ownership is passed to the feature which will
-  // delete it in its dtor!
-  QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+  QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
   QgsFeature myFeature;
   myFeature.setGeometry( mypPolygonGeometry );
   myFeature.initAttributes( 1 );
@@ -274,8 +275,8 @@ void TestQgsVectorFileWriter::polygonGridTest()
   QgsVectorFileWriter myWriter( myFileName,
                                 mEncoding,
                                 mFields,
-                                QGis::WKBPolygon,
-                                &mCRS );
+                                QgsWkbTypes::Polygon,
+                                mCRS );
   double myInterval = 5.0;
   for ( double i = -180.0; i <= 180.0; i += myInterval )
   {
@@ -295,10 +296,7 @@ void TestQgsVectorFileWriter::polygonGridTest()
       //polygon: first item of the list is outer ring,
       // inner rings (if any) start from second item
       //
-      // NOTE: don't delete this pointer again -
-      // ownership is passed to the feature which will
-      // delete it in its dtor!
-      QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+      QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
       QgsFeature myFeature;
       myFeature.setGeometry( mypPolygonGeometry );
       myFeature.initAttributes( 1 );
@@ -347,8 +345,8 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
   QgsVectorFileWriter myWriter( myFileName,
                                 mEncoding,
                                 mFields,
-                                QGis::WKBPolygon,
-                                &mCRS );
+                                QgsWkbTypes::Polygon,
+                                mCRS );
   double myInterval = 1000.0; //1km2
   for ( double i = 0.0; i <= 10000.0; i += myInterval ) //10km
   {
@@ -368,10 +366,7 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
       //polygon: first item of the list is outer ring,
       // inner rings (if any) start from second item
       //
-      // NOTE: don't delete this pointer again -
-      // ownership is passed to the feature which will
-      // delete it in its dtor!
-      QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+      QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
       QgsFeature myFeature;
       myFeature.setGeometry( mypPolygonGeometry );
       myFeature.initAttributes( 1 );
@@ -399,6 +394,71 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
   }
 }
 
+void TestQgsVectorFileWriter::regression1141()
+{
+#if defined(linux)
+  const char *cs = nl_langinfo( CODESET );
+  QgsDebugMsg( QString( "CODESET:%1" ).arg( cs ? cs : "unset" ) );
+  if ( !cs || strcmp( cs, "UTF-8" ) != 0 )
+  {
+    QSKIP( "This test requires a UTF-8 locale", SkipSingle );
+    return;
+  }
+#endif
+
+  //create some objects that will be used in all tests...
+  QString encoding = "UTF-8";
+  QgsField myField( "ąęćń", QVariant::Int, "int", 10, 0, "Value on lon" );
+  QgsFields fields;
+  fields.append( myField );
+  QgsCoordinateReferenceSystem crs;
+  crs = QgsCoordinateReferenceSystem( GEOWKT );
+  QString tmpDir = QDir::tempPath() + '/';
+  QString fileName = tmpDir +  "ąęćń.shp";
+
+  QVERIFY2( !QFile::exists( fileName ), QString( "File %1 already exists, cannot run test" ).arg( fileName ).toLocal8Bit().constData() );
+
+  qDebug( "Creating test dataset: " );
+
+  {
+    QgsVectorFileWriter myWriter( fileName,
+                                  encoding,
+                                  fields,
+                                  QgsWkbTypes::Point,
+                                  crs );
+
+    QgsPoint myPoint = QgsPoint( 10.0, 10.0 );
+    QgsGeometry mypPointGeometry = QgsGeometry::fromPoint( myPoint );
+    QgsFeature myFeature;
+    myFeature.setGeometry( mypPointGeometry );
+    myFeature.initAttributes( 1 );
+    myFeature.setAttribute( 0, 10 );
+    //
+    // Write the feature to the filewriter
+    // and check for errors
+    //
+    QVERIFY( myWriter.addFeature( myFeature ) );
+    QgsVectorFileWriter::WriterError error = myWriter.hasError();
+
+    if ( error == QgsVectorFileWriter::ErrDriverNotFound )
+    {
+      std::cout << "Driver not found error" << std::endl;
+    }
+    else if ( error == QgsVectorFileWriter::ErrCreateDataSource )
+    {
+      std::cout << "Create data source error" << std::endl;
+    }
+    else if ( error == QgsVectorFileWriter::ErrCreateLayer )
+    {
+      std::cout << "Create layer error" << std::endl;
+    }
+
+    QVERIFY( error == QgsVectorFileWriter::NoError );
+  }
+
+  // Now check we can delete it again ok
+  QVERIFY( QgsVectorFileWriter::deleteShapeFile( fileName ) );
+}
+
 QTEST_MAIN( TestQgsVectorFileWriter )
 #include "testqgsvectorfilewriter.moc"
-

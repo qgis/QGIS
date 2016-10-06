@@ -1,0 +1,98 @@
+<html><head>
+<style type="text/css">
+dl { border: 3px double #ccc; padding: 0.5em; } dt { float: left; clear: left; text-align: left; font-weight: bold; color: green; } dt:after { content: ":"; } dd { margin: 0 0 0 220px; padding: 0 0 0.5em 0; }
+</style>
+</head><body><h1>BandMathX</h1><h2>Brief Description</h2>This application performs mathematical operations on multiband images.
+Mathematical formula interpretation is done via muParserX library : http://articles.beltoforion.de/article.php?a=muparserx<h2>Tags</h2>Util<h2>Long Description</h2>The goal of this documentation is to give the user some hints about the syntax used in this application.
+The syntax is mainly constrained by the muparserx library, which can be considered as the core of the application.
+
+
+- Fundamentals:
+
+The default prefix name for variables related to the ith input is 'im(i+1)'(note the indexing from 1 to N, for N inputs). 
+The following list summaries the available variables for input #0 (and so on for every input): 
+
+im1                                -->   a pixel from first input, made of n components (n bands)
+im1bj                             -->   jth component of a pixel from first input (first band is indexed by 1)
+im1bjNkxp                     -->   a neighbourhood ('N') of pixels of the jth component from first input, of size kxp
+im1PhyX and im1PhyY  -->   spacing of first input in X and Y directions (horizontal and vertical)
+im1bjMean im1bjMin im1bjMax im1bjSum im1bjVar  -->   mean, min, max, sum, variance of jth band from first input (global statistics)
+
+Moreover, we also have the following generic variables:
+idxX and idxY        -->   indices of the current pixel
+
+Always keep in mind that this application only addresses mathematically well-defined formulas.
+For instance, it is not possible to add vectors of different dimensions (this implies the addition of a row vector with a column vector),
+or add a scalar to a vector or a matrix, or divide two vectors, and so on...
+Thus, it is important to remember that a pixel of n components is always represented as a row vector.
+
+Example :
+
+                   im1 + im2       (1)
+
+represents the addition of pixels from first and second inputs. This expression is consistent only if
+both inputs have the same number of bands.
+Note that it is also possible to use the following expressions to obtain the same result:
+
+                   im1b1 + im2b1 
+                   im1b2 + im2b2       (2)
+                         ....
+
+Nevertheless, the first expression is by far much pleaseant. We call this new functionality the 'batch mode'
+(performing the same operation in a band-to-band fashion).
+
+
+- Operations involving neighborhoods of pixels:
+
+Another new fonctionnality is the possibility to perform operations that involve neighborhoods of pixels.
+Variable related to such neighborhoods are always defined following the pattern imIbJNKxP, where: 
+- I is an number identifying the image input (remember, input #0 = im1, and so on)
+- J is an number identifying the band (remember, first band is indexed by 1)
+- KxP are two numbers that represent the size of the neighborhood (first one is related to the horizontal direction)
+All neighborhood are centred, thus K and P must be odd numbers.
+Many operators come with this new functionality: dotpr, mean var median min max...
+For instance, if im1 represents the pixel of 3 bands image:
+
+               im1 - mean(im1b1N5x5,im1b2N5x5,im1b3N5x5)       (3)
+
+could represent a high pass filter (Note that by implying three neighborhoods, the operator mean returns a row vector of three components.
+It is a typical behaviour for many operators of this application).
+
+
+- Operators:
+
+In addition to the previous operators, other operators are available:
+- existing operators/functions from muParserX, that were not originally defined for vectors and
+matrices (for instance cos, sin, ...). These new operators/ functions keep the original names to which we added the prefix 'v' for vector (vcos, vsin, ...).
+- mult, div and pow operators, that perform element-wise multiplication, division or exponentiation of vector/matrices (for instance im1 div im2)
+- mlt, dv and pw operators, that perform multiplication, division or exponentiation of vector/matrices by a scalar (for instance im1 dv 2.0)
+- bands, which is a very useful operator. It allows selecting specific bands from an image, and/or to rearrange them in a new vector;
+for instance bands(im1,{1,2,1,1}) produces a vector of 4 components made of band 1, band 2, band 1 and band 1 values from the first input.
+Note that curly brackets must be used in order to select the desired band indices.
+... and so on.
+
+
+- Application itself:
+
+The application takes the following parameters :
+- Setting the list of inputs can be done with the 'il' parameter.
+- Setting expressions can be done with the 'exp' parameter (see also limitations section below).
+- Setting constants can be done with the 'incontext' parameter. User must provide a txt file with a specific syntax: #type name value
+An example of such a file is given below:
+
+#F expo 1.1
+#M kernel1 { 0.1 , 0.2 , 0.3; 0.4 , 0.5 , 0.6; 0.7 , 0.8 , 0.9; 1 , 1.1 , 1.2; 1.3 , 1.4 , 1.5 }
+
+As we can see,  #I/#F allows the definition of an integer/float constant, whereas #M allows the definition of a vector/matrix.
+In the latter case, elements of a row must be separated by commas, and rows must be separated by semicolons.
+It is also possible to define expressions within the same txt file, with the pattern #E expr. For instance (two expressions; see also limitations section below):
+
+#E $dotpr(kernel1,im1b1N3x5); im2b1^expo$
+
+- The 'outcontext' parameter allows saving user's constants and expressions (context).
+- Setting the output image can be done with the 'out' parameter (multi-outputs is not implemented yet).
+
+
+Finally, we strongly recommend that the reader takes a look at the cookbook, where additional information can be found (http://www.orfeo-toolbox.org/packages/OTBCookBook.pdf).
+<h2>Parameters</h2><ul><li><b>[param] -il</b> &lt;string&gt; Image list to perform computation on.. Mandatory: True. Default Value: &quot;0&quot;</li><li><b>[param] -out</b> &lt;string&gt; Output image.. Mandatory: True. Default Value: &quot;&quot;</li><li><b>[param] -ram</b> &lt;int32&gt; Available memory for processing (in MB). Mandatory: False. Default Value: &quot;128&quot;</li><li><b>[param] -exp</b> &lt;string&gt; Mathematical expression to apply.. Mandatory: False. Default Value: &quot;&quot;</li><li><b>[param] -incontext</b> &lt;string&gt; A txt file containing user's constants and expressions.. Mandatory: False. Default Value: &quot;&quot;</li><li><b>[param] -outcontext</b> &lt;string&gt; A txt file where to save user's constants and expressions.. Mandatory: False. Default Value: &quot;&quot;</li><li><b>[param] -inxml</b> &lt;string&gt; Load otb application from xml file. Mandatory: False. Default Value: &quot;&quot;</li><li><b>[param] -outxml</b> &lt;string&gt; Save otb application to xml file. Mandatory: False. Default Value: &quot;&quot;</li></ul><h2>Limitations</h2>The application is currently unable to produce one output image per expression, contrary to otbBandMathXImageFilter.
+Separating expressions by semi-colons (; ) will concatenate their results into a unique multiband output image. <h2>Authors</h2>OTB-Team<h2>See Also</h2> <h2>Example of use</h2><ul><li><p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">il: verySmallFSATSW_r.tif verySmallFSATSW_nir.tif verySmallFSATSW.tif</p></li><li><p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">out: apTvUtBandMathOutput.tif</p></li><li><p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">exp: "cos(im1b1)+im2b1*im3b1-im3b2+ndvi(im3b3, im3b4)"</p></li></ul></body></html>

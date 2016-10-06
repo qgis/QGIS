@@ -52,7 +52,8 @@ functions = [
 ]
 
 # constants
-constants = [ "null", "false", "true" ]
+constants = ["null", "false", "true"]
+
 
 def getSqlDictionary():
-    return { 'keyword' : list(keywords), 'constant' : list(constants), 'function' : list(functions) }
+    return {'keyword': list(keywords), 'constant': list(constants), 'function': list(functions)}

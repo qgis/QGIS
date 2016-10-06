@@ -20,6 +20,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,13 +31,16 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
+
+from processing.tools import dataobjects
+
 
 class lasclip(LAStoolsAlgorithm):
 
@@ -45,18 +51,18 @@ class lasclip(LAStoolsAlgorithm):
     CLASSIFY_AS = "CLASSIFY_AS"
 
     def defineCharacteristics(self):
-        self.name = "lasclip"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasclip')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterVector(lasclip.POLYGON,
-            self.tr("Input polygon(s)"), ParameterVector.VECTOR_TYPE_POLYGON))
+                                          self.tr("Input polygon(s)"), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterBoolean(lasclip.INTERIOR,
-            self.tr("interior"), False))
+                                           self.tr("interior"), False))
         self.addParameter(ParameterSelection(lasclip.OPERATION,
-            self.tr("what to do with points"), lasclip.OPERATIONS, 0))
+                                             self.tr("what to do with points"), lasclip.OPERATIONS, 0))
         self.addParameter(ParameterNumber(lasclip.CLASSIFY_AS,
-            self.tr("classify as"), 0, None, 12))
+                                          self.tr("classify as"), 0, None, 12))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

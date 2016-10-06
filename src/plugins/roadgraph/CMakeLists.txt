@@ -24,21 +24,25 @@ SET (VRP_MOC_HDRS
 )
 SET (VRP_RCCS  roadgraph.qrc)
 
+INCLUDE_DIRECTORIES(SYSTEM
+  ${GEOS_INCLUDE_DIR}
+)
+
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${GEOS_INCLUDE_DIR}
   ../../core
+  ../../core/geometry
   ../../gui
   ../../analysis/network
   ..
-  )
+)
 
 ########################################################
 # Build
 
-QT4_WRAP_CPP (VRP_MOC_SRCS  ${VRP_MOC_HDRS})
+QT5_WRAP_CPP (VRP_MOC_SRCS  ${VRP_MOC_HDRS})
 
-QT4_ADD_RESOURCES(VRP_RCC_SRCS ${VRP_RCCS})
+QT5_ADD_RESOURCES(VRP_RCC_SRCS ${VRP_RCCS})
 
 ADD_LIBRARY (roadgraphplugin MODULE ${VRP_SRCS} ${VRP_MOC_SRCS} ${VRP_RCC_SRCS})
 

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsGlobeVectorLayerPropertiesPage</class>
+ <widget class="QgsMapLayerConfigWidget" name="QgsGlobeVectorLayerPropertiesPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>446</width>
+    <height>580</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0" colspan="2">
+    <widget class="QStackedWidget" name="stackedWidgetRenderingMode">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="pageRasterized">
+      <layout class="QVBoxLayout" name="verticalLayout"/>
+     </widget>
+     <widget class="QWidget" name="pageModel">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QGroupBox" name="groupBoxAltitude">
+         <property name="title">
+          <string>Altitude</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelAltitudeClamping">
+            <property name="toolTip">
+             <string>Terrain following behaviour</string>
+            </property>
+            <property name="text">
+             <string>Clamping</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBoxAltitudeClamping">
+            <property name="toolTip">
+             <string>Terrain following behavior</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="labelAltitudeTechnique">
+            <property name="toolTip">
+             <string>Terrain following technique</string>
+            </property>
+            <property name="text">
+             <string>Technique</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="labelAltitudeBinding">
+            <property name="toolTip">
+             <string>Granulatiry at which to sample the terrain</string>
+            </property>
+            <property name="text">
+             <string>Binding</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="labelAltitudeResolution">
+            <property name="toolTip">
+             <string>Elevation data resolution at which to sample terrain height</string>
+            </property>
+            <property name="text">
+             <string>Resolution</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="labelAltitudeOffset">
+            <property name="toolTip">
+             <string>Vertical offset to apply to geometry Z</string>
+            </property>
+            <property name="text">
+             <string>Offset</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="labelAltitudeScale">
+            <property name="toolTip">
+             <string>Scale factor to apply to geometry Z</string>
+            </property>
+            <property name="text">
+             <string>Scale</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="comboBoxAltitudeTechnique">
+            <property name="toolTip">
+             <string>Terrain following technique</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="comboBoxAltitudeBinding">
+            <property name="toolTip">
+             <string>Granulatiry at which to sample the terrain</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QDoubleSpinBox" name="spinBoxAltitudeResolution">
+            <property name="toolTip">
+             <string>Elevation data resolution at which to sample terrain height</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QDoubleSpinBox" name="spinBoxAltitudeOffset">
+            <property name="toolTip">
+             <string>Vertical offset to apply to geometry Z</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QDoubleSpinBox" name="spinBoxAltitudeScale">
+            <property name="toolTip">
+             <string>Scale factor to apply to geometry Z</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxExtrusion">
+         <property name="title">
+          <string>E&amp;xtrusion</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <layout class="QFormLayout" name="formLayout_2">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelExtrusionHeight_2">
+            <property name="text">
+             <string>Height [m]</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="labelExtrusionHeight">
+            <property name="toolTip">
+             <string>Extrusion height, either a numeric value, or a field expression</string>
+            </property>
+            <property name="text">
+             <string>0</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="labelExtrusionWallGradient">
+            <property name="text">
+             <string>Wall gradient</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="spinBoxExtrusionWallGradient">
+            <property name="toolTip">
+             <string>Wall coloring gradient</string>
+            </property>
+            <property name="maximum">
+             <double>1.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.100000000000000</double>
+            </property>
+            <property name="value">
+             <double>0.500000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="checkBoxExtrusionFlatten">
+            <property name="toolTip">
+             <string>Whether the top cap of the extruded geometry should be flat</string>
+            </property>
+            <property name="text">
+             <string>Flatten</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxLabelingEnabled">
+         <property name="title">
+          <string>Enable &amp;labeling</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <layout class="QFormLayout" name="formLayout_4">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="checkBoxLabelingDeclutter">
+            <property name="text">
+             <string>Declutter</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxLighting">
+         <property name="text">
+          <string>Lighting</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="labelRenderingMode">
+     <property name="text">
+      <string>Rendering mode:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="comboBoxRenderingMode">
+     <property name="toolTip">
+      <string>Rendering method for the layer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsMapLayerConfigWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsmaplayerconfigwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

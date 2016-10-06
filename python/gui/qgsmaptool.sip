@@ -9,8 +9,6 @@
 #include <qgsmaptoolidentify.h>
 %End
 
-%Feature HAVE_TOUCH
-
 class QgsMapTool : QObject
 {
 %TypeHeaderCode
@@ -19,33 +17,50 @@ class QgsMapTool : QObject
 
 %ConvertToSubClassCode
   if (dynamic_cast<QgsMapToolZoom*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsMapToolZoom;
+    sipType = sipType_QgsMapToolZoom;
   else if (dynamic_cast<QgsMapToolPan*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsMapToolPan;
+    sipType = sipType_QgsMapToolPan;
   else if (dynamic_cast<QgsMapToolEmitPoint*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsMapToolEmitPoint;
+    sipType = sipType_QgsMapToolEmitPoint;
   else if (dynamic_cast<QgsMapToolIdentify*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsMapToolIdentify;
+    sipType = sipType_QgsMapToolIdentify;
   else
-    sipClass = NULL;
+    sipType = NULL;
 %End
 
   public:
+
+    //! Enumeration of flags that adjust the way the map tool operates
+    //! @note added in QGIS 2.16
+    enum Flag
+    {
+      Transient, /*!< Indicates that this map tool performs a transient (one-off) operation.
+                               If it does, the tool can be operated once and then a previous map
+                               tool automatically restored. */
+      EditTool, /*!< Map tool is an edit tool, which can only be used when layer is editable*/
+      AllowZoomRect, /*!< Allow zooming by rectangle (by holding shift and dragging) while the tool is active*/
+    };
+    typedef QFlags<QgsMapTool::Flag> Flags;
+
+    /** Returns the flags for the map tool.
+     * @note added in QGIS 2.16
+     */
+    virtual Flags flags() const;
 
     //! virtual destructor
     virtual ~QgsMapTool();
 
     //! Mouse move event for overriding. Default implementation does nothing.
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e );
 
     //! Mouse double click event for overriding. Default implementation does nothing.
-    virtual void canvasDoubleClickEvent( QMouseEvent * e );
+    virtual void canvasDoubleClickEvent( QgsMapMouseEvent* e );
 
     //! Mouse press event for overriding. Default implementation does nothing.
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent* e );
 
     //! Mouse release event for overriding. Default implementation does nothing.
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e );
 
     //! Mouse wheel event for overriding. Default implementation does nothing.
     virtual void wheelEvent( QWheelEvent* e );
@@ -60,11 +75,6 @@ class QgsMapTool : QObject
     //! gesture event for overriding. Default implementation does nothing.
     virtual bool gestureEvent( QGestureEvent* e );
 %End
-
-    //! Called when rendering has finished. Default implementation does nothing.
-    //! @deprecated since 2.4 - not called anymore - map tools must not directly depend on rendering progress
-    virtual void renderComplete() /Deprecated/;
-
 
     /** Use this to associate a QAction to this maptool. Then when the setMapTool
      * method of mapcanvas is called the action state will be set to on.
@@ -83,17 +93,7 @@ class QgsMapTool : QObject
     QAbstractButton* button();
 
     /** Set a user defined cursor */
-    virtual void setCursor( QCursor cursor );
-
-    /** Check whether this MapTool performs a zoom or pan operation.
-     * If it does, we will be able to perform the zoom  and then
-     * resume operations with the original / previously used tool.*/
-    virtual bool isTransient();
-
-    /** Check whether this MapTool performs an edit operation.
-     * If it does, we will deactivate it when editing is turned off
-     */
-    virtual bool isEditTool();
+    virtual void setCursor( const QCursor& cursor );
 
     //! called when set as currently active map tool
     virtual void activate();
@@ -110,7 +110,7 @@ class QgsMapTool : QObject
 
     /** Get search radius in mm. Used by identify, tip etc.
      *  The values is currently set in identify tool options (move somewhere else?)
-     *  and defaults to QGis::DEFAULT_SEARCH_RADIUS_MM.
+     *  and defaults to Qgis::DEFAULT_SEARCH_RADIUS_MM.
      *  @note added in 2.3 */
     static double searchRadiusMM();
 
@@ -126,7 +126,7 @@ class QgsMapTool : QObject
 
   signals:
     //! emit a message
-    void messageEmitted( QString message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
+    void messageEmitted( const QString& message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
 
     //! emit signal to clear previous message
     void messageDiscarded();
@@ -143,16 +143,20 @@ class QgsMapTool : QObject
     QgsMapTool( QgsMapCanvas* canvas /TransferThis/ );
 
     //! transformation from screen coordinates to map coordinates
-    QgsPoint toMapCoordinates( const QPoint& point );
+    QgsPoint toMapCoordinates( QPoint point );
 
     //! transformation from screen coordinates to layer's coordinates
-    QgsPoint toLayerCoordinates( QgsMapLayer* layer, const QPoint& point );
+    QgsPoint toLayerCoordinates( QgsMapLayer* layer, QPoint point );
 
     //! transformation from map coordinates to layer's coordinates
     QgsPoint toLayerCoordinates( QgsMapLayer* layer, const QgsPoint& point );
 
     //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
     QgsPoint toMapCoordinates( QgsMapLayer* layer, const QgsPoint& point );
+
+    //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
+    //! @note available in python bindings as toMapCoordinatesV2
+    QgsPointV2 toMapCoordinates( QgsMapLayer* layer, const QgsPointV2 &point ) /PyName=toMapCoordinatesV2/;
 
     //! trnasformation of the rect from map coordinates to layer's coordinates
     QgsRectangle toLayerCoordinates( QgsMapLayer* layer, const QgsRectangle& rect );
@@ -162,3 +166,6 @@ class QgsMapTool : QObject
 
 
 };
+
+
+QFlags<QgsMapTool::Flag> operator|(QgsMapTool::Flag f1, QFlags<QgsMapTool::Flag> f2);

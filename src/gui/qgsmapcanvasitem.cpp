@@ -16,7 +16,6 @@
 
 #include "qgsmapcanvasitem.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
 #include <QGraphicsScene>
@@ -30,7 +29,6 @@ QgsMapCanvasItem::QgsMapCanvasItem( QgsMapCanvas* mapCanvas )
     : QGraphicsItem()
     , mMapCanvas( mapCanvas )
     , mRectRotation( 0.0 )
-    , mPanningOffset( 0, 0 )
     , mItemSize( 0, 0 )
 {
   Q_ASSERT( mapCanvas && mapCanvas->scene() );
@@ -55,17 +53,17 @@ void QgsMapCanvasItem::paint( QPainter * painter,
   paint( painter ); // call the derived item's drawing routines
 }
 
-QgsPoint QgsMapCanvasItem::toMapCoordinates( const QPoint& point ) const
+QgsPoint QgsMapCanvasItem::toMapCoordinates( QPoint point ) const
 {
-  return mMapCanvas->getCoordinateTransform()->toMapCoordinates( point - mPanningOffset );
+  return mMapCanvas->getCoordinateTransform()->toMapCoordinates( point );
 }
 
 
 QPointF QgsMapCanvasItem::toCanvasCoordinates( const QgsPoint& point ) const
 {
-  double x = point.x(), y = point.y();
+  qreal x = point.x(), y = point.y();
   mMapCanvas->getCoordinateTransform()->transformInPlace( x, y );
-  return QPointF( x, y ) + mPanningOffset;
+  return QPointF( x, y );
 }
 
 QgsRectangle QgsMapCanvasItem::rect() const
@@ -141,10 +139,4 @@ void QgsMapCanvasItem::updatePosition()
   // default implementation: recalculate position of the item
   setRect( mRect, false );
   setRotation( mMapCanvas->rotation() - mRectRotation );
-}
-
-
-void QgsMapCanvasItem::setPanningOffset( const QPoint& point )
-{
-  mPanningOffset = point;
 }

@@ -16,10 +16,13 @@
  ***************************************************************************/
 
 #include "qgslogger.h"
+#include "qgsrasterblock.h"
 #include "qgsrasterdrawer.h"
+#include "qgsrasterinterface.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterviewport.h"
 #include "qgsmaptopixel.h"
+#include "qgsrendercontext.h"
 #include <QImage>
 #include <QPainter>
 #include <QPrinter>
@@ -28,13 +31,9 @@ QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator* iterator ): mIterator( iter
 {
 }
 
-QgsRasterDrawer::~QgsRasterDrawer()
+void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel, QgsRasterBlockFeedback* feedback )
 {
-}
-
-void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
-{
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 4 );
   if ( !p || !mIterator || !viewPort || !theQgsMapToPixel )
   {
     return;
@@ -42,7 +41,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
 
   // last pipe filter has only 1 band
   int bandNumber = 1;
-  mIterator->startRasterRead( bandNumber, viewPort->mWidth, viewPort->mHeight, viewPort->mDrawnExtent );
+  mIterator->startRasterRead( bandNumber, viewPort->mWidth, viewPort->mHeight, viewPort->mDrawnExtent, feedback );
 
   //number of cols/rows in output pixels
   int nCols = 0;
@@ -72,7 +71,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
     QPrinter *printer = dynamic_cast<QPrinter *>( p->device() );
     if ( printer && printer->outputFormat() == QPrinter::PdfFormat )
     {
-      QgsDebugMsg( "PdfFormat" );
+      QgsDebugMsgLevel( "PdfFormat", 4 );
 
       img = img.convertToFormat( QImage::Format_ARGB32 );
       QRgb transparentBlack = qRgba( 0, 0, 0, 0 );
@@ -89,9 +88,24 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
       }
     }
 
+    if ( feedback && feedback->renderPartialOutput() )
+    {
+      // there could have been partial preview written before
+      // so overwrite anything with the resulting image.
+      // (we are guaranteed to have a temporary image for this layer, see QgsMapRendererJob::needTemporaryImage)
+      p->setCompositionMode( QPainter::CompositionMode_Source );
+    }
+
     drawImage( p, viewPort, img, topLeftCol, topLeftRow, theQgsMapToPixel );
 
     delete block;
+
+    p->setCompositionMode( QPainter::CompositionMode_SourceOver );  // go back to the default composition mode
+
+    // ok this does not matter much anyway as the tile size quite big so most of the time
+    // there would be just one tile for the whole display area, but it won't hurt...
+    if ( feedback && feedback->isCancelled() )
+      break;
   }
 }
 
@@ -140,11 +154,13 @@ void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const
   p->drawLine( QLineF( br.x(), br.y(), br.x() + br.width(), br.y() + br.height() ) );
   p->drawLine( QLineF( br.x() + br.width(), br.y(), br.x(), br.y() + br.height() ) );
 
-  double nw = br.width() * 0.5; double nh = br.height() * 0.5;
+  double nw = br.width() * 0.5;
+  double nh = br.height() * 0.5;
   br = QRectF( c - QPointF( nw / 2, nh / 2 ), QSize( nw, nh ) );
   p->drawRoundedRect( br, rad, rad );
 
-  nw = br.width() * 0.5; nh = br.height() * 0.5;
+  nw = br.width() * 0.5;
+  nh = br.height() * 0.5;
   br = QRectF( c - QPointF( nw / 2, nh / 2 ), QSize( nw, nh ) );
   p->drawRoundedRect( br, rad, rad );
 #endif

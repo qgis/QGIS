@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'October 2014'
@@ -24,12 +27,13 @@ __copyright__ = '(C) 2014, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
+
 
 class lasoverlapPro(LAStoolsAlgorithm):
 
@@ -42,21 +46,21 @@ class lasoverlapPro(LAStoolsAlgorithm):
     CREATE_DIFFERENCE_RASTER = "CREATE_DIFFERENCE_RASTER"
 
     def defineCharacteristics(self):
-        self.name = "lasoverlapPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasoverlapPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParameter(ParameterNumber(lasoverlapPro.CHECK_STEP,
-            self.tr("size of grid used for overlap check"), 0, None, 2.0))
+                                          self.tr("size of grid used for overlap check"), 0, None, 2.0))
         self.addParameter(ParameterSelection(lasoverlapPro.ATTRIBUTE,
-            self.tr("attribute to check"), lasoverlapPro.ATTRIBUTES, 0))
+                                             self.tr("attribute to check"), lasoverlapPro.ATTRIBUTES, 0))
         self.addParameter(ParameterSelection(lasoverlapPro.OPERATION,
-            self.tr("operation on attribute per cell"), lasoverlapPro.OPERATIONS, 0))
+                                             self.tr("operation on attribute per cell"), lasoverlapPro.OPERATIONS, 0))
         self.addParameter(ParameterBoolean(lasoverlapPro.CREATE_OVERLAP_RASTER,
-            self.tr("create overlap raster"), True))
+                                           self.tr("create overlap raster"), True))
         self.addParameter(ParameterBoolean(lasoverlapPro.CREATE_DIFFERENCE_RASTER,
-            self.tr("create difference raster"), True))
+                                           self.tr("create difference raster"), True))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersRasterOutputFormatGUI()

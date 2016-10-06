@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    las2txt.py
+    shp2las.py
     ---------------------
     Date                 : September 2013
     Copyright            : (C) 2013 by Martin Isenburg
@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
@@ -24,11 +27,12 @@ __copyright__ = '(C) 2013, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterFile
+
 
 class shp2las(LAStoolsAlgorithm):
 
@@ -37,15 +41,15 @@ class shp2las(LAStoolsAlgorithm):
     SCALE_FACTOR_Z = "SCALE_FACTOR_Z"
 
     def defineCharacteristics(self):
-        self.name = "shp2las"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('shp2las')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParameter(ParameterFile(shp2las.INPUT,
-            self.tr("Input SHP file")))
+                                        self.tr("Input SHP file")))
         self.addParameter(ParameterNumber(shp2las.SCALE_FACTOR_XY,
-            self.tr("resolution of x and y coordinate"), False, False, 0.01))
+                                          self.tr("resolution of x and y coordinate"), 0, None, 0.01))
         self.addParameter(ParameterNumber(shp2las.SCALE_FACTOR_Z,
-            self.tr("resolution of z coordinate"), False, False, 0.01))
+                                          self.tr("resolution of z coordinate"), 0, None, 0.01))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

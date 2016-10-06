@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Aggregates temporally the maps of a space time raster dataset by a user defined granularity" module="t.rast.aggregate">
+	<option key="input"/>
+	<option key="output"/>
+	<option key="basename"/>
+	<option key="granularity"/>
+	<option key="method"/>
+	<flag key="s" hidden="no" answer="on" advanced="yes"/>
+	<option key="where" advanced="yes"/>
+	<option key="sampling" advanced="yes"/>
+	<option key="nprocs" advanced="yes"/>
+	<flag key="n" hidden="no" advanced="yes"/>
+	<option key="offset" hidden="yes" advanced="yes"/>
+</qgisgrassmodule>

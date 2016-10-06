@@ -3,7 +3,8 @@
 
 <qgisgrassmodule label="Convert bearing and distance measurements to coordinates and vice versa" module="m.cogo">
 	<file key="input" type="old" />
-	<option key="coord" />
+	<option key="coord" version_max="6"/>
+	<option key="coordinates" version_min="7"/>
 	<flag key="r" />
 	<file key="output" type="new" />
 </qgisgrassmodule>

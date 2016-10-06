@@ -3,7 +3,8 @@
 
 <qgisgrassmodule label="Calculate volume of data clumps, and create vector with centroids of clumps" module="r.volume">
 	<flag key="f" />
-	<option key="data" />
+	<option key="data" version_max="6"/>
+	<option key="input" version_min="7"/>
 	<option key="clump" />
 	<option key="centroids" />
 </qgisgrassmodule>

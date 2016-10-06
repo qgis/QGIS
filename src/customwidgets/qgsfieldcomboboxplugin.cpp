@@ -42,7 +42,7 @@ QString QgsFieldComboBoxPlugin::includeFile() const
 
 QIcon QgsFieldComboBoxPlugin::icon() const
 {
-  return QIcon();
+  return QIcon( ":/images/icons/qgis-icon-60x60.png" );
 }
 
 bool QgsFieldComboBoxPlugin::isContainer() const

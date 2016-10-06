@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'April 2014'
@@ -26,20 +27,23 @@ __copyright__ = '(C) 2014, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingLog import ProcessingLog
-from Grass7Utils import Grass7Utils
-from Grass7Algorithm import Grass7Algorithm
+from .Grass7Utils import Grass7Utils
+from .Grass7Algorithm import Grass7Algorithm
 from processing.tools.system import isWindows, isMac
-from nviz7 import nviz7
+from .nviz7 import nviz7
+
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
 
 class Grass7AlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.activate = False
         self.createAlgsList()
 
     def initializeSettings(self):
@@ -48,11 +52,7 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
             ProcessingConfig.addSetting(Setting(
                 self.getDescription(),
                 Grass7Utils.GRASS_FOLDER, self.tr('GRASS7 folder'),
-                Grass7Utils.grassPath()))
-            ProcessingConfig.addSetting(Setting(
-                self.getDescription(),
-                Grass7Utils.GRASS_WIN_SHELL, self.tr('Msys folder'),
-                Grass7Utils.grassWinShell()))
+                Grass7Utils.grassPath(), valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(
             self.getDescription(),
             Grass7Utils.GRASS_LOG_COMMANDS,
@@ -66,7 +66,6 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.unload(self)
         if isWindows() or isMac():
             ProcessingConfig.removeSetting(Grass7Utils.GRASS_FOLDER)
-            ProcessingConfig.removeSetting(Grass7Utils.GRASS_WIN_SHELL)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_CONSOLE)
 
@@ -83,10 +82,10 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
                             self.tr('Could not open GRASS GIS 7 algorithm: %s' % descriptionFile))
-                except Exception, e:
+                except Exception as e:
                     ProcessingLog.addToLog(
                         ProcessingLog.LOG_ERROR,
-                        self.tr('Could not open GRASS GIS 7 algorithm: %s' % descriptionFile))
+                        self.tr('Could not open GRASS GIS 7 algorithm: %s\n%s') % (descriptionFile, str(e)))
         self.preloadedAlgs.append(nviz7())
 
     def _loadAlgorithms(self):
@@ -99,10 +98,13 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
         return 'grass70'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/grass.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
 
     def getSupportedOutputVectorLayerExtensions(self):
         return ['shp']
 
     def getSupportedOutputRasterLayerExtensions(self):
         return ['tif']
+
+    def canBeActivated(self):
+        return not bool(Grass7Utils.checkGrass7IsInstalled())

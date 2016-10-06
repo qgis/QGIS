@@ -6,4 +6,4 @@ ParameterString|distance|Buffer distance in map units|
 ParameterString|tolerance|Maximum distance between theoretical arc and polygon segments as multiple of buffer|0.01
 ParameterBoolean|-s|Make outside corners straight|False
 ParameterBoolean|-c|Do not make caps at the ends of polylines|False
-OutputVector|output|Output buffer
+OutputVector|output|Buffer

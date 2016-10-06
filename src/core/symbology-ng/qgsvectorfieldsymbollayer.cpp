@@ -17,20 +17,21 @@
 
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
+#include "qgsunittypes.h"
 
 QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
     : mXAttribute( "" )
     , mYAttribute( "" )
-    , mDistanceUnit( QgsSymbolV2::MM )
+    , mDistanceUnit( QgsUnitTypes::RenderMillimeters )
     , mScale( 1.0 )
     , mVectorFieldType( Cartesian )
     , mAngleOrientation( ClockwiseFromNorth )
     , mAngleUnits( Degrees )
-    , mLineSymbol( 0 )
+    , mLineSymbol( nullptr )
     , mXIndex( -1 )
     , mYIndex( -1 )
 {
-  setSubSymbol( new QgsLineSymbolV2() );
+  setSubSymbol( new QgsLineSymbol() );
 }
 
 QgsVectorFieldSymbolLayer::~QgsVectorFieldSymbolLayer()
@@ -38,37 +39,37 @@ QgsVectorFieldSymbolLayer::~QgsVectorFieldSymbolLayer()
   delete mLineSymbol;
 }
 
-void QgsVectorFieldSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+void QgsVectorFieldSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
-  QgsMarkerSymbolLayerV2::setOutputUnit( unit );
+  QgsMarkerSymbolLayer::setOutputUnit( unit );
   mDistanceUnit = unit;
 }
 
-QgsSymbolV2::OutputUnit QgsVectorFieldSymbolLayer::outputUnit() const
+QgsUnitTypes::RenderUnit QgsVectorFieldSymbolLayer::outputUnit() const
 {
-  if ( QgsMarkerSymbolLayerV2::outputUnit() == mDistanceUnit )
+  if ( QgsMarkerSymbolLayer::outputUnit() == mDistanceUnit )
   {
     return mDistanceUnit;
   }
-  return QgsSymbolV2::Mixed;
+  return QgsUnitTypes::RenderUnknownUnit;
 }
 
 void QgsVectorFieldSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 {
-  QgsMarkerSymbolLayerV2::setMapUnitScale( scale );
+  QgsMarkerSymbolLayer::setMapUnitScale( scale );
   mDistanceMapUnitScale = scale;
 }
 
 QgsMapUnitScale QgsVectorFieldSymbolLayer::mapUnitScale() const
 {
-  if ( QgsMarkerSymbolLayerV2::mapUnitScale() == mDistanceMapUnitScale )
+  if ( QgsMarkerSymbolLayer::mapUnitScale() == mDistanceMapUnitScale )
   {
     return mDistanceMapUnitScale;
   }
   return QgsMapUnitScale();
 }
 
-QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::create( const QgsStringMap& properties )
+QgsSymbolLayer* QgsVectorFieldSymbolLayer::create( const QgsStringMap& properties )
 {
   QgsVectorFieldSymbolLayer* symbolLayer = new QgsVectorFieldSymbolLayer();
   if ( properties.contains( "x_attribute" ) )
@@ -81,11 +82,11 @@ QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::create( const QgsStringMap& propert
   }
   if ( properties.contains( "distance_unit" ) )
   {
-    symbolLayer->setDistanceUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["distance_unit"] ) );
+    symbolLayer->setDistanceUnit( QgsUnitTypes::decodeRenderUnit( properties["distance_unit"] ) );
   }
   if ( properties.contains( "distance_map_unit_scale" ) )
   {
-    symbolLayer->setDistanceMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( properties["distance_map_unit_scale"] ) );
+    symbolLayer->setDistanceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties["distance_map_unit_scale"] ) );
   }
   if ( properties.contains( "scale" ) )
   {
@@ -93,15 +94,15 @@ QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::create( const QgsStringMap& propert
   }
   if ( properties.contains( "vector_field_type" ) )
   {
-    symbolLayer->setVectorFieldType(( VectorFieldType )( properties["vector_field_type"].toInt() ) );
+    symbolLayer->setVectorFieldType( static_cast< VectorFieldType >( properties["vector_field_type"].toInt() ) );
   }
   if ( properties.contains( "angle_orientation" ) )
   {
-    symbolLayer->setAngleOrientation(( AngleOrientation )( properties["angle_orientation"].toInt() ) );
+    symbolLayer->setAngleOrientation( static_cast< AngleOrientation >( properties["angle_orientation"].toInt() ) );
   }
   if ( properties.contains( "angle_units" ) )
   {
-    symbolLayer->setAngleUnits(( AngleUnits )( properties["angle_units"].toInt() ) );
+    symbolLayer->setAngleUnits( static_cast< AngleUnits >( properties["angle_units"].toInt() ) );
   }
   if ( properties.contains( "size" ) )
   {
@@ -109,39 +110,39 @@ QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::create( const QgsStringMap& propert
   }
   if ( properties.contains( "size_unit" ) )
   {
-    symbolLayer->setSizeUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["size_unit"] ) );
+    symbolLayer->setSizeUnit( QgsUnitTypes::decodeRenderUnit( properties["size_unit"] ) );
   }
   if ( properties.contains( "size_map_unit_scale" ) )
   {
-    symbolLayer->setSizeMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( properties["size_map_unit_scale"] ) );
+    symbolLayer->setSizeMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties["size_map_unit_scale"] ) );
   }
   if ( properties.contains( "offset" ) )
   {
-    symbolLayer->setOffset( QgsSymbolLayerV2Utils::decodePoint( properties["offset"] ) );
+    symbolLayer->setOffset( QgsSymbolLayerUtils::decodePoint( properties["offset"] ) );
   }
   if ( properties.contains( "offset_unit" ) )
   {
-    symbolLayer->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["offset_unit"] ) );
+    symbolLayer->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( properties["offset_unit"] ) );
   }
   if ( properties.contains( "offset_map_unit_scale" ) )
   {
-    symbolLayer->setOffsetMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( properties["offset_map_unit_scale"] ) );
+    symbolLayer->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties["offset_map_unit_scale"] ) );
   }
   return symbolLayer;
 }
 
-bool QgsVectorFieldSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
+bool QgsVectorFieldSymbolLayer::setSubSymbol( QgsSymbol* symbol )
 {
-  if ( symbol->type() == QgsSymbolV2::Line )
+  if ( symbol->type() == QgsSymbol::Line )
   {
     delete mLineSymbol;
-    mLineSymbol = static_cast<QgsLineSymbolV2*>( symbol );
+    mLineSymbol = static_cast<QgsLineSymbol*>( symbol );
     return true;
   }
   return false;
 }
 
-void QgsVectorFieldSymbolLayer::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )
+void QgsVectorFieldSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext& context )
 {
   if ( !mLineSymbol )
   {
@@ -157,7 +158,7 @@ void QgsVectorFieldSymbolLayer::renderPoint( const QPointF& point, QgsSymbolV2Re
     QPolygonF line;
     line << QPointF( 0, 50 );
     line << QPointF( 100, 50 );
-    mLineSymbol->renderPolyline( line, 0, context.renderContext() );
+    mLineSymbol->renderPolyline( line, nullptr, context.renderContext() );
   }
 
   double xComponent = 0;
@@ -177,17 +178,17 @@ void QgsVectorFieldSymbolLayer::renderPoint( const QPointF& point, QgsSymbolV2Re
   switch ( mVectorFieldType )
   {
     case Cartesian:
-      xComponent = xVal * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDistanceUnit, mDistanceMapUnitScale );
-      yComponent = yVal * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDistanceUnit, mDistanceMapUnitScale );
+      xComponent = QgsSymbolLayerUtils::convertToPainterUnits( ctx, xVal, mDistanceUnit, mDistanceMapUnitScale );
+      yComponent = QgsSymbolLayerUtils::convertToPainterUnits( ctx, yVal, mDistanceUnit, mDistanceMapUnitScale );
       break;
     case Polar:
       convertPolarToCartesian( xVal, yVal, xComponent, yComponent );
-      xComponent = xComponent * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDistanceUnit, mDistanceMapUnitScale );
-      yComponent = yComponent * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDistanceUnit, mDistanceMapUnitScale );
+      xComponent = QgsSymbolLayerUtils::convertToPainterUnits( ctx, xComponent, mDistanceUnit, mDistanceMapUnitScale );
+      yComponent = QgsSymbolLayerUtils::convertToPainterUnits( ctx, yComponent, mDistanceUnit, mDistanceMapUnitScale );
       break;
     case Height:
       xComponent = 0;
-      yComponent = yVal * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDistanceUnit, mDistanceMapUnitScale );
+      yComponent = QgsSymbolLayerUtils::convertToPainterUnits( ctx, yVal, mDistanceUnit, mDistanceMapUnitScale );
       break;
     default:
       break;
@@ -202,18 +203,18 @@ void QgsVectorFieldSymbolLayer::renderPoint( const QPointF& point, QgsSymbolV2Re
   mLineSymbol->renderPolyline( line, f, context.renderContext() );
 }
 
-void QgsVectorFieldSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
+void QgsVectorFieldSymbolLayer::startRender( QgsSymbolRenderContext& context )
 {
   if ( mLineSymbol )
   {
     mLineSymbol->startRender( context.renderContext(), context.fields() );
   }
 
-  const QgsFields* fields = context.fields();
-  if ( fields )
+  QgsFields fields = context.fields();
+  if ( !fields.isEmpty() )
   {
-    mXIndex = fields->fieldNameIndex( mXAttribute );
-    mYIndex = fields->fieldNameIndex( mYAttribute );
+    mXIndex = fields.lookupField( mXAttribute );
+    mYIndex = fields.lookupField( mYAttribute );
   }
   else
   {
@@ -222,7 +223,7 @@ void QgsVectorFieldSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
   }
 }
 
-void QgsVectorFieldSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
+void QgsVectorFieldSymbolLayer::stopRender( QgsSymbolRenderContext& context )
 {
   if ( mLineSymbol )
   {
@@ -230,14 +231,14 @@ void QgsVectorFieldSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
   }
 }
 
-QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::clone() const
+QgsVectorFieldSymbolLayer* QgsVectorFieldSymbolLayer::clone() const
 {
-  QgsSymbolLayerV2* clonedLayer = QgsVectorFieldSymbolLayer::create( properties() );
+  QgsSymbolLayer* clonedLayer = QgsVectorFieldSymbolLayer::create( properties() );
   if ( mLineSymbol )
   {
     clonedLayer->setSubSymbol( mLineSymbol->clone() );
   }
-  return clonedLayer;
+  return static_cast< QgsVectorFieldSymbolLayer* >( clonedLayer );
 }
 
 QgsStringMap QgsVectorFieldSymbolLayer::properties() const
@@ -245,34 +246,34 @@ QgsStringMap QgsVectorFieldSymbolLayer::properties() const
   QgsStringMap properties;
   properties["x_attribute"] = mXAttribute;
   properties["y_attribute"] = mYAttribute;
-  properties["distance_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceUnit );
-  properties["distance_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mDistanceMapUnitScale );
+  properties["distance_unit"] = QgsUnitTypes::encodeUnit( mDistanceUnit );
+  properties["distance_map_unit_scale"] = QgsSymbolLayerUtils::encodeMapUnitScale( mDistanceMapUnitScale );
   properties["scale"] = QString::number( mScale );
   properties["vector_field_type"] = QString::number( mVectorFieldType );
   properties["angle_orientation"] = QString::number( mAngleOrientation );
   properties["angle_units"] = QString::number( mAngleUnits );
   properties["size"] = QString::number( mSize );
-  properties["size_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSizeUnit );
-  properties["size_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mSizeMapUnitScale );
-  properties["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
-  properties["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
-  properties["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
+  properties["size_unit"] = QgsUnitTypes::encodeUnit( mSizeUnit );
+  properties["size_map_unit_scale"] = QgsSymbolLayerUtils::encodeMapUnitScale( mSizeMapUnitScale );
+  properties["offset"] = QgsSymbolLayerUtils::encodePoint( mOffset );
+  properties["offset_unit"] = QgsUnitTypes::encodeUnit( mOffsetUnit );
+  properties["offset_map_unit_scale"] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
   return properties;
 }
 
-void QgsVectorFieldSymbolLayer::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
+void QgsVectorFieldSymbolLayer::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const
 {
   element.appendChild( doc.createComment( "VectorField not implemented yet..." ) );
   mLineSymbol->toSld( doc, element, props );
 }
 
-QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::createFromSld( QDomElement &element )
+QgsSymbolLayer* QgsVectorFieldSymbolLayer::createFromSld( QDomElement &element )
 {
   Q_UNUSED( element );
-  return NULL;
+  return nullptr;
 }
 
-void QgsVectorFieldSymbolLayer::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )
+void QgsVectorFieldSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext& context, QSize size )
 {
   if ( mLineSymbol )
   {
@@ -282,7 +283,7 @@ void QgsVectorFieldSymbolLayer::drawPreviewIcon( QgsSymbolV2RenderContext& conte
 
 QSet<QString> QgsVectorFieldSymbolLayer::usedAttributes() const
 {
-  QSet<QString> attributes;
+  QSet<QString> attributes = QgsMarkerSymbolLayer::usedAttributes();
   if ( !mXAttribute.isEmpty() )
   {
     attributes.insert( mXAttribute );
@@ -290,6 +291,10 @@ QSet<QString> QgsVectorFieldSymbolLayer::usedAttributes() const
   if ( !mYAttribute.isEmpty() )
   {
     attributes.insert( mYAttribute );
+  }
+  if ( mLineSymbol )
+  {
+    attributes.unite( mLineSymbol->usedAttributes() );
   }
   return attributes;
 }
@@ -316,6 +321,19 @@ void QgsVectorFieldSymbolLayer::convertPolarToCartesian( double length, double a
 
   x = length * sin( angle );
   y = length * cos( angle );
+}
+
+void QgsVectorFieldSymbolLayer::setColor( const QColor& color )
+{
+  if ( mLineSymbol )
+    mLineSymbol->setColor( color );
+
+  mColor = color;
+}
+
+QColor QgsVectorFieldSymbolLayer::color() const
+{
+  return mLineSymbol ? mLineSymbol->color() : mColor;
 }
 
 

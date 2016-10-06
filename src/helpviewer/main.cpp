@@ -33,9 +33,8 @@ int main( int argc, char ** argv )
   // Set up the QSettings environment must be done after qapp is created
   QCoreApplication::setOrganizationName( "QGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );
-  QCoreApplication::setApplicationName( "QGIS2" );
+  QCoreApplication::setApplicationName( "QGIS3" );
 
-  QString context = QString::null;
   QString myTranslationCode = "";
 
   if ( argc == 2 )
@@ -66,11 +65,11 @@ int main( int argc, char ** argv )
       myTranslationCode = settings.value( "locale/userLocale", "en_US" ).toString();
     }
   }
-  QgsDebugMsg( QString( "Setting translation to %1/qgis_%2" ).arg( i18nPath ).arg( myTranslationCode ) );
+  QgsDebugMsg( QString( "Setting translation to %1/qgis_%2" ).arg( i18nPath, myTranslationCode ) );
 
   /* Translation file for QGIS.
    */
-  QTranslator qgistor( 0 );
+  QTranslator qgistor( nullptr );
   if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )
   {
     a.installTranslator( &qgistor );
@@ -81,7 +80,7 @@ int main( int argc, char ** argv )
    * the About, Preferences and Quit items to the Mac Application menu.
    * These items must be translated identically in both qt_ and qgis_ files.
    */
-  QTranslator qttor( 0 );
+  QTranslator qttor( nullptr );
   if ( qttor.load( QString( "qt_" ) + myTranslationCode, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
   {
     a.installTranslator( &qttor );

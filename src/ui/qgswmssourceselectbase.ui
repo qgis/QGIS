@@ -66,6 +66,9 @@
        </item>
        <item row="1" column="0" colspan="2">
         <widget class="QPushButton" name="btnConnect">
+        <property name="toolTip">
+          <string>Connect to selected service</string>
+         </property>
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -76,6 +79,9 @@
        </item>
        <item row="1" column="2" colspan="2">
         <widget class="QPushButton" name="btnNew">
+         <property name="toolTip">
+          <string>Create a new service connection</string>
+         </property>
          <property name="text">
           <string>&amp;New</string>
          </property>
@@ -83,6 +89,9 @@
        </item>
        <item row="1" column="4">
         <widget class="QPushButton" name="btnEdit">
+         <property name="toolTip">
+          <string>Edit selected service connection</string>
+         </property>
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -93,11 +102,14 @@
        </item>
        <item row="1" column="5">
         <widget class="QPushButton" name="btnDelete">
+         <property name="toolTip">
+          <string>Remove connection to selected service</string>
+         </property>
          <property name="enabled">
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>Delete</string>
+          <string>Remove</string>
          </property>
         </widget>
        </item>

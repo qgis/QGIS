@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,7 +31,7 @@ __revision__ = '$Format:%H$'
 import os
 import time
 
-from PyQt4 import QtGui
+from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsRasterLayer
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -36,9 +39,12 @@ from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterRaster
-from Grass7Utils import Grass7Utils
+from .Grass7Utils import Grass7Utils
 from processing.tools.system import getNumExportedLayers
 from processing.tools import dataobjects
+
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
 class nviz7(GeoAlgorithm):
@@ -49,24 +55,28 @@ class nviz7(GeoAlgorithm):
     GRASS_REGION_EXTENT_PARAMETER = 'GRASS_REGION_PARAMETER'
     GRASS_REGION_CELLSIZE_PARAMETER = 'GRASS_REGION_CELLSIZE_PARAMETER'
 
+    def __init__(self):
+        GeoAlgorithm.__init__(self)
+        self.showInModeler = False
+
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/grass.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
 
     def defineCharacteristics(self):
-        self.name = 'nviz7'
-        self.group = 'Visualization(NVIZ)'
+        self.name, self.i18n_name = self.trAlgorithm('nviz7')
+        self.group, self.i18n_group = self.trAlgorithm('Visualization(NVIZ)')
         self.addParameter(ParameterMultipleInput(
             nviz7.ELEVATION,
             self.tr('Raster file(s) for elevation'),
-            ParameterMultipleInput.TYPE_RASTER, True))
+            dataobjects.TYPE_RASTER, True))
         self.addParameter(ParameterMultipleInput(
             nviz7.VECTOR,
             self.tr('Vector lines/areas overlay file(s)'),
-            ParameterMultipleInput.TYPE_VECTOR_ANY, True))
+            dataobjects.TYPE_VECTOR_ANY, True))
         self.addParameter(ParameterMultipleInput(
             nviz7.COLOR,
             self.tr('Raster file(s) for color'),
-            ParameterMultipleInput.TYPE_RASTER, True))
+            dataobjects.TYPE_RASTER, True))
         self.addParameter(ParameterExtent(
             nviz7.GRASS_REGION_EXTENT_PARAMETER,
             self.tr('GRASS region extent')))
@@ -158,7 +168,7 @@ class nviz7(GeoAlgorithm):
                     else:
                         layer = dataobjects.getObjectFromUri(param.value)
                     cellsize = max(cellsize, (layer.extent().xMaximum()
-                                   - layer.extent().xMinimum())
+                                              - layer.extent().xMinimum())
                                    / layer.width())
                 elif isinstance(param, ParameterMultipleInput):
 

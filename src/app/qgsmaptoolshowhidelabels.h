@@ -22,7 +22,7 @@
 #include "qgsfeature.h"
 
 
-/**A map tool for showing or hidding a feature's label*/
+/** A map tool for showing or hidding a feature's label*/
 class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
 {
     Q_OBJECT
@@ -32,13 +32,13 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
     ~QgsMapToolShowHideLabels();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
   protected:
 
@@ -52,7 +52,6 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
     QgsRubberBand* mRubberBand;
 
   private:
-
     //! Select valid labels to pin or unpin
     void showHideLabels( QMouseEvent * e );
 
@@ -62,12 +61,10 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
 
     //! Return label features intersecting rubberband
     bool selectedLabelFeatures( QgsVectorLayer* vlayer,
-                                QgsFeatureIds& selectedFeatIds );
+                                QList<QgsLabelPosition> &listPos );
 
-    //! Show or hide chosen label by setting data defined Show Label to 0
-    bool showHideLabel( QgsVectorLayer* vlayer,
-                        const QgsFeatureId &fid,
-                        bool hide );
+    //! Show label or diagram with feature ID
+    bool showHide( QgsVectorLayer *vl, const bool show );
 };
 
 #endif // QGSMAPTOOLSHOWHIDELABELS_H

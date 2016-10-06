@@ -2,8 +2,11 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Fast fourier transform for image processing" module="i.fft">
-	<option key="input_image" />
-	<option key="real_image" />
-	<option key="imaginary_image" />
-	<option key="range" />
+	<option key="input_image" version_max="6"/>
+	<option key="input" version_min="7"/>
+	<option key="real_image" version_max="6"/>
+	<option key="real" version_min="7"/>
+	<option key="imaginary_image" version_max="6"/>
+	<option key="imaginary" version_min="7"/>
+	<option key="range" version_max="6"/>
 </qgisgrassmodule>

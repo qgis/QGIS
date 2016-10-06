@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,21 +28,25 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import QSettings
-from PyQt4.QtGui import QWidget, QIcon, QFileDialog
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QFileDialog
 from processing.tools import dataobjects
 
-from processing.ui.ui_widgetLayerSelector import Ui_Form
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetLayerSelector.ui'))
 
 
-class InputLayerSelectorPanel(QWidget, Ui_Form):
+class InputLayerSelectorPanel(BASE, WIDGET):
 
     def __init__(self, options, param):
-        QWidget.__init__(self)
+        super(InputLayerSelectorPanel, self).__init__(None)
         self.setupUi(self)
 
         self.btnIterate.setIcon(
-            QIcon(os.path.dirname(__file__) + '/../images/iterate.png'))
+            QIcon(os.path.join(pluginPath, 'images', 'iterate.png')))
         self.btnIterate.hide()
 
         self.param = param
@@ -53,25 +58,24 @@ class InputLayerSelectorPanel(QWidget, Ui_Form):
 
     def showSelectionDialog(self):
         settings = QSettings()
-        text = unicode(self.cmbText.currentText())
+        text = str(self.cmbText.currentText())
         if os.path.isdir(text):
             path = text
         elif os.path.isdir(os.path.dirname(text)):
             path = os.path.dirname(text)
         elif settings.contains('/Processing/LastInputPath'):
-            path = unicode(settings.value('/Processing/LastInputPath'))
+            path = str(settings.value('/Processing/LastInputPath'))
         else:
             path = ''
 
-        filename = QFileDialog.getOpenFileName(self, self.tr('Select file'),
-            path, self.tr('All files (*.*);;') + self.param.getFileFilter())
+        filename, selected_filter = QFileDialog.getOpenFileName(self, self.tr('Select file'),
+                                                                path, self.tr('All files (*.*);;') + self.param.getFileFilter())
         if filename:
             settings.setValue('/Processing/LastInputPath',
-                              os.path.dirname(unicode(filename)))
+                              os.path.dirname(str(filename)))
             filename = dataobjects.getRasterSublayer(filename, self.param)
             self.cmbText.addItem(filename, filename)
             self.cmbText.setCurrentIndex(self.cmbText.count() - 1)
-
 
     def getValue(self):
         return self.cmbText.itemData(self.cmbText.currentIndex())

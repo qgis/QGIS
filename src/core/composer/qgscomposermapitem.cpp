@@ -34,7 +34,7 @@ QgsComposerMapItem::~QgsComposerMapItem()
 
 }
 
-bool QgsComposerMapItem::writeXML( QDomElement &elem, QDomDocument &doc ) const
+bool QgsComposerMapItem::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   Q_UNUSED( doc );
   elem.setAttribute( "uuid", mUuid );
@@ -43,7 +43,7 @@ bool QgsComposerMapItem::writeXML( QDomElement &elem, QDomDocument &doc ) const
   return true;
 }
 
-bool QgsComposerMapItem::readXML( const QDomElement &itemElem, const QDomDocument &doc )
+bool QgsComposerMapItem::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   Q_UNUSED( doc );
   mUuid = itemElem.attribute( "uuid" );
@@ -132,7 +132,7 @@ const QgsComposerMapItem *QgsComposerMapItemStack::constItem( const QString &ite
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 QgsComposerMapItem *QgsComposerMapItemStack::item( const QString &itemId ) const
@@ -146,7 +146,7 @@ QgsComposerMapItem *QgsComposerMapItemStack::item( const QString &itemId ) const
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 QgsComposerMapItem *QgsComposerMapItemStack::item( const int index ) const
@@ -156,7 +156,7 @@ QgsComposerMapItem *QgsComposerMapItemStack::item( const int index ) const
     return mItems.at( index );
   }
 
-  return 0;
+  return nullptr;
 }
 
 QgsComposerMapItem &QgsComposerMapItemStack::operator[]( int idx )
@@ -175,13 +175,13 @@ QList<QgsComposerMapItem *> QgsComposerMapItemStack::asList() const
   return list;
 }
 
-bool QgsComposerMapItemStack::writeXML( QDomElement &elem, QDomDocument &doc ) const
+bool QgsComposerMapItemStack::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   //write item stack
   QList< QgsComposerMapItem* >::const_iterator itemIt = mItems.constBegin();
   for ( ; itemIt != mItems.constEnd(); ++itemIt )
   {
-    ( *itemIt )->writeXML( elem, doc );
+    ( *itemIt )->writeXml( elem, doc );
   }
 
   return true;

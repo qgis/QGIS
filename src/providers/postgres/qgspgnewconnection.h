@@ -19,8 +19,9 @@
 #include "ui_qgspgnewconnectionbase.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
+#include "qgsauthconfigselect.h"
 
-/*! \class QgsPgNewConnection
+/** \class QgsPgNewConnection
  * \brief Dialog to allow the user to configure and save connection
  * information for a PostgreSQL database
  */
@@ -29,7 +30,7 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     Q_OBJECT
   public:
     //! Constructor
-    QgsPgNewConnection( QWidget *parent = 0, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsPgNewConnection( QWidget *parent = nullptr, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsPgNewConnection();
     //! Tests the connection using the parameters supplied
@@ -41,6 +42,7 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
+    QgsAuthConfigSelect * mAuthConfigSelect;
 };
 
 #endif //  QGSPGNEWCONNECTIONBASE_H

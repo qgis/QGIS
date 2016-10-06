@@ -29,6 +29,7 @@
 #include <string.h>
 #include <math.h>
 #include <assert.h>
+#include <limits.h>
 #ifdef WIN32
 #include <fcntl.h>
 #include <io.h>
@@ -59,6 +60,7 @@
 #define G_read_colors Rast_read_colors
 #define G_window_cols Rast_window_cols
 #define G_window_rows Rast_window_rows
+#define G_suppress_masking Rast_suppress_masking
 #endif
 
 int display( char *name, char *mapset, RASTER_MAP_TYPE data_type, char *format );
@@ -78,7 +80,6 @@ int main( int argc, char **argv )
   G_gisinit( argv[0] );
 
   module = G_define_module();
-  module->keywords = ( "display, raster" );
   module->description = ( "Output raster map layers in a format suitable for display in QGIS" );
 
   map = G_define_standard_option( G_OPT_R_MAP );
@@ -104,7 +105,7 @@ int main( int argc, char **argv )
   /* Make sure map is available */
 #if GRASS_VERSION_MAJOR < 7
   mapset = G_find_cell2( name, "" );
-  if ( mapset == NULL )
+  if ( !mapset )
     G_fatal_error(( "Raster map <%s> not found" ), name );
 #else
   mapset = "";
@@ -122,6 +123,8 @@ int main( int argc, char **argv )
   window.rows = atoi( win->answers[5] );
   G_adjust_Cell_head( &window, 1, 1 );
   G_set_window( &window );
+
+  G_suppress_masking(); // must be after G_set_window()
 
   raster_type = G_raster_map_type( name, "" );
 
@@ -172,7 +175,7 @@ static int cell_draw( char *name,
   size_t raster_size;
 #ifdef NAN
   double dnul = NAN;
-  float fnul = NAN;
+  float fnul = ( float )( NAN );
 #else
   double dnul = strtod( "NAN", 0 );
   float fnul = strtof( "NAN", 0 );
@@ -200,6 +203,7 @@ static int cell_draw( char *name,
   set = G_malloc( ncols );
 
   /* some buggy C libraries require BOTH setmode() and fdopen(bin) */
+  // Do not use Q_OS_WIN, we are in C file, no Qt headers
 #ifdef WIN32
   if ( _setmode( _fileno( stdout ), _O_BINARY ) == -1 )
     G_fatal_error( "Cannot set stdout mode" );
@@ -256,7 +260,7 @@ static int cell_draw( char *name,
           if ( data_type == CELL_TYPE )
           {
             //int nul = -2000000000;
-            int nul = -2147483648;
+            int nul = INT_MIN;
             fwrite( &nul, 4, 1, fo );
           }
           else if ( data_type == DCELL_TYPE )

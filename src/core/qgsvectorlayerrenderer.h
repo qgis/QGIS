@@ -16,17 +16,17 @@
 #ifndef QGSVECTORLAYERRENDERER_H
 #define QGSVECTORLAYERRENDERER_H
 
-class QgsFeatureRendererV2;
+class QgsFeatureRenderer;
 class QgsRenderContext;
 class QgsVectorLayer;
 class QgsVectorLayerFeatureSource;
 
-class QgsDiagramRendererV2;
+class QgsDiagramRenderer;
 class QgsDiagramLayerSettings;
 
 class QgsGeometryCache;
 class QgsFeatureIterator;
-class QgsSingleSymbolRendererV2;
+class QgsSingleSymbolRenderer;
 
 #include <QList>
 #include <QPainter>
@@ -34,18 +34,35 @@ class QgsSingleSymbolRendererV2;
 typedef QList<int> QgsAttributeList;
 
 #include "qgis.h"
-#include "qgsfield.h"  // QgsFields
+#include "qgsfields.h"  // QgsFields
 #include "qgsfeature.h"  // QgsFeatureIds
 #include "qgsfeatureiterator.h"
 #include "qgsvectorsimplifymethod.h"
 
 #include "qgsmaplayerrenderer.h"
 
+class QgsVectorLayerLabelProvider;
+class QgsVectorLayerDiagramProvider;
 
-/**
+/** \ingroup core
+ * Interruption checker used by QgsVectorLayerRenderer::render()
+ * @note not available in Python bindings
+ */
+class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
+{
+  public:
+    /** Constructor */
+    explicit QgsVectorLayerRendererInterruptionChecker( const QgsRenderContext& context );
+    bool mustStop() const override;
+  private:
+    const QgsRenderContext& mContext;
+};
+
+/** \ingroup core
  * Implementation of threaded rendering for vector layers.
  *
  * @note added in 2.4
+ * @note not available in Python bindings
  */
 class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 {
@@ -61,28 +78,33 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
   private:
 
-    /**Registers label and diagram layer
+    /** Registers label and diagram layer
       @param layer diagram layer
       @param attributeNames attributes needed for labeling and diagrams will be added to the list
      */
-    void prepareLabeling( QgsVectorLayer* layer, QStringList& attributeNames );
-    void prepareDiagrams( QgsVectorLayer* layer, QStringList& attributeNames );
+    void prepareLabeling( QgsVectorLayer* layer, QSet<QString>& attributeNames );
+    void prepareDiagrams( QgsVectorLayer* layer, QSet<QString>& attributeNames );
 
     /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
      */
-    void drawRendererV2( QgsFeatureIterator& fit );
+    void drawRenderer( QgsFeatureIterator& fit );
 
     /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
      */
-    void drawRendererV2Levels( QgsFeatureIterator& fit );
+    void drawRendererLevels( QgsFeatureIterator& fit );
 
     /** Stop version 2 renderer and selected renderer (if required) */
-    void stopRendererV2( QgsSingleSymbolRendererV2* selRenderer );
+    void stopRenderer( QgsSingleSymbolRenderer* selRenderer );
 
 
   protected:
 
     QgsRenderContext& mContext;
+
+    QgsVectorLayerRendererInterruptionChecker mInterruptionChecker;
+
+    /** The rendered layer */
+    QgsVectorLayer* mLayer;
 
     QgsFields mFields; // TODO: use fields from mSource
 
@@ -90,7 +112,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QgsVectorLayerFeatureSource* mSource;
 
-    QgsFeatureRendererV2 *mRendererV2;
+    QgsFeatureRenderer *mRenderer;
 
     QgsGeometryCache* mCache;
 
@@ -98,14 +120,22 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     bool mVertexMarkerOnlyForSelection;
     int mVertexMarkerStyle, mVertexMarkerSize;
 
-    QGis::GeometryType mGeometryType;
+    QgsWkbTypes::GeometryType mGeometryType;
 
-    QStringList mAttrNames;
+    QSet<QString> mAttrNames;
 
+    //! used with old labeling engine (QgsPalLabeling): whether labeling is enabled
     bool mLabeling;
+    //! used with new labeling engine (QgsPalLabeling): whether diagrams are enabled
     bool mDiagrams;
 
-    int mLayerTransparency;
+    //! used with new labeling engine (QgsLabelingEngine): provider for labels.
+    //! may be null. no need to delete: if exists it is owned by labeling engine
+    QgsVectorLayerLabelProvider* mLabelProvider;
+    //! used with new labeling engine (QgsLabelingEngine): provider for diagrams.
+    //! may be null. no need to delete: if exists it is owned by labeling engine
+    QgsVectorLayerDiagramProvider* mDiagramProvider;
+
     QPainter::CompositionMode mFeatureBlendMode;
 
     QgsVectorSimplifyMethod mSimplifyMethod;

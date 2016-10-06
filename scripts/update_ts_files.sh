@@ -32,7 +32,7 @@ cleanup() {
 	fi
 
 	echo Removing temporary files
-	perl -i.bak -ne 'print unless /^\s+<location.*python-i18n\.cpp.*$/;' i18n/qgis_*.ts
+	perl -i.bak -ne 'print unless /^\s+<location.*(python-i18n|_texts)\.cpp.*$/;' i18n/qgis_*.ts
 	for i in \
 		python/python-i18n.{ts,cpp} \
 		python/plugins/*/python-i18n.{ts,cpp} \
@@ -105,6 +105,17 @@ if [ "$exclude" != "--exclude i18n/qgis_en.ts" -o -n "$add" ]; then
   tar $fast -cf i18n/qgis_ts.tar i18n/qgis_*.ts $exclude
 fi
 
+builddir=$1
+if [ -d "$builddir" ]; then
+	echo Build directory not found
+	exit 1
+fi
+
+if [ ! -f "$builddir/src/core/qgsexpression_texts.cpp" -o ! -f "$builddir/src/core/qgscontexthelp_texts.cpp" ]; then
+	echo Generated help files not found
+	exit 1
+fi
+
 echo Updating python translations
 cd python
 pylupdate4 utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
@@ -128,7 +139,7 @@ for i in \
 do
 	[ -f "$i" ] && mv "$i" "$i.save"
 done
-$QMAKE -project -o qgis_ts.pro -nopwd src python i18n
+$QMAKE -project -o qgis_ts.pro -nopwd src python i18n "$builddir/src/core/qgsexpression_texts.cpp" "$builddir/src/core/qgscontexthelp_texts.cpp"
 if [ -n "$add" ]; then
 	for i in $add; do
 		echo "Adding translation for $i"

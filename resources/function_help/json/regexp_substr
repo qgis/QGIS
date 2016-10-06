@@ -1,0 +1,9 @@
+{
+  "name": "regexp_substr",
+  "type": "function",
+  "description": "Returns the portion of a string which matches a supplied regular expression.",
+  "arguments": [ {"arg":"input_string","description":"the string to find matches in"},
+  {"arg":"regex","description":"The regular expression to match against. Backslash characters must be double escaped (eg \"\\\\s\" to match a white space character). Non-greedy regular expressions are not supported."}
+  ],
+  "examples": [ { "expression":"regexp_substr('abc123','(\\\\d+)')", "returns":"'123'"}]
+}

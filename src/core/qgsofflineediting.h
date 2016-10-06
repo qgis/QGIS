@@ -29,6 +29,8 @@ class QgsMapLayer;
 class QgsVectorLayer;
 struct sqlite3;
 
+/** \ingroup core
+ */
 class CORE_EXPORT QgsOfflineEditing : public QObject
 {
     Q_OBJECT
@@ -48,41 +50,42 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     QgsOfflineEditing();
     ~QgsOfflineEditing();
 
-    /** convert current project for offline editing
-     * @param offlineDataPath path to offline db file
-     * @param offlineDbFile offline db file name
-     * @param layerIds list of layer names to convert
+    /** Convert current project for offline editing
+     * @param offlineDataPath Path to offline db file
+     * @param offlineDbFile Offline db file name
+     * @param layerIds List of layer names to convert
+     * @param onlySelected Only copy selected features from layers where a selection is present
      */
-    bool convertToOfflineProject( const QString& offlineDataPath, const QString& offlineDbFile, const QStringList& layerIds );
+    bool convertToOfflineProject( const QString& offlineDataPath, const QString& offlineDbFile, const QStringList& layerIds, bool onlySelected = false );
 
-    /** return true if current project is offline */
-    bool isOfflineProject();
+    /** Return true if current project is offline */
+    bool isOfflineProject() const;
 
-    /** synchronize to remote layers */
+    /** Synchronize to remote layers */
     void synchronize();
 
   signals:
-    /** emit a signal that processing has started */
+    /** Emit a signal that processing has started */
     void progressStarted();
 
-    /** emit a signal that the next layer of numLayers has started processing
+    /** Emit a signal that the next layer of numLayers has started processing
      * @param layer current layer index
      * @param numLayers total number of layers
      */
     void layerProgressUpdated( int layer, int numLayers );
 
-    /** emit a signal that sets the mode for the progress of the current operation
+    /** Emit a signal that sets the mode for the progress of the current operation
      * @param mode progress mode
      * @param maximum total number of entities to process in the current operation
      */
     void progressModeSet( QgsOfflineEditing::ProgressMode mode, int maximum );
 
-    /** emit a signal with the progress of the current mode
+    /** Emit a signal with the progress of the current mode
      * @param progress current index of processed entities
      */
     void progressUpdated( int progress );
 
-    /** emit a signal that processing of all layers has finished */
+    /** Emit a signal that processing of all layers has finished */
     void progressStopped();
 
     /**
@@ -96,7 +99,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     void initializeSpatialMetadata( sqlite3 *sqlite_handle );
     bool createSpatialiteDB( const QString& offlineDbPath );
     void createLoggingTables( sqlite3* db );
-    QgsVectorLayer* copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, const QString& offlineDbPath );
+    QgsVectorLayer* copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, const QString& offlineDbPath, bool onlySelected );
 
     void applyAttributesAdded( QgsVectorLayer* remoteLayer, sqlite3* db, int layerId, int commitNo );
     void applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVectorLayer* remoteLayer, sqlite3* db, int layerId );

@@ -297,7 +297,7 @@ void QwtPolarSpectrogram::draw( QPainter *painter,
         QRectF r( 0, 0, 2 * radius, 2 * radius );
         r.moveCenter( pole );
 
-        clipRegion &= QRegion( r.toRect(), QRegion::Ellipse );;
+        clipRegion &= QRegion( r.toRect(), QRegion::Ellipse );
 
         imageRect &= r.toRect();
     }

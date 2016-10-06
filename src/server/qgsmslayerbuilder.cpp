@@ -55,7 +55,7 @@ QString QgsMSLayerBuilder::layerNameFromUri( const QString& uri ) const
   if ( uri.contains( "dbname" ) )
   {
     //take tablename
-    foreach ( QString token, uri.split( " " ) )
+    Q_FOREACH ( const QString& token, uri.split( " " ) )
     {
       if ( token.startsWith( "table" ) )
       {

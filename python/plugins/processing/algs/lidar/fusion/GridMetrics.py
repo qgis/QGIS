@@ -20,6 +20,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -33,8 +36,8 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputFile
-from FusionUtils import FusionUtils
-from FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
+from .FusionAlgorithm import FusionAlgorithm
 
 
 class GridMetrics(FusionAlgorithm):
@@ -53,10 +56,10 @@ class GridMetrics(FusionAlgorithm):
     CLASS = 'CLASS'
 
     def defineCharacteristics(self):
-        self.name = 'Grid Metrics'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Grid Metrics')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterFile(
             self.GROUND, self.tr('Input ground DTM layer')))
         self.addParameter(ParameterNumber(
@@ -105,7 +108,7 @@ class GridMetrics(FusionAlgorithm):
             commands.append('/outlier:' + str(outlier))
         first = self.getParameterValue(self.FIRST)
         if first:
-            commands.append('/first:' + str(first))
+            commands.append('/first')
         minht = self.getParameterValue(self.MINHT)
         if str(minht).strip() != '':
             commands.append('/minht:' + str(minht))

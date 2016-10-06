@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 6.6.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -41,7 +41,7 @@ void QgsVectorLayerSelectionManager::deselect( const QgsFeatureIds& ids )
 
 void QgsVectorLayerSelectionManager::setSelectedFeatures( const QgsFeatureIds& ids )
 {
-  mLayer->setSelectedFeatures( ids );
+  mLayer->selectByIds( ids );
 }
 
 const QgsFeatureIds& QgsVectorLayerSelectionManager::selectedFeaturesIds() const

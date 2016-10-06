@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 from owslib.etree import etree
 from owslib.util import nspath, testXMLValue, openURL
 from owslib.util import xml_to_dict as _xml_to_dict

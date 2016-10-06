@@ -15,6 +15,7 @@
 
 #include "qgsdatetimeeditconfig.h"
 #include "qgsdatetimeeditfactory.h"
+#include "qgsvectorlayer.h"
 
 QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
     : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -32,6 +33,11 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, 
 
   connect( mFieldHelpToolButton, SIGNAL( clicked( bool ) ), this, SLOT( showHelp( bool ) ) );
   connect( mDisplayHelpToolButton, SIGNAL( clicked( bool ) ), this, SLOT( showHelp( bool ) ) );
+
+  connect( mFieldFormatEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( changed() ) );
+  connect( mDisplayFormatEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( changed() ) );
+  connect( mCalendarPopupCheckBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mAllowNullCheckBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
 
   // initialize
   updateFieldFormat( mFieldFormatComboBox->currentIndex() );
@@ -70,7 +76,7 @@ void QgsDateTimeEditConfig::updateFieldFormat( int idx )
 }
 
 
-void QgsDateTimeEditConfig::updateDisplayFormat( QString fieldFormat )
+void QgsDateTimeEditConfig::updateDisplayFormat( const QString& fieldFormat )
 {
   if ( mDisplayFormatComboBox->currentIndex() == 0 )
   {
@@ -114,45 +120,48 @@ QgsEditorWidgetConfig QgsDateTimeEditConfig::config()
 }
 
 
+QString QgsDateTimeEditConfig::defaultFormat( const QVariant::Type type )
+{
+  switch ( type )
+  {
+    case QVariant::DateTime:
+      return QGSDATETIMEEDIT_DATETIMEFORMAT;
+      break;
+    case QVariant::Time:
+      return QGSDATETIMEEDIT_TIMEFORMAT;
+      break;
+    default:
+      return QGSDATETIMEEDIT_DATEFORMAT;
+  }
+}
+
+
 void QgsDateTimeEditConfig::setConfig( const QgsEditorWidgetConfig &config )
 {
-  if ( config.contains( "field_format" ) )
-  {
-    const QString fieldFormat = config[ "field_format" ].toString();
-    mFieldFormatEdit->setText( fieldFormat );
+  const QgsField fieldDef = layer()->fields().at( field() );
+  const QString fieldFormat = config.value( "field_format", defaultFormat( fieldDef.type() ) ).toString();
+  mFieldFormatEdit->setText( fieldFormat );
 
-    if ( fieldFormat == QGSDATETIMEEDIT_DATEFORMAT )
-      mFieldFormatComboBox->setCurrentIndex( 0 );
-    else if ( fieldFormat == QGSDATETIMEEDIT_TIMEFORMAT )
-      mFieldFormatComboBox->setCurrentIndex( 1 );
-    else if ( fieldFormat == QGSDATETIMEEDIT_DATETIMEFORMAT )
-      mFieldFormatComboBox->setCurrentIndex( 2 );
-    else
-      mFieldFormatComboBox->setCurrentIndex( 3 );
+  if ( fieldFormat == QGSDATETIMEEDIT_DATEFORMAT )
+    mFieldFormatComboBox->setCurrentIndex( 0 );
+  else if ( fieldFormat == QGSDATETIMEEDIT_TIMEFORMAT )
+    mFieldFormatComboBox->setCurrentIndex( 1 );
+  else if ( fieldFormat == QGSDATETIMEEDIT_DATETIMEFORMAT )
+    mFieldFormatComboBox->setCurrentIndex( 2 );
+  else
+    mFieldFormatComboBox->setCurrentIndex( 3 );
+
+  QString displayFormat = config.value( "display_format", defaultFormat( fieldDef.type() ) ).toString();
+  mDisplayFormatEdit->setText( displayFormat );
+  if ( displayFormat == mFieldFormatEdit->text() )
+  {
+    mDisplayFormatComboBox->setCurrentIndex( 0 );
+  }
+  else
+  {
+    mDisplayFormatComboBox->setCurrentIndex( 1 );
   }
 
-  if ( config.contains( "display_format" ) )
-  {
-    const QString displayFormat = config[ "display_format" ].toString();
-    mDisplayFormatEdit->setText( displayFormat );
-    if ( displayFormat == mFieldFormatEdit->text() )
-    {
-      mDisplayFormatComboBox->setCurrentIndex( 0 );
-    }
-    else
-    {
-      mDisplayFormatComboBox->setCurrentIndex( 1 );
-    }
-  }
-
-  if ( config.contains( "calendar_popup" ) )
-  {
-    mCalendarPopupCheckBox->setChecked( config[ "calendar_popup" ].toBool() );
-  }
-
-  if ( config.contains( "allow_null" ) )
-  {
-    mAllowNullCheckBox->setChecked( config[ "allow_null" ].toBool() );
-  }
-
+  mCalendarPopupCheckBox->setChecked( config.value( "calendar_popup" , false ).toBool() );
+  mAllowNullCheckBox->setChecked( config.value( "allow_null", true ).toBool() );
 }

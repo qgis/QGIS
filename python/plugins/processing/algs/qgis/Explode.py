@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -37,22 +38,26 @@ class Explode(GeoAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
+    def defineCharacteristics(self):
+        self.name, self.i18n_name = self.trAlgorithm('Explode lines')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+        self.addParameter(ParameterVector(self.INPUT,
+                                          self.tr('Input layer'),
+                                          [dataobjects.TYPE_VECTOR_LINE]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Exploded'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
+
     def processAlgorithm(self, progress):
         vlayer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
-        vprovider = vlayer.dataProvider()
-        fields = vprovider.fields()
-        writer = output.getVectorWriter(fields, QGis.WKBLineString,
-                vlayer.crs())
+        fields = vlayer.fields()
+        writer = output.getVectorWriter(fields, QgsWkbTypes.LineString,
+                                        vlayer.crs())
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        nElement = 0
         features = vector.features(vlayer)
-        nFeat = len(features)
-        for feature in features:
-            nElement += 1
-            progress.setPercentage(nElement * 100 / nFeat)
+        total = 100.0 / len(features)
+        for current, feature in enumerate(features):
+            progress.setPercentage(int(current * total))
             inGeom = feature.geometry()
             atMap = feature.attributes()
             segments = self.extractAsSingleSegments(inGeom)
@@ -81,10 +86,3 @@ class Explode(GeoAlgorithm):
             segment = QgsGeometry.fromPolyline([ptA, ptB])
             segments.append(segment)
         return segments
-
-    def defineCharacteristics(self):
-        self.name = 'Explode lines'
-        self.group = 'Vector geometry tools'
-        self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))

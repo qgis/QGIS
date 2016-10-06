@@ -1,0 +1,60 @@
+<root>
+  <key>Despeckle-lee</key>
+  <exec>otbcli_Despeckle</exec>
+  <longname>Despeckle (lee)</longname>
+  <group>Image Filtering</group>
+  <description>Perform speckle noise reduction on SAR image.</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input Image</name>
+    <description>Input image.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>out</key>
+    <name>Output Image</name>
+    <description>Output image.</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>filter</key>
+    <name>speckle filtering method</name>
+    <description />
+    <options>
+      <choices>
+        <choice>lee</choice>
+        </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>filter.lee.rad</key>
+    <name>Radius</name>
+    <description>Radius for lee filter</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>filter.lee.nblooks</key>
+    <name>nb looks</name>
+    <description>Nb looks for lee filter</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
+  </parameter>
+  </root>

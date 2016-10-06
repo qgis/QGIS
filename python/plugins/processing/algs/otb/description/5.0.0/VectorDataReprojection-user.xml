@@ -1,0 +1,91 @@
+<root>
+  <key>VectorDataReprojection-user</key>
+  <exec>otbcli_VectorDataReprojection</exec>
+  <longname>VectorDataReprojection (user)</longname>
+  <group>Vector Data Manipulation</group>
+  <description>This application allows reprojecting a vector data using support image projection reference, or a user specified map projection
+</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputFilename">ParameterFile</parameter_type>
+    <key>in.vd</key>
+    <name>Input vector data</name>
+    <description>The input vector data to reproject</description>
+    <isFolder />
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in.kwl</key>
+    <name>Use image keywords list</name>
+    <description>Optional input image to fill vector data with image kwl.</description>
+    <optional>True</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputFilename">OutputFile</parameter_type>
+    <key>out.vd</key>
+    <name>Output vector data</name>
+    <description>The reprojected vector data</description>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>out.proj</key>
+    <name>Output Projection choice</name>
+    <description />
+    <options>
+      <choices>
+        <choice>user</choice>
+      </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>out.proj.user.map</key>
+    <name>Output Cartographic Map Projection</name>
+    <description>Parameters of the output map projection to be used.</description>
+    <options>
+      <choices>
+        <choice>utm</choice>
+        <choice>lambert2</choice>
+        <choice>lambert93</choice>
+        <choice>wgs</choice>
+        <choice>epsg</choice>
+      </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>out.proj.user.map.utm.zone</key>
+    <name>Zone number</name>
+    <description>The zone number ranges from 1 to 60 and allows defining the transverse mercator projection (along with the hemisphere)</description>
+    <minValue />
+    <maxValue />
+    <default>31</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Empty">ParameterBoolean</parameter_type>
+    <key>out.proj.user.map.utm.northhem</key>
+    <name>Northern Hemisphere</name>
+    <description>The transverse mercator projections are defined by their zone number as well as the hemisphere. Activate this parameter if your image is in the northern hemisphere.</description>
+    <default>True</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>out.proj.user.map.epsg.code</key>
+    <name>EPSG Code</name>
+    <description>See www.spatialreference.org to find which EPSG code is associated to your projection</description>
+    <minValue />
+    <maxValue />
+    <default>4326</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>elev.default</key>
+    <name>Default elevation</name>
+    <description>This parameter allows setting the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+</root>

@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2012'
@@ -27,7 +30,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -38,7 +41,7 @@ from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 
-from TauDEMUtils import TauDEMUtils
+from .TauDEMUtils import TauDEMUtils
 
 
 class LengthArea(GeoAlgorithm):
@@ -51,24 +54,24 @@ class LengthArea(GeoAlgorithm):
     STREAM_SOURCE_GRID = 'STREAM_SOURCE_GRID'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/taudem.svg')
 
     def defineCharacteristics(self):
-        self.name = 'Length Area Stream Source'
+        self.name, self.i18n_name = self.trAlgorithm('Length Area Stream Source')
         self.cmdName = 'lengtharea'
-        self.group = 'Stream Network Analysis tools'
+        self.group, self.i18n_group = self.trAlgorithm('Stream Network Analysis tools')
 
         self.addParameter(ParameterRaster(self.LENGTH_GRID,
-            self.tr('Length Grid'), False))
+                                          self.tr('Length Grid'), False))
         self.addParameter(ParameterRaster(self.CONTRIB_AREA_GRID,
-            self.tr('Contributing Area Grid'), False))
+                                          self.tr('Contributing Area Grid'), False))
         self.addParameter(ParameterNumber(self.THRESHOLD,
-            self.tr('Threshold'), 0, None, 0.03))
+                                          self.tr('Threshold'), 0, None, 0.03))
         self.addParameter(ParameterNumber(self.EXPONENT,
-            self.tr('Exponent'), 0, None, 1.3))
+                                          self.tr('Exponent'), 0, None, 1.3))
 
         self.addOutput(OutputRaster(self.STREAM_SOURCE_GRID,
-            self.tr('Stream Source Grid')))
+                                    self.tr('Stream Source Grid')))
 
     def processAlgorithm(self, progress):
         commands = []

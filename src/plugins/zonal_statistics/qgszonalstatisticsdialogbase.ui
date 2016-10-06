@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>240</width>
-    <height>193</height>
+    <width>254</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,6 +23,20 @@
    </item>
    <item>
     <widget class="QComboBox" name="mRasterLayerComboBox"/>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Band</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mBandComboBox"/>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QLabel" name="mVectorLayerLabel">
@@ -49,6 +63,16 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Statistics to calculate:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QListWidget" name="mStatsListWidget"/>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -60,6 +84,14 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mRasterLayerComboBox</tabstop>
+  <tabstop>mBandComboBox</tabstop>
+  <tabstop>mPolygonLayerComboBox</tabstop>
+  <tabstop>mColumnPrefixLineEdit</tabstop>
+  <tabstop>mStatsListWidget</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

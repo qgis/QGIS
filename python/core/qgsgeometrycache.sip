@@ -5,7 +5,6 @@ class QgsGeometryCache
 %End
   public:
     QgsGeometryCache();
-    ~QgsGeometryCache();
 
     QgsGeometryMap& cachedGeometries();
 
@@ -17,7 +16,6 @@ class QgsGeometryCache
 
     //! get rid of the cached geometry
     void removeGeometry( QgsFeatureId fid );
-
 
     /** Deletes the geometries in mCachedGeometries */
     void deleteCachedGeometries();

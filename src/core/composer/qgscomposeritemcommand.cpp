@@ -25,7 +25,7 @@
 QgsComposerItemCommand::QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent )
     : QUndoCommand( text, parent )
     , mItem( item )
-    , mMultiFrame( 0 )
+    , mMultiFrame( nullptr )
     , mFrameNumber( 0 )
     , mFirstRun( true )
 {
@@ -65,7 +65,7 @@ bool QgsComposerItemCommand::containsChange() const
 
 QgsComposerItem* QgsComposerItemCommand::item() const
 {
-  QgsComposerItem* item = 0;
+  QgsComposerItem* item = nullptr;
   if ( mMultiFrame )
   {
     //item is a frame, so it needs to be handled differently
@@ -104,7 +104,7 @@ void QgsComposerItemCommand::saveState( QDomDocument& stateDoc ) const
 
   stateDoc.clear();
   QDomElement documentElement = stateDoc.createElement( "ComposerItemState" );
-  source->writeXML( documentElement, stateDoc );
+  source->writeXml( documentElement, stateDoc );
   stateDoc.appendChild( documentElement );
 }
 
@@ -116,9 +116,9 @@ void QgsComposerItemCommand::restoreState( QDomDocument& stateDoc ) const
     return;
   }
 
-  destItem->readXML( stateDoc.documentElement().firstChild().toElement(), stateDoc );
+  destItem->readXml( stateDoc.documentElement().firstChild().toElement(), stateDoc );
   destItem->repaint();
-  QgsProject::instance()->dirty( true );
+  QgsProject::instance()->setDirty( true );
 }
 
 //

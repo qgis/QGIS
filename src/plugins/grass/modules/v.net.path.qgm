@@ -3,12 +3,17 @@
 
 <qgisgrassmodule label="Find shortest path on vector network" module="v.net.path">
 	<option key="input" />
-	<option key="alayer" answer="1" />
-	<option key="nlayer" answer="2" />
+	<option key="alayer" answer="1" version_max="6"/>
+	<option key="arc_layer" answer="1" version_min="7"/>
+	<option key="nlayer" answer="2" version_max="6"/>
+	<option key="node_layer" answer="2" version_min="7"/>
 	<file key="file" type="old" />
-	<option key="afcolumn" />
-	<option key="abcolumn" />
-	<option key="ncolumn" />
+	<option key="afcolumn" version_max="6"/>
+	<option key="arc_column" version_min="7"/>
+	<option key="abcolumn" version_max="6"/>
+	<option key="arc_backward_column" version_min="7"/>
+	<option key="ncolumn" version_max="6"/>
+	<option key="node_column" version_min="7"/>
 	<option key="dmax" />
 	<flag key="g" />
 	<flag key="s" />

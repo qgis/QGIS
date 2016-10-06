@@ -18,12 +18,12 @@
  ***************************************************************************/
 
 #include "qgsrubberselectid.h"
-
+#include "qgsfeatureiterator.h"
 #include "qgsfeature.h"
 
 QgsRubberSelectId::QgsRubberSelectId( QgsMapCanvas* mapCanvas )
 {
-  mGeometryType = QGis::Line;
+  mGeometryType = QgsWkbTypes::LineGeometry;
   mMapCanvas = mapCanvas;
   mRubberBand = new QgsRubberBand( mMapCanvas, mGeometryType );
   mColorRGB[0] = 255;
@@ -68,7 +68,7 @@ void QgsRubberSelectId::addFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
   {
     return;
   }
-  if ( !feat.geometry() )
+  if ( !feat.hasGeometry() )
   {
     return;
   }

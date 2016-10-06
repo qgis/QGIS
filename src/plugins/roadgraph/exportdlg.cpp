@@ -58,7 +58,7 @@ RgExportDlg::RgExportDlg( QWidget* parent, Qt::WindowFlags fl )
     QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer_it.value() );
     if ( !vl )
       continue;
-    if ( vl->geometryType() != QGis::Line )
+    if ( vl->geometryType() != QgsWkbTypes::LineGeometry )
       continue;
     mcbLayers->insertItem( 0, vl->name(), QVariant( vl->id() ) );
   }
@@ -71,17 +71,17 @@ RgExportDlg::~RgExportDlg()
 
 QgsVectorLayer* RgExportDlg::mapLayer() const
 {
-  QgsVectorLayer* myLayer = NULL;
-  QString layerId = mcbLayers->itemData( mcbLayers->currentIndex() ).toString();
+  QgsVectorLayer* myLayer = nullptr;
+  QString layerId = mcbLayers->currentData().toString();
 
-  if ( layerId == QString( "-1" ) )
+  if ( layerId == "-1" )
   {
     // create a temporary layer
     myLayer = new QgsVectorLayer( QString( "LineString?crs=epsg:4326&memoryid=%1" ).arg( QUuid::createUuid().toString() ), "shortest path", "memory" );
 
     QgsVectorDataProvider *prov = myLayer->dataProvider();
-    if ( prov == NULL )
-      return NULL;
+    if ( !prov )
+      return nullptr;
 
     QList<QgsField> attrList;
     attrList.append( QgsField( "length", QVariant::Double, "", 20, 8 ) );

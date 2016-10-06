@@ -1,0 +1,8 @@
+PyQgsComposerPicture
+PyQgsJSONUtils
+PyQgsLocalServer
+PyQgsPalLabelingServer
+qgis_composermapgridtest
+qgis_composerutils
+ProcessingGrass7AlgorithmsImageryTest
+ProcessingGrass7AlgorithmsRasterTest

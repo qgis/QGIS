@@ -1,0 +1,10 @@
+{
+  "name": "regexp_replace",
+  "type": "function",
+  "description": "Returns a string with the supplied regular expression replaced.",
+  "arguments": [ {"arg":"input_string","description":"the string to replace matches in"},
+  {"arg":"regex","description":"The regular expression to replace. Backslash characters must be double escaped (eg \"\\\\s\" to match a white space character). Non-greedy regular expressions are not supported."},
+  {"arg":"replacement","description":"The string that will replace any matching occurrences of the supplied regular expression. Captured groups can be inserted into the replacement string using \\\\1, \\\\2, etc."}
+  ],
+  "examples": [ { "expression":"regexp_replace('QGIS SHOULD ROCK','\\\\sSHOULD\\\\s',' DOES ')", "returns":"'QGIS DOES ROCK'"}]
+}

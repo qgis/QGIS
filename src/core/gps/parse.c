@@ -133,6 +133,7 @@ int nmea_pack_type( const char *buff, int buff_sz )
     "GPGSV",
     "GPRMC",
     "GPVTG",
+    "GNRMC",
   };
 
   NMEA_ASSERT( buff );
@@ -149,6 +150,8 @@ int nmea_pack_type( const char *buff, int buff_sz )
     return GPRMC;
   else if ( 0 == memcmp( buff, pheads[4], 5 ) )
     return GPVTG;
+  else if ( 0 == memcmp( buff, pheads[5], 5 ) )
+    return GPRMC;
 
   return GPNON;
 }
@@ -322,6 +325,7 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
 int nmea_parse_GPRMC( const char *buff, int buff_sz, nmeaGPRMC *pack )
 {
   int nsen;
+  char type;
   char time_buff[NMEA_TIMEPARSE_BUF];
 
   NMEA_ASSERT( buff && pack );
@@ -331,16 +335,22 @@ int nmea_parse_GPRMC( const char *buff, int buff_sz, nmeaGPRMC *pack )
   nmea_trace_buff( buff, buff_sz );
 
   nsen = nmea_scanf( buff, buff_sz,
-                     "$GPRMC,%s,%C,%f,%C,%f,%C,%f,%f,%2d%2d%2d,%f,%C,%C*",
-                     &( time_buff[0] ),
+                     "$G%CRMC,%s,%C,%f,%C,%f,%C,%f,%f,%2d%2d%2d,%f,%C,%C*",
+                     &( type ), &( time_buff[0] ),
                      &( pack->status ), &( pack->lat ), &( pack->ns ), &( pack->lon ), &( pack->ew ),
                      &( pack->speed ), &( pack->direction ),
                      &( pack->utc.day ), &( pack->utc.mon ), &( pack->utc.year ),
                      &( pack->declination ), &( pack->declin_ew ), &( pack->mode ) );
 
-  if ( nsen != 13 && nsen != 14 )
+  if ( nsen != 14 && nsen != 15 )
   {
     nmea_error( "GPRMC parse error!" );
+    return 0;
+  }
+
+  if ( type != 'P' && type != 'N' )
+  {
+    nmea_error( "G?RMC invalid type " );
     return 0;
   }
 

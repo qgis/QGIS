@@ -36,7 +36,7 @@ class QgsGCPCanvasItem : public QgsMapCanvasItem
 
     void updatePosition() override;
 
-    /**Calls prepareGeometryChange()*/
+    /** Calls prepareGeometryChange()*/
     void checkBoundingRectChange();
 
   private:
@@ -52,9 +52,9 @@ class QgsGCPCanvasItem : public QgsMapCanvasItem
     QRectF mTextBoxRect;
 
     void drawResidualArrow( QPainter* p, const QgsRenderContext& context );
-    /**Calculates scale factor for residual display*/
+    /** Calculates scale factor for residual display*/
     double residualToScreenFactor() const;
-    /**Calculates pixel size for a font point size*/
+    /** Calculates pixel size for a font point size*/
     double fontSizePainterUnits( double points, const QgsRenderContext& c );
 };
 

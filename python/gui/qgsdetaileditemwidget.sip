@@ -6,6 +6,6 @@ class QgsDetailedItemWidget : QWidget
   public:
     QgsDetailedItemWidget( QWidget * parent /TransferThis/ = 0 );
     ~QgsDetailedItemWidget();
-    void setData( QgsDetailedItemData theData );
+    void setData( const QgsDetailedItemData& theData );
     void setChecked( bool theFlag );
 };

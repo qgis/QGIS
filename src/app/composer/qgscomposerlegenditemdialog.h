@@ -18,20 +18,23 @@
 #ifndef QGSCOMPOSERLEGENDITEMDIALOG_H
 #define QGSCOMPOSERLEGENDITEMDIALOG_H
 
+#include <QDialog>
 #include "ui_qgscomposerlegenditemdialogbase.h"
 
 class QStandardItem;
 
-/** \ingroup MapComposer
+/** \ingroup app
  * A dialog to enter properties of composer legend items (currently only item text)
  * */
-class QgsComposerLegendItemDialog: private Ui::QgsComposerLegendItemDialogBase, public QDialog
+class QgsComposerLegendItemDialog: public QDialog, private Ui::QgsComposerLegendItemDialogBase
 {
+    Q_OBJECT
+
   public:
-    QgsComposerLegendItemDialog( const QStandardItem* item, QWidget* parent = 0 );
+    QgsComposerLegendItemDialog( const QStandardItem* item, QWidget* parent = nullptr );
     ~QgsComposerLegendItemDialog();
 
-    /**Returns the item text inserted by user*/
+    /** Returns the item text inserted by user*/
     QString itemText() const;
 
   private:

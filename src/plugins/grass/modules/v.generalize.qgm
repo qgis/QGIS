@@ -3,7 +3,7 @@
 
 <qgisgrassmodule label="Simplify vector" module="v.generalize">
 	<option key="input" typeoption="type" layeroption="layer" />
-        <flag key="c" answer="on" hidden="yes" />
+        <flag key="c" answer="on" hidden="yes" version_max="6"/>
 	<option key="type" label="Feature type (for polygons, choose Boundary)"/>
 	<option key="method" />
 	<option key="threshold" answer="1.0" label="Maximal tolerance value (higher value=more simplification)" />

@@ -1,0 +1,13 @@
+{
+  "name": "%",
+  "type": "operator",
+  "description": "Remainder of division",
+  "arguments": [
+        { "arg": "a", "description": "value" },
+        { "arg": "b", "description": "value" }
+  ],
+  "examples": [
+	{ "expression":"5 % 4", "returns":"1"},
+	{ "expression":"5 % NULL", "returns":"NULL"}
+  ]
+}

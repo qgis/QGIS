@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Piotr Pociask'
 __date__ = 'May 2014'
@@ -25,7 +26,7 @@ __copyright__ = '(C) 2014, Piotr Pociask'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
@@ -34,6 +35,7 @@ from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 import processing
 from math import sqrt
+
 
 class ConcaveHull(GeoAlgorithm):
 
@@ -44,86 +46,91 @@ class ConcaveHull(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Concave hull'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Concave hull')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
         self.addParameter(ParameterVector(ConcaveHull.INPUT,
-            self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+                                          self.tr('Input point layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterNumber(self.ALPHA,
-            self.tr('Threshold (0-1, where 1 is equivalent with Convex Hull)'),
-            0, 1, 0.3))
+                                          self.tr('Threshold (0-1, where 1 is equivalent with Convex Hull)'),
+                                          0, 1, 0.3))
         self.addParameter(ParameterBoolean(self.HOLES,
-            self.tr('Allow holes'), True))
+                                           self.tr('Allow holes'), True))
         self.addParameter(ParameterBoolean(self.NO_MULTIGEOMETRY,
-            self.tr('Split multipart geometry into singleparts geometries'), False))
-        self.addOutput(OutputVector(ConcaveHull.OUTPUT, self.tr('Concave hull')))
+                                           self.tr('Split multipart geometry into singleparts geometries'), False))
+        self.addOutput(OutputVector(ConcaveHull.OUTPUT, self.tr('Concave hull'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, progress):
-        #get parameters
         layer = dataobjects.getObjectFromUri(self.getParameterValue(ConcaveHull.INPUT))
         alpha = self.getParameterValue(self.ALPHA)
         holes = self.getParameterValue(self.HOLES)
         no_multigeom = self.getParameterValue(self.NO_MULTIGEOMETRY)
-        #Delaunay triangulation from input point layer
+
+        # Delaunay triangulation from input point layer
         progress.setText(self.tr('Creating Delaunay triangles...'))
         delone_triangles = processing.runalg("qgis:delaunaytriangulation", layer, None)['OUTPUT']
         delaunay_layer = processing.getObject(delone_triangles)
-        #get max edge length from Delaunay triangles
+
+        # Get max edge length from Delaunay triangles
         progress.setText(self.tr('Computing edges max length...'))
         features = delaunay_layer.getFeatures()
-        counter = 50./delaunay_layer.featureCount()
+        counter = 50. / delaunay_layer.featureCount()
         lengths = []
         edges = {}
         for feat in features:
             line = feat.geometry().asPolygon()[0]
-            for i in range(len(line)-1):
-                lengths.append(sqrt(line[i].sqrDist(line[i+1])))
+            for i in range(len(line) - 1):
+                lengths.append(sqrt(line[i].sqrDist(line[i + 1])))
             edges[feat.id()] = max(lengths[-3:])
-            progress.setPercentage(feat.id()*counter)
+            progress.setPercentage(feat.id() * counter)
         max_length = max(lengths)
-        #get features with longest edge longer than alpha*max_length
+
+        # Get features with longest edge longer than alpha*max_length
         progress.setText(self.tr('Removing features...'))
-        counter = 50./len(edges)
+        counter = 50. / len(edges)
         i = 0
         ids = []
-        for id, max_len in edges.iteritems():
-            if max_len > alpha*max_length:
+        for id, max_len in edges.items():
+            if max_len > alpha * max_length:
                 ids.append(id)
-            progress.setPercentage(50+i*counter)
+            progress.setPercentage(50 + i * counter)
             i += 1
-        #remove features
-        delaunay_layer.setSelectedFeatures(ids)
+
+        # Remove features
+        delaunay_layer.selectByIds(ids)
         delaunay_layer.startEditing()
         delaunay_layer.deleteSelectedFeatures()
         delaunay_layer.commitChanges()
-        #dissolve all Delaunay triangles
+
+        # Dissolve all Delaunay triangles
         progress.setText(self.tr('Dissolving Delaunay triangles...'))
         dissolved = processing.runalg("qgis:dissolve", delaunay_layer,
-                                      True, '', None)['OUTPUT']
+                                      True, None, None)['OUTPUT']
         dissolved_layer = processing.getObject(dissolved)
-        #save result
+
+        # Save result
         progress.setText(self.tr('Saving data...'))
         feat = QgsFeature()
         dissolved_layer.getFeatures(QgsFeatureRequest().setFilterFid(0)).nextFeature(feat)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), QGis.WKBPolygon, layer.crs())
+            layer.fields().toList(), QgsWkbTypes.Polygon, layer.crs())
         geom = feat.geometry()
         if no_multigeom and geom.isMultipart():
-            #only singlepart geometries are allowed
+            # Only singlepart geometries are allowed
             geom_list = geom.asMultiPolygon()
             for single_geom_list in geom_list:
                 single_feature = QgsFeature()
                 single_geom = QgsGeometry.fromPolygon(single_geom_list)
                 if not holes:
-                    #delete holes
+                    # Delete holes
                     deleted = True
                     while deleted:
                         deleted = single_geom.deleteRing(1)
                 single_feature.setGeometry(single_geom)
                 writer.addFeature(single_feature)
         else:
-            #multipart geometries are allowed
+            # Multipart geometries are allowed
             if not holes:
-                #delete holes
+                # Delete holes
                 deleted = True
                 while deleted:
                     deleted = geom.deleteRing(1)

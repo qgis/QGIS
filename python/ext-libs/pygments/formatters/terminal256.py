@@ -11,7 +11,7 @@
 
     Formatter version 1.
 
-    :copyright: Copyright 2006-2013 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2015 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
@@ -29,7 +29,7 @@ import sys
 from pygments.formatter import Formatter
 
 
-__all__ = ['Terminal256Formatter']
+__all__ = ['Terminal256Formatter', 'TerminalTrueColorFormatter']
 
 
 class EscapeSequence:
@@ -56,6 +56,18 @@ class EscapeSequence:
             attrs.append("04")
         return self.escape(attrs)
 
+    def true_color_string(self):
+        attrs = []
+        if self.fg:
+            attrs.extend(("38", "2", str(self.fg[0]), str(self.fg[1]), str(self.fg[2])))
+        if self.bg:
+            attrs.extend(("48", "2", str(self.bg[0]), str(self.bg[1]), str(self.bg[2])))
+        if self.bold:
+            attrs.append("01")
+        if self.underline:
+            attrs.append("04")
+        return self.escape(attrs)
+
     def reset_string(self):
         attrs = []
         if self.fg is not None:
@@ -66,17 +78,18 @@ class EscapeSequence:
             attrs.append("00")
         return self.escape(attrs)
 
+
 class Terminal256Formatter(Formatter):
-    r"""
+    """
     Format tokens with ANSI color sequences, for output in a 256-color
-    terminal or console. Like in `TerminalFormatter` color sequences
+    terminal or console.  Like in `TerminalFormatter` color sequences
     are terminated at newlines, so that paging the output works correctly.
 
     The formatter takes colors from a style defined by the `style` option
     and converts them to nearest ANSI 256-color escape sequences. Bold and
     underline attributes from the style are preserved (and displayed).
 
-    *New in Pygments 0.9.*
+    .. versionadded:: 0.9
 
     Options accepted:
 
@@ -98,28 +111,28 @@ class Terminal256Formatter(Formatter):
         self.usebold = 'nobold' not in options
         self.useunderline = 'nounderline' not in options
 
-        self._build_color_table() # build an RGB-to-256 color conversion table
-        self._setup_styles() # convert selected style's colors to term. colors
+        self._build_color_table()  # build an RGB-to-256 color conversion table
+        self._setup_styles()  # convert selected style's colors to term. colors
 
     def _build_color_table(self):
         # colors 0..15: 16 basic colors
 
-        self.xterm_colors.append((0x00, 0x00, 0x00)) # 0
-        self.xterm_colors.append((0xcd, 0x00, 0x00)) # 1
-        self.xterm_colors.append((0x00, 0xcd, 0x00)) # 2
-        self.xterm_colors.append((0xcd, 0xcd, 0x00)) # 3
-        self.xterm_colors.append((0x00, 0x00, 0xee)) # 4
-        self.xterm_colors.append((0xcd, 0x00, 0xcd)) # 5
-        self.xterm_colors.append((0x00, 0xcd, 0xcd)) # 6
-        self.xterm_colors.append((0xe5, 0xe5, 0xe5)) # 7
-        self.xterm_colors.append((0x7f, 0x7f, 0x7f)) # 8
-        self.xterm_colors.append((0xff, 0x00, 0x00)) # 9
-        self.xterm_colors.append((0x00, 0xff, 0x00)) # 10
-        self.xterm_colors.append((0xff, 0xff, 0x00)) # 11
-        self.xterm_colors.append((0x5c, 0x5c, 0xff)) # 12
-        self.xterm_colors.append((0xff, 0x00, 0xff)) # 13
-        self.xterm_colors.append((0x00, 0xff, 0xff)) # 14
-        self.xterm_colors.append((0xff, 0xff, 0xff)) # 15
+        self.xterm_colors.append((0x00, 0x00, 0x00))  # 0
+        self.xterm_colors.append((0xcd, 0x00, 0x00))  # 1
+        self.xterm_colors.append((0x00, 0xcd, 0x00))  # 2
+        self.xterm_colors.append((0xcd, 0xcd, 0x00))  # 3
+        self.xterm_colors.append((0x00, 0x00, 0xee))  # 4
+        self.xterm_colors.append((0xcd, 0x00, 0xcd))  # 5
+        self.xterm_colors.append((0x00, 0xcd, 0xcd))  # 6
+        self.xterm_colors.append((0xe5, 0xe5, 0xe5))  # 7
+        self.xterm_colors.append((0x7f, 0x7f, 0x7f))  # 8
+        self.xterm_colors.append((0xff, 0x00, 0x00))  # 9
+        self.xterm_colors.append((0x00, 0xff, 0x00))  # 10
+        self.xterm_colors.append((0xff, 0xff, 0x00))  # 11
+        self.xterm_colors.append((0x5c, 0x5c, 0xff))  # 12
+        self.xterm_colors.append((0xff, 0x00, 0xff))  # 13
+        self.xterm_colors.append((0x00, 0xff, 0xff))  # 14
+        self.xterm_colors.append((0xff, 0xff, 0xff))  # 15
 
         # colors 16..232: the 6x6x6 color cube
 
@@ -138,7 +151,7 @@ class Terminal256Formatter(Formatter):
             self.xterm_colors.append((v, v, v))
 
     def _closest_color(self, r, g, b):
-        distance = 257*257*3 # "infinity" (>distance from #000000 to #ffffff)
+        distance = 257*257*3  # "infinity" (>distance from #000000 to #ffffff)
         match = 0
 
         for i in range(0, 254):
@@ -197,7 +210,7 @@ class Terminal256Formatter(Formatter):
             not_found = True
             while ttype and not_found:
                 try:
-                    #outfile.write( "<" + str(ttype) + ">" )
+                    # outfile.write( "<" + str(ttype) + ">" )
                     on, off = self.style_string[str(ttype)]
 
                     # Like TerminalFormatter, add "reset colors" escape sequence
@@ -211,12 +224,58 @@ class Terminal256Formatter(Formatter):
                         outfile.write(on + spl[-1] + off)
 
                     not_found = False
-                    #outfile.write( '#' + str(ttype) + '#' )
+                    # outfile.write( '#' + str(ttype) + '#' )
 
                 except KeyError:
-                    #ottype = ttype
+                    # ottype = ttype
                     ttype = ttype[:-1]
-                    #outfile.write( '!' + str(ottype) + '->' + str(ttype) + '!' )
+                    # outfile.write( '!' + str(ottype) + '->' + str(ttype) + '!' )
 
             if not_found:
                 outfile.write(value)
+
+
+class TerminalTrueColorFormatter(Terminal256Formatter):
+    r"""
+    Format tokens with ANSI color sequences, for output in a true-color
+    terminal or console.  Like in `TerminalFormatter` color sequences
+    are terminated at newlines, so that paging the output works correctly.
+
+    .. versionadded:: 2.1
+
+    Options accepted:
+
+    `style`
+        The style to use, can be a string or a Style subclass (default:
+        ``'default'``).
+    """
+    name = 'TerminalTrueColor'
+    aliases = ['terminal16m', 'console16m', '16m']
+    filenames = []
+
+    def _build_color_table(self):
+        pass
+
+    def _color_tuple(self, color):
+        try:
+            rgb = int(str(color), 16)
+        except ValueError:
+            return None
+        r = (rgb >> 16) & 0xff
+        g = (rgb >> 8) & 0xff
+        b = rgb & 0xff
+        return (r, g, b)
+
+    def _setup_styles(self):
+        for ttype, ndef in self.style:
+            escape = EscapeSequence()
+            if ndef['color']:
+                escape.fg = self._color_tuple(ndef['color'])
+            if ndef['bgcolor']:
+                escape.bg = self._color_tuple(ndef['bgcolor'])
+            if self.usebold and ndef['bold']:
+                escape.bold = True
+            if self.useunderline and ndef['underline']:
+                escape.underline = True
+            self.style_string[str(ttype)] = (escape.true_color_string(),
+                                             escape.reset_string())

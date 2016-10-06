@@ -14,47 +14,77 @@
  ***************************************************************************/
 #include "qgsheatmaprendererwidget.h"
 #include "qgsheatmaprenderer.h"
-#include "qgsrendererv2registry.h"
+#include "qgsrendererregistry.h"
 
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorcolorrampv2.h"
-#include "qgsvectorgradientcolorrampv2dialog.h"
-#include "qgsstylev2.h"
+#include "qgscolorramp.h"
+#include "qgsstyle.h"
 #include "qgsproject.h"
+#include "qgsmapcanvas.h"
 #include <QGridLayout>
 #include <QLabel>
 
-QgsRendererV2Widget* QgsHeatmapRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
+QgsRendererWidget* QgsHeatmapRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
 {
   return new QgsHeatmapRendererWidget( layer, style, renderer );
 }
 
-QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    : QgsRendererV2Widget( layer, style )
-    , mRenderer( NULL )
+QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( nullptr );
+
+  if ( mContext.mapCanvas() )
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+
+  if ( vectorLayer() )
+    expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
+
+  // additional scopes
+  Q_FOREACH ( const QgsExpressionContextScope& scope, mContext.additionalExpressionContextScopes() )
+  {
+    expContext.appendScope( new QgsExpressionContextScope( scope ) );
+  }
+
+  return expContext;
+}
+
+QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+    : QgsRendererWidget( layer, style )
+    , mRenderer( nullptr )
 {
   if ( !layer )
   {
     return;
   }
   // the renderer only applies to point vector layers
-  if ( layer->geometryType() != QGis::Point )
+  if ( layer->geometryType() != QgsWkbTypes::PointGeometry )
   {
     //setup blank dialog
-    mRenderer = NULL;
-    QGridLayout* layout = new QGridLayout( this );
+    mRenderer = nullptr;
     QLabel* label = new QLabel( tr( "The heatmap renderer only applies to point and multipoint layers. \n"
                                     "'%1' is not a point layer and cannot be rendered as a heatmap." )
                                 .arg( layer->name() ), this );
-    layout->addWidget( label );
+    layout()->addWidget( label );
     return;
   }
 
   setupUi( this );
-  mRadiusUnitWidget->setUnits( QStringList() << tr( "Pixels" ) << tr( "Millimeter" ) << tr( "Map unit" ), 2 );
+
+  mRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits );
+  mWeightExpressionWidget->registerExpressionContextGenerator( this );
 
   if ( renderer )
   {
@@ -66,8 +96,11 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
   }
 
   mRampComboBox->setShowGradientOnly( true );
-  mRampComboBox->populate( QgsStyleV2::defaultStyle() );
+  mRampComboBox->populate( QgsStyle::defaultStyle() );
   connect( mRampComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
+  connect( mRampComboBox, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );
+  connect( mButtonEditRamp, SIGNAL( clicked() ), mRampComboBox, SLOT( editSourceRamp() ) );
+
   if ( mRenderer->colorRamp() )
   {
     mRampComboBox->blockSignals( true );
@@ -78,19 +111,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
   mRadiusSpinBox->setValue( mRenderer->radius() );
   mRadiusSpinBox->blockSignals( false );
   mRadiusUnitWidget->blockSignals( true );
-  switch ( mRenderer->radiusUnit() )
-  {
-    case QgsSymbolV2::MM:
-      mRadiusUnitWidget->setUnit( 1 );
-      break;
-    case QgsSymbolV2::MapUnit:
-      mRadiusUnitWidget->setUnit( 2 );
-      break;
-    case QgsSymbolV2::Pixel:
-    default:
-      mRadiusUnitWidget->setUnit( 0 );
-      break;
-  }
+  mRadiusUnitWidget->setUnit( mRenderer->radiusUnit() );
   mRadiusUnitWidget->setMapUnitScale( mRenderer->radiusMapUnitScale() );
   mRadiusUnitWidget->blockSignals( false );
   mMaxSpinBox->blockSignals( true );
@@ -108,9 +129,16 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
   connect( mWeightExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( weightExpressionChanged( QString ) ) );
 }
 
-QgsFeatureRendererV2* QgsHeatmapRendererWidget::renderer()
+QgsFeatureRenderer* QgsHeatmapRendererWidget::renderer()
 {
   return mRenderer;
+}
+
+void QgsHeatmapRendererWidget::setContext( const QgsSymbolWidgetContext& context )
+{
+  QgsRendererWidget::setContext( context );
+  if ( context.mapCanvas() )
+    mRadiusUnitWidget->setMapCanvas( context.mapCanvas() );
 }
 
 void QgsHeatmapRendererWidget::applyColorRamp()
@@ -120,33 +148,12 @@ void QgsHeatmapRendererWidget::applyColorRamp()
     return;
   }
 
-  QgsVectorColorRampV2* ramp = mRampComboBox->currentColorRamp();
-  if ( ramp == NULL )
+  QgsColorRamp* ramp = mRampComboBox->currentColorRamp();
+  if ( !ramp )
     return;
 
   mRenderer->setColorRamp( ramp );
-}
-
-void QgsHeatmapRendererWidget::on_mButtonEditRamp_clicked()
-{
-  if ( mRenderer && mRenderer->colorRamp()->type() == "gradient" )
-  {
-    QgsVectorColorRampV2* ramp = mRenderer->colorRamp()->clone();
-    QgsVectorGradientColorRampV2* gradRamp = static_cast<QgsVectorGradientColorRampV2*>( ramp );
-    QgsVectorGradientColorRampV2Dialog dlg( gradRamp, this );
-
-    if ( dlg.exec() && gradRamp )
-    {
-      mRenderer->setColorRamp( gradRamp );
-      mRampComboBox->blockSignals( true );
-      mRampComboBox->setSourceColorRamp( mRenderer->colorRamp() );
-      mRampComboBox->blockSignals( false );
-    }
-    else
-    {
-      delete ramp;
-    }
-  }
+  emit widgetChanged();
 }
 
 void QgsHeatmapRendererWidget::on_mRadiusUnitWidget_changed()
@@ -155,23 +162,10 @@ void QgsHeatmapRendererWidget::on_mRadiusUnitWidget_changed()
   {
     return;
   }
-  QgsSymbolV2::OutputUnit unit;
-  switch ( mRadiusUnitWidget->getUnit() )
-  {
-    case 0:
-      unit = QgsSymbolV2::Pixel;
-      break;
-    case 2:
-      unit = QgsSymbolV2::MapUnit;
-      break;
-    case 1:
-    default:
-      unit = QgsSymbolV2::MM;
-      break;
-  }
 
-  mRenderer->setRadiusUnit( unit );
+  mRenderer->setRadiusUnit( mRadiusUnitWidget->unit() );
   mRenderer->setRadiusMapUnitScale( mRadiusUnitWidget->getMapUnitScale() );
+  emit widgetChanged();
 }
 
 void QgsHeatmapRendererWidget::on_mRadiusSpinBox_valueChanged( double d )
@@ -182,6 +176,7 @@ void QgsHeatmapRendererWidget::on_mRadiusSpinBox_valueChanged( double d )
   }
 
   mRenderer->setRadius( d );
+  emit widgetChanged();
 }
 
 void QgsHeatmapRendererWidget::on_mMaxSpinBox_valueChanged( double d )
@@ -192,6 +187,7 @@ void QgsHeatmapRendererWidget::on_mMaxSpinBox_valueChanged( double d )
   }
 
   mRenderer->setMaximumValue( d );
+  emit widgetChanged();
 }
 
 void QgsHeatmapRendererWidget::on_mQualitySlider_valueChanged( int v )
@@ -202,6 +198,7 @@ void QgsHeatmapRendererWidget::on_mQualitySlider_valueChanged( int v )
   }
 
   mRenderer->setRenderQuality( v );
+  emit widgetChanged();
 }
 
 void QgsHeatmapRendererWidget::on_mInvertCheckBox_toggled( bool v )
@@ -212,9 +209,11 @@ void QgsHeatmapRendererWidget::on_mInvertCheckBox_toggled( bool v )
   }
 
   mRenderer->setInvertRamp( v );
+  emit widgetChanged();
 }
 
-void QgsHeatmapRendererWidget::weightExpressionChanged( QString expression )
+void QgsHeatmapRendererWidget::weightExpressionChanged( const QString& expression )
 {
   mRenderer->setWeightExpression( expression );
+  emit widgetChanged();
 }

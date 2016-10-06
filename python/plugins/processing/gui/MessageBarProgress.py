@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
+
 
 __author__ = 'Victor Olaya'
 __date__ = 'April 2013'
@@ -25,17 +27,18 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import Qt, QCoreApplication
-from PyQt4.QtGui import QProgressBar
+from qgis.PyQt.QtCore import Qt, QCoreApplication
+from qgis.PyQt.QtWidgets import QProgressBar
 from qgis.utils import iface
-from qgis.gui import QgsMessageBar
+from processing.gui.MessageDialog import MessageDialog
 
 
-class MessageBarProgress:
+class MessageBarProgress(object):
 
-    def __init__(self):
+    def __init__(self, algname=None):
+        self.msg = []
         self.progressMessageBar = \
-            iface.messageBar().createMessage(self.tr('Executing algorithm'))
+            iface.messageBar().createMessage(self.tr('Executing algorithm <i>{0}</i>'.format(algname if algname else '')))
         self.progress = QProgressBar()
         self.progress.setMaximum(100)
         self.progress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
@@ -44,9 +47,7 @@ class MessageBarProgress:
                                       iface.messageBar().INFO)
 
     def error(self, msg):
-        iface.messageBar().clearWidgets()
-        iface.messageBar().pushMessage(self.tr('Error'),
-            msg, level=QgsMessageBar.CRITICAL, duration=3)
+        self.msg.append(msg)
 
     def setText(self, text):
         pass
@@ -67,6 +68,11 @@ class MessageBarProgress:
         pass
 
     def close(self):
+        if self.msg:
+            dlg = MessageDialog()
+            dlg.setTitle(QCoreApplication.translate('MessageBarProgress', 'Problem executing algorithm'))
+            dlg.setMessage("<br>".join(self.msg))
+            dlg.exec_()
         iface.messageBar().clearWidgets()
 
     def tr(self, string, context=''):

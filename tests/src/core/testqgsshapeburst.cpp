@@ -16,13 +16,11 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
 #include <QDesktopServices>
 
-#include <iostream>
 //qgis includes...
 #include <qgsmapsettings.h>
 #include <qgsmaplayer.h>
@@ -30,10 +28,10 @@
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
-#include <qgssymbolv2.h>
-#include <qgssinglesymbolrendererv2.h>
-#include <qgsfillsymbollayerv2.h>
-#include <qgsvectorcolorrampv2.h>
+#include <qgssymbol.h>
+#include <qgssinglesymbolrenderer.h>
+#include <qgsfillsymbollayer.h>
+#include <qgscolorramp.h>
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
@@ -55,8 +53,8 @@ class TestQgsShapeburst : public QObject
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void shapeburstSymbol();
     void shapeburstSymbolColors();
@@ -69,13 +67,13 @@ class TestQgsShapeburst : public QObject
 
   private:
     bool mTestHasError;
-    bool setQml( QString theType );
-    bool imageCheck( QString theType );
+    bool setQml( const QString& theType );
+    bool imageCheck( const QString& theType );
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mpPolysLayer;
-    QgsShapeburstFillSymbolLayerV2* mShapeburstFill;
-    QgsFillSymbolV2* mFillSymbol;
-    QgsSingleSymbolRendererV2* mSymbolRenderer;
+    QgsShapeburstFillSymbolLayer* mShapeburstFill;
+    QgsFillSymbol* mFillSymbol;
+    QgsSingleSymbolRenderer* mSymbolRenderer;
     QString mTestDataDir;
     QString mReport;
 };
@@ -91,7 +89,7 @@ void TestQgsShapeburst::initTestCase()
 
   //create some objects that will be used in all tests...
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + QDir::separator();
+  mTestDataDir = myDataDir + '/';
 
   //
   //create a poly layer that will be used in all tests...
@@ -110,11 +108,11 @@ void TestQgsShapeburst::initTestCase()
     QList<QgsMapLayer *>() << mpPolysLayer );
 
   //setup shapeburst fill
-  mShapeburstFill = new QgsShapeburstFillSymbolLayerV2();
-  mFillSymbol = new QgsFillSymbolV2();
+  mShapeburstFill = new QgsShapeburstFillSymbolLayer();
+  mFillSymbol = new QgsFillSymbol();
   mFillSymbol->changeSymbolLayer( 0, mShapeburstFill );
-  mSymbolRenderer = new QgsSingleSymbolRendererV2( mFillSymbol );
-  mpPolysLayer->setRendererV2( mSymbolRenderer );
+  mSymbolRenderer = new QgsSingleSymbolRenderer( mFillSymbol );
+  mpPolysLayer->setRenderer( mSymbolRenderer );
 
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui
@@ -126,7 +124,7 @@ void TestQgsShapeburst::initTestCase()
 }
 void TestQgsShapeburst::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -162,15 +160,15 @@ void TestQgsShapeburst::shapeburstSymbolRamp()
 {
   mReport += "<h2>Shapeburst symbol renderer ramp test</h2>\n";
 
-  QgsVectorGradientColorRampV2* gradientRamp = new QgsVectorGradientColorRampV2( QColor( Qt::yellow ), QColor( 255, 105, 180 ) );
+  QgsGradientColorRamp* gradientRamp = new QgsGradientColorRamp( QColor( Qt::yellow ), QColor( 255, 105, 180 ) );
   QgsGradientStopsList stops;
   stops.append( QgsGradientStop( 0.5, QColor( 255, 255, 255, 0 ) ) );
   gradientRamp->setStops( stops );
 
   mShapeburstFill->setColorRamp( gradientRamp );
-  mShapeburstFill->setColorType( QgsShapeburstFillSymbolLayerV2::ColorRamp );
+  mShapeburstFill->setColorType( QgsShapeburstFillSymbolLayer::ColorRamp );
   QVERIFY( imageCheck( "shapeburst_ramp" ) );
-  mShapeburstFill->setColorType( QgsShapeburstFillSymbolLayerV2::SimpleTwoColor );
+  mShapeburstFill->setColorType( QgsShapeburstFillSymbolLayer::SimpleTwoColor );
 }
 
 void TestQgsShapeburst::shapeburstBlur()
@@ -186,7 +184,7 @@ void TestQgsShapeburst::shapeburstMaxDistanceMm()
   mReport += "<h2>Shapeburst symbol renderer maximum distance MM </h2>\n";
   mShapeburstFill->setUseWholeShape( false );
   mShapeburstFill->setMaxDistance( 3 );
-  mShapeburstFill->setDistanceUnit( QgsSymbolV2::MM );
+  mShapeburstFill->setDistanceUnit( QgsUnitTypes::RenderMillimeters );
   QVERIFY( imageCheck( "shapeburst_maxdistance_mm" ) );
   mShapeburstFill->setUseWholeShape( true );
 }
@@ -196,10 +194,10 @@ void TestQgsShapeburst::shapeburstMaxDistanceMapUnits()
   mReport += "<h2>Shapeburst symbol renderer maximum distance map units</h2>\n";
   mShapeburstFill->setUseWholeShape( false );
   mShapeburstFill->setMaxDistance( 10 );
-  mShapeburstFill->setDistanceUnit( QgsSymbolV2::MapUnit );
+  mShapeburstFill->setDistanceUnit( QgsUnitTypes::RenderMapUnits );
   QVERIFY( imageCheck( "shapeburst_maxdistance_mapunit" ) );
   mShapeburstFill->setUseWholeShape( true );
-  mShapeburstFill->setDistanceUnit( QgsSymbolV2::MM );
+  mShapeburstFill->setDistanceUnit( QgsUnitTypes::RenderMillimeters );
 }
 
 void TestQgsShapeburst::shapeburstIgnoreRings()
@@ -224,7 +222,7 @@ void TestQgsShapeburst::shapeburstSymbolFromQml()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsShapeburst::setQml( QString theType )
+bool TestQgsShapeburst::setQml( const QString& theType )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
@@ -239,12 +237,14 @@ bool TestQgsShapeburst::setQml( QString theType )
   return myStyleFlag;
 }
 
-bool TestQgsShapeburst::imageCheck( QString theTestType )
+bool TestQgsShapeburst::imageCheck( const QString& theTestType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
   mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
+  myChecker.setControlPathPrefix( "symbol_shapeburst" );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );

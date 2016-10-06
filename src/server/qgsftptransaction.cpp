@@ -19,7 +19,7 @@
 #include <QApplication>
 #include <QUrl>
 
-QgsFtpTransaction::QgsFtpTransaction(): mFtp( new QFtp( 0 ) ), mRequestFinished( false ), mErrorFlag( false )
+QgsFtpTransaction::QgsFtpTransaction(): mFtp( new QFtp( nullptr ) ), mRequestFinished( false ), mErrorFlag( false )
 {
 
 }

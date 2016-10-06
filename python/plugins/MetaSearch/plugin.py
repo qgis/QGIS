@@ -1,3 +1,4 @@
+from builtins import object
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
@@ -25,9 +26,11 @@
 
 import logging
 
-from PyQt4.QtCore import QCoreApplication
-from PyQt4.QtGui import QAction, QIcon
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsApplication
 from MetaSearch.dialogs.maindialog import MetaSearchDialog
 from MetaSearch.util import get_help_url, open_url, StaticContext
 
@@ -35,7 +38,9 @@ LOGGER = logging.getLogger('MetaSearch')
 
 
 class MetaSearchPlugin(object):
+
     """base plugin"""
+
     def __init__(self, iface):
         """init"""
 
@@ -55,9 +60,9 @@ class MetaSearchPlugin(object):
         self.action_run = QAction(run_icon, 'MetaSearch',
                                   self.iface.mainWindow())
         self.action_run.setWhatsThis(QCoreApplication.translate('MetaSearch',
-                                     'MetaSearch plugin'))
+                                                                'MetaSearch plugin'))
         self.action_run.setStatusTip(QCoreApplication.translate('MetaSearch',
-                                     'Search Metadata Catalogues'))
+                                                                'Search Metadata Catalogues'))
 
         self.action_run.triggered.connect(self.run)
 
@@ -65,12 +70,12 @@ class MetaSearchPlugin(object):
         self.iface.addPluginToWebMenu(self.web_menu, self.action_run)
 
         # help
-        help_icon = QIcon('%s/%s' % (self.context.ppath, 'images/help.png'))
+        help_icon = QgsApplication.getThemeIcon('/mActionHelpContents.svg')
         self.action_help = QAction(help_icon, 'Help', self.iface.mainWindow())
         self.action_help.setWhatsThis(QCoreApplication.translate('MetaSearch',
-                                      'MetaSearch plugin help'))
+                                                                 'MetaSearch plugin help'))
         self.action_help.setStatusTip(QCoreApplication.translate('MetaSearch',
-                                      'Get Help on MetaSearch'))
+                                                                 'Get Help on MetaSearch'))
         self.action_help.triggered.connect(self.help)
 
         self.iface.addPluginToWebMenu(self.web_menu, self.action_help)

@@ -1,3 +1,8 @@
+#
+# NOTE: This keyboard binding is not installed because it
+# apparently doesn't work with actual VT420 systems 
+# (see BUG:170220)
+#
 # [vt420pc.keytab] Konsole Keyboard Table (VT420pc keys)
 # adapted by ferdinand gassauer f.gassauer@aon.at
 # Nov 2000
@@ -21,7 +26,7 @@ keyboard "DEC VT420 Terminal"
 
 # --------------------------------------------------------------
 #
-# This configuration table allows customizing the
+# This configuration table allows to customize the
 # meaning of the keys.
 #
 # The syntax is that each entry has the form : 
@@ -57,7 +62,7 @@ keyboard "DEC VT420 Terminal"
 #
 # If the key is not found here, the text of the
 # key event as provided by QT is emitted, possibly
-# preceded by ESC if the Alt key is pressed.
+# preceeded by ESC if the Alt key is pressed.
 #
 # --------------------------------------------------------------
 

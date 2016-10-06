@@ -77,9 +77,9 @@ class QgsLayerTreeNode : QObject
     QList<QgsLayerTreeNode*> children();
 
     //! Read layer tree from XML. Returns new instance
-    static QgsLayerTreeNode *readXML( QDomElement &element );
+    static QgsLayerTreeNode *readXml( QDomElement &element );
     //! Write layer tree to XML
-    virtual void writeXML( QDomElement &parentElement ) = 0;
+    virtual void writeXml( QDomElement &parentElement ) = 0;
 
     //! Return string with layer tree structure. For debug purposes only
     virtual QString dump() const = 0;
@@ -116,13 +116,21 @@ class QgsLayerTreeNode : QObject
     //! Emitted when check state of a node within the tree has been changed
     void visibilityChanged( QgsLayerTreeNode *node, Qt::CheckState state );
     //! Emitted when a custom property of a node within the tree has been changed or removed
-    void customPropertyChanged( QgsLayerTreeNode *node, QString key );
+    void customPropertyChanged( QgsLayerTreeNode *node, const QString& key );
     //! Emitted when the collapsed/expanded state of a node within the tree has been changed
     void expandedChanged( QgsLayerTreeNode *node, bool expanded );
 
   protected:
 
     QgsLayerTreeNode( NodeType t );
+
+    void readCommonXml( QDomElement &element );
+    void writeCommonXml( QDomElement &element );
+
+    //! Low-level insertion of children to the node. The children must not have any parent yet!
+    void insertChildrenPrivate( int index, QList<QgsLayerTreeNode*> nodes );
+    //! Low-level removal of children from the node.
+    void removeChildrenPrivate( int from, int count, bool destroy = true );
 
   private:
     QgsLayerTreeNode( const QgsLayerTreeNode& other );

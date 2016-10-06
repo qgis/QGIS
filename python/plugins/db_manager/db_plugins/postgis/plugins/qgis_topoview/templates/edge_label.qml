@@ -1,24 +1,7 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis version="1.9.0-Master" minimumScale="0" maximumScale="1e+08" hasScaleBasedVisibilityFlag="0">
   <transparencyLevelInt>255</transparencyLevelInt>
-  <renderer-v2 symbollevels="0" type="singleSymbol">
-    <symbols>
-      <symbol outputUnit="MM" alpha="0" type="line" name="0">
-        <layer pass="0" class="SimpleLine" locked="0">
-          <prop k="capstyle" v="square"/>
-          <prop k="color" v="167,236,159,255"/>
-          <prop k="customdash" v="5;2"/>
-          <prop k="joinstyle" v="bevel"/>
-          <prop k="offset" v="0"/>
-          <prop k="penstyle" v="solid"/>
-          <prop k="use_custom_dash" v="0"/>
-          <prop k="width" v="0.26"/>
-        </layer>
-      </symbol>
-    </symbols>
-    <rotation field=""/>
-    <sizescale field="" scalemethod="area"/>
-  </renderer-v2>
+  <renderer-v2 symbollevels="0" type="nullSymbol"/>
   <customproperties>
     <property key="labeling" value="pal"/>
     <property key="labeling/addDirectionSymbol" value="false"/>

@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'January 2013'
@@ -28,7 +30,7 @@ __revision__ = '$Format:%H$'
 import matplotlib.pyplot as plt
 import matplotlib.pylab as lab
 
-from PyQt4.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsField
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -48,17 +50,16 @@ class RasterLayerHistogram(GeoAlgorithm):
     BINS = 'BINS'
 
     def defineCharacteristics(self):
-        self.name = 'Raster layer histogram'
-        self.group = 'Graphics'
+        self.name, self.i18n_name = self.trAlgorithm('Raster layer histogram')
+        self.group, self.i18n_group = self.trAlgorithm('Graphics')
 
         self.addParameter(ParameterRaster(self.INPUT,
-            self.tr('Input layer')))
+                                          self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.BINS,
-           self.tr('Number of bins'), 2, None, 10))
+                                          self.tr('Number of bins'), 2, None, 10))
 
-        self.addOutput(OutputHTML(self.PLOT, self.tr('Output plot')))
-        self.addOutput(OutputTable(self.TABLE, self.tr('Output table')))
-
+        self.addOutput(OutputHTML(self.PLOT, self.tr('Histogram')))
+        self.addOutput(OutputTable(self.TABLE, self.tr('Table')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -81,11 +82,11 @@ class RasterLayerHistogram(GeoAlgorithm):
         fields = [QgsField('CENTER_VALUE', QVariant.Double),
                   QgsField('NUM_ELEM', QVariant.Double)]
         writer = outputtable.getTableWriter(fields)
-        for i in xrange(len(values)):
+        for i in range(len(values)):
             writer.addRecord([str(bins[i]) + '-' + str(bins[i + 1]), n[i]])
 
         plotFilename = outputplot + '.png'
         lab.savefig(plotFilename)
         f = open(outputplot, 'w')
-        f.write('<img src="' + plotFilename + '"/>')
+        f.write('<html><img src="' + plotFilename + '"/></html>')
         f.close()

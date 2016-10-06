@@ -20,7 +20,7 @@
 
 #include "ui_qgsaddattrdialogbase.h"
 #include "qgisgui.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 class QgsVectorLayer;
 
@@ -29,9 +29,9 @@ class APP_EXPORT QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogB
     Q_OBJECT
   public:
     QgsAddAttrDialog( QgsVectorLayer *vlayer,
-                      QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+                      QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     QgsAddAttrDialog( const std::list<QString>& typelist,
-                      QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+                      QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     QgsField field() const;
 

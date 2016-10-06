@@ -24,7 +24,7 @@ class APP_EXPORT QgsTipGui : public QDialog, private Ui::QgsTipGuiBase
 {
     Q_OBJECT
   public:
-    QgsTipGui();
+    QgsTipGui( QWidget *parent = nullptr );
     ~QgsTipGui();
 
   private:

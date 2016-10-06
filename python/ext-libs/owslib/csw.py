@@ -8,12 +8,21 @@
 # =============================================================================
 
 """ CSW request and response processor """
+
+from __future__ import (absolute_import, division, print_function)
+
 import inspect
 import warnings
-import StringIO
+import six
+try:
+    from StringIO import StringIO as BytesIO  # Python 2
+except ImportError:
+    from io import BytesIO  # Python 3
 import random
-from urllib import urlencode
-from urllib2 import urlopen
+try:                    # Python 3
+    from urllib.parse import urlencode
+except ImportError:     # Python 2
+    from urllib import urlencode
 
 from owslib.util import OrderedDict
 
@@ -24,8 +33,9 @@ from owslib import ows
 from owslib.iso import MD_Metadata
 from owslib.fgdc import Metadata
 from owslib.dif import DIF
+from owslib.gm03 import GM03
 from owslib.namespaces import Namespaces
-from owslib.util import cleanup_namespaces, bind_url, add_namespaces
+from owslib.util import cleanup_namespaces, bind_url, add_namespaces, openURL
 
 # default variables
 outputformat = 'application/xml'
@@ -37,9 +47,10 @@ namespaces = get_namespaces()
 schema = 'http://schemas.opengis.net/csw/2.0.2/CSW-discovery.xsd'
 schema_location = '%s %s' % (namespaces['csw'], schema)
 
-class CatalogueServiceWeb:
+class CatalogueServiceWeb(object):
     """ csw request class """
-    def __init__(self, url, lang='en-US', version='2.0.2', timeout=10, skip_caps=False):
+    def __init__(self, url, lang='en-US', version='2.0.2', timeout=10, skip_caps=False,
+                 username=None, password=None):
         """
 
         Construct and process a GetCapabilities request
@@ -52,6 +63,8 @@ class CatalogueServiceWeb:
         - version: version (default is '2.0.2')
         - timeout: timeout in seconds
         - skip_caps: whether to skip GetCapabilities processing on init (default is False)
+        - username: username for HTTP basic authentication
+        - password: password for HTTP basic authentication
 
         """
 
@@ -59,6 +72,8 @@ class CatalogueServiceWeb:
         self.lang = lang
         self.version = version
         self.timeout = timeout
+        self.username = username
+        self.password = password
         self.service = 'CSW'
         self.exceptionreport = None
         self.owscommon = ows.OwsCommon('1.0.0')
@@ -68,25 +83,31 @@ class CatalogueServiceWeb:
 
             data = {'service': self.service, 'version': self.version, 'request': 'GetCapabilities'}
 
-            self.request = '%s%s' % (bind_url(self.url), urlencode(data))
+            self.request = urlencode(data)
     
             self._invoke()
     
             if self.exceptionreport is None:
                 # ServiceIdentification
                 val = self._exml.find(util.nspath_eval('ows:ServiceIdentification', namespaces))
-                self.identification=ows.ServiceIdentification(val,self.owscommon.namespace)
+                if val is not None:
+                  self.identification = ows.ServiceIdentification(val,self.owscommon.namespace)
+                else:
+                  self.identification = None
                 # ServiceProvider
                 val = self._exml.find(util.nspath_eval('ows:ServiceProvider', namespaces))
-                self.provider=ows.ServiceProvider(val,self.owscommon.namespace)
+                if val is not None:
+                    self.provider = ows.ServiceProvider(val,self.owscommon.namespace)
+                else:
+                  self.provider = None
                 # ServiceOperations metadata 
-                self.operations=[]
+                self.operations = []
                 for elem in self._exml.findall(util.nspath_eval('ows:OperationsMetadata/ows:Operation', namespaces)):
                     self.operations.append(ows.OperationsMetadata(elem, self.owscommon.namespace))
         
                 # FilterCapabilities
                 val = self._exml.find(util.nspath_eval('ogc:Filter_Capabilities', namespaces))
-                self.filters=fes.FilterCapabilities(val)
+                self.filters = fes.FilterCapabilities(val)
  
     def describerecord(self, typename='csw:Record', format=outputformat):
         """
@@ -267,7 +288,7 @@ class CatalogueServiceWeb:
             'id': ','.join(id),
         }
 
-        self.request = '%s%s' % (bind_url(self.url), urlencode(data))
+        self.request = urlencode(data)
 
         self._invoke()
 
@@ -303,6 +324,9 @@ class CatalogueServiceWeb:
             val = self.request.find(util.nspath_eval('csw:Query/csw:ElementSetName', namespaces))
             if val is not None:
                 esn = util.testXMLValue(val)
+            val = self.request.attrib.get('outputSchema')
+            if val is not None:
+                outputschema = util.testXMLValue(val, True)
         else:
             # construct request
             node0 = self._setrootelement('csw:GetRecords')
@@ -395,7 +419,7 @@ class CatalogueServiceWeb:
         validtransactions = ['insert', 'update', 'delete']
 
         if ttype not in validtransactions:  # invalid transaction
-            raise RuntimeError, 'Invalid transaction \'%s\'.' % ttype
+            raise RuntimeError('Invalid transaction \'%s\'.' % ttype)
 
         node1 = etree.SubElement(node0, util.nspath_eval('csw:%s' % ttype.capitalize(), namespaces))
 
@@ -404,7 +428,7 @@ class CatalogueServiceWeb:
 
         if ttype == 'insert':
             if record is None:
-                raise RuntimeError, 'Nothing to insert.'
+                raise RuntimeError('Nothing to insert.')
             node1.append(etree.fromstring(record))
  
         if ttype == 'update':
@@ -480,7 +504,7 @@ class CatalogueServiceWeb:
         for item in self.operations:
             if item.name.lower() == name.lower():
                 return item
-        raise KeyError, "No operation named %s" % name
+        raise KeyError("No operation named %s" % name)
 
     def getService_urls(self, service_string=None):
         """
@@ -495,7 +519,7 @@ class CatalogueServiceWeb:
         """
         
         urls=[]
-        for key,rec in self.records.iteritems():
+        for key,rec in six.iteritems(self.records):
             #create a generator object, and iterate through it until the match is found
             #if not found, gets the default value (here "none")
             url = next((d['url'] for d in rec.references if d['scheme'] == service_string), None)
@@ -505,13 +529,13 @@ class CatalogueServiceWeb:
 
     def _parseinsertresult(self):
         self.results['insertresults'] = []
-        for i in self._exml.findall(util.nspath_eval('csw:InsertResult', namespaces)):
+        for i in self._exml.findall('.//'+util.nspath_eval('csw:InsertResult', namespaces)):
             for j in i.findall(util.nspath_eval('csw:BriefRecord/dc:identifier', namespaces)):
                 self.results['insertresults'].append(util.testXMLValue(j))
 
     def _parserecords(self, outputschema, esn):
         if outputschema == namespaces['gmd']: # iso 19139
-            for i in self._exml.findall('.//'+util.nspath_eval('gmd:MD_Metadata', namespaces)):
+            for i in self._exml.findall('.//'+util.nspath_eval('gmd:MD_Metadata', namespaces)) or self._exml.findall('.//'+util.nspath_eval('gmi:MI_Metadata', namespaces)):
                 val = i.find(util.nspath_eval('gmd:fileIdentifier/gco:CharacterString', namespaces))
                 identifier = self._setidentifierkey(util.testXMLValue(val))
                 self.records[identifier] = MD_Metadata(i)
@@ -525,6 +549,11 @@ class CatalogueServiceWeb:
                 val = i.find(util.nspath_eval('dif:Entry_ID', namespaces))
                 identifier = self._setidentifierkey(util.testXMLValue(val))
                 self.records[identifier] = DIF(i)
+        elif outputschema == namespaces['gm03']: # GM03
+            for i in self._exml.findall('.//'+util.nspath_eval('gm03:TRANSFER', namespaces)):
+                val = i.find(util.nspath_eval('gm03:fileIdentifier', namespaces))
+                identifier = self._setidentifierkey(util.testXMLValue(val))
+                self.records[identifier] = GM03(i)
         else: # process default
             for i in self._exml.findall('.//'+util.nspath_eval('csw:%s' % self._setesnel(esn), namespaces)):
                 val = i.find(util.nspath_eval('dc:identifier', namespaces))
@@ -532,7 +561,7 @@ class CatalogueServiceWeb:
                 self.records[identifier] = CswRecord(i)
 
     def _parsetransactionsummary(self):
-        val = self._exml.find(util.nspath_eval('csw:TransactionSummary', namespaces))
+        val = self._exml.find(util.nspath_eval('csw:TransactionResponse/csw:TransactionSummary', namespaces))
         if val is not None:
             rid = val.attrib.get('requestId')
             self.results['requestid'] = util.testXMLValue(rid, True)
@@ -583,31 +612,43 @@ class CatalogueServiceWeb:
     def _invoke(self):
         # do HTTP request
 
-        if isinstance(self.request, basestring):  # GET KVP
-            self.response = urlopen(self.request, timeout=self.timeout).read()
-        else:
-            xml_post_url = self.url
-            # Get correct POST URL based on Operation list.
-            # If skip_caps=True, then self.operations has not been set, so use
-            # default URL.
-            if hasattr(self, 'operations'):
-                caller = inspect.stack()[1][3]
-                if caller == 'getrecords2': caller = 'getrecords'
-                try:
-                    op = self.get_operation_by_name(caller)
-                    post_verbs = filter(lambda x: x.get('type').lower() == 'post', op.methods)
+        request_url = self.url
+
+        # Get correct URL based on Operation list.
+
+        # If skip_caps=True, then self.operations has not been set, so use
+        # default URL.
+        if hasattr(self, 'operations'):
+            caller = inspect.stack()[1][3]
+            if caller == 'getrecords2': caller = 'getrecords'
+            try:
+                op = self.get_operation_by_name(caller)
+                if isinstance(self.request, six.string_types):  # GET KVP
+                    get_verbs = [x for x in op.methods if x.get('type').lower() == 'get']
+                    request_url = get_verbs[0].get('url')
+                else:
+                    post_verbs = [x for x in op.methods if x.get('type').lower() == 'post']
                     if len(post_verbs) > 1:
                         # Filter by constraints.  We must match a PostEncoding of "XML"
-                        try:
-                            xml_post_url = next(x for x in filter(list, ([pv.get('url') for const in pv.get('constraints') if const.name.lower() == "postencoding" and 'xml' in map(lambda x: x.lower(), const.values)] for pv in post_verbs)))[0]
-                        except StopIteration:
+                        for pv in post_verbs:
+                            for const in pv.get('constraints'):
+                                if const.name.lower() == 'postencoding':
+                                    values = [v.lower() for v in const.values]
+                                    if 'xml' in values:
+                                        request_url = pv.get('url')
+                                        break
+                        else:
                             # Well, just use the first one.
-                            xml_post_url = post_verbs[0].get('url')
+                            request_url = post_verbs[0].get('url')
                     elif len(post_verbs) == 1:
-                        xml_post_url = post_verbs[0].get('url')
-                except:  # no such luck, just go with xml_post_url
-                    pass
+                        request_post_url = post_verbs[0].get('url')
+            except:  # no such luck, just go with request_url
+                pass
 
+        if isinstance(self.request, six.string_types):  # GET KVP
+            self.request = '%s%s' % (bind_url(request_url), self.request)
+            self.response = openURL(self.request, None, 'Get', username=self.username, password=self.password, timeout=self.timeout).read()
+        else:
             self.request = cleanup_namespaces(self.request)
             # Add any namespaces used in the "typeNames" attribute of the
             # csw:Query element to the query's xml namespaces.
@@ -621,10 +662,10 @@ class CatalogueServiceWeb:
 
             self.request = util.element_to_string(self.request, encoding='utf-8')
 
-            self.response = util.http_post(xml_post_url, self.request, self.lang, self.timeout)
+            self.response = util.http_post(request_url, self.request, self.lang, self.timeout, self.username, self.password)
 
         # parse result see if it's XML
-        self._exml = etree.parse(StringIO.StringIO(self.response))
+        self._exml = etree.parse(BytesIO(self.response))
 
         # it's XML.  Attempt to decipher whether the XML response is CSW-ish """
         valid_xpaths = [
@@ -639,7 +680,7 @@ class CatalogueServiceWeb:
         ]
 
         if self._exml.getroot().tag not in valid_xpaths:
-            raise RuntimeError, 'Document is XML, but not CSW-ish'
+            raise RuntimeError('Document is XML, but not CSW-ish')
 
         # check if it's an OGC Exception
         val = self._exml.find(util.nspath_eval('ows:Exception', namespaces))

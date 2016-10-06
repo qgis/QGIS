@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,13 +28,13 @@ __revision__ = '$Format:%H$'
 
 import os
 import subprocess
-from PyQt4.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import userFolder
 
 
-class FusionUtils:
+class FusionUtils(object):
 
     FUSION_FOLDER = 'FUSION_FOLDER'
 
@@ -48,7 +49,7 @@ class FusionUtils:
     @staticmethod
     def tempFileListFilepath():
         filename = 'fusion_files_list.txt'
-        filepath = userFolder() + os.sep + filename
+        filepath = os.path.join(userFolder(), filename)
         return filepath
 
     @staticmethod

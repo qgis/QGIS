@@ -1,0 +1,1107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsComposerBase</class>
+ <widget class="QMainWindow" name="QgsComposerBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1333</width>
+    <height>609</height>
+   </rect>
+  </property>
+  <property name="mouseTracking">
+   <bool>true</bool>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="mouseTracking">
+    <bool>true</bool>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="margin">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QFrame" name="mViewFrame">
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QScrollArea" name="scrollArea">
+       <property name="geometry">
+        <rect>
+         <x>280</x>
+         <y>110</y>
+         <width>120</width>
+         <height>80</height>
+        </rect>
+       </property>
+       <property name="widgetResizable">
+        <bool>true</bool>
+       </property>
+       <widget class="QWidget" name="scrollAreaWidgetContents">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>116</width>
+          <height>76</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="mStatusBar"/>
+  <widget class="QToolBar" name="mComposerToolbar">
+   <property name="windowTitle">
+    <string>Composer</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionSaveProject"/>
+   <addaction name="separator"/>
+   <addaction name="mActionNewComposer"/>
+   <addaction name="mActionDuplicateComposer"/>
+   <addaction name="mActionComposerManager"/>
+   <addaction name="mActionLoadFromTemplate"/>
+   <addaction name="mActionSaveAsTemplate"/>
+   <addaction name="separator"/>
+   <addaction name="mActionPrint"/>
+   <addaction name="mActionExportAsImage"/>
+   <addaction name="mActionExportAsSVG"/>
+   <addaction name="mActionExportAsPDF"/>
+   <addaction name="mActionUndo"/>
+   <addaction name="mActionRedo"/>
+  </widget>
+  <widget class="QToolBar" name="mPaperNavToolbar">
+   <property name="windowTitle">
+    <string>Navigation</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="mActionZoomAll"/>
+   <addaction name="mActionZoomActual"/>
+   <addaction name="mActionZoomIn"/>
+   <addaction name="mActionZoomOut"/>
+   <addaction name="mActionRefreshView"/>
+  </widget>
+  <widget class="QToolBar" name="mItemActionToolbar">
+   <property name="windowTitle">
+    <string>Actions</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="mActionGroupItems"/>
+   <addaction name="mActionUngroupItems"/>
+   <addaction name="mActionLockItems"/>
+   <addaction name="mActionUnlockAll"/>
+  </widget>
+  <widget class="QToolBar" name="mItemToolbar">
+   <property name="windowTitle">
+    <string>Toolbox</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="mActionPan"/>
+   <addaction name="mActionMouseZoom"/>
+   <addaction name="mActionSelectMoveItem"/>
+   <addaction name="mActionMoveItemContent"/>
+   <addaction name="mActionEditNodesItem"/>
+   <addaction name="separator"/>
+   <addaction name="mActionAddNewMap"/>
+   <addaction name="mActionAddImage"/>
+   <addaction name="mActionAddNewLabel"/>
+   <addaction name="mActionAddNewLegend"/>
+   <addaction name="mActionAddNewScalebar"/>
+   <addaction name="mActionAddArrow"/>
+   <addaction name="mActionAddAttributeTable"/>
+   <addaction name="mActionAddHtml"/>
+  </widget>
+  <widget class="QToolBar" name="mAtlasToolbar">
+   <property name="windowTitle">
+    <string>Atlas</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="mActionAtlasPreview"/>
+   <addaction name="mActionAtlasFirst"/>
+   <addaction name="mActionAtlasPrev"/>
+   <addaction name="mActionAtlasNext"/>
+   <addaction name="mActionAtlasLast"/>
+   <addaction name="mActionPrintAtlas"/>
+   <addaction name="mActionAtlasSettings"/>
+  </widget>
+  <action name="mActionPrint">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilePrint.svg</normaloff>:/images/themes/default/mActionFilePrint.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Print...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="mActionZoomAll">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomFullExtent.svg</normaloff>:/images/themes/default/mActionZoomFullExtent.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom &amp;Full</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom full</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+0</string>
+   </property>
+  </action>
+  <action name="mActionZoomIn">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomIn.svg</normaloff>:/images/themes/default/mActionZoomIn.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom &amp;In</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom in</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl++</string>
+   </property>
+  </action>
+  <action name="mActionZoomOut">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomOut.svg</normaloff>:/images/themes/default/mActionZoomOut.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom &amp;Out</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom out</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="mActionZoomActual">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomActual.svg</normaloff>:/images/themes/default/mActionZoomActual.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom to &amp;100%</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom to 100%</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
+   </property>
+  </action>
+  <action name="mActionMouseZoom">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToSelected.svg</normaloff>:/images/themes/default/mActionZoomToSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom</string>
+   </property>
+   <property name="shortcut">
+    <string>Z</string>
+   </property>
+  </action>
+  <action name="mActionAddNewMap">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddMap.svg</normaloff>:/images/themes/default/mActionAddMap.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add &amp;Map</string>
+   </property>
+   <property name="toolTip">
+    <string>Add new map</string>
+   </property>
+  </action>
+  <action name="mActionAddNewLabel">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionLabel.svg</normaloff>:/images/themes/default/mActionLabel.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Lab&amp;el</string>
+   </property>
+   <property name="toolTip">
+    <string>Add new label</string>
+   </property>
+  </action>
+  <action name="mActionAddNewLegend">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddLegend.svg</normaloff>:/images/themes/default/mActionAddLegend.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Legen&amp;d</string>
+   </property>
+   <property name="toolTip">
+    <string>Add new legend</string>
+   </property>
+  </action>
+  <action name="mActionSelectMoveItem">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionPan.svg</normaloff>:/images/themes/default/mActionPan.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Move &amp;Item</string>
+   </property>
+   <property name="toolTip">
+    <string>Select/Move item</string>
+   </property>
+   <property name="shortcut">
+    <string>V</string>
+   </property>
+  </action>
+  <action name="mActionExportAsImage">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export as &amp;Image...</string>
+   </property>
+   <property name="toolTip">
+    <string>Export as image</string>
+   </property>
+  </action>
+  <action name="mActionExportAsPDF">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Export as PDF...</string>
+   </property>
+  </action>
+  <action name="mActionExportAsSVG">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsSVG.svg</normaloff>:/images/themes/default/mActionSaveAsSVG.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export as S&amp;VG...</string>
+   </property>
+  </action>
+  <action name="mActionAddNewScalebar">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionScaleBar.svg</normaloff>:/images/themes/default/mActionScaleBar.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add &amp;Scalebar</string>
+   </property>
+   <property name="toolTip">
+    <string>Add new scalebar</string>
+   </property>
+  </action>
+  <action name="mActionRefreshView">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Refresh</string>
+   </property>
+   <property name="toolTip">
+    <string>Refresh view</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
+  </action>
+  <action name="mActionShowGrid">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/vector_grid.png</normaloff>:/images/themes/default/vector_grid.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show &amp;Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Show grid</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+'</string>
+   </property>
+  </action>
+  <action name="mActionSnapGrid">
+   <property name="text">
+    <string>S&amp;nap to Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Snap to grid</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+'</string>
+   </property>
+  </action>
+  <action name="mActionShowGuides">
+   <property name="text">
+    <string>Show G&amp;uides</string>
+   </property>
+   <property name="toolTip">
+    <string>Show guides</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+;</string>
+   </property>
+  </action>
+  <action name="mActionSnapGuides">
+   <property name="text">
+    <string>&amp;Snap to Guides</string>
+   </property>
+   <property name="toolTip">
+    <string>Snap to guides</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+;</string>
+   </property>
+  </action>
+  <action name="mActionSmartGuides">
+   <property name="text">
+    <string>S&amp;mart Guides</string>
+   </property>
+   <property name="toolTip">
+    <string>Smart guides</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+;</string>
+   </property>
+  </action>
+  <action name="mActionClearGuides">
+   <property name="text">
+    <string>&amp;Clear Guides</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear guides</string>
+   </property>
+  </action>
+  <action name="mActionAddImage">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddImage.svg</normaloff>:/images/themes/default/mActionAddImage.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Im&amp;age</string>
+   </property>
+   <property name="toolTip">
+    <string>Add image</string>
+   </property>
+  </action>
+  <action name="mActionMoveItemContent">
+   <property name="text">
+    <string>Move &amp;Content</string>
+   </property>
+   <property name="toolTip">
+    <string>Move item content</string>
+   </property>
+   <property name="shortcut">
+    <string>C</string>
+   </property>
+  </action>
+  <action name="mActionGroupItems">
+   <property name="text">
+    <string>&amp;Group</string>
+   </property>
+   <property name="toolTip">
+    <string>Group items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="mActionUngroupItems">
+   <property name="text">
+    <string>&amp;Ungroup</string>
+   </property>
+   <property name="toolTip">
+    <string>Ungroup items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+G</string>
+   </property>
+  </action>
+  <action name="mActionRaiseItems">
+   <property name="text">
+    <string>&amp;Raise</string>
+   </property>
+   <property name="toolTip">
+    <string>Raise selected items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+]</string>
+   </property>
+  </action>
+  <action name="mActionLowerItems">
+   <property name="text">
+    <string>&amp;Lower</string>
+   </property>
+   <property name="toolTip">
+    <string>Lower selected items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+[</string>
+   </property>
+  </action>
+  <action name="mActionMoveItemsToTop">
+   <property name="text">
+    <string>Bring to &amp;Front</string>
+   </property>
+   <property name="toolTip">
+    <string>Move selected items to top</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+]</string>
+   </property>
+  </action>
+  <action name="mActionMoveItemsToBottom">
+   <property name="text">
+    <string>Send to &amp;Back</string>
+   </property>
+   <property name="toolTip">
+    <string>Move selected items to bottom</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+[</string>
+   </property>
+  </action>
+  <action name="mActionLoadFromTemplate">
+   <property name="text">
+    <string>&amp;Add Items from Template...</string>
+   </property>
+   <property name="toolTip">
+    <string>Add items from template</string>
+   </property>
+  </action>
+  <action name="mActionSaveAsTemplate">
+   <property name="text">
+    <string>Save as &amp;Template...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save as template</string>
+   </property>
+  </action>
+  <action name="mActionAlignLeft">
+   <property name="text">
+    <string>Align Left</string>
+   </property>
+   <property name="toolTip">
+    <string>Align selected items left</string>
+   </property>
+  </action>
+  <action name="mActionAlignHCenter">
+   <property name="text">
+    <string>Align Center</string>
+   </property>
+   <property name="toolTip">
+    <string>Align center horizontal</string>
+   </property>
+  </action>
+  <action name="mActionAlignRight">
+   <property name="text">
+    <string>Align Right</string>
+   </property>
+   <property name="toolTip">
+    <string>Align selected items right</string>
+   </property>
+  </action>
+  <action name="mActionAlignTop">
+   <property name="text">
+    <string>Align Top</string>
+   </property>
+   <property name="toolTip">
+    <string>Align selected items to top</string>
+   </property>
+  </action>
+  <action name="mActionAlignVCenter">
+   <property name="text">
+    <string>Align Center Vertical</string>
+   </property>
+   <property name="toolTip">
+    <string>Align center vertical</string>
+   </property>
+  </action>
+  <action name="mActionAlignBottom">
+   <property name="text">
+    <string>Align Bottom</string>
+   </property>
+   <property name="toolTip">
+    <string>Align selected items bottom</string>
+   </property>
+  </action>
+  <action name="mActionQuit">
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+   <property name="toolTip">
+    <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="mActionAddArrow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Arro&amp;w</string>
+   </property>
+   <property name="toolTip">
+    <string>Add arrow</string>
+   </property>
+  </action>
+  <action name="mActionAddTable">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Table</string>
+   </property>
+   <property name="toolTip">
+    <string>Add table</string>
+   </property>
+  </action>
+  <action name="mActionAddAttributeTable">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Attribute &amp;Table</string>
+   </property>
+   <property name="toolTip">
+    <string>Add attribute table</string>
+   </property>
+  </action>
+  <action name="mActionPageSetup">
+   <property name="text">
+    <string>Pa&amp;ge Setup...</string>
+   </property>
+   <property name="toolTip">
+    <string>Page setup</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
+   </property>
+  </action>
+  <action name="mActionUndo">
+   <property name="icon">
+    <iconset>
+     <normalon>:/images/themes/default/mActionUndo.svg</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Undo</string>
+   </property>
+   <property name="toolTip">
+    <string>Revert last change</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="mActionRedo">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRedo.svg</normaloff>:/images/themes/default/mActionRedo.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Redo</string>
+   </property>
+   <property name="toolTip">
+    <string>Restore last change</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
+   </property>
+  </action>
+  <action name="mActionAddRectangle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Rectangle</string>
+   </property>
+   <property name="toolTip">
+    <string>Add rectangle</string>
+   </property>
+  </action>
+  <action name="mActionAddTriangle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Triangle</string>
+   </property>
+   <property name="toolTip">
+    <string>Add triangle</string>
+   </property>
+  </action>
+  <action name="mActionAddEllipse">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Ellipse</string>
+   </property>
+   <property name="toolTip">
+    <string>Add ellipse</string>
+   </property>
+  </action>
+  <action name="mActionAddHtml">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add &amp;HTML</string>
+   </property>
+   <property name="toolTip">
+    <string>Add HTML frame</string>
+   </property>
+  </action>
+  <action name="mActionComposerManager">
+   <property name="text">
+    <string>Composer &amp;Manager...</string>
+   </property>
+   <property name="toolTip">
+    <string>Composer manager</string>
+   </property>
+  </action>
+  <action name="mActionNewComposer">
+   <property name="text">
+    <string>&amp;New Composer...</string>
+   </property>
+   <property name="toolTip">
+    <string>New composer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="mActionSaveProject">
+   <property name="text">
+    <string>&amp;Save Project</string>
+   </property>
+   <property name="toolTip">
+    <string>Save project</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="mActionDuplicateComposer">
+   <property name="text">
+    <string>&amp;Duplicate Composer...</string>
+   </property>
+   <property name="toolTip">
+    <string>Duplicate composer</string>
+   </property>
+  </action>
+  <action name="mActionLockItems">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/locked.svg</normaloff>:/images/themes/default/locked.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Loc&amp;k Selected Items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="mActionUnlockAll">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/unlocked.svg</normaloff>:/images/themes/default/unlocked.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Unl&amp;ock All</string>
+   </property>
+   <property name="toolTip">
+    <string>Unlock All Items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+L</string>
+   </property>
+  </action>
+  <action name="mActionPasteInPlace">
+   <property name="text">
+    <string>Paste in P&amp;lace</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste in place</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+V</string>
+   </property>
+  </action>
+  <action name="mActionDeleteSelection">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Delete</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete selected items</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
+   </property>
+  </action>
+  <action name="mActionDeselectAll">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeselectAll.svg</normaloff>:/images/themes/default/mActionDeselectAll.svg</iconset>
+   </property>
+   <property name="text">
+    <string>D&amp;eselect All</string>
+   </property>
+   <property name="toolTip">
+    <string>Deselect all</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="mActionSelectAll">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectAll.svg</normaloff>:/images/themes/default/mActionSelectAll.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Select All</string>
+   </property>
+   <property name="toolTip">
+    <string>Select all items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="mActionInvertSelection">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionInvertSelection.svg</normaloff>:/images/themes/default/mActionInvertSelection.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Invert Selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Invert selection</string>
+   </property>
+  </action>
+  <action name="mActionSelectNextBelow">
+   <property name="text">
+    <string>Select Next Item &amp;Below</string>
+   </property>
+   <property name="toolTip">
+    <string>Select next item below</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+[</string>
+   </property>
+  </action>
+  <action name="mActionSelectNextAbove">
+   <property name="text">
+    <string>Select Next Item &amp;Above</string>
+   </property>
+   <property name="toolTip">
+    <string>Select next item above</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+]</string>
+   </property>
+  </action>
+  <action name="mActionPan">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionPan.svg</normaloff>:/images/themes/default/mActionPan.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Pan Composer</string>
+   </property>
+   <property name="shortcut">
+    <string>P</string>
+   </property>
+  </action>
+  <action name="mActionOptions">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Composer &amp;Options...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::PreferencesRole</enum>
+   </property>
+  </action>
+  <action name="mActionShowRulers">
+   <property name="text">
+    <string>Show Ru&amp;lers</string>
+   </property>
+   <property name="toolTip">
+    <string>Show rulers</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="mActionAtlasFirst">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAtlasFirst.svg</normaloff>:/images/themes/default/mActionAtlasFirst.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;First Feature</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+&lt;</string>
+   </property>
+  </action>
+  <action name="mActionAtlasPrev">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAtlasPrev.svg</normaloff>:/images/themes/default/mActionAtlasPrev.svg</iconset>
+   </property>
+   <property name="text">
+    <string>P&amp;revious Feature</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+,</string>
+   </property>
+  </action>
+  <action name="mActionAtlasNext">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAtlasNext.svg</normaloff>:/images/themes/default/mActionAtlasNext.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Next Feature</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+.</string>
+   </property>
+  </action>
+  <action name="mActionAtlasLast">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAtlasLast.svg</normaloff>:/images/themes/default/mActionAtlasLast.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Last Feature</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+&gt;</string>
+   </property>
+  </action>
+  <action name="mActionAtlasPreview">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconAtlas.svg</normaloff>:/images/themes/default/mIconAtlas.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Preview &amp;Atlas</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+/</string>
+   </property>
+  </action>
+  <action name="mActionPrintAtlas">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilePrint.svg</normaloff>:/images/themes/default/mActionFilePrint.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Print Atlas...</string>
+   </property>
+  </action>
+  <action name="mActionExportAtlasAsImage">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export Atlas as &amp;Images...</string>
+   </property>
+  </action>
+  <action name="mActionExportAtlasAsSVG">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsSVG.svg</normaloff>:/images/themes/default/mActionSaveAsSVG.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export Atlas as S&amp;VG...</string>
+   </property>
+  </action>
+  <action name="mActionExportAtlasAsPDF">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Export Atlas as PDF...</string>
+   </property>
+   <property name="toolTip">
+    <string>Export Atlas as PDF</string>
+   </property>
+  </action>
+  <action name="mActionAtlasSettings">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAtlasSettings.svg</normaloff>:/images/themes/default/mActionAtlasSettings.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Atlas &amp;Settings</string>
+   </property>
+  </action>
+  <action name="mActionShowBoxes">
+   <property name="text">
+    <string>Show Bounding Boxes</string>
+   </property>
+   <property name="toolTip">
+    <string>Show bounding boxes</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+B</string>
+   </property>
+  </action>
+  <action name="mActionToggleFullScreen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Toggle Full Scr&amp;een</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle full screen mode</string>
+   </property>
+   <property name="shortcut">
+    <string>F11</string>
+   </property>
+  </action>
+  <action name="mActionHidePanels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Hide Panels</string>
+   </property>
+   <property name="toolTip">
+    <string>Hide panels</string>
+   </property>
+   <property name="shortcut">
+    <string>F10</string>
+   </property>
+  </action>
+  <action name="mActionShowPage">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Pages</string>
+   </property>
+   <property name="toolTip">
+    <string>Show pages</string>
+   </property>
+  </action>
+  <action name="mActionAddPolygon">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Polygon</string>
+   </property>
+   <property name="toolTip">
+    <string>Add polygon</string>
+   </property>
+  </action>
+  <action name="mActionNodesItem">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Nodes item</string>
+   </property>
+   <property name="toolTip">
+    <string>Nodes item</string>
+   </property>
+  </action>
+  <action name="mActionAddPolyline">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Polyline</string>
+   </property>
+   <property name="toolTip">
+    <string>Add polyline</string>
+   </property>
+  </action>
+  <action name="mActionEditNodesItem">
+   <property name="text">
+    <string>Edit Nodes Item</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit Nodes Item</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -1,0 +1,7 @@
+v.net
+v.net.nreport - Reports nodes information of a network
+Vector (v.*)
+ParameterVector|input|Input vector line layer (arcs)|1|False
+Hardcoded|operation=nreport
+OutputFile|output|NReport
+

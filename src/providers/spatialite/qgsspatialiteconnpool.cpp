@@ -15,9 +15,9 @@
 
 #include "qgsspatialiteconnpool.h"
 
+QgsSpatiaLiteConnPool QgsSpatiaLiteConnPool::sInstance;
 
 QgsSpatiaLiteConnPool* QgsSpatiaLiteConnPool::instance()
 {
-  static QgsSpatiaLiteConnPool sInstance;
   return &sInstance;
 }

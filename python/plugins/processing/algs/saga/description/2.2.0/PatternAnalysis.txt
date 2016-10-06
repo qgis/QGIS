@@ -1,0 +1,11 @@
+Pattern Analysis
+grid_analysis
+ParameterRaster|INPUT|Input Grid|False
+ParameterSelection|WINSIZE|Size of Analysis Window|[0] 3 X 3;[1] 5 X 5;[2] 7 X 7
+ParameterNumber|MAXNUMCLASS|Max. Number of Classes|None|None|0
+OutputRaster|RELATIVE|Relative Richness
+OutputRaster|DIVERSITY|Diversity
+OutputRaster|DOMINANCE|Dominance
+OutputRaster|FRAGMENTATION|Fragmentation
+OutputRaster|NDC|Number of Different Classes
+OutputRaster|CVN|Center Versus Neighbours

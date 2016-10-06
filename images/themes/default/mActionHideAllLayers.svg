@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   viewBox="0 0 24 24"
+   version="1.1"
+   id="svg5692"
+   height="24"
+   width="24">
+  <title
+     id="title2829">GIS icon theme 0.2</title>
+  <defs
+     id="defs5694">
+    <linearGradient
+       id="linearGradient4137-3">
+      <stop
+         id="stop4139-9"
+         offset="0"
+         style="stop-color:#555753;stop-opacity:1;" />
+      <stop
+         id="stop4141-0"
+         offset="1"
+         style="stop-color:#555753;stop-opacity:0;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient4137">
+      <stop
+         id="stop4139"
+         offset="0"
+         style="stop-color:#555753;stop-opacity:1;" />
+      <stop
+         id="stop4141"
+         offset="1"
+         style="stop-color:#555753;stop-opacity:0;" />
+    </linearGradient>
+    <linearGradient
+       gradientUnits="userSpaceOnUse"
+       y2="21"
+       x2="23"
+       y1="15"
+       x1="23"
+       id="linearGradient4143"
+       xlink:href="#linearGradient4137" />
+    <linearGradient
+       id="linearGradient4691">
+      <stop
+         id="stop4693"
+         offset="0"
+         style="stop-color:#8cbe8c;stop-opacity:1;" />
+      <stop
+         id="stop4695"
+         offset="1"
+         style="stop-color:#a1daa1;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       gradientUnits="userSpaceOnUse"
+       y2="5"
+       x2="4"
+       y1="9"
+       x1="10"
+       id="linearGradient4697"
+       xlink:href="#linearGradient4691" />
+    <linearGradient
+       xlink:href="#linearGradient3718"
+       id="linearGradient3724"
+       x1="11.5"
+       y1="23.5"
+       x2="11.499999"
+       y2="14.5"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-21,3)" />
+    <radialGradient
+       xlink:href="#linearGradient3710"
+       id="radialGradient3716"
+       cx="11.72698"
+       cy="30.008162"
+       fx="11.72698"
+       fy="30.008162"
+       r="13.875"
+       gradientTransform="matrix(1.90991,2.4623411e-8,-1.6458322e-8,0.64864861,-31.897477,7.035247)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       xlink:href="#linearGradient3696"
+       id="linearGradient3694"
+       x1="20.5"
+       y1="30.5"
+       x2="3.5"
+       y2="30.5"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       xlink:href="#linearGradient2937"
+       id="linearGradient2947"
+       gradientUnits="userSpaceOnUse"
+       x1="7"
+       y1="17"
+       x2="2"
+       y2="22"
+       gradientTransform="rotate(180,13,15)" />
+    <linearGradient
+       xlink:href="#linearGradient2937"
+       id="linearGradient2943"
+       x1="7"
+       y1="17"
+       x2="2"
+       y2="22"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       id="linearGradient2835">
+      <stop
+         style="stop-color:#ccf2a6;stop-opacity:1;"
+         offset="0"
+         id="stop2837" />
+      <stop
+         style="stop-color:#8ae234;stop-opacity:1;"
+         offset="1"
+         id="stop2839" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2843">
+      <stop
+         style="stop-color:#eeeeec;stop-opacity:1;"
+         offset="0"
+         id="stop2845" />
+      <stop
+         style="stop-color:#c8c8c2;stop-opacity:1;"
+         offset="1"
+         id="stop2847" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient7614">
+      <stop
+         style="stop-color:#d3d7cf;stop-opacity:1;"
+         offset="0"
+         id="stop7616" />
+      <stop
+         id="stop7636"
+         offset="0.40000001"
+         style="stop-color:#d3d7cf;stop-opacity:0.38666666;" />
+      <stop
+         style="stop-color:#d3d7cf;stop-opacity:0;"
+         offset="0.5"
+         id="stop7638" />
+      <stop
+         id="stop7622"
+         offset="0.60000002"
+         style="stop-color:#d3d7cf;stop-opacity:0.39215687;" />
+      <stop
+         style="stop-color:#d3d7cf;stop-opacity:1;"
+         offset="1"
+         id="stop7618" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient7624">
+      <stop
+         style="stop-color:#555753;stop-opacity:1;"
+         offset="0"
+         id="stop7626" />
+      <stop
+         id="stop7634"
+         offset="0.40000001"
+         style="stop-color:#555753;stop-opacity:0.39215687;" />
+      <stop
+         style="stop-color:#555753;stop-opacity:0;"
+         offset="0.5"
+         id="stop7640" />
+      <stop
+         id="stop7632"
+         offset="0.60000002"
+         style="stop-color:#555753;stop-opacity:0.39215687;" />
+      <stop
+         style="stop-color:#555753;stop-opacity:1;"
+         offset="1"
+         id="stop7628" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient2937">
+      <stop
+         style="stop-color:#ce5c00;stop-opacity:1;"
+         offset="0"
+         id="stop2939" />
+      <stop
+         style="stop-color:#ce5c00;stop-opacity:0;"
+         offset="1"
+         id="stop2941" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3688">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop3690" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop3692" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3696">
+      <stop
+         id="stop3698"
+         offset="0"
+         style="stop-color:#ff0000;stop-opacity:1;" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0.5"
+         id="stop3702" />
+      <stop
+         id="stop3700"
+         offset="1"
+         style="stop-color:#ffffff;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3710">
+      <stop
+         style="stop-color:#9a9c96;stop-opacity:1;"
+         offset="0"
+         id="stop3712" />
+      <stop
+         style="stop-color:#eff0ef;stop-opacity:1;"
+         offset="1"
+         id="stop3714" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3718">
+      <stop
+         style="stop-color:#9a9c96;stop-opacity:1"
+         offset="0"
+         id="stop3720" />
+      <stop
+         style="stop-color:#d8d9d7;stop-opacity:1"
+         offset="1"
+         id="stop3722" />
+    </linearGradient>
+  </defs>
+  <metadata
+     id="metadata5697">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>GIS icon theme 0.2</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Robert Szczepanek</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Robert Szczepanek</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>GIS icons</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:coverage>GIS icons</dc:coverage>
+        <dc:description>http://robert.szczepanek.pl/</dc:description>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/3.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/3.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(0,-8)"
+     style="display:inline"
+     id="layer2">
+    <path
+       id="path4389-5-0-7"
+       d="m 23.920726,22.589049 c 0,0 -0.204601,-0.652217 -1.183864,-1.741642 -0.626778,-0.697285 1.133965,-4.759717 -4.203989,-7.462595 -2.843013,-1.439563 -8.9684055,0.115819 -11.2570483,0.515667 -5.0919021,0.889605 -4.9405237,1.461199 -5.466197,2.832546 -0.3947767,1.029871 -0.205755,4.210676 -0.193479,4.489383 -0.01888,0.230131 1.214539,2.152487 2.867438,3.325547 1.508743,1.070752 3.592552,2.336622 5.9029663,2.73289 2.79582,0.479522 3.821514,0.379776 6.481198,-0.469869 1.39945,-0.447059 3.888123,-2.570867 3.888123,-2.570867 0,0 0.521038,-0.348323 1.332925,-0.951893 0.700164,-0.520511 1.831927,-0.699167 1.831927,-0.699167 z"
+       style="display:inline;fill:#eeeeec;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <path
+       id="path4421-4"
+       d="m 1.1431106,15.424331 c 5.0059781,-1.495379 8.5535321,-2.062068 10.9931454,-2.285946 5.222126,-0.479224 7.062158,0.400175 8.402611,1.388166 1.448462,1.0676 1.763071,1.760039 1.763071,1.760039"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#888a85;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <path
+       id="path4389-5-0"
+       d="m 23.514476,22.589049 c -0.0074,-1.621158 -1.489833,-0.70922 -2.121364,-0.366642 -1.345528,0.583965 -4.05405,3.175877 -5.922739,3.568655 -2.150462,0.452003 -4.650818,0.144881 -6.7882983,-0.765583 -2.09114,-0.890725 -3.6035308,-2.157143 -5.122447,-3.292454 -0.983278,-0.734949 -1.955755,-0.414323 -1.943479,-0.135617 -0.01888,0.230131 1.214539,1.777488 2.867438,2.950547 1.508743,1.070753 3.592552,2.336622 5.9029663,2.73289 2.79582,0.479522 3.821514,0.379776 6.481198,-0.469869 1.39945,-0.447059 3.888123,-2.570867 3.888123,-2.570867 0,0 0.521038,-0.348323 1.332925,-0.951893 0.700164,-0.520511 1.425677,-0.699167 1.425677,-0.699167 z"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#888a85;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  </g>
+</svg>

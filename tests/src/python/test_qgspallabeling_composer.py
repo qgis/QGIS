@@ -17,14 +17,16 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
+
 import sys
 import os
 import subprocess
 
-from PyQt4.QtCore import QRect, QRectF, QSize, QSizeF, qDebug
-from PyQt4.QtGui import QImage, QColor, QPainter, QPrinter
-from PyQt4.QtSvg import QSvgRenderer, QSvgGenerator
+from qgis.PyQt.QtCore import QRect, QRectF, QSize, QSizeF, qDebug
+from qgis.PyQt.QtGui import QImage, QColor, QPainter
+from qgis.PyQt.QtPrintSupport import QPrinter
+from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
 
 from qgis.core import QgsComposition, QgsMapSettings, QgsProject, QgsComposerMap
 
@@ -37,6 +39,7 @@ from utilities import (
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
 from test_qgspallabeling_tests import (
     TestPointBase,
+    TestLineBase,
     suiteTests
 )
 
@@ -62,7 +65,7 @@ if not PDFUTIL:
 # output kind enum
 # noinspection PyClassHasNoInit
 class OutputKind():
-    Img, Svg, Pdf = range(3)
+    Img, Svg, Pdf = list(range(3))
 
 
 # noinspection PyShadowingNames
@@ -238,7 +241,7 @@ class TestComposerBase(TestQgsPalLabeling):
             ]
         elif PDFUTIL.strip().endswith('mudraw'):
             call = [
-                PDFUTIL,  '-c', 'rgba',
+                PDFUTIL, '-c', 'rgba',
                 '-r', str(dpi), '-w', str(width), '-h', str(height),
                 # '-b', '8',
                 '-o', filepath, pdfpath
@@ -343,9 +346,11 @@ class TestComposerSvgPoint(TestComposerPointBase, TestPointBase):
 
 
 class TestComposerSvgVsComposerPoint(TestComposerPointBase, TestPointBase):
+
     """
     Compare only to composer image, which is already compared to canvas point
     """
+
     def setUp(self):
         """Run before each test."""
         super(TestComposerSvgVsComposerPoint, self).setUp()
@@ -364,14 +369,89 @@ class TestComposerPdfPoint(TestComposerPointBase, TestPointBase):
 
 
 class TestComposerPdfVsComposerPoint(TestComposerPointBase, TestPointBase):
+
     """
     Compare only to composer image, which is already compared to canvas point
     """
+
     def setUp(self):
         """Run before each test."""
         super(TestComposerPdfVsComposerPoint, self).setUp()
         self._TestKind = OutputKind.Pdf
         self.configTest('pal_composer', 'sp_img')
+        self._Mismatch = 50
+        self._ColorTol = 18
+
+
+class TestComposerLineBase(TestComposerBase):
+
+    @classmethod
+    def setUpClass(cls):
+        TestComposerBase.setUpClass()
+        cls.layer = TestQgsPalLabeling.loadFeatureLayer('line')
+
+
+class TestComposerImageLine(TestComposerLineBase, TestLineBase):
+
+    def setUp(self):
+        """Run before each test."""
+        super(TestComposerImageLine, self).setUp()
+        self._TestKind = OutputKind.Img
+        self.configTest('pal_composer_line', 'sp_img')
+
+
+class TestComposerImageVsCanvasLine(TestComposerLineBase, TestLineBase):
+
+    def setUp(self):
+        """Run before each test."""
+        super(TestComposerImageVsCanvasLine, self).setUp()
+        self._TestKind = OutputKind.Img
+        self.configTest('pal_canvas_line', 'sp')
+
+
+class TestComposerSvgLine(TestComposerLineBase, TestLineBase):
+
+    def setUp(self):
+        """Run before each test."""
+        super(TestComposerSvgLine, self).setUp()
+        self._TestKind = OutputKind.Svg
+        self.configTest('pal_composer_line', 'sp_svg')
+
+
+class TestComposerSvgVsComposerLine(TestComposerLineBase, TestLineBase):
+
+    """
+    Compare only to composer image, which is already compared to canvas line
+    """
+
+    def setUp(self):
+        """Run before each test."""
+        super(TestComposerSvgVsComposerLine, self).setUp()
+        self._TestKind = OutputKind.Svg
+        self.configTest('pal_composer_line', 'sp_img')
+        self._ColorTol = 4
+
+
+class TestComposerPdfLine(TestComposerLineBase, TestLineBase):
+
+    def setUp(self):
+        """Run before each test."""
+        super(TestComposerPdfLine, self).setUp()
+        self._TestKind = OutputKind.Pdf
+        self.configTest('pal_composer_line', 'sp_pdf')
+
+
+class TestComposerPdfVsComposerLine(TestComposerLineBase, TestLineBase):
+
+    """
+    Compare only to composer image, which is already compared to canvas line
+    """
+
+    def setUp(self):
+        """Run before each test."""
+        super(TestComposerPdfVsComposerLine, self).setUp()
+        self._TestKind = OutputKind.Pdf
+        self.configTest('pal_composer_line', 'sp_img')
         self._Mismatch = 50
         self._ColorTol = 18
 

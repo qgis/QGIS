@@ -8,9 +8,9 @@ IF (WITH_PYSPATIALITE)
   ADD_SUBDIRECTORY(pyspatialite)
 ENDIF (WITH_PYSPATIALITE)
 
-MACRO(EXT_PYLIB lib)
+MACRO(EXT_PYLIB lib enable_by_default)
   STRING(TOUPPER ${lib} ulib)
-  SET (WITH_INTERNAL_${ulib} TRUE CACHE BOOL "Determines whether python ${lib} should be included")
+  SET (WITH_INTERNAL_${ulib} ${enable_by_default} CACHE BOOL "Determines whether python ${lib} should be included")
   IF(WITH_INTERNAL_${ulib})
     INSTALL(DIRECTORY ${lib} DESTINATION "${QGIS_PYTHON_DIR}")
 
@@ -33,8 +33,12 @@ MACRO(EXT_PYLIB lib)
   ENDIF(WITH_INTERNAL_${ulib})
 ENDMACRO(EXT_PYLIB lib)
 
-FOREACH(pkg httplib2 jinja2 markupsafe owslib pygments dateutil pytz)
-  EXT_PYLIB(${pkg})
+# Our yaml package is not compatible with python 3
+# Fallback to system package by default
+EXT_PYLIB(yaml FALSE)
+
+FOREACH(pkg httplib2 jinja2 markupsafe owslib pygments dateutil pytz nose2 requests)
+  EXT_PYLIB(${pkg} TRUE)
 ENDFOREACH(pkg)
 
 SET (WITH_INTERNAL_SIX TRUE CACHE BOOL "Determines whether python six should be included")

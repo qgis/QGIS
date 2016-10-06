@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 5.1.2014
     Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -32,4 +32,10 @@ QgsEditorWidgetWrapper* QgsUuidWidgetFactory::create( QgsVectorLayer* vl, int fi
 QgsEditorConfigWidget* QgsUuidWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
   return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "Read-only field that generates a UUID if empty." ) );
+}
+
+unsigned int QgsUuidWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
+{
+  const QVariant::Type type = vl->fields().field( fieldIdx ).type();
+  return type == QVariant::String ? 5 : 0;
 }

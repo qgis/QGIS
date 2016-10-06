@@ -16,6 +16,9 @@
 #define QGSMEMORYFEATUREITERATOR_H
 
 #include "qgsfeatureiterator.h"
+#include "qgsexpressioncontext.h"
+#include "qgsfields.h"
+#include "qgsgeometry.h"
 
 class QgsMemoryProvider;
 
@@ -27,7 +30,7 @@ class QgsSpatialIndex;
 class QgsMemoryFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsMemoryFeatureSource( const QgsMemoryProvider* p );
+    explicit QgsMemoryFeatureSource( const QgsMemoryProvider* p );
     ~QgsMemoryFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
@@ -37,6 +40,7 @@ class QgsMemoryFeatureSource : public QgsAbstractFeatureSource
     QgsFeatureMap mFeatures;
     QgsSpatialIndex* mSpatialIndex;
     QString mSubsetString;
+    QgsExpressionContext mExpressionContext;
 
     friend class QgsMemoryFeatureIterator;
 };
@@ -63,7 +67,7 @@ class QgsMemoryFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
     bool nextFeatureUsingList( QgsFeature& feature );
     bool nextFeatureTraverseAll( QgsFeature& feature );
 
-    QgsGeometry* mSelectRectGeom;
+    QgsGeometry mSelectRectGeom;
     QgsFeatureMap::const_iterator mSelectIterator;
     bool mUsingFeatureIdList;
     QList<QgsFeatureId> mFeatureIdList;

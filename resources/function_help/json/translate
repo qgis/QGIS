@@ -1,0 +1,10 @@
+{
+  "name": "translate",
+  "type": "function",
+  "description": "Returns a translated version of a geometry. Calculations are in the Spatial Reference System of this geometry.",
+  "arguments": [ {"arg":"geom","description":"a geometry"},
+                 {"arg":"dx","description":"delta x"},
+                 {"arg":"dy","description":"delta y"}
+               ],
+  "examples": [ { "expression":"translate($geometry, 5, 10)", "returns":"a geometry of the same type like the original one"}]
+}

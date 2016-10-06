@@ -26,14 +26,14 @@ __copyright__ = '(C) 2014, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from SagaAlgorithm213 import SagaAlgorithm213
+from .SagaAlgorithm213 import SagaAlgorithm213
 from processing.tools import dataobjects
 from processing.tools.system import getTempFilenameInTempFolder
 
 sessionExportedLayers = {}
 
-class SagaAlgorithm214(SagaAlgorithm213):
 
+class SagaAlgorithm214(SagaAlgorithm213):
 
     def getCopy(self):
         newone = SagaAlgorithm214(self.descriptionFile)
@@ -61,4 +61,4 @@ class SagaAlgorithm214(SagaAlgorithm213):
         destFilename = getTempFilenameInTempFolder(filename + '.sgrd')
         self.exportedLayers[source] = destFilename
         sessionExportedLayers[source] = destFilename
-        return 'io_gdal -TRANSFORM -INTERPOL 0 -GRIDS "' + destFilename + '" -FILES "' + source +  '"'
+        return 'io_gdal 0 -TRANSFORM 1 -INTERPOL 0 -GRIDS "' + destFilename + '" -FILES "' + source + '"'

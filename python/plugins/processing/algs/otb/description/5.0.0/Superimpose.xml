@@ -1,0 +1,91 @@
+<root>
+  <key>Superimpose</key>
+  <exec>otbcli_Superimpose</exec>
+  <longname>Superimpose sensor</longname>
+  <group>Geometry</group>
+  <description>Using available image metadata, project one image onto another one</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>inr</key>
+    <name>Reference input</name>
+    <description>The input reference image.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>inm</key>
+    <name>The image to reproject</name>
+    <description>The image to reproject into the geometry of the reference input.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>elev.default</key>
+    <name>Default elevation</name>
+    <description>This parameter allows setting the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
+    <key>lms</key>
+    <name>Spacing of the deformation field</name>
+    <description>Generate a coarser deformation field with the given spacing</description>
+    <minValue />
+    <maxValue />
+    <default>4</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputImage">OutputRaster</parameter_type>
+    <key>out</key>
+    <name>Output image</name>
+    <description>Output reprojected image.</description>
+    <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>mode</key>
+    <name>Mode</name>
+    <description>Superimposition mode</description>
+    <options>
+      <choices>
+        <choice>default</choice>
+        <choice>phr</choice>
+      </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>interpolator</key>
+    <name>Interpolation</name>
+    <description>This group of parameters allows defining how the input image will be interpolated during resampling.</description>
+    <options>
+      <choices>
+        <choice>bco</choice>
+        <choice>nn</choice>
+        <choice>linear</choice>
+      </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Radius">ParameterNumber</parameter_type>
+    <key>interpolator.bco.radius</key>
+    <name>Radius for bicubic interpolation</name>
+    <description>This parameter allows controlling the size of the bicubic interpolation filter. If the target pixel size is higher than the input pixel size, increasing this parameter will reduce aliasing artifacts.</description>
+    <minValue />
+    <maxValue />
+    <default>2</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+</root>

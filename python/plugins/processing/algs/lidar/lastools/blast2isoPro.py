@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'October 2014'
@@ -24,10 +27,11 @@ __copyright__ = '(C) 2014, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterNumber
+
 
 class blast2isoPro(LAStoolsAlgorithm):
 
@@ -38,23 +42,23 @@ class blast2isoPro(LAStoolsAlgorithm):
     CLEAN = "CLEAN"
 
     def defineCharacteristics(self):
-        self.name = "blast2isoPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('blast2isoPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersPointInputMergedGUI()
         self.addParameter(ParameterNumber(blast2isoPro.SMOOTH,
-            self.tr("smooth underlying TIN"), 0, None, 0))
+                                          self.tr("smooth underlying TIN"), 0, None, 0))
         self.addParameter(ParameterNumber(blast2isoPro.ISO_EVERY,
-            self.tr("extract isoline with a spacing of"), 0, None, 10.0))
+                                          self.tr("extract isoline with a spacing of"), 0, None, 10.0))
         self.addParameter(ParameterNumber(blast2isoPro.CLEAN,
-            self.tr("clean isolines shorter than (0 = do not clean)"),
-            None, None, 0.0))
+                                          self.tr("clean isolines shorter than (0 = do not clean)"),
+                                          None, None, 0.0))
         self.addParameter(ParameterNumber(blast2isoPro.SIMPLIFY_LENGTH,
-            self.tr("simplify segments shorter than (0 = do not simplify)"),
-            None, None, 0.0))
+                                          self.tr("simplify segments shorter than (0 = do not simplify)"),
+                                          None, None, 0.0))
         self.addParameter(ParameterNumber(blast2isoPro.SIMPLIFY_AREA,
-            self.tr("simplify segments pairs with area less than (0 = do not simplify)"),
-            None, None, 0.0))
+                                          self.tr("simplify segments pairs with area less than (0 = do not simplify)"),
+                                          None, None, 0.0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersVectorOutputFormatGUI()

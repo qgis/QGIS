@@ -1,0 +1,14 @@
+{
+  "name": ">",
+  "type": "operator",
+  "description": "Compares two values and evaluates to 1 if the left value is greater than the right value.",
+  "arguments": [
+        { "arg": "a", "description": "value" },
+        { "arg": "b", "description": "value" }
+  ],
+  "examples": [
+	{ "expression":"5 &gt; 4", "returns":"1"},
+	{ "expression":"5 &gt; 5", "returns":"0"},
+	{ "expression":"4 &gt; 5", "returns":"0"}
+  ]
+}

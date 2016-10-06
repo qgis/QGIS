@@ -19,7 +19,6 @@
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
-#include "qgscrscache.h"
 #include "qgsmaplayer.h"
 #include "qgsrectangle.h"
 
@@ -37,7 +36,7 @@ class QDomElement;
 class QString;
 class QStringList;
 
-void QgsConfigParserUtils::appendCRSElementsToLayer( QDomElement& layerElement, QDomDocument& doc,
+void QgsConfigParserUtils::appendCrsElementsToLayer( QDomElement& layerElement, QDomDocument& doc,
     const QStringList &crsList, const QStringList& constrainedCrsList )
 {
   if ( layerElement.isNull() )
@@ -51,23 +50,23 @@ void QgsConfigParserUtils::appendCRSElementsToLayer( QDomElement& layerElement, 
   QDomElement CRSPrecedingElement = abstractElement.isNull() ? titleElement : abstractElement; //last element before the CRS elements
 
   //In case the number of advertised CRS is constrained
-  if ( constrainedCrsList.size() > 0 )
+  if ( !constrainedCrsList.isEmpty() )
   {
     for ( int i = constrainedCrsList.size() - 1; i >= 0; --i )
     {
-      appendCRSElementToLayer( layerElement, CRSPrecedingElement, constrainedCrsList.at( i ), doc );
+      appendCrsElementToLayer( layerElement, CRSPrecedingElement, constrainedCrsList.at( i ), doc );
     }
   }
   else //no crs constraint
   {
-    foreach ( QString crs, crsList )
+    Q_FOREACH ( const QString& crs, crsList )
     {
-      appendCRSElementToLayer( layerElement, CRSPrecedingElement, crs, doc );
+      appendCrsElementToLayer( layerElement, CRSPrecedingElement, crs, doc );
     }
   }
 }
 
-void QgsConfigParserUtils::appendCRSElementToLayer( QDomElement& layerElement, const QDomElement& precedingElement,
+void QgsConfigParserUtils::appendCrsElementToLayer( QDomElement& layerElement, const QDomElement& precedingElement,
     const QString& crsText, QDomDocument& doc )
 {
   QString version = doc.documentElement().attribute( "version" );
@@ -78,22 +77,26 @@ void QgsConfigParserUtils::appendCRSElementToLayer( QDomElement& layerElement, c
 }
 
 void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent,
-    const QgsCoordinateReferenceSystem& layerCRS )
+    const QgsCoordinateReferenceSystem& layerCRS, const QStringList &crsList, const QStringList& constrainedCrsList )
 {
   if ( layerElem.isNull() )
   {
     return;
   }
 
-  const QgsCoordinateReferenceSystem& wgs84 = QgsCRSCache::instance()->crsByAuthId( GEO_EPSG_CRS_AUTHID );
+  QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
 
   QString version = doc.documentElement().attribute( "version" );
 
   //Ex_GeographicBoundingBox
   QDomElement ExGeoBBoxElement;
   //transform the layers native CRS into WGS84
-  QgsCoordinateTransform exGeoTransform( layerCRS, wgs84 );
-  QgsRectangle wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
+  QgsRectangle wgs84BoundingRect;
+  if ( !layerExtent.isNull() )
+  {
+    QgsCoordinateTransform exGeoTransform( layerCRS, wgs84 );
+    wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
+  }
   if ( version == "1.1.1" )   // WMS Version 1.1.1
   {
     ExGeoBBoxElement = doc.createElement( "LatLonBoundingBox" );
@@ -123,7 +126,7 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
     ExGeoBBoxElement.appendChild( nBoundLatitudeElement );
   }
 
-
+  /*
   //BoundingBox element
   QDomElement bBoxElement = doc.createElement( "BoundingBox" );
   if ( layerCRS.isValid() )
@@ -132,7 +135,7 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
   }
 
   QgsRectangle r( layerExtent );
-  if ( version != "1.1.1" && layerCRS.axisInverted() )
+  if ( version != "1.1.1" && layerCRS.hasAxisInverted() )
   {
     r.invert();
   }
@@ -141,21 +144,94 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
   bBoxElement.setAttribute( "miny", QString::number( r.yMinimum() ) );
   bBoxElement.setAttribute( "maxx", QString::number( r.xMaximum() ) );
   bBoxElement.setAttribute( "maxy", QString::number( r.yMaximum() ) );
+  */
 
   QDomElement lastCRSElem = layerElem.lastChildElement( version == "1.1.1" ? "SRS" : "CRS" );
   if ( !lastCRSElem.isNull() )
   {
     layerElem.insertAfter( ExGeoBBoxElement, lastCRSElem );
-    layerElem.insertAfter( bBoxElement, ExGeoBBoxElement );
+    //layerElem.insertAfter( bBoxElement, ExGeoBBoxElement );
   }
   else
   {
     layerElem.appendChild( ExGeoBBoxElement );
-    layerElem.appendChild( bBoxElement );
+    //layerElem.appendChild( bBoxElement );
+  }
+
+  //In case the number of advertised CRS is constrained
+  if ( !constrainedCrsList.isEmpty() )
+  {
+    for ( int i = constrainedCrsList.size() - 1; i >= 0; --i )
+    {
+      appendLayerBoundingBox( layerElem, doc, layerExtent, layerCRS, constrainedCrsList.at( i ) );
+    }
+  }
+  else //no crs constraint
+  {
+    Q_FOREACH ( const QString& crs, crsList )
+    {
+      appendLayerBoundingBox( layerElem, doc, layerExtent, layerCRS, crs );
+    }
   }
 }
 
-QStringList QgsConfigParserUtils::createCRSListForLayer( QgsMapLayer* theMapLayer )
+void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent,
+    const QgsCoordinateReferenceSystem& layerCRS, const QString& crsText )
+{
+  if ( layerElem.isNull() )
+  {
+    return;
+  }
+
+  QString version = doc.documentElement().attribute( "version" );
+
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsText );
+
+  //transform the layers native CRS into CRS
+  QgsRectangle crsExtent;
+  if ( !layerExtent.isNull() )
+  {
+    QgsCoordinateTransform crsTransform( layerCRS, crs );
+    crsExtent = crsTransform.transformBoundingBox( layerExtent );
+  }
+
+  //BoundingBox element
+  QDomElement bBoxElement = doc.createElement( "BoundingBox" );
+  if ( crs.isValid() )
+  {
+    bBoxElement.setAttribute( version == "1.1.1" ? "SRS" : "CRS", crs.authid() );
+  }
+
+  if ( version != "1.1.1" && crs.hasAxisInverted() )
+  {
+    crsExtent.invert();
+  }
+
+  bBoxElement.setAttribute( "minx", QString::number( crsExtent.xMinimum() ) );
+  bBoxElement.setAttribute( "miny", QString::number( crsExtent.yMinimum() ) );
+  bBoxElement.setAttribute( "maxx", QString::number( crsExtent.xMaximum() ) );
+  bBoxElement.setAttribute( "maxy", QString::number( crsExtent.yMaximum() ) );
+
+  QDomElement lastBBoxElem = layerElem.lastChildElement( "BoundingBox" );
+  if ( !lastBBoxElem.isNull() )
+  {
+    layerElem.insertAfter( bBoxElement, lastBBoxElem );
+  }
+  else
+  {
+    lastBBoxElem = layerElem.lastChildElement( version == "1.1.1" ? "LatLonBoundingBox" : "EX_GeographicBoundingBox" );
+    if ( !lastBBoxElem.isNull() )
+    {
+      layerElem.insertAfter( bBoxElement, lastBBoxElem );
+    }
+    else
+    {
+      layerElem.appendChild( bBoxElement );
+    }
+  }
+}
+
+QStringList QgsConfigParserUtils::createCrsListForLayer( QgsMapLayer* theMapLayer )
 {
   QStringList crsNumbers;
   QString myDatabaseFileName = QgsApplication::srsDbFilePath();

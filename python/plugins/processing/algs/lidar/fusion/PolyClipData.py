@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = "Niccolo' Marchi"
 __date__ = 'May 2014'
@@ -30,8 +33,8 @@ from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputFile
-from FusionAlgorithm import FusionAlgorithm
-from FusionUtils import FusionUtils
+from .FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
 
 
 class PolyClipData(FusionAlgorithm):
@@ -40,25 +43,24 @@ class PolyClipData(FusionAlgorithm):
     OUTPUT = 'OUTPUT'
     SHAPE = 'SHAPE'
     MASK = 'MASK'
-    FIELD ='FIELD'
+    FIELD = 'FIELD'
     VALUE = 'VALUE'
 
     def defineCharacteristics(self):
-        self.name = 'Poly Clip Data'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Poly Clip Data')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input .las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterFile(self.MASK, self.tr('Mask layer')))
         self.addOutput(OutputFile(self.OUTPUT,
-            self.tr('Output clipped .las file'), 'las'))
+                                  self.tr('Output clipped LAS file'), 'las'))
         self.addParameter(ParameterBoolean(self.SHAPE,
-            self.tr('Use Shape attribute'), False))
+                                           self.tr('Use Shape attribute'), False))
         ##  'field' e 'value' box should appear or get activated if Shape attribute is switched ON
         self.addParameter(ParameterString(self.FIELD,
-            self.tr('Shape field index')))
+                                          self.tr('Shape field index')))
         self.addParameter(ParameterString(self.VALUE, self.tr("Shape value")))
         self.addAdvancedModifiers()
-
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'PolyClipData.exe')]

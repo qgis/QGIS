@@ -3,7 +3,9 @@
 
 <qgisgrassmodule label="Calculate univariate statistics from raster based on vector objects" module="v.rast.stats">
 	<option key="raster"/>
-	<option key="vector" typemask="area"/>
-	<option key="colprefix"/>
+	<option key="vector" typemask="area" version_max="6"/>
+	<option key="map" typemask="area" version_min="7"/>
+	<option key="colprefix" version_max="6"/>
+	<option key="column_prefix" version_min="7"/>
 	<flag key="c" answer="off" hidden="yes" />
 </qgisgrassmodule>

@@ -5,6 +5,7 @@
     SplitLines.py
     ---------------------
     Date                 : November 2014
+    Revised              : February 2016
     Copyright            : (C) 2014 by Bernhard Ströbl
     Email                : bernhard dot stroebl at jena dot de
 ***************************************************************************
@@ -25,7 +26,7 @@ __copyright__ = '(C) 2014, Bernhard Ströbl'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -42,37 +43,32 @@ class SplitLinesWithLines(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Split lines with lines'
-        self.group = 'Vector overlay tools'
+        self.name, self.i18n_name = self.trAlgorithm('Split lines with lines')
+        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(self.INPUT_A,
-            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.INPUT_B,
-            self.tr('Split layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Split layer'), [dataobjects.TYPE_VECTOR_LINE]))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Split lines')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Splitted'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, progress):
         layerA = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_A))
         layerB = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_B))
 
-        fieldList = layerA.pendingFields()
+        sameLayer = self.getParameterValue(self.INPUT_A) == self.getParameterValue(self.INPUT_B)
+        fieldList = layerA.fields()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                QGis.WKBLineString, layerA.dataProvider().crs())
+                                                                     QgsWkbTypes.LineString, layerA.crs())
 
         spatialIndex = vector.spatialindex(layerB)
 
-        inFeatA = QgsFeature()
-        inFeatB = QgsFeature()
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-        splitGeom = QgsGeometry()
-
         features = vector.features(layerA)
-        current = 0
         total = 100.0 / float(len(features))
 
-        for inFeatA in features:
+        for current, inFeatA in enumerate(features):
             inGeom = inFeatA.geometry()
             attrsA = inFeatA.attributes()
             outFeat.setAttributes(attrsA)
@@ -84,8 +80,13 @@ class SplitLinesWithLines(GeoAlgorithm):
 
                 for i in lines:
                     request = QgsFeatureRequest().setFilterFid(i)
-                    inFeatB = layerB.getFeatures(request).next()
-                    splitGeom = QgsGeometry(inFeatB.geometry())
+                    inFeatB = next(layerB.getFeatures(request))
+                    # check if trying to self-intersect
+                    if sameLayer:
+                        if inFeatA.id() == inFeatB.id():
+                            continue
+
+                    splitGeom = inFeatB.geometry()
 
                     if inGeom.intersects(splitGeom):
                         splittingLines.append(splitGeom)
@@ -104,12 +105,12 @@ class SplitLinesWithLines(GeoAlgorithm):
                                     result, newGeometries, topoTestPoints = inGeom.splitGeometry(splitterPList, False)
                                 except:
                                     ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                        self.tr('Geometry exception while splitting'))
+                                                           self.tr('Geometry exception while splitting'))
                                     result = 1
 
                                 # splitGeometry: If there are several intersections
                                 # between geometry and splitLine, only the first one is considered.
-                                if result == 0:  # split occured
+                                if result == 0:  # split occurred
 
                                     if inPoints == vector.extractPoints(inGeom):
                                         # bug in splitGeometry: sometimes it returns 0 but
@@ -119,7 +120,7 @@ class SplitLinesWithLines(GeoAlgorithm):
                                         inLines.append(inGeom)
 
                                         for aNewGeom in newGeometries:
-                                           inLines.append(aNewGeom)
+                                            inLines.append(aNewGeom)
                                 else:
                                     outLines.append(inGeom)
                             else:
@@ -127,12 +128,14 @@ class SplitLinesWithLines(GeoAlgorithm):
 
                         inLines = outLines
 
-
             for aLine in inLines:
-                outFeat.setGeometry(aLine)
-                writer.addFeature(outFeat)
+                if len(aLine.asPolyline()) > 2 or \
+                        (len(aLine.asPolyline()) == 2 and
+                         aLine.asPolyline()[0] != aLine.asPolyline()[1]):
+                    # sometimes splitting results in lines of zero length
+                    outFeat.setGeometry(aLine)
+                    writer.addFeature(outFeat)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer

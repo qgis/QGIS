@@ -1,0 +1,11 @@
+Diffusive Hillslope Evolution (FTCS)
+sim_qm_of_esp
+ParameterRaster|DEM|Elevation|False
+ParameterBoolean|UPDATE|Update|True
+ParameterNumber|KAPPA|Diffusivity [m2/kyr]|0.0|None|1.0
+ParameterNumber|DURATION|Simulation Time [kyr]|0.0|None|100.0
+ParameterSelection|TIMESTEP|Time Step|[0] user defined;[1] automatically|1
+ParameterNumber|DTIME|Time Step [kyr]|0.0|None|10.0
+ParameterSelection|NEIGHBOURS|Neighbourhood|[0] Neumann;[1] Moore|1
+OutputRaster|MODEL|Modelled Elevation
+OutputRaster|DIFF|Elevation Difference

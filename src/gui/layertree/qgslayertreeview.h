@@ -22,11 +22,13 @@ class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
 class QgsLayerTreeNode;
+class QgsLayerTreeModelLegendNode;
 class QgsLayerTreeViewDefaultActions;
 class QgsLayerTreeViewMenuProvider;
 class QgsMapLayer;
 
 /**
+ * \ingroup gui
  * The QgsLayerTreeView class extends QTreeView and provides some additional functionality
  * when working with a layer tree.
  *
@@ -45,7 +47,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 {
     Q_OBJECT
   public:
-    explicit QgsLayerTreeView( QWidget *parent = 0 );
+    explicit QgsLayerTreeView( QWidget *parent = nullptr );
     ~QgsLayerTreeView();
 
     //! Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.
@@ -71,6 +73,11 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeNode* currentNode() const;
     //! Get current group node. If a layer is current node, the function will return parent group. May be null.
     QgsLayerTreeGroup* currentGroupNode() const;
+
+    /** Get current legend node. May be null if current node is not a legend node.
+     * @note added in QGIS 2.14
+     */
+    QgsLayerTreeModelLegendNode* currentLegendNode() const;
 
     //! Return list of selected nodes
     //! @arg skipInternal If true, will ignore nodes which have an ancestor in the selection
@@ -98,10 +105,10 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
   protected slots:
 
-    void modelRowsInserted( QModelIndex index, int start, int end );
+    void modelRowsInserted( const QModelIndex& index, int start, int end );
     void modelRowsRemoved();
 
-    void updateExpandedStateToNode( QModelIndex index );
+    void updateExpandedStateToNode( const QModelIndex& index );
 
     void onCurrentChanged();
     void onExpandedChanged( QgsLayerTreeNode* node, bool expanded );
@@ -117,7 +124,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 };
 
 
-/**
+/** \ingroup gui
  * Implementation of this interface can be implemented to allow QgsLayerTreeView
  * instance to provide custom context menus (opened upon right-click).
  *

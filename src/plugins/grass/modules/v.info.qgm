@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Outputs basic information about a vector map" module="v.info">
+	<option key="map"/>
+	<flag key="h"/>
+	<flag key="c"/>
+	<flag key="e" version_min="7"/>
+	<flag key="t"/>
+	<flag key="g"/>
+</qgisgrassmodule>

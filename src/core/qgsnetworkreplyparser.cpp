@@ -39,7 +39,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
   {
     // reply is not multipart, copy body and headers
     QMap<QByteArray, QByteArray> headers;
-    foreach ( QByteArray h, mReply->rawHeaderList() )
+    Q_FOREACH ( QByteArray h, mReply->rawHeaderList() )
     {
       headers.insert( h, mReply->rawHeader( h ) );
     }
@@ -66,13 +66,13 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
     // Lines should be terminated by CRLF ("\r\n") but any new line combination may appear
     QByteArray data = mReply->readAll();
     int from, to;
-    from = data.indexOf( boundary.toAscii(), 0 ) + boundary.length() + 1;
+    from = data.indexOf( boundary.toLatin1(), 0 ) + boundary.length() + 1;
     //QVector<QByteArray> partHeaders;
     //QVector<QByteArray> partBodies;
     while ( true )
     {
       // 'to' is not really 'to', but index of the next byte after the end of part
-      to = data.indexOf( boundary.toAscii(), from );
+      to = data.indexOf( boundary.toLatin1(), from );
       if ( to < 0 )
       {
         QgsDebugMsg( QString( "No more boundaries, rest size = %1" ).arg( data.size() - from - 1 ) );
@@ -96,7 +96,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
       QgsDebugMsg( QString( "part %1 - %2" ).arg( from ).arg( to ) );
       QByteArray part = data.mid( from, to - from );
       // Remove possible new line from beginning
-      while ( part.size() > 0 && ( part.at( 0 ) == '\r' || part.at( 0 ) == '\n' ) )
+      while ( !part.isEmpty() && ( part.at( 0 ) == '\r' || part.at( 0 ) == '\n' ) )
       {
         part.remove( 0, 1 );
       }
@@ -119,11 +119,11 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
       QgsDebugMsg( "headers:\n" + headers );
 
       QStringList headerRows = QString( headers ).split( QRegExp( "[\n\r]+" ) );
-      foreach ( QString row, headerRows )
+      Q_FOREACH ( const QString& row, headerRows )
       {
         QgsDebugMsg( "row = " + row );
         QStringList kv = row.split( ": " );
-        headersMap.insert( kv.value( 0 ).toAscii(), kv.value( 1 ).toAscii() );
+        headersMap.insert( kv.value( 0 ).toLatin1(), kv.value( 1 ).toLatin1() );
       }
       mHeaders.append( headersMap );
 

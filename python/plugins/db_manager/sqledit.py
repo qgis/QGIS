@@ -25,13 +25,13 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import Qt, QSettings
-from PyQt4.QtGui import QColor, QFont, QShortcut, QKeySequence
-from PyQt4.Qsci import QsciScintilla, QsciLexerSQL
+from qgis.PyQt.QtCore import Qt, QSettings
+from qgis.PyQt.QtGui import QColor, QFont, QKeySequence
+from qgis.PyQt.QtWidgets import QShortcut
+from qgis.PyQt.Qsci import QsciScintilla, QsciLexerSQL
 
 
 class SqlEdit(QsciScintilla):
-
     LEXER_PYTHON = 0
     LEXER_R = 1
 
@@ -131,12 +131,12 @@ class SqlEdit(QsciScintilla):
                            + shift)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl)
 
-        #self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Z") + ctrl)
+        # self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Z") + ctrl)
         #self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Y") + ctrl)
 
         # Use Ctrl+Space for autocompletion
         self.shortcutAutocomplete = QShortcut(QKeySequence(Qt.CTRL
-                + Qt.Key_Space), self)
+                                                           + Qt.Key_Space), self)
         self.shortcutAutocomplete.setContext(Qt.WidgetShortcut)
         self.shortcutAutocomplete.activated.connect(self.autoComplete)
 
@@ -177,3 +177,6 @@ class SqlEdit(QsciScintilla):
 
     def lexer(self):
         return self.mylexer
+
+    def setMarginVisible(self, visible):
+        pass

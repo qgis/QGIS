@@ -16,14 +16,16 @@
 #include "qgsexpressionbuilderdialog.h"
 #include <QSettings>
 
-QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText, QWidget* parent, QString key )
-    : QDialog( parent ), mRecentKey( key )
+QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, const QString& startText, QWidget* parent, const QString& key, const QgsExpressionContext &context )
+    : QDialog( parent )
+    , mRecentKey( key )
 {
   setupUi( this );
 
   QPushButton* okButton = buttonBox->button( QDialogButtonBox::Ok );
   connect( builder, SIGNAL( expressionParsed( bool ) ), okButton, SLOT( setEnabled( bool ) ) );
 
+  builder->setExpressionContext( context );
   builder->setLayer( layer );
   builder->setExpressionText( startText );
   builder->loadFieldNames();
@@ -46,6 +48,16 @@ void QgsExpressionBuilderDialog::setExpressionText( const QString& text )
 QString QgsExpressionBuilderDialog::expressionText()
 {
   return builder->expressionText();
+}
+
+QgsExpressionContext QgsExpressionBuilderDialog::expressionContext() const
+{
+  return builder->expressionContext();
+}
+
+void QgsExpressionBuilderDialog::setExpressionContext( const QgsExpressionContext &context )
+{
+  builder->setExpressionContext( context );
 }
 
 void QgsExpressionBuilderDialog::done( int r )

@@ -11,20 +11,18 @@ class QgsMapToolZoom : QgsMapTool
 
     ~QgsMapToolZoom();
 
+    virtual Flags flags() const;
+
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e );
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent* e );
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e );
-
-    //! indicates whether we're zooming in or out
-    virtual bool isTransient();
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e );
 
     //! Flag to indicate a map canvas drag operation is taking place
     virtual void deactivate();
-
 };
 

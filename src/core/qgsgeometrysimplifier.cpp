@@ -16,6 +16,8 @@
 
 #include <limits>
 #include "qgsgeometrysimplifier.h"
+#include "qgsrectangle.h"
+#include "qgsgeometry.h"
 
 QgsAbstractGeometrySimplifier::~QgsAbstractGeometrySimplifier()
 {
@@ -52,25 +54,8 @@ QgsTopologyPreservingSimplifier::~QgsTopologyPreservingSimplifier()
 }
 
 //! Returns a simplified version the specified geometry
-QgsGeometry* QgsTopologyPreservingSimplifier::simplify( QgsGeometry* geometry ) const
+QgsGeometry QgsTopologyPreservingSimplifier::simplify( const QgsGeometry& geometry ) const
 {
-  return geometry->simplify( mTolerance );
+  return geometry.simplify( mTolerance );
 }
 
-//! Simplifies the specified geometry
-bool QgsTopologyPreservingSimplifier::simplifyGeometry( QgsGeometry* geometry ) const
-{
-  QgsGeometry* g = geometry->simplify( mTolerance );
-
-  if ( g )
-  {
-    size_t wkbSize = g->wkbSize();
-    unsigned char* wkb = ( unsigned char* )malloc( wkbSize );
-    memcpy( wkb, g->asWkb(), wkbSize );
-    geometry->fromWkb( wkb, wkbSize );
-    delete g;
-
-    return true;
-  }
-  return false;
-}

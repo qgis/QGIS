@@ -1,0 +1,9 @@
+v.out.vtk
+Converts a vector map to VTK ASCII output.
+Vector (v.*)
+ParameterVector|input|Name of input vector map|-1|False
+ParameterString|precision|Number of significant digits (floating point only)|None|False|True
+ParameterNumber|zscale|Scale factor for elevation|0.0|None|1.0|True
+*ParameterBoolean|-c|Correct the coordinates to fit the VTK-OpenGL precision|False
+*ParameterBoolean|-n|Export numeric attribute table fields as VTK scalar variables|False
+OutputFile|output|VTK File

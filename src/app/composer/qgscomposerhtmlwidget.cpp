@@ -26,7 +26,7 @@
 
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame )
-    : QgsComposerItemBaseWidget( 0, html )
+    : QgsComposerItemBaseWidget( nullptr, html )
     , mHtml( html )
     , mFrame( frame )
 {
@@ -53,15 +53,6 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
   if ( mHtml )
   {
     QObject::connect( mHtml, SIGNAL( changed() ), this, SLOT( setGuiElementValues() ) );
-
-    QgsAtlasComposition* atlas = atlasComposition();
-    if ( atlas )
-    {
-      // repopulate data defined buttons if atlas layer changes
-      connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
-               this, SLOT( populateDataDefinedButtons() ) );
-      connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( populateDataDefinedButtons() ) );
-    }
   }
 
   //embed widget for general options
@@ -73,18 +64,15 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
   }
 
   //connections for data defined buttons
-  connect( mUrlDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( mUrlDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
   connect( mUrlDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mUrlLineEdit, SLOT( setDisabled( bool ) ) );
-
 }
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget()
-    : QgsComposerItemBaseWidget( 0, 0 )
-    , mHtml( NULL )
-    , mFrame( NULL )
-    , mHtmlEditor( NULL )
-    , mStylesheetEditor( NULL )
+    : QgsComposerItemBaseWidget( nullptr, nullptr )
+    , mHtml( nullptr )
+    , mFrame( nullptr )
+    , mHtmlEditor( nullptr )
+    , mStylesheetEditor( nullptr )
 {
 }
 
@@ -122,7 +110,7 @@ void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
     QgsComposition* composition = mHtml->composition();
     if ( composition )
     {
-      composition->beginMultiFrameCommand( mHtml, tr( "Change html url" ) );
+      composition->beginMultiFrameCommand( mHtml, tr( "Change HTML url" ) );
       mHtml->setUrl( newUrl );
       mHtml->update();
       composition->endMultiFrameCommand();
@@ -133,7 +121,7 @@ void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
 void QgsComposerHtmlWidget::on_mFileToolButton_clicked()
 {
   QSettings s;
-  QString lastDir = s.value( "/UI/lastHtmlDir", "" ).toString();
+  QString lastDir = s.value( "/UI/lastHtmlDir", QDir::homePath() ).toString();
   QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, "HTML (*.html *.htm);;All files (*.*)" );
   if ( !file.isEmpty() )
   {
@@ -369,7 +357,8 @@ void QgsComposerHtmlWidget::on_mInsertExpressionButton_clicked()
 
   // use the atlas coverage layer, if any
   QgsVectorLayer* coverageLayer = atlasCoverageLayer();
-  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this );
+  QgsExpressionContext context = mHtml->createExpressionContext();
+  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, "generic", context );
   exprDlg.setWindowTitle( tr( "Insert expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
@@ -472,29 +461,11 @@ void QgsComposerHtmlWidget::setGuiElementValues()
   blockSignals( false );
 }
 
-QgsComposerItem::DataDefinedProperty QgsComposerHtmlWidget::ddPropertyForWidget( QgsDataDefinedButton *widget )
-{
-  if ( widget == mUrlDDBtn )
-  {
-    return QgsComposerItem::SourceUrl;
-  }
-  return QgsComposerItem::NoProperty;
-}
-
 void QgsComposerHtmlWidget::populateDataDefinedButtons()
 {
-  QgsVectorLayer* vl = atlasCoverageLayer();
-
-  //block signals from data defined buttons
-  mUrlDDBtn->blockSignals( true );
-
-  //initialise buttons to use atlas coverage layer
-  mUrlDDBtn->init( vl, mHtml->dataDefinedProperty( QgsComposerItem::SourceUrl ),
-                   QgsDataDefinedButton::AnyType, tr( "url string" ) );
+  registerDataDefinedButton( mUrlDDBtn, QgsComposerObject::SourceUrl,
+                             QgsDataDefinedButton::AnyType, tr( "url string" ) );
 
   //initial state of controls - disable related controls when dd buttons are active
   mUrlLineEdit->setEnabled( !mUrlDDBtn->isActive() );
-
-  //unblock signals from data defined buttons
-  mUrlDDBtn->blockSignals( false );
 }

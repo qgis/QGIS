@@ -17,8 +17,9 @@
 #ifndef QGSRASTERVIEWPORT_H
 #define QGSRASTERVIEWPORT_H
 
-#include <qgspoint.h>
-#include "qgscoordinatetransform.h"
+#include "qgspoint.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsrectangle.h"
 
 /** \ingroup core
  *  This class provides details of the viewable area that a raster will

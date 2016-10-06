@@ -349,7 +349,7 @@ void QwtPolarLayout::activate( const QwtPolarPlot *plot,
 
     QRectF rect( boundingRect ); // undistributed rest of the plot rect
     rect.adjust( d_data->margin, d_data->margin,
-        -d_data->margin, -d_data->margin );
+        -1.0 * d_data->margin, -1.0 * d_data->margin );
 
     // We extract all layout relevant data from the widgets
     // and save them to d_data->layoutData.

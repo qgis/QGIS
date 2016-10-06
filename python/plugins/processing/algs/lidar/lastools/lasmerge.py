@@ -4,7 +4,7 @@
 ***************************************************************************
     lasmerge.py
     ---------------------
-    Date                 : September 2013
+    Date                 : September 2013 and May 2016
     Copyright            : (C) 2013 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
 
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
@@ -24,10 +26,11 @@ __copyright__ = '(C) 2013, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterFile
+
 
 class lasmerge(LAStoolsAlgorithm):
 
@@ -39,8 +42,8 @@ class lasmerge(LAStoolsAlgorithm):
     FILE7 = "FILE7"
 
     def defineCharacteristics(self):
-        self.name = "lasmerge"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasmerge')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParametersApplyFileSourceIdGUI()
@@ -55,7 +58,10 @@ class lasmerge(LAStoolsAlgorithm):
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge")]
+        if (LAStoolsUtils.hasWine()):
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge.exe")]
+        else:
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         file2 = self.getParameterValue(lasmerge.FILE2)
@@ -83,7 +89,7 @@ class lasmerge(LAStoolsAlgorithm):
             commands.append("-i")
             commands.append(file7)
         self.addParametersFilesAreFlightlinesCommands(commands)
-        self.addParametersApplyFileSourceIdsCommands(commands)
+        self.addParametersApplyFileSourceIdCommands(commands)
         self.addParametersPointOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)
 

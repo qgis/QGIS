@@ -1,0 +1,57 @@
+<root>
+  <key>ComputeConfusionMatrix-raster</key>
+  <exec>otbcli_ComputeConfusionMatrix</exec>
+  <longname>ComputeConfusionMatrix (raster)</longname>
+  <group>Learning</group>
+  <description>Computes the confusion matrix of a classification</description>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>in</key>
+    <name>Input Image</name>
+    <description>The input classification image.</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_OutputFilename">OutputFile</parameter_type>
+    <key>out</key>
+    <name>Matrix output</name>
+    <description>Filename to store the output matrix (csv format)</description>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
+    <key>ref</key>
+    <name>Ground truth</name>
+    <description>Choice of ground truth format</description>
+    <options>
+      <choices>
+        <choice>raster</choice>
+        </choices>
+    </options>
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
+    <key>ref.raster.in</key>
+    <name>Input reference image</name>
+    <description>Input image containing the ground truth labels</description>
+    <optional>False</optional>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>nodatalabel</key>
+    <name>Value for nodata pixels</name>
+    <description>Label for the NoData class. Such input pixels will be discarded from the ground truth and from the input classification map. By default, 'nodatalabel = 0'.</description>
+    <minValue />
+    <maxValue />
+    <default>0</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
+  </parameter>
+</root>

@@ -23,21 +23,26 @@
 
 #include <cstdlib>
 
-QgsServerLogger* QgsServerLogger::mInstance = 0;
+QgsServerLogger* QgsServerLogger::mInstance = nullptr;
 
 QgsServerLogger* QgsServerLogger::instance()
 {
-  if ( mInstance == 0 )
+  if ( !mInstance )
   {
     mInstance = new QgsServerLogger();
   }
   return mInstance;
 }
 
-QgsServerLogger::QgsServerLogger(): mLogFile( 0 )
+QgsServerLogger::QgsServerLogger()
+    : mLogFile( nullptr )
+    , mLogLevel( 3 )
 {
   //logfile
   QString filePath = getenv( "QGIS_SERVER_LOG_FILE" );
+  if ( filePath.isEmpty() )
+    return;
+
   mLogFile.setFileName( filePath );
   if ( mLogFile.open( QIODevice::Append ) )
   {
@@ -50,16 +55,12 @@ QgsServerLogger::QgsServerLogger(): mLogFile( 0 )
   {
     mLogLevel = atoi( logLevelChar );
   }
-  else
-  {
-    mLogLevel = 3;
-  }
 
   connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ), this,
            SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
 }
 
-void QgsServerLogger::logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
+void QgsServerLogger::logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level )
 {
   Q_UNUSED( tag );
   if ( !mLogFile.isOpen() || mLogLevel > level )

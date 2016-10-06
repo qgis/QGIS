@@ -16,9 +16,9 @@
  ***************************************************************************/
 
 // GDAL includes
-#include "gdal_priv.h"
-#include "cpl_string.h"
-#include "cpl_conv.h"
+#include <gdal.h>
+#include <cpl_string.h>
+#include <cpl_conv.h>
 
 // QGIS Specific includes
 #include <qgisinterface.h>
@@ -27,6 +27,7 @@
 #include "heatmap.h"
 #include "heatmapgui.h"
 
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -70,7 +71,7 @@ Heatmap::Heatmap( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mDecay( 1. )
     , mQGisIface( theQgisInterface )
-    , mQActionPointer( 0 )
+    , mQActionPointer( nullptr )
 {
 }
 
@@ -137,30 +138,26 @@ void Heatmap::run()
   OutputValues valueType = d.outputValues();
 
   //is input layer multipoint?
-  bool isMultiPoint = inputLayer->wkbType() == QGis::WKBMultiPoint || inputLayer->wkbType() == QGis::WKBMultiPoint25D;
+  bool isMultiPoint = inputLayer->wkbType() == QgsWkbTypes::MultiPoint || inputLayer->wkbType() == QgsWkbTypes::MultiPoint25D;
 
   // Getting the rasterdataset in place
   GDALAllRegister();
 
-  GDALDataset *emptyDataset;
-  GDALDriver *myDriver;
-
-  myDriver = GetGDALDriverManager()->GetDriverByName( d.outputFormat().toUtf8() );
-  if ( myDriver == NULL )
+  GDALDriverH myDriver = GDALGetDriverByName( d.outputFormat().toUtf8() );
+  if ( !myDriver )
   {
     mQGisIface->messageBar()->pushMessage( tr( "GDAL driver error" ), tr( "Cannot open the driver for the specified format" ), QgsMessageBar::WARNING, mQGisIface->messageTimeout() );
     return;
   }
 
   double geoTransform[6] = { myBBox.xMinimum(), cellsize, 0, myBBox.yMinimum(), 0, cellsize };
-  emptyDataset = myDriver->Create( d.outputFilename().toUtf8(), columns, rows, 1, GDT_Float32, NULL );
-  emptyDataset->SetGeoTransform( geoTransform );
+  GDALDatasetH emptyDataset = GDALCreate( myDriver, d.outputFilename().toUtf8(), columns, rows, 1, GDT_Float32, nullptr );
+  GDALSetGeoTransform( emptyDataset, geoTransform );
   // Set the projection on the raster destination to match the input layer
-  emptyDataset->SetProjection( inputLayer->crs().toWkt().toLocal8Bit().data() );
+  GDALSetProjection( emptyDataset, inputLayer->crs().toWkt().toLocal8Bit().data() );
 
-  GDALRasterBand *poBand;
-  poBand = emptyDataset->GetRasterBand( 1 );
-  poBand->SetNoDataValue( NO_DATA );
+  GDALRasterBandH poBand = GDALGetRasterBand( emptyDataset, 1 );
+  GDALSetRasterNoDataValue( poBand, NO_DATA );
 
   float* line = ( float * ) CPLMalloc( sizeof( float ) * columns );
   for ( int i = 0; i < columns ; i++ )
@@ -170,22 +167,24 @@ void Heatmap::run()
   // Write the empty raster
   for ( int i = 0; i < rows ; i++ )
   {
-    poBand->RasterIO( GF_Write, 0, i, columns, 1, line, columns, 1, GDT_Float32, 0, 0 );
+    if ( GDALRasterIO( poBand, GF_Write, 0, i, columns, 1, line, columns, 1, GDT_Float32, 0, 0 ) != CE_None )
+    {
+      QgsDebugMsg( "Raster IO Error" );
+    }
   }
 
   CPLFree( line );
   //close the dataset
-  GDALClose(( GDALDatasetH ) emptyDataset );
+  GDALClose( emptyDataset );
 
   // open the raster in GA_Update mode
-  GDALDataset *heatmapDS;
-  heatmapDS = ( GDALDataset * ) GDALOpen( TO8F( d.outputFilename() ), GA_Update );
+  GDALDatasetH heatmapDS = GDALOpen( TO8F( d.outputFilename() ), GA_Update );
   if ( !heatmapDS )
   {
     mQGisIface->messageBar()->pushMessage( tr( "Raster update error" ), tr( "Could not open the created raster for updating. The heatmap was not generated." ), QgsMessageBar::WARNING );
     return;
   }
-  poBand = heatmapDS->GetRasterBand( 1 );
+  poBand = GDALGetRasterBand( heatmapDS, 1 );
 
   QgsAttributeList myAttrList;
   int rField = 0;
@@ -202,7 +201,7 @@ void Heatmap::run()
     QgsDebugMsg( QString( "Radius Field index received: %1" ).arg( rField ) );
 
     // If not using map units, then calculate a conversion factor to convert the radii to map units
-    if ( d.radiusUnit() == HeatmapGui::Meters )
+    if ( d.radiusUnit() == HeatmapGui::LayerUnits )
     {
       radiusToMapUnits = mapUnitsOf( 1, inputLayer->crs() );
     }
@@ -225,7 +224,8 @@ void Heatmap::run()
   int totalFeatures = inputLayer->featureCount();
   int counter = 0;
 
-  QProgressDialog p( tr( "Creating heatmap" ), tr( "Abort" ), 0, totalFeatures, mQGisIface->mainWindow() );
+  QProgressDialog p( tr( "Rendering heatmap..." ), tr( "Abort" ), 0, totalFeatures, mQGisIface->mainWindow() );
+  p.setWindowTitle( tr( "QGIS" ) );
   p.setWindowModality( Qt::ApplicationModal );
   p.show();
 
@@ -242,8 +242,8 @@ void Heatmap::run()
       break;
     }
 
-    QgsGeometry* featureGeometry = myFeature.geometry();
-    if ( !featureGeometry )
+    QgsGeometry featureGeometry = myFeature.geometry();
+    if ( featureGeometry.isEmpty() )
     {
       continue;
     }
@@ -252,7 +252,7 @@ void Heatmap::run()
     QgsMultiPoint multiPoints;
     if ( !isMultiPoint )
     {
-      QgsPoint myPoint = featureGeometry->asPoint();
+      QgsPoint myPoint = featureGeometry.asPoint();
       // avoiding any empty points or out of extent points
       if (( myPoint.x() < myBBox.xMinimum() ) || ( myPoint.y() < myBBox.yMinimum() )
           || ( myPoint.x() > myBBox.xMaximum() ) || ( myPoint.y() > myBBox.yMaximum() ) )
@@ -263,7 +263,7 @@ void Heatmap::run()
     }
     else
     {
-      multiPoints = featureGeometry->asMultiPoint();
+      multiPoints = featureGeometry.asMultiPoint();
     }
 
     // If radius is variable then fetch it and calculate new pixel buffer size
@@ -298,8 +298,11 @@ void Heatmap::run()
 
       // get the data
       float *dataBuffer = ( float * ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
-      poBand->RasterIO( GF_Read, xPosition, yPosition, blockSize, blockSize,
-                        dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
+      if ( GDALRasterIO( poBand, GF_Read, xPosition, yPosition, blockSize, blockSize,
+                         dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
+      {
+        QgsDebugMsg( "Raster IO Error" );
+      }
 
       for ( int xp = 0; xp <= myBuffer; xp++ )
       {
@@ -340,8 +343,11 @@ void Heatmap::run()
           }
         }
       }
-      poBand->RasterIO( GF_Write, xPosition, yPosition, blockSize, blockSize,
-                        dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
+      if ( GDALRasterIO( poBand, GF_Write, xPosition, yPosition, blockSize, blockSize,
+                         dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
+      {
+        QgsDebugMsg( "Raster IO Error" );
+      }
       CPLFree( dataBuffer );
     }
   }
@@ -363,9 +369,9 @@ void Heatmap::run()
  *
  */
 
-double Heatmap::mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs )
+double Heatmap::mapUnitsOf( double layerdist, const QgsCoordinateReferenceSystem& layerCrs )
 {
-  // Worker to transform metres input to mapunits
+  // Worker to transform layer input to mapunits
   QgsDistanceArea da;
   da.setSourceCrs( layerCrs.srsid() );
   da.setEllipsoid( layerCrs.ellipsoidAcronym() );
@@ -373,7 +379,7 @@ double Heatmap::mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs
   {
     da.setEllipsoidalMode( true );
   }
-  return meters / da.measureLine( QgsPoint( 0.0, 0.0 ), QgsPoint( 0.0, 1.0 ) );
+  return layerdist / da.measureLine( QgsPoint( 0.0, 0.0 ), QgsPoint( 0.0, 1.0 ) );
 }
 
 int Heatmap::bufferSize( double radius, double cellsize )

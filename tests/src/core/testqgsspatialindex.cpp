@@ -16,24 +16,19 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QObject>
 
 #include <qgsapplication.h>
+#include "qgsfeatureiterator.h"
 #include <qgsgeometry.h>
 #include <qgsspatialindex.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 
-
-#if QT_VERSION < 0x40701
-// See http://hub.qgis.org/issues/4284
-Q_DECLARE_METATYPE( QVariant )
-#endif
-
 static QgsFeature _pointFeature( QgsFeatureId id, qreal x, qreal y )
 {
   QgsFeature f( id );
-  f.setGeometry( QgsGeometry::fromPoint( QgsPoint( x, y ) ) );
+  QgsGeometry g = QgsGeometry::fromPoint( QgsPoint( x, y ) );
+  f.setGeometry( g );
   return f;
 }
 
@@ -74,7 +69,7 @@ class TestQgsSpatialIndex : public QObject
     void testQuery()
     {
       QgsSpatialIndex index;
-      foreach ( const QgsFeature& f, _pointFeatures() )
+      Q_FOREACH ( const QgsFeature& f, _pointFeatures() )
         index.insertFeature( f );
 
       QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 0, 0, 10, 10 ) );
@@ -90,7 +85,7 @@ class TestQgsSpatialIndex : public QObject
     void testCopy()
     {
       QgsSpatialIndex* index = new QgsSpatialIndex;
-      foreach ( const QgsFeature& f, _pointFeatures() )
+      Q_FOREACH ( const QgsFeature& f, _pointFeatures() )
         index->insertFeature( f );
 
       // create copy of the index
@@ -109,7 +104,7 @@ class TestQgsSpatialIndex : public QObject
       QVERIFY( indexCopy.refs() == 2 );
 
       // do a modification
-      QgsFeature f2( _pointFeatures()[1] );
+      QgsFeature f2( _pointFeatures().at( 1 ) );
       indexCopy.deleteFeature( f2 );
 
       // check that the index is not shared anymore
@@ -133,7 +128,8 @@ class TestQgsSpatialIndex : public QObject
         for ( int k = 0; k < 500; ++k )
         {
           QgsFeature f( i*1000 + k );
-          f.setGeometry( QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) ) );
+          QgsGeometry g = QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) );
+          f.setGeometry( g );
           index.insertFeature( f );
         }
       }
@@ -154,7 +150,8 @@ class TestQgsSpatialIndex : public QObject
         for ( int k = 0; k < 500; ++k )
         {
           QgsFeature f( i*1000 + k );
-          f.setGeometry( QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) ) );
+          QgsGeometry g = QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) );
+          f.setGeometry( g );
           flist << f;
         }
         vl->dataProvider()->addFeatures( flist );

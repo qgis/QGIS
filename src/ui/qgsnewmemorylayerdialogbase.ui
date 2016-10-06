@@ -24,6 +24,71 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QGroupBox" name="buttonGroupGeometry">
+     <property name="title">
+      <string>Geometry type and CRS</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="1" column="0">
+         <widget class="QRadioButton" name="mMultiPointRadioButton">
+          <property name="text">
+           <string>Multipoint</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QRadioButton" name="mMultiPolygonRadioButton">
+          <property name="text">
+           <string>Multipolygon</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QRadioButton" name="mPolygonRadioButton">
+          <property name="text">
+           <string>Polygon</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QRadioButton" name="mPointRadioButton">
+          <property name="text">
+           <string>Point</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QRadioButton" name="mLineRadioButton">
+          <property name="text">
+           <string>Line</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QRadioButton" name="mMultiLineRadioButton">
+          <property name="text">
+           <string>Multiline</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLabel" name="label">
@@ -36,64 +101,6 @@
       <widget class="QLineEdit" name="mNameLineEdit"/>
      </item>
     </layout>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="buttonGroup1">
-     <property name="title">
-      <string>Type</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="mPointRadioButton">
-        <property name="text">
-         <string>Point</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QRadioButton" name="mLineRadioButton">
-        <property name="text">
-         <string>Line</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QRadioButton" name="mPolygonRadioButton">
-        <property name="text">
-         <string>Polygon</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QRadioButton" name="mMultiPointRadioButton">
-        <property name="text">
-         <string>Multipoint</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QRadioButton" name="mMultiLineRadioButton">
-        <property name="text">
-         <string>Multiline</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QRadioButton" name="mMultiPolygonRadioButton">
-        <property name="text">
-         <string>Multipolygon</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
-     <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
-     </property>
-    </widget>
    </item>
    <item>
     <widget class="QLabel" name="label_2">
@@ -143,7 +150,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mNameLineEdit</tabstop>
+  <tabstop>buttonGroupGeometry</tabstop>
   <tabstop>mPointRadioButton</tabstop>
   <tabstop>mLineRadioButton</tabstop>
   <tabstop>mPolygonRadioButton</tabstop>
@@ -151,7 +158,7 @@
   <tabstop>mMultiLineRadioButton</tabstop>
   <tabstop>mMultiPolygonRadioButton</tabstop>
   <tabstop>mCrsSelector</tabstop>
-  <tabstop>mButtonBox</tabstop>
+  <tabstop>mNameLineEdit</tabstop>
  </tabstops>
  <resources/>
  <connections>

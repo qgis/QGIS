@@ -9,6 +9,7 @@ class QgsSingleBandPseudoColorRendererWidget : QgsRasterRendererWidget
     {
       Continuous,    // Using breaks from color palette
       EqualInterval,
+      Quantile,
     };
 
     QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
@@ -16,6 +17,7 @@ class QgsSingleBandPseudoColorRendererWidget : QgsRasterRendererWidget
 
     static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) /Factory/;
     QgsRasterRenderer* renderer();
+    void setMapCanvas( QgsMapCanvas* canvas );
 
     void setFromRenderer( const QgsRasterRenderer* r );
 
@@ -23,3 +25,4 @@ class QgsSingleBandPseudoColorRendererWidget : QgsRasterRendererWidget
     void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
 
 };
+

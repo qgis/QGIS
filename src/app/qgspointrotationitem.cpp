@@ -28,7 +28,7 @@ QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas* canvas )
 }
 
 QgsPointRotationItem::QgsPointRotationItem()
-    : QgsMapCanvasItem( 0 )
+    : QgsMapCanvasItem( nullptr )
     , mOrientation( Clockwise )
     , mRotation( 0.0 )
 {

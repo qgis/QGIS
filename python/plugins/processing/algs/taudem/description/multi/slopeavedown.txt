@@ -1,7 +1,0 @@
-Slope Average Down (multifile)
-slopeavedown
-Specialized Grid Analysis tools
-ParameterFile|-p|D8 Flow Direction Grid|True|False
-ParameterFile|-fel|Pit Filled Elevation Grid|True|False
-ParameterNumber|-dn|Downslope Distance|1|500|50
-OutputDirectory|-slpd|Slope Average Down Grid

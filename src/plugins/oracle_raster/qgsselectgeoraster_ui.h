@@ -52,7 +52,7 @@ class QgsOracleSelectGeoraster : public QDialog, private Ui::SelectGeoRasterBase
     void on_btnNew_clicked();
     void on_btnEdit_clicked();
     void on_btnDelete_clicked();
-    void on_listWidget_clicked( QModelIndex Index );
+    void on_listWidget_clicked( const QModelIndex& Index );
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 };
 

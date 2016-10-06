@@ -1,0 +1,36 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>innerRingTouchesOuterRing</Name>
+    <ElementPath>innerRingTouchesOuterRing</ElementPath>
+    <!--MULTIPOLYGON-->
+    <GeometryType>6</GeometryType>
+    <SRSName>EPSG:3003</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>19</FeatureCount>
+      <ExtentXMin>1754447.79750</ExtentXMin>
+      <ExtentXMax>1757996.40354</ExtentXMax>
+      <ExtentYMin>5078658.22018</ExtentYMin>
+      <ExtentYMax>5080667.30082</ExtentYMax>
+    </DatasetSpecificInfo>
+    <PropertyDefn>
+      <Name>DN</Name>
+      <ElementPath>DN</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>AREA</Name>
+      <ElementPath>AREA</ElementPath>
+      <Type>Real</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>PERIMETER</Name>
+      <ElementPath>PERIMETER</ElementPath>
+      <Type>Real</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>area2</Name>
+      <ElementPath>area2</ElementPath>
+      <Type>Real</Type>
+    </PropertyDefn>
+  </GMLFeatureClass>
+</GMLFeatureClassList>

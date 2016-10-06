@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,6 +26,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
@@ -37,6 +41,8 @@ from processing.tools.system import isWindows
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class sieve(GdalAlgorithm):
 
@@ -47,18 +53,21 @@ class sieve(GdalAlgorithm):
 
     PIXEL_CONNECTIONS = ['4', '8']
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'sieve.png'))
+
     def defineCharacteristics(self):
-        self.name = 'Sieve'
-        self.group = '[GDAL] Analysis'
+        self.name, self.i18n_name = self.trAlgorithm('Sieve')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.THRESHOLD,
-            self.tr('Threshold'), 0, 9999, 2))
+                                          self.tr('Threshold'), 0, 9999, 2))
         self.addParameter(ParameterSelection(self.CONNECTIONS,
-            self.tr('Pixel connection'), self.PIXEL_CONNECTIONS, 0))
+                                             self.tr('Pixel connection'), self.PIXEL_CONNECTIONS, 0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Sieved')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         output = self.getOutputValue(self.OUTPUT)
 
         arguments = []
@@ -66,8 +75,8 @@ class sieve(GdalAlgorithm):
         arguments.append(str(self.getParameterValue(self.THRESHOLD)))
 
         arguments.append('-' +
-            self.PIXEL_CONNECTIONS[self.getParameterValue(
-                self.CONNECTIONS)])
+                         self.PIXEL_CONNECTIONS[self.getParameterValue(
+                                                self.CONNECTIONS)])
 
         arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
@@ -82,4 +91,4 @@ class sieve(GdalAlgorithm):
         else:
             commands = ['gdal_sieve.py', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

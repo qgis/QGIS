@@ -4,7 +4,7 @@
 ***************************************************************************
     las2lasPro_project.py
     ---------------------
-    Date                 : October 2014
+    Date                 : October 2014 and May 2016
     Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'October 2014'
@@ -24,10 +27,11 @@ __copyright__ = '(C) 2014, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterSelection
+
 
 class las2lasPro_project(LAStoolsAlgorithm):
 
@@ -46,21 +50,21 @@ class las2lasPro_project(LAStoolsAlgorithm):
     TARGET_SP = "TARGET_SP"
 
     def defineCharacteristics(self):
-        self.name = "las2lasPro_project"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('las2lasPro_project')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterSelection(las2lasPro_project.SOURCE_PROJECTION,
-            self.tr("source projection"), las2lasPro_project.PROJECTIONS, 0))
+                                             self.tr("source projection"), las2lasPro_project.PROJECTIONS, 0))
         self.addParameter(ParameterSelection(las2lasPro_project.SOURCE_UTM,
-            self.tr("source utm zone"), las2lasPro_project.UTM_ZONES, 0))
+                                             self.tr("source utm zone"), las2lasPro_project.UTM_ZONES, 0))
         self.addParameter(ParameterSelection(las2lasPro_project.SOURCE_SP,
-            self.tr("source state plane code"), las2lasPro_project.STATE_PLANES, 0))
+                                             self.tr("source state plane code"), las2lasPro_project.STATE_PLANES, 0))
         self.addParameter(ParameterSelection(las2lasPro_project.TARGET_PROJECTION,
-            self.tr("target projection"), las2lasPro_project.PROJECTIONS, 0))
+                                             self.tr("target projection"), las2lasPro_project.PROJECTIONS, 0))
         self.addParameter(ParameterSelection(las2lasPro_project.TARGET_UTM,
-            self.tr("target utm zone"), las2lasPro_project.UTM_ZONES, 0))
+                                             self.tr("target utm zone"), las2lasPro_project.UTM_ZONES, 0))
         self.addParameter(ParameterSelection(las2lasPro_project.TARGET_SP,
-            self.tr("target state plane code"), las2lasPro_project.STATE_PLANES, 0))
+                                             self.tr("target state plane code"), las2lasPro_project.STATE_PLANES, 0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -69,7 +73,10 @@ class las2lasPro_project(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las")]
+        if (LAStoolsUtils.hasWine()):
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las.exe")]
+        else:
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
         source_projection = self.getParameterValue(las2lasPro_project.SOURCE_PROJECTION)

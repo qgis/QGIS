@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Michael Minn'
 __date__ = 'May 2010'
@@ -25,7 +26,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -33,6 +34,7 @@ from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 
 from processing.tools import dataobjects, vector
+
 
 class HubLines(GeoAlgorithm):
     HUBS = 'HUBS'
@@ -42,19 +44,19 @@ class HubLines(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Hub lines'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Hub lines')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.HUBS,
-            self.tr('Hub point layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Hub layer')))
         self.addParameter(ParameterTableField(self.HUB_FIELD,
-            self.tr('Hub ID field'), self.HUBS))
+                                              self.tr('Hub ID field'), self.HUBS))
         self.addParameter(ParameterVector(self.SPOKES,
-            self.tr('Spoke point layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+                                          self.tr('Spoke layer')))
         self.addParameter(ParameterTableField(self.SPOKE_FIELD,
-            self.tr('Spoke ID field'), self.SPOKES))
+                                              self.tr('Spoke ID field'), self.SPOKES))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub lines'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, progress):
         layerHub = dataobjects.getObjectFromUri(
@@ -70,22 +72,20 @@ class HubLines(GeoAlgorithm):
                 self.tr('Same layer given for both hubs and spokes'))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layerSpoke.pendingFields(), QGis.WKBLineString, layerSpoke.crs())
+            layerSpoke.fields(), QgsWkbTypes.LineString, layerSpoke.crs())
 
         spokes = vector.features(layerSpoke)
         hubs = vector.features(layerHub)
+        total = 100.0 / len(spokes)
 
-        count = len(spokes)
-        total = 100.0 / float(count)
-
-        for count, spokepoint in enumerate(spokes):
+        for current, spokepoint in enumerate(spokes):
             p = spokepoint.geometry().boundingBox().center()
             spokeX = p.x()
             spokeY = p.y()
-            spokeId = unicode(spokepoint[fieldSpoke])
+            spokeId = str(spokepoint[fieldSpoke])
 
             for hubpoint in hubs:
-                hubId = unicode(hubpoint[fieldHub])
+                hubId = str(hubpoint[fieldHub])
                 if hubId == spokeId:
                     p = hubpoint.geometry().boundingBox().center()
                     hubX = p.x()
@@ -99,6 +99,6 @@ class HubLines(GeoAlgorithm):
 
                     break
 
-            progress.setPercentage(int(count * total))
+            progress.setPercentage(int(current * total))
 
         del writer

@@ -18,14 +18,14 @@
 #include "qgscomposerarrowwidget.h"
 #include "qgscomposerarrow.h"
 #include "qgscomposeritemwidget.h"
-#include "qgssymbolv2selectordialog.h"
-#include "qgsstylev2.h"
-#include "qgssymbolv2.h"
+#include "qgssymbolselectordialog.h"
+#include "qgsstyle.h"
+#include "qgssymbol.h"
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QFileInfo>
 
-QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QgsComposerItemBaseWidget( 0, arrow ), mArrow( arrow )
+QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QgsComposerItemBaseWidget( nullptr, arrow ), mArrow( arrow )
 {
   setupUi( this );
   mRadioButtonGroup = new QButtonGroup( this );
@@ -261,7 +261,7 @@ void QgsComposerArrowWidget::on_mStartMarkerToolButton_clicked()
 
   if ( openDir.isEmpty() )
   {
-    openDir = s.value( "/UI/lastComposerMarkerDir", "" ).toString();
+    openDir = s.value( "/UI/lastComposerMarkerDir", QDir::homePath() ).toString();
   }
 
   QString svgFileName = QFileDialog::getOpenFileName( this, tr( "Start marker svg file" ), openDir );
@@ -288,7 +288,7 @@ void QgsComposerArrowWidget::on_mEndMarkerToolButton_clicked()
 
   if ( openDir.isEmpty() )
   {
-    openDir = s.value( "/UI/lastComposerMarkerDir", "" ).toString();
+    openDir = s.value( "/UI/lastComposerMarkerDir", QDir::homePath() ).toString();
   }
 
   QString svgFileName = QFileDialog::getOpenFileName( this, tr( "End marker svg file" ), openDir );
@@ -309,8 +309,12 @@ void QgsComposerArrowWidget::on_mLineStyleButton_clicked()
     return;
   }
 
-  QgsLineSymbolV2* newSymbol = dynamic_cast<QgsLineSymbolV2*>( mArrow->lineSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
+  QgsLineSymbol* newSymbol = mArrow->lineSymbol()->clone();
+  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
+  QgsExpressionContext context = mArrow->createExpressionContext();
+  QgsSymbolWidgetContext symbolContext;
+  symbolContext.setExpressionContext( &context );
+  d.setContext( symbolContext );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -333,6 +337,6 @@ void QgsComposerArrowWidget::updateLineSymbolMarker()
     return;
   }
 
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mArrow->lineSymbol(), mLineStyleButton->iconSize() );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mArrow->lineSymbol(), mLineStyleButton->iconSize() );
   mLineStyleButton->setIcon( icon );
 }

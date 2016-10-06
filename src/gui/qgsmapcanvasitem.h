@@ -42,12 +42,12 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! paint function called by map canvas
     virtual void paint( QPainter * painter,
                         const QStyleOptionGraphicsItem * option,
-                        QWidget * widget = 0 ) override;
+                        QWidget * widget = nullptr ) override;
 
     //! schedules map canvas for repaint
     void updateCanvas();
 
-    /**Sets render context parameters
+    /** Sets render context parameters
     @param p painter for rendering
     @param context out: configured context
     @return true in case of success */
@@ -61,10 +61,6 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! default implementation for canvas items
     virtual QRectF boundingRect() const override;
 
-    //! sets current offset, to be called from QgsMapCanvas
-    //! @deprecated since v2.4 - not called by QgsMapCanvas anymore
-    Q_DECL_DEPRECATED void setPanningOffset( const QPoint& point );
-
     //! returns canvas item rectangle in map units
     QgsRectangle rect() const;
 
@@ -72,7 +68,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     void setRect( const QgsRectangle& r, bool resetRotation = true );
 
     //! transformation from screen coordinates to map coordinates
-    QgsPoint toMapCoordinates( const QPoint& point ) const;
+    QgsPoint toMapCoordinates( QPoint point ) const;
 
     //! transformation from map coordinates to screen coordinates
     QPointF toCanvasCoordinates( const QgsPoint& point ) const;
@@ -93,11 +89,6 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     QgsRectangle mRect;
 
     double mRectRotation;
-
-    //! offset from normal position due current panning operation,
-    //! used when converting map coordinates to move map canvas items
-    //! @deprecated since v2.4
-    QPoint mPanningOffset;
 
     //! cached size of the item (to return in boundingRect())
     QSizeF mItemSize;

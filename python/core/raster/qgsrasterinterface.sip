@@ -1,5 +1,42 @@
 
-/**  Base class for processing modules.
+/** \ingroup core
+ * Feedback object tailored for raster block reading.
+ *
+ * @note added in QGIS 3.0
+ */
+class QgsRasterBlockFeedback : QgsFeedback
+{
+%TypeHeaderCode
+#include <qgsrasterinterface.h>
+%End
+
+  public:
+    //! Construct a new raster block feedback object
+    QgsRasterBlockFeedback( QObject* parent = nullptr );
+
+    //! May be emitted by raster data provider to indicate that some partial data are available
+    //! and a new preview image may be produced
+    virtual void onNewData();
+
+    //! Whether the raster provider should return only data that are already available
+    //! without waiting for full result. By default this flag is not enabled.
+    //! @see setPreviewOnly()
+    bool isPreviewOnly() const;
+    //! set flag whether the block request is for preview purposes only
+    //! @see isPreviewOnly()
+    void setPreviewOnly( bool preview );
+
+    //! Whether our painter is drawing to a temporary image used just by this layer
+    //! @see setRenderPartialOutput()
+    bool renderPartialOutput() const;
+    //! Set whether our painter is drawing to a temporary image used just by this layer
+    //! @see renderPartialOutput()
+    void setRenderPartialOutput( bool enable );
+
+};
+
+
+/** Base class for processing modules.
  *
  */
 
@@ -27,39 +64,39 @@ class QgsRasterInterface
 
 %ConvertToSubClassCode
   if (     dynamic_cast<QgsBrightnessContrastFilter*>(sipCpp))
-    sipClass = sipClass_QgsBrightnessContrastFilter;
+    sipType = sipType_QgsBrightnessContrastFilter;
   else if (dynamic_cast<QgsHueSaturationFilter*>(sipCpp))
-    sipClass = sipClass_QgsHueSaturationFilter;
+    sipType = sipType_QgsHueSaturationFilter;
   else if (dynamic_cast<QgsRasterDataProvider*>(sipCpp))
   {
-    sipClass = sipClass_QgsRasterDataProvider;
+    sipType = sipType_QgsRasterDataProvider;
     // use static cast because QgsRasterDataProvider has multiple inheritance
     // and we would end up with bad pointer otherwise!
     *sipCppRet = static_cast<QgsRasterDataProvider*>(sipCpp);
   }
   else if (dynamic_cast<QgsRasterNuller*>(sipCpp))
-    sipClass = sipClass_QgsRasterNuller;
+    sipType = sipType_QgsRasterNuller;
   else if (dynamic_cast<QgsRasterProjector*>(sipCpp))
-    sipClass = sipClass_QgsRasterProjector;
+    sipType = sipType_QgsRasterProjector;
   else if (dynamic_cast<QgsRasterRenderer*>(sipCpp))
   {
     if (     dynamic_cast<QgsMultiBandColorRenderer*>(sipCpp))
-      sipClass = sipClass_QgsMultiBandColorRenderer;
+      sipType = sipType_QgsMultiBandColorRenderer;
     else if (dynamic_cast<QgsPalettedRasterRenderer*>(sipCpp))
-      sipClass = sipClass_QgsPalettedRasterRenderer;
+      sipType = sipType_QgsPalettedRasterRenderer;
     else if (dynamic_cast<QgsSingleBandColorDataRenderer*>(sipCpp))
-      sipClass = sipClass_QgsSingleBandColorDataRenderer;
+      sipType = sipType_QgsSingleBandColorDataRenderer;
     else if (dynamic_cast<QgsSingleBandGrayRenderer*>(sipCpp))
-      sipClass = sipClass_QgsSingleBandGrayRenderer;
+      sipType = sipType_QgsSingleBandGrayRenderer;
     else if (dynamic_cast<QgsSingleBandPseudoColorRenderer*>(sipCpp))
-      sipClass = sipClass_QgsSingleBandPseudoColorRenderer;
+      sipType = sipType_QgsSingleBandPseudoColorRenderer;
     else
-      sipClass = sipClass_QgsRasterRenderer;
+      sipType = sipType_QgsRasterRenderer;
   }
   else if (dynamic_cast<QgsRasterResampleFilter*>(sipCpp))
-    sipClass = sipClass_QgsRasterResampleFilter;
+    sipType = sipType_QgsRasterResampleFilter;
   else
-    sipClass = 0;
+    sipType = 0;
 %End
 
   public:
@@ -94,17 +131,17 @@ class QgsRasterInterface
     QString capabilitiesString() const;
 
     /** Returns data type for the band specified by number */
-    virtual QGis::DataType dataType( int bandNo ) const = 0;
+    virtual Qgis::DataType dataType( int bandNo ) const = 0;
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType */
-    virtual QGis::DataType srcDataType( int bandNo ) const;
+    virtual Qgis::DataType sourceDataType( int bandNo ) const;
 
     /**
      * Get the extent of the interface.
      * @return QgsRectangle containing the extent of the layer
      */
-    virtual QgsRectangle extent();
+    virtual QgsRectangle extent() const;
 
     int dataTypeSize( int bandNo );
 
@@ -129,8 +166,9 @@ class QgsRasterInterface
      * @param extent extent of block
      * @param width pixel width of block
      * @param height pixel height of block
+     * @param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0 /Factory/;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) = 0 /Factory/;
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */
@@ -149,7 +187,7 @@ class QgsRasterInterface
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      */
-    virtual QgsRasterInterface *srcInput();
+    virtual QgsRasterInterface *sourceInput();
 
     /** \brief Get band statistics.
      * @param theBandNo The band (number).
@@ -219,9 +257,32 @@ class QgsRasterInterface
                                 int theSampleSize = 0 );
 
     /** Write base class members to xml. */
-    virtual void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    virtual void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
     /** Sets base class members from xml. Usually called from create() methods of subclasses */
-    virtual void readXML( const QDomElement& filterElem );
+    virtual void readXml( const QDomElement& filterElem );
+
+  protected:
+
+    /** Fill in histogram defaults if not specified
+     * @note theBinCount, theMinimun and theMaximum not optional in python bindings
+     */
+    void initHistogram( QgsRasterHistogram &theHistogram, int theBandNo,
+                        int theBinCount /* = 0 */,
+                        double theMinimum /*= std::numeric_limits<double>::quiet_NaN()*/,
+                        double theMaximum /*= std::numeric_limits<double>::quiet_NaN()*/,
+                        const QgsRectangle & theExtent = QgsRectangle(),
+                        int theSampleSize = 0,
+                        bool theIncludeOutOfRange = false );
+
+    /** Fill in statistics defaults if not specified */
+    void initStatistics( QgsRasterBandStats &theStatistics, int theBandNo,
+                         int theStats = QgsRasterBandStats::All,
+                         const QgsRectangle & theExtent = QgsRectangle(),
+                         int theBinCount = 0 );
+
+  private:
+    QgsRasterInterface(const QgsRasterInterface &);
+    QgsRasterInterface &operator=(const QgsRasterInterface &);
 
 };
 

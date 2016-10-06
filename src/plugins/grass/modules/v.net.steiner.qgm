@@ -2,8 +2,11 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Connect selected nodes by shortest tree (Steiner tree)" module="v.net.steiner">
-	<option key="input" layeroption="alayer" typemask="line,boundary" label="Input arcs" id="arcs" />
-	<option key="input" mapid="arcs" layeroption="nlayer" typemask="point" label="Input nodes" id="nodes" />
-	<selection key="tcats" layerid="nodes" label="Cats" />
+	<option key="input" layeroption="alayer" typemask="line,boundary" label="Input arcs" id="arcs" version_max="6"/>
+	<option key="input" layeroption="arc_layer" typemask="line,boundary" label="Input arcs" id="arcs" version_min="7"/>
+	<option key="input" mapid="arcs" layeroption="nlayer" typemask="point" label="Input nodes" id="nodes" version_max="6"/>
+	<option key="input" mapid="arcs" layeroption="node_layer" typemask="point" label="Input nodes" id="nodes" version_min="7"/>
+	<selection key="tcats" layerid="nodes" label="Cats" version_max="6"/>
+	<selection key="terminal_cats" layerid="nodes" label="Cats" version_min="7"/>
 	<option key="output" />
 </qgisgrassmodule>

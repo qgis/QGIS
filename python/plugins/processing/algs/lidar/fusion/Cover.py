@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -31,8 +34,8 @@ from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputRaster
-from FusionAlgorithm import FusionAlgorithm
-from FusionUtils import FusionUtils
+from .FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
 
 
 class Cover(FusionAlgorithm):
@@ -47,10 +50,10 @@ class Cover(FusionAlgorithm):
     UNITS = ['Meter', 'Feet']
 
     def defineCharacteristics(self):
-        self.name = 'Cover'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Cover')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterFile(
             self.GROUND, self.tr('Input ground DTM layer')))
         self.addParameter(ParameterNumber(
@@ -73,6 +76,7 @@ class Cover(FusionAlgorithm):
             commands.append('/ground:' + str(ground))
         outFile = self.getOutputValue(self.OUTPUT) + '.dtm'
         commands.append(outFile)
+        commands.append(str(self.getParameterValue(self.HEIGHTBREAK)))
         commands.append(str(self.getParameterValue(self.CELLSIZE)))
         commands.append(self.UNITS[self.getParameterValue(self.XYUNITS)][0])
         commands.append(self.UNITS[self.getParameterValue(self.ZUNITS)][0])
@@ -87,7 +91,7 @@ class Cover(FusionAlgorithm):
             FusionUtils.createFileList(files)
             commands.append(FusionUtils.tempFileListFilepath())
         FusionUtils.runFusion(commands, progress)
-        commands = [os.path.join(FusionUtils.FusionPath(), 'DTM2TIF.exe')]
+        commands = [os.path.join(FusionUtils.FusionPath(), 'DTM2ASCII.exe')]
         commands.append(outFile)
         commands.append(self.getOutputValue(self.OUTPUT))
         p = subprocess.Popen(commands, shell=True)

@@ -3,7 +3,7 @@
 
 Example: url=http://127.0.0.1/wcs&identifier=coverage1
 
-WCS URI is composed of key=value pairs separated by '&'. It is the same format like query string in URL, encoded the same way. QgsDataSourceURI should be used to construct the URI to ensure that special characters are encoded properly.
+WCS URI is composed of key=value pairs separated by '&'. It is the same format like query string in URL, encoded the same way. QgsDataSourceUri should be used to construct the URI to ensure that special characters are encoded properly.
 
 Parameters:
 
@@ -34,7 +34,7 @@ Python console example, adds new layer to map canvas:
 
   from PyQt4.QtCore import QString
 
-  uri = QgsDataSourceURI()
+  uri = QgsDataSourceUri()
   uri.setParam ("url", "http://wcs.qgis.org/1.9.0/wcs" )
   uri.setParam ( "identifier", "band1_int16_noct_epsg4326" )
 
@@ -58,7 +58,7 @@ another standalone script, downloads WCS layer to local file:
 
   app = QgsApplication(sys.argv,False) # important for QgsNetworkAccessManager
     
-  srcUri = QgsDataSourceURI()
+  srcUri = QgsDataSourceUri()
   srcUri.setParam ("url", "http://wcs.qgis.org/1.9.0/wcs" )
   srcUri.setParam ( "identifier", "band1_int16_noct_epsg4326" )
 

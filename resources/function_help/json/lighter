@@ -1,0 +1,10 @@
+{
+  "name": "lighter",
+  "type": "function",
+  "description": "Returns a lighter (or darker) color string",
+  "arguments": [
+               {"arg":"color", "description":"a color string"},
+	{"arg":"factor", "description":"a integer number corresponding to the lightening factor:<ul><li>if the factor is greater than 100, this functions returns a lighter color (for e.g., setting factor to 150 returns a color that is 50% brighter);</li><li>if the factor is less than 100, the return color is darker, but using the darker() function for this purpose is recommended;</li><li>if the factor is 0 or negative, the return value is unspecified.</li></ul>"}
+	          ],
+  "examples": [ { "expression":"lighter('200,10,30',200)", "returns":"'255,158,168,255'"}]
+}

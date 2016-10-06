@@ -20,6 +20,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -30,8 +33,8 @@ __revision__ = '$Format:%H$'
 import os
 from processing.core.parameters import ParameterFile
 from processing.core.outputs import OutputFile
-from FusionUtils import FusionUtils
-from FusionAlgorithm import FusionAlgorithm
+from .FusionUtils import FusionUtils
+from .FusionAlgorithm import FusionAlgorithm
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterBoolean
 
@@ -46,12 +49,12 @@ class CloudMetrics(FusionAlgorithm):
     HTMIN = 'HTMIN'
 
     def defineCharacteristics(self):
-        self.name = 'Cloud Metrics'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Cloud Metrics')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addOutput(OutputFile(
-            self.OUTPUT, self.tr('Output file with tabular metric information'), 'dtm'))
+            self.OUTPUT, self.tr('Output file with tabular metric information'), 'csv'))
         above = ParameterString(self.ABOVE, self.tr('Above'), '', False)
         above.isAdvanced = True
         self.addParameter(above)
@@ -75,10 +78,10 @@ class CloudMetrics(FusionAlgorithm):
             commands.append('/above:' + str(above))
         firstImpulse = self.getParameterValue(self.FIRSTIMPULSE)
         if firstImpulse:
-            commands.append('/firstinpulse:' + firstImpulse)
+            commands.append('/firstinpulse')
         firstReturn = self.getParameterValue(self.FIRSTRETURN)
         if firstReturn:
-            commands.append('/firstreturn:' + firstReturn)
+            commands.append('/firstreturn')
         htmin = self.getParameterValue(self.HTMIN)
         if str(htmin).strip() != '':
             commands.append('/minht:' + str(htmin))

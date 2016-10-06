@@ -45,14 +45,14 @@ class CORE_EXPORT QgsRasterHistogram
       valid = false;
     }
 
-    /*! Compares region, size etc. not histogram itself */
+    /** Compares region, size etc. not histogram itself */
     bool operator==( const QgsRasterHistogram &h ) const
     {
       return ( h.bandNumber == bandNumber &&
                h.binCount == binCount &&
                h.includeOutOfRange == includeOutOfRange &&
-               h.maximum == maximum &&
-               h.minimum == minimum &&
+               qgsDoubleNear( h.maximum, maximum ) &&
+               qgsDoubleNear( h.minimum, minimum ) &&
                h.extent == extent &&
                h.width == width &&
                h.height == height );

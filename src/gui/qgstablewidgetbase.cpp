@@ -1,0 +1,56 @@
+/***************************************************************************
+    qgstablewidgetbase.cpp
+     --------------------------------------
+    Date                 : 08.2016
+    Copyright            : (C) 2016 Patrick Valsecchi
+    Email                : patrick.valsecchi@camptocamp.com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgstablewidgetbase.h"
+
+QgsTableWidgetBase::QgsTableWidgetBase( QWidget* parent )
+    : QWidget( parent )
+{
+  setupUi( this );
+}
+
+void QgsTableWidgetBase::init( QAbstractTableModel* model )
+{
+  tableView->setModel( model );
+  connect( tableView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( onSelectionChanged() ) );
+  connect( model, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SIGNAL( valueChanged() ) );
+}
+
+void QgsTableWidgetBase::on_addButton_clicked()
+{
+  const QItemSelectionModel *select = tableView->selectionModel();
+  const int pos = select->hasSelection() ? select->selectedRows()[0].row() : 0;
+  QAbstractItemModel* model = tableView->model();
+  model->insertRows( pos, 1 );
+  const QModelIndex index = model->index( pos, 0 );
+  tableView->scrollTo( index );
+  tableView->edit( index );
+  tableView->selectRow( pos );
+}
+
+void QgsTableWidgetBase::on_removeButton_clicked()
+{
+  const QItemSelectionModel *select = tableView->selectionModel();
+  // The UI is configured to have single row selection.
+  if ( select->hasSelection() )
+  {
+    tableView->model()->removeRows( select->selectedRows()[0].row(), 1 );
+  }
+}
+
+void QgsTableWidgetBase::onSelectionChanged()
+{
+  removeButton->setEnabled( tableView->selectionModel()->hasSelection() );
+}

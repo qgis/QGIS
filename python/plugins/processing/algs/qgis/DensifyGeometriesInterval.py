@@ -17,6 +17,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Anita Graser'
 __date__ = 'Dec 2012'
@@ -28,7 +29,7 @@ __revision__ = '$Format:%H$'
 
 from math import sqrt
 
-from qgis.core import QGis, QgsPoint, QgsGeometry, QgsFeature
+from qgis.core import Qgis, QgsPoint, QgsGeometry, QgsFeature, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -44,41 +45,39 @@ class DensifyGeometriesInterval(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Densify geometries given an interval'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Densify geometries given an interval')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
-            self.tr('Input layer'),
-            [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
+                                          self.tr('Input layer'),
+                                          [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.INTERVAL,
-            self.tr('Interval between vertices to add'), 0.0, 10000000.0, 1.0))
+                                          self.tr('Interval between vertices to add'), 0.0, 10000000.0, 1.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         interval = self.getParameterValue(self.INTERVAL)
 
-        isPolygon = layer.geometryType() == QGis.Polygon
+        isPolygon = layer.geometryType() == QgsWkbTypes.PolygonGeometry
 
         writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
+            self.OUTPUT).getVectorWriter(layer.fields().toList(),
                                          layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
-        total = 100.0 / float(len(features))
-        current = 0
-        for f in features:
-            featGeometry = QgsGeometry(f.geometry())
+        total = 100.0 / len(features)
+        for current, f in enumerate(features):
+            featGeometry = f.geometry()
             attrs = f.attributes()
             newGeometry = self.densifyGeometry(featGeometry, interval,
-                    isPolygon)
+                                               isPolygon)
             feature = QgsFeature()
             feature.setGeometry(newGeometry)
             feature.setAttributes(attrs)
             writer.addFeature(feature)
 
-            current += 1
             progress.setPercentage(int(current * total))
 
         del writer
@@ -112,7 +111,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
 
     def densify(self, polyline, interval):
         output = []
-        for i in xrange(len(polyline) - 1):
+        for i in range(len(polyline) - 1):
             p1 = polyline[i]
             p2 = polyline[i + 1]
             output.append(p1)
@@ -123,7 +122,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
                 multiplier = 1.0 / float(pointsNumber)
             else:
                 multiplier = 1
-            for j in xrange(int(pointsNumber)):
+            for j in range(int(pointsNumber)):
                 delta = multiplier * (j + 1)
                 x = p1.x() + delta * (p2.x() - p1.x())
                 y = p1.y() + delta * (p2.y() - p1.y())

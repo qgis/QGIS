@@ -4,7 +4,7 @@
 ***************************************************************************
     lasinfoPro.py
     ---------------------
-    Date                 : October 2014
+    Date                 : October 2014 and May 2016
     Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Martin Isenburg'
 __date__ = 'October 2014'
@@ -24,12 +27,13 @@ __copyright__ = '(C) 2014, Martin Isenburg'
 __revision__ = '$Format:%H$'
 
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
+from .LAStoolsUtils import LAStoolsUtils
+from .LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
+
 
 class lasinfoPro(LAStoolsAlgorithm):
 
@@ -45,27 +49,27 @@ class lasinfoPro(LAStoolsAlgorithm):
     HISTO3_BIN = "HISTO3_BIN"
 
     def defineCharacteristics(self):
-        self.name = "lasinfoPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasinfoPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterBoolean(lasinfoPro.COMPUTE_DENSITY,
-            self.tr("compute density"), False))
+                                           self.tr("compute density"), False))
         self.addParameter(ParameterBoolean(lasinfoPro.REPAIR_BB,
-            self.tr("repair bounding box"), False))
+                                           self.tr("repair bounding box"), False))
         self.addParameter(ParameterBoolean(lasinfoPro.REPAIR_COUNTERS,
-            self.tr("repair counters"), False))
+                                           self.tr("repair counters"), False))
         self.addParameter(ParameterSelection(lasinfoPro.HISTO1,
-            self.tr("histogram"), lasinfoPro.HISTOGRAM, 0))
+                                             self.tr("histogram"), lasinfoPro.HISTOGRAM, 0))
         self.addParameter(ParameterNumber(lasinfoPro.HISTO1_BIN,
-            self.tr("bin size"), 0, None, 1.0))
+                                          self.tr("bin size"), 0, None, 1.0))
         self.addParameter(ParameterSelection(lasinfoPro.HISTO2,
-            self.tr("histogram"), lasinfoPro.HISTOGRAM, 0))
+                                             self.tr("histogram"), lasinfoPro.HISTOGRAM, 0))
         self.addParameter(ParameterNumber(lasinfoPro.HISTO2_BIN,
-            self.tr("bin size"), 0, None, 1.0))
+                                          self.tr("bin size"), 0, None, 1.0))
         self.addParameter(ParameterSelection(lasinfoPro.HISTO3,
-            self.tr("histogram"), lasinfoPro.HISTOGRAM, 0))
+                                             self.tr("histogram"), lasinfoPro.HISTOGRAM, 0))
         self.addParameter(ParameterNumber(lasinfoPro.HISTO3_BIN,
-            self.tr("bin size"), 0, None, 1.0))
+                                          self.tr("bin size"), 0, None, 1.0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersAdditionalGUI()
@@ -73,7 +77,10 @@ class lasinfoPro(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasinfo")]
+        if (LAStoolsUtils.hasWine()):
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasinfo.exe")]
+        else:
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasinfo")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
         if self.getParameterValue(lasinfoPro.COMPUTE_DENSITY):

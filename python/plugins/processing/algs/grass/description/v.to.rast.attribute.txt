@@ -4,4 +4,4 @@ Vector (v.*)
 ParameterVector|input|Input vector layer|-1|False
 ParameterSelection|use|Source of raster values|attr
 ParameterTableField|column|Name of column for 'attr' parameter (data type must be numeric)|input|0|False
-OutputRaster|output|Rasterized layer
+OutputRaster|output|Rasterized
