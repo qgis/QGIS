@@ -37,7 +37,9 @@ int QgsWFSUtils::gmCounter = 0;
 QString QgsWFSUtils::getBaseCacheDirectory( bool createIfNotExisting )
 {
   QSettings settings;
-  QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
+  QString cacheDirectory = settings.value( "cache/directory" ).toString();
+  if ( cacheDirectory.isEmpty() )
+    cacheDirectory = QgsApplication::qgisSettingsDirPath() + "cache";
   if ( createIfNotExisting )
   {
     QMutexLocker locker( &gmMutex );
