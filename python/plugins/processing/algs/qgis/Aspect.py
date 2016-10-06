@@ -25,6 +25,10 @@ __copyright__ = '(C) 2016, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from qgis.PyQt.QtGui import QIcon
+
 from qgis.analysis import QgsAspectFilter
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -33,12 +37,17 @@ from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.tools import raster
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class Aspect(GeoAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     Z_FACTOR = 'Z_FACTOR'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'dem.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Aspect')

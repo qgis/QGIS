@@ -25,6 +25,10 @@ __copyright__ = '(C) 2016, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from qgis.PyQt.QtGui import QIcon
+
 from qgis.analysis import QgsHillshadeFilter
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -32,6 +36,8 @@ from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.tools import raster
+
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class Hillshade(GeoAlgorithm):
@@ -41,6 +47,9 @@ class Hillshade(GeoAlgorithm):
     AZIMUTH = 'AZIMUTH'
     V_ANGLE = 'V_ANGLE'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'dem.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Hillshade')
