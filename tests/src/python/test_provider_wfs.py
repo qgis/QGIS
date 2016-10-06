@@ -111,7 +111,8 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
     <xsd:complexContent>
       <xsd:extension base="gml:AbstractFeatureType">
         <xsd:sequence>
-          <xsd:element maxOccurs="1" minOccurs="0" name="pk" nillable="true" type="xsd:long"/>
+          <!-- add a trailing space to the name to test http://hub.qgis.org/issues/3426 -->
+          <xsd:element maxOccurs="1" minOccurs="0" name="pk  " nillable="true" type="xsd:long"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="cnt" nillable="true" type="xsd:long"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="name" nillable="true" type="xsd:string"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="name2" nillable="true" type="xsd:string"/>
