@@ -42,6 +42,8 @@ cmake \
       -DCMAKE_PREFIX_PATH=/home/travis/osgeo4travis \
       -DWITH_STAGED_PLUGINS=ON \
       -DWITH_GRASS=ON \
+      -DWITH_GRASS7=ON \
+      -DGRASS_PREFIX7=/home/travis/osgeo4travis/grass-7.0.4 \
       -DSUPPRESS_QT_WARNINGS=ON \
       -DENABLE_MODELTEST=ON \
       -DENABLE_PGTEST=ON \
