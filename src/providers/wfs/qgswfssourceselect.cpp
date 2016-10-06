@@ -354,7 +354,9 @@ void QgsWFSSourceSelect::connectToServer()
   }
   if ( mCapabilities )
   {
-    mCapabilities->requestCapabilities( false );
+    const bool synchronous = false;
+    const bool forceRefresh = true;
+    mCapabilities->requestCapabilities( synchronous, forceRefresh );
   }
 }
 
