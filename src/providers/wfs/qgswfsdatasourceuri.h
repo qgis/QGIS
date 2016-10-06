@@ -35,11 +35,11 @@ struct QgsWFSAuthorization
   //! set authorization header
   bool setAuthorization( QNetworkRequest &request ) const
   {
-    if ( !mAuthCfg.isEmpty() )
+    if ( !mAuthCfg.isEmpty() ) // must be non-empty value
     {
       return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
     }
-    else if ( !mUserName.isNull() || !mPassword.isNull() )
+    else if ( !mUserName.isNull() || !mPassword.isNull() ) // allow empty values
     {
       request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName, mPassword ).toAscii().toBase64() );
     }
@@ -65,8 +65,8 @@ class QgsWFSDataSourceURI
 
     explicit QgsWFSDataSourceURI( const QString& uri );
 
-    /** Return the URI */
-    const QString uri( bool expandAuthConfig = true ) const;
+    /** Return the URI, avoiding expansion of authentication configuration, which is handled during network access */
+    const QString uri( bool expandAuthConfig = false ) const;
 
     /** Return base URL (with SERVICE=WFS parameter if bIncludeServiceWFS=true) */
     QUrl baseURL( bool bIncludeServiceWFS = true ) const;
