@@ -332,6 +332,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     if ( panel )
     {
       connect( panel, SIGNAL( widgetChanged( QgsPanelWidget* ) ), this, SLOT( autoApply() ) );
+      panel->setDockMode( true );
       mWidgetStack->addMainPanel( panel );
     }
   }
@@ -383,12 +384,14 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     {
       case 0: // Style
         mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetStack );
+        mRasterStyleWidget->setDockMode( true );
         connect( mRasterStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
         mWidgetStack->addMainPanel( mRasterStyleWidget );
         break;
       case 1: // Transparency
       {
         QgsRasterTransparencyWidget* transwidget = new QgsRasterTransparencyWidget( rlayer, mMapCanvas, mWidgetStack );
+        transwidget->setDockMode( true );
         connect( transwidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
         mWidgetStack->addMainPanel( transwidget );
         break;
@@ -410,6 +413,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           connect( widget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
           QString name = mRasterStyleWidget->currentRenderWidget()->renderer()->type();
           widget->setRendererWidget( name, mRasterStyleWidget->currentRenderWidget() );
+          widget->setDockMode( true );
 
           mWidgetStack->addMainPanel( widget );
         }
