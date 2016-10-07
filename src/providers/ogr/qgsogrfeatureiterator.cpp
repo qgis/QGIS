@@ -365,7 +365,6 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider* p )
   mDriverName = p->ogrDriverName;
   mFirstFieldIsFid = p->mFirstFieldIsFid;
   mOgrGeometryTypeFilter = QgsOgrProvider::ogrWkbSingleFlatten( p->mOgrGeometryTypeFilter );
-  QgsDebugMsg( QString( "mOgrGeometryTypeFilter: %1" ).arg( mOgrGeometryTypeFilter ) );
   QgsOgrConnPool::instance()->ref( mDataSource );
 }
 
