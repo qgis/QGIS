@@ -181,7 +181,7 @@ class QgsGeometry
      * @param afterVertex will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if
      * not present.
      * @param sqrDist will be set to the square distance between the closest vertex and the specified point
-     * @returns closest point in geometry
+     * @returns closest point in geometry. If not found (empty geometry), returns null point nad sqrDist is negative.
      */
     //TODO QGIS 3.0 - rename beforeVertex to previousVertex, afterVertex to nextVertex
     QgsPoint closestVertex( const QgsPoint& point, int& atVertex /Out/, int& beforeVertex /Out/, int& afterVertex /Out/, double& sqrDist /Out/ ) const;

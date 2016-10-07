@@ -2047,11 +2047,10 @@ void TestQgsGeometry::lineString()
   //closest segment
   QgsLineString l35;
   bool leftOf = false;
+  p = QgsPointV2(); // reset all coords to zero
   ( void )l35.closestSegment( QgsPointV2( 1, 2 ), p, v, 0, 0 ); //empty line, just want no crash
   l35.setPoints( QgsPointSequence() << QgsPointV2( 5, 10 ) );
-  QVERIFY( qgsDoubleNear( l35.closestSegment( QgsPointV2( 5, 10 ), p, v, 0, 0 ), 0 ) );
-  QCOMPARE( p, QgsPointV2( 5, 10 ) );
-  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QVERIFY( l35.closestSegment( QgsPointV2( 5, 10 ), p, v, 0, 0 ) < 0 );
   l35.setPoints( QgsPointSequence() << QgsPointV2( 5, 10 ) << QgsPointV2( 10, 10 ) );
   QVERIFY( qgsDoubleNear( l35.closestSegment( QgsPointV2( 4, 11 ), p, v, &leftOf, 0 ), 2.0 ) );
   QCOMPARE( p, QgsPointV2( 5, 10 ) );

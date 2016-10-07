@@ -65,6 +65,7 @@ QgsPointV2 QgsGeometryUtils::closestVertex( const QgsAbstractGeometry& geom, con
   double minDist = std::numeric_limits<double>::max();
   double currentDist = 0;
   QgsPointV2 minDistPoint;
+  id = QgsVertexId(); // set as invalid
 
   QgsVertexId vertexId;
   QgsPointV2 vertex;
