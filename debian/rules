@@ -43,9 +43,9 @@ endif
 DEB_BUILD_NAME ?= $(DISTRIBUTION)-$(DEB_BUILD_ARCH)
 
 ifeq (,$(DISPLAY))
-TESTMAKE=xvfb-run -a -n 1 -s "-screen 0 1280x1024x24 -dpi 96" $(MAKE)
+TESTMAKE=xvfb-run -a -n 1 -s "-screen 0 1280x1024x24 -dpi 96" ninja
 else
-TESTMAKE=$(MAKE)
+TESTMAKE=ninja
 endif
 
 QGIS_MAJOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
