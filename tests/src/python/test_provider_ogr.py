@@ -171,5 +171,24 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(f.constGeometry().geometry().pointN(1).z(), 2)
         self.assertEqual(f.constGeometry().geometry().pointN(2).z(), 3)
 
+    def testGeometryCollection(self):
+        ''' Test that we can at least retrieves attribute of features with geometry collection '''
+
+        datasource = os.path.join(self.basetestpath, 'testGeometryCollection.csv')
+        with open(datasource, 'wt') as f:
+            f.write('id,WKT\n')
+            f.write('1,POINT Z(2 49 0)\n')
+            f.write('2,GEOMETRYCOLLECTION Z (POINT Z (2 49 0))\n')
+
+        vl = QgsVectorLayer('{}|layerid=0|geometrytype=GeometryCollection'.format(datasource), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.featureCount(), 1)
+        values = [f['id'] for f in vl.getFeatures()]
+        self.assertEqual(values, ['2'])
+        del vl
+
+        os.unlink(datasource)
+        self.assertFalse(os.path.exists(datasource))
+
 if __name__ == '__main__':
     unittest.main()
