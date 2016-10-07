@@ -3367,6 +3367,18 @@ void QgsOgrProvider::open( OpenMode mode )
     ogrLayer = ogrOrigLayer = nullptr;
     mValid = false;
 
+#if defined(GDAL_COMPUTE_VERSION)
+    // In the case where we deal with a shapefile, it is possible that it has
+    // pre-existing holes in the DBF (see #15407), so if using a GDAL version
+    // recent enough to have reliable packing, do a packing at the first edit
+    // action.
+    if ( ogrDriverName == "ESRI Shapefile"  &&
+         atoi( GDALVersionInfo( "VERSION_NUM" ) ) >= GDAL_COMPUTE_VERSION( 2, 1, 2 ) )
+    {
+      mShapefileMayBeCorrupted = true;
+    }
+#endif
+
     ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( mFilePath ), false, &ogrDriver );
 
     mWriteAccess = false;
