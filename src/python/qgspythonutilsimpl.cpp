@@ -36,7 +36,7 @@
 #include <QDebug>
 
 #if (PY_VERSION_HEX < 0x03000000)
-QString PYOBJ2QSTRING( PyObject* obj )
+QString PY_UNICODE2QSTRING( PyObject* obj )
 {
   PyObject* utf8 = PyUnicode_AsUTF8String( obj );
   QString result = utf8 ? QString::fromUtf8( PyString_AS_STRING( utf8 ) ) : "(qgis error)";
@@ -44,9 +44,9 @@ QString PYOBJ2QSTRING( PyObject* obj )
   return result;
 }
 #elif (PY_VERSION_HEX < 0x03030000)
-#define PYOBJ2QSTRING(obj) QString::fromUtf8( PyBytes_AsString(PyUnicode_AsUTF8String( obj ) ) )
+#define PY_UNICODE2QSTRING(obj) QString::fromUtf8( PyBytes_AsString(PyUnicode_AsUTF8String( obj ) ) )
 #else
-#define PYOBJ2QSTRING(obj) QString::fromUtf8( PyUnicode_AsUTF8( obj ) )
+#define PY_UNICODE2QSTRING(obj) QString::fromUtf8( PyUnicode_AsUTF8( obj ) )
 #endif
 
 PyThreadState* _mainState;
@@ -415,7 +415,7 @@ QString QgsPythonUtilsImpl::getTraceback()
      )
     TRACEBACK_FETCH_ERROR( "getvalue() did not return a string" );
 
-  result = PYOBJ2QSTRING( obResult );
+  result = PyObjectToQString( obResult );
 
 done:
 
@@ -519,7 +519,7 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
   // check whether the object is already a unicode string
   if ( PyUnicode_Check( obj ) )
   {
-    result = PYOBJ2QSTRING( obj );
+    result = PY_UNICODE2QSTRING( obj );
     return result;
   }
 
@@ -535,15 +535,7 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
   PyObject* obj_uni = PyObject_Unicode( obj ); // obj_uni is new reference
   if ( obj_uni )
   {
-    // get utf-8 representation of unicode string (new reference)
-    PyObject* obj_utf8 = PyUnicode_AsUTF8String( obj_uni );
-    // convert from utf-8 to QString
-    if ( obj_utf8 )
-      result = QString::fromUtf8( PyString_AsString( obj_utf8 ) );
-    else
-      result = "(qgis error)";
-
-    Py_XDECREF( obj_utf8 );
+    result = PY_UNICODE2QSTRING( obj_uni );
     Py_XDECREF( obj_uni );
     return result;
   }
@@ -553,7 +545,11 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
   PyObject* obj_str = PyObject_Str( obj ); // new reference
   if ( obj_str )
   {
-    result = PYOBJ2QSTRING( obj_str );
+#if (PY_VERSION_HEX < 0x03000000)
+    result = QString::fromUtf8( PyString_AS_STRING( obj ) );
+#else
+    result = PY_UNICODE2QSTRING( obj_str );
+#endif
     Py_XDECREF( obj_str );
     return result;
   }
