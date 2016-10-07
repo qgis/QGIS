@@ -311,8 +311,13 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature ) 
     else
       feature.clearGeometry();
 
-    if (( useIntersect && ( !feature.hasGeometry() || !feature.geometry().intersects( mRequest.filterRect() ) ) )
-        || ( geometryTypeFilter && ( !feature.hasGeometry() || QgsOgrProvider::ogrWkbSingleFlatten(( OGRwkbGeometryType )feature.geometry().wkbType() ) != mSource->mOgrGeometryTypeFilter ) ) )
+    if ( mSource->mOgrGeometryTypeFilter == wkbGeometryCollection &&
+         geom && wkbFlatten( OGR_G_GetGeometryType( geom ) ) == wkbGeometryCollection )
+    {
+      // OK
+    }
+    else if (( useIntersect && ( !feature.hasGeometry() || !feature.geometry().intersects( mRequest.filterRect() ) ) )
+             || ( geometryTypeFilter && ( !feature.hasGeometry() || QgsOgrProvider::ogrWkbSingleFlatten(( OGRwkbGeometryType )feature.geometry().wkbType() ) != mSource->mOgrGeometryTypeFilter ) ) )
     {
       OGR_F_Destroy( fet );
       return false;
@@ -359,7 +364,8 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider* p )
     mFieldsWithoutFid.append( mFields.at( i ) );
   mDriverName = p->ogrDriverName;
   mFirstFieldIsFid = p->mFirstFieldIsFid;
-  mOgrGeometryTypeFilter = wkbFlatten( p->mOgrGeometryTypeFilter );
+  mOgrGeometryTypeFilter = QgsOgrProvider::ogrWkbSingleFlatten( p->mOgrGeometryTypeFilter );
+  QgsDebugMsg( QString( "mOgrGeometryTypeFilter: %1" ).arg( mOgrGeometryTypeFilter ) );
   QgsOgrConnPool::instance()->ref( mDataSource );
 }
 

@@ -3155,13 +3155,16 @@ void QgsOgrProvider::recalculateFeatureCount()
     setRelevantFields( ogrLayer, true, QgsAttributeList() );
     OGR_L_ResetReading( ogrLayer );
     OGRFeatureH fet;
+    const OGRwkbGeometryType flattenGeomTypeFilter =
+      QgsOgrProvider::ogrWkbSingleFlatten( mOgrGeometryTypeFilter );
     while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
     {
       OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
       if ( geom )
       {
         OGRwkbGeometryType gType = OGR_G_GetGeometryType( geom );
-        if ( gType == mOgrGeometryTypeFilter ) mFeaturesCounted++;
+        gType = QgsOgrProvider::ogrWkbSingleFlatten( gType );
+        if ( gType == flattenGeomTypeFilter ) mFeaturesCounted++;
       }
       OGR_F_Destroy( fet );
     }
