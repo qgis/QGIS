@@ -28,6 +28,9 @@
 #include "qgslayertreegroup.h"
 #include "qgslogger.h"
 
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+
 #include <QDomDocument>
 #include <QFileInfo>
 #include <QStringList>
@@ -234,8 +237,11 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
     if ( !QgsMapLayerRegistry::instance()->mapLayer( id ) )
       QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
     if ( layer->type() == QgsMapLayer::VectorLayer )
+    {
       addValueRelationLayersForLayer( dynamic_cast<QgsVectorLayer *>( layer ) );
-
+      // Reload joins and expression fields
+      layer->readLayerXML( const_cast<QDomElement&>( elem ) );
+    }
     return layer;
   }
 
@@ -1541,7 +1547,7 @@ void QgsServerProjectParser::addJoinLayersForElement( const QDomElement& layerEl
   {
     QString id = joinNodeList.at( i ).toElement().attribute( "joinLayerId" );
     QgsMapLayer* layer = mapLayerFromLayerId( id );
-    if ( layer )
+    if ( layer && !QgsMapLayerRegistry::instance()->mapLayer( id ))
     {
       QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
     }
