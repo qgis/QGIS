@@ -100,6 +100,8 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
       int vertexIndex, beforeVertex, afterVertex;
       double sqrDist;
       QgsPoint pt = geom->closestVertex( mSrcPoint, vertexIndex, beforeVertex, afterVertex, sqrDist );
+      if ( sqrDist < 0 )
+        return;  // probably empty geometry
 
       QgsPointLocator::Match m( QgsPointLocator::Vertex, mLocator->mLayer, id, sqrt( sqrDist ), pt, vertexIndex );
       // in range queries the filter may reject some matches

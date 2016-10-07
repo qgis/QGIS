@@ -347,6 +347,7 @@ QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& 
 {
   if ( !d->geometry )
   {
+    sqrDist = -1;
     return QgsPoint( 0, 0 );
   }
 
@@ -531,12 +532,14 @@ double QgsGeometry::closestVertexWithContext( const QgsPoint& point, int& atVert
 {
   if ( !d->geometry )
   {
-    return 0.0;
+    return -1;
   }
 
   QgsVertexId vId;
   QgsPointV2 pt( point.x(), point.y() );
   QgsPointV2 closestPoint = QgsGeometryUtils::closestVertex( *( d->geometry ), pt, vId );
+  if ( !vId.isValid() )
+    return -1;
   atVertex = vertexNrFromVertexId( vId );
   return QgsGeometryUtils::sqrDistance2D( closestPoint, pt );
 }
@@ -550,7 +553,7 @@ double QgsGeometry::closestSegmentWithContext(
 {
   if ( !d->geometry )
   {
-    return 0;
+    return -1;
   }
 
   QgsPointV2 segmentPt;
@@ -558,6 +561,8 @@ double QgsGeometry::closestSegmentWithContext(
   bool leftOfBool;
 
   double sqrDist = d->geometry->closestSegment( QgsPointV2( point.x(), point.y() ), segmentPt,  vertexAfter, &leftOfBool, epsilon );
+  if ( sqrDist < 0 )
+    return -1;
 
   minDistPoint.setX( segmentPt.x() );
   minDistPoint.setY( segmentPt.y() );
