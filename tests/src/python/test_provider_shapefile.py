@@ -319,5 +319,49 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(ds.GetLayer(0).GetFeatureCount(), feature_count - 1)
         ds = None
 
+    def testRepackAtFirstSave(self):
+        ''' Test fix for #15407 '''
+
+        # This requires a GDAL fix done per https://trac.osgeo.org/gdal/ticket/6672
+        # but on non-Windows version the test would succeed
+        if int(osgeo.gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 1, 2):
+            return
+
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        ds = osgeo.ogr.Open(datasource)
+        lyr = ds.GetLayer(0)
+        original_feature_count = lyr.GetFeatureCount()
+        lyr.DeleteFeature(2)
+        ds = None
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+
+        self.assertTrue(vl.featureCount(), original_feature_count)
+
+        # Edit a feature (attribute change only)
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.dataProvider().changeAttributeValues({0: {0: 100}}))
+
+        # Commit changes and check no error is emitted
+        cbk = ErrorReceiver()
+        vl.dataProvider().raiseError.connect(cbk.receiveError)
+        self.assertTrue(vl.commitChanges())
+        self.assertIsNone(cbk.msg)
+
+        self.assertTrue(vl.featureCount(), original_feature_count - 1)
+
+        vl = None
+
+        # Test repacking has been done
+        ds = osgeo.ogr.Open(datasource)
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount(), original_feature_count - 1)
+        ds = None
+
 if __name__ == '__main__':
     unittest.main()
