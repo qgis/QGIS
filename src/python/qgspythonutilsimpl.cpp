@@ -28,6 +28,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
+#include "qgsmessagelog.h"
 
 #include <QMessageBox>
 #include <QStringList>
@@ -35,7 +36,13 @@
 #include <QDebug>
 
 #if (PY_VERSION_HEX < 0x03000000)
-#define PYOBJ2QSTRING(obj) PyString_AsString( obj )
+QString PYOBJ2QSTRING( PyObject* obj )
+{
+  PyObject* utf8 = PyUnicode_AsUTF8String( obj );
+  QString result = utf8 ? QString::fromUtf8( PyString_AS_STRING( utf8 ) ) : "(qgis error)";
+  Py_XDECREF( utf8 );
+  return result;
+}
 #elif (PY_VERSION_HEX < 0x03030000)
 #define PYOBJ2QSTRING(obj) QString::fromUtf8( PyBytes_AsString(PyUnicode_AsUTF8String( obj ) ) )
 #else
@@ -556,7 +563,6 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
   return "(qgis error)";
 }
 
-
 bool QgsPythonUtilsImpl::evalString( const QString& command, QString& result )
 {
   // acquire global interpreter lock to ensure we are in a consistent state
@@ -566,7 +572,11 @@ bool QgsPythonUtilsImpl::evalString( const QString& command, QString& result )
   PyObject* res = PyRun_String( command.toUtf8().data(), Py_eval_input, mMainDict, mMainDict );
   bool success = nullptr != res;
 
-  // TODO: error handling
+  if ( PyErr_Occurred() )
+  {
+    QString traceback = getTraceback();
+    QgsMessageLog::logMessage( QString( "evalString()) error!\nCommand:\n%1\nError:\n%2" ).arg( command ).arg( traceback ), "Python" );
+  }
 
   if ( success )
     result = PyObjectToQString( res );
