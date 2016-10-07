@@ -37,7 +37,8 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QList<QgsLineStringV2*> extractLineStrings( const QgsAbstractGeometryV2* geom );
 
-    /** Returns the closest vertex to a geometry for a specified point
+    /** Returns the closest vertex to a geometry for a specified point.
+     * On error null point will be returned and "id" argument will be invalid.
      */
     static QgsPointV2 closestVertex( const QgsAbstractGeometryV2& geom, const QgsPointV2& pt, QgsVertexId& id );
 
@@ -250,7 +251,7 @@ class CORE_EXPORT QgsGeometryUtils
       for ( int i = 0; i < container.size(); ++i )
       {
         sqrDist = container.at( i )->closestSegment( pt, segmentPt, vertexAfter, leftOf, epsilon );
-        if ( sqrDist < minDist )
+        if ( sqrDist >= 0 && sqrDist < minDist )
         {
           minDist = sqrDist;
           minDistSegmentX = segmentPt.x();
@@ -279,6 +280,9 @@ class CORE_EXPORT QgsGeometryUtils
           partOffset += 1;
         }
       }
+
+      if ( minDist == std::numeric_limits<double>::max() )
+        return -1;  // error: no segments
 
       segmentPt.setX( minDistSegmentX );
       segmentPt.setY( minDistSegmentY );

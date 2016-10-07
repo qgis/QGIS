@@ -636,7 +636,7 @@ double QgsCurvePolygonV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segm
 {
   if ( !mExteriorRing )
   {
-    return 0.0;
+    return -1;
   }
   QList<QgsCurveV2*> segmentList;
   segmentList.append( mExteriorRing );

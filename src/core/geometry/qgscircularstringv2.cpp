@@ -845,6 +845,9 @@ double QgsCircularStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& se
     }
   }
 
+  if ( minDist == std::numeric_limits<double>::max() )
+    return -1; // error: no segments
+
   segmentPt = minDistSegmentPoint;
   vertexAfter = minDistVertexAfter;
   vertexAfter.part = 0;

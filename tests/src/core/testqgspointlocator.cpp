@@ -23,6 +23,7 @@
 #include "qgsgeometry.h"
 #include "qgsmaplayerregistry.h"
 #include "qgspointlocator.h"
+#include "qgspolygonv2.h"
 
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
@@ -258,6 +259,48 @@ class TestQgsPointLocator : public QObject
       QgsPointLocator::Match m2 = loc2.nearestVertex( QgsPoint( 2, 2 ), 999 );
       QVERIFY( m2.isValid() );
       QCOMPARE( m2.point(), QgsPoint( 1, 1 ) );
+    }
+
+    void testNullGeometries()
+    {
+      QgsVectorLayer* vlNullGeom = new QgsVectorLayer( "Polygon", "x", "memory" );
+      QgsFeature ff( 0 );
+      ff.setGeometry( QgsGeometry() );
+      QgsFeatureList flist;
+      flist << ff;
+      vlNullGeom->dataProvider()->addFeatures( flist );
+
+      QgsPointLocator loc( vlNullGeom, 0, nullptr );
+
+      QgsPointLocator::Match m1 = loc.nearestVertex( QgsPoint( 2, 2 ), std::numeric_limits<double>::max() );
+      QVERIFY( !m1.isValid() );
+
+      QgsPointLocator::Match m2 = loc.nearestEdge( QgsPoint( 2, 2 ), std::numeric_limits<double>::max() );
+      QVERIFY( !m2.isValid() );
+
+      delete vlNullGeom;
+    }
+
+    void testEmptyGeometries()
+    {
+      QgsVectorLayer* vlEmptyGeom = new QgsVectorLayer( "Polygon", "x", "memory" );
+      QgsFeature ff( 0 );
+      QgsGeometry g;
+      g.setGeometry( new QgsPolygonV2() );
+      ff.setGeometry( g );
+      QgsFeatureList flist;
+      flist << ff;
+      vlEmptyGeom->dataProvider()->addFeatures( flist );
+
+      QgsPointLocator loc( vlEmptyGeom, 0, nullptr );
+
+      QgsPointLocator::Match m1 = loc.nearestVertex( QgsPoint( 2, 2 ), std::numeric_limits<double>::max() );
+      QVERIFY( !m1.isValid() );
+
+      QgsPointLocator::Match m2 = loc.nearestEdge( QgsPoint( 2, 2 ), std::numeric_limits<double>::max() );
+      QVERIFY( !m2.isValid() );
+
+      delete vlEmptyGeom;
     }
 };
 

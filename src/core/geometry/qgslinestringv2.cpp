@@ -747,16 +747,10 @@ double QgsLineStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& segmen
   double segmentPtX, segmentPtY;
 
   int size = mX.size();
-  if ( size == 0 )
+  if ( size == 0 || size == 1 )
   {
     vertexAfter = QgsVertexId( 0, 0, 0 );
-    return sqrDist;
-  }
-  else if ( size == 1 )
-  {
-    segmentPt = pointN( 0 );
-    vertexAfter = QgsVertexId( 0, 0, 1 );
-    return QgsGeometryUtils::sqrDistance2D( pt, segmentPt );
+    return -1;
   }
   for ( int i = 1; i < size; ++i )
   {
