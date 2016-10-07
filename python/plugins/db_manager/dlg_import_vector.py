@@ -315,7 +315,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
             if self.chkSinglePart.isEnabled() and self.chkSinglePart.isChecked():
                 options['forceSinglePartGeometryType'] = True
 
-            outCrs = None
+            outCrs = QgsCoordinateReferenceSystem()
             if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
                 targetSrid = int(self.editTargetSrid.text())
                 outCrs = QgsCoordinateReferenceSystem(targetSrid)
