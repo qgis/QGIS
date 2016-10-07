@@ -31,6 +31,7 @@ from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
 
 from qgis.utils import spatialite_connect
+import sqlite3 as sqlite
 
 
 def classFactory():
