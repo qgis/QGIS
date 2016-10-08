@@ -26,7 +26,7 @@ clustering of points.</p>
 
 <h4>Rows and Columns</h4>
 <p>Used to change the dimensions of the output raster file. These values are also linked to the <b>Cell size X</b> and <b>Cell size Y</b> values. 
-Increasing the number of rows or colums will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
+Increasing the number of rows or columns will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
 are also linked, so doubling the number of rows will automatically double the number of columns and the cell sizes will also be halved. The geographical area of the output raster will remain the same!</p>
 
 <h4>Cell size X and Y</h4>

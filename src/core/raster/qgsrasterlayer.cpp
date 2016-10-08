@@ -1043,7 +1043,7 @@ void QgsRasterLayer::setDrawingStyle( QString const & theDrawingStyleQString )
   {
     QgsDebugMsgLevel( "Setting drawingStyle to SingleBandColorDataStyle " + QString::number( QgsRaster::SingleBandColorDataStyle ), 4 );
     drawingStyle = QgsRaster::SingleBandColorDataStyle;
-    QgsDebugMsgLevel( "Setted drawingStyle to " + QString::number( drawingStyle ), 4 );
+    QgsDebugMsgLevel( "drawingStyle set to " + QString::number( drawingStyle ), 4 );
   }
   else
   {
