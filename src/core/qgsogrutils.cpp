@@ -274,7 +274,7 @@ QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString& string, const Qg
   }
 
   OGR_DS_Destroy( hDS );
-  VSIUnlink( "/vsimem/clipboard.dat" );
+  VSIUnlink( TO8( randomFileName ) );
 
   return features;
 }
