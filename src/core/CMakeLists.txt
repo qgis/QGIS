@@ -479,6 +479,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsofflineediting.h
   qgsowsconnection.h
   qgspluginlayer.h
+  qgspoint.h
   qgspointlocator.h
   qgsproject.h
   qgsrelationmanager.h
@@ -674,7 +675,6 @@ SET(QGIS_CORE_HDRS
   qgspainting.h
   qgspallabeling.h
   qgspluginlayerregistry.h
-  qgspoint.h
   qgspointlocator.h
   qgsproject.h
   qgsprojectfiletransform.h
