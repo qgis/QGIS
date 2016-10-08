@@ -187,7 +187,7 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
     void setFeatureFilter( const QString& expression );
 
     /** Returns the attributes fields which are shown by the table.
-     * @returns a QSet of integers refering to the attributes in the vector layer. If
+     * @returns a QSet of integers referring to the attributes in the vector layer. If
      * result is an empty QSet than all feature attributes will be shown.
      * @see setDisplayAttributes
      * @deprecated use QgsComposerTable::columns() instead
@@ -195,7 +195,7 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
     Q_DECL_DEPRECATED QSet<int> displayAttributes() const;
 
     /** Sets the attributes to display in the table.
-     * @param attr QSet of integer values refering to the attributes from the vector layer to show.
+     * @param attr QSet of integer values referring to the attributes from the vector layer to show.
      * Set to an empty QSet to show all feature attributes.
      * @param refresh set to true to force the table to refetch features from its vector layer
      * and immediately update the display of the table. This may result in the table changing size
