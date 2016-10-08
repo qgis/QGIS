@@ -1410,7 +1410,7 @@ void QgsStyleV2ManagerDialog::groupSelectedSymbols()
     QgsStyleV2::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyleV2::SymbolEntity : QgsStyleV2::ColorrampEntity;
     if ( currentItemType() > 3 )
     {
-      QgsDebugMsg( "unknow entity type" );
+      QgsDebugMsg( "unknown entity type" );
       return;
     }
     int groupId = selectedItem->data().toInt();
