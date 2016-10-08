@@ -697,7 +697,7 @@ struct DXFLIB_EXPORT DL_InsertData {
     double sz;
     /*! Rotation angle in degrees. */
     double angle;
-    /*! Number of colums if we insert an array of the block or 1. */
+    /*! Number of columns if we insert an array of the block or 1. */
     int cols;
     /*! Number of rows if we insert an array of the block or 1. */
     int rows;
