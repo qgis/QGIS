@@ -454,7 +454,7 @@ QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> QgsGmlStreamingParser:
 }
 
 #define LOCALNAME_EQUALS(string_constant) \
-  ( localNameLen == strlen( string_constant ) && memcmp(pszLocalName, string_constant, localNameLen) == 0 )
+  ( localNameLen == ( int )strlen( string_constant ) && memcmp(pszLocalName, string_constant, localNameLen) == 0 )
 
 void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** attr )
 {
@@ -675,7 +675,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char* el, const XML_Char** a
     isGeom = true;
   }
   else if ( isGMLNS &&
-            localNameLen == strlen( "Polygon" ) && memcmp( pszLocalName, "Polygon", localNameLen ) == 0 )
+            localNameLen == ( int )strlen( "Polygon" ) && memcmp( pszLocalName, "Polygon", localNameLen ) == 0 )
   {
     isGeom = true;
     mCurrentWKBFragments.push_back( QList<QgsWkbPtr>() );
