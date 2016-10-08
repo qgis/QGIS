@@ -33,6 +33,11 @@ void QgsExpressionFieldBuffer::removeExpression( int index )
   mExpressions.removeAt( index );
 }
 
+void QgsExpressionFieldBuffer::renameExpression( int index, const QString& name )
+{
+  mExpressions[index].field.setName( name );
+}
+
 void QgsExpressionFieldBuffer::updateExpression( int index, const QString& exp )
 {
   mExpressions[index].cachedExpression = QgsExpression( exp );

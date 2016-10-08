@@ -2125,10 +2125,41 @@ void QgsVectorLayer::removeFieldAlias( int attIndex )
 
 bool QgsVectorLayer::renameAttribute( int index, const QString& newName )
 {
-  if ( !mEditBuffer || !mDataProvider )
+  if ( index < 0 || index >= fields().count() )
     return false;
 
-  return mEditBuffer->renameAttribute( index, newName );
+  switch ( mFields.fieldOrigin( index ) )
+  {
+    case QgsFields::OriginExpression:
+    {
+      if ( mExpressionFieldBuffer )
+      {
+        int oi = mFields.fieldOriginIndex( index );
+        mExpressionFieldBuffer->renameExpression( oi, newName );
+        updateFields();
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    case QgsFields::OriginProvider:
+    case QgsFields::OriginEdit:
+
+      if ( !mEditBuffer || !mDataProvider )
+        return false;
+
+      return mEditBuffer->renameAttribute( index, newName );
+
+    case QgsFields::OriginJoin:
+    case QgsFields::OriginUnknown:
+      return false;
+
+  }
+
+  return false; // avoid warning
 }
 
 void QgsVectorLayer::setFieldAlias( int attIndex, const QString& aliasString )
