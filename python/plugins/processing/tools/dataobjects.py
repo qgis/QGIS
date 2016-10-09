@@ -112,10 +112,11 @@ def getVectorLayers(shapetype=[-1], sorting=True):
 
 
 def canUseVectorLayer(layer, shapetype):
-    if layer.type() == QgsMapLayer.VectorLayer and layer.dataProvider().name() != "grass":
-        if (layer.hasGeometryType() and
-                (shapetype == ALL_TYPES or layer.geometryType() in shapetype)):
-            return True
+    if layer.type() == QgsMapLayer.VectorLayer:
+        if layer.dataProvider().name() != "grass":
+            if (layer.hasGeometryType() and
+                    (shapetype == ALL_TYPES or layer.geometryType() in shapetype)):
+                return True
     return False
 
 
