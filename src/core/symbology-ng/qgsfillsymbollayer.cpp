@@ -2083,20 +2083,16 @@ void QgsSVGFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, cons
 
   if ( !mSvgFilePath.isEmpty() )
   {
-    double partternWidth = QgsSymbolLayerUtils::rescaleUom( mPatternWidth, mPatternWidthUnit, props );
-    QgsSymbolLayerUtils::externalGraphicToSld( doc, graphicElem, mSvgFilePath, QStringLiteral( "image/svg+xml" ), mColor, partternWidth );
+    // encode a parametric SVG reference
+    double patternWidth = QgsSymbolLayerUtils::rescaleUom( mPatternWidth, mPatternWidthUnit, props );
+    double outlineWidth = QgsSymbolLayerUtils::rescaleUom( mSvgOutlineWidth, mSvgOutlineWidthUnit, props );
+    QgsSymbolLayerUtils::parametricSvgToSld( doc, graphicElem, mSvgFilePath, mColor, patternWidth, mSvgOutlineColor, outlineWidth );
   }
   else
   {
     // TODO: create svg from data
     // <se:InlineContent>
     symbolizerElem.appendChild( doc.createComment( QStringLiteral( "SVG from data not implemented yet" ) ) );
-  }
-
-  if ( mSvgOutlineColor.isValid() || mSvgOutlineWidth >= 0 )
-  {
-    double svgOutlineWidth = QgsSymbolLayerUtils::rescaleUom( mSvgOutlineWidth, mSvgOutlineWidthUnit, props );
-    QgsSymbolLayerUtils::lineToSld( doc, graphicElem, Qt::SolidLine, mSvgOutlineColor, svgOutlineWidth );
   }
 
   // <Rotation>

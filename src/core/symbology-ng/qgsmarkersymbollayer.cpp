@@ -2194,8 +2194,10 @@ void QgsSvgMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &el
   QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
   element.appendChild( graphicElem );
 
+  // encode a parametric SVG reference
   double size = QgsSymbolLayerUtils::rescaleUom( mSize, mSizeUnit, props );
-  QgsSymbolLayerUtils::externalGraphicToSld( doc, graphicElem, mPath, QStringLiteral( "image/svg+xml" ), mColor, size );
+  double outlineWidth = QgsSymbolLayerUtils::rescaleUom( mOutlineWidth, mOutlineWidthUnit, props );
+  QgsSymbolLayerUtils::parametricSvgToSld( doc, graphicElem, mPath, mColor, size, mOutlineColor, outlineWidth );
 
   // <Rotation>
   QString angleFunc;
