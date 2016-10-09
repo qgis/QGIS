@@ -47,12 +47,8 @@ class QDomDocument;
 class CORE_EXPORT QgsProperty
 {
   public:
-
-    QgsProperty()
-    {}
-
-    virtual ~ QgsProperty()
-    {}
+    QgsProperty();
+    virtual ~QgsProperty();
 
     /** Dumps out the keys and values
      *
@@ -125,7 +121,7 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
         : value_( value )
     {}
 
-    virtual ~QgsPropertyValue() {}
+    virtual ~QgsPropertyValue();
 
     /** Returns true if is a QgsPropertyKey */
     virtual bool isKey() const override { return false; }
@@ -190,7 +186,7 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
 {
   public:
     QgsPropertyKey( const QString &name = "" );
-    virtual ~ QgsPropertyKey();
+    virtual ~QgsPropertyKey();
 
     /// every key has a name
     // @{
@@ -208,7 +204,7 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
 
 
     /// add the given property key
-    QgsPropertyKey * addKey( const QString & keyName )
+    QgsPropertyKey *addKey( const QString & keyName )
     {
       delete mProperties.take( keyName );
       mProperties.insert( keyName, new QgsPropertyKey( keyName ) );
