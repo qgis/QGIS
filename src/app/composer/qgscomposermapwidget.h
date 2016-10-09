@@ -174,6 +174,13 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
 
     void onPresetsChanged();
 
+    void updateGridLineStyleFromWidget();
+    void cleanUpGridLineStyleSelector( QgsPanelWidget* container );
+    void updateGridMarkerStyleFromWidget();
+    void cleanUpGridMarkerStyleSelector( QgsPanelWidget* container );
+    void updateOverviewFrameStyleFromWidget();
+    void cleanUpOverviewFrameStyleSelector( QgsPanelWidget* container );
+
   private:
     QgsComposerMap* mComposerMap;
 

@@ -32,7 +32,7 @@ QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerShape );
 
-  //shapes don't use background or frame, since the symbol style is set through a QgsSymbolSelectorDialog
+  //shapes don't use background or frame, since the symbol style is set through a QgsSymbolSelectorWidget
   itemPropertiesWidget->showBackgroundGroup( false );
   itemPropertiesWidget->showFrameGroup( false );
 
@@ -110,8 +110,6 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
 
   QgsFillSymbol* newSymbol = mComposerShape->shapeStyleSymbol()->clone();
   QgsExpressionContext context = mComposerShape->createExpressionContext();
-
-
 
   QgsSymbolSelectorWidget* d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
   QgsSymbolWidgetContext symbolContext;

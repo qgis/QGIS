@@ -292,6 +292,99 @@ void QgsComposerMapWidget::onPresetsChanged()
   }
 }
 
+void QgsComposerMapWidget::updateGridLineStyleFromWidget()
+{
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( !grid )
+  {
+    return;
+  }
+
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
+  grid->setLineSymbol( dynamic_cast< QgsLineSymbol* >( w->symbol()->clone() ) );
+  mComposerMap->update();
+}
+
+void QgsComposerMapWidget::cleanUpGridLineStyleSelector( QgsPanelWidget* container )
+{
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( container );
+  if ( !w )
+    return;
+
+  delete w->symbol();
+
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( !grid )
+  {
+    return;
+  }
+
+  updateGridLineSymbolMarker( grid );
+  mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::updateGridMarkerStyleFromWidget()
+{
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( !grid )
+  {
+    return;
+  }
+
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
+  grid->setMarkerSymbol( dynamic_cast< QgsMarkerSymbol* >( w->symbol()->clone() ) );
+  mComposerMap->update();
+}
+
+void QgsComposerMapWidget::cleanUpGridMarkerStyleSelector( QgsPanelWidget* container )
+{
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( container );
+  if ( !w )
+    return;
+
+  delete w->symbol();
+
+  QgsComposerMapGrid* grid = currentGrid();
+  if ( !grid )
+  {
+    return;
+  }
+
+  updateGridMarkerSymbolMarker( grid );
+  mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::updateOverviewFrameStyleFromWidget()
+{
+  QgsComposerMapOverview* overview = currentOverview();
+  if ( !overview )
+  {
+    return;
+  }
+
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
+  overview->setFrameSymbol( dynamic_cast< QgsFillSymbol* >( w->symbol()->clone() ) );
+  mComposerMap->update();
+}
+
+void QgsComposerMapWidget::cleanUpOverviewFrameStyleSelector( QgsPanelWidget* container )
+{
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( container );
+  if ( !w )
+    return;
+
+  delete w->symbol();
+
+  QgsComposerMapOverview* overview = currentOverview();
+  if ( !overview )
+  {
+    return;
+  }
+
+  updateOverviewFrameSymbolMarker( overview );
+  mComposerMap->endCommand();
+}
+
 void QgsComposerMapWidget::on_mAtlasCheckBox_toggled( bool checked )
 {
   if ( !mComposerMap )
@@ -1496,21 +1589,21 @@ void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
     return;
   }
 
-  QgsLineSymbol* newSymbol = static_cast<QgsLineSymbol*>( grid->lineSymbol()->clone() );
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
+  // use the atlas coverage layer, if any
+  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
-  if ( d.exec() == QDialog::Accepted )
-  {
-    mComposerMap->beginCommand( tr( "Grid line style changed" ) );
-    grid->setLineSymbol( newSymbol );
-    updateGridLineSymbolMarker( grid );
-    mComposerMap->endCommand();
-    mComposerMap->update();
-  }
-  else
-  {
-    delete newSymbol;
-  }
+  QgsLineSymbol* newSymbol = static_cast<QgsLineSymbol*>( grid->lineSymbol()->clone() );
+  QgsExpressionContext context = mComposerMap->createExpressionContext();
+
+  QgsSymbolSelectorWidget* d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
+  QgsSymbolWidgetContext symbolContext;
+  symbolContext.setExpressionContext( &context );
+  d->setContext( symbolContext );
+
+  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateGridLineStyleFromWidget() ) );
+  connect( d, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpGridLineStyleSelector( QgsPanelWidget* ) ) );
+  openPanel( d );
+  mComposerMap->beginCommand( tr( "Grid line style changed" ) );
 }
 
 void QgsComposerMapWidget::on_mGridMarkerStyleButton_clicked()
@@ -1521,21 +1614,21 @@ void QgsComposerMapWidget::on_mGridMarkerStyleButton_clicked()
     return;
   }
 
-  QgsMarkerSymbol* newSymbol = static_cast<QgsMarkerSymbol*>( grid->markerSymbol()->clone() );
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
+  // use the atlas coverage layer, if any
+  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
-  if ( d.exec() == QDialog::Accepted )
-  {
-    mComposerMap->beginCommand( tr( "Grid markers style changed" ) );
-    grid->setMarkerSymbol( newSymbol );
-    updateGridMarkerSymbolMarker( grid );
-    mComposerMap->endCommand();
-    mComposerMap->update();
-  }
-  else
-  {
-    delete newSymbol;
-  }
+  QgsMarkerSymbol* newSymbol = static_cast<QgsMarkerSymbol*>( grid->markerSymbol()->clone() );
+  QgsExpressionContext context = mComposerMap->createExpressionContext();
+
+  QgsSymbolSelectorWidget* d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
+  QgsSymbolWidgetContext symbolContext;
+  symbolContext.setExpressionContext( &context );
+  d->setContext( symbolContext );
+
+  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateGridMarkerStyleFromWidget() ) );
+  connect( d, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpGridMarkerStyleSelector( QgsPanelWidget* ) ) );
+  openPanel( d );
+  mComposerMap->beginCommand( tr( "Grid markers style changed" ) );
 }
 
 void QgsComposerMapWidget::on_mIntervalXSpinBox_editingFinished()
@@ -2463,21 +2556,21 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
     return;
   }
 
-  QgsFillSymbol* newSymbol = static_cast<QgsFillSymbol*>( overview->frameSymbol()->clone() );
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
+  // use the atlas coverage layer, if any
+  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
-  if ( d.exec() == QDialog::Accepted )
-  {
-    mComposerMap->beginCommand( tr( "Overview frame style changed" ) );
-    overview->setFrameSymbol( newSymbol );
-    updateOverviewFrameSymbolMarker( overview );
-    mComposerMap->endCommand();
-    mComposerMap->update();
-  }
-  else
-  {
-    delete newSymbol;
-  }
+  QgsFillSymbol* newSymbol = static_cast<QgsFillSymbol*>( overview->frameSymbol()->clone() );
+  QgsExpressionContext context = mComposerMap->createExpressionContext();
+
+  QgsSymbolSelectorWidget* d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
+  QgsSymbolWidgetContext symbolContext;
+  symbolContext.setExpressionContext( &context );
+  d->setContext( symbolContext );
+
+  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateOverviewFrameStyleFromWidget() ) );
+  connect( d, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpOverviewFrameStyleSelector( QgsPanelWidget* ) ) );
+  openPanel( d );
+  mComposerMap->beginCommand( tr( "Overview frame style changed" ) );
 }
 
 void QgsComposerMapWidget::on_mOverviewBlendModeComboBox_currentIndexChanged( int index )
