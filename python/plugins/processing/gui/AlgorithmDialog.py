@@ -247,7 +247,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     self.resetGUI()
         except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
-                self.buttonBox.accepted.connect(lambda:
+                self.buttonBox.accepted.connect(lambda e=e:
                                                 e.widget.setPalette(QPalette()))
                 palette = e.widget.palette()
                 palette.setColor(QPalette.Base, QColor(255, 255, 0))
