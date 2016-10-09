@@ -185,7 +185,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     return;
   }
 
-  // Get small piece of coverage to find GDAL data type and nubmer of bands
+  // Get small piece of coverage to find GDAL data type and number of bands
   int bandNo = 0; // All bands
   int width;
   int height;

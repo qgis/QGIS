@@ -34,7 +34,7 @@ class QwtAbstractLegend;
   from QwtPolarItem.
 
   The coordinate system is defined by a radial and a azimuth scale.
-  The scales at the axes can be explicitely set (QwtScaleDiv), or
+  The scales at the axes can be explicitly set (QwtScaleDiv), or
   are calculated from the plot items, using algorithms (QwtScaleEngine) which
   can be configured separately for each axis. Autoscaling is supported
   for the radial scale.

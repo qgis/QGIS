@@ -635,7 +635,7 @@ double QwtPolarPlot::azimuthOrigin() const
 
    In zoom mode the zoom position is in the center of the
    canvas. The radius of the circle depends on the size of the plot canvas,
-   that is devided by the zoom factor. Thus a factor < 1.0 zoom in.
+   that is divided by the zoom factor. Thus a factor < 1.0 zoom in.
 
    Setting an invalid zoom position disables zooming.
 
