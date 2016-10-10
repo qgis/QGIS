@@ -41,7 +41,7 @@ QgsEditorWidgetConfig QgsUniqueValueWidgetFactory::readConfig( const QDomElement
 
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( QStringLiteral( "Editable" ), configElement.attribute( QStringLiteral( "Editable" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) );
+  xml2config( configElement, cfg, QStringLiteral( "Editable" ) );
 
   return cfg;
 }
@@ -51,5 +51,5 @@ void QgsUniqueValueWidgetFactory::writeConfig( const QgsEditorWidgetConfig& conf
   Q_UNUSED( doc )
   Q_UNUSED( layer )
   Q_UNUSED( fieldIdx )
-  configElement.setAttribute( QStringLiteral( "Editable" ), config.value( QStringLiteral( "Editable" ), false ).toBool() );
+  config2xml( config, configElement, QStringLiteral( "Editable" ) );
 }

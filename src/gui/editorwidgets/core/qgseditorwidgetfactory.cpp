@@ -123,3 +123,27 @@ unsigned int QgsEditorWidgetFactory::fieldScore( const QgsVectorLayer* vl, int f
   return 5;
 }
 
+void QgsEditorWidgetFactory::config2xml( const QgsEditorWidgetConfig& config, QDomElement& configElement, const QString& fieldName )
+{
+  const QVariant value = config.value( fieldName );
+  if ( value.isValid() )
+  {
+    if ( value.type() == QVariant::Bool )
+    {
+      configElement.setAttribute( fieldName, value.toBool() ? "1" : "0" );
+    }
+    else
+    {
+      configElement.setAttribute( fieldName, value.toString() );
+    }
+  }
+}
+
+void QgsEditorWidgetFactory::xml2config( const QDomElement& configElement, QgsEditorWidgetConfig& config, const QString& fieldName )
+{
+  const QString value = configElement.attribute( fieldName );
+  if ( !value.isNull() )
+  {
+    config.insert( fieldName, value );
+  }
+}

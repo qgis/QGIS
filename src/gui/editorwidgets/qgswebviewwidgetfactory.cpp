@@ -41,8 +41,8 @@ QgsEditorWidgetConfig QgsWebViewWidgetFactory::readConfig( const QDomElement& co
 
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( QStringLiteral( "Height" ), configElement.attribute( QStringLiteral( "Height" ), 0 ).toInt() );
-  cfg.insert( QStringLiteral( "Width" ), configElement.attribute( QStringLiteral( "Width" ), 0 ).toInt() );
+  xml2config( configElement, cfg, QStringLiteral( "Height" ) );
+  xml2config( configElement, cfg, QStringLiteral( "Width" ) );
 
   return cfg;
 }
@@ -53,6 +53,6 @@ void QgsWebViewWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, 
   Q_UNUSED( layer )
   Q_UNUSED( fieldIdx )
 
-  configElement.setAttribute( QStringLiteral( "Height" ), config.value( QStringLiteral( "Height" ), 0 ).toString() );
-  configElement.setAttribute( QStringLiteral( "Width" ), config.value( QStringLiteral( "Width" ), 0 ).toString() );
+  config2xml( config, configElement, QStringLiteral( "Height" ) );
+  config2xml( config, configElement, QStringLiteral( "Width" ) );
 }

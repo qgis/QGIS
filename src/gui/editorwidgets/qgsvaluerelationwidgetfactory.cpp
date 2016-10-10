@@ -52,14 +52,14 @@ QgsEditorWidgetConfig QgsValueRelationWidgetFactory::readConfig( const QDomEleme
 
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( QStringLiteral( "Layer" ), configElement.attribute( QStringLiteral( "Layer" ) ) );
-  cfg.insert( QStringLiteral( "Key" ), configElement.attribute( QStringLiteral( "Key" ) ) );
-  cfg.insert( QStringLiteral( "Value" ), configElement.attribute( QStringLiteral( "Value" ) ) );
-  cfg.insert( QStringLiteral( "FilterExpression" ), configElement.attribute( QStringLiteral( "FilterExpression" ) ) );
-  cfg.insert( QStringLiteral( "OrderByValue" ), configElement.attribute( QStringLiteral( "OrderByValue" ) ) );
-  cfg.insert( QStringLiteral( "AllowMulti" ), configElement.attribute( QStringLiteral( "AllowMulti" ) ) );
-  cfg.insert( QStringLiteral( "AllowNull" ), configElement.attribute( QStringLiteral( "AllowNull" ) ) );
-  cfg.insert( QStringLiteral( "UseCompleter" ), configElement.attribute( QStringLiteral( "UseCompleter" ) ) );
+  xml2config( configElement, cfg, QStringLiteral( "Layer" ) );
+  xml2config( configElement, cfg, QStringLiteral( "Key" ) );
+  xml2config( configElement, cfg, QStringLiteral( "Value" ) );
+  xml2config( configElement, cfg, QStringLiteral( "FilterExpression" ) );
+  xml2config( configElement, cfg, QStringLiteral( "OrderByValue" ) );
+  xml2config( configElement, cfg, QStringLiteral( "AllowMulti" ) );
+  xml2config( configElement, cfg, QStringLiteral( "AllowNull" ) );
+  xml2config( configElement, cfg, QStringLiteral( "UseCompleter" ) );
 
   return cfg;
 }
@@ -70,14 +70,14 @@ void QgsValueRelationWidgetFactory::writeConfig( const QgsEditorWidgetConfig& co
   Q_UNUSED( layer )
   Q_UNUSED( fieldIdx )
 
-  configElement.setAttribute( QStringLiteral( "Layer" ), config.value( QStringLiteral( "Layer" ) ).toString() );
-  configElement.setAttribute( QStringLiteral( "Key" ), config.value( QStringLiteral( "Key" ) ).toString() );
-  configElement.setAttribute( QStringLiteral( "Value" ), config.value( QStringLiteral( "Value" ) ).toString() );
-  configElement.setAttribute( QStringLiteral( "FilterExpression" ), config.value( QStringLiteral( "FilterExpression" ) ).toString() );
-  configElement.setAttribute( QStringLiteral( "OrderByValue" ), config.value( QStringLiteral( "OrderByValue" ) ).toBool() );
-  configElement.setAttribute( QStringLiteral( "AllowMulti" ), config.value( QStringLiteral( "AllowMulti" ) ).toBool() );
-  configElement.setAttribute( QStringLiteral( "AllowNull" ), config.value( QStringLiteral( "AllowNull" ) ).toBool() );
-  configElement.setAttribute( QStringLiteral( "UseCompleter" ), config.value( QStringLiteral( "UseCompleter" ) ).toBool() );
+  config2xml( config, configElement, QStringLiteral( "Layer" ) );
+  config2xml( config, configElement, QStringLiteral( "Key" ) );
+  config2xml( config, configElement, QStringLiteral( "Value" ) );
+  config2xml( config, configElement, QStringLiteral( "FilterExpression" ) );
+  config2xml( config, configElement, QStringLiteral( "OrderByValue" ) );
+  config2xml( config, configElement, QStringLiteral( "AllowMulti" ) );
+  config2xml( config, configElement, QStringLiteral( "AllowNull" ) );
+  config2xml( config, configElement, QStringLiteral( "UseCompleter" ) );
 }
 
 QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const

@@ -45,8 +45,8 @@ QgsEditorWidgetConfig QgsCheckboxWidgetFactory::readConfig( const QDomElement& c
 
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( QStringLiteral( "CheckedState" ), configElement.attribute( QStringLiteral( "CheckedState" ) ) );
-  cfg.insert( QStringLiteral( "UncheckedState" ), configElement.attribute( QStringLiteral( "UncheckedState" ) ) );
+  xml2config( configElement, cfg, QStringLiteral( "CheckedState" ) );
+  xml2config( configElement, cfg, QStringLiteral( "UncheckedState" ) );
 
   return cfg;
 }
@@ -57,8 +57,8 @@ void QgsCheckboxWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config,
   Q_UNUSED( layer )
   Q_UNUSED( fieldIdx )
 
-  configElement.setAttribute( QStringLiteral( "CheckedState" ), config.value( QStringLiteral( "CheckedState" ), "1" ).toString() );
-  configElement.setAttribute( QStringLiteral( "UncheckedState" ), config.value( QStringLiteral( "UncheckedState" ), "0" ).toString() );
+  config2xml( config, configElement, QStringLiteral( "CheckedState" ) );
+  config2xml( config, configElement, QStringLiteral( "UncheckedState" ) );
 }
 
 QHash<const char*, int> QgsCheckboxWidgetFactory::supportedWidgetTypes()

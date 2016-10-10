@@ -46,8 +46,8 @@ void QgsTextEditWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config,
   Q_UNUSED( layer )
   Q_UNUSED( fieldIdx )
 
-  configElement.setAttribute( QStringLiteral( "IsMultiline" ), config.value( QStringLiteral( "IsMultiline" ), false ).toBool() );
-  configElement.setAttribute( QStringLiteral( "UseHtml" ), config.value( QStringLiteral( "UseHtml" ), false ).toBool() );
+  config2xml( config, configElement, QStringLiteral( "IsMultiline" ) );
+  config2xml( config, configElement, QStringLiteral( "UseHtml" ) );
 }
 
 QgsEditorWidgetConfig QgsTextEditWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
@@ -57,8 +57,8 @@ QgsEditorWidgetConfig QgsTextEditWidgetFactory::readConfig( const QDomElement& c
 
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( QStringLiteral( "IsMultiline" ), configElement.attribute( QStringLiteral( "IsMultiline" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) );
-  cfg.insert( QStringLiteral( "UseHtml" ), configElement.attribute( QStringLiteral( "UseHtml" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) );
+  xml2config( configElement, cfg, QStringLiteral( "IsMultiline" ) );
+  xml2config( configElement, cfg, QStringLiteral( "UseHtml" ) );
 
   return cfg;
 }

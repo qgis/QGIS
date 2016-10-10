@@ -47,10 +47,10 @@ QgsEditorWidgetConfig QgsDateTimeEditFactory::readConfig( const QDomElement& con
   Q_UNUSED( fieldIdx );
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( QStringLiteral( "field_format" ), configElement.attribute( QStringLiteral( "field_format" ) ) );
-  cfg.insert( QStringLiteral( "display_format" ), configElement.attribute( QStringLiteral( "display_format" ) ) );
-  cfg.insert( QStringLiteral( "calendar_popup" ), configElement.attribute( QStringLiteral( "calendar_popup" ) ) == QLatin1String( "1" ) );
-  cfg.insert( QStringLiteral( "allow_null" ), configElement.attribute( QStringLiteral( "allow_null" ) ) == QLatin1String( "1" ) );
+  xml2config( configElement, cfg, QStringLiteral( "field_format" ) );
+  xml2config( configElement, cfg, QStringLiteral( "display_format" ) );
+  xml2config( configElement, cfg, QStringLiteral( "calendar_popup" ) );
+  xml2config( configElement, cfg, QStringLiteral( "allow_null" ) );
 
   return cfg;
 }
@@ -61,10 +61,10 @@ void QgsDateTimeEditFactory::writeConfig( const QgsEditorWidgetConfig& config, Q
   Q_UNUSED( layer );
   Q_UNUSED( fieldIdx );
 
-  configElement.setAttribute( QStringLiteral( "field_format" ), config[QStringLiteral( "field_format" )].toString() );
-  configElement.setAttribute( QStringLiteral( "display_format" ), config[QStringLiteral( "display_format" )].toString() );
-  configElement.setAttribute( QStringLiteral( "calendar_popup" ), config[QStringLiteral( "calendar_popup" )].toBool() );
-  configElement.setAttribute( QStringLiteral( "allow_null" ), config[QStringLiteral( "allow_null" )].toBool() );
+  config2xml( config, configElement, QStringLiteral( "field_format" ) );
+  config2xml( config, configElement, QStringLiteral( "display_format" ) );
+  config2xml( config, configElement, QStringLiteral( "calendar_popup" ) );
+  config2xml( config, configElement, QStringLiteral( "allow_null" ) );
 }
 
 QString QgsDateTimeEditFactory::representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
