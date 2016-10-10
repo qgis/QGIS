@@ -160,7 +160,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const 
 
   if ( allowCaching )
   {
-    result = dynamic_cast<QgsRasterLayer*>( QgsMSLayerCache::instance()->searchLayer( url, layerName ) );
+    result = qobject_cast<QgsRasterLayer*>( QgsMSLayerCache::instance()->searchLayer( url, layerName ) );
   }
 
   if ( result )
@@ -403,7 +403,7 @@ QgsVectorLayer* QgsRemoteOWSBuilder::sosLayer( const QDomElement& remoteOWSElem,
   QgsVectorLayer* sosLayer = nullptr;
   if ( allowCaching )
   {
-    sosLayer = dynamic_cast<QgsVectorLayer*>( QgsMSLayerCache::instance()->searchLayer( providerUrl, layerName ) );
+    sosLayer = qobject_cast<QgsVectorLayer*>( QgsMSLayerCache::instance()->searchLayer( providerUrl, layerName ) );
     if ( sosLayer )
     {
       return sosLayer;

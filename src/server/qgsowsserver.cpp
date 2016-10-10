@@ -25,7 +25,7 @@
 /** Apply filter from AccessControl */
 void QgsOWSServer::applyAccessControlLayerFilters( QgsMapLayer* mapLayer, QHash<QgsMapLayer*, QString>& originalLayerFilters ) const
 {
-  if ( QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mapLayer ) )
+  if ( QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mapLayer ) )
   {
     QString sql = mAccessControl->extraSubsetString( layer );
     if ( !sql.isEmpty() )
@@ -54,7 +54,7 @@ void QgsOWSServer::restoreLayerFilters( const QHash<QgsMapLayer*, QString>& filt
   QHash<QgsMapLayer*, QString>::const_iterator filterIt = filterMap.constBegin();
   for ( ; filterIt != filterMap.constEnd(); ++filterIt )
   {
-    QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( filterIt.key() );
+    QgsVectorLayer* filteredLayer = qobject_cast<QgsVectorLayer*>( filterIt.key() );
     if ( filteredLayer )
     {
       QgsVectorDataProvider* dp = filteredLayer->dataProvider();

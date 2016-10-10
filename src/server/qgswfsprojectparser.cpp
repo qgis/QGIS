@@ -346,7 +346,7 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
     if ( type == "vector" )
     {
       QgsMapLayer *mLayer = mProjectParser->createLayerFromElement( elem );
-      QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
+      QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mLayer );
       if ( !layer )
         continue;
 
@@ -565,7 +565,7 @@ QList<QgsMapLayer*> QgsWFSProjectParser::mapLayerFromTypeName( const QString& aT
     if ( type == "vector" )
     {
       QgsMapLayer *mLayer = mProjectParser->createLayerFromElement( elem );
-      QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
+      QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mLayer );
       if ( !layer )
         continue;
 
