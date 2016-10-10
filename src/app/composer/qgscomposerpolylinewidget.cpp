@@ -26,6 +26,7 @@ QgsComposerPolylineWidget::QgsComposerPolylineWidget( QgsComposerPolyline* compo
     , mComposerPolyline( composerPolyline )
 {
   setupUi( this );
+  setPanelTitle( tr( "Polyline properties" ) );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerPolyline );

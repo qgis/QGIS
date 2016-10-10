@@ -26,6 +26,7 @@ QgsComposerPolygonWidget::QgsComposerPolygonWidget( QgsComposerPolygon* composer
     , mComposerPolygon( composerPolygon )
 {
   setupUi( this );
+  setPanelTitle( tr( "Polygon properties" ) );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerPolygon );

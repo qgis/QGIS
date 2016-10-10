@@ -36,6 +36,7 @@
 QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QgsComposerItemBaseWidget( nullptr, picture ), mPicture( picture ), mPreviewsLoaded( false )
 {
   setupUi( this );
+  setPanelTitle( tr( "Picture properties" ) );
 
   mFillColorButton->setAllowAlpha( true );
   mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );
@@ -632,7 +633,7 @@ void QgsComposerPictureWidget::loadPicturePreviews( bool collapsed )
 
 void QgsComposerPictureWidget::on_mFillColorButton_colorChanged( const QColor& color )
 {
-  mPicture->beginCommand( tr( "Picture fill color changed" ) );
+  mPicture->beginCommand( tr( "Picture fill color changed" ), QgsComposerMergeCommand::ComposerPictureFillColor );
   mPicture->setSvgFillColor( color );
   mPicture->endCommand();
   mPicture->update();
@@ -640,7 +641,7 @@ void QgsComposerPictureWidget::on_mFillColorButton_colorChanged( const QColor& c
 
 void QgsComposerPictureWidget::on_mOutlineColorButton_colorChanged( const QColor& color )
 {
-  mPicture->beginCommand( tr( "Picture border color changed" ) );
+  mPicture->beginCommand( tr( "Picture border color changed" ), QgsComposerMergeCommand::ComposerPictureOutlineColor );
   mPicture->setSvgBorderColor( color );
   mPicture->endCommand();
   mPicture->update();

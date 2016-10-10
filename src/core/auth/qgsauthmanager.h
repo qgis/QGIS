@@ -90,7 +90,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /** Standard message for when QCA's qca-ossl plugin is missing and system is disabled */
     const QString disabledMessage() const;
 
-    /** The standard authentication database file in ~/.qgis2/ or defined location
+    /** The standard authentication database file in ~/.qgis3/ or defined location
      * @see QgsApplication::qgisAuthDbFilePath
      */
     const QString authenticationDbPath() const { return mAuthDbPath; }

@@ -965,12 +965,11 @@ void QgsDxfExport::writeEntities()
     }
     renderer->startRender( ctx, vl->fields() );
 
-    QStringList attributes = renderer->usedAttributes();
+    QSet<QString> attributes = renderer->usedAttributes();
     if ( vl->fields().exists( layerIt->second ) )
     {
       QString layerAttr = vl->fields().at( layerIt->second ).name();
-      if ( !attributes.contains( layerAttr ) )
-        attributes << layerAttr;
+      attributes << layerAttr;
     }
 
     const QgsAbstractVectorLayerLabeling *labeling = vl->labeling();
@@ -1106,7 +1105,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
   {
     req.setFlags( QgsFeatureRequest::NoGeometry );
   }
-  req.setSubsetOfAttributes( QStringList( renderer->usedAttributes() ), layer->fields() );
+  req.setSubsetOfAttributes( renderer->usedAttributes(), layer->fields() );
   req.setFilterRect( mMapSettings.mapToLayerCoordinates( layer, mExtent ) );
 
   QgsFeatureIterator fit = layer->getFeatures( req );

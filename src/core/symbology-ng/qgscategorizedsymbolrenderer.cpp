@@ -430,7 +430,7 @@ void QgsCategorizedSymbolRenderer::stopRender( QgsRenderContext& context )
   mExpression.reset();
 }
 
-QList<QString> QgsCategorizedSymbolRenderer::usedAttributes()
+QSet<QString> QgsCategorizedSymbolRenderer::usedAttributes() const
 {
   QSet<QString> attributes;
 
@@ -442,7 +442,7 @@ QList<QString> QgsCategorizedSymbolRenderer::usedAttributes()
 
   QgsExpression testExpr( mAttrName );
   if ( !testExpr.hasParserError() )
-    attributes.unite( testExpr.referencedColumns().toSet() );
+    attributes.unite( testExpr.referencedColumns() );
 
   QgsCategoryList::const_iterator catIt = mCategories.constBegin();
   for ( ; catIt != mCategories.constEnd(); ++catIt )
@@ -453,7 +453,7 @@ QList<QString> QgsCategorizedSymbolRenderer::usedAttributes()
       attributes.unite( catSymbol->usedAttributes() );
     }
   }
-  return attributes.toList();
+  return attributes;
 }
 
 QString QgsCategorizedSymbolRenderer::dump() const

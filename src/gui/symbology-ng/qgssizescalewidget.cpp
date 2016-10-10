@@ -277,7 +277,7 @@ void QgsSizeScaleWidget::computeFromLayerTriggered()
   if ( ! expression.prepare( &context ) )
     return;
 
-  QStringList lst( expression.referencedColumns() );
+  QSet<QString> lst( expression.referencedColumns() );
 
   QgsFeatureIterator fit = mLayer->getFeatures(
                              QgsFeatureRequest().setFlags( expression.needsGeometry()

@@ -67,6 +67,7 @@
 #include "qgsvectorlayer.h"
 #include "qgscomposerimageexportoptionsdialog.h"
 #include "ui_qgssvgexportoptions.h"
+#include "qgspanelwidgetstack.h"
 
 #include <QCloseEvent>
 #include <QCheckBox>
@@ -578,6 +579,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mItemDock = new QgsDockWidget( tr( "Item properties" ), this );
   mItemDock->setObjectName( "ItemDock" );
   mItemDock->setMinimumWidth( minDockWidth );
+  mItemPropertiesStack = new QgsPanelWidgetStack();
+  mItemDock->setWidget( mItemPropertiesStack );
   mPanelMenu->addAction( mItemDock->toggleViewAction() );
   mUndoDock = new QgsDockWidget( tr( "Command history" ), this );
   mUndoDock->setObjectName( "CommandDock" );
@@ -996,28 +999,27 @@ void QgsComposer::updateStatusAtlasMsg( const QString& message )
 
 void QgsComposer::showItemOptions( QgsComposerItem* item )
 {
-  QWidget* currentWidget = mItemDock->widget();
-
   if ( !item )
   {
-    mItemDock->setWidget( nullptr );
+    mItemPropertiesStack->takeMainPanel();
     return;
   }
 
-  QMap<QgsComposerItem*, QWidget*>::const_iterator it = mItemWidgetMap.constFind( item );
+  QMap<QgsComposerItem*, QgsPanelWidget*>::const_iterator it = mItemWidgetMap.constFind( item );
   if ( it == mItemWidgetMap.constEnd() )
   {
     return;
   }
 
-  QWidget* newWidget = it.value();
-
-  if ( !newWidget || newWidget == currentWidget ) //bail out if new widget does not exist or is already there
+  QgsPanelWidget* newWidget = it.value();
+  if ( !newWidget || newWidget == mItemPropertiesStack->mainPanel() ) //bail out if new widget does not exist or is already there
   {
     return;
   }
 
-  mItemDock->setWidget( newWidget );
+  ( void ) mItemPropertiesStack->takeMainPanel();
+  newWidget->setDockMode( true );
+  mItemPropertiesStack->setMainPanel( newWidget );
 }
 
 void QgsComposer::on_mActionOptions_triggered()
@@ -3774,7 +3776,7 @@ void QgsComposer::addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame*
 
 void QgsComposer::deleteItem( QgsComposerItem* item )
 {
-  QMap<QgsComposerItem*, QWidget*>::const_iterator it = mItemWidgetMap.constFind( item );
+  QMap<QgsComposerItem*, QgsPanelWidget*>::const_iterator it = mItemWidgetMap.constFind( item );
 
   if ( it == mItemWidgetMap.constEnd() )
   {
@@ -3800,7 +3802,7 @@ void QgsComposer::setSelectionTool()
 
 bool QgsComposer::containsWmsLayer() const
 {
-  QMap<QgsComposerItem*, QWidget*>::const_iterator item_it = mItemWidgetMap.constBegin();
+  QMap<QgsComposerItem*, QgsPanelWidget*>::const_iterator item_it = mItemWidgetMap.constBegin();
   QgsComposerItem* currentItem = nullptr;
   QgsComposerMap* currentMap = nullptr;
 
@@ -3822,7 +3824,7 @@ bool QgsComposer::containsWmsLayer() const
 bool QgsComposer::containsAdvancedEffects() const
 {
   // Check if composer contains any blend modes or flattened layers for transparency
-  QMap<QgsComposerItem*, QWidget*>::const_iterator item_it = mItemWidgetMap.constBegin();
+  QMap<QgsComposerItem*, QgsPanelWidget*>::const_iterator item_it = mItemWidgetMap.constBegin();
   QgsComposerItem* currentItem = nullptr;
   QgsComposerMap* currentMap = nullptr;
 
@@ -3893,7 +3895,7 @@ void QgsComposer::showAdvancedEffectsWarning()
 
 void QgsComposer::cleanupAfterTemplateRead()
 {
-  QMap<QgsComposerItem*, QWidget*>::const_iterator itemIt = mItemWidgetMap.constBegin();
+  QMap<QgsComposerItem*, QgsPanelWidget*>::const_iterator itemIt = mItemWidgetMap.constBegin();
   for ( ; itemIt != mItemWidgetMap.constEnd(); ++itemIt )
   {
     //update all legends completely

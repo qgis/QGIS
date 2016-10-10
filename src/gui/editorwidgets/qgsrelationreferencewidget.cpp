@@ -518,7 +518,7 @@ void QgsRelationReferenceWidget::init()
 
     QgsExpression exp( mReferencedLayer->displayExpression() );
 
-    requestedAttrs += exp.referencedColumns().toSet();
+    requestedAttrs += exp.referencedColumns();
     requestedAttrs << mRelation.fieldPairs().at( 0 ).second;
 
     QgsAttributeList attributes;
@@ -527,7 +527,7 @@ void QgsRelationReferenceWidget::init()
 
     layerCache->setCacheSubsetOfAttributes( attributes );
     mMasterModel = new QgsAttributeTableModel( layerCache );
-    mMasterModel->setRequest( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( requestedAttrs.toList(), mReferencedLayer->fields() ) );
+    mMasterModel->setRequest( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( requestedAttrs, mReferencedLayer->fields() ) );
     mFilterModel = new QgsAttributeTableFilterModel( mCanvas, mMasterModel, mMasterModel );
     mFeatureListModel = new QgsFeatureListModel( mFilterModel, this );
     mFeatureListModel->setDisplayExpression( mReferencedLayer->displayExpression() );

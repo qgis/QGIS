@@ -178,7 +178,7 @@ bool QgsGeometryGeneratorSymbolLayer::setSubSymbol( QgsSymbol* symbol )
 
 QSet<QString> QgsGeometryGeneratorSymbolLayer::usedAttributes() const
 {
-  return mSymbol->usedAttributes() + mExpression->referencedColumns().toSet();
+  return mSymbol->usedAttributes() + mExpression->referencedColumns();
 }
 
 bool QgsGeometryGeneratorSymbolLayer::isCompatibleWithSymbol( QgsSymbol* symbol ) const

@@ -76,7 +76,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
 
     virtual void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props = QgsStringMap() ) const override;
     bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
-    virtual QList<QString> usedAttributes() override;
+    virtual QSet<QString> usedAttributes() const override;
     virtual Capabilities capabilities() override;
     virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;

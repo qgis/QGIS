@@ -36,7 +36,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
     virtual void stopRender( QgsRenderContext& context ) override;
-    virtual QList<QString> usedAttributes() override;
+    virtual QSet<QString> usedAttributes() const override;
 
     QgsSymbol* symbol() const;
     void setSymbol( QgsSymbol* s );

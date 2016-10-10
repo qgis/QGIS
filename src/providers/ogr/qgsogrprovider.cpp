@@ -154,7 +154,12 @@ void QgsOgrProvider::repack()
   // run REPACK on shape files
   QByteArray sql = QByteArray( "REPACK " ) + layerName;   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
   QgsDebugMsg( QString( "SQL: %1" ).arg( FROM8( sql ) ) );
+  CPLErrorReset();
   OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), nullptr, nullptr );
+  if ( CPLGetLastErrorType() != CE_None )
+  {
+    pushError( tr( "OGR[%1] error %2: %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
+  }
 
   if ( mFilePath.endsWith( ".shp", Qt::CaseInsensitive ) || mFilePath.endsWith( ".dbf", Qt::CaseInsensitive ) )
   {
@@ -3150,13 +3155,16 @@ void QgsOgrProvider::recalculateFeatureCount()
     setRelevantFields( ogrLayer, true, QgsAttributeList() );
     OGR_L_ResetReading( ogrLayer );
     OGRFeatureH fet;
+    const OGRwkbGeometryType flattenGeomTypeFilter =
+      QgsOgrProvider::ogrWkbSingleFlatten( mOgrGeometryTypeFilter );
     while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
     {
       OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
       if ( geom )
       {
         OGRwkbGeometryType gType = OGR_G_GetGeometryType( geom );
-        if ( gType == mOgrGeometryTypeFilter ) mFeaturesCounted++;
+        gType = QgsOgrProvider::ogrWkbSingleFlatten( gType );
+        if ( gType == flattenGeomTypeFilter ) mFeaturesCounted++;
       }
       OGR_F_Destroy( fet );
     }
@@ -3359,6 +3367,18 @@ void QgsOgrProvider::open( OpenMode mode )
     OGR_DS_Destroy( ogrDataSource );
     ogrLayer = ogrOrigLayer = nullptr;
     mValid = false;
+
+#if defined(GDAL_COMPUTE_VERSION)
+    // In the case where we deal with a shapefile, it is possible that it has
+    // pre-existing holes in the DBF (see #15407), so if using a GDAL version
+    // recent enough to have reliable packing, do a packing at the first edit
+    // action.
+    if ( ogrDriverName == "ESRI Shapefile"  &&
+         atoi( GDALVersionInfo( "VERSION_NUM" ) ) >= GDAL_COMPUTE_VERSION( 2, 1, 2 ) )
+    {
+      mShapefileMayBeCorrupted = true;
+    }
+#endif
 
     ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( TO8F( mFilePath ), false, &ogrDriver );
 

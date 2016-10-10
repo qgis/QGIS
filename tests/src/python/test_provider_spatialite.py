@@ -19,7 +19,7 @@ import sys
 import shutil
 import tempfile
 
-from qgis.core import QgsVectorLayer, QgsPoint, QgsFeature, QgsGeometry
+from qgis.core import QgsVectorLayer, QgsPoint, QgsFeature, QgsGeometry, QgsProject, QgsMapLayerRegistry
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -121,6 +121,18 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         cur.execute(sql)
         sql = "INSERT INTO test_arrays (id, strings, ints, reals, geometry) "
         sql += "VALUES (1, '[\"toto\",\"tutu\"]', '[1,-2,724562]', '[1.0, -232567.22]', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
+        cur.execute(sql)
+
+        # 2 tables with relations
+        sql = "PRAGMA foreign_keys = ON;"
+        cur.execute(sql)
+        sql = "CREATE TABLE test_relation_a(artistid INTEGER PRIMARY KEY, artistname  TEXT);"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_relation_a', 'Geometry', 4326, 'POLYGON', 'XY')"
+        cur.execute(sql)
+        sql = "CREATE TABLE test_relation_b(trackid INTEGER, trackname TEXT, trackartist INTEGER, FOREIGN KEY(trackartist) REFERENCES test_relation_a(artistid));"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_relation_b', 'Geometry', 4326, 'POLYGON', 'XY')"
         cur.execute(sql)
 
         cur.execute("COMMIT")
@@ -346,6 +358,29 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(read_back['strings'], new_f['strings'])
         self.assertEqual(read_back['ints'], new_f['ints'])
         self.assertEqual(read_back['reals'], new_f['reals'])
+
+    def test_discover_relation(self):
+        artist = QgsVectorLayer("dbname=%s table=test_relation_a (geometry)" % self.dbname, "test_relation_a", "spatialite")
+        self.assertTrue(artist.isValid())
+        track = QgsVectorLayer("dbname=%s table=test_relation_b (geometry)" % self.dbname, "test_relation_b", "spatialite")
+        self.assertTrue(track.isValid())
+        QgsMapLayerRegistry.instance().addMapLayer(artist)
+        QgsMapLayerRegistry.instance().addMapLayer(track)
+        try:
+            relMgr = QgsProject.instance().relationManager()
+            relations = relMgr.discoverRelations([], [artist, track])
+            relations = {r.name(): r for r in relations}
+            self.assertEqual({'fk_test_relation_b_0'}, set(relations.keys()))
+
+            a2t = relations['fk_test_relation_b_0']
+            self.assertTrue(a2t.isValid())
+            self.assertEqual('test_relation_b', a2t.referencingLayer().name())
+            self.assertEqual('test_relation_a', a2t.referencedLayer().name())
+            self.assertEqual([2], a2t.referencingFields())
+            self.assertEqual([0], a2t.referencedFields())
+        finally:
+            QgsMapLayerRegistry.instance().removeMapLayer(track.id())
+            QgsMapLayerRegistry.instance().removeMapLayer(artist.id())
 
     # This test would fail. It would require turning on WAL
     def XXXXXtestLocking(self):

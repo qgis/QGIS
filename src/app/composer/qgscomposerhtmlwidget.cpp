@@ -31,6 +31,7 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
     , mFrame( frame )
 {
   setupUi( this );
+  setPanelTitle( tr( "HTML properties" ) );
 
   //setup html editor
   mHtmlEditor = new QgsCodeEditorHTML( this );

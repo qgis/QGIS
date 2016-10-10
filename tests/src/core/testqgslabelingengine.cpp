@@ -437,7 +437,7 @@ void TestQgsLabelingEngine::testSubstitutions()
   mapSettings.setLayers( QStringList() << vl->id() );
   mapSettings.setOutputDpi( 96 );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-  QStringList attributes;
+  QSet<QString> attributes;
   QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
   engine.addProvider( provider );
@@ -469,7 +469,7 @@ void TestQgsLabelingEngine::testCapitalization()
   mapSettings.setLayers( QStringList() << vl->id() );
   mapSettings.setOutputDpi( 96 );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-  QStringList attributes;
+  QSet<QString> attributes;
   QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
 

@@ -6,35 +6,41 @@ Priority: optional
 Build-Depends:
  bison,
  cmake (>= 2.8),
- debhelper (>= 7),
+ debhelper (>= 9),
+ dh-python,
  flex,
  grass-dev,
  libexpat1-dev,
  libfcgi-dev,
- libgdal1-dev | libgdal-dev,
+ libgdal-dev (>= 1.11),
+ libgsl-dev,
  libgeos-dev (>= 3.0.0),
- libgsl0-dev,
  libpq-dev,
  libproj-dev,
- qtbase5-dev,
- libqca-qt5-2-dev,
- libqwt-qt5-dev,
  libspatialite-dev,
  libsqlite3-dev,
  libspatialindex-dev,
+ qtbase5-dev, qttools5-dev-tools, qttools5-dev, qtscript5-dev, qtpositioning5-dev,
+ libqt5svg5-dev, libqt5xmlpatterns5-dev, libqt5webkit5-dev, libqt5opengl5-dev, libqt5sql5-sqlite, libqt5scintilla2-dev,
+ libqwt-qt5-dev, libqca-qt5-2-dev, libqca-qt5-2-plugins,
+ python3-dev, python3-all-dev, python3-sip, python3-sip-dev,
+ pyqt5-dev-tools, pyqt5-dev, pyqt5.qsci-dev,
+ python3-pyqt5, python3-pyqt5.qsci, python3-pyqt5.qtsql, python3-pyqt5.qtsvg,
+ python3-gdal,
+ python3-nose2, python3-yaml, python3-mock, python3-psycopg2, python3-future, python3-termcolor,
  pkg-config,
- pyqt5-dev,
- python3-dev,
- python3-all-dev,
- python3-sip,
- python3-sip-dev,
- python3-pyqt5,
  git,
  txt2tags,
- doxygen
+ doxygen,
+ gdal-bin,
+ spawn-fcgi, lighttpd, poppler-utils,
+ graphviz,
+ xvfb, xauth,
+ xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
+ libosgearth-dev,
+ locales, ca-certificates, ninja-build
 Build-Conflicts: libqgis-dev, qgis-dev
-Standards-Version: 3.8.4
-XS-Python-Version: current
+Standards-Version: 3.9.7
 Vcs-Browser: https://github.com/qgis/QGIS/
 Vcs-Git: https://github.com/qgis/QGIS.git
 Homepage: http://qgis.org/
@@ -64,7 +70,9 @@ Description: Geographic Information System (GIS)
 Package: qgis-common
 Architecture: all
 Depends:
- ${misc:Depends}
+  libjs-jquery,
+  libjs-leaflet,
+  ${misc:Depends}
 Description: QGIS - architecture-independent data
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -72,20 +80,20 @@ Description: QGIS - architecture-independent data
  This package contains architecture-independent supporting data files for use
  with QGIS.
 
-Package: libqgis-app3.0.0
+Package: libqgis-app2.99.0
 Architecture: any
 Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
-Replaces: libqgis{QGIS_ABI}
+Replaces: libqgis2.99.0
 Description: QGIS - shared app library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
  This package contains the shared app library.
 
-Package: libqgis-core3.0.0
+Package: libqgis-core2.99.0
 Architecture: any
 Section: libs
 Depends:
@@ -97,7 +105,7 @@ Description: QGIS - shared core library
  .
  This package contains the shared core library.
 
-Package: libqgis-gui3.0.0
+Package: libqgis-gui2.99.0
 Architecture: any
 Section: libs
 Depends:
@@ -109,7 +117,7 @@ Description: QGIS - shared gui library
  .
  This package contains the shared gui library.
 
-Package: libqgis-analysis3.0.0
+Package: libqgis-analysis2.99.0
 Architecture: any
 Section: libs
 Depends:
@@ -121,7 +129,7 @@ Description: QGIS - shared analysis library
  .
  This package contains the shared analysis library.
 
-Package: libqgis-networkanalysis3.0.0
+Package: libqgis-networkanalysis2.99.0
 Architecture: any
 Section: libs
 Depends:
@@ -133,7 +141,7 @@ Description: QGIS - shared network analysis library
  .
  This package contains the shared network analysis library.
 
-Package: libqgisgrass3.0.0
+Package: libqgisgrass7-2.99.0
 Architecture: any
 Section: libs
 Depends:
@@ -145,13 +153,13 @@ Description: QGIS - shared grass library
  .
  This package contains the shared grass library.
 
-Package: libqgispython3.0.0
+Package: libqgispython2.99.0
 Architecture: any
 Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
-Replaces: libqgis3.0.0
+Replaces: libqgis2.99.0
 Description: QGIS - shared Python library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -170,7 +178,7 @@ Description: QGIS custom widgets for Qt Designer
  .
  This package contains a library to use specific QGIS widgets in Qt Designer.
 
-Package: libqgis-server{QGIS_ABI}
+Package: libqgis-server2.99.0
 Architecture: any
 Depends:
  ${shlibs:Depends},
@@ -187,18 +195,18 @@ Section: libdevel
 Depends:
  grass-dev,
  libexpat1-dev,
- libgdal1-dev,
+ libgdal-dev (>= 1.11),
  libgeos-dev (>= 3.0.0),
- libgsl0-dev,
+ libgsl-dev,
  libpq-dev,
  libproj-dev,
- libqgis-app3.0.0 (= ${binary:Version}),
- libqgis-core3.0.0 (= ${binary:Version}),
- libqgis-gui3.0.0 (= ${binary:Version}),
- libqgis-analysis3.0.0 (= ${binary:Version}),
- libqgis-networkanalysis3.0.0 (= ${binary:Version}),
- libqgisgrass7.0.4-3.0.0 (= ${binary:Version}),
- libqgispython3.0.0 (= ${binary:Version}),
+ libqgis-app2.99.0 (= ${binary:Version}),
+ libqgis-core2.99.0 (= ${binary:Version}),
+ libqgis-gui2.99.0 (= ${binary:Version}),
+ libqgis-analysis2.99.0 (= ${binary:Version}),
+ libqgis-networkanalysis2.99.0 (= ${binary:Version}),
+ libqgisgrass7-2.99.0 (= ${binary:Version}),
+ libqgispython2.99.0 (= ${binary:Version}),
  libsqlite3-dev,
  qtbase5-dev, python3-pyqt5, qttools5-dev,
  libqt5svg5-dev, pyqt5.qsci-dev,
@@ -229,13 +237,13 @@ Architecture: any
 Section: debug
 Priority: extra
 Depends:
- libqgis-app{QGIS_ABI} (= ${binary:Version}),
- libqgis-core{QGIS_ABI} (= ${binary:Version}),
- libqgis-gui{QGIS_ABI} (= ${binary:Version}),
- libqgis-analysis{QGIS_ABI} (= ${binary:Version}),
- libqgis-networkanalysis{QGIS_ABI} (= ${binary:Version}),
- libqgisgrass{GRASSVER}-{QGIS_ABI} (= ${binary:Version}),
- libqgispython{QGIS_ABI} (= ${binary:Version}),
+ libqgis-app2.99.0 (= ${binary:Version}),
+ libqgis-core2.99.0 (= ${binary:Version}),
+ libqgis-gui2.99.0 (= ${binary:Version}),
+ libqgis-analysis2.99.0 (= ${binary:Version}),
+ libqgis-networkanalysis2.99.0 (= ${binary:Version}),
+ libqgisgrass7-2.99.0 (= ${binary:Version}),
+ libqgispython2.99.0 (= ${binary:Version}),
  ${misc:Depends}
 Suggests: gdb
 Description: QGIS - debugging symbols
@@ -304,7 +312,7 @@ Depends:
  python3-six,
  python3-yaml,
  python3-future,
- libqgispython3.0.0,
+ libqgispython2.99.0,
  ${shlibs:Depends},
  ${python:Depends},
  ${misc:Depends},

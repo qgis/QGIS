@@ -71,9 +71,9 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     }
   }
 
-  QStringList lst;
+  QSet<QString> lst;
   if ( expression.isNull() )
-    lst.append( fieldOrExpression );
+    lst.insert( fieldOrExpression );
   else
     lst = expression->referencedColumns();
 

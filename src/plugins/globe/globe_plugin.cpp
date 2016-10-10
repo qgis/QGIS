@@ -342,7 +342,9 @@ void GlobePlugin::run()
   }
   else
   {
-    QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
+    QString cacheDirectory = settings.value( "cache/directory" ).toString();
+    if ( cacheDirectory.isEmpty() )
+      cacheDirectory = QgsApplication::qgisSettingsDirPath() + "cache";
     osgEarth::Drivers::FileSystemCacheOptions cacheOptions;
     cacheOptions.rootPath() = cacheDirectory.toStdString();
 

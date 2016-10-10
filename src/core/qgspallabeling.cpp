@@ -3946,7 +3946,7 @@ void QgsPalLabeling::clearActiveLayer( const QString &layerID )
 }
 
 
-int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx )
+int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<QString>& attrNames, QgsRenderContext& ctx )
 {
   if ( !willUseLayer( layer ) )
   {
@@ -3974,7 +3974,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
   return 1; // init successful
 }
 
-int QgsPalLabeling::prepareDiagramLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx )
+int QgsPalLabeling::prepareDiagramLayer( QgsVectorLayer* layer, QSet<QString>& attrNames, QgsRenderContext& ctx )
 {
   QgsVectorLayerDiagramProvider* dp = new QgsVectorLayerDiagramProvider( layer, false );
   // need to be added before calling prepare() - uses map settings from engine

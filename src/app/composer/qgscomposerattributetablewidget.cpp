@@ -39,6 +39,7 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
     , mFrame( frame )
 {
   setupUi( this );
+  setPanelTitle( tr( "Table properties" ) );
 
   blockAllSignals( true );
 
@@ -268,7 +269,7 @@ void QgsComposerAttributeTableWidget::on_mHeaderFontColorButton_colorChanged( co
   QgsComposition* composition = mComposerTable->composition();
   if ( composition )
   {
-    composition->beginMultiFrameCommand( mComposerTable, tr( "Table header font color" ) );
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table header font color" ), QgsComposerMultiFrameMergeCommand::TableHeaderFontColor );
   }
   mComposerTable->setHeaderFontColor( newColor );
   if ( composition )
@@ -309,7 +310,7 @@ void QgsComposerAttributeTableWidget::on_mContentFontColorButton_colorChanged( c
   QgsComposition* composition = mComposerTable->composition();
   if ( composition )
   {
-    composition->beginMultiFrameCommand( mComposerTable, tr( "Table content font color" ) );
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table content font color" ), QgsComposerMultiFrameMergeCommand::TableContentFontColor );
   }
   mComposerTable->setContentFontColor( newColor );
   if ( composition )
@@ -347,7 +348,7 @@ void QgsComposerAttributeTableWidget::on_mGridColorButton_colorChanged( const QC
   QgsComposition* composition = mComposerTable->composition();
   if ( composition )
   {
-    composition->beginMultiFrameCommand( mComposerTable, tr( "Table grid color" ) );
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table grid color" ), QgsComposerMultiFrameMergeCommand::TableGridColor );
   }
   mComposerTable->setGridColor( newColor );
   if ( composition )
@@ -385,7 +386,7 @@ void QgsComposerAttributeTableWidget::on_mBackgroundColorButton_colorChanged( co
   QgsComposition* composition = mComposerTable->composition();
   if ( composition )
   {
-    composition->beginMultiFrameCommand( mComposerTable, tr( "Table background color" ) );
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table background color" ), QgsComposerMultiFrameMergeCommand::TableBackgroundColor );
   }
   mComposerTable->setBackgroundColor( newColor );
   if ( composition )

@@ -29,7 +29,7 @@ if "%ARCH%"=="" goto usage
 if not "%SHA%"=="" set SHA=-%SHA%
 if "%SITE%"=="" set SITE=qgis.org
 
-set BUILDDIR=%CD%\build-nightly-%ARCH%
+set BUILDDIR=%CD%\build-%PACKAGENAME%-%ARCH%
 
 if "%OSGEO4W_ROOT%"=="" (
 	if "%ARCH%"=="x86" (
@@ -52,35 +52,36 @@ if not "%PROGRAMFILES(X86)%"=="" set PF86=%PROGRAMFILES(X86)%
 if "%PF86%"=="" set PF86=%PROGRAMFILES%
 if "%PF86%"=="" (echo PROGRAMFILES not set & goto error)
 
-if "%ARCH%"=="x86" goto devenv_x86
-goto devenv_x86_64
+if "%ARCH%"=="x86" goto cmake_x86
+goto cmake_x86_64
 
-:devenv_x86
+:cmake_x86
 set GRASS6_VERSION=6.4.4
 call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" x86
 if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x86 /Release
 path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
+set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 10.0\VC\bin
 
 set CMAKE_OPT=^
-	-G "Visual Studio 10" ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
 	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt.lib ^
 	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /MP /Od /D NDEBUG /D QGISDEBUG" ^
-	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb
-goto devenv
+	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
+	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex_i.lib
+goto cmake
 
-:devenv_x86_64
+:cmake_x86_64
 set GRASS6_VERSION=6.4.3
 call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" amd64
 if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x64 /Release
 path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
+set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 10.0\VC\bin\amd64
 
 set SETUPAPI_LIBRARY=%PF86%\Microsoft SDKs\Windows\v7.0A\Lib\x64\SetupAPI.Lib
 if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=%PROGRAMFILES%\Microsoft SDKs\Windows\v7.1\Lib\x64\SetupAPI.lib
 if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 
 set CMAKE_OPT=^
-	-G "Visual Studio 10 Win64" ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/bin/sip.exe ^
 	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
@@ -89,7 +90,7 @@ set CMAKE_OPT=^
 	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
 
-:devenv
+:cmake
 for /f "usebackq tokens=1" %%a in (`%OSGEO4W_ROOT%\bin\grass70 --config path`) do set GRASS70_PATH=%%a
 for %%i in ("%GRASS70_PATH%") do set GRASS70_VERSION=%%~nxi
 set GRASS70_VERSION=%GRASS70_VERSION:grass-=%
@@ -153,7 +154,10 @@ if errorlevel 1 goto error
 set LIB=%LIB%;%OSGEO4W_ROOT%\lib
 set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
 
-cmake %CMAKE_OPT% ^
+cmake -G Ninja ^
+	-D CMAKE_CXX_COMPILER="%CMAKE_COMPILER_PATH:\=/%/cl.exe" ^
+	-D CMAKE_C_COMPILER="%CMAKE_COMPILER_PATH:\=/%/cl.exe" ^
+	-D CMAKE_LINKER="%CMAKE_COMPILER_PATH:\=/%/link.exe" ^
 	-D BUILDNAME="%PACKAGENAME%-%VERSION%%SHA%-Nightly-VC10-%ARCH%" ^
 	-D SITE="%SITE%" ^
 	-D PEDANTIC=TRUE ^
@@ -195,7 +199,8 @@ cmake %CMAKE_OPT% ^
 	-D WITH_INTERNAL_MOCK=FALSE ^
 	-D WITH_INTERNAL_HTTPLIB2=FALSE ^
 	-D WITH_INTERNAL_FUTURE=FALSE ^
-	%SRCDIR%
+	%CMAKE_OPT% ^
+	%SRCDIR:\=/%
 if errorlevel 1 (echo cmake failed & goto error)
 
 :skipcmake
@@ -244,7 +249,7 @@ if exist "%PKGDIR%" (
 )
 
 echo INSTALL: %DATE% %TIME%
-cmake --build %BUILDDIR% --target INSTALL --config %BUILDCONF%
+cmake --build %BUILDDIR% --target install --config %BUILDCONF%
 if errorlevel 1 (echo INSTALL failed & goto error)
 
 :package

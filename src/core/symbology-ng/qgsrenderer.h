@@ -148,8 +148,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * @return A set of attributes
      */
-    // TODO QGIS3: Change QList to QSet
-    virtual QList<QString> usedAttributes() = 0;
+    virtual QSet<QString> usedAttributes() const = 0;
 
     /**
      * Returns true if this renderer requires the geometry to apply the filter.

@@ -600,7 +600,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   char *tmpBlock = ( char * )qgsMalloc( dataSize * tmpWidth * tmpHeight );
   if ( ! tmpBlock )
   {
-    QgsDebugMsg( QString( "Coudn't allocate temporary buffer of %1 bytes" ).arg( dataSize * tmpWidth * tmpHeight ) );
+    QgsDebugMsg( QString( "Couldn't allocate temporary buffer of %1 bytes" ).arg( dataSize * tmpWidth * tmpHeight ) );
     return;
   }
   GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );

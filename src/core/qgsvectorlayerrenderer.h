@@ -82,8 +82,8 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
       @param layer diagram layer
       @param attributeNames attributes needed for labeling and diagrams will be added to the list
      */
-    void prepareLabeling( QgsVectorLayer* layer, QStringList& attributeNames );
-    void prepareDiagrams( QgsVectorLayer* layer, QStringList& attributeNames );
+    void prepareLabeling( QgsVectorLayer* layer, QSet<QString>& attributeNames );
+    void prepareDiagrams( QgsVectorLayer* layer, QSet<QString>& attributeNames );
 
     /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
      */
@@ -122,7 +122,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QgsWkbTypes::GeometryType mGeometryType;
 
-    QStringList mAttrNames;
+    QSet<QString> mAttrNames;
 
     //! used with old labeling engine (QgsPalLabeling): whether labeling is enabled
     bool mLabeling;

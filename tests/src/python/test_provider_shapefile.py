@@ -30,6 +30,19 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
+def GDAL_COMPUTE_VERSION(maj, min, rev):
+    return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
+
+
+class ErrorReceiver():
+
+    def __init__(self):
+        self.msg = None
+
+    def receiveError(self, msg):
+        self.msg = msg
+
+
 class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
     @classmethod
@@ -379,6 +392,94 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         ds = None
 
         vl = None
+
+    def testRepackUnderFileLocks(self):
+        ''' Test fix for #15570 and #15393 '''
+
+        # This requires a GDAL fix done per https://trac.osgeo.org/gdal/ticket/6672
+        # but on non-Windows version the test would succeed
+        if int(osgeo.gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 1, 2):
+            return
+
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        feature_count = vl.featureCount()
+
+        # Keep a file descriptor opened on the .dbf, .shp and .shx
+        f_shp = open(os.path.join(tmpdir, 'shapefile.shp'), 'rb')
+        f_shx = open(os.path.join(tmpdir, 'shapefile.shx'), 'rb')
+        f_dbf = open(os.path.join(tmpdir, 'shapefile.dbf'), 'rb')
+
+        # Delete a feature
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.deleteFeature(1))
+
+        # Commit changes and check no error is emitted
+        cbk = ErrorReceiver()
+        vl.dataProvider().raiseError.connect(cbk.receiveError)
+        self.assertTrue(vl.commitChanges())
+        self.assertIsNone(cbk.msg)
+
+        vl = None
+
+        del f_shp
+        del f_shx
+        del f_dbf
+
+        # Test repacking has been done
+        ds = osgeo.ogr.Open(datasource)
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount(), feature_count - 1)
+        ds = None
+
+    def testRepackAtFirstSave(self):
+        ''' Test fix for #15407 '''
+
+        # This requires a GDAL fix done per https://trac.osgeo.org/gdal/ticket/6672
+        # but on non-Windows version the test would succeed
+        if int(osgeo.gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 1, 2):
+            return
+
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        ds = osgeo.ogr.Open(datasource)
+        lyr = ds.GetLayer(0)
+        original_feature_count = lyr.GetFeatureCount()
+        lyr.DeleteFeature(2)
+        ds = None
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+
+        self.assertTrue(vl.featureCount(), original_feature_count)
+
+        # Edit a feature (attribute change only)
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.dataProvider().changeAttributeValues({0: {0: 100}}))
+
+        # Commit changes and check no error is emitted
+        cbk = ErrorReceiver()
+        vl.dataProvider().raiseError.connect(cbk.receiveError)
+        self.assertTrue(vl.commitChanges())
+        self.assertIsNone(cbk.msg)
+
+        self.assertTrue(vl.featureCount(), original_feature_count - 1)
+
+        vl = None
+
+        # Test repacking has been done
+        ds = osgeo.ogr.Open(datasource)
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount(), original_feature_count - 1)
+        ds = None
 
 if __name__ == '__main__':
     unittest.main()

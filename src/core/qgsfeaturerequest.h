@@ -377,6 +377,9 @@ class CORE_EXPORT QgsFeatureRequest
     //! Set a subset of attributes by names that will be fetched
     QgsFeatureRequest& setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields );
 
+    //! Set a subset of attributes by names that will be fetched
+    QgsFeatureRequest& setSubsetOfAttributes( const QSet<QString>& attrNames, const QgsFields& fields );
+
     //! Set a simplification method for geometries that will be fetched
     //! @note added in 2.2
     QgsFeatureRequest& setSimplifyMethod( const QgsSimplifyMethod& simplifyMethod );

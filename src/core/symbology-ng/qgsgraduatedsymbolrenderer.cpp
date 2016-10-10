@@ -412,7 +412,7 @@ void QgsGraduatedSymbolRenderer::stopRender( QgsRenderContext& context )
   }
 }
 
-QList<QString> QgsGraduatedSymbolRenderer::usedAttributes()
+QSet<QString> QgsGraduatedSymbolRenderer::usedAttributes() const
 {
   QSet<QString> attributes;
 
@@ -424,7 +424,7 @@ QList<QString> QgsGraduatedSymbolRenderer::usedAttributes()
 
   QgsExpression testExpr( mAttrName );
   if ( !testExpr.hasParserError() )
-    attributes.unite( testExpr.referencedColumns().toSet() );
+    attributes.unite( testExpr.referencedColumns() );
 
   QgsRangeList::const_iterator range_it = mRanges.constBegin();
   for ( ; range_it != mRanges.constEnd(); ++range_it )
@@ -435,7 +435,7 @@ QList<QString> QgsGraduatedSymbolRenderer::usedAttributes()
       attributes.unite( symbol->usedAttributes() );
     }
   }
-  return attributes.toList();
+  return attributes;
 }
 
 bool QgsGraduatedSymbolRenderer::updateRangeSymbol( int rangeIndex, QgsSymbol* symbol )

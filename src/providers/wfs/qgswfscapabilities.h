@@ -30,7 +30,7 @@ class QgsWfsCapabilities : public QgsWfsRequest
     virtual ~QgsWfsCapabilities();
 
     //! start network connection to get capabilities
-    bool requestCapabilities( bool synchronous );
+    bool requestCapabilities( bool synchronous, bool forceRefresh );
 
     //! description of a vector layer
     struct FeatureType

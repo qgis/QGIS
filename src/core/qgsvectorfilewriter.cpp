@@ -2863,13 +2863,13 @@ void QgsVectorFileWriter::addRendererAttributes( QgsVectorLayer* vl, QgsAttribut
   QgsFeatureRenderer* renderer = symbologyRenderer( vl );
   if ( renderer )
   {
-    QList<QString> rendererAttributes = renderer->usedAttributes();
-    for ( int i = 0; i < rendererAttributes.size(); ++i )
+    const QSet<QString> rendererAttributes = renderer->usedAttributes();
+  for ( const QString& attr : rendererAttributes )
     {
-      int index = vl->fields().lookupField( rendererAttributes.at( i ) );
+      int index = vl->fields().lookupField( attr );
       if ( index != -1 )
       {
-        attList.push_back( vl->fields().lookupField( rendererAttributes.at( i ) ) );
+        attList.append( index );
       }
     }
   }

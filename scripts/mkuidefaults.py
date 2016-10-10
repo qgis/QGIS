@@ -32,7 +32,7 @@ def chunks(l, n):
 
 QCoreApplication.setOrganizationName("QGIS")
 QCoreApplication.setOrganizationDomain("qgis.org")
-QCoreApplication.setApplicationName("QGIS2")
+QCoreApplication.setApplicationName("QGIS3")
 
 s = QSettings()
 

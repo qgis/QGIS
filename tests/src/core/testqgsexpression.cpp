@@ -1494,7 +1494,7 @@ class TestQgsExpression: public QObject
       expectedCols << "foo" << "bar" << "ppp" << "qqq" << "rrr";
       QgsExpression exp( "length(Bar || FOO) = 4 or foo + sqrt(bar) > 0 or case when ppp then qqq else rrr end" );
       QCOMPARE( exp.hasParserError(), false );
-      QStringList refCols = exp.referencedColumns();
+      QSet<QString> refCols = exp.referencedColumns();
       // make sure we have lower case
       QSet<QString> refColsSet;
       Q_FOREACH ( const QString& col, refCols )
@@ -1507,7 +1507,7 @@ class TestQgsExpression: public QObject
     {
       QgsExpression exp( "attribute($currentfeature,'test')" );
       QCOMPARE( exp.hasParserError(), false );
-      QStringList refCols = exp.referencedColumns();
+      QSet<QString> refCols = exp.referencedColumns();
       // make sure we get the all attributes flag
       bool allAttributesFlag = refCols.contains( QgsFeatureRequest::AllAttributes );
       QCOMPARE( allAttributesFlag, true );

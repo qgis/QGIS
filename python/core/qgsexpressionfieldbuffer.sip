@@ -28,6 +28,16 @@ class QgsExpressionFieldBuffer
     void removeExpression( int index );
 
     /**
+     * Renames an expression field at a given index
+     *
+     * @param index The index of the expression to change
+     * @param name   New name for field
+     *
+     * @note added in 3.0
+     */
+    void renameExpression( int index, const QString& name );
+
+    /**
      * Changes the expression at a given index
      *
      * @param index The index of the expression to change

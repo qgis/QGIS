@@ -340,7 +340,7 @@ class QgsRuleBasedRenderer : QgsFeatureRenderer
 
     virtual QString filter( const QgsFields& fields = QgsFields() );
 
-    virtual QList<QString> usedAttributes();
+    virtual QSet<QString> usedAttributes() const;
 
     virtual bool filterNeedsGeometry() const;
 

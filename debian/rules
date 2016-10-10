@@ -36,16 +36,16 @@ endif
 
 QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch xenial"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"trusty stretch xenial"))
 	DISTRIBUTION := sid
 endif
 
 DEB_BUILD_NAME ?= $(DISTRIBUTION)-$(DEB_BUILD_ARCH)
 
 ifeq (,$(DISPLAY))
-TESTMAKE=xvfb-run -a -n 1 -s "-screen 0 1280x1024x24 -dpi 96" $(MAKE)
+TESTMAKE=xvfb-run -a -n 1 -s "-screen 0 1280x1024x24 -dpi 96" ninja
 else
-TESTMAKE=$(MAKE)
+TESTMAKE=ninja
 endif
 
 QGIS_MAJOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
@@ -56,6 +56,7 @@ GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
 GRASSVER=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1))
 
 CMAKE_OPTS := \
+	-G Ninja \
 	-DBUILDNAME=$(DEB_BUILD_NAME) \
 	-DCMAKE_VERBOSE_MAKEFILE=1 \
 	-DCMAKE_INSTALL_PREFIX=/usr \
@@ -84,7 +85,8 @@ CMAKE_OPTS := \
 	-DWITH_QSPATIALITE=TRUE \
 	-DWITH_PYSPATIALITE=TRUE \
 	-DQT_PLUGINS_DIR=$(QT_PLUGINS_DIR) \
-	-DPYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's\#-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$\#\1/lib\2.so\#')
+	-DPYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's\#-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$\#\1/lib\2.so\#') \
+	-DDOXYGEN_ON_DEMAND=TRUE
 
 ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
@@ -136,7 +138,7 @@ endif
 		-DORACLE_INCLUDEDIR=$(ORACLE_INCLUDEDIR)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid stretch jessie"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
 	CMAKE_OPTS += -DSPATIALINDEX_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libspatialindex.so
 endif
 
@@ -154,12 +156,10 @@ else
 	CMAKE_OPTS += -DENABLE_TESTS=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty sid"))
 CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
 CFLAGS   := $(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
 CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS) $(CPPFLAGS)
 LDFLAGS  := $(shell dpkg-buildflags --get LDFLAGS)
-endif
 
 ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
@@ -236,6 +236,12 @@ override_dh_clean: cleantemplates
 override_dh_auto_configure:
 	dh_auto_configure -- $(CMAKE_OPTS)
 
+override_dh_auto_build-arch:
+	ninja -C $(QGIS_BUILDDIR)
+
+override_dh_auto_build-indep:
+	ninja -C $(QGIS_BUILDDIR) apidoc
+
 override_dh_auto_test: test-stamp
 
 test-stamp:
@@ -254,7 +260,7 @@ endif
 	touch test-stamp
 
 override_dh_auto_install:
-	dh_auto_install
+	DESTDIR=$(CURDIR)/debian/tmp ninja -C $(QGIS_BUILDDIR) install
 
 	# remove unwanted files
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/api/installdox

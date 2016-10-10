@@ -534,7 +534,7 @@ void QgsVectorLayerRenderer::stopRenderer( QgsSingleSymbolRenderer* selRenderer 
 
 
 
-void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QStringList& attributeNames )
+void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QSet<QString>& attributeNames )
 {
   if ( !mContext.labelingEngine() )
   {
@@ -591,7 +591,7 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer* layer, QStringList
   }
 }
 
-void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList& attributeNames )
+void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QSet<QString>& attributeNames )
 {
   if ( !mContext.labelingEngine() )
   {

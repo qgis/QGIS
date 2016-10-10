@@ -43,26 +43,35 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
     QgsPanelWidgetStack( QWidget* parent = nullptr );
 
     /**
-     * Adds the main widget to the stack and selects it for the user
+     * Adds the main panel widget to the stack and selects it for the user
      * The main widget can not be closed and only the showPanel signal is attached
      * to handle children widget opening panels.
      * @param panel The panel to set as the first widget in the stack.
+     * @note a stack can have only one main panel. Any existing main panel
+     * should be removed by first calling takeMainPanel().
+     * @see mainPanel()
+     * @see takeMainPanel()
      */
-    void addMainPanel( QgsPanelWidget* panel );
+    void setMainPanel( QgsPanelWidget* panel );
 
     /**
-     * The main widget that is set in the stack.  The main widget can not be closed
+     * The main panel widget that is set in the stack. The main widget can not be closed
      * and doesn't display a back button.
      * @return The main QgsPanelWidget that is active in the stack.
+     * @see setMainPanel()
      */
-    QgsPanelWidget* mainWidget();
+    QgsPanelWidget* mainPanel();
 
     /**
-     * Removes the main widget from the stack and transfers ownsership to the
+     * Removes the main panel widget from the stack and transfers ownsership to the
      * caller.
      * @return The main widget that is set in the stack.
+     * @note Calling this will clear out any current stacked panels by accepting
+     * each panel in turn.
+     * @see mainPanel()
+     * @see setMainPanel()
      */
-    QgsPanelWidget* takeMainWidget();
+    QgsPanelWidget* takeMainPanel();
 
     /**
      * Clear the stack of all widgets. Unless the panels autoDelete is set to false
@@ -70,13 +79,28 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      */
     void clear();
 
+    /**
+     * Returns the panel currently shown in the stack.
+     * @note added in QGIS 3.0
+     */
+    QgsPanelWidget* currentPanel();
+
   public slots:
     /**
      * Accept the current active widget in the stack.
      *
      * Calls the panelAccepeted signal on the active widget.
+     * @see acceptAllPanels()
      */
     void acceptCurrentPanel();
+
+    /**
+     * Accepts all panel widgets open in the stack in turn until until only the mainPanel()
+     * remains.
+     * @see acceptCurrentPanel();
+     * @note added in QGIS 3.0
+     */
+    void acceptAllPanels();
 
     /**
      * Show a panel in the stack widget. Will connect to the panels showPanel event to handle

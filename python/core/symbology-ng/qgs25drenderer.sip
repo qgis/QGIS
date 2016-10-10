@@ -33,7 +33,7 @@ class Qgs25DRenderer : QgsFeatureRenderer
     void startRender( QgsRenderContext& context, const QgsFields& fields );
     void stopRender( QgsRenderContext& context );
 
-    QList<QString> usedAttributes();
+    QSet<QString> usedAttributes() const;
     QgsFeatureRenderer* clone() const;
 
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );

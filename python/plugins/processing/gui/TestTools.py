@@ -37,7 +37,7 @@ from osgeo.gdalconst import GA_ReadOnly
 from numpy import nan_to_num
 
 from qgis.PyQt.QtCore import QCoreApplication, QMetaObject
-from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit
+from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QMessageBox
 
 from processing.core.Processing import Processing
 from processing.core.outputs import (
@@ -232,6 +232,15 @@ def createTest(text):
         if isinstance(out, (OutputNumber, OutputString)):
             results[out.name] = str(out)
         elif isinstance(out, OutputRaster):
+            if token is None:
+                QMessageBox.warning(None,
+                                    tr('Error'),
+                                    tr('Seems some outputs are temporary '
+                                       'files. To create test you need to '
+                                       'redirect all algorithm outputs to '
+                                       'files'))
+                return
+
             dataset = gdal.Open(token, GA_ReadOnly)
             dataArray = nan_to_num(dataset.ReadAsArray(0))
             strhash = hashlib.sha224(dataArray.data).hexdigest()

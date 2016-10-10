@@ -7,7 +7,7 @@
 	<key>CFBundleName</key>
 	<string>QGIS</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.qgis.qgis2</string>
+	<string>org.qgis.qgis3</string>
 	<key>CFBundleExecutable</key>
 	<string>${QGIS_APP_NAME}</string>
 	<key>CFBundlePackageType</key>

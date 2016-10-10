@@ -20,6 +20,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgscodeeditorsql.h"
+#include "qgsvectorlayer.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QToolButton>
@@ -113,6 +114,8 @@ void QgsExpressionLineEdit::setGeomCalculator( const QgsDistanceArea &da )
 
 void QgsExpressionLineEdit::setLayer( QgsVectorLayer* layer )
 {
+  if ( !mExpressionContextGenerator || mExpressionContextGenerator == mLayer )
+    mExpressionContextGenerator = layer;
   mLayer = layer;
 }
 

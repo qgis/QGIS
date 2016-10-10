@@ -1,9 +1,9 @@
 qgis (2.99.0) UNRELEASED; urgency=medium
 
   * New development version 2.999 after branch of 2.16
-  * move to qt5/python3
+  * move to qt5/python3/ninja
 
- -- Jürgen E. Fischer <jef@norbit.de>  Fri, 08 Jul 2016 14:12:36 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 06 Oct 2016 13:30:42 +0200
 
 qgis (2.16.0) unstable; urgency=medium
 

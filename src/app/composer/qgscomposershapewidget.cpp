@@ -27,11 +27,12 @@
 QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape ): QgsComposerItemBaseWidget( nullptr, composerShape ), mComposerShape( composerShape )
 {
   setupUi( this );
+  setPanelTitle( tr( "Shape properties" ) );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerShape );
 
-  //shapes don't use background or frame, since the symbol style is set through a QgsSymbolSelectorDialog
+  //shapes don't use background or frame, since the symbol style is set through a QgsSymbolSelectorWidget
   itemPropertiesWidget->showBackgroundGroup( false );
   itemPropertiesWidget->showFrameGroup( false );
 
@@ -109,19 +110,16 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
 
   QgsFillSymbol* newSymbol = mComposerShape->shapeStyleSymbol()->clone();
   QgsExpressionContext context = mComposerShape->createExpressionContext();
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), coverageLayer, this );
+
+  QgsSymbolSelectorWidget* d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
   QgsSymbolWidgetContext symbolContext;
   symbolContext.setExpressionContext( &context );
-  d.setContext( symbolContext );
+  d->setContext( symbolContext );
 
-  if ( d.exec() == QDialog::Accepted )
-  {
-    mComposerShape->beginCommand( tr( "Shape style changed" ) );
-    mComposerShape->setShapeStyleSymbol( newSymbol );
-    updateShapeStyle();
-    mComposerShape->endCommand();
-  }
-  delete newSymbol;
+  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolFromWidget() ) );
+  connect( d, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
+  openPanel( d );
+  mComposerShape->beginCommand( tr( "Shape style changed" ) );
 }
 
 void QgsComposerShapeWidget::updateShapeStyle()
@@ -180,6 +178,23 @@ void QgsComposerShapeWidget::toggleRadiusSpin( const QString& shapeText )
   {
     mCornerRadiusSpinBox->setEnabled( false );
   }
+}
+
+void QgsComposerShapeWidget::updateSymbolFromWidget()
+{
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
+  mComposerShape->setShapeStyleSymbol( dynamic_cast< QgsFillSymbol* >( w->symbol() ) );
+}
+
+void QgsComposerShapeWidget::cleanUpSymbolSelector( QgsPanelWidget* container )
+{
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( container );
+  if ( !w )
+    return;
+
+  delete w->symbol();
+  updateShapeStyle();
+  mComposerShape->endCommand();
 }
 
 

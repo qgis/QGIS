@@ -1058,6 +1058,16 @@ class TestQgsVectorLayer(unittest.TestCase):
         #layer.undoStack().redo()
         #checkFieldNames(['fldint'])
 
+    def test_RenameExpressionField(self):
+        layer = createLayerWithOnePoint()
+        exp_field_idx = layer.addExpressionField('1+1', QgsField('math_is_hard', QVariant.Int))
+
+        #rename and check
+        self.assertTrue(layer.renameAttribute(exp_field_idx, 'renamed'))
+        self.assertEqual(layer.fields()[exp_field_idx].name(), 'renamed')
+        f = next(layer.getFeatures())
+        self.assertEqual(f.fields()[exp_field_idx].name(), 'renamed')
+
     def test_fields(self):
         layer = createLayerWithOnePoint()
 

@@ -50,7 +50,7 @@ class QgsPointDistanceRenderer : QgsFeatureRenderer
 
     virtual void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props = QgsStringMap() ) const;
     bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
-    virtual QList<QString> usedAttributes();
+    virtual QSet<QString> usedAttributes() const;
     virtual Capabilities capabilities();
     virtual QgsSymbolList symbols( QgsRenderContext& context );
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );

@@ -47,23 +47,14 @@ QgsMemoryProvider::QgsMemoryProvider( const QString& uri )
     geometry = url.path();
   }
 
-  geometry = geometry.toLower();
-  if ( geometry == "point" )
-    mWkbType = QgsWkbTypes::Point;
-  else if ( geometry == "linestring" )
-    mWkbType = QgsWkbTypes::LineString;
-  else if ( geometry == "polygon" )
-    mWkbType = QgsWkbTypes::Polygon;
-  else if ( geometry == "multipoint" )
-    mWkbType = QgsWkbTypes::MultiPoint;
-  else if ( geometry == "multilinestring" )
-    mWkbType = QgsWkbTypes::MultiLineString;
-  else if ( geometry == "multipolygon" )
-    mWkbType = QgsWkbTypes::MultiPolygon;
-  else if ( geometry == "none" )
+  if ( geometry.toLower() == "none" )
+  {
     mWkbType = QgsWkbTypes::NoGeometry;
+  }
   else
-    mWkbType = QgsWkbTypes::Unknown;
+  {
+    mWkbType = QgsWkbTypes::parseType( geometry );
+  }
 
   if ( url.hasQueryItem( "crs" ) )
   {
@@ -208,34 +199,7 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
   Q_UNUSED( expandAuthConfig )
 
   QUrl uri( "memory" );
-  QString geometry;
-  switch ( mWkbType )
-  {
-    case QgsWkbTypes::Point :
-      geometry = "Point";
-      break;
-    case QgsWkbTypes::LineString :
-      geometry = "LineString";
-      break;
-    case QgsWkbTypes::Polygon :
-      geometry = "Polygon";
-      break;
-    case QgsWkbTypes::MultiPoint :
-      geometry = "MultiPoint";
-      break;
-    case QgsWkbTypes::MultiLineString :
-      geometry = "MultiLineString";
-      break;
-    case QgsWkbTypes::MultiPolygon :
-      geometry = "MultiPolygon";
-      break;
-    case QgsWkbTypes::NoGeometry :
-      geometry = "None";
-      break;
-    default:
-      geometry = "";
-      break;
-  }
+  QString geometry = QgsWkbTypes::displayString( mWkbType );
   uri.addQueryItem( "geometry", geometry );
 
   if ( mCrs.isValid() )

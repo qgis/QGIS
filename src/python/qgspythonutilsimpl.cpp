@@ -595,9 +595,9 @@ QString QgsPythonUtilsImpl::pluginsPath()
 QString QgsPythonUtilsImpl::homePythonPath()
 {
   QString settingsDir = QgsApplication::qgisSettingsDirPath();
-  if ( QDir::cleanPath( settingsDir ) == QDir::homePath() + QString( "/.qgis%1" ).arg( Qgis::QGIS_VERSION_INT / 10000 ) )
+  if ( QDir::cleanPath( settingsDir ) == QDir::homePath() + QString( "/.qgis3" ) )
   {
-    return QString( "b\"%1/.qgis%2/python\".decode('utf-8')" ).arg( QDir::homePath() ).arg( Qgis::QGIS_VERSION_INT / 10000 );
+    return QString( "b\"%1/.qgis3/python\".decode('utf-8')" ).arg( QDir::homePath() );
   }
   else
   {

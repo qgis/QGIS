@@ -273,20 +273,20 @@ void TestQgsDataDefined::referencedColumns()
   dd.setActive( true );
   dd.setUseExpression( true );
 
-  QStringList cols = dd.referencedColumns();
+  QSet<QString> cols = dd.referencedColumns();
   QVERIFY( cols.isEmpty() );
 
   //set as expression
   dd.setExpressionString( "1+col1+col2" );
   cols = dd.referencedColumns();
-  QCOMPARE( cols.length(), 2 );
+  QCOMPARE( cols.size(), 2 );
   QVERIFY( cols.contains( QString( "col1" ) ) );
   QVERIFY( cols.contains( QString( "col2" ) ) );
 
   //alter expression and check that referenced columns is updated
   dd.setExpressionString( "1+col1+col2+col3" );
   cols = dd.referencedColumns();
-  QCOMPARE( cols.length(), 3 );
+  QCOMPARE( cols.size(), 3 );
   QVERIFY( cols.contains( QString( "col1" ) ) );
   QVERIFY( cols.contains( QString( "col2" ) ) );
   QVERIFY( cols.contains( QString( "col3" ) ) );
@@ -298,13 +298,13 @@ void TestQgsDataDefined::referencedColumns()
 
   dd.setField( "field" );
   cols = dd.referencedColumns();
-  QCOMPARE( cols.length(), 1 );
+  QCOMPARE( cols.size(), 1 );
   QVERIFY( cols.contains( QString( "field" ) ) );
 
   //switch back to expression
   dd.setUseExpression( true );
   cols = dd.referencedColumns();
-  QCOMPARE( cols.length(), 3 );
+  QCOMPARE( cols.size(), 3 );
   QVERIFY( cols.contains( QString( "col1" ) ) );
   QVERIFY( cols.contains( QString( "col2" ) ) );
   QVERIFY( cols.contains( QString( "col3" ) ) );

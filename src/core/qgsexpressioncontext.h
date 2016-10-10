@@ -41,12 +41,17 @@ class QgsSymbol;
 class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
 {
   public:
+    /**
+     * Create a new QgsScopedExpressionFunction
+     *
+     * @note Added in QGIS 2.12
+     */
     QgsScopedExpressionFunction( const QString& fnname,
                                  int params,
                                  const QString& group,
                                  const QString& helpText = QString(),
                                  bool usesGeometry = false,
-                                 const QStringList& referencedColumns = QStringList(),
+                                 const QSet<QString>& referencedColumns = QSet<QString>(),
                                  bool lazyEval = false,
                                  bool handlesNull = false,
                                  bool isContextual = true )

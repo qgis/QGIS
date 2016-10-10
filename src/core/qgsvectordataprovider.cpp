@@ -718,3 +718,8 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry& ge
 }
 
 QStringList QgsVectorDataProvider::smEncodings;
+
+QList<QgsRelation> QgsVectorDataProvider::discoverRelations( const QgsVectorLayer*, const QList<QgsVectorLayer*>& ) const
+{
+  return QList<QgsRelation>();
+}
