@@ -135,7 +135,7 @@ class ProcessingLog(object):
     def saveLog(fileName):
         entries = ProcessingLog.getLogEntries()
         with codecs.open(fileName, 'w', encoding='utf-8') as f:
-            for k, v in entries.items():
+            for k, v in list(entries.items()):
                 for entry in v:
                     f.write('%s|%s|%s\n' % (k, entry.date, entry.text))
 

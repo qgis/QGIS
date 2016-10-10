@@ -174,7 +174,7 @@ def exportInputRasters(alg, rasterDic):
     { 'inputName1': 'outputName1', 'inputName2': 'outputName2'}
     """
     # Get inputs and outputs
-    for inputName, outputName in rasterDic.items():
+    for inputName, outputName in list(rasterDic.items()):
         inputRaster = alg.getParameterValue(inputName)
         outputRaster = alg.getOutputFromName(outputName)
         command = 'r.out.gdal -c -t -f --overwrite createopt="TFW=YES,COMPRESS=LZW" input={} output=\"{}\"'.format(

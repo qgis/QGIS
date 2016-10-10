@@ -89,11 +89,6 @@ class FieldsCalculator(GeoAlgorithm):
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        if output.value == '':
-            ext = output.getDefaultFileExtension(self)
-            output.value = system.getTempFilenameInTempFolder(
-                output.name + '.' + ext)
-
         fields = layer.fields()
         if newField:
             fields.append(QgsField(fieldName, fieldType, '', width, precision))

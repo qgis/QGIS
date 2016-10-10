@@ -39,8 +39,7 @@ from processing.core.parameters import (Parameter,
                                         ParameterPoint,
                                         ParameterString,
                                         ParameterVector,
-                                        ParameterTableField,
-                                        ParameterTableMultipleField)
+                                        ParameterTableField)
 from processing.tools import dataobjects
 from processing.tests.TestData import points2
 
@@ -434,62 +433,6 @@ class ParameterTableFieldTest(unittest.TestCase):
         parameter = ParameterTableField(
             'myName', 'myDesc', parent_name, optional=True)
 
-
-class ParameterTableMultipleFieldTest(unittest.TestCase):
-
-    def setUp(self):
-        self.parent_name = 'test_parent_layer'
-        test_data = points2()
-        test_layer = QgsVectorLayer(test_data, self.parent_name, 'ogr')
-        self.parent = ParameterVector(self.parent_name,
-                                      self.parent_name)
-        self.parent.setValue(test_layer)
-
-    def testGetAsScriptCode(self):
-        parameter = ParameterTableMultipleField(
-            'myName', 'myDesc', self.parent_name, optional=False)
-
-        self.assertEqual(
-            parameter.getAsScriptCode(),
-            '##myName=multiple field test_parent_layer')
-
-        # test optional
-        parameter.optional = True
-        self.assertEqual(
-            parameter.getAsScriptCode(),
-            '##myName=optional multiple field test_parent_layer')
-
-    def testOptional(self):
-        parameter = ParameterTableMultipleField(
-            'myName', 'myDesc', self.parent_name, optional=True)
-
-        parameter.setValue(['my', 'super', 'widget', '77'])
-        self.assertEqual(parameter.value, 'my;super;widget;77')
-
-        parameter.setValue([])
-        self.assertEqual(parameter.value, None)
-
-        parameter.setValue(None)
-        self.assertEqual(parameter.value, None)
-
-        parameter.setValue(['my', 'widget', '77'])
-        self.assertEqual(parameter.value, 'my;widget;77')
-
-    def testSetValue(self):
-        parameter = ParameterTableMultipleField(
-            'myName', 'myDesc', self.parent_name, optional=False)
-
-        parameter.setValue(['my', 'super', 'widget', '77'])
-        self.assertEqual(parameter.value, 'my;super;widget;77')
-
-        parameter.setValue([])
-        self.assertEqual(parameter.value, 'my;super;widget;77')
-
-        parameter.setValue(None)
-        self.assertEqual(parameter.value, 'my;super;widget;77')
-
-        parameter.setValue(['my', 'widget', '77'])
-        self.assertEqual(parameter.value, 'my;widget;77')
 
 if __name__ == '__main__':
     unittest.main()

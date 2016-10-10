@@ -106,7 +106,7 @@ class PointsToPaths(GeoAlgorithm):
 
         current = 0
         total = 100.0 / len(points)
-        for group, vertices in points.items():
+        for group, vertices in list(points.items()):
             vertices.sort()
             f = QgsFeature()
             f.initAttributes(len(fields))

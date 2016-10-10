@@ -52,7 +52,7 @@ class LexerR(QsciLexerCustom):
             4: 'String',
         }
 
-        for (k, v) in self._styles.items():
+        for (k, v) in list(self._styles.items()):
             setattr(self, v, k)
 
     def description(self, style):

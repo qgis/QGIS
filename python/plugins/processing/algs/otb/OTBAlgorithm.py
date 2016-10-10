@@ -22,6 +22,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 from future import standard_library
 standard_library.install_aliases()
 from builtins import map
@@ -307,7 +308,7 @@ class OTBAlgorithm(GeoAlgorithm):
             OTBUtils.executeOtb(helperCommands, progress)
 
         if self.roiRasters:
-            supportRaster = next(iter(self.roiRasters.values()))
+            supportRaster = next(iter(list(self.roiRasters.values())))
             for roiInput, roiFile in list(self.roiVectors.items()):
                 helperCommands = [
                     "otbcli_VectorDataExtractROIApplication",

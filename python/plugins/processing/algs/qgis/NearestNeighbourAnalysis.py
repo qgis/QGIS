@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 from builtins import str
 
 __author__ = 'Victor Olaya'

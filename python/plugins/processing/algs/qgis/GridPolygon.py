@@ -65,7 +65,7 @@ class GridPolygon(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.TYPE,
                                              self.tr('Grid type'), self.types))
         self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Grid extent')))
+                                          self.tr('Grid extent'), optional=False))
         self.addParameter(ParameterNumber(self.HSPACING,
                                           self.tr('Horizontal spacing'), default=10.0))
         self.addParameter(ParameterNumber(self.VSPACING,

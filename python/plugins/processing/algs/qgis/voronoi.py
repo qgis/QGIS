@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 from __future__ import print_function
+from builtins import next
 from past.builtins import cmp
 from builtins import str
 from builtins import range

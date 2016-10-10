@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -109,7 +110,7 @@ class VoronoiPolygons(GeoAlgorithm):
         current = 0
         total = 100.0 / len(c.polygons)
 
-        for (site, edges) in c.polygons.items():
+        for (site, edges) in list(c.polygons.items()):
             request = QgsFeatureRequest().setFilterFid(ptDict[ids[site]])
             inFeat = next(layer.getFeatures(request))
             lines = self.clip_voronoi(edges, c, width, height, extent, extraX, extraY)
