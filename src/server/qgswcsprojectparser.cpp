@@ -221,7 +221,7 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
     QString type = elem.attribute( "type" );
     if ( type == "raster" )
     {
-      QgsRasterLayer *rLayer = dynamic_cast<QgsRasterLayer *>( mProjectParser->createLayerFromElement( elem ) );
+      QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( mProjectParser->createLayerFromElement( elem ) );
       if ( !rLayer )
         continue;
 
@@ -436,7 +436,7 @@ QList<QgsMapLayer*> QgsWCSProjectParser::mapLayerFromCoverage( const QString& cN
     if ( type == "raster" )
     {
       QgsMapLayer *mLayer = mProjectParser->createLayerFromElement( elem, useCache );
-      QgsRasterLayer* layer = dynamic_cast<QgsRasterLayer*>( mLayer );
+      QgsRasterLayer* layer = qobject_cast<QgsRasterLayer*>( mLayer );
       if ( !layer || !wcsLayersId.contains( layer->id() ) )
         return layerList;
 

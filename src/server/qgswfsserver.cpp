@@ -470,7 +470,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
 
       currentLayer = layerList.at( 0 );
-      QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+      QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( currentLayer );
       if ( layer && wfsLayersId.contains( layer->id() ) )
       {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -865,7 +865,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
     currentLayer = layerList.at( 0 );
 
-    QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+    QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( currentLayer );
     if ( layer && wfsLayersId.contains( layer->id() ) )
     {
       expressionContext << QgsExpressionContextUtils::layerScope( layer );

@@ -377,7 +377,7 @@ QByteArray* QgsWCSServer::getCoverage()
   QgsRectangle rect( minx, miny, maxx, maxy );
 
   QgsMapLayer* layer = layerList.at( 0 );
-  QgsRasterLayer* rLayer = dynamic_cast<QgsRasterLayer*>( layer );
+  QgsRasterLayer* rLayer = qobject_cast<QgsRasterLayer*>( layer );
   if ( rLayer && wcsLayersId.contains( rLayer->id() ) )
   {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
