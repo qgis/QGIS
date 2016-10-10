@@ -1005,3 +1005,19 @@ tests:
       OUTPUT:
         name: expected/add_geometry_pointz.gml
         type: vector
+
+
+  - algorithm: qgis:countpointsinpolygon
+    name: Count points in polygon
+    params:
+      FIELD: NUMPOINTS
+      POINTS:
+        name: points_in_polys.gml
+        type: vector
+      POLYGONS:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/points_in_polys.gml
+        type: vector
