@@ -503,19 +503,19 @@ QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTem
   QList<QgsComposerItem *>::iterator itemIt = itemList.begin();
   for ( ; itemIt != itemList.end(); ++itemIt )
   {
-    QgsComposerLabel* label = dynamic_cast< QgsComposerLabel *>( *itemIt );
+    QgsComposerLabel* label = qobject_cast< QgsComposerLabel *>( *itemIt );
     if ( label )
     {
       labelList.push_back( label );
       continue;
     }
-    QgsComposerMap* map = dynamic_cast< QgsComposerMap *>( *itemIt );
+    QgsComposerMap* map = qobject_cast< QgsComposerMap *>( *itemIt );
     if ( map )
     {
       mapList.push_back( map );
       continue;
     }
-    QgsComposerLegend* legend = dynamic_cast< QgsComposerLegend *>( *itemIt );
+    QgsComposerLegend* legend = qobject_cast< QgsComposerLegend *>( *itemIt );
     if ( legend )
     {
       QgsLegendModelV2* model = legend->modelV2();
@@ -567,7 +567,7 @@ QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTem
       legendList.push_back( legend );
       continue;
     }
-    QgsComposerPicture* pic = dynamic_cast< QgsComposerPicture *>( *itemIt );
+    QgsComposerPicture* pic = qobject_cast< QgsComposerPicture *>( *itemIt );
     if ( pic )
     {
       pic->setPicturePath( mProjectParser->convertToAbsolutePath(( pic )->picturePath() ) );
@@ -576,11 +576,11 @@ QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTem
 
     // an html item will be a composer frame and if it is we can try to get
     // its multiframe parent and then try to cast that to a composer html
-    const QgsComposerFrame* frame = dynamic_cast<const QgsComposerFrame *>( *itemIt );
+    const QgsComposerFrame* frame = qobject_cast<const QgsComposerFrame *>( *itemIt );
     if ( frame )
     {
       const QgsComposerMultiFrame * multiFrame = frame->multiFrame();
-      const QgsComposerHtml* composerHtml = dynamic_cast<const QgsComposerHtml *>( multiFrame );
+      const QgsComposerHtml* composerHtml = qobject_cast<const QgsComposerHtml *>( multiFrame );
       if ( composerHtml )
       {
         htmlList.push_back( composerHtml );
@@ -1332,7 +1332,7 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
       bool geometryLayer = true;
       if ( currentLayer->type() == QgsMapLayer::VectorLayer )
       {
-        QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+        QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( currentLayer );
         if ( vLayer )
         {
           if ( vLayer->wkbType() == QGis::WKBNoGeometry )
@@ -1841,7 +1841,7 @@ QDomDocument QgsWMSProjectParser::getStyles( QStringList& layerList ) const
     for ( int j = 0; j < currentLayerList.size(); j++ )
     {
       QgsMapLayer* currentLayer = currentLayerList.at( j );
-      QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+      QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( currentLayer );
       if ( !layer )
       {
         throw QgsMapServiceException( "Error", QString( "Could not get style because:\n%1" ).arg( "Non-vector layers not supported yet" ) );
