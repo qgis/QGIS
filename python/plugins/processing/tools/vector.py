@@ -269,14 +269,15 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
     # 1 - project CRS
     # 2 - ellipsoidal
 
-    if geom.wkbType() in [QgsWkbTypes.Point, QgsWkbTypes.Point25D]:
-        pt = geom.asPoint()
-        attr1 = pt.x()
-        attr2 = pt.y()
-    elif geom.wkbType() in [QgsWkbTypes.MultiPoint, QgsWkbTypes.MultiPoint25D]:
-        pt = geom.asMultiPoint()
-        attr1 = pt[0].x()
-        attr2 = pt[0].y()
+    if geom.type() == QgsWkbTypes.PointGeometry:
+        if not geom.isMultipart():
+            pt = geom.geometry()
+            attr1 = pt.x()
+            attr2 = pt.y()
+        else:
+            pt = geom.asMultiPoint()
+            attr1 = pt[0].x()
+            attr2 = pt[0].y()
     else:
         measure = QgsDistanceArea()
 

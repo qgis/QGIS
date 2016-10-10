@@ -993,3 +993,15 @@ tests:
       OUTPUT_LAYER:
         name: expected/smoothed_lines_max_angle.gml
         type: vector
+
+  - algorithm: qgis:exportaddgeometrycolumns
+    name: Add Geometry PointZ
+    params:
+      CALC_METHOD: '0'
+      INPUT:
+        name: pointsz.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/add_geometry_pointz.gml
+        type: vector

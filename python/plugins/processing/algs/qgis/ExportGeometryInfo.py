@@ -74,6 +74,8 @@ class ExportGeometryInfo(GeoAlgorithm):
         geometryType = layer.geometryType()
         fields = layer.fields()
 
+        export_z = False
+        export_m = False
         if geometryType == QgsWkbTypes.PolygonGeometry:
             areaName = vector.createUniqueFieldName('area', fields)
             fields.append(QgsField(areaName, QVariant.Double))
@@ -87,6 +89,14 @@ class ExportGeometryInfo(GeoAlgorithm):
             fields.append(QgsField(xName, QVariant.Double))
             yName = vector.createUniqueFieldName('ycoord', fields)
             fields.append(QgsField(yName, QVariant.Double))
+            if QgsWkbTypes.hasZ(layer.wkbType()):
+                export_z = True
+                zName = vector.createUniqueFieldName('zcoord', fields)
+                fields.append(QgsField(zName, QVariant.Double))
+            if QgsWkbTypes.hasM(layer.wkbType()):
+                export_m = True
+                zName = vector.createUniqueFieldName('mvalue', fields)
+                fields.append(QgsField(zName, QVariant.Double))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields.toList(), layer.wkbType(), layer.crs())
@@ -130,6 +140,13 @@ class ExportGeometryInfo(GeoAlgorithm):
             attrs.append(attr1)
             if attr2 is not None:
                 attrs.append(attr2)
+
+            # add point z/m
+            if export_z:
+                attrs.append(inGeom.geometry().z())
+            if export_m:
+                attrs.append(inGeom.geometry().m())
+
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
