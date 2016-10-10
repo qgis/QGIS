@@ -1742,7 +1742,7 @@ int QgsWmsServer::getFeatureInfo( QDomDocument& result, const QString& version )
       }
 
       //switch depending on vector or raster
-      QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+      QgsVectorLayer* vectorLayer = qobject_cast<QgsVectorLayer*>( currentLayer );
 
       QDomElement layerElement;
       if ( infoFormat.startsWith( "application/vnd.ogc.gml" ) )
@@ -1788,7 +1788,7 @@ int QgsWmsServer::getFeatureInfo( QDomDocument& result, const QString& version )
           getFeatureInfoElement.appendChild( layerElement );
         }
 
-        QgsRasterLayer* rasterLayer = dynamic_cast<QgsRasterLayer*>( currentLayer );
+        QgsRasterLayer* rasterLayer = qobject_cast<QgsRasterLayer*>( currentLayer );
         if ( rasterLayer )
         {
           if ( !infoPoint.data() )
@@ -2579,7 +2579,7 @@ void QgsWmsServer::applyRequestedLayerFilters( const QStringList& layerList , QH
 
       Q_FOREACH ( QgsMapLayer *filter, layersToFilter )
       {
-        QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( filter );
+        QgsVectorLayer* filteredLayer = qobject_cast<QgsVectorLayer*>( filter );
         if ( filteredLayer )
         {
           originalFilters.insert( filteredLayer, filteredLayer->subsetString() );

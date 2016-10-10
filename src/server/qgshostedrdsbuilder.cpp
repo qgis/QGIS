@@ -59,7 +59,7 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
     QgsRasterLayer* rl = nullptr;
     if ( allowCaching )
     {
-      rl = dynamic_cast<QgsRasterLayer*>( QgsMSLayerCache::instance()->searchLayer( uri, layerName ) );
+      rl = qobject_cast<QgsRasterLayer*>( QgsMSLayerCache::instance()->searchLayer( uri, layerName ) );
     }
     if ( !rl )
     {
