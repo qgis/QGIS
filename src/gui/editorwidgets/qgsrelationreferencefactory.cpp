@@ -53,13 +53,13 @@ QgsEditorWidgetConfig QgsRelationReferenceFactory::readConfig( const QDomElement
   Q_UNUSED( fieldIdx );
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( QStringLiteral( "AllowNULL" ), configElement.attribute( QStringLiteral( "AllowNULL" ) ) == QLatin1String( "1" ) );
-  cfg.insert( QStringLiteral( "OrderByValue" ), configElement.attribute( QStringLiteral( "OrderByValue" ) ) == QLatin1String( "1" ) );
-  cfg.insert( QStringLiteral( "ShowForm" ), configElement.attribute( QStringLiteral( "ShowForm" ) ) == QLatin1String( "1" ) );
-  cfg.insert( QStringLiteral( "Relation" ), configElement.attribute( QStringLiteral( "Relation" ) ) );
-  cfg.insert( QStringLiteral( "MapIdentification" ), configElement.attribute( QStringLiteral( "MapIdentification" ) ) == QLatin1String( "1" ) );
-  cfg.insert( QStringLiteral( "ReadOnly" ), configElement.attribute( QStringLiteral( "ReadOnly" ) ) == QLatin1String( "1" ) );
-  cfg.insert( QStringLiteral( "AllowAddFeatures" ), configElement.attribute( QStringLiteral( "AllowAddFeatures" ) ) == QLatin1String( "1" ) );
+  xml2config( configElement, cfg, QStringLiteral( "AllowNULL" ) );
+  xml2config( configElement, cfg, QStringLiteral( "OrderByValue" ) );
+  xml2config( configElement, cfg, QStringLiteral( "ShowForm" ) );
+  xml2config( configElement, cfg, QStringLiteral( "Relation" ) );
+  xml2config( configElement, cfg, QStringLiteral( "MapIdentification" ) );
+  xml2config( configElement, cfg, QStringLiteral( "ReadOnly" ) );
+  xml2config( configElement, cfg, QStringLiteral( "AllowAddFeatures" ) );
 
   QDomNode filterNode = configElement.elementsByTagName( QStringLiteral( "FilterFields" ) ).at( 0 );
   if ( !filterNode.isNull() )
@@ -74,7 +74,7 @@ QgsEditorWidgetConfig QgsRelationReferenceFactory::readConfig( const QDomElement
     }
     cfg.insert( QStringLiteral( "FilterFields" ), filterFields );
 
-    cfg.insert( QStringLiteral( "ChainFilters" ), filterNode.toElement().attribute( QStringLiteral( "ChainFilters" ) ) == QLatin1String( "1" ) );
+    xml2config( configElement, cfg , QStringLiteral( "ChainFilters" ) );
   }
   return cfg;
 }
@@ -85,13 +85,13 @@ void QgsRelationReferenceFactory::writeConfig( const QgsEditorWidgetConfig& conf
   Q_UNUSED( layer );
   Q_UNUSED( fieldIdx );
 
-  configElement.setAttribute( QStringLiteral( "AllowNULL" ), config[QStringLiteral( "AllowNULL" )].toBool() );
-  configElement.setAttribute( QStringLiteral( "OrderByValue" ), config[QStringLiteral( "OrderByValue" )].toBool() );
-  configElement.setAttribute( QStringLiteral( "ShowForm" ), config[QStringLiteral( "ShowForm" )].toBool() );
-  configElement.setAttribute( QStringLiteral( "Relation" ), config[QStringLiteral( "Relation" )].toString() );
-  configElement.setAttribute( QStringLiteral( "MapIdentification" ), config[QStringLiteral( "MapIdentification" )].toBool() );
-  configElement.setAttribute( QStringLiteral( "ReadOnly" ), config[QStringLiteral( "ReadOnly" )].toBool() );
-  configElement.setAttribute( QStringLiteral( "AllowAddFeatures" ), config[QStringLiteral( "AllowAddFeatures" )].toBool() );
+  config2xml( config, configElement, QStringLiteral( "AllowNULL" ) );
+  config2xml( config, configElement, QStringLiteral( "OrderByValue" ) );
+  config2xml( config, configElement, QStringLiteral( "ShowForm" ) );
+  config2xml( config, configElement, QStringLiteral( "Relation" ) );
+  config2xml( config, configElement, QStringLiteral( "MapIdentification" ) );
+  config2xml( config, configElement, QStringLiteral( "ReadOnly" ) );
+  config2xml( config, configElement, QStringLiteral( "AllowAddFeatures" ) );
 
   if ( config.contains( QStringLiteral( "FilterFields" ) ) )
   {
@@ -105,7 +105,7 @@ void QgsRelationReferenceFactory::writeConfig( const QgsEditorWidgetConfig& conf
     }
     configElement.appendChild( filterFields );
 
-    filterFields.setAttribute( QStringLiteral( "ChainFilters" ), config[QStringLiteral( "ChainFilters" )].toBool() );
+    config2xml( config, configElement, QStringLiteral( "ChainFilters" ) );
   }
 }
 

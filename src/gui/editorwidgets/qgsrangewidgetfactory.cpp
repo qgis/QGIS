@@ -40,16 +40,12 @@ QgsEditorWidgetConfig QgsRangeWidgetFactory::readConfig( const QDomElement& conf
   Q_UNUSED( fieldIdx );
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( QStringLiteral( "Style" ), configElement.attribute( QStringLiteral( "Style" ) ) );
-  cfg.insert( QStringLiteral( "Min" ), configElement.attribute( QStringLiteral( "Min" ) ) );
-  cfg.insert( QStringLiteral( "Max" ), configElement.attribute( QStringLiteral( "Max" ) ) );
-  cfg.insert( QStringLiteral( "Step" ), configElement.attribute( QStringLiteral( "Step" ) ) );
-  cfg.insert( QStringLiteral( "AllowNull" ), configElement.attribute( QStringLiteral( "AllowNull" ) ) == QLatin1String( "1" ) );
-
-  if ( configElement.hasAttribute( QStringLiteral( "Suffix" ) ) )
-  {
-    cfg.insert( QStringLiteral( "Suffix" ), configElement.attribute( QStringLiteral( "Suffix" ) ) );
-  }
+  xml2config( configElement, cfg, QStringLiteral( "Style" ) );
+  xml2config( configElement, cfg, QStringLiteral( "Min" ) );
+  xml2config( configElement, cfg, QStringLiteral( "Max" ) );
+  xml2config( configElement, cfg, QStringLiteral( "Step" ) );
+  xml2config( configElement, cfg, QStringLiteral( "AllowNull" ) );
+  xml2config( configElement, cfg, QStringLiteral( "Suffix" ) );
 
   return cfg;
 }
@@ -60,15 +56,12 @@ void QgsRangeWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QD
   Q_UNUSED( layer );
   Q_UNUSED( fieldIdx );
 
-  configElement.setAttribute( QStringLiteral( "Style" ), config[QStringLiteral( "Style" )].toString() );
-  configElement.setAttribute( QStringLiteral( "Min" ), config[QStringLiteral( "Min" )].toString() );
-  configElement.setAttribute( QStringLiteral( "Max" ), config[QStringLiteral( "Max" )].toString() );
-  configElement.setAttribute( QStringLiteral( "Step" ), config[QStringLiteral( "Step" )].toString() );
-  configElement.setAttribute( QStringLiteral( "AllowNull" ), config[QStringLiteral( "AllowNull" )].toBool() );
-  if ( config.contains( QStringLiteral( "Suffix" ) ) )
-  {
-    configElement.setAttribute( QStringLiteral( "Suffix" ), config[QStringLiteral( "Suffix" )].toString() );
-  }
+  config2xml( config, configElement, QStringLiteral( "Style" ) );
+  config2xml( config, configElement, QStringLiteral( "Min" ) );
+  config2xml( config, configElement, QStringLiteral( "Max" ) );
+  config2xml( config, configElement, QStringLiteral( "Step" ) );
+  config2xml( config, configElement, QStringLiteral( "AllowNull" ) );
+  config2xml( config, configElement, QStringLiteral( "Suffix" ) );
 }
 
 unsigned int QgsRangeWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const

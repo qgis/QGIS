@@ -189,4 +189,16 @@ class QgsEditorWidgetFactory
      * @see supportsField( QgsVectorLayer* vl, fieldIdx )
      */
     virtual unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const;
+
+  protected:
+
+    /**
+     * Copy the given config element to a XML attribute.
+     */
+    static void config2xml( const QgsEditorWidgetConfig& config, QDomElement& configElement, const QString& fieldName );
+
+    /**
+     * Copy the given XML attribute to the configuration element.
+     */
+    static void xml2config( const QDomElement& configElement, QgsEditorWidgetConfig& config, const QString& fieldName );
 };
