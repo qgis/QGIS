@@ -939,6 +939,14 @@ QImage* QgsWMSServer::getLegendGraphics()
           legendNode->setUserLabel( " " ); // empty string = no override, so let's use one space
         }
       }
+      else if ( !mDrawLegendLayerLabel )
+      {
+        Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, legendModel.layerLegendNodes( nodeLayer ) )
+        {
+          if ( legendNode->isEmbeddedInParent() )
+            legendNode->setEmbeddedInParent( false );
+        }
+      }
     }
   }
 
