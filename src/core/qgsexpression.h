@@ -458,7 +458,31 @@ class CORE_EXPORT QgsExpression
             : mName( fnname )
             , mParams( params )
             , mUsesGeometry( usesGeometry )
-            , mGroup( group )
+            , mGroups( group.isEmpty() ? QStringList() : QStringList() << group )
+            , mHelpText( helpText )
+            , mReferencedColumns( referencedColumns )
+            , mLazyEval( lazyEval )
+            , mHandlesNull( handlesNull )
+            , mIsContextual( isContextual )
+        {
+        }
+
+        /** Constructor for function which uses unnamed parameters and group list
+         * @note added in QGIS 3.0
+         */
+        Function( const QString& fnname,
+                  int params,
+                  const QStringList& groups,
+                  const QString& helpText = QString(),
+                  bool usesGeometry = false,
+                  const QSet<QString>& referencedColumns = QSet<QString>(),
+                  bool lazyEval = false,
+                  bool handlesNull = false,
+                  bool isContextual = false )
+            : mName( fnname )
+            , mParams( params )
+            , mUsesGeometry( usesGeometry )
+            , mGroups( groups )
             , mHelpText( helpText )
             , mReferencedColumns( referencedColumns )
             , mLazyEval( lazyEval )
@@ -483,7 +507,31 @@ class CORE_EXPORT QgsExpression
             , mParams( 0 )
             , mParameterList( params )
             , mUsesGeometry( usesGeometry )
-            , mGroup( group )
+            , mGroups( group.isEmpty() ? QStringList() : QStringList() << group )
+            , mHelpText( helpText )
+            , mReferencedColumns( referencedColumns )
+            , mLazyEval( lazyEval )
+            , mHandlesNull( handlesNull )
+            , mIsContextual( isContextual )
+        {}
+
+        /** Constructor for function which uses named parameter list and group list.
+         * @note added in QGIS 3.0
+         */
+        Function( const QString& fnname,
+                  const ParameterList& params,
+                  const QStringList& groups,
+                  const QString& helpText = QString(),
+                  bool usesGeometry = false,
+                  const QSet<QString>& referencedColumns = QSet<QString>(),
+                  bool lazyEval = false,
+                  bool handlesNull = false,
+                  bool isContextual = false )
+            : mName( fnname )
+            , mParams( 0 )
+            , mParameterList( params )
+            , mUsesGeometry( usesGeometry )
+            , mGroups( groups )
             , mHelpText( helpText )
             , mReferencedColumns( referencedColumns )
             , mLazyEval( lazyEval )
@@ -541,8 +589,22 @@ class CORE_EXPORT QgsExpression
          */
         bool isContextual() const { return mIsContextual; }
 
-        /** The group the function belongs to. */
-        QString group() const { return mGroup; }
+        /** Returns true if the function is deprecated and should not be presented as a valid option
+         * to users in expression builders.
+         * @note added in QGIS 3.0
+         */
+        virtual bool isDeprecated() const { return mGroups.isEmpty() ? false : mGroups.contains( "deprecated" ); }
+
+        /** Returns the first group which the function belongs to.
+         * @note consider using groups() instead, as some functions naturally belong in multiple groups
+        */
+        QString group() const { return mGroups.isEmpty() ? QString() : mGroups.at( 0 ); }
+
+        /** Returns a list of the groups the function belongs to.
+         * @note added in QGIS 3.0
+         * @see group()
+        */
+        QStringList groups() const { return mGroups; }
 
         /** The help text for the function. */
         const QString helpText() const { return mHelpText.isEmpty() ? QgsExpression::helpText( mName ) : mHelpText; }
@@ -564,7 +626,7 @@ class CORE_EXPORT QgsExpression
         int mParams;
         ParameterList mParameterList;
         bool mUsesGeometry;
-        QString mGroup;
+        QStringList mGroups;
         QString mHelpText;
         QSet<QString> mReferencedColumns;
         bool mLazyEval;
@@ -610,6 +672,24 @@ class CORE_EXPORT QgsExpression
                         const QStringList& aliases = QStringList(),
                         bool handlesNull = false )
             : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
+            , mFnc( fcn )
+            , mAliases( aliases )
+        {}
+
+        /** Static function for evaluation against a QgsExpressionContext, using a named list of parameter values and list
+         * of groups.
+         */
+        StaticFunction( const QString& fnname,
+                        const ParameterList& params,
+                        FcnEval fcn,
+                        const QStringList& groups,
+                        const QString& helpText = QString(),
+                        bool usesGeometry = false,
+                        const QSet<QString>& referencedColumns = QSet<QString>(),
+                        bool lazyEval = false,
+                        const QStringList& aliases = QStringList(),
+                        bool handlesNull = false )
+            : Function( fnname, params, groups, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
             , mFnc( fcn )
             , mAliases( aliases )
         {}
