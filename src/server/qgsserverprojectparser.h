@@ -112,7 +112,10 @@ class SERVER_EXPORT QgsServerProjectParser
     QStringList wfsLayers() const;
     QStringList wcsLayers() const;
 
+    /** Add layers for vector joins */
     void addJoinLayersForElement( const QDomElement& layerElem ) const;
+    /** Update vector joins to layer, based on QgsVectorLayerJoinBuffer::readXml */
+    void addJoinsToLayer( const QDomElement& layerElem, QgsVectorLayer *vl ) const;
 
     void addValueRelationLayersForLayer( const QgsVectorLayer *vl ) const;
     /** Add layers which are necessary for the evaluation of the expression function 'getFeature( layer, attributField, value)'*/
