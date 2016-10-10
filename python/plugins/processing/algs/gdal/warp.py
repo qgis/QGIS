@@ -87,7 +87,7 @@ class warp(GdalAlgorithm):
                                           0.0, None, 0.0))
         self.addParameter(ParameterSelection(self.METHOD,
                                              self.tr('Resampling method'), self.METHOD_OPTIONS))
-        self.addParameter(ParameterExtent(self.RAST_EXT, self.tr('Raster extent')))
+        self.addParameter(ParameterExtent(self.RAST_EXT, self.tr('Raster extent'), optional=True))
 
         if GdalUtils.version() >= 2000000:
             self.addParameter(ParameterCrs(self.EXT_CRS,
