@@ -34,6 +34,7 @@ import time
 import uuid
 import importlib
 import re
+import traceback
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
@@ -145,18 +146,14 @@ class GrassAlgorithm(GeoAlgorithm):
                 line = line.strip('\n').strip()
                 if line.startswith('Hardcoded'):
                     self.hardcodedStrings.append(line[len('Hardcoded|'):])
-                elif line.startswith('Parameter'):
-                    parameter = getParameterFromString(line)
+                parameter = getParameterFromString(line)
+                if parameter is not None:
                     self.addParameter(parameter)
                     if isinstance(parameter, ParameterVector):
                         hasVectorInput = True
                     if isinstance(parameter, ParameterMultipleInput) \
                        and parameter.datatype < 3:
                         hasVectorInput = True
-                elif line.startswith('*Parameter'):
-                    param = getParameterFromString(line[1:])
-                    param.isAdvanced = True
-                    self.addParameter(param)
                 else:
                     output = getOutputFromString(line)
                     self.addOutput(output)
@@ -169,9 +166,11 @@ class GrassAlgorithm(GeoAlgorithm):
                                                   " (raw output)", "txt"))
                 line = lines.readline().strip('\n').strip()
             except Exception as e:
+
                 ProcessingLog.addToLog(
                     ProcessingLog.LOG_ERROR,
-                    self.tr('Could not open GRASS algorithm: %s.\n%s' % (self.descriptionFile, line)))
+                    traceback.format_exc())
+                #self.tr('Could not open GRASS algorithm: %s.\n%s' % (self.descriptionFile, line)))
                 raise e
         lines.close()
 

@@ -30,7 +30,7 @@ from qgis.PyQt.QtCore import QPointF, Qt
 from qgis.PyQt.QtWidgets import QGraphicsItem, QGraphicsScene
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerArrowItem import ModelerArrowItem
-from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput
+from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput, CompoundValue
 
 
 class ModelerScene(QGraphicsScene):
@@ -43,16 +43,16 @@ class ModelerScene(QGraphicsScene):
         self.setItemIndexMethod(QGraphicsScene.NoIndex)
 
     def getParameterPositions(self):
-        return {key: item.pos() for key, item in self.paramItems.items()}
+        return {key: item.pos() for key, item in list(self.paramItems.items())}
 
     def getAlgorithmPositions(self):
-        return {key: item.pos() for key, item in self.algItems.items()}
+        return {key: item.pos() for key, item in list(self.algItems.items())}
 
     def getOutputPositions(self):
         pos = {}
-        for algName, outputs in self.outputItems.items():
+        for algName, outputs in list(self.outputItems.items()):
             outputPos = {}
-            for (key, value) in outputs.items():
+            for (key, value) in list(outputs.items()):
                 if value is not None:
                     outputPos[key] = value.pos()
                 else:
@@ -64,6 +64,9 @@ class ModelerScene(QGraphicsScene):
         items = []
         if isinstance(value, list):
             for v in value:
+                items.extend(self.getItemsFromParamValue(v))
+        elif isinstance(value, CompoundValue):
+            for v in value.values:
                 items.extend(self.getItemsFromParamValue(v))
         elif isinstance(value, ValueFromInput):
             items.append((self.paramItems[value.name], 0))

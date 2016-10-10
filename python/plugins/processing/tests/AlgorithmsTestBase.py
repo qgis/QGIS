@@ -29,7 +29,9 @@ __copyright__ = '(C) 2016, Matthias Kuhn'
 
 __revision__ = ':%H$'
 
+
 import qgis  # NOQA switch sip api
+
 import os
 import yaml
 import nose2
@@ -42,7 +44,6 @@ from numpy import nan_to_num
 
 import processing
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
-from processing.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
 from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider
 from processing.algs.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
 from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider

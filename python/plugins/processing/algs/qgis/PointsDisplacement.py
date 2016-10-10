@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Alexander Bruy'
 __date__ = 'July 2013'
@@ -86,7 +87,7 @@ class PointsDisplacement(GeoAlgorithm):
         fullPerimeter = 2 * math.pi
 
         request = QgsFeatureRequest()
-        for (geom, fids) in duplicates.items():
+        for (geom, fids) in list(duplicates.items()):
             count = len(fids)
             if count == 1:
                 f = next(layer.getFeatures(request.setFilterFid(fids[0])))

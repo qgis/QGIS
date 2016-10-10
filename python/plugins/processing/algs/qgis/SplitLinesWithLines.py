@@ -17,6 +17,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Bernhard Ströbl'
 __date__ = 'November 2014'

@@ -83,8 +83,6 @@ class BatchOutputSelectionPanel(QWidget):
             path = ''
         filename, selectedFileFilter = QFileDialog.getSaveFileName(self,
                                                                    self.tr('Save file'), path, filefilter)
-        # fix_print_with_import
-        print(filename, selectedFileFilter)
         if filename:
             if not filename.lower().endswith(
                     tuple(re.findall("\*(\.[a-z]{1,10})", filefilter))):

@@ -151,7 +151,7 @@ class ScriptEditorDialog(BASE, WIDGET):
 
     def showSnippets(self, evt):
         popupmenu = QMenu()
-        for name, snippet in self.snippets.items():
+        for name, snippet in list(self.snippets.items()):
             action = QAction(self.tr(name), self.btnSnippets)
             action.triggered[()].connect(lambda snippet=snippet: self.editor.insert(snippet))
             popupmenu.addAction(action)

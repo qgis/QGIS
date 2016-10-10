@@ -20,7 +20,6 @@ from builtins import str
 from builtins import range
 from builtins import object
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -29,21 +28,28 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 import sys
 
 from qgis.PyQt.QtCore import QCoreApplication, QSettings
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools.system import isWindows, getTempFilenameInTempFolder
+from processing.tools.system import isWindows, getTempFilenameInTempFolder, getTempDirInTempFolder
 from processing.tools.vector import VectorWriter, TableWriter
 from processing.tools import dataobjects
 
+from qgis.core import QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope
 
-def getOutputFromString(s):
-    tokens = s.split("|")
-    params = [t if str(t) != "None" else None for t in tokens[1:]]
-    clazz = getattr(sys.modules[__name__], tokens[0])
-    return clazz(*params)
+
+def _expressionContext(alg):
+    context = QgsExpressionContext()
+    context.appendScope(QgsExpressionContextUtils.globalScope())
+    context.appendScope(QgsExpressionContextUtils.projectScope())
+    processingScope = QgsExpressionContextScope()
+    for param in alg.parameters:
+        processingScope.setVariable('%s_value' % param.name, '')
+    context.appendScope(processingScope)
+    return context
 
 
 class Output(object):
@@ -90,6 +96,42 @@ class Output(object):
         except:
             return False
 
+    def _resolveTemporary(self, alg):
+        ext = self.getDefaultFileExtension()
+        return getTempFilenameInTempFolder(self.name + '.' + ext)
+
+    def _supportedExtensions(self):
+        return []
+
+    def resolveValue(self, alg):
+        if self.hidden:
+            return
+        if not bool(self.value):
+            self.value = self._resolveTemporary(alg)
+        else:
+            exp = QgsExpression(self.value)
+            if not exp.hasParserError():
+                value = exp.evaluate(_expressionContext(alg))
+                if not exp.hasEvalError():
+                    self.value = value
+
+        if ":" not in self.value:
+            if not os.path.isabs(self.value):
+                self.value = os.path.join(ProcessingConfig.getSetting(ProcessingConfig.OUTPUT_FOLDER),
+                                          self.value)
+            supported = self._supportedExtensions()
+            if supported:
+                idx = self.value.rfind('.')
+                if idx == -1:
+                    self.value = self.value + '.' + self.getDefaultFileExtension()
+                else:
+                    ext = self.value[idx + 1:]
+                    if ext not in supported:
+                        self.value = self.value + '.' + self.getDefaultFileExtension()
+
+    def expressionContext(self, alg):
+        return _expressionContext(alg)
+
     def typeName(self):
         return self.__class__.__name__.replace('Output', '').lower()
 
@@ -100,7 +142,9 @@ class Output(object):
 
 
 class OutputDirectory(Output):
-    directory = True
+
+    def resolveValue(self, alg):
+        self.value = getTempDirInTempFolder()
 
 
 class OutputExtent(Output):
@@ -125,10 +169,7 @@ class OutputExtent(Output):
 class OutputCrs(Output):
 
     def __init__(self, name='', description=''):
-        self.name = name
-        self.description = description
-        self.value = None
-        self.hidden = True
+        Output.__init__(self, name, description, True)
 
 
 class OutputFile(Output):
@@ -143,7 +184,7 @@ class OutputFile(Output):
         else:
             return self.tr('%s files(*.%s)', 'OutputFile') % (self.ext, self.ext)
 
-    def getDefaultFileExtension(self, alg):
+    def getDefaultFileExtension(self):
         return self.ext or 'file'
 
 
@@ -152,17 +193,14 @@ class OutputHTML(Output):
     def getFileFilter(self, alg):
         return self.tr('HTML files(*.html)', 'OutputHTML')
 
-    def getDefaultFileExtension(self, alg):
+    def getDefaultFileExtension(self):
         return 'html'
 
 
 class OutputNumber(Output):
 
     def __init__(self, name='', description=''):
-        self.name = name
-        self.description = description
-        self.value = None
-        self.hidden = True
+        Output.__init__(self, name, description, True)
 
 
 class OutputRaster(Output):
@@ -175,11 +213,8 @@ class OutputRaster(Output):
             exts[i] = self.tr('%s files (*.%s)', 'OutputVector') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
-    def getDefaultFileExtension(self, alg):
-        supported = alg.provider.getSupportedOutputRasterLayerExtensions()
-        default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT)
-        ext = default if default in supported else supported[0]
-        return ext
+    def getDefaultFileExtension(self):
+        return ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT)
 
     def getCompatibleFileName(self, alg):
         """
@@ -196,18 +231,17 @@ class OutputRaster(Output):
             return self.value
         else:
             if self.compatible is None:
-                self.compatible = getTempFilenameInTempFolder(
-                    self.name + '.' + self.getDefaultFileExtension(alg))
+                supported = alg.provider.getSupportedOutputRasterLayerExtensions()
+                default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT)
+                ext = default if default in supported else supported[0]
+                self.compatible = getTempFilenameInTempFolder(self.name + '.' + ext)
             return self.compatible
 
 
 class OutputString(Output):
 
     def __init__(self, name='', description=''):
-        self.name = name
-        self.description = description
-        self.value = None
-        self.hidden = True
+        Output.__init__(self, name, description, True)
 
 
 class OutputTable(Output):
@@ -216,13 +250,13 @@ class OutputTable(Output):
     compatible = None
 
     def getFileFilter(self, alg):
-        exts = ['csv']
+        exts = ['dbf']
         for i in range(len(exts)):
             exts[i] = exts[i].upper() + ' files(*.' + exts[i].lower() + ')'
         return ';;'.join(exts)
 
-    def getDefaultFileExtension(self, alg):
-        return alg.provider.getSupportedOutputTableExtensions()[0]
+    def getDefaultFileExtension(self):
+        return "dbf"
 
     def getCompatibleFileName(self, alg):
         """Returns a filename that is compatible with the algorithm
@@ -240,7 +274,7 @@ class OutputTable(Output):
         else:
             if self.compatible is None:
                 self.compatible = getTempFilenameInTempFolder(
-                    self.name + '.' + self.getDefaultFileExtension(alg))
+                    self.name + '.' + alg.provider.getSupportedOutputTableExtensions()[0])
             return self.compatible
 
     def getTableWriter(self, fields):
@@ -293,14 +327,12 @@ class OutputVector(Output):
             exts[i] = self.tr('%s files (*.%s)', 'OutputVector') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
-    def getDefaultFileExtension(self, alg):
-        supported = alg.provider.getSupportedOutputVectorLayerExtensions()
+    def getDefaultFileExtension(self):
         if self.hasGeometry():
             default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT)
         else:
             default = 'dbf'
-        ext = default if default in supported else supported[0]
-        return ext
+        return default
 
     def getCompatibleFileName(self, alg):
         """Returns a filename that is compatible with the algorithm
@@ -316,8 +348,10 @@ class OutputVector(Output):
             return self.value
         else:
             if self.compatible is None:
-                self.compatible = getTempFilenameInTempFolder(
-                    self.name + '.' + self.getDefaultFileExtension(alg))
+                default = self.getDefaultFileExtension()
+                supported = alg.provider.getSupportedOutputVectorLayerExtensions()
+                ext = default if default in supported else supported[0]
+                self.compatible = getTempFilenameInTempFolder(self.name + '.' + ext)
             return self.compatible
 
     def getVectorWriter(self, fields, geomType, crs, options=None):
@@ -351,3 +385,55 @@ class OutputVector(Output):
 
     def dataType(self):
         return dataobjects.vectorDataType(self)
+
+    def _resolveTemporary(self, alg):
+        if alg.provider.supportsNonFileBasedOutput():
+            return "memory:"
+        else:
+            ext = self.getDefaultFileExtension()
+            return getTempFilenameInTempFolder(self.name + '.' + ext)
+
+
+def getOutputFromString(s):
+    try:
+        if "|" in s:
+            tokens = s.split("|")
+            params = [t if str(t) != "None" else None for t in tokens[1:]]
+            clazz = getattr(sys.modules[__name__], tokens[0])
+            return clazz(*params)
+        else:
+            tokens = s.split("=")
+            token = tokens[1].strip()[len('output') + 1:]
+            out = None
+
+            if token.lower().strip().startswith('raster'):
+                out = OutputRaster()
+            elif token.lower().strip() == 'vector':
+                out = OutputVector()
+            elif token.lower().strip() == 'vector point':
+                out = OutputVector(datatype=[dataobjects.TYPE_VECTOR_POINT])
+            elif token.lower().strip() == 'vector line':
+                out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_LINE])
+            elif token.lower().strip() == 'vector polygon':
+                out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_POLYGON])
+            elif token.lower().strip().startswith('table'):
+                out = OutputTable()
+            elif token.lower().strip().startswith('html'):
+                out = OutputHTML()
+            elif token.lower().strip().startswith('file'):
+                out = OutputFile()
+                subtokens = token.split(' ')
+                if len(subtokens) > 2:
+                    out.ext = subtokens[2]
+            elif token.lower().strip().startswith('directory'):
+                out = OutputDirectory()
+            elif token.lower().strip().startswith('number'):
+                out = OutputNumber()
+            elif token.lower().strip().startswith('string'):
+                out = OutputString()
+            elif token.lower().strip().startswith('extent'):
+                out = OutputExtent()
+
+            return out
+    except:
+        return None

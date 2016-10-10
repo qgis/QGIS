@@ -124,7 +124,7 @@ class MeanCoords(GeoAlgorithm):
 
         current = 0
         total = 100.0 / len(means)
-        for (clazz, values) in means.items():
+        for (clazz, values) in list(means.items()):
             outFeat = QgsFeature()
             cx = values[0] / values[2]
             cy = values[1] / values[2]

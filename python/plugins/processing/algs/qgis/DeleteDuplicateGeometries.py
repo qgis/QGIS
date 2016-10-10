@@ -64,7 +64,7 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
 
         cleaned = dict(geoms)
 
-        for i, g in geoms.items():
+        for i, g in list(geoms.items()):
             for j in list(cleaned.keys()):
                 if i == j or i not in cleaned:
                     continue

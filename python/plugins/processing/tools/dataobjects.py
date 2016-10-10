@@ -47,6 +47,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.system import (getTempFilenameInTempFolder,
                                      getTempFilename,
+                                     removeInvalidChars,
                                      isWindows)
 
 ALL_TYPES = [-1]
@@ -311,6 +312,13 @@ def exportVectorLayer(layer, supported=None):
     systemEncoding = settings.value('/UI/encoding', 'System')
 
     output = getTempFilename('shp')
+    basename = removeInvalidChars(os.path.basename(layer.source()))
+    if basename:
+        if not basename.endswith("shp"):
+            basename = basename + ".shp"
+        output = getTempFilenameInTempFolder(basename)
+    else:
+        output = getTempFilename("shp")
     provider = layer.dataProvider()
     useSelection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
     if useSelection and layer.selectedFeatureCount() != 0:

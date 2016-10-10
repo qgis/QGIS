@@ -51,7 +51,7 @@ class ScriptSelector(BASE, WIDGET):
         for script in alglist:
             allScripts[script.group].append(script)
 
-        for group, groupScripts in allScripts.items():
+        for group, groupScripts in list(allScripts.items()):
             groupItem = QTreeWidgetItem()
             groupItem.setText(0, group)
             groupItem.setFlags(groupItem.flags() | Qt.ItemIsTristate)

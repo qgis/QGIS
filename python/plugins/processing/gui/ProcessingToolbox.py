@@ -112,7 +112,7 @@ class ProcessingToolbox(BASE, WIDGET):
         if text:
             self.algorithmTree.expandAll()
             self.disabledWithMatchingAlgs = []
-            for providerName, provider in algList.algs.items():
+            for providerName, provider in list(algList.algs.items()):
                 name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
                 if not ProcessingConfig.getSetting(name):
                     for alg in list(provider.values()):
@@ -187,7 +187,7 @@ class ProcessingToolbox(BASE, WIDGET):
             executeAction = QAction(self.tr('Execute'), self.algorithmTree)
             executeAction.triggered.connect(self.executeAlgorithm)
             popupmenu.addAction(executeAction)
-            if alg.canRunInBatchMode and not alg.allowOnlyOpenedLayers:
+            if alg.canRunInBatchMode:
                 executeBatchAction = QAction(
                     self.tr('Execute as batch process'),
                     self.algorithmTree)
