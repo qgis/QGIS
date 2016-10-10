@@ -1541,7 +1541,7 @@ void QgsServerProjectParser::addJoinLayersForElement( const QDomElement& layerEl
   {
     QString id = joinNodeList.at( i ).toElement().attribute( "joinLayerId" );
     QgsMapLayer* layer = mapLayerFromLayerId( id );
-    if ( layer && !QgsMapLayerRegistry::instance()->mapLayer( id ) )
+    if ( layer && !QgsMapLayerRegistry::instance()->mapLayer( id ))
     {
       QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
     }
