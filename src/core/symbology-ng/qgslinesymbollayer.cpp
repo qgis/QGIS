@@ -929,7 +929,6 @@ void QgsMarkerLineSymbolLayer::renderPolylineInterval( const QPolygonF& points, 
 
   QPointF lastPt = points[0];
   double lengthLeft = 0; // how much is left until next marker
-  bool first = mOffsetAlongLine ? false : true; //only draw marker at first vertex when no offset along line is set
 
   QgsRenderContext& rc = context.renderContext();
   double interval = mInterval;
@@ -976,12 +975,6 @@ void QgsMarkerLineSymbolLayer::renderPolylineInterval( const QPolygonF& points, 
       mMarker->setLineAngle( l.angle() * 180 / M_PI );
     }
 
-    // draw first marker
-    if ( first )
-    {
-      mMarker->renderPoint( lastPt, context.feature(), rc, -1, context.selected() );
-      first = false;
-    }
 
     // while we're not at the end of line segment, draw!
     while ( lengthLeft > painterUnitInterval )
