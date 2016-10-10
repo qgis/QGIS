@@ -16,6 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
+from builtins import zip
+from builtins import str
+from builtins import object
 
 __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
@@ -25,10 +29,6 @@ __copyright__ = '(C) 2016, Matthias Kuhn'
 
 __revision__ = ':%H$'
 
-from __future__ import print_function
-from builtins import zip
-from builtins import str
-from builtins import object
 
 import qgis  # NOQA switch sip api
 
