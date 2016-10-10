@@ -454,7 +454,7 @@ QgsExpressionContextScope* QgsPointDistanceRenderer::createGroupScope( const Clu
     else
     {
       //mixed colors
-      clusterScope->setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "" );
+      clusterScope->setVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, QVariant() );
     }
 
     clusterScope->setVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, group.size() );
