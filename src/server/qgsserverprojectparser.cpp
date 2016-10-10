@@ -242,7 +242,7 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
       // Reload joins and expression fields
       QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer *>( layer );
       QString subsetString = vlayer->subsetString();
-      layer->readLayerXml( const_cast<QDomElement&>( elem ) );
+      layer->readLayerXML( const_cast<QDomElement&>( elem ) );
       vlayer->setSubsetString( subsetString );
     }
     return layer;
