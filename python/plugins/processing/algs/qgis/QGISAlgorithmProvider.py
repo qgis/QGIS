@@ -165,6 +165,8 @@ from .Hillshade import Hillshade
 from .ReliefAuto import ReliefAuto
 from .IdwInterpolationZValue import IdwInterpolationZValue
 from .IdwInterpolationAttribute import IdwInterpolationAttribute
+from .TinInterpolationZValue import TinInterpolationZValue
+from .TinInterpolationAttribute import TinInterpolationAttribute
 
 
 pluginPath = os.path.normpath(os.path.join(
@@ -224,7 +226,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SingleSidedBuffer(), PointsAlongGeometry(),
                         Aspect(), Slope(), Ruggedness(), Hillshade(),
                         ReliefAuto(), IdwInterpolationZValue(),
-                        IdwInterpolationAttribute()
+                        IdwInterpolationAttribute(), TinInterpolationZValue(),
+                        TinInterpolationAttribute()
                         ]
 
         if hasMatplotlib:
