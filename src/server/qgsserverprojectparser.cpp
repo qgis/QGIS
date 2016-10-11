@@ -25,6 +25,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
+#include "qgsvectorlayerjoinbuffer.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreegroup.h"
 
@@ -237,7 +238,8 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
     {
       QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
       addValueRelationLayersForLayer( vlayer );
-      addJoinsToLayer( const_cast<QDomElement&>( elem ), vlayer );
+      QgsVectorLayerJoinBuffer* joinBuffer = vlayer->joinBuffer();
+      joinBuffer->readXml( const_cast<QDomElement&>( elem ) );
     }
 
     return layer;
@@ -1543,50 +1545,6 @@ void QgsServerProjectParser::addJoinLayersForElement( const QDomElement& layerEl
     {
       QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
     }
-  }
-}
-
-// Based on QgsVectorLayerJoinBuffer::readXml
-void QgsServerProjectParser::addJoinsToLayer( const QDomElement& layerElem, QgsVectorLayer *vl ) const
-{
-  if ( !vl )
-    return;
-
-  QDomElement vectorJoinsElem = layerElem.firstChildElement( "vectorjoins" );
-  if ( vectorJoinsElem.isNull() )
-  {
-    return;
-  }
-
-  QDomNodeList joinList = vectorJoinsElem.elementsByTagName( "join" );
-  for ( int i = 0; i < joinList.size(); ++i )
-  {
-    QDomElement infoElem = joinList.at( i ).toElement();
-    QgsVectorJoinInfo info;
-    info.joinFieldName = infoElem.attribute( "joinFieldName" );
-    info.joinLayerId = infoElem.attribute( "joinLayerId" );
-    info.targetFieldName = infoElem.attribute( "targetFieldName" );
-    info.memoryCache = infoElem.attribute( "memoryCache" ).toInt();
-
-    info.joinFieldIndex = infoElem.attribute( "joinField" ).toInt();   //for compatibility with 1.x
-    info.targetFieldIndex = infoElem.attribute( "targetField" ).toInt();   //for compatibility with 1.x
-
-    QDomElement subsetElem = infoElem.firstChildElement( "joinFieldsSubset" );
-    if ( !subsetElem.isNull() )
-    {
-      QStringList* fieldNames = new QStringList;
-      QDomNodeList fieldNodes = infoElem.elementsByTagName( "field" );
-      for ( int i = 0; i < fieldNodes.count(); ++i )
-        *fieldNames << fieldNodes.at( i ).toElement().attribute( "name" );
-      info.setJoinFieldNamesSubset( fieldNames );
-    }
-
-    if ( infoElem.attribute( "hasCustomPrefix" ).toInt() )
-      info.prefix = infoElem.attribute( "customPrefix" );
-    else
-      info.prefix = QString::null;
-
-    vl->addJoin( info );
   }
 }
 
