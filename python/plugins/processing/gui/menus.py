@@ -21,6 +21,7 @@ vectorMenu = QApplication.translate('MainWindow', 'Vect&or')
 analysisToolsMenu = vectorMenu + "/" + Processing.tr('&Analysis Tools')
 defaultMenuEntries.update({'qgis:distancematrix': analysisToolsMenu,
                            'qgis:sumlinelengths': analysisToolsMenu,
+                           'qgis:pointsinpolygon': analysisToolsMenu,
                            'qgis:countpointsinpolygon': analysisToolsMenu,
                            'qgis:listuniquevalues': analysisToolsMenu,
                            'qgis:basicstatisticsfornumericfields': analysisToolsMenu,
