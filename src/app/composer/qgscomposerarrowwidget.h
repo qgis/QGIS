@@ -57,6 +57,9 @@ class QgsComposerArrowWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
     void on_mLineStyleButton_clicked();
 
     void setGuiElementValues();
+
+    void updateLineStyleFromWidget();
+    void cleanUpLineStyleSelector( QgsPanelWidget* container );
 };
 
 #endif // QGSCOMPOSERARROWWIDGET_H

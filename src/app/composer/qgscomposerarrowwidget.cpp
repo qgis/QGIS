@@ -169,6 +169,24 @@ void QgsComposerArrowWidget::setGuiElementValues()
   blockAllSignals( false );
 }
 
+void QgsComposerArrowWidget::updateLineStyleFromWidget()
+{
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
+  mArrow->setLineSymbol( dynamic_cast< QgsLineSymbol* >( w->symbol()->clone() ) );
+  mArrow->update();
+}
+
+void QgsComposerArrowWidget::cleanUpLineStyleSelector( QgsPanelWidget* container )
+{
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( container );
+  if ( !w )
+    return;
+
+  delete w->symbol();
+  updateLineSymbolMarker();
+  mArrow->endCommand();
+}
+
 void QgsComposerArrowWidget::enableSvgInputElements( bool enable )
 {
   mStartMarkerLineEdit->setEnabled( enable );
@@ -310,25 +328,21 @@ void QgsComposerArrowWidget::on_mLineStyleButton_clicked()
     return;
   }
 
+  // use the atlas coverage layer, if any
+  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
+
   QgsLineSymbol* newSymbol = mArrow->lineSymbol()->clone();
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), nullptr, this );
   QgsExpressionContext context = mArrow->createExpressionContext();
+
+  QgsSymbolSelectorWidget* d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
   QgsSymbolWidgetContext symbolContext;
   symbolContext.setExpressionContext( &context );
-  d.setContext( symbolContext );
+  d->setContext( symbolContext );
 
-  if ( d.exec() == QDialog::Accepted )
-  {
-    mArrow->beginCommand( tr( "Arrow line style changed" ) );
-    mArrow->setLineSymbol( newSymbol );
-    updateLineSymbolMarker();
-    mArrow->endCommand();
-    mArrow->update();
-  }
-  else
-  {
-    delete newSymbol;
-  }
+  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateLineStyleFromWidget() ) );
+  connect( d, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpLineStyleSelector( QgsPanelWidget* ) ) );
+  openPanel( d );
+  mArrow->beginCommand( tr( "Arrow line style changed" ) );
 }
 
 void QgsComposerArrowWidget::updateLineSymbolMarker()

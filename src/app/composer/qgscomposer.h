@@ -602,6 +602,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QgsPanelWidgetStack* mItemPropertiesStack;
     QgsDockWidget* mUndoDock;
     QgsDockWidget* mGeneralDock;
+    QgsPanelWidgetStack* mGeneralPropertiesStack;
     QgsDockWidget* mAtlasDock;
     QgsDockWidget* mItemsDock;
 

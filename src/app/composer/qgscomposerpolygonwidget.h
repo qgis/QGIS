@@ -43,6 +43,9 @@ class QgsComposerPolygonWidget: public QgsComposerItemBaseWidget, private Ui::Qg
 
     /** Sets the GUI elements to the currentValues of mComposerShape*/
     void setGuiElementValues();
+
+    void updateStyleFromWidget();
+    void cleanUpStyleSelector( QgsPanelWidget* container );
 };
 
 #endif // QGSCOMPOSERPOLYGONWIDGET_H

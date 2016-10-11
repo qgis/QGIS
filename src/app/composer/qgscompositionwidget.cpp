@@ -28,9 +28,13 @@
 #include <QWidget>
 #include <QPrinter> //for screen resolution
 
-QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c ): QWidget( parent ), mComposition( c )
+QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )\
+:
+QgsPanelWidget( parent )
+, mComposition( c )
 {
   setupUi( this );
+  setPanelTitle( tr( "Composition properties" ) );
   blockSignals( true );
   createPaperEntries();
 
@@ -133,7 +137,9 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   blockSignals( false );
 }
 
-QgsCompositionWidget::QgsCompositionWidget(): QWidget( nullptr ), mComposition( nullptr )
+QgsCompositionWidget::QgsCompositionWidget()
+    : QgsPanelWidget( nullptr )
+    , mComposition( nullptr )
 {
   setupUi( this );
 }
@@ -245,6 +251,23 @@ QgsComposerObject::DataDefinedProperty QgsCompositionWidget::ddPropertyForWidget
   }
 
   return QgsComposerObject::NoProperty;
+}
+
+void QgsCompositionWidget::updateStyleFromWidget()
+{
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
+  mComposition->setPageStyleSymbol( dynamic_cast< QgsFillSymbol* >( w->symbol() ) );
+  mComposition->update();
+}
+
+void QgsCompositionWidget::cleanUpStyleSelector( QgsPanelWidget* container )
+{
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( container );
+  if ( !w )
+    return;
+
+  delete w->symbol();
+  updatePageStyle();
 }
 
 void QgsCompositionWidget::updateDataDefinedProperty()
@@ -572,17 +595,15 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
     newSymbol = new QgsFillSymbol();
   }
   QgsExpressionContext context = mComposition->createExpressionContext();
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), coverageLayer, this );
+
+  QgsSymbolSelectorWidget* d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
   QgsSymbolWidgetContext symbolContext;
   symbolContext.setExpressionContext( &context );
-  d.setContext( symbolContext );
+  d->setContext( symbolContext );
 
-  if ( d.exec() == QDialog::Accepted )
-  {
-    mComposition->setPageStyleSymbol( newSymbol );
-    updatePageStyle();
-  }
-  delete newSymbol;
+  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateStyleFromWidget() ) );
+  connect( d, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpStyleSelector( QgsPanelWidget* ) ) );
+  openPanel( d );
 }
 
 void QgsCompositionWidget::on_mResizePageButton_clicked()

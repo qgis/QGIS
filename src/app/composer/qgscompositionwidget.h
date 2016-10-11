@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "ui_qgscompositionwidgetbase.h"
+#include "qgspanelwidget.h"
 
 class QgsComposition;
 class QgsComposerMap;
@@ -34,7 +35,7 @@ struct QgsCompositionPaper
 /** \ingroup app
   * Input widget for QgsComposition
   */
-class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
+class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWidgetBase
 {
     Q_OBJECT
   public:
@@ -85,6 +86,9 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
 
     void updateVariables();
 
+    void updateStyleFromWidget();
+    void cleanUpStyleSelector( QgsPanelWidget* container );
+
   private:
     QgsComposition* mComposition;
     QMap<QString, QgsCompositionPaper> mPaperMap;
@@ -114,5 +118,6 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
 
     /** Returns the data defined property corresponding to a data defined button widget*/
     virtual QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton* widget );
+
 
 };

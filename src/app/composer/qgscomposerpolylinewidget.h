@@ -43,6 +43,9 @@ class QgsComposerPolylineWidget: public QgsComposerItemBaseWidget, private Ui::Q
 
     /** Sets the GUI elements to the currentValues of mComposerShape*/
     void setGuiElementValues();
+
+    void updateStyleFromWidget();
+    void cleanUpStyleSelector( QgsPanelWidget* container );
 };
 
 #endif // QGSCOMPOSERPOLYLINEWIDGET_H

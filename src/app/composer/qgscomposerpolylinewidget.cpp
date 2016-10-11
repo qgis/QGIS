@@ -51,23 +51,21 @@ void QgsComposerPolylineWidget::on_mLineStyleButton_clicked()
   if ( !mComposerPolyline )
     return;
 
-  QScopedPointer<QgsLineSymbol> newSymbol;
-  newSymbol.reset( mComposerPolyline->polylineStyleSymbol()->clone() );
+  // use the atlas coverage layer, if any
+  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
+  QgsLineSymbol* newSymbol = mComposerPolyline->polylineStyleSymbol()->clone();
   QgsExpressionContext context = mComposerPolyline->createExpressionContext();
-  QgsSymbolSelectorDialog d( newSymbol.data(), QgsStyle::defaultStyle(),
-                             nullptr, this );
+
+  QgsSymbolSelectorWidget* d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
   QgsSymbolWidgetContext symbolContext;
   symbolContext.setExpressionContext( &context );
-  d.setContext( symbolContext );
+  d->setContext( symbolContext );
 
-  if ( d.exec() == QDialog::Accepted )
-  {
-    mComposerPolyline->beginCommand( tr( "Polyline style changed" ) );
-    mComposerPolyline->setPolylineStyleSymbol( newSymbol.data() );
-    updatePolylineStyle();
-    mComposerPolyline->endCommand();
-  }
+  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateStyleFromWidget() ) );
+  connect( d, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpStyleSelector( QgsPanelWidget* ) ) );
+  openPanel( d );
+  mComposerPolyline->beginCommand( tr( "Polyline style changed" ) );
 }
 
 void QgsComposerPolylineWidget::setGuiElementValues()
@@ -76,6 +74,24 @@ void QgsComposerPolylineWidget::setGuiElementValues()
     return;
 
   updatePolylineStyle();
+}
+
+void QgsComposerPolylineWidget::updateStyleFromWidget()
+{
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
+  mComposerPolyline->setPolylineStyleSymbol( dynamic_cast< QgsLineSymbol* >( w->symbol() ) );
+  mComposerPolyline->update();
+}
+
+void QgsComposerPolylineWidget::cleanUpStyleSelector( QgsPanelWidget* container )
+{
+  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( container );
+  if ( !w )
+    return;
+
+  delete w->symbol();
+  updatePolylineStyle();
+  mComposerPolyline->endCommand();
 }
 
 void QgsComposerPolylineWidget::updatePolylineStyle()
