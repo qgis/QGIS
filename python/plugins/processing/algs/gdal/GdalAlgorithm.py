@@ -77,7 +77,7 @@ class GdalAlgorithm(GeoAlgorithm):
                 if layer.source() in c:
                     exported = dataobjects.exportVectorLayer(layer, supported)
                     exportedFileName = os.path.splitext(os.path.split(exported)[1])[0]
-                    
+
                     if layer.dataProvider().name() == 'memory':
                         if 'memory_clip_layer' in c:
                             # Ogr2OgrClip alg may get 2 memory layers, deal with the clip layer
@@ -87,15 +87,15 @@ class GdalAlgorithm(GeoAlgorithm):
                             else:
                                 c = c.replace('memory_layer', exportedFileName)
                         else:
-                            c = c.replace('memory_layer', exportedFileName)                    
-                    
+                            c = c.replace('memory_layer', exportedFileName)
+
                     c = c.replace(layer.source(), exported)
                     if os.path.isfile(layer.source()):
                         fileName = os.path.splitext(os.path.split(layer.source())[1])[0]
                         c = re.sub('[\s]{}[\s]'.format(fileName), ' ' + exportedFileName + ' ', c)
                         c = re.sub('[\s]{}'.format(fileName), ' ' + exportedFileName, c)
                         c = re.sub('["\']{}["\']'.format(fileName), "'" + exportedFileName + "'", c)
-                
-            commands[i] = c    
+
+            commands[i] = c
 
         return commands
