@@ -512,6 +512,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
       @returns true if join was found and successfully removed */
     bool removeJoin( const QString& joinLayerId );
 
+    /**
+     * Acccessor to the join buffer object
+     * @note added 2.14.7
+     */
+    QgsVectorLayerJoinBuffer* joinBuffer() { return mJoinBuffer; }
     const QList<QgsVectorJoinInfo> vectorJoins() const;
 
     /**
