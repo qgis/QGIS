@@ -25,6 +25,10 @@ __copyright__ = '(C) 2016, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from qgis.PyQt.QtGui import QIcon
+
 from qgis.core import QgsRectangle, QgsWkbTypes
 from qgis.analysis import (QgsInterpolator,
                            QgsIDWInterpolator,
@@ -39,6 +43,8 @@ from processing.core.parameters import ParameterExtent
 from processing.core.outputs import OutputRaster
 from processing.tools import dataobjects
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class IdwInterpolationZValue(GeoAlgorithm):
 
@@ -51,6 +57,9 @@ class IdwInterpolationZValue(GeoAlgorithm):
     CELLSIZE_Y = 'CELLSIZE_Y'
     EXTENT = 'EXTENT'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'interpolation.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('IDW interpolation (using Z-values)')

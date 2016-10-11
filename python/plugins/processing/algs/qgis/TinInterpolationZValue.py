@@ -25,6 +25,10 @@ __copyright__ = '(C) 2016, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from qgis.PyQt.QtGui import QIcon
+
 from qgis.core import QgsRectangle, QgsWkbTypes
 from qgis.analysis import (QgsInterpolator,
                            QgsTINInterpolator,
@@ -40,6 +44,8 @@ from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class TinInterpolationZValue(GeoAlgorithm):
 
@@ -53,6 +59,9 @@ class TinInterpolationZValue(GeoAlgorithm):
     EXTENT = 'EXTENT'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     TRIANULATION_FILE = 'TRIANULATION_FILE'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'interpolation.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('TIN interpolation (using Z-values)')
