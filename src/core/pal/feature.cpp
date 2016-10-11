@@ -1170,19 +1170,6 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition* >& lPos,
     return 0;
   }
 
-  //calculate overall angle of line
-  double lineAngle;
-  double bx = mapShape->x[0];
-  double by = mapShape->y[0];
-  double ex = mapShape->x[ mapShape->nbPoints - 1 ];
-  double ey = mapShape->y[ mapShape->nbPoints - 1 ];
-  if ( qgsDoubleNear( ey, by ) && qgsDoubleNear( ex, bx ) )
-  {
-    lineAngle = 0.0;
-  }
-  else
-    lineAngle = atan2( ey - by, ex - bx );
-
   QLinkedList<LabelPosition*> positions;
   double delta = qMax( li->label_height, total_distance / mLF->layer()->pal->line_p );
 
