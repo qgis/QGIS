@@ -48,27 +48,6 @@ class GdalAlgorithm(GeoAlgorithm):
         return GdalAlgorithmDialog(self)
 
     def processAlgorithm(self, progress):
-        commands = self._prepareCommands()
-        GdalUtils.runGdal(commands, progress)
-
-    def shortHelp(self):
-        return self._formatHelp('''This algorithm is based on the GDAL %s module.
-
-                For more info, see the <a href = 'http://www.gdal.org/%s.html'> module help</a>
-                ''' % (self.commandName(), self.commandName()))
-
-    def commandName(self):
-        alg = self.getCopy()
-        for output in alg.outputs:
-            output.setValue("dummy")
-        for param in alg.parameters:
-            param.setValue("1")
-        name = alg.getConsoleCommands()[0]
-        if name.endswith(".py"):
-            name = name[:-3]
-        return name
-
-    def _prepareCommands(self):
         commands = self.getConsoleCommands()
         layers = dataobjects.getVectorLayers()
         supported = dataobjects.getSupportedOutputVectorLayerExtensions()
@@ -97,5 +76,21 @@ class GdalAlgorithm(GeoAlgorithm):
                         c = re.sub('["\']{}["\']'.format(fileName), "'" + exportedFileName + "'", c)
 
             commands[i] = c
+        GdalUtils.runGdal(commands, progress)
 
-        return commands
+    def shortHelp(self):
+        return self._formatHelp('''This algorithm is based on the GDAL %s module.
+
+                For more info, see the <a href = 'http://www.gdal.org/%s.html'> module help</a>
+                ''' % (self.commandName(), self.commandName()))
+
+    def commandName(self):
+        alg = self.getCopy()
+        for output in alg.outputs:
+            output.setValue("dummy")
+        for param in alg.parameters:
+            param.setValue("1")
+        name = alg.getConsoleCommands()[0]
+        if name.endswith(".py"):
+            name = name[:-3]
+        return name
