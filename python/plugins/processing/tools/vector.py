@@ -528,6 +528,8 @@ def ogrLayerName(uri):
         regex = re.compile('(layername=)(.*)')
         r = regex.search(uri)
         return r.groups()[1]
+    elif re.match('^(multi)?(point|linestring|polygon)(25d|(z?m?))?(\?|$)', uri, re.I):
+        return 'memory_layer'
     else:
         return os.path.basename(os.path.splitext(uri)[0])
 
