@@ -572,7 +572,20 @@ def ogrLayerName(uri):
             # take precedence
     ds = ogr.Open(ogruri)
     if not ds:
+        if 'host=' in uri:
+            regex = re.compile('(table=")(.+?)(\.)(.+?)"')
+            r = regex.search(uri)
+            return '"' + r.groups()[1] + '.' + r.groups()[3] + '"'
+        elif 'dbname=' in uri:
+            regex = re.compile('(table=")(.+?)"')
+            r = regex.search(uri)
+            return r.groups()[1]
+        elif re.match('^(multi)?(point|linestring|polygon)(25d|(z?m?))?(\?|$)', uri, re.I):
+            return 'memory_layer'
+        elif os.path.isfile(uri):
+            return os.path.basename(os.path.splitext(uri)[0])
         return "invalid-uri"
+        
     ly = ds.GetLayer(layerid)
     if not ly:
         return "invalid-layerid"

@@ -37,6 +37,8 @@ from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools.vector import ogrLayerName
+
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
@@ -91,9 +93,7 @@ class GridDataMetrics(GdalAlgorithm):
 
     def getConsoleCommands(self):
         arguments = ['-l']
-        arguments.append(
-            os.path.basename(os.path.splitext(
-                unicode(self.getParameterValue(self.INPUT)))[0]))
+        arguments.append(ogrLayerName(self.getParameterValue(self.INPUT)))
 
         fieldName = self.getParameterValue(self.Z_FIELD)
         if fieldName is not None and fieldName != '':

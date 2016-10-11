@@ -72,6 +72,10 @@ class Ogr2OgrClip(GdalAlgorithm):
         arguments.append('-clipsrc')
         arguments.append(ogrClipLayer)
         arguments.append("-clipsrclayer")
+        clipLayer = ogrLayerName(clipLayer)
+        if clipLayer == 'memory_layer':
+            clipLayer = 'memory_clip_layer' 
+
         arguments.append(ogrLayerName(clipLayer))
         if len(options) > 0:
             arguments.append(options)
