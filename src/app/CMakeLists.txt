@@ -139,6 +139,7 @@ SET(QGIS_APP_SRCS
   composer/qgscomposerlabelwidget.cpp
   composer/qgscomposerpicturewidget.cpp
   composer/qgscomposermanager.cpp
+  composer/qgscomposermapgridwidget.cpp
   composer/qgscomposermapwidget.cpp
   composer/qgscomposerscalebarwidget.cpp
   composer/qgscomposershapewidget.cpp
@@ -314,6 +315,7 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscomposerlegenditemdialog.h
   composer/qgscomposerlegendlayersdialog.h
   composer/qgscomposermanager.h
+  composer/qgscomposermapgridwidget.h
   composer/qgscomposermapwidget.h
   composer/qgscomposerpicturewidget.h
   composer/qgscomposerscalebarwidget.h
