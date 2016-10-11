@@ -659,8 +659,7 @@ void QgsLabelingGui::init()
   chkLineAbove->setChecked( lyr.placementFlags & QgsPalLayerSettings::AboveLine );
   chkLineBelow->setChecked( lyr.placementFlags & QgsPalLayerSettings::BelowLine );
   chkLineOn->setChecked( lyr.placementFlags & QgsPalLayerSettings::OnLine );
-  if ( !( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) )
-    chkLineOrientationDependent->setChecked( true );
+  chkLineOrientationDependent->setChecked( !( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) );
 
   switch ( lyr.placement )
   {
