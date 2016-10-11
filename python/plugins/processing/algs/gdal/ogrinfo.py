@@ -25,6 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
@@ -34,6 +35,7 @@ from processing.core.outputs import OutputHTML
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
+from processing.tools import dataobjects
 from processing.tools.vector import ogrConnectionString
 
 
@@ -66,7 +68,23 @@ class OgrInfo(GdalAlgorithm):
         return arguments
 
     def processAlgorithm(self, progress):
-        commands = self._prepareCommands()
+        commands = self.getConsoleCommands()
+        layers = dataobjects.getVectorLayers()
+        supported = dataobjects.getSupportedOutputVectorLayerExtensions()
+        for i, c in enumerate(commands):
+            for layer in layers:
+                if layer.source() in c:
+                    if layer.dataProvider().name() == 'memory':
+                        exported = dataobjects.exportVectorLayer(layer, supported)
+                        exportedFileName = os.path.splitext(os.path.split(exported)[1])[0]
+                        c = c.replace(layer.source(), exported)
+                        if os.path.isfile(layer.source()):
+                            fileName = os.path.splitext(os.path.split(layer.source())[1])[0]
+                            c = re.sub('[\s]{}[\s]'.format(fileName), ' ' + exportedFileName + ' ', c)
+                            c = re.sub('[\s]{}'.format(fileName), ' ' + exportedFileName, c)
+                            c = re.sub('["\']{}["\']'.format(fileName), "'" + exportedFileName + "'", c)
+
+            commands[i] = c
         GdalUtils.runGdal(commands, progress)
         output = self.getOutputValue(self.OUTPUT)
         with open(output, 'w') as f:
