@@ -184,7 +184,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         test_query_attribute(self.dbconn, '(SELECT -1::int8 i, NULL::geometry(Point) g)', 'i', -1, 1)
         test_query_attribute(self.dbconn, '(SELECT -65535::int8 i, NULL::geometry(Point) g)', 'i', -65535, 1)
 
-    # See http://hub.qgis.org/issues/18155
+    # See http://hub.qgis.org/issues/15188
     def testNumericPrecision(self):
         uri = 'point?field=f1:int'
         uri += '&field=f2:double(6,4)'
