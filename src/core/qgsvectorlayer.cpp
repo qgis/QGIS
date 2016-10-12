@@ -2378,12 +2378,41 @@ void QgsVectorLayer::remAttributeAlias( int attIndex )
   }
 }
 
-bool QgsVectorLayer::renameAttribute( int attIndex, const QString& newName )
+bool QgsVectorLayer::renameAttribute( int index, const QString& newName )
 {
-  if ( !mEditBuffer || !mDataProvider )
+  if ( index < 0 || index >= fields().count() )
     return false;
 
-  return mEditBuffer->renameAttribute( attIndex, newName );
+  switch ( mUpdatedFields.fieldOrigin( index ) )
+  {
+    case QgsFields::OriginExpression:
+    {
+      if ( mExpressionFieldBuffer )
+      {
+        int oi = mUpdatedFields.fieldOriginIndex( index );
+        mExpressionFieldBuffer->renameExpression( oi, newName );
+        updateFields();
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    case QgsFields::OriginProvider:
+    case QgsFields::OriginEdit:
+
+      if ( !mEditBuffer || !mDataProvider )
+        return false;
+
+      return mEditBuffer->renameAttribute( index, newName );
+
+    case QgsFields::OriginJoin:
+    case QgsFields::OriginUnknown:
+      return false;
+
+  }
 }
 
 void QgsVectorLayer::addAttributeAlias( int attIndex, const QString& aliasString )
