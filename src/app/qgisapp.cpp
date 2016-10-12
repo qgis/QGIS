@@ -3545,7 +3545,11 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
     QString base;
     if ( dataSourceType == "file" )
     {
-      QFileInfo fi( src );
+      QString srcWithoutLayername( src );
+      int posPipe = srcWithoutLayername.indexOf( '|' );
+      if ( posPipe >= 0 )
+        srcWithoutLayername.resize( posPipe );
+      QFileInfo fi( srcWithoutLayername );
       base = fi.completeBaseName();
 
       // if needed prompt for zipitem layers
@@ -6252,22 +6256,29 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
     // No need to use the converter if there is nothing to convert
     if ( !dialog->attributesAsDisplayedValues().isEmpty() )
       converterPtr = &converter;
+
+    QgsVectorFileWriter::SaveVectorOptions options;
+    options.driverName = format;
+    options.layerName = dialog->layername();
+    options.actionOnExistingFile = dialog->creationActionOnExistingFile();
+    options.fileEncoding = encoding;
+    options.ct = ct;
+    options.onlySelectedFeatures = dialog->onlySelected();
+    options.datasourceOptions = datasourceOptions;
+    options.layerOptions = dialog->layerOptions();
+    options.skipAttributeCreation = dialog->selectedAttributes().isEmpty();
+    options.symbologyExport = static_cast< QgsVectorFileWriter::SymbologyExport >( dialog->symbologyExport() );
+    options.symbologyScale = dialog->scaleDenominator();
+    if ( dialog->hasFilterExtent() )
+      options.filterExtent = filterExtent;
+    options.overrideGeometryType = autoGeometryType ? QgsWKBTypes::Unknown : forcedGeometryType;
+    options.forceMulti = dialog->forceMulti();
+    options.includeZ = dialog->includeZ();
+    options.attributes = dialog->selectedAttributes();
+    options.fieldValueConverter = converterPtr;
+
     error = QgsVectorFileWriter::writeAsVectorFormat(
-              vlayer, vectorFilename, encoding, ct, format,
-              dialog->onlySelected(),
-              &errorMessage,
-              datasourceOptions, dialog->layerOptions(),
-              dialog->attributeSelection() && dialog->selectedAttributes().isEmpty(),
-              &newFilename,
-              static_cast< QgsVectorFileWriter::SymbologyExport >( dialog->symbologyExport() ),
-              dialog->scaleDenominator(),
-              dialog->hasFilterExtent() ? &filterExtent : nullptr,
-              autoGeometryType ? QgsWKBTypes::Unknown : forcedGeometryType,
-              dialog->forceMulti(),
-              dialog->includeZ(),
-              dialog->selectedAttributes(),
-              converterPtr
-            );
+              vlayer, vectorFilename, options, &newFilename, &errorMessage );
 
     delete ct;
 
@@ -6277,7 +6288,10 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
     {
       if ( dialog->addToCanvas() )
       {
-        addVectorLayers( QStringList( newFilename ), encoding, "file" );
+        QString uri( newFilename );
+        if ( !dialog->layername().isEmpty() )
+          uri += "|layername=" + dialog->layername();
+        addVectorLayers( QStringList( uri ), encoding, "file" );
       }
       emit layerSavedAs( vlayer, vectorFilename );
       messageBar()->pushMessage( tr( "Saving done" ),
