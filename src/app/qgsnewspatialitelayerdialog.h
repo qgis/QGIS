@@ -52,10 +52,12 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     void on_buttonBox_rejected();
 
   private:
-    /** Returns the selected geometry type*/
+    /**
+     * Returns the selected geometry type*/
     QString selectedType() const;
 
-    /** Create a new database */
+    /**
+     * Create a new database */
     bool createDb();
 
     bool apply();

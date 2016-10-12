@@ -25,7 +25,8 @@
  * See details in QEP #17
  ****************************************************************************/
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsStatisticalSummary
  * \brief Calculator for summary statistics for a list of doubles.
  *
@@ -64,36 +65,42 @@ class CORE_EXPORT QgsStatisticalSummary
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
-    /** Constructor for QgsStatisticalSummary
+    /**
+     * Constructor for QgsStatisticalSummary
      * @param stats flags for statistics to calculate
      */
     QgsStatisticalSummary( const QgsStatisticalSummary::Statistics& stats = All );
 
     virtual ~QgsStatisticalSummary();
 
-    /** Returns flags which specify which statistics will be calculated. Some statistics
+    /**
+     * Returns flags which specify which statistics will be calculated. Some statistics
      * are always calculated (eg sum, min and max).
      * @see setStatistics
      */
     Statistics statistics() const { return mStatistics; }
 
-    /** Sets flags which specify which statistics will be calculated. Some statistics
+    /**
+     * Sets flags which specify which statistics will be calculated. Some statistics
      * are always calculated (eg sum, min and max).
      * @param stats flags for statistics to calculate
      * @see statistics
      */
     void setStatistics( const Statistics& stats ) { mStatistics = stats; }
 
-    /** Resets the calculated values
+    /**
+     * Resets the calculated values
      */
     void reset();
 
-    /** Calculates summary statistics for a list of values
+    /**
+     * Calculates summary statistics for a list of values
      * @param values list of doubles
      */
     void calculate( const QList<double>& values );
 
-    /** Adds a single value to the statistics calculation. Calling this method
+    /**
+     * Adds a single value to the statistics calculation. Calling this method
      * allows values to be added to the calculation one at a time. For large
      * quantities of values this may be more efficient then first adding all the
      * values to a list and calling calculate().
@@ -109,7 +116,8 @@ class CORE_EXPORT QgsStatisticalSummary
      */
     void addValue( double value );
 
-    /** Adds a single value to the statistics calculation. Calling this method
+    /**
+     * Adds a single value to the statistics calculation. Calling this method
      * allows values to be added to the calculation one at a time. For large
      * quantities of values this may be more efficient then first adding all the
      * values to a list and calling calculate().
@@ -125,7 +133,8 @@ class CORE_EXPORT QgsStatisticalSummary
      */
     void addVariant( const QVariant& value );
 
-    /** Must be called after adding all values with addValues() and before retrieving
+    /**
+     * Must be called after adding all values with addValues() and before retrieving
      * any calculated statistics.
      * @see addValue()
      * @see addVariant()
@@ -133,100 +142,118 @@ class CORE_EXPORT QgsStatisticalSummary
      */
     void finalize();
 
-    /** Returns the value of a specified statistic
+    /**
+     * Returns the value of a specified statistic
      * @param stat statistic to return
      * @returns calculated value of statistic
      */
     double statistic( Statistic stat ) const;
 
-    /** Returns calculated count of values
+    /**
+     * Returns calculated count of values
      */
     int count() const { return mCount; }
 
-    /** Returns the number of missing (null) values
+    /**
+     * Returns the number of missing (null) values
      * @note added in QGIS 2.16
      */
     int countMissing() const { return mMissing; }
 
-    /** Returns calculated sum of values
+    /**
+     * Returns calculated sum of values
      */
     double sum() const { return mSum; }
 
-    /** Returns calculated mean of values
+    /**
+     * Returns calculated mean of values
      */
     double mean() const { return mMean; }
 
-    /** Returns calculated median of values. This is only calculated if Statistic::Median has
+    /**
+     * Returns calculated median of values. This is only calculated if Statistic::Median has
      * been specified in the constructor or via setStatistics.
      */
     double median() const { return mMedian; }
 
-    /** Returns calculated minimum from values.
+    /**
+     * Returns calculated minimum from values.
      */
     double min() const { return mMin; }
 
-    /** Returns calculated maximum from values.
+    /**
+     * Returns calculated maximum from values.
      */
     double max() const { return mMax; }
 
-    /** Returns calculated range (difference between maximum and minimum values).
+    /**
+     * Returns calculated range (difference between maximum and minimum values).
      */
     double range() const { return mMax - mMin; }
 
-    /** Returns population standard deviation. This is only calculated if Statistic::StDev has
+    /**
+     * Returns population standard deviation. This is only calculated if Statistic::StDev has
      * been specified in the constructor or via setStatistics.
      * @see sampleStDev
      */
     double stDev() const { return mStdev; }
 
-    /** Returns sample standard deviation. This is only calculated if Statistic::StDev has
+    /**
+     * Returns sample standard deviation. This is only calculated if Statistic::StDev has
      * been specified in the constructor or via setStatistics.
      * @see stDev
      */
     double sampleStDev() const { return mSampleStdev; }
 
-    /** Returns variety of values. The variety is the count of unique values from the list.
+    /**
+     * Returns variety of values. The variety is the count of unique values from the list.
      * This is only calculated if Statistic::Variety has been specified in the constructor
      * or via setStatistics.
      */
     int variety() const { return mValueCount.count(); }
 
-    /** Returns minority of values. The minority is the value with least occurances in the list
+    /**
+     * Returns minority of values. The minority is the value with least occurances in the list
      * This is only calculated if Statistic::Minority has been specified in the constructor
      * or via setStatistics.
      * @see majority
      */
     double minority() const { return mMinority; }
 
-    /** Returns majority of values. The majority is the value with most occurances in the list
+    /**
+     * Returns majority of values. The majority is the value with most occurances in the list
      * This is only calculated if Statistic::Majority has been specified in the constructor
      * or via setStatistics.
      * @see minority
      */
     double majority() const { return mMajority; }
 
-    /** Returns the first quartile of the values. The quartile is calculated using the
+    /**
+     * Returns the first quartile of the values. The quartile is calculated using the
      * "Tukey's hinges" method.
      * @see thirdQuartile
      * @see interQuartileRange
      */
     double firstQuartile() const { return mFirstQuartile; }
 
-    /** Returns the third quartile of the values. The quartile is calculated using the
+    /**
+     * Returns the third quartile of the values. The quartile is calculated using the
      * "Tukey's hinges" method.
      * @see firstQuartile
      * @see interQuartileRange
      */
     double thirdQuartile() const { return mThirdQuartile; }
 
-    /** Returns the inter quartile range of the values. The quartiles are calculated using the
+    /**
+     * Returns the inter quartile range of the values. The quartiles are calculated using the
      * "Tukey's hinges" method.
      * @see firstQuartile
      * @see thirdQuartile
      */
     double interQuartileRange() const { return mThirdQuartile - mFirstQuartile; }
 
-    /** Returns the friendly display name for a statistic
+    /**
+     * Returns the friendly display name for a statistic
      * @param statistic statistic to return name for
      */
     static QString displayName( Statistic statistic );

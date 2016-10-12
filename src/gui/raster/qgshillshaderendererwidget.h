@@ -66,12 +66,14 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
      */
     double azimuth() const;
 
-    /** Returns the angle of the light source over the raster.
+    /**
+     * Returns the angle of the light source over the raster.
      * @see setAltitude()
      */
     double altitude()  const;
 
-    /** Returns the Z scaling factor.
+    /**
+     * Returns the Z scaling factor.
      * @see setZFactor()
      */
     double zFactor()  const;
@@ -105,7 +107,8 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
      */
     void setZFactor( double zfactor );
 
-    /** Sets whether to render using a multi-directional hillshade algorithm.
+    /**
+     * Sets whether to render using a multi-directional hillshade algorithm.
      * @param isMultiDirectional set to true to use multi directional rendering
      * @see multiDirectional()
      */

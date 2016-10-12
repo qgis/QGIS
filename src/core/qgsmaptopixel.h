@@ -25,7 +25,8 @@
 class QgsPoint;
 class QPoint;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Perform transforms between map coordinates and device coordinates.
   *
   * This class can convert device coordinates to map coordinates and vice versa.
@@ -52,7 +53,8 @@ class CORE_EXPORT QgsMapToPixel
      */
     QgsMapToPixel( double mapUnitsPerPixel );
 
-    /** Returns a new QgsMapToPixel created using a specified scale and distance unit.
+    /**
+     * Returns a new QgsMapToPixel created using a specified scale and distance unit.
      * @param scale map scale
      * @param dpi screen DPI
      * @param mapUnits map units
@@ -178,13 +180,15 @@ class CORE_EXPORT QgsMapToPixel
 
     QTransform transform() const;
 
-    /** Returns the center x-coordinate for the transform.
+    /**
+     * Returns the center x-coordinate for the transform.
      * @see yCenter()
      * @note added in QGIS 3.0
      */
     double xCenter() const { return mXCenter; }
 
-    /** Returns the center y-coordinate for the transform.
+    /**
+     * Returns the center y-coordinate for the transform.
      * @see xCenter()
      * @note added in QGIS 3.0
      */

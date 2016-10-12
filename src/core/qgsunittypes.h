@@ -26,7 +26,8 @@
  * See details in QEP #17
  ****************************************************************************/
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsUnitTypes
  * \brief Helper functions for various unit types.
  * \note Added in version 2.14
@@ -49,7 +50,8 @@ class CORE_EXPORT QgsUnitTypes
       DistanceUnknownUnit, /*!< unknown distance unit */
     };
 
-    /** Types of distance units
+    /**
+     * Types of distance units
      */
     enum DistanceUnitType
     {
@@ -100,18 +102,21 @@ class CORE_EXPORT QgsUnitTypes
 
     // DISTANCE UNITS
 
-    /** Returns the type for a distance unit.
+    /**
+     * Returns the type for a distance unit.
      */
     static DistanceUnitType unitType( DistanceUnit unit );
 
-    /** Encodes a distance unit to a string.
+    /**
+     * Encodes a distance unit to a string.
      * @param unit unit to encode
      * @returns encoded string
      * @see decodeDistanceUnit()
      */
     static QString encodeUnit( QgsUnitTypes::DistanceUnit unit );
 
-    /** Decodes a distance unit from a string.
+    /**
+     * Decodes a distance unit from a string.
      * @param string string to decode
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @returns decoded units
@@ -119,20 +124,23 @@ class CORE_EXPORT QgsUnitTypes
      */
     static QgsUnitTypes::DistanceUnit decodeDistanceUnit( const QString& string, bool *ok = 0 );
 
-    /** Returns a translated string representing a distance unit.
+    /**
+     * Returns a translated string representing a distance unit.
      * @param unit unit to convert to string
      * @see stringToDistanceUnit()
      */
     static QString toString( QgsUnitTypes::DistanceUnit unit );
 
-    /** Converts a translated string to a distance unit.
+    /**
+     * Converts a translated string to a distance unit.
      * @param string string representing a distance unit
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @see toString()
      */
     static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString& string, bool *ok = 0 );
 
-    /** Returns the conversion factor between the specified distance units.
+    /**
+     * Returns the conversion factor between the specified distance units.
      * @param fromUnit distance unit to convert from
      * @param toUnit distance unit to convert to
      * @returns multiplication factor to convert between units
@@ -141,18 +149,21 @@ class CORE_EXPORT QgsUnitTypes
 
     // AREAL UNITS
 
-    /** Returns the type for an areal unit.
+    /**
+     * Returns the type for an areal unit.
     */
     static DistanceUnitType unitType( AreaUnit unit );
 
-    /** Encodes an areal unit to a string.
+    /**
+     * Encodes an areal unit to a string.
      * @param unit unit to encode
      * @returns encoded string
      * @see decodeAreaUnit()
     */
     static QString encodeUnit( AreaUnit unit );
 
-    /** Decodes an areal unit from a string.
+    /**
+     * Decodes an areal unit from a string.
      * @param string string to decode
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @returns decoded units
@@ -160,27 +171,31 @@ class CORE_EXPORT QgsUnitTypes
     */
     static AreaUnit decodeAreaUnit( const QString& string, bool *ok = 0 );
 
-    /** Returns a translated string representing an areal unit.
+    /**
+     * Returns a translated string representing an areal unit.
      * @param unit unit to convert to string
      * @see stringToAreaUnit()
      */
     static QString toString( AreaUnit unit );
 
-    /** Converts a translated string to an areal unit.
+    /**
+     * Converts a translated string to an areal unit.
      * @param string string representing an areal unit
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @see toString()
      */
     static AreaUnit stringToAreaUnit( const QString& string, bool *ok = 0 );
 
-    /** Returns the conversion factor between the specified areal units.
+    /**
+     * Returns the conversion factor between the specified areal units.
      * @param fromUnit area unit to convert from
      * @param toUnit area unit to convert to
      * @returns multiplication factor to convert between units
      */
     static double fromUnitToUnitFactor( AreaUnit fromUnit, AreaUnit toUnit );
 
-    /** Converts a distance unit to its corresponding area unit, eg meters to square meters
+    /**
+     * Converts a distance unit to its corresponding area unit, eg meters to square meters
      * @param distanceUnit distance unit to convert
      * @return matching areal unit
      */
@@ -188,14 +203,16 @@ class CORE_EXPORT QgsUnitTypes
 
     // ANGULAR UNITS
 
-    /** Encodes an angular unit to a string.
+    /**
+     * Encodes an angular unit to a string.
      * @param unit unit to encode
      * @returns encoded string
      * @see decodeAngleUnit()
     */
     static QString encodeUnit( AngleUnit unit );
 
-    /** Decodes an angular unit from a string.
+    /**
+     * Decodes an angular unit from a string.
      * @param string string to decode
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @returns decoded units
@@ -203,19 +220,22 @@ class CORE_EXPORT QgsUnitTypes
     */
     static AngleUnit decodeAngleUnit( const QString& string, bool *ok = 0 );
 
-    /** Returns a translated string representing an angular unit.
+    /**
+     * Returns a translated string representing an angular unit.
      * @param unit unit to convert to string
      */
     static QString toString( AngleUnit unit );
 
-    /** Returns the conversion factor between the specified angular units.
+    /**
+     * Returns the conversion factor between the specified angular units.
      * @param fromUnit angle unit to convert from
      * @param toUnit angle unit to convert to
      * @returns multiplication factor to convert between units
      */
     static double fromUnitToUnitFactor( AngleUnit fromUnit, AngleUnit toUnit );
 
-    /** Returns an angle formatted as a friendly string.
+    /**
+     * Returns an angle formatted as a friendly string.
      * @param angle angle to format
      * @param decimals number of decimal places to show
      * @param unit unit of angle
@@ -225,14 +245,16 @@ class CORE_EXPORT QgsUnitTypes
 
     // RENDER UNITS
 
-    /** Encodes a render unit to a string.
+    /**
+     * Encodes a render unit to a string.
      * @param unit unit to encode
      * @returns encoded string
      * @see decodeRenderUnit()
      */
     static QString encodeUnit( RenderUnit unit );
 
-    /** Decodes a render unit from a string.
+    /**
+     * Decodes a render unit from a string.
      * @param string string to decode
      * @param ok optional boolean, will be set to true if string was converted successfully
      * @returns decoded units

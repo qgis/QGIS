@@ -32,7 +32,8 @@ class QgsRasterLayerRenderer;
 #include "qgsrasterinterface.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Implementation of threaded rendering for raster layers.
  *
  * @note added in 2.4
@@ -57,7 +58,8 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
     QgsRasterPipe* mPipe;
     QgsRenderContext& mContext;
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Specific internal feedback class to provide preview of raster layer rendering.
      * @note added in 3.0
      * @note not available in Python bindings

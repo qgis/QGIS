@@ -20,7 +20,8 @@
 
 #include <QEventLoop>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Job implementation that renders everything sequentially using a custom painter.
  *
  * Also supports synchronous rendering in main thread for cases when rendering in background

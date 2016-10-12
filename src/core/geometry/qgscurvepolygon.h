@@ -22,7 +22,8 @@
 
 class QgsPolygonV2;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCurvePolygon
  * \brief Curve polygon geometry type
  * \note added in QGIS 2.10
@@ -61,13 +62,15 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     int numInteriorRings() const;
     const QgsCurve* exteriorRing() const;
     const QgsCurve* interiorRing( int i ) const;
-    /** Returns a new polygon geometry corresponding to a segmentized approximation
+    /**
+     * Returns a new polygon geometry corresponding to a segmentized approximation
      * of the curve.
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     virtual QgsPolygonV2* toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
 
-    /** Sets the exterior ring of the polygon. The CurvePolygon type will be updated to match the dimensionality
+    /**
+     * Sets the exterior ring of the polygon. The CurvePolygon type will be updated to match the dimensionality
      * of the exterior ring. For instance, setting a 2D exterior ring on a 3D CurvePolygon will drop the z dimension
      * from the CurvePolygon and all interior rings.
      * @param ring new exterior ring. Ownership is transferred to the CurvePolygon.
@@ -76,11 +79,14 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      */
     virtual void setExteriorRing( QgsCurve* ring );
 
-    /** Sets all interior rings (takes ownership)*/
+    /**
+     * Sets all interior rings (takes ownership)*/
     void setInteriorRings( const QList<QgsCurve*>& rings );
-    /** Adds an interior ring to the geometry (takes ownership)*/
+    /**
+     * Adds an interior ring to the geometry (takes ownership)*/
     virtual void addInteriorRing( QgsCurve* ring );
-    /** Removes ring. Exterior ring is 0, first interior ring 1, ...*/
+    /**
+     * Removes ring. Exterior ring is 0, first interior ring 1, ...*/
     bool removeInteriorRing( int nr );
 
     virtual void draw( QPainter& p ) const override;
@@ -97,12 +103,14 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
     bool hasCurvedSegments() const override;
-    /** Returns a geometry without curves. Caller takes ownership
+    /**
+     * Returns a geometry without curves. Caller takes ownership
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     QgsAbstractGeometry* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
-    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+    /**
+     * Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
      *  @param vertex the vertex id
      *  @return rotation in radians, clockwise from north
      */

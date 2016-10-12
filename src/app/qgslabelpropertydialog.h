@@ -24,7 +24,8 @@
 #include <QDialog>
 
 
-/** A dialog to enter data defined label attributes*/
+/**
+ * A dialog to enter data defined label attributes*/
 class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialogBase
 {
     Q_OBJECT
@@ -32,12 +33,14 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     QgsLabelPropertyDialog( const QString& layerId, const QString& providerId, int featureId, const QFont& labelFont, const QString& labelText, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsLabelPropertyDialog();
 
-    /** Returns properties changed by the user*/
+    /**
+     * Returns properties changed by the user*/
     const QgsAttributeMap& changedProperties() const { return mChangedProperties; }
 
   signals:
 
-    /** Emitted when dialog settings are applied
+    /**
+     * Emitted when dialog settings are applied
      * @note added in QGIS 2.9
      */
     void applied();
@@ -67,25 +70,30 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     void on_mLabelTextLineEdit_textChanged( const QString& text );
 
   private:
-    /** Sets activation / values to the gui elements depending on the label settings and feature values*/
+    /**
+     * Sets activation / values to the gui elements depending on the label settings and feature values*/
     void init( const QString& layerId, const QString& providerId, int featureId, const QString& labelText );
     void disableGuiElements();
-    /** Block / unblock all input element signals*/
+    /**
+     * Block / unblock all input element signals*/
     void blockElementSignals( bool block );
 
     void setDataDefinedValues( const QgsPalLayerSettings &layerSettings, QgsVectorLayer* vlayer );
     void enableDataDefinedWidgets( QgsVectorLayer* vlayer );
 
-    /** Updates font when family or style is updated */
+    /**
+     * Updates font when family or style is updated */
     void updateFont( const QFont& font, bool block = true );
 
-    /** Updates combobox with named styles of font */
+    /**
+     * Updates combobox with named styles of font */
     void populateFontStyleComboBox();
 
     void fillHaliComboBox();
     void fillValiComboBox();
 
-    /** Insert changed value into mChangedProperties*/
+    /**
+     * Insert changed value into mChangedProperties*/
     void insertChangedValue( QgsPalLayerSettings::DataDefinedProperties p, const QVariant& value );
 
     QgsAttributeMap mChangedProperties;
@@ -94,10 +102,12 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
 
     QFontDatabase mFontDB;
 
-    /** Label field for the current layer (or -1 if none)*/
+    /**
+     * Label field for the current layer (or -1 if none)*/
     int mCurLabelField;
 
-    /** Current feature */
+    /**
+     * Current feature */
     QgsFeature mCurLabelFeat;
 };
 

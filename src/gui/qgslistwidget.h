@@ -21,7 +21,8 @@
 #include <QVariant>
 
 ///@cond PRIVATE
-/** @ingroup gui
+/**
+ * @ingroup gui
  * Table model to edit a QVariantList.
  * @note added in QGIS 3.0
  * @note not available in Python bindings
@@ -52,7 +53,8 @@ class GUI_EXPORT QgsListModel : public QAbstractTableModel
 ///@endcond
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget allowing to edit a QVariantList, using a table.
  * @note added in QGIS 3.0
  */

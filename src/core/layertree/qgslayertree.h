@@ -20,7 +20,8 @@
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Namespace with helper functions for layer tree operations.
  *
  * Only generally useful routines should be here. Miscellaneous utility functions for work

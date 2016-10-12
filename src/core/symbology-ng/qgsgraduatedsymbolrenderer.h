@@ -21,7 +21,8 @@
 #include <QScopedPointer>
 #include <QRegExp>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsRendererRange
  */
 class CORE_EXPORT QgsRendererRange
@@ -56,7 +57,8 @@ class CORE_EXPORT QgsRendererRange
     // debugging
     QString dump() const;
 
-    /** Creates a DOM element representing the range in SLD format.
+    /**
+     * Creates a DOM element representing the range in SLD format.
      * @param doc DOM document
      * @param element destination DOM element
      * @param props graduated renderer properties
@@ -78,7 +80,8 @@ class CORE_EXPORT QgsRendererRange
 typedef QList<QgsRendererRange> QgsRangeList;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsRendererRangeLabelFormat
  * \note added in QGIS 2.6
  */
@@ -125,7 +128,8 @@ class CORE_EXPORT QgsRendererRangeLabelFormat
 class QgsVectorLayer;
 class QgsColorRamp;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGraduatedSymbolRenderer
  */
 class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
@@ -165,7 +169,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! @note available in python bindings as addClassLowerUpper
     void addClass( double lower, double upper );
 
-    /** Add a breakpoint by splitting existing classes so that the specified
+    /**
+     * Add a breakpoint by splitting existing classes so that the specified
      * value becomes a break between two classes.
      * @param breakValue position to insert break
      * @param updateSymbols set to true to reapply ramp colors to the new
@@ -180,13 +185,15 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! Moves the category at index position from to index position to.
     void moveClass( int from, int to );
 
-    /** Tests whether classes assigned to the renderer have ranges which overlap.
+    /**
+     * Tests whether classes assigned to the renderer have ranges which overlap.
      * @returns true if ranges overlap
      * @note added in QGIS 2.10
      */
     bool rangesOverlap() const;
 
-    /** Tests whether classes assigned to the renderer have gaps between the ranges.
+    /**
+     * Tests whether classes assigned to the renderer have gaps between the ranges.
      * @returns true if ranges have gaps
      * @note added in QGIS 2.10
      */
@@ -228,7 +235,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! @note Added in 2.6
     void calculateLabelPrecision( bool updateRanges = true );
 
-    /** Creates a new graduated renderer.
+    /**
+     * Creates a new graduated renderer.
      * @param vlayer vector layer
      * @param attrName attribute to classify
      * @param classes number of classes
@@ -259,14 +267,16 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
     virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
-    /** Returns the renderer's source symbol, which is the base symbol used for the each classes' symbol before applying
+    /**
+     * Returns the renderer's source symbol, which is the base symbol used for the each classes' symbol before applying
      * the classes' color.
      * @see setSourceSymbol()
      * @see sourceColorRamp()
      */
     QgsSymbol* sourceSymbol();
 
-    /** Sets the source symbol for the renderer, which is the base symbol used for the each classes' symbol before applying
+    /**
+     * Sets the source symbol for the renderer, which is the base symbol used for the each classes' symbol before applying
      * the classes' color.
      * @param sym source symbol, ownership is transferred to the renderer
      * @see sourceSymbol()
@@ -274,13 +284,15 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      */
     void setSourceSymbol( QgsSymbol* sym );
 
-    /** Returns the source color ramp, from which each classes' color is derived.
+    /**
+     * Returns the source color ramp, from which each classes' color is derived.
      * @see setSourceColorRamp()
      * @see sourceSymbol()
      */
     QgsColorRamp* sourceColorRamp();
 
-    /** Sets the source color ramp.
+    /**
+     * Sets the source color ramp.
      * @param ramp color ramp. Ownership is transferred to the renderer
      */
     void setSourceColorRamp( QgsColorRamp* ramp );
@@ -289,14 +301,16 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     bool invertedColorRamp() { return mInvertedColorRamp; }
     void setInvertedColorRamp( bool inverted ) { mInvertedColorRamp = inverted; }
 
-    /** Update the color ramp used. Also updates all symbols colors.
+    /**
+     * Update the color ramp used. Also updates all symbols colors.
      * Doesn't alter current breaks.
      * @param ramp color ramp. Ownership is transferred to the renderer
      * @param inverted set to true to invert ramp colors
      */
     void updateColorRamp( QgsColorRamp* ramp = nullptr, bool inverted = false );
 
-    /** Update all the symbols but leave breaks and colors. This method also sets the source
+    /**
+     * Update all the symbols but leave breaks and colors. This method also sets the source
      * symbol for the renderer.
      * @param sym source symbol to use for classes. Ownership is not transferred.
      * @see setSourceSymbol()
@@ -354,7 +368,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     QgsSymbol* symbolForValue( double value );
 
-    /** Returns the matching legend key for a value.
+    /**
+     * Returns the matching legend key for a value.
      */
     QString legendKeyForValue( double value ) const;
 
@@ -363,7 +378,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
   private:
 
-    /** Returns calculated value used for classifying a feature.
+    /**
+     * Returns calculated value used for classifying a feature.
      */
     QVariant valueForFeature( QgsFeature& feature, QgsRenderContext &context ) const;
 

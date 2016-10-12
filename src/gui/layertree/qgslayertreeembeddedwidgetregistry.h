@@ -22,7 +22,8 @@
 
 class QgsMapLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsLayerTreeEmbeddedWidgetProvider
  * Provider interface to be implemented in order to introduce new kinds of embedded widgets for use in layer tree.
  * Embedded widgets are assigned per individual map layers and they are shown before any legend entries.
@@ -49,7 +50,8 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetProvider
     virtual bool supportsLayer( QgsMapLayer* layer ) = 0;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsLayerTreeEmbeddedWidgetRegistry
  * Registry of widgets that may be embedded into layer tree view.
  * Embedded widgets are assigned per individual map layers and they are shown before any legend entries.
@@ -62,22 +64,27 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
 {
   public:
 
-    /** Means of accessing canonical single instance  */
+    /**
+     * Means of accessing canonical single instance  */
     static QgsLayerTreeEmbeddedWidgetRegistry* instance();
 
     ~QgsLayerTreeEmbeddedWidgetRegistry();
 
-    /** Return list of all registered providers */
+    /**
+     * Return list of all registered providers */
     QStringList providers() const;
 
-    /** Get provider object from the provider's ID */
+    /**
+     * Get provider object from the provider's ID */
     QgsLayerTreeEmbeddedWidgetProvider* provider( const QString& providerId ) const;
 
-    /** Register a provider, takes ownership of the object.
+    /**
+     * Register a provider, takes ownership of the object.
      * Returns true on success, false if the provider is already registered. */
     bool addProvider( QgsLayerTreeEmbeddedWidgetProvider* provider );
 
-    /** Unregister a provider, the provider object is deleted.
+    /**
+     * Unregister a provider, the provider object is deleted.
      * Returns true on success, false if the provider was not registered. */
     bool removeProvider( const QString& providerId );
 

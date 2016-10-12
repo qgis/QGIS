@@ -41,26 +41,30 @@
 #endif
 
 
-/** \ingroup server
+/**
+ * \ingroup server
  * The QgsServer class provides OGC web services.
  */
 class SERVER_EXPORT QgsServer
 {
   public:
-    /** Creates the server instance
+    /**
+     * Creates the server instance
      * @param captureOutput set to false for stdout output (FCGI)
      */
     QgsServer( bool captureOutput = true );
     ~QgsServer();
 
-    /** Set environment variable
+    /**
+     * Set environment variable
      * @param var environment variable name
      * @param val value
      * @note added in 2.14
      */
     void putenv( const QString &var, const QString &val );
 
-    /** Handles the request. The output is normally printed trough FCGI printf
+    /**
+     * Handles the request. The output is normally printed trough FCGI printf
      * by the request handler or, in case the server has been invoked from python
      * bindings, a flag is set that captures all the output headers and body, instead
      * of printing it returns the output as a QPair of QByteArray.
@@ -77,19 +81,22 @@ class SERVER_EXPORT QgsServer
     QPair<QByteArray, QByteArray> testQPair( QPair<QByteArray, QByteArray> pair );
 #endif
 
-    /** Returns a pointer to the server interface */
+    /**
+     * Returns a pointer to the server interface */
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsServerInterfaceImpl* serverInterface() { return sServerInterface; }
 #endif
 
   private:
 
-    /** Server initialization */
+    /**
+     * Server initialization */
     static bool init();
 
     void saveEnvVars();
 
-    /** Saves environment variable into mEnvironmentVariables if defined*/
+    /**
+     * Saves environment variable into mEnvironmentVariables if defined*/
     void saveEnvVar( const QString& variableName );
 
     // All functions that where previously in the main file are now
@@ -125,7 +132,8 @@ class SERVER_EXPORT QgsServer
     static bool sInitialised;
     static bool sCaptureOutput;
 
-    /** Pass important environment variables to the fcgi processes*/
+    /**
+     * Pass important environment variables to the fcgi processes*/
     QHash< QString, QString > mEnvironmentVariables;
 };
 #endif // QGSSERVER_H

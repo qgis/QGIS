@@ -5,7 +5,8 @@
 #include <QPair>
 #include <QStack>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsRuntimeProfiler
  */
 class CORE_EXPORT QgsRuntimeProfiler

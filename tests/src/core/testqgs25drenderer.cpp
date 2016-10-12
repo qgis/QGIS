@@ -34,7 +34,8 @@
 #include "qgscomposermap.h"
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for 25d renderer.
  */
 class TestQgs25DRenderer : public QObject

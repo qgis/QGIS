@@ -20,7 +20,8 @@
 
 #include "qgseditorconfigwidget.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsCheckBoxConfigDlg
  * \note not available in Python bindings
  */

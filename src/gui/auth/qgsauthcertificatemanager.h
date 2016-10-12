@@ -23,7 +23,8 @@
 #include <QDialog>
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wrapper widget to manage available certificate editors
  */
 class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertManager
@@ -43,7 +44,8 @@ class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertMan
 
 //////////////// Embed in dialog ///////////////////
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Dialog wrapper for widget to manage available certificate editors
  */
 class GUI_EXPORT QgsAuthCertManager : public QDialog
@@ -59,7 +61,8 @@ class GUI_EXPORT QgsAuthCertManager : public QDialog
 
     ~QgsAuthCertManager();
 
-    /** Get access to embedded editors widget */
+    /**
+     * Get access to embedded editors widget */
     QgsAuthCertEditors *certEditorsWidget() { return mCertEditors; }
 
   private:

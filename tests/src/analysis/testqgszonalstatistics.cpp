@@ -22,7 +22,8 @@
 #include "qgszonalstatistics.h"
 #include "qgsmaplayerregistry.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the zonal statistics class
  */
 class TestQgsZonalStatistics : public QObject

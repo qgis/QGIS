@@ -17,7 +17,8 @@
 
 #include <QLineEdit>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A line edit for capturing file names that can have files dropped onto
  * it via drag & drop.
  */

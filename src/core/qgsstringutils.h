@@ -24,7 +24,8 @@
 #define QGSSTRINGUTILS_H
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsStringReplacement
  * \brief A representation of a single string replacement.
  * \note Added in version 3.0
@@ -35,7 +36,8 @@ class CORE_EXPORT QgsStringReplacement
 
   public:
 
-    /** Constructor for QgsStringReplacement.
+    /**
+     * Constructor for QgsStringReplacement.
      * @param match string to match
      * @param replacement string to replace match with
      * @param caseSensitive set to true for a case sensitive match
@@ -58,7 +60,8 @@ class CORE_EXPORT QgsStringReplacement
     //! Returns true if match only applies to whole words, or false if partial word matches are permitted
     bool wholeWordOnly() const { return mWholeWordOnly; }
 
-    /** Processes a given input string, applying any valid replacements which should be made.
+    /**
+     * Processes a given input string, applying any valid replacements which should be made.
      * @param input input string
      * @returns input string with any matches replaced by replacement string
      */
@@ -72,12 +75,14 @@ class CORE_EXPORT QgsStringReplacement
              && mWholeWordOnly == other.mWholeWordOnly;
     }
 
-    /** Returns a map of the replacement properties.
+    /**
+     * Returns a map of the replacement properties.
      * @see fromProperties()
      */
     QgsStringMap properties() const;
 
-    /** Creates a new QgsStringReplacement from an encoded properties map.
+    /**
+     * Creates a new QgsStringReplacement from an encoded properties map.
      * @see properties()
      */
     static QgsStringReplacement fromProperties( const QgsStringMap& properties );
@@ -96,7 +101,8 @@ class CORE_EXPORT QgsStringReplacement
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsStringReplacementCollection
  * \brief A collection of string replacements (specified using QgsStringReplacement objects).
  * \note Added in version 3.0
@@ -107,19 +113,22 @@ class CORE_EXPORT QgsStringReplacementCollection
 
   public:
 
-    /** Constructor for QgsStringReplacementCollection
+    /**
+     * Constructor for QgsStringReplacementCollection
      * @param replacements initial list of string replacements
      */
     QgsStringReplacementCollection( const QList< QgsStringReplacement >& replacements = QList< QgsStringReplacement >() )
         : mReplacements( replacements )
     {}
 
-    /** Returns the list of string replacements in this collection.
+    /**
+     * Returns the list of string replacements in this collection.
      * @see setReplacements()
      */
     QList< QgsStringReplacement > replacements() const { return mReplacements; }
 
-    /** Sets the list of string replacements in this collection.
+    /**
+     * Sets the list of string replacements in this collection.
      * @param replacements list of string replacements to apply. Replacements are applied in the
      * order they are specified here.
      * @see replacements()
@@ -129,7 +138,8 @@ class CORE_EXPORT QgsStringReplacementCollection
       mReplacements = replacements;
     }
 
-    /** Processes a given input string, applying any valid replacements which should be made
+    /**
+     * Processes a given input string, applying any valid replacements which should be made
      * using QgsStringReplacement objects contained by this collection. Replacements
      * are made in order of the QgsStringReplacement objects contained in the collection.
      * @param input input string
@@ -137,14 +147,16 @@ class CORE_EXPORT QgsStringReplacementCollection
      */
     QString process( const QString& input ) const;
 
-    /** Writes the collection state to an XML element.
+    /**
+     * Writes the collection state to an XML element.
      * @param elem target DOM element
      * @param doc DOM document
      * @see readXml()
      */
     void writeXml( QDomElement& elem, QDomDocument& doc ) const;
 
-    /** Reads the collection state from an XML element.
+    /**
+     * Reads the collection state from an XML element.
      * @param elem DOM element
      * @see writeXml()
      */
@@ -157,7 +169,8 @@ class CORE_EXPORT QgsStringReplacementCollection
 
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsStringUtils
  * \brief Utility functions for working with strings.
  * \note Added in version 2.11
@@ -176,7 +189,8 @@ class CORE_EXPORT QgsStringUtils
       ForceFirstLetterToCapital = QFont::Capitalize, //!< Convert just the first letter of each word to uppercase, leave the rest untouched
     };
 
-    /** Converts a string by applying capitalization rules to the string.
+    /**
+     * Converts a string by applying capitalization rules to the string.
      * @param string input string
      * @param capitalization capitalization type to apply
      * @return capitalized string
@@ -184,7 +198,8 @@ class CORE_EXPORT QgsStringUtils
      */
     static QString capitalize( const QString& string, Capitalization capitalization );
 
-    /** Returns the Levenshtein edit distance between two strings. This equates to the minimum
+    /**
+     * Returns the Levenshtein edit distance between two strings. This equates to the minimum
      * number of character edits (insertions, deletions or substitutions) required to change
      * one string to another.
      * @param string1 first string
@@ -194,7 +209,8 @@ class CORE_EXPORT QgsStringUtils
      */
     static int levenshteinDistance( const QString &string1, const QString &string2, bool caseSensitive = false );
 
-    /** Returns the longest common substring between two strings. This substring is the longest
+    /**
+     * Returns the longest common substring between two strings. This substring is the longest
      * string that is a substring of the two input strings. Eg, the longest common substring
      * of "ABABC" and "BABCA" is "ABC".
      * @param string1 first string
@@ -204,7 +220,8 @@ class CORE_EXPORT QgsStringUtils
      */
     static QString longestCommonSubstring( const QString &string1, const QString &string2, bool caseSensitive = false );
 
-    /** Returns the Hamming distance between two strings. This equates to the number of characters at
+    /**
+     * Returns the Hamming distance between two strings. This equates to the number of characters at
      * corresponding positions within the input strings where the characters are different. The input
      * strings must be the same length.
      * @param string1 first string
@@ -214,14 +231,16 @@ class CORE_EXPORT QgsStringUtils
      */
     static int hammingDistance( const QString &string1, const QString &string2, bool caseSensitive = false );
 
-    /** Returns the Soundex representation of a string. Soundex is a phonetic matching algorithm,
+    /**
+     * Returns the Soundex representation of a string. Soundex is a phonetic matching algorithm,
      * so strings with similar sounds should be represented by the same Soundex code.
      * @param string input string
      * @returns 4 letter Soundex code
      */
     static QString soundex( const QString &string );
 
-    /** Returns a string with any URL (eg http(s)/ftp) and mailto: text converted to valid HTML <a ...>
+    /**
+     * Returns a string with any URL (eg http(s)/ftp) and mailto: text converted to valid HTML <a ...>
      * links.
      * @param string string to insert links into
      * @param foundLinks if specified, will be set to true if any links were inserted into the string

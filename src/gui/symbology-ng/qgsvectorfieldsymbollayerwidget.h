@@ -20,7 +20,8 @@
 
 class QgsVectorFieldSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsVectorFieldSymbolLayerWidget
  */
 class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::WidgetVectorFieldBase

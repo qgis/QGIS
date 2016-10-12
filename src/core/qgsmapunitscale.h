@@ -21,7 +21,8 @@
 #include <QtCore>
 #include "qgsrendercontext.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMapUnitScale
  * \brief Struct for storing maximum and minimum scales for measurements in map units
  *
@@ -34,7 +35,8 @@ class CORE_EXPORT QgsMapUnitScale
 {
   public:
 
-    /** Constructor for QgsMapUnitScale
+    /**
+     * Constructor for QgsMapUnitScale
      * @param minScale minimum allowed scale, or 0.0 if no minimum scale set
      * @param maxScale maximum allowed scale, or 0.0 if no maximum scale set
      */
@@ -47,21 +49,28 @@ class CORE_EXPORT QgsMapUnitScale
         , maxSizeMM( 0.0 )
     {}
 
-    /** The minimum scale, or 0.0 if unset */
+    /**
+     * The minimum scale, or 0.0 if unset */
     double minScale;
-    /** The maximum scale, or 0.0 if unset */
+    /**
+     * The maximum scale, or 0.0 if unset */
     double maxScale;
 
-    /** Whether the minimum size in mm should be respected */
+    /**
+     * Whether the minimum size in mm should be respected */
     bool minSizeMMEnabled;
-    /** The minimum size in millimeters, or 0.0 if unset */
+    /**
+     * The minimum size in millimeters, or 0.0 if unset */
     double minSizeMM;
-    /** Whether the maximum size in mm should be respected */
+    /**
+     * Whether the maximum size in mm should be respected */
     bool maxSizeMMEnabled;
-    /** The maximum size in millimeters, or 0.0 if unset */
+    /**
+     * The maximum size in millimeters, or 0.0 if unset */
     double maxSizeMM;
 
-    /** Computes a map units per pixel scaling factor, respecting the minimum and maximum scales
+    /**
+     * Computes a map units per pixel scaling factor, respecting the minimum and maximum scales
      * set for the object.
      * @param c render context
      * @returns map units per pixel, limited between minimum and maximum scales

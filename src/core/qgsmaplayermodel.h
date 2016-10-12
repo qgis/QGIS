@@ -23,7 +23,8 @@
 class QgsMapLayer;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * @brief The QgsMapLayerModel class is a model to display layers in widgets.
  * @see QgsMapLayerProxyModel to sort and/filter the layers
  * @see QgsFieldModel to combine in with a field selector.

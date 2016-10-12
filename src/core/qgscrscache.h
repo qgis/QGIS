@@ -24,7 +24,8 @@
 
 class QgsCoordinateTransform;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Cache coordinate transform by authid of source/dest transformation to avoid the
 overhead of initialization for each redraw*/
 class CORE_EXPORT QgsCoordinateTransformCache
@@ -34,7 +35,8 @@ class CORE_EXPORT QgsCoordinateTransformCache
 
     ~QgsCoordinateTransformCache();
 
-    /** Returns coordinate transformation. Cache keeps ownership
+    /**
+     * Returns coordinate transformation. Cache keeps ownership
         @param srcAuthId auth id string of source crs
         @param destAuthId auth id string of dest crs
         @param srcDatumTransform id of source's datum transform
@@ -43,7 +45,8 @@ class CORE_EXPORT QgsCoordinateTransformCache
      */
     QgsCoordinateTransform transform( const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
 
-    /** Removes transformations where a changed crs is involved from the cache*/
+    /**
+     * Removes transformations where a changed crs is involved from the cache*/
     void invalidateCrs( const QString& crsAuthId );
 
   private:

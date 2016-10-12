@@ -33,7 +33,8 @@ class QgsRectangle;
 class QgsMapRendererQImageJob;
 #include "qgsmapsettings.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A widget that displays an overview map.
  */
 class GUI_EXPORT QgsMapOverviewCanvas : public QWidget

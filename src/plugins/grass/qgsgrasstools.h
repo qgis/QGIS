@@ -31,7 +31,8 @@ class QgsMapCanvas;
 class QgsGrassRegion;
 class QgsGrassToolsTreeFilterProxyModel;
 
-/** \class QgsGrassTools
+/**
+ * \class QgsGrassTools
  *  \brief Interface to GRASS modules.
  *
  */

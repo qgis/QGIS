@@ -44,7 +44,8 @@ namespace pal
   class RTFileStream;  // File I/O helper class, look below for implementation and notes.
 
 
-  /** \ingroup core
+  /**
+   * \ingroup core
      Implementation of RTree, a multidimensional bounding rectangle tree.
      Example usage: For a 3-dimensional tree use RTree<Object*, float, 3> myTree;
 
@@ -123,7 +124,8 @@ namespace pal
       /// Save tree contents to stream
       bool Save( RTFileStream& a_stream );
 
-      /** \ingroup core
+      /**
+       * \ingroup core
        * Iterator is not remove safe.
        */
       class Iterator
@@ -363,7 +365,8 @@ namespace pal
 
   // Because there is not stream support, this is a quick and dirty file I/O helper.
   // Users will likely replace its usage with a Stream implementation from their favorite API.
-  /** \ingroup core
+  /**
+   * \ingroup core
    */
   class RTFileStream
   {

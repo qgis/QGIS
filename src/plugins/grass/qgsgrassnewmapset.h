@@ -30,7 +30,8 @@ extern "C"
 }
 
 
-/** \class QgsGrassNewMapset
+/**
+ * \class QgsGrassNewMapset
  *  \brief GRASS vector edit.
  *
  */

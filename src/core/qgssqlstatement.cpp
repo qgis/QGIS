@@ -189,7 +189,8 @@ void QgsSQLStatement::RecursiveVisitor::visit( const QgsSQLStatement::NodeJoin& 
     expr->accept( *this );
 }
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Internal use.
  *  @note not available in Python bindings
  */

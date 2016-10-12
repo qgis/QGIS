@@ -21,7 +21,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgshistogram.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for QgsHistogram
  */
 class TestQgsHistogram : public QObject

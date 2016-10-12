@@ -27,7 +27,8 @@ class QgsStyle;
 
 class QMenu;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSymbolsListWidget
  */
 class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListWidget, private QgsExpressionContextGenerator
@@ -40,20 +41,23 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     //! Destructor
     virtual ~QgsSymbolsListWidget();
 
-    /** Sets the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+    /**
+     * Sets the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
      * @param context symbol widget context
      * @see context()
      * @note added in QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext& context );
 
-    /** Returns the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+    /**
+     * Returns the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
      * @see setContext()
      * @note added in QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
 
-    /** Returns the vector layer associated with the widget.
+    /**
+     * Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
     const QgsVectorLayer* layer() const { return mLayer; }
@@ -97,9 +101,11 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void updateSymbolColor();
     void updateSymbolInfo();
 
-    /** Displays alpha value as transparency in mTransparencyLabel*/
+    /**
+     * Displays alpha value as transparency in mTransparencyLabel*/
     void displayTransparency( double alpha );
-    /** Recursive function to create the group tree in the widget */
+    /**
+     * Recursive function to create the group tree in the widget */
     void populateGroups( const QString& parent = "", const QString& prepend = "" );
 
     QgsSymbolWidgetContext mContext;

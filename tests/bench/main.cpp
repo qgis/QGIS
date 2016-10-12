@@ -61,7 +61,8 @@ typedef SInt32 SRefCon;
 #include "qgslogger.h"
 
 
-/** Print usage text
+/**
+ * Print usage text
  */
 void usage( std::string const & appName )
 {

@@ -31,7 +31,8 @@ class QgsRenderContext;
 class QgsGeometry;
 class QgsRuleBasedLabelProvider;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * @class QgsRuleBasedLabeling
  * @note not available in Python bindings
  * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
@@ -317,7 +318,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * @class QgsRuleBasedLabelProvider
  * @note not available in Python bindings
  * @note this class is not a part of public API yet. See notes in QgsLabelingEngine

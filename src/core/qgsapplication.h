@@ -22,7 +22,8 @@
 #include <qgis.h>
 #include <qgsconfig.h>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
  * as theme paths, database paths etc.
  */
@@ -41,7 +42,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath = QString(), const QString& platformName = "desktop" );
     virtual ~QgsApplication();
 
-    /** This method initialises paths etc for QGIS. Called by the ctor or call it manually
+    /**
+     * This method initialises paths etc for QGIS. Called by the ctor or call it manually
         when your app does not extend the QApplication class.
         @note you will probably want to call initQgis too to load the providers in
         the above case.
@@ -58,7 +60,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Set the FileOpen event receiver
     static void setFileOpenEventReceiver( QObject * receiver );
 
-    /** Set the active theme to the specified theme.
+    /**
+     * Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
      * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
      * but plugin writers etc can use themeName() as a basis for searching
@@ -69,7 +72,8 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static void setThemeName( const QString &theThemeName );
 
-    /** Set the active theme to the specified theme.
+    /**
+     * Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
      * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
      * but plugin writers etc can use this method as a basis for searching
@@ -97,21 +101,25 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to the authors file.
     static QString authorsFilePath();
 
-    /** Returns the path to the contributors file.
+    /**
+     * Returns the path to the contributors file.
      * Contributors are people who have submitted patches
      * but don't have commit access. */
     static QString contributorsFilePath();
 
-    /** Returns the path to the developers map file.
+    /**
+     * Returns the path to the developers map file.
      * The developers map was created by using leaflet framework,
      * it shows the doc/contributors.json file.
      * @note this function was added in version 2.7 */
     static QString developersMapFilePath();
 
-    /** Returns the path to the sponsors file. */
+    /**
+     * Returns the path to the sponsors file. */
     static QString sponsorsFilePath();
 
-    /** Returns the path to the donors file. */
+    /**
+     * Returns the path to the donors file. */
     static QString donorsFilePath();
 
     /**
@@ -193,25 +201,29 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the short name regular expression for line edit validator
     static QRegExp shortNameRegExp();
 
-    /** Returns the user's operating system login account name.
+    /**
+     * Returns the user's operating system login account name.
      * @note added in QGIS 2.14
      * @see userFullName()
      */
     static QString userLoginName();
 
-    /** Returns the user's operating system login account full display name.
+    /**
+     * Returns the user's operating system login account full display name.
      * @note added in QGIS 2.14
      * @see userLoginName()
      */
     static QString userFullName();
 
-    /** Returns a string name of the operating system QGIS is running on.
+    /**
+     * Returns a string name of the operating system QGIS is running on.
      * @note added in QGIS 2.14
      * @see platform()
      */
     static QString osName();
 
-    /** Returns the QGIS platform name, eg "desktop" or "server".
+    /**
+     * Returns the QGIS platform name, eg "desktop" or "server".
      * @note added in QGIS 2.14
      * @see osName()
      */
@@ -262,7 +274,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! get application icon
     static QString appIconPath();
 
-    /** Constants for endian-ness */
+    /**
+     * Constants for endian-ness */
     enum endian_t
     {
       XDR = 0,  // network, or big-endian, byte order
@@ -272,7 +285,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns whether this machine uses big or little endian
     static endian_t endian();
 
-    /** Swap the endianness of the specified value.
+    /**
+     * Swap the endianness of the specified value.
      * @note not available in Python bindings
      */
     template<typename T>
@@ -286,7 +300,8 @@ class CORE_EXPORT QgsApplication : public QApplication
       }
     }
 
-    /** \brief get a standard css style sheet for reports.
+    /**
+     * \brief get a standard css style sheet for reports.
      * Typically you will use this method by doing:
      * QString myStyle = QgsApplication::reportStyleSheet();
      * textBrowserReport->document()->setDefaultStyleSheet(myStyle);
@@ -296,11 +311,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QString reportStyleSheet();
 
-    /** Convenience function to get a summary of the paths used in this
+    /**
+     * Convenience function to get a summary of the paths used in this
      * application instance useful for debugging mainly.*/
     static QString showSettings();
 
-    /** Register OGR drivers ensuring this only happens once.
+    /**
+     * Register OGR drivers ensuring this only happens once.
      * This is a workaround for an issue with older gdal versions that
      * caused duplicate driver name entries to appear in the list
      * of registered drivers when QgsApplication::registerOgrDrivers was called multiple
@@ -308,49 +325,60 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static void registerOgrDrivers();
 
-    /** Converts absolute path to path relative to target */
+    /**
+     * Converts absolute path to path relative to target */
     static QString absolutePathToRelativePath( const QString& apath, const QString& targetPath );
-    /** Converts path relative to target to an absolute path */
+    /**
+     * Converts path relative to target to an absolute path */
     static QString relativePathToAbsolutePath( const QString& rpath, const QString& targetPath );
 
-    /** Indicates whether running from build directory (not installed) */
+    /**
+     * Indicates whether running from build directory (not installed) */
     static bool isRunningFromBuildDir() { return ABISYM( mRunningFromBuildDir ); }
 #ifdef _MSC_VER
     static QString cfgIntDir() { return ABISYM( mCfgIntDir ); }
 #endif
-    /** Returns path to the source directory. Valid only when running from build directory */
+    /**
+     * Returns path to the source directory. Valid only when running from build directory */
     static QString buildSourcePath() { return ABISYM( mBuildSourcePath ); }
-    /** Returns path to the build output directory. Valid only when running from build directory */
+    /**
+     * Returns path to the build output directory. Valid only when running from build directory */
     static QString buildOutputPath() { return ABISYM( mBuildOutputPath ); }
 
-    /** Sets the GDAL_SKIP environment variable to include the specified driver
+    /**
+     * Sets the GDAL_SKIP environment variable to include the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      */
     static void skipGdalDriver( const QString& theDriver );
 
-    /** Sets the GDAL_SKIP environment variable to exclude the specified driver
+    /**
+     * Sets the GDAL_SKIP environment variable to exclude the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      */
     static void restoreGdalDriver( const QString& theDriver );
 
-    /** Returns the list of gdal drivers that should be skipped (based on
+    /**
+     * Returns the list of gdal drivers that should be skipped (based on
      * GDAL_SKIP environment variable)
      */
     static QStringList skippedGdalDrivers() { return ABISYM( mGdalSkipList ); }
 
-    /** Apply the skipped drivers list to gdal
+    /**
+     * Apply the skipped drivers list to gdal
      * @see skipGdalDriver
      * @see restoreGdalDriver
      * @see skippedGdalDrivers */
     static void applyGdalSkippedDrivers();
 
-    /** Get maximum concurrent thread count
+    /**
+     * Get maximum concurrent thread count
      * @note added in 2.4 */
     static int maxThreads() { return ABISYM( mMaxThreads ); }
 
-    /** Set maximum concurrent thread count
+    /**
+     * Set maximum concurrent thread count
      * @note must be between 1 and \#cores, -1 means use all available cores
      * @note added in 2.4 */
     static void setMaxThreads( int maxThreads );
@@ -366,7 +394,8 @@ class CORE_EXPORT QgsApplication : public QApplication
 
   public slots:
 
-    /** Causes the application instance to emit the settingsChanged() signal. This should
+    /**
+     * Causes the application instance to emit the settingsChanged() signal. This should
      * be called whenever global, application-wide settings are altered to advise listeners
      * that they may need to update their state.
      * @see settingsChanged()
@@ -378,7 +407,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! @note not available in python bindings
     void preNotify( QObject * receiver, QEvent * event, bool * done );
 
-    /** Emitted whenever any global, application-wide settings are changed.
+    /**
+     * Emitted whenever any global, application-wide settings are changed.
      * @note added in QGIS 3.0
      * @see emitSettingsChanged()
      */
@@ -401,17 +431,22 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     static QString ABISYM( mConfigPath );
 
-    /** True when running from build directory, i.e. without 'make install' */
+    /**
+     * True when running from build directory, i.e. without 'make install' */
     static bool ABISYM( mRunningFromBuildDir );
-    /** Path to the source directory. valid only when running from build directory. */
+    /**
+     * Path to the source directory. valid only when running from build directory. */
     static QString ABISYM( mBuildSourcePath );
 #ifdef _MSC_VER
-    /** Configuration internal dir */
+    /**
+     * Configuration internal dir */
     static QString ABISYM( mCfgIntDir );
 #endif
-    /** Path to the output directory of the build. valid only when running from build directory */
+    /**
+     * Path to the output directory of the build. valid only when running from build directory */
     static QString ABISYM( mBuildOutputPath );
-    /** List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
+    /**
+     * List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
      * @see skipGdalDriver, restoreGdalDriver */
     static QStringList ABISYM( mGdalSkipList );
     /**

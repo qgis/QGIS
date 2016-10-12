@@ -31,7 +31,8 @@ class QgsRasterRendererWidget;
 typedef QgsRasterRenderer*( *QgsRasterRendererCreateFunc )( const QDomElement&, QgsRasterInterface* input );
 typedef QgsRasterRendererWidget*( *QgsRasterRendererWidgetCreateFunc )( QgsRasterLayer*, const QgsRectangle &extent );
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Registry for raster renderer entries.
   */
 struct CORE_EXPORT QgsRasterRendererRegistryEntry
@@ -46,7 +47,8 @@ struct CORE_EXPORT QgsRasterRendererRegistryEntry
   QgsRasterRendererWidgetCreateFunc widgetCreateFunction; //pointer to create function for renderer widget
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Registry for raster renderers.
   * \note not available in Python bindings
   */
@@ -61,7 +63,8 @@ class CORE_EXPORT QgsRasterRendererRegistry
     QStringList renderersList() const;
     QList< QgsRasterRendererRegistryEntry > entries() const;
 
-    /** Creates a default renderer for a raster drawing style (considering user options such as default contrast enhancement).
+    /**
+     * Creates a default renderer for a raster drawing style (considering user options such as default contrast enhancement).
         Caller takes ownership*/
     QgsRasterRenderer* defaultRendererForDrawingStyle( QgsRaster::DrawingStyle theDrawingStyle, QgsRasterDataProvider* provider ) const;
 

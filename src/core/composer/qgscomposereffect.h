@@ -21,7 +21,8 @@
 #include <QGraphicsEffect>
 #include <QPainter>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsComposerEffect
  */
 class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
@@ -35,7 +36,8 @@ class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
     void setCompositionMode( QPainter::CompositionMode compositionMode );
 
   protected:
-    /** Called whenever source needs to be drawn */
+    /**
+     * Called whenever source needs to be drawn */
     virtual void draw( QPainter *painter ) override;
 
   private:

@@ -25,7 +25,8 @@
 
 class QPushButton;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A generic dialog for requesting credentials
  */
 class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, private Ui_QgsCredentialDialog

@@ -20,7 +20,8 @@
 #include <QFile>
 #include <QString>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Funtions for hashing/checking master password and encrypt/decrypting data with password
  * \since 2.8
  * \note not available in Python bindings
@@ -29,22 +30,27 @@ class CORE_EXPORT QgsAuthCrypto
 {
 
   public:
-    /** Whether QCA has the qca-ossl plugin, which a base run-time requirement */
+    /**
+     * Whether QCA has the qca-ossl plugin, which a base run-time requirement */
     static bool isDisabled();
 
-    /** Encrypt data using master password */
+    /**
+     * Encrypt data using master password */
     static const QString encrypt( const QString& pass, const QString& cipheriv, const QString& text );
 
-    /** Decrypt data using master password */
+    /**
+     * Decrypt data using master password */
     static const QString decrypt( const QString& pass, const QString& cipheriv, const QString& text );
 
-    /** Generate SHA256 hash for master password, with iterations and salt */
+    /**
+     * Generate SHA256 hash for master password, with iterations and salt */
     static void passwordKeyHash( const QString &pass,
                                  QString *salt,
                                  QString *hash,
                                  QString *cipheriv = nullptr );
 
-    /** Verify existing master password hash to a re-generated one */
+    /**
+     * Verify existing master password hash to a re-generated one */
     static bool verifyPasswordKeyHash( const QString& pass,
                                        const QString& salt,
                                        const QString& hash,

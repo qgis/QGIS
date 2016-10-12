@@ -26,7 +26,8 @@
 class QgsCachedFeatureIterator;
 class QgsAbstractCacheIndex;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class caches features of a given QgsVectorLayer.
  *
  * @brief

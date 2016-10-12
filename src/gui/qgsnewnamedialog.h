@@ -22,7 +22,8 @@ class QLineEdit;
 
 #include "qgsdialog.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * New name, for example new layer name dialog. If existing names are provided,
  * the dialog warns users if an entered name already exists.
  * @note added in 2.10
@@ -31,7 +32,8 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
 {
     Q_OBJECT
   public:
-    /** New dialog constructor.
+    /**
+     * New dialog constructor.
      * @param source original data source name, e.g. original layer name of the layer to be copied
      * @param initial initial name
      * @param extensions base name extensions, e.g. raster base name band extensions or vector layer type extensions
@@ -46,7 +48,8 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
                       const QRegExp& regexp = QRegExp(), Qt::CaseSensitivity cs = Qt::CaseSensitive,
                       QWidget *parent = nullptr, Qt::WindowFlags flags = QgisGui::ModalDialogFlags );
 
-    /** Sets the hint string for the dialog (the text shown above the name
+    /**
+     * Sets the hint string for the dialog (the text shown above the name
      * input box).
      * @param hintString hint text
      * @see hintString()
@@ -54,14 +57,16 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      */
     void setHintString( const QString& hintString );
 
-    /** Returns the hint string for the dialog (the text shown above the name
+    /**
+     * Returns the hint string for the dialog (the text shown above the name
      * input box).
      * @see setHintString()
      * @note added in QGIS 2.12
      */
     QString hintString() const;
 
-    /** Sets whether users are permitted to overwrite existing names. If true, then
+    /**
+     * Sets whether users are permitted to overwrite existing names. If true, then
      * the dialog will reflect that the new name will overwrite an existing name. If false,
      * then the dialog will not accept names which already exist.
      * @note added in QGIS 2.12
@@ -69,31 +74,36 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      */
     void setOverwriteEnabled( bool enabled );
 
-    /** Returns whether users are permitted to overwrite existing names.
+    /**
+     * Returns whether users are permitted to overwrite existing names.
      * @note added in QGIS 2.12
      * @see setOverwriteEnabled()
      */
     bool overwriteEnabled() const { return mOverwriteEnabled; }
 
-    /** Sets the string used for warning users if a conflicting name exists.
+    /**
+     * Sets the string used for warning users if a conflicting name exists.
      * @param string warning string. If empty a default warning string will be used.
      * @note added in QGIS 2.12
      * @see conflictingNameWarning()
      */
     void setConflictingNameWarning( const QString& string );
 
-    /** Returns the string used for warning users if a conflicting name exists.
+    /**
+     * Returns the string used for warning users if a conflicting name exists.
      * @note added in QGIS 2.12
      * @see setConflictingNameWarning()
      */
     QString conflictingNameWarning() const { return mConflictingNameWarning; }
 
-    /** Name entered by user.
+    /**
+     * Name entered by user.
      * @return new name
      */
     QString name() const;
 
-    /** Test if name or name with at least one extension exists.
+    /**
+     * Test if name or name with at least one extension exists.
      * @param name name or base name
      * @param extensions base name extensions
      * @param existing existing names

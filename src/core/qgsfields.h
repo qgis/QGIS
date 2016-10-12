@@ -24,7 +24,8 @@
  * See details in QEP #17
  ****************************************************************************/
 
-/** \class QgsFields
+/**
+ * \class QgsFields
  * \ingroup core
  * Container of fields for a vector layer.
  *
@@ -68,15 +69,18 @@ class CORE_EXPORT QgsFields
       int originIndex;     //!< index specific to the origin
     } Field;
 
-    /** Constructor for an empty field container
+    /**
+     * Constructor for an empty field container
      */
     QgsFields();
 
-    /** Copy constructor
+    /**
+     * Copy constructor
      */
     QgsFields( const QgsFields& other );
 
-    /** Assignment operator
+    /**
+     * Assignment operator
      */
     QgsFields& operator =( const QgsFields& other );
 
@@ -173,7 +177,8 @@ class CORE_EXPORT QgsFields
     bool operator==( const QgsFields& other ) const;
     //! @note added in 2.6
     bool operator!=( const QgsFields& other ) const { return !( *this == other ); }
-    /** Returns an icon corresponding to a field index, based on the field's type and source
+    /**
+     * Returns an icon corresponding to a field index, based on the field's type and source
      * @note added in QGIS 2.14
      */
     QIcon iconForField( int fieldIdx ) const;
@@ -320,9 +325,11 @@ class CORE_EXPORT QgsFields
 
 Q_DECLARE_METATYPE( QgsFields )
 
-/** Writes the fields to stream out. QGIS version compatibility is not guaranteed. */
+/**
+ * Writes the fields to stream out. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsFields& fields );
-/** Reads fields from stream in into fields. QGIS version compatibility is not guaranteed. */
+/**
+ * Reads fields from stream in into fields. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsFields& fields );
 
 #endif // QGSFIELDS_H

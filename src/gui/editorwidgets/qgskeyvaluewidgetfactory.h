@@ -18,7 +18,8 @@
 
 #include "qgseditorwidgetfactory.h"
 
-/** @ingroup gui
+/**
+ * @ingroup gui
  * Factory for widgets for editing a QVariantMap
  * @note added in QGIS 3.0
  * @note not available in Python bindings

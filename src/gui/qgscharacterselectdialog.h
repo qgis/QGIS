@@ -24,7 +24,8 @@
 
 class CharacterWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A dialog for selecting a single character from a single font
   */
 

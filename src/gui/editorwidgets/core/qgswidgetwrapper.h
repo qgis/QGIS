@@ -25,7 +25,8 @@ class QgsVectorLayer;
 #include "qgseditorwidgetconfig.h"
 #include "qgsattributeeditorcontext.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Manages an editor widget
  * Widget and wrapper share the same parent
  *

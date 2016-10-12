@@ -25,7 +25,8 @@ class QgsFilterLineEdit;
 
 #include <QWidget>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * @brief The QgsFileWidget class creates a widget for selecting a file or a folder.
  */
 class GUI_EXPORT QgsFileWidget : public QWidget

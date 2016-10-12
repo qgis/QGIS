@@ -26,7 +26,8 @@ class QgsMapLayerAction;
 class QgsVectorLayer;
 class QgsActionManager;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This class is a menu that is populated automatically with the actions defined for a given layer.
  */
 

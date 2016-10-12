@@ -12,7 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/** QGIS - Plugin API
+/**
+ * QGIS - Plugin API
  *
  *  \section about  About QGis Plugins
  * Plugins provide additional functionality to QGis. Plugins must
@@ -41,7 +42,8 @@ class QgisInterface;
 
 //#include "qgisplugingui.h"
 
-/** \ingroup plugins
+/**
+ * \ingroup plugins
  * \class QgisPlugin
  * \brief Abstract base class from which all plugins must inherit
  * \note not available in Python bindings

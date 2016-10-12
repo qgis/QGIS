@@ -24,7 +24,8 @@
 class QDomDocument;
 class QDomNode;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Simple key-value store (keys = strings, values = variants) that supports loading/saving to/from XML
  * in \verbatim <customproperties> \endverbatim element.
  *
@@ -48,13 +49,15 @@ class CORE_EXPORT QgsObjectCustomProperties
     void remove( const QString& key );
 
 
-    /** Read store contents from XML
+    /**
+     * Read store contents from XML
       @param parentNode node to read from
       @param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)
      */
     void readXml( const QDomNode& parentNode, const QString& keyStartsWith = QString() );
 
-    /** Write store contents to XML */
+    /**
+     * Write store contents to XML */
     void writeXml( QDomNode& parentNode, QDomDocument& doc ) const;
 
 

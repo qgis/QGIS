@@ -432,7 +432,8 @@ bool QgsPropertyKey::writeXml( QString const &nodeName, QDomElement & element, Q
 
 
 
-/** Return keys that do not contain other keys
+/**
+ * Return keys that do not contain other keys
  */
 void QgsPropertyKey::entryList( QStringList & entries ) const
 {

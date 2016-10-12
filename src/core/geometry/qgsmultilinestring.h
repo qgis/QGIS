@@ -18,7 +18,8 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsmulticurve.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMultiLineString
  * \brief Multi line string geometry collection.
  * \note added in QGIS 2.10
@@ -40,10 +41,12 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
 
-    /** Adds a geometry and takes ownership. Returns true in case of success*/
+    /**
+     * Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometry* g ) override;
 
-    /** Returns the geometry converted to the more generic curve type QgsMultiCurve
+    /**
+     * Returns the geometry converted to the more generic curve type QgsMultiCurve
     @return the converted geometry. Caller takes ownership*/
     QgsAbstractGeometry* toCurveType() const override;
 

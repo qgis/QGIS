@@ -51,7 +51,8 @@ typedef QList< QPair<QString, QgsSymbol*> > QgsLegendSymbolList;
 ////////
 // symbol levels
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSymbolLevelItem
  */
 class CORE_EXPORT QgsSymbolLevelItem
@@ -78,7 +79,8 @@ typedef QList< QgsSymbolLevel > QgsSymbolLevelOrder;
 //////////////
 // renderers
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsFeatureRenderer
  */
 class CORE_EXPORT QgsFeatureRenderer
@@ -91,7 +93,8 @@ class CORE_EXPORT QgsFeatureRenderer
 
     QString type() const { return mType; }
 
-    /** To be overridden
+    /**
+     * To be overridden
      *
      * Must be called between startRender() and stopRender() calls.
      * @param feature feature
@@ -208,7 +211,8 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     virtual Capabilities capabilities() { return 0; }
 
-    /** Returns list of symbols used by the renderer.
+    /**
+     * Returns list of symbols used by the renderer.
      * @param context render context
      * @note added in QGIS 2.12
      */
@@ -227,7 +231,8 @@ class CORE_EXPORT QgsFeatureRenderer
     //! @note added in 2.8
     virtual QDomElement writeSld( QDomDocument& doc, const QString& styleName, QgsStringMap props = QgsStringMap() ) const;
 
-    /** Create a new renderer according to the information contained in
+    /**
+     * Create a new renderer according to the information contained in
      * the UserStyle element of a SLD style document
      * @param node the node in the SLD document whose the UserStyle element
      * is a child
@@ -261,7 +266,8 @@ class CORE_EXPORT QgsFeatureRenderer
     //! @note added in 2.5
     virtual void checkLegendSymbolItem( const QString& key, bool state = true );
 
-    /** Sets the symbol to be used for a legend symbol item.
+    /**
+     * Sets the symbol to be used for a legend symbol item.
      * @param key rule key for legend symbol
      * @param symbol new symbol for legend item. Ownership is transferred to renderer.
      * @note added in QGIS 2.14
@@ -284,27 +290,31 @@ class CORE_EXPORT QgsFeatureRenderer
     //! set type and size of editing vertex markers for subsequent rendering
     void setVertexMarkerAppearance( int type, int size );
 
-    /** Returns whether the renderer will render a feature or not.
+    /**
+     * Returns whether the renderer will render a feature or not.
      * Must be called between startRender() and stopRender() calls.
      * Default implementation uses symbolForFeature().
      * @note added in QGIS 2.12
      */
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context );
 
-    /** Returns list of symbols used for rendering the feature.
+    /**
+     * Returns list of symbols used for rendering the feature.
      * For renderers that do not support MoreSymbolsPerFeature it is more efficient
      * to use symbolForFeature()
      * @note added in QGIS 2.12
      */
     virtual QgsSymbolList symbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
 
-    /** Equivalent of originalSymbolsForFeature() call
+    /**
+     * Equivalent of originalSymbolsForFeature() call
      * extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
      * @note added in 2.12
      */
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
 
-    /** Allows for a renderer to modify the extent of a feature request prior to rendering
+    /**
+     * Allows for a renderer to modify the extent of a feature request prior to rendering
      * @param extent reference to request's filter extent. Modify extent to change the
      * extent of feature request
      * @param context render context
@@ -312,27 +322,31 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     virtual void modifyRequestExtent( QgsRectangle& extent, QgsRenderContext& context ) { Q_UNUSED( extent ); Q_UNUSED( context ); }
 
-    /** Returns the current paint effect for the renderer.
+    /**
+     * Returns the current paint effect for the renderer.
      * @returns paint effect
      * @note added in QGIS 2.9
      * @see setPaintEffect
      */
     QgsPaintEffect* paintEffect() const;
 
-    /** Sets the current paint effect for the renderer.
+    /**
+     * Sets the current paint effect for the renderer.
      * @param effect paint effect. Ownership is transferred to the renderer.
      * @note added in QGIS 2.9
      * @see paintEffect
      */
     void setPaintEffect( QgsPaintEffect* effect );
 
-    /** Returns whether the renderer must render as a raster.
+    /**
+     * Returns whether the renderer must render as a raster.
      * @note added in QGIS 2.12
      * @see setForceRasterRender
      */
     bool forceRasterRender() const { return mForceRaster; }
 
-    /** Sets whether the renderer should be rendered to a raster destination.
+    /**
+     * Sets whether the renderer should be rendered to a raster destination.
      * @param forceRaster set to true if renderer must be drawn on a raster surface.
      * This may be desirable for highly detailed layers where rendering as a vector
      * would result in a large, complex vector output.
@@ -374,7 +388,8 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     void setOrderByEnabled( bool enabled );
 
-    /** Sets an embedded renderer (subrenderer) for this feature renderer. The base class implementation
+    /**
+     * Sets an embedded renderer (subrenderer) for this feature renderer. The base class implementation
      * does nothing with subrenderers, but individual derived classes can use these to modify their behaviour.
      * @param subRenderer the embedded renderer. Ownership will be transferred.
      * @see embeddedRenderer()
@@ -382,7 +397,8 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     virtual void setEmbeddedRenderer( QgsFeatureRenderer* subRenderer ) { delete subRenderer; }
 
-    /** Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
+    /**
+     * Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
      * implementation does not use subrenderers and will always return null.
      * @see setEmbeddedRenderer()
      * @note added in QGIS 2.16
@@ -426,20 +442,24 @@ class CORE_EXPORT QgsFeatureRenderer
 
     bool mUsingSymbolLevels;
 
-    /** The current type of editing marker */
+    /**
+     * The current type of editing marker */
     int mCurrentVertexMarkerType;
-    /** The current size of editing marker */
+    /**
+     * The current size of editing marker */
     int mCurrentVertexMarkerSize;
 
     QgsPaintEffect* mPaintEffect;
 
     bool mForceRaster;
 
-    /** @note this function is used to convert old sizeScale expresssions to symbol
+    /**
+     * @note this function is used to convert old sizeScale expresssions to symbol
      * level DataDefined size
      */
     static void convertSymbolSizeScale( QgsSymbol * symbol, QgsSymbol::ScaleMethod method, const QString & field );
-    /** @note this function is used to convert old rotations expresssions to symbol
+    /**
+     * @note this function is used to convert old rotations expresssions to symbol
      * level DataDefined angle
      */
     static void convertSymbolRotation( QgsSymbol * symbol, const QString & field );

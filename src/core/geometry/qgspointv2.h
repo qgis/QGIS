@@ -27,7 +27,8 @@
  * See details in QEP #17
  ****************************************************************************/
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsPointV2
  * \brief Point geometry type, with support for z-dimension and m-values.
  * \note added in QGIS 2.10
@@ -36,21 +37,25 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
 {
   public:
 
-    /** Construct a 2 dimensional point with an initial x and y coordinate.
+    /**
+     * Construct a 2 dimensional point with an initial x and y coordinate.
      * @param x x-coordinate of point
      * @param y y-coordinate of point
      */
     QgsPointV2( double x = 0.0, double y = 0.0 );
 
-    /** Construct a QgsPointV2 from a QgsPoint object
+    /**
+     * Construct a QgsPointV2 from a QgsPoint object
      */
     explicit QgsPointV2( const QgsPoint& p );
 
-    /** Construct a QgsPointV2 from a QPointF
+    /**
+     * Construct a QgsPointV2 from a QPointF
      */
     explicit QgsPointV2( QPointF p );
 
-    /** Construct a point with a specified type (eg PointZ, PointM) and initial x, y, z, and m values.
+    /**
+     * Construct a point with a specified type (eg PointZ, PointM) and initial x, y, z, and m values.
      * @param type point type
      * @param x x-coordinate of point
      * @param y y-coordinate of point
@@ -62,31 +67,36 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     bool operator==( const QgsPointV2& pt ) const;
     bool operator!=( const QgsPointV2& pt ) const;
 
-    /** Returns the point's x-coordinate.
+    /**
+     * Returns the point's x-coordinate.
      * @see setX()
      * @see rx()
      */
     double x() const { return mX; }
 
-    /** Returns the point's y-coordinate.
+    /**
+     * Returns the point's y-coordinate.
      * @see setY()
      * @see ry()
      */
     double y() const { return mY; }
 
-    /** Returns the point's z-coordinate.
+    /**
+     * Returns the point's z-coordinate.
      * @see setZ()
      * @see rz()
      */
     double z() const { return mZ; }
 
-    /** Returns the point's m value.
+    /**
+     * Returns the point's m value.
      * @see setM()
      * @see rm()
      */
     double m() const { return mM; }
 
-    /** Returns a reference to the x-coordinate of this point.
+    /**
+     * Returns a reference to the x-coordinate of this point.
      * Using a reference makes it possible to directly manipulate x in place.
      * @see x()
      * @see setX()
@@ -94,7 +104,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      */
     double &rx() { clearCache(); return mX; }
 
-    /** Returns a reference to the y-coordinate of this point.
+    /**
+     * Returns a reference to the y-coordinate of this point.
      * Using a reference makes it possible to directly manipulate y in place.
      * @see y()
      * @see setY()
@@ -102,7 +113,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      */
     double &ry() { clearCache(); return mY; }
 
-    /** Returns a reference to the z-coordinate of this point.
+    /**
+     * Returns a reference to the z-coordinate of this point.
      * Using a reference makes it possible to directly manipulate z in place.
      * @see z()
      * @see setZ()
@@ -110,7 +122,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      */
     double &rz() { clearCache(); return mZ; }
 
-    /** Returns a reference to the m value of this point.
+    /**
+     * Returns a reference to the m value of this point.
      * Using a reference makes it possible to directly manipulate m in place.
      * @see m()
      * @see setM()
@@ -118,19 +131,22 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      */
     double &rm() { clearCache(); return mM; }
 
-    /** Sets the point's x-coordinate.
+    /**
+     * Sets the point's x-coordinate.
      * @see x()
      * @see rx()
      */
     void setX( double x ) { clearCache(); mX = x; }
 
-    /** Sets the point's y-coordinate.
+    /**
+     * Sets the point's y-coordinate.
      * @see y()
      * @see ry()
      */
     void setY( double y ) { clearCache(); mY = y; }
 
-    /** Sets the point's z-coordinate.
+    /**
+     * Sets the point's z-coordinate.
      * @note calling this will have no effect if the point does not contain a z-dimension. Use addZValue() to
      * add a z value and force the point to have a z dimension.
      * @see z()
@@ -138,7 +154,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      */
     void setZ( double z ) { clearCache(); mZ = z; }
 
-    /** Sets the point's m-value.
+    /**
+     * Sets the point's m-value.
      * @note calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
      * add a m value and force the point to have an m dimension.
      * @see m()
@@ -146,7 +163,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      */
     void setM( double m ) { clearCache(); mM = m; }
 
-    /** Returns the point as a QPointF.
+    /**
+     * Returns the point as a QPointF.
      * @note added in QGIS 2.14
      */
     QPointF toQPointF() const;
@@ -180,7 +198,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
-    /** Angle undefined. Always returns 0.0
+    /**
+     * Angle undefined. Always returns 0.0
         @param vertex the vertex id
         @return 0.0*/
     double vertexAngle( QgsVertexId vertex ) const override { Q_UNUSED( vertex ); return 0.0; }

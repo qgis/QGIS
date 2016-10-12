@@ -22,7 +22,8 @@
 
 class QToolButton;
 
-/** \class QgsFilterLineEdit
+/**
+ * \class QgsFilterLineEdit
  * \ingroup gui
  * QLineEdit subclass with built in support for clearing the widget's value and
  * handling custom null value representations.
@@ -50,40 +51,46 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
       ClearToDefault, //!< Reset value to default value (see defaultValue() )
     };
 
-    /** Constructor for QgsFilterLineEdit.
+    /**
+     * Constructor for QgsFilterLineEdit.
      * @param parent parent widget
      * @param nullValue string for representing null values
      */
     QgsFilterLineEdit( QWidget* parent = nullptr, const QString& nullValue = QString::null );
 
-    /** Returns true if the widget's clear button is visible.
+    /**
+     * Returns true if the widget's clear button is visible.
      * @see setShowClearButton()
      * @note added in QGIS 3.0
      */
     bool showClearButton() const { return mClearButtonVisible; }
 
-    /** Sets whether the widget's clear button is visible.
+    /**
+     * Sets whether the widget's clear button is visible.
      * @param visible set to false to hide the clear button
      * @see showClearButton()
      * @note added in QGIS 3.0
      */
     void setShowClearButton( bool visible );
 
-    /** Returns the clear mode for the widget. The clear mode defines the behaviour of the
+    /**
+     * Returns the clear mode for the widget. The clear mode defines the behaviour of the
      * widget when its value is cleared. This defaults to ClearToNull.
      * @see setClearMode()
      * @note added in QGIS 3.0
      */
     ClearMode clearMode() const { return mClearMode; }
 
-    /** Sets the clear mode for the widget. The clear mode defines the behaviour of the
+    /**
+     * Sets the clear mode for the widget. The clear mode defines the behaviour of the
      * widget when its value is cleared. This defaults to ClearToNull.
      * @see clearMode()
      * @note added in QGIS 3.0
      */
     void setClearMode( ClearMode mode ) { mClearMode = mode; }
 
-    /** Sets the string representation for null values in the widget. This does not
+    /**
+     * Sets the string representation for null values in the widget. This does not
      * affect the values returned for null values by value(), rather it only affects
      * the text that is shown to users when the widget's value is null.
      * @param nullValue string to show when widget's value is null
@@ -91,13 +98,15 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     void setNullValue( const QString& nullValue ) { mNullValue = nullValue; }
 
-    /** Returns the string used for representating null values in the widget.
+    /**
+     * Returns the string used for representating null values in the widget.
      * @see setNullValue()
      * @see isNull()
      */
     QString nullValue() const { return mNullValue; }
 
-    /** Sets the default value for the widget. The default value is a value
+    /**
+     * Sets the default value for the widget. The default value is a value
      * which the widget will be reset to if it is cleared and the clearMode()
      * is equal to ClearToDefault.
      * @param defaultValue default value
@@ -107,7 +116,8 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     void setDefaultValue( const QString& defaultValue ) { mDefaultValue = defaultValue; }
 
-    /** Returns the default value for the widget. The default value is a value
+    /**
+     * Returns the default value for the widget. The default value is a value
      * which the widget will be reset to if it is cleared and the clearMode()
      * is equal to ClearToDefault.
      * @see setDefaultValue()
@@ -145,7 +155,8 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
   public slots:
 
-    /** Clears the widget and resets it to the null value.
+    /**
+     * Clears the widget and resets it to the null value.
      * @see nullValue()
      * @note added in QGIS 3.0
      */
@@ -153,7 +164,8 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
   signals:
 
-    /** Emitted when the widget is cleared
+    /**
+     * Emitted when the widget is cleared
      * @see clearValue()
      */
     void cleared();
@@ -199,7 +211,8 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
 /// @cond PRIVATE
 
-/** Private QgsFilterLineEdit subclass for use as a line edit in QgsSpinBox/QgsDoubleSpinBox
+/**
+ * Private QgsFilterLineEdit subclass for use as a line edit in QgsSpinBox/QgsDoubleSpinBox
  * we let QgsFilterLineEdit handle display of the clear button and detection
  * of clicks, but override clearValue() and let Qgs(Double)SpinBox handle the clearing
  * themselves.

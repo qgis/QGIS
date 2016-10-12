@@ -20,7 +20,8 @@ class QgsGenericFeatureSelectionManager;
 
 #include "ui_qgsfeatureselectiondlg.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFeatureSelectionDlg
  */
 class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeatureSelectionDlg

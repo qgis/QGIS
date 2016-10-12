@@ -35,7 +35,8 @@ struct ANALYSIS_EXPORT QgsRasterCalculatorEntry
   int bandNumber; //raster band number
 };
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * Raster calculator class*/
 class ANALYSIS_EXPORT QgsRasterCalculator
 {
@@ -52,7 +53,8 @@ class ANALYSIS_EXPORT QgsRasterCalculator
       MemoryError = 5, /*!< Error allocating memory for result */
     };
 
-    /** QgsRasterCalculator constructor.
+    /**
+     * QgsRasterCalculator constructor.
      * @param formulaString formula for raster calculation
      * @param outputFile output file path
      * @param outputFormat output file format
@@ -64,7 +66,8 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
                          const QgsRectangle& outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry>& rasterEntries );
 
-    /** QgsRasterCalculator constructor.
+    /**
+     * QgsRasterCalculator constructor.
      * @param formulaString formula for raster calculation
      * @param outputFile output file path
      * @param outputFormat output file format
@@ -78,7 +81,8 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
                          const QgsRectangle& outputExtent, const QgsCoordinateReferenceSystem& outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry>& rasterEntries );
 
-    /** Starts the calculation and writes new raster
+    /**
+     * Starts the calculation and writes new raster
       @param p progress bar (or 0 if called from non-gui code)
       @return 0 in case of success*/
     //TODO QGIS 3.0 - return QgsRasterCalculator::Result
@@ -88,15 +92,18 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     //default constructor forbidden. We need formula, output file, output format and output raster resolution obligatory
     QgsRasterCalculator();
 
-    /** Opens the output driver and tests if it supports the creation of a new dataset
+    /**
+     * Opens the output driver and tests if it supports the creation of a new dataset
       @return nullptr on error and the driver handle on success*/
     GDALDriverH openOutputDriver();
 
-    /** Opens the output file and sets the same geotransform and CRS as the input data
+    /**
+     * Opens the output file and sets the same geotransform and CRS as the input data
       @return the output dataset or nullptr in case of error*/
     GDALDatasetH openOutputFile( GDALDriverH outputDriver );
 
-    /** Sets gdal 6 parameters array from mOutputRectangle, mNumOutputColumns, mNumOutputRows
+    /**
+     * Sets gdal 6 parameters array from mOutputRectangle, mNumOutputColumns, mNumOutputRows
       @param transform double[6] array that receives the GDAL parameters*/
     void outputGeoTransform( double* transform ) const;
 
@@ -104,13 +111,16 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     QString mOutputFile;
     QString mOutputFormat;
 
-    /** Output raster extent*/
+    /**
+     * Output raster extent*/
     QgsRectangle mOutputRectangle;
     QgsCoordinateReferenceSystem mOutputCrs;
 
-    /** Number of output columns*/
+    /**
+     * Number of output columns*/
     int mNumOutputColumns;
-    /** Number of output rows*/
+    /**
+     * Number of output rows*/
     int mNumOutputRows;
 
     /***/

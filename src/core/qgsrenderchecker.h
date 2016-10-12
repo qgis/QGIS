@@ -28,7 +28,8 @@
 
 class QImage;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This is a helper class for unit tests that need to
  * write an image and compare it to an expected result
  * or render time.
@@ -57,20 +58,23 @@ class CORE_EXPORT QgsRenderChecker
     int elapsedTime() { return mElapsedTime; }
     void setElapsedTimeTarget( int theTarget ) { mElapsedTimeTarget = theTarget; }
 
-    /** Base directory name for the control image (with control image path
+    /**
+     * Base directory name for the control image (with control image path
      * suffixed) the path to the image will be constructed like this:
      * controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
      */
     void setControlName( const QString &theName );
 
-    /** Prefix where the control images are kept.
+    /**
+     * Prefix where the control images are kept.
      * This will be appended to controlImagePath
      */
     void setControlPathPrefix( const QString &theName ) { mControlPathPrefix = theName + '/'; }
 
     void setControlPathSuffix( const QString& theName );
 
-    /** Get an md5 hash that uniquely identifies an image */
+    /**
+     * Get an md5 hash that uniquely identifies an image */
     QString imageToHash( const QString& theImageFile );
 
     void setRenderedImage( const QString& theImageFileName ) { mRenderedImageFile = theImageFileName; }
@@ -86,7 +90,8 @@ class CORE_EXPORT QgsRenderChecker
     //! @note added in 2.4
     void setMapSettings( const QgsMapSettings& mapSettings );
 
-    /** Set tolerance for color components used by runTest() and compareImages().
+    /**
+     * Set tolerance for color components used by runTest() and compareImages().
      * Default value is 0.
      * @param theColorTolerance is maximum difference for each color component
      * including alpha to be considered correct.
@@ -94,7 +99,8 @@ class CORE_EXPORT QgsRenderChecker
      */
     void setColorTolerance( unsigned int theColorTolerance ) { mColorTolerance = theColorTolerance; }
 
-    /** Sets the largest allowable difference in size between the rendered and the expected image.
+    /**
+     * Sets the largest allowable difference in size between the rendered and the expected image.
      * @param xTolerance x tolerance in pixels
      * @param yTolerance y tolerance in pixels
      * @note added in QGIS 2.12
@@ -125,7 +131,8 @@ class CORE_EXPORT QgsRenderChecker
      * @note: make sure to call setExpectedImage and setRenderedImage first.
      */
     bool compareImages( const QString& theTestName, unsigned int theMismatchCount = 0, const QString& theRenderedImageFile = "" );
-    /** Get a list of all the anomalies. An anomaly is a rendered difference
+    /**
+     * Get a list of all the anomalies. An anomaly is a rendered difference
      * file where there is some red pixel content (indicating a render check
      * mismatch), but where the output was still acceptible. If the render
      * diff matches one of these anomalies we will still consider it to be
@@ -134,7 +141,8 @@ class CORE_EXPORT QgsRenderChecker
      */
     bool isKnownAnomaly( const QString& theDiffImageFile );
 
-    /** Draws a checkboard pattern for image backgrounds, so that transparency is visible
+    /**
+     * Draws a checkboard pattern for image backgrounds, so that transparency is visible
      * without requiring a transparent background for the image
      */
     static void drawBackground( QImage* image );
@@ -189,7 +197,8 @@ class CORE_EXPORT QgsRenderChecker
 }; // class QgsRenderChecker
 
 
-/** Compare two WKT strings with some tolerance
+/**
+ * Compare two WKT strings with some tolerance
  * @param a first WKT string
  * @param b second WKT string
  * @param tolerance tolerance to use (optional, defaults to 0.000001)

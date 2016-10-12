@@ -22,7 +22,8 @@
 class QgsMapCanvas;
 class QgsScaleWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsScaleRangeWidget
  */
 class GUI_EXPORT QgsScaleRangeWidget : public QWidget
@@ -64,7 +65,8 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
 
   signals:
 
-    /** Emitted when the scale range set in the widget is changed.
+    /**
+     * Emitted when the scale range set in the widget is changed.
      * @param min minimum scale
      * @param max maximum scale
      * @note added in QGIS 2.16

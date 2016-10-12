@@ -23,7 +23,8 @@ class QgsVectorLayer;
 class QgsFeatureModel;
 class QgsIFeatureSelectionManager;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFeatureSelectionModel
  */
 class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel

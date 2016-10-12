@@ -18,7 +18,8 @@
 #define QGSCSEXCEPTION_H
 
 #include "qgsexception.h"
-/** \ingroup core
+/**
+ * \ingroup core
  * Custom exception class for Coordinate Reference System related exceptions.
  */
 class CORE_EXPORT QgsCsException : public QgsException

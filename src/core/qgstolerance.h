@@ -22,22 +22,27 @@ class QgsMapSettings;
 class QgsMapLayer;
 class QgsPoint;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This is the class is providing tolerance value in map unit values.
  */
 class CORE_EXPORT QgsTolerance
 {
 
   public:
-    /** Type of unit of tolerance value from settings.
+    /**
+     * Type of unit of tolerance value from settings.
      * For map (project) units, use ProjectUnits.*/
     enum UnitType
     {
-      /** Layer unit value */
+      /**
+       * Layer unit value */
       LayerUnits,
-      /** Pixels unit of tolerance*/
+      /**
+       * Pixels unit of tolerance*/
       Pixels,
-      /** Map (project) units. Added in 2.8 */
+      /**
+       * Map (project) units. Added in 2.8 */
       ProjectUnits
     };
 

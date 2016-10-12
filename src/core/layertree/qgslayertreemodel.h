@@ -32,7 +32,8 @@ class QgsMapLayer;
 class QgsMapSettings;
 class QgsExpression;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * The QgsLayerTreeModel class is model implementation for Qt item views framework.
  * The model can be used in any QTreeView, it is however recommended to use it
  * with QgsLayerTreeView which brings additional functionality specific to layer tree handling.
@@ -126,7 +127,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! @see layerLegendNodes()
     QList<QgsLayerTreeModelLegendNode*> layerOriginalLegendNodes( QgsLayerTreeLayer* nodeLayer );
 
-    /** Searches through the layer tree to find a legend node with a matching layer ID
+    /**
+     * Searches through the layer tree to find a legend node with a matching layer ID
      * and rule key.
      * @param layerId map layer ID
      * @param ruleKey legend node rule key
@@ -237,7 +239,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! emit dataChanged() for layer tree node items
     void recursivelyEmitDataChanged( const QModelIndex& index = QModelIndex() );
 
-    /** Updates layer data for scale dependent layers, should be called when map scale changes.
+    /**
+     * Updates layer data for scale dependent layers, should be called when map scale changes.
      * Emits dataChanged() for all scale dependent layers.
      * @note added in QGIS 2.16
      */
@@ -258,7 +261,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QVariant legendNodeData( QgsLayerTreeModelLegendNode* node, int role ) const;
     Qt::ItemFlags legendNodeFlags( QgsLayerTreeModelLegendNode* node ) const;
     bool legendEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
-    /** Return legend node that may be embbeded in parent (i.e. its icon will be used for layer's icon). */
+    /**
+     * Return legend node that may be embbeded in parent (i.e. its icon will be used for layer's icon). */
     QgsLayerTreeModelLegendNode* legendNodeEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
     QIcon legendIconEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
     void legendCleanup();

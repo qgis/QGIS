@@ -27,7 +27,8 @@ class QgsVectorLayerCache;
 class QgsMapCanvas;
 class QItemSelectionModel;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsAttributeTableFilterModel
  */
 class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, public QgsFeatureModel
@@ -194,7 +195,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     QString sortExpression() const;
 
-    /** Returns the map canvas*/
+    /**
+     * Returns the map canvas*/
     QgsMapCanvas* mapCanvas() const { return mCanvas; }
 
     virtual QVariant data( const QModelIndex& index, int role ) const override;

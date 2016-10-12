@@ -20,7 +20,8 @@
 
 class QgsKeyValueWidget;
 
-/** @ingroup gui
+/**
+ * @ingroup gui
  * Wraps a key/value widget.
  * @note added in QGIS 3.0
  * @note not available in Python bindings

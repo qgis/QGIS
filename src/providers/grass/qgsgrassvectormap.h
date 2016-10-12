@@ -61,7 +61,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     int oldNumLines() const { return mOldNumLines; }
     // number of instances using this map
     int userCount() const;
-    /** Get current number of lines.
+    /**
+     * Get current number of lines.
      *   @return number of lines */
     int numLines();
     int numAreas();
@@ -87,59 +88,72 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QHash<QgsFeatureId, int> & newCats() { return mNewCats; }
     QMap<int, QList<QgsGrassUndoCommand *> > & undoCommands() { return mUndoCommands; }
 
-    /** Get geometry of line.
+    /**
+     * Get geometry of line.
      * @return geometry (point,line or polygon(GV_FACE)) or 0 */
     QgsAbstractGeometry * lineGeometry( int id );
     QgsAbstractGeometry * nodeGeometry( int id );
     QgsAbstractGeometry * areaGeometry( int id );
 
-    /** Open map if not yet open. Open/close lock */
+    /**
+     * Open map if not yet open. Open/close lock */
     bool open();
 
-    /** Close map. All iterators are closed first. Open/close lock. */
+    /**
+     * Close map. All iterators are closed first. Open/close lock. */
     void close();
 
-    /** Open GRASS map, no open/close locking */
+    /**
+     * Open GRASS map, no open/close locking */
     bool openMap();
 
-    /** Close GRASS map, no open/close locking */
+    /**
+     * Close GRASS map, no open/close locking */
     void closeMap();
 
-    /** Reload layers from (reopened) map. The layers keep field/type. */
+    /**
+     * Reload layers from (reopened) map. The layers keep field/type. */
     void reloadLayers();
 
     bool startEdit();
     bool closeEdit( bool newMap );
     void clearUndoCommands();
 
-    /** Get layer, layer is created and loaded if not yet.
+    /**
+     * Get layer, layer is created and loaded if not yet.
      *  @param field
      *  @return pointer to layer or 0 if layer doe not exist */
     QgsGrassVectorMapLayer * openLayer( int field );
 
-    /** Close layer and release cached data if there are no more users and close map
+    /**
+     * Close layer and release cached data if there are no more users and close map
      *  if there are no more map users.
      *  @param layer */
     void closeLayer( QgsGrassVectorMapLayer * layer );
 
-    /** Update map. Close and reopen vector and refresh layers.
+    /**
+     * Update map. Close and reopen vector and refresh layers.
      *  Instances of QgsGrassProvider are not updated and should call update() method */
     void update();
 
-    /** The map is outdated. The map was for example rewritten by GRASS module outside QGIS.
+    /**
+     * The map is outdated. The map was for example rewritten by GRASS module outside QGIS.
      *  This function checks internal timestamp stored in QGIS.
      */
     bool mapOutdated();
 
-    /** The attributes are outdated. The table was for example updated by GRASS module outside QGIS.
+    /**
+     * The attributes are outdated. The table was for example updated by GRASS module outside QGIS.
      *  This function checks internal timestamp stored in QGIS.
      */
     bool attributesOutdated();
 
-    /** Map descripton for debugging */
+    /**
+     * Map descripton for debugging */
     QString toString();
 
-    /** Get topology symbol code
+    /**
+     * Get topology symbol code
      * @param lid line or area number
      * @param type geometry type */
     TopoSymbol topoSymbol( int lid );
@@ -149,18 +163,22 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     void printDebug();
 
   signals:
-    /** Ask all iterators to cancel iteration when possible. Connected to iterators with
+    /**
+     * Ask all iterators to cancel iteration when possible. Connected to iterators with
      * Qt::DirectConnection (non blocking) */
     void cancelIterators();
 
-    /** Close all iterators. Connected to iterators in different threads with Qt::BlockingQueuedConnection */
+    /**
+     * Close all iterators. Connected to iterators in different threads with Qt::BlockingQueuedConnection */
     void closeIterators();
 
-    /** Emitted when data were reloaded */
+    /**
+     * Emitted when data were reloaded */
     void dataChanged();
 
   private:
-    /** Close iterators, blocking */
+    /**
+     * Close iterators, blocking */
     void closeAllIterators();
 
     QgsGrassObject mGrassObject;
@@ -225,13 +243,15 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapStore
     // This is only used for editing test to have an independent map
     static void setStore( QgsGrassVectorMapStore * store ) { mStore = store; }
 
-    /** Open map.
+    /**
+     * Open map.
      *  @param grassObject
      *  @return map, the map may be invalide  */
     QgsGrassVectorMap * openMap( const QgsGrassObject & grassObject );
 
   private:
-    /** Open vector maps */
+    /**
+     * Open vector maps */
     QList<QgsGrassVectorMap*> mMaps;
 
     // Lock open/close map

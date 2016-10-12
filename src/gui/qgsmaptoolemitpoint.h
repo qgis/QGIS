@@ -20,7 +20,8 @@
 class QgsMapCanvas;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A map tool that simply emits a point when clicking on the map.
  * Connecting a slot to its canvasClicked() signal will
  * let you implement custom behaviour for the passed in point.

@@ -75,7 +75,8 @@ class QgsGraduatedSymbolRendererViewStyle: public QProxyStyle
 
 ///@endcond
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsGraduatedSymbolRendererWidget
  */
 class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, private Ui::QgsGraduatedSymbolRendererWidget, private QgsExpressionContextGenerator
@@ -100,13 +101,17 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void rangesClicked( const QModelIndex & idx );
     void changeCurrentValue( QStandardItem * item );
 
-    /** Adds a class manually to the classification*/
+    /**
+     * Adds a class manually to the classification*/
     void addClass();
-    /** Removes currently selected classes */
+    /**
+     * Removes currently selected classes */
     void deleteClasses();
-    /** Removes all classes from the classification*/
+    /**
+     * Removes all classes from the classification*/
     void deleteAllClasses();
-    /** Toggle the link between classes boundaries */
+    /**
+     * Toggle the link between classes boundaries */
     void toggleBoundariesLink( bool linked );
 
     void labelFormatChanged();

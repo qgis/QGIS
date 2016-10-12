@@ -25,7 +25,8 @@
 class QgsVectorLayer;
 class QPaintEvent;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A class for drawing transient features (e.g. digitising lines) on the map.
  * It may be used
  */
@@ -33,7 +34,8 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 {
   public:
 
-    /** Icons */
+    /**
+     * Icons */
     enum IconType
     {
       /**
@@ -134,7 +136,8 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      */
     void addPoint( const QgsPoint & p, bool doUpdate = true, int geometryIndex = 0 );
 
-    /** Ensures that a polygon geometry is closed and that the last vertex equals the
+    /**
+     * Ensures that a polygon geometry is closed and that the last vertex equals the
      * first vertex.
      * @param doUpdate set to true to update the map canvas immediately
      * @param geometryIndex index of the feature part (in case of multipart geometries)
@@ -247,10 +250,12 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     QBrush mBrush;
     QPen mPen;
 
-    /** The size of the icon for points. */
+    /**
+     * The size of the icon for points. */
     int mIconSize;
 
-    /** Icon to be shown. */
+    /**
+     * Icon to be shown. */
     IconType mIconType;
 
     /**

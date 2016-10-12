@@ -22,7 +22,8 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsOgrUtils
  * \brief Utilities for working with OGR features and layers
  *
@@ -34,7 +35,8 @@ class CORE_EXPORT QgsOgrUtils
 {
   public:
 
-    /** Reads an OGR feature and converts it to a QgsFeature.
+    /**
+     * Reads an OGR feature and converts it to a QgsFeature.
      * @param ogrFet OGR feature handle
      * @param fields fields collection corresponding to feature
      * @param encoding text encoding
@@ -42,14 +44,16 @@ class CORE_EXPORT QgsOgrUtils
      */
     static QgsFeature readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec* encoding );
 
-    /** Reads an OGR feature and returns a corresponding fields collection.
+    /**
+     * Reads an OGR feature and returns a corresponding fields collection.
      * @param ogrFet OGR feature handle
      * @param encoding text encoding
      * @returns fields collection if read was successful
      */
     static QgsFields readOgrFields( OGRFeatureH ogrFet, QTextCodec* encoding );
 
-    /** Retrieves an attribute value from an OGR feature.
+    /**
+     * Retrieves an attribute value from an OGR feature.
      * @param ogrFet OGR feature handle
      * @param fields fields collection corresponding to feature
      * @param attIndex index of attribute to retrieve
@@ -60,7 +64,8 @@ class CORE_EXPORT QgsOgrUtils
      */
     static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec* encoding, bool* ok = 0 );
 
-    /** Reads all attributes from an OGR feature into a QgsFeature.
+    /**
+     * Reads all attributes from an OGR feature into a QgsFeature.
      * @param ogrFet OGR feature handle
      * @param fields fields collection corresponding to feature
      * @param feature QgsFeature to store attributes in
@@ -70,7 +75,8 @@ class CORE_EXPORT QgsOgrUtils
      */
     static bool readOgrFeatureAttributes( OGRFeatureH ogrFet, const QgsFields &fields, QgsFeature& feature, QTextCodec* encoding );
 
-    /** Reads the geometry from an OGR feature into a QgsFeature.
+    /**
+     * Reads the geometry from an OGR feature into a QgsFeature.
      * @param ogrFet OGR feature handle
      * @param feature QgsFeature to store geometry in
      * @returns true if geometry read was successful
@@ -79,7 +85,8 @@ class CORE_EXPORT QgsOgrUtils
      */
     static bool readOgrFeatureGeometry( OGRFeatureH ogrFet, QgsFeature& feature );
 
-    /** Converts an OGR geometry representation to a QgsGeometry object
+    /**
+     * Converts an OGR geometry representation to a QgsGeometry object
      * @param geom OGR geometry handle
      * @returns QgsGeometry object. If conversion was not successful the geometry
      * will be empty.
@@ -87,7 +94,8 @@ class CORE_EXPORT QgsOgrUtils
      */
     static QgsGeometry ogrGeometryToQgsGeometry( OGRGeometryH geom );
 
-    /** Attempts to parse a string representing a collection of features using OGR. For example, this method can be
+    /**
+     * Attempts to parse a string representing a collection of features using OGR. For example, this method can be
      * used to convert a GeoJSON encoded collection to a list of QgsFeatures.
      * @param string string to parse
      * @param fields fields collection to use for parsed features (@see stringToFields())
@@ -97,7 +105,8 @@ class CORE_EXPORT QgsOgrUtils
      */
     static QgsFeatureList stringToFeatureList( const QString& string, const QgsFields& fields, QTextCodec* encoding );
 
-    /** Attempts to retrieve the fields from a string representing a collection of features using OGR.
+    /**
+     * Attempts to retrieve the fields from a string representing a collection of features using OGR.
      * @param string string to parse
      * @param encoding text encoding
      * @returns retrieved fields collection, or an empty list if no fields could be determined from the string

@@ -25,7 +25,8 @@
 
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for viewing and editing authentication identities database
  */
 class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthIdentitiesEditor
@@ -47,10 +48,12 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
 
     void showCertInfo( QTreeWidgetItem *item );
 
-    /** Pass selection change on to UI update */
+    /**
+     * Pass selection change on to UI update */
     void selectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
 
-    /** Update UI based upon current selection */
+    /**
+     * Update UI based upon current selection */
     void checkSelection();
 
     void handleDoubleClick( QTreeWidgetItem* item, int col );
@@ -63,11 +66,13 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
 
     void on_btnGroupByOrg_toggled( bool checked );
 
-    /** Relay messages to widget's messagebar */
+    /**
+     * Relay messages to widget's messagebar */
     void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
 
   protected:
-    /** Overridden show event of base widget */
+    /**
+     * Overridden show event of base widget */
     void showEvent( QShowEvent *e ) override;
 
   private:

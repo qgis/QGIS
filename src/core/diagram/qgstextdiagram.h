@@ -28,7 +28,8 @@ class QgsDiagramInterpolationSettings;
 class QgsFeature;
 class QgsRenderContext;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsTextDiagram
  */
 class CORE_EXPORT QgsTextDiagram: public QgsDiagram
@@ -65,7 +66,8 @@ class CORE_EXPORT QgsTextDiagram: public QgsDiagram
     QBrush mBrush; //transparent brush
     QPen mPen;
 
-    /** Calculates intersection points between a line and an ellipse
+    /**
+     * Calculates intersection points between a line and an ellipse
       @return intersection points*/
     void lineEllipseIntersection( QPointF lineStart, QPointF lineEnd, QPointF ellipseMid, double r1, double r2, QList<QPointF>& result ) const;
 };

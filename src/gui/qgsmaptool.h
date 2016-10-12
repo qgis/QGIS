@@ -41,7 +41,8 @@ class QPoint;
 class QAction;
 class QAbstractButton;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Abstract base class for all map tools.
  * Map tools are user interactive tools for manipulating the
  * map canvas. For example map pan and zoom features are
@@ -66,7 +67,8 @@ class GUI_EXPORT QgsMapTool : public QObject
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    /** Returns the flags for the map tool.
+    /**
+     * Returns the flags for the map tool.
      * @note added in QGIS 2.16
      */
     virtual Flags flags() const { return Flags(); }
@@ -100,23 +102,28 @@ class GUI_EXPORT QgsMapTool : public QObject
     virtual bool gestureEvent( QGestureEvent* e );
 #endif
 
-    /** Use this to associate a QAction to this maptool. Then when the setMapTool
+    /**
+     * Use this to associate a QAction to this maptool. Then when the setMapTool
      * method of mapcanvas is called the action state will be set to on.
      * Usually this will cause e.g. a toolbutton to appear pressed in and
      * the previously used toolbutton to pop out. */
     void setAction( QAction* action );
 
-    /** Return associated action with map tool or NULL if no action is associated */
+    /**
+     * Return associated action with map tool or NULL if no action is associated */
     QAction* action();
 
-    /** Use this to associate a button to this maptool. It has the same meaning
+    /**
+     * Use this to associate a button to this maptool. It has the same meaning
      * as setAction() function except it works with a button instead of an QAction. */
     void setButton( QAbstractButton* button );
 
-    /** Return associated button with map tool or NULL if no button is associated */
+    /**
+     * Return associated button with map tool or NULL if no button is associated */
     QAbstractButton* button();
 
-    /** Set a user defined cursor */
+    /**
+     * Set a user defined cursor */
     virtual void setCursor( const QCursor& cursor );
 
     //! called when set as currently active map tool
@@ -132,18 +139,21 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! @note added in 2.3
     QString toolName() { return mToolName; }
 
-    /** Get search radius in mm. Used by identify, tip etc.
+    /**
+     * Get search radius in mm. Used by identify, tip etc.
      *  The values is currently set in identify tool options (move somewhere else?)
      *  and defaults to Qgis::DEFAULT_SEARCH_RADIUS_MM.
      *  @note added in 2.3 */
     static double searchRadiusMM();
 
-    /** Get search radius in map units for given context. Used by identify, tip etc.
+    /**
+     * Get search radius in map units for given context. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
      *  @note added in 2.3 */
     static double searchRadiusMU( const QgsRenderContext& context );
 
-    /** Get search radius in map units for given canvas. Used by identify, tip etc.
+    /**
+     * Get search radius in map units for given canvas. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
      *  @note added in 2.3 */
     static double searchRadiusMU( QgsMapCanvas * canvas );

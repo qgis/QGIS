@@ -21,7 +21,8 @@
 #include "qgscomposeritem.h"
 #include <QGraphicsRectItem>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Item representing a grid. This is drawn separately to the underlying paper item since the grid needs to be
  * drawn above all other composer items, while the paper item is drawn below all others.*/
 class CORE_EXPORT QgsPaperGrid: public QGraphicsRectItem
@@ -30,14 +31,16 @@ class CORE_EXPORT QgsPaperGrid: public QGraphicsRectItem
     QgsPaperGrid( double x, double y, double width, double height, QgsComposition* composition );
     ~QgsPaperGrid();
 
-    /** \brief Reimplementation of QCanvasItem::paint*/
+    /**
+     * \brief Reimplementation of QCanvasItem::paint*/
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
   private:
     QgsComposition* mComposition;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Item representing the paper.*/
 class CORE_EXPORT QgsPaperItem : public QgsComposerItem
 {
@@ -48,19 +51,23 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
     QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition );
     ~QgsPaperItem();
 
-    /** Return correct graphics item type. */
+    /**
+     * Return correct graphics item type. */
     virtual int type() const override { return ComposerPaper; }
 
-    /** \brief Reimplementation of QCanvasItem::paint*/
+    /**
+     * \brief Reimplementation of QCanvasItem::paint*/
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
-    /** Stores state in Dom element
+    /**
+     * Stores state in Dom element
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
     bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
-    /** Sets state from Dom document
+    /**
+     * Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is the Dom document
      */
@@ -70,7 +77,8 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
 
   private:
     QgsPaperItem();
-    /** Set flags and z-value*/
+    /**
+     * Set flags and z-value*/
     void initialize();
 
     void calculatePageMargin();

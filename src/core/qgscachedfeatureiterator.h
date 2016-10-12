@@ -21,7 +21,8 @@
 
 class QgsVectorLayerCache;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * @brief
  * Delivers features from the cache
  *
@@ -78,7 +79,8 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
     QgsFeatureIds::ConstIterator mFeatureIdIterator;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * @brief
  * Uses another iterator as backend and writes features to the cache
  *

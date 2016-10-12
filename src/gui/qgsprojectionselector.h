@@ -20,7 +20,8 @@
 
 class QResizeEvent;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A widget for selecting a Coordinate reference system from a tree.
  * @see QgsGenericProjectionSelector.
   @author Tim Sutton
@@ -108,10 +109,12 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
     void pushProjectionToFront();
 
   protected:
-    /** Used to ensure the projection list view is actually populated */
+    /**
+     * Used to ensure the projection list view is actually populated */
     void showEvent( QShowEvent * theEvent ) override;
 
-    /** Used to manage column sizes */
+    /**
+     * Used to manage column sizes */
     void resizeEvent( QResizeEvent * theEvent ) override;
 
   private:
@@ -147,7 +150,8 @@ class GUI_EXPORT QgsProjectionSelector : public QWidget, private Ui::QgsProjecti
        */
     QString getSelectedExpression( const QString& e );
 
-    /** Show the user a warning if the srs database could not be found */
+    /**
+     * Show the user a warning if the srs database could not be found */
     void showDBMissingWarning( const QString& theFileName );
     // List view nodes for the tree view of projections
     //! User defined projections node

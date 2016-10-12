@@ -20,7 +20,8 @@
 
 #include "qgsfeature.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Is an interface class to abstract feature selection handling.
  *
  * e.g. { @link QgsVectorLayer } implements this interface to manage its selections.

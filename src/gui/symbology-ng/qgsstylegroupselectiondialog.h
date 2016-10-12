@@ -24,7 +24,8 @@
 
 class QgsStyle;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsStyleGroupSelectionDialog
  */
 class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::SymbolsGroupSelectionDialogBase

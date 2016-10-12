@@ -20,7 +20,8 @@
 
 #include "qgssymbollayer.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A symbol layer class for displaying displacement arrows based on point layer attributes*/
 class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
 {
@@ -91,13 +92,15 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale& scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    /** Sets the units for the distance.
+    /**
+     * Sets the units for the distance.
      * @param unit distance units
      * @see distanceUnit()
     */
     void setDistanceUnit( QgsUnitTypes::RenderUnit unit ) { mDistanceUnit = unit; }
 
-    /** Returns the units for the distance.
+    /**
+     * Returns the units for the distance.
      * @see setDistanceUnit()
     */
     QgsUnitTypes::RenderUnit distanceUnit() const { return mDistanceUnit; }

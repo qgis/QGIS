@@ -19,7 +19,8 @@
 
 #include "qgsscalebarstyle.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A scale bar that draws segments using short ticks.
  */
 class CORE_EXPORT QgsTicksScaleBarStyle: public QgsScaleBarStyle
@@ -37,7 +38,8 @@ class CORE_EXPORT QgsTicksScaleBarStyle: public QgsScaleBarStyle
 
     QString name() const override;
 
-    /** Draw method
+    /**
+     * Draw method
      @param p painter object
      @param xOffset offset
      */

@@ -20,7 +20,8 @@
 class QgsStyle;
 class QgsColorRamp;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsColorRampComboBox
  */
 class GUI_EXPORT QgsColorRampComboBox : public QComboBox
@@ -34,20 +35,23 @@ class GUI_EXPORT QgsColorRampComboBox : public QComboBox
     //! initialize the combo box with color ramps from the style
     void populate( QgsStyle* style );
 
-    /** Adds or selects the current color ramp to show in the combo box. The ramp appears
+    /**
+     * Adds or selects the current color ramp to show in the combo box. The ramp appears
      * in the combo box as the "source" ramp.
      * @param sourceRamp color ramp, ownership is transferred.
      * @see currentColorRamp()
      */
     void setSourceColorRamp( QgsColorRamp* sourceRamp );
 
-    /** Returns a new instance of the current color ramp or NULL if there is no active color ramp.
+    /**
+     * Returns a new instance of the current color ramp or NULL if there is no active color ramp.
      * The caller takes responsibility for deleting the returned value.
      * @see setSourceColorRamp()
      */
     QgsColorRamp* currentColorRamp() const;
 
-    /** Returns true if the current selection in the combo box is the option for creating
+    /**
+     * Returns true if the current selection in the combo box is the option for creating
      * a new color ramp
      * @note added in QGIS 2.7
      */
@@ -64,7 +68,8 @@ class GUI_EXPORT QgsColorRampComboBox : public QComboBox
   public slots:
     void colorRampChanged( int index );
 
-    /** Triggers a dialog which allows users to edit the current source
+    /**
+     * Triggers a dialog which allows users to edit the current source
      * ramp for the combo box.
      * @see sourceRampEdited
      * @note added in QGIS 2.12
@@ -73,7 +78,8 @@ class GUI_EXPORT QgsColorRampComboBox : public QComboBox
 
   signals:
 
-    /** Emitted when the user has edited the current source ramp.
+    /**
+     * Emitted when the user has edited the current source ramp.
      * @see editSourceRamp
      * @note added in QGIS 2.12
      */

@@ -20,7 +20,8 @@
 class QgsComposition;
 class QGraphicsLineItem;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A class to show paper scale and the current cursor position
 */
 class GUI_EXPORT QgsComposerRuler: public QWidget
@@ -95,7 +96,8 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     void drawMarkerPos( QPainter *painter );
 
   signals:
-    /** Is emitted when mouse cursor coordinates change*/
+    /**
+     * Is emitted when mouse cursor coordinates change*/
     void cursorPosChanged( QPointF );
 
 };

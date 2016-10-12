@@ -35,7 +35,8 @@ namespace SpatialIndex
   class ISpatialIndex;
 }
 
-/** \ingroup core
+/**
+ * \ingroup core
  * @brief The class defines interface for querying point location:
  *  - query nearest vertices / edges to a point
  *  - query vertices / edges in rectangle
@@ -49,7 +50,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
 {
     Q_OBJECT
   public:
-    /** Construct point locator for a layer.
+    /**
+     * Construct point locator for a layer.
      *  @arg destinationCrs if a valid QgsCoordinateReferenceSystem is passed then the locator will
      *  do the searches on data reprojected to the given CRS
      *  @arg extent  if not null, will index only a subset of the layer
@@ -86,13 +88,15 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     Q_DECLARE_FLAGS( Types, Type )
 
-    /** Prepare the index for queries. Does nothing if the index already exists.
+    /**
+     * Prepare the index for queries. Does nothing if the index already exists.
      * If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
      * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used. Returns
      * false if the creation of index has been prematurely stopped due to the limit of features, otherwise true */
     bool init( int maxFeaturesToIndex = -1 );
 
-    /** Indicate whether the data have been already indexed */
+    /**
+     * Indicate whether the data have been already indexed */
     bool hasIndex() const;
 
     struct Match
@@ -215,7 +219,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
     void onGeometryChanged( QgsFeatureId fid, const QgsGeometry& geom );
 
   private:
-    /** Storage manager */
+    /**
+     * Storage manager */
     SpatialIndex::IStorageManager* mStorage;
 
     QHash<QgsFeatureId, QgsGeometry*> mGeoms;
@@ -224,7 +229,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! flag whether the layer is currently empty (i.e. mRTree is null but it is not necessary to rebuild it)
     bool mIsEmptyLayer;
 
-    /** R-tree containing spatial index */
+    /**
+     * R-tree containing spatial index */
     QgsCoordinateTransform mTransform;
     QgsVectorLayer* mLayer;
     QgsRectangle* mExtent;

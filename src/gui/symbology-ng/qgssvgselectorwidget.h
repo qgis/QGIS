@@ -38,7 +38,8 @@ class QTreeView;
 
 ///@cond PRIVATE
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSvgSelectorLoader
  * Recursively loads SVG images from a path in a background thread.
  * \note added in QGIS 2.18
@@ -49,25 +50,29 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
 
   public:
 
-    /** Constructor for QgsSvgSelectorLoader
+    /**
+     * Constructor for QgsSvgSelectorLoader
      * @param parent parent object
      */
     QgsSvgSelectorLoader( QObject* parent = nullptr );
 
     ~QgsSvgSelectorLoader();
 
-    /** Starts the loader finding and generating previews for SVG images. foundSvgs() will be
+    /**
+     * Starts the loader finding and generating previews for SVG images. foundSvgs() will be
      * emitted as the loader encounters SVG images.
      * @brief run
      */
     virtual void run() override;
 
-    /** Cancels the current loading operation. Waits until the thread has finished operation
+    /**
+     * Cancels the current loading operation. Waits until the thread has finished operation
      * before returning.
      */
     virtual void stop();
 
-    /** Sets the root path containing SVG images to load. If no path is set, the default SVG
+    /**
+     * Sets the root path containing SVG images to load. If no path is set, the default SVG
      * search paths will be used instead.
      */
     void setPath( const QString& path )
@@ -77,7 +82,8 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
 
   signals:
 
-    /** Emitted when the loader has found a block of SVG images. This signal is emitted with blocks
+    /**
+     * Emitted when the loader has found a block of SVG images. This signal is emitted with blocks
      * of SVG images to prevent spamming any connected model.
      * @param svgs list of SVGs and preview images found.
      */
@@ -98,7 +104,8 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
 
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSvgGroupLoader
  * Recursively loads SVG paths in a background thread.
  * \note added in QGIS 2.18
@@ -109,24 +116,28 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
 
   public:
 
-    /** Constructor for QgsSvgGroupLoader
+    /**
+     * Constructor for QgsSvgGroupLoader
      * @param parent parent object
      */
     QgsSvgGroupLoader( QObject* parent = nullptr );
 
     ~QgsSvgGroupLoader();
 
-    /** Starts the loader finding folders for SVG images.
+    /**
+     * Starts the loader finding folders for SVG images.
      * @brief run
      */
     virtual void run() override;
 
-    /** Cancels the current loading operation. Waits until the thread has finished operation
+    /**
+     * Cancels the current loading operation. Waits until the thread has finished operation
      * before returning.
      */
     virtual void stop();
 
-    /** Sets the root path containing child paths to find. If no path is set, the default SVG
+    /**
+     * Sets the root path containing child paths to find. If no path is set, the default SVG
      * search paths will be used instead.
      */
     void setParentPaths( const QStringList& parentPaths )
@@ -136,7 +147,8 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
 
   signals:
 
-    /** Emitted when the loader has found a block of SVG images. This signal is emitted with blocks
+    /**
+     * Emitted when the loader has found a block of SVG images. This signal is emitted with blocks
      * of SVG images to prevent spamming any connected model.
      * @param svgs list of SVGs and preview images found.
      */
@@ -155,7 +167,8 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
 ///@endcond
 ///
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSvgSelectorListModel
  * A model for displaying SVG files with a preview icon. Population of the model is performed in
  * a background thread to ensure that initial creation of the model is responsive and does
@@ -167,13 +180,15 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
 
   public:
 
-    /** Constructor for QgsSvgSelectorListModel. All SVGs in folders from the application SVG
+    /**
+     * Constructor for QgsSvgSelectorListModel. All SVGs in folders from the application SVG
      * search paths will be shown.
      * @param parent parent object
      */
     QgsSvgSelectorListModel( QObject* parent );
 
-    /** Constructor for creating a model for SVG files in a specific path.
+    /**
+     * Constructor for creating a model for SVG files in a specific path.
      * @param parent parent object
      * @param path initial path, which is recursively searched
      */
@@ -191,7 +206,8 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
 
   private slots:
 
-    /** Called to add SVG files to the model.
+    /**
+     * Called to add SVG files to the model.
      * @param svgs list of SVG files to add to model.
      */
     void addSvgs( const QStringList& svgs );
@@ -199,7 +215,8 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
 };
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSvgSelectorGroupsModel
  * A model for displaying SVG search paths. Population of the model is performed in
  * a background thread to ensure that initial creation of the model is responsive and does
@@ -222,7 +239,8 @@ class GUI_EXPORT QgsSvgSelectorGroupsModel : public QStandardItemModel
     void addPath( const QString& parentPath, const QString& path );
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSvgSelectorWidget
  */
 class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSelector
@@ -246,7 +264,8 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     QLayout* selectorLayout() { return this->layout(); }
 
   public slots:
-    /** Accepts absolute and relative paths */
+    /**
+     * Accepts absolute and relative paths */
     void setSvgPath( const QString& svgPath );
 
   signals:
@@ -269,7 +288,8 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
 
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSvgSelectorDialog
  */
 class GUI_EXPORT QgsSvgSelectorDialog : public QDialog

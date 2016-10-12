@@ -178,7 +178,8 @@ QgsProperty *findKey_( const QString& scope,
 
 
 
-/** Add the given key and value
+/**
+ * Add the given key and value
 
 @param scope scope of key
 @param key key name
@@ -337,7 +338,8 @@ struct QgsProject::Imp
     properties_.name() = "properties"; // root property node always this value
   }
 
-  /** Clear project properties when a new project is started
+  /**
+   * Clear project properties when a new project is started
    */
   void clear()
   {

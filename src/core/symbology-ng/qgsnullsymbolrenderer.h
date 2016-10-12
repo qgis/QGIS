@@ -19,7 +19,8 @@
 #include "qgsrenderer.h"
 #include "qgssymbol.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsNullSymbolRenderer
  * \brief Null symbol renderer. Renderer which draws no symbols for features by default, but allows for labeling
  * and diagrams for the layer. Selected features will also be drawn with a default symbol.
@@ -47,7 +48,8 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
     virtual QgsFeatureRenderer* clone() const override;
     virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
 
-    /** Creates a null renderer from XML element.
+    /**
+     * Creates a null renderer from XML element.
      * @param element DOM element
      * @returns new null symbol renderer
      */
@@ -55,7 +57,8 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
 
     virtual QDomElement save( QDomDocument& doc ) override;
 
-    /** Creates a QgsNullSymbolRenderer from an existing renderer.
+    /**
+     * Creates a QgsNullSymbolRenderer from an existing renderer.
      * @param renderer renderer to convert from
      * @returns a new renderer if the conversion was possible, otherwise nullptr.
      */

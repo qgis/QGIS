@@ -23,13 +23,15 @@
 // Macro to create Error message including info about where it was created.
 #define QGS_ERROR_MESSAGE(message, tag) QgsErrorMessage(QString(message),QString(tag), QString(__FILE__), QString(__FUNCTION__), __LINE__)
 
-/** \ingroup core
+/**
+ * \ingroup core
  * QgsErrorMessage represents single error message.
 */
 class CORE_EXPORT QgsErrorMessage
 {
   public:
-    /** Format */
+    /**
+     * Format */
     enum Format
     {
       Text, // Plain text
@@ -41,7 +43,8 @@ class CORE_EXPORT QgsErrorMessage
         , mFormat( Text )
     {}
 
-    /** Constructor.
+    /**
+     * Constructor.
      *  @param theMessage error message string
      *  @param theTag error label, for example GDAL, GDAL Provider, Raster layer
      *  @param theFile the file where error was created
@@ -57,22 +60,27 @@ class CORE_EXPORT QgsErrorMessage
     int line() const { return mLine; }
 
   private:
-    /** Error messages */
+    /**
+     * Error messages */
     QString mMessage;
 
-    /** Short description */
+    /**
+     * Short description */
     QString mTag;
 
-    /** Detailed debug info */
+    /**
+     * Detailed debug info */
     QString mFile;
     QString mFunction;
     int mLine;
 
-    /** Message format */
+    /**
+     * Message format */
     Format mFormat;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * QgsError is container for error messages (report). It may contain chain
  * (sort of traceback) of error messages (e.g. GDAL - provider - layer).
  * Higher level messages are appended at the end.
@@ -83,44 +91,52 @@ class CORE_EXPORT QgsError
 
     QgsError() {}
 
-    /** Constructor with single message.
+    /**
+     * Constructor with single message.
      *  @param theMessage error message
      *  @param theTag short description, e.g. GDAL, Provider, Layer
      */
     QgsError( const QString & theMessage, const QString & theTag );
 
-    /** Append new error message.
+    /**
+     * Append new error message.
      *  @param theMessage error message string
      *  @param theTag error label, for example GDAL, GDAL Provider, Raster layer
      */
     void append( const QString & theMessage, const QString & theTag );
 
-    /** Append new error message.
+    /**
+     * Append new error message.
      *  @param theMessage error message
      */
     void append( const QgsErrorMessage & theMessage );
 
-    /** Test if any error is set.
+    /**
+     * Test if any error is set.
      *  @return true if contains error
      */
     bool isEmpty() const { return mMessageList.isEmpty(); }
 
-    /** Full error messages description
+    /**
+     * Full error messages description
      *  @param theFormat output format
      *  @return error report
      */
     QString message( QgsErrorMessage::Format theFormat = QgsErrorMessage::Html ) const;
 
-    /** Short error description, usually the first error in chain, the real error.
+    /**
+     * Short error description, usually the first error in chain, the real error.
      *  @return error description
      */
     QString summary() const;
 
-    /** Clear error messages */
+    /**
+     * Clear error messages */
     void clear() { mMessageList.clear(); }
 
   private:
-    /** List of messages */
+    /**
+     * List of messages */
     QList<QgsErrorMessage> mMessageList;
 };
 

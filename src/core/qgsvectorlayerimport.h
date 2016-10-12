@@ -26,7 +26,8 @@ class QgsVectorDataProvider;
 class QgsVectorLayer;
 class QgsFields;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * A convenience class for writing vector files to disk.
  There are two possibilities how to use this class:
  1. static call to QgsVectorFileWriter::writeAsShapefile(...) which saves the whole vector layer
@@ -78,7 +79,8 @@ class CORE_EXPORT QgsVectorLayerImport
                                     QProgressDialog *progress = nullptr
                                   );
 
-    /** Constructor for QgsVectorLayerImport.
+    /**
+     * Constructor for QgsVectorLayerImport.
      * @param uri URI for destination data source
      * @param provider string key for destination data provider
      * @param fields fields to include in created layer
@@ -99,28 +101,35 @@ class CORE_EXPORT QgsVectorLayerImport
                           QProgressDialog *progress = nullptr
                         );
 
-    /** Checks whether there were any errors */
+    /**
+     * Checks whether there were any errors */
     ImportError hasError();
 
-    /** Retrieves error message */
+    /**
+     * Retrieves error message */
     QString errorMessage();
 
     int errorCount() const { return mErrorCount; }
 
-    /** Add feature to the new created layer */
+    /**
+     * Add feature to the new created layer */
     bool addFeature( QgsFeature& feature );
 
-    /** Close the new created layer */
+    /**
+     * Close the new created layer */
     ~QgsVectorLayerImport();
 
   protected:
-    /** Flush the buffer writing the features to the new layer */
+    /**
+     * Flush the buffer writing the features to the new layer */
     bool flushBuffer();
 
-    /** Create index */
+    /**
+     * Create index */
     bool createSpatialIndex();
 
-    /** Contains error value */
+    /**
+     * Contains error value */
     ImportError mError;
     QString mErrorMessage;
 
@@ -128,7 +137,8 @@ class CORE_EXPORT QgsVectorLayerImport
 
     QgsVectorDataProvider *mProvider;
 
-    /** Map attribute indexes to new field indexes */
+    /**
+     * Map attribute indexes to new field indexes */
     QMap<int, int> mOldToNewAttrIdx;
     int mAttributeCount;
 

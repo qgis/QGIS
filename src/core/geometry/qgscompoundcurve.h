@@ -20,7 +20,8 @@
 
 #include "qgscurve.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCompoundCurve
  * \brief Compound curve geometry type
  * \note added in QGIS 2.10
@@ -58,30 +59,36 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     virtual QgsPointV2 endPoint() const override;
     virtual void points( QgsPointSequence &pts ) const override;
     virtual int numPoints() const override;
-    /** Returns a new line string geometry corresponding to a segmentized approximation
+    /**
+     * Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
-    /** Returns the number of curves in the geometry.
+    /**
+     * Returns the number of curves in the geometry.
      */
     int nCurves() const { return mCurves.size(); }
 
-    /** Returns the curve at the specified index.
+    /**
+     * Returns the curve at the specified index.
      */
     const QgsCurve* curveAt( int i ) const;
 
-    /** Adds a curve to the geometr (takes ownership)
+    /**
+     * Adds a curve to the geometr (takes ownership)
      */
     void addCurve( QgsCurve* c );
 
-    /** Removes a curve from the geometry.
+    /**
+     * Removes a curve from the geometry.
      * @param i index of curve to remove
      */
     void removeCurve( int i );
 
-    /** Adds a vertex to the end of the geometry.
+    /**
+     * Adds a vertex to the end of the geometry.
      */
     void addVertex( const QgsPointV2& pt );
 
@@ -101,12 +108,14 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     void sumUpArea( double& sum ) const override;
 
-    /** Appends first point if not already closed.*/
+    /**
+     * Appends first point if not already closed.*/
     void close();
 
     bool hasCurvedSegments() const override;
 
-    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+    /**
+     * Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
         @param vertex the vertex id
         @return rotation in radians, clockwise from north*/
     double vertexAngle( QgsVertexId vertex ) const override;
@@ -128,7 +137,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
   private:
     QList< QgsCurve* > mCurves;
-    /** Turns a vertex id for the compound curve into one or more ids for the subcurves
+    /**
+     * Turns a vertex id for the compound curve into one or more ids for the subcurves
         @return the index of the subcurve or -1 in case of error*/
     QList< QPair<int, QgsVertexId> > curveVertexId( QgsVertexId id ) const;
 

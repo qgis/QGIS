@@ -41,7 +41,8 @@
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsMapRendererJob class.
  * It will do some performance testing too
  *
@@ -69,10 +70,12 @@ class TestQgsMapRendererJob : public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
-    /** This method tests render perfomance */
+    /**
+     * This method tests render perfomance */
     void performanceTest();
 
-    /** This unit test checks if rendering of adjacent tiles (e.g. to render images for tile caches)
+    /**
+     * This unit test checks if rendering of adjacent tiles (e.g. to render images for tile caches)
      * does not result in border effects
      */
     void testFourAdjacentTiles_data();

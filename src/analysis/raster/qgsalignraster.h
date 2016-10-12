@@ -27,7 +27,8 @@ class QgsRectangle;
 typedef void* GDALDatasetH;
 
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * @brief QgsAlignRaster takes one or more raster layers and warps (resamples) them
  * so they have the same:
  * - coordinate reference system

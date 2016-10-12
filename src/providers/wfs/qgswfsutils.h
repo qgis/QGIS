@@ -22,26 +22,33 @@
 #include <QMutex>
 #include <QSharedMemory>
 
-/** Utility class to deal mostly with the management of the temporary directory
+/**
+ * Utility class to deal mostly with the management of the temporary directory
     that holds the on-disk cache. */
 class QgsWFSUtils
 {
   public:
-    /** Return the name of temporary directory. */
+    /**
+     * Return the name of temporary directory. */
     static QString acquireCacheDirectory();
 
-    /** To be called when a temporary file is removed from the directory */
+    /**
+     * To be called when a temporary file is removed from the directory */
     static void releaseCacheDirectory();
 
-    /** Initial cleanup. */
+    /**
+     * Initial cleanup. */
     static void init();
 
-    /** Removes a possible namespace prefix from a typename*/
+    /**
+     * Removes a possible namespace prefix from a typename*/
     static QString removeNamespacePrefix( const QString& tname );
-    /** Returns namespace prefix (or an empty string if there is no prefix)*/
+    /**
+     * Returns namespace prefix (or an empty string if there is no prefix)*/
     static QString nameSpacePrefix( const QString& tname );
 
-    /** Return a unique identifier made from feature content */
+    /**
+     * Return a unique identifier made from feature content */
     static QString getMD5( const QgsFeature& f );
 
   protected:
@@ -54,16 +61,19 @@ class QgsWFSUtils
     static bool gmKeepAliveWorks;
     static int gmCounter;
 
-    /** Return the name of temporary directory. */
+    /**
+     * Return the name of temporary directory. */
     static QString getCacheDirectory( bool createIfNotExisting );
 
     static QString getBaseCacheDirectory( bool createIfNotExisting );
 
-    /** Remove (recursively) a directory. */
+    /**
+     * Remove (recursively) a directory. */
     static bool removeDir( const QString &dirName );
 };
 
-/** For internal use of QgsWFSUtils */
+/**
+ * For internal use of QgsWFSUtils */
 class QgsWFSUtilsKeepAlive: public QThread
 {
     Q_OBJECT

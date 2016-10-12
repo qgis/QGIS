@@ -23,7 +23,8 @@
 
 class QStandardItem;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * A dialog to enter properties of composer legend items (currently only item text)
  * */
 class QgsComposerLegendItemDialog: public QDialog, private Ui::QgsComposerLegendItemDialogBase
@@ -34,7 +35,8 @@ class QgsComposerLegendItemDialog: public QDialog, private Ui::QgsComposerLegend
     QgsComposerLegendItemDialog( const QStandardItem* item, QWidget* parent = nullptr );
     ~QgsComposerLegendItemDialog();
 
-    /** Returns the item text inserted by user*/
+    /**
+     * Returns the item text inserted by user*/
     QString itemText() const;
 
   private:

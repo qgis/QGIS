@@ -55,13 +55,16 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     Q_OBJECT
 
   public:
-    /** \brief Constructor called when button is pressed in the plugin toolbar */
+    /**
+     * \brief Constructor called when button is pressed in the plugin toolbar */
     eVisGenericEventBrowserGui( QWidget* parent, QgisInterface* interface, Qt::WindowFlags fl );
 
-    /** \brief Constructor called when new browser is requested by the eVisEventIdTool */
+    /**
+     * \brief Constructor called when new browser is requested by the eVisEventIdTool */
     eVisGenericEventBrowserGui( QWidget* parent, QgsMapCanvas* canvas, Qt::WindowFlags fl );
 
-    /** \Brief Destructor */
+    /**
+     * \Brief Destructor */
     ~eVisGenericEventBrowserGui();
 
   protected:
@@ -69,86 +72,113 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
 
   private:
     //Variables
-    /** \brief A flag to bypass some signal/slots during gui initialization */
+    /**
+     * \brief A flag to bypass some signal/slots during gui initialization */
     bool mIgnoreEvent;
 
-    /** \brief Pointer to the main configurations object */
+    /**
+     * \brief Pointer to the main configurations object */
     eVisConfiguration mConfiguration;
 
-    /** \brief Flag indicating if the browser fully initialized */
+    /**
+     * \brief Flag indicating if the browser fully initialized */
     bool mBrowserInitialized;
 
-    /** \brief Index of the attribute field name that closest 'matches' configuration of the parameter */
+    /**
+     * \brief Index of the attribute field name that closest 'matches' configuration of the parameter */
     int mDefaultCompassBearingField;
 
-    /** \brief Index of the attribute field name that closest 'matches' configuration of the parameter */
+    /**
+     * \brief Index of the attribute field name that closest 'matches' configuration of the parameter */
     int mDefaultCompassOffsetField;
 
-    /** \brief Index of the attribute field name that closest 'matches' configuration of the parameter */
+    /**
+     * \brief Index of the attribute field name that closest 'matches' configuration of the parameter */
     int mDefaultEventImagePathField;
 
-    /** \brief Pointer to the QgisInferface */
+    /**
+     * \brief Pointer to the QgisInferface */
     QgisInterface* mInterface;
 
-    /** \brief Pointer to the map canvas */
+    /**
+     * \brief Pointer to the map canvas */
     QgsMapCanvas* mCanvas;
 
-    /** \brief Pointer to the vector layer */
+    /**
+     * \brief Pointer to the vector layer */
     QgsVectorLayer* mVectorLayer;
 
-    /** \brief Pointer to the vector data provider */
+    /**
+     * \brief Pointer to the vector data provider */
     QgsVectorDataProvider* mDataProvider;
 
-    /** \brief QPixmap holding the default highlighting symbol */
+    /**
+     * \brief QPixmap holding the default highlighting symbol */
     QPixmap mHighlightSymbol;
 
-    /** \brief QPixmap holding the pointer highlighting symbol */
+    /**
+     * \brief QPixmap holding the pointer highlighting symbol */
     QPixmap mPointerSymbol;
 
-    /** \brief Compass bearing value for the current feature */
+    /**
+     * \brief Compass bearing value for the current feature */
     double mCompassBearing;
 
-    /** \brief Compass bearing offset retrieved from attribute */
+    /**
+     * \brief Compass bearing offset retrieved from attribute */
     double mCompassOffset;
 
-    /** \brief QString holding the path to the image for the current feature */
+    /**
+     * \brief QString holding the path to the image for the current feature */
     QString mEventImagePath;
 
-    /** \brief List of current select featured ids*/
+    /**
+     * \brief List of current select featured ids*/
     QList<QgsFeatureId> mFeatureIds;
 
-    /** \brief Index of selected feature being viewed, used to access mFeatureIds */
+    /**
+     * \brief Index of selected feature being viewed, used to access mFeatureIds */
     int mCurrentFeatureIndex;
 
-    /** \brief Current feature being viewed */
+    /**
+     * \brief Current feature being viewed */
     QgsFeature mFeature;
 
     //Methods
-    /** \brief Applies parameters on the Options tabs and saves the configuration */
+    /**
+     * \brief Applies parameters on the Options tabs and saves the configuration */
     void accept() override;
 
-    /** \brief Modifies the Event Image Path according to the local and global settings */
+    /**
+     * \brief Modifies the Event Image Path according to the local and global settings */
     void buildEventImagePath();
 
-    /** \brief Method that loads the image in the browser */
+    /**
+     * \brief Method that loads the image in the browser */
     void displayImage();
 
-    /** \brief Generic method to get a feature by id. Access mLocalFeatureList when layer is of type delimitedtext otherwise calls existing methods in mDataProvider */
+    /**
+     * \brief Generic method to get a feature by id. Access mLocalFeatureList when layer is of type delimitedtext otherwise calls existing methods in mDataProvider */
     QgsFeature* featureAtId( QgsFeatureId );
 
-    /** \brief Functionality common to both constructors */
+    /**
+     * \brief Functionality common to both constructors */
     bool initBrowser();
 
-    /** \brief Set all of the gui objects based on the current configuration*/
+    /**
+     * \brief Set all of the gui objects based on the current configuration*/
     void initOptionsTab();
 
-    /** \brief Method called to load data into the browser */
+    /**
+     * \brief Method called to load data into the browser */
     void loadRecord();
 
-    /** \brief Reset all gui items on the options tab to a 'system default' */
+    /**
+     * \brief Reset all gui items on the options tab to a 'system default' */
     void restoreDefaultOptions();
 
-    /** \brief Sets the base path to the path of the data source */
+    /**
+     * \brief Sets the base path to the path of the data source */
     void setBasePathToDataSource();
 
   private slots:
@@ -176,7 +206,8 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     void on_pbtnResetUseOnlyFilenameData_clicked();
     void on_rbtnManualCompassOffset_toggled( bool );
     void on_tableFileTypeAssociations_cellDoubleClicked( int, int );
-    /** \brief Slot called when the map canvas is done refreshing. Draws the highlighting symbol over the current selected feature */
+    /**
+     * \brief Slot called when the map canvas is done refreshing. Draws the highlighting symbol over the current selected feature */
     void renderSymbol( QPainter* );
 };
 #endif

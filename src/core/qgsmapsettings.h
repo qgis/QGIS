@@ -37,7 +37,8 @@ class QgsMapRendererJob;
 class QgsMapLayer;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * The QgsMapSettings class contains configuration for rendering of the map.
  * The rendering itself is done by QgsMapRendererJob subclasses.
  *
@@ -114,14 +115,16 @@ class CORE_EXPORT QgsMapSettings
     //! @note added in 2.8
     void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
 
-    /** Get custom rendering flags. Layers might honour these to alter their rendering.
+    /**
+     * Get custom rendering flags. Layers might honour these to alter their rendering.
      *  @returns custom flags strings, separated by ';'
      * @note added in QGIS 2.16
      * @see setCustomRenderFlags()
      */
     QString customRenderFlags() const { return mCustomRenderFlags; }
 
-    /** Sets the custom rendering flags. Layers might honour these to alter their rendering.
+    /**
+     * Sets the custom rendering flags. Layers might honour these to alter their rendering.
      * @param customRenderFlags custom flags strings, separated by ';'
      * @note added in QGIS 2.16
      * @see customRenderFlags()
@@ -196,14 +199,16 @@ class CORE_EXPORT QgsMapSettings
     //! Return the calculated scale of the map
     double scale() const;
 
-    /** Sets the expression context. This context is used for all expression evaluation
+    /**
+     * Sets the expression context. This context is used for all expression evaluation
      * associated with this map settings.
      * @see expressionContext()
      * @note added in QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext& context ) { mExpressionContext = context; }
 
-    /** Gets the expression context. This context should be used for all expression evaluation
+    /**
+     * Gets the expression context. This context should be used for all expression evaluation
      * associated with this map settings.
      * @see setExpressionContext()
      * @note added in QGIS 2.12
@@ -218,7 +223,8 @@ class CORE_EXPORT QgsMapSettings
 
     const QgsMapToPixel& mapToPixel() const { return mMapToPixel; }
 
-    /** Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
+    /**
+     * Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
      * @param theLayer The layer
      * @param referenceExtent A reference extent based on which to perform the computation. If not specified, the layer extent is used
      * @note added in QGIS 2.12
@@ -281,15 +287,19 @@ class CORE_EXPORT QgsMapSettings
 
     void writeXml( QDomNode& theNode, QDomDocument& theDoc );
 
-    /** Sets the segmentation tolerance applied when rendering curved geometries
+    /**
+     * Sets the segmentation tolerance applied when rendering curved geometries
     @param tolerance the segmentation tolerance*/
     void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
-    /** Gets the segmentation tolerance applied when rendering curved geometries*/
+    /**
+     * Gets the segmentation tolerance applied when rendering curved geometries*/
     double segmentationTolerance() const { return mSegmentationTolerance; }
-    /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+    /**
+     * Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     @param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
-    /** Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)*/
+    /**
+     * Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)*/
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
 
   protected:

@@ -24,7 +24,8 @@
 class QgsMapCanvas;
 class QgsMapLayer;
 
-/** A dialog to enter advanced editing properties, e.g. topological editing, snapping settings
+/**
+ * A dialog to enter advanced editing properties, e.g. topological editing, snapping settings
 for the individual layers*/
 class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
 {
@@ -63,7 +64,8 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
     void emitProjectSnapSettingsChanged();
 
   protected:
-    /** Constructor
+    /**
+     * Constructor
      * @param canvas pointer to the map canvas (for detecting which vector layers are loaded
      */
     //QgsSnappingDialog( QgsMapCanvas* canvas );
@@ -81,21 +83,26 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
     void reload();
 
   private:
-    /** Default constructor forbidden*/
+    /**
+     * Default constructor forbidden*/
     QgsSnappingDialog();
 
-    /** Stores ids of layers where intersections of new polygons is considered. Is passed to / read from QgsAvoidIntersectionsDialog*/
+    /**
+     * Stores ids of layers where intersections of new polygons is considered. Is passed to / read from QgsAvoidIntersectionsDialog*/
     QSet<QString> mAvoidIntersectionsSettings;
 
-    /** Used to query the loaded layers*/
+    /**
+     * Used to query the loaded layers*/
     QgsMapCanvas* mMapCanvas;
 
     QgsDockWidget *mDock;
 
-    /** Set checkbox value based on project setting*/
+    /**
+     * Set checkbox value based on project setting*/
     void setTopologicalEditingState();
 
-    /** Set checkbox value based on project setting*/
+    /**
+     * Set checkbox value based on project setting*/
     void setIntersectionSnappingState();
 
     void setSnappingMode();

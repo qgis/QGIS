@@ -22,20 +22,26 @@
 
 class NormVecDecorator;
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * This is an implementation of a Clough-Tocher interpolator based on a triangular tessellation. The derivatives orthogonal to the boundary curves are interpolated linearly along a triangle edge.*/
 class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
 {
   protected:
-    /** Association with a triangulation object*/
+    /**
+     * Association with a triangulation object*/
     NormVecDecorator* mTIN;
-    /** Tolerance of the barycentric coordinates at the borders of the triangles (to prevent errors because of very small negativ baricentric coordinates)*/
+    /**
+     * Tolerance of the barycentric coordinates at the borders of the triangles (to prevent errors because of very small negativ baricentric coordinates)*/
     double mEdgeTolerance;
-    /** First point of the triangle in x-,y-,z-coordinates*/
+    /**
+     * First point of the triangle in x-,y-,z-coordinates*/
     Point3D point1;
-    /** Second point of the triangle in x-,y-,z-coordinates*/
+    /**
+     * Second point of the triangle in x-,y-,z-coordinates*/
     Point3D point2;
-    /** Third point of the triangle in x-,y-,z-coordinates*/
+    /**
+     * Third point of the triangle in x-,y-,z-coordinates*/
     Point3D point3;
     Point3D cp1;
     Point3D cp2;
@@ -53,39 +59,55 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     Point3D cp14;
     Point3D cp15;
     Point3D cp16;
-    /** Derivative in x-direction at point1*/
+    /**
+     * Derivative in x-direction at point1*/
     double der1X;
-    /** Derivative in y-direction at point1*/
+    /**
+     * Derivative in y-direction at point1*/
     double der1Y;
-    /** Derivative in x-direction at point2*/
+    /**
+     * Derivative in x-direction at point2*/
     double der2X;
-    /** Derivative in y-direction at point2*/
+    /**
+     * Derivative in y-direction at point2*/
     double der2Y;
-    /** Derivative in x-direction at point3*/
+    /**
+     * Derivative in x-direction at point3*/
     double der3X;
-    /** Derivative in y-direction at point3*/
+    /**
+     * Derivative in y-direction at point3*/
     double der3Y;
-    /** Stores point1 of the last run*/
+    /**
+     * Stores point1 of the last run*/
     Point3D lpoint1;
-    /** Stores point2 of the last run*/
+    /**
+     * Stores point2 of the last run*/
     Point3D lpoint2;
-    /** Stores point3 of the last run*/
+    /**
+     * Stores point3 of the last run*/
     Point3D lpoint3;
-    /** Finds out, in which triangle the point with the coordinates x and y is*/
+    /**
+     * Finds out, in which triangle the point with the coordinates x and y is*/
     void init( double x, double y );
-    /** Calculates the Bernsteinpolynomials to calculate the Beziertriangle. 'n' is three in the cubical case, 'i', 'j', 'k' are the indices of the controllpoint and 'u', 'v', 'w' are the barycentric coordinates of the point*/
+    /**
+     * Calculates the Bernsteinpolynomials to calculate the Beziertriangle. 'n' is three in the cubical case, 'i', 'j', 'k' are the indices of the controllpoint and 'u', 'v', 'w' are the barycentric coordinates of the point*/
     double calcBernsteinPoly( int n, int i, int j, int k, double u, double v, double w );
 
   public:
-    /** Standard constructor*/
+    /**
+     * Standard constructor*/
     CloughTocherInterpolator();
-    /** Constructor with a pointer to the triangulation as argument*/
+    /**
+     * Constructor with a pointer to the triangulation as argument*/
     CloughTocherInterpolator( NormVecDecorator* tin );
-    /** Destructor*/
+    /**
+     * Destructor*/
     virtual ~CloughTocherInterpolator();
-    /** Calculates the normal vector and assigns it to vec (not implemented at the moment)*/
+    /**
+     * Calculates the normal vector and assigns it to vec (not implemented at the moment)*/
     virtual bool calcNormVec( double x, double y, Vector3D* result ) override;
-    /** Performs a linear interpolation in a triangle and assigns the x-,y- and z-coordinates to point*/
+    /**
+     * Performs a linear interpolation in a triangle and assigns the x-,y- and z-coordinates to point*/
     virtual bool calcPoint( double x, double y, Point3D* result ) override;
     virtual void setTriangulation( NormVecDecorator* tin );
 };

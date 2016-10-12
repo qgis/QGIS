@@ -24,7 +24,8 @@ class QgsDxfPaintEngine;
 class QgsDxfExport;
 class QPaintEngine;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A paint device for drawing into dxf files.
  * @note not available in Python bindings
 */
@@ -40,10 +41,12 @@ class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
     void setDrawingSize( QSizeF size ) { mDrawingSize = size; }
     void setOutputSize( const QRectF& r ) { mRectangle = r; }
 
-    /** Returns scale factor for line width*/
+    /**
+     * Returns scale factor for line width*/
     double widthScaleFactor() const;
 
-    /** Converts a point from device coordinates to dxf coordinates*/
+    /**
+     * Converts a point from device coordinates to dxf coordinates*/
     QPointF dxfCoordinates( QPointF pt ) const;
 
     /*int height() const { return mDrawingSize.height(); }

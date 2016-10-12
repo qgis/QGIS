@@ -100,7 +100,8 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
     static QVariant nonEditableValue( int layerNumber );
 
   public slots:
-    /** Cancel iterator, iterator will be closed on next occasion, probably when next getFeature() gets called.
+    /**
+     * Cancel iterator, iterator will be closed on next occasion, probably when next getFeature() gets called.
      * This function can be called directly from other threads (setting bool is atomic) */
     void cancel();
 
@@ -110,30 +111,35 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
     //void lock();
     //void unlock();
 
-    /** Reset selection */
+    /**
+     * Reset selection */
     void resetSelection( bool value );
 
     void setSelectionRect( const QgsRectangle& rect, bool useIntersect );
 
     void setFeatureGeometry( QgsFeature& feature, int id, int type );
 
-    /** Set feature attributes.
+    /**
+     * Set feature attributes.
      *  @param feature
      *  @param cat category number
      */
     void setFeatureAttributes( int cat, QgsFeature *feature, QgsGrassVectorMap::TopoSymbol symbol );
 
-    /** Set feature attributes.
+    /**
+     * Set feature attributes.
      *  @param feature
      *  @param cat category number
      *  @param attlist a list containing the index number of the fields to set
      */
     void setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList & attlist, QgsGrassVectorMap::TopoSymbol symbol );
 
-    /** Canceled -> close when possible */
+    /**
+     * Canceled -> close when possible */
     bool mCanceled;
 
-    /** Selection array */
+    /**
+     * Selection array */
     QBitArray mSelection; // !UPDATE!
 
     // Edit mode is using mNextLid + mNextCidx

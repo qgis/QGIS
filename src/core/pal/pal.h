@@ -44,7 +44,8 @@ class QgsAbstractLabelProvider;
 
 namespace pal
 {
-  /** Get GEOS context handle to be used in all GEOS library calls with reentrant API */
+  /**
+   * Get GEOS context handle to be used in all GEOS library calls with reentrant API */
   GEOSContextHandle_t geosContext();
 
   class Layer;
@@ -53,7 +54,8 @@ namespace pal
   class Problem;
   class PointSet;
 
-  /** Search method to use */
+  /**
+   * Search method to use */
   enum SearchMethod
   {
     CHAIN = 0, /**< is the worst but fastest method */
@@ -63,7 +65,8 @@ namespace pal
     FALP = 4 /** only initial solution */
   };
 
-  /** Enumeration line arrangement flags. Flags can be combined. */
+  /**
+   * Enumeration line arrangement flags. Flags can be combined. */
   enum LineArrangementFlag
   {
     FLAG_ON_LINE     = 1,
@@ -73,7 +76,8 @@ namespace pal
   };
   Q_DECLARE_FLAGS( LineArrangementFlags, LineArrangementFlag )
 
-  /** \ingroup core
+  /**
+   * \ingroup core
    *  \brief Main Pal labelling class
    *
    *  A pal object will contains layers and global information such as which search method
@@ -137,10 +141,12 @@ namespace pal
 
       typedef bool ( *FnIsCancelled )( void* ctx );
 
-      /** Register a function that returns whether this job has been cancelled - PAL calls it during the computation */
+      /**
+       * Register a function that returns whether this job has been cancelled - PAL calls it during the computation */
       void registerCancellationCallback( FnIsCancelled fnCancelled, void* context );
 
-      /** Check whether the job has been cancelled */
+      /**
+       * Check whether the job has been cancelled */
       inline bool isCancelled() { return fnIsCancelled ? fnIsCancelled( fnIsCancelledContext ) : false; }
 
       Problem* extractProblem( double bbox[4] );
@@ -257,9 +263,11 @@ namespace pal
        */
       bool showPartial;
 
-      /** Callback that may be called from PAL to check whether the job has not been cancelled in meanwhile */
+      /**
+       * Callback that may be called from PAL to check whether the job has not been cancelled in meanwhile */
       FnIsCancelled fnIsCancelled;
-      /** Application-specific context for the cancellation check function */
+      /**
+       * Application-specific context for the cancellation check function */
       void* fnIsCancelledContext;
 
       /**

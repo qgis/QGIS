@@ -24,7 +24,8 @@
 
 class QgsRenderContext;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsPaintEffect
  * \brief Base class for visual effects which can be applied to QPicture drawings
  *
@@ -52,7 +53,8 @@ class CORE_EXPORT QgsPaintEffect
 
   public:
 
-    /** Drawing modes for effects. These modes are used only when effects are
+    /**
+     * Drawing modes for effects. These modes are used only when effects are
      * drawn as part of an effects stack
      * @see QgsEffectStack
      */
@@ -67,17 +69,20 @@ class CORE_EXPORT QgsPaintEffect
     QgsPaintEffect( const QgsPaintEffect& other );
     virtual ~QgsPaintEffect();
 
-    /** Returns the effect type.
+    /**
+     * Returns the effect type.
      * @returns unique string representation of the effect type
      */
     virtual QString type() const = 0;
 
-    /** Duplicates an effect by creating a deep copy of the effect
+    /**
+     * Duplicates an effect by creating a deep copy of the effect
      * @returns clone of paint effect
      */
     virtual QgsPaintEffect* clone() const = 0;
 
-    /** Returns the properties describing the paint effect encoded in a
+    /**
+     * Returns the properties describing the paint effect encoded in a
      * string format.
      * @returns string map of properties, in the form property key, value
      * @see readProperties
@@ -85,14 +90,16 @@ class CORE_EXPORT QgsPaintEffect
      */
     virtual QgsStringMap properties() const = 0;
 
-    /** Reads a string map of an effect's properties and restores the effect
+    /**
+     * Reads a string map of an effect's properties and restores the effect
      * to the state described by the properties map.
      * @param props effect properties encoded in a string map
      * @see properties
      */
     virtual void readProperties( const QgsStringMap& props ) = 0;
 
-    /** Saves the current state of the effect to a DOM element. The default
+    /**
+     * Saves the current state of the effect to a DOM element. The default
      * behaviour is to save the properties string map returned by
      * @link properties @endlink.
      * @param doc destination DOM document
@@ -102,21 +109,24 @@ class CORE_EXPORT QgsPaintEffect
      */
     virtual bool saveProperties( QDomDocument& doc, QDomElement& element ) const;
 
-    /** Restores the effect to the state described by a DOM element.
+    /**
+     * Restores the effect to the state described by a DOM element.
      * @param element DOM element describing an effect's state
      * @returns true if read was successful
      * @see saveProperties
      */
     virtual bool readProperties( const QDomElement& element );
 
-    /** Renders a picture using the effect.
+    /**
+     * Renders a picture using the effect.
      * @param picture source QPicture to render
      * @param context destination render context
      * @see begin
      */
     virtual void render( QPicture& picture, QgsRenderContext& context );
 
-    /** Begins intercepting paint operations to a render context. When the corresponding
+    /**
+     * Begins intercepting paint operations to a render context. When the corresponding
      * @link end @endlink member is called all intercepted paint operations will be
      * drawn to the render context after being modified by the effect.
      * @param context destination render context
@@ -125,33 +135,38 @@ class CORE_EXPORT QgsPaintEffect
      */
     virtual void begin( QgsRenderContext& context );
 
-    /** Ends interception of paint operations to a render context, and draws the result
+    /**
+     * Ends interception of paint operations to a render context, and draws the result
      * to the render context after being modified by the effect.
      * @param context destination render context
      * @see begin
      */
     virtual void end( QgsRenderContext& context );
 
-    /** Returns whether the effect is enabled
+    /**
+     * Returns whether the effect is enabled
      * @returns true if effect is enabled
      * @see setEnabled
      */
     bool enabled() const { return mEnabled; }
 
-    /** Sets whether the effect is enabled
+    /**
+     * Sets whether the effect is enabled
      * @param enabled set to false to disable the effect
      * @see enabled
      */
     void setEnabled( const bool enabled );
 
-    /** Returns the draw mode for the effect. This property only has an
+    /**
+     * Returns the draw mode for the effect. This property only has an
      * effect if the paint effect is used in a @link QgsEffectStack @endlink
      * @returns draw mode for effect
      * @see setDrawMode
      */
     DrawMode drawMode() const { return mDrawMode; }
 
-    /** Sets the draw mode for the effect. This property only has an
+    /**
+     * Sets the draw mode for the effect. This property only has an
      * effect if the paint effect is used in a @link QgsEffectStack @endlink
      * @param drawMode draw mode for effect
      * @see drawMode
@@ -164,7 +179,8 @@ class CORE_EXPORT QgsPaintEffect
     DrawMode mDrawMode;
     bool requiresQPainterDpiFix;
 
-    /** Handles drawing of the effect's result on to the specified render context.
+    /**
+     * Handles drawing of the effect's result on to the specified render context.
      * Derived classes must reimplement this method to apply any transformations to
      * the source QPicture and draw the result using the context's painter.
      * @param context destination render context
@@ -172,7 +188,8 @@ class CORE_EXPORT QgsPaintEffect
      */
     virtual void draw( QgsRenderContext& context ) = 0;
 
-    /** Draws the source QPicture onto the specified painter. Handles scaling of the picture
+    /**
+     * Draws the source QPicture onto the specified painter. Handles scaling of the picture
      * to account for the destination painter's DPI.
      * @param painter destination painter
      * @see source
@@ -180,7 +197,8 @@ class CORE_EXPORT QgsPaintEffect
      */
     void drawSource( QPainter& painter );
 
-    /** Returns the source QPicture. The @link draw @endlink member can utilise this when
+    /**
+     * Returns the source QPicture. The @link draw @endlink member can utilise this when
      * drawing the effect.
      * @returns source QPicture
      * @see drawSource
@@ -188,7 +206,8 @@ class CORE_EXPORT QgsPaintEffect
      */
     const QPicture* source() const { return mPicture; }
 
-    /** Returns the source QPicture rendered to a new QImage. The @link draw @endlink member can
+    /**
+     * Returns the source QPicture rendered to a new QImage. The @link draw @endlink member can
      * utilise this when drawing the effect. The image will be padded or cropped from the original
      * source QPicture by the results of the @link boundingRect @endlink method.
      * The result is cached to speed up subsequent calls to sourceAsImage.
@@ -200,7 +219,8 @@ class CORE_EXPORT QgsPaintEffect
      */
     QImage* sourceAsImage( QgsRenderContext &context );
 
-    /** Returns the offset which should be used when drawing the source image on to a destination
+    /**
+     * Returns the offset which should be used when drawing the source image on to a destination
      * render context.
      * @param context destination render context
      * @returns point offset for image top left corner
@@ -208,7 +228,8 @@ class CORE_EXPORT QgsPaintEffect
      */
     QPointF imageOffset( const QgsRenderContext& context ) const;
 
-    /** Returns the bounding rect required for drawing the effect. This method can be used
+    /**
+     * Returns the bounding rect required for drawing the effect. This method can be used
      * to expand the bounding rect of a source picture to account for offset or blurring
      * effects.
      * @param rect original source bounding rect
@@ -218,7 +239,8 @@ class CORE_EXPORT QgsPaintEffect
      */
     virtual QRectF boundingRect( const QRectF& rect, const QgsRenderContext& context ) const;
 
-    /** Applies a workaround to a QPainter to avoid an issue with incorrect scaling
+    /**
+     * Applies a workaround to a QPainter to avoid an issue with incorrect scaling
      * when drawing QPictures. This may need to be called by derived classes prior
      * to rendering results onto a painter.
      * @param painter destination painter
@@ -241,7 +263,8 @@ class CORE_EXPORT QgsPaintEffect
 
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsDrawSourceEffect
  * \brief A paint effect which draws the source picture with minor or no alterations
  *
@@ -260,7 +283,8 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
     QgsDrawSourceEffect();
     virtual ~QgsDrawSourceEffect();
 
-    /** Creates a new QgsDrawSource effect from a properties string map.
+    /**
+     * Creates a new QgsDrawSource effect from a properties string map.
      * @param map encoded properties string map
      * @returns new QgsDrawSourceEffect
      */
@@ -271,28 +295,32 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap& props ) override;
 
-    /** Sets the transparency for the effect
+    /**
+     * Sets the transparency for the effect
      * @param transparency double between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see transparency
      */
     void setTransparency( const double transparency ) { mTransparency = transparency; }
 
-    /** Returns the transparency for the effect
+    /**
+     * Returns the transparency for the effect
      * @returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see setTransparency
      */
     double transparency() const { return mTransparency; }
 
-    /** Sets the blend mode for the effect
+    /**
+     * Sets the blend mode for the effect
      * @param mode blend mode used for drawing the source on to a destination
      * paint device
      * @see blendMode
      */
     void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
 
-    /** Returns the blend mode for the effect
+    /**
+     * Returns the blend mode for the effect
      * @returns blend mode used for drawing the source on to a destination
      * paint device
      * @see setBlendMode

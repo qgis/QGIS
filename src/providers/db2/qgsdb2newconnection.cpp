@@ -79,7 +79,8 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connNa
   }
 }
 
-/** Autoconnected SLOTS **/
+/**
+ * Autoconnected SLOTS **/
 void QgsDb2NewConnection::accept()
 {
   QSettings settings;
@@ -147,7 +148,8 @@ void QgsDb2NewConnection::on_cb_trustedConnection_clicked()
 
 }
 
-/** End  Autoconnected SLOTS **/
+/**
+ * End  Autoconnected SLOTS **/
 
 QgsDb2NewConnection::~QgsDb2NewConnection()
 {

@@ -23,7 +23,8 @@
 class QgsContrastEnhancement;
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Renderer for multiband images with the color components
 */
 class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
@@ -47,15 +48,18 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     void setBlueBand( int band ) { mBlueBand = band; }
 
     const QgsContrastEnhancement* redContrastEnhancement() const { return mRedContrastEnhancement; }
-    /** Takes ownership*/
+    /**
+     * Takes ownership*/
     void setRedContrastEnhancement( QgsContrastEnhancement* ce );
 
     const QgsContrastEnhancement* greenContrastEnhancement() const { return mGreenContrastEnhancement; }
-    /** Takes ownership*/
+    /**
+     * Takes ownership*/
     void setGreenContrastEnhancement( QgsContrastEnhancement* ce );
 
     const QgsContrastEnhancement* blueContrastEnhancement() const { return mBlueContrastEnhancement; }
-    /** Takes ownership*/
+    /**
+     * Takes ownership*/
     void setBlueContrastEnhancement( QgsContrastEnhancement* ce );
 
     void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;

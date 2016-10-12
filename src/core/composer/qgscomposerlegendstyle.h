@@ -24,7 +24,8 @@
 #include <QDomElement>
 #include <QDomDocument>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Composer legend components style
  */
 class CORE_EXPORT QgsComposerLegendStyle
@@ -63,13 +64,16 @@ class CORE_EXPORT QgsComposerLegendStyle
 
     void readXml( const QDomElement& elem, const QDomDocument& doc );
 
-    /** Get name for style, used in project file */
+    /**
+     * Get name for style, used in project file */
     static QString styleName( Style s );
 
-    /** Get style from name, used in project file */
+    /**
+     * Get style from name, used in project file */
     static Style styleFromName( const QString& styleName );
 
-    /** Get style label, translated, used in UI */
+    /**
+     * Get style label, translated, used in UI */
     static QString styleLabel( Style s );
 
   private:

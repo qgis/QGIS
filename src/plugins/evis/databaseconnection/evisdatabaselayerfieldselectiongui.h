@@ -41,10 +41,12 @@ class eVisDatabaseLayerFieldSelectionGui : public QDialog, private Ui::eVisDatab
     Q_OBJECT
 
   public:
-    /** \brief Constructor */
+    /**
+     * \brief Constructor */
     eVisDatabaseLayerFieldSelectionGui( QWidget* parent, Qt::WindowFlags fl );
 
-    /** \brief Public method that sets the contents of the combo boxes with the available field names */
+    /**
+     * \brief Public method that sets the contents of the combo boxes with the available field names */
     void setFieldList( QStringList* );
 
   public slots:
@@ -52,7 +54,8 @@ class eVisDatabaseLayerFieldSelectionGui : public QDialog, private Ui::eVisDatab
     void on_buttonBox_rejected();
 
   signals:
-    /** \brief Signal emitted when the user has entered the layername, selected the field names, and pressed the accept button */
+    /**
+     * \brief Signal emitted when the user has entered the layername, selected the field names, and pressed the accept button */
     void eVisDatabaseLayerFieldsSelected( const QString&, const QString&, const QString& );
 };
 #endif

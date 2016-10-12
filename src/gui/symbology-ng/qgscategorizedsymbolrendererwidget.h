@@ -62,7 +62,8 @@ class GUI_EXPORT QgsCategorizedSymbolRendererModel : public QAbstractItemModel
     QString mMimeFormat;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * View style which shows drop indicator line between items
  */
 class QgsCategorizedSymbolRendererViewStyle: public QProxyStyle
@@ -77,7 +78,8 @@ class QgsCategorizedSymbolRendererViewStyle: public QProxyStyle
 
 ///@endcond
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsCategorizedSymbolRendererWidget
  */
 class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, private Ui::QgsCategorizedSymbolRendererWidget, private QgsExpressionContextGenerator
@@ -91,7 +93,8 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 
     virtual QgsFeatureRenderer* renderer() override;
 
-    /** Replaces category symbols with the symbols from a style that have a matching
+    /**
+     * Replaces category symbols with the symbols from a style that have a matching
      * name.
      * @param style style containing symbols to match with
      * @return number of symbols matched
@@ -115,7 +118,8 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 
     void rowsMoved();
 
-    /** Replaces category symbols with the symbols from the users' symbol library that have a
+    /**
+     * Replaces category symbols with the symbols from the users' symbol library that have a
      * matching name.
      * @see matchToSymbolsFromXml
      * @see matchToSymbols
@@ -123,7 +127,8 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
      */
     void matchToSymbolsFromLibrary();
 
-    /** Prompts for selection of an xml file, then replaces category symbols with the symbols
+    /**
+     * Prompts for selection of an xml file, then replaces category symbols with the symbols
      * from the XML file with a matching name.
      * @see matchToSymbolsFromLibrary
      * @see matchToSymbols

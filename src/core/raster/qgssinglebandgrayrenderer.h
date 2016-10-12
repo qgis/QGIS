@@ -23,7 +23,8 @@
 class QgsContrastEnhancement;
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Raster renderer pipe for single band gray.
   */
 class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
@@ -46,7 +47,8 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     int grayBand() const { return mGrayBand; }
     void setGrayBand( int band ) { mGrayBand = band; }
     const QgsContrastEnhancement* contrastEnhancement() const { return mContrastEnhancement; }
-    /** Takes ownership*/
+    /**
+     * Takes ownership*/
     void setContrastEnhancement( QgsContrastEnhancement* ce );
 
     void setGradient( Gradient theGradient ) { mGradient = theGradient; }

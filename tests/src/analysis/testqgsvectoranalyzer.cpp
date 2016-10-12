@@ -36,7 +36,8 @@ class TestQgsVectorAnalyzer : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init() ;// will be called before each testfunction is executed.
     void cleanup() ;// will be called after every testfunction.
-    /** Our tests proper begin here */
+    /**
+     * Our tests proper begin here */
     void singleToMulti();
     void multiToSingle();
     void extractNodes();

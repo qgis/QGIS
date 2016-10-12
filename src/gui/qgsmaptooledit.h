@@ -24,7 +24,8 @@ class QgsGeometryRubberBand;
 class QgsVectorLayer;
 class QKeyEvent;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Base class for map tools that edit vector geometry
 */
 class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
@@ -39,7 +40,8 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
 
   protected:
 
-    /** Creates a rubber band with the color/line width from
+    /**
+     * Creates a rubber band with the color/line width from
      *   the QGIS settings. The caller takes ownership of the
      *   returned object
      *   @param geometryType
@@ -49,18 +51,22 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
 
     QgsGeometryRubberBand* createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const;
 
-    /** Returns the current vector layer of the map canvas or 0*/
+    /**
+     * Returns the current vector layer of the map canvas or 0*/
     QgsVectorLayer* currentVectorLayer();
 
-    /** Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
+    /**
+     * Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
      * @param geom list of points (in layer coordinate system)
      * @return 0 in case of success
      */
     int addTopologicalPoints( const QList<QgsPoint>& geom );
 
-    /** Display a timed message bar noting the active layer is not vector. */
+    /**
+     * Display a timed message bar noting the active layer is not vector. */
     void notifyNotVectorLayer();
-    /** Display a timed message bar noting the active vector layer is not editable. */
+    /**
+     * Display a timed message bar noting the active vector layer is not editable. */
     void notifyNotEditableLayer();
 };
 

@@ -28,7 +28,8 @@ class QgsFeatureRenderer;
 class QgsSymbolSelectorDialog;
 class QgsMapCanvas;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
   Base class for renderer settings widgets
 
 WORKFLOW:
@@ -52,20 +53,23 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     //! show a dialog with renderer's symbol level settings
     void showSymbolLevelsDialog( QgsFeatureRenderer* r );
 
-    /** Sets the context in which the renderer widget is shown, eg the associated map canvas and expression contexts.
+    /**
+     * Sets the context in which the renderer widget is shown, eg the associated map canvas and expression contexts.
      * @param context symbol widget context
      * @see context()
      * @note added in QGIS 3.0
      */
     virtual void setContext( const QgsSymbolWidgetContext& context );
 
-    /** Returns the context in which the renderer widget is shown, eg the associated map canvas and expression contexts.
+    /**
+     * Returns the context in which the renderer widget is shown, eg the associated map canvas and expression contexts.
      * @see setContext()
      * @note added in QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
 
-    /** Returns the vector layer associated with the widget.
+    /**
+     * Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
     const QgsVectorLayer* vectorLayer() const { return mLayer; }
@@ -93,24 +97,31 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     //! Context in which widget is shown
     QgsSymbolWidgetContext mContext;
 
-    /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
+    /**
+     * Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
       and by connecting the slot contextMenuViewCategories(const QPoint&)*/
     virtual QList<QgsSymbol*> selectedSymbols() { return QList<QgsSymbol*>(); }
     virtual void refreshSymbolView() {}
 
   protected slots:
     void  contextMenuViewCategories( QPoint p );
-    /** Change color of selected symbols*/
+    /**
+     * Change color of selected symbols*/
     void changeSymbolColor();
-    /** Change opacity of selected symbols*/
+    /**
+     * Change opacity of selected symbols*/
     void changeSymbolTransparency();
-    /** Change units mm/map units of selected symbols*/
+    /**
+     * Change units mm/map units of selected symbols*/
     void changeSymbolUnit();
-    /** Change line widths of selected symbols*/
+    /**
+     * Change line widths of selected symbols*/
     void changeSymbolWidth();
-    /** Change marker sizes of selected symbols*/
+    /**
+     * Change marker sizes of selected symbols*/
     void changeSymbolSize();
-    /** Change marker angles of selected symbols*/
+    /**
+     * Change marker angles of selected symbols*/
     void changeSymbolAngle();
 
     virtual void copy() {}
@@ -138,7 +149,8 @@ class QgsFields;
 #include "ui_widget_set_dd_value.h"
 #include "qgssizescalewidget.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
 Utility classes for "en masse" size definition
 */
 class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataDefinedValueDialog, private QgsExpressionContextGenerator
@@ -146,7 +158,8 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     Q_OBJECT
 
   public:
-    /** Constructor
+    /**
+     * Constructor
      * @param symbolList must not be empty
      * @param layer must not be null
      * @param label value label
@@ -154,20 +167,23 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     QgsDataDefinedValueDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer, const QString & label );
     virtual ~QgsDataDefinedValueDialog() {}
 
-    /** Sets the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+    /**
+     * Sets the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
      * @param context symbol widget context
      * @see context()
      * @note added in QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext& context );
 
-    /** Returns the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+    /**
+     * Returns the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
      * @see setContext()
      * @note added in QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
 
-    /** Returns the vector layer associated with the widget.
+    /**
+     * Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
     const QgsVectorLayer* vectorLayer() const { return mLayer; }
@@ -198,7 +214,8 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     QgsExpressionContext createExpressionContext() const override;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsDataDefinedSizeDialog
  */
 class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
@@ -221,7 +238,8 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
     void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) override;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsDataDefinedRotationDialog
  */
 class GUI_EXPORT QgsDataDefinedRotationDialog : public QgsDataDefinedValueDialog
@@ -242,7 +260,8 @@ class GUI_EXPORT QgsDataDefinedRotationDialog : public QgsDataDefinedValueDialog
     void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) override;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsDataDefinedWidthDialog
  */
 class GUI_EXPORT QgsDataDefinedWidthDialog : public QgsDataDefinedValueDialog

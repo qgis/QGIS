@@ -30,7 +30,8 @@
 class QgsStyle;
 class QgsStyleGroupSelectionDialog;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsStyleExportImportDialog
  */
 class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsStyleExportImportDialogBase

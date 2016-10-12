@@ -18,7 +18,8 @@
 
 #include "qgsexpression.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
 * \class QgsScaleExpression
 * \brief Class storing parameters of a scale expression, which is a subclass of
 * QgsExpression for expressions which return a size or width.
@@ -38,13 +39,15 @@ class CORE_EXPORT QgsScaleExpression : public QgsExpression
       Unknown
     };
 
-    /** Constructor for QgsScaleExpression which parses an expression string
+    /**
+     * Constructor for QgsScaleExpression which parses an expression string
      * to determine whether it's a scale expression
      * @param expression expression string
      */
     QgsScaleExpression( const QString &expression );
 
-    /** Constructor for QgsScaleExpression which creates an expression from
+    /**
+     * Constructor for QgsScaleExpression which creates an expression from
      * specified parameters
      * @param type scale method
      * @param baseExpression expression (or field) used for value
@@ -59,50 +62,59 @@ class CORE_EXPORT QgsScaleExpression : public QgsExpression
 
     operator bool() const { return ! mExpression.isEmpty(); }
 
-    /** Calculates the size corresponding to a specific value.
+    /**
+     * Calculates the size corresponding to a specific value.
      * @param value
      * @returns calculated size using expression's parameters and type
      */
     double size( double value ) const;
 
-    /** Returns the minimum size calculated by the expression
+    /**
+     * Returns the minimum size calculated by the expression
      * @see maxSize
      */
     double minSize() const { return mMinSize; }
 
-    /** Returns the maximum size calculated by the expression
+    /**
+     * Returns the maximum size calculated by the expression
      * @see minSize
      */
     double maxSize() const { return mMaxSize; }
 
-    /** Returns the minimum value expected by the expression. The minimum
+    /**
+     * Returns the minimum value expected by the expression. The minimum
      * value corresponds to the expression's minimum size.
      * @see maxValue
      */
     double minValue() const { return mMinValue; }
 
-    /** Returns the maximum value expected by the expression. The maximum
+    /**
+     * Returns the maximum value expected by the expression. The maximum
      * value corresponds to the expression's maximum size.
      * @see minValue
      */
     double maxValue() const { return mMaxValue; }
 
-    /** Returns the size value when expression evaluates to NULL.
+    /**
+     * Returns the size value when expression evaluates to NULL.
      * @see nullSize
      */
     double nullSize() const { return mNullSize; }
 
-    /** Returns the exponent of the exponential expression.
+    /**
+     * Returns the exponent of the exponential expression.
      * @see exponent
      */
     double exponent() const { return mExponent; }
 
-    /** Returns the base expression string (or field reference) used for
+    /**
+     * Returns the base expression string (or field reference) used for
      * calculating the values to be mapped to a size.
      */
     QString baseExpression() const { return mExpression; }
 
-    /** Returns the scale expression's type (method used to calculate
+    /**
+     * Returns the scale expression's type (method used to calculate
      * the size from a value).
      */
     Type type() const { return mType; }

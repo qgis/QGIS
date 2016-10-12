@@ -28,7 +28,8 @@
 #include <qgslayerdefinition.h>
 #include <qgsproject.h>
 
-/** @ingroup UnitTests
+/**
+ * @ingroup UnitTests
  * This is a unit test for the vector layer join buffer
  *
  * @see QgsVectorLayerJoinBuffer

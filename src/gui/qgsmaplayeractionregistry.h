@@ -25,7 +25,8 @@
 
 class QgsFeature;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
 * An action which can run on map layers
 */
 class GUI_EXPORT QgsMapLayerAction : public QAction
@@ -55,31 +56,40 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
     ~QgsMapLayerAction();
 
-    /** True if action can run using the specified layer */
+    /**
+     * True if action can run using the specified layer */
     bool canRunUsingLayer( QgsMapLayer* layer ) const;
 
-    /** Triggers the action with the specified layer and list of feature. */
+    /**
+     * Triggers the action with the specified layer and list of feature. */
     void triggerForFeatures( QgsMapLayer* layer, const QList<QgsFeature>& featureList );
 
-    /** Triggers the action with the specified layer and feature. */
+    /**
+     * Triggers the action with the specified layer and feature. */
     void triggerForFeature( QgsMapLayer* layer, const QgsFeature* feature );
 
-    /** Triggers the action with the specified layer. */
+    /**
+     * Triggers the action with the specified layer. */
     void triggerForLayer( QgsMapLayer* layer );
 
-    /** Define the targets of the action */
+    /**
+     * Define the targets of the action */
     void setTargets( const Targets& targets ) {mTargets = targets;}
-    /** Return availibity of action */
+    /**
+     * Return availibity of action */
     const Targets& targets() const {return mTargets;}
 
   signals:
-    /** Triggered when action has been run for a specific list of features */
+    /**
+     * Triggered when action has been run for a specific list of features */
     void triggeredForFeatures( QgsMapLayer* layer, const QList<QgsFeature>& featureList );
 
-    /** Triggered when action has been run for a specific feature */
+    /**
+     * Triggered when action has been run for a specific feature */
     void triggeredForFeature( QgsMapLayer* layer, const QgsFeature& feature );
 
-    /** Triggered when action has been run for a specific layer */
+    /**
+     * Triggered when action has been run for a specific layer */
     void triggeredForLayer( QgsMapLayer* layer );
 
   private:
@@ -100,7 +110,8 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerAction::Targets )
 
-/** \ingroup gui
+/**
+ * \ingroup gui
 * This class tracks map layer actions
 */
 class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
@@ -113,18 +124,23 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
 
     ~QgsMapLayerActionRegistry();
 
-    /** Adds a map layer action to the registry*/
+    /**
+     * Adds a map layer action to the registry*/
     void addMapLayerAction( QgsMapLayerAction * action );
 
-    /** Returns the map layer actions which can run on the specified layer*/
+    /**
+     * Returns the map layer actions which can run on the specified layer*/
     QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer* layer, const QgsMapLayerAction::Targets& targets = QgsMapLayerAction::AllActions );
 
-    /** Removes a map layer action from the registry*/
+    /**
+     * Removes a map layer action from the registry*/
     bool removeMapLayerAction( QgsMapLayerAction *action );
 
-    /** Sets the default action for a layer*/
+    /**
+     * Sets the default action for a layer*/
     void setDefaultActionForLayer( QgsMapLayer* layer, QgsMapLayerAction* action );
-    /** Returns the default action for a layer*/
+    /**
+     * Returns the default action for a layer*/
     QgsMapLayerAction * defaultActionForLayer( QgsMapLayer* layer );
 
   protected:
@@ -134,7 +150,8 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
     QList< QgsMapLayerAction* > mMapLayerActionList;
 
   signals:
-    /** Triggered when an action is added or removed from the registry */
+    /**
+     * Triggered when an action is added or removed from the registry */
     void changed();
 
   private:

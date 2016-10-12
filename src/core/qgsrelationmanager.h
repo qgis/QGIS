@@ -26,7 +26,8 @@
 class QgsProject;
 class QgsVectorLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class manages a set of relations between layers.
  */
 class CORE_EXPORT QgsRelationManager : public QObject
@@ -35,7 +36,8 @@ class CORE_EXPORT QgsRelationManager : public QObject
 
   public:
 
-    /** Constructor for QgsRelationManager.
+    /**
+     * Constructor for QgsRelationManager.
      * @param project associated project (used to notify project of changes)
      */
     explicit QgsRelationManager( QgsProject *project = nullptr );
@@ -85,7 +87,8 @@ class CORE_EXPORT QgsRelationManager : public QObject
      */
     QgsRelation relation( const QString& id ) const;
 
-    /** Returns a list of relations with matching names.
+    /**
+     * Returns a list of relations with matching names.
      * @param name relation name to search for. Searching is case insensitive.
      * @returns a list of matching relations
      * @note added in QGIS 2.16
@@ -128,7 +131,8 @@ class CORE_EXPORT QgsRelationManager : public QObject
     static QList<QgsRelation> discoverRelations( const QList<QgsRelation>& existingRelations, const QList<QgsVectorLayer*>& layers );
 
   signals:
-    /** This signal is emitted when the relations were loaded after reading a project */
+    /**
+     * This signal is emitted when the relations were loaded after reading a project */
     void relationsLoaded();
 
     /**
@@ -143,7 +147,8 @@ class CORE_EXPORT QgsRelationManager : public QObject
     void layersRemoved( const QStringList& layers );
 
   private:
-    /** The references */
+    /**
+     * The references */
     QMap<QString, QgsRelation> mRelations;
 
     QgsProject* mProject;

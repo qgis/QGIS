@@ -23,7 +23,8 @@
 class QgsMapLayer;
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * @brief The QgsMapLayerComboBox class is a combo box which displays the list of layers
  * @note added in 2.3
  */
@@ -52,12 +53,14 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     //! returns the list of excepted layers
     QList<QgsMapLayer*> exceptedLayerList() const {return mProxyModel->exceptedLayerList();}
 
-    /** Returns the current layer selected in the combo box.
+    /**
+     * Returns the current layer selected in the combo box.
      * @see layer
      */
     QgsMapLayer* currentLayer() const;
 
-    /** Return the layer currently shown at the specified index within the combo box.
+    /**
+     * Return the layer currently shown at the specified index within the combo box.
      * @param layerIndex position of layer to return
      * @note added in QGIS 2.10
      * @see currentLayer

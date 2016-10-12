@@ -30,7 +30,8 @@ class QSignalMapper;
 class QgsMapLayerAction;
 class QScrollArea;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This widget is used to show the attributes of a set of features of a {@link QgsVectorLayer}.
  * The attributes can be edited.
  * It supports two different layouts: the table layout, in which the attributes for the features
@@ -213,12 +214,14 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void openConditionalStyles();
 
-    /** Sets whether multi edit mode is enabled.
+    /**
+     * Sets whether multi edit mode is enabled.
      * @note added in QGIS 2.16
      */
     void setMultiEditEnabled( bool enabled );
 
-    /** Toggles whether search mode should be enabled in the form.
+    /**
+     * Toggles whether search mode should be enabled in the form.
      * @param enabled set to true to switch on search mode
      * @note added in QGIS 2.16
      */
@@ -242,14 +245,16 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void filterChanged();
 
-    /** Is emitted when a filter expression is set using the view.
+    /**
+     * Is emitted when a filter expression is set using the view.
      * @param expression filter expression
      * @param type filter type
      * @note added in QGIS 2.16
      */
     void filterExpressionSet( const QString& expression, QgsAttributeForm::FilterType type );
 
-    /** Emitted when the form changes mode.
+    /**
+     * Emitted when the form changes mode.
      * @param mode new mode
      */
     void formModeChanged( QgsAttributeForm::Mode mode );
@@ -312,9 +317,11 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     virtual void finished();
 
-    /** Zooms to the active feature*/
+    /**
+     * Zooms to the active feature*/
     void zoomToCurrentFeature();
-    /** Pans to the active feature*/
+    /**
+     * Pans to the active feature*/
     void panToCurrentFeature();
 
   private:
@@ -340,7 +347,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     friend class TestQgsDualView;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsAttributeTableAction
  */
 class GUI_EXPORT QgsAttributeTableAction : public QAction
@@ -365,7 +373,8 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
     QModelIndex mFieldIdx;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsAttributeTableMapLayerAction
  */
 class GUI_EXPORT QgsAttributeTableMapLayerAction : public QAction

@@ -26,7 +26,8 @@ class QgsLayerTreeNode;
 class QgsLayerTreeView;
 class QgsMapLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * QgsLegendInterface
  * Abstract base class to make QgsLegend available to plugins.
  */
@@ -37,10 +38,12 @@ class QgsAppLegendInterface : public QgsLegendInterface
 
   public:
 
-    /** Constructor */
+    /**
+     * Constructor */
     explicit QgsAppLegendInterface( QgsLayerTreeView * layerTreeView );
 
-    /** Destructor */
+    /**
+     * Destructor */
     ~QgsAppLegendInterface();
 
     //! Return a string list of groups

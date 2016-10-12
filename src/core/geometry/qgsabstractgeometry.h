@@ -36,7 +36,8 @@ typedef QList< QgsPointV2 > QgsPointSequence;
 typedef QList< QgsPointSequence > QgsRingSequence;
 typedef QList< QgsRingSequence > QgsCoordinateSequence;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsAbstractGeometry
  * \brief Abstract base class for all geometries
  * \note added in QGIS 2.10
@@ -45,7 +46,8 @@ class CORE_EXPORT QgsAbstractGeometry
 {
   public:
 
-    /** Segmentation tolerance as maximum angle or maximum difference between approximation and circle*/
+    /**
+     * Segmentation tolerance as maximum angle or maximum difference between approximation and circle*/
     enum SegmentationToleranceType
     {
       MaximumAngle = 0,
@@ -57,49 +59,58 @@ class CORE_EXPORT QgsAbstractGeometry
     QgsAbstractGeometry( const QgsAbstractGeometry& geom );
     virtual QgsAbstractGeometry& operator=( const QgsAbstractGeometry& geom );
 
-    /** Clones the geometry by performing a deep copy
+    /**
+     * Clones the geometry by performing a deep copy
      */
     virtual QgsAbstractGeometry* clone() const = 0;
 
-    /** Clears the geometry, ie reset it to a null geometry
+    /**
+     * Clears the geometry, ie reset it to a null geometry
      */
     virtual void clear() = 0;
 
-    /** Returns the minimal bounding box for the geometry
+    /**
+     * Returns the minimal bounding box for the geometry
      */
     virtual QgsRectangle boundingBox() const = 0;
 
     //mm-sql interface
-    /** Returns the inherent dimension of the geometry. For example, this is 0 for a point geometry,
+    /**
+     * Returns the inherent dimension of the geometry. For example, this is 0 for a point geometry,
      * 1 for a linestring and 2 for a polygon.
      */
     virtual int dimension() const = 0;
     //virtual int coordDim() const { return mCoordDimension; }
 
-    /** Returns a unique string representing the geometry type.
+    /**
+     * Returns a unique string representing the geometry type.
      * @see wkbType
      * @see wktTypeStr
      */
     virtual QString geometryType() const = 0;
 
-    /** Returns the WKB type of the geometry.
+    /**
+     * Returns the WKB type of the geometry.
      * @see geometryType
      * @see wktTypeStr
      */
     QgsWkbTypes::Type wkbType() const { return mWkbType; }
 
-    /** Returns the WKT type string of the geometry.
+    /**
+     * Returns the WKT type string of the geometry.
      * @see geometryType
      * @see wkbType
      */
     QString wktTypeStr() const;
 
-    /** Returns true if the geometry is 3D and contains a z-value.
+    /**
+     * Returns true if the geometry is 3D and contains a z-value.
      * @see isMeasure
      */
     bool is3D() const;
 
-    /** Returns true if the geometry contains m values.
+    /**
+     * Returns true if the geometry contains m values.
      * @see is3D
      */
     bool isMeasure() const;
@@ -114,7 +125,8 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsRectangle envelope() const = 0;
 #endif
 
-    /** Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry).
+    /**
+     * Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry).
      * For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon.
      * @returns boundary for geometry. May be null for some geometry types.
      * @note added in QGIS 3.0
@@ -123,24 +135,28 @@ class CORE_EXPORT QgsAbstractGeometry
 
     //import
 
-    /** Sets the geometry from a WKB string.
+    /**
+     * Sets the geometry from a WKB string.
      * @see fromWkt
      */
     virtual bool fromWkb( QgsConstWkbPtr wkb ) = 0;
 
-    /** Sets the geometry from a WKT string.
+    /**
+     * Sets the geometry from a WKT string.
      * @see fromWkb
      */
     virtual bool fromWkt( const QString& wkt ) = 0;
 
     //export
 
-    /** Returns the size of the WKB representation of the geometry.
+    /**
+     * Returns the size of the WKB representation of the geometry.
      * @see asWkb
      */
     virtual int wkbSize() const = 0;
 
-    /** Returns a WKB representation of the geometry.
+    /**
+     * Returns a WKB representation of the geometry.
      * @param binarySize will be set to the size of the returned WKB string
      * @see wkbSize
      * @see asWkt
@@ -150,7 +166,8 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual unsigned char* asWkb( int& binarySize ) const = 0;
 
-    /** Returns a WKT representation of the geometry.
+    /**
+     * Returns a WKT representation of the geometry.
      * @param precision number of decimal places for coordinates
      * @see asWkb
      * @see asGML2
@@ -159,7 +176,8 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual QString asWkt( int precision = 17 ) const = 0;
 
-    /** Returns a GML2 representation of the geometry.
+    /**
+     * Returns a GML2 representation of the geometry.
      * @param doc DOM document
      * @param precision number of decimal places for coordinates
      * @param ns XML namespace
@@ -170,7 +188,8 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const = 0;
 
-    /** Returns a GML3 representation of the geometry.
+    /**
+     * Returns a GML3 representation of the geometry.
      * @param doc DOM document
      * @param precision number of decimal places for coordinates
      * @param ns XML namespace
@@ -181,7 +200,8 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const = 0;
 
-    /** Returns a GeoJSON representation of the geometry.
+    /**
+     * Returns a GeoJSON representation of the geometry.
      * @param precision number of decimal places for coordinates
      * @see asWkb
      * @see asWkt
@@ -192,7 +212,8 @@ class CORE_EXPORT QgsAbstractGeometry
 
     //render pipeline
 
-    /** Transforms the geometry using a coordinate transform
+    /**
+     * Transforms the geometry using a coordinate transform
      * @param ct coordinate transform
      * @param d transformation direction
      * @param transformZ set to true to also transform z coordinates. This requires that
@@ -204,7 +225,8 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                             bool transformZ = false ) = 0;
 
-    /** Transforms the geometry using a QTransform object
+    /**
+     * Transforms the geometry using a QTransform object
      * @param t QTransform transformation
      */
     virtual void transform( const QTransform& t ) = 0;
@@ -213,12 +235,14 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual void clip( const QgsRectangle& rect ); //todo
 #endif
 
-    /** Draws the geometry using the specified QPainter.
+    /**
+     * Draws the geometry using the specified QPainter.
      * @param p destination QPainter
      */
     virtual void draw( QPainter& p ) const = 0;
 
-    /** Returns next vertex id and coordinates
+    /**
+     * Returns next vertex id and coordinates
      * @param id initial value should be the starting vertex id. The next vertex id will be stored
      * in this variable if found.
      * @param vertex container for found node
@@ -226,20 +250,24 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const = 0;
 
-    /** Retrieves the sequence of geometries, rings and nodes.
+    /**
+     * Retrieves the sequence of geometries, rings and nodes.
      * @return coordinate sequence
      */
     virtual QgsCoordinateSequence coordinateSequence() const = 0;
 
-    /** Returns the number of nodes contained in the geometry
+    /**
+     * Returns the number of nodes contained in the geometry
      */
     int nCoordinates() const;
 
-    /** Returns the point corresponding to a specified vertex id
+    /**
+     * Returns the point corresponding to a specified vertex id
      */
     virtual QgsPointV2 vertexAt( QgsVertexId id ) const = 0;
 
-    /** Searches for the closest segment of the geometry to a given point.
+    /**
+     * Searches for the closest segment of the geometry to a given point.
      * @param pt specifies the point to find closest segment to
      * @param segmentPt storage for the closest point within the geometry
      * @param vertexAfter storage for the ID of the vertex at the end of the closest segment
@@ -252,7 +280,8 @@ class CORE_EXPORT QgsAbstractGeometry
 
     //low-level editing
 
-    /** Inserts a vertex into the geometry
+    /**
+     * Inserts a vertex into the geometry
      * @param position vertex id for position of inserted vertex
      * @param vertex vertex to insert
      * @returns true if insert was successful
@@ -261,7 +290,8 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) = 0;
 
-    /** Moves a vertex within the geometry
+    /**
+     * Moves a vertex within the geometry
      * @param position vertex id for vertex to move
      * @param newPos new position of vertex
      * @returns true if move was successful
@@ -270,7 +300,8 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) = 0;
 
-    /** Deletes a vertex within the geometry
+    /**
+     * Deletes a vertex within the geometry
      * @param position vertex id for vertex to delete
      * @returns true if delete was successful
      * @see insertVertex
@@ -278,49 +309,58 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual bool deleteVertex( QgsVertexId position ) = 0;
 
-    /** Returns the length of the geometry.
+    /**
+     * Returns the length of the geometry.
      * @see area()
      * @see perimeter()
      */
     virtual double length() const { return 0.0; }
 
-    /** Returns the perimeter of the geometry.
+    /**
+     * Returns the perimeter of the geometry.
      * @see area()
      * @see length()
      */
     virtual double perimeter() const { return 0.0; }
 
-    /** Returns the area of the geometry.
+    /**
+     * Returns the area of the geometry.
      * @see length()
      * @see perimeter()
      */
     virtual double area() const { return 0.0; }
 
-    /** Returns the centroid of the geometry */
+    /**
+     * Returns the centroid of the geometry */
     virtual QgsPointV2 centroid() const;
 
-    /** Returns true if the geometry is empty
+    /**
+     * Returns true if the geometry is empty
      */
     bool isEmpty() const;
 
-    /** Returns true if the geometry contains curved segments
+    /**
+     * Returns true if the geometry contains curved segments
      */
     virtual bool hasCurvedSegments() const { return false; }
 
-    /** Returns a version of the geometry without curves. Caller takes ownership of
+    /**
+     * Returns a version of the geometry without curves. Caller takes ownership of
      * the returned geometry.
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve
      */
     virtual QgsAbstractGeometry* segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const;
 
-    /** Returns the geometry converted to the more generic curve type.
+    /**
+     * Returns the geometry converted to the more generic curve type.
         E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
         QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
         @return the converted geometry. Caller takes ownership*/
     virtual QgsAbstractGeometry* toCurveType() const { return 0; }
 
-    /** Returns approximate angle at a vertex. This is usually the average angle between adjacent
+    /**
+     * Returns approximate angle at a vertex. This is usually the average angle between adjacent
      * segments, and can be pictured as the orientation of a line following the curvature of the
      * geometry at the specified vertex.
      * @param vertex the vertex id
@@ -338,13 +378,15 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual int ringCount( int part = 0 ) const = 0;
 
-    /** Returns count of parts contained in the geometry.
+    /**
+     * Returns count of parts contained in the geometry.
      * @see vertexCount
      * @see ringCount
      */
     virtual int partCount() const = 0;
 
-    /** Adds a z-dimension to the geometry, initialized to a preset value.
+    /**
+     * Adds a z-dimension to the geometry, initialized to a preset value.
      * @param zValue initial z-value for all nodes
      * @returns true on success
      * @note added in QGIS 2.12
@@ -353,7 +395,8 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual bool addZValue( double zValue = 0 ) = 0;
 
-    /** Adds a measure to the geometry, initialized to a preset value.
+    /**
+     * Adds a measure to the geometry, initialized to a preset value.
      * @param mValue initial m-value for all nodes
      * @returns true on success
      * @note added in QGIS 2.12
@@ -362,7 +405,8 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual bool addMValue( double mValue = 0 ) = 0;
 
-    /** Drops any z-dimensions which exist in the geometry.
+    /**
+     * Drops any z-dimensions which exist in the geometry.
      * @returns true if Z values were present and have been removed
      * @see addZValue()
      * @see dropMValue()
@@ -370,7 +414,8 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual bool dropZValue() = 0;
 
-    /** Drops any measure values which exist in the geometry.
+    /**
+     * Drops any measure values which exist in the geometry.
      * @returns true if m-values were present and have been removed
      * @see addMValue()
      * @see dropZValue()
@@ -378,7 +423,8 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual bool dropMValue() = 0;
 
-    /** Converts the geometry to a specified type.
+    /**
+     * Converts the geometry to a specified type.
      * @returns true if conversion was successful
      * @note added in QGIS 2.14
      */
@@ -387,23 +433,27 @@ class CORE_EXPORT QgsAbstractGeometry
   protected:
     QgsWkbTypes::Type mWkbType;
 
-    /** Updates the geometry type based on whether sub geometries contain z or m values.
+    /**
+     * Updates the geometry type based on whether sub geometries contain z or m values.
      */
     void setZMTypeFromSubGeometry( const QgsAbstractGeometry* subggeom, QgsWkbTypes::Type baseGeomType );
 
-    /** Default calculator for the minimal bounding box for the geometry. Derived classes should override this method
+    /**
+     * Default calculator for the minimal bounding box for the geometry. Derived classes should override this method
      * if a more efficient bounding box calculation is available.
      */
     virtual QgsRectangle calculateBoundingBox() const;
 
-    /** Clears any cached parameters associated with the geometry, eg bounding boxes
+    /**
+     * Clears any cached parameters associated with the geometry, eg bounding boxes
      */
     virtual void clearCache() const {}
 
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsVertexId
  * \brief Utility class for identifying a unique vertex within a geometry.
  * \note added in QGIS 2.10
@@ -423,7 +473,8 @@ struct CORE_EXPORT QgsVertexId
       , type( _type )
   {}
 
-  /** Returns true if the vertex id is valid
+  /**
+   * Returns true if the vertex id is valid
    */
   bool isValid() const { return part >= 0 && ring >= 0 && vertex >= 0; }
 

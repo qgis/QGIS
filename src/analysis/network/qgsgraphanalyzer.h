@@ -24,7 +24,8 @@
 // forward-declaration
 class QgsGraph;
 
-/** \ingroup networkanalysis
+/**
+ * \ingroup networkanalysis
  * The QGis class provides graph analysis functions
  */
 

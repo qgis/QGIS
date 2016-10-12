@@ -26,7 +26,8 @@ class QgsRelationReferenceWidgetFactory;
 class QgsMapCanvas;
 class QgsRelationReferenceWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRelationReferenceSearchWidgetWrapper
  * Wraps a relation reference search widget.
  * \note Added in version 2.16
@@ -38,7 +39,8 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
 
   public:
 
-    /** Constructor for QgsRelationReferenceSearchWidgetWrapper
+    /**
+     * Constructor for QgsRelationReferenceSearchWidgetWrapper
      * @param vl associated vector layer
      * @param fieldIdx associated field index
      * @param canvas optional map canvas
@@ -46,7 +48,8 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
      */
     explicit QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QgsMapCanvas* canvas, QWidget* parent = nullptr );
 
-    /** Returns a variant representing the current state of the widget.
+    /**
+     * Returns a variant representing the current state of the widget.
      */
     QVariant value() const;
 

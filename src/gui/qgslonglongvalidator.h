@@ -24,7 +24,8 @@
 #include <QValidator>
 #include <QLocale>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsLongLongValidator
  */
 class GUI_EXPORT QgsLongLongValidator : public QValidator

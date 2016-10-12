@@ -59,11 +59,13 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
 
     QList<int> usesBands() const override;
 
-    /** Returns the band used by the renderer
+    /**
+     * Returns the band used by the renderer
      */
     int band() const { return mBand; }
 
-    /** Sets the band used by the renderer.
+    /**
+     * Sets the band used by the renderer.
      * @see band
      */
     void setBand( int bandNo );
@@ -74,17 +76,20 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
      */
     double azimuth() const { return mLightAzimuth; }
 
-    /** Returns the angle of the light source over the raster.
+    /**
+     * Returns the angle of the light source over the raster.
      * @see setAltitude()
      */
     double altitude()  const { return mLightAngle; }
 
-    /** Returns the Z scaling factor.
+    /**
+     * Returns the Z scaling factor.
      * @see setZFactor()
      */
     double zFactor()  const { return mZFactor; }
 
-    /** Returns true if the renderer is using multi-directional hillshading.
+    /**
+     * Returns true if the renderer is using multi-directional hillshading.
      * @see setMultiDirectional()
      */
     bool multiDirectional() const { return mMultiDirectional; }
@@ -110,7 +115,8 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
      */
     void setZFactor( double zfactor ) { mZFactor = zfactor; }
 
-    /** Sets whether to render using a multi-directional hillshade algorithm.
+    /**
+     * Sets whether to render using a multi-directional hillshade algorithm.
      * @param isMultiDirectional set to true to use multi directional rendering
      * @see multiDirectional()
      */
@@ -123,10 +129,12 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
     double mLightAzimuth;
     bool mMultiDirectional;
 
-    /** Calculates the first order derivative in x-direction according to Horn (1981)*/
+    /**
+     * Calculates the first order derivative in x-direction according to Horn (1981)*/
     double calcFirstDerX( double x11, double x21, double x31, double x12, double x22, double x32, double x13, double x23, double x33 , double cellsize );
 
-    /** Calculates the first order derivative in y-direction according to Horn (1981)*/
+    /**
+     * Calculates the first order derivative in y-direction according to Horn (1981)*/
     double calcFirstDerY( double x11, double x21, double x31, double x12, double x22, double x32, double x13, double x23, double x33 , double cellsize );
 };
 

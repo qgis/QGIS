@@ -44,7 +44,8 @@ class QgsTextLabelFeature : public QgsLabelFeature
       delete mFontMetrics;
     }
 
-    /** Returns the text component corresponding to a specified label part
+    /**
+     * Returns the text component corresponding to a specified label part
      * @param partId Set to -1 for labels which are not broken into parts (eg, non-curved labels), or the required
      * part index for labels which are broken into parts (curved labels)
      * @note added in QGIS 2.10
@@ -142,7 +143,8 @@ class QgsTextLabelFeature : public QgsLabelFeature
     QFont mDefinedFont;
     //! Metrics of the font for rendering
     QFontMetricsF* mFontMetrics;
-    /** Stores attribute values for data defined properties*/
+    /**
+     * Stores attribute values for data defined properties*/
     QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > mDataDefinedValues;
 
 };

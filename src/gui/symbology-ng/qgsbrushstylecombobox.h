@@ -18,7 +18,8 @@
 
 #include <QComboBox>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsBrushStyleComboBox
  */
 class GUI_EXPORT QgsBrushStyleComboBox : public QComboBox

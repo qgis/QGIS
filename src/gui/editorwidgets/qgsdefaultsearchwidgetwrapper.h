@@ -21,7 +21,8 @@
 
 #include <QCheckBox>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a search widget. Default form is just a QgsLineFilterEdit
  */
 
@@ -58,13 +59,15 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
     void initWidget( QWidget* editor ) override;
     bool valid() const override;
 
-    /** Returns a pointer to the line edit part of the widget.
+    /**
+     * Returns a pointer to the line edit part of the widget.
      * @note this method is in place for unit testing only, and is not considered
      * stable API
      */
     QgsFilterLineEdit* lineEdit();
 
-    /** Returns a pointer to the case sensitivity check box in the widget.
+    /**
+     * Returns a pointer to the case sensitivity check box in the widget.
      * @note this method is in place for unit testing only, and is not considered
      * stable API
      */

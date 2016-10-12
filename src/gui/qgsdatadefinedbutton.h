@@ -27,7 +27,8 @@ class QgsVectorLayer;
 class QgsDataDefined;
 class QgsMapCanvas;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsDataDefinedAssistant
  * An assistant (wizard) dialog, accessible from a QgsDataDefinedButton.
  * Can be used to guide users through creation of an expression for the
@@ -47,7 +48,8 @@ class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
      */
     virtual QgsDataDefined dataDefined() const = 0;
 
-    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+    /**
+     * Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
      * @param canvas map canvas
      * @see mapCanvas()
@@ -55,7 +57,8 @@ class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
      */
     virtual void setMapCanvas( QgsMapCanvas* canvas ) { mMapCanvas = canvas; }
 
-    /** Returns the map canvas associated with the widget.
+    /**
+     * Returns the map canvas associated with the widget.
      * @see setMapCanvas
      * @note added in QGIS 2.12
      */
@@ -66,7 +69,8 @@ class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
     QgsMapCanvas* mMapCanvas;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsDataDefinedButton
  * A button for defining data source field mappings or expressions.
  */
@@ -117,21 +121,24 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
 
     QMap< QString, QString > definedProperty() const { return mProperty; }
 
-    /** Updates a QgsDataDefined with the current settings from the button
+    /**
+     * Updates a QgsDataDefined with the current settings from the button
      * @param dd QgsDataDefined to update
      * @note added in QGIS 2.9
      * @see currentDataDefined
      */
     void updateDataDefined( QgsDataDefined* dd ) const;
 
-    /** Returns a QgsDataDefined which reflects the current settings from the
+    /**
+     * Returns a QgsDataDefined which reflects the current settings from the
      * button.
      * @note added in QGIS 2.9
      * @see updateDataDefined
      */
     QgsDataDefined currentDataDefined() const;
 
-    /** Sets the vector layer associated with the button. This controls which fields are
+    /**
+     * Sets the vector layer associated with the button. This controls which fields are
      * displayed within the widget's pop up menu.
      * @param layer vector layer
      * @note added in QGIS 3.0
@@ -249,7 +256,8 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
      */
     void setAssistant( const QString& title, QgsDataDefinedAssistant * assistant );
 
-    /** Returns the assistant used to defined the data defined object properties, if set.
+    /**
+     * Returns the assistant used to defined the data defined object properties, if set.
      * @see setAssistant()
      * @note added in QGIS 2.12
      */

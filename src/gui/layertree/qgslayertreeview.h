@@ -74,7 +74,8 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     //! Get current group node. If a layer is current node, the function will return parent group. May be null.
     QgsLayerTreeGroup* currentGroupNode() const;
 
-    /** Get current legend node. May be null if current node is not a legend node.
+    /**
+     * Get current legend node. May be null if current node is not a legend node.
      * @note added in QGIS 2.14
      */
     QgsLayerTreeModelLegendNode* currentLegendNode() const;
@@ -124,7 +125,8 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 };
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Implementation of this interface can be implemented to allow QgsLayerTreeView
  * instance to provide custom context menus (opened upon right-click).
  *

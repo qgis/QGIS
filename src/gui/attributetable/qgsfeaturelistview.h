@@ -31,7 +31,8 @@ class QgsVectorLayerCache;
 class QgsFeatureListViewDelegate;
 class QRect;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Shows a list of features and renders a edit button next to each feature.
  *
  * @brief

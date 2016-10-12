@@ -24,7 +24,8 @@ class QgsVectorLayer;
 class QgsAttributeTableModel;
 class QToolButton;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A delegate item class for QgsAttributeTable (see Qt documentation for
  * QItemDelegate).
  */

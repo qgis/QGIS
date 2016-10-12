@@ -22,7 +22,8 @@
 #include "qgscontexthelp.h"
 #include "qgsauthconfigselect.h"
 
-/** \class QgsDb2NewConnection
+/**
+ * \class QgsDb2NewConnection
  * \brief Dialog to allow the user to configure and save connection
  * information for an DB2 database
  */

@@ -26,7 +26,8 @@
 
 class QgsStyle;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsStyleManagerDialog
  */
 class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleManagerDialogBase

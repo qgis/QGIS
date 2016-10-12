@@ -55,7 +55,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    /** Import a vector layer into the database */
+    /**
+     * Import a vector layer into the database */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
       const QgsFields &fields,
@@ -81,7 +82,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! Returns the permanent storage type for this layer as a friendly name.
     virtual QString storageType() const override;
 
-    /** Get the QgsCoordinateReferenceSystem for this layer
+    /**
+     * Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
@@ -92,12 +94,14 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     virtual QString subsetString() const override;
 
-    /** Mutator for sql where clause used to limit dataset size */
+    /**
+     * Mutator for sql where clause used to limit dataset size */
     virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() const override { return true; }
 
-    /** Get the feature type. This corresponds to
+    /**
+     * Get the feature type. This corresponds to
      * WKBPoint,
      * WKBLineString,
      * WKBPolygon,
@@ -108,7 +112,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     QgsWkbTypes::Type wkbType() const override;
 
-    /** Return the number of layers for the current data source
+    /**
+     * Return the number of layers for the current data source
      *
      * @note Should this be subLayerCount() instead?
      */
@@ -121,7 +126,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     virtual QgsRectangle extent() const override;
 
-    /** Update the extent for this data layer
+    /**
+     * Update the extent for this data layer
      */
     virtual void updateExtents() override;
 
@@ -134,21 +140,25 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool isValid() const override;
     virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
 
-    /** Adds a list of features
+    /**
+     * Adds a list of features
       @return true in case of success and false in case of failure*/
     bool addFeatures( QgsFeatureList & flist ) override;
 
-    /** Deletes a list of features
+    /**
+     * Deletes a list of features
       @param id list of feature ids
       @return true in case of success and false in case of failure*/
     bool deleteFeatures( const QgsFeatureIds & id ) override;
 
-    /** Adds new attributes
+    /**
+     * Adds new attributes
       @param name map with attribute name as key and type as value
       @return true in case of success and false in case of failure*/
     bool addAttributes( const QList<QgsField> &attributes ) override;
 
-    /** Changes attribute values of existing features
+    /**
+     * Changes attribute values of existing features
       @param attr_map a map containing the new attributes. The integer is the feature id,
       the first QString is the attribute name and the second one is the new attribute value
       @return true in case of success and false in case of failure*/
@@ -162,10 +172,12 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
-    /** Returns a bitmask containing the supported capabilities*/
+    /**
+     * Returns a bitmask containing the supported capabilities*/
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
-    /** The SpatiaLite provider does its own transforms so we return
+    /**
+     * The SpatiaLite provider does its own transforms so we return
      * true for the following three functions to indicate that transforms
      * should not be handled by the QgsCoordinateTransform object. See the
      * documentation on QgsVectorDataProvider for details on these functions.
@@ -177,7 +189,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       return false;
     }
 
-    /** Return a provider name
+    /**
+     * Return a provider name
      *
      * Essentially just returns the provider key.  Should be used to build file
      * dialogs so that providers can be shown with their supported types. Thus
@@ -193,7 +206,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     QString name() const override;
 
-    /** Return description
+    /**
+     * Return description
      *
      * Return a terse string describing what the provider is.
      *

@@ -66,10 +66,12 @@ class SERVER_EXPORT QgsConfigCache : public QObject
   private:
     QgsConfigCache();
 
-    /** Check for configuration file updates (remove entry from cache if file changes)*/
+    /**
+     * Check for configuration file updates (remove entry from cache if file changes)*/
     QFileSystemWatcher mFileSystemWatcher;
 
-    /** Returns xml document for project file / sld or 0 in case of errors*/
+    /**
+     * Returns xml document for project file / sld or 0 in case of errors*/
     QDomDocument* xmlDocument( const QString& filePath );
 
     QCache<QString, QDomDocument> mXmlDocumentCache;
@@ -78,7 +80,8 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     QCache<QString, QgsWCSProjectParser> mWCSConfigCache;
 
   private slots:
-    /** Removes changed entry from this cache*/
+    /**
+     * Removes changed entry from this cache*/
     void removeChangedEntry( const QString& path );
 };
 

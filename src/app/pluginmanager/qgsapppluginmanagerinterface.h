@@ -21,7 +21,8 @@
 
 class QgsPluginManager;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * QgsPluginManagerInterface
  * Abstract base class to make QgsPluginManager available to pyplugin_installer.
  */

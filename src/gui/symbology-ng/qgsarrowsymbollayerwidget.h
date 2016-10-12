@@ -20,7 +20,8 @@
 
 class QgsArrowSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsArrowSymbolLayerWidget
  */
 class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::QgsArrowSymbolLayerWidgetBase
@@ -28,20 +29,24 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private
     Q_OBJECT
 
   public:
-    /** Constructor
+    /**
+     * Constructor
      * @param layer the layer where this symbol layer is applied
      * @param parent the parent widget
      */
     QgsArrowSymbolLayerWidget( const QgsVectorLayer* layer, QWidget* parent = nullptr );
 
-    /** Static creation method
+    /**
+     * Static creation method
      * @param layer the layer where this symbol layer is applied
      */
     static QgsSymbolLayerWidget* create( const QgsVectorLayer* layer ) { return new QgsArrowSymbolLayerWidget( layer ); }
 
-    /** Set the symbol layer */
+    /**
+     * Set the symbol layer */
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
-    /** Get the current symbol layer */
+    /**
+     * Get the current symbol layer */
     virtual QgsSymbolLayer* symbolLayer() override;
 
   private:

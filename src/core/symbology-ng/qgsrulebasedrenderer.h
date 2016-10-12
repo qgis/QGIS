@@ -27,7 +27,8 @@ class QgsExpression;
 class QgsCategorizedSymbolRenderer;
 class QgsGraduatedSymbolRenderer;
 
-/** \ingroup core
+/**
+ * \ingroup core
 When drawing a vector layer with rule-based renderer, it goes through
 the rules and draws features with symbols from rules that match.
  */
@@ -99,7 +100,8 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     class Rule;
     typedef QList<Rule*> RuleList;
 
-    /** \ingroup core
+    /**
+     * \ingroup core
       This class keeps data about a rules for rule-based renderer.
       A rule consists of a symbol, filter expression and range of scales.
       If filter is empty, it matches all features.
@@ -285,7 +287,8 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         //! tell which symbols will be used to render the feature
         QgsSymbolList symbolsForFeature( QgsFeature& feat, QgsRenderContext* context = nullptr );
 
-        /** Returns which legend keys match the feature
+        /**
+         * Returns which legend keys match the feature
          * @note added in QGIS 2.14
          */
         QSet< QString > legendKeysForFeature( QgsFeature& feat, QgsRenderContext* context = nullptr );

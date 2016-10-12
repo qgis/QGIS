@@ -87,7 +87,8 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
 
 };
 
-/** Ogr connection pool - singleton */
+/**
+ * Ogr connection pool - singleton */
 class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup>
 {
   public:

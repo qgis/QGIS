@@ -23,7 +23,8 @@
 #include "qgsauthconfig.h"
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Selector widget for authentication configs
  */
 class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfigSelect
@@ -40,27 +41,34 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
     explicit QgsAuthConfigSelect( QWidget *parent = nullptr, const QString &dataprovider = QString() );
     ~QgsAuthConfigSelect();
 
-    /** Set the authentication config id for the resource */
+    /**
+     * Set the authentication config id for the resource */
     void setConfigId( const QString& authcfg );
 
-    /** Get the authentication config id for the resource */
+    /**
+     * Get the authentication config id for the resource */
     const QString configId() const { return mAuthCfg; }
 
-    /** Set key of layer provider, if applicable */
+    /**
+     * Set key of layer provider, if applicable */
     void setDataProviderKey( const QString &key );
 
   signals:
-    /** Emitted when authentication config is changed or missing */
+    /**
+     * Emitted when authentication config is changed or missing */
     void selectedConfigIdChanged( const QString& authcfg );
 
-    /** Emitted when authentication config is removed */
+    /**
+     * Emitted when authentication config is removed */
     void selectedConfigIdRemoved( const QString& authcfg );
 
   public slots:
-    /** Show a small message bar with a close button */
+    /**
+     * Show a small message bar with a close button */
     void showMessage( const QString &msg );
 
-    /** Clear and hide small message bar */
+    /**
+     * Clear and hide small message bar */
     void clearMessage();
 
   private slots:
@@ -98,7 +106,8 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
 
 class QPushButton;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Dialog wrapper of select widget to edit an authcfg in a data source URI
  */
 class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfigUriEdit
@@ -117,13 +126,16 @@ class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfi
                                    const QString &dataprovider = QString() );
     ~QgsAuthConfigUriEdit();
 
-    /** Set the data source URI to parse */
+    /**
+     * Set the data source URI to parse */
     void setDataSourceUri( const QString &datauri );
 
-    /** The returned, possibly edited data source URI */
+    /**
+     * The returned, possibly edited data source URI */
     QString dataSourceUri();
 
-    /** Whether a string contains an authcfg ID */
+    /**
+     * Whether a string contains an authcfg ID */
     static bool hasConfigId( const QString &txt );
 
   private slots:

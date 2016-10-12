@@ -135,12 +135,14 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
 
     ~QgsFieldsProperties();
 
-    /** Adds an attribute to the table (but does not commit it yet)
+    /**
+     * Adds an attribute to the table (but does not commit it yet)
     @param field the field to add
     @return false in case of a name conflict, true in case of success */
     bool addAttribute( const QgsField &field );
 
-    /** Creates the a proper item to save from the tree
+    /**
+     * Creates the a proper item to save from the tree
      * @return A widget definition. Containing another container or the final field
      */
     QgsAttributeEditorElement* createAttributeEditorWidget( QTreeWidgetItem* item, QgsAttributeEditorElement* parent, bool forceGroup = true );
@@ -196,7 +198,8 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
 
     void updateExpression();
 
-    /** Editing of layer was toggled */
+    /**
+     * Editing of layer was toggled */
     void editingToggled();
 
   protected:

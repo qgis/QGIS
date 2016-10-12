@@ -19,7 +19,8 @@
 #include <QKeyEvent>
 #include <QStack>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * @brief Base class for any widget that can be shown as a inline panel
  */
 class GUI_EXPORT QgsPanelWidget : public QWidget
@@ -93,7 +94,8 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      */
     bool autoDelete() { return mAutoDelete; }
 
-    /** Traces through the parents of a widget to find if it is contained within a QgsPanelWidget
+    /**
+     * Traces through the parents of a widget to find if it is contained within a QgsPanelWidget
      * widget.
      * @param widget widget which may be contained within a panel widget
      * @returns parent panel widget if found, otherwise nullptr
@@ -165,7 +167,8 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
 };
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * @brief Wrapper widget for existing widgets which can't have
  * the inheritance tree changed, e.g dialogs.
  *

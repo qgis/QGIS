@@ -25,7 +25,8 @@
 
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for editing authentication configuration database
  */
 class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfigEditor
@@ -42,45 +43,58 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
     explicit QgsAuthConfigEditor( QWidget *parent = nullptr, bool showUtilities = true, bool relayMessages = true );
     ~QgsAuthConfigEditor();
 
-    /** Hide the widget's title, e.g. when embedding */
+    /**
+     * Hide the widget's title, e.g. when embedding */
     void toggleTitleVisibility( bool visible );
 
   public slots:
-    /** Set whether to show the widget's utilities button, e.g. when embedding */
+    /**
+     * Set whether to show the widget's utilities button, e.g. when embedding */
     void setShowUtilitiesButton( bool show = true );
 
-    /** Set whether to relay auth manager messages to internal message bar, e.g. when embedding */
+    /**
+     * Set whether to relay auth manager messages to internal message bar, e.g. when embedding */
     void setRelayMessages( bool relay = true );
 
   private slots:
-    /** Repopulate the view with table contents */
+    /**
+     * Repopulate the view with table contents */
     void refreshTableView();
 
-    /** Sets the cached master password (and verifies it if its hash is in authentication database) */
+    /**
+     * Sets the cached master password (and verifies it if its hash is in authentication database) */
     void setMasterPassword();
 
-    /** Clear the currently cached master password (not its hash in database) */
+    /**
+     * Clear the currently cached master password (not its hash in database) */
     void clearCachedMasterPassword();
 
-    /** Reset the cached master password, updating its hash in authentication database and reseting all existing configs to use it */
+    /**
+     * Reset the cached master password, updating its hash in authentication database and reseting all existing configs to use it */
     void resetMasterPassword();
 
-    /** Clear all cached authentication configs for session */
+    /**
+     * Clear all cached authentication configs for session */
     void clearCachedAuthenticationConfigs();
 
-    /** Remove all authentication configs */
+    /**
+     * Remove all authentication configs */
     void removeAuthenticationConfigs();
 
-    /** Completely clear out the authentication database (configs and master password) */
+    /**
+     * Completely clear out the authentication database (configs and master password) */
     void eraseAuthenticationDatabase();
 
-    /** Relay messages to widget's messagebar */
+    /**
+     * Relay messages to widget's messagebar */
     void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
 
-    /** Pass selection change on to UI update */
+    /**
+     * Pass selection change on to UI update */
     void selectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
 
-    /** Update UI based upon current selection */
+    /**
+     * Update UI based upon current selection */
     void checkSelection();
 
     void on_btnAddConfig_clicked();

@@ -26,7 +26,8 @@ class QVBoxLayout;
 class QgsMessageBar;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief Dialog to verify current master password and initiate reset of
  * authentication database with a new password
  * \note not available in Python bindings

@@ -57,7 +57,8 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
   private:
     QgsWFSSourceSelect(); //default constructor is forbidden
     QgsGenericProjectionSelector* mProjectionSelector;
-    /** Stores the available CRS for a server connections.
+    /**
+     * Stores the available CRS for a server connections.
      The first string is the typename, the corresponding list
     stores the CRS for the typename in the form 'EPSG:XXXX'*/
     QMap<QString, QStringList > mAvailableCRS;
@@ -72,7 +73,8 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     QModelIndex mSQLIndex;
     QgsSQLComposerDialog* mSQLComposerDialog;
 
-    /** Returns the best suited CRS from a set of authority ids
+    /**
+     * Returns the best suited CRS from a set of authority ids
        1. project CRS if contained in the set
        2. WGS84 if contained in the set
        3. the first entry in the set else

@@ -251,7 +251,8 @@ QgsProviderRegistry::~QgsProviderRegistry()
 }
 
 
-/** Convenience function for finding any existing data providers that match "providerKey"
+/**
+ * Convenience function for finding any existing data providers that match "providerKey"
 
   Necessary because [] map operator will create a QgsProviderMetadata
   instance.  Also you cannot use the map [] operator in const members for that
@@ -339,7 +340,8 @@ QDir const & QgsProviderRegistry::libraryDirectory() const
 typedef QgsDataProvider * classFactoryFunction_t( const QString * );
 
 
-/** Copied from QgsVectorLayer::setDataProvider
+/**
+ * Copied from QgsVectorLayer::setDataProvider
  *  TODO: Make it work in the generic environment
  *
  *  TODO: Is this class really the best place to put a data provider loader?

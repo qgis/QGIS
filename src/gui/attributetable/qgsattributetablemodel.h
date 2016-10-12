@@ -33,7 +33,8 @@ class QgsMapCanvas;
 class QgsMapLayerAction;
 class QgsEditorWidgetFactory;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A model backed by a {@link QgsVectorLayerCache} which is able to provide
  * feature/attribute information to a QAbstractItemView.
  *
@@ -255,7 +256,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void loadLayer();
 
-    /** Handles updating the model when the conditional style for a field changes.
+    /**
+     * Handles updating the model when the conditional style for a field changes.
      * @param fieldName name of field whose conditional style has changed
      * @note added in QGIS 2.12
      */
@@ -347,12 +349,15 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     QgsFeatureRequest mFeatureRequest;
 
-    /** The currently cached column */
+    /**
+     * The currently cached column */
     QgsExpression mSortCacheExpression;
     QgsAttributeList mSortCacheAttributes;
-    /** If it is set, a simple field is used for sorting, if it's -1 it's the mSortCacheExpression*/
+    /**
+     * If it is set, a simple field is used for sorting, if it's -1 it's the mSortCacheExpression*/
     int mSortFieldIndex;
-    /** Allows caching of one value per column (used for sorting) */
+    /**
+     * Allows caching of one value per column (used for sorting) */
     QHash<QgsFeatureId, QVariant> mSortCache;
 
     /**

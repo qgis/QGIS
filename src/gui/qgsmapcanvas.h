@@ -65,7 +65,8 @@ class QgsMapTool;
 class QgsSnappingUtils;
 class QgsRubberBand;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
   * A class that stores visibility and presence in overview flags together
   * with pointer to the layer.
   *
@@ -91,15 +92,18 @@ class GUI_EXPORT QgsMapCanvasLayer
   private:
     QgsMapLayer* mLayer;
 
-    /** Flag whether layer is visible */
+    /**
+     * Flag whether layer is visible */
     bool mVisible;
 
-    /** Flag whether layer is shown in overview */
+    /**
+     * Flag whether layer is shown in overview */
     bool mInOverview;
 };
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Map canvas is a class for displaying all GIS data types on a canvas.
  */
 
@@ -219,28 +223,34 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     // ! Clears the list of extents and sets current extent as first item
     void clearExtentHistory();
 
-    /** Zoom to the extent of the selected features of current (vector) layer.
+    /**
+     * Zoom to the extent of the selected features of current (vector) layer.
      * @param layer optionally specify different than current layer
      */
     void zoomToSelected( QgsVectorLayer* layer = nullptr );
 
-    /** Set canvas extent to the bounding box of a set of features
+    /**
+     * Set canvas extent to the bounding box of a set of features
         @param layer the vector layer
         @param ids the feature ids*/
     void zoomToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds& ids );
 
-    /** Centers canvas extent to feature ids
+    /**
+     * Centers canvas extent to feature ids
         @param layer the vector layer
         @param ids the feature ids*/
     void panToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds& ids );
 
-    /** Pan to the selected features of current (vector) layer keeping same extent. */
+    /**
+     * Pan to the selected features of current (vector) layer keeping same extent. */
     void panToSelected( QgsVectorLayer* layer = nullptr );
 
-    /** \brief Sets the map tool currently being used on the canvas */
+    /**
+     * \brief Sets the map tool currently being used on the canvas */
     void setMapTool( QgsMapTool* mapTool );
 
-    /** \brief Unset the current map tool or last non zoom tool
+    /**
+     * \brief Unset the current map tool or last non zoom tool
      *
      * This is called from destructor of map tools to make sure
      * that this map tool won't be used any more.
@@ -248,19 +258,24 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void unsetMapTool( QgsMapTool* mapTool );
 
-    /** Returns the currently active tool*/
+    /**
+     * Returns the currently active tool*/
     QgsMapTool* mapTool();
 
-    /** Write property of QColor bgColor. */
+    /**
+     * Write property of QColor bgColor. */
     void setCanvasColor( const QColor & _newVal );
-    /** Read property of QColor bgColor. */
+    /**
+     * Read property of QColor bgColor. */
     QColor canvasColor() const;
 
-    /** Set color of selected vector features */
+    /**
+     * Set color of selected vector features */
     //! @note added in 2.4
     void setSelectionColor( const QColor& color );
 
-    /** Emits signal scaleChanged to update scale in main window */
+    /**
+     * Emits signal scaleChanged to update scale in main window */
     void updateScale();
 
     //! return the map layer at position index in the layer stack
@@ -350,20 +365,23 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! returns last position of mouse cursor
     QPoint mouseLastXY();
 
-    /** Enables a preview mode for the map canvas
+    /**
+     * Enables a preview mode for the map canvas
      * @param previewEnabled set to true to enable a preview mode
      * @see setPreviewMode
      * @note added in 2.3 */
     void setPreviewModeEnabled( bool previewEnabled );
 
-    /** Returns whether a preview mode is enabled for the map canvas
+    /**
+     * Returns whether a preview mode is enabled for the map canvas
      * @returns true if a preview mode is currently enabled
      * @see setPreviewModeEnabled
      * @see previewMode
      * @note added in 2.3 */
     bool previewModeEnabled() const;
 
-    /** Sets a preview mode for the map canvas. This setting only has an effect if
+    /**
+     * Sets a preview mode for the map canvas. This setting only has an effect if
      * previewModeEnabled is true.
      * @param mode preview mode for the canvas
      * @see previewMode
@@ -372,7 +390,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * @note added in 2.3 */
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 
-    /** Returns the current preview mode for the map canvas. This setting only has an effect if
+    /**
+     * Returns the current preview mode for the map canvas. This setting only has an effect if
      * previewModeEnabled is true.
      * @returns preview mode for map canvas
      * @see setPreviewMode
@@ -380,7 +399,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * @note added in 2.3 */
     QgsPreviewEffect::PreviewMode previewMode() const;
 
-    /** Return snapping utility class that is associated with map canvas.
+    /**
+     * Return snapping utility class that is associated with map canvas.
      *  If no snapping utils instance has been associated previously, an internal will be created for convenience
      *  (so map tools do not need to test for existence of the instance).
      *
@@ -388,7 +408,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *  @note added in 2.8
      */
     QgsSnappingUtils* snappingUtils() const;
-    /** Assign an instance of snapping utils to the map canvas.
+    /**
+     * Assign an instance of snapping utils to the map canvas.
      * The instance is not owned by the canvas, so it is possible to use one instance in multiple canvases.
      *
      * For main canvas in QGIS, do not associate a different instance from the existing one (it is updated from
@@ -397,7 +418,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void setSnappingUtils( QgsSnappingUtils* utils );
 
-    /** Sets an expression context scope for the map canvas. This scope is injected into the expression
+    /**
+     * Sets an expression context scope for the map canvas. This scope is injected into the expression
      * context used for rendering the map, and can be used to apply specific variable overrides for
      * expression evaluation for the map canvas render. This method will overwrite the existing expression
      * context scope for the canvas.
@@ -407,7 +429,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void setExpressionContextScope( const QgsExpressionContextScope& scope ) { mExpressionContextScope = scope; }
 
-    /** Returns a reference to the expression context scope for the map canvas. This scope is injected
+    /**
+     * Returns a reference to the expression context scope for the map canvas. This scope is injected
      * into the expression context used for rendering the map, and can be used to apply specific variable
      * overrides for expression evaluation for the map canvas render.
      * @note added in QGIS 2.12
@@ -415,23 +438,27 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     QgsExpressionContextScope& expressionContextScope() { return mExpressionContextScope; }
 
-    /** Returns a const reference to the expression context scope for the map canvas.
+    /**
+     * Returns a const reference to the expression context scope for the map canvas.
      * @note added in QGIS 2.12
      * @see setExpressionContextScope()
      * @note not available in python bindings
      */
     const QgsExpressionContextScope& expressionContextScope() const { return mExpressionContextScope; }
 
-    /** Sets the segmentation tolerance applied when rendering curved geometries
+    /**
+     * Sets the segmentation tolerance applied when rendering curved geometries
     @param tolerance the segmentation tolerance*/
     void setSegmentationTolerance( double tolerance );
-    /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+    /**
+     * Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     @param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
 
   public slots:
 
-    /** Repaints the canvas map*/
+    /**
+     * Repaints the canvas map*/
     void refresh();
 
     //! Receives signal about selection change, and pass it on with layer info
@@ -451,7 +478,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! State of render suppression flag
     bool renderFlag() {return mRenderFlag;}
 
-    /** A simple helper method to find out if on the fly projections are enabled or not */
+    /**
+     * A simple helper method to find out if on the fly projections are enabled or not */
     bool hasCrsTransformEnabled();
 
     //! stop rendering (if there is any right now)
@@ -496,7 +524,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void refreshMap();
 
   signals:
-    /** Emits current mouse position
+    /**
+     * Emits current mouse position
         \note changed in 1.3 */
     void xyCoordinates( const QgsPoint &p );
 
@@ -514,7 +543,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.16
     void magnificationChanged( double );
 
-    /** Emitted when the canvas has rendered.
+    /**
+     * Emitted when the canvas has rendered.
      * Passes a pointer to the painter on which the map was drawn. This is
      * useful for plugins that wish to draw on the map after it has been
      * rendered.  Passing the painter allows plugins to work when the map is
@@ -527,11 +557,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void renderComplete( QPainter * );
 
     // ### QGIS 3: renamte to mapRefreshFinished()
-    /** Emitted when canvas finished a refresh request. */
+    /**
+     * Emitted when canvas finished a refresh request. */
     void mapCanvasRefreshed();
 
     // ### QGIS 3: rename to mapRefreshStarted()
-    /** Emitted when the canvas is about to be rendered. */
+    /**
+     * Emitted when the canvas is about to be rendered. */
     void renderStarting();
 
     //! Emitted when a new set of layers has been received
@@ -546,7 +578,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emit map tool changed event
     void mapToolSet( QgsMapTool *tool );
 
-    /** Emit map tool changed with the old tool
+    /**
+     * Emit map tool changed with the old tool
      * @note added in 2.3
      */
     void mapToolSet( QgsMapTool *newTool, QgsMapTool* oldTool );
@@ -637,7 +670,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QScopedPointer<CanvasProperties> mCanvasProperties;
 
 #if 0
-    /** Debugging member
+    /**
+     * Debugging member
      * invoked when a connect() is made to this object
      */
     void connectNotify( const char * signal ) override;
@@ -741,19 +775,22 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.16
     void updateMapSize();
 
-    /** Starts zooming via rectangle
+    /**
+     * Starts zooming via rectangle
      * @param pos start position for rectangle
      * @note added in QGIS 2.16
      */
     void beginZoomRect( QPoint pos );
 
-    /** Ends zooming via rectangle
+    /**
+     * Ends zooming via rectangle
      * @param pos end position for rectangle
      * @note added in QGIS 2.16
      */
     void endZoomRect( QPoint pos );
 
-    /** Returns bounding box of feature list (in canvas coordinates)
+    /**
+     * Returns bounding box of feature list (in canvas coordinates)
         @param ids feature id list
         @param layer the layer
         @param bbox out: bounding box

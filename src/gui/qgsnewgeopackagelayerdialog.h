@@ -23,14 +23,16 @@
 
 #include "qgis.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Dialog to set up parameters to create a new GeoPackage layer, and on accept() to create it and add it to the layers */
 class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNewGeoPackageLayerDialogBase
 {
     Q_OBJECT
 
   public:
-    /** Constructor */
+    /**
+     * Constructor */
     QgsNewGeoPackageLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewGeoPackageLayerDialog();
 

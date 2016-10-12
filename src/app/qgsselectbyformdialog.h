@@ -23,7 +23,8 @@ class QgsAttributeForm;
 class QgsMessageBar;
 class QgsVectorLayer;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * \class QgsSelectByFormDialog
  * A dialog for selecting features from a layer, using a form based off the layer's editor widgets.
  * @note introduced in QGIS 2.16
@@ -35,7 +36,8 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
 
   public:
 
-    /** Constructor for QgsSelectByFormDialog
+    /**
+     * Constructor for QgsSelectByFormDialog
      * @param layer vector layer to select from
      * @param context editor context
      * @param parent parent widget
@@ -47,7 +49,8 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
 
     ~QgsSelectByFormDialog();
 
-    /** Sets the message bar to display feedback from the form in. This is used in the search/filter
+    /**
+     * Sets the message bar to display feedback from the form in. This is used in the search/filter
      * mode to display the count of selected features.
      * @param messageBar target message bar
      * @note added in QGIS 2.16

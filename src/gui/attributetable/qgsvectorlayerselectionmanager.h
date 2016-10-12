@@ -20,7 +20,8 @@
 
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsVectorLayerSelectionManager
  * \note not available in Python bindings
  */

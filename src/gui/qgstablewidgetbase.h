@@ -20,7 +20,8 @@
 #include <QAbstractTableModel>
 #include <QVariant>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Base widget allowing to edit a collection, using a table.
  *
  * This widget includes buttons to add and remove rows.

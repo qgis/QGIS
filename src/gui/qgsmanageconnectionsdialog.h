@@ -22,7 +22,8 @@
 #include <QDomDocument>
 #include "ui_qgsmanageconnectionsdialogbase.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsManageConnectionsDialog
  */
 class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsManageConnectionsDialogBase

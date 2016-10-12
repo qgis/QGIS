@@ -183,7 +183,8 @@ void QgsGeometrySnapperDialog::selectOutputFile()
 
 void QgsGeometrySnapperDialog::run()
 {
-  /** Get layers **/
+  /**
+   * Get layers **/
   QgsVectorLayer* layer = getInputLayer();
   QgsVectorLayer* referenceLayer = getReferenceLayer();
   if ( !layer || !referenceLayer )
@@ -201,7 +202,8 @@ void QgsGeometrySnapperDialog::run()
 
   bool selectedOnly = checkBoxInputSelectedOnly->isChecked();
 
-  /** Duplicate if necessary **/
+  /**
+   * Duplicate if necessary **/
   if ( radioButtonOutputNew->isChecked() )
   {
     QString filename = lineEditOutput->text();
@@ -278,7 +280,8 @@ void QgsGeometrySnapperDialog::run()
     QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << layer );
   }
 
-  /** Run **/
+  /**
+   * Run **/
   QEventLoop evLoop;
   QFutureWatcher<void> futureWatcher;
   connect( &futureWatcher, SIGNAL( finished() ), &evLoop, SLOT( quit() ) );
@@ -298,7 +301,8 @@ void QgsGeometrySnapperDialog::run()
   futureWatcher.setFuture( snapper.processFeatures() );
   evLoop.exec();
 
-  /** Restore window **/
+  /**
+   * Restore window **/
   unsetCursor();
   buttonBox->button( QDialogButtonBox::Abort )->hide();
   mRunButton->show();
@@ -307,10 +311,12 @@ void QgsGeometrySnapperDialog::run()
 
   layer->setReadOnly( false );
 
-  /** Trigger layer repaint **/
+  /**
+   * Trigger layer repaint **/
   layer->triggerRepaint();
 
-  /** Show errors **/
+  /**
+   * Show errors **/
   if ( !snapper.getErrors().isEmpty() )
   {
     QMessageBox::warning( this, tr( "Errors occurred" ), tr( "<p>The following errors occurred:</p><ul><li>%1</li></ul>" ).arg( snapper.getErrors().join( "</li><li>" ) ) );

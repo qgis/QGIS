@@ -27,7 +27,8 @@ class QgsVectorLayer;
 class QgsDataDefinedPrivate;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsDataDefined
  * A container class for data source field mapping or expression.
  * \note QgsDataDefined objects are implicitly shared.
@@ -70,7 +71,8 @@ class CORE_EXPORT QgsDataDefined
      */
     QgsDataDefined( const QgsDataDefined& other );
 
-    /** Creates a QgsDataDefined from a decoded QgsStringMap.
+    /**
+     * Creates a QgsDataDefined from a decoded QgsStringMap.
      * @param map string map encoding of QgsDataDefined
      * @param baseName base name for values in the string map
      * @returns new QgsDataDefined if string map was successfully interpreted
@@ -81,7 +83,8 @@ class CORE_EXPORT QgsDataDefined
 
     virtual ~QgsDataDefined();
 
-    /** Returns whether the data defined container is set to all the default
+    /**
+     * Returns whether the data defined container is set to all the default
      * values, ie, disabled, with empty expression and no assigned field
      * @returns true if data defined container is set to default values
      * @note added in QGIS 2.7
@@ -136,21 +139,24 @@ class CORE_EXPORT QgsDataDefined
      */
     QString expressionOrField() const;
 
-    /** Prepares the expression using an expression context.
+    /**
+     * Prepares the expression using an expression context.
      * @param context expression context
      * @returns true if expression was successfully prepared
      * @note added in QGIS 2.12
      */
     bool prepareExpression( const QgsExpressionContext &context = QgsExpressionContext() );
 
-    /** Returns whether the data defined object's expression is prepared
+    /**
+     * Returns whether the data defined object's expression is prepared
      * @returns true if expression is prepared
      */
     bool expressionIsPrepared() const;
 
     QgsExpression* expression();
 
-    /** Returns the columns referenced by the QgsDataDefined
+    /**
+     * Returns the columns referenced by the QgsDataDefined
      * @param context expression context, used for preparing the expression if required
      * @note added in QGIS 2.12
      */
@@ -174,14 +180,16 @@ class CORE_EXPORT QgsDataDefined
      */
     void setField( const QString& field );
 
-    /** Encodes the QgsDataDefined into a string map.
+    /**
+     * Encodes the QgsDataDefined into a string map.
      * @param baseName optional base name for values in the string map. Can be used
      * to differentiate multiple QgsDataDefineds encoded in the same string map.
      * @see fromMap
      */
     QgsStringMap toMap( const QString& baseName = QString() ) const;
 
-    /** Returns a DOM element containing the properties of the data defined container.
+    /**
+     * Returns a DOM element containing the properties of the data defined container.
      * @param document DOM document
      * @param elementName name for DOM element
      * @returns DOM element corresponding to data defined container
@@ -190,7 +198,8 @@ class CORE_EXPORT QgsDataDefined
      */
     QDomElement toXmlElement( QDomDocument &document, const QString &elementName ) const;
 
-    /** Sets the properties of the data defined container from an XML element. Calling
+    /**
+     * Sets the properties of the data defined container from an XML element. Calling
      * this will overwrite all the current properties of the container.
      * @param element DOM element
      * @returns true if properties were successfully read from element
@@ -202,7 +211,8 @@ class CORE_EXPORT QgsDataDefined
     bool operator==( const QgsDataDefined &other ) const;
     bool operator!=( const QgsDataDefined &other ) const;
 
-    /** Assignment operator. Note that after assignment the data defined
+    /**
+     * Assignment operator. Note that after assignment the data defined
      * object's expression will not be prepared.
      */
     QgsDataDefined& operator=( QgsDataDefined const & rhs );

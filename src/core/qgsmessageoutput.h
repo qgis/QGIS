@@ -24,7 +24,8 @@ class QgsMessageOutput;
 typedef QgsMessageOutput*( *MESSAGE_OUTPUT_CREATOR )();
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Interface for showing messages from QGIS in GUI independent way.
  * This class provides abstraction of a dialog for showing output to the user.
  * By default QgsMessageConsoleOutput will be used if not overridden with other
@@ -57,7 +58,8 @@ class CORE_EXPORT QgsMessageOutput
     //! display the message to the user and deletes itself
     virtual void showMessage( bool blocking = true ) = 0;
 
-    /** Display the blocking message to the user.
+    /**
+     * Display the blocking message to the user.
      *  @note added in 2.10
      */
     static void showMessage( const QString& title, const QString& message, MessageType msgType );
@@ -78,7 +80,8 @@ class CORE_EXPORT QgsMessageOutput
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
 \brief Default implementation of message output interface
 
 This class outputs messages to the standard output. Therefore it might

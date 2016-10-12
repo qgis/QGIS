@@ -93,22 +93,26 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // ! Key (category) field index
     int keyField();
 
-    /** Restart reading features from previous select operation */
+    /**
+     * Restart reading features from previous select operation */
     void rewind();
 
     QVariant minimumValue( int index ) const override;
 
-    /** Returns the maximum value of an attributs
+    /**
+     * Returns the maximum value of an attributs
      *  @param index the index of the attribute */
     QVariant maxValue( int index );
 
-    /** Update (reload) non static members (marked !UPDATE!) from the static layer and the map.
+    /**
+     * Update (reload) non static members (marked !UPDATE!) from the static layer and the map.
      *   This method MUST be called whenever lastUpdate of the map is later then mapLastUpdate
      *   of the instance.
      */
     void update();
 
-    /** Load info (mNumberFeatures, mCidxFieldIndex, mCidxFieldNumCats)  from map */
+    /**
+     * Load info (mNumberFeatures, mCidxFieldIndex, mCidxFieldNumCats)  from map */
     void loadMapInfo();
 
     bool isValid() const override;
@@ -132,19 +136,22 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     // ----------------------------------- Edit ----------------------------------
 
-    /** Is the layer editable? I.e. the layer is valid and current user is owner of the mapset
+    /**
+     * Is the layer editable? I.e. the layer is valid and current user is owner of the mapset
      *   @return true the layer editable
      *   @return false the is not editable
      */
     bool isGrassEditable();
 
-    /** Returns true if the layer is currently edited (opened in update mode)
+    /**
+     * Returns true if the layer is currently edited (opened in update mode)
      *   @return true in update mode
      *   @return false not edited
      */
     bool isEdited();
 
-    /** Returns true if the layer is currently froze, i.e. a module
+    /**
+     * Returns true if the layer is currently froze, i.e. a module
      *  from GRASS Tools is writing to this vector
      *   @return true in update mode
      *   @return false not edited
@@ -155,13 +162,16 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     //void startEditing( QgsVectorLayerEditBuffer* buffer );
     void startEditing( QgsVectorLayer *vectorLayer );
 
-    /** Freeze vector. */
+    /**
+     * Freeze vector. */
     void freeze();
 
-    /** Thaw vector. */
+    /**
+     * Thaw vector. */
     void thaw();
 
-    /** Close editing. Rebuild topology, GMAP.update = false
+    /**
+     * Close editing. Rebuild topology, GMAP.update = false
      *   @param newMap set to true if a new map was created
      *          and it is not yet used as layer
      *   @return true success
@@ -169,17 +179,20 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     bool closeEdit( bool newMap = false, QgsVectorLayer *vectorLayer = 0 );
 
-    /** Get current number of lines.
+    /**
+     * Get current number of lines.
      *   @return number of lines
      */
     int numLines( void );
 
-    /** Get current number of nodes.
+    /**
+     * Get current number of nodes.
      *   @return number of nodes
      */
     int numNodes( void );
 
-    /** Read line
+    /**
+     * Read line
      *   @param Points pointer to existing structure or NULL
      *   @param Cats pointer to existing structure or NULL
      *   @param line line number
@@ -188,108 +201,126 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     int readLine( struct line_pnts * Points, struct line_cats * Cats, int line );
 
-    /** Read node coordinates
+    /**
+     * Read node coordinates
      *   @param line line number
      *   @return true node is alive
      *   @return false node is dead
      */
     bool nodeCoor( int node, double *x, double *y );
 
-    /** Read line nodes
+    /**
+     * Read line nodes
      *   @param line line number
      *   @return true line is alive
      *   @return false line is dead
      */
     bool lineNodes( int line, int *node1, int *node2 );
 
-    /** Read boundary areas
+    /**
+     * Read boundary areas
      *   @param line line number
      *   @return true line is alive
      *   @return false line is dead
      */
     bool lineAreas( int line, int *left, int *right );
 
-    /** Get isle area
+    /**
+     * Get isle area
      *   @param isle number
      *   @return area number
      */
     int isleArea( int isle );
 
-    /** Get centroid area
+    /**
+     * Get centroid area
      *   @param centroid line number
      *   @return area number (negative for island)
      */
     int centroidArea( int centroid );
 
-    /** Get number of lines at node
+    /**
+     * Get number of lines at node
      *   @param node node number
      *   @return number of lines at node (including dead lines)
      */
     int nodeNLines( int node );
 
-    /** Get line number of line at node for given line index
+    /**
+     * Get line number of line at node for given line index
      *   @param node node number
      *   @param idx line index
      *   @return line number
      */
     int nodeLine( int node, int idx );
 
-    /** True if line is alive
+    /**
+     * True if line is alive
      *   @param line line number
      *   @return true alive
      *   @return false dead
      */
     int lineAlive( int line );
 
-    /** True if node is alive
+    /**
+     * True if node is alive
      *   @param node node number
      *   @return true alive
      *   @return false dead
      */
     int nodeAlive( int node );
 
-    /** Write a new line into vector.
+    /**
+     * Write a new line into vector.
      *   @return line number
      *   @return -1 error
      */
     int writeLine( int type, struct line_pnts *Points, struct line_cats *Cats );
 
-    /** Rewrite line.
+    /**
+     * Rewrite line.
      *   @return line number
      *   @return -1 error
      */
     int rewriteLine( int lid, int type, struct line_pnts *Points, struct line_cats *Cats );
 
-    /** Delete line
+    /**
+     * Delete line
      *   @return 0 OK
      *   @return -1 error
      */
     int deleteLine( int line );
 
-    /** Number of updated lines
+    /**
+     * Number of updated lines
      */
     int numUpdatedLines( void );
 
-    /** Number of updated nodes
+    /**
+     * Number of updated nodes
      */
     int numUpdatedNodes( void );
 
-    /** Get updated line
+    /**
+     * Get updated line
      */
     int updatedLine( int idx );
 
-    /** Get updated node
+    /**
+     * Get updated node
      */
     int updatedNode( int idx );
 
-    /** Find nearest line
+    /**
+     * Find nearest line
      *   @param threshold maximum distance
      *   @return line number
      *   @return 0 nothing found
      */
     int findLine( double x, double y, int type, double threshold );
 
-    /** Find nearest node
+    /**
+     * Find nearest node
      *   @param threshold maximum distance
      *   @return node number
      *   @return 0 nothing found
@@ -297,25 +328,29 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     int findNode( double x, double y, double threshold );
 
     // TODO is it used?
-    /** Read attributes from DB
+    /**
+     * Read attributes from DB
      *   @param field
      *   @param cat
      *   @return vector of attributes
      */
     QgsAttributeMap *attributes( int field, int cat );
 
-    /** Key (cat) column name
+    /**
+     * Key (cat) column name
      *   @param field
      *   @return Key column name or empty string
      */
     QString key( int field );
 
-    /** Get number of db links
+    /**
+     * Get number of db links
      *   @return number of links
      */
     int numDbLinks( void );
 
-    /** Get db link field
+    /**
+     * Get db link field
      *  @param link
      *   @return field number or 0
      */
@@ -324,32 +359,40 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     /* Following functions work only until first edit operation! (category index used) */
 
-    /** Get number of fields in category index */
+    /**
+     * Get number of fields in category index */
     int cidxGetNumFields( void );
 
-    /** Get field number for index */
+    /**
+     * Get field number for index */
     int cidxGetFieldNumber( int idx );
 
-    /** Get maximum category for field index */
+    /**
+     * Get maximum category for field index */
     int cidxGetMaxCat( int idx );
 
-    /** Returns GRASS layer number */
+    /**
+     * Returns GRASS layer number */
     int grassLayer();
 
-    /** Returns GRASS layer number for given layer name or -1 if cannot
+    /**
+     * Returns GRASS layer number for given layer name or -1 if cannot
      *  get layer number
      */
     static int grassLayer( QString );
 
-    /** Returns GRASS layer type (GV_POINT, GV_LINES, GV_AREA) for
+    /**
+     * Returns GRASS layer type (GV_POINT, GV_LINES, GV_AREA) for
      *  given layer name or -1 if cannot get layer type
      */
     static int grassLayerType( QString );
 
-    /** Return a provider name */
+    /**
+     * Return a provider name */
     QString name() const override;
 
-    /** Return description */
+    /**
+     * Return description */
     QString description() const override;
 
     // Layer type (layerType)
@@ -424,7 +467,8 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // create QgsFeatureId from GRASS geometry object id and cat
     static QgsFeatureId makeFeatureId( int grassId, int cat );
 
-    /** Get attribute by category(key) and attribute number.
+    /**
+     * Get attribute by category(key) and attribute number.
      *  @param layerId
      *  @param category (key)
      *  @param column column number ( < nColumns )
@@ -432,10 +476,12 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     static char *attribute( int layerId, int cat, int column );
 
-    /** Check if provider is outdated and update if necessary */
+    /**
+     * Check if provider is outdated and update if necessary */
     void ensureUpdated() const;
 
-    /** Check if layer is topology layer TOPO_POINT, TOPO_NODE, TOPO_LINE */
+    /**
+     * Check if layer is topology layer TOPO_POINT, TOPO_NODE, TOPO_LINE */
     bool isTopoType() const;
 
     static bool isTopoType( int layerType );
@@ -447,7 +493,8 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // Get other edited layer, returns 0 if layer does not exist
     QgsGrassVectorMapLayer * otherEditLayer( int layerField );
 
-    /** Fields used for topo layers */
+    /**
+     * Fields used for topo layers */
     QgsFields mTopoFields;
 
     //QgsFields mEditFields;

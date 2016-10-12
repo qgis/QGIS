@@ -23,7 +23,8 @@
 #include "ui_qgssubstitutionlistwidgetbase.h"
 #include "qgsstringutils.h"
 
-/** \class QgsSubstitutionListWidget
+/**
+ * \class QgsSubstitutionListWidget
  * \ingroup app
  * A widget which allows users to specify a list of substitutions to apply to a string, with
  * options for exporting and importing substitution lists.
@@ -37,18 +38,21 @@ class APP_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
 
   public:
 
-    /** Constructor for QgsSubstitutionListWidget.
+    /**
+     * Constructor for QgsSubstitutionListWidget.
      * @param parent parent widget
      */
     QgsSubstitutionListWidget( QWidget* parent = nullptr );
 
-    /** Sets the list of substitutions to show in the widget.
+    /**
+     * Sets the list of substitutions to show in the widget.
      * @param substitutions substitution list
      * @see substitutions()
      */
     void setSubstitutions( const QgsStringReplacementCollection& substitutions );
 
-    /** Returns the list of substitutions currently defined by the widget.
+    /**
+     * Returns the list of substitutions currently defined by the widget.
      * @see setSubstitutions()
      */
     QgsStringReplacementCollection substitutions() const;
@@ -72,7 +76,8 @@ class APP_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
 
 };
 
-/** \class QgsSubstitutionListDialog
+/**
+ * \class QgsSubstitutionListDialog
  * \ingroup app
  * A dialog which allows users to specify a list of substitutions to apply to a string, with
  * options for exporting and importing substitution lists.
@@ -85,18 +90,21 @@ class APP_EXPORT QgsSubstitutionListDialog : public QDialog
 
   public:
 
-    /** Constructor for QgsSubstitutionListDialog.
+    /**
+     * Constructor for QgsSubstitutionListDialog.
      * @param parent parent widget
      */
     QgsSubstitutionListDialog( QWidget* parent = nullptr );
 
-    /** Sets the list of substitutions to show in the dialog.
+    /**
+     * Sets the list of substitutions to show in the dialog.
      * @param substitutions substitution list
      * @see substitutions()
      */
     void setSubstitutions( const QgsStringReplacementCollection& substitutions );
 
-    /** Returns the list of substitutions currently defined by the dialog.
+    /**
+     * Returns the list of substitutions currently defined by the dialog.
      * @see setSubstitutions()
      */
     QgsStringReplacementCollection substitutions() const;

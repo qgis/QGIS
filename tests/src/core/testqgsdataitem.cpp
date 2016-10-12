@@ -24,7 +24,8 @@
 #include <qgsapplication.h>
 #include <qgslogger.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsDataItem class.
  */
 class TestQgsDataItem : public QObject

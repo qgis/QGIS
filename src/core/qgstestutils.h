@@ -18,7 +18,8 @@
 #include "qgis.h"
 #include "QtTest/qtestcase.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Assorted helper methods for unit testing.
  * @note added in QGIS 2.16
  */

@@ -30,7 +30,8 @@
 #include <qgsrasterdataprovider.h>
 #include <qgsrectangle.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the gdal provider
  */
 class TestQgsGdalProvider : public QObject

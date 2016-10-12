@@ -23,7 +23,8 @@
 
 class QgsSpatialIndex;
 
-/** \class QgsPointDistanceRenderer
+/**
+ * \class QgsPointDistanceRenderer
  * \ingroup core
  * An abstract base class for distance based point renderers (eg clusterer and displacement renderers).
  * QgsPointDistanceRenderer handles calculation of point clusters using a distance based threshold.
@@ -39,7 +40,8 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     //! Contains properties for a feature within a clustered group.
     struct GroupedFeature
     {
-      /** Constructor for GroupedFeature.
+      /**
+       * Constructor for GroupedFeature.
       * @param feature feature
       * @param symbol base symbol for rendering feature
       * @param isSelected set to true if feature is selected and should be rendered in a selected state
@@ -68,7 +70,8 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     //! A group of clustered points (ie features within the distance tolerance).
     typedef QList< GroupedFeature > ClusteredGroup;
 
-    /** Constructor for QgsPointDistanceRenderer.
+    /**
+     * Constructor for QgsPointDistanceRenderer.
      * @param rendererName name of renderer for registry
      * @param labelAttributeName optional attribute for labeling points
      */
@@ -96,7 +99,8 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     void checkLegendSymbolItem( const QString& key, bool state ) override;
     virtual QString filter( const QgsFields& fields = QgsFields() ) override;
 
-    /** Sets the attribute name for labeling points.
+    /**
+     * Sets the attribute name for labeling points.
      * @param name attribute name, or empty string to avoid labeling features by the renderer
      * @see labelAttributeName()
      * @see setLabelFont()
@@ -105,7 +109,8 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      */
     void setLabelAttributeName( const QString& name ) { mLabelAttributeName = name; }
 
-    /** Returns the attribute name used for labeling points, or an empty string if no labeling
+    /**
+     * Returns the attribute name used for labeling points, or an empty string if no labeling
      * will be done by the renderer.
      * @see setLabelAttributeName()
      * @see labelFont()
@@ -114,7 +119,8 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      */
     QString labelAttributeName() const { return mLabelAttributeName; }
 
-    /** Sets the font used for labeling points.
+    /**
+     * Sets the font used for labeling points.
      * @param font label font
      * @see labelFont()
      * @see setLabelAttributeName()
@@ -122,27 +128,31 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      */
     void setLabelFont( const QFont& font ) { mLabelFont = font; }
 
-    /** Returns the font used for labeling points.
+    /**
+     * Returns the font used for labeling points.
      * @see setLabelFont()
      * @see labelAttributeName()
      * @see labelColor()
      */
     QFont labelFont() const { return mLabelFont;}
 
-    /** Sets the maximum scale at which points should be labeled by the renderer.
+    /**
+     * Sets the maximum scale at which points should be labeled by the renderer.
      * @param denominator maximum scale denominator
      * @see maxLabelScaleDenominator()
      * @see setLabelAttributeName()
      */
     void setMaxLabelScaleDenominator( double denominator ) { mMaxLabelScaleDenominator = denominator; }
 
-    /** Returns the denominator for the maximum scale at which points should be labeled by the renderer.
+    /**
+     * Returns the denominator for the maximum scale at which points should be labeled by the renderer.
      * @see setMaxLabelScaleDenominator()
      * @see labelAttributeName()
      */
     double maxLabelScaleDenominator() const { return mMaxLabelScaleDenominator; }
 
-    /** Sets the color to use for for labeling points.
+    /**
+     * Sets the color to use for for labeling points.
      * @param color label color
      * @see labelColor()
      * @see setLabelAttributeName()
@@ -150,14 +160,16 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      */
     void setLabelColor( const QColor& color ) { mLabelColor = color;}
 
-    /** Returns the color used for for labeling points.
+    /**
+     * Returns the color used for for labeling points.
      * @see setLabelColor()
      * @see labelAttributeName()
      * @see labelFont()
      */
     QColor labelColor() const { return mLabelColor; }
 
-    /** Sets the tolerance distance for grouping points. Units are specified using
+    /**
+     * Sets the tolerance distance for grouping points. Units are specified using
      * setToleranceUnit().
      * @param distance tolerance distance
      * @see tolerance()
@@ -165,14 +177,16 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      */
     void setTolerance( double distance ) { mTolerance = distance; }
 
-    /** Returns the tolerance distance for grouping points. Units are retrieved using
+    /**
+     * Returns the tolerance distance for grouping points. Units are retrieved using
      * toleranceUnit().
      * @see setTolerance()
      * @see toleranceUnit()
      */
     double tolerance() const { return mTolerance; }
 
-    /** Sets the units for the tolerance distance.
+    /**
+     * Sets the units for the tolerance distance.
      * @param unit tolerance distance units
      * @see setTolerance()
      * @see toleranceUnit()
@@ -180,14 +194,16 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      */
     void setToleranceUnit( QgsUnitTypes::RenderUnit unit ) { mToleranceUnit = unit; }
 
-    /** Returns the units for the tolerance distance.
+    /**
+     * Returns the units for the tolerance distance.
      * @see tolerance()
      * @see setToleranceUnit()
      * @note added in QGIS 2.12
      */
     QgsUnitTypes::RenderUnit toleranceUnit() const { return mToleranceUnit; }
 
-    /** Sets the map unit scale object for the distance tolerance. This is only used if the
+    /**
+     * Sets the map unit scale object for the distance tolerance. This is only used if the
      * toleranceUnit() is set to QgsUnitTypes::RenderMapUnits.
      * @param scale scale for distance tolerance
      * @see toleranceMapUnitScale()
@@ -195,7 +211,8 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      */
     void setToleranceMapUnitScale( const QgsMapUnitScale& scale ) { mToleranceMapUnitScale = scale; }
 
-    /** Returns the map unit scale object for the distance tolerance. This is only used if the
+    /**
+     * Returns the map unit scale object for the distance tolerance. This is only used if the
      * toleranceUnit() is set to QgsUnitTypes::RenderMapUnits.
      * @see setToleranceMapUnitScale()
      * @see toleranceUnit()
@@ -241,7 +258,8 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     //! Spatial index for fast lookup of nearby points.
     QgsSpatialIndex* mSpatialIndex;
 
-    /** Renders the labels for a group.
+    /**
+     * Renders the labels for a group.
      * @param centerPoint center point of group
      * @param context destination render context
      * @param labelShifts displacement for individual label positions
@@ -252,7 +270,8 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
 
   private:
 
-    /** Draws a group of clustered points.
+    /**
+     * Draws a group of clustered points.
      * @param centerPoint central point (geographic centroid) of all points contained within the cluster
      * @param context destination render context
      * @param group contents of group
@@ -271,13 +290,15 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     //! Internal group rendering helper
     void drawGroup( const ClusteredGroup& group, QgsRenderContext& context );
 
-    /** Returns first symbol from the embedded renderer for a feature or nullptr if none
+    /**
+     * Returns first symbol from the embedded renderer for a feature or nullptr if none
      * @param feature source feature
      * @param context target render context
     */
     QgsMarkerSymbol* firstSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
-    /** Creates an expression context scope for a clustered group, with variables reflecting the group's properties.
+    /**
+     * Creates an expression context scope for a clustered group, with variables reflecting the group's properties.
      * @param group clustered group
      * @returns new expression context scope
      */

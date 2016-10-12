@@ -26,7 +26,8 @@
 class QString;
 class QgsMapLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMapLayerRegistry
  * This class tracks map layers that are currently loaded and provides
  * various methods to retrieve matching layers from the registry.
@@ -45,7 +46,8 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     //! Returns the number of registered layers.
     int count() const;
 
-    /** Retrieve a pointer to a registered layer by layer ID.
+    /**
+     * Retrieve a pointer to a registered layer by layer ID.
      * @param theLayerId ID of layer to retrieve
      * @returns matching layer, or nullptr if no matching layer found
      * @see mapLayersByName()
@@ -54,7 +56,8 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     //TODO QGIS 3.0 - rename theLayerId to layerId
     QgsMapLayer* mapLayer( const QString& theLayerId ) const;
 
-    /** Retrieve a list of matching registered layers by layer name.
+    /**
+     * Retrieve a list of matching registered layers by layer name.
      * @param layerName name of layers to match
      * @returns list of matching layers
      * @see mapLayer()
@@ -62,14 +65,16 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      */
     QList<QgsMapLayer *> mapLayersByName( const QString& layerName ) const;
 
-    /** Returns a map of all registered layers by layer ID.
+    /**
+     * Returns a map of all registered layers by layer ID.
      * @see mapLayer()
      * @see mapLayersByName()
      * @see layers()
      */
     QMap<QString, QgsMapLayer*> mapLayers() const;
 
-    /** Returns a list of registered map layers with a specified layer type.
+    /**
+     * Returns a list of registered map layers with a specified layer type.
      *
      * Example:
      *
@@ -346,7 +351,8 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
 
   protected:
 #if 0
-    /** Debugging member
+    /**
+     * Debugging member
      *  invoked when a connect() is made to this object
      */
     void connectNotify( const char * signal ) override;

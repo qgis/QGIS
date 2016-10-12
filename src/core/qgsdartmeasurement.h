@@ -18,7 +18,8 @@
 
 #include <QString>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsDartMeasurement
  */
 class CORE_EXPORT QgsDartMeasurement

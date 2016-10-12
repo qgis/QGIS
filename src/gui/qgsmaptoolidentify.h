@@ -33,7 +33,8 @@ class QgsHighlight;
 class QgsIdentifyMenu;
 class QgsDistanceArea;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
   \brief Map tool for identifying features in layers
 
   after selecting a point, performs the identification:
@@ -107,7 +108,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     virtual void deactivate() override;
 
-    /** Performs the identification.
+    /**
+     * Performs the identification.
     @param x x coordinates of mouseEvent
     @param y y coordinates of mouseEvent
     @param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
@@ -115,7 +117,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     @return a list of IdentifyResult*/
     QList<IdentifyResult> identify( int x, int y, const QList<QgsMapLayer*>& layerList = QList<QgsMapLayer*>(), IdentifyMode mode = DefaultQgsSetting );
 
-    /** Performs the identification.
+    /**
+     * Performs the identification.
     To avoid beeing forced to specify IdentifyMode with a list of layers
     this has been made private and two publics methods are offered
     @param x x coordinates of mouseEvent
@@ -138,7 +141,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     void changedRasterResults( QList<IdentifyResult>& );
 
   protected:
-    /** Performs the identification.
+    /**
+     * Performs the identification.
     To avoid beeing forced to specify IdentifyMode with a list of layers
     this has been made private and two publics methods are offered
     @param x x coordinates of mouseEvent
@@ -151,7 +155,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     QgsIdentifyMenu* mIdentifyMenu;
 
-    /** Call the right method depending on layer type */
+    /**
+     * Call the right method depending on layer type */
     bool identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPoint& point, const QgsRectangle& viewExtent, double mapUnitsPerPixel, const QgsMapToolIdentify::LayerType& layerType = AllLayers );
 
     bool identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, const QgsRectangle& viewExtent, double mapUnitsPerPixel );
@@ -159,25 +164,29 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
   private:
 
-    /** Desired units for distance display.
+    /**
+     * Desired units for distance display.
      * @note added in QGIS 2.14
      * @see displayAreaUnits()
      */
     virtual QgsUnitTypes::DistanceUnit displayDistanceUnits() const;
 
-    /** Desired units for area display.
+    /**
+     * Desired units for area display.
      * @note added in QGIS 2.14
      * @see displayDistanceUnits()
      */
     virtual QgsUnitTypes::AreaUnit displayAreaUnits() const;
 
-    /** Format a distance into a suitable string for display to the user
+    /**
+     * Format a distance into a suitable string for display to the user
      * @note added in QGIS 2.14
      * @see formatArea()
      */
     QString formatDistance( double distance ) const;
 
-    /** Format a distance into a suitable string for display to the user
+    /**
+     * Format a distance into a suitable string for display to the user
      * @note added in QGIS 2.14
      * @see formatDistance()
      */
@@ -185,7 +194,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     QMap< QString, QString > featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer, const QgsPoint& layerPoint = QgsPoint() );
 
-    /** Adds details of the closest vertex to derived attributes
+    /**
+     * Adds details of the closest vertex to derived attributes
      */
     void closestVertexAttributes( const QgsAbstractGeometry& geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString >& derivedAttributes );
 

@@ -27,7 +27,8 @@
 
 class QgsRectangle;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Raster data container.
  */
 class CORE_EXPORT QgsRasterBlock
@@ -35,7 +36,8 @@ class CORE_EXPORT QgsRasterBlock
   public:
     QgsRasterBlock();
 
-    /** \brief Constructor which allocates data block in memory
+    /**
+     * \brief Constructor which allocates data block in memory
      *  @param theDataType raster data type
      *  @param theWidth width of data matrix
      *  @param theHeight height of data matrix
@@ -43,7 +45,8 @@ class CORE_EXPORT QgsRasterBlock
      */
     QgsRasterBlock( Qgis::DataType theDataType, int theWidth, int theHeight );
 
-    /** \brief Constructor which allocates data block in memory
+    /**
+     * \brief Constructor which allocates data block in memory
      *  @param theDataType raster data type
      *  @param theWidth width of data matrix
      *  @param theHeight height of data matrix
@@ -53,7 +56,8 @@ class CORE_EXPORT QgsRasterBlock
 
     virtual ~QgsRasterBlock();
 
-    /** \brief Reset block
+    /**
+     * \brief Reset block
      *  @param theDataType raster data type
      *  @param theWidth width of data matrix
      *  @param theHeight height of data matrix
@@ -62,7 +66,8 @@ class CORE_EXPORT QgsRasterBlock
      */
     bool reset( Qgis::DataType theDataType, int theWidth, int theHeight );
 
-    /** \brief Reset block
+    /**
+     * \brief Reset block
      *  @param theDataType raster data type
      *  @param theWidth width of data matrix
      *  @param theHeight height of data matrix
@@ -73,16 +78,19 @@ class CORE_EXPORT QgsRasterBlock
 
     // TODO: consider if use isValid() at all, isEmpty() should be sufficient
     // and works also if block is valid but empty - difference between valid and empty?
-    /** \brief Returns true if the block is valid (correctly filled with data).
+    /**
+     * \brief Returns true if the block is valid (correctly filled with data).
      *  An empty block may still be valid (if zero size block was requested).
      *  If the block is not valid, error may be retrieved by error() method.
      */
     bool isValid() const { return mValid; }
 
-    /** \brief Mark block as valid or invalid */
+    /**
+     * \brief Mark block as valid or invalid */
     void setValid( bool valid ) { mValid = valid; }
 
-    /** Returns true if block is empty, i.e. its size is 0 (zero rows or cols).
+    /**
+     * Returns true if block is empty, i.e. its size is 0 (zero rows or cols).
      *  This method does not return true if size is not zero and all values are
      *  'no data' (null).
      */
@@ -130,120 +138,143 @@ class CORE_EXPORT QgsRasterBlock
       return typeSize( mDataType );
     }
 
-    /** Returns true if data type is numeric */
+    /**
+     * Returns true if data type is numeric */
     static bool typeIsNumeric( Qgis::DataType type );
 
-    /** Returns true if data type is color */
+    /**
+     * Returns true if data type is color */
     static bool typeIsColor( Qgis::DataType type );
 
-    /** Returns data type */
+    /**
+     * Returns data type */
     Qgis::DataType dataType() const { return mDataType; }
 
-    /** For given data type returns wider type and sets no data value */
+    /**
+     * For given data type returns wider type and sets no data value */
     static Qgis::DataType typeWithNoDataValue( Qgis::DataType dataType, double *noDataValue );
 
-    /** True if the block has no data value.
+    /**
+     * True if the block has no data value.
      * @return true if the block has no data value */
     bool hasNoDataValue() const { return mHasNoDataValue; }
 
-    /** Returns true if the block may contain no data. It does not guarantee
+    /**
+     * Returns true if the block may contain no data. It does not guarantee
      * that it really contains any no data. It can be used to speed up processing.
      * Not the difference between this method and hasNoDataValue().
      * @return true if the block may contain no data */
     bool hasNoData() const;
 
-    /** Return no data value. If the block does not have a no data value the
+    /**
+     * Return no data value. If the block does not have a no data value the
      *  returned value is undefined.
      * @return No data value */
     double noDataValue() const { return mNoDataValue; }
 
-    /** Get byte array representing a value.
+    /**
+     * Get byte array representing a value.
      * @param theDataType data type
      * @param theValue value
      * @return byte array representing the value */
     static QByteArray valueBytes( Qgis::DataType theDataType, double theValue );
 
-    /** \brief Read a single value if type of block is numeric. If type is color,
+    /**
+     * \brief Read a single value if type of block is numeric. If type is color,
      *  returned value is undefined.
      *  @param row row index
      *  @param column column index
      *  @return value */
     double value( int row, int column ) const;
 
-    /** \brief Read a single value if type of block is numeric. If type is color,
+    /**
+     * \brief Read a single value if type of block is numeric. If type is color,
      *  returned value is undefined.
      *  @param index data matrix index (long type in Python)
      *  @return value */
     double value( qgssize index ) const;
 
-    /** \brief Read a single color
+    /**
+     * \brief Read a single color
      *  @param row row index
      *  @param column column index
      *  @return color */
     QRgb color( int row, int column ) const;
 
-    /** \brief Read a single value
+    /**
+     * \brief Read a single value
      *  @param index data matrix index (long type in Python)
      *  @return color */
     QRgb color( qgssize index ) const;
 
-    /** \brief Check if value at position is no data
+    /**
+     * \brief Check if value at position is no data
      *  @param row row index
      *  @param column column index
      *  @return true if value is no data */
     bool isNoData( int row, int column );
 
-    /** \brief Check if value at position is no data
+    /**
+     * \brief Check if value at position is no data
      *  @param index data matrix index (long type in Python)
      *  @return true if value is no data */
     bool isNoData( qgssize index );
 
-    /** \brief Set value on position
+    /**
+     * \brief Set value on position
      *  @param row row index
      *  @param column column index
      *  @param value the value to be set
      *  @return true on success */
     bool setValue( int row, int column, double value );
 
-    /** \brief Set value on index (indexed line by line)
+    /**
+     * \brief Set value on index (indexed line by line)
      *  @param index data matrix index (long type in Python)
      *  @param value the value to be set
      *  @return true on success */
     bool setValue( qgssize index, double value );
 
-    /** \brief Set color on position
+    /**
+     * \brief Set color on position
      *  @param row row index
      *  @param column column index
      *  @param color the color to be set, QRgb value
      *  @return true on success */
     bool setColor( int row, int column, QRgb color );
 
-    /** \brief Set color on index (indexed line by line)
+    /**
+     * \brief Set color on index (indexed line by line)
      *  @param index data matrix index (long type in Python)
      *  @param color the color to be set, QRgb value
      *  @return true on success */
     bool setColor( qgssize index, QRgb color );
 
-    /** \brief Set no data on pixel
+    /**
+     * \brief Set no data on pixel
      *  @param row row index
      *  @param column column index
      *  @return true on success */
     bool setIsNoData( int row, int column );
 
-    /** \brief Set no data on pixel
+    /**
+     * \brief Set no data on pixel
      *  @param index data matrix index (long type in Python)
      *  @return true on success */
     bool setIsNoData( qgssize index );
 
-    /** \brief Set the whole block to no data
+    /**
+     * \brief Set the whole block to no data
      *  @return true on success */
     bool setIsNoData();
 
-    /** \brief Set the whole block to no data except specified rectangle
+    /**
+     * \brief Set the whole block to no data except specified rectangle
      *  @return true on success */
     bool setIsNoDataExcept( QRect theExceptRect );
 
-    /** \brief Remove no data flag on pixel. If the raster block does not have an explicit
+    /**
+     * \brief Remove no data flag on pixel. If the raster block does not have an explicit
      * no data value set then an internal map of no data pixels is maintained for the block.
      * In this case it is possible to reset a pixel to flag it as having valid data using this
      * method. This method has no effect for raster blocks with an explicit no data value set.
@@ -252,7 +283,8 @@ class CORE_EXPORT QgsRasterBlock
      *  @note added in QGIS 2.10 */
     void setIsData( int row, int column );
 
-    /** \brief Remove no data flag on pixel. If the raster block does not have an explicit
+    /**
+     * \brief Remove no data flag on pixel. If the raster block does not have an explicit
      * no data value set then an internal map of no data pixels is maintained for the block.
      * In this case it is possible to reset a pixel to flag it as having valid data using this
      * method. This method has no effect for raster blocks with an explicit no data value set.
@@ -260,7 +292,8 @@ class CORE_EXPORT QgsRasterBlock
      *  @note added in QGIS 2.10 */
     void setIsData( qgssize index );
 
-    /** \brief Get pointer to data
+    /**
+     * \brief Get pointer to data
      *  @param row row index
      *  @param column column index
      *  @return pointer to data
@@ -268,26 +301,30 @@ class CORE_EXPORT QgsRasterBlock
      */
     char * bits( int row, int column );
 
-    /** \brief Get pointer to data
+    /**
+     * \brief Get pointer to data
      *  @param index data matrix index (long type in Python)
      *  @return pointer to data
      *  @note not available in python bindings
      */
     char * bits( qgssize index );
 
-    /** \brief Get pointer to data
+    /**
+     * \brief Get pointer to data
      *  @return pointer to data
      *  @note not available in python bindings
      */
     char * bits();
 
-    /** \brief Print double value with all necessary significant digits.
+    /**
+     * \brief Print double value with all necessary significant digits.
      *         It is ensured that conversion back to double gives the same number.
      *  @param value the value to be printed
      *  @return string representing the value*/
     static QString printValue( double value );
 
-    /** \brief Print float value with all necessary significant digits.
+    /**
+     * \brief Print float value with all necessary significant digits.
      *         It is ensured that conversion back to float gives the same number.
      *  @param value the value to be printed
      *  @return string representing the value
@@ -296,16 +333,19 @@ class CORE_EXPORT QgsRasterBlock
      */
     static QString printValue( float value );
 
-    /** \brief Convert data to different type.
+    /**
+     * \brief Convert data to different type.
      *  @param destDataType dest data type
      *  @return true on success */
     bool convert( Qgis::DataType destDataType );
 
-    /** \brief Get image if type is color.
+    /**
+     * \brief Get image if type is color.
     *   @return image */
     QImage image() const;
 
-    /** \brief set image.
+    /**
+     * \brief set image.
      *  @param image image
      *  @return true on success */
     bool setImage( const QImage * image );
@@ -318,19 +358,23 @@ class CORE_EXPORT QgsRasterBlock
 
     void applyNoDataValues( const QgsRasterRangeList & rangeList );
 
-    /** Apply band scale and offset to raster block values
+    /**
+     * Apply band scale and offset to raster block values
      * @@note added in 2.3 */
     void applyScaleOffset( double scale, double offset );
 
-    /** \brief Get error */
+    /**
+     * \brief Get error */
     QgsError error() const { return mError; }
 
-    /** \brief Set error */
+    /**
+     * \brief Set error */
     void setError( const QgsError & theError ) { mError = theError;}
 
     QString toString() const;
 
-    /** \brief For theExtent and theWidht, theHeight find rectangle covered by subextent.
+    /**
+     * \brief For theExtent and theWidht, theHeight find rectangle covered by subextent.
      * The output rect has x oriented from left to right and y from top to bottom
      * (upper-left to lower-right orientation).
      * @param theExtent extent, usually the larger
@@ -341,13 +385,15 @@ class CORE_EXPORT QgsRasterBlock
      */
     static QRect subRect( const QgsRectangle &theExtent, int theWidth, int theHeight, const QgsRectangle &theSubExtent );
 
-    /** Returns the width (number of columns) of the raster block.
+    /**
+     * Returns the width (number of columns) of the raster block.
      * @see height
      * @note added in QGIS 2.10
      */
     int width() const { return mWidth; }
 
-    /** Returns the height (number of rows) of the raster block.
+    /**
+     * Returns the height (number of rows) of the raster block.
      * @see width
      * @note added in QGIS 2.10
      */
@@ -357,22 +403,26 @@ class CORE_EXPORT QgsRasterBlock
     static QImage::Format imageFormat( Qgis::DataType theDataType );
     static Qgis::DataType dataType( QImage::Format theFormat );
 
-    /** Test if value is nodata comparing to noDataValue
+    /**
+     * Test if value is nodata comparing to noDataValue
      * @param value tested value
      * @param noDataValue no data value
      * @return true if value is nodata */
     static bool isNoDataValue( double value, double noDataValue );
 
-    /** Test if value is nodata for specific band
+    /**
+     * Test if value is nodata for specific band
      * @param value tested value
      * @return true if value is nodata */
     bool isNoDataValue( double value ) const;
 
-    /** Allocate no data bitmap
+    /**
+     * Allocate no data bitmap
      *  @return true on success */
     bool createNoDataBitmap();
 
-    /** \brief Convert block of data from one type to another. Original block memory
+    /**
+     * \brief Convert block of data from one type to another. Original block memory
      *         is not release.
      *  @param srcData source data
      *  @param srcDataType source data type

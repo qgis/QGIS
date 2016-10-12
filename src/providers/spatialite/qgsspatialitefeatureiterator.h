@@ -94,7 +94,8 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
      */
     sqlite3_stmt *sqliteStatement;
 
-    /** Geometry column index used when fetching geometry */
+    /**
+     * Geometry column index used when fetching geometry */
     int mGeomColIdx;
 
     //! Set to true, if geometry is in the requested columns

@@ -44,21 +44,24 @@ typedef QList<int> QgsAttributeList;
 class QgsVectorLayerLabelProvider;
 class QgsVectorLayerDiagramProvider;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Interruption checker used by QgsVectorLayerRenderer::render()
  * @note not available in Python bindings
  */
 class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
 {
   public:
-    /** Constructor */
+    /**
+     * Constructor */
     explicit QgsVectorLayerRendererInterruptionChecker( const QgsRenderContext& context );
     bool mustStop() const override;
   private:
     const QgsRenderContext& mContext;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Implementation of threaded rendering for vector layers.
  *
  * @note added in 2.4
@@ -78,22 +81,26 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
   private:
 
-    /** Registers label and diagram layer
+    /**
+     * Registers label and diagram layer
       @param layer diagram layer
       @param attributeNames attributes needed for labeling and diagrams will be added to the list
      */
     void prepareLabeling( QgsVectorLayer* layer, QSet<QString>& attributeNames );
     void prepareDiagrams( QgsVectorLayer* layer, QSet<QString>& attributeNames );
 
-    /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
+    /**
+     * Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
      */
     void drawRenderer( QgsFeatureIterator& fit );
 
-    /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
+    /**
+     * Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
      */
     void drawRendererLevels( QgsFeatureIterator& fit );
 
-    /** Stop version 2 renderer and selected renderer (if required) */
+    /**
+     * Stop version 2 renderer and selected renderer (if required) */
     void stopRenderer( QgsSingleSymbolRenderer* selRenderer );
 
 
@@ -103,7 +110,8 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QgsVectorLayerRendererInterruptionChecker mInterruptionChecker;
 
-    /** The rendered layer */
+    /**
+     * The rendered layer */
     QgsVectorLayer* mLayer;
 
     QgsFields mFields; // TODO: use fields from mSource

@@ -25,7 +25,8 @@
 #include <QSettings>
 #include "qgsfields.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFieldValidator
  */
 class GUI_EXPORT QgsFieldValidator : public QValidator

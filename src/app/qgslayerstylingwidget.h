@@ -53,7 +53,8 @@ class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
   public:
     QgsMapLayerStyleCommand( QgsMapLayer* layer, const QString& text, const QDomNode& current, const QDomNode& last );
 
-    /** Return unique ID for this kind of undo command.
+    /**
+     * Return unique ID for this kind of undo command.
      * Currently we do not have a central registry of undo command IDs, so it is a random magic number.
      */
     virtual int id() const override { return 0xbeef; }
@@ -61,7 +62,8 @@ class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
     virtual void undo() override;
     virtual void redo() override;
 
-    /** Try to merge with other commands of this type when they are created in small time interval */
+    /**
+     * Try to merge with other commands of this type when they are created in small time interval */
     virtual bool mergeWith( const QUndoCommand* other ) override;
 
   private:
@@ -91,7 +93,8 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
 
     void setPageFactories( QList<QgsMapLayerConfigWidgetFactory *> factories );
 
-    /** Sets whether updates of the styling widget are blocked. This can be called to prevent
+    /**
+     * Sets whether updates of the styling widget are blocked. This can be called to prevent
      * the widget being refreshed multiple times when a batch of layer style changes are
      * about to be applied
      * @param blocked set to true to block updates, or false to re-allow updates
@@ -109,7 +112,8 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     void redo();
     void updateCurrentWidgetLayer();
 
-    /** Sets the current visible page in the widget.
+    /**
+     * Sets the current visible page in the widget.
      * @param page standard page to display
      */
     void setCurrentPage( Page page );

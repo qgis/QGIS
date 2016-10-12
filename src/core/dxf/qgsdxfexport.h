@@ -37,7 +37,8 @@ namespace pal
   class LabelPosition;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsDxfExport
  */
 class CORE_EXPORT QgsDxfExport
@@ -311,7 +312,8 @@ class CORE_EXPORT QgsDxfExport
     //! return list of available DXF encodings
     static QStringList encodings();
 
-    /** Output the label
+    /**
+     * Output the label
      * @param layerId id of the layer
      * @param context render context
      * @param label position of label
@@ -320,7 +322,8 @@ class CORE_EXPORT QgsDxfExport
      */
     void drawLabel( QString layerId, QgsRenderContext& context, pal::LabelPosition* label, const QgsPalLayerSettings &settings );
 
-    /** Register name of layer for feature
+    /**
+     * Register name of layer for feature
      * @param layerId id of layer
      * @param fid id of feature
      * @param layer dxf layer of feature
@@ -330,9 +333,11 @@ class CORE_EXPORT QgsDxfExport
   private:
     QList< QPair<QgsVectorLayer*, int> > mLayers;
 
-    /** Extent for export, only intersecting features are exported. If the extent is an empty rectangle, all features are exported*/
+    /**
+     * Extent for export, only intersecting features are exported. If the extent is an empty rectangle, all features are exported*/
     QgsRectangle mExtent;
-    /** Scale for symbology export (used if symbols units are mm)*/
+    /**
+     * Scale for symbology export (used if symbols units are mm)*/
     double mSymbologyScaleDenominator;
     SymbologyExport mSymbologyExport;
     QgsUnitTypes::DistanceUnit mMapUnits;

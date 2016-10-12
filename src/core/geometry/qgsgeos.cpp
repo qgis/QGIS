@@ -108,7 +108,8 @@ static GEOSInit geosinit;
 ///@endcond
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * @brief Scoped GEOS pointer
  * @note not available in Python bindings
  */
@@ -1942,7 +1943,8 @@ double QgsGeos::lineLocatePoint( const QgsPointV2& point, QString* errorMsg ) co
 }
 
 
-/** Extract coordinates of linestring's endpoints. Returns false on error. */
+/**
+ * Extract coordinates of linestring's endpoints. Returns false on error. */
 static bool _linestringEndpoints( const GEOSGeometry* linestring, double& x1, double& y1, double& x2, double& y2 )
 {
   const GEOSCoordSequence* coordSeq = GEOSGeom_getCoordSeq_r( geosinit.ctxt, linestring );
@@ -1964,7 +1966,8 @@ static bool _linestringEndpoints( const GEOSGeometry* linestring, double& x1, do
 }
 
 
-/** Merge two linestrings if they meet at the given intersection point, return new geometry or null on error. */
+/**
+ * Merge two linestrings if they meet at the given intersection point, return new geometry or null on error. */
 static GEOSGeometry* _mergeLinestrings( const GEOSGeometry* line1, const GEOSGeometry* line2, const QgsPoint& interesectionPoint )
 {
   double x1, y1, x2, y2;

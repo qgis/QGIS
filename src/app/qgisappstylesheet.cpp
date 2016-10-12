@@ -25,7 +25,8 @@
 #include <QSettings>
 #include <QStyle>
 
-/** @class QgisAppStyleSheet
+/**
+ * @class QgisAppStyleSheet
  * @brief Adjustable stylesheet for the Qgis application
  */
 

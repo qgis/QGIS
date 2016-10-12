@@ -19,7 +19,8 @@
 
 #include "qgsscalebarstyle.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Double box with alternating colors
   */
 class CORE_EXPORT QgsDoubleBoxScaleBarStyle: public QgsScaleBarStyle

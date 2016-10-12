@@ -20,7 +20,8 @@
 
 #include <QSortFilterProxyModel>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A class that implements a custom filter and can be used
  as a proxy for QgsDbTableModel*/
 class CORE_EXPORT QgsDbFilterProxyModel: public QSortFilterProxyModel
@@ -30,9 +31,11 @@ class CORE_EXPORT QgsDbFilterProxyModel: public QSortFilterProxyModel
   public:
     QgsDbFilterProxyModel( QObject* parent = nullptr );
     ~QgsDbFilterProxyModel();
-    /** Calls QSortFilterProxyModel::setFilterWildcard and triggers update*/
+    /**
+     * Calls QSortFilterProxyModel::setFilterWildcard and triggers update*/
     void _setFilterWildcard( const QString& pattern );
-    /** Calls QSortFilterProxyModel::setFilterRegExp and triggers update*/
+    /**
+     * Calls QSortFilterProxyModel::setFilterRegExp and triggers update*/
     void _setFilterRegExp( const QString& pattern );
 
   protected:

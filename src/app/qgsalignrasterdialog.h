@@ -21,7 +21,8 @@
 
 class QgsAlignRaster;
 
-/** Dialog providing user interface for QgsAlignRaster */
+/**
+ * Dialog providing user interface for QgsAlignRaster */
 class QgsAlignRasterDialog : public QDialog, private Ui::QgsAlignRasterDialog
 {
     Q_OBJECT
@@ -62,7 +63,8 @@ class QgsAlignRasterDialog : public QDialog, private Ui::QgsAlignRasterDialog
 class QgsMapLayerComboBox;
 class QCheckBox;
 
-/** Simple dialog to display details of one layer's configuration */
+/**
+ * Simple dialog to display details of one layer's configuration */
 class QgsAlignRasterLayerConfigDialog : public QDialog
 {
     Q_OBJECT

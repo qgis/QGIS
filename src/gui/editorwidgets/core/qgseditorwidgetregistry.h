@@ -33,7 +33,8 @@ class QgsEditorConfigWidget;
 class QgsVectorLayer;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This class manages all known edit widget factories
  */
 class GUI_EXPORT QgsEditorWidgetRegistry : public QObject

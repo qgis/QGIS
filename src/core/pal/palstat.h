@@ -35,7 +35,8 @@
 namespace pal
 {
 
-  /** \ingroup core
+  /**
+   * \ingroup core
    * \brief Summary statistics of labelling problem.
    * \class pal::PalStat
    * \note not available in Python bindings

@@ -169,7 +169,8 @@ void QgsSingleBandPseudoColorRendererWidget::setMapCanvas( QgsMapCanvas* canvas 
   mMinMaxWidget->setMapCanvas( canvas );
 }
 
-/** Generate labels from the values in the color map.
+/**
+ * Generate labels from the values in the color map.
  *  Skip labels which were manually edited (black text).
  *  Text of generated labels is made gray
  */
@@ -218,7 +219,8 @@ void QgsSingleBandPseudoColorRendererWidget::autoLabel()
   }
 }
 
-/** Extract the unit out of the current labels and set the unit field. */
+/**
+ * Extract the unit out of the current labels and set the unit field. */
 void QgsSingleBandPseudoColorRendererWidget::setUnitFromLabels()
 {
   QgsColorRampShader::ColorRamp_TYPE interpolation = static_cast< QgsColorRampShader::ColorRamp_TYPE >( mColorInterpolationComboBox->currentData().toInt() );
@@ -761,7 +763,8 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemDoubleCl
   }
 }
 
-/** Update the colormap table after manual edit. */
+/**
+ * Update the colormap table after manual edit. */
 void QgsSingleBandPseudoColorRendererWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem* item, int column )
 {
   Q_UNUSED( item );

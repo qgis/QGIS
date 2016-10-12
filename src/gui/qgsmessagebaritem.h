@@ -25,7 +25,8 @@
 #include <QTextEdit>
 #include <QHBoxLayout>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsMessageBarItem
  */
 class GUI_EXPORT QgsMessageBarItem : public QWidget

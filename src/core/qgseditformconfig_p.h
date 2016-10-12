@@ -59,10 +59,12 @@ class QgsEditFormConfigPrivate : public QSharedData
       delete mInvisibleRootContainer;
     }
 
-    /** The invisible root container for attribute editors in the drag and drop designer */
+    /**
+     * The invisible root container for attribute editors in the drag and drop designer */
     QgsAttributeEditorContainer* mInvisibleRootContainer;
 
-    /** This flag is set if the root container was configured by the user */
+    /**
+     * This flag is set if the root container was configured by the user */
     bool mConfiguredRootContainer;
 
     QMap< QString, QString> mConstraints;
@@ -74,21 +76,28 @@ class QgsEditFormConfigPrivate : public QSharedData
     QMap<QString, QString> mEditorWidgetTypes;
     QMap<QString, QgsEditorWidgetConfig > mWidgetConfigs;
 
-    /** Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated) */
+    /**
+     * Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated) */
     QgsEditFormConfig::EditorLayout mEditorLayout;
 
-    /** Init form instance */
+    /**
+     * Init form instance */
     QString mUiFormPath;
-    /** Name of the python form init function */
+    /**
+     * Name of the python form init function */
     QString mInitFunction;
-    /** Path of the python external file to be loaded */
+    /**
+     * Path of the python external file to be loaded */
     QString mInitFilePath;
-    /** Choose the source of the init founction */
+    /**
+     * Choose the source of the init founction */
     QgsEditFormConfig::PythonInitCodeSource mInitCodeSource;
-    /** Python init code provided in the dialog */
+    /**
+     * Python init code provided in the dialog */
     QString mInitCode;
 
-    /** Type of feature form suppression after feature creation */
+    /**
+     * Type of feature form suppression after feature creation */
     QgsEditFormConfig::FeatureFormSuppress mSuppressForm;
 
     QgsFields mFields;

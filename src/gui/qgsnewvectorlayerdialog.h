@@ -23,7 +23,8 @@
 
 #include "qgis.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsNewVectorLayerDialog
  */
 class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVectorLayerDialogBase
@@ -38,15 +39,20 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
 
     QgsNewVectorLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewVectorLayerDialog();
-    /** Returns the selected geometry type*/
+    /**
+     * Returns the selected geometry type*/
     QgsWkbTypes::Type selectedType() const;
-    /** Appends the chosen attribute names and types to at*/
+    /**
+     * Appends the chosen attribute names and types to at*/
     void attributes( QList< QPair<QString, QString> >& at ) const;
-    /** Returns the file format for storage*/
+    /**
+     * Returns the file format for storage*/
     QString selectedFileFormat() const;
-    /** Returns the file format for storage*/
+    /**
+     * Returns the file format for storage*/
     QString selectedFileEncoding() const;
-    /** Returns the selected crs id*/
+    /**
+     * Returns the selected crs id*/
     int selectedCrsId() const;
 
   protected slots:

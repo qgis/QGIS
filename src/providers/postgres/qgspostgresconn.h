@@ -35,7 +35,8 @@ extern "C"
 
 class QgsField;
 
-/** Spatial column types */
+/**
+ * Spatial column types */
 enum QgsPostgresGeometryColumnType
 {
   sctNone,
@@ -55,7 +56,8 @@ enum QgsPostgresPrimaryKeyType
   pktFidMap
 };
 
-/** Schema properties structure */
+/**
+ * Schema properties structure */
 struct QgsPostgresSchemaProperty
 {
   QString name;
@@ -63,7 +65,8 @@ struct QgsPostgresSchemaProperty
   QString owner;
 };
 
-/** Layer Property structure */
+/**
+ * Layer Property structure */
 // TODO: Fill to Postgres/PostGIS specifications
 struct QgsPostgresLayerProperty
 {
@@ -261,15 +264,18 @@ class QgsPostgresConn : public QObject
     // cancel running query
     bool cancel();
 
-    /** Double quote a PostgreSQL identifier for placement in a SQL string.
+    /**
+     * Double quote a PostgreSQL identifier for placement in a SQL string.
      */
     static QString quotedIdentifier( const QString& ident );
 
-    /** Quote a value for placement in a SQL string.
+    /**
+     * Quote a value for placement in a SQL string.
      */
     static QString quotedValue( const QVariant& value );
 
-    /** Get the list of supported layers
+    /**
+     * Get the list of supported layers
      * @param layers list to store layers in
      * @param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
@@ -284,7 +290,8 @@ class QgsPostgresConn : public QObject
                           bool allowGeometrylessTables = false,
                           const QString schema = QString() );
 
-    /** Get the list of database schemas
+    /**
+     * Get the list of database schemas
      * @param schemas list to store schemas in
      * @returns true if schemas where fetched successfully
      * @note added in QGIS 2.7
@@ -293,7 +300,8 @@ class QgsPostgresConn : public QObject
 
     void retrieveLayerTypes( QgsPostgresLayerProperty &layerProperty, bool useEstimatedMetadata );
 
-    /** Gets information about the spatial tables
+    /**
+     * Gets information about the spatial tables
      * @param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
      * @param searchPublicOnly
@@ -335,7 +343,8 @@ class QgsPostgresConn : public QObject
     static bool allowGeometrylessTables( const QString& theConnName );
     static void deleteConnection( const QString& theConnName );
 
-    /** A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback} */
+    /**
+     * A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback} */
     void lock() { mLock.lock(); }
     void unlock() { mLock.unlock(); }
 
@@ -386,7 +395,8 @@ class QgsPostgresConn : public QObject
     static QMap<QString, QgsPostgresConn *> sConnectionsRW;
     static QMap<QString, QgsPostgresConn *> sConnectionsRO;
 
-    /** Count number of spatial columns in a given relation */
+    /**
+     * Count number of spatial columns in a given relation */
     void addColumnInfo( QgsPostgresLayerProperty& layerProperty, const QString& schemaName, const QString& viewName, bool fetchPkCandidates );
 
     //! List of the supported layers

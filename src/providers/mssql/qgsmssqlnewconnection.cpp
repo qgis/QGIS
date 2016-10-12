@@ -66,7 +66,8 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& co
   }
   on_cb_trustedConnection_clicked();
 }
-/** Autoconnected SLOTS **/
+/**
+ * Autoconnected SLOTS **/
 void QgsMssqlNewConnection::accept()
 {
   QSettings settings;
@@ -140,7 +141,8 @@ void QgsMssqlNewConnection::on_cb_trustedConnection_clicked()
   }
 }
 
-/** End  Autoconnected SLOTS **/
+/**
+ * End  Autoconnected SLOTS **/
 
 QgsMssqlNewConnection::~QgsMssqlNewConnection()
 {

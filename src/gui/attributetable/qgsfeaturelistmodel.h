@@ -28,7 +28,8 @@ class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;
 class QgsVectorLayerCache;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFeatureListModel
  */
 class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFeatureModel

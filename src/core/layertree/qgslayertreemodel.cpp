@@ -34,7 +34,8 @@
 
 ///@cond PRIVATE
 
-/** In order to support embedded widgets in layer tree view, the model
+/**
+ * In order to support embedded widgets in layer tree view, the model
  * generates one placeholder legend node for each embedded widget.
  * The placeholder will be replaced by an embedded widget in QgsLayerTreeView
  */

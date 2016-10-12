@@ -64,7 +64,8 @@ class QgsOracleConnPoolGroup : public QObject, public QgsConnectionPoolGroup<Qgs
 
 };
 
-/** Oracle connection pool - singleton */
+/**
+ * Oracle connection pool - singleton */
 class QgsOracleConnPool : public QgsConnectionPool<QgsOracleConn*, QgsOracleConnPoolGroup>
 {
   public:

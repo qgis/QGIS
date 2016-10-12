@@ -21,7 +21,8 @@
 
 #include <QNetworkReply>
 
-/** \ingroup core
+/**
+ * \ingroup core
   \brief Multipart QNetworkReply parser.
 
   It seams that Qt does not have currently support for multipart reply
@@ -38,39 +39,48 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
   public:
     typedef QMap<QByteArray, QByteArray> RawHeaderMap;
 
-    /** Constructor
+    /**
+     * Constructor
       * @param reply */
     QgsNetworkReplyParser( QNetworkReply *reply );
 
-    /** Indicates if successfully parsed
+    /**
+     * Indicates if successfully parsed
       * @return true if successfully parsed */
     bool isValid() const { return mValid; }
 
-    /** Get number of parts
+    /**
+     * Get number of parts
       * @return number of parts */
     int parts() const { return mHeaders.size(); }
 
-    /** Get part header
+    /**
+     * Get part header
       * @param part part index
       * @param headerName header name
       * @return raw header */
     QByteArray rawHeader( int part, const QByteArray & headerName ) const { return mHeaders.value( part ).value( headerName ); }
 
-    /** Get headers */
+    /**
+     * Get headers */
     QList< RawHeaderMap > headers() const { return mHeaders; }
 
-    /** Get part part body
+    /**
+     * Get part part body
       * @param part part index
       * @return part body */
     QByteArray body( int part ) const { return mBodies.value( part ); }
 
-    /** Get bodies */
+    /**
+     * Get bodies */
     QList<QByteArray> bodies() const { return mBodies; }
 
-    /** Parsing error */
+    /**
+     * Parsing error */
     QString error() const { return mError; }
 
-    /** Test if reply is multipart.
+    /**
+     * Test if reply is multipart.
       * @return true if reply is multipart */
     static bool isMultipart( QNetworkReply *reply );
 

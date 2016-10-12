@@ -22,7 +22,8 @@
 #include <QLabel>
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a uuid widget. Will create a new UUID if empty or represent the current value if not empty.
  * \note not available in Python bindings
  */

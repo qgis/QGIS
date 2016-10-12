@@ -24,7 +24,8 @@
 class QgsMapCanvas;
 class QgsRasterLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRasterMinMaxWidget
  */
 class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMinMaxWidgetBase
@@ -34,14 +35,16 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
     QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget *parent = nullptr );
     ~QgsRasterMinMaxWidget();
 
-    /** Sets the extent to use for minimum and maximum value calculation.
+    /**
+     * Sets the extent to use for minimum and maximum value calculation.
      * @param theExtent extent in raster layer's CRS
      * @note if a map canvas is set using setMapCanvas(), its extent will take
      * precedence over any extent set using this method.
      */
     void setExtent( const QgsRectangle & theExtent ) { mExtent = theExtent; }
 
-    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+    /**
+     * Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map extent from the canvas. If a canvas is set it will take precedence over any extent
      * set from calling setExtent().
      * @param canvas map canvas
@@ -50,7 +53,8 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
      */
     void setMapCanvas( QgsMapCanvas* canvas );
 
-    /** Returns the map canvas associated with the widget.
+    /**
+     * Returns the map canvas associated with the widget.
      * @see setMapCanvas()
      * @see canvasExtent()
      * @note added in QGIS 2.16
@@ -59,12 +63,14 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
 
     void setBands( const QList<int> & theBands ) { mBands = theBands; }
 
-    /** Return the extent selected by the user.
+    /**
+     * Return the extent selected by the user.
      * Either an empty extent for 'full' or the current visible extent.
     */
     QgsRectangle extent();
 
-    /** Return the selected sample size. */
+    /**
+     * Return the selected sample size. */
     int sampleSize() { return cboAccuracy->currentIndex() == 0 ? 250000 : 0; }
 
     // Load programmaticaly with current values

@@ -30,7 +30,8 @@ class QgsMessageBarItem;
 class QgsWidgetWrapper;
 class QgsTabWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsAttributeForm
  */
 class GUI_EXPORT QgsAttributeForm : public QWidget
@@ -104,13 +105,15 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     bool editable();
 
-    /** Returns the current mode of the form.
+    /**
+     * Returns the current mode of the form.
      * @note added in QGIS 2.16
      * @see setMode()
      */
     Mode mode() const { return mMode; }
 
-    /** Sets the current mode of the form.
+    /**
+     * Sets the current mode of the form.
      * @param mode form mode
      * @note added in QGIS 2.16
      * @see mode()
@@ -134,13 +137,15 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     bool eventFilter( QObject* object, QEvent* event ) override;
 
-    /** Sets all feature IDs which are to be edited if the form is in multiedit mode
+    /**
+     * Sets all feature IDs which are to be edited if the form is in multiedit mode
      * @param fids feature ID list
      * @note added in QGIS 2.16
      */
     void setMultiEditFeatureIds( const QgsFeatureIds& fids );
 
-    /** Sets the message bar to display feedback from the form in. This is used in the search/filter
+    /**
+     * Sets the message bar to display feedback from the form in. This is used in the search/filter
      * mode to display the count of selected features.
      * @param messageBar target message bar
      * @note added in QGIS 2.16
@@ -171,19 +176,22 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void featureSaved( const QgsFeature& feature );
 
-    /** Is emitted when a filter expression is set using the form.
+    /**
+     * Is emitted when a filter expression is set using the form.
      * @param expression filter expression
      * @param type filter type
      * @note added in QGIS 2.16
      */
     void filterExpressionSet( const QString& expression, QgsAttributeForm::FilterType type );
 
-    /** Emitted when the form changes mode.
+    /**
+     * Emitted when the form changes mode.
      * @param mode new mode
      */
     void modeChanged( QgsAttributeForm::Mode mode );
 
-    /** Emitted when the user selects the close option from the form's button bar.
+    /**
+     * Emitted when the user selects the close option from the form's button bar.
      * @note added in QGIS 2.16
      */
     void closed();
@@ -216,7 +224,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void resetValues();
 
-    /** Resets the search/filter form values.
+    /**
+     * Resets the search/filter form values.
      * @note added in QGIS 2.16
      */
     void resetSearch();

@@ -29,7 +29,8 @@ class QgsMapLayer;
 class QgsVectorLayer;
 struct sqlite3;
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsOfflineEditing : public QObject
 {
@@ -50,7 +51,8 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     QgsOfflineEditing();
     ~QgsOfflineEditing();
 
-    /** Convert current project for offline editing
+    /**
+     * Convert current project for offline editing
      * @param offlineDataPath Path to offline db file
      * @param offlineDbFile Offline db file name
      * @param layerIds List of layer names to convert
@@ -58,34 +60,41 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
      */
     bool convertToOfflineProject( const QString& offlineDataPath, const QString& offlineDbFile, const QStringList& layerIds, bool onlySelected = false );
 
-    /** Return true if current project is offline */
+    /**
+     * Return true if current project is offline */
     bool isOfflineProject() const;
 
-    /** Synchronize to remote layers */
+    /**
+     * Synchronize to remote layers */
     void synchronize();
 
   signals:
-    /** Emit a signal that processing has started */
+    /**
+     * Emit a signal that processing has started */
     void progressStarted();
 
-    /** Emit a signal that the next layer of numLayers has started processing
+    /**
+     * Emit a signal that the next layer of numLayers has started processing
      * @param layer current layer index
      * @param numLayers total number of layers
      */
     void layerProgressUpdated( int layer, int numLayers );
 
-    /** Emit a signal that sets the mode for the progress of the current operation
+    /**
+     * Emit a signal that sets the mode for the progress of the current operation
      * @param mode progress mode
      * @param maximum total number of entities to process in the current operation
      */
     void progressModeSet( QgsOfflineEditing::ProgressMode mode, int maximum );
 
-    /** Emit a signal with the progress of the current mode
+    /**
+     * Emit a signal with the progress of the current mode
      * @param progress current index of processed entities
      */
     void progressUpdated( int progress );
 
-    /** Emit a signal that processing of all layers has finished */
+    /**
+     * Emit a signal that processing of all layers has finished */
     void progressStopped();
 
     /**
