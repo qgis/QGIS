@@ -871,7 +871,6 @@ tests:
         name: expected/single_sided_buffer_multiline_bevel.gml
         type: vector
 
-
   - algorithm: qgis:extractnodes
     name: Test (qgis:extractnodes)
     params:
@@ -1006,7 +1005,6 @@ tests:
         name: expected/add_geometry_pointz.gml
         type: vector
 
-
   - algorithm: qgis:countpointsinpolygon
     name: Count points in polygon
     params:
@@ -1124,3 +1122,83 @@ tests:
       OUTPUT:
         name: expected/multipoint_delaunay.gml
         type: vector
+
+  - algorithm: qgis:idwinterpolationusingattribute
+    name: IDW interpolation using attribute
+    params:
+      ATTRIBUTE: elev
+      CELLSIZE_X: 0.02667
+      CELLSIZE_Y: 0.02667
+      COLUMNS: 300
+      DISTANCE_COEFFICIENT: 2.0
+      EXTENT: 0, 8, -5, 3
+      INPUT_LAYER:
+        name: pointsz.gml
+        type: vector
+      LAYER_TYPE: '0'
+      ROWS: 300
+    results:
+      OUTPUT_LAYER:
+        hash: 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
+        type: rasterhash
+
+  - algorithm: qgis:idwinterpolationusingzvalues
+    name: IDW interpolation using Z value
+    params:
+      CELLSIZE_X: 0.02667
+      CELLSIZE_Y: 0.02667
+      COLUMNS: 300
+      DISTANCE_COEFFICIENT: 2.0
+      EXTENT: 0, 8, -5, 3
+      INPUT_LAYER:
+        name: pointsz.gml
+        type: vector
+      LAYER_TYPE: '0'
+      ROWS: 300
+    results:
+      OUTPUT_LAYER:
+        hash: 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
+        type: rasterhash
+
+  - algorithm: qgis:tininterpolationusingattribute
+    name: TIN interpolation using attribute
+    params:
+      ATTRIBUTE: elev
+      CELLSIZE_X: 0.02667
+      CELLSIZE_Y: 0.02667
+      COLUMNS: 300
+      EXTENT: 0, 8, -5, 3
+      INPUT_LAYER:
+        name: pointsz.gml
+        type: vector
+      LAYER_TYPE: '0'
+      METHOD: '0'
+      ROWS: 300
+    results:
+      OUTPUT_LAYER:
+        hash: 87f40be6ec08f3fcbb5707762de71f6be35bb265c61f594335562a26
+        type: rasterhash
+      #TRIANULATION_FILE:
+      #  name: expected/triangulation.gml
+      #  type: vector
+
+  - algorithm: qgis:tininterpolationusingzvalues
+    name: TIN interpolation using Z value
+    params:
+      CELLSIZE_X: 0.02667
+      CELLSIZE_Y: 0.02667
+      COLUMNS: 300
+      EXTENT: 0, 8, -5, 3
+      INPUT_LAYER:
+        name: pointsz.gml
+        type: vector
+      LAYER_TYPE: '0'
+      METHOD: '1'
+      ROWS: 300
+    results:
+      OUTPUT_LAYER:
+        hash: 5e14dd0b879884b8b8da56c082947dad681feb4e9f1137f5cda126f8
+        type: rasterhash
+      #TRIANULATION_FILE:
+      #  name: expected/triangulation.gml
+      #  type: vector

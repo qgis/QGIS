@@ -12,6 +12,11 @@
       <ExtentYMax>3.00000</ExtentYMax>
     </DatasetSpecificInfo>
     <PropertyDefn>
+      <Name>elev</Name>
+      <ElementPath>elev</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
       <Name>xcoord</Name>
       <ElementPath>xcoord</ElementPath>
       <Type>Integer</Type>
