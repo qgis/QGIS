@@ -25,6 +25,10 @@ __copyright__ = '(C) 2016, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from qgis.PyQt.QtGui import QIcon
+
 from qgis.analysis import QgsZonalStatistics
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -36,6 +40,8 @@ from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
+pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
 
 class ZonalStatisticsQgis(GeoAlgorithm):
 
@@ -45,6 +51,9 @@ class ZonalStatisticsQgis(GeoAlgorithm):
     COLUMN_PREFIX = 'COLUMN_PREFIX'
     STATISTICS = 'STATS'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'zonalstats.png'))
 
     def defineCharacteristics(self):
         self.STATS = {self.tr('Count'): QgsZonalStatistics.Count,
@@ -67,7 +76,8 @@ class ZonalStatisticsQgis(GeoAlgorithm):
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
                                           self.tr('Raster layer')))
         self.addParameter(ParameterNumber(self.RASTER_BAND,
-                                          self.tr('Raster band'), 1, 999, 1))
+                                          self.tr('Raster band'),
+                                          1, 999, 1))
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
                                           self.tr('Vector layer containing zones'),
                                           [dataobjects.TYPE_VECTOR_POLYGON]))
@@ -96,7 +106,11 @@ class ZonalStatisticsQgis(GeoAlgorithm):
         for i in st:
            selectedStats |= self.STATS[keys[i]]
 
-        zs = QgsZonalStatistics(vectorLayer, rasterPath, columnPrefix, bandNumber, selectedStats)
+        zs = QgsZonalStatistics(vectorLayer,
+                                rasterPath,
+                                columnPrefix,
+                                bandNumber,
+                                selectedStats)
         zs.calculateStatistics(None)
 
         self.setOutputValue(self.OUTPUT_LAYER, vectorPath)
