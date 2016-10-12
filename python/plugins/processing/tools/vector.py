@@ -122,13 +122,23 @@ def uniqueValues(layer, attribute):
     Attribute can be defined using a field names or a zero-based
     field index. It considers the existing selection.
     """
-    values = []
+
     fieldIndex = resolveFieldIndex(layer, attribute)
-    feats = features(layer)
-    for feat in feats:
-        if feat.attributes()[fieldIndex] not in values:
-            values.append(feat.attributes()[fieldIndex])
-    return values
+    if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED) \
+            and layer.selectedFeatureCount() > 0:
+
+        # iterate through selected features
+        values = []
+        request = QgsFeatureRequest().setSubsetOfAttributes([fieldIndex]).setFlags(QgsFeatureRequest.NoGeometry)
+        feats = features(layer, request)
+        for feat in feats:
+            if feat.attributes()[fieldIndex] not in values:
+                values.append(feat.attributes()[fieldIndex])
+        return values
+    else:
+        # no selection, or not considering selecting
+        # so we can take advantage of provider side unique value optimisations
+        return layer.uniqueValues(fieldIndex)
 
 
 def resolveFieldIndex(layer, attr):

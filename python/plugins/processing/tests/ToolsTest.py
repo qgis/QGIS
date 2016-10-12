@@ -122,6 +122,32 @@ class VectorTest(unittest.TestCase):
 
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
 
+    def testUniqueValues(self):
+        ProcessingConfig.initialize()
+
+        test_data = points2()
+        test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
+
+        # field by index
+        v = vector.uniqueValues(test_layer, 3)
+        self.assertEqual(len(v), len(set(v)))
+        self.assertEqual(set(v), set([2, 1, 0]))
+
+        # field by name
+        v = vector.uniqueValues(test_layer, 'id_2')
+        self.assertEqual(len(v), len(set(v)))
+        self.assertEqual(set(v), set([2, 1, 0]))
+
+        # test with selected features
+        previous_value = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
+        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
+        test_layer.selectByIds([2, 4, 6])
+        v = vector.uniqueValues(test_layer, 'id')
+        self.assertEqual(len(v), len(set(v)))
+        self.assertEqual(set(v), set([5, 7, 3]))
+
+        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
+
 
 if __name__ == '__main__':
     unittest.main()
