@@ -325,7 +325,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(fet.fields()[1].name(), 'newname2')
         self.assertEqual(fet.fields()[2].name(), 'another')
 
-    # See http://hub.qgis.org/issues/18155
+    # See http://hub.qgis.org/issues/15188
     def testNumericPrecision(self):
         uri = 'point?field=f1:int'
         uri += '&field=f2:double(6,4)'
