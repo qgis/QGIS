@@ -84,6 +84,44 @@ class VectorTest(unittest.TestCase):
 
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
 
+    def testValues(self):
+        ProcessingConfig.initialize()
+
+        test_data = points2()
+        test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
+
+        # field by index
+        res = vector.values(test_layer, 0)
+        self.assertEqual(res[0], [1, 2, 3, 4, 5, 6, 7, 8])
+
+        # field by name
+        res = vector.values(test_layer, 'id')
+        self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8])
+
+        # two fields
+        res = vector.values(test_layer, 0, 3)
+        self.assertEqual(res[0], [1, 2, 3, 4, 5, 6, 7, 8])
+        self.assertEqual(res[3], [2, 1, 0, 2, 1, 0, 0, 0])
+
+        # two fields by name
+        res = vector.values(test_layer, 'id', 'id_2')
+        self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8])
+        self.assertEqual(res['id_2'], [2, 1, 0, 2, 1, 0, 0, 0])
+
+        # two fields by name and index
+        res = vector.values(test_layer, 'id', 3)
+        self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8])
+        self.assertEqual(res[3], [2, 1, 0, 2, 1, 0, 0, 0])
+
+        # test with selected features
+        previous_value = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
+        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
+        test_layer.selectByIds([2, 4, 6])
+        res = vector.values(test_layer, 0)
+        self.assertEqual(set(res[0]), set([5, 7, 3]))
+
+        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -163,17 +163,30 @@ def values(layer, *attributes):
     to a number.
     """
     ret = {}
+    indices = []
+    attr_keys = {}
     for attr in attributes:
         index = resolveFieldIndex(layer, attr)
-        values = []
-        feats = features(layer)
-        for feature in feats:
+        indices.append(index)
+        attr_keys[index] = attr
+
+    # use an optimised feature request
+    request = QgsFeatureRequest().setSubsetOfAttributes(indices).setFlags(QgsFeatureRequest.NoGeometry)
+
+    for feature in features(layer, request):
+        for i in indices:
+
+            # convert attribute value to number
             try:
-                v = float(feature.attributes()[index])
-                values.append(v)
+                v = float(feature.attributes()[i])
             except:
-                values.append(None)
-        ret[attr] = values
+                v = None
+
+            k = attr_keys[i]
+            if k in ret:
+                ret[k].append(v)
+            else:
+                ret[k] = [v]
     return ret
 
 
