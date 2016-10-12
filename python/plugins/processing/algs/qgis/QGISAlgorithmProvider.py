@@ -167,6 +167,7 @@ from .IdwInterpolationZValue import IdwInterpolationZValue
 from .IdwInterpolationAttribute import IdwInterpolationAttribute
 from .TinInterpolationZValue import TinInterpolationZValue
 from .TinInterpolationAttribute import TinInterpolationAttribute
+from .ZonalStatisticsQgis import ZonalStatisticsQgis
 
 
 pluginPath = os.path.normpath(os.path.join(
@@ -225,9 +226,9 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         OffsetLine(), PolygonCentroids(), Translate(),
                         SingleSidedBuffer(), PointsAlongGeometry(),
                         Aspect(), Slope(), Ruggedness(), Hillshade(),
-                        ReliefAuto(), IdwInterpolationZValue(),
-                        IdwInterpolationAttribute(), TinInterpolationZValue(),
-                        TinInterpolationAttribute()
+                        ReliefAuto(), ZonalStatisticsQgis(),
+                        IdwInterpolationZValue(), IdwInterpolationAttribute(),
+                        TinInterpolationZValue(), TinInterpolationAttribute()
                         ]
 
         if hasMatplotlib:
