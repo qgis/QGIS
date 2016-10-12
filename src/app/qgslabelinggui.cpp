@@ -2126,6 +2126,20 @@ void QgsLabelingGui::on_mChkNoObstacle_toggled( bool active )
   mObstaclePriorityFrame->setEnabled( active );
 }
 
+void QgsLabelingGui::on_chkLineOrientationDependent_toggled( bool active )
+{
+  if ( active )
+  {
+    chkLineAbove->setText( tr( "Left of line" ) );
+    chkLineBelow->setText( tr( "Right of line" ) );
+  }
+  else
+  {
+    chkLineAbove->setText( tr( "Above line" ) );
+    chkLineBelow->setText( tr( "Below line" ) );
+  }
+}
+
 void QgsLabelingGui::on_mToolButtonConfigureSubstitutes_clicked()
 {
   QgsPanelWidget* panel = QgsPanelWidget::findParentPanel( this );
