@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtCore import pyqtWrapperType, Qt, QDir, QFile, QIODevice, QPointF
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 
 from qgis.core import (QgsCentroidFillSymbolLayer,
                        QgsEllipseSymbolLayer,
@@ -55,7 +55,17 @@ from qgis.core import (QgsCentroidFillSymbolLayer,
                        QgsShapeburstFillSymbolLayer,
                        QgsArrowSymbolLayer,
                        QgsSymbol,
-                       QgsUnitTypes
+                       QgsUnitTypes,
+                       QgsFillSymbol,
+                       QgsLineSymbol,
+                       QgsMarkerSymbol,
+                       QgsSymbolLayerUtils,
+                       QgsMapSettings,
+                       QgsGeometry,
+                       QgsFeature,
+                       QgsRenderContext,
+                       QgsRenderChecker,
+                       QgsRectangle
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -78,6 +88,14 @@ class TestQgsSymbolLayer(unittest.TestCase):
      - QgsVectorFieldSymbolLayer where createFromSld implementation
          returns NULL
      """
+
+    def setUp(self):
+        self.report = "<h1>Python QgsSymbolLayer Tests</h1>\n"
+
+    def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
 
     def testBinding(self):
         """Test python bindings existence."""
@@ -269,6 +287,181 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mExpectedType = pyqtWrapperType
         mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
         assert mExpectedType == mType, mMessage
+
+    def testGettersSetters(self):
+        """ test base class getters/setters """
+        layer = QgsSimpleFillSymbolLayer()
+
+        layer.setEnabled(False)
+        self.assertFalse(layer.enabled())
+        layer.setEnabled(True)
+        self.assertTrue(layer.enabled())
+
+        layer.setLocked(False)
+        self.assertFalse(layer.isLocked())
+        layer.setLocked(True)
+        self.assertTrue(layer.isLocked())
+
+        layer.setRenderingPass(5)
+        self.assertEqual(layer.renderingPass(), 5)
+
+    def testSaveRestore(self):
+        """ Test saving and restoring base symbol layer properties to xml"""
+
+        layer = QgsSimpleFillSymbolLayer()
+        layer.setEnabled(False)
+        layer.setLocked(True)
+        layer.setRenderingPass(5)
+
+        symbol = QgsFillSymbol()
+        symbol.changeSymbolLayer(0, layer)
+
+        doc = QDomDocument("testdoc")
+        elem = QgsSymbolLayerUtils.saveSymbol('test', symbol, doc)
+
+        restored_symbol = QgsSymbolLayerUtils.loadSymbol(elem)
+        restored_layer = restored_symbol.symbolLayer(0)
+        self.assertFalse(restored_layer.enabled())
+        self.assertTrue(restored_layer.isLocked())
+        self.assertEqual(restored_layer.renderingPass(), 5)
+
+    def testClone(self):
+        """ test that base symbol layer properties are cloned with layer """
+
+        layer = QgsSimpleFillSymbolLayer()
+        layer.setEnabled(False)
+        layer.setLocked(True)
+        layer.setRenderingPass(5)
+
+        symbol = QgsFillSymbol()
+        symbol.changeSymbolLayer(0, layer)
+
+        cloned_symbol = symbol.clone()
+        cloned_layer = cloned_symbol.symbolLayer(0)
+        self.assertFalse(cloned_layer.enabled())
+        self.assertTrue(cloned_layer.isLocked())
+        self.assertEqual(cloned_layer.renderingPass(), 5)
+
+    def imageCheck(self, name, reference_image, image):
+        self.report += "<h2>Render {}</h2>\n".format(name)
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + 'symbollayer_' + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsRenderChecker()
+        checker.setControlPathPrefix("symbol_layer")
+        checker.setControlName("expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(2)
+        result = checker.compareImages(name, 20)
+        self.report += checker.report()
+        print((self.report))
+        return result
+
+    def testRenderFillLayerDisabled(self):
+        """ test that rendering a fill symbol with disabled layer works"""
+        layer = QgsSimpleFillSymbolLayer()
+        layer.setEnabled(False)
+
+        symbol = QgsFillSymbol()
+        symbol.changeSymbolLayer(0, layer)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+        painter = QPainter()
+        ms = QgsMapSettings()
+
+        geom = QgsGeometry.fromWkt('Polygon ((0 0, 10 0, 10 10, 0 10, 0 0))')
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        extent = geom.geometry().boundingBox()
+        # buffer extent by 10%
+        extent = extent.buffer((extent.height() + extent.width()) / 20.0)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(image)
+        image.fill(QColor(255, 255, 255))
+
+        symbol.startRender(context)
+        symbol.renderFeature(f, context)
+        symbol.stopRender(context)
+        painter.end()
+
+        self.assertTrue(self.imageCheck('symbol_layer', 'symbollayer_disabled', image))
+
+    def testRenderLineLayerDisabled(self):
+        """ test that rendering a line symbol with disabled layer works"""
+        layer = QgsSimpleLineSymbolLayer()
+        layer.setEnabled(False)
+
+        symbol = QgsLineSymbol()
+        symbol.changeSymbolLayer(0, layer)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+        painter = QPainter()
+        ms = QgsMapSettings()
+
+        geom = QgsGeometry.fromWkt('LineString (0 0,3 4,4 3)')
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        extent = geom.geometry().boundingBox()
+        # buffer extent by 10%
+        extent = extent.buffer((extent.height() + extent.width()) / 20.0)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(image)
+        image.fill(QColor(255, 255, 255))
+
+        symbol.startRender(context)
+        symbol.renderFeature(f, context)
+        symbol.stopRender(context)
+        painter.end()
+
+        self.assertTrue(self.imageCheck('symbol_layer', 'symbollayer_disabled', image))
+
+    def testRenderMarkerLayerDisabled(self):
+        """ test that rendering a marker symbol with disabled layer works"""
+        layer = QgsSimpleMarkerSymbolLayer()
+        layer.setEnabled(False)
+
+        symbol = QgsMarkerSymbol()
+        symbol.changeSymbolLayer(0, layer)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+        painter = QPainter()
+        ms = QgsMapSettings()
+
+        geom = QgsGeometry.fromWkt('Point (1 2)')
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        extent = QgsRectangle(0, 0, 4, 4)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(image)
+        image.fill(QColor(255, 255, 255))
+
+        symbol.startRender(context)
+        symbol.renderFeature(f, context)
+        symbol.stopRender(context)
+        painter.end()
+
+        self.assertTrue(self.imageCheck('symbol_layer', 'symbollayer_disabled', image))
 
     def testQgsSimpleFillSymbolLayer(self):
         """Create a new style from a .sld file and match test.

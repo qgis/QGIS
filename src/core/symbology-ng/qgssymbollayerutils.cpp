@@ -852,6 +852,7 @@ QgsSymbolLayer* QgsSymbolLayerUtils::loadSymbolLayer( QDomElement& element )
 {
   QString layerClass = element.attribute( "class" );
   bool locked = element.attribute( "locked" ).toInt();
+  bool enabled = element.attribute( "enabled", "1" ).toInt();
   int pass = element.attribute( "pass" ).toInt();
 
   // parse properties
@@ -863,6 +864,7 @@ QgsSymbolLayer* QgsSymbolLayerUtils::loadSymbolLayer( QDomElement& element )
   {
     layer->setLocked( locked );
     layer->setRenderingPass( pass );
+    layer->setEnabled( enabled );
 
     //restore layer effect
     QDomElement effectElem = element.firstChildElement( "effect" );
@@ -910,6 +912,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString& name, QgsSymbol* sym
 
     QDomElement layerEl = doc.createElement( "layer" );
     layerEl.setAttribute( "class", layer->layerType() );
+    layerEl.setAttribute( "enabled", layer->enabled() );
     layerEl.setAttribute( "locked", layer->isLocked() );
     layerEl.setAttribute( "pass", layer->renderingPass() );
     saveProperties( layer->properties(), doc, layerEl );
