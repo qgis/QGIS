@@ -952,6 +952,9 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
   QgsRenderContext& rc = context.renderContext();
   double interval = mInterval;
 
+  QgsExpressionContextScope* scope = new QgsExpressionContextScope();
+  context.renderContext().expressionContext().appendScope( scope );
+
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_INTERVAL ) )
   {
     context.setOriginalValueVariable( mInterval );
@@ -971,6 +974,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
   double painterUnitInterval = QgsSymbolLayerV2Utils::convertToPainterUnits( rc, interval, mIntervalUnit, mIntervalMapUnitScale );
   lengthLeft = painterUnitInterval - QgsSymbolLayerV2Utils::convertToPainterUnits( rc, offsetAlongLine, mIntervalUnit, mIntervalMapUnitScale );
 
+  int pointNum = 0;
   for ( int i = 1; i < points.count(); ++i )
   {
     const QPointF& pt = points[i];
@@ -1001,12 +1005,15 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
       // "c" is 1 for regular point or in interval (0,1] for begin of line segment
       lastPt += c * diff;
       lengthLeft -= painterUnitInterval;
+      scope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum );
       mMarker->renderPoint( lastPt, context.feature(), rc, -1, context.selected() );
       c = 1; // reset c (if wasn't 1 already)
     }
 
     lastPt = pt;
   }
+
+  delete context.renderContext().expressionContext().popScope();
 }
 
 static double _averageAngle( QPointF prevPt, QPointF pt, QPointF nextPt )
@@ -1030,6 +1037,10 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
   int i, maxCount;
   bool isRing = false;
 
+  QgsExpressionContextScope* scope = new QgsExpressionContextScope();
+  context.renderContext().expressionContext().appendScope( scope );
+  scope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, points.size() );
+
   double offsetAlongLine = mOffsetAlongLine;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET_ALONG_LINE ) )
   {
@@ -1052,8 +1063,11 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
     QgsPointV2 vPoint;
     double x, y, z;
     QPointF mapPoint;
+    int pointNum = 0;
     while ( context.renderContext().geometry()->nextVertex( vId, vPoint ) )
     {
+      scope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum );
+
       if (( placement == Vertex && vId.type == QgsVertexId::SegmentVertex )
           || ( placement == CurvePoint && vId.type == QgsVertexId::CurveVertex ) )
       {
@@ -1075,6 +1089,8 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
         mMarker->renderPoint( mapPoint, context.feature(), rc, -1, context.selected() );
       }
     }
+
+    delete context.renderContext().expressionContext().popScope();
     return;
   }
 
@@ -1097,6 +1113,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
   }
   else
   {
+    delete context.renderContext().expressionContext().popScope();
     return;
   }
 
@@ -1107,11 +1124,16 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
     renderOffsetVertexAlongLine( points, i, distance, context );
     // restore original rotation
     mMarker->setAngle( origAngle );
+
+    delete context.renderContext().expressionContext().popScope();
     return;
   }
 
+  int pointNum = 0;
   for ( ; i < maxCount; ++i )
   {
+    scope->setVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum );
+
     if ( isRing && placement == Vertex && i == points.count() - 1 )
     {
       continue; // don't draw the last marker - it has been drawn already
@@ -1128,6 +1150,8 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
 
   // restore original rotation
   mMarker->setAngle( origAngle );
+
+  delete context.renderContext().expressionContext().popScope();
 }
 
 double QgsMarkerLineSymbolLayerV2::markerAngle( const QPolygonF& points, bool isRing, int vertex )

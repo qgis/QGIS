@@ -29,6 +29,10 @@
 #include "qgsmaprenderer.h"
 #include "qgspallabeling.h"
 #include "qgsfontutils.h"
+#include "qgslinesymbollayerv2.h"
+#include "qgssinglesymbolrendererv2.h"
+#include "qgsmarkersymbollayerv2.h"
+#include "qgsdatadefined.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
@@ -56,6 +60,8 @@ class TestQgsMarkerLineSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void lineOffset();
+    void pointNumInterval();
+    void pointNumVertex();
 
   private:
     bool render( const QString& theFileName );
@@ -135,6 +141,65 @@ void TestQgsMarkerLineSymbol::lineOffset()
 
   // TODO: -0.0 offset, see
   // http://hub.qgis.org/issues/13811#note-1
+}
+
+void TestQgsMarkerLineSymbol::pointNumInterval()
+{
+  mMapSettings->setLayers( QStringList() << mLinesLayer->id() );
+
+  QgsMarkerLineSymbolLayerV2* ml = new QgsMarkerLineSymbolLayerV2();
+  ml->setPlacement( QgsMarkerLineSymbolLayerV2::Interval );
+  ml->setInterval( 4 );
+  QgsLineSymbolV2* lineSymbol = new QgsLineSymbolV2();
+  lineSymbol->changeSymbolLayer( 0, ml );
+  QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( lineSymbol );
+
+  // make sub-symbol
+  QgsStringMap props;
+  props["color"] = "255,0,0";
+  props["size"] = "2";
+  props["outline_style"] = "no";
+  QgsSimpleMarkerSymbolLayerV2* marker = static_cast< QgsSimpleMarkerSymbolLayerV2* >( QgsSimpleMarkerSymbolLayerV2::create( props ) );
+
+  marker->setDataDefinedProperty( "size", new QgsDataDefined( true, true, "@geometry_point_num * 2" ) );
+
+  QgsMarkerSymbolV2* subSymbol = new QgsMarkerSymbolV2();
+  subSymbol->changeSymbolLayer( 0, marker );
+  ml->setSubSymbol( subSymbol );
+
+  mLinesLayer->setRendererV2( r );
+
+  mMapSettings->setExtent( QgsRectangle( -140, -140, 140, 140 ) );
+  QVERIFY( render( "point_num_interval" ) );
+}
+
+void TestQgsMarkerLineSymbol::pointNumVertex()
+{
+  mMapSettings->setLayers( QStringList() << mLinesLayer->id() );
+
+  QgsMarkerLineSymbolLayerV2* ml = new QgsMarkerLineSymbolLayerV2();
+  ml->setPlacement( QgsMarkerLineSymbolLayerV2::Vertex );
+  QgsLineSymbolV2* lineSymbol = new QgsLineSymbolV2();
+  lineSymbol->changeSymbolLayer( 0, ml );
+  QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( lineSymbol );
+
+  // make sub-symbol
+  QgsStringMap props;
+  props["color"] = "255,0,0";
+  props["size"] = "2";
+  props["outline_style"] = "no";
+  QgsSimpleMarkerSymbolLayerV2* marker = static_cast< QgsSimpleMarkerSymbolLayerV2* >( QgsSimpleMarkerSymbolLayerV2::create( props ) );
+
+  marker->setDataDefinedProperty( "size", new QgsDataDefined( true, true, "@geometry_point_num * 2" ) );
+
+  QgsMarkerSymbolV2* subSymbol = new QgsMarkerSymbolV2();
+  subSymbol->changeSymbolLayer( 0, marker );
+  ml->setSubSymbol( subSymbol );
+
+  mLinesLayer->setRendererV2( r );
+
+  mMapSettings->setExtent( QgsRectangle( -140, -140, 140, 140 ) );
+  QVERIFY( render( "point_num_vertex" ) );
 }
 
 bool TestQgsMarkerLineSymbol::render( const QString& theTestType )
