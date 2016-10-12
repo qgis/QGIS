@@ -73,6 +73,22 @@ class QgsSymbolLayer
     virtual ~QgsSymbolLayer();
 
     /**
+     * Returns true if symbol layer is enabled and will be drawn.
+     * @note added in QGIS 3.0
+     * @see setEnabled()
+     */
+    bool enabled() const;
+
+    /**
+     * Sets whether symbol layer is enabled and should be drawn. Disabled
+     * layers are not drawn, but remain part of the symbol and can be re-enabled
+     * when desired.
+     * @note added in QGIS 3.0
+     * @see enabled()
+     */
+    void setEnabled( bool enabled );
+
+    /**
      * The fill color.
      */
     virtual QColor color() const;

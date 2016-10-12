@@ -82,6 +82,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, private Ui::L
 
   private slots:
     void reloadLayer();
+    void on_mEnabledCheckBox_toggled( bool enabled );
 
   private:
 

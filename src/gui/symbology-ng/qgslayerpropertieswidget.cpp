@@ -112,6 +112,7 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const
   // update layer type combo box
   int idx = cboLayerType->findData( mLayer->layerType() );
   cboLayerType->setCurrentIndex( idx );
+  mEnabledCheckBox->setChecked( mLayer->enabled() );
   // set the corresponding widget
   updateSymbolLayerWidget( layer );
   connect( cboLayerType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( layerTypeChanged() ) );
@@ -235,4 +236,10 @@ void QgsLayerPropertiesWidget::emitSignalChanged()
 void QgsLayerPropertiesWidget::reloadLayer()
 {
   emit changeLayer( mLayer );
+}
+
+void QgsLayerPropertiesWidget::on_mEnabledCheckBox_toggled( bool enabled )
+{
+  mLayer->setEnabled( enabled );
+  emitSignalChanged();
 }

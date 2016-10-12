@@ -30,7 +30,7 @@
     <number>3</number>
    </property>
    <item row="1" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
@@ -49,6 +49,9 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="4" column="0">
+    <widget class="QgsEffectStackCompactWidget" name="mEffectWidget" native="true"/>
    </item>
    <item row="2" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
@@ -69,7 +72,34 @@
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="QgsEffectStackCompactWidget" name="mEffectWidget" native="true"/>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QCheckBox" name="mEnabledCheckBox">
+       <property name="text">
+        <string>Enable layer</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

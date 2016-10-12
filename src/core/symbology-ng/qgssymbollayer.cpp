@@ -261,6 +261,7 @@ void QgsSymbolLayer::setPaintEffect( QgsPaintEffect *effect )
 
 QgsSymbolLayer::QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked )
     : mType( type )
+    , mEnabled( true )
     , mLocked( locked )
     , mRenderingPass( 0 )
     , mPaintEffect( nullptr )
