@@ -146,6 +146,7 @@ bool TestQgs25DRenderer::imageCheck( const QString& theTestType )
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
   mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings.setOutputSize( QSize( 400, 400 ) );
   mMapSettings.setOutputDpi( 96 );
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::mapSettingsScope( mMapSettings );
