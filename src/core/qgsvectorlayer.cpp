@@ -2413,6 +2413,8 @@ bool QgsVectorLayer::renameAttribute( int index, const QString& newName )
       return false;
 
   }
+
+  return false; //avoid warnings
 }
 
 void QgsVectorLayer::addAttributeAlias( int attIndex, const QString& aliasString )
