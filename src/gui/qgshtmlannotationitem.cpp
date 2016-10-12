@@ -191,42 +191,44 @@ void QgsHtmlAnnotationItem::readXML( const QDomDocument& doc, const QDomElement&
 
 void QgsHtmlAnnotationItem::setFeatureForMapPosition()
 {
-  if ( !mVectorLayer || !mMapCanvas )
+  QString newText;
+  if ( mVectorLayer && mMapCanvas )
   {
-    return;
+    double halfIdentifyWidth = QgsMapTool::searchRadiusMU( mMapCanvas );
+    QgsRectangle searchRect( mMapPosition.x() - halfIdentifyWidth, mMapPosition.y() - halfIdentifyWidth,
+                             mMapPosition.x() + halfIdentifyWidth, mMapPosition.y() + halfIdentifyWidth );
+
+    QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( searchRect ).setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect ) );
+
+    QgsFeature currentFeature;
+    QgsFeatureId currentFeatureId = 0;
+    bool featureFound = false;
+
+    while ( fit.nextFeature( currentFeature ) )
+    {
+      currentFeatureId = currentFeature.id();
+      featureFound = true;
+      break;
+    }
+
+    mHasAssociatedFeature = featureFound;
+    mFeatureId = currentFeatureId;
+    mFeature = currentFeature;
+
+    QgsExpressionContext context;
+    context << QgsExpressionContextUtils::globalScope()
+    << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::layerScope( mVectorLayer );
+    if ( mMapCanvas )
+      context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() ) );
+    context.setFeature( mFeature );
+    newText = QgsExpression::replaceExpressionText( mHtmlSource, &context );
   }
-
-  QSettings settings;
-  double halfIdentifyWidth = QgsMapTool::searchRadiusMU( mMapCanvas );
-  QgsRectangle searchRect( mMapPosition.x() - halfIdentifyWidth, mMapPosition.y() - halfIdentifyWidth,
-                           mMapPosition.x() + halfIdentifyWidth, mMapPosition.y() + halfIdentifyWidth );
-
-  QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( searchRect ).setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect ) );
-
-  QgsFeature currentFeature;
-  QgsFeatureId currentFeatureId = 0;
-  bool featureFound = false;
-
-  while ( fit.nextFeature( currentFeature ) )
+  else
   {
-    currentFeatureId = currentFeature.id();
-    featureFound = true;
-    break;
+    newText = mHtmlSource;
   }
-
-  mHasAssociatedFeature = featureFound;
-  mFeatureId = currentFeatureId;
-  mFeature = currentFeature;
-
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( mVectorLayer );
-  if ( mMapCanvas )
-    context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() ) );
-  context.setFeature( mFeature );
-  QString newtext = QgsExpression::replaceExpressionText( mHtmlSource, &context );
-  mWebView->setHtml( newtext );
+  mWebView->setHtml( newText );
 }
 
 void QgsHtmlAnnotationItem::updateVisibility()
