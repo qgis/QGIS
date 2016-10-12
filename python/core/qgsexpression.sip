@@ -354,12 +354,38 @@ class QgsExpression
                   bool handlesNull = false,
                   bool isContextual = false );
 
+        /** Constructor for function which uses unnamed parameters and group list
+         * @note added in QGIS 3.0
+         */
+        Function( const QString& fnname,
+                  int params,
+                  const QStringList& groups,
+                  const QString& helpText = QString(),
+                  bool usesGeometry = false,
+                  const QStringList& referencedColumns = QStringList(),
+                  bool lazyEval = false,
+                  bool handlesNull = false,
+                  bool isContextual = false );
+
         /** Constructor for function which uses named parameter list.
          * @note added in QGIS 2.16
          */
         Function( const QString& fnname,
                   const QgsExpression::ParameterList& params,
                   const QString& group,
+                  const QString& helpText = QString(),
+                  bool usesGeometry = false,
+                  const QStringList& referencedColumns = QStringList(),
+                  bool lazyEval = false,
+                  bool handlesNull = false,
+                  bool isContextual = false );
+
+        /** Constructor for function which uses named parameter list and group list.
+         * @note added in QGIS 3.0
+         */
+        Function( const QString& fnname,
+                  const QgsExpression::ParameterList& params,
+                  const QStringList& groups,
                   const QString& helpText = QString(),
                   bool usesGeometry = false,
                   const QStringList& referencedColumns = QStringList(),
@@ -405,8 +431,23 @@ class QgsExpression
          */
         bool isContextual() const;
 
-        /** The group the function belongs to. */
+        /** Returns true if the function is deprecated and should not be presented as a valid option
+         * to users in expression builders.
+         * @note added in QGIS 3.0
+         */
+        virtual bool isDeprecated() const;
+
+        /** Returns the first group which the function belongs to.
+         * @note consider using groups() instead, as some functions naturally belong in multiple groups
+        */
         QString group() const;
+
+        /** Returns a list of the groups the function belongs to.
+         * @note added in QGIS 3.0
+         * @see group()
+        */
+        QStringList groups() const;
+
         /** The help text for the function. */
         const QString helptext() const;
 

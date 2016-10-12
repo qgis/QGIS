@@ -477,7 +477,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
     QString name = func->name();
     if ( name.startsWith( '_' ) ) // do not display private functions
       continue;
-    if ( func->group() == "deprecated" ) // don't show deprecated functions
+    if ( func->isDeprecated() ) // don't show deprecated functions
       continue;
     if ( func->isContextual() )
     {
@@ -489,14 +489,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
       name += '(';
     else if ( !name.startsWith( '$' ) )
       name += "()";
-    registerItem( func->group(), func->name(), ' ' + name + ' ', func->helptext() );
-  }
-
-  QList<QgsExpression::Function*> specials = QgsExpression::specialColumns();
-  for ( int i = 0; i < specials.size(); ++i )
-  {
-    QString name = specials[i]->name();
-    registerItem( specials[i]->group(), name, ' ' + name + ' ' );
+    registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helptext() );
   }
 
   loadExpressionContext();
@@ -619,7 +612,15 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
       continue;
     if ( func->params() != 0 )
       name += '(';
-    registerItem( func->group(), func->name(), ' ' + name + ' ', func->helptext() );
+    registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helptext() );
+  }
+}
+
+void QgsExpressionBuilderWidget::registerItemForAllGroups( const QStringList& groups, const QString& label, const QString& expressionText, const QString& helpText, QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder )
+{
+  Q_FOREACH ( const QString& group, groups )
+  {
+    registerItem( group, label, expressionText, helpText, type, highlightedItem, sortOrder );
   }
 }
 
