@@ -23,21 +23,21 @@
    <item>
     <widget class="QWidget" name="widget" native="true">
      <layout class="QGridLayout" name="gridLayout_4">
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>CRS</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="1" column="2">
        <widget class="QLineEdit" name="leFilename">
         <property name="enabled">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
+      <item row="1" column="3">
        <widget class="QPushButton" name="browseFilename">
         <property name="enabled">
          <bool>false</bool>
@@ -57,23 +57,40 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="2">
+      <item row="0" column="2" colspan="2">
        <widget class="QComboBox" name="mFormatComboBox"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Save as</string>
+         <string>File name</string>
         </property>
         <property name="buddy">
          <cstring>leFilename</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" colspan="2">
+      <item row="3" column="2" colspan="2">
        <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Layer name</string>
+        </property>
+        <property name="buddy">
+         <cstring>leFilename</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" colspan="2">
+       <widget class="QLineEdit" name="leLayername">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -90,8 +107,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>550</width>
-        <height>953</height>
+        <width>557</width>
+        <height>922</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -434,6 +451,7 @@
   <tabstop>mFormatComboBox</tabstop>
   <tabstop>leFilename</tabstop>
   <tabstop>browseFilename</tabstop>
+  <tabstop>leLayername</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mEncodingComboBox</tabstop>

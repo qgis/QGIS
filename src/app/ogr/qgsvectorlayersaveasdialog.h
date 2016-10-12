@@ -45,6 +45,7 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QString format() const;
     QString encoding() const;
     QString filename() const;
+    QString layername() const;
     QStringList datasourceOptions() const;
     QStringList layerOptions() const;
     long crs() const;
@@ -99,6 +100,9 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
      */
     void setIncludeZ( bool checked );
 
+    /** Returns creation action */
+    QgsVectorFileWriter::ActionOnExistingFile creationActionOnExistingFile() const;
+
   private slots:
 
     void on_mFormatComboBox_currentIndexChanged( int idx );
@@ -125,6 +129,7 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsVectorLayer *mLayer;
     bool mAttributeTableItemChangedSlotEnabled;
     bool mReplaceRawFieldValuesStateChangedSlotEnabled;
+    QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;
 };
 
 #endif // QGSVECTORLAYERSAVEASDIALOG_H

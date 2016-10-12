@@ -29,6 +29,7 @@ from qgis.core import (QgsVectorLayer,
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 import os
 import osgeo.gdal
+from osgeo import gdal, ogr
 import platform
 from qgis.testing import start_app, unittest
 from utilities import writeShape, compareWkt
@@ -461,6 +462,177 @@ class TestQgsVectorLayer(unittest.TestCase):
         int8_idx = created_layer.fieldNameIndex('int8')
         self.assertEqual(f.attributes()[int8_idx], 2123456789)
 
+    def testOverwriteLayer(self):
+        """Tests writing a layer with a field value converter."""
+
+        ml = QgsVectorLayer('Point?field=firstfield:int', 'test', 'memory')
+        provider = ml.dataProvider()
+
+        ft = QgsFeature()
+        ft.setAttributes([1])
+        provider.addFeatures([ft])
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'test'
+        filename = '/vsimem/out.gpkg'
+        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+            ml,
+            filename,
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+
+        ds = ogr.Open(filename, update=1)
+        lyr = ds.GetLayerByName('test')
+        self.assertIsNotNone(lyr)
+        f = lyr.GetNextFeature()
+        self.assertEqual(f['firstfield'], 1)
+        ds.CreateLayer('another_layer')
+        del f
+        del lyr
+        del ds
+
+        caps = QgsVectorFileWriter.editionCapabilities(filename)
+        self.assertTrue((caps & QgsVectorFileWriter.CanAddNewLayer))
+        self.assertTrue((caps & QgsVectorFileWriter.CanAppendToExistingLayer))
+        self.assertTrue((caps & QgsVectorFileWriter.CanAddNewFieldsToExistingLayer))
+        self.assertTrue((caps & QgsVectorFileWriter.CanDeleteLayer))
+
+        self.assertTrue(QgsVectorFileWriter.targetLayerExists(filename, 'test'))
+
+        self.assertFalse(QgsVectorFileWriter.areThereNewFieldsToCreate(filename, 'test', ml, [0]))
+
+        # Test CreateOrOverwriteLayer
+        ml = QgsVectorLayer('Point?field=firstfield:int', 'test', 'memory')
+        provider = ml.dataProvider()
+
+        ft = QgsFeature()
+        ft.setAttributes([2])
+        provider.addFeatures([ft])
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'test'
+        options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
+        filename = '/vsimem/out.gpkg'
+        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+            ml,
+            filename,
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+
+        ds = ogr.Open(filename)
+        lyr = ds.GetLayerByName('test')
+        self.assertIsNotNone(lyr)
+        f = lyr.GetNextFeature()
+        self.assertEqual(f['firstfield'], 2)
+        # another_layer should still exist
+        self.assertIsNotNone(ds.GetLayerByName('another_layer'))
+        del f
+        del lyr
+        del ds
+
+        # Test CreateOrOverwriteFile
+        ml = QgsVectorLayer('Point?field=firstfield:int', 'test', 'memory')
+        provider = ml.dataProvider()
+
+        ft = QgsFeature()
+        ft.setAttributes([3])
+        provider.addFeatures([ft])
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'test'
+        filename = '/vsimem/out.gpkg'
+        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+            ml,
+            filename,
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+
+        ds = ogr.Open(filename)
+        lyr = ds.GetLayerByName('test')
+        self.assertIsNotNone(lyr)
+        f = lyr.GetNextFeature()
+        self.assertEqual(f['firstfield'], 3)
+        # another_layer should no longer exist
+        self.assertIsNone(ds.GetLayerByName('another_layer'))
+        del f
+        del lyr
+        del ds
+
+        # Test AppendToLayerNoNewFields
+        ml = QgsVectorLayer('Point?field=firstfield:int&field=secondfield:int', 'test', 'memory')
+        provider = ml.dataProvider()
+
+        ft = QgsFeature()
+        ft.setAttributes([4, -10])
+        provider.addFeatures([ft])
+
+        self.assertTrue(QgsVectorFileWriter.areThereNewFieldsToCreate(filename, 'test', ml, [0, 1]))
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'test'
+        options.actionOnExistingFile = QgsVectorFileWriter.AppendToLayerNoNewFields
+        filename = '/vsimem/out.gpkg'
+        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+            ml,
+            filename,
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+
+        ds = ogr.Open(filename)
+        lyr = ds.GetLayerByName('test')
+        self.assertEqual(lyr.GetLayerDefn().GetFieldCount(), 1)
+        self.assertIsNotNone(lyr)
+        f = lyr.GetNextFeature()
+        self.assertEqual(f['firstfield'], 3)
+        f = lyr.GetNextFeature()
+        self.assertEqual(f['firstfield'], 4)
+        del f
+        del lyr
+        del ds
+
+        # Test AppendToLayerAddFields
+        ml = QgsVectorLayer('Point?field=firstfield:int&field=secondfield:int', 'test', 'memory')
+        provider = ml.dataProvider()
+
+        ft = QgsFeature()
+        ft.setAttributes([5, -1])
+        provider.addFeatures([ft])
+
+        self.assertTrue(QgsVectorFileWriter.areThereNewFieldsToCreate(filename, 'test', ml, [0, 1]))
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'test'
+        options.actionOnExistingFile = QgsVectorFileWriter.AppendToLayerAddFields
+        filename = '/vsimem/out.gpkg'
+        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+            ml,
+            filename,
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+
+        ds = ogr.Open(filename)
+        lyr = ds.GetLayerByName('test')
+        self.assertEqual(lyr.GetLayerDefn().GetFieldCount(), 2)
+        self.assertIsNotNone(lyr)
+        f = lyr.GetNextFeature()
+        self.assertEqual(f['firstfield'], 3)
+        self.assertFalse(f.IsFieldSet('secondfield'))
+        f = lyr.GetNextFeature()
+        self.assertEqual(f['firstfield'], 4)
+        self.assertFalse(f.IsFieldSet('secondfield'))
+        f = lyr.GetNextFeature()
+        self.assertEqual(f['firstfield'], 5)
+        self.assertEqual(f['secondfield'], -1)
+        del f
+        del lyr
+        del ds
+
+        gdal.Unlink(filename)
 
 if __name__ == '__main__':
     unittest.main()
