@@ -1095,7 +1095,11 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QgsRenderContext& context, QP
     return;
   }
   QgsComposerMapGrid::BorderSide frameBorder = borderForLineCoord( pos, coordinateType );
-  double textWidth = QgsComposerUtils::textWidthMM( mGridAnnotationFont, annotationString );
+
+  double dotsPerMM = context.painter()->device()->logicalDpiX() / 25.4;
+
+  double textWidth = dotsPerMM * QgsTextRenderer::textWidth( context, mAnnotationFormat, QStringList() << annotationString );
+//  double textWidth = QgsComposerUtils::textWidthMM( mGridAnnotationFont, annotationString );
   //relevant for annotations is the height of digits
   double textHeight = extension ? QgsComposerUtils::fontAscentMM( mGridAnnotationFont )
                       : QgsComposerUtils::fontHeightCharacterMM( mGridAnnotationFont, QChar( '0' ) );
