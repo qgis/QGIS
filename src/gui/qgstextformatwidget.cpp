@@ -1413,3 +1413,21 @@ QgsTextFormat QgsTextFormatDialog::format() const
 {
   return mFormatWidget->format();
 }
+
+QgsTextFormatPanelWidget::QgsTextFormatPanelWidget( const QgsTextFormat& format, QgsMapCanvas* mapCanvas, QWidget* parent )
+    : QgsPanelWidgetWrapper( new QgsTextFormatWidget( format, mapCanvas ), parent )
+{
+  mFormatWidget = qobject_cast< QgsTextFormatWidget* >( widget() );
+  connect( mFormatWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+}
+
+QgsTextFormat QgsTextFormatPanelWidget::format() const
+{
+  return mFormatWidget->format();
+}
+
+void QgsTextFormatPanelWidget::setDockMode( bool dockMode )
+{
+  mFormatWidget->setDockMode( dockMode );
+  QgsPanelWidgetWrapper::setDockMode( dockMode );
+}
