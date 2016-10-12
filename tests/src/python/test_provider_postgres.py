@@ -437,6 +437,30 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(isinstance(f.attributes()[value_idx], list))
         self.assertEqual(f.attributes()[value_idx], [1.1, 2, -5.12345])
 
+    # See http://hub.qgis.org/issues/15188
+    def testNumericPrecision(self):
+        uri = 'point?field=f1:int'
+        uri += '&field=f2:double(6,4)'
+        uri += '&field=f3:string(20)'
+        lyr = QgsVectorLayer(uri, "x", "memory")
+        self.assertTrue(lyr.isValid())
+        f = QgsFeature(lyr.fields())
+        f['f1'] = 1
+        f['f2'] = 123.456
+        f['f3'] = '12345678.90123456789'
+        lyr.dataProvider().addFeatures([f])
+        uri = '%s table="qgis_test"."b18155" (g) key=\'f1\'' % (self.dbconn)
+        self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.b18155')
+        err = QgsVectorLayerImport.importLayer(lyr, uri, "postgres", lyr.crs())
+        self.assertEqual(err[0], QgsVectorLayerImport.NoError,
+                         'unexpected import error {0}'.format(err))
+        lyr = QgsVectorLayer(uri, "y", "postgres")
+        self.assertTrue(lyr.isValid())
+        f = next(lyr.getFeatures())
+        self.assertEqual(f['f1'], 1)
+        self.assertEqual(f['f2'], 123.456)
+        self.assertEqual(f['f3'], '12345678.90123456789')
+
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
 
@@ -466,30 +490,6 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
 
     def partiallyCompiledFilters(self):
         return set([])
-
-    # See http://hub.qgis.org/issues/15188
-    def testNumericPrecision(self):
-        uri = 'point?field=f1:int'
-        uri += '&field=f2:double(6,4)'
-        uri += '&field=f3:string(20)'
-        lyr = QgsVectorLayer(uri, "x", "memory")
-        self.assertTrue(lyr.isValid())
-        f = QgsFeature(lyr.fields())
-        f['f1'] = 1
-        f['f2'] = 123.456
-        f['f3'] = '12345678.90123456789'
-        lyr.dataProvider().addFeatures([f])
-        uri = '%s table="qgis_test"."b18155" (g) key=\'f1\'' % (self.dbconn)
-        self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.b18155')
-        err = QgsVectorLayerImport.importLayer(lyr, uri, "postgres", lyr.crs())
-        self.assertEqual(err[0], QgsVectorLayerImport.NoError,
-                         'unexpected import error {0}'.format(err))
-        lyr = QgsVectorLayer(uri, "y", "postgres")
-        self.assertTrue(lyr.isValid())
-        f = next(lyr.getFeatures())
-        self.assertEqual(f['f1'], 1)
-        self.assertEqual(f['f2'], 123.456)
-        self.assertEqual(f['f3'], '12345678.90123456789')
 
 if __name__ == '__main__':
     unittest.main()
