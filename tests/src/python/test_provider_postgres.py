@@ -349,6 +349,37 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f['f2'], 123.456)
         self.assertEqual(f['f3'], '12345678.90123456789')
 
+    # See http://hub.qgis.org/issues/15226
+    def testImportKey(self):
+        uri = 'point?field=f1:int'
+        uri += '&field=F2:double(6,4)'
+        uri += '&field=f3:string(20)'
+        lyr = QgsVectorLayer(uri, "x", "memory")
+        self.assertTrue(lyr.isValid())
+
+        def testKey(lyr, key, kfnames):
+            self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.import_test')
+            uri = '%s table="qgis_test"."import_test" (g) key=\'%s\'' % (self.dbconn, key)
+            err = QgsVectorLayerImport.importLayer(lyr, uri, "postgres", lyr.crs())
+            self.assertEqual(err[0], QgsVectorLayerImport.NoError,
+                             'unexpected import error {0}'.format(err))
+            olyr = QgsVectorLayer(uri, "y", "postgres")
+            self.assertTrue(olyr.isValid())
+            flds = lyr.fields()
+            oflds = olyr.fields()
+            self.assertEquals(oflds.size(), flds.size())
+            for i in range(0, oflds.size()):
+                self.assertEqual(oflds[i].name(), flds[i].name())
+            pks = olyr.pkAttributeList()
+            self.assertEquals(len(pks), len(kfnames))
+            for i in range(0, len(kfnames)):
+                self.assertEqual(oflds[pks[i]].name(), kfnames[i])
+
+        testKey(lyr, 'f1', ['f1'])
+        testKey(lyr, '"f1"', ['f1'])
+        testKey(lyr, '"f1","F2"', ['f1', 'F2'])
+        testKey(lyr, '"f1","F2","f3"', ['f1', 'F2', 'f3'])
+
 
 if __name__ == '__main__':
     unittest.main()
