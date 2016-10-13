@@ -138,7 +138,6 @@ class Dissolve(GeoAlgorithm):
                         raise
                         raise GeoAlgorithmExecutionException(
                             self.tr('Geometry exception while dissolving'))
-            print outFeat.geometry().exportToWkt()
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
         else:
