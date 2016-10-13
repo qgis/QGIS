@@ -64,6 +64,8 @@ from processing.core.outputs import OutputTable
 
 from processing.tools import dataobjects
 
+from qgis.utils import iface
+
 
 class AlgorithmDialog(AlgorithmDialogBase):
 
@@ -189,6 +191,37 @@ class AlgorithmDialog(AlgorithmDialogBase):
         else:
             return param.setValue(unicode(widget.text()))
 
+    def checkExtentCRS(self):
+        unmatchingCRS = False
+        hasExtent = False
+        projectCRS = iface.mapCanvas().mapSettings().destinationCrs()
+        layers = dataobjects.getAllLayers()
+        for param in self.alg.parameters:
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
+                if param.value:
+                    if isinstance(param, ParameterMultipleInput):
+                        inputlayers = param.value.split(';')
+                    else:
+                        inputlayers = [param.value]
+                    for inputlayer in inputlayers:
+                        for layer in layers:
+                            if layer.source() == inputlayer:
+                                if layer.crs() != projectCRS:
+                                    unmatchingCRS = True
+
+                        p = dataobjects.getObjectFromUri(inputlayer)
+                        if p is not None:
+                            if p.crs() != projectCRS:
+                                unmatchingCRS = True
+            if isinstance(param, ParameterExtent):
+                value = self.mainWidget.valueItems[param.name].leText.text().strip()
+                print value
+                if value:
+                    hasExtent = True
+
+        return hasExtent and unmatchingCRS
+
+
     def accept(self):
         self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
 
@@ -200,6 +233,17 @@ class AlgorithmDialog(AlgorithmDialogBase):
                                              self.tr('Layers do not all use the same CRS. This can '
                                                      'cause unexpected results.\nDo you want to '
                                                      'continue?'),
+                                             QMessageBox.Yes | QMessageBox.No,
+                                             QMessageBox.No)
+                if reply == QMessageBox.No:
+                    return
+            checkExtentCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_EXTENT_CRS)
+            if checkExtentCRS and self.checkExtentCRS():
+                reply = QMessageBox.question(self, self.tr("Extent CRS"),
+                                             self.tr('Extent parameters must use the same CRS as the input layers.\n'
+                                                     'Your input layers do not have the same extent as the project, '
+                                                     'so the extent might be in a wrong CRS if you have selected it from the canvas.\n'
+                                                     'Do you want to continue?'),
                                              QMessageBox.Yes | QMessageBox.No,
                                              QMessageBox.No)
                 if reply == QMessageBox.No:
