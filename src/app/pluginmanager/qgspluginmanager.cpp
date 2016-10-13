@@ -617,7 +617,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
           "    padding:0px;"
           "    margin:0px;"
           "    font-family:verdana;"
-          "    font-size: 1.1em;"
+          "    font-size: 10pt;"
           "  }"
           "  div#votes {"
           "    width:360px;"
@@ -1133,11 +1133,11 @@ void QgsPluginManager::setCurrentTab( int idx )
     if ( it != mTabDescriptions.constEnd() )
     {
       tabInfoHTML += "<style>"
-                     "body, table {"
-                     "margin:4px;"
-                     "font-family:verdana;"
-                     "font-size: 12px;"
-                     "}"
+                     "  body, p {"
+                     "      margin: 2px;"
+                     "      font-family: verdana;"
+                     "      font-size: 10pt;"
+                     "  }"
                      "</style>";
       // tabInfoHTML += "<style>" + QgsApplication::reportStyleSheet() + "</style>";
       tabInfoHTML += it.value();
