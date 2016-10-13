@@ -5,6 +5,7 @@
     copyright            : (C) 2012 by Radim Blazek
     email                : radim dot blazek at gmail dot com
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -141,6 +142,7 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     void warning( QString msg );
 
   private:
+
     /**
      * Pointer to canonical Singleton object */
     static QgsGrassGisLib* _instance;
@@ -160,22 +162,28 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     /**
      * Current region extent */
     QgsRectangle mExtent;
+
     /**
      * Current region rows */
     int mRows;
+
     /**
      * Current region columns */
     int mColumns;
+
     /**
      * X resolution */
     double mXRes;
+
     /**
      * Y resolution */
     double mYRes;
+
     /**
      * Current coordinate reference system */
     QgsCoordinateReferenceSystem mCrs;
     QgsDistanceArea mDistanceArea;
+
     /**
      * Lat1, lat2 used for geodesic distance calculation */
     double mLat1, mLat2;

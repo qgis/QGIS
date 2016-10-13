@@ -168,6 +168,7 @@ class GUI_EXPORT QgsTreeWidgetItemObject: public QObject, public QgsTreeWidgetIt
     virtual void setData( int column, int role, const QVariant & value );
 
   signals:
+
     /**
      * This signal is emitted when the contents of the column in the specified item has been edited by the user. */
     void itemEdited( QTreeWidgetItem* item, int column );

@@ -149,6 +149,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     static QString qgsFieldToDb2Field( QgsField field );
 
   protected:
+
     /**
      * Loads fields from input file to member attributeFields */
     QVariant::Type decodeSqlType( int typeId );

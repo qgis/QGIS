@@ -105,6 +105,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
      * Returns the current collapsed state of this group box
      */
     bool isCollapsed() const { return mCollapsed; }
+
     /**
      * Collapse or uncollapse this groupbox
      *
@@ -129,6 +130,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     bool scrollOnExpand() {return mScrollOnExpand;}
 
   signals:
+
     /**
      * Signal emitted when groupbox collapsed/expanded state is changed, and when first shown */
     void collapsedStateChanged( bool collapsed );
@@ -207,6 +209,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
 
     //! set this to false to not save/restore collapsed state
     void setSaveCollapsedState( bool save ) { mSaveCollapsedState = save; }
+
     /**
      * Set this to true to save/restore checked state
      * @note only turn on mSaveCheckedState for groupboxes NOT used
@@ -221,6 +224,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     QString settingGroup() const { return mSettingGroup; }
 
   protected slots:
+
     /**
      * Will load the collapsed and checked state
      *
@@ -229,6 +233,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
      *  * The settingGroup
      */
     void loadState();
+
     /**
      * Will save the collapsed and checked state
      *

@@ -96,6 +96,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     //note - must sync with QgsMapCanvas::WheelAction.
     //TODO - QGIS 3.0 move QgsMapCanvas::WheelAction from GUI->CORE and remove this enum
+
     /**
      * Modes for zooming item content
      */
@@ -112,6 +113,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      @param composition parent composition
      @param manageZValue true if the z-Value of this object should be managed by mComposition*/
     QgsComposerItem( QgsComposition* composition, bool manageZValue = true );
+
     /**
      * Constructor with box position and composer object
      @param x x coordinate of item
@@ -445,6 +447,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     void beginCommand( const QString& commandText, QgsComposerMergeCommand::Context c = QgsComposerMergeCommand::Unknown );
 
     virtual void endItemCommand() { endCommand(); }
+
     /**
      * Finish current command and push it onto the undo stack */
     void endCommand();
@@ -609,14 +612,17 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr ) override;
 
   protected:
+
     /**
      * True if item has been removed from the composition*/
     bool mRemovedFromComposition;
 
     QgsComposerItem::MouseMoveAction mCurrentMouseMoveAction;
+
     /**
      * Start point of the last mouse move action (in scene coordinates)*/
     QPointF mMouseMoveStartPos;
+
     /**
      * Position of the last mouse move event (in scene coordinates)*/
     QPointF mLastMouseEventPos;
@@ -630,12 +636,15 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /**
      * True if item fram needs to be painted*/
     bool mFrame;
+
     /**
      * True if item background needs to be painted*/
     bool mBackground;
+
     /**
      * Background color*/
     QColor mBackgroundColor;
+
     /**
      * Frame join style*/
     Qt::PenJoinStyle mFrameJoinStyle;
@@ -652,6 +661,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /**
      * Item rotation in degrees, clockwise*/
     double mItemRotation;
+
     /**
      * Temporary evaluated item rotation in degrees, clockwise. Data defined rotation may mean
      * this value differs from mItemRotation.
@@ -724,6 +734,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * Return horizontal align snap item. Creates a new graphics line if 0*/
     QGraphicsLineItem* hAlignSnapItem();
     void deleteHAlignSnapItem();
+
     /**
      * Return vertical align snap item. Creates a new graphics line if 0*/
     QGraphicsLineItem* vAlignSnapItem();
@@ -752,17 +763,21 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     bool shouldDrawItem() const;
 
   signals:
+
     /**
      * Is emitted on item rotation change*/
     void itemRotationChanged( double newRotation );
+
     /**
      * Emitted if the rectangle changes*/
     void sizeChanged();
+
     /**
      * Emitted if the item's frame style changes
      * @note: this function was introduced in version 2.2
      */
     void frameChanged();
+
     /**
      * Emitted if the item's lock status changes
      * @note: this function was introduced in version 2.5

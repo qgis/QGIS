@@ -64,6 +64,7 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
     void emitProjectSnapSettingsChanged();
 
   protected:
+
     /**
      * Constructor
      * @param canvas pointer to the map canvas (for detecting which vector layers are loaded
@@ -83,6 +84,7 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
     void reload();
 
   private:
+
     /**
      * Default constructor forbidden*/
     QgsSnappingDialog();

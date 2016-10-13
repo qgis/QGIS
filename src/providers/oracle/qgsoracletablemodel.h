@@ -66,6 +66,7 @@ class QgsOracleTableModel : public QStandardItemModel
     static QIcon iconForWkbType( QgsWkbTypes::Type type );
 
   private:
+
     /**
      * Number of tables in the model*/
     int mTableCount;

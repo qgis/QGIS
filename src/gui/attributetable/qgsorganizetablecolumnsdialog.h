@@ -36,6 +36,7 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * @param vl The concerned vector layer
@@ -55,6 +56,7 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
     QgsAttributeTableConfig config() const;
 
   public slots:
+
     /**
      * showAll checks all the  fields to show them all in the attribute table
      */

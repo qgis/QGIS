@@ -1,4 +1,5 @@
 
+
 /***************************************************************************
                           qgsvectorlayer.h  -  description
                              -------------------
@@ -86,15 +87,19 @@ struct CORE_EXPORT QgsVectorJoinInfo
   /**
    * Join field in the target layer*/
   QString targetFieldName;
+
   /**
    * Source layer*/
   QString joinLayerId;
+
   /**
    * Join field in the source layer*/
   QString joinFieldName;
+
   /**
    * True if the join is cached in virtual memory*/
   bool memoryCache;
+
   /**
    * True if the cached join attributes need to be updated*/
   bool cacheDirty;
@@ -108,6 +113,7 @@ struct CORE_EXPORT QgsVectorJoinInfo
   /**
    * Join field index in the target layer. For backward compatibility with 1.x (x>=7)*/
   int targetFieldIndex;
+
   /**
    * Join field index in the source layer. For backward compatibility with 1.x (x>=7)*/
   int joinFieldIndex;
@@ -132,12 +138,14 @@ struct CORE_EXPORT QgsVectorJoinInfo
    * Set subset of fields to be used from joined layer. Takes ownership of the passed pointer. Null pointer tells to use all fields.
     @note added in 2.6 */
   void setJoinFieldNamesSubset( QStringList* fieldNamesSubset ) { joinFieldsSubset = QSharedPointer<QStringList>( fieldNamesSubset ); }
+
   /**
    * Get subset of fields to be used from joined layer. All fields will be used if null is returned.
     @note added in 2.6 */
   QStringList* joinFieldNamesSubset() const { return joinFieldsSubset.data(); }
 
 protected:
+
   /**
    * Subset of fields to use from joined layer. null = use all fields*/
   QSharedPointer<QStringList> joinFieldsSubset;
@@ -1319,6 +1327,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * A set of attributes that are not advertised in WMS requests with QGIS server.
      */
     const QSet<QString>& excludeAttributesWms() const { return mExcludeAttributesWMS; }
+
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
      */
@@ -1569,6 +1578,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Set the blending mode used for rendering each feature */
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
+
     /**
      * Returns the current blending mode for features */
     QPainter::CompositionMode featureBlendMode() const;
@@ -1576,6 +1586,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Set the transparency for the vector layer */
     void setLayerTransparency( int layerTransparency );
+
     /**
      * Returns the current transparency for the vector layer */
     int layerTransparency() const;
@@ -1667,6 +1678,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setEditFormConfig( const QgsEditFormConfig& editFormConfig );
 
   public slots:
+
     /**
      * Select feature by its ID
      *
@@ -1868,18 +1880,23 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * This signal is emitted, when attributes are deleted from the provider */
     void committedAttributesDeleted( const QString& layerId, const QgsAttributeList& deletedAttributes );
+
     /**
      * This signal is emitted, when attributes are added to the provider */
     void committedAttributesAdded( const QString& layerId, const QList<QgsField>& addedAttributes );
+
     /**
      * This signal is emitted, when features are added to the provider */
     void committedFeaturesAdded( const QString& layerId, const QgsFeatureList& addedFeatures );
+
     /**
      * This signal is emitted, when features are deleted from the provider */
     void committedFeaturesRemoved( const QString& layerId, const QgsFeatureIds& deletedFeatureIds );
+
     /**
      * This signal is emitted, when attribute value changes are saved to the provider */
     void committedAttributeValuesChanges( const QString& layerId, const QgsChangedAttributesMap& changedAttributesValues );
+
     /**
      * This signal is emitted, when geometry changes are saved to the provider */
     void committedGeometriesChanges( const QString& layerId, const QgsGeometryMap& changedGeometries );
@@ -1980,11 +1997,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void onRelationsLoaded();
 
   protected:
+
     /**
      * Set the extent */
     void setExtent( const QgsRectangle &rect ) override;
 
   private:                       // Private methods
+
     /**
      * Returns true if the provider is in read-only mode
      */

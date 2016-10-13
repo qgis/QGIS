@@ -153,6 +153,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     bool isValid() const override;
 
     virtual QgsCoordinateReferenceSystem crs() const override;
+
     /**
      * Set the subset string used to create a subset of features in
      * the layer.

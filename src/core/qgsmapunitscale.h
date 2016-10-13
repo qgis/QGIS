@@ -52,6 +52,7 @@ class CORE_EXPORT QgsMapUnitScale
     /**
      * The minimum scale, or 0.0 if unset */
     double minScale;
+
     /**
      * The maximum scale, or 0.0 if unset */
     double maxScale;
@@ -59,12 +60,15 @@ class CORE_EXPORT QgsMapUnitScale
     /**
      * Whether the minimum size in mm should be respected */
     bool minSizeMMEnabled;
+
     /**
      * The minimum size in millimeters, or 0.0 if unset */
     double minSizeMM;
+
     /**
      * Whether the maximum size in mm should be respected */
     bool maxSizeMMEnabled;
+
     /**
      * The maximum size in millimeters, or 0.0 if unset */
     double maxSizeMM;

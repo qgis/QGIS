@@ -127,6 +127,7 @@ class CORE_EXPORT QgsProviderRegistry
       It'd be nice to eventually be raster/vector neutral.
      */
     virtual QString fileVectorFilters() const;
+
     /**
      * Return raster file filter string
 
@@ -139,12 +140,15 @@ class CORE_EXPORT QgsProviderRegistry
       @note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
      */
     virtual QString fileRasterFilters() const;
+
     /**
      * Return a string containing the available database drivers */
     virtual QString databaseDrivers() const;
+
     /**
      * Return a string containing the available directory drivers */
     virtual QString directoryDrivers() const;
+
     /**
      * Return a string containing the available protocol drivers */
     virtual QString protocolDrivers() const;
@@ -181,6 +185,7 @@ class CORE_EXPORT QgsProviderRegistry
     typedef std::map<QString, QgsProviderMetadata*> Providers;
 
   private:
+
     /**
      * Ctor private since instance() creates it */
     QgsProviderRegistry( const QString& pluginPath );
@@ -206,10 +211,12 @@ class CORE_EXPORT QgsProviderRegistry
      * one time.
      */
     QString mVectorFileFilters;
+
     /**
      * File filter string for raster files
      */
     QString mRasterFileFilters;
+
     /**
      * Available database drivers string for vector databases
      *
@@ -217,12 +224,14 @@ class CORE_EXPORT QgsProviderRegistry
      * DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
      */
     QString mDatabaseDrivers;
+
     /**
      * Available directory drivers string for vector databases
      * This is a string of form:
      * DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
      */
     QString mDirectoryDrivers;
+
     /**
      * Available protocol drivers string for vector databases
      *

@@ -53,6 +53,7 @@ class CORE_EXPORT QgsContrastEnhancementFunction
     void setMinimumValue( double );
 
   protected:
+
     /**
      * \brief User defineable maximum value for the band, used for enhanceContrasting */
     double mMaximumValue;

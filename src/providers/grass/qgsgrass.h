@@ -5,6 +5,7 @@
     copyright            : (C) 2004 by Radim Blazek
     email                : blazek@itc.it
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -99,10 +100,12 @@ class GRASS_LIB_EXPORT QgsGrassObject
     QString mapsetPath() const { return mGisdbase + "/" + mLocation + "/" + mMapset; }
     QString name() const { return mName; }
     void setName( const QString& name ) { mName = name; }
+
     /**
      * Return full name (map@mapset)
      * @return full name or empty string if map name is empty */
     QString fullName() const;
+
     /**
      * Parse full name in map@mapset form and set map and mapset. If mapset is not
      * specified, mapset is set to the current mapset. */
@@ -191,6 +194,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static void unlock();
 
     //! Get info about the mode
+
     /**
      * QgsGrass may be running in active or passive mode.
      *  Active mode means that GISRC is set up and GISRC file is available,
@@ -351,6 +355,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static void initRegion( struct Cell_head *window );
     //! Set region extent
     static void setRegion( struct Cell_head *window, QgsRectangle rect );
+
     /**
      * Init region, set extent, rows and cols and adjust.
      * Returns error if adjustment failed. */
@@ -660,6 +665,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static ModuleOutput parseModuleOutput( const QString & input, QString &text, QString &html, int &value );
 
   public slots:
+
     /**
      * Close mapset and show warning if closing failed */
     bool closeMapsetWarn();
@@ -674,6 +680,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     void onSearchPathFileChanged( const QString & path );
 
   signals:
+
     /**
      * Signal emitted  when user changed GISBASE */
     void gisbaseChanged();

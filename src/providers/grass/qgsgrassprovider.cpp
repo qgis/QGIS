@@ -5,6 +5,7 @@
     copyright            : (C) 2004 by Gary E.Sherman, Radim Blazek
     email                : sherman@mrcc.com, blazek@itc.it
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

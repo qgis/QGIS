@@ -35,6 +35,7 @@ class GUI_EXPORT QgsAuthConfigEdit : public QDialog, private Ui::QgsAuthConfigEd
     Q_OBJECT
 
   public:
+
     /**
      * Type of configuration validity */
     enum Validity
@@ -59,6 +60,7 @@ class GUI_EXPORT QgsAuthConfigEdit : public QDialog, private Ui::QgsAuthConfigEd
     const QString configId() const { return mAuthCfg; }
 
   signals:
+
     /**
      * Emit generated id when a new config is saved to auth database */
     void authenticationConfigStored( const QString& authcfg );

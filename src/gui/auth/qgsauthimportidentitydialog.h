@@ -34,6 +34,7 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     Q_OBJECT
 
   public:
+
     /**
      * Type of identity being imported */
     enum IdentityType

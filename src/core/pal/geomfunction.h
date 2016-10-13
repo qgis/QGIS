@@ -35,6 +35,7 @@
 
 namespace pal
 {
+
   /**
    * \ingroup core
    * \class pal::GeomFunction

@@ -33,12 +33,14 @@ class GUI_EXPORT QgsTableWidgetBase: public QWidget, public Ui::QgsTableWidgetBa
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor.
      */
     explicit QgsTableWidgetBase( QWidget* parent );
 
   protected:
+
     /**
      * Initialise the table with the given model.
      * Must be called once in the child class' constructor.
@@ -46,12 +48,14 @@ class GUI_EXPORT QgsTableWidgetBase: public QWidget, public Ui::QgsTableWidgetBa
     void init( QAbstractTableModel* model );
 
   signals:
+
     /**
      * Emitted each time a key or a value is changed.
      */
     void valueChanged();
 
   private slots:
+
     /**
      * Called when the add button is clicked.
      */

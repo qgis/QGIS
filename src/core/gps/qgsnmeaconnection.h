@@ -32,14 +32,17 @@ class CORE_EXPORT QgsNMEAConnection: public QgsGPSConnection
     ~QgsNMEAConnection();
 
   protected slots:
+
     /**
      * Parse available data source content*/
     void parseData() override;
 
   protected:
+
     /**
      * Store data from the device before it is processed*/
     QString mStringBuffer;
+
     /**
      * Splits mStringBuffer into sentences and calls libnmea*/
     void processStringBuffer();

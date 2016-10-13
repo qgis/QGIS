@@ -72,6 +72,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     void deleteNodeSelection();
 
   private:
+
     /**
      * Get the feature on the mouse click
      */

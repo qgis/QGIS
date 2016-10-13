@@ -37,6 +37,7 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     /**
      * Reverses the command*/
     void undo() override;
+
     /**
      * Replays the command*/
     void redo() override;
@@ -44,6 +45,7 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     /**
      * Saves current item state as previous state*/
     void savePreviousState();
+
     /**
      * Saves current item state as after state*/
     void saveAfterState();
@@ -62,18 +64,22 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     QgsComposerItem *item() const;
 
   protected:
+
     /**
      * Target item of the command*/
     QgsComposerItem* mItem;
+
     /**
      * XML that saves the state before executing the command*/
     QDomDocument mPreviousState;
+
     /**
      * XML containing the state after executing the command*/
     QDomDocument mAfterState;
 
     /**
      * Parameters for frame items*/
+
     /**
      * Parent multiframe*/
     QgsComposerMultiFrame* mMultiFrame;

@@ -76,37 +76,46 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     /**
      * Proxy that will call this method on the embedded renderer. */
     virtual QSet<QString> usedAttributes() const override;
+
     /**
      * Proxy that will call this method on the embedded renderer. */
     virtual Capabilities capabilities() override;
+
     /**
      * Proxy that will call this method on the embedded renderer.
      */
     virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
+
     /**
      * Proxy that will call this method on the embedded renderer.
      */
     virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
+
     /**
      * Proxy that will call this method on the embedded renderer.
      */
     virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
+
     /**
      * Proxy that will call this method on the embedded renderer.
      */
     virtual QgsSymbolList symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
+
     /**
      * Proxy that will call this method on the embedded renderer.
      */
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
+
     /**
      * Proxy that will call this method on the embedded renderer. */
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
+
     /**
      * Proxy that will call this method on the embedded renderer.
      * @note not available in python bindings
      */
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" ) override;
+
     /**
      * Proxy that will call this method on the embedded renderer.
      */
@@ -130,6 +139,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     /**
      * @returns true if the geometries are to be preprocessed (merged with an union) before rendering.*/
     bool preprocessingEnabled() const { return mPreprocessingEnabled; }
+
     /**
      * @param enabled enables or disables the preprocessing.
      * When enabled, geometries will be merged with an union before being rendered.
@@ -146,9 +156,11 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     static QgsInvertedPolygonRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer );
 
   private:
+
     /**
      * Private copy constructor. @see clone() */
     QgsInvertedPolygonRenderer( const QgsInvertedPolygonRenderer& );
+
     /**
      * Private assignment operator. @see clone() */
     QgsInvertedPolygonRenderer& operator=( const QgsInvertedPolygonRenderer& );
@@ -165,6 +177,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
       QgsFeature feature;             //< one feature (for attriute-based rendering)
     };
     typedef QVector<CombinedFeature> FeatureCategoryVector;
+
     /**
      * Where features are stored, based on the index of their symbol category @see mSymbolCategories */
     FeatureCategoryVector mFeaturesCategories;

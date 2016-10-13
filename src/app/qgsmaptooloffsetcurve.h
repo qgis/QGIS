@@ -34,6 +34,7 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
   private slots:
+
     /**
      * Places curve offset to value entered in the spin box*/
     void placeOffsetCurveToValue();
@@ -43,30 +44,39 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     void applyOffset();
 
   private:
+
     /**
      * Rubberband that shows the position of the offset curve*/
     QgsRubberBand* mRubberBand;
+
     /**
      * Geometry to manipulate*/
     QgsGeometry mOriginalGeometry;
+
     /**
      * Geometry after manipulation*/
     QgsGeometry mModifiedGeometry;
+
     /**
      * ID of manipulated feature*/
     QgsFeatureId mModifiedFeature;
+
     /**
      * Layer ID of source layer*/
     QString mSourceLayerId;
+
     /**
      * Internal flag to distinguish move from click*/
     bool mGeometryModified;
+
     /**
      * Shows current distance value and allows numerical editing*/
     QgsDoubleSpinBox* mDistanceWidget;
+
     /**
      * Marker to show the cursor was snapped to another location*/
     QgsVertexMarker* mSnapVertexMarker;
+
     /**
      * Forces geometry copy (no modification of geometry in current layer)*/
     bool mForceCopy;
@@ -78,12 +88,15 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     void createDistanceWidget();
     void deleteDistanceWidget();
     void setOffsetForRubberBand( double offset );
+
     /**
      * Creates a linestring from the polygon ring containing the snapped vertex. Caller takes ownership of the created object*/
     QgsGeometry linestringFromPolygon( const QgsGeometry& featureGeom, int vertex );
+
     /**
      * Returns a single line from a multiline (or does nothing if geometry is already a single line). Deletes the input geometry*/
     QgsGeometry convertToSingleLine( const QgsGeometry& geom, int vertex, bool& isMulti );
+
     /**
      * Converts offset line back to a multiline if necessary*/
     QgsGeometry* convertToMultiLine( QgsGeometry* geom );

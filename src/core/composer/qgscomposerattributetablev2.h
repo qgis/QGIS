@@ -337,9 +337,11 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     /**
      * Attribute source*/
     ContentSource mSource;
+
     /**
      * Associated vector layer*/
     QgsVectorLayer* mVectorLayer;
+
     /**
      * Relation id, if in relation children mode*/
     QString mRelationId;
@@ -351,6 +353,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     /**
      * Associated composer map (used to display the visible features)*/
     const QgsComposerMap* mComposerMap;
+
     /**
      * Maximum number of features that is displayed*/
     int mMaximumNumberOfFeatures;
@@ -370,6 +373,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     /**
      * True if feature filtering enabled*/
     bool mFilterFeatures;
+
     /**
      * Feature filter expression*/
     QString mFeatureFilter;
@@ -396,6 +400,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     QVariant replaceWrapChar( const QVariant &variant ) const;
 
   private slots:
+
     /**
      * Checks if this vector layer will be removed (and sets mVectorLayer to 0 if yes) */
     void removeLayer( const QString& layerId );

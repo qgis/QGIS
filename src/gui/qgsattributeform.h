@@ -153,6 +153,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void setMessageBar( QgsMessageBar* messageBar );
 
   signals:
+
     /**
      * Notifies about changes of attributes
      *
@@ -197,6 +198,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void closed();
 
   public slots:
+
     /**
      * Call this to change the content of a given attribute. Will update the editor(s) related to this field.
      *

@@ -80,6 +80,7 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     QCache<QString, QgsWCSProjectParser> mWCSConfigCache;
 
   private slots:
+
     /**
      * Removes changed entry from this cache*/
     void removeChangedEntry( const QString& path );

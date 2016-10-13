@@ -36,6 +36,7 @@ class APP_EXPORT QgsMapToolRotateLabel: public QgsMapToolLabel
   protected:
 
     static int roundTo15Degrees( double n );
+
     /**
      * Converts azimuth value to counterclockwise 0 - 360*/
     static double azimuthToCCW( double a );

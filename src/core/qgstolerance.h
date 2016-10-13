@@ -30,17 +30,21 @@ class CORE_EXPORT QgsTolerance
 {
 
   public:
+
     /**
      * Type of unit of tolerance value from settings.
      * For map (project) units, use ProjectUnits.*/
     enum UnitType
     {
+
       /**
        * Layer unit value */
       LayerUnits,
+
       /**
        * Pixels unit of tolerance*/
       Pixels,
+
       /**
        * Map (project) units. Added in 2.8 */
       ProjectUnits

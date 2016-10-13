@@ -198,6 +198,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool tracingAddVertex( const QgsPoint& point );
 
   private:
+
     /**
      * Flag to indicate a map canvas capture operation is taking place */
     bool mCapturing;

@@ -84,6 +84,7 @@ class APP_EXPORT QgsIdentifyResultsWebViewItem: public QObject, public QTreeWidg
     QgsIdentifyResultsWebViewItem( QTreeWidget *treeWidget = nullptr );
     QgsIdentifyResultsWebView *webView() { return mWebView; }
     void setHtml( const QString &html );
+
     /**
      * @note added in 2.1 */
     void setContent( const QByteArray & data, const QString & mimeType = QString(), const QUrl & baseUrl = QUrl() );
@@ -162,6 +163,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void activateLayer( QgsMapLayer * );
 
   public slots:
+
     /**
      * Remove results */
     void clear();

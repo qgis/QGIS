@@ -59,6 +59,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     virtual QgsPointV2 endPoint() const override;
     virtual void points( QgsPointSequence &pts ) const override;
     virtual int numPoints() const override;
+
     /**
      * Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
@@ -137,6 +138,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
   private:
     QList< QgsCurve* > mCurves;
+
     /**
      * Turns a vertex id for the compound curve into one or more ids for the subcurves
         @return the index of the subcurve or -1 in case of error*/

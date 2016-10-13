@@ -110,6 +110,7 @@ class CORE_EXPORT QgsExpression
 {
     Q_DECLARE_TR_FUNCTIONS( QgsExpression )
   public:
+
     /**
      * Creates a new expression based on the provided string.
      * The string will immediately be parsed. For optimization
@@ -948,6 +949,7 @@ class CORE_EXPORT QgsExpression
       public:
         NodeList() : mHasNamedNodes( false ) {}
         virtual ~NodeList() { qDeleteAll( mList ); }
+
         /**
          * Takes ownership of the provided node */
         void append( Node* node ) { mList.append( node ); mNameList.append( QString() ); }

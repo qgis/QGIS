@@ -83,15 +83,19 @@ class QgsEditFormConfigPrivate : public QSharedData
     /**
      * Init form instance */
     QString mUiFormPath;
+
     /**
      * Name of the python form init function */
     QString mInitFunction;
+
     /**
      * Path of the python external file to be loaded */
     QString mInitFilePath;
+
     /**
      * Choose the source of the init founction */
     QgsEditFormConfig::PythonInitCodeSource mInitCodeSource;
+
     /**
      * Python init code provided in the dialog */
     QString mInitCode;

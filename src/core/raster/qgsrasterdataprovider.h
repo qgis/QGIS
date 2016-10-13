@@ -54,9 +54,11 @@ class CORE_EXPORT QgsImageFetcher : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor */
     QgsImageFetcher( QObject* parent = 0 ) : QObject( parent ) {}
+
     /**
      * Destructor */
     virtual ~QgsImageFetcher() {}
@@ -67,13 +69,16 @@ class CORE_EXPORT QgsImageFetcher : public QObject
     virtual void start() = 0;
 
   signals:
+
     /**
      * Emitted when the download completes
      *  @param legend The downloaded legend image */
     void finish( const QImage& legend );
+
     /**
      * Emitted to report progress */
     void progress( qint64 received, qint64 total );
+
     /**
      * Emitted when an error occurs */
     void error( const QString& msg );
@@ -190,6 +195,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
           return "Unknown";
       }
     }
+
     /**
      * Reload data (data could change) */
     virtual bool reload() { return true; }
@@ -204,6 +210,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * @note added in 2.3
      */
     virtual double bandScale( int bandNo ) const { Q_UNUSED( bandNo ); return 1.0; }
+
     /**
      * Read band offset for raster value
      * @note added in 2.3
@@ -456,6 +463,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     static Capability identifyFormatToCapability( QgsRaster::IdentifyFormat format );
 
   signals:
+
     /**
      * Emit a signal to notify of the progress event.
       * Emitted theProgress is in percents (0.0-100.0) */
@@ -469,6 +477,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     void statusChanged( const QString& ) const;
 
   protected:
+
     /**
      * Read block of data
      * @note not available in python bindings

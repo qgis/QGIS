@@ -52,10 +52,12 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QStringList layerOptions() const;
     long crs() const;
     QgsAttributeList selectedAttributes() const;
+
     /**
      * Return selected attributes that must be exported with their displayed values instead of their raw values. Added in QGIS 2.16 */
     QgsAttributeList attributesAsDisplayedValues() const;
     bool addToCanvas() const;
+
     /**
      * Returns type of symbology export.
         0: No symbology

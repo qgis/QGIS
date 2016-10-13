@@ -34,6 +34,7 @@ class CORE_EXPORT QgsSQLStatement
 {
     Q_DECLARE_TR_FUNCTIONS( QgsSQLStatement )
   public:
+
     /**
      * Creates a new statement based on the provided string.
      */
@@ -43,6 +44,7 @@ class CORE_EXPORT QgsSQLStatement
      * Create a copy of this statement.
      */
     QgsSQLStatement( const QgsSQLStatement& other );
+
     /**
      * Create a copy of this statement.
      */
@@ -252,6 +254,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeList
     {
       public:
+
         /**
          * Constructor */
         NodeList()  {}
@@ -292,6 +295,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeUnaryOperator : public Node
     {
       public:
+
         /**
          * Constructor */
         NodeUnaryOperator( UnaryOperator op, Node* operand ) : mOp( op ), mOperand( operand ) {}
@@ -322,6 +326,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeBinaryOperator : public Node
     {
       public:
+
         /**
          * Constructor */
         NodeBinaryOperator( BinaryOperator op, Node* opLeft, Node* opRight ) : mOp( op ), mOpLeft( opLeft ), mOpRight( opRight ) {}
@@ -366,6 +371,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeInOperator : public Node
     {
       public:
+
         /**
          * Constructor */
         NodeInOperator( Node* node, NodeList* list, bool notin = false ) : mNode( node ), mList( list ), mNotIn( notin ) {}
@@ -401,6 +407,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeBetweenOperator : public Node
     {
       public:
+
         /**
          * Constructor */
         NodeBetweenOperator( Node* node, Node* minVal, Node* maxVal, bool notBetween = false ) : mNode( node ), mMinVal( minVal ), mMaxVal( maxVal ), mNotBetween( notBetween ) {}
@@ -441,6 +448,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeFunction : public Node
     {
       public:
+
         /**
          * Constructor */
         NodeFunction( QString name, NodeList* args ) : mName( name ), mArgs( args ) {}
@@ -472,6 +480,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeLiteral : public Node
     {
       public:
+
         /**
          * Constructor */
         NodeLiteral( const QVariant& value ) : mValue( value ) {}
@@ -496,9 +505,11 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeColumnRef : public Node
     {
       public:
+
         /**
          * Constructor with colum name only */
         NodeColumnRef( const QString& name, bool star ) : mName( name ), mDistinct( false ), mStar( star ) {}
+
         /**
          * Constructor with table and column name */
         NodeColumnRef( const QString& tableName, const QString& name, bool star ) : mTableName( tableName ), mName( name ), mDistinct( false ), mStar( star ) {}
@@ -528,6 +539,7 @@ class CORE_EXPORT QgsSQLStatement
 
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
+
         /**
          * Clone with same type return */
         NodeColumnRef* cloneThis() const;
@@ -545,6 +557,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeSelectedColumn : public Node
     {
       public:
+
         /**
          * Constructor */
         NodeSelectedColumn( Node* node ) : mColumnNode( node ) {}
@@ -567,6 +580,7 @@ class CORE_EXPORT QgsSQLStatement
 
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
+
         /**
          * Clone with same type return */
         NodeSelectedColumn* cloneThis() const;
@@ -582,6 +596,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeCast : public Node
     {
       public:
+
         /**
          * Constructor */
         NodeCast( Node* node, const QString& type ) : mNode( node ), mType( type ) {}
@@ -612,9 +627,11 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeTableDef : public Node
     {
       public:
+
         /**
          * Constructor with table name */
         NodeTableDef( const QString& name ) : mName( name ) {}
+
         /**
          * Constructor with table name and alias */
         NodeTableDef( const QString& name, const QString& alias ) : mName( name ), mAlias( alias ) {}
@@ -632,6 +649,7 @@ class CORE_EXPORT QgsSQLStatement
 
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
+
         /**
          * Clone with same type return */
         NodeTableDef* cloneThis() const;
@@ -647,9 +665,11 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeJoin : public Node
     {
       public:
+
         /**
          * Constructor with table definition, ON expression */
         NodeJoin( NodeTableDef* tabledef, Node* onExpr, JoinType type ) : mTableDef( tabledef ), mOnExpr( onExpr ), mType( type ) {}
+
         /**
          * Constructor with table definition and USING columns */
         NodeJoin( NodeTableDef* tabledef, QList<QString> usingColumns, JoinType type ) : mTableDef( tabledef ), mOnExpr( nullptr ), mUsingColumns( usingColumns ), mType( type ) {}
@@ -676,6 +696,7 @@ class CORE_EXPORT QgsSQLStatement
 
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
+
         /**
          * Clone with same type return */
         NodeJoin* cloneThis() const;
@@ -693,6 +714,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeColumnSorted : public Node
     {
       public:
+
         /**
          * Constructor */
         NodeColumnSorted( NodeColumnRef* column, bool asc ) : mColumn( column ), mAsc( asc ) {}
@@ -711,6 +733,7 @@ class CORE_EXPORT QgsSQLStatement
 
         virtual void accept( Visitor& v ) const override { v.visit( *this ); }
         virtual Node* clone() const override;
+
         /**
          * Clone with same type return */
         NodeColumnSorted* cloneThis() const;
@@ -726,6 +749,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT NodeSelect : public Node
     {
       public:
+
         /**
          * Constructor */
         NodeSelect( QList<NodeTableDef*> tableList, QList<NodeSelectedColumn*> columns, bool distinct ) : mTableList( tableList ), mColumns( columns ), mDistinct( distinct ), mWhere( nullptr ) {}
@@ -734,12 +758,15 @@ class CORE_EXPORT QgsSQLStatement
         /**
          * Set joins */
         void setJoins( QList<NodeJoin*> joins ) { qDeleteAll( mJoins ); mJoins = joins; }
+
         /**
          * Append a join */
         void appendJoin( NodeJoin* join ) { mJoins.append( join ); }
+
         /**
          * Set where clause */
         void setWhere( Node* where ) { delete mWhere; mWhere = where; }
+
         /**
          * Set order by columns */
         void setOrderBy( QList<NodeColumnSorted*> orderBy ) { qDeleteAll( mOrderBy ); mOrderBy = orderBy; }
@@ -747,18 +774,23 @@ class CORE_EXPORT QgsSQLStatement
         /**
          * Return the list of tables */
         QList<NodeTableDef*> tables() const { return mTableList; }
+
         /**
          * Return the list of columns */
         QList<NodeSelectedColumn*> columns() const { return mColumns; }
+
         /**
          * Return if the SELECT is DISTINCT */
         bool distinct() const { return mDistinct; }
+
         /**
          * Return the list of joins */
         QList<NodeJoin*> joins() const { return mJoins; }
+
         /**
          * Return the where clause */
         Node* where() const { return mWhere; }
+
         /**
          * Return the list of order by columns */
         QList<NodeColumnSorted*> orderBy() const { return mOrderBy; }
@@ -788,42 +820,55 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         virtual ~Visitor() {}
+
         /**
          * Visit NodeUnaryOperator */
         virtual void visit( const NodeUnaryOperator& n ) = 0;
+
         /**
          * Visit NodeBinaryOperator */
         virtual void visit( const NodeBinaryOperator& n ) = 0;
+
         /**
          * Visit NodeInOperator */
         virtual void visit( const NodeInOperator& n ) = 0;
+
         /**
          * Visit NodeBetweenOperator */
         virtual void visit( const NodeBetweenOperator& n ) = 0;
+
         /**
          * Visit NodeFunction */
         virtual void visit( const NodeFunction& n ) = 0;
+
         /**
          * Visit NodeLiteral */
         virtual void visit( const NodeLiteral& n ) = 0;
+
         /**
          * Visit NodeColumnRef */
         virtual void visit( const NodeColumnRef& n ) = 0;
+
         /**
          * Visit NodeSelectedColumn */
         virtual void visit( const NodeSelectedColumn& n ) = 0;
+
         /**
          * Visit NodeTableDef */
         virtual void visit( const NodeTableDef& n ) = 0;
+
         /**
          * Visit NodeSelect */
         virtual void visit( const NodeSelect& n ) = 0;
+
         /**
          * Visit NodeJoin */
         virtual void visit( const NodeJoin& n ) = 0;
+
         /**
          * Visit NodeColumnSorted */
         virtual void visit( const NodeColumnSorted& n ) = 0;
+
         /**
          * Visit NodeCast */
         virtual void visit( const NodeCast& n ) = 0;
@@ -835,6 +880,7 @@ class CORE_EXPORT QgsSQLStatement
     class CORE_EXPORT RecursiveVisitor: public QgsSQLStatement::Visitor
     {
       public:
+
         /**
          * Constructor */
         RecursiveVisitor() {}

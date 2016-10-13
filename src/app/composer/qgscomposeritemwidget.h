@@ -80,6 +80,7 @@ class QgsComposerConfigObject: public QObject
     QgsAtlasComposition *atlasComposition() const;
 
   private slots:
+
     /**
      * Must be called when a data defined button changes*/
     void updateDataDefinedProperty();
@@ -145,6 +146,7 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     /**
      * Toggles display of the background group*/
     void showBackgroundGroup( bool showGroup );
+
     /**
      * Toggles display of the frame group*/
     void showFrameGroup( bool showGroup );
@@ -156,6 +158,7 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
      */
     void on_mFrameColorButton_colorChanged( const QColor& newFrameColor );
     void on_mBackgroundColorButton_clicked();
+
     /**
      * Set the background color
      */
@@ -198,6 +201,7 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void setValuesForGuiNonPositionElements();
 
   protected slots:
+
     /**
      * Initializes data defined buttons to current atlas coverage layer*/
     void populateDataDefinedButtons();

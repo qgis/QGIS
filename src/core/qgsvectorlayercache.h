@@ -41,6 +41,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     Q_OBJECT
 
   private:
+
     /**
      * This is a wrapper class around a cached @link QgsFeature @endlink, which
      * will inform the cache, when it has been deleted, so indexes can be
@@ -49,6 +50,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     class QgsCachedFeature
     {
       public:
+
         /**
          * Will create a new cached feature.
          *
@@ -220,6 +222,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     QgsVectorLayer* layer();
 
   protected:
+
     /**
      * @brief
      * Gets called, whenever the full list of feature ids for a certain request is known.

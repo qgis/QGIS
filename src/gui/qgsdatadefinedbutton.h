@@ -303,6 +303,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     static QString customDashDesc();
 
   public slots:
+
     /**
      * Set whether the current data definition or expression is to be used
      */
@@ -319,6 +320,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     void checkCheckedWidgets( bool check );
 
   signals:
+
     /**
      * Emitted when data definition or expression is changed
      * @param definition The current definition or expression (empty string if inactive)

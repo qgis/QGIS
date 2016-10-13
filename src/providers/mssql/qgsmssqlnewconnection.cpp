@@ -66,6 +66,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& co
   }
   on_cb_trustedConnection_clicked();
 }
+
 /**
  * Autoconnected SLOTS **/
 void QgsMssqlNewConnection::accept()

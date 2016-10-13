@@ -62,6 +62,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     int numInteriorRings() const;
     const QgsCurve* exteriorRing() const;
     const QgsCurve* interiorRing( int i ) const;
+
     /**
      * Returns a new polygon geometry corresponding to a segmentized approximation
      * of the curve.
@@ -82,9 +83,11 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     /**
      * Sets all interior rings (takes ownership)*/
     void setInteriorRings( const QList<QgsCurve*>& rings );
+
     /**
      * Adds an interior ring to the geometry (takes ownership)*/
     virtual void addInteriorRing( QgsCurve* ring );
+
     /**
      * Removes ring. Exterior ring is 0, first interior ring 1, ...*/
     bool removeInteriorRing( int nr );
@@ -103,6 +106,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
     bool hasCurvedSegments() const override;
+
     /**
      * Returns a geometry without curves. Caller takes ownership
      * @param tolerance segmentation tolerance

@@ -30,6 +30,7 @@
 class CORE_EXPORT QgsErrorMessage
 {
   public:
+
     /**
      * Format */
     enum Format
@@ -60,6 +61,7 @@ class CORE_EXPORT QgsErrorMessage
     int line() const { return mLine; }
 
   private:
+
     /**
      * Error messages */
     QString mMessage;
@@ -135,6 +137,7 @@ class CORE_EXPORT QgsError
     void clear() { mMessageList.clear(); }
 
   private:
+
     /**
      * List of messages */
     QList<QgsErrorMessage> mMessageList;

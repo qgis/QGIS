@@ -57,6 +57,7 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( QString defaultValueExpression READ defaultValueExpression WRITE setDefaultValueExpression )
 
   public:
+
     /**
      * Constructor. Constructs a new QgsField object.
      * @param name Field name
@@ -277,6 +278,7 @@ Q_DECLARE_METATYPE( QgsField )
 /**
  * Writes the field to stream out. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsField& field );
+
 /**
  * Reads a field from stream in into field. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsField& field );

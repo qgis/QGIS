@@ -55,6 +55,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QgsVectorLayerProperties( QgsVectorLayer *lyr = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsVectorLayerProperties();
+
     /**
      * Returns the display name entered in the dialog*/
     QString displayName();
@@ -132,6 +133,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void toggleEditing( QgsMapLayer * );
 
   private slots:
+
     /**
      * Toggle editing of layer */
     void toggleEditing();
@@ -183,15 +185,19 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     /**
      * Renderer dialog which is shown*/
     QgsRendererPropertiesDialog* mRendererDialog;
+
     /**
      * Labeling dialog. If apply is pressed, options are applied to vector's QgsLabel */
     QgsLabelingWidget* labelingDialog;
+
     /**
      * Actions dialog. If apply is pressed, the actions are stored for later use */
     QgsAttributeActionDialog* mActionDialog;
+
     /**
      * Diagram dialog. If apply is pressed, options are applied to vector's diagrams*/
     QgsDiagramProperties* diagramPropertiesDialog;
+
     /**
      * Fields dialog. If apply is pressed, options are applied to vector's diagrams*/
     QgsFieldsProperties* mFieldsPropertiesDialog;

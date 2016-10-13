@@ -58,6 +58,7 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
     /**
      * Connect listener to frameChanged() signal */
     void connectFrameChanged( const QObject * receiver, const char * method );
+
     /**
      * Disconnect listener from frameChanged() signal */
     void disconnectFrameChanged( const QObject * receiver, const char * method );
@@ -66,6 +67,7 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
     void onFrameChanged();
 
   signals:
+
     /**
      * Emitted when icon changed */
     void frameChanged();
@@ -226,6 +228,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Get item parent. QgsDataItem maintains its own items hierarchy, it does not use
      *  QObject hierarchy. */
     QgsDataItem* parent() const { return mParent; }
+
     /**
      * Set item parent and connect / disconnect parent to / from item signals.
      *  It does not add itself to parents children (mChildren) */
@@ -258,6 +261,7 @@ class CORE_EXPORT QgsDataItem : public QObject
   protected:
     virtual void populate( const QVector<QgsDataItem*>& children );
     virtual void refresh( QVector<QgsDataItem*> children );
+
     /**
      * The item is scheduled to be deleted. E.g. if deleteLater() is called when
      * item is in Populating state (createChildren() running in another thread),
@@ -284,6 +288,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     QMap<QString, QIcon> mIconMap;
 
   public slots:
+
     /**
      * Safely delete the item:
      *   - disconnects parent
@@ -396,15 +401,19 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     /**
      * The provider key */
     QString mProviderKey;
+
     /**
      * The URI */
     QString mUri;
+
     /**
      * The layer type */
     LayerType mLayerType;
+
     /**
      * The list of supported CRS */
     QStringList mSupportedCRS;
+
     /**
      * The list of supported formats */
     QStringList mSupportFormats;
@@ -534,6 +543,7 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 
 
 // ---------
+
 /**
  * \ingroup core
  * \class QgsDirectoryParamWidget

@@ -49,6 +49,7 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
     Q_OBJECT
 
   public:
+
     /**
      * \brief Constructor */
     eVisDatabaseConnectionGui( QList<QTemporaryFile*>*, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
@@ -58,6 +59,7 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
     ~eVisDatabaseConnectionGui();
 
   private:
+
     /**
      * \brief Pointer to a database connection */
     eVisDatabaseConnection* mDatabaseConnection;
@@ -75,6 +77,7 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
     QMap<int, eVisQueryDefinition>* mQueryDefinitionMap;
 
   private slots:
+
     /**
      * \brief Slot called after the user selects the x, y fields in the field selection gui component */
     void drawNewVectorLayer( const QString&, const QString&, const QString& );
@@ -90,6 +93,7 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
     void on_pbtnRunQuery_clicked();
 
   signals:
+
     /**
      * \brief signal emitted by the drawNewVectorLayer slot */
     void drawVectorLayer( const QString&, const QString&, const QString& );

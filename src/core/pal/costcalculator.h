@@ -33,6 +33,7 @@ namespace pal
   class CostCalculator
   {
     public:
+
       /**
        * Increase candidate's cost according to its collision with passed feature */
       static void addObstacleCostPenalty( LabelPosition* lp, pal::FeaturePart *obstacle );

@@ -54,6 +54,7 @@ class CORE_EXPORT QgsRasterTransparency
     //
     // Initializer, Accessor and mutator for transparency tables.
     //
+
     /**
      * \brief Accessor for transparentSingleValuePixelList */
     QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleValuePixelList() const;
@@ -95,6 +96,7 @@ class CORE_EXPORT QgsRasterTransparency
     void readXml( const QDomElement& elem );
 
   private:
+
     /**
      * \brief The list to hold transparency values for RGB layers */
     QList<QgsRasterTransparency::TransparentThreeValuePixel> mTransparentThreeValuePixelList;

@@ -45,6 +45,7 @@ class QgsMapToolAddCircularString: public QgsMapToolCapture
      *  Completed circular strings will be added to this tool by calling its addCurve() method.
      * */
     QgsMapToolCapture* mParentTool;
+
     /**
      * Circular string points (in map coordinates)*/
     QgsPointSequence mPoints;

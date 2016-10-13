@@ -52,6 +52,7 @@ class CORE_EXPORT QgsTransaction : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Creates a transaction for the specified connection string and provider */
     static QgsTransaction* create( const QString& connString, const QString& providerKey );
@@ -100,6 +101,7 @@ class CORE_EXPORT QgsTransaction : public QObject
     static bool supportsTransaction( const QgsVectorLayer* layer );
 
   signals:
+
     /**
      * Emitted after a rollback
      */

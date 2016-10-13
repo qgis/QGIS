@@ -210,6 +210,7 @@ class CORE_EXPORT QgsOgcUtils
     class LayerProperties
     {
       public:
+
         /**
          * Constructor */
         LayerProperties() {}
@@ -217,9 +218,11 @@ class CORE_EXPORT QgsOgcUtils
         /**
          * Layer name */
         QString mName;
+
         /**
          * Geometry attribute name */
         QString mGeometryAttribute;
+
         /**
          * SRS name */
         QString mSRSName;
@@ -258,27 +261,34 @@ class CORE_EXPORT QgsOgcUtils
     /**
      * Static method that creates geometry from GML Point */
     static QgsGeometry geometryFromGMLPoint( const QDomElement& geometryElement );
+
     /**
      * Static method that creates geometry from GML LineString */
     static QgsGeometry geometryFromGMLLineString( const QDomElement& geometryElement );
+
     /**
      * Static method that creates geometry from GML Polygon */
     static QgsGeometry geometryFromGMLPolygon( const QDomElement& geometryElement );
+
     /**
      * Static method that creates geometry from GML MultiPoint */
     static QgsGeometry geometryFromGMLMultiPoint( const QDomElement& geometryElement );
+
     /**
      * Static method that creates geometry from GML MultiLineString */
     static QgsGeometry geometryFromGMLMultiLineString( const QDomElement& geometryElement );
+
     /**
      * Static method that creates geometry from GML MultiPolygon */
     static QgsGeometry geometryFromGMLMultiPolygon( const QDomElement& geometryElement );
+
     /**
      * Reads the \verbatim <gml:coordinates> \endverbatim element and extracts the coordinates as points
        @param coords list where the found coordinates are appended
        @param elem the \verbatim <gml:coordinates> \endverbatim element
        @return boolean for success*/
     static bool readGMLCoordinates( QgsPolyline &coords, const QDomElement &elem );
+
     /**
      * Reads the \verbatim <gml:pos> \endverbatim or \verbatim <gml:posList> \endverbatim
        and extracts the coordinates as points
@@ -331,6 +341,7 @@ class CORE_EXPORT QgsOgcUtils
 class QgsOgcUtilsExprToFilter
 {
   public:
+
     /**
      * Constructor */
     QgsOgcUtilsExprToFilter( QDomDocument& doc,
@@ -382,6 +393,7 @@ class QgsOgcUtilsExprToFilter
 class QgsOgcUtilsSQLStatementToFilter
 {
   public:
+
     /**
      * Constructor */
     QgsOgcUtilsSQLStatementToFilter( QDomDocument& doc,

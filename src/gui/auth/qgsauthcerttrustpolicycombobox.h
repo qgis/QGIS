@@ -29,6 +29,7 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
     Q_OBJECT
 
   public:
+
     /**
      * Construct a combo box for defining certificate trust policy
      * @param parent Parent widget
@@ -50,6 +51,7 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
     QgsAuthCertUtils::CertTrustPolicy trustPolicyForIndex( int indx );
 
   public slots:
+
     /**
      * Set current trust policy */
     void setTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy );

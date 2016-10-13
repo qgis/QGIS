@@ -1954,21 +1954,27 @@ static QString createFileFilter_( QString const &longName, QString const &glob )
 
 QString createFilters( QString type )
 {
+
   /**
    * Database drivers available*/
   static QString myDatabaseDrivers;
+
   /**
    * Protocol drivers available*/
   static QString myProtocolDrivers;
+
   /**
    * File filters*/
   static QString myFileFilters;
+
   /**
    * Directory drivers*/
   static QString myDirectoryDrivers;
+
   /**
    * Extensions*/
   static QStringList myExtensions;
+
   /**
    * Wildcards*/
   static QStringList myWildcards;

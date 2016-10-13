@@ -68,6 +68,7 @@ class QgsWFSProgressDialog: public QProgressDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor */
     QgsWFSProgressDialog( const QString & labelText, const QString & cancelButtonText, int minimum, int maximum, QWidget * parent );
@@ -107,11 +108,13 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     void run( bool serializeFeatures, int maxFeatures );
 
   public slots:
+
     /**
      * To interrupt the download. Thread-safe */
     void stop();
 
   signals:
+
     /**
      * Emitted when new features have been received */
     void featureReceived( QVector<QgsWFSFeatureGmlIdPair> );
@@ -150,12 +153,15 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     /**
      * Mutable data shared between provider, feature sources and downloader. */
     QgsWFSSharedData* mShared;
+
     /**
      * Whether the download should stop */
     bool mStop;
+
     /**
      * Progress dialog */
     QProgressDialog* mProgressDialog;
+
     /**
      * If the progress dialog should be shown immediately, or if it should be
         let to QProgressDialog logic to decide when to show it */
@@ -187,11 +193,13 @@ class QgsWFSThreadedFeatureDownloader: public QThread
     void stop();
 
   signals:
+
     /**
      * Emitted when the thread is ready */
     void ready();
 
   protected:
+
     /**
      * Inherited from QThread. Starts the download */
     void run() override;

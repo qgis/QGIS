@@ -63,6 +63,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     void foreignKeyChanged( QVariant value );
 
   protected:
+
     /**
      * This should update the widget with a visual cue if a constraint status
      * changed.

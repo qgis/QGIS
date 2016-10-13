@@ -622,6 +622,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * Get outline width.
      * @note added in 2.16 */
     double outlineWidth() const { return mOutlineWidth; }
+
     /**
      * Set outline width.
      * @note added in 2.16 */
@@ -631,6 +632,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * Get outline width unit.
      * @note added in 2.16 */
     QgsUnitTypes::RenderUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+
     /**
      * Set outline width unit.
      * @note added in 2.16 */
@@ -640,6 +642,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * Get outline width map unit scale.
      * @note added in 2.16 */
     const QgsMapUnitScale& outlineWidthMapUnitScale() const { return mOutlineWidthMapUnitScale; }
+
     /**
      * Set outline width map unit scale.
      * @note added in 2.16 */
@@ -649,6 +652,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * Get outline join style.
      * @note added in 2.16 */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
+
     /**
      * Set outline join style.
      * @note added in 2.16 */

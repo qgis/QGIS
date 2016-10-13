@@ -30,6 +30,7 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
     Q_OBJECT
 
   public:
+
     /**
      * Static creation method
      * @param layer the layer where this renderer is applied

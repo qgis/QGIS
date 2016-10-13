@@ -50,6 +50,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     Q_OBJECT
 
   public:
+
     /**
      * Formats supported by provider */
     struct SupportedFormat
@@ -114,6 +115,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     void connectionsChanged();
 
   protected:
+
     /**
      * List of image formats (encodings) supported by provider
      * @return list of format/label pairs

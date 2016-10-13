@@ -27,11 +27,13 @@
 class MngProgressBar
 {
   public:
+
     /**
      * \brief Constructor for a MngProgressBar.
      * \param pb Pointer to the MngProgressBar object.
      */
     explicit MngProgressBar( QProgressBar *pb );
+
     /**
      * \brief Destructor
      */

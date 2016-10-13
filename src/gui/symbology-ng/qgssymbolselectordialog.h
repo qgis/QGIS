@@ -87,6 +87,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     friend class QgsSymbolSelectorDialog;
 
   public:
+
     /**
        * Symbol selector widget that can be used to select and build a symbol
        * @param symbol The symbol to load into the widget as a start point.
@@ -168,12 +169,14 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     void setWidget( QWidget* widget );
 
   signals:
+
     /**
      * Emiited when a symbol is modified in the widget.
      */
     void symbolModified();
 
   public slots:
+
     /**
      * Move the active symbol layer down.
      */

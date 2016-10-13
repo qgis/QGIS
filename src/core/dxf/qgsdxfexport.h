@@ -336,6 +336,7 @@ class CORE_EXPORT QgsDxfExport
     /**
      * Extent for export, only intersecting features are exported. If the extent is an empty rectangle, all features are exported*/
     QgsRectangle mExtent;
+
     /**
      * Scale for symbology export (used if symbols units are mm)*/
     double mSymbologyScaleDenominator;

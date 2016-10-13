@@ -119,6 +119,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     /**
      * Number of output columns*/
     int mNumOutputColumns;
+
     /**
      * Number of output rows*/
     int mNumOutputRows;

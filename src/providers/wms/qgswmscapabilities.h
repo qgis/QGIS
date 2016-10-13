@@ -799,6 +799,7 @@ class QgsWmsCapabilitiesDownload : public QObject
     void abort();
 
   signals:
+
     /**
      * \brief emit a signal to be caught by qgisapp and display a msg on status bar */
     void statusChanged( QString const &  theStatusQString );

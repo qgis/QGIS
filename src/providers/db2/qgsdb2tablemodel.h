@@ -91,6 +91,7 @@ class QgsDb2TableModel : public QStandardItemModel
     static QgsWkbTypes::Type wkbTypeFromDb2( QString dbType, int dim = 2 );
 
   private:
+
     /**
      * Number of tables in the model*/
     int mTableCount;

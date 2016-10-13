@@ -88,9 +88,11 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
      * Sets the pen to draw composer grid */
     void setGridPen( const QPen& p ) { mGridPen = p; }
     QPen gridPen() const { return mGridPen; }
+
     /**
      * Sets with of grid pen */
     void setGridPenWidth( double w ) { mGridPen.setWidthF( w ); }
+
     /**
      * Sets the color of the grid pen */
     void setGridPenColor( const QColor& c ) {  mGridPen.setColor( c ); }
@@ -153,6 +155,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     /**
      * Computes interval that is approx. 1/5 of canvas extent */
     bool getIntervalFromExtent( double* values, bool useXAxis = true );
+
     /**
      * Computes interval from current raster layer */
     bool getIntervalFromCurrentLayer( double* values );
@@ -188,39 +191,51 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     /**
      * Line or Symbol */
     GridStyle mGridStyle;
+
     /**
      * Grid line interval in x-direction (map units)*/
     double mGridIntervalX;
+
     /**
      * Grid line interval in y-direction (map units)*/
     double mGridIntervalY;
+
     /**
      * Grid line offset in x-direction*/
     double mGridOffsetX;
+
     /**
      * Grid line offset in y-direction*/
     double mGridOffsetY;
+
     /**
      * Grid line pen*/
     QPen mGridPen;
+
     /**
      * Font for grid line annotation*/
     QFont mGridAnnotationFont;
+
     /**
      * Digits after the dot*/
     int mGridAnnotationPrecision;
+
     /**
      * True if coordinate values should be drawn*/
     bool mShowGridAnnotation;
+
     /**
      * Annotation position inside or outside of map frame*/
     GridAnnotationPosition mGridAnnotationPosition;
+
     /**
      * Distance between map frame and annotation*/
     double mAnnotationFrameDistance;
+
     /**
      * Annotation can be horizontal / vertical or different for axes*/
     GridAnnotationDirection mGridAnnotationDirection;
+
     /**
      * The length of the cross sides for mGridStyle Cross*/
     /* double mCrossLength; */
@@ -237,6 +252,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
         @param vLines vertical coordinate lines in item coordinates*/
     void drawCoordinateAnnotations( QPainter* p, const QList< QPair< qreal, QLineF > >& hLines, const QList< QPair< qreal, QLineF > >& vLines );
     void drawCoordinateAnnotation( QPainter* p, QPointF pos, const QString& annotationString );
+
     /**
      * Draws a single annotation
         @param p drawing painter
@@ -244,14 +260,17 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
         @param rotation text rotation
         @param annotationText the text to draw*/
     void drawAnnotation( QPainter* p, QPointF pos, int rotation, const QString& annotationText );
+
     /**
      * Returns the grid lines with associated coordinate value
         @return 0 in case of success*/
     int xGridLines( QList< QPair< qreal, QLineF > >& lines ) const;
+
     /**
      * Returns the grid lines for the y-coordinates. Not vertical in case of rotation
         @return 0 in case of success*/
     int yGridLines( QList< QPair< qreal, QLineF > >& lines ) const;
+
     /**
      * Returns the item border of a point (in item coordinates)*/
     Border borderForLineCoord( QPointF point, QPainter* p ) const;
@@ -260,21 +279,27 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
      * Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
      to work around the Qt font bug)*/
     void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const;
+
     /**
      * Like the above, but with a rectangle for multiline text*/
     void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop ) const;
+
     /**
      * Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double textWidthMillimeters( const QFont& font, const QString& text ) const;
+
     /**
      * Returns the font height of a character in millimeters. */
     double fontHeightCharacterMM( const QFont& font, QChar c ) const;
+
     /**
      * Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double fontAscentMillimeters( const QFont& font ) const;
+
     /**
      * Calculates font to from point size to pixel size*/
     double pixelFontSize( double pointSize ) const;
+
     /**
      * Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE*/
     QFont scaledFontPixelSize( const QFont& font ) const;

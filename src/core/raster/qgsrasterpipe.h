@@ -112,6 +112,7 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterNuller * nuller() const;
 
   private:
+
     /**
      * Get known parent type_info of interface parent */
     Role interfaceRole( QgsRasterInterface * iface ) const;

@@ -39,6 +39,7 @@ class CORE_EXPORT QgsSvgCacheEntry
 {
   public:
     QgsSvgCacheEntry();
+
     /**
      * Constructor.
      * @param file Absolute path to SVG file (relative paths are not resolved).
@@ -82,6 +83,7 @@ class CORE_EXPORT QgsSvgCacheEntry
     /**
      * Don't consider image, picture, last used timestamp for comparison*/
     bool operator==( const QgsSvgCacheEntry& other ) const;
+
     /**
      * Return memory usage in bytes*/
     int dataSize() const;
@@ -120,6 +122,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
      */
     const QImage& svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                               double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache );
+
     /**
      * Get SVG  as QPicture&.
      * @param file Absolute or relative path to SVG file.
@@ -193,6 +196,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
                                   double widthScaleFactor, double rasterScaleFactor );
 
   signals:
+
     /**
      * Emit a signal to be caught by qgisapp and display a msg on status bar */
     void statusChanged( const QString&  theStatusQString );
@@ -218,6 +222,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
     void replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry );
     void cacheImage( QgsSvgCacheEntry* entry );
     void cachePicture( QgsSvgCacheEntry* entry, bool forceVectorOutput = false );
+
     /**
      * Returns entry from cache or creates a new entry if it does not exist already*/
     QgsSvgCacheEntry* cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
@@ -234,9 +239,11 @@ class CORE_EXPORT QgsSvgCache : public QObject
     void downloadProgress( qint64, qint64 );
 
   private:
+
     /**
      * Entry pointers accessible by file name*/
     QMultiHash< QString, QgsSvgCacheEntry* > mEntryLookup;
+
     /**
      * Estimated total size of all images, pictures and svgContent*/
     long mTotalSize;

@@ -29,6 +29,7 @@
 class QgsGeometryCoordinateTransform
 {
   public:
+
     /**
      * \brief Constructor for a Geometry Coordinate Transform.
      *
@@ -53,11 +54,13 @@ class QgsGeometryCoordinateTransform
      */
     void transform( QgsGeometry *geom );
   private:
+
     /**
      * \brief Transform the coordinates reference system of the geometry (use by transform)
      * \param geom      Geometry
      */
     void setGeomTransform( QgsGeometry *geom );
+
     /**
      * \brief None transform the coordinates reference system of the geometry (use by transform)
      * \param geom      Geometry

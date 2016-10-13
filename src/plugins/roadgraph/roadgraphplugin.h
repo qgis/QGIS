@@ -43,6 +43,7 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for a plugin. The QgisInterface pointer is passed by
      * QGIS when it attempts to instantiate the plugin.
@@ -51,6 +52,7 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     explicit RoadGraphPlugin( QgisInterface * theQgisInterface );
     //! Destructor
     virtual ~RoadGraphPlugin();
+
     /**
      * return pointer to my Interface
      */
@@ -96,12 +98,14 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     void help();
 
   private slots:
+
     /**
      * set show roads direction
      */
     void onShowDirection();
 
   private:
+
     /**
      * set all gui elements to default status
      */
@@ -122,6 +126,7 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
     //
     ////////////////////////////////////////////////////////////////////
+
     /**
      * on show settings
      */

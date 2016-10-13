@@ -55,6 +55,7 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     void setGuiElementValues();
 
   protected slots:
+
     /**
      * Initializes data defined buttons to current atlas coverage layer*/
     void populateDataDefinedButtons();

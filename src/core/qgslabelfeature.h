@@ -39,6 +39,7 @@ class CORE_EXPORT QgsLabelFeature
     //! @note not available in Python bindings
     struct VisualMargin
     {
+
       /**
        * Default constructor, all margins are set to 0.0
        */
@@ -185,6 +186,7 @@ class CORE_EXPORT QgsLabelFeature
      * @see setPriority
      */
     double priority() const { return mPriority; }
+
     /**
      * Sets the priority for labeling the feature.
      * @param priority feature's priority, as a value between 0 (highest priority)
@@ -236,6 +238,7 @@ class CORE_EXPORT QgsLabelFeature
      * @see quadOffset
      */
     bool hasFixedQuadrant() const { return mHasFixedQuadrant; }
+
     /**
      * Sets whether the quadrant for the label must be respected. This can be used
      * to fix the quadrant for specific features when using an "around point" placement.
@@ -313,18 +316,21 @@ class CORE_EXPORT QgsLabelFeature
      * @see setIsObstacle
      */
     bool isObstacle() const { return mIsObstacle; }
+
     /**
      * Sets whether the feature will act as an obstacle for labels.
      * @param enabled whether feature will act as an obstacle
      * @see isObstacle
      */
     void setIsObstacle( bool enabled ) { mIsObstacle = enabled; }
+
     /**
      * Returns the obstacle factor for the feature. The factor controls the penalty
      * for labels overlapping this feature.
      * @see setObstacleFactor
      */
     double obstacleFactor() const { return mObstacleFactor; }
+
     /**
      * Sets the obstacle factor for the feature. The factor controls the penalty
      * for labels overlapping this feature.

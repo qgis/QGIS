@@ -32,6 +32,7 @@ class QgsGeometry;
 class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 {
   public:
+
     /**
      * GEOS geometry engine constructor
      * @param geometry The geometry

@@ -80,6 +80,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     void applyChanges();
 
   signals:
+
     /**
      * Emitted when expression context variables on the associated
      * vector layers have been changed. Will request the parent dialog
@@ -105,21 +106,27 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
 
   protected slots:
     void  contextMenuViewCategories( QPoint p );
+
     /**
      * Change color of selected symbols*/
     void changeSymbolColor();
+
     /**
      * Change opacity of selected symbols*/
     void changeSymbolTransparency();
+
     /**
      * Change units mm/map units of selected symbols*/
     void changeSymbolUnit();
+
     /**
      * Change line widths of selected symbols*/
     void changeSymbolWidth();
+
     /**
      * Change marker sizes of selected symbols*/
     void changeSymbolSize();
+
     /**
      * Change marker angles of selected symbols*/
     void changeSymbolAngle();
@@ -128,6 +135,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     virtual void paste() {}
 
   private:
+
     /**
      * This will be called whenever the renderer is set on a layer.
      * This can be overwritten in subclasses.
@@ -158,6 +166,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * @param symbolList must not be empty
@@ -192,6 +201,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     void dataDefinedChanged();
 
   protected:
+
     /**
      * Should be called in the constructor of child classes.
      *

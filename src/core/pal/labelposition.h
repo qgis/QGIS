@@ -173,6 +173,7 @@ namespace pal
       void resetNumOverlaps() { nbOverlap = 0; } // called from problem.cpp, pal.cpp
 
       int getProblemFeatureId() const { return probFeat; }
+
       /**
        * Set problem feature ID and assigned label candidate ID.
        *  called from pal.cpp during extraction */
@@ -219,6 +220,7 @@ namespace pal
        * \return x coordinate
        */
       double getX( int i = 0 ) const;
+
       /**
        * \brief get the down-left y coordinate
        * \return y coordinate

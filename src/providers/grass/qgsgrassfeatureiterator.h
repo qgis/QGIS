@@ -100,6 +100,7 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
     static QVariant nonEditableValue( int layerNumber );
 
   public slots:
+
     /**
      * Cancel iterator, iterator will be closed on next occasion, probably when next getFeature() gets called.
      * This function can be called directly from other threads (setting bool is atomic) */

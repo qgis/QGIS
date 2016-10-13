@@ -97,23 +97,27 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * @return The maximum scale denominator
          */
         int scaleMaxDenom() const { return mScaleMaxDenom; }
+
         /**
          * A filter that will check if this rule applies
          * @return An expression
          */
         QString filterExpression() const { return mFilterExp; }
+
         /**
          * A human readable description for this rule
          *
          * @return Description
          */
         QString description() const { return mDescription; }
+
         /**
          * Returns if this rule is active
          *
          * @return True if the rule is active
          */
         bool active() const { return mIsActive; }
+
         /**
          * Check if this rule is an ELSE rule
          *
@@ -134,6 +138,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * @param scaleMinDenom The minimum scale denominator for this rule
          */
         void setScaleMinDenom( int scaleMinDenom ) { mScaleMinDenom = scaleMinDenom; }
+
         /**
          * Set the maximum denominator for which this rule shall apply.
          * E.g. 100'000 if it shall be evaluated between 1:1000 and 1:100'000
@@ -141,23 +146,27 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * @param scaleMaxDenom maximum scale denominator for this rule
          */
         void setScaleMaxDenom( int scaleMaxDenom ) { mScaleMaxDenom = scaleMaxDenom; }
+
         /**
          * Set the expression used to check if a given feature shall be rendered with this rule
          *
          * @param filterExp An expression
          */
         void setFilterExpression( const QString& filterExp ) { mFilterExp = filterExp; initFilter(); }
+
         /**
          * Set a human readable description for this rule
          *
          * @param description Description
          */
         void setDescription( const QString& description ) { mDescription = description; }
+
         /**
          * Sets if this rule is active
          * @param state Determines if the rule should be activated or deactivated
          */
         void setActive( bool state ) { mIsActive = state; }
+
         /**
          * Sets if this rule is an ELSE rule
          *
@@ -176,6 +185,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * @return A list of rules
          */
         const RuleList& children() const { return mChildren; }
+
         /**
          * Return all children rules of this rule
          *
@@ -196,6 +206,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * @return Parent rule
          */
         const Rule* parent() const { return mParent; }
+
         /**
          * The parent rule
          *
@@ -245,6 +256,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         RegisterResult registerFeature( QgsFeature& feature, QgsRenderContext& context, RuleToProviderMap& subProviders, QgsGeometry* obstacleGeometry = nullptr );
 
       protected:
+
         /**
          * Check if a given feature shall be labelled by this rule
          *
@@ -253,6 +265,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * @return          True if the feature shall be rendered
          */
         bool isFilterOK( QgsFeature& f, QgsRenderContext& context ) const;
+
         /**
          * Check if this rule applies for a given scale
          * @param scale The scale to check. If set to 0, it will always return true.

@@ -40,6 +40,7 @@ class CORE_EXPORT QgsRasterShader
      * Non-Static Inline methods
      *
      */
+
     /**
      * \brief Return the maximum value for the raster shader */
     double maximumValue() { return mMaximumValue; }
@@ -56,6 +57,7 @@ class CORE_EXPORT QgsRasterShader
      * Non-Static methods
      *
      */
+
     /**
      * \brief generates and new RGBA value based on one input value */
     bool shade( double, int*, int*, int*, int* );
@@ -82,6 +84,7 @@ class CORE_EXPORT QgsRasterShader
     void readXml( const QDomElement& elem );
 
   private:
+
     /**
      * \brief User defineable minimum value for the raster shader */
     double mMinimumValue;

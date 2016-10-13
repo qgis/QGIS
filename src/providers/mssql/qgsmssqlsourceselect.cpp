@@ -206,6 +206,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
 
   cbxAllowGeometrylessTables->setDisabled( true );
 }
+
 /**
  * Autoconnected SLOTS **/
 // Slot for adding a new connection

@@ -31,6 +31,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new Python editor.
      *

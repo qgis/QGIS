@@ -56,6 +56,7 @@ class QgsInterpolationDialog: public QDialog, private Ui::QgsInterpolationDialog
 
   private:
     QgisInterface* mIface;
+
     /**
      * Dialog to get input for the current interpolation method*/
     QgsInterpolatorDialog* mInterpolatorDialog;
@@ -64,19 +65,24 @@ class QgsInterpolationDialog: public QDialog, private Ui::QgsInterpolationDialog
      * Returns the vector layer object with the given name
      Returns a pointer to the vector layer or 0 in case of error.*/
     QgsVectorLayer* vectorLayerFromName( const QString& name );
+
     /**
      * Enables or disables the Ok button depending on the availability of input layers and the output file*/
     void enableOrDisableOkButton();
+
     /**
      * Get the current output bounding box (might be different to the compound layers bounding box because of user edits)
       @return the bounding box or an empty bounding box in case of error*/
     QgsRectangle currentBoundingBox();
+
     /**
      * Returns the compound bounding box of the inserted layers*/
     QgsRectangle boundingBoxOfLayers();
+
     /**
      * Inserts the compound bounding box of the input layers into the line edits for the output bounding box*/
     void setLayersBoundingBox();
+
     /**
      * Set cellsizes according to nex bounding box and number of columns / rows */
     void setNewCellsizeOnBoundingBoxChange();

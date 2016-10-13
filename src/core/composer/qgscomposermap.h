@@ -49,9 +49,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     Q_OBJECT
 
   public:
+
     /**
      * Constructor. */
     QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height );
+
     /**
      * Constructor. Settings are read from project. */
     QgsComposerMap( QgsComposition *composition );
@@ -193,6 +195,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**
      * Getter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas */
     bool keepLayerSet() const {return mKeepLayerSet;}
+
     /**
      * Setter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas */
     void setKeepLayerSet( bool enabled ) {mKeepLayerSet = enabled;}
@@ -200,9 +203,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**
      * Getter for stored layer set that is used if mKeepLayerSet is true */
     QStringList layerSet() const {return mLayerSet;}
+
     /**
      * Setter for stored layer set that is used if mKeepLayerSet is true */
     void setLayerSet( const QStringList& layerSet ) {mLayerSet = layerSet;}
+
     /**
      * Stores the current layer set of the qgis mapcanvas in mLayerSet*/
     void storeCurrentLayerSet();
@@ -210,6 +215,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**
      * Getter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8 */
     bool keepLayerStyles() const { return mKeepLayerStyles; }
+
     /**
      * Setter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8 */
     void setKeepLayerStyles( bool enabled ) { mKeepLayerStyles = enabled; }
@@ -217,9 +223,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**
      * Getter for stored overrides of styles for layers. @note added in 2.8 */
     QMap<QString, QString> layerStyleOverrides() const { return mLayerStyleOverrides; }
+
     /**
      * Setter for stored overrides of styles for layers. @note added in 2.8 */
     void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
+
     /**
      * Stores the current layer styles into style overrides. @note added in 2.8 */
     void storeCurrentLayerStyles();
@@ -235,15 +243,18 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * map will use the same configuration as the map canvas uses.
      * @note added in 2.16 */
     bool followVisibilityPreset() const { return mFollowVisibilityPreset; }
+
     /**
      * Sets whether the map should follow a map theme. See followVisibilityPreset() for more details.
      * @note added in 2.16 */
     void setFollowVisibilityPreset( bool follow ) { mFollowVisibilityPreset = follow; }
+
     /**
      * Preset name that decides which layers and layer styles are used for map rendering. It is only
      * used when followVisibilityPreset() returns true.
      * @note added in 2.16 */
     QString followVisibilityPresetName() const { return mFollowVisibilityPresetName; }
+
     /**
      * Sets preset name for map rendering. See followVisibilityPresetName() for more details.
      * @note added in 2.16 */
@@ -543,6 +554,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**
      * Offset in x direction for showing map cache image*/
     double mXOffset;
+
     /**
      * Offset in y direction for showing map cache image*/
     double mYOffset;
@@ -550,6 +562,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**
      * Map rotation*/
     double mMapRotation;
+
     /**
      * Temporary evaluated map rotation. Data defined rotation may mean this value
      * differs from mMapRotation*/
@@ -564,6 +577,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QStringList mLayerSet;
 
     bool mKeepLayerStyles;
+
     /**
      * Stored style names (value) to be used with particular layer IDs (key) instead of default style */
     QMap<QString, QString> mLayerStyleOverrides;
@@ -573,6 +587,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * in mVisibilityPresetName and may be overridden by data-defined expression).
      * This flag has higher priority than mKeepLayerSet. */
     bool mFollowVisibilityPreset;
+
     /**
      * Map theme name to be used for map's layers and styles in case mFollowVisibilityPreset
      *  is true. May be overridden by data-defined expression. */
@@ -602,6 +617,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * Current bounding rectangle. This is used to check if notification to the graphics scene is necessary*/
     QRectF mCurrentRectangle;
     QGraphicsView* mMapCanvas;
+
     /**
      * True if annotation items, rubber band, etc. from the main canvas should be displayed*/
     bool mDrawCanvasItems;
@@ -614,9 +630,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**
      * True if map is being controlled by an atlas*/
     bool mAtlasDriven;
+
     /**
      * Current atlas scaling mode*/
     AtlasScalingMode mAtlasScalingMode;
+
     /**
      * Margin size for atlas driven extents (percentage of feature size) - when in auto scaling mode*/
     double mAtlasMargin;

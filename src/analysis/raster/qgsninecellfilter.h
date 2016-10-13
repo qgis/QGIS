@@ -32,10 +32,12 @@ the method that calculates the new value from the nine values. Everything else (
 class ANALYSIS_EXPORT QgsNineCellFilter
 {
   public:
+
     /**
      * Constructor that takes input file, output file and output format (GDAL string)*/
     QgsNineCellFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat );
     virtual ~QgsNineCellFilter();
+
     /**
      * Starts the calculation, reads from mInputFile and stores the result in mOutputFile
       @param p progress dialog that receives update and that is checked for abort. 0 if no progress bar is needed.
@@ -69,10 +71,12 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     /**
      * Opens the input file and returns the dataset handle and the number of pixels in x-/y- direction*/
     GDALDatasetH openInputFile( int& nCellsX, int& nCellsY );
+
     /**
      * Opens the output driver and tests if it supports the creation of a new dataset
       @return nullptr on error and the driver handle on success*/
     GDALDriverH openOutputDriver();
+
     /**
      * Opens the output file and sets the same geotransform and CRS as the input data
       @return the output dataset or nullptr in case of error*/
@@ -86,12 +90,15 @@ class ANALYSIS_EXPORT QgsNineCellFilter
 
     double mCellSizeX;
     double mCellSizeY;
+
     /**
      * The nodata value of the input layer*/
     float mInputNodataValue;
+
     /**
      * The nodata value of the output layer*/
     float mOutputNodataValue;
+
     /**
      * Scale factor for z-value if x-/y- units are different to z-units (111120 for degree->meters and 370400 for degree->feet)*/
     double mZFactor;

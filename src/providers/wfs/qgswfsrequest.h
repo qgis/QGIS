@@ -61,11 +61,13 @@ class QgsWfsRequest : public QObject
     const QByteArray& response() const { return mResponse; }
 
   public slots:
+
     /**
      * Abort network request immediately */
     void abort();
 
   signals:
+
     /**
      * \brief emit a signal when data arrives */
     void downloadProgress( qint64, qint64 );
@@ -80,6 +82,7 @@ class QgsWfsRequest : public QObject
     void requestTimedOut( QNetworkReply* reply );
 
   protected:
+
     /**
      * URI */
     QgsWFSDataSourceURI mUri;

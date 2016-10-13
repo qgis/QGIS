@@ -44,6 +44,7 @@ class QgsHttpTransaction : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor.
      */
@@ -100,6 +101,7 @@ class QgsHttpTransaction : public QObject
     /**
      * Returns the network timeout in msec*/
     int networkTimeout() const { return mNetworkTimeoutMsec;}
+
     /**
      * Sets the network timeout in milliseconds*/
     void setNetworkTimeout( int msec ) { mNetworkTimeoutMsec = msec;}
@@ -136,6 +138,7 @@ class QgsHttpTransaction : public QObject
     /**
      * Signal for progress update */
     void dataReadProgress( int theProgress );
+
     /**
      * Signal for adjusted number of steps*/
     void totalSteps( int theTotalSteps );

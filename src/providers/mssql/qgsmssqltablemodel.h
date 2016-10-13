@@ -87,6 +87,7 @@ class QgsMssqlTableModel : public QStandardItemModel
     static QgsWkbTypes::Type wkbTypeFromMssql( QString dbType );
 
   private:
+
     /**
      * Number of tables in the model*/
     int mTableCount;

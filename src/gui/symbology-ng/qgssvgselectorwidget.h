@@ -264,6 +264,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     QLayout* selectorLayout() { return this->layout(); }
 
   public slots:
+
     /**
      * Accepts absolute and relative paths */
     void setSvgPath( const QString& svgPath );

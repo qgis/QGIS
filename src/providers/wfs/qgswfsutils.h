@@ -28,6 +28,7 @@
 class QgsWFSUtils
 {
   public:
+
     /**
      * Return the name of temporary directory. */
     static QString acquireCacheDirectory();
@@ -43,6 +44,7 @@ class QgsWFSUtils
     /**
      * Removes a possible namespace prefix from a typename*/
     static QString removeNamespacePrefix( const QString& tname );
+
     /**
      * Returns namespace prefix (or an empty string if there is no prefix)*/
     static QString nameSpacePrefix( const QString& tname );

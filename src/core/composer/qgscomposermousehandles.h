@@ -120,18 +120,23 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     QGraphicsView* mGraphicsView; //reference to QGraphicsView
 
     QgsComposerMouseHandles::MouseAction mCurrentMouseMoveAction;
+
     /**
      * Start point of the last mouse move action (in scene coordinates)*/
     QPointF mMouseMoveStartPos;
+
     /**
      * Position of the last mouse move event (in scene coordinates)*/
     QPointF mLastMouseEventPos;
+
     /**
      * Position of the mouse at beginning of move/resize (in scene coordinates)*/
     QPointF mBeginMouseEventPos;
+
     /**
      * Position of composer handles at beginning of move/resize (in scene coordinates)*/
     QPointF mBeginHandlePos;
+
     /**
      * Width and height of composer handles at beginning of resize*/
     double mBeginHandleWidth;
@@ -144,6 +149,7 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     /**
      * True if user is currently dragging items*/
     bool mIsDragging;
+
     /**
      * True is user is currently resizing items*/
     bool mIsResizing;
@@ -166,9 +172,11 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     /**
      * Redraws or hides the handles based on the current selection*/
     void updateHandles();
+
     /**
      * Draws the handles*/
     void drawHandles( QPainter* painter, double rectHandlerSize );
+
     /**
      * Draw outlines for selected items*/
     void drawSelectedItemBounds( QPainter* painter );
@@ -202,6 +210,7 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
      * Return horizontal align snap item. Creates a new graphics line if 0*/
     QGraphicsLineItem* hAlignSnapItem();
     void deleteHAlignSnapItem();
+
     /**
      * Return vertical align snap item. Creates a new graphics line if 0*/
     QGraphicsLineItem* vAlignSnapItem();
@@ -211,9 +220,11 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     /**
      * Snaps an item or point (depending on mode) originating at originalPoint to the grid or align rulers*/
     QPointF snapPoint( QPointF originalPoint, QgsComposerMouseHandles::SnapGuideMode mode );
+
     /**
      * Snaps an item originating at unalignedX, unalignedY to the grid or align rulers*/
     QPointF alignItem( double& alignX, double& alignY, double unalignedX, double unalignedY );
+
     /**
      * Snaps a point to to the grid or align rulers*/
     QPointF alignPos( QPointF pos, double& alignX, double& alignY );

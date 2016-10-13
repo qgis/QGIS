@@ -104,6 +104,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName
     txtName->setText( connName );
   }
 }
+
 /**
  * Autoconnected SLOTS **/
 void QgsPgNewConnection::accept()

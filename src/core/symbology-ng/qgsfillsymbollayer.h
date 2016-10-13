@@ -392,6 +392,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * @see blurRadius
      */
     void setBlurRadius( int blurRadius ) { mBlurRadius = blurRadius; }
+
     /**
      * Returns the blur radius, which controls the amount of blurring applied to the fill.
      * @returns Integer representing the radius for fill blur. Higher values indicate a stronger blur. A 0 value indicates that blurring is disabled.
@@ -409,6 +410,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * @see setMaxDistance
      */
     void setUseWholeShape( bool useWholeShape ) { mUseWholeShape = useWholeShape; }
+
     /**
      * Returns whether the shapeburst fill is set to cover the entire shape.
      * @returns True if shapeburst fill will cover the entire shape. If false, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
@@ -427,6 +429,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * @see setDistanceUnit
      */
     void setMaxDistance( double maxDistance ) { mMaxDistance = maxDistance; }
+
     /**
      * Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is false.
      * @returns the maximum distance from the polygon's boundary which is shaded. Distance units are indicated by distanceUnit.
@@ -445,6 +448,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * @see distanceUnit
      */
     void setDistanceUnit( QgsUnitTypes::RenderUnit unit ) { mDistanceUnit = unit; }
+
     /**
      * Returns the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
      * @returns distance unit for the maximum distance
@@ -468,6 +472,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * @see setColorRamp
      */
     void setColorType( ShapeburstColorType colorType ) { mColorType = colorType; }
+
     /**
      * Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
      * or by simply specificing a start and end color.
@@ -488,6 +493,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * @see colorRamp
      */
     void setColorRamp( QgsColorRamp* ramp );
+
     /**
      * Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType::ColorRamp
      * @returns a QgsColorRamp color ramp
@@ -505,6 +511,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * @see color2
      */
     void setColor2( const QColor& color2 ) { mColor2 = color2; }
+
     /**
      * Returns the color used for the endpoint of the shapeburst fill. This color is only used if the colorType is set to ShapeburstColorType::SimpleTwoColor
      * @returns a QColor indicating the color of the endpoint of the gradient
@@ -522,6 +529,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * @see ignoreRings
      */
     void setIgnoreRings( bool ignoreRings ) { mIgnoreRings = ignoreRings; }
+
     /**
      * Returns whether the shapeburst fill is set to ignore polygon interior rings.
      * @returns True if the shapeburst fill will ignore interior rings when calculating buffered shading.
@@ -538,6 +546,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * @see setOffsetUnit
      */
     void setOffset( QPointF offset ) { mOffset = offset; }
+
     /**
      * Returns the offset for the shapeburst fill.
      * @returns a QPointF indicating the horizontal/vertical offset amount
@@ -555,6 +564,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      * @see offsetUnit
      */
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+
     /**
      * Returns the units used for the offset of the shapeburst fill.
      * @returns units used for the fill offset
@@ -714,6 +724,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see imageFilePath
      */
     void setImageFilePath( const QString& imagePath );
+
     /**
      * The path to the raster image used for the fill.
      * @returns path to image file
@@ -728,6 +739,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see coordinateMode
      */
     void setCoordinateMode( const FillCoordinateMode mode );
+
     /**
      * Coordinate mode for fill. Controls how the top left corner of the image
      * fill is positioned relative to the feature.
@@ -742,6 +754,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see alpha
      */
     void setAlpha( const double alpha );
+
     /**
      * The opacity for the raster image used in the fill.
      * @returns opacity value between 0 (fully transparent) and 1 (fully opaque)
@@ -757,6 +770,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see setOffsetMapUnitScale
      */
     void setOffset( QPointF offset ) { mOffset = offset; }
+
     /**
      * Returns the offset for the fill.
      * @returns offset for fill
@@ -774,6 +788,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see setOffsetMapUnitScale
      */
     void setOffsetUnit( const QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+
     /**
      * Returns the units for the fill's offset.
      * @returns units for offset
@@ -791,6 +806,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see setOffsetUnit
      */
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }
+
     /**
      * Returns the map unit scale for the fill's offset.
      * @returns map unit scale for offset
@@ -809,6 +825,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see setWidthMapUnitScale
      */
     void setWidth( const double width ) { mWidth = width; }
+
     /**
      * Returns the width used for scaling the image used in the fill. The image's height is
      * scaled to maintain the image's aspect ratio.
@@ -827,6 +844,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see setWidthMapUnitScale
      */
     void setWidthUnit( const QgsUnitTypes::RenderUnit unit ) { mWidthUnit = unit; }
+
     /**
      * Returns the units for the image's width.
      * @returns units for width
@@ -844,6 +862,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * @see setWidthUnit
      */
     void setWidthMapUnitScale( const QgsMapUnitScale& scale ) { mWidthMapUnitScale = scale; }
+
     /**
      * Returns the map unit scale for the image's width.
      * @returns map unit scale for width
@@ -959,6 +978,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsMapUnitScale mapUnitScale() const override;
 
   protected:
+
     /**
      * Width of the pattern (in output units)*/
     double mPatternWidth;
@@ -968,12 +988,15 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     /**
      * SVG data*/
     QByteArray mSvgData;
+
     /**
      * Path to the svg file (or empty if constructed directly from data)*/
     QString mSvgFilePath;
+
     /**
      * SVG view box (to keep the aspect ratio */
     QRectF mSvgViewBox;
+
     /**
      * SVG pattern image */
     QImage* mSvgPattern;
@@ -988,6 +1011,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     void applyDataDefinedSettings( QgsSymbolRenderContext& context ) override;
 
   private:
+
     /**
      * Helper function that gets the view box from the byte array*/
     void storeViewBox();
@@ -1116,20 +1140,24 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QSet<QString> usedAttributes() const override;
 
   protected:
+
     /**
      * Distance (in mm or map units) between lines*/
     double mDistance;
     QgsUnitTypes::RenderUnit mDistanceUnit;
     QgsMapUnitScale mDistanceMapUnitScale;
+
     /**
      * Line width (in mm or map units)*/
     double mLineWidth;
     QgsUnitTypes::RenderUnit mLineWidthUnit;
     QgsMapUnitScale mLineWidthMapUnitScale;
     QColor mColor;
+
     /**
      * Vector line angle in degrees (0 = horizontal, counterclockwise)*/
     double mLineAngle;
+
     /**
      * Offset perpendicular to line direction*/
     double mOffset;
@@ -1139,6 +1167,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void applyDataDefinedSettings( QgsSymbolRenderContext& context ) override;
 
   private:
+
     /**
      * Applies the svg pattern to the brush*/
     void applyPattern( const QgsSymbolRenderContext& context, QBrush& brush, double lineAngle, double distance, double lineWidth, const QColor& color );
@@ -1347,6 +1376,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
      * Sets whether a point is drawn for all parts or only on the biggest part of multi-part features.
      * @note added in 2.16 */
     void setPointOnAllParts( bool pointOnAllParts ) { mPointOnAllParts = pointOnAllParts; }
+
     /**
      * Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
      * @note added in 2.16 */

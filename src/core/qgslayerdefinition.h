@@ -32,15 +32,19 @@ class QgsLayerTreeNode;
 class CORE_EXPORT QgsLayerDefinition
 {
   public:
+
     /**
      * Loads the QLR at path into QGIS.  New layers are added to rootGroup and the map layer registry*/
     static bool loadLayerDefinition( const QString & path, QgsLayerTreeGroup* rootGroup, QString &errorMessage );
+
     /**
      * Loads the QLR from the XML document.  New layers are added to rootGroup and the map layer registry */
     static bool loadLayerDefinition( QDomDocument doc, QgsLayerTreeGroup* rootGroup, QString &errorMessage );
+
     /**
      * Export the selected layer tree nodes to a QLR file */
     static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage );
+
     /**
      * Export the selected layer tree nodes to a QLR-XML document */
     static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage, const QString& relativeBasePath = QString::null );
@@ -52,6 +56,7 @@ class CORE_EXPORT QgsLayerDefinition
     class CORE_EXPORT DependencySorter
     {
       public:
+
         /**
          * Constructor
          * @param doc The XML document containing maplayer elements

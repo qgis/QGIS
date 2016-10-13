@@ -5,6 +5,7 @@
     copyright            : (C) 2004 by Radim Blazek
     email                : blazek@itc.it
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -45,29 +46,35 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for a plugin. The QgisInterface pointer is passed by
      * QGIS when it attempts to instantiate the plugin.
      * @param qI Pointer to the QgisInterface object.
      */
     explicit QgsGrassPlugin( QgisInterface * qI );
+
     /**
      * Virtual function to return the name of the plugin. The name will be used when presenting a list
      * of installable plugins to the user
      */
     virtual QString name();
+
     /**
      * Virtual function to return the version of the plugin.
      */
     virtual QString version();
+
     /**
      * Virtual function to return a description of the plugins functions
      */
     virtual QString description();
+
     /**
      * Virtual function to return a category of the plugin
      */
     virtual QString category();
+
     /**
      * Return the plugin type
      */

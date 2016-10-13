@@ -51,6 +51,7 @@ class CORE_EXPORT QgsPythonRunner
     static void setInstance( QgsPythonRunner* runner );
 
   protected:
+
     /**
      * Protected constructor: can be instantiated only from children */
     QgsPythonRunner();

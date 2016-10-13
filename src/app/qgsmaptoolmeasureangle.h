@@ -47,6 +47,7 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
     void deactivate() override;
 
   private:
+
     /**
      * Points defining the angle (three for measuring)*/
     QList<QgsPoint> mAnglePoints;
@@ -56,6 +57,7 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
     /**
      * Creates a new rubber band and deletes the old one*/
     void createRubberBand();
+
     /**
      * Snaps point to background layers*/
     QgsPoint snapPoint( QPoint p );
@@ -65,11 +67,13 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
     QgsDistanceArea mDa;
 
   public slots:
+
     /**
      * Recalculate angle if projection state changed*/
     void updateSettings();
 
   private slots:
+
     /**
      * Deletes the rubber band and the dialog*/
     void stopMeasuring();

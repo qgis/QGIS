@@ -71,9 +71,11 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     void setSelectedBand( int index );
 
   public slots:
+
     /**
      * \brief slot executed when user wishes to refresh raster histogramwidget */
     void refreshHistogram();
+
     /**
      * This slot lets you save the histogram as an image to disk */
     void on_mSaveAsImageButton_clicked();
@@ -81,31 +83,39 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     void apply() override;
 
   private slots:
+
     /**
      * Used when the histogram band selector changes, or when tab is loaded. */
     void on_cboHistoBand_currentIndexChanged( int );
+
     /**
      * Applies the selected min/max values to the renderer widget. */
     void applyHistoMin();
     void applyHistoMax();
+
     /**
      * Button to activate picking of the min/max value on the graph. */
     void on_btnHistoMin_toggled();
     void on_btnHistoMax_toggled();
+
     /**
      * Called when a selection has been made using the plot picker. */
     void histoPickerSelected( QPointF );
+
     /**
      * Called when a selection has been made using the plot picker (for qwt5 only).
       @note not available in python bindings
       */
     void histoPickerSelectedQwt5( QwtDoublePoint );
+
     /**
      * Various actions that are stored in btnHistoActions. */
     void histoActionTriggered( QAction* );
+
     /**
      * Draw the min/max markers on the histogram plot. */
     void updateHistoMarkers();
+
     /**
      * Button to compute the histogram, appears when no cached histogram is available. */
     void on_btnHistoCompute_clicked();
@@ -122,9 +132,11 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     /**
      * \brief Pointer to the raster layer that this property dilog changes the behaviour of. */
     QgsRasterLayer * mRasterLayer;
+
     /**
      * \brief Pointer to the renderer widget, to get/set min/max. */
     QgsRasterRendererWidget* mRendererWidget;
+
     /**
      * \brief Name of the renderer widget (see QgsRasterRendererRegistry). */
     QString mRendererName;
@@ -142,9 +154,11 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     bool mHistoDrawLines;
     /* bool mHistoLoadApplyAll; */
     HistoShowBands mHistoShowBands;
+
     /**
      * \brief Returns a list of selected bands in the histogram widget- or empty if there is no selection restriction. */
     QList< int > histoSelectedBands();
+
     /**
      * \brief Returns a list of selected bands in the renderer widget. */
     QList< int > rendererSelectedBands();

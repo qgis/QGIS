@@ -44,6 +44,7 @@
 class QgsSourceSelectItemDelegate : public QItemDelegate
 {
   public:
+
     /**
      * Constructor */
     QgsSourceSelectItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }

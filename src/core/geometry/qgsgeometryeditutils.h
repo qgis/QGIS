@@ -35,6 +35,7 @@ class QgsVectorLayer;
 class QgsGeometryEditUtils
 {
   public:
+
     /**
      * Adds interior ring (taking ownership).
     @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,

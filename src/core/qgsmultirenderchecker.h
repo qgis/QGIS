@@ -132,6 +132,7 @@ class CORE_EXPORT QgsMultiRenderChecker
 
 #ifdef ENABLE_TESTS
 ///@cond PRIVATE
+
 /**
  * \ingroup core
  * \class QgsCompositionChecker

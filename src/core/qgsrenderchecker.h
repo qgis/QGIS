@@ -131,6 +131,7 @@ class CORE_EXPORT QgsRenderChecker
      * @note: make sure to call setExpectedImage and setRenderedImage first.
      */
     bool compareImages( const QString& theTestName, unsigned int theMismatchCount = 0, const QString& theRenderedImageFile = "" );
+
     /**
      * Get a list of all the anomalies. An anomaly is a rendered difference
      * file where there is some red pixel content (indicating a render check

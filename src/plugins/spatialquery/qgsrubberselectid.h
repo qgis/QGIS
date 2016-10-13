@@ -30,11 +30,13 @@
 class QgsRubberSelectId
 {
   public:
+
     /**
      * Constructor for a class RubberSelectedId.
      * @param mapCanvas Pointer to the iface.mapCanvas().
      */
     explicit QgsRubberSelectId( QgsMapCanvas* mapCanvas );
+
     /**
      * \brief Destructor
      */

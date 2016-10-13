@@ -30,9 +30,11 @@ class ANALYSIS_EXPORT TriDecorator : public Triangulation
     virtual ~TriDecorator();
     virtual void addLine( Line3D* line, bool breakline ) override;
     virtual int addPoint( Point3D* p ) override;
+
     /**
      * Adds an association to a triangulation*/
     virtual void addTriangulation( Triangulation* t );
+
     /**
      * Performs a consistency check, remove this later*/
     virtual void performConsistencyTest() override;
@@ -59,6 +61,7 @@ class ANALYSIS_EXPORT TriDecorator : public Triangulation
     virtual bool swapEdge( double x, double y ) override;
     virtual QList<int>* getPointsAroundEdge( double x, double y ) override;
   protected:
+
     /**
      * Association with a Triangulation object*/
     Triangulation* mTIN;

@@ -125,6 +125,7 @@ class SERVER_EXPORT QgsWmsConfigParser
 
     // WMS inspire capabilities
     virtual bool wmsInspireActivated() const = 0;
+
     /**
      * Adds inspire capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     virtual void inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
@@ -164,6 +165,7 @@ class SERVER_EXPORT QgsWmsConfigParser
     static void removeHighlightLayers( const QStringList& layerIds );
 
 #if 0
+
     /**
      * List of GML datasets passed outside SLD (e.g. in a SOAP request). Key of the map is the layer name*/
     QMap<QString, QDomDocument*> mExternalGMLDatasets;

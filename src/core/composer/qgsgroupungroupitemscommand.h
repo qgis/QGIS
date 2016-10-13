@@ -61,9 +61,11 @@ class CORE_EXPORT QgsGroupUngroupItemsCommand: public QObject, public QUndoComma
     void undo() override;
 
   signals:
+
     /**
      * Signals addition of an item (the group) */
     void itemAdded( QgsComposerItem* item );
+
     /**
      * Signals removal of an item (the group) */
     void itemRemoved( QgsComposerItem* item );

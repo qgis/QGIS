@@ -225,6 +225,7 @@ class CORE_EXPORT QgsRenderContext
     /**
      * Returns pointer to the unsegmentized geometry*/
     const QgsAbstractGeometry* geometry() const { return mGeometry; }
+
     /**
      * Sets pointer to original (unsegmentized) geometry*/
     void setGeometry( const QgsAbstractGeometry* geometry ) { mGeometry = geometry; }
@@ -249,6 +250,7 @@ class CORE_EXPORT QgsRenderContext
      * Sets the segmentation tolerance applied when rendering curved geometries
     @param tolerance the segmentation tolerance*/
     void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
+
     /**
      * Gets the segmentation tolerance applied when rendering curved geometries*/
     double segmentationTolerance() const { return mSegmentationTolerance; }
@@ -257,6 +259,7 @@ class CORE_EXPORT QgsRenderContext
      * Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     @param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
+
     /**
      * Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)*/
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }

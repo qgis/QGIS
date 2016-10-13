@@ -32,17 +32,21 @@ class APP_EXPORT QgsTipFactory : public QObject
 {
     Q_OBJECT //used for tr() so we don't need to do QObject::tr()
   public:
+
     /**
      * Constructor */
     QgsTipFactory();
+
     /**
      * Destructor */
     ~QgsTipFactory();
+
     /**
      * Get a random tip (generic or gui-centric)
      * @return An QgsTip containing the tip
      */
     QgsTip getTip();
+
     /**
      * Get a specific tip (generic or gui-centric).
      * @param thePosition The tip returned will be based on the
@@ -52,11 +56,13 @@ class APP_EXPORT QgsTipFactory : public QObject
      * @return An QgsTip containing the tip
      */
     QgsTip getTip( int thePosition );
+
     /**
      * Get a random generic tip
      * @return An QgsTip containing the tip
      */
     QgsTip getGenericTip();
+
     /**
      * Get a random gui-centric tip
      * @return An QgsTip  containing the tip

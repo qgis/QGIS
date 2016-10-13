@@ -1,4 +1,4 @@
-#!/usr/bin/perl -i.sortinc -n
+#!/usr/bin/perl -0 -i.sortinc -n
 ###########################################################################
 #    unify_includes.pl
 #    ---------------------
@@ -17,6 +17,9 @@
 
 # adapted from scripts/sort_includes.sh
 
+# this is slurped in whole-file mode, as opposed to unify_incudes.pl
+# which slurps in per-line mode
+
 use strict;
 use warnings;
 
@@ -25,23 +28,7 @@ our @inc;
 
 END { die "header files not empty" if @inc; }
 
-# Also fix doxygen comments
-s#^(\s*)/\*[*!]\s*([^\s*].*)\s*$#$1/** \u$2\n#;
-
-# Space around doxygen (ie start with /** on its own line)
-s#^(\s*)/\*\*(?!\*)\s*(.+)$#$1/**\n$1 * $2#;
-
-if( /^\s*#include/ ) {
-	push @inc, $_ unless exists $inc{$_};
-	$inc{$_}=1;
-	next unless eof;
-}
-
-if( %inc ) {
-	print foreach @inc;
-	undef %inc;
-	undef @inc;
-	last if eof;
-}
+# Space around doxygen start blocks (force blank line before /**)
+s#(?<!\n)(\n\h*/\*\*)#\n$1#g;
 
 print;

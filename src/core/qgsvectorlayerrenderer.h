@@ -52,6 +52,7 @@ class QgsVectorLayerDiagramProvider;
 class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
 {
   public:
+
     /**
      * Constructor */
     explicit QgsVectorLayerRendererInterruptionChecker( const QgsRenderContext& context );

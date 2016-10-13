@@ -139,9 +139,11 @@ class QgsGPSData
     /**
      * This iterator type is used to iterate over waypoints. */
     typedef QList<QgsWaypoint>::iterator WaypointIterator;
+
     /**
      * This iterator type is used to iterate over routes. */
     typedef QList<QgsRoute>::iterator RouteIterator;
+
     /**
      * This iterator type is used to iterate over tracks. */
     typedef QList<QgsTrack>::iterator TrackIterator;

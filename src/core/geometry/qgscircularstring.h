@@ -78,10 +78,12 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      * @copydoc QgsCurve::startPoint()
      */
     virtual QgsPointV2 startPoint() const override;
+
     /**
      * @copydoc QgsCurve::endPoint()
      */
     virtual QgsPointV2 endPoint() const override;
+
     /**
      * Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
@@ -105,6 +107,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     virtual bool deleteVertex( QgsVertexId position ) override;
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
+
     /**
      * @copydoc QgsCurve::pointAt()
      */

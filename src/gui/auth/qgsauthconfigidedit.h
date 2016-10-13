@@ -32,6 +32,7 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
     Q_OBJECT
 
   public:
+
     /**
      * Widget to unlock and edit an authentication configuration ID
      * @param parent Parent widget
@@ -54,11 +55,13 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
     bool validate();
 
   signals:
+
     /**
      * Validity of the ID has changed */
     void validityChanged( bool valid );
 
   public slots:
+
     /**
      * Set the authentication configuration ID, storing it, and validating the passed value */
     void setAuthConfigId( const QString &authcfg );

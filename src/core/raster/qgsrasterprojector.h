@@ -45,6 +45,7 @@ class QgsCoordinateTransform;
 class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 {
   public:
+
     /**
      * Precision defines if each pixel is reprojected or approximate reprojection based
      *  on an approximation matrix of reprojected points is used.
@@ -132,6 +133,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 class ProjectorData
 {
   public:
+
     /**
      * Initialize reprojector and calculate matrix */
     ProjectorData( const QgsRectangle &extent, int width, int height, QgsRasterInterface *input, const QgsCoordinateTransform &inverseCt, QgsRasterProjector::Precision precision );
@@ -149,6 +151,7 @@ class ProjectorData
     int srcCols() const { return mSrcCols; }
 
   private:
+
     /**
      * \brief get destination point for _current_ destination position */
     void destPointOnCPMatrix( int theRow, int theCol, double *theX, double *theY );
@@ -303,6 +306,7 @@ class ProjectorData
     /**
      * Number of mCPMatrix columns */
     int mCPCols;
+
     /**
      * Number of mCPMatrix rows */
     int mCPRows;

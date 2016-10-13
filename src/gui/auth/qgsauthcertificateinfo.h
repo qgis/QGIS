@@ -144,6 +144,7 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Construct a dialog displaying detailed info on a certificate and its hierarchical trust chain
      * @param cert Certificate object

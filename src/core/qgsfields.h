@@ -177,6 +177,7 @@ class CORE_EXPORT QgsFields
     bool operator==( const QgsFields& other ) const;
     //! @note added in 2.6
     bool operator!=( const QgsFields& other ) const { return !( *this == other ); }
+
     /**
      * Returns an icon corresponding to a field index, based on the field's type and source
      * @note added in QGIS 2.14
@@ -328,6 +329,7 @@ Q_DECLARE_METATYPE( QgsFields )
 /**
  * Writes the fields to stream out. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsFields& fields );
+
 /**
  * Reads fields from stream in into fields. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsFields& fields );

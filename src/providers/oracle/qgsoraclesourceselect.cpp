@@ -257,6 +257,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
 
   populateConnectionList();
 }
+
 /**
  * Autoconnected SLOTS **/
 // Slot for adding a new connection

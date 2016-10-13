@@ -155,6 +155,7 @@ class CORE_EXPORT QgsVectorFileWriter
       QString ext;
       QMap<QString, Option*> driverOptions;
       QMap<QString, Option*> layerOptions;
+
       /**
        * Some formats require a compulsory encoding, typically UTF-8. If no compulsory encoding, empty string */
       QString compulsoryEncoding;
@@ -188,6 +189,7 @@ class CORE_EXPORT QgsVectorFileWriter
     class CORE_EXPORT FieldValueConverter
     {
       public:
+
         /**
          * Constructor */
         FieldValueConverter();
@@ -491,6 +493,7 @@ class CORE_EXPORT QgsVectorFileWriter
     void startRender( QgsVectorLayer* vl );
     void stopRender( QgsVectorLayer* vl );
     QgsFeatureRenderer* symbologyRenderer( QgsVectorLayer* vl ) const;
+
     /**
      * Adds attributes needed for classification*/
     void addRendererAttributes( QgsVectorLayer* vl, QgsAttributeList& attList );

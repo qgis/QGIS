@@ -151,6 +151,7 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
     /**
      * Watermark text items*/
     QList< QPair< QTextDocument*, QDomElement > > mTextAnnotationItems;
+
     /**
      * Watermark items (content cached in QgsSVGCache)*/
     QList< QPair< QSvgRenderer*, QDomElement > > mSvgAnnotationElems;

@@ -29,12 +29,14 @@ class DockModel: public QAbstractTableModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * @param theErrorList reference to the ErrorList where errors will be stored
      * @param parent parent object
      */
     DockModel( ErrorList& theErrorList, QObject *parent );
+
     /**
      * Returns header data
      * @param section required section
@@ -42,12 +44,14 @@ class DockModel: public QAbstractTableModel
      * @param role data role
      */
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+
     /**
      * Returns data on the given index
      * @param index model index
      * @param role data role
      */
     virtual QVariant data( const QModelIndex &index, int role ) const override;
+
     /**
      * Updates data on given index
      * @param index model index
@@ -55,6 +59,7 @@ class DockModel: public QAbstractTableModel
      * @param role data role
      */
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+
     /**
      * Returns item flags for the index
      * @param index model index
@@ -66,6 +71,7 @@ class DockModel: public QAbstractTableModel
      * @param parent parent index
      */
     int rowCount( const QModelIndex &parent ) const override;
+
     /**
      * Returns the number of columns
      * @param parent parent index
@@ -78,6 +84,7 @@ class DockModel: public QAbstractTableModel
      * @param index2 end index
      */
     void reload( const QModelIndex &index1, const QModelIndex &index2 );
+
     /**
      * Resets the model
      */

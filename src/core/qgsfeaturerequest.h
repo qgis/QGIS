@@ -111,6 +111,7 @@ class CORE_EXPORT QgsFeatureRequest
     class CORE_EXPORT OrderByClause
     {
       public:
+
         /**
          * Creates a new OrderByClause for a QgsFeatureRequest
          *
@@ -120,6 +121,7 @@ class CORE_EXPORT QgsFeatureRequest
          *                   If the order is descending, by default nulls are first
          */
         OrderByClause( const QString &expression, bool ascending = true );
+
         /**
          * Creates a new OrderByClause for a QgsFeatureRequest
          *
@@ -180,6 +182,7 @@ class CORE_EXPORT QgsFeatureRequest
     class OrderBy : public QList<OrderByClause>
     {
       public:
+
         /**
          * Create a new empty order by
          */
@@ -331,6 +334,7 @@ class CORE_EXPORT QgsFeatureRequest
      */
 
     QgsFeatureRequest& addOrderBy( const QString &expression, bool ascending = true );
+
     /**
      * Adds a new OrderByClause, appending it as the least important one.
      *
@@ -378,6 +382,7 @@ class CORE_EXPORT QgsFeatureRequest
     //! Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
     //! To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
     QgsFeatureRequest& setSubsetOfAttributes( const QgsAttributeList& attrs );
+
     /**
      * Return the subset of attributes which at least need to be fetched
      * @return A list of attributes to be fetched

@@ -34,6 +34,7 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
     Q_OBJECT
 
   public:
+
     /**
      * Widget for editing authentication configurations directly in database
      * @param parent Parent widget
@@ -48,6 +49,7 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
     void toggleTitleVisibility( bool visible );
 
   public slots:
+
     /**
      * Set whether to show the widget's utilities button, e.g. when embedding */
     void setShowUtilitiesButton( bool show = true );
@@ -57,6 +59,7 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
     void setRelayMessages( bool relay = true );
 
   private slots:
+
     /**
      * Repopulate the view with table contents */
     void refreshTableView();

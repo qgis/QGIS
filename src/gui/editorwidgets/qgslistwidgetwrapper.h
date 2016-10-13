@@ -30,6 +30,7 @@ class GUI_EXPORT QgsListWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor.
      */

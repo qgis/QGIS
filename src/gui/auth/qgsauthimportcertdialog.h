@@ -33,6 +33,7 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
     Q_OBJECT
 
   public:
+
     /**
      * Type of filter to apply to dialog */
     enum CertFilter

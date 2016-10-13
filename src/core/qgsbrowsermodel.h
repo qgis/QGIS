@@ -143,6 +143,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void fetchMore( const QModelIndex & parent ) override;
 
   signals:
+
     /**
      * Emitted when item children fetch was finished */
     void stateChanged( const QModelIndex & index, QgsDataItem::State oldState );

@@ -43,6 +43,7 @@ class QgsSymbol;
 class CORE_EXPORT QgsLegendRenderer
 {
   public:
+
     /**
      * Construct legend renderer. The ownership of legend model does not change */
     QgsLegendRenderer( QgsLayerTreeModel* legendModel, const QgsLegendSettings& settings );

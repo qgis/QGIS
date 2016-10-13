@@ -199,6 +199,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
      * Keep track about the most important nested elements*/
     //std::stack<ParseMode> mParseModeStack;
     QStack<ParseMode> mParseModeStack;
+
     /**
      * This contains the character data if an important element has been encountered*/
     QString mStringCash;
@@ -206,9 +207,11 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     QString mCurrentFeatureId;
     int mFeatureCount;
     QString mAttributeName;
+
     /**
      * Coordinate separator for coordinate strings. Usually "," */
     QString mCoordinateSeparator;
+
     /**
      * Tuple separator for coordinate strings. Usually " " */
     QString mTupleSeparator;

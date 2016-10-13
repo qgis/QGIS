@@ -178,6 +178,7 @@ class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
     void updateSceneRect();
 
   private:
+
     /**
      * This tag is used to write the XML document. */
     QString mTagName;

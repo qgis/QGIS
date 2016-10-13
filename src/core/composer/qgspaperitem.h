@@ -77,6 +77,7 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
 
   private:
     QgsPaperItem();
+
     /**
      * Set flags and z-value*/
     void initialize();

@@ -78,9 +78,11 @@ class CORE_EXPORT QgsGPSConnection : public QObject
       */
     QgsGPSConnection( QIODevice* dev );
     virtual ~QgsGPSConnection();
+
     /**
      * Opens connection to device*/
     bool connect();
+
     /**
      * Closes connection to device*/
     bool close();
@@ -102,23 +104,28 @@ class CORE_EXPORT QgsGPSConnection : public QObject
     void nmeaSentenceReceived( const QString& substring ); // added to capture 'raw' data
 
   protected:
+
     /**
      * Data source (e.g. serial device, socket, file,...)*/
     QIODevice* mSource;
+
     /**
      * Last state of the gps related variables (e.g. position, time, ...)*/
     QgsGPSInformation mLastGPSInformation;
+
     /**
      * Connection status*/
     Status mStatus;
 
   private:
+
     /**
      * Closes and deletes mSource*/
     void cleanupSource();
     void clearLastGPSInformation();
 
   protected slots:
+
     /**
      * Parse available data source content*/
     virtual void parseData() = 0;

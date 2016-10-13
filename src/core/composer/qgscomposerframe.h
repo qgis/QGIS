@@ -120,6 +120,7 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
     /**
      * If true, composition will not export page if this frame is empty*/
     bool mHidePageIfEmpty;
+
     /**
      * If true, background and outside frame will not be drawn if frame is empty*/
     bool mHideBackgroundIfEmpty;

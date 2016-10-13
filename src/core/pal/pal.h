@@ -44,6 +44,7 @@ class QgsAbstractLabelProvider;
 
 namespace pal
 {
+
   /**
    * Get GEOS context handle to be used in all GEOS library calls with reentrant API */
   GEOSContextHandle_t geosContext();
@@ -266,6 +267,7 @@ namespace pal
       /**
        * Callback that may be called from PAL to check whether the job has not been cancelled in meanwhile */
       FnIsCancelled fnIsCancelled;
+
       /**
        * Application-specific context for the cancellation check function */
       void* fnIsCancelledContext;
@@ -325,6 +327,7 @@ namespace pal
        * @return minimum # of iteration
        */
       int getMinIt();
+
       /**
        * \brief Get the maximum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
        * @return maximum # of iteration

@@ -41,6 +41,7 @@ class QgsGeorefToolMovePoint : public QgsMapTool
     void pointReleased( QPoint p );
 
   private:
+
     /**
      * Start point of the move in map coordinates*/
     QPoint mStartPointMapCoords;

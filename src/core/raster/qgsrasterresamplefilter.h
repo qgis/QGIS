@@ -64,9 +64,11 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
     void readXml( const QDomElement& filterElem ) override;
 
   protected:
+
     /**
      * Resampler used if screen resolution is higher than raster resolution (zoomed in). 0 means no resampling (nearest neighbour)*/
     QgsRasterResampler* mZoomedInResampler;
+
     /**
      * Resampler used if raster resolution is higher than raster resolution (zoomed out). 0 mean no resampling (nearest neighbour)*/
     QgsRasterResampler* mZoomedOutResampler;

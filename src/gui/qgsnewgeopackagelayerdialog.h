@@ -31,6 +31,7 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
     Q_OBJECT
 
   public:
+
     /**
      * Constructor */
     QgsNewGeoPackageLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );

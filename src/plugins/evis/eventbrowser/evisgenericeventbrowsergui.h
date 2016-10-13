@@ -55,6 +55,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     Q_OBJECT
 
   public:
+
     /**
      * \brief Constructor called when button is pressed in the plugin toolbar */
     eVisGenericEventBrowserGui( QWidget* parent, QgisInterface* interface, Qt::WindowFlags fl );
@@ -72,6 +73,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
 
   private:
     //Variables
+
     /**
      * \brief A flag to bypass some signal/slots during gui initialization */
     bool mIgnoreEvent;
@@ -145,6 +147,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     QgsFeature mFeature;
 
     //Methods
+
     /**
      * \brief Applies parameters on the Options tabs and saves the configuration */
     void accept() override;
@@ -206,6 +209,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     void on_pbtnResetUseOnlyFilenameData_clicked();
     void on_rbtnManualCompassOffset_toggled( bool );
     void on_tableFileTypeAssociations_cellDoubleClicked( int, int );
+
     /**
      * \brief Slot called when the map canvas is done refreshing. Draws the highlighting symbol over the current selected feature */
     void renderSymbol( QPainter* );

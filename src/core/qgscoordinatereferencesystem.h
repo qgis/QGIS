@@ -444,6 +444,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *  Internally it will use authid() for comparison.
      */
     bool operator==( const QgsCoordinateReferenceSystem &theSrs ) const;
+
     /**
      * Overloaded != operator used to compare to CRS's.
      *
@@ -457,6 +458,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @return bool True on success, False on failure
      */
     bool readXml( const QDomNode & theNode );
+
     /**
      * Stores state to the given Dom node in the given document.
      * @param theNode The node in which state will be restored
@@ -571,6 +573,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QgsUnitTypes::DistanceUnit mapUnits() const;
 
     // Mutators -----------------------------------
+
     /**
      * Set user hint for validation
      */
@@ -619,6 +622,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     // We don't want to expose these to the public api since they wont create
     // a fully valid crs. Programmers should use the createFrom* methods rather
   private:
+
     /**
      * A static helper function to find out the proj4 string for a srsid
      * @param theSrsId The srsid used for the lookup
@@ -631,11 +635,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *  @param theSrsId The internal sqlite3 srs.db primary key for this CRS
      */
     void setInternalId( long theSrsId );
+
     /**
      * Set the postgis srid
      *  @param theSrid The postgis spatial_ref_sys key for this CRS
      */
     void setSrid( long theSrid );
+
     /**
      * Set the Description
      * @param theDescription A textual description of the CRS.
@@ -672,11 +678,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @param theID the authority identifier for this CRS (defaults to 0)
      */
     void setAuthId( const QString& theID );
+
     /**
      * Set the projection acronym
      * @param theProjectionAcronym the acronym (must be a valid proj4 projection acronym)
      */
     void setProjectionAcronym( const QString& theProjectionAcronym );
+
     /**
      * Set the ellipsoid acronym
      * @param theEllipsoidAcronym the acronym (must be a valid proj4 ellipsoid acronym)
@@ -691,6 +699,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * A string based associative array used for passing records around */
     typedef QMap<QString, QString> RecordMap;
+
     /**
      * Get a record from the srs.db or qgis.db backends, given an sql statment.
      * @note only handles queries that return a single record.

@@ -74,6 +74,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
      * Returns data array (but not ownership)*/
     //! @note not available in python bindings
     double* data() { return mData; }
+
     /**
      * Returns data and ownership. Sets data and nrows, ncols of this matrix to 0*/
     //! @note not available in python bindings
@@ -88,9 +89,11 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     void setNodataValue( double d ) { mNodataValue = d; }
 
     QgsRasterMatrix& operator=( const QgsRasterMatrix& m );
+
     /**
      * Adds another matrix to this one*/
     bool add( const QgsRasterMatrix& other );
+
     /**
      * Subtracts another matrix from this one*/
     bool subtract( const QgsRasterMatrix& other );

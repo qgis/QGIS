@@ -37,6 +37,7 @@ class CORE_EXPORT QgsDiagram
 {
   public:
     virtual ~QgsDiagram() { clearCache(); }
+
     /**
      * Returns an instance that is equivalent to this one
      * @note added in 2.4 */
@@ -60,9 +61,11 @@ class CORE_EXPORT QgsDiagram
      * Get a descriptive name for this diagram type.
      */
     virtual QString diagramName() const = 0;
+
     /**
      * Returns the size in map units the diagram will use to render.*/
     virtual QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s ) = 0;
+
     /**
      * Returns the size in map units the diagram will use to render. Interpolate size*/
     virtual QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) = 0;

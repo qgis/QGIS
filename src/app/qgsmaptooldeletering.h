@@ -19,6 +19,7 @@
 #include "qgsmaptooledit.h"
 
 class QgsVertexMarker;
+
 /**
  * Map tool to delete vertices from line/polygon features*/
 

@@ -32,6 +32,7 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, pr
     Q_OBJECT
 
   public:
+
     /**
      * Static creation method
      * @param layer the layer where this renderer is applied
@@ -55,9 +56,11 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, pr
     void setContext( const QgsSymbolWidgetContext& context ) override;
 
   protected:
+
     /**
      * The mask renderer */
     QScopedPointer<QgsInvertedPolygonRenderer> mRenderer;
+
     /**
      * The widget used to represent the mask's embedded renderer */
     QScopedPointer<QgsRendererWidget> mEmbeddedRendererWidget;

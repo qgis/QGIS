@@ -54,6 +54,7 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
     QFont defaultFont() { return mDefaultFont; }
 
   signals:
+
     /**
      * Signal the successful stylesheet build results
      * @note connect to (app|widget)->setStyleSheet or similar custom slot
@@ -61,6 +62,7 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
     void appStyleSheetChanged( const QString& appStyleSheet );
 
   private:
+
     /**
      * Set active configuration values */
     void setActiveValues();

@@ -60,22 +60,26 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 
     QFont font() const;
     void setFont( const QFont& f );
+
     /**
      * Accessor for the vertical alignment of the label
      * @returns Qt::AlignmentFlag
      */
     Qt::AlignmentFlag vAlign() const { return mVAlignment; }
+
     /**
      * Accessor for the horizontal alignment of the label
      * @returns Qt::AlignmentFlag
      */
     Qt::AlignmentFlag hAlign() const { return mHAlignment; }
+
     /**
      * Mutator for the horizontal alignment of the label
      * @param a alignment
      * @returns void
      */
     void setHAlign( Qt::AlignmentFlag a ) {mHAlignment = a;}
+
     /**
      * Mutator for the vertical alignment of the label
      * @param a alignment
@@ -133,6 +137,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     /**
      * Sets text color */
     void setFontColor( const QColor& c ) { mFontColor = c; }
+
     /**
      * Get font color */
     QColor fontColor() const { return mFontColor; }
@@ -201,6 +206,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     /**
      * Horizontal margin between contents and frame (in mm)*/
     double mMarginX;
+
     /**
      * Vertical margin between contents and frame (in mm)*/
     double mMarginY;

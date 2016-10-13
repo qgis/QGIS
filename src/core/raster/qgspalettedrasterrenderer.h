@@ -32,6 +32,7 @@ class QDomElement;
 class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 {
   public:
+
     /**
      * Renderer owns color array*/
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray, int nColors, const QVector<QString>& labels = QVector<QString>() );
@@ -45,6 +46,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     /**
      * Returns number of colors*/
     int nColors() const { return mNColors; }
+
     /**
      * Returns copy of color array (caller takes ownership)*/
     QColor* colors() const;
@@ -73,12 +75,15 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
   private:
     int mBand;
+
     /**
      * Color array*/
     QRgb* mColors;
+
     /**
      * Number of colors*/
     int mNColors;
+
     /**
      * Optional category labels, size of vector may be < mNColors */
     QVector<QString> mLabels;

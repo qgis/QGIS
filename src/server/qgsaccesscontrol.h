@@ -35,6 +35,7 @@ class QgsAccessControlPlugin;
 class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
 {
   public:
+
     /**
      * Constructor */
     QgsAccessControl()
@@ -135,6 +136,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     void registerAccessControl( QgsAccessControlFilter* accessControl, int priority = 0 );
 
   private:
+
     /**
      * The AccessControl plugins registry */
     QgsAccessControlFilterMap* mPluginsAccessControls;

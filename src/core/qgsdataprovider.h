@@ -436,6 +436,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     void dataChanged( int changed );
 
   protected:
+
     /**
      * Timestamp of data in the moment when the data were loaded by provider.
      */

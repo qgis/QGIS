@@ -42,6 +42,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     Q_PROPERTY( RelativeStorage relativeStorage READ relativeStorage WRITE setRelativeStorage )
 
   public:
+
     /**
      * @brief The StorageMode enum determines if the file picker should pick files or directories
      */
@@ -79,6 +80,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
     //! returns the open file dialog title
     QString dialogTitle() const;
+
     /**
      * @brief setDialogTitle defines the open file dialog title
      * @note if not defined, the title is "Select a file" or "Select a directory" depending on the configuration.
@@ -87,6 +89,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
     //! returns the filters used for QDialog::getOpenFileName
     QString filter() const;
+
     /**
      * @brief setFilter sets the filter used by the model to filters. The filter is used to specify the kind of files that should be shown.
      * @param filter Only files that match the given filter are shown, it may be an empty string. If you want multiple filters, separate them with ';;',

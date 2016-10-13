@@ -209,6 +209,7 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
 
   cbxAllowGeometrylessTables->setDisabled( true );
 }
+
 /**
  * Autoconnected SLOTS **/
 // Slot for adding a new connection

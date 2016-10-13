@@ -75,6 +75,7 @@ class ANALYSIS_EXPORT QgsTransectSample
     /**
      * If value is negative, the buffer distance ist set to the same value as the minimum distance*/
     double mBaselineBufferDistance;
+
     /**
      * If value is negative, no simplification is done to the baseline prior to create the buffer*/
     double mBaselineSimplificationTolerance;
@@ -88,9 +89,11 @@ class ANALYSIS_EXPORT QgsTransectSample
         @param pt2 out: closest point on secont geometry
         @return true in case of success*/
     static bool closestSegmentPoints( const QgsGeometry& g1, const QgsGeometry& g2, double& dist, QgsPoint& pt1, QgsPoint& pt2 );
+
     /**
      * Returns a copy of the multiline element closest to a point (caller takes ownership)*/
     static QgsGeometry closestMultilineElement( const QgsPoint& pt, const QgsGeometry& multiLine );
+
     /**
      * Returns clipped buffer line. Iteratively applies reduced tolerances if the result is not a single line
         @param stratumGeom stratum polygon

@@ -72,6 +72,7 @@ ShapeType (1 byte)
 
 /************************************************************************/
 /*                         Geometry parser macros                       */
+
 /************************************************************************/
 
 #define SP_NONE 0
@@ -114,6 +115,7 @@ ShapeType (1 byte)
 
 /************************************************************************/
 /*                   QgsMssqlGeometryParser()                           */
+
 /************************************************************************/
 
 QgsMssqlGeometryParser::QgsMssqlGeometryParser()
@@ -170,6 +172,7 @@ void QgsMssqlGeometryParser::DumpMemoryToLog( const char* pszMsg, unsigned char*
 
 /************************************************************************/
 /*                         CopyBytes()                                  */
+
 /************************************************************************/
 
 void QgsMssqlGeometryParser::CopyBytes( void* src, int len )
@@ -189,6 +192,7 @@ void QgsMssqlGeometryParser::CopyBytes( void* src, int len )
 
 /************************************************************************/
 /*                         CopyCoordinates()                            */
+
 /************************************************************************/
 
 void QgsMssqlGeometryParser::CopyCoordinates( int iPoint )
@@ -208,6 +212,7 @@ void QgsMssqlGeometryParser::CopyCoordinates( int iPoint )
 
 /************************************************************************/
 /*                         CopyPoint()                                  */
+
 /************************************************************************/
 
 void QgsMssqlGeometryParser::CopyPoint( int iPoint )
@@ -227,6 +232,7 @@ void QgsMssqlGeometryParser::CopyPoint( int iPoint )
 
 /************************************************************************/
 /*                         ReadPoint()                                  */
+
 /************************************************************************/
 
 void QgsMssqlGeometryParser::ReadPoint( int iShape )
@@ -244,6 +250,7 @@ void QgsMssqlGeometryParser::ReadPoint( int iShape )
 
 /************************************************************************/
 /*                         ReadMultiPoint()                             */
+
 /************************************************************************/
 
 void QgsMssqlGeometryParser::ReadMultiPoint( int iShape )
@@ -276,6 +283,7 @@ void QgsMssqlGeometryParser::ReadMultiPoint( int iShape )
 
 /************************************************************************/
 /*                         ReadLineString()                             */
+
 /************************************************************************/
 
 void QgsMssqlGeometryParser::ReadLineString( int iShape )
@@ -311,6 +319,7 @@ void QgsMssqlGeometryParser::ReadLineString( int iShape )
 
 /************************************************************************/
 /*                         ReadMultiLineString()                        */
+
 /************************************************************************/
 
 void QgsMssqlGeometryParser::ReadMultiLineString( int iShape )
@@ -343,6 +352,7 @@ void QgsMssqlGeometryParser::ReadMultiLineString( int iShape )
 
 /************************************************************************/
 /*                         ReadPolygon()                                */
+
 /************************************************************************/
 
 void QgsMssqlGeometryParser::ReadPolygon( int iShape )
@@ -386,6 +396,7 @@ void QgsMssqlGeometryParser::ReadPolygon( int iShape )
 
 /************************************************************************/
 /*                         ReadMultiPolygon()                           */
+
 /************************************************************************/
 
 void QgsMssqlGeometryParser::ReadMultiPolygon( int iShape )
@@ -418,6 +429,7 @@ void QgsMssqlGeometryParser::ReadMultiPolygon( int iShape )
 
 /************************************************************************/
 /*                         ReadGeometryCollection()                     */
+
 /************************************************************************/
 
 void QgsMssqlGeometryParser::ReadGeometryCollection( int iShape )
@@ -467,6 +479,7 @@ void QgsMssqlGeometryParser::ReadGeometryCollection( int iShape )
 
 /************************************************************************/
 /*                         ParseSqlGeometry()                           */
+
 /************************************************************************/
 
 unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput, int nLen )

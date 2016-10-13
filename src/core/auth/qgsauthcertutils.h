@@ -36,6 +36,7 @@ class QgsAuthConfigSslServer;
 class CORE_EXPORT QgsAuthCertUtils
 {
   public:
+
     /**
      * Type of CA certificate source */
     enum CaCertSource

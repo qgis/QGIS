@@ -47,12 +47,15 @@ class ANALYSIS_EXPORT QgsPointSample
     /**
      * Layer id of input polygon/multipolygon layer*/
     QgsVectorLayer* mInputLayer;
+
     /**
      * Output path of result layer*/
     QString mOutputLayer;
+
     /**
      * Attribute containing number of points per feature*/
     QString mNumberOfPointsAttribute;
+
     /**
      * Attribute containing minimum distance between sample points (or -1 if no min. distance constraint)*/
     QString mMinDistanceAttribute;

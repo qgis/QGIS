@@ -35,6 +35,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new code editor.
      *

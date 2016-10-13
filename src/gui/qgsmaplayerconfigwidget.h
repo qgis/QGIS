@@ -45,6 +45,7 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
     QgsMapLayerConfigWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 
   public slots:
+
     /**
      * @brief Called when changes to the layer need to be made.
      * Will be called when live update is enabled.

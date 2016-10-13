@@ -71,6 +71,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /**
      * Set current layer so that if mode is SnapCurrentLayer we know which layer to use */
     void setCurrentLayer( QgsVectorLayer* layer );
+
     /**
      * The current layer used if mode is SnapCurrentLayer */
     QgsVectorLayer* currentLayer() const { return mCurrentLayer; }
@@ -89,6 +90,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /**
      * Set how the snapping to map is done */
     void setSnapToMapMode( SnapToMapMode mode );
+
     /**
      * Find out how the snapping to map is done */
     SnapToMapMode snapToMapMode() const { return mSnapToMapMode; }
@@ -103,6 +105,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /**
      * Set a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be */
     void setIndexingStrategy( IndexingStrategy strategy ) { mStrategy = strategy; }
+
     /**
      * Find out which strategy is used for indexing - by default hybrid indexing is used */
     IndexingStrategy indexingStrategy() const { return mStrategy; }
@@ -110,6 +113,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /**
      * Configure options used when the mode is snap to current layer or to all layers */
     void setDefaultSettings( int type, double tolerance, QgsTolerance::UnitType unit );
+
     /**
      * Query options used when the mode is snap to current layer or to all layers */
     void defaultSettings( int& type, double& tolerance, QgsTolerance::UnitType& unit );
@@ -119,6 +123,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
      */
     struct LayerConfig
     {
+
       /**
        * Create a new configuration for a snapping layer.
 
@@ -166,6 +171,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /**
      * Set layers which will be used for snapping */
     void setLayers( const QList<LayerConfig>& layers );
+
     /**
      * Query layers used for snapping */
     QList<LayerConfig> layers() const { return mLayers; }
@@ -173,6 +179,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     /**
      * Set whether to consider intersections of nearby segments for snapping */
     void setSnapOnIntersections( bool enabled );
+
     /**
      * Query whether to consider intersections of nearby segments for snapping */
     bool snapOnIntersections() const { return mSnapOnIntersection; }
@@ -184,11 +191,13 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     QString dump();
 
   public slots:
+
     /**
      * Read snapping configuration from the project */
     void readConfigFromProject();
 
   signals:
+
     /**
      * Emitted when snapping configuration has been changed
      * @note added in QGIS 2.14

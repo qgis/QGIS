@@ -276,6 +276,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
                                        Qt::PenCapStyle capStyle = Qt::FlatCap,
                                        double offset = 0.0,
                                        const QVector<qreal>* dashPattern = nullptr );
+
     /**
      * Create ogr feature style string for brush
      @param fillColr fill color*/
@@ -499,6 +500,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /**
      * Sorts the passed list in requested order*/
     static void sortVariantList( QList<QVariant>& list, Qt::SortOrder order );
+
     /**
      * Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
     static QPointF pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance );

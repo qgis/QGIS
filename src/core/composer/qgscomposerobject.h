@@ -225,6 +225,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     bool dataDefinedEvaluate( const QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue, const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
   signals:
+
     /**
      * Emitted when the item changes. Signifies that the item widgets must update the
      * gui elements.
@@ -232,6 +233,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     void itemChanged();
 
   private slots:
+
     /**
      * Prepares all composer item data defined expressions using the current atlas coverage layer if set.
      * @note this method was added in version 2.5

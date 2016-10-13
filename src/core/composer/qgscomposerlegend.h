@@ -137,6 +137,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      * @see setTitleAlignment
      */
     Qt::AlignmentFlag titleAlignment() const;
+
     /**
      * Sets the alignment of the legend title
      * @param alignment Text alignment for drawing the legend title
@@ -148,12 +149,14 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     /**
      * Returns reference to modifiable style */
     QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s );
+
     /**
      * Returns style */
     QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const;
     void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style );
 
     QFont styleFont( QgsComposerLegendStyle::Style s ) const;
+
     /**
      * Set style font */
     void setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f );
@@ -282,9 +285,11 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     virtual QString displayName() const override;
 
   public slots:
+
     /**
      * Data changed*/
     void synchronizeWithModel();
+
     /**
      * Sets mCompositionMap to 0 if the map is deleted*/
     void invalidateCurrentMap();

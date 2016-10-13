@@ -101,6 +101,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     void init();
     void setSymbol( QgsSymbol* symbol, const QgsRenderContext & context, const QColor & color, const QColor & fillColor );
     double getSymbolWidth( const QgsRenderContext & context, double width, QgsUnitTypes::RenderUnit unit );
+
     /**
      * Get renderer for current color mode and colors. The renderer should be freed by caller. */
     QgsFeatureRenderer * getRenderer( QgsRenderContext &context, const QColor & color, const QColor & fillColor );

@@ -132,27 +132,35 @@ class CORE_EXPORT QgsGeometry
     /**
      * Creates a new geometry from a WKT string */
     static QgsGeometry fromWkt( const QString& wkt );
+
     /**
      * Creates a new geometry from a QgsPoint object*/
     static QgsGeometry fromPoint( const QgsPoint& point );
+
     /**
      * Creates a new geometry from a QgsMultiPoint object */
     static QgsGeometry fromMultiPoint( const QgsMultiPoint& multipoint );
+
     /**
      * Creates a new geometry from a QgsPolyline object */
     static QgsGeometry fromPolyline( const QgsPolyline& polyline );
+
     /**
      * Creates a new geometry from a QgsMultiPolyline object*/
     static QgsGeometry fromMultiPolyline( const QgsMultiPolyline& multiline );
+
     /**
      * Creates a new geometry from a QgsPolygon */
     static QgsGeometry fromPolygon( const QgsPolygon& polygon );
+
     /**
      * Creates a new geometry from a QgsMultiPolygon */
     static QgsGeometry fromMultiPolygon( const QgsMultiPolygon& multipoly );
+
     /**
      * Creates a new geometry from a QgsRectangle */
     static QgsGeometry fromRect( const QgsRectangle& rect );
+
     /**
      * Creates a new multipart geometry from a list of QgsGeometry objects*/
     static QgsGeometry collectGeometry( const QList< QgsGeometry >& geometries );
@@ -1051,9 +1059,11 @@ class CORE_EXPORT QgsGeometry
     /**
      * Try to convert the geometry to a point */
     QgsGeometry convertToPoint( bool destMultipart ) const;
+
     /**
      * Try to convert the geometry to a line */
     QgsGeometry convertToLine( bool destMultipart ) const;
+
     /**
      * Try to convert the geometry to a polygon */
     QgsGeometry convertToPolygon( bool destMultipart ) const;
@@ -1094,6 +1104,7 @@ Q_DECLARE_METATYPE( QgsGeometry )
 /**
  * Writes the geometry to stream out. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsGeometry& geometry );
+
 /**
  * Reads a geometry from stream in into geometry. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsGeometry& geometry );

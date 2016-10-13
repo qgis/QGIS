@@ -43,6 +43,7 @@ class QgsInterpolatorDialog: public QDialog
     void setInputData( const QList< QgsInterpolator::LayerData >& inputData );
 
   protected:
+
     /**
      * Pointer to the running QGIS instance. This may be necessary to show interpolator properties on the map (e.g. triangulation)*/
     QgisInterface* mInterface;

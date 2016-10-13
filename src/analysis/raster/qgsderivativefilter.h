@@ -34,9 +34,11 @@ class ANALYSIS_EXPORT QgsDerivativeFilter : public QgsNineCellFilter
                                          float* x13, float* x23, float* x33 ) override = 0;
 
   protected:
+
     /**
      * Calculates the first order derivative in x-direction according to Horn (1981)*/
     float calcFirstDerX( float* x11, float* x21, float* x31, float* x12, float* x22, float* x32, float* x13, float* x23, float* x33 );
+
     /**
      * Calculates the first order derivative in y-direction according to Horn (1981)*/
     float calcFirstDerY( float* x11, float* x21, float* x31, float* x12, float* x22, float* x32, float* x13, float* x23, float* x33 );

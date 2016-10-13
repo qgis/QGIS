@@ -216,6 +216,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     virtual QgsCoordinateReferenceSystem crs() const override;
 
   protected:
+
     /**
      * Loads fields from input file to member attributeFields */
     QVariant::Type DecodeSqlType( const QString& sqlTypeName );

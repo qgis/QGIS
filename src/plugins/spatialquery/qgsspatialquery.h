@@ -52,6 +52,7 @@ enum Topologic_Relation
 class QgsSpatialQuery
 {
   public:
+
     /**
      * \brief Constructor for a Spatial query.
      * \param pb Pointer to the MngProgressBar object.
@@ -138,6 +139,7 @@ class QgsSpatialQuery
      */
     void populateIndexResult( QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
                               bool ( QgsGeometryEngine::* operation )( const QgsAbstractGeometry&, QString* ) const );
+
     /**
      * \brief Populate index Result Disjoint
      * \param qsetIndexResult    Reference to QSet contains the result query

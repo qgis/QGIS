@@ -71,19 +71,24 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
   private:
     QgsMergeAttributesDialog(); //default constructor forbidden
     void createTableWidgetContents();
+
     /**
      * Create new combo box with the options for featureXX / mean / min / max */
     QComboBox* createMergeComboBox( QVariant::Type columnType ) const;
+
     /**
      * Returns the table widget column index of a combo box
     @return the column index or -1 in case of error*/
     int findComboColumn( QComboBox* c ) const;
+
     /**
      * Calculates the merged value of a column (depending on the selected merge behaviour) and inserts the value in the corresponding cell*/
     void refreshMergedValue( int col );
+
     /**
      * Inserts the attribute value of a specific feature into the row of merged attributes*/
     QVariant featureAttribute( QgsFeatureId featureId, int col );
+
     /**
      * Appends the values of the features for the final value*/
     QVariant concatenationAttribute( int col );
@@ -101,6 +106,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     QgsFeatureList mFeatureList;
     QgsVectorLayer* mVectorLayer;
     QgsMapCanvas* mMapCanvas;
+
     /**
      * Item that highlights the selected feature in the merge table*/
     QgsRubberBand* mSelectionRubberBand;

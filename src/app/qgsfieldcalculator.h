@@ -45,6 +45,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private slots:
+
     /**
      * Sets the ok button enabled / disabled*/
     void setOkButtonState();
@@ -53,14 +54,17 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
   private:
     //! default constructor forbidden
     QgsFieldCalculator();
+
     /**
      * Inserts existing fields into the combo box*/
     void populateFields();
+
     /**
      * Inserts the types supported by the provider into the combo box*/
     void populateOutputFieldTypes();
 
     QgsVectorLayer* mVectorLayer;
+
     /**
      * Key: field name, Value: field index*/
     QMap<QString, int> mFieldMap;

@@ -36,6 +36,7 @@
 class CORE_EXPORT QgsAuthMethodMetadata
 {
   public:
+
     /**
      * Construct an authentication method metadata container
      * @param _key Textual key of the library plugin

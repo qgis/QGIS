@@ -36,6 +36,7 @@ class CORE_EXPORT QgsRasterChecker
     ~QgsRasterChecker() {}
 
     QString report() { return mReport; }
+
     /**
      * Test using renderer to generate the image to be compared.
      * @param theVerifiedKey verified provider key

@@ -55,11 +55,13 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     void resizeEvent( QResizeEvent * event ) override;
 
   protected slots:
+
     /**
      * Initializes data defined buttons to current atlas coverage layer*/
     void populateDataDefinedButtons();
 
   private slots:
+
     /**
      * Sets the GUI elements to the values of mPicture*/
     void setGuiElementValues();
@@ -79,6 +81,7 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
 
   private:
     QgsComposerPicture* mPicture;
+
     /**
      * Whether the picture selection previews have been loaded */
     bool mPreviewsLoaded;
@@ -90,6 +93,7 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     /**
      * Tests if a file is valid svg*/
     bool testSvgFile( const QString& filename ) const;
+
     /**
      * Tests if a file is a valid pixel format*/
     bool testImageFile( const QString& filename ) const;

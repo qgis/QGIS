@@ -75,11 +75,13 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     /**
      * Define the targets of the action */
     void setTargets( const Targets& targets ) {mTargets = targets;}
+
     /**
      * Return availibity of action */
     const Targets& targets() const {return mTargets;}
 
   signals:
+
     /**
      * Triggered when action has been run for a specific list of features */
     void triggeredForFeatures( QgsMapLayer* layer, const QList<QgsFeature>& featureList );
@@ -139,6 +141,7 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
     /**
      * Sets the default action for a layer*/
     void setDefaultActionForLayer( QgsMapLayer* layer, QgsMapLayerAction* action );
+
     /**
      * Returns the default action for a layer*/
     QgsMapLayerAction * defaultActionForLayer( QgsMapLayer* layer );
@@ -150,6 +153,7 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
     QList< QgsMapLayerAction* > mMapLayerActionList;
 
   signals:
+
     /**
      * Triggered when an action is added or removed from the registry */
     void changed();

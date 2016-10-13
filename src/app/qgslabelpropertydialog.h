@@ -70,10 +70,12 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     void on_mLabelTextLineEdit_textChanged( const QString& text );
 
   private:
+
     /**
      * Sets activation / values to the gui elements depending on the label settings and feature values*/
     void init( const QString& layerId, const QString& providerId, int featureId, const QString& labelText );
     void disableGuiElements();
+
     /**
      * Block / unblock all input element signals*/
     void blockElementSignals( bool block );

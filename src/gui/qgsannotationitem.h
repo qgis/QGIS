@@ -64,6 +64,7 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem, public QgsAnnotatio
      * Returns the mouse move behaviour for a given position
       @param pos the position in scene coordinates*/
     QgsAnnotationItem::MouseMoveAction moveActionForPosition( QPointF pos ) const;
+
     /**
      * Returns suitable cursor shape for mouse move action*/
     Qt::CursorShape cursorShapeForAction( MouseMoveAction moveAction ) const;
@@ -85,6 +86,7 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem, public QgsAnnotatio
      * Sets the CRS of the map position.
       @param crs the CRS to set */
     virtual void setMapPositionCrs( const QgsCoordinateReferenceSystem& crs );
+
     /**
      * Returns the CRS of the map position.*/
     QgsCoordinateReferenceSystem mapPositionCrs() const override { return mMapPositionCrs; }
@@ -140,12 +142,15 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem, public QgsAnnotatio
     void paint( QPainter* painter ) override;
 
   protected:
+
     /**
      * True: the item stays at the same map position, False: the item stays on same screen position*/
     bool mMapPositionFixed;
+
     /**
      * Map position (in case mMapPositionFixed is true)*/
     QgsPoint mMapPosition;
+
     /**
      * CRS of the map position */
     QgsCoordinateReferenceSystem mMapPositionCrs;
@@ -157,6 +162,7 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem, public QgsAnnotatio
     /**
      * Size of the frame (without balloon)*/
     QSizeF mFrameSize;
+
     /**
      * Bounding rect (including item frame and balloon)*/
     QRectF mBoundingRect;
@@ -164,9 +170,11 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem, public QgsAnnotatio
     /**
      * Point symbol that is to be drawn at the map reference location*/
     QgsMarkerSymbol* mMarkerSymbol;
+
     /**
      * Width of the frame*/
     double mFrameBorderWidth;
+
     /**
      * Frame / balloon color*/
     QColor mFrameColor;
@@ -175,14 +183,17 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem, public QgsAnnotatio
     /**
      * Segment number where the connection to the map point is attached. -1 if no balloon needed (e.g. if point is contained in frame)*/
     int mBalloonSegment;
+
     /**
      * First segment point for drawing the connection (ccw direction)*/
     QPointF mBalloonSegmentPoint1;
+
     /**
      * Second segment point for drawing the balloon connection (ccw direction)*/
     QPointF mBalloonSegmentPoint2;
 
     void updateBoundingRect();
+
     /**
      * Check where to attach the balloon connection between frame and map point*/
     void updateBalloon();
@@ -199,12 +210,15 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem, public QgsAnnotatio
     /**
      * Returns frame width in painter units*/
     //double scaledFrameWidth( QPainter* p) const;
+
     /**
      * Gets the frame line (0 is the top line, 1 right, 2 bottom, 3 left)*/
     QLineF segment( int index ) const;
+
     /**
      * Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
     QPointF pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance ) const;
+
     /**
      * Returns the symbol size scaled in (mapcanvas) pixels. Used for the counding rect calculation*/
     double scaledSymbolSize() const;

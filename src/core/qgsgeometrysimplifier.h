@@ -44,6 +44,7 @@ class CORE_EXPORT QgsAbstractGeometrySimplifier
 };
 
 /***************************************************************************/
+
 /**
  * \ingroup core
  * Implementation of GeometrySimplifier using the Douglas-Peucker algorithm

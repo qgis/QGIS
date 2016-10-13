@@ -96,6 +96,7 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void setCurrentNodeStyleFromAction();
 
   private slots:
+
     /**
      * Sets GUI according to state of mLegend*/
     void setGuiElements();

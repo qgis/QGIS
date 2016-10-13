@@ -287,6 +287,7 @@ class CORE_EXPORT QgsEditFormConfig
      * Returns if the field at fieldidx should be treated as NOT NULL value
      */
     bool notNull( int fieldidx ) const;
+
     /**
      * Set if the field at fieldidx should be treated as NOT NULL value
      */
@@ -364,6 +365,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Type of feature form pop-up suppression after feature creation (overrides app setting) */
     FeatureFormSuppress suppress() const;
+
     /**
      * Set type of feature form pop-up suppression after feature creation (overrides app setting) */
     void setSuppress( FeatureFormSuppress s );

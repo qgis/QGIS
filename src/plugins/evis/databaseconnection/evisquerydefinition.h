@@ -42,6 +42,7 @@ class eVisQueryDefinition
 {
 
   public:
+
     /**
      * \brief Constructor */
     eVisQueryDefinition();
@@ -138,6 +139,7 @@ class eVisQueryDefinition
 
 
   private:
+
     /**
      * \brief Detailed description for the query */
     QString mDescription;

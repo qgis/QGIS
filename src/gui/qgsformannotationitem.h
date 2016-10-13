@@ -40,6 +40,7 @@ class GUI_EXPORT QgsFormAnnotationItem: public QObject, public QgsAnnotationItem
     void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr ) override;
 
     QSizeF minimumFrameSize() const override;
+
     /**
      * Returns the optimal frame size*/
     QSizeF preferredFrameSize() const;
@@ -57,9 +58,11 @@ class GUI_EXPORT QgsFormAnnotationItem: public QObject, public QgsAnnotationItem
     QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 
   private slots:
+
     /**
      * Sets a feature for the current map position and updates the dialog*/
     void setFeatureForMapPosition();
+
     /**
      * Sets visibility status based on mVectorLayer visibility*/
     void updateVisibility();
@@ -67,15 +70,19 @@ class GUI_EXPORT QgsFormAnnotationItem: public QObject, public QgsAnnotationItem
   private:
     QGraphicsProxyWidget* mWidgetContainer;
     QWidget* mDesignerWidget;
+
     /**
      * Associated vectorlayer (or 0 if attributes are not supposed to be replaced)*/
     QgsVectorLayer* mVectorLayer;
+
     /**
      * True if the item is related to a vector feature*/
     bool mHasAssociatedFeature;
+
     /**
      * Associated feature*/
     QgsFeatureId mFeature;
+
     /**
      * Path to (and including) the .ui file*/
     QString mDesignerForm;

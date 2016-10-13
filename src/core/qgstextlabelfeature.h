@@ -63,6 +63,7 @@ class QgsTextLabelFeature : public QgsLabelFeature
     QFont mDefinedFont;
     //! Metrics of the font for rendering
     QFontMetricsF* mFontMetrics;
+
     /**
      * Stores attribute values for data defined properties*/
     QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > mDataDefinedValues;

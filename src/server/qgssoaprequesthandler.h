@@ -38,9 +38,11 @@ class QgsSOAPRequestHandler: public QgsHttpRequestHandler
     void setXmlResponse( const QDomDocument& doc, const QString& mimeType ) override;
     void setGetPrintResponse( QByteArray* ba ) override;
   private:
+
     /**
      * Parses the xml of a getMap request and fills the parameters into the map. Returns 0 in case of success*/
     int parseGetMapElement( QMap<QString, QString>& parameterMap, const QDomElement& getMapElement ) const;
+
     /**
      * Parses the xml of a feature info request and fills the parameters into the map. Returns 0 in case of success*/
     int parseGetFeatureInfoElement( QMap<QString, QString>& parameterMap, const QDomElement& getMapElement ) const;
@@ -48,6 +50,7 @@ class QgsSOAPRequestHandler: public QgsHttpRequestHandler
     int parseOutputAttributesElement( QMap<QString, QString>& parameterMap, const QDomElement& outputAttributesElement ) const;
     int setSOAPWithAttachments( QImage* img );
     int setUrlToFile( QImage* img );
+
     /**
      * Reads the file wms_metadata.xml and extract the OnlineResource href. Returns 0 in case of success.*/
     int findOutHostAddress( QString& address ) const;

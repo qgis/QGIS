@@ -37,6 +37,7 @@ class QgsRasterResampler
      * Needs to be implemented by subclasses.
      */
     virtual QString type() const = 0;
+
     /**
      * Get a deep copy of this object.
      * Needs to be reimplemented by subclasses.

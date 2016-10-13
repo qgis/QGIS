@@ -42,12 +42,15 @@ class QgsZonalStatisticsDialog: public QDialog, private Ui::QgsZonalStatisticsDi
 
   private:
     QgsZonalStatisticsDialog();
+
     /**
      * Fills the available raster and polygon layers into the combo boxes*/
     void insertAvailableLayers();
+
     /**
      * Propose a valid prefix for the attributes*/
     QString proposeAttributePrefix() const;
+
     /**
      * Check if a prefix can be used for the count, sum and mean attribute*/
     bool prefixIsValid( const QString& prefix ) const;

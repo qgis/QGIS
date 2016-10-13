@@ -53,6 +53,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      */
 
     virtual bool isSelected( QgsFeatureId fid );
+
     /**
      * Returns the selection status of a given QModelIndex.
      *
@@ -63,6 +64,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
     virtual bool isSelected( const QModelIndex& index );
 
   signals:
+
     /**
      * Request a repaint of a list of model indexes.
      * Views using this model should connect to and properly process this signal.
@@ -78,6 +80,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
     void requestRepaint();
 
   public slots:
+
     /**
      * Overwritten to do NOTHING (we handle selection ourselves)
      *

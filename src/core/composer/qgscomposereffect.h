@@ -36,6 +36,7 @@ class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
     void setCompositionMode( QPainter::CompositionMode compositionMode );
 
   protected:
+
     /**
      * Called whenever source needs to be drawn */
     virtual void draw( QPainter *painter ) override;

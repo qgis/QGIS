@@ -328,6 +328,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Converts absolute path to path relative to target */
     static QString absolutePathToRelativePath( const QString& apath, const QString& targetPath );
+
     /**
      * Converts path relative to target to an absolute path */
     static QString relativePathToAbsolutePath( const QString& rpath, const QString& targetPath );
@@ -338,9 +339,11 @@ class CORE_EXPORT QgsApplication : public QApplication
 #ifdef _MSC_VER
     static QString cfgIntDir() { return ABISYM( mCfgIntDir ); }
 #endif
+
     /**
      * Returns path to the source directory. Valid only when running from build directory */
     static QString buildSourcePath() { return ABISYM( mBuildSourcePath ); }
+
     /**
      * Returns path to the build output directory. Valid only when running from build directory */
     static QString buildOutputPath() { return ABISYM( mBuildOutputPath ); }
@@ -434,24 +437,30 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * True when running from build directory, i.e. without 'make install' */
     static bool ABISYM( mRunningFromBuildDir );
+
     /**
      * Path to the source directory. valid only when running from build directory. */
     static QString ABISYM( mBuildSourcePath );
 #ifdef _MSC_VER
+
     /**
      * Configuration internal dir */
     static QString ABISYM( mCfgIntDir );
 #endif
+
     /**
      * Path to the output directory of the build. valid only when running from build directory */
     static QString ABISYM( mBuildOutputPath );
+
     /**
      * List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
      * @see skipGdalDriver, restoreGdalDriver */
     static QStringList ABISYM( mGdalSkipList );
+
     /**
      * @note added in 2.4 */
     static int ABISYM( mMaxThreads );
+
     /**
      * @note added in 2.12 */
     static QString ABISYM( mAuthDbDirPath );

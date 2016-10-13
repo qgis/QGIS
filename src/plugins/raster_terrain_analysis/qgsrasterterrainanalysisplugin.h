@@ -37,6 +37,7 @@ class QgsRasterTerrainAnalysisPlugin: public QObject, public QgisPlugin
     /**
      * Initialize connection to GUI*/
     void initGui() override;
+
     /**
      * Unload the plugin and cleanup the GUI*/
     void unload() override;

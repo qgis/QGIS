@@ -38,6 +38,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor
      * @param parent Parent widget (usually a QgisApp)

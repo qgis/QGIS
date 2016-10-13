@@ -96,6 +96,7 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     void drawMarkerPos( QPainter *painter );
 
   signals:
+
     /**
      * Is emitted when mouse cursor coordinates change*/
     void cursorPosChanged( QPointF );

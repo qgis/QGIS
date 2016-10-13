@@ -35,26 +35,32 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
   public:
     enum IconType
     {
+
       /**
       * No icon is used
       */
       ICON_NONE,
+
       /**
        * A cross is used to highlight points (+)
        */
       ICON_CROSS,
+
       /**
        * A cross is used to highlight points (x)
        */
       ICON_X,
+
       /**
        * A box is used to highlight points (□)
        */
       ICON_BOX,
+
       /**
        * A circle is used to highlight points (○)
        */
       ICON_CIRCLE,
+
       /**
        * A full box is used to highlight points (■)
        */
@@ -67,27 +73,35 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     /**
      * Sets geometry (takes ownership). Geometry is expected to be in map coordinates */
     void setGeometry( QgsAbstractGeometry* geom );
+
     /**
      * Returns a pointer to the geometry*/
     const QgsAbstractGeometry* geometry() { return mGeometry; }
+
     /**
      * Moves vertex to new position (in map coordinates)*/
     void moveVertex( QgsVertexId id, const QgsPointV2& newPos );
+
     /**
      * Sets fill color for vertex markers*/
     void setFillColor( const QColor& c );
+
     /**
      * Sets outline color for vertex markes*/
     void setOutlineColor( const QColor& c );
+
     /**
      * Sets outline width*/
     void setOutlineWidth( int width );
+
     /**
      * Sets pen style*/
     void setLineStyle( Qt::PenStyle penStyle );
+
     /**
      * Sets brush style*/
     void setBrushStyle( Qt::BrushStyle brushStyle );
+
     /**
      * Sets vertex marker icon type*/
     void setIconType( IconType iconType ) { mIconType = iconType; }

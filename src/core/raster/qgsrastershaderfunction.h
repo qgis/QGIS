@@ -19,6 +19,7 @@ email                : ersts@amnh.org
 
 #ifndef QGSRASTERSHADERFUNCTION_H
 #define QGSRASTERSHADERFUNCTION_H
+
 /**
  * \ingroup core
  * The raster shade function applies a shader to a pixel at render time -
@@ -59,6 +60,7 @@ class CORE_EXPORT QgsRasterShaderFunction
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
 
   protected:
+
     /**
      * \brief User defineable maximum value for the shading function */
     double mMaximumValue;

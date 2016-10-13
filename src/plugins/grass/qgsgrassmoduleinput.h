@@ -5,6 +5,7 @@
     copyright            : (C) 2015 by Radim Blazek
     email                : radim.blazek@gmail.com
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -72,6 +73,7 @@ class QgsGrassModuleInputModel : public QStandardItemModel
 
 
   public slots:
+
     /**
      * Reload current mapset */
     void reload();
@@ -236,6 +238,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
+
     /**
      * \brief Constructor
      * \param qdesc option element in QGIS module description XML file

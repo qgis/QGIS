@@ -103,11 +103,13 @@ class eVisDatabaseConnection
     }
 
   protected:
+
     /**
      * \brief Variable used to store the query results */
     QSqlQuery mQuery;
 
   private:
+
     /**
      * \brief Host name for the database server */
     QString mHostName;

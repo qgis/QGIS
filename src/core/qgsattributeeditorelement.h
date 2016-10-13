@@ -118,6 +118,7 @@ class CORE_EXPORT QgsAttributeEditorElement
     bool mShowLabel;
 
   private:
+
     /**
      * Should be implemented by subclasses to save type specific configuration.
      *
@@ -143,6 +144,7 @@ class CORE_EXPORT QgsAttributeEditorElement
 class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 {
   public:
+
     /**
      * Creates a new attribute editor container
      *
@@ -257,6 +259,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 {
   public:
+
     /**
      * Creates a new attribute editor element which represents a field
      *
@@ -293,6 +296,7 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 {
   public:
+
     /**
      * Creates a new element which embeds a relation.
      *
@@ -348,6 +352,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * @note Added in QGIS 2.18
      */
     bool showLinkButton() const;
+
     /**
      * Determines if the "link feature" button should be shown
      *
@@ -361,6 +366,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * @note Added in QGIS 2.18
      */
     bool showUnlinkButton() const;
+
     /**
      * Determines if the "unlink feature" button should be shown
      *

@@ -238,6 +238,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     /**
      * Width of the arrow marker in mm. May be specified by the user. The height is automatically adapted*/
     double mArrowHeadWidth;
+
     /**
      * Height of the arrow marker in mm. Is calculated from arrow marker width and apsect ratio of svg*/
     double mStartArrowHeadHeight;
@@ -246,9 +247,11 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     /**
      * Path to the start marker file*/
     QString mStartMarkerFile;
+
     /**
      * Path to the end marker file*/
     QString mEndMarkerFile;
+
     /**
      * Default marker, no marker or svg marker*/
     MarkerMode mMarkerMode;
@@ -256,6 +259,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     double mArrowHeadOutlineWidth;
     QColor mArrowHeadOutlineColor;
     QColor mArrowHeadFillColor;
+
     /**
      * Indicates QGIS version to mimic bounding box behaviour for. The line placement changed in version 2.4, so a value
      * of 22 is used to indicate that the line should be drawn using the older placement routine.
@@ -269,23 +273,29 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      *  Needs to be called whenever the arrow width/height, the outline with or the endpoints are changed
      */
     void adaptItemSceneRect();
+
     /**
      * Computes the margin around the line necessary to include the markers */
     double computeMarkerMargin() const;
+
     /**
      * Draws the default marker at the line end*/
     void drawHardcodedMarker( QPainter* p, MarkerType type );
+
     /**
      * Draws a user-defined marker (must be an svg file)*/
     void drawSVGMarker( QPainter* p, MarkerType type, const QString& markerPath );
+
     /**
      * Apply default graphics settings*/
     void init();
+
     /**
      * Creates the default line symbol
      * @note added in QGIS 2.5
      */
     void createDefaultLineSymbol();
+
     /**
      * Draws the arrow line
      * @note added in QGIS 2.5

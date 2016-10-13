@@ -41,6 +41,7 @@ class QgsSearchWidgetWrapper;
 class GUI_EXPORT QgsEditorWidgetFactory
 {
   public:
+
     /**
      * Constructor
      *

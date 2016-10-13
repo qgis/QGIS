@@ -55,6 +55,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+
     /**
      * Import a vector layer into the database */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
@@ -266,6 +267,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QgsSqliteHandle *mHandle;
 
   signals:
+
     /**
      *   This is emitted whenever the worker thread has fully calculated the
      *   extents for this layer, and its event has been received by this

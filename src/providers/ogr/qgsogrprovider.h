@@ -188,12 +188,15 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     /* virtual */
     QString fileVectorFilters() const override;
+
     /**
      * Return a string containing the available database drivers */
     QString databaseDrivers() const;
+
     /**
      * Return a string containing the available directory drivers */
     QString protocolDrivers() const;
+
     /**
      * Return a string containing the available protocol drivers */
     QString directoryDrivers() const;
@@ -290,6 +293,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     void reloadData() override;
 
   protected:
+
     /**
      * Loads fields from input file to member attributeFields */
     void loadFields();
@@ -377,6 +381,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /**
      * Adds one feature*/
     bool addFeature( QgsFeature& f );
+
     /**
      * Deletes one feature*/
     bool deleteFeature( QgsFeatureId id );

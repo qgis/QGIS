@@ -79,6 +79,7 @@ class CORE_EXPORT QgsRasterIdentifyResult
     void setError( const QgsError & theError ) { mError = theError;}
 
   private:
+
     /**
      * \brief Is valid */
     bool mValid;

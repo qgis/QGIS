@@ -5,6 +5,7 @@
     copyright            : (C) 2008 by Marco Hugentobler
     email                : marco dot hugentobler at karto dot baug dot ethz dot ch
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -66,14 +67,17 @@ class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWid
     /**
      * Sets GUI elements to width/height from composition*/
     void displayCompositionWidthHeight();
+
     /**
      * Sets Print as raster checkbox value*/
     void setPrintAsRasterCheckBox( bool state );
+
     /**
      * Sets number of pages spin box value*/
     void setNumberPages();
 
   signals:
+
     /**
      * Is emitted when page orientation changes*/
     void pageOrientationChanged( const QString& orientation );
@@ -102,15 +106,19 @@ class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWid
     QMap<QString, QgsCompositionPaper> mPaperMap;
 
     QgsCompositionWidget(); //default constructor is forbidden
+
     /**
      * Sets width/height to chosen paper format and updates paper item*/
     void applyCurrentPaperSettings();
+
     /**
      * Applies the current width and height values*/
     void applyWidthHeight();
+
     /**
      * Makes sure width/height values for custom paper matches the current orientation*/
     void adjustOrientation();
+
     /**
      * Sets GUI elements to snaping distances of composition*/
     void displaySnapingSettings();
@@ -122,6 +130,7 @@ class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWid
 
     double size( QDoubleSpinBox *spin );
     void setSize( QDoubleSpinBox *spin, double v );
+
     /**
      * Blocks / unblocks the signals of all items*/
     void blockSignals( bool block );

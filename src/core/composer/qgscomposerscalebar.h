@@ -5,6 +5,7 @@
     copyright            : (C) 2005 by Radim Blazek
     email                : blazek@itc.it
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,6 +24,7 @@
 
 class QgsComposerMap;
 class QgsScaleBarStyle;
+
 /**
  * \ingroup core
  * A scale bar item that can be added to a map composition.
@@ -252,6 +254,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see setLineJoinStyle
      */
     Qt::PenJoinStyle lineJoinStyle() const { return mLineJoinStyle; }
+
     /**
      * Sets join style used when drawing the lines in the scalebar
      * @param style Join style for lines
@@ -268,6 +271,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see setLineCapStyle
      */
     Qt::PenCapStyle lineCapStyle() const { return mLineCapStyle; }
+
     /**
      * Sets cap style used when drawing the lines in the scalebar
      * @param style Cap style for lines
@@ -280,6 +284,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     /**
      * Apply default settings*/
     void applyDefaultSettings();
+
     /**
      * Apply default size (scale bar 1/5 of map item width) */
     void applyDefaultSize( ScaleBarUnits u = Meters );
@@ -335,6 +340,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
   public slots:
     void updateSegmentSize();
+
     /**
      * Sets mCompositionMap to 0 if the map is deleted*/
     void invalidateCurrentMap();
@@ -344,24 +350,31 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     /**
      * Reference to composer map object*/
     const QgsComposerMap* mComposerMap;
+
     /**
      * Number of segments on right side*/
     int mNumSegments;
+
     /**
      * Number of segments on left side*/
     int mNumSegmentsLeft;
+
     /**
      * Size of a segment (in map units)*/
     double mNumUnitsPerSegment;
+
     /**
      * Number of map units per scale bar units (e.g. 1000 to have km for a map with m units)*/
     double mNumMapUnitsPerScaleBarUnit;
+
     /**
      * Either fixed (i.e. mNumUnitsPerSegment) or try to best fit scale bar width (mMinBarWidth, mMaxBarWidth)*/
     SegmentSizeMode mSegmentSizeMode;
+
     /**
      * Minimum allowed bar width, when mSegmentSizeMode is FitWidth*/
     double mMinBarWidth;
+
     /**
      * Maximum allowed bar width, when mSegmentSizeMode is FitWidth*/
     double mMaxBarWidth;
@@ -369,22 +382,28 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     /**
      * Labeling of map units*/
     QString mUnitLabeling;
+
     /**
      * Font*/
     QFont mFont;
     QColor mFontColor;
+
     /**
      * Outline*/
     QPen mPen;
+
     /**
      * Fill*/
     QBrush mBrush;
+
     /**
      * Secondary fill*/
     QBrush mBrush2;
+
     /**
      * Height of bars/lines*/
     double mHeight;
+
     /**
      * Scalebar style*/
     QgsScaleBarStyle* mStyle;

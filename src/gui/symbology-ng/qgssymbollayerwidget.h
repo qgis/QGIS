@@ -77,11 +77,13 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
     QgsMapCanvas* mMapCanvas;
 
   signals:
+
     /**
      * Should be emitted whenever configuration changes happened on this symbol layer configuration.
      * If the subsymbol is changed, {@link symbolChanged()} should be emitted instead.
      */
     void changed();
+
     /**
      * Should be emitted whenever the sub symbol changed on this symbol layer configuration.
      * Normally {@link changed()} should be preferred.
@@ -544,6 +546,7 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
   protected:
     QgsSVGFillSymbolLayer* mLayer;
     void insertIcons();
+
     /**
      * Enables or disables svg fill color, border color and border width based on whether the
      * svg file supports custom parameters.

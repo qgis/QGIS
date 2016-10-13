@@ -183,6 +183,7 @@ void QgsGeometrySnapperDialog::selectOutputFile()
 
 void QgsGeometrySnapperDialog::run()
 {
+
   /**
    * Get layers **/
   QgsVectorLayer* layer = getInputLayer();

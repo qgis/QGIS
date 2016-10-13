@@ -41,6 +41,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 {
     Q_OBJECT
   public:
+
     /**
      * This constructor is used when the query builder is called from the
      * vector layer properties dialog

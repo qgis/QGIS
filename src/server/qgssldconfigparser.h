@@ -28,6 +28,7 @@ class QTemporaryFile;
 class QgsSLDConfigParser : public QgsWmsConfigParser
 {
   public:
+
     /**
      * Constructor takes a dom document as argument. The class takes ownership of the document and deletes it in the destructor
     @param doc SLD document
@@ -124,6 +125,7 @@ class QgsSLDConfigParser : public QgsWmsConfigParser
 
     // WMS inspire capabilities
     bool wmsInspireActivated() const override;
+
     /**
      * Adds inspire capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     void inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;

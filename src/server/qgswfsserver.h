@@ -60,6 +60,7 @@ independent from any server side technology*/
 class QgsWfsServer: public QgsOWSServer
 {
   public:
+
     /**
      * Constructor. Takes parameter map and a pointer to a renderer object (does not take ownership)*/
     QgsWfsServer(
@@ -98,6 +99,7 @@ class QgsWfsServer: public QgsOWSServer
     void setAdminConfigParser( QgsWfsProjectParser* parser ) { mConfigParser = parser; }
 
   private:
+
     /**
      * Don't use the default constructor*/
     QgsWfsServer();

@@ -38,11 +38,13 @@ class GUI_EXPORT QgsDetailedItemDelegate : public QAbstractItemDelegate
   public:
     QgsDetailedItemDelegate( QObject * parent = nullptr );
     ~QgsDetailedItemDelegate();
+
     /**
      * Reimplement for parent class */
     void paint( QPainter * thePainter,
                 const QStyleOptionViewItem & theOption,
                 const QModelIndex & theIndex ) const override;
+
     /**
      * Reimplement for parent class */
     QSize sizeHint( const QStyleOptionViewItem & theOption,

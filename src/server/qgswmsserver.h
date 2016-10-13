@@ -62,6 +62,7 @@ independent from any server side technology*/
 class QgsWmsServer: public QgsOWSServer
 {
   public:
+
     /**
      * Constructor. Does _NOT_ take ownership of
         QgsConfigParser, QgsCapabilitiesCache and QgsMapRenderer*/
@@ -87,6 +88,7 @@ class QgsWmsServer: public QgsOWSServer
     QDomDocument getCapabilities( QString version = "1.3.0", bool fullProjectInformation = false );
 
     QDomDocument getContext();
+
     /**
      * Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership
     of the image object*/
@@ -100,15 +102,19 @@ class QgsWmsServer: public QgsOWSServer
     of the image object). If an instance to existing hit test structure is passed, instead of rendering
     it will fill the structure with symbols that would be used for rendering */
     QImage* getMap( HitTest* hitTest = nullptr );
+
     /**
      * GetMap request with vector format output. This output is usually symbolized (difference to WFS GetFeature)*/
     void getMapAsDxf();
+
     /**
      * Returns an SLD file with the style of the requested layer. Exception is raised in case of troubles :-)*/
     QDomDocument getStyle();
+
     /**
      * Returns an SLD file with the styles of the requested layers. Exception is raised in case of troubles :-)*/
     QDomDocument getStyles();
+
     /**
      * Returns a describeLayer file with the onlineResource of the requested layers. Exception is raised in case of troubles :-)*/
     QDomDocument describeLayer();
@@ -133,6 +139,7 @@ class QgsWmsServer: public QgsOWSServer
     QDomDocument getSchemaExtension();
 
   private:
+
     /**
      * Don't use the default constructor*/
     QgsWmsServer();
@@ -151,22 +158,26 @@ class QgsWmsServer: public QgsOWSServer
      @param height image height (or -1 if height should be taken from HEIGHT wms parameter)
      @return 0 in case of error*/
     QImage* createImage( int width = -1, int height = -1 ) const;
+
     /**
      * Configures mMapRenderer to the parameters
      HEIGHT, WIDTH, BBOX, CRS.
      @param paintDevice the device that is used for painting (for dpi)
      @return 0 in case of success*/
     int configureMapRender( const QPaintDevice* paintDevice ) const;
+
     /**
      * Reads the layers and style lists from the parameters LAYERS and STYLES
      @return 0 in case of success*/
     int readLayersAndStyles( QStringList& layersList, QStringList& stylesList ) const;
+
     /**
      * If the parameter SLD exists, mSLDParser is configured appropriately. The lists are
     set to the layer and style names according to the SLD
     @return 0 in case of success*/
     int initializeSLDParser( QStringList& layersList, QStringList& stylesList );
     static bool infoPointToMapCoordinates( int i, int j, QgsPoint* infoPoint, QgsMapRenderer* mapRenderer );
+
     /**
      * Appends feature info xml for the layer to the layer element of the feature info dom document
     @param featureBBox the bounding box of the selected features in output CRS
@@ -181,6 +192,7 @@ class QgsWmsServer: public QgsOWSServer
                                     const QString& version,
                                     const QString& infoFormat,
                                     QgsRectangle* featureBBox = nullptr ) const;
+
     /**
      * Appends feature info xml for the layer to the layer element of the dom document*/
     int featureInfoFromRasterLayer( QgsRasterLayer* layer,
@@ -198,6 +210,7 @@ class QgsWmsServer: public QgsOWSServer
     /**
      * Record which symbols would be used if the map was in the current configuration of mMapRenderer. This is useful for content-based legend*/
     void runHitTest( QPainter* painter, HitTest& hitTest );
+
     /**
      * Record which symbols within one layer would be rendered with the given renderer context*/
     void runHitTestLayer( QgsVectorLayer* vl, SymbolSet& usedSymbols, QgsRenderContext& context );
@@ -222,6 +235,7 @@ class QgsWmsServer: public QgsOWSServer
     void applyRequestedLayerFilters( const QStringList& layerList, QHash<QgsMapLayer*, QString>& originalFilters ) const;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
+
     /**
      * Apply filter strings from the access control to the layers.
      * @param layerList layers to filter
@@ -234,6 +248,7 @@ class QgsWmsServer: public QgsOWSServer
      * Tests if a filter sql string is allowed (safe)
       @return true in case of success, false if string seems unsafe*/
     bool testFilterStringSafety( const QString& filter ) const;
+
     /**
      * Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes*/
     static void groupStringList( QStringList& list, const QString& groupString );
@@ -242,6 +257,7 @@ class QgsWmsServer: public QgsOWSServer
      * Select vector features with ids specified in parameter SELECTED, e.g. ...&SELECTED=layer1:1,2,9;layer2:3,5,10&...
       @return list with layer ids where selections have been created*/
     QStringList applyFeatureSelections( const QStringList& layerList ) const;
+
     /**
      * Clear all feature selections in the given layers*/
     void clearFeatureSelections( const QStringList& layerIds ) const;

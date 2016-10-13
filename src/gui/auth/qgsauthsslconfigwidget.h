@@ -39,6 +39,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     Q_OBJECT
 
   public:
+
     /**
      * Construct a widget for editing an SSL server certificate configuration
      * @param parent Parent widget
@@ -55,6 +56,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     /**
      * Access to the certificate's group box widget */
     QGroupBox *certificateGroupBox();
+
     /**
      * Access to the SSL configuration's group box widget */
     QGroupBox *sslConfigGroupBox();
@@ -90,11 +92,13 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     int sslPeerVerifyDepth();
 
   public slots:
+
     /**
      * Enable or disable the custom options widget */
     void enableSslCustomOptions( bool enable );
 
     // may also load existing config, if found
+
     /**
      * Set SSl certificate and any associated host:port */
     void setSslCertificate( const QSslCertificate& cert, const QString &hostport = QString() );
@@ -160,6 +164,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     bool readyToSave();
 
   signals:
+
     /**
      * Emitted when the enabled state of the configuration changes */
     void configEnabledChanged( bool enabled );
@@ -220,6 +225,7 @@ class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Construct wrapper dialog for the SSL config widget
      * @param parent Parent widget
@@ -236,6 +242,7 @@ class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
     QgsAuthSslConfigWidget *sslCustomConfigWidget() { return mSslConfigWdgt; }
 
   public slots:
+
     /**
      * Overridden base dialog accept slot */
     void accept() override;

@@ -50,6 +50,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * Construct point locator for a layer.
      *  @arg destinationCrs if a valid QgsCoordinateReferenceSystem is passed then the locator will
@@ -219,6 +220,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     void onGeometryChanged( QgsFeatureId fid, const QgsGeometry& geom );
 
   private:
+
     /**
      * Storage manager */
     SpatialIndex::IStorageManager* mStorage;

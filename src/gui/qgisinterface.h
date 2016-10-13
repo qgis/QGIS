@@ -398,6 +398,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler* handler ) = 0;
 
     // @todo is this deprecated in favour of QgsContextHelp?
+
     /**
      * Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
@@ -424,6 +425,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QMenu *viewMenu() = 0;
     virtual QMenu *layerMenu() = 0;
     virtual QMenu *newLayerMenu() = 0;
+
     /**
      * @note added in 2.5 */
     virtual QMenu *addLayerMenu() = 0;
@@ -534,9 +536,11 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionAddRasterLayer() = 0;
     virtual QAction *actionAddPgLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
+
     /**
      * Get access to the native Add ArcGIS FeatureServer action. */
     virtual QAction *actionAddAfsLayer() = 0;
+
     /**
      * Get access to the native Add ArcGIS MapServer action. */
     virtual QAction *actionAddAmsLayer() = 0;
@@ -633,6 +637,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual int messageTimeout() = 0;
 
   signals:
+
     /**
      * Emitted whenever current (selected) layer changes.
      *  The pointer to layer can be null if no layer is selected
@@ -659,6 +664,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * This signal is emitted when the initialization is complete
      */
     void initializationCompleted();
+
     /**
      * Emitted when a project file is successfully read
      * @note
@@ -667,6 +673,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * knows to then check the project properties for any relevant state.
      */
     void projectRead();
+
     /**
      * Emitted when starting an entirely new project
      * @note

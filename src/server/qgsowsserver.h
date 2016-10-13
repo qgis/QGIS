@@ -63,6 +63,7 @@ class QgsOWSServer
     QgsRequestHandler* mRequestHandler;
     QString mConfigFilePath;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
+
     /**
      * The access control helper */
     const QgsAccessControl* mAccessControl;

@@ -152,6 +152,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     virtual void updateMethodConfig( QgsAuthMethodConfig &mconfig ) = 0;
 
   protected:
+
     /**
      * Construct a default authentication method
      * @note Non-public since this is an abstract base class
@@ -173,6 +174,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     /**
      * Set the support expansions (points in providers where the authentication is injected) of the auth method */
     void setExpansions( const QgsAuthMethod::Expansions& expansions ) { mExpansions = expansions; }
+
     /**
      * Set list of data providers this auth method supports */
     void setDataProviders( const QStringList& dataproviders ) { mDataProviders = dataproviders; }

@@ -22,6 +22,7 @@
 #include "qgsvectordataprovider.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
+
 /**
  * Apply filter from AccessControl */
 void QgsOWSServer::applyAccessControlLayerFilters( QgsMapLayer* mapLayer, QHash<QgsMapLayer*, QString>& originalLayerFilters ) const

@@ -10,6 +10,7 @@
  * B. Morley - added functions to convert this class to a data provider interface
  * Frank Warmerdam - contributed bug fixes and migrated class to use all GDAL_C_API calls
  */
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -137,6 +138,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 {
     Q_OBJECT
   public:
+
     /**
      * \brief Default cumulative cut lower limit */
     static const double CUMULATIVE_CUT_LOWER;
@@ -179,6 +181,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //as the previous constructor will be called with the literal for providerKey
     //implicitly converted to a bool.
     //for QGIS 3.0, make either constructor explicit or alter the signatures
+
     /**
      * \brief [ data provider interface ] Constructor in provider mode */
     QgsRasterLayer( const QString &uri,
@@ -371,11 +374,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void onProgress( int, double, const QString& );
 
   signals:
+
     /**
      * \brief Signal for notifying listeners of long running processes */
     void progressUpdate( int theValue );
 
   protected:
+
     /**
      * \brief Read the symbology for the current layer from the Dom node supplied */
     bool readSymbology( const QDomNode& node, QString& errorMessage ) override;
@@ -401,6 +406,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool writeXml( QDomNode & layer_node, QDomDocument & doc ) const override;
 
   private:
+
     /**
      * \brief Initialize default values */
     void init();

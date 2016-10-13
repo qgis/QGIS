@@ -30,6 +30,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
     Q_OBJECT
 
   public:
+
     /**
      * Create a new QgsTabWidget with the optionally provided parent.
      *

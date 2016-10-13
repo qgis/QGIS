@@ -351,6 +351,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
 
   protected:
 #if 0
+
     /**
      * Debugging member
      *  invoked when a connect() is made to this object

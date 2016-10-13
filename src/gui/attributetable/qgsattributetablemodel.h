@@ -58,6 +58,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     };
 
   public:
+
     /**
      * Constructor
      * @param layerCache  A layer cache to use as backend
@@ -250,6 +251,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void setExtraColumns( int extraColumns );
 
   public slots:
+
     /**
      * Loads the layer into the model
      * Preferably to be called, before using this model as source for any other proxy model
@@ -264,6 +266,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void fieldConditionalStyleChanged( const QString& fieldName );
 
   signals:
+
     /**
      * Model has been changed
      */
@@ -274,6 +277,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void finished();
 
   private slots:
+
     /**
      * Launched whenever the number of fields has changed
      */
@@ -292,6 +296,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     virtual void attributeDeleted( int idx );
 
   protected slots:
+
     /**
      * Launched when attribute value has been changed
      * @param fid feature id
@@ -299,11 +304,13 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param value new value
      */
     virtual void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
+
     /**
      * Launched when eatures have been deleted
      * @param fids feature ids
      */
     virtual void featuresDeleted( const QgsFeatureIds& fids );
+
     /**
      * Launched when a feature has been added
      * @param fid feature id
@@ -338,6 +345,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     virtual void loadAttributes();
 
   private:
+
     /**
      * Load feature fid into local cache (mFeat)
      *
@@ -353,9 +361,11 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * The currently cached column */
     QgsExpression mSortCacheExpression;
     QgsAttributeList mSortCacheAttributes;
+
     /**
      * If it is set, a simple field is used for sorting, if it's -1 it's the mSortCacheExpression*/
     int mSortFieldIndex;
+
     /**
      * Allows caching of one value per column (used for sorting) */
     QHash<QgsFeatureId, QVariant> mSortCache;

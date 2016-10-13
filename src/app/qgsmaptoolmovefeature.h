@@ -35,6 +35,7 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
     void deactivate() override;
 
   private:
+
     /**
      * Start point of the move in map coordinates*/
     QgsPoint mStartPointMapCoords;

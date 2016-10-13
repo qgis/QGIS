@@ -947,27 +947,35 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /**
      * Solid or crosses*/
     GridStyle mGridStyle;
+
     /**
      * Grid line interval in x-direction (map units)*/
     double mGridIntervalX;
+
     /**
      * Grid line interval in y-direction (map units)*/
     double mGridIntervalY;
+
     /**
      * Grid line offset in x-direction*/
     double mGridOffsetX;
+
     /**
      * Grid line offset in y-direction*/
     double mGridOffsetY;
+
     /**
      * Font for grid line annotation*/
     QFont mGridAnnotationFont;
+
     /**
      * Font color for grid coordinates*/
     QColor mGridAnnotationFontColor;
+
     /**
      * Digits after the dot*/
     int mGridAnnotationPrecision;
+
     /**
      * True if coordinate values should be drawn*/
     bool mShowGridAnnotation;
@@ -975,12 +983,15 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /**
      * Annotation display mode for left map side*/
     DisplayMode mLeftGridAnnotationDisplay;
+
     /**
      * Annotation display mode for right map side*/
     DisplayMode mRightGridAnnotationDisplay;
+
     /**
      * Annotation display mode for top map side*/
     DisplayMode mTopGridAnnotationDisplay;
+
     /**
      * Annotation display mode for bottom map side*/
     DisplayMode mBottomGridAnnotationDisplay;
@@ -988,12 +999,15 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /**
      * Annotation position for left map side (inside / outside)*/
     AnnotationPosition mLeftGridAnnotationPosition;
+
     /**
      * Annotation position for right map side (inside / outside)*/
     AnnotationPosition mRightGridAnnotationPosition;
+
     /**
      * Annotation position for top map side (inside / outside)*/
     AnnotationPosition mTopGridAnnotationPosition;
+
     /**
      * Annotation position for bottom map side (inside / outside)*/
     AnnotationPosition mBottomGridAnnotationPosition;
@@ -1005,12 +1019,15 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /**
      * Annotation direction on left side ( horizontal or vertical )*/
     AnnotationDirection mLeftGridAnnotationDirection;
+
     /**
      * Annotation direction on right side ( horizontal or vertical )*/
     AnnotationDirection mRightGridAnnotationDirection;
+
     /**
      * Annotation direction on top side ( horizontal or vertical )*/
     AnnotationDirection mTopGridAnnotationDirection;
+
     /**
      * Annotation direction on bottom side ( horizontal or vertical )*/
     AnnotationDirection mBottomGridAnnotationDirection;
@@ -1031,12 +1048,15 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /**
      * Divisions for frame on left map side*/
     DisplayMode mLeftFrameDivisions;
+
     /**
      * Divisions for frame on right map side*/
     DisplayMode mRightFrameDivisions;
+
     /**
      * Divisions for frame on top map side*/
     DisplayMode mTopFrameDivisions;
+
     /**
      * Divisions for frame on bottom map side*/
     DisplayMode mBottomFrameDivisions;

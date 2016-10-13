@@ -273,6 +273,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
   signals:
+
     /**
      * Is emitted on picture rotation change*/
     void pictureRotationChanged( double newRotation );
@@ -281,9 +282,11 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     //default constructor is forbidden
     QgsComposerPicture();
+
     /**
      * Calculates bounding rect for svg file (mSourcefile) such that aspect ratio is correct*/
     QRectF boundedSVGRect( double deviceWidth, double deviceHeight );
+
     /**
      * Calculates bounding rect for image such that aspect ratio is correct*/
     QRectF boundedImageRect( double deviceWidth, double deviceHeight );
@@ -302,12 +305,15 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /**
      * Image rotation*/
     double mPictureRotation;
+
     /**
      * Map that sets the rotation (or 0 if this picture uses map independent rotation)*/
     const QgsComposerMap* mRotationMap;
+
     /**
      * Width of the picture (in mm)*/
     double mPictureWidth;
+
     /**
      * Height of the picture (in mm)*/
     double mPictureHeight;

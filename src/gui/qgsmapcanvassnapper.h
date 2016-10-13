@@ -34,6 +34,7 @@ class QPoint;
 class GUI_EXPORT QgsMapCanvasSnapper
 {
   public:
+
     /**
      * Constructor
      @param canvas the map canvas to snap to*/
@@ -76,9 +77,11 @@ class GUI_EXPORT QgsMapCanvasSnapper
     void setMapCanvas( QgsMapCanvas* canvas );
 
   private:
+
     /**
      * Pointer to the map canvas*/
     QgsMapCanvas* mMapCanvas;
+
     /**
      * The object which does the snapping operations*/
     QgsSnapper* mSnapper;

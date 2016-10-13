@@ -91,6 +91,7 @@ class QgsWcsCapabilities : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *
@@ -224,6 +225,7 @@ class QgsWcsCapabilities : public QObject
     static QStringList domElementsTexts( const QDomElement &element, const QString &path );
 
   signals:
+
     /**
      * \brief emit a signal to notify of a progress event */
     void progressChanged( int theProgress, int theTotalSteps );
@@ -256,6 +258,7 @@ class QgsWcsCapabilities : public QObject
     QList<int> parseInts( const QString &text );
     QList<double> parseDoubles( const QString &text );
     QString crsUrnToAuthId( const QString &text );
+
     /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server
      *

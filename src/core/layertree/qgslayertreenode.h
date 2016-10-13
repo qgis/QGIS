@@ -103,15 +103,19 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     /**
      * Set a custom property for the node. Properties are stored in a map and saved in project file. */
     void setCustomProperty( const QString &key, const QVariant &value );
+
     /**
      * Read a custom property from layer. Properties are stored in a map and saved in project file. */
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
+
     /**
      * Remove a custom property from layer. Properties are stored in a map and saved in project file. */
     void removeCustomProperty( const QString &key );
+
     /**
      * Return list of keys stored in custom properties */
     QStringList customProperties() const;
+
     /**
      * Remove a child from a node */
     bool takeChild( QgsLayerTreeNode *node );

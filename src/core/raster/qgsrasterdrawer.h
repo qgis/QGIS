@@ -47,6 +47,7 @@ class CORE_EXPORT QgsRasterDrawer
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel, QgsRasterBlockFeedback* feedback = nullptr );
 
   protected:
+
     /**
      * Draws raster part
      * @param p the painter to draw to

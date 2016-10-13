@@ -28,6 +28,7 @@
 //This file was created using the plugin generator distributed with QGIS evis.h
 //is based on and a modification of the default plugin.h file which carried the
 //following header
+
 /***************************************************************************
                           plugin.h
  Functions:

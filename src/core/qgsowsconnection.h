@@ -36,6 +36,7 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * @param theService service name: WMS,WFS,WCS
@@ -57,11 +58,13 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     /**
      * Retreives the selected connection for the specified service */
     static QString selectedConnection( const QString & theService );
+
     /**
      * Marks the specified connection for the specified service as selected */
     static void setSelectedConnection( const QString & theService, const QString & name );
 
     QString mConnName;
+
     /**
      * Returns the connection uri */
     QgsDataSourceUri uri() const;

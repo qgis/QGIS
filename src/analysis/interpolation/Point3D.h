@@ -25,17 +25,21 @@
 class ANALYSIS_EXPORT Point3D
 {
   protected:
+
     /**
      * X-coordinate*/
     double mX;
+
     /**
      * Y-coordinate*/
     double mY;
+
     /**
      * Z-coordinate*/
     double mZ;
   public:
     Point3D();
+
     /**
      * Constructor with the x-, y- and z-coordinate as arguments*/
     Point3D( double x, double y, double z );
@@ -44,24 +48,31 @@ class ANALYSIS_EXPORT Point3D
     Point3D& operator=( const Point3D& p );
     bool operator==( const Point3D& p ) const;
     bool operator!=( const Point3D& p ) const;
+
     /**
      * Calculates the three-dimensional distance to another point*/
     double dist3D( Point3D* p ) const;
+
     /**
      * Returns the x-coordinate of the point*/
     double getX() const;
+
     /**
      * Returns the y-coordinate of the point*/
     double getY() const;
+
     /**
      * Returns the z-coordinate of the point*/
     double getZ() const;
+
     /**
      * Sets the x-coordinate of the point*/
     void setX( double x );
+
     /**
      * Sets the y-coordinate of the point*/
     void setY( double y );
+
     /**
      * Sets the z-coordinate of the point*/
     void setZ( double z );

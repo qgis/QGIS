@@ -36,6 +36,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
 {
     Q_OBJECT
   public:
+
     /**
      * @brief Widget to control a layers transparency and related options
      */
@@ -43,6 +44,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     ~QgsRasterTransparencyWidget();
 
   public slots:
+
     /**
      * Sync the widget state to the layer set for the widget.
      */
@@ -84,11 +86,13 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     /**
      * \brief slow executed when user wishes to import transparency values */
     void on_pbnImportTransparentPixelValues_clicked();
+
     /**
      * \brief slot executed when user presses "Remove Selected Row" button on the transparency page */
     void on_pbnRemoveSelectedRow_clicked();
 
   private:
+
     /**
      * \brief  A constant that signals property not used */
     const QString TRSTRING_NOT_SET;

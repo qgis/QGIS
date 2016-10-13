@@ -443,6 +443,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsExpressionContext createExpressionContext() const override;
 
   protected:
+
     /**
      * Set error message from read/write operation
      * @note not available in Python bindings

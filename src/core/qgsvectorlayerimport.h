@@ -120,6 +120,7 @@ class CORE_EXPORT QgsVectorLayerImport
     ~QgsVectorLayerImport();
 
   protected:
+
     /**
      * Flush the buffer writing the features to the new layer */
     bool flushBuffer();

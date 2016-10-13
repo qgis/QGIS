@@ -5,6 +5,7 @@
     copyright            : (C) 2009 by Marco Hugentobler
     email                : marco at hugis dot net
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -57,11 +58,13 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     void addTemplates( const QMap<QString, QString>& templates );
 
   public slots:
+
     /**
      * Raise, unminimize and activate this window */
     void activate();
 
   private:
+
     /**
      * Stores the relation between items and composer pointers. A 0 pointer for the composer means that
       this composer needs to be created from a default template*/
@@ -96,19 +99,24 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 #endif
 
   private slots:
+
     /**
      * Slot to update buttons state when selecting compositions */
     void toggleButtons();
     void on_mAddButton_clicked();
+
     /**
      * Slot to track combobox to use specific template path */
     void on_mTemplate_currentIndexChanged( int indx );
+
     /**
      * Slot to choose path to template */
     void on_mTemplatePathBtn_pressed();
+
     /**
      * Slot to open default templates dir with user's system */
     void on_mTemplatesDefaultDirBtn_pressed();
+
     /**
      * Slot to open user templates dir with user's system */
     void on_mTemplatesUserDirBtn_pressed();
@@ -119,6 +127,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 
     void remove_clicked();
     void show_clicked();
+
     /**
      * Duplicate composer */
     void duplicate_clicked();

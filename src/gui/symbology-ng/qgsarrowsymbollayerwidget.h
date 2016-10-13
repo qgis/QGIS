@@ -29,6 +29,7 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * @param layer the layer where this symbol layer is applied
@@ -45,6 +46,7 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private
     /**
      * Set the symbol layer */
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
+
     /**
      * Get the current symbol layer */
     virtual QgsSymbolLayer* symbolLayer() override;

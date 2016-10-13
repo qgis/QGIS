@@ -34,6 +34,7 @@
 class ANALYSIS_EXPORT QgsGraphBuilderInterface
 {
   public:
+
     /**
      * QgsGraphBuilderInterface constructor
      * @param crs Coordinate reference system for new graph vertex

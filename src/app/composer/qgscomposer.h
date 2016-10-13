@@ -561,13 +561,16 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QLabel* mStatusCursorXLabel;
     QLabel* mStatusCursorYLabel;
     QLabel* mStatusCursorPageLabel;
+
     /**
      * Combobox in status bar which shows/adjusts current zoom level*/
     QComboBox* mStatusZoomCombo;
     QList<double> mStatusZoomLevelsList;
+
     /**
      * Label in status bar which shows messages from the composition*/
     QLabel* mStatusCompositionLabel;
+
     /**
      * Label in status bar which shows atlas details*/
     QLabel* mStatusAtlasLabel;

@@ -574,6 +574,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QMutex *mutex() { return mMutex; }
 
   signals:
+
     /**
      * Custom logging signal to relay to console output and QgsMessageLog
      * @see QgsMessageLog
@@ -598,6 +599,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     void authDatabaseChanged() const;
 
   public slots:
+
     /**
      * Clear all authentication configs from authentication method caches */
     void clearAllCachedConfigs();

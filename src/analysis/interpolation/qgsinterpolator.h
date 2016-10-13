@@ -38,6 +38,7 @@ can be an attribute or the z-coordinates in case of 25D types*/
 class ANALYSIS_EXPORT QgsInterpolator
 {
   public:
+
     /**
      * Describes the type of input data*/
     enum InputType
@@ -73,6 +74,7 @@ class ANALYSIS_EXPORT QgsInterpolator
     const QList<LayerData>& layerData() const { return mLayerData; }
 
   protected:
+
     /**
      * Caches the vertex and value data from the provider. All the vertex data
      will be held in virtual memory
@@ -90,6 +92,7 @@ class ANALYSIS_EXPORT QgsInterpolator
 
   private:
     QgsInterpolator(); //forbidden
+
     /**
      * Helper method that adds the vertices of a geometry to the mCachedBaseData
        @param geom the geometry

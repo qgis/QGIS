@@ -55,15 +55,19 @@ class APP_EXPORT QgsPointRotationItem: public QgsMapCanvasItem
 
   private:
     QgsPointRotationItem();
+
     /**
      * Converts rotation into QPainter rotation considering mOrientation*/
     int painterRotation( int rotation ) const;
+
     /**
      * Clockwise (default) or counterclockwise*/
     Orientation mOrientation;
+
     /**
      * Font to display the numerical rotation values*/
     QFont mFont;
+
     /**
      * Symboll pixmap*/
     QPixmap mPixmap;

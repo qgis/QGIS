@@ -445,6 +445,7 @@ class CORE_EXPORT QgsFeatureRenderer
     /**
      * The current type of editing marker */
     int mCurrentVertexMarkerType;
+
     /**
      * The current size of editing marker */
     int mCurrentVertexMarkerSize;
@@ -458,6 +459,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * level DataDefined size
      */
     static void convertSymbolSizeScale( QgsSymbol * symbol, QgsSymbol::ScaleMethod method, const QString & field );
+
     /**
      * @note this function is used to convert old rotations expresssions to symbol
      * level DataDefined angle

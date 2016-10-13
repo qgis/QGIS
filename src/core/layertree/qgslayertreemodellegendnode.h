@@ -134,6 +134,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     void dataChanged();
 
   protected:
+
     /**
      * Construct the node with pointer to its parent layer node */
     explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL, QObject* parent = nullptr );

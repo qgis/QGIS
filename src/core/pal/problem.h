@@ -54,6 +54,7 @@ namespace pal
 
   typedef struct _subpart
   {
+
     /**
      * # of features in problem
      */
@@ -73,10 +74,12 @@ namespace pal
      * wrap bw sub feat and main feat
      */
     int *sub;
+
     /**
      * sub solution
      */
     int *sol;
+
     /**
      * first feat in sub part
      */
@@ -190,6 +193,7 @@ namespace pal
        * # active candidates (remaining after reduce())
        */
       int nblp;
+
       /**
        * # candidates (all, including)
        */

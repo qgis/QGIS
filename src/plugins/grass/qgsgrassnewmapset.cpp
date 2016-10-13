@@ -5,6 +5,7 @@
     copyright            : (C) 2005 by Radim Blazek
     email                : radim.blazek@gmail.it
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -129,6 +130,7 @@ QgsGrassNewMapset::~QgsGrassNewMapset()
   settings.setValue( "/Windows/QgsGrassNewMapset/geometry", saveGeometry() );
   mRunning = false;
 }
+
 /*************************** DATABASE *******************************/
 void QgsGrassNewMapset::browseDatabase()
 {

@@ -60,6 +60,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         //! Ordered list of layers that are visible
         QStringList mVisibleLayerIDs;
+
         /**
          * For layers that have checkable legend symbols and not all symbols are checked - list which ones are
          * @note not available in Python bindings

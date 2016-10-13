@@ -105,6 +105,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     const QString processSQLWarningMsg() const { return mProcessSQLWarningMsg; }
 
     //Editing operations
+
     /**
      * Adds a list of features
      * @return true in case of success and false in case of failure
@@ -135,6 +136,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
   public slots:
+
     /**
      * Reloads the data from the source. Needs to be implemented by providers with data caches to
       synchronize with changes in the data source*/
@@ -147,6 +149,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     void pushErrorSlot( const QString& errorMsg );
 
   private:
+
     /**
      * Mutable data shared between provider and feature sources */
     QSharedPointer<QgsWFSSharedData> mShared;
@@ -161,15 +164,19 @@ class QgsWFSProvider : public QgsVectorDataProvider
     /**
      * Geometry type of the features in this layer*/
     mutable QgsWkbTypes::Type mWKBType;
+
     /**
      * Flag if provider is valid*/
     bool mValid;
+
     /**
      * Namespace URL of the server (comes from DescribeFeatureDocument)*/
     QString mApplicationNamespace;
+
     /**
      * Server capabilities for this layer (generated from capabilities document)*/
     QgsVectorDataProvider::Capabilities mCapabilities;
+
     /**
      * Fields of this typename. Might be different from mShared->mFields in case of SELECT */
     QgsFields mThisTypenameFields;
@@ -207,18 +214,23 @@ class QgsWFSProvider : public QgsVectorDataProvider
     /**
      * True if the server response means success*/
     bool transactionSuccess( const QDomDocument& serverResponse ) const;
+
     /**
      * Returns the inserted ids*/
     QStringList insertedFeatureIds( const QDomDocument& serverResponse ) const;
+
     /**
      * Retrieve version and capabilities for this layer from GetCapabilities document (will be stored in mCapabilites)*/
     bool getCapabilities();
+
     /**
      * Records provider error*/
     void handleException( const QDomDocument& serverResponse );
+
     /**
      * Converts DescribeFeatureType schema geometry property type to WKBType*/
     QgsWkbTypes::Type geomTypeFromPropertyType( const QString& attName, const QString& propType );
+
     /**
      * Convert the value to its appropriate XML representation */
     QString convertToXML( const QVariant& value );

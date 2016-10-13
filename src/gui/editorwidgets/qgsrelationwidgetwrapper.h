@@ -55,6 +55,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      * @note Added in QGIS 2.18
      */
     bool showLinkButton() const;
+
     /**
      * Determines if the "link feature" button should be shown
      *
@@ -68,6 +69,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      * @note Added in QGIS 2.18
      */
     bool showUnlinkButton() const;
+
     /**
      * Determines if the "unlink feature" button should be shown
      *

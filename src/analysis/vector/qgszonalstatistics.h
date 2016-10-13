@@ -128,11 +128,13 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     QString getUniqueFieldName( const QString& fieldName );
 
     QString mRasterFilePath;
+
     /**
      * Raster band to calculate statistics from (defaults to 1)*/
     int mRasterBand;
     QgsVectorLayer* mPolygonLayer;
     QString mAttributePrefix;
+
     /**
      * The nodata value of the input layer*/
     float mInputNodataValue;

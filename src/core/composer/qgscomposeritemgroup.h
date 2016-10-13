@@ -39,12 +39,15 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
      * Adds an item to the group. All the group members are deleted
      if the group is deleted*/
     void addItem( QgsComposerItem* item ) override;
+
     /**
      * Removes the items but does not delete them*/
     void removeItems() override;
+
     /**
      * Draw outline and ev. selection handles*/
     void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = nullptr ) override;
+
     /**
      * Sets this items bound in scene coordinates such that 1 item size units
        corresponds to 1 scene size unit*/

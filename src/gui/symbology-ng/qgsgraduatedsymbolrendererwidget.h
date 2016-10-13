@@ -104,12 +104,15 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     /**
      * Adds a class manually to the classification*/
     void addClass();
+
     /**
      * Removes currently selected classes */
     void deleteClasses();
+
     /**
      * Removes all classes from the classification*/
     void deleteAllClasses();
+
     /**
      * Toggle the link between classes boundaries */
     void toggleBoundariesLink( bool linked );

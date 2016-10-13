@@ -99,6 +99,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     virtual void updateGuiElements();
 
   protected slots:
+
     /**
      * Initializes data defined buttons to current atlas coverage layer*/
     void populateDataDefinedButtons();

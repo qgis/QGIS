@@ -30,6 +30,7 @@ class QgsRasterShader;
 class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 {
   public:
+
     /**
      * Note: takes ownership of QgsRasterShader*/
     QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band, QgsRasterShader* shader );

@@ -41,6 +41,7 @@ class eVisDatabaseLayerFieldSelectionGui : public QDialog, private Ui::eVisDatab
     Q_OBJECT
 
   public:
+
     /**
      * \brief Constructor */
     eVisDatabaseLayerFieldSelectionGui( QWidget* parent, Qt::WindowFlags fl );
@@ -54,6 +55,7 @@ class eVisDatabaseLayerFieldSelectionGui : public QDialog, private Ui::eVisDatab
     void on_buttonBox_rejected();
 
   signals:
+
     /**
      * \brief Signal emitted when the user has entered the layername, selected the field names, and pressed the accept button */
     void eVisDatabaseLayerFieldsSelected( const QString&, const QString&, const QString& );

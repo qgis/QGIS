@@ -32,6 +32,7 @@ class QgsAbstractGeometry;
 class QgsInternalGeometryEngine
 {
   public:
+
     /**
      * The caller is responsible that the geometry is available and unchanged
      * for the whole lifetime of this object.

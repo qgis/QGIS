@@ -35,6 +35,7 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
 {
     Q_OBJECT
   public:
+
     /**
      * Create a new configuration widget
      *

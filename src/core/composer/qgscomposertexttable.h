@@ -56,6 +56,7 @@ class CORE_EXPORT QgsComposerTextTableV2 : public QgsComposerTableV2
     virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) override;
 
   private:
+
     /**
      * One stringlist per row*/
     QList< QStringList > mRowText;

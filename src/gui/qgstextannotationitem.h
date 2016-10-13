@@ -33,6 +33,7 @@ class GUI_EXPORT QgsTextAnnotationItem: public QgsAnnotationItem
     /**
      * Returns document (caller takes ownership)*/
     QTextDocument* document() const;
+
     /**
      * Sets document (does not take ownership)*/
     void setDocument( const QTextDocument* doc );

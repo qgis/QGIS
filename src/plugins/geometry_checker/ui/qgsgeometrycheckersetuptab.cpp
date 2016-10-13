@@ -169,6 +169,7 @@ void QgsGeometryCheckerSetupTab::selectOutputFile()
 
 void QgsGeometryCheckerSetupTab::runChecks()
 {
+
   /**
    * Get selected layer **/
   QgsVectorLayer* layer = getSelectedLayer();

@@ -103,6 +103,7 @@ class QgsDelimitedTextFile : public QObject
      * @param filename  the name of the file
      */
     void setFileName( const QString& filename );
+
     /**
      * Return the filename
      * @return filename  the name of the file
@@ -117,6 +118,7 @@ class QgsDelimitedTextFile : public QObject
      *  @param encoding the encoding to use for the fileName()
      */
     void setEncoding( const QString& encoding );
+
     /**
      * Return the file encoding
      *  @return encoding The file encoding
@@ -128,6 +130,7 @@ class QgsDelimitedTextFile : public QObject
      *  @param url  The url from which the delimiter and delimiterType items are read
      */
     bool setFromUrl( const QString& url );
+
     /**
      * Decode the parser settings from a url
      *  @param url  The url from which the delimiter and delimiterType items are read
@@ -150,6 +153,7 @@ class QgsDelimitedTextFile : public QObject
      *  @param regexp A string defining the regular expression
      */
     void setTypeRegexp( const QString& regexp );
+
     /**
      * Set the parser to use a character type delimiter.
      *  @param delim  The field delimiter character set
@@ -164,6 +168,7 @@ class QgsDelimitedTextFile : public QObject
      * @param skiplines The maximum lines to skip
      */
     void setSkipLines( int skiplines );
+
     /**
      * Return the number of header lines to skip
      * @return skiplines The maximum lines to skip
@@ -178,6 +183,7 @@ class QgsDelimitedTextFile : public QObject
      * @param useheaders Field names will be read if true
      */
     void setUseHeader( bool useheader = true );
+
     /**
      * Return the option for reading field names from the first record
      * @return useheaders Field names will be read if true
@@ -192,6 +198,7 @@ class QgsDelimitedTextFile : public QObject
      * @param useheaders Empty fields will be discarded if true
      */
     void setDiscardEmptyFields( bool discardEmptyFields = true );
+
     /**
      * Return the option for discarding empty fields
      * @return useheaders Empty fields will be discarded if true
@@ -206,6 +213,7 @@ class QgsDelimitedTextFile : public QObject
      * @param trimFields Fields will be trimmed if true
      */
     void setTrimFields( bool trimFields = true );
+
     /**
      * Return the option for trimming empty fields
      * @return useheaders Empty fields will be trimmed if true
@@ -221,6 +229,7 @@ class QgsDelimitedTextFile : public QObject
      *  @param maxFields  The maximum number of fields that will be read
      */
     void setMaxFields( int maxFields );
+
     /**
      * Return the maximum number of fields that will be read
      *  @return maxFields The maximum number of fields that will be read
@@ -288,6 +297,7 @@ class QgsDelimitedTextFile : public QObject
      *  @return maxRecordNumber The maximum record number
      */
     long recordCount() { return mMaxRecordNumber; }
+
     /**
      * Reset the file to reread from the beginning
      */
@@ -330,12 +340,14 @@ class QgsDelimitedTextFile : public QObject
     void setUseWatcher( bool useWatcher );
 
   signals:
+
     /**
      * Signal sent when the file is updated by another process
      */
     void fileUpdated();
 
   public slots:
+
     /**
      * Slot used by watcher to notify of file updates
      */
@@ -364,6 +376,7 @@ class QgsDelimitedTextFile : public QObject
     /**
      * Parse reqular expression delimited fields */
     Status parseRegexp( QString &buffer, QStringList &fields );
+
     /**
      * Parse quote delimited fields, where quote and escape are different */
     Status parseQuoted( QString &buffer, QStringList &fields );

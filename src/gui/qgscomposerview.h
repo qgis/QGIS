@@ -177,6 +177,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
      * @see setPreviewMode
      */
     void setPreviewModeEnabled( bool enabled );
+
     /**
      * Sets the preview mode which should be used to modify the view's appearance. Preview modes are only used
      * if setPreviewMode is set to true.
@@ -206,9 +207,11 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void scrollContentsBy( int dx, int dy ) override;
 
   private:
+
     /**
      * Current composer tool*/
     QgsComposerView::Tool mCurrentTool;
+
     /**
      * Previous composer tool*/
     QgsComposerView::Tool mPreviousTool;
@@ -216,15 +219,19 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**
      * Rubber band item*/
     QGraphicsRectItem* mRubberBandItem;
+
     /**
      * Rubber band item for arrows*/
     QGraphicsLineItem* mRubberBandLineItem;
+
     /**
      * Item to move content*/
     QgsComposerItem* mMoveContentItem;
+
     /**
      * Start position of content move*/
     QPointF mMoveContentStartPos;
+
     /**
      * Start of rubber band creation*/
     QPointF mRubberBandStartPos;
@@ -232,9 +239,11 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**
      * True if user is currently selecting by marquee*/
     bool mMarqueeSelect;
+
     /**
      * True if user is currently zooming by marquee*/
     bool mMarqueeZoom;
+
     /**
      * True if user is currently temporarily activating the zoom tool by holding control+space*/
     QgsComposerView::ToolStatus mTemporaryZoomStatus;
@@ -265,9 +274,11 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**
      * True if user is currently panning by clicking and dragging with the pan tool*/
     bool mToolPanning;
+
     /**
      * True if user is currently panning by holding the middle mouse button*/
     bool mMousePanning;
+
     /**
      * True if user is currently panning by holding the space key*/
     bool mKeyPanning;
@@ -289,12 +300,15 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**
      * Zoom composition from a mouse wheel event*/
     void wheelZoom( QWheelEvent * event );
+
     /**
      * Redraws the rectangular rubber band*/
     void updateRubberBandRect( QPointF & pos, const bool constrainSquare = false, const bool fromCenter = false );
+
     /**
      * Redraws the linear rubber band*/
     void updateRubberBandLine( QPointF pos, const bool constrainAngles = false );
+
     /**
      * Removes the rubber band and cleans up*/
     void removeRubberBand();
@@ -302,12 +316,15 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**
      * Starts a marquee selection*/
     void startMarqueeSelect( QPointF & scenePoint );
+
     /**
      * Finalises a marquee selection*/
     void endMarqueeSelect( QMouseEvent* e );
+
     /**
      * Starts a zoom in marquee*/
     void startMarqueeZoom( QPointF & scenePoint );
+
     /**
      * Finalises a marquee zoom*/
     void endMarqueeZoom( QMouseEvent* e );
@@ -315,19 +332,24 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     //void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 
   signals:
+
     /**
      * Is emitted when selected item changed. If 0, no item is selected*/
     void selectedItemChanged( QgsComposerItem* selected );
+
     /**
      * Is emitted when a composer item has been removed from the scene*/
     void itemRemoved( QgsComposerItem* );
+
     /**
      * Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
      QgsComposer may set the selection tool again*/
     void actionFinished();
+
     /**
      * Is emitted when mouse cursor coordinates change*/
     void cursorPosChanged( QPointF );
+
     /**
      * Is emitted when the view zoom changes*/
     void zoomLevelChanged();
@@ -335,6 +357,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**
      * Emitted before composerview is shown*/
     void composerViewShow( QgsComposerView* );
+
     /**
      * Emitted before composerview is hidden*/
     void composerViewHide( QgsComposerView* );

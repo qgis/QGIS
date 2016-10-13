@@ -112,15 +112,19 @@ class TestQgsGeometry : public QObject
     void segmentizeCircularString();
 
   private:
+
     /**
      * A helper method to do a render check to see if the geometry op is as expected */
     bool renderCheck( const QString& theTestName, const QString& theComment = "", int mismatchCount = 0 );
+
     /**
      * A helper method to dump to qdebug the geometry of a multipolygon */
     void dumpMultiPolygon( QgsMultiPolygon &theMultiPolygon );
+
     /**
      * A helper method to dump to qdebug the geometry of a polygon */
     void dumpPolygon( QgsPolygon &thePolygon );
+
     /**
      * A helper method to dump to qdebug the geometry of a polyline */
     void dumpPolyline( QgsPolyline &thePolyline );

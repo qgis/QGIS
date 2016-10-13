@@ -58,6 +58,7 @@ class CORE_EXPORT QgsSymbolLayer
      * The fill color.
      */
     virtual QColor color() const { return mColor; }
+
     /**
      * The fill color.
      */
@@ -789,6 +790,7 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
 
   protected:
     QgsFillSymbolLayer( bool locked = false );
+
     /**
      * Default method to render polygon*/
     void _renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolRenderContext& context );

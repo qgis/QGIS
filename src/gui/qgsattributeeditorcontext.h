@@ -34,6 +34,7 @@
 class GUI_EXPORT QgsAttributeEditorContext
 {
   public:
+
     /**
      * Determines in which direction a relation was resolved.
      */

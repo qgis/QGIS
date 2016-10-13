@@ -59,6 +59,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
     QgsAttributes()
         : QVector<QVariant>()
     {}
+
     /**
      * Create a new vector of attributes with the given size
      *
@@ -67,6 +68,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
     QgsAttributes( int size )
         : QVector<QVariant>( size )
     {}
+
     /**
      * Constructs a vector with an initial size of size elements. Each element is initialized with value.
      * @param size Number of elements
@@ -361,6 +363,7 @@ class CORE_EXPORT QgsFeature
 /**
  * Writes the feature to stream out. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsFeature& feature );
+
 /**
  * Reads a feature from stream in into feature. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsFeature& feature );

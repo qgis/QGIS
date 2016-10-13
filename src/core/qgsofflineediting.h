@@ -69,6 +69,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     void synchronize();
 
   signals:
+
     /**
      * Emit a signal that processing has started */
     void progressStarted();

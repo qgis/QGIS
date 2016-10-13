@@ -140,6 +140,7 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator
     void close();
 
   protected:
+
     /**
      * @note not available in Python bindings
      */
@@ -166,6 +167,7 @@ class ANALYSIS_EXPORT QgsOSMWayIterator
     void close();
 
   protected:
+
     /**
      * @note not available in Python bindings
      */

@@ -72,6 +72,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     /**
      * Sets radius for rounded rectangle corners. Added in v2.1 */
     void setCornerRadius( double radius );
+
     /**
      * Returns the radius for rounded rectangle corners*/
     double cornerRadius() const { return mCornerRadius; }
@@ -81,6 +82,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
      * enable drawing with a symbol.
      * Note: added in version 2.1*/
     void setShapeStyleSymbol( QgsFillSymbol* symbol );
+
     /**
      * Returns the QgsFillSymbol used to draw the shape.
      * Note: added in version 2.1*/
@@ -110,12 +112,14 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     virtual void drawFrame( QPainter* p ) override;
     /* reimplement drawBackground, since it's not a rect, but a custom shape */
     virtual void drawBackground( QPainter* p ) override;
+
     /**
      * Reimplement estimatedFrameBleed, since frames on shapes are drawn using symbology
      * rather than the item's pen */
     virtual double estimatedFrameBleed() const override;
 
   public slots:
+
     /**
      * Should be called after the shape's symbol is changed. Redraws the shape and recalculates
      * its selection bounds.
@@ -123,6 +127,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     void refreshSymbol();
 
   private:
+
     /**
      * Ellipse, rectangle or triangle*/
     Shape mShape;
@@ -133,6 +138,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 
     QgsFillSymbol* mShapeStyleSymbol;
     double mMaxSymbolBleed;
+
     /**
      * Current bounding rectangle of shape*/
     QRectF mCurrentRectangle;

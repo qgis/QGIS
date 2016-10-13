@@ -52,6 +52,7 @@ class eVisImageDisplayWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * \brief Constructor */
     eVisImageDisplayWidget( QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
@@ -72,6 +73,7 @@ class eVisImageDisplayWidget : public QWidget
      * There needs to be more logic around setting the zoom steps as you could change it mid display
      * and end up getting not being able to zoom in or out
      */
+
     /**
      * \brief Accessor for ZOOM_STEPS */
     int getZoomSteps() { return ZOOM_STEPS; }
@@ -107,6 +109,7 @@ class eVisImageDisplayWidget : public QWidget
 
 // TODO: Update to QNetworkAccessManager
 #if QT_VERSION < 0x050000
+
     /**
      * \brief Pointer to the http connection if needed */
     QHttp* mHttpConnection;

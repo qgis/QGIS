@@ -291,13 +291,16 @@ class CORE_EXPORT QgsMapSettings
      * Sets the segmentation tolerance applied when rendering curved geometries
     @param tolerance the segmentation tolerance*/
     void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
+
     /**
      * Gets the segmentation tolerance applied when rendering curved geometries*/
     double segmentationTolerance() const { return mSegmentationTolerance; }
+
     /**
      * Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     @param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
+
     /**
      * Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)*/
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }

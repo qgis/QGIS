@@ -439,11 +439,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @see removeCustomProperty()
      */
     void setCustomProperty( const QString& key, const QVariant& value );
+
     /**
      * Read a custom property from layer. Properties are stored in a map and saved in project file.
      * @see setCustomProperty()
     */
     QVariant customProperty( const QString& value, const QVariant& defaultValue = QVariant() ) const;
+
     /**
      * Remove a custom property from layer. Properties are stored in a map and saved in project file.
      * @see setCustomProperty()
@@ -655,6 +657,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @note added in 2.6
      */
     void setLegend( QgsMapLayerLegend* legend );
+
     /**
      * Can be null.
      * @note added in 2.6
@@ -854,6 +857,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void dependenciesChanged();
 
   protected:
+
     /**
      * Set the extent */
     virtual void setExtent( const QgsRectangle &rect );
@@ -888,11 +892,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Read style manager's configuration (if any). To be called by subclasses. */
     void readStyleManager( const QDomNode& layerNode );
+
     /**
      * Write style manager's configuration (if exists). To be called by subclasses. */
     void writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const;
 
 #if 0
+
     /**
      * Debugging member - invoked when a connect() is made to this object */
     void connectNotify( const char * signal ) override;
@@ -901,6 +907,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Add error message */
     void appendError( const QgsErrorMessage & error ) { mError.append( error );}
+
     /**
      * Set error message */
     void setError( const QgsError & error ) { mError = error;}
@@ -966,6 +973,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     bool hasDependencyCycle( const QSet<QgsMapLayerDependency>& layers ) const;
 
   private:
+
     /**
      * This method returns true by default but can be overwritten to specify
      * that a certain layer is writable.
@@ -1004,9 +1012,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Minimum scale denominator at which this layer should be displayed */
     double mMinScale;
+
     /**
      * Maximum scale denominator at which this layer should be displayed */
     double mMaxScale;
+
     /**
      * A flag that tells us whether to use the above vars to restrict layer visibility */
     bool mScaleBasedVisibility;

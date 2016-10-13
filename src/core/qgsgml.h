@@ -55,6 +55,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     class LayerProperties
     {
       public:
+
         /**
          * Constructor */
         LayerProperties() {}
@@ -62,6 +63,7 @@ class CORE_EXPORT QgsGmlStreamingParser
         /**
          * Layer name */
         QString mName;
+
         /**
          * Geometry attribute name */
         QString mGeometryAttribute;
@@ -71,12 +73,15 @@ class CORE_EXPORT QgsGmlStreamingParser
      * Axis orientation logic. */
     typedef enum
     {
+
       /**
        * Honour EPSG axis order only if srsName is of the form urn:ogc:def:crs:EPSG: **/
       Honour_EPSG_if_urn,
+
       /**
        * Honour EPSG axis order */
       Honour_EPSG,
+
       /**
        * Ignore EPSG axis order */
       Ignore_EPSG,
@@ -207,6 +212,7 @@ class CORE_EXPORT QgsGmlStreamingParser
        @return 0 in case of success
       */
     int readEpsgFromAttribute( int& epsgNr, const XML_Char** attr );
+
     /**
      * Reads attribute as string
        @param attributeName
@@ -214,9 +220,11 @@ class CORE_EXPORT QgsGmlStreamingParser
        @return attribute value or an empty string if no such attribute
       */
     QString readAttribute( const QString& attributeName, const XML_Char** attr ) const;
+
     /**
      * Creates a rectangle from a coordinate string. */
     bool createBBoxFromCoordinateString( QgsRectangle &bb, const QString& coordString ) const;
+
     /**
      * Creates a set of points from a coordinate string.
        @param points list that will contain the created points
@@ -238,6 +246,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     int getPointWKB( QgsWkbPtr &wkbPtr, const QgsPoint& ) const;
     int getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& lineCoordinates ) const;
     int getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& ringCoordinates ) const;
+
     /**
      * Creates a multiline from the information in mCurrentWKBFragments and
      * mCurrentWKBFragmentSizes. Assign the result. The multiline is in
@@ -248,6 +257,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     int createMultiPointFromFragments();
     int createPolygonFromFragments();
     int createMultiPolygonFromFragments();
+
     /**
      * Adds all the integers contained in mCurrentWKBFragmentSizes*/
     int totalWKBFragmentSize() const;
@@ -295,14 +305,17 @@ class CORE_EXPORT QgsGmlStreamingParser
     bool mIsException;
     QString mExceptionText;
     bool mTruncatedResponse;
+
     /**
      * Parsing depth */
     int mParseDepth;
     int mFeatureTupleDepth;
     QString mCurrentTypename; /** Used to track the current (unprefixed) typename for wfs:Member in join layer */
+
     /**
      * Keep track about the most important nested elements*/
     QStack<ParseMode> mParseModeStack;
+
     /**
      * This contains the character data if an important element has been encountered*/
     QString mStringCash;
@@ -310,11 +323,13 @@ class CORE_EXPORT QgsGmlStreamingParser
     QVector<QVariant> mCurrentAttributes; //attributes of current feature
     QString mCurrentFeatureId;
     int mFeatureCount;
+
     /**
      * The total WKB for a feature*/
     QgsWkbPtr mCurrentWKB;
     QgsRectangle mCurrentExtent;
     bool mBoundedByNullFound;
+
     /**
      * WKB intermediate storage during parsing. For points and lines, no
      * intermediate WKB is stored at all. For multipoints and multilines and
@@ -323,49 +338,64 @@ class CORE_EXPORT QgsGmlStreamingParser
     QList< QList<QgsWkbPtr> > mCurrentWKBFragments;
     QString mAttributeName;
     char mEndian;
+
     /**
      * Coordinate separator for coordinate strings. Usually "," */
     QString mCoordinateSeparator;
+
     /**
      * Tuple separator for coordinate strings. Usually " " */
     QString mTupleSeparator;
+
     /**
      * Number of dimensions in pos or posList */
     int mDimension;
+
     /**
      * Coordinates mode, coordinate or posList */
     ParseMode mCoorMode;
+
     /**
      * EPSG of parsed features geometries */
     int mEpsg;
+
     /**
      * Literal srsName attribute */
     QString mSrsName;
+
     /**
      * Layer bounding box */
     QgsRectangle mLayerExtent;
+
     /**
      * GML namespace URI */
     QString mGMLNameSpaceURI;
     const char* mGMLNameSpaceURIPtr;
+
     /**
      * Axis orientation logic */
     AxisOrientationLogic mAxisOrientationLogic;
+
     /**
      * Whether to invert axis orientation. This value is immutable, but combined with what is infered from data and mAxisOrientationLogic, is used to compute mInvertAxisOrientation */
     bool mInvertAxisOrientationRequest;
+
     /**
      * Whether to invert axis orientation: result of mAxisOrientationLogic, mInvertAxisOrientationRequest and what is infered from data and mAxisOrientationLogic */
     bool mInvertAxisOrientation;
+
     /**
      * WFS 2.0 "numberReturned" or WFS 1.1 "numberOfFeatures" attribute, or -1 if invalid/not found */
     int mNumberReturned;
+
     /**
      * WFS 2.0 "numberMatched" attribute, or -1 if invalid/not found */
     int mNumberMatched;
+
     /**
      * XML blob containing geometry */
     std::string mGeometryString;
+
     /**
      * Whether we found a unhandled geometry element */
     bool mFoundUnhandledGeometryElement;

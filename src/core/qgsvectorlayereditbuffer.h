@@ -190,6 +190,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     void undoIndexChanged( int index );
 
   signals:
+
     /**
      * This signal is emitted when modifications has been done on layer */
     void layerModified();

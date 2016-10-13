@@ -42,6 +42,7 @@ class QgsSymbol;
 class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
 {
   public:
+
     /**
      * Create a new QgsScopedExpressionFunction
      *
@@ -93,6 +94,7 @@ class CORE_EXPORT QgsExpressionContextScope
      */
     struct StaticVariable
     {
+
       /**
        * Constructor for StaticVariable.
        * @param name variable name (should be unique within the QgsExpressionContextScope)

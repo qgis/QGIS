@@ -48,6 +48,7 @@ class CORE_EXPORT QgsLegendSettings
      * @see setTitleAlignment
      */
     Qt::AlignmentFlag titleAlignment() const { return mTitleAlignment; }
+
     /**
      * Sets the alignment of the legend title
      * @param alignment Text alignment for drawing the legend title
@@ -58,6 +59,7 @@ class CORE_EXPORT QgsLegendSettings
     /**
      * Returns reference to modifiable style */
     QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s ) { return mStyleMap[s]; }
+
     /**
      * Returns style */
     QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const { return mStyleMap.value( s ); }

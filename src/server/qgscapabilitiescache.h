@@ -61,6 +61,7 @@ class SERVER_EXPORT QgsCapabilitiesCache : public QObject
     QFileSystemWatcher mFileSystemWatcher;
 
   private slots:
+
     /**
      * Removes changed entry from this cache*/
     void removeChangedEntry( const QString &path );

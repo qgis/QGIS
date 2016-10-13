@@ -61,6 +61,7 @@ class CORE_EXPORT QgsContrastEnhancement
      * Static methods
      *
      */
+
     /**
      * \brief Helper function that returns the maximum possible value for a GDAL data type */
     static double maximumValuePossible( Qgis::DataType );
@@ -74,6 +75,7 @@ class CORE_EXPORT QgsContrastEnhancement
      * Non-Static Inline methods
      *
      */
+
     /**
      * \brief Return the maximum value for the contrast enhancement range. */
     double maximumValue() const { return mMaximumValue; }
@@ -93,6 +95,7 @@ class CORE_EXPORT QgsContrastEnhancement
      * Non-Static methods
      *
      */
+
     /**
      * \brief Apply the contrast enhancement to a value. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed */
     int enhanceContrast( double );
@@ -122,6 +125,7 @@ class CORE_EXPORT QgsContrastEnhancement
     void readXml( const QDomElement& elem );
 
   private:
+
     /**
      * \brief Current contrast enhancement algorithm */
     ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm;

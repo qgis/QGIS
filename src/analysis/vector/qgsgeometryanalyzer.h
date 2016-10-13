@@ -129,6 +129,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     /**
      * Returns linear reference geometry as a multiline (or 0 if no match). Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
     QgsGeometry locateBetweenMeasures( double fromMeasure, double toMeasure, const QgsGeometry& lineGeom );
+
     /**
      * Returns linear reference geometry. Unlike the PostGIS function, this method always returns multipoint or 0 if no match (not geometry collection).
      * Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)
@@ -139,19 +140,24 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
 
     QList<double> simpleMeasure( QgsGeometry& geometry );
     double perimeterMeasure( const QgsGeometry& geometry, QgsDistanceArea& measure );
+
     /**
      * Helper function to simplify an individual feature*/
     void simplifyFeature( QgsFeature& f, QgsVectorFileWriter* vfw, double tolerance );
+
     /**
      * Helper function to get the cetroid of an individual feature*/
     void centroidFeature( QgsFeature& f, QgsVectorFileWriter* vfw );
+
     /**
      * Helper function to buffer an individual feature*/
     void bufferFeature( QgsFeature& f, int nProcessedFeatures, QgsVectorFileWriter* vfw, bool dissolve, QgsGeometry& dissolveGeometry,
                         double bufferDistance, int bufferDistanceField );
+
     /**
      * Helper function to get the convex hull of feature(s)*/
     void convexFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry& dissolveGeometry );
+
     /**
      * Helper function to dissolve feature(s)*/
     QgsGeometry dissolveFeature( const QgsFeature& f, const QgsGeometry& dissolveInto );
@@ -159,6 +165,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     //helper functions for event layer
     void addEventLayerFeature( QgsFeature& feature, const QgsGeometry& geom, const QgsGeometry& lineGeom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures, int offsetField = -1, double offsetScale = 1.0,
                                bool forceSingleType = false );
+
     /**
      * Create geometry offset relative to line geometry.
         @param geom the geometry to modify

@@ -29,6 +29,7 @@ class QgsSpatiaLiteConnection : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * Construct a connection. Name can be either stored connection name or a path to the database file */
     explicit QgsSpatiaLiteConnection( const QString& name );
@@ -97,6 +98,7 @@ class QgsSpatiaLiteConnection : public QObject
 
 #ifdef SPATIALITE_VERSION_GE_4_0_0
     // only if libspatialite version is >= 4.0.0
+
     /**
      * Inserts information about the spatial tables into mTables
      * please note: this method is fully based on the Abstract Interface

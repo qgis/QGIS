@@ -39,9 +39,11 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     /**
      * Bounding box for output raster*/
     QgsRectangle outputRectangle() const;
+
     /**
      * Number of pixels in x-direction*/
     int numberOfColumns() const;
+
     /**
      * Number of pixels in y-direction*/
     int numberOfRows() const;
@@ -55,6 +57,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     void on_mCurrentLayerExtentButton_clicked();
     void on_mExpressionTextEdit_textChanged();
     void on_mOutputLayerLineEdit_textChanged( const QString& text );
+
     /**
      * Enables ok button if calculator expression is valid and output file path exists*/
     void setAcceptButtonState();
@@ -88,6 +91,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
   private:
     //insert available GDAL drivers that support the create() option
     void insertAvailableOutputFormats();
+
     /**
      * Accesses the available raster layers/bands from the layer registry*/
     void insertAvailableRasterBands();
@@ -95,6 +99,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     /**
      * Returns true if raster calculator expression has valid syntax*/
     bool expressionValid() const;
+
     /**
      * Returns true if output file directory exists*/
     bool filePathValid() const;

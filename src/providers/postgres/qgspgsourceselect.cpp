@@ -282,6 +282,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
   mSearchModeLabel->setVisible( false );
   mSearchTableEdit->setVisible( false );
 }
+
 /**
  * Autoconnected SLOTS **/
 // Slot for adding a new connection

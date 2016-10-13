@@ -78,6 +78,7 @@ class CORE_EXPORT QgsRasterBlock
 
     // TODO: consider if use isValid() at all, isEmpty() should be sufficient
     // and works also if block is valid but empty - difference between valid and empty?
+
     /**
      * \brief Returns true if the block is valid (correctly filled with data).
      *  An empty block may still be valid (if zero size block was requested).

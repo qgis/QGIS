@@ -49,6 +49,7 @@ class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
      * @see mode
      */
     void setMode( PreviewMode mode );
+
     /**
      * Returns the mode used for the preview effect.
      * @returns PreviewMode currently used by the effect

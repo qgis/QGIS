@@ -52,6 +52,7 @@ class QgsResidualPlotItem: public QgsComposerItem
     QgsGCPList mGCPList;
 
     QgsRectangle mExtent;
+
     /**
      * True if the scale bar units should be converted to map units. This can be done for transformation where the scaling in all directions is the same (helmert)*/
     bool mConvertScaleToMapUnits;

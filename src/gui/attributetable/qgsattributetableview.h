@@ -77,6 +77,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void setAttributeTableConfig( const QgsAttributeTableConfig& config );
 
   protected:
+
     /**
      * Called for mouse press events on a table cell.
      * Disables selection change for these events.
@@ -125,6 +126,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void closeEvent( QCloseEvent *event ) override;
 
   signals:
+
     /**
      * @brief
      * Is emitted, in order to provide a hook to add aditional menu entries to the context menu.

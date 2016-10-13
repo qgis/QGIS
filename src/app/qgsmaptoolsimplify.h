@@ -72,6 +72,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     QString statusText() const;
 
   public slots:
+
     /**
      * Slot to change display when slidebar is moved */
     void setTolerance( double tolerance );
@@ -94,6 +95,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     int vertexCount( const QgsGeometry& g ) const;
 
     // data
+
     /**
      * Dialog with slider to set correct tolerance value */
     QgsSimplifyDialog* mSimplifyDialog;
@@ -101,6 +103,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     /**
      * Rubber bands to draw current state of simplification */
     QList<QgsRubberBand*> mRubberBands;
+
     /**
      * Features with which we are working */
     QList<QgsFeature> mSelectedFeatures;

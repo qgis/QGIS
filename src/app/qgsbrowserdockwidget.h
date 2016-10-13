@@ -50,6 +50,7 @@ class QgsBrowserPropertiesWidget : public QWidget
     explicit QgsBrowserPropertiesWidget( QWidget* parent = nullptr );
     static QgsBrowserPropertiesWidget* createWidget( QgsDataItem* item, QWidget* parent = nullptr );
     virtual void setItem( QgsDataItem* item ) { Q_UNUSED( item ) }
+
     /**
      * Set content widget, usually item paramWidget. Takes ownership. */
     virtual void setWidget( QWidget* widget );

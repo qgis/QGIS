@@ -5,6 +5,7 @@
     copyright            : (C) 2008 by Marco Hugentobler
     email                : marco.hugentobler@karto.baug.ethz.ch
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -38,6 +39,7 @@ class CORE_EXPORT QgsNumericScaleBarStyle: public QgsScaleBarStyle
 
   private:
     QgsNumericScaleBarStyle(); //forbidden
+
     /**
      * Returns the text for the scale bar or an empty string in case of error*/
     QString scaleText() const;

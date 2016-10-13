@@ -30,6 +30,7 @@ class GUI_EXPORT QgsAuthMethodEdit : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Validate the configuration of subclasses */
     virtual bool validateConfig() = 0;
@@ -39,11 +40,13 @@ class GUI_EXPORT QgsAuthMethodEdit : public QWidget
     virtual QgsStringMap configMap() const = 0;
 
   signals:
+
     /**
      * Emitted when the configuration validatity changes */
     void validityChanged( bool valid );
 
   public slots:
+
     /**
      * Load an existing config map into subclassed widget
      * @param configmap
@@ -59,6 +62,7 @@ class GUI_EXPORT QgsAuthMethodEdit : public QWidget
     virtual void clearConfig() = 0;
 
   protected:
+
     /**
      * Construct widget to edit an authentication method configuration
      * @note Non-public since this is an abstract base class
