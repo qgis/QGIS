@@ -1360,6 +1360,58 @@ bool QgsPostgresProvider::determinePrimaryKey()
   return mValid;
 }
 
+/* static */
+QStringList QgsPostgresProvider::parseUriKey( const QString& key )
+{
+  if ( key.isEmpty() ) return QStringList();
+
+  QStringList cols;
+
+  // remove quotes from key list
+  if ( key.startsWith( '"' ) && key.endsWith( '"' ) )
+  {
+    int i = 1;
+    QString col;
+    while ( i < key.size() )
+    {
+      if ( key[i] == '"' )
+      {
+        if ( i + 1 < key.size() && key[i+1] == '"' )
+        {
+          i++;
+        }
+        else
+        {
+          cols << col;
+          col = "";
+
+          if ( ++i == key.size() )
+            break;
+
+          Q_ASSERT( key[i] == ',' );
+          i++;
+          Q_ASSERT( key[i] == '"' );
+          i++;
+          col = "";
+          continue;
+        }
+      }
+
+      col += key[i++];
+    }
+  }
+  else if ( key.contains( ',' ) )
+  {
+    cols = key.split( ',' );
+  }
+  else
+  {
+    cols << key;
+  }
+
+  return cols;
+}
+
 void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
 {
   QString primaryKey = mUri.keyColumn();
@@ -1367,49 +1419,14 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
 
   if ( !primaryKey.isEmpty() )
   {
-    QStringList cols;
+    QStringList cols = parseUriKey( primaryKey );
 
-    // remove quotes from key list
-    if ( primaryKey.startsWith( '"' ) && primaryKey.endsWith( '"' ) )
+    primaryKey = "";
+    QString del = "";
+    Q_FOREACH ( const QString& col, cols )
     {
-      int i = 1;
-      QString col;
-      while ( i < primaryKey.size() )
-      {
-        if ( primaryKey[i] == '"' )
-        {
-          if ( i + 1 < primaryKey.size() && primaryKey[i+1] == '"' )
-          {
-            i++;
-          }
-          else
-          {
-            cols << col;
-            col = "";
-
-            if ( ++i == primaryKey.size() )
-              break;
-
-            Q_ASSERT( primaryKey[i] == ',' );
-            i++;
-            Q_ASSERT( primaryKey[i] == '"' );
-            i++;
-            col = "";
-            continue;
-          }
-        }
-
-        col += primaryKey[i++];
-      }
-    }
-    else if ( primaryKey.contains( ',' ) )
-    {
-      cols = primaryKey.split( ',' );
-    }
-    else
-    {
-      cols << primaryKey;
-      primaryKey = quotedIdentifier( primaryKey );
+      primaryKey += del + quotedIdentifier( col );
+      del = ",";
     }
 
     Q_FOREACH ( const QString& col, cols )
@@ -3463,6 +3480,9 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
   QString primaryKey = dsUri.keyColumn();
   QString primaryKeyType;
 
+  QStringList pkList;
+  QStringList pkType;
+
   QString schemaTableName = "";
   if ( !schemaName.isEmpty() )
   {
@@ -3503,45 +3523,39 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
   }
   else
   {
-    // search for the passed field
-    for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
+    pkList = parseUriKey( primaryKey );
+    Q_FOREACH ( const QString& col, pkList )
     {
-      if ( fields.at( fldIdx ).name() == primaryKey )
+      // search for the passed field
+      QString type;
+      for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
       {
-        // found, get the field type
-        QgsField fld = fields.at( fldIdx );
-        if ( convertField( fld, options ) )
+        if ( fields[fldIdx].name() == col )
         {
-          primaryKeyType = fld.typeName();
+          // found, get the field type
+          QgsField fld = fields[fldIdx];
+          if ( convertField( fld, options ) )
+          {
+            type = fld.typeName();
+            break;
+          }
         }
       }
-    }
-  }
-
-  // if the pk field doesn't exist yet, create a serial pk field
-  // as it's autoincremental
-  if ( primaryKeyType.isEmpty() )
-  {
-    primaryKeyType = "serial";
-#if 0
-    // TODO: check the feature count to choose if create a serial8 pk field
-    if ( layer->featureCount() > 0xffffffff )
-    {
-      primaryKeyType = "serial8";
-    }
-#endif
-  }
-  else
-  {
-    // if the pk field's type is one of the postgres integer types,
-    // use the equivalent autoincremental type (serialN)
-    if ( primaryKeyType == "int2" || primaryKeyType == "int4" )
-    {
-      primaryKeyType = "serial";
-    }
-    else if ( primaryKeyType == "int8" )
-    {
-      primaryKeyType = "serial8";
+      if ( type.isEmpty() ) type = "serial";
+      else
+      {
+        // if the pk field's type is one of the postgres integer types,
+        // use the equivalent autoincremental type (serialN)
+        if ( primaryKeyType == "int2" || primaryKeyType == "int4" )
+        {
+          primaryKeyType = "serial";
+        }
+        else if ( primaryKeyType == "int8" )
+        {
+          primaryKeyType = "serial8";
+        }
+      }
+      pkType << type;
     }
   }
 
@@ -3577,17 +3591,32 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
         throw PGException( result );
     }
 
-    if ( options && options->value( "lowercaseFieldNames", false ).toBool() )
+    sql = QString( "CREATE TABLE %1(" ) .arg( schemaTableName );
+    QString pk;
+    for ( int i = 0; i < pkList.size(); ++i )
     {
-      //convert primary key name to lowercase
-      //this must happen after determining the field type of the primary key
-      primaryKey = primaryKey.toLower();
-    }
+      QString col = pkList[i];
+      const QString& type = pkType[i];
 
-    sql = QString( "CREATE TABLE %1(%2 %3 PRIMARY KEY)" )
-          .arg( schemaTableName,
-                quotedIdentifier( primaryKey ),
-                primaryKeyType );
+      if ( options && options->value( "lowercaseFieldNames", false ).toBool() )
+      {
+        col = col.toLower();
+      }
+      else
+      {
+        col = quotedIdentifier( col ); // no need to quote lowercase field
+      }
+
+      if ( i )
+      {
+        pk  += ",";
+        sql += ",";
+      }
+
+      pk += col;
+      sql += col + " " + type;
+    }
+    sql += QString( ", PRIMARY KEY (%1) )" ) .arg( pk );
 
     result = conn->PQexec( sql );
     if ( result.PQresultStatus() != PGRES_COMMAND_OK )
@@ -3678,9 +3707,25 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer( const Q
         fld.setName( fld.name().toLower() );
       }
 
-      if ( fld.name() == primaryKey )
+      int pkIdx = -1;
+      for ( int i = 0; i < pkList.size(); ++i )
       {
-        oldToNewAttrIdxMap->insert( fldIdx, 0 );
+        QString col = pkList[i];
+        if ( options && options->value( "lowercaseFieldNames", false ).toBool() )
+        {
+          //convert field name to lowercase (TODO: avoid doing this
+          //over and over)
+          col =  col.toLower();
+        }
+        if ( fld.name() == col )
+        {
+          pkIdx = i;
+          break;
+        }
+      }
+      if ( pkIdx >= 0 )
+      {
+        oldToNewAttrIdxMap->insert( fldIdx, pkIdx );
         continue;
       }
 
