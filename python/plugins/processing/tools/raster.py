@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import range
-from builtins import object
 
 __author__ = 'Victor Olaya  and Alexander Bruy'
 __date__ = 'February 2013'
@@ -28,16 +25,55 @@ __copyright__ = '(C) 2013, Victor Olaya  and Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+from builtins import str
+from builtins import range
+from builtins import object
+
+import os
 import struct
+
 import numpy
 from osgeo import gdal
-from osgeo.gdalconst import GA_ReadOnly
+
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+
+
+RASTER_EXTENSION_MAP = None
+
+
+def initGdalData():
+    global RASTER_EXTENSION_MAP
+
+    if RASTER_EXTENSION_MAP is not None:
+        return
+
+    if gdal.GetDriverCount() == 0:
+        gdal.AllRegister()
+
+    RASTER_EXTENSION_MAP = dict()
+    for i in range(gdal.GetDriverCount()):
+        driver = gdal.GetDriver(i)
+        if driver is None:
+            continue
+        md = driver.GetMetadata()
+        if gdal.DCAP_CREATE in md and md[gdal.DCAP_CREATE].lower() == 'yes':
+            ext = md[gdal.DMD_EXTENSION] if gdal.DMD_EXTENSION in md else None
+            if ext is not None and ext != '':
+                RASTER_EXTENSION_MAP[driver.ShortName] = ext
+
+
+def formatShortNameFromFileName(fileName):
+    initGdalData()
+    ext = os.path.splitext(fileName)[1][1:]
+    for k, v in RASTER_EXTENSION_MAP.items():
+        if ext == v:
+            return k
+    return 'GTiff'
 
 
 def scanraster(layer, progress):
     filename = str(layer.source())
-    dataset = gdal.Open(filename, GA_ReadOnly)
+    dataset = gdal.Open(filename, gdal.GA_ReadOnly)
     band = dataset.GetRasterBand(1)
     nodata = band.GetNoDataValue()
     bandtype = gdal.GetDataTypeName(band.DataType)
@@ -114,8 +150,8 @@ class RasterWriter(object):
             return self.NODATA
 
     def close(self):
-        format = 'GTiff'
-        driver = gdal.GetDriverByName(format)
+        fmt = 'GTiff'
+        driver = gdal.GetDriverByName(fmt)
         dst_ds = driver.Create(self.fileName, self.nx, self.ny, 1,
                                gdal.GDT_Float32)
         dst_ds.SetProjection(str(self.crs.toWkt()))
