@@ -194,7 +194,12 @@ void QgsComposerMouseHandles::drawSelectedItemBounds( QPainter* painter )
       //not resizing or moving, so just map from scene bounds
       itemBounds = mapRectFromItem(( *itemIter ), ( *itemIter )->rectWithFrame() );
     }
-    painter->drawPolygon( itemBounds );
+
+    // drawPolygon causes issues on windows - corners of path may be missing resulting in triangles being drawn
+    // instead of rectangles! (Same cause as #13343)
+    QPainterPath path;
+    path.addPolygon( itemBounds );
+    painter->drawPath( path );
   }
   painter->restore();
 }
