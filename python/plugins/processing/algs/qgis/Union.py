@@ -75,7 +75,7 @@ class Union(GeoAlgorithm):
         geomType = vlayerA.wkbType()
         fields = vector.combineVectorFields(vlayerA, vlayerB)
         writer = self.getOutputFromName(Union.OUTPUT).getVectorWriter(fields,
-                                                                      geomType, vproviderA.crs())
+                                                                      geomType, vlayerA.crs())
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
