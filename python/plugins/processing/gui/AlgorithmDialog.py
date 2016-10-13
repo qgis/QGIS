@@ -215,12 +215,10 @@ class AlgorithmDialog(AlgorithmDialogBase):
                                 unmatchingCRS = True
             if isinstance(param, ParameterExtent):
                 value = self.mainWidget.valueItems[param.name].leText.text().strip()
-                print value
                 if value:
                     hasExtent = True
 
         return hasExtent and unmatchingCRS
-
 
     def accept(self):
         self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
