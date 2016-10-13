@@ -20,7 +20,8 @@
 
 class QgsRelationEditorWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRelationWidgetWrapper
  * \note not available in Python bindings
  */
@@ -54,6 +55,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      * @note Added in QGIS 2.18
      */
     bool showLinkButton() const;
+
     /**
      * Determines if the "link feature" button should be shown
      *
@@ -67,6 +69,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      * @note Added in QGIS 2.18
      */
     bool showUnlinkButton() const;
+
     /**
      * Determines if the "unlink feature" button should be shown
      *
@@ -82,7 +85,8 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
   public slots:
     void setFeature( const QgsFeature& feature ) override;
 
-    /** Sets the visibility of the wrapper's widget.
+    /**
+     * Sets the visibility of the wrapper's widget.
      * @param visible set to true to show widget, false to hide widget
      * @note added in QGIS 2.16
      */

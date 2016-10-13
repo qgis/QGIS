@@ -20,7 +20,8 @@
 
 #include <QMap>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsValueRelationWidgetFactory
  * \note not available in Python bindings
  */

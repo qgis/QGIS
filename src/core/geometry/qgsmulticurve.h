@@ -18,7 +18,8 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsgeometrycollection.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMultiCurve
  * \brief Multi curve geometry collection.
  * \note added in QGIS 2.10
@@ -40,10 +41,12 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
 
-    /** Adds a geometry and takes ownership. Returns true in case of success*/
+    /**
+     * Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometry* g ) override;
 
-    /** Returns a copy of the multi curve, where each component curve has had its line direction reversed.
+    /**
+     * Returns a copy of the multi curve, where each component curve has had its line direction reversed.
      * @note added in QGIS 2.14
      */
     QgsMultiCurve* reversed() const;

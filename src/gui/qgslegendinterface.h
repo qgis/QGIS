@@ -5,6 +5,7 @@
     Copyright            : (C) 2009 by Andres Manz
     Email                : manz dot andres at gmail dot com
 ****************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -33,7 +34,8 @@ class QAction;
 //value: containter with layer ids contained in the group
 typedef QPair< QString, QList<QString> > GroupLayerInfo;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * QgsLegendInterface
  * Abstract base class to make QgsLegend available to plugins.
  */
@@ -43,10 +45,12 @@ class GUI_EXPORT QgsLegendInterface : public QObject
 
   public:
 
-    /** Constructor */
+    /**
+     * Constructor */
     QgsLegendInterface();
 
-    /** Virtual destructor */
+    /**
+     * Virtual destructor */
     virtual ~QgsLegendInterface();
 
     //! Return a string list of groups
@@ -78,16 +82,19 @@ class GUI_EXPORT QgsLegendInterface : public QObject
     //! Check if a layer is visible
     virtual bool isLayerVisible( QgsMapLayer * ml ) = 0;
 
-    /** Add action for layers in the legend */
+    /**
+     * Add action for layers in the legend */
     virtual void addLegendLayerAction( QAction* action, QString menu, QString id,
                                        QgsMapLayer::LayerType type, bool allLayers ) = 0;
 
-    /** Add action for a specific layers in the legend.
+    /**
+     * Add action for a specific layers in the legend.
      * Use this in combination with addLegendLayerAction( allLayers = False )
      */
     virtual void addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer ) = 0;
 
-    /** Remove action for layers in the legend */
+    /**
+     * Remove action for layers in the legend */
     virtual bool removeLegendLayerAction( QAction* action ) = 0;
 
     //! Returns the current layer if the current item is a QgsLegendLayer.

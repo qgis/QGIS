@@ -22,7 +22,8 @@
 
 class QgsExpression;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle )*/
 class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
 {
@@ -57,10 +58,13 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     Qt::PenStyle outlineStyle() const { return mOutlineStyle; }
     void setOutlineStyle( Qt::PenStyle outlineStyle ) { mOutlineStyle = outlineStyle; }
 
-    /** Get outline join style.
+    /**
+     * Get outline join style.
      * @note added in 2.16 */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
-    /** Set outline join style.
+
+    /**
+     * Set outline join style.
      * @note added in 2.16 */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
@@ -73,14 +77,16 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     void setOutlineColor( const QColor& c ) override { mOutlineColor = c; }
     QColor outlineColor() const override { return mOutlineColor; }
 
-    /** Sets the units for the symbol's width.
+    /**
+     * Sets the units for the symbol's width.
      * @param unit symbol units
      * @see symbolWidthUnit()
      * @see setSymbolHeightUnit()
     */
     void setSymbolWidthUnit( QgsUnitTypes::RenderUnit unit ) { mSymbolWidthUnit = unit; }
 
-    /** Returns the units for the symbol's width.
+    /**
+     * Returns the units for the symbol's width.
      * @see setSymbolWidthUnit()
      * @see symbolHeightUnit()
     */
@@ -89,14 +95,16 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     void setSymbolWidthMapUnitScale( const QgsMapUnitScale& scale ) { mSymbolWidthMapUnitScale = scale; }
     const QgsMapUnitScale& symbolWidthMapUnitScale() const { return mSymbolWidthMapUnitScale; }
 
-    /** Sets the units for the symbol's height.
+    /**
+     * Sets the units for the symbol's height.
      * @param unit symbol units
      * @see symbolHeightUnit()
      * @see setSymbolWidthUnit()
     */
     void setSymbolHeightUnit( QgsUnitTypes::RenderUnit unit ) { mSymbolHeightUnit = unit; }
 
-    /** Returns the units for the symbol's height.
+    /**
+     * Returns the units for the symbol's height.
      * @see setSymbolHeightUnit()
      * @see symbolWidthUnit()
     */
@@ -105,13 +113,15 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     void setSymbolHeightMapUnitScale( const QgsMapUnitScale& scale ) { mSymbolHeightMapUnitScale = scale; }
     const QgsMapUnitScale& symbolHeightMapUnitScale() const { return mSymbolHeightMapUnitScale; }
 
-    /** Sets the units for the symbol's outline width.
+    /**
+     * Sets the units for the symbol's outline width.
      * @param unit symbol units
      * @see outlineWidthUnit()
     */
     void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit ) { mOutlineWidthUnit = unit; }
 
-    /** Returns the units for the symbol's outline width.
+    /**
+     * Returns the units for the symbol's outline width.
      * @see setOutlineWidthUnit()
     */
     QgsUnitTypes::RenderUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
@@ -147,7 +157,8 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     QPen mPen;
     QBrush mBrush;
 
-    /** Setup mPainterPath
+    /**
+     * Setup mPainterPath
       @param symbolName name of symbol
       @param context render context
       @param scaledWidth optional width

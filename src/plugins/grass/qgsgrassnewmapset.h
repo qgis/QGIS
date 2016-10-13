@@ -5,6 +5,7 @@
     copyright            : (C) 2005 by Radim Blazek
     email                : radim.blazek@gmail.com
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -30,7 +31,8 @@ extern "C"
 }
 
 
-/** \class QgsGrassNewMapset
+/**
+ * \class QgsGrassNewMapset
  *  \brief GRASS vector edit.
  *
  */

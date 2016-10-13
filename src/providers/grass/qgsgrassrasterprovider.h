@@ -71,6 +71,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterValue
     QTemporaryFile mGisrcFile;
     QProcess *mProcess;
 };
+
 /**
 
   \brief Data provider for GRASS raster layers.
@@ -85,6 +86,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *
@@ -99,11 +101,13 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 
     QgsRasterInterface * clone() const override;
 
-    /** \brief   Renders the layer as an image
+    /**
+     * \brief   Renders the layer as an image
      */
     QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight ) override;
 
-    /** Return a provider name
+    /**
+     * Return a provider name
      *
      * Essentially just returns the provider key.  Should be used to build file
      * dialogs so that providers can be shown with their supported types. Thus
@@ -120,7 +124,8 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     QString name() const override;
 
 
-    /** Return description
+    /**
+     * Return description
      *
      * Return a terse string describing what the provider is.
      *
@@ -135,7 +140,8 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 
     virtual QgsCoordinateReferenceSystem crs() const override;
 
-    /** Return the extent for this data layer
+    /**
+     * Return the extent for this data layer
      */
     virtual QgsRectangle extent() const override;
 
@@ -164,7 +170,8 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 
     QString lastError() override;
 
-    /** Returns a bitmask containing the supported capabilities
+    /**
+     * Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on which
         sublayers are visible on this provider, so it may
         be prudent to check this value per intended operation.
@@ -213,6 +220,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     void clearLastError();
     // append error if it is not empty
     void appendIfError( QString error );
+
     /**
      * Flag indicating if the layer data source is a valid layer
      */

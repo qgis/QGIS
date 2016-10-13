@@ -26,18 +26,21 @@
 #include <QStringList>
 
 
-/** Constructor */
+/**
+ * Constructor */
 QgsAccessControlFilter::QgsAccessControlFilter( const QgsServerInterface* serverInterface ):
     mServerInterface( serverInterface )
 {
 }
 
-/** Destructor */
+/**
+ * Destructor */
 QgsAccessControlFilter::~QgsAccessControlFilter()
 {
 }
 
-/** Return an additional layer expression filter */
+/**
+ * Return an additional layer expression filter */
 QString QgsAccessControlFilter::layerFilterExpression( const QgsVectorLayer* layer ) const
 {
   QgsMessageLog::logMessage( "QgsAccessControlFilter plugin default layerFilterExpression called", "AccessControlFilter", QgsMessageLog::INFO );
@@ -45,7 +48,8 @@ QString QgsAccessControlFilter::layerFilterExpression( const QgsVectorLayer* lay
   return QString();
 }
 
-/** Return an additional layer subset string (typically SQL) filter */
+/**
+ * Return an additional layer subset string (typically SQL) filter */
 QString QgsAccessControlFilter::layerFilterSubsetString( const QgsVectorLayer* layer ) const
 {
   QgsMessageLog::logMessage( "QgsAccessControlFilter plugin default layerFilterSQL called", "AccessControlFilter", QgsMessageLog::INFO );
@@ -53,7 +57,8 @@ QString QgsAccessControlFilter::layerFilterSubsetString( const QgsVectorLayer* l
   return QString();
 }
 
-/** Return the layer permissions */
+/**
+ * Return the layer permissions */
 QgsAccessControlFilter::LayerPermissions QgsAccessControlFilter::layerPermissions( const QgsMapLayer* layer ) const
 {
   QgsMessageLog::logMessage( "QgsAccessControlFilter plugin default layerPermissions called", "AccessControlFilter", QgsMessageLog::INFO );
@@ -63,7 +68,8 @@ QgsAccessControlFilter::LayerPermissions QgsAccessControlFilter::layerPermission
   return permissions;
 }
 
-/** Return the authorized layer attributes */
+/**
+ * Return the authorized layer attributes */
 QStringList QgsAccessControlFilter::authorizedLayerAttributes( const QgsVectorLayer* layer, const QStringList& attributes ) const
 {
   Q_UNUSED( layer );
@@ -71,7 +77,8 @@ QStringList QgsAccessControlFilter::authorizedLayerAttributes( const QgsVectorLa
   return attributes;
 }
 
-/** Are we authorized to modify the feature */
+/**
+ * Are we authorized to modify the feature */
 bool QgsAccessControlFilter::allowToEdit( const QgsVectorLayer* layer, const QgsFeature& feature ) const
 {
   QgsMessageLog::logMessage( "QgsAccessControlFilter plugin default allowToEdit called", "AccessControlFilter", QgsMessageLog::INFO );
@@ -80,7 +87,8 @@ bool QgsAccessControlFilter::allowToEdit( const QgsVectorLayer* layer, const Qgs
   return true;
 }
 
-/** Cache key to used to create the capabilities cache, "" for no cache */
+/**
+ * Cache key to used to create the capabilities cache, "" for no cache */
 QString QgsAccessControlFilter::cacheKey() const
 {
   return QString();

@@ -8,7 +8,8 @@
  *
  */
 
-/** \file */
+/**
+ * \file */
 
 #ifndef NMEA_SENTENCE_H
 #define NMEA_SENTENCE_H

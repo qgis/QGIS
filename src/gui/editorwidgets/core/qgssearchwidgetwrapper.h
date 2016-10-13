@@ -27,7 +27,8 @@ class QgsField;
 #include "qgsattributeeditorcontext.h"
 #include "qgswidgetwrapper.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Manages an editor widget
  * Widget and wrapper share the same parent
  *
@@ -46,35 +47,38 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     //! @note added in QGIS 2.16
     enum FilterFlag
     {
-      EqualTo = 1 << 1, /*!< Supports equal to */
-      NotEqualTo = 1 << 2, /*!< Supports not equal to */
-      GreaterThan = 1 << 3, /*!< Supports greater than */
-      LessThan = 1 << 4, /*!< Supports less than */
-      GreaterThanOrEqualTo = 1 << 5, /*!< Supports >= */
-      LessThanOrEqualTo = 1 << 6, /*!< Supports <= */
-      Between = 1 << 7, /*!< Supports searches between two values */
-      CaseInsensitive = 1 << 8, /*!< Supports case insensitive searching */
-      Contains = 1 << 9, /*!< Supports value "contains" searching */
-      DoesNotContain = 1 << 10, /*!< Supports value does not contain searching */
-      IsNull = 1 << 11, /*!< Supports searching for null values */
-      IsNotBetween = 1 << 12, /*!< Supports searching for values outside of a set range */
-      IsNotNull = 1 << 13, /*!< Supports searching for non-null values */
+      EqualTo = 1 << 1, //!< Supports equal to
+      NotEqualTo = 1 << 2, //!< Supports not equal to
+      GreaterThan = 1 << 3, //!< Supports greater than
+      LessThan = 1 << 4, //!< Supports less than
+      GreaterThanOrEqualTo = 1 << 5, //!< Supports >=
+      LessThanOrEqualTo = 1 << 6, //!< Supports <=
+      Between = 1 << 7, //!< Supports searches between two values
+      CaseInsensitive = 1 << 8, //!< Supports case insensitive searching
+      Contains = 1 << 9, //!< Supports value "contains" searching
+      DoesNotContain = 1 << 10, //!< Supports value does not contain searching
+      IsNull = 1 << 11, //!< Supports searching for null values
+      IsNotBetween = 1 << 12, //!< Supports searching for values outside of a set range
+      IsNotNull = 1 << 13, //!< Supports searching for non-null values
     };
     Q_DECLARE_FLAGS( FilterFlags, FilterFlag )
 
-    /** Returns a list of exclusive filter flags, which cannot be combined with other flags (eg EqualTo/NotEqualTo)
+    /**
+     * Returns a list of exclusive filter flags, which cannot be combined with other flags (eg EqualTo/NotEqualTo)
      * @note added in QGIS 2.16
      * @see nonExclusiveFilterFlags()
      */
     static QList< FilterFlag > exclusiveFilterFlags();
 
-    /** Returns a list of non-exclusive filter flags, which can be combined with other flags (eg CaseInsensitive)
+    /**
+     * Returns a list of non-exclusive filter flags, which can be combined with other flags (eg CaseInsensitive)
      * @note added in QGIS 2.16
      * @see exclusiveFilterFlags()
      */
     static QList< FilterFlag > nonExclusiveFilterFlags();
 
-    /** Returns a translated string representing a filter flag.
+    /**
+     * Returns a translated string representing a filter flag.
      * @param flag flag to convert to string
      * @note added in QGIS 2.16
      */
@@ -89,13 +93,15 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      */
     explicit QgsSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
 
-    /** Returns filter flags supported by the search widget.
+    /**
+     * Returns filter flags supported by the search widget.
      * @note added in QGIS 2.16
      * @see defaultFlags()
      */
     virtual FilterFlags supportedFlags() const;
 
-    /** Returns the filter flags which should be set by default for the search widget.
+    /**
+     * Returns the filter flags which should be set by default for the search widget.
      * @note added in QGIS 2.16
      * @see supportedFlags()
      */
@@ -118,7 +124,8 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      */
     virtual bool applyDirectly() = 0;
 
-    /** Creates a filter expression based on the current state of the search widget
+    /**
+     * Creates a filter expression based on the current state of the search widget
      * and the specified filter flags.
      * @param flags filter flags
      * @returns filter expression
@@ -129,12 +136,14 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
   public slots:
 
-    /** Clears the widget's current value and resets it back to the default state
+    /**
+     * Clears the widget's current value and resets it back to the default state
      * @note added in QGIS 2.16
      */
     virtual void clearWidget() {}
 
-    /** Toggles whether the search widget is enabled or disabled.
+    /**
+     * Toggles whether the search widget is enabled or disabled.
      * @param enabled set to true to enable widget
      */
     virtual void setEnabled( bool enabled ) override { Q_UNUSED( enabled ); }
@@ -147,12 +156,14 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      */
     void expressionChanged( const QString& exp );
 
-    /** Emitted when a user changes the value of the search widget.
+    /**
+     * Emitted when a user changes the value of the search widget.
      * @note added in QGIS 2.16
      */
     void valueChanged();
 
-    /** Emitted when a user changes the value of the search widget back
+    /**
+     * Emitted when a user changes the value of the search widget back
      * to an empty, default state.
      * @note added in QGIS 2.16
      */

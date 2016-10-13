@@ -36,7 +36,8 @@ class QgsPythonUtils;
 class QgsVectorLayer;
 class QgsExpressionContext;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsActionManager
  * Storage and management of actions associated with a layer.
  *
@@ -53,7 +54,8 @@ class CORE_EXPORT QgsActionManager
         , mDefaultAction( -1 )
     {}
 
-    /** Add an action with the given name and action details.
+    /**
+     * Add an action with the given name and action details.
      * Will happily have duplicate names and actions. If
      * capture is true, when running the action using doAction(),
      * any stdout from the process will be captured and displayed in a
@@ -61,7 +63,8 @@ class CORE_EXPORT QgsActionManager
      */
     void addAction( QgsAction::ActionType type, const QString& name, const QString& action, bool capture = false );
 
-    /** Add an action with the given name and action details.
+    /**
+     * Add an action with the given name and action details.
      * Will happily have duplicate names and actions. If
      * capture is true, when running the action using doAction(),
      * any stdout from the process will be captured and displayed in a
@@ -77,7 +80,8 @@ class CORE_EXPORT QgsActionManager
     //! Remove an action at given index
     void removeAction( int index );
 
-    /** Does the given values. defaultValueIndex is the index of the
+    /**
+     * Does the given values. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
      *  @note available in python bindings as doActionFeature
      */
@@ -85,7 +89,8 @@ class CORE_EXPORT QgsActionManager
                    const QgsFeature &feat,
                    int defaultValueIndex = 0 );
 
-    /** Does the action using the expression engine to replace any embedded expressions
+    /**
+     * Does the action using the expression engine to replace any embedded expressions
      * in the action definition.
      * @param index action index
      * @param feature feature to run action for

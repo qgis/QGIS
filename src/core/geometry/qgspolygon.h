@@ -20,7 +20,8 @@
 
 #include "qgscurvepolygon.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsPolygonV2
  * \brief Polygon geometry type.
  * \note added in QGIS 2.10
@@ -51,7 +52,8 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
 
     QgsPolygonV2* surfaceToPolygon() const override;
 
-    /** Returns the geometry converted to the more generic curve type QgsCurvePolygon
+    /**
+     * Returns the geometry converted to the more generic curve type QgsCurvePolygon
      @return the converted geometry. Caller takes ownership*/
     QgsAbstractGeometry* toCurveType() const override;
 

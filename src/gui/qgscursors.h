@@ -18,7 +18,8 @@
 #ifndef QGSCURSORS_H
 #define QGSCURSORS_H
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Bitmap cursors for map operations.
  */
 extern GUI_EXPORT const char *zoom_in[];

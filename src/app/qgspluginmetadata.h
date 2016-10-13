@@ -20,6 +20,7 @@
 #define QGSPLUGINMETADATA_H
 #include <QString>
 class QgisPlugin;
+
 /**
 * \class QgsPluginMetadata
 * \brief Stores information about a loaded plugin, including a pointer to

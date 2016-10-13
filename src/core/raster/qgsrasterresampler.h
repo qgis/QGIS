@@ -22,7 +22,8 @@
 
 class QImage;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Interface for resampling rasters (e.g. to have a smoother appearance)
   */
 class QgsRasterResampler
@@ -36,6 +37,7 @@ class QgsRasterResampler
      * Needs to be implemented by subclasses.
      */
     virtual QString type() const = 0;
+
     /**
      * Get a deep copy of this object.
      * Needs to be reimplemented by subclasses.

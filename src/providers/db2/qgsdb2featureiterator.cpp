@@ -327,6 +327,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature& feature )
       else
       {
 //        QgsDebugMsg( QString( "Field: %1; value: %2" ).arg( attrName, v.toString() ) );
+
         /**
          * CHAR and VARCHAR fields seem to get corrupted sometimes when directly
          * calling feature.setAttribute(..., v) with mQuery->value(i). Workaround

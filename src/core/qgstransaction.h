@@ -25,7 +25,8 @@
 class QgsVectorDataProvider;
 class QgsVectorLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class allows including a set of layers in a database-side transaction,
  * provided the layer data providers support transactions and are compatible
  * with each other.
@@ -51,22 +52,28 @@ class CORE_EXPORT QgsTransaction : public QObject
     Q_OBJECT
 
   public:
-    /** Creates a transaction for the specified connection string and provider */
+
+    /**
+     * Creates a transaction for the specified connection string and provider */
     static QgsTransaction* create( const QString& connString, const QString& providerKey );
 
-    /** Creates a transaction which includes the specified layers. Connection string
+    /**
+     * Creates a transaction which includes the specified layers. Connection string
      *  and data provider are taken from the first layer */
     static QgsTransaction* create( const QStringList& layerIds );
 
     virtual ~QgsTransaction();
 
-    /** Add layer to the transaction. The layer must not be in edit mode.*/
+    /**
+     * Add layer to the transaction. The layer must not be in edit mode.*/
     bool addLayer( const QString& layerId );
 
-    /** Add layer to the transaction. The layer must not be in edit mode.*/
+    /**
+     * Add layer to the transaction. The layer must not be in edit mode.*/
     bool addLayer( QgsVectorLayer* layer );
 
-    /** Begin transaction
+    /**
+     * Begin transaction
      *  The statement timeout, in seconds, specifies how long an sql statement
      *  is allowed to block QGIS before it is aborted. Statements can block,
      *  depending on the provider, if multiple transactions are active and a
@@ -76,13 +83,16 @@ class CORE_EXPORT QgsTransaction : public QObject
      *  Some providers might not honour the statement timeout. */
     bool begin( QString& errorMsg, int statementTimeout = 20 );
 
-    /** Commit transaction. */
+    /**
+     * Commit transaction. */
     bool commit( QString& errorMsg );
 
-    /** Roll back transaction. */
+    /**
+     * Roll back transaction. */
     bool rollback( QString& errorMsg );
 
-    /** Executes sql */
+    /**
+     * Executes sql */
     virtual bool executeSql( const QString& sql, QString& error ) = 0;
 
     /**
@@ -91,6 +101,7 @@ class CORE_EXPORT QgsTransaction : public QObject
     static bool supportsTransaction( const QgsVectorLayer* layer );
 
   signals:
+
     /**
      * Emitted after a rollback
      */

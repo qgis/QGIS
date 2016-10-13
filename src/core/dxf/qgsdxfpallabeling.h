@@ -26,7 +26,8 @@ class QgsPalLayerSettings;
 class QgsRuleBasedLabeling;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Implements a derived label provider internally used for DXF export
  *
  * Internal class, not in public API. Added in QGIS 2.12
@@ -38,13 +39,15 @@ class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
     //! construct the provider
     explicit QgsDxfLabelProvider( QgsVectorLayer* layer, const QString& providerId, QgsDxfExport* dxf, const QgsPalLayerSettings *settings );
 
-    /** Re-implementation that writes to DXF file instead of drawing with QPainter
+    /**
+     * Re-implementation that writes to DXF file instead of drawing with QPainter
      * @param context render context
      * @param label label
      */
     void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const override;
 
-    /** Registration method that keeps track of DXF layer names of individual features
+    /**
+     * Registration method that keeps track of DXF layer names of individual features
      * @param feature feature
      * @param context render context
      * @param dxfLayerName name of dxf layer
@@ -56,7 +59,8 @@ class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
     QgsDxfExport* mDxfExport;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Implements a derived label provider for rule based labels internally used
  * for DXF export
  *
@@ -69,18 +73,21 @@ class QgsDxfRuleBasedLabelProvider : public QgsRuleBasedLabelProvider
     //! construct the provider
     explicit QgsDxfRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer* layer, QgsDxfExport* dxf );
 
-    /** Reinitialize the subproviders with QgsDxfLabelProviders
+    /**
+     * Reinitialize the subproviders with QgsDxfLabelProviders
      * @param layer layer
      */
     void reinit( QgsVectorLayer* layer );
 
-    /** Re-implementation that writes to DXF file instead of drawing with QPainter
+    /**
+     * Re-implementation that writes to DXF file instead of drawing with QPainter
      * @param context render context
      * @param label label
      */
     void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
 
-    /** Registration method that keeps track of DXF layer names of individual features
+    /**
+     * Registration method that keeps track of DXF layer names of individual features
      * @param feature feature
      * @param context render context
      * @param dxfLayerName name of dxf layer

@@ -20,7 +20,8 @@
 
 class QgsMapLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsLayerTreeEmbeddedConfigWidget
  * A widget to configure layer tree embedded widgets for a particular map layer.
  * @note introduced in QGIS 2.16
@@ -29,6 +30,7 @@ class GUI_EXPORT QgsLayerTreeEmbeddedConfigWidget : public QWidget, protected Ui
 {
     Q_OBJECT
   public:
+
     /**
      * A widget to configure layer tree embedded widgets for a particular map layer.
      * @param parent The parent of the widget.

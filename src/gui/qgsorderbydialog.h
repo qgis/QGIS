@@ -24,7 +24,8 @@
 
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This is a dialog to build and manage a list of order by clauses.
  *
  * @note added in 2.14
@@ -35,6 +36,7 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     Q_OBJECT
 
   public:
+
     /**
      * Create a new order by dialog. This helps building order by structures.
      *
@@ -61,6 +63,7 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     void onExpressionChanged( const QString& expression );
 
   private:
+
     /**
      * Initialize a row with the given information
      */

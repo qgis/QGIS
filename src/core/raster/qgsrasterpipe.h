@@ -37,7 +37,8 @@ class QgsRasterDataProvider;
 #undef interface
 #endif
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Base class for processing modules.
  */
 class CORE_EXPORT QgsRasterPipe
@@ -61,15 +62,18 @@ class CORE_EXPORT QgsRasterPipe
 
     ~QgsRasterPipe();
 
-    /** Try to insert interface at specified index and connect
+    /**
+     * Try to insert interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
     bool insert( int idx, QgsRasterInterface* theInterface );
 
-    /** Try to replace interface at specified index and connect
+    /**
+     * Try to replace interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
     bool replace( int idx, QgsRasterInterface* theInterface );
 
-    /** Insert a new known interface in default place or replace interface of the same
+    /**
+     * Insert a new known interface in default place or replace interface of the same
      * role if it already exists. Known interfaces are: QgsRasterDataProvider,
      * QgsRasterRenderer, QgsRasterResampleFilter, QgsRasterProjector and their
      * subclasses. For unknown interfaces it mus be explicitly specified position
@@ -77,21 +81,25 @@ class CORE_EXPORT QgsRasterPipe
      */
     bool set( QgsRasterInterface * theInterface );
 
-    /** Remove and delete interface at given index if possible */
+    /**
+     * Remove and delete interface at given index if possible */
     bool remove( int idx );
 
-    /** Remove and delete interface from pipe if possible */
+    /**
+     * Remove and delete interface from pipe if possible */
     bool remove( QgsRasterInterface * theInterface );
 
     int size() const { return mInterfaces.size(); }
     QgsRasterInterface * at( int idx ) const { return mInterfaces.at( idx ); }
     QgsRasterInterface * last() const { return mInterfaces.last(); }
 
-    /** Set interface at index on/off
+    /**
+     * Set interface at index on/off
      *  Returns true on success */
     bool setOn( int idx, bool on );
 
-    /** Test if interface at index may be swithed on/off */
+    /**
+     * Test if interface at index may be swithed on/off */
     bool canSetOn( int idx, bool on );
 
     // Getters for special types of interfaces
@@ -104,7 +112,9 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterNuller * nuller() const;
 
   private:
-    /** Get known parent type_info of interface parent */
+
+    /**
+     * Get known parent type_info of interface parent */
     Role interfaceRole( QgsRasterInterface * iface ) const;
 
     // Interfaces in pipe, the first is always provider
@@ -121,10 +131,12 @@ class CORE_EXPORT QgsRasterPipe
     // Check if index is in bounds
     bool checkBounds( int idx ) const;
 
-    /** Get known interface by role */
+    /**
+     * Get known interface by role */
     QgsRasterInterface * interface( Role role ) const;
 
-    /** \brief Try to connect interfaces in pipe and to the provider at beginning.
+    /**
+     * \brief Try to connect interfaces in pipe and to the provider at beginning.
         Returns true if connected or false if connection failed */
     bool connect( QVector<QgsRasterInterface*> theInterfaces );
 

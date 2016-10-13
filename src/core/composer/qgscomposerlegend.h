@@ -30,7 +30,8 @@ class QgsComposerMap;
 class QgsLegendRenderer;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Item model implementation based on layer tree model for composer legend.
  * Overrides some functionality of QgsLayerTreeModel to better fit the needs of composer legend.
  *
@@ -49,7 +50,8 @@ class CORE_EXPORT QgsLegendModelV2 : public QgsLayerTreeModel
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A legend that can be placed onto a map composition
  */
 class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
@@ -60,19 +62,24 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     QgsComposerLegend( QgsComposition* composition );
     ~QgsComposerLegend();
 
-    /** Return correct graphics item type. */
+    /**
+     * Return correct graphics item type. */
     virtual int type() const override { return ComposerLegend; }
 
-    /** \brief Reimplementation of QCanvasItem::paint*/
+    /**
+     * \brief Reimplementation of QCanvasItem::paint*/
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
-    /** Paints the legend and calculates its size. If painter is 0, only size is calculated*/
+    /**
+     * Paints the legend and calculates its size. If painter is 0, only size is calculated*/
     QSizeF paintAndDetermineSize( QPainter* painter );
 
-    /** Sets item box to the whole content*/
+    /**
+     * Sets item box to the whole content*/
     void adjustBoxSize();
 
-    /** Sets whether the legend should automatically resize to fit its contents.
+    /**
+     * Sets whether the legend should automatically resize to fit its contents.
      * @param enabled set to false to disable automatic resizing. The legend frame will not
      * be expanded to fit legend items, and items may be cropped from display.
      * @see resizeToContents()
@@ -80,7 +87,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      */
     void setResizeToContents( bool enabled );
 
-    /** Returns whether the legend should automatically resize to fit its contents.
+    /**
+     * Returns whether the legend should automatically resize to fit its contents.
      * @see setResizeToContents()
      * @note added in QGIS 3.0
      */
@@ -122,30 +130,39 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setTitle( const QString& t );
     QString title() const;
 
-    /** Returns the alignment of the legend title
+    /**
+     * Returns the alignment of the legend title
      * @returns Qt::AlignmentFlag for the legend title
      * @note added in 2.3
      * @see setTitleAlignment
      */
     Qt::AlignmentFlag titleAlignment() const;
-    /** Sets the alignment of the legend title
+
+    /**
+     * Sets the alignment of the legend title
      * @param alignment Text alignment for drawing the legend title
      * @note added in 2.3
      * @see titleAlignment
      */
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 
-    /** Returns reference to modifiable style */
+    /**
+     * Returns reference to modifiable style */
     QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s );
-    /** Returns style */
+
+    /**
+     * Returns style */
     QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const;
     void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style );
 
     QFont styleFont( QgsComposerLegendStyle::Style s ) const;
-    /** Set style font */
+
+    /**
+     * Set style font */
     void setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f );
 
-    /** Set style margin*/
+    /**
+     * Set style margin*/
     void setStyleMargin( QgsComposerLegendStyle::Style s, double margin );
     void setStyleMargin( QgsComposerLegendStyle::Style s, QgsComposerLegendStyle::Side side, double margin );
 
@@ -182,7 +199,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     bool equalColumnWidth() const;
     void setEqualColumnWidth( bool s );
 
-    /** Returns whether a border will be drawn around raster symbol items.
+    /**
+     * Returns whether a border will be drawn around raster symbol items.
      * @see setDrawRasterBorder()
      * @see rasterBorderColor()
      * @see rasterBorderWidth()
@@ -190,7 +208,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      */
     bool drawRasterBorder() const;
 
-    /** Sets whether a border will be drawn around raster symbol items.
+    /**
+     * Sets whether a border will be drawn around raster symbol items.
      * @param enabled set to true to draw borders
      * @see drawRasterBorder()
      * @see setRasterBorderColor()
@@ -199,7 +218,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      */
     void setDrawRasterBorder( bool enabled );
 
-    /** Returns the border color for the border drawn around raster symbol items. The border is
+    /**
+     * Returns the border color for the border drawn around raster symbol items. The border is
      * only drawn if drawRasterBorder() is true.
      * @see setRasterBorderColor()
      * @see drawRasterBorder()
@@ -208,7 +228,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      */
     QColor rasterBorderColor() const;
 
-    /** Sets the border color for the border drawn around raster symbol items. The border is
+    /**
+     * Sets the border color for the border drawn around raster symbol items. The border is
      * only drawn if drawRasterBorder() is true.
      * @param color border color
      * @see rasterBorderColor()
@@ -218,7 +239,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      */
     void setRasterBorderColor( const QColor& color );
 
-    /** Returns the border width (in millimeters) for the border drawn around raster symbol items. The border is
+    /**
+     * Returns the border width (in millimeters) for the border drawn around raster symbol items. The border is
      * only drawn if drawRasterBorder() is true.
      * @see setRasterBorderWidth()
      * @see drawRasterBorder()
@@ -227,7 +249,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      */
     double rasterBorderWidth() const;
 
-    /** Sets the border width for the border drawn around raster symbol items. The border is
+    /**
+     * Sets the border width for the border drawn around raster symbol items. The border is
      * only drawn if drawRasterBorder() is true.
      * @param width border width in millimeters
      * @see rasterBorderWidth()
@@ -240,16 +263,19 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setComposerMap( const QgsComposerMap* map );
     const QgsComposerMap* composerMap() const { return mComposerMap;}
 
-    /** Updates the model and all legend entries*/
+    /**
+     * Updates the model and all legend entries*/
     void updateLegend();
 
-    /** Stores state in Dom node
+    /**
+     * Stores state in Dom node
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
     bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
 
-    /** Sets state from Dom document
+    /**
+     * Sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
        * @param doc is Dom document
        */
@@ -259,9 +285,13 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     virtual QString displayName() const override;
 
   public slots:
-    /** Data changed*/
+
+    /**
+     * Data changed*/
     void synchronizeWithModel();
-    /** Sets mCompositionMap to 0 if the map is deleted*/
+
+    /**
+     * Sets mCompositionMap to 0 if the map is deleted*/
     void invalidateCurrentMap();
 
   private slots:

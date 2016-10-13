@@ -110,6 +110,7 @@ class topolTest: public QObject
      * Returns copy of the test map
      */
     QMap<QString, TopologyRule> testMap() { return mTopologyRuleMap; }
+
     /**
      * Runs the test and returns all found errors
      * @param testName name of the test
@@ -127,6 +128,7 @@ class topolTest: public QObject
      * @param layer2 pointer to the second layer
      */
     ErrorList checkOverlapWithLayer( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
+
     /**
      * Checks for self-intersections in the layer
      * @param tolerance not used
@@ -136,6 +138,7 @@ class topolTest: public QObject
     ErrorList checkSelfIntersections( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
 
 #if 0 //unused and broken
+
     /**
      * Checks for features that are too close
      * @param tolerance allowed tolerance
@@ -152,6 +155,7 @@ class topolTest: public QObject
      * @param layer2 pointer to the second layer
      */
     ErrorList checkSegmentLength( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
+
     /**
      * Checks for dangling lines
      * @param tolerance allowed tolerance
@@ -159,6 +163,7 @@ class topolTest: public QObject
      * @param layer2 not used
      */
     ErrorList checkDanglingLines( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
+
     /**
      * Checks for points not covered by any segment
      * @param tolerance not used
@@ -166,6 +171,7 @@ class topolTest: public QObject
      * @param layer2 pointer to the second layer
      */
     ErrorList checkPointCoveredBySegment( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
+
     /**
      * Checks for invalid geometries
      * @param tolerance not used
@@ -248,6 +254,7 @@ class topolTest: public QObject
 
 
   public slots:
+
     /**
      * Checks for invalid geometries
      * @param tolerance not used
@@ -292,6 +299,7 @@ class topolTest: public QObject
     bool testCancelled();
 
   signals:
+
     /**
      * Informs progress dialog about current status
      * @param value process status

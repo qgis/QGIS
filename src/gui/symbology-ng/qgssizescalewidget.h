@@ -30,7 +30,8 @@ class QgsScaleExpression;
 class QgsDataDefined;
 class QgsMapCanvas;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSizeScaleWidget
  */
 class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui_SizeScaleBase, private QgsExpressionContextGenerator
@@ -42,7 +43,8 @@ class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui
 
     QgsDataDefined dataDefined() const override;
 
-    /** Returns the vector layer associated with the widget.
+    /**
+     * Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
     const QgsVectorLayer* layer() const { return mLayer; }

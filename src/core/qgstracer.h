@@ -27,7 +27,8 @@ class QgsVectorLayer;
 
 struct QgsTracerGraph;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Utility class that construct a planar graph from the input vector
  * layers and provides shortest path search for tracing of existing
  * features.

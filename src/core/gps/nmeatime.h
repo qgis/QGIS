@@ -24,7 +24,8 @@
  *
  */
 
-/** \file */
+/**
+ * \file */
 
 #ifndef NMEA_TIME_H
 #define NMEA_TIME_H

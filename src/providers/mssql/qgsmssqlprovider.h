@@ -91,19 +91,22 @@ class QgsMssqlProvider : public QgsVectorDataProvider
      */
     virtual long featureCount() const override;
 
-    /** Update the extent, feature count, wkb type and srid for this layer */
+    /**
+     * Update the extent, feature count, wkb type and srid for this layer */
     void UpdateStatistics( bool estimate ) const;
 
     virtual QgsFields fields() const override;
 
     QString subsetString() const override;
 
-    /** Mutator for sql where clause used to limit dataset size */
+    /**
+     * Mutator for sql where clause used to limit dataset size */
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() const override { return true; }
 
-    /** Returns a bitmask containing the supported capabilities
+    /**
+     * Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on whether
         a spatial filter is active on this provider, so it may
         be prudent to check this value per intended operation.
@@ -113,7 +116,8 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     /* Implementation of functions from QgsDataProvider */
 
-    /** Return a provider name
+    /**
+     * Return a provider name
 
         Essentially just returns the provider key.  Should be used to build file
         dialogs so that providers can be shown with their supported types. Thus
@@ -128,7 +132,8 @@ class QgsMssqlProvider : public QgsVectorDataProvider
      */
     QString name() const override;
 
-    /** Return description
+    /**
+     * Return description
 
         Return a terse string describing what the provider is.
 
@@ -146,10 +151,12 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
 
-    /** Writes a list of features to the database*/
+    /**
+     * Writes a list of features to the database*/
     virtual bool addFeatures( QgsFeatureList & flist ) override;
 
-    /** Deletes a feature*/
+    /**
+     * Deletes a feature*/
     virtual bool deleteFeatures( const QgsFeatureIds & id ) override;
 
     /**
@@ -166,10 +173,12 @@ class QgsMssqlProvider : public QgsVectorDataProvider
      */
     virtual bool deleteAttributes( const QgsAttributeIds &attributes ) override;
 
-    /** Changes attribute values of existing features */
+    /**
+     * Changes attribute values of existing features */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
-    /** Changes existing geometries*/
+    /**
+     * Changes existing geometries*/
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
     /**
@@ -177,18 +186,22 @@ class QgsMssqlProvider : public QgsVectorDataProvider
      */
     virtual bool createSpatialIndex() override;
 
-    /** Create an attribute index on the datasource*/
+    /**
+     * Create an attribute index on the datasource*/
     virtual bool createAttributeIndex( int field ) override;
 
-    /** Convert a QgsField to work with MSSQL */
+    /**
+     * Convert a QgsField to work with MSSQL */
     static bool convertField( QgsField &field );
 
-    /** Convert values to quoted values for database work **/
+    /**
+     * Convert values to quoted values for database work **/
     static QString quotedValue( const QVariant& value );
 
     QVariant defaultValue( int fieldId ) const override;
 
-    /** Import a vector layer into the database */
+    /**
+     * Import a vector layer into the database */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
       const QgsFields &fields,
@@ -203,7 +216,9 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     virtual QgsCoordinateReferenceSystem crs() const override;
 
   protected:
-    /** Loads fields from input file to member attributeFields */
+
+    /**
+     * Loads fields from input file to member attributeFields */
     QVariant::Type DecodeSqlType( const QString& sqlTypeName );
     void loadFields();
     void loadMetadata();

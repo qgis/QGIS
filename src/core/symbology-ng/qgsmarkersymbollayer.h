@@ -31,7 +31,8 @@
 #include <QPolygonF>
 #include <QFont>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSimpleMarkerSymbolLayerBase
  * \brief Abstract base class for simple marker symbol layers. Handles creation of the symbol shapes but
  * leaves the actual drawing of the symbols to subclasses.
@@ -44,41 +45,43 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     //! Marker symbol shapes
     enum Shape
     {
-      Square, /*!< Square */
-      Diamond, /*!< Diamond */
-      Pentagon, /*!< Pentagon */
-      Hexagon, /*!< Hexagon */
-      Triangle, /*!< Triangle */
-      EquilateralTriangle, /*!< Equilateral triangle*/
-      Star, /*!< Star*/
-      Arrow, /*!< Arrow*/
-      Circle, /*!< Circle*/
-      Cross, /*!< Cross (lines only)*/
-      CrossFill, /*!< Solid filled cross*/
-      Cross2, /*!< Rotated cross (lines only), "x" shape*/
-      Line, /*!< Vertical line*/
-      ArrowHead, /*!< Right facing arrow head (unfilled, lines only)*/
-      ArrowHeadFilled, /*!< Right facing filled arrow head*/
-      SemiCircle, /*!< Semi circle (top half)*/
-      ThirdCircle, /*!< One third circle (top left third)*/
-      QuarterCircle, /*!< Quarter circle (top left quarter)*/
-      QuarterSquare, /*!< Quarter square (top left quarter)*/
-      HalfSquare, /*!< Half square (left half)*/
-      DiagonalHalfSquare, /*!< Diagonal half square (bottom left half)*/
-      RightHalfTriangle, /*!< Right half of triangle*/
-      LeftHalfTriangle, /*!< Left half of triangle*/
+      Square, //!< Square
+      Diamond, //!< Diamond
+      Pentagon, //!< Pentagon
+      Hexagon, //!< Hexagon
+      Triangle, //!< Triangle
+      EquilateralTriangle, //!< Equilateral triangle
+      Star, //!< Star
+      Arrow, //!< Arrow
+      Circle, //!< Circle
+      Cross, //!< Cross (lines only)
+      CrossFill, //!< Solid filled cross
+      Cross2, //!< Rotated cross (lines only), "x" shape
+      Line, //!< Vertical line
+      ArrowHead, //!< Right facing arrow head (unfilled, lines only)
+      ArrowHeadFilled, //!< Right facing filled arrow head
+      SemiCircle, //!< Semi circle (top half)
+      ThirdCircle, //!< One third circle (top left third)
+      QuarterCircle, //!< Quarter circle (top left quarter)
+      QuarterSquare, //!< Quarter square (top left quarter)
+      HalfSquare, //!< Half square (left half)
+      DiagonalHalfSquare, //!< Diagonal half square (bottom left half)
+      RightHalfTriangle, //!< Right half of triangle
+      LeftHalfTriangle, //!< Left half of triangle
     };
 
     //! Returns a list of all available shape types.
     static QList< Shape > availableShapes();
 
-    /** Returns true if a symbol shape has a fill.
+    /**
+     * Returns true if a symbol shape has a fill.
      * @param shape shape to test
      * @returns true if shape uses a fill, or false if shape uses lines only
      */
     static bool shapeIsFilled( Shape shape );
 
-    /** Constructor for QgsSimpleMarkerSymbolLayerBase.
+    /**
+     * Constructor for QgsSimpleMarkerSymbolLayerBase.
     * @param shape symbol shape for markers
     * @param size symbol size (in mm)
     * @param angle symbol rotation angle
@@ -89,18 +92,21 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
                                     double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                     QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
-    /** Returns the shape for the rendered marker symbol.
+    /**
+     * Returns the shape for the rendered marker symbol.
      * @see setShape()
      */
     Shape shape() const { return mShape; }
 
-    /** Sets the rendered marker shape.
+    /**
+     * Sets the rendered marker shape.
      * @param shape new marker shape
      * @see shape()
      */
     void setShape( Shape shape ) { mShape = shape; }
 
-    /** Attempts to decode a string representation of a shape name to the corresponding
+    /**
+     * Attempts to decode a string representation of a shape name to the corresponding
      * shape.
      * @param name encoded shape name
      * @param ok if specified, will be set to true if shape was successfully decoded
@@ -109,7 +115,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      */
     static Shape decodeShape( const QString& name, bool* ok = nullptr );
 
-    /** Encodes a shape to its string representation.
+    /**
+     * Encodes a shape to its string representation.
      * @param shape shape to encode
      * @returns encoded string
      * @see decodeShape()
@@ -131,7 +138,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     //! @note not available in Python bindings
     bool prepareMarkerPath( Shape symbol );
 
-    /** Creates a polygon representing the specified shape.
+    /**
+     * Creates a polygon representing the specified shape.
      * @param shape shape to create
      * @param polygon destination polygon for shape
      * @returns true if shape was successfully stored in polygon
@@ -139,7 +147,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      */
     bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const;
 
-    /** Calculates the desired size of the marker, considering data defined size overrides.
+    /**
+     * Calculates the desired size of the marker, considering data defined size overrides.
      * @param context symbol render context
      * @param hasDataDefinedSize will be set to true if marker uses data defined sizes
      * @returns marker size, in original size units
@@ -147,7 +156,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      */
     double calculateSize( QgsSymbolRenderContext& context, bool& hasDataDefinedSize ) const;
 
-    /** Calculates the marker offset and rotation.
+    /**
+     * Calculates the marker offset and rotation.
      * @param context symbol render context
      * @param scaledSize size of symbol to render
      * @param hasDataDefinedRotation will be set to true if marker has data defined rotation
@@ -168,7 +178,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
 
   private:
 
-    /** Derived classes must implement draw() to handle drawing the generated shape onto the painter surface.
+    /**
+     * Derived classes must implement draw() to handle drawing the generated shape onto the painter surface.
      * @param context symbol render context
      * @param shape shape to draw
      * @param polygon polygon representing transformed marker shape. May be empty, in which case the shape will be specified
@@ -178,7 +189,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     virtual void draw( QgsSymbolRenderContext& context, Shape shape, const QPolygonF& polygon, const QPainterPath& path ) = 0;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSimpleMarkerSymbolLayer
  * \brief Simple marker symbol layer, consisting of a rendered shape with solid fill color and an outline.
  */
@@ -186,7 +198,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 {
   public:
 
-    /** Constructor for QgsSimpleMarkerSymbolLayer.
+    /**
+     * Constructor for QgsSimpleMarkerSymbolLayer.
     * @param shape symbol shape
     * @param size symbol size (in mm)
     * @param angle symbol rotation angle
@@ -205,13 +218,15 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
     // static methods
 
-    /** Creates a new QgsSimpleMarkerSymbolLayer.
+    /**
+     * Creates a new QgsSimpleMarkerSymbolLayer.
      * @param properties a property map containing symbol properties (see properties())
      * @returns new QgsSimpleMarkerSymbolLayer
      */
     static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
 
-    /** Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
+    /**
+     * Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
      * @param element XML element containing SLD definition of symbol
      * @returns new QgsSimpleMarkerSymbolLayer
      */
@@ -241,14 +256,16 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
     // new methods
 
-    /** Returns the marker's border color.
+    /**
+     * Returns the marker's border color.
      * @see setBorderColor()
      * @see outlineStyle()
      * @see penJoinStyle()
      */
     QColor borderColor() const { return mBorderColor; }
 
-    /** Sets the marker's border color.
+    /**
+     * Sets the marker's border color.
      * @param color border color
      * @see borderColor()
      * @see setOutlineStyle()
@@ -256,7 +273,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      */
     void setBorderColor( const QColor& color ) { mBorderColor = color; }
 
-    /** Returns the marker's outline style (eg solid, dashed, etc)
+    /**
+     * Returns the marker's outline style (eg solid, dashed, etc)
      * @note added in 2.4
      * @see setOutlineStyle()
      * @see borderColor()
@@ -264,7 +282,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     */
     Qt::PenStyle outlineStyle() const { return mOutlineStyle; }
 
-    /** Sets the marker's outline style (eg solid, dashed, etc)
+    /**
+     * Sets the marker's outline style (eg solid, dashed, etc)
      * @param outlineStyle style
      * @note added in 2.4
      * @see outlineStyle()
@@ -273,7 +292,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     */
     void setOutlineStyle( Qt::PenStyle outlineStyle ) { mOutlineStyle = outlineStyle; }
 
-    /** Returns the marker's outline join style (eg miter, bevel, etc).
+    /**
+     * Returns the marker's outline join style (eg miter, bevel, etc).
      * @note added in 2.16
      * @see setPenJoinStyle()
      * @see borderColor()
@@ -281,7 +301,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
 
-    /** Sets the marker's outline join style (eg miter, bevel, etc).
+    /**
+     * Sets the marker's outline join style (eg miter, bevel, etc).
      * @param style join style
      * @note added in 2.16
      * @see penJoinStyle()
@@ -290,14 +311,16 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
-    /** Returns the width of the marker's outline.
+    /**
+     * Returns the width of the marker's outline.
      * @see setOutlineWidth()
      * @see outlineWidthUnit()
      * @see outlineWidthMapUnitScale()
      */
     double outlineWidth() const { return mOutlineWidth; }
 
-    /** Sets the width of the marker's outline.
+    /**
+     * Sets the width of the marker's outline.
      * @param w outline width. See outlineWidthUnit() for units.
      * @see outlineWidth()
      * @see setOutlineWidthUnit()
@@ -305,7 +328,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      */
     void setOutlineWidth( double w ) { mOutlineWidth = w; }
 
-    /** Sets the unit for the width of the marker's outline.
+    /**
+     * Sets the unit for the width of the marker's outline.
      * @param u outline width unit
      * @see outlineWidthUnit()
      * @see setOutlineWidth()
@@ -313,14 +337,16 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      */
     void setOutlineWidthUnit( QgsUnitTypes::RenderUnit u ) { mOutlineWidthUnit = u; }
 
-    /** Returns the unit for the width of the marker's outline.
+    /**
+     * Returns the unit for the width of the marker's outline.
      * @see setOutlineWidthUnit()
      * @see outlineWidth()
      * @see outlineWidthMapUnitScale()
      */
     QgsUnitTypes::RenderUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
 
-    /** Sets the map scale for the width of the marker's outline.
+    /**
+     * Sets the map scale for the width of the marker's outline.
      * @param scale outline width map unit scale
      * @see outlineWidthMapUnitScale()
      * @see setOutlineWidth()
@@ -328,7 +354,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      */
     void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale ) { mOutlineWidthMapUnitScale = scale; }
 
-    /** Returns the map scale for the width of the marker's outline.
+    /**
+     * Returns the map scale for the width of the marker's outline.
      * @see setOutlineWidthMapUnitScale()
      * @see outlineWidth()
      * @see outlineWidthUnit()
@@ -337,14 +364,16 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
   protected:
 
-    /** Draws the marker shape in the specified painter.
+    /**
+     * Draws the marker shape in the specified painter.
      * @param p destination QPainter
      * @param context symbol context
      * @note this method does not handle setting the painter pen or brush to match the symbol's fill or outline
      */
     void drawMarker( QPainter* p, QgsSymbolRenderContext& context );
 
-    /** Prepares cache image
+    /**
+     * Prepares cache image
      * @returns true in case of success, false if cache image size too large
     */
     bool prepareCache( QgsSymbolRenderContext& context );
@@ -385,7 +414,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     virtual void draw( QgsSymbolRenderContext& context, Shape shape, const QPolygonF& polygon, const QPainterPath& path ) override;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsFilledMarkerSymbolLayer
  * \brief Filled marker symbol layer, consisting of a shape which is rendered using a QgsFillSymbol. This allows
  * the symbol to support advanced styling of the interior and outline of the shape.
@@ -395,7 +425,8 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 {
   public:
 
-    /** Constructor for QgsFilledMarkerSymbolLayer.
+    /**
+     * Constructor for QgsFilledMarkerSymbolLayer.
     * @param shape symbol shape
     * @param size symbol size (in mm)
     * @param angle symbol rotation angle
@@ -406,7 +437,8 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                 QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
-    /** Creates a new QgsFilledMarkerSymbolLayer.
+    /**
+     * Creates a new QgsFilledMarkerSymbolLayer.
      * @param properties a property map containing symbol properties (see properties())
      * @returns new QgsFilledMarkerSymbolLayer
      */
@@ -438,7 +470,8 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 #define DEFAULT_SVGMARKER_SIZE         2*DEFAULT_POINT_SIZE
 #define DEFAULT_SVGMARKER_ANGLE        0
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSvgMarkerSymbolLayer
  */
 class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
@@ -482,13 +515,15 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     double outlineWidth() const { return mOutlineWidth; }
     void setOutlineWidth( double w ) { mOutlineWidth = w; }
 
-    /** Sets the units for the outline width.
+    /**
+     * Sets the units for the outline width.
      * @param unit width units
      * @see outlineWidthUnit()
     */
     void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit ) { mOutlineWidthUnit = unit; }
 
-    /** Returns the units for the outline width.
+    /**
+     * Returns the units for the outline width.
      * @see outlineWidthUnit()
     */
     QgsUnitTypes::RenderUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
@@ -536,7 +571,8 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 #define DEFAULT_FONTMARKER_JOINSTYLE    Qt::MiterJoin
 #define DEFAULT_FONTMARKER_ANGLE  0
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsFontMarkerSymbolLayer
  */
 class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
@@ -582,31 +618,43 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QColor outlineColor() const override { return mOutlineColor; }
     void setOutlineColor( const QColor& color ) override { mOutlineColor = color; }
 
-    /** Get outline width.
+    /**
+     * Get outline width.
      * @note added in 2.16 */
     double outlineWidth() const { return mOutlineWidth; }
-    /** Set outline width.
+
+    /**
+     * Set outline width.
      * @note added in 2.16 */
     void setOutlineWidth( double width ) { mOutlineWidth = width; }
 
-    /** Get outline width unit.
+    /**
+     * Get outline width unit.
      * @note added in 2.16 */
     QgsUnitTypes::RenderUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
-    /** Set outline width unit.
+
+    /**
+     * Set outline width unit.
      * @note added in 2.16 */
     void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit ) { mOutlineWidthUnit = unit; }
 
-    /** Get outline width map unit scale.
+    /**
+     * Get outline width map unit scale.
      * @note added in 2.16 */
     const QgsMapUnitScale& outlineWidthMapUnitScale() const { return mOutlineWidthMapUnitScale; }
-    /** Set outline width map unit scale.
+
+    /**
+     * Set outline width map unit scale.
      * @note added in 2.16 */
     void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale ) { mOutlineWidthMapUnitScale = scale; }
 
-    /** Get outline join style.
+    /**
+     * Get outline join style.
      * @note added in 2.16 */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
-    /** Set outline join style.
+
+    /**
+     * Set outline join style.
      * @note added in 2.16 */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 

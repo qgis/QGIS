@@ -43,6 +43,7 @@ bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QV
 }
 
 /***************************************************************************/
+
 /**
  * Implementation of GeometrySimplifier using the Douglas-Peucker algorithm
  */

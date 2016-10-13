@@ -24,7 +24,8 @@
 class QPainter;
 class QStyleOptionGraphicsItem;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsAnnotation
  * \note added in QGIS 3.0
  *
@@ -44,7 +45,8 @@ class CORE_EXPORT QgsAnnotation
     //! Returns true if the annotation should be shown.
     virtual bool showItem() const = 0;
 
-    /** Returns true if the annotation is attached to a fixed map position, or
+    /**
+     * Returns true if the annotation is attached to a fixed map position, or
      * false if the annotation uses a position relative to the current map
      * extent.
      * @see mapPosition()
@@ -52,26 +54,30 @@ class CORE_EXPORT QgsAnnotation
      */
     virtual bool hasFixedMapPosition() const = 0;
 
-    /** Returns the map position of the annotation, if it is attached to a fixed map
+    /**
+     * Returns the map position of the annotation, if it is attached to a fixed map
      * position.
      * @see mapPositionFixed()
      * @see mapPositionCrs()
      */
     virtual QgsPoint mapPosition() const { return QgsPoint(); }
 
-    /** Returns the CRS of the map position, or an invalid CRS if the annotation does
+    /**
+     * Returns the CRS of the map position, or an invalid CRS if the annotation does
      * not have a fixed map position.
     */
     virtual QgsCoordinateReferenceSystem mapPositionCrs() const { return QgsCoordinateReferenceSystem(); }
 
-    /** Returns the relative position of the annotation, if it is not attached to a fixed map
+    /**
+     * Returns the relative position of the annotation, if it is not attached to a fixed map
      * position. The coordinates in the return point should be between 0 and 1, and represent
      * the relative percentage for the position compared to the map width and height.
      * @see mapPositionFixed()
      */
     virtual QPointF relativePosition() const { return QPointF(); }
 
-    /** Returns a scaling factor which should be applied to painters before rendering
+    /**
+     * Returns a scaling factor which should be applied to painters before rendering
      * the item.
      */
     virtual double scaleFactor() const = 0;

@@ -1,4 +1,5 @@
 
+
 /***************************************************************************
      testqgsogcutils.cpp
      --------------------------------------
@@ -22,7 +23,8 @@
 #include <qgsogcutils.h>
 #include "qgsapplication.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for OGC utilities
  */
 class TestQgsOgcUtils : public QObject

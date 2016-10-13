@@ -19,7 +19,8 @@
 #include <QDialog>
 #include "ui_qgsexpressionselectiondialogbase.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This class offers a dialog to change feature selections.
  * To do so, a QgsExpressionBuilderWidget is shown in a dialog.
  * It offers the possibilities to create a new selection, add to the current selection
@@ -30,6 +31,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new selection dialog.
      * @param layer     The layer on which the selection is to be performed.
@@ -69,6 +71,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     void on_mPbnClose_clicked();
 
   protected:
+
     /**
      * Implementation for closeEvent
      * Saves the window geometry

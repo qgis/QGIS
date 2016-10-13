@@ -23,7 +23,8 @@
 
 class QgsFields;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This is a container for configuration of the attribute table.
  * The configuration is specific for one vector layer.
  * \note added in QGIS 2.16
@@ -32,6 +33,7 @@ class QgsFields;
 class CORE_EXPORT QgsAttributeTableConfig
 {
   public:
+
     /**
      * The type of an attribute table column.
      */
@@ -78,11 +80,13 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     QVector<ColumnConfig> columns() const;
 
-    /** Returns true if the configuration is empty, ie it contains no columns.
+    /**
+     * Returns true if the configuration is empty, ie it contains no columns.
      */
     bool isEmpty() const;
 
-    /** Maps a visible column index to its original column index.
+    /**
+     * Maps a visible column index to its original column index.
      * @param visibleColumn index of visible column
      * @returns corresponding index when hidden columns are considered
      */
@@ -142,26 +146,30 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     void setSortExpression( const QString& sortExpression );
 
-    /** Returns the width of a column, or -1 if column should use default width.
+    /**
+     * Returns the width of a column, or -1 if column should use default width.
      * @param column column index
      * @see setColumnWidth()
      */
     int columnWidth( int column ) const;
 
-    /** Sets the width of a column.
+    /**
+     * Sets the width of a column.
      * @param column column index
      * @param width column width in pixels, or -1 if column should use default width
      * @see columnWidth()
      */
     void setColumnWidth( int column, int width );
 
-    /** Returns true if the specified column is hidden.
+    /**
+     * Returns true if the specified column is hidden.
      * @param column column index
      * @see setColumnHidden()
      */
     bool columnHidden( int column ) const;
 
-    /** Sets whether the specified column should be hidden.
+    /**
+     * Sets whether the specified column should be hidden.
      * @param column column index
      * @param hidden set to true to hide column
      * @see columnHidden()

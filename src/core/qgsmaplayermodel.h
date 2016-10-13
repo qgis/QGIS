@@ -23,7 +23,8 @@
 class QgsMapLayer;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * @brief The QgsMapLayerModel class is a model to display layers in widgets.
  * @see QgsMapLayerProxyModel to sort and/filter the layers
  * @see QgsFieldModel to combine in with a field selector.
@@ -37,14 +38,15 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     //! Item data roles
     enum ItemDataRole
     {
-      LayerIdRole = Qt::UserRole + 1, /*!< Stores the map layer ID */
-      LayerRole, /*!< Stores pointer to the map layer itself */
+      LayerIdRole = Qt::UserRole + 1, //!< Stores the map layer ID
+      LayerRole, //!< Stores pointer to the map layer itself
     };
 
     /**
      * @brief QgsMapLayerModel creates a model to display layers in widgets.
      */
     explicit QgsMapLayerModel( QObject *parent = nullptr );
+
     /**
      * @brief QgsMapLayerModel creates a model to display a specific list of layers in a widget.
      */
@@ -54,10 +56,12 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * @brief setItemsCheckable defines if layers should be selectable in the widget
      */
     void setItemsCheckable( bool checkable );
+
     /**
      * @brief checkAll changes the checkstate for all the layers
      */
     void checkAll( Qt::CheckState checkState );
+
     /**
      * @brief layersChecked returns the list of layers which are checked (or unchecked)
      */

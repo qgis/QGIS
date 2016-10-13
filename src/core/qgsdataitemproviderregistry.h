@@ -20,7 +20,8 @@
 
 class QgsDataItemProvider;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This singleton class keeps a list of data item providers that may add items to the browser tree.
  * When created, it automatically adds providers from provider plugins (e.g. PostGIS, WMS, ...)
  *

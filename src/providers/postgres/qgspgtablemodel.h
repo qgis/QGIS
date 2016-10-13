@@ -23,7 +23,8 @@
 
 class QIcon;
 
-/** A model that holds the tables of a database in a hierarchy where the
+/**
+ * A model that holds the tables of a database in a hierarchy where the
 schemas are the root elements that contain the individual tables as children.
 The tables have the following columns: Type, Schema, Tablename, Geometry Column, Sql*/
 class QgsPgTableModel : public QStandardItemModel
@@ -33,13 +34,16 @@ class QgsPgTableModel : public QStandardItemModel
     QgsPgTableModel();
     ~QgsPgTableModel();
 
-    /** Adds entry for one database table to the model*/
+    /**
+     * Adds entry for one database table to the model*/
     void addTableEntry( const QgsPostgresLayerProperty& property );
 
-    /** Sets an sql statement that belongs to a cell specified by a model index*/
+    /**
+     * Sets an sql statement that belongs to a cell specified by a model index*/
     void setSql( const QModelIndex& index, const QString& sql );
 
-    /** Returns the number of tables in the model*/
+    /**
+     * Returns the number of tables in the model*/
     int tableCount() const { return mTableCount; }
 
     enum columns
@@ -64,7 +68,9 @@ class QgsPgTableModel : public QStandardItemModel
     static QIcon iconForWkbType( QgsWkbTypes::Type type );
 
   private:
-    /** Number of tables in the model*/
+
+    /**
+     * Number of tables in the model*/
     int mTableCount;
 };
 

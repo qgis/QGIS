@@ -18,7 +18,8 @@
 
 #include "qgsmaptoolidentify.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * @brief The QgsMapToolIdentifyFeature class is a map tool to identify a feature on a chosen layer.
  * Once the map tool is enable, user can click on the map canvas to identify a feature.
  * A signal will then be emitted.
@@ -28,6 +29,7 @@ class GUI_EXPORT QgsMapToolIdentifyFeature : public QgsMapToolIdentify
     Q_OBJECT
 
   public:
+
     /**
      * @brief QgsMapToolIdentifyFeature is a map tool to identify a feature on a chosen layer
      * @param canvas the map canvas

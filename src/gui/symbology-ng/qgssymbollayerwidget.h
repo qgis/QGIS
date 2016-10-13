@@ -26,7 +26,8 @@ class QgsSymbolLayer;
 class QgsVectorLayer;
 class QgsMapCanvas;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSymbolLayerWidget
  */
 class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionContextGenerator
@@ -44,20 +45,23 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
     virtual void setSymbolLayer( QgsSymbolLayer* layer ) = 0;
     virtual QgsSymbolLayer* symbolLayer() = 0;
 
-    /** Sets the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+    /**
+     * Sets the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
      * @param context symbol widget context
      * @see context()
      * @note added in QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext& context );
 
-    /** Returns the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
+    /**
+     * Returns the context in which the symbol widget is shown, eg the associated map canvas and expression contexts.
      * @see setContext()
      * @note added in QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
 
-    /** Returns the vector layer associated with the widget.
+    /**
+     * Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
     const QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
@@ -73,11 +77,13 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
     QgsMapCanvas* mMapCanvas;
 
   signals:
+
     /**
      * Should be emitted whenever configuration changes happened on this symbol layer configuration.
      * If the subsymbol is changed, {@link symbolChanged()} should be emitted instead.
      */
     void changed();
+
     /**
      * Should be emitted whenever the sub symbol changed on this symbol layer configuration.
      * Normally {@link changed()} should be preferred.
@@ -99,7 +105,8 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
 
 class QgsSimpleLineSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSimpleLineSymbolLayerWidget
  */
 class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetSimpleLine
@@ -151,7 +158,8 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
 class QgsSimpleMarkerSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSimpleMarkerSymbolLayerWidget
  */
 class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetSimpleMarker
@@ -202,7 +210,8 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
 
 class QgsSimpleFillSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSimpleFillSymbolLayerWidget
  */
 class GUI_EXPORT QgsSimpleFillSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetSimpleFill
@@ -239,7 +248,8 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
 class QgsFilledMarkerSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFilledMarkerSymbolLayerWidget
  * \brief Widget for configuring QgsFilledMarkerSymbolLayer symbol layers.
  * \note Added in version 2.16
@@ -250,7 +260,8 @@ class GUI_EXPORT QgsFilledMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
 
   public:
 
-    /** Constructor for QgsFilledMarkerSymbolLayerWidget.
+    /**
+     * Constructor for QgsFilledMarkerSymbolLayerWidget.
      * @param vl associated vector layer
      * @param parent parent widget
      */
@@ -258,7 +269,8 @@ class GUI_EXPORT QgsFilledMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
 
     ~QgsFilledMarkerSymbolLayerWidget();
 
-    /** Creates a new QgsFilledMarkerSymbolLayerWidget.
+    /**
+     * Creates a new QgsFilledMarkerSymbolLayerWidget.
      * @param vl associated vector layer
      */
     static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsFilledMarkerSymbolLayerWidget( vl ); }
@@ -293,7 +305,8 @@ class GUI_EXPORT QgsFilledMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
 
 class QgsGradientFillSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsGradientFillSymbolLayerWidget
  */
 class GUI_EXPORT QgsGradientFillSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetGradientFill
@@ -332,7 +345,8 @@ class GUI_EXPORT QgsGradientFillSymbolLayerWidget : public QgsSymbolLayerWidget,
 
 class QgsShapeburstFillSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsShapeburstFillSymbolLayerWidget
  */
 class GUI_EXPORT QgsShapeburstFillSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetShapeburstFill
@@ -371,7 +385,8 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerWidget : public QgsSymbolLayerWidge
 
 class QgsMarkerLineSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsMarkerLineSymbolLayerWidget
  */
 class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetMarkerLine
@@ -410,7 +425,8 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
 class QgsSvgMarkerSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSvgMarkerSymbolLayerWidget
  */
 class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetSvgMarker
@@ -469,7 +485,8 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
 
 class QgsRasterFillSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRasterFillSymbolLayerWidget
  */
 class GUI_EXPORT QgsRasterFillSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetRasterFill
@@ -509,7 +526,8 @@ class GUI_EXPORT QgsRasterFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
 class QgsSVGFillSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSVGFillSymbolLayerWidget
  */
 class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetSVGFill
@@ -528,7 +546,9 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
   protected:
     QgsSVGFillSymbolLayer* mLayer;
     void insertIcons();
-    /** Enables or disables svg fill color, border color and border width based on whether the
+
+    /**
+     * Enables or disables svg fill color, border color and border width based on whether the
      * svg file supports custom parameters.
      * @param resetValues set to true to overwrite existing layer fill color, border color and border width
      * with default values from svg file
@@ -556,7 +576,8 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
 
 class QgsLinePatternFillSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsLinePatternFillSymbolLayerWidget
  */
 class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetLinePatternFill
@@ -588,7 +609,8 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerWidg
 
 class QgsPointPatternFillSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPointPatternFillSymbolLayerWidget
  */
 class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::WidgetPointPatternFill
@@ -623,7 +645,8 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerWidg
 class QgsFontMarkerSymbolLayer;
 class CharacterWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFontMarkerSymbolLayerWidget
  */
 class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetFontMarker
@@ -645,7 +668,8 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void setFontFamily( const QFont& font );
     void setColor( const QColor& color );
 
-    /** Set outline color.
+    /**
+     * Set outline color.
      * @note added in 2.16 */
     void setColorBorder( const QColor& color );
     void setSize( double size );
@@ -681,7 +705,8 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
 class QgsCentroidFillSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsCentroidFillSymbolLayerWidget
  */
 class GUI_EXPORT QgsCentroidFillSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetCentroidFill
@@ -711,7 +736,8 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerWidget : public QgsSymbolLayerWidget,
 
 class QgsGeometryGeneratorSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsGeometryGeneratorSymbolLayerWidget
  */
 class GUI_EXPORT QgsGeometryGeneratorSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::GeometryGeneratorWidgetBase

@@ -31,7 +31,8 @@ class QgsMapLayer;
 class QgsVectorLayer;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * @brief The QgsFieldExpressionWidget class reates a widget to choose fields and edit expressions
  * It contains a combo boxto display the fields and expression and a button to open the expression dialog.
  * The combo box is editable, allowing expressions to be edited inline.
@@ -47,6 +48,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     Q_PROPERTY( QgsFieldProxyModel::Filters filters READ filters WRITE setFilters )
 
   public:
+
     /**
      * @brief QgsFieldExpressionWidget creates a widget with a combo box to display the fields and expression and a button to open the expression dialog
      */

@@ -46,7 +46,8 @@ class QgsDataDefinedButton;
 // long story short - don't change this without good reason. If you add a new item type, inherit
 // from QgsComposerItemWidget and trust that everything else has been done for you.
 
-/** An object for property widgets for composer items. All composer config type widgets should contain
+/**
+ * An object for property widgets for composer items. All composer config type widgets should contain
  * this object.
 */
 class QgsComposerConfigObject: public QObject
@@ -56,10 +57,12 @@ class QgsComposerConfigObject: public QObject
     QgsComposerConfigObject( QWidget* parent, QgsComposerObject* composerObject );
     ~QgsComposerConfigObject();
 
-    /** Sets a data defined property for the item from its current data defined button settings*/
+    /**
+     * Sets a data defined property for the item from its current data defined button settings*/
     void setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty p );
 
-    /** Registers a data defined button, setting up its initial value, connections and description.
+    /**
+     * Registers a data defined button, setting up its initial value, connections and description.
      * @param button button to register
      * @param property correponding data defined property
      * @param type valid data types for button
@@ -68,14 +71,18 @@ class QgsComposerConfigObject: public QObject
     void registerDataDefinedButton( QgsDataDefinedButton* button, QgsComposerObject::DataDefinedProperty property,
                                     QgsDataDefinedButton::DataType type, const QString& description );
 
-    /** Returns the current atlas coverage layer (if set)*/
+    /**
+     * Returns the current atlas coverage layer (if set)*/
     QgsVectorLayer* atlasCoverageLayer() const;
 
-    /** Returns the atlas for the composition*/
+    /**
+     * Returns the atlas for the composition*/
     QgsAtlasComposition *atlasComposition() const;
 
   private slots:
-    /** Must be called when a data defined button changes*/
+
+    /**
+     * Must be called when a data defined button changes*/
     void updateDataDefinedProperty();
 
     //! Updates data defined buttons to reflect current state of atlas (eg coverage layer)
@@ -99,7 +106,8 @@ class QgsComposerItemBaseWidget: public QgsPanelWidget
 
   protected:
 
-    /** Registers a data defined button, setting up its initial value, connections and description.
+    /**
+     * Registers a data defined button, setting up its initial value, connections and description.
      * @param button button to register
      * @param property correponding data defined property
      * @param type valid data types for button
@@ -108,10 +116,12 @@ class QgsComposerItemBaseWidget: public QgsPanelWidget
     void registerDataDefinedButton( QgsDataDefinedButton* button, QgsComposerObject::DataDefinedProperty property,
                                     QgsDataDefinedButton::DataType type, const QString& description );
 
-    /** Returns the current atlas coverage layer (if set)*/
+    /**
+     * Returns the current atlas coverage layer (if set)*/
     QgsVectorLayer* atlasCoverageLayer() const;
 
-    /** Returns the atlas for the composition*/
+    /**
+     * Returns the atlas for the composition*/
     QgsAtlasComposition *atlasComposition() const;
 
   private:
@@ -119,7 +129,8 @@ class QgsComposerItemBaseWidget: public QgsPanelWidget
     QgsComposerConfigObject* mConfigObject;
 };
 
-/** A class to enter generic properties for composer items (e.g. background, outline, frame).
+/**
+ * A class to enter generic properties for composer items (e.g. background, outline, frame).
  This widget can be embedded into other item widgets*/
 class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBase
 {
@@ -128,21 +139,28 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item );
     ~QgsComposerItemWidget();
 
-    /** A combination of upper/middle/lower and left/middle/right*/
+    /**
+     * A combination of upper/middle/lower and left/middle/right*/
     QgsComposerItem::ItemPositionMode positionMode() const;
 
-    /** Toggles display of the background group*/
+    /**
+     * Toggles display of the background group*/
     void showBackgroundGroup( bool showGroup );
-    /** Toggles display of the frame group*/
+
+    /**
+     * Toggles display of the frame group*/
     void showFrameGroup( bool showGroup );
 
   public slots:
 
-    /** Set the frame color
+    /**
+     * Set the frame color
      */
     void on_mFrameColorButton_colorChanged( const QColor& newFrameColor );
     void on_mBackgroundColorButton_clicked();
-    /** Set the background color
+
+    /**
+     * Set the background color
      */
     void on_mBackgroundColorButton_colorChanged( const QColor& newBackgroundColor );
 //    void on_mTransparencySlider_valueChanged( int value );
@@ -183,7 +201,9 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void setValuesForGuiNonPositionElements();
 
   protected slots:
-    /** Initializes data defined buttons to current atlas coverage layer*/
+
+    /**
+     * Initializes data defined buttons to current atlas coverage layer*/
     void populateDataDefinedButtons();
 
   private:

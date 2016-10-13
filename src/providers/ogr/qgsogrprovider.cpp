@@ -1954,17 +1954,29 @@ static QString createFileFilter_( QString const &longName, QString const &glob )
 
 QString createFilters( QString type )
 {
-  /** Database drivers available*/
+
+  /**
+   * Database drivers available*/
   static QString myDatabaseDrivers;
-  /** Protocol drivers available*/
+
+  /**
+   * Protocol drivers available*/
   static QString myProtocolDrivers;
-  /** File filters*/
+
+  /**
+   * File filters*/
   static QString myFileFilters;
-  /** Directory drivers*/
+
+  /**
+   * Directory drivers*/
   static QString myDirectoryDrivers;
-  /** Extensions*/
+
+  /**
+   * Extensions*/
   static QStringList myExtensions;
-  /** Wildcards*/
+
+  /**
+   * Wildcards*/
   static QStringList myWildcards;
 
   // if we've already built the supported vector string, just return what
@@ -2435,7 +2447,8 @@ QGISEXTERN QgsOgrProvider * classFactory( const QString *uri )
 
 
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
@@ -2461,7 +2474,8 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-/** Creates an empty data source
+/**
+ * Creates an empty data source
 @param uri location to store the file(s)
 @param format data format (e.g. "ESRI Shapefile"
 @param vectortype point/line/polygon or multitypes

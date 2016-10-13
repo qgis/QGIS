@@ -20,7 +20,8 @@
 #include <QString>
 class QImage;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This is a helper class for unit tests that need to
  * write an image and compare it to an expected result
  * or render time.
@@ -35,6 +36,7 @@ class CORE_EXPORT QgsRasterChecker
     ~QgsRasterChecker() {}
 
     QString report() { return mReport; }
+
     /**
      * Test using renderer to generate the image to be compared.
      * @param theVerifiedKey verified provider key

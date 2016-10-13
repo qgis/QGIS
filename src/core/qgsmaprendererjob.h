@@ -36,7 +36,8 @@ class QgsMapRendererCache;
 class QgsPalLabeling;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Structure keeping low-level rendering job information.
  * @note not part of public API!
  */
@@ -49,13 +50,14 @@ struct LayerRenderJob
   double opacity;
   bool cached; // if true, img already contains cached image from previous rendering
   QString layerId;
-  int renderingTime; //!< time it took to render the layer in ms (it is -1 if not rendered or still rendering)
+  int renderingTime; //!< Time it took to render the layer in ms (it is -1 if not rendered or still rendering)
 };
 
 typedef QList<LayerRenderJob> LayerRenderJobs;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Abstract base class for map rendering implementations.
  *
  * The API is designed in a way that rendering is done asynchronously, therefore
@@ -141,6 +143,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     const QgsMapSettings& mapSettings() const;
 
   signals:
+
     /**
      * Emitted when the layers are rendered.
      * Rendering labels is not yet done. If the fully rendered layer including labels is required use
@@ -155,7 +158,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
   protected:
 
-    /** Convenience function to project an extent into the layer source
+    /**
+     * Convenience function to project an extent into the layer source
      * CRS, but also split it into two extents if it crosses
      * the +/- 180 degree line. Modifies the given extent to be in the
      * source CRS coordinates, and if it was split, returns true, and
@@ -197,7 +201,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Intermediate base class adding functionality that allows client to query the rendered image.
  *  The image can be queried even while the rendering is still in progress to get intermediate result
  *

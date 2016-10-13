@@ -36,6 +36,7 @@
 class QgsExpressionContextGenerator
 {
   public:
+
     /**
      * This method needs to be reimplemented in all classes which implement this interface
      * and return an expression context.

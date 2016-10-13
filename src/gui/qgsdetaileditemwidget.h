@@ -20,7 +20,8 @@
 #include <ui_qgsdetaileditemwidgetbase.h>
 #include <qgsdetaileditemdata.h>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A widget renderer for detailed item views.
  * @see also QgsDetailedItem and QgsDetailedItemData.
  */

@@ -36,7 +36,8 @@ class QgsComposerObject;
 
 // QgsComposerColumnAlignmentDelegate
 
-/** A delegate for showing column alignment as a combo box*/
+/**
+ * A delegate for showing column alignment as a combo box*/
 class QgsComposerColumnAlignmentDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -53,7 +54,8 @@ class QgsComposerColumnAlignmentDelegate : public QItemDelegate
 
 // QgsComposerColumnAlignmentDelegate
 
-/** A delegate for showing column attribute source as a QgsFieldExpressionWidget*/
+/**
+ * A delegate for showing column attribute source as a QgsFieldExpressionWidget*/
 class QgsComposerColumnSourceDelegate : public QItemDelegate, private QgsExpressionContextGenerator
 {
     Q_OBJECT
@@ -74,7 +76,8 @@ class QgsComposerColumnSourceDelegate : public QItemDelegate, private QgsExpress
 
 // QgsComposerColumnWidthDelegate
 
-/** A delegate for showing column width as a spin box*/
+/**
+ * A delegate for showing column width as a spin box*/
 class QgsComposerColumnWidthDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -91,7 +94,8 @@ class QgsComposerColumnWidthDelegate : public QItemDelegate
 
 // QgsComposerColumnSortOrderDelegate
 
-/** A delegate for showing column sort order as a combo box*/
+/**
+ * A delegate for showing column sort order as a combo box*/
 class QgsComposerColumnSortOrderDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -108,7 +112,8 @@ class QgsComposerColumnSortOrderDelegate : public QItemDelegate
 
 // QgsAttributeSelectionDialog
 
-/** A dialog to select what attributes to display (in the table item), set the column properties and specify a sort order*/
+/**
+ * A dialog to select what attributes to display (in the table item), set the column properties and specify a sort order*/
 class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelectionDialogBase
 {
     Q_OBJECT

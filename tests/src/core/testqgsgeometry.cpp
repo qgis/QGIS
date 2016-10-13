@@ -44,7 +44,8 @@
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the different geometry operations on vector features.
  */
 class TestQgsGeometry : public QObject
@@ -111,13 +112,21 @@ class TestQgsGeometry : public QObject
     void segmentizeCircularString();
 
   private:
-    /** A helper method to do a render check to see if the geometry op is as expected */
+
+    /**
+     * A helper method to do a render check to see if the geometry op is as expected */
     bool renderCheck( const QString& theTestName, const QString& theComment = "", int mismatchCount = 0 );
-    /** A helper method to dump to qdebug the geometry of a multipolygon */
+
+    /**
+     * A helper method to dump to qdebug the geometry of a multipolygon */
     void dumpMultiPolygon( QgsMultiPolygon &theMultiPolygon );
-    /** A helper method to dump to qdebug the geometry of a polygon */
+
+    /**
+     * A helper method to dump to qdebug the geometry of a polygon */
     void dumpPolygon( QgsPolygon &thePolygon );
-    /** A helper method to dump to qdebug the geometry of a polyline */
+
+    /**
+     * A helper method to dump to qdebug the geometry of a polyline */
     void dumpPolyline( QgsPolyline &thePolyline );
 
     // Release return with delete []

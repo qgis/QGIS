@@ -33,7 +33,8 @@
 
 #include "qgsstyle.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test to verify that styles are working correctly
  */
 class TestStyle : public QObject

@@ -1934,12 +1934,15 @@ QGISEXTERN QgsGdalProvider * classFactory( const QString *uri )
 {
   return new QgsGdalProvider( *uri );
 }
-/** Required key function (used to map the plugin to a data store type)
+
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
   return PROVIDER_KEY;
 }
+
 /**
  * Required description function
  */
@@ -1947,6 +1950,7 @@ QGISEXTERN QString description()
 {
   return PROVIDER_DESCRIPTION;
 }
+
 /**
  * Required isProvider function. Used to determine if this shared library
  * is a data provider plugin
@@ -1955,6 +1959,7 @@ QGISEXTERN bool isProvider()
 {
   return true;
 }
+
 /**
 
   Convenience function for readily creating file filters.

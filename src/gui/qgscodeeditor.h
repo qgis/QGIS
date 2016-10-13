@@ -24,7 +24,8 @@
 
 class QWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A text editor based on QScintilla2.
  * \note added in 2.6
  * \note may not be available in Python bindings, depending on platform support
@@ -34,6 +35,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new code editor.
      *
@@ -46,24 +48,28 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     QgsCodeEditor( QWidget *parent = nullptr, const QString& title = "", bool folding = false, bool margin = false );
     ~QgsCodeEditor();
 
-    /** Set the widget title
+    /**
+     * Set the widget title
      * @param title widget title
      */
     void setTitle( const QString& title );
 
-    /** Set margin visible state
+    /**
+     * Set margin visible state
      *  @param margin Set margin in the editor
      */
     void setMarginVisible( bool margin );
     bool marginVisible() { return mMargin; }
 
-    /** Set folding visible state
+    /**
+     * Set folding visible state
      *  @param folding Set folding in the editor
      */
     void setFoldingVisible( bool folding );
     bool foldingVisible() { return mFolding; }
 
-    /** Insert text at cursor position, or replace any selected text if user has
+    /**
+     * Insert text at cursor position, or replace any selected text if user has
      * made a selection.
      * @param theText The text to be inserted
      */

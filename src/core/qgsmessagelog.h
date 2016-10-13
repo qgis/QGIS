@@ -19,7 +19,8 @@
 #include <QString>
 #include <QObject>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Interface for logging messages from QGIS in GUI independent way.
  * This class provides abstraction of a tabbed window for showing messages to the user.
  * By default QgsMessageLogOutput will be used if not overridden with another
@@ -59,7 +60,8 @@ class CORE_EXPORT QgsMessageLog : public QObject
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
 \brief Default implementation of message logging interface
 
 This class outputs log messages to the standard output. Therefore it might

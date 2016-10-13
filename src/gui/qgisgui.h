@@ -22,7 +22,8 @@
 
 class QFont;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * /namespace QgisGui
  * The QgisGui namespace contains constants and helper functions used throughout the QGIS GUI.
  */
@@ -75,7 +76,8 @@ namespace QgisGui
       QString const &filters, QStringList & selectedFiles, QString& enc, QString &title,
       bool cancelAll = false );
 
-  /** A helper function to get an image name from the user. It will nicely
+  /**
+   * A helper function to get an image name from the user. It will nicely
    * provide filters with all available writable image formats.
    * @param theParent widget that should act as the parent for the file dialog
    * @param theMessage the message to display to the user

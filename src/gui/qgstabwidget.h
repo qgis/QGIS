@@ -18,7 +18,8 @@
 
 #include <QTabWidget>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * The QgsTabWidget class is the same as the QTabWidget but with additional methods to
  * temporarily hide/show tabs.
  *
@@ -29,6 +30,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
     Q_OBJECT
 
   public:
+
     /**
      * Create a new QgsTabWidget with the optionally provided parent.
      *

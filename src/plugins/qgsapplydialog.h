@@ -19,7 +19,8 @@
 
 #include <QDialog>
 
-/** \ingroup plugins
+/**
+ * \ingroup plugins
  * \brief Interface class for dialogs that have an apply operation (e.g. for symbology)
  * \note not available in Python bindings
 */

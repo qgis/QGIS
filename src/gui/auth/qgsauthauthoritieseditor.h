@@ -28,7 +28,8 @@ class QgsMessageBar;
 class QMenu;
 class QAction;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for viewing and editing authentication identities database
  */
 class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthAuthoritiesEditor
@@ -36,6 +37,7 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
     Q_OBJECT
 
   public:
+
     /**
      * Widget for viewing and editing certificate authorities directly in database
      * @param parent Parent widget
@@ -50,10 +52,12 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
 
     void showCertInfo( QTreeWidgetItem *item );
 
-    /** Pass selection change on to UI update */
+    /**
+     * Pass selection change on to UI update */
     void selectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
 
-    /** Update UI based upon current selection */
+    /**
+     * Update UI based upon current selection */
     void checkSelection();
 
     void handleDoubleClick( QTreeWidgetItem* item, int col );
@@ -76,11 +80,14 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
 
     void showTrustedCertificateAuthorities();
 
-    /** Relay messages to widget's messagebar */
+    /**
+     * Relay messages to widget's messagebar */
     void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
 
   protected:
-    /** Overridden show event of base widget */
+
+    /**
+     * Overridden show event of base widget */
     void showEvent( QShowEvent *e ) override;
 
   private:

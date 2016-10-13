@@ -28,7 +28,8 @@ class QgsPixmapLabel;
 
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget to display file path with a push button for an "open file" dialog
  * It can also be used to display a picture or a web page.
  **/
@@ -80,6 +81,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
     //! returns the height of the document viewer
     int documentViewerHeight() const;
+
     /**
      * @brief setDocumentViewerWidth set the height of the document viewer.
      * @param height the height. Use 0 for automatic best display.
@@ -87,6 +89,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     void setDocumentViewerHeight( int height );
     //! returns the width of the document viewer
     int documentViewerWidth() const ;
+
     /**
      * @brief setDocumentViewerWidth set the width of the document viewer.
      * @param width the width. Use 0 for automatic best display.

@@ -35,7 +35,8 @@ class QgsFieldsPrivate;
 
 #include "qgseditorwidgetsetup.h"
 
-/** \class QgsField
+/**
+ * \class QgsField
   * \ingroup core
   * Encapsulate a field in an attribute table or data source.
   * QgsField stores metadata about an attribute field, including name, type
@@ -56,7 +57,9 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( QString defaultValueExpression READ defaultValueExpression WRITE setDefaultValueExpression )
 
   public:
-    /** Constructor. Constructs a new QgsField object.
+
+    /**
+     * Constructor. Constructs a new QgsField object.
      * @param name Field name
      * @param type Field variant type, currently supported: String / Int / Double
      * @param typeName Field type (eg. char, varchar, text, int, serial, double).
@@ -78,11 +81,13 @@ class CORE_EXPORT QgsField
               const QString& comment = QString(),
               QVariant::Type subType = QVariant::Invalid );
 
-    /** Copy constructor
+    /**
+     * Copy constructor
      */
     QgsField( const QgsField& other );
 
-    /** Assignment operator
+    /**
+     * Assignment operator
      */
     QgsField& operator =( const QgsField &other );
 
@@ -92,13 +97,15 @@ class CORE_EXPORT QgsField
     bool operator==( const QgsField& other ) const;
     bool operator!=( const QgsField& other ) const;
 
-    /** Returns the name of the field.
+    /**
+     * Returns the name of the field.
      * @see setName()
      * @see displayName()
      */
     QString name() const;
 
-    /** Returns the name to use when displaying this field. This will be the
+    /**
+     * Returns the name to use when displaying this field. This will be the
      * field alias if set, otherwise the field name.
      * @see name()
      * @see alias()
@@ -192,7 +199,8 @@ class CORE_EXPORT QgsField
      */
     void setComment( const QString& comment );
 
-    /** Returns the expression used when calculating the default value for the field.
+    /**
+     * Returns the expression used when calculating the default value for the field.
      * @returns expression evaluated when calculating default values for field, or an
      * empty string if no default is set
      * @note added in QGIS 3.0
@@ -200,7 +208,8 @@ class CORE_EXPORT QgsField
      */
     QString defaultValueExpression() const;
 
-    /** Sets an expression to use when calculating the default value for the field.
+    /**
+     * Sets an expression to use when calculating the default value for the field.
      * @param expression expression to evaluate when calculating default values for field. Pass
      * an empty expression to clear the default.
      * @note added in QGIS 3.0
@@ -208,21 +217,24 @@ class CORE_EXPORT QgsField
      */
     void setDefaultValueExpression( const QString& expression );
 
-    /** Returns the alias for the field (the friendly displayed name of the field ),
+    /**
+     * Returns the alias for the field (the friendly displayed name of the field ),
      * or an empty string if there is no alias.
      * @see setAlias()
      * @note added in QGIS 3.0
      */
     QString alias() const;
 
-    /** Sets the alias for the field (the friendly displayed name of the field ).
+    /**
+     * Sets the alias for the field (the friendly displayed name of the field ).
      * @param alias field alias, or empty string to remove an existing alias
      * @see alias()
      * @note added in QGIS 3.0
      */
     void setAlias( const QString& alias );
 
-    /** Formats string for display*/
+    /**
+     * Formats string for display*/
     QString displayString( const QVariant& v ) const;
 
     /**
@@ -263,9 +275,12 @@ class CORE_EXPORT QgsField
 
 Q_DECLARE_METATYPE( QgsField )
 
-/** Writes the field to stream out. QGIS version compatibility is not guaranteed. */
+/**
+ * Writes the field to stream out. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsField& field );
-/** Reads a field from stream in into field. QGIS version compatibility is not guaranteed. */
+
+/**
+ * Reads a field from stream in into field. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsField& field );
 
 

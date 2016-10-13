@@ -32,28 +32,32 @@ class QNetworkReply;
  * as illustrated in Appendix E of the Web Map Service standard, version 1.3, 2004-08-02.
  */
 
-/** OnlineResource Attribute structure */
+/**
+ * OnlineResource Attribute structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsOnlineResourceAttribute
 {
   QString xlinkHref;
 };
 
-/** Get Property structure */
+/**
+ * Get Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsGetProperty
 {
   QgsWmsOnlineResourceAttribute onlineResource;
 };
 
-/** Post Property structure */
+/**
+ * Post Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsPostProperty
 {
   QgsWmsOnlineResourceAttribute onlineResource;
 };
 
-/** HTTP Property structure */
+/**
+ * HTTP Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsHttpProperty
 {
@@ -61,14 +65,16 @@ struct QgsWmsHttpProperty
   QgsWmsPostProperty   post;  // can be null
 };
 
-/** DCP Type Property structure */
+/**
+ * DCP Type Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsDcpTypeProperty
 {
   QgsWmsHttpProperty http;
 };
 
-/** Operation Type structure (for GetMap and GetFeatureInfo) */
+/**
+ * Operation Type structure (for GetMap and GetFeatureInfo) */
 // TODO: Fill to WMS specifications
 struct QgsWmsOperationType
 {
@@ -77,7 +83,8 @@ struct QgsWmsOperationType
   QStringList                      allowedEncodings;
 };
 
-/** Request Property structure */
+/**
+ * Request Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsRequestProperty
 {
@@ -90,21 +97,24 @@ struct QgsWmsRequestProperty
   QgsWmsOperationType     getLegendGraphic;
 };
 
-/** Exception Property structure */
+/**
+ * Exception Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsExceptionProperty
 {
   QStringList        format;   // text formats supported.
 };
 
-/** Primary Contact Person Property structure */
+/**
+ * Primary Contact Person Property structure */
 struct QgsWmsContactPersonPrimaryProperty
 {
   QString            contactPerson;
   QString            contactOrganization;
 };
 
-/** Contact Address Property structure */
+/**
+ * Contact Address Property structure */
 struct QgsWmsContactAddressProperty
 {
   QString            addressType;
@@ -115,7 +125,8 @@ struct QgsWmsContactAddressProperty
   QString            country;
 };
 
-/** Contact Information Property structure */
+/**
+ * Contact Information Property structure */
 struct QgsWmsContactInformationProperty
 {
   QgsWmsContactPersonPrimaryProperty contactPersonPrimary;
@@ -126,7 +137,8 @@ struct QgsWmsContactInformationProperty
   QString                            contactElectronicMailAddress;
 };
 
-/** Service Property structure */
+/**
+ * Service Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsServiceProperty
 {
@@ -142,7 +154,8 @@ struct QgsWmsServiceProperty
   uint                               maxHeight;
 };
 
-/** Bounding Box Property structure */
+/**
+ * Bounding Box Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsBoundingBoxProperty
 {
@@ -150,7 +163,8 @@ struct QgsWmsBoundingBoxProperty
   QgsRectangle   box;    // consumes minx, miny, maxx, maxy.
 };
 
-/** Dimension Property structure */
+/**
+ * Dimension Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsDimensionProperty
 {
@@ -163,7 +177,8 @@ struct QgsWmsDimensionProperty
   bool      current;
 };
 
-/** Logo URL Property structure */
+/**
+ * Logo URL Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsLogoUrlProperty
 {
@@ -174,7 +189,8 @@ struct QgsWmsLogoUrlProperty
   int                             height;
 };
 
-/** Attribution Property structure */
+/**
+ * Attribution Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsAttributionProperty
 {
@@ -183,7 +199,8 @@ struct QgsWmsAttributionProperty
   QgsWmsLogoUrlProperty           logoUrl;
 };
 
-/** Legend URL Property structure */
+/**
+ * Legend URL Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsLegendUrlProperty
 {
@@ -194,7 +211,8 @@ struct QgsWmsLegendUrlProperty
   int                             height;
 };
 
-/** StyleSheet URL Property structure */
+/**
+ * StyleSheet URL Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsStyleSheetUrlProperty
 {
@@ -202,7 +220,8 @@ struct QgsWmsStyleSheetUrlProperty
   QgsWmsOnlineResourceAttribute   onlineResource;
 };
 
-/** Style URL Property structure */
+/**
+ * Style URL Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsStyleUrlProperty
 {
@@ -210,7 +229,8 @@ struct QgsWmsStyleUrlProperty
   QgsWmsOnlineResourceAttribute   onlineResource;
 };
 
-/** Style Property structure */
+/**
+ * Style Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsStyleProperty
 {
@@ -222,7 +242,8 @@ struct QgsWmsStyleProperty
   QgsWmsStyleUrlProperty            styleUrl;
 };
 
-/** Authority URL Property structure */
+/**
+ * Authority URL Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsAuthorityUrlProperty
 {
@@ -230,14 +251,16 @@ struct QgsWmsAuthorityUrlProperty
   QString                         name;             // XML "NMTOKEN" type
 };
 
-/** Identifier Property structure */
+/**
+ * Identifier Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsIdentifierProperty
 {
   QString   authority;
 };
 
-/** Metadata URL Property structure */
+/**
+ * Metadata URL Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsMetadataUrlProperty
 {
@@ -246,7 +269,8 @@ struct QgsWmsMetadataUrlProperty
   QString                         type;             // XML "NMTOKEN" type
 };
 
-/** Data List URL Property structure */
+/**
+ * Data List URL Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsDataListUrlProperty
 {
@@ -254,7 +278,8 @@ struct QgsWmsDataListUrlProperty
   QgsWmsOnlineResourceAttribute   onlineResource;
 };
 
-/** Feature List URL Property structure */
+/**
+ * Feature List URL Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsFeatureListUrlProperty
 {
@@ -262,7 +287,8 @@ struct QgsWmsFeatureListUrlProperty
   QgsWmsOnlineResourceAttribute   onlineResource;
 };
 
-/** Layer Property structure */
+/**
+ * Layer Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsLayerProperty
 {
@@ -316,12 +342,12 @@ struct QgsWmtsTileMatrix
   QString title, abstract;
   QStringList keywords;
   double scaleDenom;
-  QgsPoint topLeft;  //!< top-left corner of the tile matrix in map units
-  int tileWidth;     //!< width of a tile in pixels
-  int tileHeight;    //!< height of a tile in pixels
-  int matrixWidth;   //!< number of tiles horizontally
-  int matrixHeight;  //!< number of tiles vertically
-  double tres;       //!< pixel span in map units
+  QgsPoint topLeft;  //!< Top-left corner of the tile matrix in map units
+  int tileWidth;     //!< Width of a tile in pixels
+  int tileHeight;    //!< Height of a tile in pixels
+  int matrixWidth;   //!< Number of tiles horizontally
+  int matrixHeight;  //!< Number of tiles vertically
+  double tres;       //!< Pixel span in map units
 
   //! Returns extent of a tile in map coordinates.
   //! (same function as tileBBox() but returns QRectF instead of QgsRectangle)
@@ -339,12 +365,12 @@ struct QgsWmtsTileMatrix
 
 struct QgsWmtsTileMatrixSet
 {
-  QString identifier;   //!< tile matrix set identifier
-  QString title;        //!< human readable tile matrix set name
-  QString abstract;     //!< brief description of the tile matrix set
-  QStringList keywords; //!< list of words/phrases to describe the dataset
+  QString identifier;   //!< Tile matrix set identifier
+  QString title;        //!< Human readable tile matrix set name
+  QString abstract;     //!< Brief description of the tile matrix set
+  QStringList keywords; //!< List of words/phrases to describe the dataset
   QString crs;          //!< CRS of the tile matrix set
-  QString wkScaleSet;   //!< optional reference to a well-known scale set
+  QString wkScaleSet;   //!< Optional reference to a well-known scale set
   //! available tile matrixes (key = pixel span in map units)
   QMap<double, QgsWmtsTileMatrix> tileMatrices;
 
@@ -394,15 +420,15 @@ struct QgsWmtsStyle
  */
 struct QgsWmtsDimension
 {
-  QString identifier;   //!< name of the dimensional axis
-  QString title;        //!< human readable name
-  QString abstract;     //!< brief description of the dimension
-  QStringList keywords; //!< list of words/phrases to describe the dataset
-  QString UOM;          //!< units of measure of dimensional axis
-  QString unitSymbol;   //!< symbol of the units
-  QString defaultValue; //!< default value to be used if value is not specified in request
-  bool current;         //!< indicates whether temporal data are normally kept current
-  QStringList values;   //!< available values for this dimension
+  QString identifier;   //!< Name of the dimensional axis
+  QString title;        //!< Human readable name
+  QString abstract;     //!< Brief description of the dimension
+  QStringList keywords; //!< List of words/phrases to describe the dataset
+  QString UOM;          //!< Units of measure of dimensional axis
+  QString unitSymbol;   //!< Symbol of the units
+  QString defaultValue; //!< Default value to be used if value is not specified in request
+  bool current;         //!< Indicates whether temporal data are normally kept current
+  QStringList values;   //!< Available values for this dimension
 };
 
 struct QgsWmtsTileLayer
@@ -424,7 +450,8 @@ struct QgsWmtsTileLayer
   QHash<QString, QString> getFeatureInfoURLs;
 };
 
-/** Capability Property structure */
+/**
+ * Capability Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsCapabilityProperty
 {
@@ -441,7 +468,8 @@ struct QgsWmsCapabilityProperty
   QHash<QString, QgsWmtsTileMatrixSet> tileMatrixSets;
 };
 
-/** Capabilities Property structure */
+/**
+ * Capabilities Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsCapabilitiesProperty
 {
@@ -450,7 +478,8 @@ struct QgsWmsCapabilitiesProperty
   QString                       version;
 };
 
-/** Formats supported by QImageReader */
+/**
+ * Formats supported by QImageReader */
 struct QgsWmsSupportedFormat
 {
   QString format;
@@ -527,7 +556,8 @@ struct QgsWmsAuthorization
 };
 
 
-/** URI that gets passed to provider */
+/**
+ * URI that gets passed to provider */
 class QgsWmsSettings
 {
   public:
@@ -598,7 +628,8 @@ class QgsWmsSettings
 };
 
 
-/** Keeps information about capabilities of particular URI */
+/**
+ * Keeps information about capabilities of particular URI */
 class QgsWmsCapabilities
 {
   public:
@@ -642,10 +673,12 @@ class QgsWmsCapabilities
      */
     QHash<QString, QgsWmtsTileMatrixSet> supportedTileMatrixSets() const { return mTileMatrixSets; }
 
-    /** Find out whether to invert axis orientation when parsing/writing coordinates */
+    /**
+     * Find out whether to invert axis orientation when parsing/writing coordinates */
     bool shouldInvertAxisOrientation( const QString& ogcCrs );
 
-    /** Find out identify capabilities */
+    /**
+     * Find out identify capabilities */
     int identifyCapabilities() const;
 
   protected:
@@ -740,7 +773,8 @@ class QgsWmsCapabilities
 
 
 
-/** Class that handles download of capabilities.
+/**
+ * Class that handles download of capabilities.
  */
 class QgsWmsCapabilitiesDownload : public QObject
 {
@@ -765,10 +799,13 @@ class QgsWmsCapabilitiesDownload : public QObject
     void abort();
 
   signals:
-    /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
+
+    /**
+     * \brief emit a signal to be caught by qgisapp and display a msg on status bar */
     void statusChanged( QString const &  theStatusQString );
 
-    /** \brief emit a signal once the download is finished */
+    /**
+     * \brief emit a signal once the download is finished */
     void downloadFinished();
 
   protected slots:
@@ -781,16 +818,20 @@ class QgsWmsCapabilitiesDownload : public QObject
 
     QgsWmsAuthorization mAuth;
 
-    /** The reply to the capabilities request */
+    /**
+     * The reply to the capabilities request */
     QNetworkReply *mCapabilitiesReply;
 
-    /** The error message associated with the last WMS error. */
+    /**
+     * The error message associated with the last WMS error. */
     QString mError;
 
-    /** The mime type of the message */
+    /**
+     * The mime type of the message */
     QString mErrorFormat;
 
-    /** Capabilities of the WMS (raw) */
+    /**
+     * Capabilities of the WMS (raw) */
     QByteArray mHttpCapabilitiesResponse;
 
     bool mIsAborted;

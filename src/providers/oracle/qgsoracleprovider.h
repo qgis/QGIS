@@ -59,7 +59,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
   public:
 
-    /** Import a vector layer into the database */
+    /**
+     * Import a vector layer into the database */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
       const QgsFields &fields,
@@ -89,14 +90,16 @@ class QgsOracleProvider : public QgsVectorDataProvider
       */
     virtual QString storageType() const override;
 
-    /** Get the QgsCoordinateReferenceSystem for this layer
+    /**
+     * Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be returned
      */
     virtual QgsCoordinateReferenceSystem crs() const override;
 
-    /** Get the feature type. This corresponds to
+    /**
+     * Get the feature type. This corresponds to
      * WKBPoint,
      * WKBLineString,
      * WKBPolygon,
@@ -107,7 +110,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
      */
     QgsWkbTypes::Type wkbType() const override;
 
-    /** Return the number of layers for the current data source
+    /**
+     * Return the number of layers for the current data source
      * @note Should this be subLayerCount() instead?
      */
     size_t layerCount() const;
@@ -133,15 +137,18 @@ class QgsOracleProvider : public QgsVectorDataProvider
      */
     void setExtent( QgsRectangle& newExtent );
 
-    /** Return the extent for this data layer
+    /**
+     * Return the extent for this data layer
      */
     virtual QgsRectangle extent() const override;
 
-    /** Update the extent
+    /**
+     * Update the extent
      */
     virtual void updateExtents() override;
 
-    /** Determine the fields making up the primary key
+    /**
+     * Determine the fields making up the primary key
      */
     bool determinePrimaryKey();
 
@@ -157,60 +164,73 @@ class QgsOracleProvider : public QgsVectorDataProvider
      */
     QString dataComment() const override;
 
-    /** Reset the layer
+    /**
+     * Reset the layer
      */
     void rewind();
 
-    /** Returns the minimum value of an attribute
+    /**
+     * Returns the minimum value of an attribute
      *  @param index the index of the attribute */
     QVariant minimumValue( int index ) const override;
 
-    /** Returns the maximum value of an attribute
+    /**
+     * Returns the maximum value of an attribute
      *  @param index the index of the attribute */
     QVariant maximumValue( int index ) const override;
 
-    /** Return the unique values of an attribute
+    /**
+     * Return the unique values of an attribute
      *  @param index the index of the attribute
      *  @param values reference to the list of unique values */
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
 
-    /** Returns true if layer is valid
+    /**
+     * Returns true if layer is valid
      */
     bool isValid() const override;
 
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
 
-    /** Returns the default value for field specified by @c fieldName */
+    /**
+     * Returns the default value for field specified by @c fieldName */
     QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
 
-    /** Returns the default value for field specified by @c fieldId */
+    /**
+     * Returns the default value for field specified by @c fieldId */
     QVariant defaultValue( int fieldId ) const override;
 
-    /** Adds a list of features
+    /**
+     * Adds a list of features
       @return true in case of success and false in case of failure*/
     bool addFeatures( QgsFeatureList &flist ) override;
 
-    /** Deletes a list of features
+    /**
+     * Deletes a list of features
       @param id list of feature ids
       @return true in case of success and false in case of failure*/
     bool deleteFeatures( const QgsFeatureIds & id ) override;
 
-    /** Adds new attributes
+    /**
+     * Adds new attributes
       @param name map with attribute name as key and type as value
       @return true in case of success and false in case of failure*/
     bool addAttributes( const QList<QgsField> &attributes ) override;
 
-    /** Deletes existing attributes
+    /**
+     * Deletes existing attributes
       @param ids ids of attributes to delete
       @return true in case of success and false in case of failure*/
     bool deleteAttributes( const QgsAttributeIds &ids ) override;
 
-    /** Renames existing attributes
+    /**
+     * Renames existing attributes
       @param renamedAttributes attributes to rename
       @return true in case of success and false in case of failure*/
     bool renameAttributes( const QgsFieldNameMap& renamedAttributes ) override;
 
-    /** Changes attribute values of existing features
+    /**
+     * Changes attribute values of existing features
       @param attr_map a map containing the new attributes. The integer is the feature id,
       the first QString is the attribute name and the second one is the new attribute value
       @return true in case of success and false in case of failure*/
@@ -224,25 +244,30 @@ class QgsOracleProvider : public QgsVectorDataProvider
      */
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
-    /** Tries to create an spatial index file for faster access if only a subset of the features is required
+    /**
+     * Tries to create an spatial index file for faster access if only a subset of the features is required
      @return true in case of success*/
     bool createSpatialIndex() override;
 
     //! Get the table name associated with this provider instance
     QString getTableName();
 
-    /** Accessor for sql where clause used to limit dataset */
+    /**
+     * Accessor for sql where clause used to limit dataset */
     QString subsetString() const override;
 
-    /** Mutator for sql where clause used to limit dataset size */
+    /**
+     * Mutator for sql where clause used to limit dataset size */
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() const override { return true; }
 
-    /** Returns a bitmask containing the supported capabilities*/
+    /**
+     * Returns a bitmask containing the supported capabilities*/
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
-    /** Return a provider name
+    /**
+     * Return a provider name
      *
      * Essentially just returns the provider key.  Should be used to build file
      * dialogs so that providers can be shown with their supported types. Thus
@@ -258,7 +283,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
      */
     QString name() const override;
 
-    /** Return description
+    /**
+     * Return description
      *
      * Return a terse string describing what the provider is.
      *
@@ -294,11 +320,13 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     QgsField field( int index ) const;
 
-    /** Load the field list
+    /**
+     * Load the field list
      */
     bool loadFields();
 
-    /** Convert a QgsField to work with Oracle */
+    /**
+     * Convert a QgsField to work with Oracle */
     static bool convertField( QgsField &field );
 
     QgsFields mAttributeFields;  //! List of fields
@@ -322,14 +350,17 @@ class QgsOracleProvider : public QgsVectorDataProvider
      * Name of the table with no schema
      */
     QString mTableName;
+
     /**
      * Name of the table or subquery
      */
     QString mQuery;
+
     /**
      * Owner of the table
      */
     QString mOwnerName;
+
     /**
      * SQL statement used to limit the features retrieved
      */
@@ -421,7 +452,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
 };
 
 
-/** Assorted Oracle utility functions */
+/**
+ * Assorted Oracle utility functions */
 class QgsOracleUtils
 {
   public:
@@ -441,7 +473,8 @@ class QgsOracleUtils
 };
 
 
-/** Data shared between provider class and its feature sources. Ideally there should
+/**
+ * Data shared between provider class and its feature sources. Ideally there should
  *  be as few members as possible because there could be simultaneous reads/writes
  *  from different threads and therefore locking has to be involved. */
 class QgsOracleSharedData

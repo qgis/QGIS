@@ -20,7 +20,8 @@
 
 #include <QString>
 
-/** \ingroup server
+/**
+ * \ingroup server
  * \class  QgsMapServiceException
  * \brief Exception class for WMS service exceptions.
  *

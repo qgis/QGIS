@@ -19,7 +19,8 @@
 
 #include <QString>
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Defines a qgis exception class.
  */
 class CORE_EXPORT QgsException

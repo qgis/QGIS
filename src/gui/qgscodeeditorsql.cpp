@@ -40,7 +40,8 @@ QgsCodeEditorSQL::~QgsCodeEditorSQL()
 {
 }
 
-/** Internal use.
+/**
+ * Internal use.
 
    setAutoCompletionCaseSensitivity( false ) is not sufficient when installing
    a lexer, since its caseSensitive() method is actually used, and defaults

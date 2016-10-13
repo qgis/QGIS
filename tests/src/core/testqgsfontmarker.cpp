@@ -36,7 +36,8 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for font marker symbol types.
  */
 class TestQgsFontMarkerSymbol : public QObject

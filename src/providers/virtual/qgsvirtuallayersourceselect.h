@@ -46,9 +46,13 @@ class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerS
     void onTableRowChanged( const QModelIndex& current, const QModelIndex& previous );
 
   signals:
-    /** Source, name, provider */
+
+    /**
+     * Source, name, provider */
     void addVectorLayer( QString, QString, QString );
-    /** Old_id, source, name, provider */
+
+    /**
+     * Old_id, source, name, provider */
     void replaceVectorLayer( QString, QString, QString, QString );
 
   private:

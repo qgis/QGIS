@@ -28,7 +28,8 @@ class QListWidget;
 class QStackedWidget;
 class QSplitter;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsOptionsDialogBase
  * A base dialog for options and properties dialogs that offers vertical tabs.
  * It handles saving/restoring of geometry, splitter and current tab states,
@@ -50,7 +51,9 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     Q_OBJECT
 
   public:
-    /** Constructor
+
+    /**
+     * Constructor
      * @param settingsKey QSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
      * @param parent parent object (owner)
      * @param fl widget flags
@@ -59,7 +62,8 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent = nullptr, Qt::WindowFlags fl = 0, QSettings* settings = nullptr );
     ~QgsOptionsDialogBase();
 
-    /** Set up the base ui connections for vertical tabs.
+    /**
+     * Set up the base ui connections for vertical tabs.
      * @param restoreUi Whether to restore the base ui at this time.
      * @param title the window title
      */
@@ -68,13 +72,15 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     // set custom QSettings pointer if dialog used outside QGIS (in plugin)
     void setSettings( QSettings* settings );
 
-    /** Restore the base ui.
+    /**
+     * Restore the base ui.
      * Sometimes useful to do at end of subclass's constructor.
      * @param title the window title (it does not need to be defined if previously given to initOptionsBase();
      */
     void restoreOptionsBaseUi( const QString& title = QString() );
 
-    /** Determine if the options list is in icon only mode
+    /**
+     * Determine if the options list is in icon only mode
      */
     bool iconOnly() {return mIconOnly;}
 

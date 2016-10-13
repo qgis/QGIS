@@ -19,7 +19,8 @@
 #include "qgsindexedfeature.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Interface that can be optionaly attached to an iterator so its
  * nextFeature() implementaton can check if it must stop as soon as possible.
  * @note Added in QGIS 2.16
@@ -32,7 +33,8 @@ class CORE_EXPORT QgsInterruptionChecker
     virtual bool mustStop() const = 0;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Internal feature iterator to be implemented within data providers
  */
 class CORE_EXPORT QgsAbstractFeatureIterator
@@ -42,9 +44,9 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! Status of expression compilation for filter expression requests
     enum CompileStatus
     {
-      NoCompilation, /*!< Expression could not be compiled or not attempt was made to compile expression */
-      PartiallyCompiled, /*!< Expression was partially compiled, but extra checks need to be applied to features*/
-      Compiled, /*!< Expression was fully compiled and delegated to data provider source*/
+      NoCompilation, //!< Expression could not be compiled or not attempt was made to compile expression
+      PartiallyCompiled, //!< Expression was partially compiled, but extra checks need to be applied to features
+      Compiled, //!< Expression was fully compiled and delegated to data provider source
     };
 
     //! base class constructor - stores the iteration parameters
@@ -61,7 +63,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! end of iterating: free the resources / lock
     virtual bool close() = 0;
 
-    /** Attach an object that can be queried regularly by the iterator to check
+    /**
+     * Attach an object that can be queried regularly by the iterator to check
      * if it must stopped. This is mostly useful for iterators where a single
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider. When nextFeature()/fetchFeature() is reasonably fast, it is not necessary
@@ -71,12 +74,14 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      */
     virtual void setInterruptionChecker( QgsInterruptionChecker* interruptionChecker );
 
-    /** Returns the status of expression compilation for filter expression requests.
+    /**
+     * Returns the status of expression compilation for filter expression requests.
      * @note added in QGIS 2.16
      */
     CompileStatus compileStatus() const { return mCompileStatus; }
 
   protected:
+
     /**
      * If you write a feature iterator for your provider, this is the method you
      * need to implement!!
@@ -111,10 +116,12 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      */
     virtual bool nextFeatureFilterFids( QgsFeature & f );
 
-    /** A copy of the feature request. */
+    /**
+     * A copy of the feature request. */
     QgsFeatureRequest mRequest;
 
-    /** Set to true, as soon as the iterator is closed. */
+    /**
+     * Set to true, as soon as the iterator is closed. */
     bool mClosed;
 
     /**
@@ -129,8 +136,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! reference counting (to allow seamless copying of QgsFeatureIterator instances)
     //! TODO QGIS3: make this private
     int refs;
-    void ref(); //!< add reference
-    void deref(); //!< remove reference, delete if refs == 0
+    void ref(); //!< Add reference
+    void deref(); //!< Remove reference, delete if refs == 0
     friend class QgsFeatureIterator;
 
     //! Number of features already fetched by iterator
@@ -171,7 +178,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
 
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
  * \note not available in Python bindings
 */
@@ -226,7 +234,8 @@ class CORE_EXPORT QgsFeatureIterator
     //! find out whether the iterator is still valid or closed already
     bool isClosed() const;
 
-    /** Attach an object that can be queried regularly by the iterator to check
+    /**
+     * Attach an object that can be queried regularly by the iterator to check
      * if it must stopped. This is mostly useful for iterators where a single
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider.
@@ -235,7 +244,8 @@ class CORE_EXPORT QgsFeatureIterator
      */
     void setInterruptionChecker( QgsInterruptionChecker* interruptionChecker );
 
-    /** Returns the status of expression compilation for filter expression requests.
+    /**
+     * Returns the status of expression compilation for filter expression requests.
      * @note added in QGIS 2.16
      */
     QgsAbstractFeatureIterator::CompileStatus compileStatus() const { return mIter->compileStatus(); }

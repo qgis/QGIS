@@ -21,7 +21,8 @@
 class QMenu;
 class QgsHeatmapRenderer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsHeatmapRendererWidget
  */
 class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui::QgsHeatmapRendererWidgetBase, private QgsExpressionContextGenerator
@@ -29,21 +30,25 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
     Q_OBJECT
 
   public:
-    /** Static creation method
+
+    /**
+     * Static creation method
      * @param layer the layer where this renderer is applied
      * @param style
      * @param renderer the mask renderer (will not take ownership)
      */
     static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
-    /** Constructor
+    /**
+     * Constructor
      * @param layer the layer where this renderer is applied
      * @param style
      * @param renderer the mask renderer (will not take ownership)
      */
     QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
-    /** @returns the current feature renderer */
+    /**
+     * @returns the current feature renderer */
     virtual QgsFeatureRenderer* renderer() override;
 
     virtual void setContext( const QgsSymbolWidgetContext& context ) override;

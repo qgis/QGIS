@@ -5,6 +5,7 @@
     copyright            : (C) 2004 by Radim Blazek
     email                : blazek@itc.it
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,7 +18,8 @@
 #define QGSGRASSSELECT_H
 #include "ui_qgsgrassselectbase.h"
 
-/** \class QgsGrassSelect
+/**
+ * \class QgsGrassSelect
  * \brief Dialog to select GRASS layer.
  *
  */

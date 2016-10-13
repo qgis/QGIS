@@ -23,7 +23,8 @@
 
 class QgsPolygonV2;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSurface
  */
 class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
@@ -36,7 +37,8 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
      */
     virtual QgsPolygonV2* surfaceToPolygon() const = 0;
 
-    /** Returns the minimal bounding box for the geometry
+    /**
+     * Returns the minimal bounding box for the geometry
      */
     virtual QgsRectangle boundingBox() const override
     {

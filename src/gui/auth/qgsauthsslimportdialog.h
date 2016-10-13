@@ -73,13 +73,15 @@ class QSslSocket;
 class QTimer;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for importing an SSL server certificate exception into the authentication database
  */
 class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSslTestDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Construct dialog for importing certificates
      * @param parent
@@ -88,7 +90,9 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
     ~QgsAuthSslImportDialog();
 
   public slots:
-    /** Overridden slot of base dialog */
+
+    /**
+     * Overridden slot of base dialog */
     void accept() override;
 
   private slots:

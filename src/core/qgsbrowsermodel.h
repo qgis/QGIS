@@ -24,7 +24,8 @@
 
 #include "qgsdataitem.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsBrowserWatcher
  * \note not available in Python bindings
 */
@@ -45,7 +46,8 @@ class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem
     QgsDataItem *mItem;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsBrowserModel
  */
 class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
@@ -58,49 +60,59 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     enum ItemDataRole
     {
-      PathRole = Qt::UserRole, /*!< Item path used to access path in the tree, see QgsDataItem::mPath */
-      CommentRole = Qt::UserRole + 1, /*!< Item comment */
+      PathRole = Qt::UserRole, //!< Item path used to access path in the tree, see QgsDataItem::mPath
+      CommentRole = Qt::UserRole + 1, //!< Item comment
     };
     // implemented methods from QAbstractItemModel for read-only access
 
-    /** Used by other components to obtain information about each item provided by the model.
+    /**
+     * Used by other components to obtain information about each item provided by the model.
       In many models, the combination of flags should include Qt::ItemIsEnabled and Qt::ItemIsSelectable. */
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
-    /** Used to supply item data to views and delegates. Generally, models only need to supply data
+    /**
+     * Used to supply item data to views and delegates. Generally, models only need to supply data
       for Qt::DisplayRole and any application-specific user roles, but it is also good practice
       to provide data for Qt::ToolTipRole, Qt::AccessibleTextRole, and Qt::AccessibleDescriptionRole.
       See the Qt::ItemDataRole enum documentation for information about the types associated with each role. */
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
-    /** Provides views with information to show in their headers. The information is only retrieved
+    /**
+     * Provides views with information to show in their headers. The information is only retrieved
       by views that can display header information. */
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
-    /** Provides the number of rows of data exposed by the model. */
+    /**
+     * Provides the number of rows of data exposed by the model. */
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
 
-    /** Provides the number of columns of data exposed by the model. List models do not provide this function
+    /**
+     * Provides the number of columns of data exposed by the model. List models do not provide this function
       because it is already implemented in QAbstractListModel. */
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
-    /** Returns the index of the item in the model specified by the given row, column and parent index. */
+    /**
+     * Returns the index of the item in the model specified by the given row, column and parent index. */
     virtual QModelIndex index( int row, int column, const QModelIndex & parent = QModelIndex() ) const override;
 
     QModelIndex findItem( QgsDataItem *item, QgsDataItem *parent = nullptr ) const;
 
-    /** Returns the parent of the model item with the given index.
+    /**
+     * Returns the parent of the model item with the given index.
      * If the item has no parent, an invalid QModelIndex is returned.
      */
     virtual QModelIndex parent( const QModelIndex &index ) const override;
 
-    /** Returns a list of mime that can describe model indexes */
+    /**
+     * Returns a list of mime that can describe model indexes */
     virtual QStringList mimeTypes() const override;
 
-    /** Returns an object that contains serialized items of data corresponding to the list of indexes specified */
+    /**
+     * Returns an object that contains serialized items of data corresponding to the list of indexes specified */
     virtual QMimeData * mimeData( const QModelIndexList &indexes ) const override;
 
-    /** Handles the data supplied by a drag and drop operation that ended with the given action */
+    /**
+     * Handles the data supplied by a drag and drop operation that ended with the given action */
     virtual bool dropMimeData( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) override;
 
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
@@ -113,7 +125,8 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     //! Refresh item children
     void refresh( const QModelIndex &index = QModelIndex() );
 
-    /** Return index of item with given path. It only searches in currently fetched
+    /**
+     * Return index of item with given path. It only searches in currently fetched
      * items, i.e. it does not fetch children.
      * @param path item path
      * @param matchFlag supported is Qt::MatchExactly and Qt::MatchStartsWith which has reverse meaning, i.e. find
@@ -130,7 +143,9 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void fetchMore( const QModelIndex & parent ) override;
 
   signals:
-    /** Emitted when item children fetch was finished */
+
+    /**
+     * Emitted when item children fetch was finished */
     void stateChanged( const QModelIndex & index, QgsDataItem::State oldState );
 
   public slots:
@@ -147,7 +162,8 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void removeFavourite( const QModelIndex &index );
     void updateProjectHome();
 
-    /** Hide the given path in the browser model */
+    /**
+     * Hide the given path in the browser model */
     void hidePath( QgsDataItem *item );
 
   protected:

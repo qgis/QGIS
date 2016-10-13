@@ -205,6 +205,7 @@ static char * pszStringField = NULL;
 /*                                                                      */
 /*      A realloc cover function that will access a NULL pointer as     */
 /*      a valid input.                                                  */
+
 /************************************************************************/
 
 static void * SfRealloc( void * pMem, int nNewSize )
@@ -223,6 +224,7 @@ static void * SfRealloc( void * pMem, int nNewSize )
 /*      descriptions before writing any actual data records.  This      */
 /*      also computes all the DBFDataSet field offset/size/decimals     */
 /*      and so forth values.                                            */
+
 /************************************************************************/
 
 static void DBFWriteHeader( DBFHandle psDBF )
@@ -276,6 +278,7 @@ static void DBFWriteHeader( DBFHandle psDBF )
 /*                           DBFFlushRecord()                           */
 /*                                                                      */
 /*      Write out the current record if there is one.                   */
+
 /************************************************************************/
 
 static void DBFFlushRecord( DBFHandle psDBF )
@@ -299,6 +302,7 @@ static void DBFFlushRecord( DBFHandle psDBF )
 /*                              DBFOpen()                               */
 /*                                                                      */
 /*      Open a .dbf file.                                               */
+
 /************************************************************************/
 
 DBFHandle SHPAPI_CALL
@@ -435,6 +439,7 @@ DBFOpen( const char * pszFilename, const char * pszAccess )
 
 /************************************************************************/
 /*                              DBFClose()                              */
+
 /************************************************************************/
 
 void SHPAPI_CALL
@@ -502,6 +507,7 @@ DBFClose( DBFHandle psDBF )
 /*                             DBFCreate()                              */
 /*                                                                      */
 /*      Create a new .dbf file.                                         */
+
 /************************************************************************/
 
 DBFHandle SHPAPI_CALL
@@ -584,6 +590,7 @@ DBFCreate( const char *pszFilename )
 /*                                                                      */
 /*      Add a field to a newly created .dbf file before any records     */
 /*      are written.                                                    */
+
 /************************************************************************/
 
 int SHPAPI_CALL
@@ -686,6 +693,7 @@ DBFAddField( DBFHandle psDBF, const char * pszFieldName,
 /*                          DBFReadAttribute()                          */
 /*                                                                      */
 /*      Read one of the attribute fields of a record.                   */
+
 /************************************************************************/
 
 static void *DBFReadAttribute( DBFHandle psDBF, int hEntity, int iField,
@@ -793,6 +801,7 @@ static void *DBFReadAttribute( DBFHandle psDBF, int hEntity, int iField,
 /*                        DBFReadIntAttribute()                         */
 /*                                                                      */
 /*      Read an integer attribute.                                      */
+
 /************************************************************************/
 
 int SHPAPI_CALL
@@ -813,6 +822,7 @@ DBFReadIntegerAttribute( DBFHandle psDBF, int iRecord, int iField )
 /*                        DBFReadDoubleAttribute()                      */
 /*                                                                      */
 /*      Read a double attribute.                                        */
+
 /************************************************************************/
 
 double SHPAPI_CALL
@@ -833,6 +843,7 @@ DBFReadDoubleAttribute( DBFHandle psDBF, int iRecord, int iField )
 /*                        DBFReadStringAttribute()                      */
 /*                                                                      */
 /*      Read a string attribute.                                        */
+
 /************************************************************************/
 
 const char SHPAPI_CALL1( * )
@@ -846,6 +857,7 @@ DBFReadStringAttribute( DBFHandle psDBF, int iRecord, int iField )
 /*                        DBFReadLogicalAttribute()                     */
 /*                                                                      */
 /*      Read a logical attribute.                                       */
+
 /************************************************************************/
 
 const char SHPAPI_CALL1( * )
@@ -861,6 +873,7 @@ DBFReadLogicalAttribute( DBFHandle psDBF, int iRecord, int iField )
 /*      Return TRUE if value for field is NULL.                         */
 /*                                                                      */
 /*      Contributed by Jim Matthews.                                    */
+
 /************************************************************************/
 
 int SHPAPI_CALL
@@ -896,6 +909,7 @@ DBFIsAttributeNULL( DBFHandle psDBF, int iRecord, int iField )
 /*                          DBFGetFieldCount()                          */
 /*                                                                      */
 /*      Return the number of fields in this table.                      */
+
 /************************************************************************/
 
 int SHPAPI_CALL
@@ -909,6 +923,7 @@ DBFGetFieldCount( DBFHandle psDBF )
 /*                         DBFGetRecordCount()                          */
 /*                                                                      */
 /*      Return the number of records in this table.                     */
+
 /************************************************************************/
 
 int SHPAPI_CALL
@@ -922,6 +937,7 @@ DBFGetRecordCount( DBFHandle psDBF )
 /*                          DBFGetFieldInfo()                           */
 /*                                                                      */
 /*      Return any requested information about the field.               */
+
 /************************************************************************/
 
 DBFFieldType SHPAPI_CALL
@@ -970,6 +986,7 @@ DBFGetFieldInfo( DBFHandle psDBF, int iField, char * pszFieldName,
 /*                         DBFWriteAttribute()                          */
 /*         */
 /* Write an attribute record to the file.    */
+
 /************************************************************************/
 
 static int DBFWriteAttribute( DBFHandle psDBF, int hEntity, int iField,
@@ -1140,6 +1157,7 @@ static int DBFWriteAttribute( DBFHandle psDBF, int hEntity, int iField,
 /*      Write an attribute record to the file, but without any          */
 /*      reformatting based on type.  The provided buffer is written     */
 /*      as is to the field position in the record.                      */
+
 /************************************************************************/
 
 int DBFWriteAttributeDirectly( DBFHandle psDBF, int hEntity, int iField,
@@ -1215,6 +1233,7 @@ int DBFWriteAttributeDirectly( DBFHandle psDBF, int hEntity, int iField,
 /*                      DBFWriteDoubleAttribute()                       */
 /*                                                                      */
 /*      Write a double attribute.                                       */
+
 /************************************************************************/
 
 int SHPAPI_CALL
@@ -1229,6 +1248,7 @@ DBFWriteDoubleAttribute( DBFHandle psDBF, int iRecord, int iField,
 /*                      DBFWriteIntegerAttribute()                      */
 /*                                                                      */
 /*      Write a integer attribute.                                      */
+
 /************************************************************************/
 
 int SHPAPI_CALL
@@ -1245,6 +1265,7 @@ DBFWriteIntegerAttribute( DBFHandle psDBF, int iRecord, int iField,
 /*                      DBFWriteStringAttribute()                       */
 /*                                                                      */
 /*      Write a string attribute.                                       */
+
 /************************************************************************/
 
 int SHPAPI_CALL
@@ -1259,6 +1280,7 @@ DBFWriteStringAttribute( DBFHandle psDBF, int iRecord, int iField,
 /*                      DBFWriteNULLAttribute()                         */
 /*                                                                      */
 /*      Write a string attribute.                                       */
+
 /************************************************************************/
 
 int SHPAPI_CALL
@@ -1272,6 +1294,7 @@ DBFWriteNULLAttribute( DBFHandle psDBF, int iRecord, int iField )
 /*                      DBFWriteLogicalAttribute()                      */
 /*                                                                      */
 /*      Write a logical attribute.                                      */
+
 /************************************************************************/
 
 int SHPAPI_CALL
@@ -1286,6 +1309,7 @@ DBFWriteLogicalAttribute( DBFHandle psDBF, int iRecord, int iField,
 /*                         DBFWriteTuple()                              */
 /*         */
 /* Write an attribute record to the file.    */
+
 /************************************************************************/
 
 int SHPAPI_CALL
@@ -1348,6 +1372,7 @@ DBFWriteTuple( DBFHandle psDBF, int hEntity, void * pRawTuple )
 /*                          DBFReadTuple()                              */
 /*                                                                      */
 /*      Read one of the attribute fields of a record.                   */
+
 /************************************************************************/
 
 const char SHPAPI_CALL1( * )
@@ -1395,6 +1420,7 @@ DBFReadTuple( DBFHandle psDBF, int hEntity )
 /*                          DBFCloneEmpty()                              */
 /*                                                                      */
 /*      Read one of the attribute fields of a record.                   */
+
 /************************************************************************/
 
 DBFHandle SHPAPI_CALL
@@ -1442,6 +1468,7 @@ DBFCloneEmpty( DBFHandle psDBF, const char * pszFilename )
 /*                           'N' (Numeric, with or without decimal),    */
 /*                           'L' (Logical),                             */
 /*                           'M' (Memo: 10 digits .DBT block ptr)       */
+
 /************************************************************************/
 
 char SHPAPI_CALL
@@ -1456,6 +1483,7 @@ DBFGetNativeFieldType( DBFHandle psDBF, int iField )
 
 /************************************************************************/
 /*                            str_to_upper()                            */
+
 /************************************************************************/
 
 static void str_to_upper( char *string )
@@ -1476,6 +1504,7 @@ static void str_to_upper( char *string )
 /*      Get the index number for a field in a .dbf file.                */
 /*                                                                      */
 /*      Contributed by Jim Matthews.                                    */
+
 /************************************************************************/
 
 int SHPAPI_CALL

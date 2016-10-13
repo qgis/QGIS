@@ -19,7 +19,8 @@
 #include "qgscodeeditor.h"
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A Python editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
  * \note added in 2.6
@@ -30,6 +31,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new Python editor.
      *
@@ -40,12 +42,14 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     QgsCodeEditorPython( QWidget *parent = nullptr, const QList<QString> &filenames = QList<QString>() );
     ~QgsCodeEditorPython();
 
-    /** Load APIs from one or more files
+    /**
+     * Load APIs from one or more files
      * @param filenames The list of apis files to load for the python lexer
      */
     void loadAPIs( QList<QString> const &filenames );
 
-    /** Load a script file
+    /**
+     * Load a script file
      * @param script The script file to load
      */
     bool loadScript( const QString &script );

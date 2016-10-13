@@ -22,7 +22,8 @@
 
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class is a base class for nodes in a layer tree.
  * Layer tree is a hierarchical structure consisting of group and layer nodes:
  * - group nodes are containers and may contain children (layer and group nodes)
@@ -70,8 +71,8 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Enumeration of possible tree node types
     enum NodeType
     {
-      NodeGroup,   //!< container of other groups and layers
-      NodeLayer    //!< leaf node pointing to a layer
+      NodeGroup,   //!< Container of other groups and layers
+      NodeLayer    //!< Leaf node pointing to a layer
     };
 
     ~QgsLayerTreeNode();
@@ -99,15 +100,24 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Set whether the node should be shown as expanded or collapsed in GUI
     void setExpanded( bool expanded );
 
-    /** Set a custom property for the node. Properties are stored in a map and saved in project file. */
+    /**
+     * Set a custom property for the node. Properties are stored in a map and saved in project file. */
     void setCustomProperty( const QString &key, const QVariant &value );
-    /** Read a custom property from layer. Properties are stored in a map and saved in project file. */
+
+    /**
+     * Read a custom property from layer. Properties are stored in a map and saved in project file. */
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
-    /** Remove a custom property from layer. Properties are stored in a map and saved in project file. */
+
+    /**
+     * Remove a custom property from layer. Properties are stored in a map and saved in project file. */
     void removeCustomProperty( const QString &key );
-    /** Return list of keys stored in custom properties */
+
+    /**
+     * Return list of keys stored in custom properties */
     QStringList customProperties() const;
-    /** Remove a child from a node */
+
+    /**
+     * Remove a child from a node */
     bool takeChild( QgsLayerTreeNode *node );
 
   signals:

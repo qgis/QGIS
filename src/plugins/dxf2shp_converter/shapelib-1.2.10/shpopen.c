@@ -195,6 +195,7 @@ static int  bBigEndian;
 /*                              SwapWord()                              */
 /*                                                                      */
 /*      Swap a 2, 4 or 8 byte word.                                     */
+
 /************************************************************************/
 
 static void SwapWord( int length, void * wordP )
@@ -216,6 +217,7 @@ static void SwapWord( int length, void * wordP )
 /*                                                                      */
 /*      A realloc cover function that will access a NULL pointer as     */
 /*      a valid input.                                                  */
+
 /************************************************************************/
 
 static void * SfRealloc( void * pMem, int nNewSize )
@@ -232,6 +234,7 @@ static void * SfRealloc( void * pMem, int nNewSize )
 /*                                                                      */
 /*      Write out a header for the .shp and .shx files as well as the */
 /* contents of the index (.shx) file.    */
+
 /************************************************************************/
 
 static void SHPWriteHeader( SHPHandle psSHP )
@@ -335,6 +338,7 @@ static void SHPWriteHeader( SHPHandle psSHP )
 /*                                                                      */
 /*      Open the .shp and .shx files based on the basename of the       */
 /*      files or either file name.                                      */
+
 /************************************************************************/
 
 SHPHandle SHPAPI_CALL
@@ -550,6 +554,7 @@ SHPOpen( const char * pszLayer, const char * pszAccess )
 /*                              SHPClose()                              */
 /*                */
 /* Close the .shp and .shx files.     */
+
 /************************************************************************/
 
 void SHPAPI_CALL
@@ -585,6 +590,7 @@ SHPClose( SHPHandle psSHP )
 /*                             SHPGetInfo()                             */
 /*                                                                      */
 /*      Fetch general information about the shape file.                 */
+
 /************************************************************************/
 
 void SHPAPI_CALL
@@ -614,6 +620,7 @@ SHPGetInfo( SHPHandle psSHP, int * pnEntities, int * pnShapeType,
 /*                                                                      */
 /*      Create a new shape file and return a handle to the open         */
 /*      shape file with read/write access.                              */
+
 /************************************************************************/
 
 SHPHandle SHPAPI_CALL
@@ -731,6 +738,7 @@ SHPCreate( const char * pszLayer, int nShapeType )
 /*                                                                      */
 /*      Compute a bounds rectangle for a shape, and set it into the     */
 /*      indicated location in the record.                               */
+
 /************************************************************************/
 
 static void _SHPSetBounds( uchar * pabyRec, SHPObject * psShape )
@@ -755,6 +763,7 @@ static void _SHPSetBounds( uchar * pabyRec, SHPObject * psShape )
 /*                                                                      */
 /*      Recompute the extents of a shape.  Automatically done by        */
 /*      SHPCreateObject().                                              */
+
 /************************************************************************/
 
 void SHPAPI_CALL
@@ -793,6 +802,7 @@ SHPComputeExtents( SHPObject * psObject )
 /*                                                                      */
 /*      Create a shape object.  It should be freed with                 */
 /*      SHPDestroyObject().                                             */
+
 /************************************************************************/
 
 SHPObject SHPAPI_CALL1( * )
@@ -903,6 +913,7 @@ SHPCreateObject( int nSHPType, int nShapeId, int nParts,
 /*                                                                      */
 /*      Create a simple (common) shape object.  Destroy with            */
 /*      SHPDestroyObject().                                             */
+
 /************************************************************************/
 
 SHPObject SHPAPI_CALL1( * )
@@ -920,6 +931,7 @@ SHPCreateSimpleObject( int nSHPType, int nVertices,
 /*                                                                      */
 /*      Write out the vertices of a new structure.  Note that it is     */
 /*      only possible to write vertices at the end of the file.         */
+
 /************************************************************************/
 
 int SHPAPI_CALL
@@ -1282,6 +1294,7 @@ SHPWriteObject( SHPHandle psSHP, int nShapeId, SHPObject * psObject )
 /*                                                                      */
 /*      Read the vertices, parts, and other non-attribute information */
 /* for one shape.       */
+
 /************************************************************************/
 
 SHPObject SHPAPI_CALL1( * )
@@ -1610,6 +1623,7 @@ SHPReadObject( SHPHandle psSHP, int hEntity )
 
 /************************************************************************/
 /*                            SHPTypeName()                             */
+
 /************************************************************************/
 
 const char SHPAPI_CALL1( * )
@@ -1667,6 +1681,7 @@ SHPTypeName( int nSHPType )
 
 /************************************************************************/
 /*                          SHPPartTypeName()                           */
+
 /************************************************************************/
 
 const char SHPAPI_CALL1( * )
@@ -1700,6 +1715,7 @@ SHPPartTypeName( int nPartType )
 
 /************************************************************************/
 /*                          SHPDestroyObject()                          */
+
 /************************************************************************/
 
 void SHPAPI_CALL
@@ -1731,6 +1747,7 @@ SHPDestroyObject( SHPObject * psShape )
 /*                                                                      */
 /*      Reset the winding of polygon objects to adhere to the           */
 /*      specification.                                                  */
+
 /************************************************************************/
 
 int SHPAPI_CALL

@@ -25,6 +25,7 @@
 /**
 @author Sergey Yakushev
 */
+
 /**
  * \class Unit
  * \brief This class provide interface to access unit name and multipler.
@@ -33,6 +34,7 @@
 class Unit
 {
   public:
+
     /**
      * default constructor
      */

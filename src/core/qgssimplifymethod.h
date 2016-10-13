@@ -18,7 +18,8 @@
 
 class QgsAbstractGeometrySimplifier;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class contains information about how to simplify geometries fetched from a QgsFeatureIterator
  * @note added in 2.2
  */

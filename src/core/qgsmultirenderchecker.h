@@ -18,7 +18,8 @@
 
 #include "qgsrenderchecker.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class allows checking rendered images against comparison images.
  * Its main purpose is for the unit testing framework.
  *
@@ -114,7 +115,8 @@ class CORE_EXPORT QgsMultiRenderChecker
      */
     QString controlImagePath() const;
 
-    /** Draws a checkboard pattern for image backgrounds, so that transparency is visible
+    /**
+     * Draws a checkboard pattern for image backgrounds, so that transparency is visible
      * without requiring a transparent background for the image
      */
     static void drawBackground( QImage* image ) { QgsRenderChecker::drawBackground( image ); }
@@ -130,7 +132,9 @@ class CORE_EXPORT QgsMultiRenderChecker
 
 #ifdef ENABLE_TESTS
 ///@cond PRIVATE
-/** \ingroup core
+
+/**
+ * \ingroup core
  * \class QgsCompositionChecker
  * Renders a composition to an image and compares with an expected output
  */

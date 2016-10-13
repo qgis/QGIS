@@ -34,7 +34,8 @@ class QDomElement;
 typedef QMap<QString, QgsColorRamp* > QgsVectorColorRampMap;
 typedef QMap<int, QString> QgsSymbolGroupMap;
 
-/** \ingroup core
+/**
+ * \ingroup core
  *  A multimap to hold the smart group conditions as constraint and parameter pairs.
  *  Both the key and the value of the map are QString. The key is the constraint of the condition and the value is the parameter which is applied for the constraint.
  *
@@ -63,7 +64,8 @@ enum TagmapTable { TagmapTagId, TagmapSymbolId };
 enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML, ColorrampGroupId };
 enum SmartgroupTable { SmartgroupId, SmartgroupName, SmartgroupXML };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsStyle
  */
 class CORE_EXPORT QgsStyle : public QObject
@@ -82,7 +84,8 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     enum StyleEntity { SymbolEntity, GroupEntity, TagEntity, ColorrampEntity, SmartgroupEntity };
 
-    /** Adds a color ramp to the style. Calling this method takes the ramp's ownership.
+    /**
+     * Adds a color ramp to the style. Calling this method takes the ramp's ownership.
      *  \note Adding a color ramp with the name of existing one replaces it.
      *  \param name is the name of the color ramp being added or updated
      *  \param colorRamp is the color ramp. Ownership is transferred.
@@ -124,7 +127,8 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     int addTag( const QString& tagName );
 
-    /** Returns a list of all tags in the style database
+    /**
+     * Returns a list of all tags in the style database
      * @note added in QGIS 2.16
      * @see addTag()
      */
@@ -136,7 +140,8 @@ class CORE_EXPORT QgsStyle : public QObject
     //! remove all contents of the style
     void clear();
 
-    /** Returns a new copy of the specified color ramp. The caller
+    /**
+     * Returns a new copy of the specified color ramp. The caller
      * takes responsibility for deleting the returned object.
      */
     QgsColorRamp* colorRamp( const QString& name ) const;

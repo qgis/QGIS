@@ -39,14 +39,17 @@
 #include <cmath>
 #include <QString>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class pal::LabelInfo
  * \note not available in Python bindings
  */
 
 namespace pal
 {
-  /** Optional additional info about label (for curved labels) */
+
+  /**
+   * Optional additional info about label (for curved labels) */
   class CORE_EXPORT LabelInfo
   {
     public:
@@ -91,7 +94,8 @@ namespace pal
 
     public:
 
-      /** Creates a new generic feature.
+      /**
+       * Creates a new generic feature.
         * @param lf a pointer for a feature which contains the spatial entites
         * @param geom a pointer to a GEOS geometry
         */
@@ -99,23 +103,28 @@ namespace pal
 
       FeaturePart( const FeaturePart& other );
 
-      /** Delete the feature
+      /**
+       * Delete the feature
        */
       virtual ~FeaturePart();
 
-      /** Returns the parent feature.
+      /**
+       * Returns the parent feature.
        */
       QgsLabelFeature* feature() { return mLF; }
 
-      /** Returns the layer that feature belongs to.
+      /**
+       * Returns the layer that feature belongs to.
        */
       Layer* layer();
 
-      /** Returns the unique ID of the feature.
+      /**
+       * Returns the unique ID of the feature.
        */
       QgsFeatureId featureId() const;
 
-      /** Generic method to generate label candidates for the feature.
+      /**
+       * Generic method to generate label candidates for the feature.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param bboxMin min values of the map extent
        * \param bboxMax max values of the map extent
@@ -125,7 +134,8 @@ namespace pal
        */
       int createCandidates( QList<LabelPosition *> &lPos, double bboxMin[2], double bboxMax[2], PointSet *mapShape, RTree<LabelPosition*, double, 2, double>* candidates );
 
-      /** Generate candidates for point feature, located around a specified point.
+      /**
+       * Generate candidates for point feature, located around a specified point.
        * @param x x coordinate of the point
        * @param y y coordinate of the point
        * @param lPos pointer to an array of candidates, will be filled by generated candidates
@@ -134,7 +144,8 @@ namespace pal
        */
       int createCandidatesAroundPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
 
-      /** Generate one candidate over or offset the specified point.
+      /**
+       * Generate one candidate over or offset the specified point.
        * @param x x coordinate of the point
        * @param y y coordinate of the point
        * @param lPos pointer to an array of candidates, will be filled by generated candidate
@@ -143,7 +154,8 @@ namespace pal
        */
       int createCandidatesOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
 
-      /** Generates candidates following a prioritised list of predefined positions around a point.
+      /**
+       * Generates candidates following a prioritised list of predefined positions around a point.
        * @param x x coordinate of the point
        * @param y y coordinate of the point
        * @param lPos pointer to an array of candidates, will be filled by generated candidate
@@ -152,14 +164,16 @@ namespace pal
        */
       int createCandidatesAtOrderedPositionsOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
 
-      /** Generate candidates for line feature.
+      /**
+       * Generate candidates for line feature.
        * @param lPos pointer to an array of candidates, will be filled by generated candidates
        * @param mapShape a pointer to the line
        * @returns the number of generated candidates
        */
       int createCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape );
 
-      /** Generate candidates for line feature, by trying to place candidates towards the middle of the longest
+      /**
+       * Generate candidates for line feature, by trying to place candidates towards the middle of the longest
        * straightish segments of the line. Segments closer to horizontal are preferred over vertical segments.
        * @param lPos pointer to an array of candidates, will be filled by generated candidates
        * @param mapShape a pointer to the line
@@ -167,7 +181,8 @@ namespace pal
        */
       int createCandidatesAlongLineNearStraightSegments( QList<LabelPosition *> &lPos, PointSet *mapShape );
 
-      /** Generate candidates for line feature, by trying to place candidates as close as possible to the line's midpoint.
+      /**
+       * Generate candidates for line feature, by trying to place candidates as close as possible to the line's midpoint.
        * Candidates can "cut corners" if it helps them place near this mid point.
        * @param lPos pointer to an array of candidates, will be filled by generated candidates
        * @param mapShape a pointer to the line
@@ -177,7 +192,8 @@ namespace pal
        */
       int createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &lPos, PointSet *mapShape, double initialCost = 0.0 );
 
-      /** Returns the label position for a curved label at a specific offset along a path.
+      /**
+       * Returns the label position for a curved label at a specific offset along a path.
        * @param path_positions line path to place label on
        * @param path_distances array of distances to each segment on path
        * @param orientation can be 0 for automatic calculation of orientation, or -1/+1 for a specific label orientation
@@ -190,21 +206,24 @@ namespace pal
       LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
                                               int& orientation, int index, double distance, bool& reversed, bool& flip );
 
-      /** Generate curved candidates for line features.
+      /**
+       * Generate curved candidates for line features.
        * @param lPos pointer to an array of candidates, will be filled by generated candidates
        * @param mapShape a pointer to the line
        * @returns the number of generated candidates
        */
       int createCurvedCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet* mapShape );
 
-      /** Generate candidates for polygon features.
+      /**
+       * Generate candidates for polygon features.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the polygon
        * \return the number of generated candidates
        */
       int createCandidatesForPolygon( QList<LabelPosition *> &lPos, PointSet *mapShape );
 
-      /** Tests whether this feature part belongs to the same QgsLabelFeature as another
+      /**
+       * Tests whether this feature part belongs to the same QgsLabelFeature as another
        * feature part.
        * @param part part to compare to
        * @returns true if both parts belong to same QgsLabelFeature
@@ -212,6 +231,7 @@ namespace pal
       bool hasSameLabelFeatureAs( FeaturePart* part ) const;
 
 #if 0
+
       /**
        * \brief Print feature information
        * Print feature unique id, geometry type, points, and holes on screen
@@ -251,16 +271,19 @@ namespace pal
       //! Get hole (inner ring) - considered as obstacle
       FeaturePart* getSelfObstacle( int i ) { return mHoles.at( i ); }
 
-      /** Check whether this part is connected with some other part */
+      /**
+       * Check whether this part is connected with some other part */
       bool isConnected( FeaturePart* p2 );
 
-      /** Merge other (connected) part with this one and save the result in this part (other is unchanged).
+      /**
+       * Merge other (connected) part with this one and save the result in this part (other is unchanged).
        * Return true on success, false if the feature wasn't modified */
       bool mergeWithFeaturePart( FeaturePart* other );
 
       void addSizePenalty( int nbp, QList<LabelPosition *> &lPos, double bbx[4], double bby[4] );
 
-      /** Calculates the priority for the feature. This will be the feature's priority if set,
+      /**
+       * Calculates the priority for the feature. This will be the feature's priority if set,
        * otherwise the layer's default priority.
        * @see Feature::setPriority
        * @see Feature::priority
@@ -279,7 +302,8 @@ namespace pal
       QgsLabelFeature* mLF;
       QList<FeaturePart*> mHoles;
 
-      /** \brief read coordinates from a GEOS geom */
+      /**
+       * \brief read coordinates from a GEOS geom */
       void extractCoords( const GEOSGeometry* geom );
 
     private:

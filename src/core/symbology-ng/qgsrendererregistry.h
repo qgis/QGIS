@@ -27,7 +27,8 @@ class QgsVectorLayer;
 class QgsStyle;
 class QgsRendererWidget;
 
-/** \ingroup core
+/**
+ * \ingroup core
  Stores metadata about one renderer class.
 
  @note It's necessary to implement createRenderer() function.
@@ -61,15 +62,19 @@ class CORE_EXPORT QgsRendererAbstractMetadata
     QIcon icon() const { return mIcon; }
     void setIcon( const QIcon& icon ) { mIcon = icon; }
 
-    /** Returns flags indicating the types of layer the renderer is compatible with.
+    /**
+     * Returns flags indicating the types of layer the renderer is compatible with.
      * @note added in QGIS 2.16
      */
     virtual LayerTypes compatibleLayerTypes() const { return All; }
 
-    /** Return new instance of the renderer given the DOM element. Returns NULL on error.
+    /**
+     * Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
     virtual QgsFeatureRenderer* createRenderer( QDomElement& elem ) = 0;
-    /** Return new instance of settings widget for the renderer. Returns NULL on error.
+
+    /**
+     * Return new instance of settings widget for the renderer. Returns NULL on error.
      *
      * The \a oldRenderer argument may refer to previously used renderer (or it is null).
      * If not null, it may be used to initialize GUI of the widget from the previous settings.
@@ -99,14 +104,16 @@ typedef QgsFeatureRenderer*( *QgsRendererCreateFunc )( QDomElement& );
 typedef QgsRendererWidget*( *QgsRendererWidgetFunc )( QgsVectorLayer*, QgsStyle*, QgsFeatureRenderer* );
 typedef QgsFeatureRenderer*( *QgsRendererCreateFromSldFunc )( QDomElement&, QgsWkbTypes::GeometryType geomType );
 
-/** \ingroup core
+/**
+ * \ingroup core
  Convenience metadata class that uses static functions to create renderer and its widget.
  */
 class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
 {
   public:
 
-    /** Construct metadata */
+    /**
+     * Construct metadata */
     //! @note not available in python bindings
     QgsRendererMetadata( const QString& name,
                          const QString& visibleName,
@@ -170,7 +177,8 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsRendererRegistry
  * \brief Registry of renderers.
  *

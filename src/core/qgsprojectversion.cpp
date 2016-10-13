@@ -53,7 +53,8 @@ QgsProjectVersion::QgsProjectVersion( const QString& string )
 
 }
 
-/** Boolean equal operator
+/**
+ * Boolean equal operator
  */
 bool QgsProjectVersion::operator==( const QgsProjectVersion &other ) const
 {
@@ -62,7 +63,8 @@ bool QgsProjectVersion::operator==( const QgsProjectVersion &other ) const
           ( mSub == other.mSub ) );
 }
 
-/** Boolean equal operator
+/**
+ * Boolean equal operator
  */
 bool QgsProjectVersion::operator!=( const QgsProjectVersion &other ) const
 {
@@ -71,7 +73,8 @@ bool QgsProjectVersion::operator!=( const QgsProjectVersion &other ) const
           ( mSub != other.mSub ) );
 }
 
-/** Boolean >= operator
+/**
+ * Boolean >= operator
  */
 bool QgsProjectVersion::operator>=( const QgsProjectVersion &other ) const
 {
@@ -80,7 +83,8 @@ bool QgsProjectVersion::operator>=( const QgsProjectVersion &other ) const
           (( mMajor == other.mMajor ) && ( mMinor == other.mMinor ) && ( mSub >= other.mSub ) ) );
 }
 
-/** Boolean > operator
+/**
+ * Boolean > operator
  */
 bool QgsProjectVersion::operator>( const QgsProjectVersion &other ) const
 {

@@ -25,7 +25,8 @@
 class QgsColorRamp;
 class QgsVectorLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief categorized renderer
 */
 class CORE_EXPORT QgsRendererCategory
@@ -71,7 +72,8 @@ class CORE_EXPORT QgsRendererCategory
 
 typedef QList<QgsRendererCategory> QgsCategoryList;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCategorizedSymbolRenderer
  */
 class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
@@ -94,7 +96,8 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     virtual QString filter( const QgsFields& fields = QgsFields() ) override;
     virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
 
-    /** Update all the symbols but leave categories and colors. This method also sets the source
+    /**
+     * Update all the symbols but leave categories and colors. This method also sets the source
      * symbol for the renderer.
      * @param sym source symbol to use for categories. Ownership is not transferred.
      * @see setSourceSymbol()
@@ -139,14 +142,16 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
     virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
 
-    /** Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
+    /**
+     * Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
      * the categories' color.
      * @see setSourceSymbol()
      * @see sourceColorRamp()
      */
     QgsSymbol* sourceSymbol();
 
-    /** Sets the source symbol for the renderer, which is the base symbol used for the each categories' symbol before applying
+    /**
+     * Sets the source symbol for the renderer, which is the base symbol used for the each categories' symbol before applying
      * the categories' color.
      * @param sym source symbol, ownership is transferred to the renderer
      * @see sourceSymbol()
@@ -154,13 +159,15 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      */
     void setSourceSymbol( QgsSymbol* sym );
 
-    /** Returns the source color ramp, from which each categories' color is derived.
+    /**
+     * Returns the source color ramp, from which each categories' color is derived.
      * @see setSourceColorRamp()
      * @see sourceSymbol()
      */
     QgsColorRamp* sourceColorRamp();
 
-    /** Sets the source color ramp.
+    /**
+     * Sets the source color ramp.
       * @param ramp color ramp. Ownership is transferred to the renderer
       * @see sourceColorRamp()
       * @see setSourceSymbol()
@@ -171,7 +178,8 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     bool invertedColorRamp() { return mInvertedColorRamp; }
     void setInvertedColorRamp( bool inverted ) { mInvertedColorRamp = inverted; }
 
-    /** Update the color ramp used and all symbols colors.
+    /**
+     * Update the color ramp used and all symbols colors.
       * @param ramp color ramp. Ownership is transferred to the renderer
       * @param inverted set to true to invert ramp colors
       * @note added in 2.5
@@ -212,7 +220,8 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
   private:
 
-    /** Returns calculated classification value for a feature */
+    /**
+     * Returns calculated classification value for a feature */
     QVariant valueForFeature( QgsFeature& feature, QgsRenderContext &context ) const;
 
 };

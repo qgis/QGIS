@@ -22,7 +22,8 @@
 class QgsMapCanvas;
 class QgsScaleRangeWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsScaleVisibilityDialog
  */
 class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog

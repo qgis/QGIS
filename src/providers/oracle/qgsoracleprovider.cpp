@@ -3086,12 +3086,15 @@ QGISEXTERN QgsOracleProvider * classFactory( const QString *uri )
 {
   return new QgsOracleProvider( *uri );
 }
-/** Required key function (used to map the plugin to a data store type)
+
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
   return QSqlDatabase::isDriverAvailable( "QOCISPATIAL" ) ? ORACLE_KEY : 0;
 }
+
 /**
  * Required description function
  */
@@ -3099,6 +3102,7 @@ QGISEXTERN QString description()
 {
   return QSqlDatabase::isDriverAvailable( "QOCISPATIAL" ) ? ORACLE_DESCRIPTION : 0;
 }
+
 /**
  * Required isProvider function. Used to determine if this shared library
  * is a data provider plugin

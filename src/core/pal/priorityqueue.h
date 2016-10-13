@@ -39,6 +39,7 @@
 
 namespace pal
 {
+
   /**
    * \ingroup core
    * \class pal::PriorityQueue
@@ -48,7 +49,9 @@ namespace pal
   {
 
     public:
-      /** \brief Create a priority queue of max size n
+
+      /**
+       * \brief Create a priority queue of max size n
        * \@param n max size of the queuet
        * \@param p external vector representing the priority
        * \@param min best element has the smalest p when min is True ans has the biggest when min is false

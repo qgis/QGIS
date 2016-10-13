@@ -39,7 +39,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
   public:
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Individual preset record of visible layers and styles.
      */
     class PresetRecord
@@ -59,7 +60,9 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         //! Ordered list of layers that are visible
         QStringList mVisibleLayerIDs;
-        /** For layers that have checkable legend symbols and not all symbols are checked - list which ones are
+
+        /**
+         * For layers that have checkable legend symbols and not all symbols are checked - list which ones are
          * @note not available in Python bindings
          */
         QMap<QString, QSet<QString> > mPerLayerCheckedLegendSymbols;
@@ -69,27 +72,31 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
     QgsMapThemeCollection();
 
-    /** Returns whether a preset with a matching name exists.
+    /**
+     * Returns whether a preset with a matching name exists.
      * @param name name of preset to check
      * @returns true if preset exists
      */
     bool hasPreset( const QString& name ) const;
 
-    /** Inserts a new preset to the collection.
+    /**
+     * Inserts a new preset to the collection.
      * @param name name of preset
      * @param state preset record
      * @see update()
      */
     void insert( const QString& name, const PresetRecord& state );
 
-    /** Updates a preset within the collection.
+    /**
+     * Updates a preset within the collection.
      * @param name name of preset to update
      * @param state preset record to replace existing preset
      * @see insert()
      */
     void update( const QString& name, const PresetRecord& state );
 
-    /** Remove existing preset from collection.
+    /**
+     * Remove existing preset from collection.
      * @param name preset name
      */
     void removePreset( const QString& name );
@@ -100,42 +107,49 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     //! Returns a list of existing preset names.
     QStringList presets() const;
 
-    /** Returns the recorded state of a preset.
+    /**
+     * Returns the recorded state of a preset.
      * @param name name of preset
      */
     PresetRecord presetState( const QString& name ) const { return mPresets[name]; }
 
-    /** Returns the list of layer IDs that should be visible for the specified preset.
+    /**
+     * Returns the list of layer IDs that should be visible for the specified preset.
      * @note The order of the returned list is not guaranteed to reflect the order of layers
      * in the canvas.
      * @param name preset name
      */
     QStringList presetVisibleLayers( const QString& name ) const;
 
-    /** Apply check states of legend nodes of a given layer as defined in the preset.
+    /**
+     * Apply check states of legend nodes of a given layer as defined in the preset.
      * @param name preset name
      * @param layerID layer ID
      */
     void applyPresetCheckedLegendNodesToLayer( const QString& name, const QString& layerID );
 
-    /** Get layer style overrides (for QgsMapSettings) of the visible layers for given preset.
+    /**
+     * Get layer style overrides (for QgsMapSettings) of the visible layers for given preset.
      * @param name preset name
      */
     QMap<QString, QString> presetStyleOverrides( const QString& name );
 
-    /** Reads the preset collection state from XML
+    /**
+     * Reads the preset collection state from XML
      * @param doc DOM document
      * @see writeXml
      */
     void readXml( const QDomDocument& doc );
 
-    /** Writes the preset collection state to XML.
+    /**
+     * Writes the preset collection state to XML.
      * @param doc DOM document
      * @see readXml
      */
     void writeXml( QDomDocument& doc );
 
-    /** Static method for adding visible layers from a layer tree group to a preset
+    /**
+     * Static method for adding visible layers from a layer tree group to a preset
      * record.
      * @param parent layer tree group parent
      * @param rec preset record to amend
@@ -144,13 +158,15 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
   signals:
 
-    /** Emitted when presets within the collection are changed.
+    /**
+     * Emitted when presets within the collection are changed.
      */
     void presetsChanged();
 
   protected slots:
 
-    /** Handles updates of the preset collection when layers are removed from the registry
+    /**
+     * Handles updates of the preset collection when layers are removed from the registry
      */
     void registryLayersRemoved( const QStringList& layerIDs );
 
@@ -159,7 +175,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
   protected:
 
-    /** Reconnects all preset layers to handle style renames
+    /**
+     * Reconnects all preset layers to handle style renames
      */
     void reconnectToLayersStyleManager();
 

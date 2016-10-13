@@ -22,7 +22,8 @@
 class QgsVectorLayer;
 class QgsTransaction;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsTransactionGroup
  */
 class CORE_EXPORT QgsTransactionGroup : public QObject
@@ -70,6 +71,7 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     bool isEmpty() const;
 
   signals:
+
     /**
      * Will be emitted whenever there is a commit error
      */

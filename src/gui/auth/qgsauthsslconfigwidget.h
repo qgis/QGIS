@@ -30,7 +30,8 @@ class QComboBox;
 class QGroupBox;
 class QSpinBox;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for editing an SSL server configuration
  */
 class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSslConfigWidget
@@ -38,6 +39,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     Q_OBJECT
 
   public:
+
     /**
      * Construct a widget for editing an SSL server certificate configuration
      * @param parent Parent widget
@@ -51,98 +53,132 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
                                      const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
     ~QgsAuthSslConfigWidget();
 
-    /** Access to the certificate's group box widget */
+    /**
+     * Access to the certificate's group box widget */
     QGroupBox *certificateGroupBox();
-    /** Access to the SSL configuration's group box widget */
+
+    /**
+     * Access to the SSL configuration's group box widget */
     QGroupBox *sslConfigGroupBox();
 
-    /** Get the SSL configuration */
+    /**
+     * Get the SSL configuration */
     const QgsAuthConfigSslServer sslCustomConfig();
 
-    /** Get the SSL server certificate */
+    /**
+     * Get the SSL server certificate */
     const QSslCertificate sslCertificate();
 
-    /** Get the host:port to associate with the server certificate */
+    /**
+     * Get the host:port to associate with the server certificate */
     const QString sslHost();
 
-    /** Get the SSL protocl used for connections */
+    /**
+     * Get the SSL protocl used for connections */
     QSsl::SslProtocol sslProtocol();
 
-    /** Get list of the SSL errors (as enums) to be ignored for connections */
+    /**
+     * Get list of the SSL errors (as enums) to be ignored for connections */
     const QList<QSslError::SslError> sslIgnoreErrorEnums();
 
-    /** Get the client's peer verify mode for connections */
+    /**
+     * Get the client's peer verify mode for connections */
     QSslSocket::PeerVerifyMode sslPeerVerifyMode();
 
-    /** Get the client's peer verify depth for connections
+    /**
+     * Get the client's peer verify depth for connections
      * @note Value of 0 = unlimited
      */
     int sslPeerVerifyDepth();
 
   public slots:
-    /** Enable or disable the custom options widget */
+
+    /**
+     * Enable or disable the custom options widget */
     void enableSslCustomOptions( bool enable );
 
     // may also load existing config, if found
-    /** Set SSl certificate and any associated host:port */
+
+    /**
+     * Set SSl certificate and any associated host:port */
     void setSslCertificate( const QSslCertificate& cert, const QString &hostport = QString() );
 
-    /** Load an existing SSL server configuration */
+    /**
+     * Load an existing SSL server configuration */
     void loadSslCustomConfig( const QgsAuthConfigSslServer& config = QgsAuthConfigSslServer() );
 
-    /** Save the current SSL server configuration to the authentication database */
+    /**
+     * Save the current SSL server configuration to the authentication database */
     void saveSslCertConfig();
 
-    /** Clear the current SSL server configuration and disabled it */
+    /**
+     * Clear the current SSL server configuration and disabled it */
     void resetSslCertConfig();
 
-    /** Set the SSL protocol to use in connections */
+    /**
+     * Set the SSL protocol to use in connections */
     void setSslProtocol( QSsl::SslProtocol protocol );
 
-    /** Reset the SSL protocol to use in connections to the default */
+    /**
+     * Reset the SSL protocol to use in connections to the default */
     void resetSslProtocol();
 
-    /** Add to SSL errors to ignore for the connection */
+    /**
+     * Add to SSL errors to ignore for the connection */
     void appendSslIgnoreErrors( const QList<QSslError>& errors );
 
-    /** Set the SSL errors (as enums) to ignore for the connection */
+    /**
+     * Set the SSL errors (as enums) to ignore for the connection */
     void setSslIgnoreErrorEnums( const QList<QSslError::SslError>& errorenums );
 
-    /** Set the SSL errors to ignore for the connection */
+    /**
+     * Set the SSL errors to ignore for the connection */
     void setSslIgnoreErrors( const QList<QSslError>& errors );
 
-    /** Clear the SSL errors to ignore for the connection */
+    /**
+     * Clear the SSL errors to ignore for the connection */
     void resetSslIgnoreErrors();
 
-    /** Set the client's peer verify mode for connections */
+    /**
+     * Set the client's peer verify mode for connections */
     void setSslPeerVerify( QSslSocket::PeerVerifyMode mode, int modedepth );
 
-    /** Reset the client's peer verify mode for connections to default */
+    /**
+     * Reset the client's peer verify mode for connections to default */
     void resetSslPeerVerify();
 
-    /** Set the host of the server */
+    /**
+     * Set the host of the server */
     void setSslHost( const QString& host );
 
-    /** Set whether the config group box is checkable */
+    /**
+     * Set whether the config group box is checkable */
     void setConfigCheckable( bool checkable );
 
-    /** Parse string for host:port */
+    /**
+     * Parse string for host:port */
     void validateHostPortText( const QString &txt );
 
-    /** Verify if the configuration if ready to save */
+    /**
+     * Verify if the configuration if ready to save */
     bool readyToSave();
 
   signals:
-    /** Emitted when the enabled state of the configuration changes */
+
+    /**
+     * Emitted when the enabled state of the configuration changes */
     void configEnabledChanged( bool enabled );
 
-    /** Emitted when an certificate of same SHA hash is found in authentication database */
+    /**
+     * Emitted when an certificate of same SHA hash is found in authentication database */
     void certFoundInAuthDatabase( bool found );
 
-    /** Emitted when the validity of the host:port changes */
+    /**
+     * Emitted when the validity of the host:port changes */
     void hostPortValidityChanged( bool valid );
 
-    /** Emitted when the configuration can be saved changes */
+    /**
+     * Emitted when the configuration can be saved changes */
     void readyToSaveChanged( bool cansave );
 
   private slots:
@@ -180,7 +216,8 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
 
 //////////////// Embed in dialog ///////////////////
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Dialog wrapper of widget for editing an SSL server configuration
  */
 class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
@@ -188,6 +225,7 @@ class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Construct wrapper dialog for the SSL config widget
      * @param parent Parent widget
@@ -199,11 +237,14 @@ class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
                                      const QString &hostport = QString() );
     ~QgsAuthSslConfigDialog();
 
-    /** Access the embedded SSL server configuration widget */
+    /**
+     * Access the embedded SSL server configuration widget */
     QgsAuthSslConfigWidget *sslCustomConfigWidget() { return mSslConfigWdgt; }
 
   public slots:
-    /** Overridden base dialog accept slot */
+
+    /**
+     * Overridden base dialog accept slot */
     void accept() override;
 
   private slots:

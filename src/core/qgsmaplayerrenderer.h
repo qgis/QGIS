@@ -20,7 +20,8 @@
 
 class QgsFeedback;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Base class for utility classes that encapsulate information necessary
  * for rendering of map layers. The rendering is typically done in a background
  * thread, so it is necessary to keep all structures required for rendering away

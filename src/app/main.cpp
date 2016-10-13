@@ -101,7 +101,8 @@ typedef SInt32 SRefCon;
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 
-/** Print usage text
+/**
+ * Print usage text
  */
 void usage( QString appName )
 {

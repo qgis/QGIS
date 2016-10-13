@@ -23,7 +23,8 @@
 
 class QgsColorRamp;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGlowEffect
  * \brief Base class for paint effect which draw a glow inside or outside a
  * picture.
@@ -36,11 +37,12 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
 
   public:
 
-    /** Color sources for the glow */
+    /**
+     * Color sources for the glow */
     enum GlowColorType
     {
-      SingleColor, /*!< use a single color and fade the color to totally transparent */
-      ColorRamp /*!< use colors from a color ramp */
+      SingleColor, //!< Use a single color and fade the color to totally transparent
+      ColorRamp //!< Use colors from a color ramp
     };
 
     QgsGlowEffect();
@@ -50,7 +52,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap& props ) override;
 
-    /** Sets the spread distance for drawing the glow effect.
+    /**
+     * Sets the spread distance for drawing the glow effect.
      * @param spread spread distance. Units are specified via @link setSpreadUnit @endlink
      * @see spread
      * @see setSpreadUnit
@@ -58,7 +61,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     void setSpread( const double spread ) { mSpread = spread; }
 
-    /** Returns the spread distance used for drawing the glow effect.
+    /**
+     * Returns the spread distance used for drawing the glow effect.
      * @returns spread distance. Units are retrieved via @link spreadUnit @endlink
      * @see setSpread
      * @see spreadUnit
@@ -66,7 +70,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     double spread() const { return mSpread; }
 
-    /** Sets the units used for the glow spread distance.
+    /**
+     * Sets the units used for the glow spread distance.
      * @param unit units for spread distance
      * @see spreadUnit
      * @see setSpread
@@ -74,7 +79,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     void setSpreadUnit( const QgsUnitTypes::RenderUnit unit ) { mSpreadUnit = unit; }
 
-    /** Returns the units used for the glow spread distance.
+    /**
+     * Returns the units used for the glow spread distance.
      * @returns units for spread distance
      * @see setSpreadUnit
      * @see spread
@@ -82,7 +88,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     QgsUnitTypes::RenderUnit spreadUnit() const { return mSpreadUnit; }
 
-    /** Sets the map unit scale used for the spread distance.
+    /**
+     * Sets the map unit scale used for the spread distance.
      * @param scale map unit scale for spread distance
      * @see spreadMapUnitScale
      * @see setSpread
@@ -90,7 +97,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     void setSpreadMapUnitScale( const QgsMapUnitScale& scale ) { mSpreadMapUnitScale = scale; }
 
-    /** Returns the map unit scale used for the spread distance.
+    /**
+     * Returns the map unit scale used for the spread distance.
      * @returns map unit scale for spread distance
      * @see setSpreadMapUnitScale
      * @see spread
@@ -98,7 +106,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     const QgsMapUnitScale& spreadMapUnitScale() const { return mSpreadMapUnitScale; }
 
-    /** Sets blur level (strength) for the glow. This can be used to smooth the
+    /**
+     * Sets blur level (strength) for the glow. This can be used to smooth the
      * output from the glow effect.
      * @param level blur level. Values between 0 and 16 are valid, with larger
      * values indicating greater blur strength.
@@ -106,28 +115,32 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     void setBlurLevel( const int level ) { mBlurLevel = level; }
 
-    /** Returns the blur level (strength) for the glow.
+    /**
+     * Returns the blur level (strength) for the glow.
      * @returns blur level. Value will be between 0 and 16, with larger
      * values indicating greater blur strength.
      * @see setBlurLevel
      */
     int blurLevel() const { return mBlurLevel; }
 
-    /** Sets the transparency for the effect
+    /**
+     * Sets the transparency for the effect
      * @param transparency double between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see transparency
      */
     void setTransparency( const double transparency ) { mTransparency = transparency; }
 
-    /** Returns the transparency for the effect
+    /**
+     * Returns the transparency for the effect
      * @returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see setTransparency
      */
     double transparency() const { return mTransparency; }
 
-    /** Sets the color for the glow. This only applies if the @link colorType @endlink
+    /**
+     * Sets the color for the glow. This only applies if the @link colorType @endlink
      * is set to SingleColor. The glow will fade between the specified color and
      * a totally transparent version of the color.
      * @param color glow color
@@ -136,7 +149,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     void setColor( const QColor& color ) { mColor = color; }
 
-    /** Returns the color for the glow. This only applies if the @link colorType @endlink
+    /**
+     * Returns the color for the glow. This only applies if the @link colorType @endlink
      * is set to SingleColor. The glow will fade between the specified color and
      * a totally transparent version of the color.
      * @returns glow color
@@ -145,7 +159,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     QColor color() const { return mColor; }
 
-    /** Sets the color ramp for the glow. This only applies if the @link colorType @endlink
+    /**
+     * Sets the color ramp for the glow. This only applies if the @link colorType @endlink
      * is set to ColorRamp. The glow will utilise colors from the ramp.
      * @param ramp color ramp for glow. Ownership of the ramp is transferred to the effect.
      * @see ramp
@@ -153,7 +168,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     void setRamp( QgsColorRamp* ramp );
 
-    /** Returns the color ramp used for the glow. This only applies if the @link colorType @endlink
+    /**
+     * Returns the color ramp used for the glow. This only applies if the @link colorType @endlink
      * is set to ColorRamp. The glow will utilise colors from the ramp.
      * @returns color ramp for glow
      * @see setRamp
@@ -161,21 +177,24 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     QgsColorRamp* ramp() const { return mRamp; }
 
-    /** Sets the blend mode for the effect
+    /**
+     * Sets the blend mode for the effect
      * @param mode blend mode used for drawing the effect on to a destination
      * paint device
      * @see blendMode
      */
     void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
 
-    /** Returns the blend mode for the effect
+    /**
+     * Returns the blend mode for the effect
      * @returns blend mode used for drawing the effect on to a destination
      * paint device
      * @see setBlendMode
      */
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
-    /** Sets the color mode to use for the glow. The glow can either be drawn using a QgsColorRamp
+    /**
+     * Sets the color mode to use for the glow. The glow can either be drawn using a QgsColorRamp
      * color ramp or by simply specificing a single color. setColorType is used to specify which mode to use
      * for the glow.
      * @param colorType color type to use for glow
@@ -185,7 +204,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     void setColorType( GlowColorType colorType ) { mColorType = colorType; }
 
-    /** Returns the color mode used for the glow. The glow can either be drawn using a QgsColorRamp
+    /**
+     * Returns the color mode used for the glow. The glow can either be drawn using a QgsColorRamp
      * color ramp or by specificing a single color.
      * @returns current color mode used for the glow
      * @see setColorType
@@ -201,7 +221,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     virtual QRectF boundingRect( const QRectF& rect, const QgsRenderContext& context ) const override;
     virtual void draw( QgsRenderContext& context ) override;
 
-    /** Specifies whether the glow is drawn outside the picture or within
+    /**
+     * Specifies whether the glow is drawn outside the picture or within
      * the picture.
      * @returns true if glow is to be drawn outside the picture, or false
      * to draw glow within the picture
@@ -221,7 +242,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsOuterGlowEffect
  * \brief A paint effect which draws a glow outside of a picture.
  *
@@ -233,7 +255,8 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
 
   public:
 
-    /** Creates a new QgsOuterGlowEffect effect from a properties string map.
+    /**
+     * Creates a new QgsOuterGlowEffect effect from a properties string map.
      * @param map encoded properties string map
      * @returns new QgsOuterGlowEffect
      */
@@ -252,7 +275,8 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsInnerGlowEffect
  * \brief A paint effect which draws a glow within a picture.
  *
@@ -264,7 +288,8 @@ class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect
 
   public:
 
-    /** Creates a new QgsInnerGlowEffect effect from a properties string map.
+    /**
+     * Creates a new QgsInnerGlowEffect effect from a properties string map.
      * @param map encoded properties string map
      * @returns new QgsInnerGlowEffect
      */

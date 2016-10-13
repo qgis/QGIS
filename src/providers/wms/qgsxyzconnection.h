@@ -26,7 +26,8 @@ struct QgsXyzConnection
   QString encodedUri() const;
 };
 
-/** Utility class for handling list of connections to XYZ tile layers */
+/**
+ * Utility class for handling list of connections to XYZ tile layers */
 class QgsXyzConnectionUtils
 {
   public:

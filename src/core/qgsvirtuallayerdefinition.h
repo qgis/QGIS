@@ -20,7 +20,8 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsfields.h"
 #include "qgis.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Class to manipulate the definition of a virtual layer
  *
  * It is used to extract parameters from an initial virtual layer definition as well as
@@ -29,7 +30,9 @@ email                : hugo dot mercier at oslandia dot com
 class CORE_EXPORT QgsVirtualLayerDefinition
 {
   public:
-    /** \ingroup core
+
+    /**
+     * \ingroup core
      * A SourceLayer is either a reference to a live layer in the registry
      * or all the parameters needed to load it (provider key, source, etc.)
      */

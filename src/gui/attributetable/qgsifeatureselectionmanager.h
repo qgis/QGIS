@@ -20,7 +20,8 @@
 
 #include "qgsfeature.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Is an interface class to abstract feature selection handling.
  *
  * e.g. { @link QgsVectorLayer } implements this interface to manage its selections.
@@ -73,6 +74,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
     virtual const QgsFeatureIds &selectedFeaturesIds() const = 0;
 
   signals:
+
     /**
      * This signal is emitted when selection was changed
      *

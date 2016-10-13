@@ -34,7 +34,8 @@ class QgsPoint;
 static const double SoftConstraintTolerancePixel = 15;
 static const double SoftConstraintToleranceDegrees = 10;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * @brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
  * used to handle the CAD tools on top of a selection of map tools.
  * It handles both the UI and the constraints. Constraints are applied
@@ -55,8 +56,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     enum CadCapacity
     {
       AbsoluteAngle = 1, //!< Azimuth
-      RelativeAngle = 2, //!< also for parallel and perpendicular
-      RelativeCoordinates = 4, //!< this corresponds to distance and relative coordinates
+      RelativeAngle = 2, //!< Also for parallel and perpendicular
+      RelativeCoordinates = 4, //!< This corresponds to distance and relative coordinates
     };
     Q_DECLARE_FLAGS( CadCapacities, CadCapacity )
 
@@ -80,7 +81,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
       ManyPoints   //!< Capture two or more points (e.g. line or polygon digitizing)
     };
 
-    /** \ingroup gui
+    /**
+     * \ingroup gui
      * @brief The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
      * It contains all values (locked, value, relative) and pointers to corresponding widgets.
      * @note Relative is not mandatory since it is not used for distance.
@@ -88,6 +90,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     class GUI_EXPORT CadConstraint
     {
       public:
+
         /**
          * The lock mode
          */
@@ -98,7 +101,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
           HardLock
         };
 
-        /** Constructor for CadConstraint.
+        /**
+         * Constructor for CadConstraint.
          * @param lineEdit associated line edit for constraint value
          * @param lockerButton associated button for locking constraint
          * @param relativeButton optional button for toggling relative constraint mode
@@ -120,12 +124,14 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          * @return Lock mode
          */
         LockMode lockMode() const { return mLockMode; }
+
         /**
          * Is any kind of lock mode enabled
          */
         bool isLocked() const { return mLockMode != NoLock; }
 
-        /** Returns true if a repeating lock is set for the constraint. Repeating locks are not
+        /**
+         * Returns true if a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
          * @note added in QGIS 2.16
          * @see setRepeatingLock()
@@ -136,6 +142,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          * Is the constraint in relative mode
          */
         bool relative() const { return mRelative; }
+
         /**
          * The value of the constraint
          */
@@ -151,7 +158,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          */
         void setLockMode( LockMode mode );
 
-        /** Sets whether a repeating lock is set for the constraint. Repeating locks are not
+        /**
+         * Sets whether a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
          * @param repeating set to true to set the lock to repeat automatically
          * @note added in QGIS 2.16
@@ -215,6 +223,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * @return  If the event is hidden (construction mode hides events from the maptool)
      */
     bool canvasPressEvent( QgsMapMouseEvent* e );
+
     /**
      * Will react on a canvas release event
      *
@@ -223,6 +232,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * @return  If the event is hidden (construction mode hides events from the maptool)
      */
     bool canvasReleaseEvent( QgsMapMouseEvent* e, AdvancedDigitizingMode mode );
+
     /**
      * Will react on a canvas move event
      *
@@ -230,6 +240,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * @return  If the event is hidden (construction mode hides events from the maptool)
      */
     bool canvasMoveEvent( QgsMapMouseEvent* e );
+
     /**
      * Filter key events to e.g. toggle construction mode or adapt constraints
      *
@@ -328,6 +339,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void disable();
 
   signals:
+
     /**
      * Push a warning
      *
@@ -427,7 +439,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! Attempts to convert a user input value to double, either directly or via expression
     double parseUserInput( const QString& inputValue, bool& ok ) const;
 
-    /** Updates a constraint value based on a text input.
+    /**
+     * Updates a constraint value based on a text input.
      * @param constraint constraint to update
      * @param textValue user entered text value, may be an expression
      * @param convertExpression set to true to update widget contents to calculated expression value

@@ -5,6 +5,7 @@
     copyright            : (C) 2004 by Radim Blazek
     email                : blazek@itc.it
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -37,7 +38,8 @@ extern "C"
 #include <grass/gis.h>
 }
 
-/** \class QgsGrassRegion
+/**
+ * \class QgsGrassRegion
  *  \brief GRASS attributes.
  *
  */
@@ -127,7 +129,8 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
     QgsGrassRegionEdit* mRegionEdit;
 };
 
-/** Map tool which uses rubber band for changing grass region */
+/**
+ * Map tool which uses rubber band for changing grass region */
 class QgsGrassRegionEdit : public QgsMapTool
 {
     Q_OBJECT

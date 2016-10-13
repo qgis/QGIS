@@ -27,33 +27,40 @@ class QgsAbstractGeometry;
 class QgsPointV2;
 struct QgsVertexId;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A rubberband class for QgsAbstractGeometry (considering curved geometries)*/
 class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
 {
   public:
     enum IconType
     {
+
       /**
       * No icon is used
       */
       ICON_NONE,
+
       /**
        * A cross is used to highlight points (+)
        */
       ICON_CROSS,
+
       /**
        * A cross is used to highlight points (x)
        */
       ICON_X,
+
       /**
        * A box is used to highlight points (□)
        */
       ICON_BOX,
+
       /**
        * A circle is used to highlight points (○)
        */
       ICON_CIRCLE,
+
       /**
        * A full box is used to highlight points (■)
        */
@@ -63,23 +70,40 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
     ~QgsGeometryRubberBand();
 
-    /** Sets geometry (takes ownership). Geometry is expected to be in map coordinates */
+    /**
+     * Sets geometry (takes ownership). Geometry is expected to be in map coordinates */
     void setGeometry( QgsAbstractGeometry* geom );
-    /** Returns a pointer to the geometry*/
+
+    /**
+     * Returns a pointer to the geometry*/
     const QgsAbstractGeometry* geometry() { return mGeometry; }
-    /** Moves vertex to new position (in map coordinates)*/
+
+    /**
+     * Moves vertex to new position (in map coordinates)*/
     void moveVertex( QgsVertexId id, const QgsPointV2& newPos );
-    /** Sets fill color for vertex markers*/
+
+    /**
+     * Sets fill color for vertex markers*/
     void setFillColor( const QColor& c );
-    /** Sets outline color for vertex markes*/
+
+    /**
+     * Sets outline color for vertex markes*/
     void setOutlineColor( const QColor& c );
-    /** Sets outline width*/
+
+    /**
+     * Sets outline width*/
     void setOutlineWidth( int width );
-    /** Sets pen style*/
+
+    /**
+     * Sets pen style*/
     void setLineStyle( Qt::PenStyle penStyle );
-    /** Sets brush style*/
+
+    /**
+     * Sets brush style*/
     void setBrushStyle( Qt::BrushStyle brushStyle );
-    /** Sets vertex marker icon type*/
+
+    /**
+     * Sets vertex marker icon type*/
     void setIconType( IconType iconType ) { mIconType = iconType; }
 
   protected:

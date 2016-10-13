@@ -49,27 +49,37 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
     Q_OBJECT
 
   public:
-    /** \brief Constructor */
+
+    /**
+     * \brief Constructor */
     eVisDatabaseConnectionGui( QList<QTemporaryFile*>*, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
 
-    /** \brief Destructor */
+    /**
+     * \brief Destructor */
     ~eVisDatabaseConnectionGui();
 
   private:
-    /** \brief Pointer to a database connection */
+
+    /**
+     * \brief Pointer to a database connection */
     eVisDatabaseConnection* mDatabaseConnection;
 
-    /** \brief Pointer to a temporary file which will hold the results of our query */
+    /**
+     * \brief Pointer to a temporary file which will hold the results of our query */
     QList<QTemporaryFile*>* mTempOutputFileList;
 
-    /** \brief Pointer to another GUI component that will select which fields contain x, y coordinates */
+    /**
+     * \brief Pointer to another GUI component that will select which fields contain x, y coordinates */
     eVisDatabaseLayerFieldSelectionGui* mDatabaseLayerFieldSelector;
 
-    /** \brief Pointer to a QMap which will hold the definition of preexisting query that can be loaded from an xml file */
+    /**
+     * \brief Pointer to a QMap which will hold the definition of preexisting query that can be loaded from an xml file */
     QMap<int, eVisQueryDefinition>* mQueryDefinitionMap;
 
   private slots:
-    /** \brief Slot called after the user selects the x, y fields in the field selection gui component */
+
+    /**
+     * \brief Slot called after the user selects the x, y fields in the field selection gui component */
     void drawNewVectorLayer( const QString&, const QString&, const QString& );
 
     void on_buttonBox_accepted();
@@ -83,7 +93,9 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
     void on_pbtnRunQuery_clicked();
 
   signals:
-    /** \brief signal emitted by the drawNewVectorLayer slot */
+
+    /**
+     * \brief signal emitted by the drawNewVectorLayer slot */
     void drawVectorLayer( const QString&, const QString&, const QString& );
 };
 

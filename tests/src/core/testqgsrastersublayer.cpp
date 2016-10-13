@@ -41,7 +41,8 @@
 //qgis unit test includes
 #include <qgsrenderchecker.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for raster sublayers
  */
 class TestQgsRasterSubLayer : public QObject

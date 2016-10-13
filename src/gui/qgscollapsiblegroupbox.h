@@ -27,7 +27,8 @@
 class QToolButton;
 class QScrollArea;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsGroupBoxCollapseButton
  */
 class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
@@ -62,7 +63,8 @@ class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
     bool mShiftDown;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsCollapsibleGroupBoxBasic
  * A groupbox that collapses/expands when toggled.
  * Basic class QgsCollapsibleGroupBoxBasic does not auto-save collapsed or checked state
@@ -103,6 +105,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
      * Returns the current collapsed state of this group box
      */
     bool isCollapsed() const { return mCollapsed; }
+
     /**
      * Collapse or uncollapse this groupbox
      *
@@ -127,7 +130,9 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     bool scrollOnExpand() {return mScrollOnExpand;}
 
   signals:
-    /** Signal emitted when groupbox collapsed/expanded state is changed, and when first shown */
+
+    /**
+     * Signal emitted when groupbox collapsed/expanded state is changed, and when first shown */
     void collapsedStateChanged( bool collapsed );
 
   public slots:
@@ -138,7 +143,8 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
   protected:
     void init();
 
-    /** Visual fixes for when group box is collapsed/expanded */
+    /**
+     * Visual fixes for when group box is collapsed/expanded */
     void collapseExpandFixes();
 
     void showEvent( QShowEvent *event ) override;
@@ -167,7 +173,8 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     QIcon mExpandIcon;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsCollapsibleGroupBox
  * A groupbox that collapses/expands when toggled and can save its collapsed and checked states.
  * By default, it auto-saves only its collapsed state to the global settings based on the widget and it's parent names.
@@ -202,7 +209,9 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
 
     //! set this to false to not save/restore collapsed state
     void setSaveCollapsedState( bool save ) { mSaveCollapsedState = save; }
-    /** Set this to true to save/restore checked state
+
+    /**
+     * Set this to true to save/restore checked state
      * @note only turn on mSaveCheckedState for groupboxes NOT used
      * in multiple places or used as options for different parent objects */
     void setSaveCheckedState( bool save ) { mSaveCheckedState = save; }
@@ -215,6 +224,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     QString settingGroup() const { return mSettingGroup; }
 
   protected slots:
+
     /**
      * Will load the collapsed and checked state
      *
@@ -223,6 +233,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
      *  * The settingGroup
      */
     void loadState();
+
     /**
      * Will save the collapsed and checked state
      *

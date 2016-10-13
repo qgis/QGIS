@@ -34,7 +34,8 @@
 #include <qgsrenderchecker.h>
 
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test to verify that raster histogram works
  */
 class TestRasterHistogram : public QObject

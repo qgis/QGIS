@@ -33,7 +33,8 @@
 #include <langinfo.h>
 #endif
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsVectorFileWriter class.
  *
  *  Possible QVariant::Type s
@@ -67,17 +68,28 @@ class TestQgsVectorFileWriter: public QObject
     void cleanup() {} // will be called after every testfunction.
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
-    /** This method tests writing a point to a shapefile */
+    /**
+     * This method tests writing a point to a shapefile */
     void createPoint();
-    /** This method tests writing a polyline to a shapefile */
+
+    /**
+     * This method tests writing a polyline to a shapefile */
     void createLine();
-    /** This method tests writing a polygon to a shapefile */
+
+    /**
+     * This method tests writing a polygon to a shapefile */
     void createPolygon();
-    /** This method test writing multiple features to a shapefile */
+
+    /**
+     * This method test writing multiple features to a shapefile */
     void polygonGridTest();
-    /** As above but using a projected CRS*/
+
+    /**
+     * As above but using a projected CRS*/
     void projectedPlygonGridTest();
-    /** This is a regression test ticket 1141 (broken Polish characters support since r8592) http://hub.qgis.org/issues/1141 */
+
+    /**
+     * This is a regression test ticket 1141 (broken Polish characters support since r8592) http://hub.qgis.org/issues/1141 */
     void regression1141();
 
   private:

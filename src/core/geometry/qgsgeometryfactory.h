@@ -33,7 +33,8 @@ typedef QVector<QgsPoint> QgsMultiPoint;
 typedef QVector<QgsPolyline> QgsMultiPolyline;
 typedef QVector<QgsPolygon> QgsMultiPolygon;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGeometryFactory
  * \brief Contains geometry creation routines.
  * \note added in QGIS 2.10
@@ -43,29 +44,47 @@ typedef QVector<QgsPolygon> QgsMultiPolygon;
 class CORE_EXPORT QgsGeometryFactory
 {
   public:
-    /** Construct geometry from a WKB string.
+
+    /**
+     * Construct geometry from a WKB string.
      */
     static QgsAbstractGeometry* geomFromWkb( QgsConstWkbPtr wkb );
 
-    /** Construct geometry from a WKT string.
+    /**
+     * Construct geometry from a WKT string.
      */
     static QgsAbstractGeometry* geomFromWkt( const QString& text );
 
-    /** Construct geometry from a point */
+    /**
+     * Construct geometry from a point */
     static QgsAbstractGeometry* fromPoint( const QgsPoint& point );
-    /** Construct geometry from a multipoint */
+
+    /**
+     * Construct geometry from a multipoint */
     static QgsAbstractGeometry* fromMultiPoint( const QgsMultiPoint& multipoint );
-    /** Construct geometry from a polyline */
+
+    /**
+     * Construct geometry from a polyline */
     static QgsAbstractGeometry* fromPolyline( const QgsPolyline& polyline );
-    /** Construct geometry from a multipolyline*/
+
+    /**
+     * Construct geometry from a multipolyline*/
     static QgsAbstractGeometry* fromMultiPolyline( const QgsMultiPolyline& multiline );
-    /** Construct geometry from a polygon */
+
+    /**
+     * Construct geometry from a polygon */
     static QgsAbstractGeometry* fromPolygon( const QgsPolygon& polygon );
-    /** Construct geometry from a multipolygon */
+
+    /**
+     * Construct geometry from a multipolygon */
     static QgsAbstractGeometry* fromMultiPolygon( const QgsMultiPolygon& multipoly );
-    /** Construct geometry from a rectangle */
+
+    /**
+     * Construct geometry from a rectangle */
     static QgsAbstractGeometry* fromRect( const QgsRectangle& rect );
-    /** Return empty geometry from wkb type*/
+
+    /**
+     * Return empty geometry from wkb type*/
     static QgsAbstractGeometry* geomFromWkbType( QgsWkbTypes::Type t );
 
   private:

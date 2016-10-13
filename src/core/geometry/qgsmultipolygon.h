@@ -18,7 +18,8 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsmultisurface.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMultiPolygonV2
  * \brief Multi polygon geometry collection.
  * \note added in QGIS 2.10
@@ -40,10 +41,12 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
 
-    /** Adds a geometry and takes ownership. Returns true in case of success*/
+    /**
+     * Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometry* g ) override;
 
-    /** Returns the geometry converted to the more generic curve type QgsMultiSurface
+    /**
+     * Returns the geometry converted to the more generic curve type QgsMultiSurface
     @return the converted geometry. Caller takes ownership*/
     QgsAbstractGeometry* toCurveType() const override;
 

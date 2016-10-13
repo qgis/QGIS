@@ -21,7 +21,8 @@
 
 class QgsRelationManager;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This is an abstract base class for any elements of a drag and drop form.
  *
  * This can either be a container which will be represented on the screen
@@ -117,6 +118,7 @@ class CORE_EXPORT QgsAttributeEditorElement
     bool mShowLabel;
 
   private:
+
     /**
      * Should be implemented by subclasses to save type specific configuration.
      *
@@ -134,13 +136,15 @@ class CORE_EXPORT QgsAttributeEditorElement
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This is a container for attribute editors, used to group them visually in the
  * attribute form if it is set to the drag and drop designer.
  */
 class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 {
   public:
+
     /**
      * Creates a new attribute editor container
      *
@@ -248,12 +252,14 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     QgsOptionalExpression mVisibilityExpression;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This element will load a field's widget onto the form.
  */
 class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 {
   public:
+
     /**
      * Creates a new attribute editor element which represents a field
      *
@@ -283,12 +289,14 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
     int mIdx;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This element will load a relation editor onto the form.
  */
 class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 {
   public:
+
     /**
      * Creates a new element which embeds a relation.
      *
@@ -344,6 +352,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * @note Added in QGIS 2.18
      */
     bool showLinkButton() const;
+
     /**
      * Determines if the "link feature" button should be shown
      *
@@ -357,6 +366,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * @note Added in QGIS 2.18
      */
     bool showUnlinkButton() const;
+
     /**
      * Determines if the "unlink feature" button should be shown
      *

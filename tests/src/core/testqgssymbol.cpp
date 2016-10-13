@@ -33,7 +33,8 @@
 
 #include "qgsstyle.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test to verify that symbols are working correctly
  */
 class TestQgsSymbol : public QObject

@@ -23,7 +23,8 @@
 class QgsRubberBand;
 class QgsLabelPosition;
 
-/** A map tool for pinning (writing to attribute table) and unpinning labelpositions and rotation*/
+/**
+ * A map tool for pinning (writing to attribute table) and unpinning labelpositions and rotation*/
 class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
 {
     Q_OBJECT

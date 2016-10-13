@@ -28,7 +28,8 @@ email                : even.rouault at spatialys.com
 #include <QStringList>
 #include <QSet>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * SQL composer dialog
  *  @note not available in Python bindings
  */
@@ -44,7 +45,8 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     //! pair (name, type)
     typedef QPair<QString, QString> PairNameType;
 
-    /** \ingroup gui
+    /**
+     * \ingroup gui
      * Callback to do actions on table selection
      * @note not available in Python bindings
      */
@@ -56,7 +58,8 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
         virtual void tableSelected( const QString& name ) = 0;
     };
 
-    /** \ingroup gui
+    /**
+     * \ingroup gui
      * Callback to do validation check on dialog validation.
      * @note not available in Python bindings
      */
@@ -136,12 +139,14 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     //! set if multiple tables/joins are supported. Default is false
     void setSupportMultipleTables( bool bMultipleTables, QString mainTypename = QString() );
 
-    /** Set a callback that will be called when a new table is selected, so
+    /**
+     * Set a callback that will be called when a new table is selected, so
         that new column names can be added typically.
         Ownership of the callback remains to the caller */
     void setTableSelectedCallback( TableSelectedCallback* tableSelectedCallback );
 
-    /** Set a callback that will be called when the OK button is pushed.
+    /**
+     * Set a callback that will be called when the OK button is pushed.
         Ownership of the callback remains to the caller */
     void setSQLValidatorCallback( SQLValidatorCallback* sqlValidatorCallback );
 

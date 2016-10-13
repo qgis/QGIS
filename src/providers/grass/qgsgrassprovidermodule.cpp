@@ -5,6 +5,7 @@
     copyright            : (C) 2004 by Gary E.Sherman, Radim Blazek
     email                : sherman@mrcc.com, blazek@itc.it
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -1270,7 +1271,8 @@ QGISEXTERN QgsGrassProvider * classFactory( const QString *uri )
   return new QgsGrassProvider( *uri );
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {

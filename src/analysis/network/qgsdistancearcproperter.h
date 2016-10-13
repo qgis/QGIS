@@ -22,7 +22,8 @@
 // QGIS includes
 #include <qgsarcproperter.h>
 
-/** \ingroup networkanalysis
+/**
+ * \ingroup networkanalysis
  * \class QgsDistanceArcProperter
  */
 class ANALYSIS_EXPORT QgsDistanceArcProperter : public QgsArcProperter

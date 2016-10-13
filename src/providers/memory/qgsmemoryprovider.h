@@ -110,7 +110,8 @@ class QgsMemoryProvider : public QgsVectorDataProvider
 
     QString subsetString() const override;
 
-    /** Mutator for sql where clause used to limit dataset size */
+    /**
+     * Mutator for sql where clause used to limit dataset size */
     bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() const override { return true; }
@@ -121,7 +122,8 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      */
     virtual bool createSpatialIndex() override;
 
-    /** Returns a bitmask containing the supported capabilities
+    /**
+     * Returns a bitmask containing the supported capabilities
     Note, some capabilities may change depending on whether
     a spatial filter is active on this provider, so it may
     be prudent to check this value per intended operation.

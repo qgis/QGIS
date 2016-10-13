@@ -25,7 +25,8 @@ class QgsDxfExport;
 class QgsDxfPaintDevice;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsDxfPaintEngine
  * \note not available in Python bindings
 */

@@ -25,7 +25,8 @@ class QgsAbstractGeometry;
 class QgsCurve;
 class QgsConstWkbPtr;
 
-/** \ingroup core
+/**
+ * \ingroup core
 General purpose distance and area calculator.
 - calculations are done on ellipsoid
 - it's possible to pass points/features in any CRS, coordinates are transformed
@@ -50,7 +51,8 @@ class CORE_EXPORT QgsDistanceArea
     //! Assignment operator
     QgsDistanceArea & operator=( const QgsDistanceArea & origDA );
 
-    /** Sets whether coordinates must be projected to ellipsoid before measuring
+    /**
+     * Sets whether coordinates must be projected to ellipsoid before measuring
      * @note for calculations to use the ellipsoid, both the ellipsoid mode must be true
      * and an ellipse must be set
      * @see setEllipsoid()
@@ -58,13 +60,15 @@ class CORE_EXPORT QgsDistanceArea
      */
     void setEllipsoidalMode( bool flag );
 
-    /** Returns whether ellipsoidal calculations are enabled
+    /**
+     * Returns whether ellipsoidal calculations are enabled
      * @see willUseEllipsoid()
      * @see setEllipsoidalMode()
      */
     bool ellipsoidalEnabled() const { return mEllipsoidalMode; }
 
-    /** Returns whether calculations will use the ellipsoid. Calculations will only use the
+    /**
+     * Returns whether calculations will use the ellipsoid. Calculations will only use the
      * ellipsoid if ellipsoidalEnabled() is true and an ellipsoid has been set.
      * @note added in QGIS 2.14
      * @see ellipsoidalEnabled()
@@ -85,12 +89,14 @@ class CORE_EXPORT QgsDistanceArea
     //! sets source spatial reference system by authid
     void setSourceAuthId( const QString& authid );
 
-    /** Returns the source spatial reference system.
+    /**
+     * Returns the source spatial reference system.
      * @see setSourceCrs()
      */
     QgsCoordinateReferenceSystem sourceCrs() const { return mCoordTransform.sourceCrs(); }
 
-    /** Returns the QgsCoordinateReferenceSystem::srsid() for the CRS used during calculations.
+    /**
+     * Returns the QgsCoordinateReferenceSystem::srsid() for the CRS used during calculations.
      * @see setSourceCrs()
      * @note added in QGIS 2.14
      */
@@ -99,7 +105,8 @@ class CORE_EXPORT QgsDistanceArea
     //! What sort of coordinate system is being used?
     bool geographic() const { return mCoordTransform.sourceCrs().isGeographic(); }
 
-    /** Sets ellipsoid by its acronym. Calculations will only use the ellipsoid if
+    /**
+     * Sets ellipsoid by its acronym. Calculations will only use the ellipsoid if
      * both the ellipsoid has been set and ellipsoidalEnabled() is true.
      * @returns true if ellipsoid was successfully set
      * @see ellipsoid()
@@ -108,7 +115,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     bool setEllipsoid( const QString& ellipsoid );
 
-    /** Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
+    /**
+     * Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
      * both the ellipsoid has been set and ellipsoidalEnabled() is true.
      * @returns true if ellipsoid was successfully set
      * @see ellipsoid()
@@ -118,7 +126,8 @@ class CORE_EXPORT QgsDistanceArea
     // Inverse flattening is calculated with invf = a/(a-b)
     bool setEllipsoid( double semiMajor, double semiMinor );
 
-    /** Returns ellipsoid's acronym. Calculations will only use the
+    /**
+     * Returns ellipsoid's acronym. Calculations will only use the
      * ellipsoid if ellipsoidalEnabled() is true and an ellipsoid has been set.
      * @see setEllipsoid()
      * @see ellipsoidalEnabled()
@@ -133,7 +142,8 @@ class CORE_EXPORT QgsDistanceArea
     //! returns ellipsoid's inverse flattening
     double ellipsoidInverseFlattening() const { return mInvFlattening; }
 
-    /** Measures the area of a geometry.
+    /**
+     * Measures the area of a geometry.
      * @param geometry geometry to measure
      * @returns area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
      * returned area can be retrieved by calling areaUnits().
@@ -144,7 +154,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measureArea( const QgsGeometry* geometry ) const;
 
-    /** Measures the area of a geometry.
+    /**
+     * Measures the area of a geometry.
      * @param geometry geometry to measure
      * @returns area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
      * returned area can be retrieved by calling areaUnits().
@@ -155,7 +166,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measureArea( const QgsGeometry& geometry ) const;
 
-    /** Measures the length of a geometry.
+    /**
+     * Measures the length of a geometry.
      * @param geometry geometry to measure
      * @returns length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
      * returned distance can be retrieved by calling lengthUnits().
@@ -166,7 +178,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measureLength( const QgsGeometry* geometry ) const;
 
-    /** Measures the length of a geometry.
+    /**
+     * Measures the length of a geometry.
      * @param geometry geometry to measure
      * @returns length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
      * returned distance can be retrieved by calling lengthUnits().
@@ -177,7 +190,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measureLength( const QgsGeometry& geometry ) const;
 
-    /** Measures the perimeter of a polygon geometry.
+    /**
+     * Measures the perimeter of a polygon geometry.
      * @param geometry geometry to measure
      * @returns perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
      * returned perimeter can be retrieved by calling lengthUnits().
@@ -188,7 +202,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measurePerimeter( const QgsGeometry *geometry ) const;
 
-    /** Measures the perimeter of a polygon geometry.
+    /**
+     * Measures the perimeter of a polygon geometry.
      * @param geometry geometry to measure
      * @returns perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
      * returned perimeter can be retrieved by calling lengthUnits().
@@ -199,14 +214,16 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measurePerimeter( const QgsGeometry& geometry ) const;
 
-    /** Measures the length of a line with multiple segments.
+    /**
+     * Measures the length of a line with multiple segments.
      * @param points list of points in line
      * @returns length of line. The units for the returned length can be retrieved by calling lengthUnits().
      * @see lengthUnits()
      */
     double measureLine( const QList<QgsPoint>& points ) const;
 
-    /** Measures length of a line with one segment.
+    /**
+     * Measures length of a line with one segment.
      * @param p1 start of line
      * @param p2 end of line
      * @returns distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
@@ -214,7 +231,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measureLine( const QgsPoint& p1, const QgsPoint& p2 ) const;
 
-    /** Measures length of line with one segment and returns units of distance.
+    /**
+     * Measures length of line with one segment and returns units of distance.
      * @param p1 start of line
      * @param p2 end of line
      * @param units will be set to units of measure
@@ -223,13 +241,15 @@ class CORE_EXPORT QgsDistanceArea
      */
     double measureLine( const QgsPoint& p1, const QgsPoint& p2, QgsUnitTypes::DistanceUnit& units ) const;
 
-    /** Returns the units of distance for length calculations made by this object.
+    /**
+     * Returns the units of distance for length calculations made by this object.
      * @note added in QGIS 2.14
      * @see areaUnits()
      */
     QgsUnitTypes::DistanceUnit lengthUnits() const;
 
-    /** Returns the units of area for areal calculations made by this object.
+    /**
+     * Returns the units of area for areal calculations made by this object.
      * @note added in QGIS 2.14
      * @see lengthUnits()
      */
@@ -241,7 +261,8 @@ class CORE_EXPORT QgsDistanceArea
     //! compute bearing - in radians
     double bearing( const QgsPoint& p1, const QgsPoint& p2 ) const;
 
-    /** Returns an distance formatted as a friendly string.
+    /**
+     * Returns an distance formatted as a friendly string.
      * @param distance distance to format
      * @param decimals number of decimal places to show
      * @param unit unit of distance
@@ -253,7 +274,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     static QString formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit = false );
 
-    /** Returns an area formatted as a friendly string.
+    /**
+     * Returns an area formatted as a friendly string.
      * @param area area to format
      * @param decimals number of decimal places to show
      * @param unit unit of area
@@ -265,7 +287,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
 
-    /** Takes a length measurement calculated by this QgsDistanceArea object and converts it to a
+    /**
+     * Takes a length measurement calculated by this QgsDistanceArea object and converts it to a
      * different distance unit.
      * @param length length value calculated by this class to convert. It is assumed that the length
      * was calculated by this class, ie that its unit of length is equal to lengthUnits().
@@ -276,7 +299,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     double convertLengthMeasurement( double length, QgsUnitTypes::DistanceUnit toUnits ) const;
 
-    /** Takes an area measurement calculated by this QgsDistanceArea object and converts it to a
+    /**
+     * Takes an area measurement calculated by this QgsDistanceArea object and converts it to a
      * different areal unit.
      * @param area area value calculated by this class to convert. It is assumed that the area
      * was calculated by this class, ie that its unit of area is equal to areaUnits().

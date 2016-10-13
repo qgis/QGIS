@@ -20,7 +20,8 @@
 
 class QgsOuterGlowEffect;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class Qgs25DRenderer
  */
 class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
@@ -89,6 +90,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
      * Get the shadow's spread distance in map units
      */
     double shadowSpread() const;
+
     /**
      * Set the shadow's spread distance in map units
      */
@@ -105,6 +107,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
      * Is the shadow enabled
      */
     bool shadowEnabled() const;
+
     /**
      * Enable or disable the shadow
      */

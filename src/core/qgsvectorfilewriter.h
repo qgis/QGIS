@@ -30,7 +30,8 @@ class QgsSymbolLayer;
 class QTextCodec;
 class QgsFeatureIterator;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * A convenience class for writing vector files to disk.
  There are two possibilities how to use this class:
  1. static call to QgsVectorFileWriter::writeAsVectorFormat(...) which saves the whole vector layer
@@ -47,7 +48,8 @@ class CORE_EXPORT QgsVectorFileWriter
       Hidden
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class Option
     {
@@ -61,7 +63,8 @@ class CORE_EXPORT QgsVectorFileWriter
         OptionType type;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class SetOption : public Option
     {
@@ -78,7 +81,8 @@ class CORE_EXPORT QgsVectorFileWriter
         bool allowNone;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class StringOption: public Option
     {
@@ -91,7 +95,8 @@ class CORE_EXPORT QgsVectorFileWriter
         QString defaultValue;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class IntOption: public Option
     {
@@ -104,7 +109,8 @@ class CORE_EXPORT QgsVectorFileWriter
         int defaultValue;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class BoolOption : public SetOption
     {
@@ -114,7 +120,8 @@ class CORE_EXPORT QgsVectorFileWriter
         {}
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class HiddenOption : public Option
     {
@@ -148,7 +155,9 @@ class CORE_EXPORT QgsVectorFileWriter
       QString ext;
       QMap<QString, Option*> driverOptions;
       QMap<QString, Option*> layerOptions;
-      /** Some formats require a compulsory encoding, typically UTF-8. If no compulsory encoding, empty string */
+
+      /**
+       * Some formats require a compulsory encoding, typically UTF-8. If no compulsory encoding, empty string */
       QString compulsoryEncoding;
     };
 
@@ -172,26 +181,32 @@ class CORE_EXPORT QgsVectorFileWriter
       SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Interface to convert raw field values to their user-friendly value.
      * @note Added in QGIS 2.16
      */
     class CORE_EXPORT FieldValueConverter
     {
       public:
-        /** Constructor */
+
+        /**
+         * Constructor */
         FieldValueConverter();
 
-        /** Destructor */
+        /**
+         * Destructor */
         virtual ~FieldValueConverter();
 
-        /** Return a possibly modified field definition. Default implementation will return provided field unmodified.
+        /**
+         * Return a possibly modified field definition. Default implementation will return provided field unmodified.
          * @param field original field definition
          * @return possibly modified field definition
          */
         virtual QgsField fieldDefinition( const QgsField& field );
 
-        /** Convert the provided value, for field fieldIdxInLayer. Default implementation will return provided value unmodified.
+        /**
+         * Convert the provided value, for field fieldIdxInLayer. Default implementation will return provided value unmodified.
          * @param fieldIdxInLayer field index
          * @param value original raw value
          * @return possibly modified value.
@@ -199,7 +214,8 @@ class CORE_EXPORT QgsVectorFileWriter
         virtual QVariant convert( int fieldIdxInLayer, const QVariant& value );
     };
 
-    /** Write contents of vector layer to an (OGR supported) vector formt
+    /**
+     * Write contents of vector layer to an (OGR supported) vector formt
      * @param layer layer to write
      * @param fileName file name to write to
      * @param fileEncoding encoding to use
@@ -242,7 +258,8 @@ class CORE_EXPORT QgsVectorFileWriter
                                             FieldValueConverter* fieldValueConverter = nullptr
                                           );
 
-    /** Writes a layer out to a vector file.
+    /**
+     * Writes a layer out to a vector file.
      * @param layer layer to write
      * @param fileName file name to write to
      * @param fileEncoding encoding to use
@@ -287,7 +304,8 @@ class CORE_EXPORT QgsVectorFileWriter
                                             FieldValueConverter* fieldValueConverter = nullptr
                                           );
 
-    /** Create a new vector file writer */
+    /**
+     * Create a new vector file writer */
     QgsVectorFileWriter( const QString& vectorFileName,
                          const QString& fileEncoding,
                          const QgsFields& fields,
@@ -300,40 +318,50 @@ class CORE_EXPORT QgsVectorFileWriter
                          SymbologyExport symbologyExport = NoSymbology
                        );
 
-    /** Returns map with format filter string as key and OGR format key as value*/
+    /**
+     * Returns map with format filter string as key and OGR format key as value*/
     static QMap< QString, QString> supportedFiltersAndFormats();
 
-    /** Returns driver list that can be used for dialogs. It contains all OGR drivers
+    /**
+     * Returns driver list that can be used for dialogs. It contains all OGR drivers
      * + some additional internal QGIS driver names to distinguish between more
      * supported formats of the same OGR driver
      */
     static QMap< QString, QString> ogrDriverList();
 
-    /** Returns filter string that can be used for dialogs*/
+    /**
+     * Returns filter string that can be used for dialogs*/
     static QString fileFilterString();
 
-    /** Creates a filter for an OGR driver key*/
+    /**
+     * Creates a filter for an OGR driver key*/
     static QString filterForDriver( const QString& driverName );
 
-    /** Converts codec name to string passed to ENCODING layer creation option of OGR Shapefile*/
+    /**
+     * Converts codec name to string passed to ENCODING layer creation option of OGR Shapefile*/
     static QString convertCodecNameForEncodingOption( const QString &codecName );
 
-    /** Checks whether there were any errors in constructor */
+    /**
+     * Checks whether there were any errors in constructor */
     WriterError hasError();
 
-    /** Retrieves error message */
+    /**
+     * Retrieves error message */
     QString errorMessage();
 
-    /** Add feature to the currently opened data source */
+    /**
+     * Add feature to the currently opened data source */
     bool addFeature( QgsFeature& feature, QgsFeatureRenderer* renderer = nullptr, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
 
     //! @note not available in python bindings
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; }
 
-    /** Close opened shapefile for writing */
+    /**
+     * Close opened shapefile for writing */
     ~QgsVectorFileWriter();
 
-    /** Delete a shapefile (and its accompanying shx / dbf / prf)
+    /**
+     * Delete a shapefile (and its accompanying shx / dbf / prf)
      * @param theFileName /path/to/file.shp
      * @return bool true if the file was deleted successfully
      */
@@ -347,14 +375,16 @@ class CORE_EXPORT QgsVectorFileWriter
 
     static bool driverMetadata( const QString& driverName, MetaData& driverMetadata );
 
-    /** Returns a list of the default dataset options for a specified driver.
+    /**
+     * Returns a list of the default dataset options for a specified driver.
      * @param driverName name of OGR driver
      * @note added in QGIS 3.0
      * @see defaultLayerOptions()
      */
     static QStringList defaultDatasetOptions( const QString& driverName );
 
-    /** Returns a list of the default layer options for a specified driver.
+    /**
+     * Returns a list of the default layer options for a specified driver.
      * @param driverName name of OGR driver
      * @note added in QGIS 3.0
      * @see defaultDatasetOptions()
@@ -380,16 +410,19 @@ class CORE_EXPORT QgsVectorFileWriter
 
     QgsFields mFields;
 
-    /** Contains error value if construction was not successful */
+    /**
+     * Contains error value if construction was not successful */
     WriterError mError;
     QString mErrorMessage;
 
     QTextCodec *mCodec;
 
-    /** Geometry type which is being used */
+    /**
+     * Geometry type which is being used */
     QgsWkbTypes::Type mWkbType;
 
-    /** Map attribute indizes to OGR field indexes */
+    /**
+     * Map attribute indizes to OGR field indexes */
     QMap<int, int> mAttrIdxToOgrIdx;
 
     SymbologyExport mSymbologyExport;
@@ -398,17 +431,20 @@ class CORE_EXPORT QgsVectorFileWriter
     QMap< QgsSymbolLayer*, QString > mSymbolLayerTable;
 #endif
 
-    /** Scale for symbology export (e.g. for symbols units in map units)*/
+    /**
+     * Scale for symbology export (e.g. for symbols units in map units)*/
     double mSymbologyScaleDenominator;
 
     QString mOgrDriverName;
 
-    /** Field value converter */
+    /**
+     * Field value converter */
     FieldValueConverter* mFieldValueConverter;
 
   private:
 
-    /** Create a new vector file writer.
+    /**
+     * Create a new vector file writer.
      * @param vectorFileName file name to write to
      * @param fileEncoding encoding to use
      * @param fields fields to write
@@ -448,7 +484,8 @@ class CORE_EXPORT QgsVectorFileWriter
     OGRFeatureH createFeature( const QgsFeature& feature );
     bool writeFeature( OGRLayerH layer, OGRFeatureH feature );
 
-    /** Writes features considering symbol level order*/
+    /**
+     * Writes features considering symbol level order*/
     WriterError exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit, const QgsCoordinateTransform& ct, QString* errorMessage = nullptr );
     double mmScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
     double mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
@@ -456,7 +493,9 @@ class CORE_EXPORT QgsVectorFileWriter
     void startRender( QgsVectorLayer* vl );
     void stopRender( QgsVectorLayer* vl );
     QgsFeatureRenderer* symbologyRenderer( QgsVectorLayer* vl ) const;
-    /** Adds attributes needed for classification*/
+
+    /**
+     * Adds attributes needed for classification*/
     void addRendererAttributes( QgsVectorLayer* vl, QgsAttributeList& attList );
     static QMap<QString, MetaData> sDriverMetadata;
 

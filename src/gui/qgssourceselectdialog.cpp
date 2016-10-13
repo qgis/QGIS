@@ -37,13 +37,16 @@
 #include <QRadioButton>
 #include <QImageReader>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Item delegate with tweaked sizeHint.
  * @note not available in Python bindings */
 class QgsSourceSelectItemDelegate : public QItemDelegate
 {
   public:
-    /** Constructor */
+
+    /**
+     * Constructor */
     QgsSourceSelectItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }
     QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };

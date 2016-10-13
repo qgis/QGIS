@@ -28,12 +28,14 @@ class QgsFeature;
 class QgsFeatureRequest;
 class QgsAttributes;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsRelation
  */
 class CORE_EXPORT QgsRelation
 {
   public:
+
     /**
      * \ingroup core
      * Defines a relation between matching fields of the two involved tables of a relation.
@@ -155,7 +157,8 @@ class CORE_EXPORT QgsRelation
      */
     QgsFeatureRequest getRelatedFeaturesRequest( const QgsFeature& feature ) const;
 
-    /** Returns a filter expression which returns all the features on the referencing (child) layer
+    /**
+     * Returns a filter expression which returns all the features on the referencing (child) layer
      * which have a foreign key pointing to the provided feature.
      * @param feature A feature from the referenced (parent) layer
      * @return expression filter string for all the referencing features
@@ -290,6 +293,7 @@ class CORE_EXPORT QgsRelation
     bool hasEqualDefinition( const QgsRelation& other ) const;
 
   protected:
+
     /**
      * Updates the validity status of this relation.
      * Will be called internally whenever a member is changed.
@@ -297,19 +301,33 @@ class CORE_EXPORT QgsRelation
     void updateRelationStatus();
 
   private:
-    /** Unique Id */
+
+    /**
+     * Unique Id */
     QString mRelationId;
-    /** Human redable name*/
+
+    /**
+     * Human redable name*/
     QString mRelationName;
-    /** The child layer */
+
+    /**
+     * The child layer */
     QString mReferencingLayerId;
-    /** The child layer */
+
+    /**
+     * The child layer */
     QgsVectorLayer* mReferencingLayer;
-    /** The parent layer id */
+
+    /**
+     * The parent layer id */
     QString mReferencedLayerId;
-    /** The parent layer */
+
+    /**
+     * The parent layer */
     QgsVectorLayer* mReferencedLayer;
-    /** A list of fields which define the relation.
+
+    /**
+     * A list of fields which define the relation.
      *  In most cases there will be only one value, but multiple values
      *  are supported for composited foreign keys.
      *  The first field is on the referencing layer, the second on the referenced */

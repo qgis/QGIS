@@ -51,7 +51,8 @@ struct SERVER_EXPORT QgsLayerCoordinateTransform
 
 // ### QGIS 3: remove QgsMapRenderer in favor of QgsMapRendererJob
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A non GUI class for rendering a map layer set onto a QPainter.
  */
 
@@ -61,7 +62,8 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
 
   public:
 
-    /** Output units for pen width and point marker width/height*/
+    /**
+     * Output units for pen width and point marker width/height*/
     enum OutputUnits
     {
       Millimeters,
@@ -99,7 +101,9 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
 
     //! Scale denominator
     double scale() const { return mScale; }
-    /** Sets scale for scale based visibility. Normally, the scale is calculated automatically. This
+
+    /**
+     * Sets scale for scale based visibility. Normally, the scale is calculated automatically. This
      function is only used to force a preview scale (e.g. for print composer)*/
     void setScale( double scale ) {mScale = scale;}
     double mapUnitsPerPixel() const { return mMapUnitsPerPixel; }
@@ -110,12 +114,14 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
     //! Recalculate the map scale
     void updateScale();
 
-    /** Returns the distance units which are used for map units.
+    /**
+     * Returns the distance units which are used for map units.
      * @see setMapUnits()
      */
     QgsUnitTypes::DistanceUnit mapUnits() const;
 
-    /** Sets the distance units which will be used for map units.
+    /**
+     * Sets the distance units which will be used for map units.
      * @see mapUnits()
      */
     void setMapUnits( QgsUnitTypes::DistanceUnit u );
@@ -123,14 +129,16 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
     //! sets whether map image will be for overview
     void enableOverviewMode( bool isOverview = true ) { mOverview = isOverview; }
 
-    /** Sets the desired size of the rendered map image.
+    /**
+     * Sets the desired size of the rendered map image.
      * @param size size in pixels
      * @param dpi resolution to render map using
      * @see outputSize()
      */
     void setOutputSize( QSize size, double dpi );
 
-    /** Sets the desired size of the rendered map image.
+    /**
+     * Sets the desired size of the rendered map image.
      * @param size size in pixels
      * @param dpi resolution to render map using
      * @see outputSizeF()
@@ -140,13 +148,15 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
     //!accessor for output dpi
     double outputDpi();
 
-    /** Returns the size which the map will be rendered at.
+    /**
+     * Returns the size which the map will be rendered at.
      * @see setOutputSize()
      * @see outputSizeF()
      */
     QSize outputSize() const;
 
-    /** Returns the size which the map will be rendered at.
+    /**
+     * Returns the size which the map will be rendered at.
      * @see setOutputSize()
      * @see outputSize()
      */
@@ -239,7 +249,8 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
     void addLayerCoordinateTransform( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
     void clearLayerCoordinateTransforms();
 
-    /** Returns the coordinate transform associated with a renderered layer,
+    /**
+     * Returns the coordinate transform associated with a renderered layer,
      * or an invalid transform is no transform is required for the layer.
      */
     QgsCoordinateTransform transformation( const QgsMapLayer *layer ) const;
@@ -248,7 +259,8 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
     //! @note added in 2.4
     const QgsMapSettings& mapSettings();
 
-    /** Convenience function to project an extent into the layer source
+    /**
+     * Convenience function to project an extent into the layer source
      * CRS, but also split it into two extents if it crosses
      * the +/- 180 degree line. Modifies the given extent to be in the
      * source CRS coordinates, and if it was split, returns true, and
@@ -256,7 +268,8 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
      */
     bool splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent, QgsRectangle& r2 );
 
-    /** Set a feature filter provider to filter the features shown in the map.
+    /**
+     * Set a feature filter provider to filter the features shown in the map.
      * @param ffp the feature filter provider
      * @note added in QGIS 2.14
      */
@@ -270,7 +283,8 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
     //! @deprecated in 2.4 - not emitted anymore
     void drawingProgress( int current, int total );
 
-    /** This signal is emitted when CRS transformation is enabled/disabled.
+    /**
+     * This signal is emitted when CRS transformation is enabled/disabled.
      *  @param flag true if transformation is enabled.
      *  @deprecated Use hasCrsTransformEnabledChanged( bool flag )
      *              to avoid conflict with method of the same name). */
@@ -279,7 +293,8 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
 #endif
     void hasCrsTransformEnabled( bool flag );
 
-    /** This signal is emitted when CRS transformation is enabled/disabled.
+    /**
+     * This signal is emitted when CRS transformation is enabled/disabled.
      *  @param flag true if transformation is enabled.
      *  @note Added in 2.4 */
     void hasCrsTransformEnabledChanged( bool flag );
@@ -336,7 +351,9 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
     //! current extent to be drawn
     QgsRectangle mExtent;
     //
-    /** Last extent to we drew so we know if we can
+
+    /**
+     * Last extent to we drew so we know if we can
         used layer render caching or not. Note there are no
         accessors for this as it is intended to internal
         use only. */

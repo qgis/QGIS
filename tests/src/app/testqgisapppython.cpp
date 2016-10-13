@@ -23,7 +23,8 @@
 #include <qgsapplication.h>
 #include "qgspythonutils.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgisApp python support.
  */
 class TestQgisAppPython : public QObject

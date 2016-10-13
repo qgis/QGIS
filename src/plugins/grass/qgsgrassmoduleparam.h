@@ -5,6 +5,7 @@
     copyright            : (C) 2015 by Radim Blazek
     email                : radim.blazek@gmail.com
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -44,9 +45,11 @@ extern "C"
 {
 #include <grass/gis.h>
 }
+
 /****************** QgsGrassModuleCheckBox ************************/
 
-/** \class QgsGrassModuleCheckBox
+/**
+ * \class QgsGrassModuleCheckBox
  *  \brief Checkbox with elided text
  */
 class QgsGrassModuleCheckBox : public QCheckBox
@@ -54,7 +57,9 @@ class QgsGrassModuleCheckBox : public QCheckBox
     Q_OBJECT
 
   public:
-    /** \brief Constructor
+
+    /**
+     * \brief Constructor
      */
     QgsGrassModuleCheckBox( const QString & text, QWidget * parent = 0 );
 
@@ -77,13 +82,16 @@ class QgsGrassModuleCheckBox : public QCheckBox
     QString mTip;
 };
 
-/** \class QgsGrassModuleItem
+/**
+ * \class QgsGrassModuleItem
  *  \brief GRASS module option
  */
 class QgsGrassModuleParam
 {
   public:
-    /** \brief Constructor
+
+    /**
+     * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      * \param gnode option node in GRASS module XML description file
@@ -115,7 +123,8 @@ class QgsGrassModuleParam
 
     QStringList errors() { return mErrors; }
 
-    /** Get gisprompt attribute
+    /**
+     * Get gisprompt attribute
      * @paream name gisprompt tag attribute name (age, element, prompt)
      */
     static QString getDescPrompt( QDomElement descDomElement, const QString & name );
@@ -123,7 +132,8 @@ class QgsGrassModuleParam
     //! Find element in GRASS module description by key, if not found, returned element is null
     static QDomNode nodeByKey( QDomElement descDocElement, QString key );
 
-    /** Find list of elements in GRASS module description by option type.
+    /**
+     * Find list of elements in GRASS module description by option type.
      *  Option type is identified by gisprompt prompt. Only few types are supported */
     static QList<QDomNode> nodesByType( QDomElement descDomElement, STD_OPT optionType, const QString & age = QString() );
 
@@ -164,7 +174,8 @@ class QgsGrassModuleParam
 
 /****************** QgsGrassModuleGroupBoxItem ************************/
 
-/** \class QgsGrassModuleGroupBoxItem
+/**
+ * \class QgsGrassModuleGroupBoxItem
  *  \brief GRASS module option box
  */
 class QgsGrassModuleGroupBoxItem : public QGroupBox, public QgsGrassModuleParam
@@ -172,7 +183,9 @@ class QgsGrassModuleGroupBoxItem : public QGroupBox, public QgsGrassModuleParam
     Q_OBJECT
 
   public:
-    /** \brief Constructor
+
+    /**
+     * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      * \param gnode option node in GRASS module XML description file
@@ -193,7 +206,8 @@ class QgsGrassModuleGroupBoxItem : public QGroupBox, public QgsGrassModuleParam
 
 /****************** QgsGrassModuleMultiParam ************************/
 
-/** \class QgsGrassModuleMultiParam
+/**
+ * \class QgsGrassModuleMultiParam
  *  \brief GRASS module multiple params box
  */
 class QgsGrassModuleMultiParam : public QgsGrassModuleGroupBoxItem
@@ -230,7 +244,8 @@ class QgsGrassModuleMultiParam : public QgsGrassModuleGroupBoxItem
 
 /****************** QgsGrassModuleOption ************************/
 
-/** \class QgsGrassModuleOption
+/**
+ * \class QgsGrassModuleOption
  *  \brief  GRASS option
  */
 class QgsGrassModuleOption : public QgsGrassModuleMultiParam
@@ -238,7 +253,9 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     Q_OBJECT
 
   public:
-    /** \brief Constructor
+
+    /**
+     * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
@@ -333,8 +350,11 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     //! Uses region
     bool mUsesRegion;
 };
+
 /********************** QgsGrassModuleFlag ************************/
-/** \class QgsGrassModuleFlag
+
+/**
+ * \class QgsGrassModuleFlag
  *  \brief  GRASS flag
  */
 class QgsGrassModuleFlag : public QgsGrassModuleCheckBox, public QgsGrassModuleParam
@@ -342,7 +362,9 @@ class QgsGrassModuleFlag : public QgsGrassModuleCheckBox, public QgsGrassModuleP
     Q_OBJECT
 
   public:
-    /** \brief Constructor
+
+    /**
+     * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
@@ -360,7 +382,8 @@ class QgsGrassModuleFlag : public QgsGrassModuleCheckBox, public QgsGrassModuleP
 
 /*********************** QgsGrassModuleGdalInput **********************/
 
-/** \class QgsGrassModuleGdalInput
+/**
+ * \class QgsGrassModuleGdalInput
  *  \brief GDAL/OGR module input
  */
 class QgsGrassModuleGdalInput : public QgsGrassModuleGroupBoxItem
@@ -370,7 +393,8 @@ class QgsGrassModuleGdalInput : public QgsGrassModuleGroupBoxItem
   public:
     enum Type { Gdal, Ogr };
 
-    /** \brief Constructor
+    /**
+     * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
@@ -423,7 +447,8 @@ class QgsGrassModuleGdalInput : public QgsGrassModuleGroupBoxItem
 
 /*********************** QgsGrassModuleField **********************/
 
-/** \class QgsGrassModuleField
+/**
+ * \class QgsGrassModuleField
  *  \brief GRASS column, not existing column of input vector, may be output column or input column from a table not linked to layer
  */
 class QgsGrassModuleField : public QgsGrassModuleOption
@@ -431,7 +456,9 @@ class QgsGrassModuleField : public QgsGrassModuleOption
     Q_OBJECT
 
   public:
-    /** \brief Constructor
+
+    /**
+     * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
@@ -445,7 +472,8 @@ class QgsGrassModuleField : public QgsGrassModuleOption
 
 /*********************** QgsGrassModuleVectorField **********************/
 
-/** \class QgsGrassModuleVectorField
+/**
+ * \class QgsGrassModuleVectorField
  *  \brief GRASS vector attribute column.
  */
 class QgsGrassModuleVectorField : public QgsGrassModuleMultiParam
@@ -453,7 +481,9 @@ class QgsGrassModuleVectorField : public QgsGrassModuleMultiParam
     Q_OBJECT
 
   public:
-    /** \brief Constructor
+
+    /**
+     * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
@@ -501,7 +531,8 @@ class QgsGrassModuleVectorField : public QgsGrassModuleMultiParam
 
 /*********************** QgsGrassModuleSelection **********************/
 
-/** \class QgsGrassModuleSelection
+/**
+ * \class QgsGrassModuleSelection
  *  \brief List of categories taken from current layer selection.
  */
 class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
@@ -517,7 +548,8 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
       Expression // expression builder - possible?
     };
 
-    /** \brief Constructor
+    /**
+     * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
@@ -575,7 +607,8 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
 
 /*********************** QgsGrassModuleFile **********************/
 
-/** \class QgsGrassModuleFile
+/**
+ * \class QgsGrassModuleFile
  *  \brief Input/output file.
  */
 class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
@@ -583,7 +616,9 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
-    /** \brief Constructor
+
+    /**
+     * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */

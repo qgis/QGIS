@@ -5,6 +5,7 @@
     copyright            : (C) 2008 by Marco Hugentobler
     email                : marco.hugentobler@karto.baug.ethz.ch
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,7 +20,8 @@
 
 #include "qgsscalebarstyle.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Scalebar style that draws a single box with alternating
  * color for the segments.
  */
@@ -31,7 +33,8 @@ class CORE_EXPORT QgsSingleBoxScaleBarStyle: public QgsScaleBarStyle
 
     QString name() const override;
 
-    /** Draw method
+    /**
+     * Draw method
      @param p painter object
      @param xOffset x offset
      */

@@ -22,7 +22,8 @@
 class QwtPlotPicker;
 class QgsGraduatedHistogramEventFilter;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsGraduatedHistogramWidget
  * \brief Graphical histogram for displaying distribution of field values and
  * editing range breaks for a QgsGraduatedSymbolRenderer renderer.
@@ -36,13 +37,15 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
 
   public:
 
-    /** QgsGraduatedHistogramWidget constructor
+    /**
+     * QgsGraduatedHistogramWidget constructor
      * @param parent parent widget
      */
     QgsGraduatedHistogramWidget( QWidget *parent = nullptr );
     ~QgsGraduatedHistogramWidget();
 
-    /** Sets the QgsGraduatedSymbolRenderer renderer associated with the histogram.
+    /**
+     * Sets the QgsGraduatedSymbolRenderer renderer associated with the histogram.
      * The histogram will fetch the ranges from the renderer before every refresh.
      * @param renderer associated QgsGraduatedSymbolRenderer
      */
@@ -50,7 +53,8 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
 
   signals:
 
-    /** Emitted when the user modifies the graduated ranges using the histogram widget.
+    /**
+     * Emitted when the user modifies the graduated ranges using the histogram widget.
      * @param rangesAdded true if the user has added ranges, false if the user has just
      * modified existing range breaks
      */

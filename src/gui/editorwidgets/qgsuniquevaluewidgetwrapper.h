@@ -21,7 +21,8 @@
 #include <QComboBox>
 #include <QLineEdit>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a unique value widget. Will offer any value previously used for this field.
  *
  * Options:

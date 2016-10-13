@@ -31,7 +31,8 @@ class TreeFilterProxyModel;
 class ListFilterProxyModel;
 class UngroupProxyModel;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsCptCityColorRampDialog
  * A dialog which allows users to modify the properties of a QgsCptCityColorRamp.
  * \note added in QGIS 3.0
@@ -43,32 +44,37 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
 
   public:
 
-    /** Constructor for QgsCptCityColorRampDialog.
+    /**
+     * Constructor for QgsCptCityColorRampDialog.
      * @param ramp initial ramp to show in dialog
      * @param parent parent widget
      */
     QgsCptCityColorRampDialog( const QgsCptCityColorRamp& ramp, QWidget* parent = nullptr );
     ~QgsCptCityColorRampDialog();
 
-    /** Returns a color ramp representing the current settings from the dialog.
+    /**
+     * Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()
      */
     QgsCptCityColorRamp ramp() const { return mRamp; }
 
-    /** Sets the color ramp to show in the dialog.
+    /**
+     * Sets the color ramp to show in the dialog.
      * @param ramp color ramp
      * @see ramp()
      */
     void setRamp( const QgsCptCityColorRamp& ramp );
 
-    /** Returns the name of the ramp currently selected in the dialog.
+    /**
+     * Returns the name of the ramp currently selected in the dialog.
      */
     QString selectedName() const
     {
       return QFileInfo( mRamp.schemeName() ).baseName() + mRamp.variantName();
     }
 
-    /** Returns true if the ramp should be converted to a QgsGradientColorRamp.
+    /**
+     * Returns true if the ramp should be converted to a QgsGradientColorRamp.
      */
     bool saveAsGradientRamp() const;
 
@@ -120,7 +126,8 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
 
 /// @cond PRIVATE
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class TreeFilterProxyModel
  */
 class TreeFilterProxyModel : public QSortFilterProxyModel

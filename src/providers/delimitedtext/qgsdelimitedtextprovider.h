@@ -104,21 +104,24 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     virtual QgsFields fields() const override;
 
-    /** Returns a bitmask containing the supported capabilities
+    /**
+     * Returns a bitmask containing the supported capabilities
      * Note, some capabilities may change depending on whether
      * a spatial filter is active on this provider, so it may
      * be prudent to check this value per intended operation.
      */
     virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
-    /** Creates a spatial index on the data
+    /**
+     * Creates a spatial index on the data
      * @return indexCreated  Returns true if a spatial index is created
      */
     virtual bool createSpatialIndex() override;
 
     /* Implementation of functions from QgsDataProvider */
 
-    /** Return a provider name
+    /**
+     * Return a provider name
      *
      *  Essentially just returns the provider key.  Should be used to build file
      *  dialogs so that providers can be shown with their supported types. Thus
@@ -133,7 +136,8 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      */
     QString name() const override;
 
-    /** Return description
+    /**
+     * Return description
      *
      *  Return a terse string describing what the provider is.
      *
@@ -149,6 +153,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     bool isValid() const override;
 
     virtual QgsCoordinateReferenceSystem crs() const override;
+
     /**
      * Set the subset string used to create a subset of features in
      * the layer.

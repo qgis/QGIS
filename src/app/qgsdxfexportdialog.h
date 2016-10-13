@@ -91,7 +91,9 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     QgsCoordinateReferenceSystem crs() const;
 
   public slots:
-    /** Change the selection of layers in the list */
+
+    /**
+     * Change the selection of layers in the list */
     void selectAll();
     void unSelectAll();
 

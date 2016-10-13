@@ -5,6 +5,7 @@
     Copyright            : (C) 2009 by Andres Manz
     Email                : manz dot andres at gmail dot com
 ****************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

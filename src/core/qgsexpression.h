@@ -40,7 +40,8 @@ class QDomElement;
 class QgsExpressionContext;
 class QgsExpressionPrivate;
 
-/** \ingroup core
+/**
+ * \ingroup core
 Class for parsing and evaluation of expressions (formerly called "search strings").
 The expressions try to follow both syntax and semantics of SQL expressions.
 
@@ -109,6 +110,7 @@ class CORE_EXPORT QgsExpression
 {
     Q_DECLARE_TR_FUNCTIONS( QgsExpression )
   public:
+
     /**
      * Creates a new expression based on the provided string.
      * The string will immediately be parsed. For optimization
@@ -166,7 +168,8 @@ class CORE_EXPORT QgsExpression
     //! Returns root node of the expression. Root node is null is parsing has failed
     const Node* rootNode() const;
 
-    /** Get the expression ready for evaluation - find out column indexes.
+    /**
+     * Get the expression ready for evaluation - find out column indexes.
      * @param context context for preparing expression
      * @note added in QGIS 2.12
      */
@@ -197,13 +200,15 @@ class CORE_EXPORT QgsExpression
 
     // evaluation
 
-    /** Evaluate the feature and return the result.
+    /**
+     * Evaluate the feature and return the result.
      * @note this method does not expect that prepare() has been called on this instance
      * @note added in QGIS 2.12
      */
     QVariant evaluate();
 
-    /** Evaluate the expression against the specified context and return the result.
+    /**
+     * Evaluate the expression against the specified context and return the result.
      * @param context context for evaluating expression
      * @note prepare() should be called before calling this method.
      * @note added in QGIS 2.12
@@ -217,12 +222,14 @@ class CORE_EXPORT QgsExpression
     //! Set evaluation error (used internally by evaluation functions)
     void setEvalErrorString( const QString& str );
 
-    /** Checks whether an expression consists only of a single field reference
+    /**
+     * Checks whether an expression consists only of a single field reference
      * @note added in 2.9
      */
     bool isField() const { return rootNode() && dynamic_cast<const NodeColumnRef*>( rootNode() ) ;}
 
-    /** Tests whether a string is a valid expression.
+    /**
+     * Tests whether a string is a valid expression.
      * @param text string to test
      * @param context optional expression context
      * @param errorMessage will be filled with any error message from the validation
@@ -249,7 +256,8 @@ class CORE_EXPORT QgsExpression
     //! expression() instead.
     QString dump() const;
 
-    /** Return calculator used for distance and area calculations
+    /**
+     * Return calculator used for distance and area calculations
      * (used by $length, $area and $perimeter functions only)
      * @see setGeomCalculator()
      * @see distanceUnits()
@@ -257,7 +265,8 @@ class CORE_EXPORT QgsExpression
      */
     QgsDistanceArea *geomCalculator();
 
-    /** Sets the geometry calculator used for distance and area calculations in expressions.
+    /**
+     * Sets the geometry calculator used for distance and area calculations in expressions.
      * (used by $length, $area and $perimeter functions only). By default, no geometry
      * calculator is set and all distance and area calculations are performed using simple
      * cartesian methods (ie no ellipsoidal calculations).
@@ -267,7 +276,8 @@ class CORE_EXPORT QgsExpression
      */
     void setGeomCalculator( const QgsDistanceArea* calc );
 
-    /** Returns the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
+    /**
+     * Returns the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
      * @note distances are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see setDistanceUnits()
@@ -275,7 +285,8 @@ class CORE_EXPORT QgsExpression
      */
     QgsUnitTypes::DistanceUnit distanceUnits() const;
 
-    /** Sets the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
+    /**
+     * Sets the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
      * @note distances are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see distanceUnits()
@@ -283,7 +294,8 @@ class CORE_EXPORT QgsExpression
      */
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 
-    /** Returns the desired areal units for calculations involving geomCalculator(), eg "$area".
+    /**
+     * Returns the desired areal units for calculations involving geomCalculator(), eg "$area".
      * @note areas are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see setAreaUnits()
@@ -291,7 +303,8 @@ class CORE_EXPORT QgsExpression
      */
     QgsUnitTypes::AreaUnit areaUnits() const;
 
-    /** Sets the desired areal units for calculations involving geomCalculator(), eg "$area".
+    /**
+     * Sets the desired areal units for calculations involving geomCalculator(), eg "$area".
      * @note areas are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see areaUnits()
@@ -299,7 +312,8 @@ class CORE_EXPORT QgsExpression
      */
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 
-    /** This function replaces each expression between [% and %]
+    /**
+     * This function replaces each expression between [% and %]
      * in the string with the result of its evaluation with the specified context
      *
      * Additional substitutions can be passed through the substitutionMap parameter
@@ -312,7 +326,8 @@ class CORE_EXPORT QgsExpression
     static QString replaceExpressionText( const QString& action, const QgsExpressionContext* context,
                                           const QgsDistanceArea* distanceArea = nullptr );
 
-    /** Attempts to evaluate a text string as an expression to a resultant double
+    /**
+     * Attempts to evaluate a text string as an expression to a resultant double
      * value.
      * @param text text to evaluate as expression
      * @param fallbackValue value to return if text can not be evaluated as a double
@@ -390,7 +405,8 @@ class CORE_EXPORT QgsExpression
     //! @note not available in Python bindings
     static const char* UnaryOperatorText[];
 
-    /** \ingroup core
+    /**
+     * \ingroup core
       * Represents a single parameter passed to a function.
       * \note added in QGIS 2.16
       */
@@ -398,7 +414,8 @@ class CORE_EXPORT QgsExpression
     {
       public:
 
-        /** Constructor for Parameter.
+        /**
+         * Constructor for Parameter.
          * @param name parameter name, used when named parameter are specified in an expression
          * @param optional set to true if parameter should be optional
          * @param defaultValue default value to use for optional parameters
@@ -434,11 +451,13 @@ class CORE_EXPORT QgsExpression
     //! List of parameters, used for function definition
     typedef QList< Parameter > ParameterList;
 
-    /** Function definition for evaluation against an expression context, using a list of values as parameters to the function.
+    /**
+     * Function definition for evaluation against an expression context, using a list of values as parameters to the function.
      */
     typedef QVariant( *FcnEval )( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent );
 
-    /** \ingroup core
+    /**
+     * \ingroup core
       * A abstract base class for defining QgsExpression functions.
       */
     class CORE_EXPORT Function
@@ -467,7 +486,8 @@ class CORE_EXPORT QgsExpression
         {
         }
 
-        /** Constructor for function which uses unnamed parameters and group list
+        /**
+         * Constructor for function which uses unnamed parameters and group list
          * @note added in QGIS 3.0
          */
         Function( const QString& fnname,
@@ -491,7 +511,8 @@ class CORE_EXPORT QgsExpression
         {
         }
 
-        /** Constructor for function which uses named parameter list.
+        /**
+         * Constructor for function which uses named parameter list.
          * @note added in QGIS 2.16
          */
         Function( const QString& fnname,
@@ -515,7 +536,8 @@ class CORE_EXPORT QgsExpression
             , mIsContextual( isContextual )
         {}
 
-        /** Constructor for function which uses named parameter list and group list.
+        /**
+         * Constructor for function which uses named parameter list and group list.
          * @note added in QGIS 3.0
          */
         Function( const QString& fnname,
@@ -541,13 +563,16 @@ class CORE_EXPORT QgsExpression
 
         virtual ~Function() {}
 
-        /** The name of the function. */
+        /**
+         * The name of the function. */
         QString name() const { return mName; }
 
-        /** The number of parameters this function takes. */
+        /**
+         * The number of parameters this function takes. */
         int params() const { return mParameterList.isEmpty() ? mParams : mParameterList.count(); }
 
-        /** The mininum number of parameters this function takes. */
+        /**
+         * The mininum number of parameters this function takes. */
         int minParams() const
         {
           if ( mParameterList.isEmpty() )
@@ -562,54 +587,64 @@ class CORE_EXPORT QgsExpression
           return min;
         }
 
-        /** Returns the list of named parameters for the function, if set.
+        /**
+         * Returns the list of named parameters for the function, if set.
          * @note added in QGIS 2.16
         */
         const ParameterList& parameters() const { return mParameterList; }
 
-        /** Does this function use a geometry object. */
+        /**
+         * Does this function use a geometry object. */
         bool usesGeometry() const { return mUsesGeometry; }
 
-        /** Returns a list of possible aliases for the function. These include
+        /**
+         * Returns a list of possible aliases for the function. These include
          * other permissible names for the function, eg deprecated names.
          * @return list of known aliases
          * @note added in QGIS 2.9
          */
         virtual QStringList aliases() const { return QStringList(); }
 
-        /** True if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression::Node objects
+        /**
+         * True if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression::Node objects
          * rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
          * Functions are non lazy default and will be given the node return value when called **/
         bool lazyEval() const { return mLazyEval; }
 
         virtual QSet<QString> referencedColumns() const { return mReferencedColumns; }
 
-        /** Returns whether the function is only available if provided by a QgsExpressionContext object.
+        /**
+         * Returns whether the function is only available if provided by a QgsExpressionContext object.
          * @note added in QGIS 2.12
          */
         bool isContextual() const { return mIsContextual; }
 
-        /** Returns true if the function is deprecated and should not be presented as a valid option
+        /**
+         * Returns true if the function is deprecated and should not be presented as a valid option
          * to users in expression builders.
          * @note added in QGIS 3.0
          */
         virtual bool isDeprecated() const { return mGroups.isEmpty() ? false : mGroups.contains( "deprecated" ); }
 
-        /** Returns the first group which the function belongs to.
+        /**
+         * Returns the first group which the function belongs to.
          * @note consider using groups() instead, as some functions naturally belong in multiple groups
         */
         QString group() const { return mGroups.isEmpty() ? QString() : mGroups.at( 0 ); }
 
-        /** Returns a list of the groups the function belongs to.
+        /**
+         * Returns a list of the groups the function belongs to.
          * @note added in QGIS 3.0
          * @see group()
         */
         QStringList groups() const { return mGroups; }
 
-        /** The help text for the function. */
+        /**
+         * The help text for the function. */
         const QString helpText() const { return mHelpText.isEmpty() ? QgsExpression::helpText( mName ) : mHelpText; }
 
-        /** Returns result of evaluating the function.
+        /**
+         * Returns result of evaluating the function.
          * @param values list of values passed to the function
          * @param context context expression is being evaluated against
          * @param parent parent expression
@@ -634,7 +669,8 @@ class CORE_EXPORT QgsExpression
         bool mIsContextual; //if true function is only available through an expression context
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
       * c++ helper class for defining QgsExpression functions.
       * \note not available in Python bindings
       */
@@ -642,7 +678,8 @@ class CORE_EXPORT QgsExpression
     {
       public:
 
-        /** Static function for evaluation against a QgsExpressionContext, using an unnamed list of parameter values.
+        /**
+         * Static function for evaluation against a QgsExpressionContext, using an unnamed list of parameter values.
          */
         StaticFunction( const QString& fnname,
                         int params,
@@ -659,7 +696,8 @@ class CORE_EXPORT QgsExpression
             , mAliases( aliases )
         {}
 
-        /** Static function for evaluation against a QgsExpressionContext, using a named list of parameter values.
+        /**
+         * Static function for evaluation against a QgsExpressionContext, using a named list of parameter values.
          */
         StaticFunction( const QString& fnname,
                         const ParameterList& params,
@@ -676,7 +714,8 @@ class CORE_EXPORT QgsExpression
             , mAliases( aliases )
         {}
 
-        /** Static function for evaluation against a QgsExpressionContext, using a named list of parameter values and list
+        /**
+         * Static function for evaluation against a QgsExpressionContext, using a named list of parameter values and list
          * of groups.
          */
         StaticFunction( const QString& fnname,
@@ -696,7 +735,8 @@ class CORE_EXPORT QgsExpression
 
         virtual ~StaticFunction() {}
 
-        /** Returns result of evaluating the function.
+        /**
+         * Returns result of evaluating the function.
          * @param values list of values passed to the function
          * @param context context expression is being evaluated against
          * @param parent parent expression
@@ -722,7 +762,8 @@ class CORE_EXPORT QgsExpression
     static QStringList gmBuiltinFunctions;
     static const QStringList& BuiltinFunctions();
 
-    /** Registers a function to the expression engine. This is required to allow expressions to utilise the function.
+    /**
+     * Registers a function to the expression engine. This is required to allow expressions to utilise the function.
      * @param function function to register
      * @param transferOwnership set to true to transfer ownership of function to expression engine
      * @returns true on successful registration
@@ -730,7 +771,8 @@ class CORE_EXPORT QgsExpression
      */
     static bool registerFunction( Function* function, bool transferOwnership = false );
 
-    /** Unregisters a function from the expression engine. The function will no longer be usable in expressions.
+    /**
+     * Unregisters a function from the expression engine. The function will no longer be usable in expressions.
      * @param name function name
      * @see registerFunction
      */
@@ -740,7 +782,8 @@ class CORE_EXPORT QgsExpression
     //! @note not available in Python bindings
     static QList<Function*> gmOwnedFunctions;
 
-    /** Deletes all registered functions whose ownership have been transferred to the expression engine.
+    /**
+     * Deletes all registered functions whose ownership have been transferred to the expression engine.
      * @note added in QGIS 2.12
      */
     static void cleanRegisteredFunctions();
@@ -751,24 +794,28 @@ class CORE_EXPORT QgsExpression
     //! return index of the function in Functions array
     static int functionIndex( const QString& name );
 
-    /** Returns the number of functions defined in the parser
+    /**
+     * Returns the number of functions defined in the parser
      *  @return The number of function defined in the parser.
      */
     static int functionCount();
 
-    /** Returns a quoted column reference (in double quotes)
+    /**
+     * Returns a quoted column reference (in double quotes)
      * @see quotedString()
      * @see quotedValue()
      */
     static QString quotedColumnRef( QString name );
 
-    /** Returns a quoted version of a string (in single quotes)
+    /**
+     * Returns a quoted version of a string (in single quotes)
      * @see quotedValue()
      * @see quotedColumnRef()
      */
     static QString quotedString( QString text );
 
-    /** Returns a string representation of a literal value, including appropriate
+    /**
+     * Returns a string representation of a literal value, including appropriate
      * quotations where required.
      * @param value value to convert to a string representation
      * @note added in QGIS 2.14
@@ -777,7 +824,8 @@ class CORE_EXPORT QgsExpression
      */
     static QString quotedValue( const QVariant& value );
 
-    /** Returns a string representation of a literal value, including appropriate
+    /**
+     * Returns a string representation of a literal value, including appropriate
      * quotations where required.
      * @param value value to convert to a string representation
      * @param type value type
@@ -800,7 +848,8 @@ class CORE_EXPORT QgsExpression
       ntCondition
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class CORE_EXPORT Node
     {
@@ -875,7 +924,8 @@ class CORE_EXPORT QgsExpression
     {
       public:
 
-        /** Constructor for NamedNode
+        /**
+         * Constructor for NamedNode
          * @param name node name
          * @param node node
          */
@@ -891,22 +941,27 @@ class CORE_EXPORT QgsExpression
         Node* node;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class CORE_EXPORT NodeList
     {
       public:
         NodeList() : mHasNamedNodes( false ) {}
         virtual ~NodeList() { qDeleteAll( mList ); }
-        /** Takes ownership of the provided node */
+
+        /**
+         * Takes ownership of the provided node */
         void append( Node* node ) { mList.append( node ); mNameList.append( QString() ); }
 
-        /** Adds a named node. Takes ownership of the provided node.
+        /**
+         * Adds a named node. Takes ownership of the provided node.
          * @note added in QGIS 2.16
         */
         void append( NamedNode* node );
 
-        /** Returns the number of nodes in the list.
+        /**
+         * Returns the number of nodes in the list.
          */
         int count() const { return mList.count(); }
 
@@ -920,7 +975,8 @@ class CORE_EXPORT QgsExpression
         //! @note added in QGIS 2.16
         QStringList names() const { return mNameList; }
 
-        /** Creates a deep copy of this list. Ownership is transferred to the caller */
+        /**
+         * Creates a deep copy of this list. Ownership is transferred to the caller */
         NodeList* clone() const;
 
         virtual QString dump() const;
@@ -934,7 +990,8 @@ class CORE_EXPORT QgsExpression
         bool mHasNamedNodes;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class CORE_EXPORT NodeUnaryOperator : public Node
     {
@@ -962,7 +1019,8 @@ class CORE_EXPORT QgsExpression
         Node* mOperand;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class CORE_EXPORT NodeBinaryOperator : public Node
     {
@@ -995,7 +1053,8 @@ class CORE_EXPORT QgsExpression
         int computeInt( int x, int y );
         double computeDouble( double x, double y );
 
-        /** Computes the result date time calculation from a start datetime and an interval
+        /**
+         * Computes the result date time calculation from a start datetime and an interval
          * @param d start datetime
          * @param i interval to add or subtract (depending on mOp)
          */
@@ -1006,7 +1065,8 @@ class CORE_EXPORT QgsExpression
         Node* mOpRight;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class CORE_EXPORT NodeInOperator : public Node
     {
@@ -1037,7 +1097,8 @@ class CORE_EXPORT QgsExpression
         bool mNotIn;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class CORE_EXPORT NodeFunction : public Node
     {
@@ -1067,7 +1128,8 @@ class CORE_EXPORT QgsExpression
 
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class CORE_EXPORT NodeLiteral : public Node
     {
@@ -1076,7 +1138,8 @@ class CORE_EXPORT QgsExpression
             : mValue( value )
         {}
 
-        /** The value of the literal. */
+        /**
+         * The value of the literal. */
         inline QVariant value() const { return mValue; }
 
         virtual NodeType nodeType() const override { return ntLiteral; }
@@ -1092,7 +1155,8 @@ class CORE_EXPORT QgsExpression
         QVariant mValue;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class CORE_EXPORT NodeColumnRef : public Node
     {
@@ -1102,7 +1166,8 @@ class CORE_EXPORT QgsExpression
             , mIndex( -1 )
         {}
 
-        /** The name of the column. */
+        /**
+         * The name of the column. */
         QString name() const { return mName; }
 
         virtual NodeType nodeType() const override { return ntColumnRef; }
@@ -1120,7 +1185,8 @@ class CORE_EXPORT QgsExpression
         int mIndex;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class CORE_EXPORT WhenThen
     {
@@ -1141,7 +1207,8 @@ class CORE_EXPORT QgsExpression
     };
     typedef QList<WhenThen*> WhenThenList;
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class CORE_EXPORT NodeCondition : public Node
     {
@@ -1170,13 +1237,15 @@ class CORE_EXPORT QgsExpression
         Node* mElseExp;
     };
 
-    /** Returns the help text for a specified function.
+    /**
+     * Returns the help text for a specified function.
      * @param name function name
      * @see variableHelpText()
      */
     static QString helpText( QString name );
 
-    /** Returns the help text for a specified variable.
+    /**
+     * Returns the help text for a specified variable.
      * @param variableName name of variable
      * @param showValue set to true to include current value of variable in help text
      * @param value current value of variable to show in help text
@@ -1185,12 +1254,14 @@ class CORE_EXPORT QgsExpression
      */
     static QString variableHelpText( const QString& variableName, bool showValue = true, const QVariant& value = QVariant() );
 
-    /** Returns the translated name for a function group.
+    /**
+     * Returns the translated name for a function group.
      * @param group untranslated group name
      */
     static QString group( const QString& group );
 
-    /** Formats an expression result for friendly display to the user. Truncates the result to a sensible
+    /**
+     * Formats an expression result for friendly display to the user. Truncates the result to a sensible
      * length, and presents text representations of non numeric/text types (eg geometries and features).
      * @param value expression result to format
      * @returns formatted string, may contain HTML formatting characters

@@ -66,7 +66,8 @@ email                : sherman at mrcc.com
 #include <math.h>
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Deprecated to be deleted, stuff from here should be moved elsewhere.
  * @note not available in Python bindings
 */
@@ -1540,7 +1541,8 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent * e )
 
 
 
-/** Sets the map tool currently being used on the canvas */
+/**
+ * Sets the map tool currently being used on the canvas */
 void QgsMapCanvas::setMapTool( QgsMapTool* tool )
 {
   if ( !tool )
@@ -1596,7 +1598,8 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool* tool )
   }
 }
 
-/** Write property of QColor bgColor. */
+/**
+ * Write property of QColor bgColor. */
 void QgsMapCanvas::setCanvasColor( const QColor & theColor )
 {
   // background of map's pixmap
@@ -1906,7 +1909,8 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
   // TODO: store only units, extent, projections, dest CRS
 }
 
-/** Ask user which datum transform to use*/
+/**
+ * Ask user which datum transform to use*/
 void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId )
 {
   if ( !ml )

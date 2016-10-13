@@ -22,7 +22,8 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a web view widget. Will show the content available at the URL of the value in a web browser.
  * \note not available in Python bindings
  */

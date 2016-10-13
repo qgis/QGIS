@@ -31,7 +31,8 @@ class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Abstract base class for spatial data provider implementations.
  * @author Gary E.Sherman
  *
@@ -84,7 +85,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual ~QgsDataProvider() {}
 
 
-    /** Returns the coordinate system for the data source.
+    /**
+     * Returns the coordinate system for the data source.
      * If the provider isn't capable of returning its projection then an invalid
      * QgsCoordinateReferenceSystem will be returned.
      */
@@ -162,7 +164,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
 
-    /** Returns true if the provider supports setting of subset strings.
+    /**
+     * Returns true if the provider supports setting of subset strings.
     */
     virtual bool supportsSubsetString() const { return false; }
 
@@ -242,7 +245,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
 
-    /** Return a provider name
+    /**
+     * Return a provider name
      *
      * Essentially just returns the provider key.  Should be used to build file
      * dialogs so that providers can be shown with their supported types. Thus
@@ -259,7 +263,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual QString name() const = 0;
 
 
-    /** Return description
+    /**
+     * Return description
      *
      * Return a terse string describing what the provider is.
      *
@@ -273,7 +278,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual QString description() const = 0;
 
 
-    /** Return vector file filter string
+    /**
+     * Return vector file filter string
      *
      * Returns a string suitable for a QFileDialog of vector file formats
      * supported by the data provider.  Naturally this will be an empty string
@@ -288,7 +294,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
 
-    /** Return raster file filter string
+    /**
+     * Return raster file filter string
      *
      * Returns a string suitable for a QFileDialog of raster file formats
      * supported by the data provider.  Naturally this will be an empty string
@@ -302,29 +309,35 @@ class CORE_EXPORT QgsDataProvider : public QObject
       return "";
     }
 
-    /** Reloads the data from the source. Needs to be implemented by providers with data caches to
+    /**
+     * Reloads the data from the source. Needs to be implemented by providers with data caches to
      * synchronize with changes in the data source
      */
     virtual void reloadData() {}
 
-    /** Time stamp of data source in the moment when data/metadata were loaded by provider */
+    /**
+     * Time stamp of data source in the moment when data/metadata were loaded by provider */
     virtual QDateTime timestamp() const { return mTimestamp; }
 
-    /** Current time stamp of data source */
+    /**
+     * Current time stamp of data source */
     virtual QDateTime dataTimestamp() const { return QDateTime(); }
 
-    /** Get current status error. This error describes some principal problem
+    /**
+     * Get current status error. This error describes some principal problem
      *  for which provider cannot work and thus is not valid. It is not last error
      *  after accessing data by block(), identify() etc.
      */
     virtual QgsError error() const { return mError; }
 
-    /** Invalidate connections corresponding to specified name
+    /**
+     * Invalidate connections corresponding to specified name
      * @note added in QGIS 2.16
      */
     virtual void invalidateConnections( const QString& connection ) { Q_UNUSED( connection ); }
 
-    /** Enter update mode.
+    /**
+     * Enter update mode.
      *
      * This is aimed at providers that can open differently the connection to
      * the datasource, according it to be in update mode or in read-only mode.
@@ -347,7 +360,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual bool enterUpdateMode() { return true; }
 
-    /** Leave update mode.
+    /**
+     * Leave update mode.
      *
      * This is aimed at providers that can open differently the connection to
      * the datasource, according it to be in update mode or in read-only mode.
@@ -422,18 +436,22 @@ class CORE_EXPORT QgsDataProvider : public QObject
     void dataChanged( int changed );
 
   protected:
+
     /**
      * Timestamp of data in the moment when the data were loaded by provider.
      */
     QDateTime mTimestamp;
 
-    /** \brief Error */
+    /**
+     * \brief Error */
     QgsError mError;
 
-    /** Add error message */
+    /**
+     * Add error message */
     void appendError( const QgsErrorMessage & theMessage ) { mError.append( theMessage );}
 
-    /** Set error message */
+    /**
+     * Set error message */
     void setError( const QgsError & theError ) { mError = theError;}
 
   private:

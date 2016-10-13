@@ -27,7 +27,8 @@ class QgsField;
 class QgsMapCanvas;
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsAttributeTypeLoadDialog
  */
 class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttributeLoadValues
@@ -64,6 +65,7 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
     bool insertNull();
 
   private slots:
+
     /**
      * Slot which reacts to change of selected layer to fill other two comboboxes with correct data
      * @param layerIndex index of layer which was selected

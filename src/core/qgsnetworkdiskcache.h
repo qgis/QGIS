@@ -23,7 +23,8 @@
 
 class QNetworkDiskCache;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Wrapper implementation of QNetworkDiskCache with all methods guarded by a
  * mutex soly for internal use of QgsNetworkAccessManagers
  *

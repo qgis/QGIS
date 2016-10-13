@@ -30,7 +30,8 @@
 #include <QString>
 #include <QtAlgorithms>
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * \class QgsPointCompare
  */
 class QgsPointCompare

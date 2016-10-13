@@ -38,7 +38,8 @@ email                : sherman at mrcc.com
 #include <QStringList>
 #include <QStyledItemDelegate>
 
-/** Used to create an editor for when the user tries to change the contents of a cell */
+/**
+ * Used to create an editor for when the user tries to change the contents of a cell */
 QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
@@ -281,7 +282,9 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
   mSearchModeLabel->setVisible( false );
   mSearchTableEdit->setVisible( false );
 }
-/** Autoconnected SLOTS **/
+
+/**
+ * Autoconnected SLOTS **/
 // Slot for adding a new connection
 void QgsPgSourceSelect::on_btnNew_clicked()
 {
@@ -339,7 +342,8 @@ void QgsPgSourceSelect::on_btnEdit_clicked()
   delete nc;
 }
 
-/** End Autoconnected SLOTS **/
+/**
+ * End Autoconnected SLOTS **/
 
 // Remember which database is selected
 void QgsPgSourceSelect::on_cmbConnections_currentIndexChanged( const QString & text )

@@ -114,11 +114,13 @@ class QgsOracleConn : public QObject
     static QgsOracleConn *connectDb( const QgsDataSourceUri &uri );
     void disconnect();
 
-    /** Double quote a Oracle identifier for placement in a SQL string.
+    /**
+     * Double quote a Oracle identifier for placement in a SQL string.
      */
     static QString quotedIdentifier( QString ident );
 
-    /** Quote a value for placement in a SQL string.
+    /**
+     * Quote a value for placement in a SQL string.
      */
     static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid );
 
@@ -130,10 +132,12 @@ class QgsOracleConn : public QObject
 
     void retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes );
 
-    /** Gets information about the spatial tables */
+    /**
+     * Gets information about the spatial tables */
     bool tableInfo( bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables );
 
-    /** Get primary key candidates (all int4 columns) */
+    /**
+     * Get primary key candidates (all int4 columns) */
     QStringList pkCandidates( QString ownerName, QString viewName );
 
     static QString fieldExpression( const QgsField &fld );

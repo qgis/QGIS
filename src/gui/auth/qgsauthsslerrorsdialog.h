@@ -25,13 +25,15 @@
 class QNetworkReply;
 class QPushButton;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for reporting SSL errors and offering an option to store an SSL server exception into the authentication database
  */
 class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSslErrorsDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Construct a dialog to handle SSL errors and saving SSL server certificate exceptions
      * @param reply Network reply that hand error(s)

@@ -21,7 +21,8 @@
 #include "qgsrectangle.h"
 #include "qgswfsrequest.h"
 
-/** Manages the GetCapabilities request */
+/**
+ * Manages the GetCapabilities request */
 class QgsWfsCapabilities : public QgsWfsRequest
 {
     Q_OBJECT
@@ -123,7 +124,8 @@ class QgsWfsCapabilities : public QgsWfsRequest
   private:
     Capabilities mCaps;
 
-    /** Takes <Operations> element and updates the capabilities*/
+    /**
+     * Takes <Operations> element and updates the capabilities*/
     void parseSupportedOperations( const QDomElement& operationsElem,
                                    bool& insertCap,
                                    bool& updateCap,

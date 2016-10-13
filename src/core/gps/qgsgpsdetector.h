@@ -27,7 +27,8 @@
 class QgsGPSConnection;
 struct QgsGPSInformation;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Class to detect the GPS port
  */
 class CORE_EXPORT QgsGPSDetector : public QObject

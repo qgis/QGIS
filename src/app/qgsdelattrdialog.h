@@ -30,7 +30,9 @@ class APP_EXPORT QgsDelAttrDialog: public QDialog, private Ui::QgsDelAttrDialogB
   public:
     QgsDelAttrDialog( const QgsVectorLayer* vl );
     ~QgsDelAttrDialog();
-    /** Returns the selected attribute indices*/
+
+    /**
+     * Returns the selected attribute indices*/
     QList<int> selectedAttributes();
 };
 

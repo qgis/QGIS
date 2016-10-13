@@ -1,4 +1,5 @@
 
+
 /***************************************************************************
                           qgsmaplayerdependency.h  -  description
                              -------------------
@@ -21,7 +22,8 @@
 
 #include <QString>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class models dependencies with or between map layers.
  * A dependency is defined by a layer ID, a type and an origin.
  * The two combinations of type/origin that are currently supported are:

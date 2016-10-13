@@ -27,7 +27,8 @@ class QgsRasterLayer;
 class QgsMapCanvas;
 class QgsRasterRendererWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRendererRasterPropertiesWidget
  */
 class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsRendererRasterPropsWidgetBase
@@ -35,6 +36,7 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     Q_OBJECT
 
   public:
+
     /**
      * A widget to hold the renderer properties for a raster layer.
      * @param layer The raster layer to style
@@ -44,7 +46,8 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     QgsRendererRasterPropertiesWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
     ~QgsRendererRasterPropertiesWidget();
 
-    /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
+    /**
+     * Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
      * @param canvas map canvas
      * @note added in QGIS 2.12
@@ -70,13 +73,17 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     void syncToLayer( QgsRasterLayer *layer );
 
   private slots:
-    /** Slot to reset all color rendering options to default */
+
+    /**
+     * Slot to reset all color rendering options to default */
     void on_mResetColorRenderingBtn_clicked();
 
-    /** Enable or disable saturation controls depending on choice of grayscale mode */
+    /**
+     * Enable or disable saturation controls depending on choice of grayscale mode */
     void toggleSaturationControls( int grayscaleMode );
 
-    /** Enable or disable colorize controls depending on checkbox */
+    /**
+     * Enable or disable colorize controls depending on checkbox */
     void toggleColorizeControls( bool colorizeEnabled );
   private:
     void setRendererWidget( const QString& rendererName );

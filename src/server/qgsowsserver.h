@@ -49,7 +49,8 @@ class QgsOWSServer
 
     virtual void executeRequest() = 0;
 
-    /** Restores the original layer filters
+    /**
+     * Restores the original layer filters
      * @param filterMap the original layer filter
      */
     static void restoreLayerFilters( const QHash < QgsMapLayer*, QString >& filterMap );
@@ -62,10 +63,13 @@ class QgsOWSServer
     QgsRequestHandler* mRequestHandler;
     QString mConfigFilePath;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    /** The access control helper */
+
+    /**
+     * The access control helper */
     const QgsAccessControl* mAccessControl;
 
-    /** Apply filter strings from the access control to the layers.
+    /**
+     * Apply filter strings from the access control to the layers.
      * @param layer the concerned layer
      * @param originalLayerFilters the original layer filter
      *
@@ -75,7 +79,8 @@ class QgsOWSServer
 
 };
 
-/** RAII class to restore layer filters on destruction
+/**
+ * RAII class to restore layer filters on destruction
  */
 class QgsOWSServerFilterRestorer
 {
@@ -89,7 +94,8 @@ class QgsOWSServerFilterRestorer
       QgsOWSServer::restoreLayerFilters( mOriginalLayerFilters );
     }
 
-    /** Returns a reference to the object's hash of layers to original subsetString filters.
+    /**
+     * Returns a reference to the object's hash of layers to original subsetString filters.
      * Original layer subsetString filters MUST be inserted into this hash before modifying them.
      */
     QHash<QgsMapLayer*, QString>& originalFilters() { return mOriginalLayerFilters; }

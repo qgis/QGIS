@@ -23,7 +23,8 @@
 #include <QHash>
 #include <QProcess>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Provides a context based help browser for a dialog.
  *
  * The help text is stored in SQLite and accessed by a context identifier

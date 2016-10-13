@@ -169,7 +169,9 @@ void QgsGeometryCheckerSetupTab::selectOutputFile()
 
 void QgsGeometryCheckerSetupTab::runChecks()
 {
-  /** Get selected layer **/
+
+  /**
+   * Get selected layer **/
   QgsVectorLayer* layer = getSelectedLayer();
   if ( !layer )
     return;
@@ -188,14 +190,16 @@ void QgsGeometryCheckerSetupTab::runChecks()
   }
   bool selectedOnly = ui.checkBoxInputSelectedOnly->isChecked();
 
-  /** Set window busy **/
+  /**
+   * Set window busy **/
   setCursor( Qt::WaitCursor );
   mRunButton->setEnabled( false );
   ui.labelStatus->setText( tr( "<b>Preparing output...</b>" ) );
   ui.labelStatus->show();
   QApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
 
-  /** Duplicate if necessary **/
+  /**
+   * Duplicate if necessary **/
   if ( ui.radioButtonOutputNew->isChecked() )
   {
     // Write selected feature ids to new layer
@@ -272,7 +276,8 @@ void QgsGeometryCheckerSetupTab::runChecks()
     }
   }
 
-  /** Setup checker **/
+  /**
+   * Setup checker **/
   ui.labelStatus->setText( tr( "<b>Building spatial index...</b>" ) );
   QApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
   QgsFeaturePool* featurePool = new QgsFeaturePool( layer, selectedOnly );
@@ -292,14 +297,16 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
   emit checkerStarted( checker, featurePool );
 
-  /** Add result layer (do this after checkerStarted, otherwise warning about removing of result layer may appear) **/
+  /**
+   * Add result layer (do this after checkerStarted, otherwise warning about removing of result layer may appear) **/
   layer->setReadOnly( true );
   if ( ui.radioButtonOutputNew->isChecked() )
   {
     QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << layer );
   }
 
-  /** Run **/
+  /**
+   * Run **/
   ui.buttonBox->addButton( mAbortButton, QDialogButtonBox::ActionRole );
   mRunButton->hide();
   ui.progressBar->setRange( 0, 0 );
@@ -318,7 +325,8 @@ void QgsGeometryCheckerSetupTab::runChecks()
   ui.progressBar->setRange( 0, maxSteps );
   evLoop.exec();
 
-  /** Restore window **/
+  /**
+   * Restore window **/
   unsetCursor();
   mAbortButton->setEnabled( true );
   ui.buttonBox->removeButton( mAbortButton );
@@ -328,7 +336,8 @@ void QgsGeometryCheckerSetupTab::runChecks()
   ui.labelStatus->hide();
   ui.widgetInputs->setEnabled( true );
 
-  /** Show result **/
+  /**
+   * Show result **/
   emit checkerFinished( !futureWatcher.isCanceled() );
 }
 

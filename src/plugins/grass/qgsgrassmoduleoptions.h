@@ -5,6 +5,7 @@
     copyright            : (C) 2005 by Radim Blazek
     email                : radim.blazek@gmail.com
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -37,7 +38,8 @@ class QgsGrassModule;
 class QgisInterface;
 class QgsMapCanvas;
 
-/** \class QgsGrassModuleOptions
+/**
+ * \class QgsGrassModuleOptions
  *  \brief Widget with GRASS options.QgsGrassTools
  *
  */
@@ -133,7 +135,8 @@ class QgsGrassModuleOptions
     QStringList mErrors;
 };
 
-/** \class QgsGrassModuleStandardOptions
+/**
+ * \class QgsGrassModuleStandardOptions
  *  \brief Widget with GRASS standard options.
  *
  */
@@ -179,12 +182,15 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     void switchAdvanced();
 
   private:
-    /** Read and parse module options (--interface-description).
+
+    /**
+     * Read and parse module options (--interface-description).
      * @param errors - list to which possible errors are added
      */
     QDomDocument readInterfaceDescription( const QString & xname, QStringList & errors );
 
-    /** Get region for currently selected map. It will show warning dialog if region could not be read.
+    /**
+     * Get region for currently selected map. It will show warning dialog if region could not be read.
      * @return true if region was successfully read
      */
     bool getCurrentMapRegion( QgsGrassModuleInput * param, struct Cell_head *window );

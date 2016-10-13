@@ -300,7 +300,8 @@ QGISEXTERN QgsAuthIdentCertMethod *classFactory()
   return new QgsAuthIdentCertMethod();
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
  */
 QGISEXTERN QString authMethodKey()
 {

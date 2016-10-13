@@ -23,7 +23,8 @@
 
 #include <QMap>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Class for storing the component parts of a PostgreSQL/RDBMS datasource URI.
  * This structure stores the database connection information, including host, database,
  * user name, password, schema, password, and sql where clause
@@ -187,7 +188,8 @@ class CORE_EXPORT QgsDataSourceUri
     //! Sets the name of the (primary) key column
     void setKeyColumn( const QString& column );
 
-    /** The wkb type.
+    /**
+     * The wkb type.
      */
     QgsWkbTypes::Type wkbType() const;
 

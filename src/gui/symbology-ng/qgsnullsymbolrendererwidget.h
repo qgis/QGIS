@@ -22,7 +22,8 @@ class QgsSymbolSelectorDialog;
 
 class QMenu;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsNullSymbolRendererWidget
  * \brief Blank widget for customising QgsNullSymbolRenderer.
  * \note Added in version 2.16

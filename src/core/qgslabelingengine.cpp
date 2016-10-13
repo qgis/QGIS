@@ -32,7 +32,8 @@ static bool _palIsCancelled( void* ctx )
   return ( reinterpret_cast< QgsRenderContext* >( ctx ) )->renderingStopped();
 }
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsLabelSorter
  * Helper class for sorting labels into correct draw order
  */

@@ -23,7 +23,8 @@
 
 class QgsRectangle;
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * @brief OSMDownload is a utility class for downloading OpenStreetMap via Overpass API.
  *
  * To use this class, it is necessary to set query, output file name and start the request.
@@ -82,8 +83,8 @@ class ANALYSIS_EXPORT QgsOSMDownload : public QObject
     bool isFinished() const;
 
   signals:
-    void finished(); //!< emitted when the network reply has finished (with success or with an error)
-    void downloadProgress( qint64, qint64 ); //!< normally the total length is not known (until we reach end)
+    void finished(); //!< Emitted when the network reply has finished (with success or with an error)
+    void downloadProgress( qint64, qint64 ); //!< Normally the total length is not known (until we reach end)
 
   private slots:
     void onReadyRead();

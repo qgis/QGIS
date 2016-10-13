@@ -22,7 +22,8 @@
 #include "qgis.h"
 #include <QPainter>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsColorEffect
  * \brief A paint effect which alters the colors (eg brightness, contrast) in a
  * source picture.
@@ -35,7 +36,8 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
 
   public:
 
-    /** Creates a new QgsColorEffect effect from a properties string map.
+    /**
+     * Creates a new QgsColorEffect effect from a properties string map.
      * @param map encoded properties string map
      * @returns new QgsColorEffect
      */
@@ -49,7 +51,8 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
     virtual void readProperties( const QgsStringMap& props ) override;
     virtual QgsColorEffect* clone() const override;
 
-    /** Sets the brightness modification for the effect.
+    /**
+     * Sets the brightness modification for the effect.
      * @param brightness Valid values are between -255 and 255, where 0 represents
      * no change, negative values indicate darkening and positive values indicate
      * lightening
@@ -57,7 +60,8 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      */
     void setBrightness( int brightness ) { mBrightness = qBound( -255, brightness, 255 ); }
 
-    /** Returns the brightness modification for the effect.
+    /**
+     * Returns the brightness modification for the effect.
      * @returns brightness value. Values are between -255 and 255, where 0 represents
      * no change, negative values indicate darkening and positive values indicate
      * lightening
@@ -65,7 +69,8 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      */
     int brightness() const { return mBrightness; }
 
-    /** Sets the contrast modification for the effect.
+    /**
+     * Sets the contrast modification for the effect.
      * @param contrast Valid values are between -100 and 100, where 0 represents
      * no change, negative values indicate less contrast and positive values indicate
      * greater contrast
@@ -73,7 +78,8 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      */
     void setContrast( int contrast ) { mContrast = qBound( -100, contrast, 100 ); }
 
-    /** Returns the contrast modification for the effect.
+    /**
+     * Returns the contrast modification for the effect.
      * @returns contrast value. Values are between -100 and 100, where 0 represents
      * no change, negative values indicate less contrast and positive values indicate
      * greater contrast
@@ -81,7 +87,8 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      */
     int contrast() const { return mContrast; }
 
-    /** Sets the saturation modification for the effect.
+    /**
+     * Sets the saturation modification for the effect.
      * @param saturation Valid values are between 0 and 2.0, where 1.0 represents
      * no change, 0.0 represents totally desaturated (grayscale), and positive values indicate
      * greater saturation
@@ -89,7 +96,8 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      */
     void setSaturation( double saturation ) { mSaturation = saturation; }
 
-    /** Returns the saturation modification for the effect.
+    /**
+     * Returns the saturation modification for the effect.
      * @returns saturation value. Values are between 0 and 2.0, where 1.0 represents
      * no change, 0.0 represents totally desaturated (grayscale), and positive values indicate
      * greater saturation
@@ -97,19 +105,22 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      */
     double saturation() const { return mSaturation; }
 
-    /** Sets whether the effect should convert a picture to grayscale.
+    /**
+     * Sets whether the effect should convert a picture to grayscale.
      * @param grayscaleMode method for grayscale conversion
      * @see grayscaleMode
      */
     void setGrayscaleMode( QgsImageOperation::GrayscaleMode grayscaleMode ) { mGrayscaleMode = grayscaleMode; }
 
-    /** Returns whether the effect will convert a picture to grayscale.
+    /**
+     * Returns whether the effect will convert a picture to grayscale.
      * @returns method for grayscale conversion
      * @see setGrayscaleMode
      */
     QgsImageOperation::GrayscaleMode grayscaleMode() const { return mGrayscaleMode; }
 
-    /** Sets whether the effect should colorize a picture.
+    /**
+     * Sets whether the effect should colorize a picture.
      * @param colorizeOn set to true to enable colorization
      * @see colorizeOn
      * @see setColorizeColor
@@ -117,7 +128,8 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      */
     void setColorizeOn( bool colorizeOn ) { mColorizeOn = colorizeOn; }
 
-    /** Returns whether the effect will colorize a picture.
+    /**
+     * Returns whether the effect will colorize a picture.
      * @returns true if colorization is enableds
      * @see setColorizeOn
      * @see colorizeColor
@@ -125,7 +137,8 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      */
     bool colorizeOn() const { return mColorizeOn; }
 
-    /** Sets the color used for colorizing a picture. This is only used if
+    /**
+     * Sets the color used for colorizing a picture. This is only used if
      * @link setColorizeOn @endlink is set to true.
      * @param colorizeColor colorization color
      * @see colorizeColor
@@ -134,7 +147,8 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      */
     void setColorizeColor( const QColor& colorizeColor );
 
-    /** Returns the color used for colorizing a picture. This is only used if
+    /**
+     * Returns the color used for colorizing a picture. This is only used if
      * @link colorizeOn @endlink is set to true.
      * @returns colorization color
      * @see setColorizeColor
@@ -143,7 +157,8 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      */
     QColor colorizeColor() const { return mColorizeColor; }
 
-    /** Sets the strength for colorizing a picture. This is only used if
+    /**
+     * Sets the strength for colorizing a picture. This is only used if
      * @link setColorizeOn @endlink is set to true.
      * @param colorizeStrength colorization strength, between 0 and 100
      * @see colorizeStrength
@@ -152,7 +167,8 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      */
     void setColorizeStrength( int colorizeStrength ) { mColorizeStrength = colorizeStrength; }
 
-    /** Returns the strength used for colorizing a picture. This is only used if
+    /**
+     * Returns the strength used for colorizing a picture. This is only used if
      * @link setColorizeOn @endlink is set to true.
      * @returns colorization strength, between 0 and 100
      * @see setColorizeStrengths
@@ -161,28 +177,32 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      */
     int colorizeStrength() const { return mColorizeStrength; }
 
-    /** Sets the transparency for the effect
+    /**
+     * Sets the transparency for the effect
      * @param transparency double between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see transparency
      */
     void setTransparency( const double transparency ) { mTransparency = transparency; }
 
-    /** Returns the transparency for the effect
+    /**
+     * Returns the transparency for the effect
      * @returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see setTransparency
      */
     double transparency() const { return mTransparency; }
 
-    /** Sets the blend mode for the effect
+    /**
+     * Sets the blend mode for the effect
      * @param mode blend mode used for drawing the effect on to a destination
      * paint device
      * @see blendMode
      */
     void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
 
-    /** Returns the blend mode for the effect
+    /**
+     * Returns the blend mode for the effect
      * @returns blend mode used for drawing the effect on to a destination
      * paint device
      * @see setBlendMode

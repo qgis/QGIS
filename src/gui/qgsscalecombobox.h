@@ -20,7 +20,8 @@
 
 #include <QComboBox>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A combobox which lets the user select map scale from predefined list
  * and highlights nearest to current scale value
  **/

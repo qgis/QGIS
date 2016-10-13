@@ -35,7 +35,8 @@ class QDomDocument;
 class QDomElement;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief  Dialog to create connections and add layers from WMS, WFS, WCS etc.
  *
  * This dialog allows the user to define and save connection information
@@ -49,7 +50,9 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     Q_OBJECT
 
   public:
-    /** Formats supported by provider */
+
+    /**
+     * Formats supported by provider */
     struct SupportedFormat
     {
       QString format;
@@ -74,7 +77,8 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! Loads connections from the file
     void on_mLoadButton_clicked();
 
-    /** Connects to the database using the stored connection parameters.
+    /**
+     * Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
      */
     void on_mConnectButton_clicked();
@@ -111,6 +115,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     void connectionsChanged();
 
   protected:
+
     /**
      * List of image formats (encodings) supported by provider
      * @return list of format/label pairs

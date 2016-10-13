@@ -23,7 +23,8 @@
 class QgsGeometryCache;
 class QgsCurve;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsVectorLayerEditUtils
  */
 class CORE_EXPORT QgsVectorLayerEditUtils
@@ -34,33 +35,38 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     inline QgsGeometryCache* cache() { return L->cache(); }
 
 
-    /** Insert a new vertex before the given vertex number,
+    /**
+     * Insert a new vertex before the given vertex number,
      *  in the given ring, item (first number is index 0), and feature
      *  Not meaningful for Point geometries
      */
     bool insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex );
 
-    /** Moves the vertex at the given position number,
+    /**
+     * Moves the vertex at the given position number,
      *  ring and item (first number is index 0), and feature
      *  to the given coordinates
      */
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
 
-    /** Moves the vertex at the given position number,
+    /**
+     * Moves the vertex at the given position number,
      *  ring and item (first number is index 0), and feature
      *  to the given coordinates
      *  @note available in python bindings as moveVertexV2
      */
     bool moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex );
 
-    /** Deletes a vertex from a feature.
+    /**
+     * Deletes a vertex from a feature.
      * @param featureId ID of feature to remove vertex from
      * @param vertex index of vertex to delete
      * @note added in QGIS 2.14
      */
     QgsVectorLayer::EditResult deleteVertex( QgsFeatureId featureId, int vertex );
 
-    /** Adds a ring to polygon/multipolygon features
+    /**
+     * Adds a ring to polygon/multipolygon features
      * @param ring ring to add
      * @param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
      * all intersecting features are tested and the ring is added to the first valid feature.
@@ -76,7 +82,8 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr );
 
-    /** Adds a ring to polygon/multipolygon features
+    /**
+     * Adds a ring to polygon/multipolygon features
      * @param ring ring to add
      * @param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
      * all intersecting features are tested and the ring is added to the first valid feature.
@@ -93,7 +100,8 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addRing( QgsCurve* ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr );
 
-    /** Adds a new part polygon to a multipart feature
+    /**
+     * Adds a new part polygon to a multipart feature
      * @return
      *  0 in case of success,
      *  1 if selected feature is not multipart,
@@ -106,7 +114,8 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QList<QgsPoint>& ring, QgsFeatureId featureId );
 
-    /** Adds a new part polygon to a multipart feature
+    /**
+     * Adds a new part polygon to a multipart feature
      * @return
      *  0 in case of success,
      *  1 if selected feature is not multipart,
@@ -124,7 +133,8 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( QgsCurve* ring, QgsFeatureId featureId );
 
-    /** Translates feature by dx, dy
+    /**
+     * Translates feature by dx, dy
      * @param featureId id of the feature to translate
      * @param dx translation of x-coordinate
      * @param dy translation of y-coordinate
@@ -132,7 +142,8 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      */
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
 
-    /** Splits parts cut by the given line
+    /**
+     * Splits parts cut by the given line
      *  @param splitLine line that splits the layer feature parts
      *  @param topologicalEditing true if topological editing is enabled
      *  @return
@@ -142,7 +153,8 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int splitParts( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
-    /** Splits features cut by the given line
+    /**
+     * Splits features cut by the given line
      *  @param splitLine line that splits the layer features
      *  @param topologicalEditing true if topological editing is enabled
      *  @return
@@ -152,14 +164,16 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
-    /** Adds topological points for every vertex of the geometry.
+    /**
+     * Adds topological points for every vertex of the geometry.
      * @param geom the geometry where each vertex is added to segments of other features
      * @note geom is not going to be modified by the function
      * @return 0 in case of success
      */
     int addTopologicalPoints( const QgsGeometry& geom );
 
-    /** Adds a vertex to segments which intersect point p but don't
+    /**
+     * Adds a vertex to segments which intersect point p but don't
      * already have a vertex there. If a feature already has a vertex at position p,
      * no additional vertex is inserted. This method is useful for topological
      * editing.
@@ -168,7 +182,8 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      */
     int addTopologicalPoints( const QgsPoint& p );
 
-    /** Inserts vertices to the snapped segments.
+    /**
+     * Inserts vertices to the snapped segments.
      * This is useful for topological editing if snap to segment is enabled.
      * @param snapResults results collected from the snapping operation
      * @return 0 in case of success
@@ -177,7 +192,8 @@ class CORE_EXPORT QgsVectorLayerEditUtils
 
   protected:
 
-    /** Little helper function that gives bounding box from a list of points.
+    /**
+     * Little helper function that gives bounding box from a list of points.
     @return 0 in case of success */
     int boundingBoxFromPointList( const QList<QgsPoint>& list, double& xmin, double& ymin, double& xmax, double& ymax ) const;
 

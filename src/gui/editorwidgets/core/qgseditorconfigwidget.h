@@ -22,7 +22,8 @@
 
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This class should be subclassed for every configurable editor widget type.
  *
  * It implements the GUI configuration widget and transforms this to/from a configuration.
@@ -34,6 +35,7 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
 {
     Q_OBJECT
   public:
+
     /**
      * Create a new configuration widget
      *
@@ -78,7 +80,8 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
 
   signals:
 
-    /** Emitted when the configuration of the widget is changed.
+    /**
+     * Emitted when the configuration of the widget is changed.
      * @note added in QGIS 3.0
      */
     void changed();

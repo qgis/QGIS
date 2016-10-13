@@ -32,6 +32,7 @@
 #include <QHBoxLayout>
 #include <QScrollBar>
 #include <QUrl>
+
 /**
 * Constructor
 * @param parent - Pointer the to parent QWidget for modality
@@ -238,6 +239,7 @@ void eVisImageDisplayWidget::setScalers()
  * Public and Private Slots
  *
  */
+
 /**
 * Slot called when a http request is complete
 * @param requestId - The id of the http request

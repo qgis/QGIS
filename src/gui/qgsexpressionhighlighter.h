@@ -24,7 +24,8 @@
 
 class QTextDocument;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsExpressionHighlighter
  */
 class GUI_EXPORT QgsExpressionHighlighter : public QSyntaxHighlighter

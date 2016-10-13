@@ -33,7 +33,8 @@
 //qgis unit test includes
 #include <qgsrenderchecker.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the map rotation feature
  */
 class TestQgsMapRotation : public QObject

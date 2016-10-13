@@ -34,7 +34,8 @@
 class QNetworkAccessManager;
 class QNetworkReply;
 
-/** CoverageSummary structure */
+/**
+ * CoverageSummary structure */
 struct QgsWcsCoverageSummary
 {
   QgsWcsCoverageSummary()
@@ -70,7 +71,8 @@ struct QgsWcsCoverageSummary
   bool hasSize;
 };
 
-/** Capability Property structure */
+/**
+ * Capability Property structure */
 struct QgsWcsCapabilitiesProperty
 {
   QString                   version;
@@ -89,6 +91,7 @@ class QgsWcsCapabilities : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *
@@ -134,23 +137,28 @@ class QgsWcsCapabilities : public QObject
      */
     static QString prepareUri( QString uri );
 
-    /** \brief Returns the GetCoverage full url
+    /**
+     * \brief Returns the GetCoverage full url
      *  \param version optional version, e.g. 1.0.0 or 1.1.0 */
     QString getCapabilitiesUrl( const QString& version ) const;
 
-    /** \brief Returns the GetCoverage full url using current version  */
+    /**
+     * \brief Returns the GetCoverage full url using current version  */
     QString getCapabilitiesUrl() const;
 
-    /** \brief Returns the GetCoverage full full url using current version  */
+    /**
+     * \brief Returns the GetCoverage full full url using current version  */
     QString getDescribeCoverageUrl( QString const &identifier ) const;
 
-    /** Returns the GetCoverage base url */
+    /**
+     * Returns the GetCoverage base url */
     QString getCoverageUrl() const;
 
     //! Send request to server
     bool sendRequest( QString const & url );
 
-    /** Get additional coverage info from server. Version 1.0 GetCapabilities
+    /**
+     * Get additional coverage info from server. Version 1.0 GetCapabilities
      *  response does not contain all info (CRS, formats).
      */
     bool describeCoverage( QString const &identifier, bool forceRefresh = false );
@@ -198,25 +206,32 @@ class QgsWcsCapabilities : public QObject
     //! Get first child of specified name, NS is ignored
     static QDomElement firstChild( const QDomElement &element, const QString &name );
 
-    /** Find sub elements by path which is string of dot separated tag names.
+    /**
+     * Find sub elements by path which is string of dot separated tag names.
      *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
     static QList<QDomElement> domElements( const QDomElement &element, const QString &path );
 
-    /** Find first sub element by path which is string of dot separated tag names.
+    /**
+     * Find first sub element by path which is string of dot separated tag names.
      *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
     static QDomElement domElement( const QDomElement &element, const QString &path );
 
-    /** Get text of element specified by path */
+    /**
+     * Get text of element specified by path */
     static QString domElementText( const QDomElement &element, const QString &path );
 
-    /** Get sub elements texts by path */
+    /**
+     * Get sub elements texts by path */
     static QStringList domElementsTexts( const QDomElement &element, const QString &path );
 
   signals:
-    /** \brief emit a signal to notify of a progress event */
+
+    /**
+     * \brief emit a signal to notify of a progress event */
     void progressChanged( int theProgress, int theTotalSteps );
 
-    /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
+    /**
+     * \brief emit a signal to be caught by qgisapp and display a msg on status bar */
     void statusChanged( QString const &  theStatusQString );
 
     void downloadFinished();
@@ -243,6 +258,7 @@ class QgsWcsCapabilities : public QObject
     QList<int> parseInts( const QString &text );
     QList<double> parseDoubles( const QString &text );
     QString crsUrnToAuthId( const QString &text );
+
     /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server
      *
@@ -257,7 +273,8 @@ class QgsWcsCapabilities : public QObject
      */
     bool retrieveServerCapabilities( const QString& preferredVersion );
 
-    /** Retrieve the best WCS version supported by server and QGIS */
+    /**
+     * Retrieve the best WCS version supported by server and QGIS */
     bool retrieveServerCapabilities();
 
     //! \return false if the capabilities document could not be parsed - see lastError() for more info
@@ -323,7 +340,8 @@ class QgsWcsCapabilities : public QObject
      */
     QString mError;
 
-    /** The mime type of the message
+    /**
+     * The mime type of the message
      */
     QString mErrorFormat;
 

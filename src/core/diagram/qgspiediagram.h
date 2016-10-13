@@ -28,7 +28,8 @@ class QgsDiagramInterpolationSettings;
 class QgsFeature;
 class QgsRenderContext;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsPieDiagram
  */
 class CORE_EXPORT QgsPieDiagram: public QgsDiagram

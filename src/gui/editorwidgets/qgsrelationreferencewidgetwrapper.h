@@ -22,7 +22,8 @@ class QgsRelationReferenceWidget;
 class QgsMapCanvas;
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a relation reference widget.
  *
  * Options:
@@ -62,6 +63,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     void foreignKeyChanged( QVariant value );
 
   protected:
+
     /**
      * This should update the widget with a visual cue if a constraint status
      * changed.

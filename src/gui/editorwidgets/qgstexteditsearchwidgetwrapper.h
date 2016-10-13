@@ -20,7 +20,8 @@
 
 class QgsTextEditWidgetFactory;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsTextEditSearchWidgetWrapper
  * Wraps a text edit widget for searching.
  * \note Added in version 2.16
@@ -33,7 +34,8 @@ class GUI_EXPORT QgsTextEditSearchWidgetWrapper : public QgsDefaultSearchWidgetW
 
   public:
 
-    /** Constructor for QgsTextEditSearchWidgetWrapper.
+    /**
+     * Constructor for QgsTextEditSearchWidgetWrapper.
      * @param vl associated vector layer
      * @param fieldIdx index of associated field
      * @param parent parent widget

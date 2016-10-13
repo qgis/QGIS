@@ -31,7 +31,8 @@ class QgsGenericFeatureSelectionManager;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRelationEditorWidget
  */
 class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
@@ -41,6 +42,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     Q_PROPERTY( bool showLabel READ showLabel WRITE setShowLabel )
 
   public:
+
     /**
      * @param parent parent widget
      */
@@ -95,6 +97,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      * @note Added in QGIS 2.18
      */
     bool showLinkButton() const;
+
     /**
      * Determines if the "link feature" button should be shown
      *
@@ -108,6 +111,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      * @note Added in QGIS 2.18
      */
     bool showUnlinkButton() const;
+
     /**
      * Determines if the "unlink feature" button should be shown
      *

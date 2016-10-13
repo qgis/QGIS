@@ -5,6 +5,7 @@
     Copyright            : (C) 2013 by Borys Jurgiel
     Email                : info at borysjurgiel dot pl
 ****************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,7 +22,8 @@
 
 class QgsPluginManager;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * QgsPluginManagerInterface
  * Abstract base class to make QgsPluginManager available to pyplugin_installer.
  */

@@ -117,6 +117,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     void setDefaultValueExpression( const QString& expression );
 
   private slots:
+
     /**
      * Slot to handle change of index in combobox to select correct page
      * @param index index of value in combobox

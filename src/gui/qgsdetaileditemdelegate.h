@@ -26,7 +26,8 @@ class QgsDetailedItemData;
 class QFontMetrics;
 class QFont;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A custom model/view delegate that can display an icon, heading
  * and detail sections.
  * @see also QgsDetailedItemData
@@ -37,11 +38,15 @@ class GUI_EXPORT QgsDetailedItemDelegate : public QAbstractItemDelegate
   public:
     QgsDetailedItemDelegate( QObject * parent = nullptr );
     ~QgsDetailedItemDelegate();
-    /** Reimplement for parent class */
+
+    /**
+     * Reimplement for parent class */
     void paint( QPainter * thePainter,
                 const QStyleOptionViewItem & theOption,
                 const QModelIndex & theIndex ) const override;
-    /** Reimplement for parent class */
+
+    /**
+     * Reimplement for parent class */
     QSize sizeHint( const QStyleOptionViewItem & theOption,
                     const QModelIndex & theIndex ) const override;
 

@@ -30,7 +30,8 @@
 #include "ui_qgsauthcertificateinfo.h"
 #include "qgsauthcertutils.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for viewing detailed info on a certificate and its hierarchical trust chain
  */
 class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
@@ -134,7 +135,8 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
 //////////////// Embed in dialog ///////////////////
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Dialog wrapper for widget displaying detailed info on a certificate and its hierarchical trust chain
  */
 class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
@@ -142,6 +144,7 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Construct a dialog displaying detailed info on a certificate and its hierarchical trust chain
      * @param cert Certificate object
@@ -155,10 +158,12 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
                                     const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
     ~QgsAuthCertInfoDialog();
 
-    /** Get access to embedded info widget */
+    /**
+     * Get access to embedded info widget */
     QgsAuthCertInfo *certInfoWidget() { return mCertInfoWdgt; }
 
-    /** Whether the trust cache has been rebuilt
+    /**
+     * Whether the trust cache has been rebuilt
      * @note This happens when a trust policy has been adjusted for any cert in the hierarchy
      */
     bool trustCacheRebuilt() { return mCertInfoWdgt->trustCacheRebuilt(); }

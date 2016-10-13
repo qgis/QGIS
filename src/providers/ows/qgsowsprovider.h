@@ -38,6 +38,7 @@ class QgsOwsProvider : public QgsDataProvider
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *

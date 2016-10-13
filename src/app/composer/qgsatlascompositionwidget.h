@@ -5,6 +5,7 @@
     copyright            : (C) 2012 Hugo Mercier
     email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,7 +22,8 @@ class QgsMapLayer;
 class QgsComposerMap;
 class QgsComposerItem;
 
-/** \ingroup app
+/**
+ * \ingroup app
   * Input widget for QgsAtlasComposition
   */
 class QgsAtlasCompositionWidget:

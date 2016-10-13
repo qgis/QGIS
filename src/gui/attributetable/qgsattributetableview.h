@@ -33,7 +33,8 @@ class QMenu;
 class QProgressDialog;
 class QgsAttributeTableConfig;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * @brief
  * Provides a table view of features of a @link QgsVectorLayer @endlink.
  *
@@ -76,6 +77,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void setAttributeTableConfig( const QgsAttributeTableConfig& config );
 
   protected:
+
     /**
      * Called for mouse press events on a table cell.
      * Disables selection change for these events.
@@ -124,6 +126,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void closeEvent( QCloseEvent *event ) override;
 
   signals:
+
     /**
      * @brief
      * Is emitted, in order to provide a hook to add aditional menu entries to the context menu.
@@ -134,7 +137,8 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      */
     void willShowContextMenu( QMenu* menu, const QModelIndex& atIndex );
 
-    /** Emitted when a column in the view has been resized.
+    /**
+     * Emitted when a column in the view has been resized.
      * @param column column index (starts at 0)
      * @param width new width in pixel
      * @note added in QGIS 2.16

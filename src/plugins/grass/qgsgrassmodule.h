@@ -5,6 +5,7 @@
     copyright            : (C) 2005 by Radim Blazek
     email                : radim.blazek@gmail.com
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -27,7 +28,8 @@
 class QDomNode;
 class QDomElement;
 
-/** \class QgsGrassModule
+/**
+ * \class QgsGrassModule
  *  \brief Interface to GRASS modules.
  *
  */
@@ -62,7 +64,8 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     //! Returns module label for module description path
     static QString label( QString path );
 
-    /** \brief Returns pixmap representing the module
+    /**
+     * \brief Returns pixmap representing the module
      * \param path module path without .qgm extension
      */
     static QPixmap pixmap( QString path, int height );
@@ -125,7 +128,9 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     //void mapsetChanged();
 
   private:
-    /** Set progress bar or busy indicator if percent is 100
+
+    /**
+     * Set progress bar or busy indicator if percent is 100
      * @param percent progress to show in %
      * @param force to set progress for 100% */
     void setProgress( int percent, bool force = false );

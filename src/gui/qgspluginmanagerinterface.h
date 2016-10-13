@@ -5,6 +5,7 @@
     Copyright            : (C) 2013 by Borys Jurgiel
     Email                : info at borysjurgiel dot pl
 ****************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -22,7 +23,8 @@
 #include <QMap>
 #include "qgsmessagebar.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPluginManagerInterface
  */
 class GUI_EXPORT QgsPluginManagerInterface : public QObject

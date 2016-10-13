@@ -34,7 +34,8 @@
 
 #include <qgswkbtypes.h>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * The Qgis class provides global constants for use throughout the application.
  */
 class CORE_EXPORT Qgis
@@ -54,26 +55,55 @@ class CORE_EXPORT Qgis
     // Enumerations
     //
 
-    /** Raster data types.
+    /**
+     * Raster data types.
      *  This is modified and extended copy of GDALDataType.
      */
     enum DataType
     {
-      /** Unknown or unspecified type */                UnknownDataType = 0,
-      /** Eight bit unsigned integer (quint8) */        Byte = 1,
-      /** Sixteen bit unsigned integer (quint16) */     UInt16 = 2,
-      /** Sixteen bit signed integer (qint16) */        Int16 = 3,
-      /** Thirty two bit unsigned integer (quint32) */  UInt32 = 4,
-      /** Thirty two bit signed integer (qint32) */     Int32 = 5,
-      /** Thirty two bit floating point (float) */      Float32 = 6,
-      /** Sixty four bit floating point (double) */     Float64 = 7,
-      /** Complex Int16 */                              CInt16 = 8,
-      /** Complex Int32 */                              CInt32 = 9,
-      /** Complex Float32 */                            CFloat32 = 10,
-      /** Complex Float64 */                            CFloat64 = 11,
-      /** Color, alpha, red, green, blue, 4 bytes the same as
+
+      /**
+       * Unknown or unspecified type */                UnknownDataType = 0,
+
+      /**
+       * Eight bit unsigned integer (quint8) */        Byte = 1,
+
+      /**
+       * Sixteen bit unsigned integer (quint16) */     UInt16 = 2,
+
+      /**
+       * Sixteen bit signed integer (qint16) */        Int16 = 3,
+
+      /**
+       * Thirty two bit unsigned integer (quint32) */  UInt32 = 4,
+
+      /**
+       * Thirty two bit signed integer (qint32) */     Int32 = 5,
+
+      /**
+       * Thirty two bit floating point (float) */      Float32 = 6,
+
+      /**
+       * Sixty four bit floating point (double) */     Float64 = 7,
+
+      /**
+       * Complex Int16 */                              CInt16 = 8,
+
+      /**
+       * Complex Int32 */                              CInt32 = 9,
+
+      /**
+       * Complex Float32 */                            CFloat32 = 10,
+
+      /**
+       * Complex Float64 */                            CFloat64 = 11,
+
+      /**
+       * Color, alpha, red, green, blue, 4 bytes the same as
           QImage::Format_ARGB32 */                      ARGB32 = 12,
-      /** Color, alpha, red, green, blue, 4 bytes  the same as
+
+      /**
+       * Color, alpha, red, green, blue, 4 bytes  the same as
           QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied = 13
     };
 
@@ -89,27 +119,32 @@ class CORE_EXPORT Qgis
       ProviderCountCalcEvent
     };
 
-    /** Identify search radius in mm
+    /**
+     * Identify search radius in mm
      *  @note added in 2.3 */
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     //! Default threshold between map coordinates and device coordinates for map2pixel simplification
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
 
-    /** Default highlight color.  The transparency is expected to only be applied to polygon
+    /**
+     * Default highlight color.  The transparency is expected to only be applied to polygon
      *  fill. Lines and outlines are rendered opaque.
      *  @note added in 2.3 */
     static const QColor DEFAULT_HIGHLIGHT_COLOR;
 
-    /** Default highlight buffer in mm.
+    /**
+     * Default highlight buffer in mm.
      *  @note added in 2.3 */
     static double DEFAULT_HIGHLIGHT_BUFFER_MM;
 
-    /** Default highlight line/outline minimum width in mm.
+    /**
+     * Default highlight line/outline minimum width in mm.
      *  @note added in 2.3 */
     static double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 
-    /** Fudge factor used to compare two scales. The code is often going from scale to scale
+    /**
+     * Fudge factor used to compare two scales. The code is often going from scale to scale
      *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
      *  To avoid that, use this factor instead of using <= or >=.
      * @note added in 2.15*/
@@ -127,7 +162,8 @@ class CORE_EXPORT Qgis
 // QLibrary
 #define cast_to_fptr(f) f
 
-/** \ingroup core
+/**
+ * \ingroup core
  * RAII signal blocking class. Used for temporarily blocking signals from a QObject
  * for the lifetime of QgsSignalBlocker object.
  * @see whileBlocking()
@@ -139,7 +175,8 @@ template<class Object> class QgsSignalBlocker
 {
   public:
 
-    /** Constructor for QgsSignalBlocker
+    /**
+     * Constructor for QgsSignalBlocker
      * @param object QObject to block signals from
      */
     explicit QgsSignalBlocker( Object* object )
@@ -162,7 +199,8 @@ template<class Object> class QgsSignalBlocker
 
 };
 
-/** Temporarily blocks signals from a QObject while calling a single method from the object.
+/**
+ * Temporarily blocks signals from a QObject while calling a single method from the object.
  *
  * Usage:
  *   whileBlocking( checkBox )->setChecked( true );
@@ -233,7 +271,8 @@ inline double qgsRound( double x )
   return x < 0.0 ? std::ceil( x - 0.5 ) : std::floor( x + 0.5 );
 }
 
-/** Converts a string to a double in a permissive way, eg allowing for incorrect
+/**
+ * Converts a string to a double in a permissive way, eg allowing for incorrect
  * numbers of digits between thousand separators
  * @param string string to convert
  * @param ok will be set to true if conversion was successful
@@ -243,7 +282,8 @@ inline double qgsRound( double x )
  */
 CORE_EXPORT double qgsPermissiveToDouble( QString string, bool& ok );
 
-/** Converts a string to an integer in a permissive way, eg allowing for incorrect
+/**
+ * Converts a string to an integer in a permissive way, eg allowing for incorrect
  * numbers of digits between thousand separators
  * @param string string to convert
  * @param ok will be set to true if conversion was successful
@@ -267,13 +307,15 @@ CORE_EXPORT bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs
 
 CORE_EXPORT QString qgsVsiPrefix( const QString& path );
 
-/** Allocates size bytes and returns a pointer to the allocated  memory.
+/**
+ * Allocates size bytes and returns a pointer to the allocated  memory.
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.
     @param size size in bytes
  */
 void CORE_EXPORT *qgsMalloc( size_t size );
 
-/** Allocates  memory for an array of nmemb elements of size bytes each and returns
+/**
+ * Allocates  memory for an array of nmemb elements of size bytes each and returns
     a pointer to the allocated memory. Works like C calloc() but prints debug message
     by QgsLogger if allocation fails.
     @param nmemb number of elements
@@ -281,34 +323,53 @@ void CORE_EXPORT *qgsMalloc( size_t size );
  */
 void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size );
 
-/** Frees the memory space  pointed  to  by  ptr. Works like C free().
+/**
+ * Frees the memory space  pointed  to  by  ptr. Works like C free().
     @param ptr pointer to memory space
  */
 void CORE_EXPORT qgsFree( void *ptr );
 
-/** Wkt string that represents a geographic coord sys
+/**
+ * Wkt string that represents a geographic coord sys
  * @note added to replace GEOWkt
  */
 extern CORE_EXPORT const QString GEOWKT;
 extern CORE_EXPORT const QString PROJECT_SCALES;
 
-/** PROJ4 string that represents a geographic coord sys */
+/**
+ * PROJ4 string that represents a geographic coord sys */
 extern CORE_EXPORT const QString GEOPROJ4;
-/** Magic number for a geographic coord sys in POSTGIS SRID */
+
+/**
+ * Magic number for a geographic coord sys in POSTGIS SRID */
 const long GEOSRID = 4326;
-/** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
+
+/**
+ * Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
 const long GEOCRS_ID = 3452;
-/** Magic number for a geographic coord sys in EpsgCrsId ID format */
+
+/**
+ * Magic number for a geographic coord sys in EpsgCrsId ID format */
 const long GEO_EPSG_CRS_ID = 4326;
-/** Geographic coord sys from EPSG authority */
+
+/**
+ * Geographic coord sys from EPSG authority */
 extern CORE_EXPORT const QString GEO_EPSG_CRS_AUTHID;
-/** The length of the string "+proj=" */
+
+/**
+ * The length of the string "+proj=" */
 const int PROJ_PREFIX_LEN = 6;
-/** The length of the string "+ellps=" */
+
+/**
+ * The length of the string "+ellps=" */
 const int ELLPS_PREFIX_LEN = 7;
-/** The length of the string "+lat_1=" */
+
+/**
+ * The length of the string "+lat_1=" */
 const int LAT_PREFIX_LEN = 7;
-/** Magick number that determines whether a projection crsid is a system (srs.db)
+
+/**
+ * Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
 const int USER_CRS_START_ID = 100000;
 
@@ -319,16 +380,19 @@ extern CORE_EXPORT const QString GEO_NONE;
 // Constants for point symbols
 //
 
-/** Magic number that determines the default point size for point symbols */
+/**
+ * Magic number that determines the default point size for point symbols */
 const double DEFAULT_POINT_SIZE = 2.0;
 const double DEFAULT_LINE_WIDTH = 0.26;
 
-/** Default snapping tolerance for segments */
+/**
+ * Default snapping tolerance for segments */
 const double DEFAULT_SEGMENT_EPSILON = 1e-8;
 
 typedef QMap<QString, QString> QgsStringMap;
 
-/** Qgssize is used instead of size_t, because size_t is stdlib type, unknown
+/**
+ * Qgssize is used instead of size_t, because size_t is stdlib type, unknown
  *  by SIP, and it would be hard to define size_t correctly in SIP.
  *  Currently used "unsigned long long" was introduced in C++11 (2011)
  *  but it was supported already before C++11 on common platforms.

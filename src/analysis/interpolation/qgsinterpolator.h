@@ -30,14 +30,17 @@ struct ANALYSIS_EXPORT vertexData
   double z;
 };
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * Interface class for interpolations. Interpolators take
 the vertices of a vector layer as base data. The z-Value
 can be an attribute or the z-coordinates in case of 25D types*/
 class ANALYSIS_EXPORT QgsInterpolator
 {
   public:
-    /** Describes the type of input data*/
+
+    /**
+     * Describes the type of input data*/
     enum InputType
     {
       POINTS,
@@ -45,7 +48,8 @@ class ANALYSIS_EXPORT QgsInterpolator
       BREAK_LINES
     };
 
-    /** A layer together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)*/
+    /**
+     * A layer together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)*/
     struct LayerData
     {
       QgsVectorLayer* vectorLayer;
@@ -58,7 +62,8 @@ class ANALYSIS_EXPORT QgsInterpolator
 
     virtual ~QgsInterpolator();
 
-    /** Calculates interpolation value for map coordinates x, y
+    /**
+     * Calculates interpolation value for map coordinates x, y
        @param x x-coordinate (in map units)
        @param y y-coordinate (in map units)
        @param result out: interpolation result
@@ -69,14 +74,17 @@ class ANALYSIS_EXPORT QgsInterpolator
     const QList<LayerData>& layerData() const { return mLayerData; }
 
   protected:
-    /** Caches the vertex and value data from the provider. All the vertex data
+
+    /**
+     * Caches the vertex and value data from the provider. All the vertex data
      will be held in virtual memory
     @return 0 in case of success*/
     int cacheBaseData();
 
     QVector<vertexData> mCachedBaseData;
 
-    /** Flag that tells if the cache already has been filled*/
+    /**
+     * Flag that tells if the cache already has been filled*/
     bool mDataIsCached;
 
     //Information about the input vector layers and the attributes (or z-values) that are used for interpolation
@@ -84,7 +92,9 @@ class ANALYSIS_EXPORT QgsInterpolator
 
   private:
     QgsInterpolator(); //forbidden
-    /** Helper method that adds the vertices of a geometry to the mCachedBaseData
+
+    /**
+     * Helper method that adds the vertices of a geometry to the mCachedBaseData
        @param geom the geometry
        @param zCoord true if the z-coordinate of the geometry is to be interpolated
        @param attributeValue the attribute value for interpolation (if not interpolated from z-coordinate)

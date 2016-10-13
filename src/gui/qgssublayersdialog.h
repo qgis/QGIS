@@ -20,7 +20,8 @@
 #include <ui_qgssublayersdialogbase.h>
 #include "qgscontexthelp.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSublayersDialog
  */
 class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDialogBase
@@ -41,10 +42,10 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     {
       LayerDefinition() : layerId( -1 ), count( -1 ) {}
 
-      int layerId;        //!< identifier of the layer (one unique layer id may have multiple types though)
-      QString layerName;  //!< name of the layer (not necessarily unique)
-      int count;          //!< number of features (might be unused)
-      QString type;       //!< extra type depending on the use (e.g. geometry type for vector sublayers)
+      int layerId;        //!< Identifier of the layer (one unique layer id may have multiple types though)
+      QString layerName;  //!< Name of the layer (not necessarily unique)
+      int count;          //!< Number of features (might be unused)
+      QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
     } LayerDefinition;
 
     //! List of layer definitions for the purpose of this dialog
@@ -69,8 +70,8 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
   protected:
     QString mName;
     QStringList mSelectedSubLayers;
-    bool mShowCount;  //!< whether to show number of features in the table
-    bool mShowType;   //!< whether to show type in the table
+    bool mShowCount;  //!< Whether to show number of features in the table
+    bool mShowType;   //!< Whether to show type in the table
 };
 
 #endif

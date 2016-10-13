@@ -363,7 +363,8 @@ extern "C"
 
 class QTreeWidgetItem;
 
-/** Set the application title bar text
+/**
+ * Set the application title bar text
 
   If the current project title is null
   if the project file is null then
@@ -2469,6 +2470,7 @@ void QgisApp::setIconSizes( int size )
 
 void QgisApp::setTheme( const QString& theThemeName )
 {
+
   /*****************************************************************
   // Init the toolbar icons by setting the icon for each action.
   // All toolbar/menu items must be a QAction in order for this
@@ -4445,7 +4447,8 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
 
   updateCrsStatusBar();
 
-  /** New Empty Project Created
+  /**
+   * New Empty Project Created
       (before attempting to load custom project templates/filepaths) */
 
   // load default template
@@ -4556,9 +4559,13 @@ void QgisApp::fileOpenAfterLaunch()
   bool projOpenedOK = settings.value( "/qgis/projOpenedOKAtLaunch", QVariant( true ) ).toBool();
 
   // notify user if last attempt at auto-opening a project failed
-  /** NOTE: Notification will not show if last auto-opened project failed but
+
+  /**
+   * NOTE: Notification will not show if last auto-opened project failed but
       next project opened is from command line (minor issue) */
-  /** TODO: Keep projOpenedOKAtLaunch from being reset to true after
+
+  /**
+   * TODO: Keep projOpenedOKAtLaunch from being reset to true after
       reading command line project (which happens before initialization signal) */
   if ( !projOpenedOK )
   {
@@ -6105,7 +6112,9 @@ void QgisApp::saveAsLayerDefinition()
 }
 
 ///@cond PRIVATE
-/** Field value converter for export as vecotr layer
+
+/**
+ * Field value converter for export as vecotr layer
  * \note Not available in Python bindings
  */
 class QgisAppFieldValueConverter : public QgsVectorFileWriter::FieldValueConverter
@@ -7641,6 +7650,7 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
     mActionPasteStyle->setEnabled( true );
   }
 }
+
 /**
    \param destinationLayer  The layer that the clipboard will be pasted to
                             (defaults to the active layer on the legend)
@@ -9117,13 +9127,15 @@ void QgisApp::unregisterMapLayerPropertiesFactory( QgsMapLayerConfigWidgetFactor
     mMapStyleWidget->setPageFactories( mMapLayerPanelFactories );
 }
 
-/** Get a pointer to the currently selected map layer */
+/**
+ * Get a pointer to the currently selected map layer */
 QgsMapLayer *QgisApp::activeLayer()
 {
   return mLayerTreeView ? mLayerTreeView->currentLayer() : nullptr;
 }
 
-/** Set the current layer */
+/**
+ * Set the current layer */
 bool QgisApp::setActiveLayer( QgsMapLayer *layer )
 {
   if ( !layer )
@@ -9136,7 +9148,8 @@ bool QgisApp::setActiveLayer( QgsMapLayer *layer )
   return true;
 }
 
-/** Add a vector layer directly without prompting user for location
+/**
+ * Add a vector layer directly without prompting user for location
   The caller must provide information compatible with the provider plugin
   using the vectorLayerPath and baseName. The provider can use these
   parameters in any way necessary to initialize the layer. The baseName
@@ -10630,6 +10643,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionLayerSubsetString->setEnabled( false );
     }
   } //end vector layer block
+
   /*************Raster layers*************/
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
@@ -10923,7 +10937,8 @@ QgsRasterLayer* QgisApp::addRasterLayer(
 }
 
 
-/** Add a raster layer directly without prompting user for location
+/**
+ * Add a raster layer directly without prompting user for location
   The caller must provide information compatible with the provider plugin
   using the uri and baseName. The provider can use these
   parameters in any way necessary to initialize the layer. The baseName

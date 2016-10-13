@@ -81,7 +81,9 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& 
     txtName->setText( connName );
   }
 }
-/** Autoconnected SLOTS **/
+
+/**
+ * Autoconnected SLOTS **/
 void QgsOracleNewConnection::accept()
 {
   QSettings settings;
@@ -165,7 +167,8 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
   }
 }
 
-/** End  Autoconnected SLOTS **/
+/**
+ * End  Autoconnected SLOTS **/
 
 QgsOracleNewConnection::~QgsOracleNewConnection()
 {

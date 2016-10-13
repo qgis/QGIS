@@ -32,7 +32,8 @@ class QgsRasterLayerRenderer;
 #include "qgsrasterinterface.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Implementation of threaded rendering for raster layers.
  *
  * @note added in 2.4
@@ -57,7 +58,8 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
     QgsRasterPipe* mPipe;
     QgsRenderContext& mContext;
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Specific internal feedback class to provide preview of raster layer rendering.
      * @note added in 3.0
      * @note not available in Python bindings
@@ -71,9 +73,9 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
         //! when notified of new data in data provider it launches a preview draw of the raster
         virtual void onNewData() override;
       private:
-        QgsRasterLayerRenderer* mR;   //!< parent renderer instance
-        int mMinimalPreviewInterval;  //!< in miliseconds
-        QTime mLastPreview;           //!< when last preview has been generated
+        QgsRasterLayerRenderer* mR;   //!< Parent renderer instance
+        int mMinimalPreviewInterval;  //!< In miliseconds
+        QTime mLastPreview;           //!< When last preview has been generated
     };
 
     //! feedback class for cancellation and preview generation

@@ -24,7 +24,8 @@
  * See details in QEP #17
  ****************************************************************************/
 
-/** \class QgsFields
+/**
+ * \class QgsFields
  * \ingroup core
  * Container of fields for a vector layer.
  *
@@ -39,11 +40,11 @@ class CORE_EXPORT QgsFields
 
     enum FieldOrigin
     {
-      OriginUnknown,   //!< it has not been specified where the field comes from
-      OriginProvider,  //!< field comes from the underlying data provider of the vector layer  (originIndex = index in provider's fields)
-      OriginJoin,      //!< field comes from a joined layer   (originIndex / 1000 = index of the join, originIndex % 1000 = index within the join)
-      OriginEdit,      //!< field has been temporarily added in editing mode (originIndex = index in the list of added attributes)
-      OriginExpression //!< field is calculated from an expression
+      OriginUnknown,   //!< It has not been specified where the field comes from
+      OriginProvider,  //!< Field comes from the underlying data provider of the vector layer  (originIndex = index in provider's fields)
+      OriginJoin,      //!< Field comes from a joined layer   (originIndex / 1000 = index of the join, originIndex % 1000 = index within the join)
+      OriginEdit,      //!< Field has been temporarily added in editing mode (originIndex = index in the list of added attributes)
+      OriginExpression //!< Field is calculated from an expression
     };
 
     typedef struct Field
@@ -63,20 +64,23 @@ class CORE_EXPORT QgsFields
       //! @note added in 2.6
       bool operator!=( const Field& other ) const { return !( *this == other ); }
 
-      QgsField field;      //!< field
-      FieldOrigin origin;  //!< origin of the field
-      int originIndex;     //!< index specific to the origin
+      QgsField field;      //!< Field
+      FieldOrigin origin;  //!< Origin of the field
+      int originIndex;     //!< Index specific to the origin
     } Field;
 
-    /** Constructor for an empty field container
+    /**
+     * Constructor for an empty field container
      */
     QgsFields();
 
-    /** Copy constructor
+    /**
+     * Copy constructor
      */
     QgsFields( const QgsFields& other );
 
-    /** Assignment operator
+    /**
+     * Assignment operator
      */
     QgsFields& operator =( const QgsFields& other );
 
@@ -173,7 +177,9 @@ class CORE_EXPORT QgsFields
     bool operator==( const QgsFields& other ) const;
     //! @note added in 2.6
     bool operator!=( const QgsFields& other ) const { return !( *this == other ); }
-    /** Returns an icon corresponding to a field index, based on the field's type and source
+
+    /**
+     * Returns an icon corresponding to a field index, based on the field's type and source
      * @note added in QGIS 2.14
      */
     QIcon iconForField( int fieldIdx ) const;
@@ -320,9 +326,12 @@ class CORE_EXPORT QgsFields
 
 Q_DECLARE_METATYPE( QgsFields )
 
-/** Writes the fields to stream out. QGIS version compatibility is not guaranteed. */
+/**
+ * Writes the fields to stream out. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsFields& fields );
-/** Reads fields from stream in into fields. QGIS version compatibility is not guaranteed. */
+
+/**
+ * Reads fields from stream in into fields. QGIS version compatibility is not guaranteed. */
 CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsFields& fields );
 
 #endif // QGSFIELDS_H

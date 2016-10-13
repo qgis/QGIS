@@ -5,6 +5,7 @@
     copyright            : (C) 2008 by Marco Hugentobler
     email                : marco.hugentobler@karto.baug.ethz.ch
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,7 +20,8 @@
 
 #include "qgsscalebarstyle.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Double box with alternating colors
   */
 class CORE_EXPORT QgsDoubleBoxScaleBarStyle: public QgsScaleBarStyle

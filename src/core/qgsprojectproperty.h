@@ -31,7 +31,8 @@ class QDomElement;
 class QDomDocument;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * An Abstract Base Class for QGIS project property hierarchies.
 
    Each sub-class is either a QgsPropertyKey or QgsPropertyValue.  QgsPropertyKeys can
@@ -50,19 +51,23 @@ class CORE_EXPORT QgsProperty
     QgsProperty();
     virtual ~QgsProperty();
 
-    /** Dumps out the keys and values
+    /**
+     * Dumps out the keys and values
      *
      * @param tabs is number of tabs to print; used for pretty-printing hierarchy
      */
     virtual void dump( int tabs = 0 ) const = 0;
 
-    /** Returns true if is a QgsPropertyKey */
+    /**
+     * Returns true if is a QgsPropertyKey */
     virtual bool isKey() const = 0;
 
-    /** Returns true if is a QgsPropertyValue */
+    /**
+     * Returns true if is a QgsPropertyValue */
     virtual bool isValue() const = 0;
 
-    /** Returns true if a leaf node
+    /**
+     * Returns true if a leaf node
      *
      * A leaf node is a key node that has either no value or a single value.
      * A non-leaf node would be a key node with key sub-nodes.
@@ -91,7 +96,8 @@ class CORE_EXPORT QgsProperty
                            QDomElement   & element,
                            QDomDocument  & document ) = 0;
 
-    /** Return the node's value
+    /**
+     * Return the node's value
      *
      * For QgsPropertyValue nodes, this is straightforward -- just return the
      * embedded QVariant, _value.  For QgsPropertyKey, this means returning
@@ -107,7 +113,8 @@ class CORE_EXPORT QgsProperty
 
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * QgsPropertyValue node
 
 Contains a QgsPropertyKey's value
@@ -123,15 +130,18 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
 
     virtual ~QgsPropertyValue();
 
-    /** Returns true if is a QgsPropertyKey */
+    /**
+     * Returns true if is a QgsPropertyKey */
     virtual bool isKey() const override { return false; }
 
-    /** Returns true if is a QgsPropertyValue */
+    /**
+     * Returns true if is a QgsPropertyValue */
     virtual bool isValue() const override { return true; }
 
     QVariant value() const override { return value_; }
 
-    /** Returns true if is a leaf node
+    /**
+     * Returns true if is a leaf node
      *
      * @note I suppose, in a way, value nodes can also be qualified as leaf
      * nodes even though we're only counting key nodes.
@@ -148,7 +158,8 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
 
     int count() const { return 0; }
 
-    /** Return keys that do not contain other keys
+    /**
+     * Return keys that do not contain other keys
      * Since QgsPropertyValue isn't a key, don't do anything.
      */
     void entryList( QStringList & keyName, QStringList & entries ) const
@@ -156,7 +167,8 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
 
   private:
 
-    /** We use QVariant as it's very handy to keep multiple types and provides
+    /**
+     * We use QVariant as it's very handy to keep multiple types and provides
      * type conversions
      */
     QVariant value_;
@@ -166,7 +178,8 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
 
 
 
-/** \ingroup core
+/**
+ * \ingroup core
    QgsPropertyKey node
 
    Can, itself, contain QgsPropertyKeys and QgsPropertyValues.
@@ -197,7 +210,8 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
     // @}
 
 
-    /** If this key has a value, it will be stored by its name in its
+    /**
+     * If this key has a value, it will be stored by its name in its
      * properties
      */
     QVariant value() const override;
@@ -219,7 +233,8 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
       delete mProperties.take( keyName );
     }
 
-    /** Set the value associated with this key
+    /**
+     * Set the value associated with this key
      * @param name is the key name
      * @param value is the value to set
      * @return pointer to property value
@@ -232,7 +247,8 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
       return dynamic_cast<QgsPropertyValue*>( mProperties.value( name ) );
     }
 
-    /** Set the value associated with this key
+    /**
+     * Set the value associated with this key
      *
      * @note that the single value node associated with each key is always
      * stored keyed by the current key name
@@ -254,10 +270,12 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
     /// Does this property not have any subkeys or values?
     /* virtual */ bool isEmpty() const { return mProperties.isEmpty(); }
 
-    /** Returns true if is a QgsPropertyKey */
+    /**
+     * Returns true if is a QgsPropertyKey */
     virtual bool isKey() const override { return true; }
 
-    /** Returns true if is a QgsPropertyValue */
+    /**
+     * Returns true if is a QgsPropertyValue */
     virtual bool isValue() const override { return false; }
 
     /// return keys that do not contain other keys
@@ -266,7 +284,8 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
     /// return keys that contain other keys
     void subkeyList( QStringList & entries ) const;
 
-    /** Returns true if a leaf node
+    /**
+     * Returns true if a leaf node
      * A leaf node is a key node that has either no value or a single value.
      * A non-leaf node would be a key node with key sub-nodes.
      */

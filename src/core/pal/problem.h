@@ -54,6 +54,7 @@ namespace pal
 
   typedef struct _subpart
   {
+
     /**
      * # of features in problem
      */
@@ -73,10 +74,12 @@ namespace pal
      * wrap bw sub feat and main feat
      */
     int *sub;
+
     /**
      * sub solution
      */
     int *sol;
+
     /**
      * first feat in sub part
      */
@@ -109,7 +112,8 @@ namespace pal
 
       ~Problem();
 
-      /** Adds a candidate label position to the problem.
+      /**
+       * Adds a candidate label position to the problem.
        * @param position label candidate position. Ownership is transferred to Problem.
        * @note added in QGIS 2.12
        */
@@ -189,6 +193,7 @@ namespace pal
        * # active candidates (remaining after reduce())
        */
       int nblp;
+
       /**
        * # candidates (all, including)
        */

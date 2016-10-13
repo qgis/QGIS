@@ -21,7 +21,8 @@
 #include <QComboBox>
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a value map widget.
  *
  * Options:

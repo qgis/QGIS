@@ -27,7 +27,8 @@
 #include <QStringList>
 #include <QPushButton>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Connections management
  */
 class CORE_EXPORT QgsOwsConnection : public QObject
@@ -35,6 +36,7 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * @param theService service name: WMS,WFS,WCS
@@ -45,19 +47,26 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     //! Destructor
     ~QgsOwsConnection();
 
-    /** Returns the list of connections for the specified service */
+    /**
+     * Returns the list of connections for the specified service */
     static QStringList connectionList( const QString & theService );
 
-    /** Deletes the connection for the specified service with the specified name */
+    /**
+     * Deletes the connection for the specified service with the specified name */
     static void deleteConnection( const QString & theService, const QString & name );
 
-    /** Retreives the selected connection for the specified service */
+    /**
+     * Retreives the selected connection for the specified service */
     static QString selectedConnection( const QString & theService );
-    /** Marks the specified connection for the specified service as selected */
+
+    /**
+     * Marks the specified connection for the specified service as selected */
     static void setSelectedConnection( const QString & theService, const QString & name );
 
     QString mConnName;
-    /** Returns the connection uri */
+
+    /**
+     * Returns the connection uri */
     QgsDataSourceUri uri() const;
     QString mConnectionInfo;
 

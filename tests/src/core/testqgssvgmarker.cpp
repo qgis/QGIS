@@ -35,7 +35,8 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for SVG marker symbol types.
  */
 class TestQgsSvgMarkerSymbol : public QObject

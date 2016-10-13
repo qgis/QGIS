@@ -19,7 +19,8 @@
 #include "qgstip.h"
 #include <QList>
 
-/** \ingroup app
+/**
+ * \ingroup app
 * \brief A factory class to serve up tips to the user.
 * Tips can be generic, in which case they make no mention of
 * gui dialogs etc, or gui-specific in which case they may allude
@@ -31,15 +32,23 @@ class APP_EXPORT QgsTipFactory : public QObject
 {
     Q_OBJECT //used for tr() so we don't need to do QObject::tr()
   public:
-    /** Constructor */
+
+    /**
+     * Constructor */
     QgsTipFactory();
-    /** Destructor */
+
+    /**
+     * Destructor */
     ~QgsTipFactory();
-    /** Get a random tip (generic or gui-centric)
+
+    /**
+     * Get a random tip (generic or gui-centric)
      * @return An QgsTip containing the tip
      */
     QgsTip getTip();
-    /** Get a specific tip (generic or gui-centric).
+
+    /**
+     * Get a specific tip (generic or gui-centric).
      * @param thePosition The tip returned will be based on the
      *        number passed in as thePosition. If the
      *        position is invalid, an empty string will be
@@ -47,11 +56,15 @@ class APP_EXPORT QgsTipFactory : public QObject
      * @return An QgsTip containing the tip
      */
     QgsTip getTip( int thePosition );
-    /** Get a random generic tip
+
+    /**
+     * Get a random generic tip
      * @return An QgsTip containing the tip
      */
     QgsTip getGenericTip();
-    /** Get a random gui-centric tip
+
+    /**
+     * Get a random gui-centric tip
      * @return An QgsTip  containing the tip
      */
     QgsTip getGuiTip();

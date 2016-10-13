@@ -21,7 +21,8 @@
 class QgsLayerItem;
 class QgsLayerTreeNode;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMimeDataUtils
  */
 class CORE_EXPORT QgsMimeDataUtils

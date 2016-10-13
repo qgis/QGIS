@@ -47,12 +47,14 @@ class APP_EXPORT QgsDecorationItem: public QObject
     void setEnabled( bool enabled ) { mEnabled = enabled; }
     bool enabled() const { return mEnabled; }
 
-    /** Returns the current placement for the item.
+    /**
+     * Returns the current placement for the item.
      * @see setPlacement()
      */
     Placement placement() const { return mPlacement; }
 
-    /** Sets the placement of the item.
+    /**
+     * Sets the placement of the item.
      * @see placement()
      */
     void setPlacement( Placement placement ) { mPlacement = placement; }
@@ -79,7 +81,8 @@ class APP_EXPORT QgsDecorationItem: public QObject
 
   protected:
 
-    /** True if decoration item has to be displayed*/
+    /**
+     * True if decoration item has to be displayed*/
     bool mEnabled;
 
     //! Placement of the decoration

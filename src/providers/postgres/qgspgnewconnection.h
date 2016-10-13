@@ -21,7 +21,8 @@
 #include "qgscontexthelp.h"
 #include "qgsauthconfigselect.h"
 
-/** \class QgsPgNewConnection
+/**
+ * \class QgsPgNewConnection
  * \brief Dialog to allow the user to configure and save connection
  * information for a PostgreSQL database
  */

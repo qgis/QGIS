@@ -28,7 +28,8 @@
 class QgsField;
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSearchQueryBuilder
  * \brief Query Builder for search strings
  */
@@ -70,7 +71,8 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     void on_btnOr_clicked();
     void on_btnClear_clicked();
 
-    /** Test the constructed search string to see if it's correct.
+    /**
+     * Test the constructed search string to see if it's correct.
      * The number of rows that would be returned is displayed in a message box.
      */
     void on_btnTest_clicked();
@@ -104,7 +106,8 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
      */
     void setupListViews();
 
-    /** Get the number of records that would be returned by the current SQL
+    /**
+     * Get the number of records that would be returned by the current SQL
      * @return Number of records or -1 if an error was encountered
      */
     long countRecords( const QString& sql );

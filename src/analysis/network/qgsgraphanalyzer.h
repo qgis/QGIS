@@ -24,13 +24,15 @@
 // forward-declaration
 class QgsGraph;
 
-/** \ingroup networkanalysis
+/**
+ * \ingroup networkanalysis
  * The QGis class provides graph analysis functions
  */
 
 class ANALYSIS_EXPORT QgsGraphAnalyzer
 {
   public:
+
     /**
      * solve shortest path problem using dijkstra algorithm
      * @param source The source graph

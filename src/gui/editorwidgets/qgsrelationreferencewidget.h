@@ -38,7 +38,8 @@ class QgsFeatureListModel;
 class QgsCollapsibleGroupBox;
 class QLabel;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRelationReferenceWidget
  */
 class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
@@ -115,7 +116,8 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     //! if no feature is related, it returns an invalid feature
     QgsFeature referencedFeature() const;
 
-    /** Sets the widget to display in an indeterminate "mixed value" state.
+    /**
+     * Sets the widget to display in an indeterminate "mixed value" state.
      * @note added in QGIS 2.16
      */
     void showIndeterminateState();

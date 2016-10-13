@@ -30,7 +30,8 @@
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
 class TestQgsInvertedPolygon : public QObject

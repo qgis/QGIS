@@ -75,6 +75,7 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
       const QString &authcfg,
       QString &connInfo,
       QString &errorMsg );
+
     /**
      * Fetch geometry column data from server and populate Browser Panel with
      * schemas and layers.
@@ -98,6 +99,7 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
     void addGeometryColumn( QgsDb2LayerProperty );
 
   public slots:
+
     /**
      * Refresh with saved connection data.
      */

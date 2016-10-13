@@ -23,7 +23,8 @@
 
 class QgsPointClusterRenderer;
 
-/** \class QgsPointClusterRendererWidget
+/**
+ * \class QgsPointClusterRendererWidget
  * \ingroup gui
  * A widget which allows configuration of the properties for a QgsPointClusterRenderer.
  * \note added in QGIS 3.0
@@ -34,7 +35,8 @@ class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, privat
     Q_OBJECT
   public:
 
-    /** Returns a new QgsPointClusterRendererWidget.
+    /**
+     * Returns a new QgsPointClusterRendererWidget.
      * @param layer associated vector layer
      * @param style style collection
      * @param renderer source QgsPointClusterRenderer renderer
@@ -42,7 +44,8 @@ class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, privat
      */
     static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
-    /** Constructor for QgsPointClusterRendererWidget.
+    /**
+     * Constructor for QgsPointClusterRendererWidget.
      * @param layer associated vector layer
      * @param style style collection
      * @param renderer source QgsPointClusterRenderer renderer

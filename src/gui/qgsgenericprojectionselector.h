@@ -48,6 +48,7 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor
      */
@@ -58,7 +59,9 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
     ~QgsGenericProjectionSelector();
 
   public slots:
-    /** If no parameter is passed, the message will be a generic
+
+    /**
+     * If no parameter is passed, the message will be a generic
      * 'define the CRS for this layer'.
      */
     void setMessage( QString theMessage = "" );

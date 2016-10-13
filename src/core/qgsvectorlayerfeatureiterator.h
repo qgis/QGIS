@@ -31,7 +31,8 @@ class QgsExpressionContext;
 
 class QgsVectorLayerFeatureIterator;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Partial snapshot of vector layer's state (only the members necessary for access to features)
  * @note not available in Python bindings
 */
@@ -39,7 +40,8 @@ class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {
   public:
 
-    /** Constructor for QgsVectorLayerFeatureSource.
+    /**
+     * Constructor for QgsVectorLayerFeatureSource.
      * @param layer source layer
      */
     explicit QgsVectorLayerFeatureSource( const QgsVectorLayer* layer );
@@ -75,7 +77,8 @@ class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     long mCrsId;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>
 {
@@ -144,7 +147,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      */
     void addVirtualAttributes( QgsFeature &f );
 
-    /** Adds an expression based attribute to a feature
+    /**
+     * Adds an expression based attribute to a feature
      * @param f feature
      * @param attrIndex attribute index
      * @note added in QGIS 2.14
@@ -152,27 +156,30 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      */
     void addExpressionAttribute( QgsFeature& f, int attrIndex );
 
-    /** Update feature with uncommited attribute updates.
+    /**
+     * Update feature with uncommited attribute updates.
      * @note not available in Python bindings
      */
     void updateChangedAttributes( QgsFeature& f );
 
-    /** Update feature with uncommited geometry updates.
+    /**
+     * Update feature with uncommited geometry updates.
      * @note not available in Python bindings
      */
     void updateFeatureGeometry( QgsFeature& f );
 
-    /** Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
+    /**
+     * Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
      * Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes
      */
     struct FetchJoinInfo
     {
-      const QgsVectorJoinInfo* joinInfo;//!< cannonical source of information about the join
-      QgsAttributeList attributes;      //!< attributes to fetch
-      int indexOffset;                  //!< at what position the joined fields start
-      QgsVectorLayer* joinLayer;        //!< resolved pointer to the joined layer
-      int targetField;                  //!< index of field (of this layer) that drives the join
-      int joinField;                    //!< index of field (of the joined layer) must have equal value
+      const QgsVectorJoinInfo* joinInfo;//!< Cannonical source of information about the join
+      QgsAttributeList attributes;      //!< Attributes to fetch
+      int indexOffset;                  //!< At what position the joined fields start
+      QgsVectorLayer* joinLayer;        //!< Resolved pointer to the joined layer
+      int targetField;                  //!< Index of field (of this layer) that drives the join
+      int joinField;                    //!< Index of field (of the joined layer) must have equal value
 
       void addJoinedAttributesCached( QgsFeature& f, const QVariant& joinValue ) const;
       void addJoinedAttributesDirect( QgsFeature& f, const QVariant& joinValue ) const;
@@ -190,7 +197,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     bool mFetchedFid; // when iterating by FID: indicator whether it has been fetched yet or not
 
-    /** Information about joins used in the current select() statement.
+    /**
+     * Information about joins used in the current select() statement.
       Allows faster mapping of attribute ids compared to mVectorJoins */
     QMap<const QgsVectorJoinInfo*, FetchJoinInfo> mFetchJoinInfo;
 
@@ -206,7 +214,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QList< int > mPreparedFields;
     QList< int > mFieldsToPrepare;
 
-    /** Join list sorted by dependency*/
+    /**
+     * Join list sorted by dependency*/
     QList< FetchJoinInfo > mOrderedJoinInfoList;
 
     /**

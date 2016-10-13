@@ -21,6 +21,7 @@
 class QgsWfsConnection : public QgsOwsConnection
 {
   public:
+
     /**
      * Constructor
      * @param theConnName connection name

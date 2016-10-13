@@ -21,7 +21,8 @@
 #include "qgsexpression.h"
 #include <QScopedPointer>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSingleSymbolRenderer
  */
 class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer

@@ -30,7 +30,8 @@
 #include "qgis.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Configuration storage class for authentication method configurations
  */
 class CORE_EXPORT QgsAuthMethodConfig
@@ -44,10 +45,12 @@ class CORE_EXPORT QgsAuthMethodConfig
      */
     QgsAuthMethodConfig( const QString& method = QString(), int version = 0 );
 
-    /** Operator used to compare configs' equality */
+    /**
+     * Operator used to compare configs' equality */
     bool operator==( const QgsAuthMethodConfig& other ) const;
 
-    /** Operator used to compare configs' inequality */
+    /**
+     * Operator used to compare configs' inequality */
     bool operator!=( const QgsAuthMethodConfig& other ) const;
 
     /**
@@ -55,25 +58,35 @@ class CORE_EXPORT QgsAuthMethodConfig
      * @note This is set by QgsAuthManager when the config is initially stored
      */
     const QString id() const { return mId; }
-    /** Set auth config ID */
+
+    /**
+     * Set auth config ID */
     void setId( const QString& id ) { mId = id; }
 
-    /** Get name of configuration */
+    /**
+     * Get name of configuration */
     const QString name() const { return mName; }
-    /** Set name of configuration */
+
+    /**
+     * Set name of configuration */
     void setName( const QString& name ) { mName = name; }
 
-    /** A URI to auto-select a config when connecting to a resource */
+    /**
+     * A URI to auto-select a config when connecting to a resource */
     const QString uri() const { return mUri; }
     void setUri( const QString& uri ) { mUri = uri; }
 
-    /** Textual key of the associated authentication method */
+    /**
+     * Textual key of the associated authentication method */
     QString method() const { return mMethod; }
     void setMethod( const QString& method ) { mMethod = method; }
 
-    /** Get version of the configuration */
+    /**
+     * Get version of the configuration */
     int version() const { return mVersion; }
-    /** Set version of the configuration */
+
+    /**
+     * Set version of the configuration */
     void setVersion( int version ) { mVersion = version; }
 
     /**
@@ -87,14 +100,17 @@ class CORE_EXPORT QgsAuthMethodConfig
      * @note This is an internal construct used by QgsAuthManager that should generally not be set by client code
      */
     const QString configString() const;
+
     /**
      * Load existing extended configuration
      * @param configstr Configuration string to load
      */
     void loadConfigString( const QString& configstr );
 
-    /** Get extended configuration, mapped to key/value pairs of QStrings */
+    /**
+     * Get extended configuration, mapped to key/value pairs of QStrings */
     QgsStringMap configMap() const { return mConfigMap; }
+
     /**
      * Set extended configuration map
      * @param map Map to set
@@ -108,6 +124,7 @@ class CORE_EXPORT QgsAuthMethodConfig
      * @param value Config value
      */
     void setConfig( const QString &key, const QString &value );
+
     /**
      * Set a multiple config values per key in the map
      * @note if key exists, it is replaced
@@ -142,7 +159,8 @@ class CORE_EXPORT QgsAuthMethodConfig
      */
     bool hasConfig( const QString &key ) const;
 
-    /** Clear all configs */
+    /**
+     * Clear all configs */
     void clearConfigMap() { mConfigMap.clear(); }
 
     /**
@@ -176,13 +194,15 @@ typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;
 
 #ifndef QT_NO_OPENSSL
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Storage set for PKI bundle: SSL certificate, key, optional CA cert chain
  * \note Useful for caching the bundle during application run sessions
  */
 class CORE_EXPORT QgsPkiBundle
 {
   public:
+
     /**
      * Construct a bundle from existing PKI components
      * @param clientCert Certificate to store in bundle
@@ -213,28 +233,40 @@ class CORE_EXPORT QgsPkiBundle
     static const QgsPkiBundle fromPkcs12Paths( const QString &bundlepath,
         const QString &bundlepass = QString::null );
 
-    /** Whether the bundle, either its certificate or private key, is null */
+    /**
+     * Whether the bundle, either its certificate or private key, is null */
     bool isNull() const;
 
-    /** Whether the bundle is valid */
+    /**
+     * Whether the bundle is valid */
     bool isValid() const;
 
-    /** The sha hash of the client certificate */
+    /**
+     * The sha hash of the client certificate */
     const QString certId() const;
 
-    /** Client certificate object */
+    /**
+     * Client certificate object */
     const QSslCertificate clientCert() const { return mCert; }
-    /** Set client certificate object */
+
+    /**
+     * Set client certificate object */
     void setClientCert( const QSslCertificate &cert );
 
-    /** Private key object */
+    /**
+     * Private key object */
     const QSslKey clientKey() const { return mCertKey; }
-    /** Set private key object */
+
+    /**
+     * Set private key object */
     void setClientKey( const QSslKey &certkey );
 
-    /** Chain of Certificate Authorities for client certificate */
+    /**
+     * Chain of Certificate Authorities for client certificate */
     const QList<QSslCertificate> caChain() const { return mCaChain; }
-    /** Set chain of Certificate Authorities for client certificate */
+
+    /**
+     * Set chain of Certificate Authorities for client certificate */
     void setCaChain( const QList<QSslCertificate> &cachain ) { mCaChain = cachain; }
 
   private:
@@ -244,12 +276,14 @@ class CORE_EXPORT QgsPkiBundle
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Storage set for constructed SSL certificate, key, associated with an authentication config
  */
 class CORE_EXPORT QgsPkiConfigBundle
 {
   public:
+
     /**
      * Construct a bundle from existing PKI components and authentication method configuration
      * @param config Authentication method configuration
@@ -260,22 +294,32 @@ class CORE_EXPORT QgsPkiConfigBundle
                         const QSslCertificate& cert,
                         const QSslKey& certkey );
 
-    /** Whether the bundle is valid */
+    /**
+     * Whether the bundle is valid */
     bool isValid();
 
-    /** Authentication method configuration */
+    /**
+     * Authentication method configuration */
     const QgsAuthMethodConfig config() const { return mConfig; }
-    /** Set authentication method configuration */
+
+    /**
+     * Set authentication method configuration */
     void setConfig( const QgsAuthMethodConfig& config ) { mConfig = config; }
 
-    /** Client certificate object */
+    /**
+     * Client certificate object */
     const QSslCertificate clientCert() const { return mCert; }
-    /** Set client certificate object */
+
+    /**
+     * Set client certificate object */
     void setClientCert( const QSslCertificate& cert ) { mCert = cert; }
 
-    /** Private key object */
+    /**
+     * Private key object */
     const QSslKey clientCertKey() const { return mCertKey; }
-    /** Set private key object */
+
+    /**
+     * Set private key object */
     void setClientCertKey( const QSslKey& certkey ) { mCertKey = certkey; }
 
   private:
@@ -285,69 +329,102 @@ class CORE_EXPORT QgsPkiConfigBundle
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Configuration container for SSL server connection exceptions or overrides
  */
 class CORE_EXPORT QgsAuthConfigSslServer
 {
   public:
-    /** Construct a default SSL server configuration */
+
+    /**
+     * Construct a default SSL server configuration */
     QgsAuthConfigSslServer();
 
     ~QgsAuthConfigSslServer() {}
 
-    /** Server certificate object */
+    /**
+     * Server certificate object */
     const QSslCertificate sslCertificate() const { return mSslCert; }
-    /** Set server certificate object */
+
+    /**
+     * Set server certificate object */
     void setSslCertificate( const QSslCertificate& cert ) { mSslCert = cert; }
 
-    /** Server host:port string */
+    /**
+     * Server host:port string */
     const QString sslHostPort() const  { return mSslHostPort; }
-    /** Set server host:port string */
+
+    /**
+     * Set server host:port string */
     void setSslHostPort( const QString& hostport ) { mSslHostPort = hostport; }
 
-    /** SSL server protocol to use in connections */
+    /**
+     * SSL server protocol to use in connections */
     QSsl::SslProtocol sslProtocol() const { return mSslProtocol; }
-    /** Set SSL server protocol to use in connections */
+
+    /**
+     * Set SSL server protocol to use in connections */
     void setSslProtocol( QSsl::SslProtocol protocol ) { mSslProtocol = protocol; }
 
-    /** SSL server errors to ignore in connections */
+    /**
+     * SSL server errors to ignore in connections */
     const QList<QSslError> sslIgnoredErrors() const;
-    /** SSL server errors (as enum list) to ignore in connections */
+
+    /**
+     * SSL server errors (as enum list) to ignore in connections */
     const QList<QSslError::SslError> sslIgnoredErrorEnums() const { return mSslIgnoredErrors; }
-    /** Set SSL server errors (as enum list) to ignore in connections */
+
+    /**
+     * Set SSL server errors (as enum list) to ignore in connections */
     void setSslIgnoredErrorEnums( const QList<QSslError::SslError>& errors ) { mSslIgnoredErrors = errors; }
 
-    /** SSL client's peer verify mode to use in connections */
+    /**
+     * SSL client's peer verify mode to use in connections */
     QSslSocket::PeerVerifyMode sslPeerVerifyMode() const { return mSslPeerVerifyMode; }
-    /** Set SSL client's peer verify mode to use in connections */
+
+    /**
+     * Set SSL client's peer verify mode to use in connections */
     void setSslPeerVerifyMode( QSslSocket::PeerVerifyMode mode ) { mSslPeerVerifyMode = mode; }
 
-    /** Number or SSL client's peer to verify in connections
+    /**
+     * Number or SSL client's peer to verify in connections
      * @note When set to 0 = unlimited depth
      */
     int sslPeerVerifyDepth() const { return mSslPeerVerifyDepth; }
-    /** Set number or SSL client's peer to verify in connections
+
+    /**
+     * Set number or SSL client's peer to verify in connections
      * @note When set to 0 = unlimited depth
      */
     void setSslPeerVerifyDepth( int depth ) { mSslPeerVerifyDepth = depth; }
 
-    /** Version of the configuration (used for future upgrading) */
+    /**
+     * Version of the configuration (used for future upgrading) */
     int version() const { return mVersion; }
-    /** Set version of the configuration (used for future upgrading) */
+
+    /**
+     * Set version of the configuration (used for future upgrading) */
     void setVersion( int version ) { mVersion = version; }
 
-    /** Qt version when the configuration was made (SSL protocols may differ) */
+    /**
+     * Qt version when the configuration was made (SSL protocols may differ) */
     int qtVersion() const { return mQtVersion; }
-    /** Set Qt version when the configuration was made (SSL protocols may differ) */
+
+    /**
+     * Set Qt version when the configuration was made (SSL protocols may differ) */
     void setQtVersion( int version ) { mQtVersion = version; }
 
-    /** Configuration as a concatenated string */
+    /**
+     * Configuration as a concatenated string */
     const QString configString() const;
-    /** Load concatenated string into configuration, e.g. from auth database */
+
+    /**
+     * Load concatenated string into configuration, e.g. from auth database */
     void loadConfigString( const QString& config = QString() );
 
-    /** Whether configuration is null (missing components) */
+    /**
+     * Whether configuration is null (missing components) */
     bool isNull() const;
 
   private:

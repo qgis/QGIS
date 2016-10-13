@@ -24,7 +24,8 @@
  *
  */
 
-/** \file */
+/**
+ * \file */
 
 #ifndef NMEA_INFO_H
 #define NMEA_INFO_H

@@ -20,7 +20,8 @@
 #include "qgseditorwidgetfactory.h"
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsExternalResourceWidgetFactory
  * \note not available in Python bindings
  */

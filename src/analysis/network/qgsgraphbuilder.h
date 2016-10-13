@@ -36,6 +36,7 @@ class QgsGraph;
 class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
 {
   public:
+
     /**
      * default constructor
      */

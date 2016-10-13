@@ -24,7 +24,8 @@
  *
  */
 
-/** \file tok.h */
+/**
+ * \file tok.h */
 
 #include "tok.h"
 

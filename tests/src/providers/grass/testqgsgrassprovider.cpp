@@ -190,7 +190,8 @@ class TestQgsGrassCommandGroup
     QMap<QgsFeatureId, QgsFeatureId> expectedFids;
 };
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
 class TestQgsGrassProvider: public QObject

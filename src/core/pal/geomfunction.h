@@ -35,6 +35,7 @@
 
 namespace pal
 {
+
   /**
    * \ingroup core
    * \class pal::GeomFunction
@@ -100,7 +101,8 @@ namespace pal
       //! Reorder points to have cross prod ((x,y)[i], (x,y)[i+1), point) > 0 when point is outside
       static int reorderPolygon( int nbPoints, double *x, double *y );
 
-      /** Returns true if a GEOS prepared geometry totally contains a label candidate.
+      /**
+       * Returns true if a GEOS prepared geometry totally contains a label candidate.
        * @param geom GEOS prepared geometry
        * @param x candidate x
        * @param y candidate y

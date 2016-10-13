@@ -20,7 +20,8 @@
 
 #include "qgspointdistancerenderer.h"
 
-/** \class QgsPointDisplacementRenderer
+/**
+ * \class QgsPointDisplacementRenderer
  * \ingroup core
  * A renderer that automatically displaces points with the same geographic location.
 */
@@ -28,15 +29,17 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
 {
   public:
 
-    /** Placement methods for dispersing points
+    /**
+     * Placement methods for dispersing points
      */
     enum Placement
     {
-      Ring, /*!< Place points in a single ring around group*/
-      ConcentricRings /*!< Place points in concentric rings around group*/
+      Ring, //!< Place points in a single ring around group
+      ConcentricRings //!< Place points in concentric rings around group
     };
 
-    /** Constructor for QgsPointDisplacementRenderer.
+    /**
+     * Constructor for QgsPointDisplacementRenderer.
      * @param labelAttributeName optional attribute name for labeling points
      */
     QgsPointDisplacementRenderer( const QString& labelAttributeName = QString() );
@@ -50,68 +53,79 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     //! Create a renderer from XML element
     static QgsFeatureRenderer* create( QDomElement& symbologyElem );
 
-    /** Sets the line width for the displacement group circle.
+    /**
+     * Sets the line width for the displacement group circle.
      * @param width line width in mm
      * @see circleWidth()
      * @see setCircleColor()
      */
     void setCircleWidth( double width ) { mCircleWidth = width; }
 
-    /** Returns the line width for the displacement group circle in mm.
+    /**
+     * Returns the line width for the displacement group circle in mm.
      * @see setCircleWidth()
      * @see circleColor()
      */
     double circleWidth() const { return mCircleWidth; }
 
-    /** Sets the color used for drawing the displacement group circle.
+    /**
+     * Sets the color used for drawing the displacement group circle.
      * @param color circle color
      * @see circleColor()
      * @see setCircleWidth()
      */
     void setCircleColor( const QColor& color ) { mCircleColor = color; }
 
-    /** Returns the color used for drawing the displacement group circle.
+    /**
+     * Returns the color used for drawing the displacement group circle.
      * @see setCircleColor()
      * @see circleWidth()
      */
     QColor circleColor() const { return mCircleColor; }
 
-    /** Sets a factor for increasing the ring size of displacement groups.
+    /**
+     * Sets a factor for increasing the ring size of displacement groups.
      * @param distance addition factor
      * @see circleRadiusAddition()
      */
     void setCircleRadiusAddition( double distance ) { mCircleRadiusAddition = distance; }
 
-    /** Returns the factor for increasing the ring size of displacement groups.
+    /**
+     * Returns the factor for increasing the ring size of displacement groups.
      * @see setCircleRadiusAddition()
      */
     double circleRadiusAddition() const { return mCircleRadiusAddition; }
 
-    /** Returns the placement method used for dispersing the points.
+    /**
+     * Returns the placement method used for dispersing the points.
      * @see setPlacement()
      * @note added in QGIS 2.12
      */
     Placement placement() const { return mPlacement; }
 
-    /** Sets the placement method used for dispersing the points.
+    /**
+     * Sets the placement method used for dispersing the points.
      * @param placement placement method
      * @see placement()
      * @note added in QGIS 2.12
      */
     void setPlacement( Placement placement ) { mPlacement = placement; }
 
-    /** Returns the symbol for the center of a displacement group (but not ownership of the symbol).
+    /**
+     * Returns the symbol for the center of a displacement group (but not ownership of the symbol).
      * @see setCenterSymbol()
     */
     QgsMarkerSymbol* centerSymbol();
 
-    /** Sets the center symbol for a displacement group.
+    /**
+     * Sets the center symbol for a displacement group.
      * @param symbol new center symbol. Ownership is transferred to the renderer.
      * @see centerSymbol()
     */
     void setCenterSymbol( QgsMarkerSymbol* symbol );
 
-    /** Creates a QgsPointDisplacementRenderer from an existing renderer.
+    /**
+     * Creates a QgsPointDisplacementRenderer from an existing renderer.
      * @note added in 2.5
      * @returns a new renderer if the conversion was possible, otherwise nullptr.
      */

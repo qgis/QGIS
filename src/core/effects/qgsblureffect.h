@@ -21,7 +21,8 @@
 #include "qgis.h"
 #include <QPainter>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsBlurEffect
  * \brief A paint effect which blurs a source picture, using a number of different blur
  * methods.
@@ -34,14 +35,16 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
 
   public:
 
-    /** Available blur methods (algorithms) */
+    /**
+     * Available blur methods (algorithms) */
     enum BlurMethod
     {
-      StackBlur, /*!< stack blur, a fast but low quality blur. Valid blur level values are between 0 - 16.*/
-      GaussianBlur /*!< Gaussian blur, a slower but high quality blur. Blur level values are the distance in pixels for the blur operation. */
+      StackBlur, //!< Stack blur, a fast but low quality blur. Valid blur level values are between 0 - 16.
+      GaussianBlur //!< Gaussian blur, a slower but high quality blur. Blur level values are the distance in pixels for the blur operation.
     };
 
-    /** Creates a new QgsBlurEffect effect from a properties string map.
+    /**
+     * Creates a new QgsBlurEffect effect from a properties string map.
      * @param map encoded properties string map
      * @returns new QgsBlurEffect
      */
@@ -55,7 +58,8 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     virtual void readProperties( const QgsStringMap& props ) override;
     virtual QgsBlurEffect* clone() const override;
 
-    /** Sets blur level (strength)
+    /**
+     * Sets blur level (strength)
      * @param level blur level. Depending on the current @link blurMethod @endlink, this parameter
      * has different effects
      * @see blurLevel
@@ -63,7 +67,8 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
      */
     void setBlurLevel( const int level ) { mBlurLevel = level; }
 
-    /** Returns the blur level (strength)
+    /**
+     * Returns the blur level (strength)
      * @returns blur level. Depending on the current @link blurMethod @endlink, this parameter
      * has different effects
      * @see setBlurLevel
@@ -71,40 +76,46 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
      */
     int blurLevel() const { return mBlurLevel; }
 
-    /** Sets the blur method (algorithm) to use for performing the blur.
+    /**
+     * Sets the blur method (algorithm) to use for performing the blur.
      * @param method blur method
      * @see blurMethod
      */
     void setBlurMethod( const BlurMethod method ) { mBlurMethod = method; }
 
-    /** Returns the blur method (algorithm) used for performing the blur.
+    /**
+     * Returns the blur method (algorithm) used for performing the blur.
      * @returns blur method
      * @see setBlurMethod
      */
     BlurMethod blurMethod() const { return mBlurMethod; }
 
-    /** Sets the transparency for the effect
+    /**
+     * Sets the transparency for the effect
      * @param transparency double between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see transparency
      */
     void setTransparency( const double transparency ) { mTransparency = transparency; }
 
-    /** Returns the transparency for the effect
+    /**
+     * Returns the transparency for the effect
      * @returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
      * and 1 is fully transparent
      * @see setTransparency
      */
     double transparency() const { return mTransparency; }
 
-    /** Sets the blend mode for the effect
+    /**
+     * Sets the blend mode for the effect
      * @param mode blend mode used for drawing the effect on to a destination
      * paint device
      * @see blendMode
      */
     void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
 
-    /** Returns the blend mode for the effect
+    /**
+     * Returns the blend mode for the effect
      * @returns blend mode used for drawing the effect on to a destination
      * paint device
      * @see setBlendMode

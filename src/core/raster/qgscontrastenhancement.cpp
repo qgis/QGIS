@@ -122,6 +122,7 @@ double QgsContrastEnhancement::maximumValuePossible( Qgis::DataType theDataType 
 
   return std::numeric_limits<double>::max();
 }
+
 /**
     Simple function to compute the minimum possible value for a data type.
 */
@@ -166,6 +167,7 @@ double QgsContrastEnhancement::minimumValuePossible( Qgis::DataType theDataType 
  * Non-Static methods
  *
  */
+
 /**
     Public function to generate the enhanced for enhanceContrasted value for a given input.
 

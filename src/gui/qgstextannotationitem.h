@@ -21,7 +21,8 @@
 #include "qgsannotationitem.h"
 #include <QTextDocument>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * An annotation item that displays formated text*/
 class GUI_EXPORT QgsTextAnnotationItem: public QgsAnnotationItem
 {
@@ -29,9 +30,12 @@ class GUI_EXPORT QgsTextAnnotationItem: public QgsAnnotationItem
     QgsTextAnnotationItem( QgsMapCanvas* canvas );
     ~QgsTextAnnotationItem();
 
-    /** Returns document (caller takes ownership)*/
+    /**
+     * Returns document (caller takes ownership)*/
     QTextDocument* document() const;
-    /** Sets document (does not take ownership)*/
+
+    /**
+     * Sets document (does not take ownership)*/
     void setDocument( const QTextDocument* doc );
 
     void writeXml( QDomDocument& doc ) const override;

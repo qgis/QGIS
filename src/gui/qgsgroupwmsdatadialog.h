@@ -20,7 +20,8 @@
 #include "qgisgui.h"
 #include "qgis.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsGroupWmsDataDialog
  */
 class GUI_EXPORT QgsGroupWmsDataDialog: public QDialog, private Ui::QgsGroupWMSDataDialogBase

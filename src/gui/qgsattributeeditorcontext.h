@@ -24,7 +24,8 @@
 #include <qgsvectorlayertools.h>
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This class contains context information for attribute editor widgets.
  * It will be passed to embedded widgets whenever this occurs (e.g. when
  * showing an embedded form due to relations)
@@ -33,6 +34,7 @@
 class GUI_EXPORT QgsAttributeEditorContext
 {
   public:
+
     /**
      * Determines in which direction a relation was resolved.
      */
@@ -102,25 +104,29 @@ class GUI_EXPORT QgsAttributeEditorContext
     inline const QgsRelation& relation() const { return mRelation; }
     inline RelationMode relationMode() const { return mRelationMode; }
 
-    /** Returns the form mode.
+    /**
+     * Returns the form mode.
      * @see setFormMode()
      */
     inline FormMode formMode() const { return mFormMode; }
 
-    /** Sets the form mode.
+    /**
+     * Sets the form mode.
      * @param mode form mode
      * @see formMode()
      * @note added in QGIS 2.16
      */
     inline void setFormMode( FormMode mode ) { mFormMode = mode; }
 
-    /** Returns true if the attribute editor should permit use of custom UI forms.
+    /**
+     * Returns true if the attribute editor should permit use of custom UI forms.
      * @see setAllowCustomUi()
      * @note added in QGIS 2.16
      */
     bool allowCustomUi() const { return mAllowCustomUi; }
 
-    /** Sets whether the attribute editor should permit use of custom UI forms.
+    /**
+     * Sets whether the attribute editor should permit use of custom UI forms.
      * @param allow set to true to allow custom UI forms, or false to disable them and use default generated
      * QGIS forms
      * @see allowCustomUi()

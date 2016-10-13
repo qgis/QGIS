@@ -88,7 +88,8 @@ class CORE_EXPORT QgsCptCityArchive
     QgsCptCityArchive& operator=( const QgsCptCityArchive& rh );
 };
 
-/** Base class for all items in the model
+/**
+ * Base class for all items in the model
  * \ingroup core
 */
 class CORE_EXPORT QgsCptCityDataItem : public QObject
@@ -201,7 +202,8 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     void endRemoveItems();
 };
 
-/** Item that represents a layer that can be opened with one of the providers
+/**
+ * Item that represents a layer that can be opened with one of the providers
  * \ingroup core
 */
 class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
@@ -237,7 +239,8 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
 };
 
 
-/** A Collection: logical collection of subcollections and color ramps
+/**
+ * A Collection: logical collection of subcollections and color ramps
  * \ingroup core
 */
 class CORE_EXPORT QgsCptCityCollectionItem : public QgsCptCityDataItem
@@ -256,7 +259,8 @@ class CORE_EXPORT QgsCptCityCollectionItem : public QgsCptCityDataItem
     bool mPopulatedRamps;
 };
 
-/** A directory: contains subdirectories and color ramps
+/**
+ * A directory: contains subdirectories and color ramps
  * \ingroup core
 */
 class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
@@ -280,7 +284,8 @@ class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
     QMap< QString, QStringList > mRampsMap;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCptCitySelectionItem
  * A selection: contains subdirectories and color ramps
 */
@@ -302,7 +307,8 @@ class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
     QStringList mSelectionsList;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * An "All ramps item", which contains all items in a flat hierarchy */
 class CORE_EXPORT QgsCptCityAllRampsItem : public QgsCptCityCollectionItem
 {
@@ -318,7 +324,8 @@ class CORE_EXPORT QgsCptCityAllRampsItem : public QgsCptCityCollectionItem
     QVector<QgsCptCityDataItem*> mItems;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCptCityBrowserModel
  */
 class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
@@ -351,13 +358,16 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
 
     virtual QModelIndex parent( const QModelIndex &index ) const override;
 
-    /** Returns a list of mime that can describe model indexes */
+    /**
+     * Returns a list of mime that can describe model indexes */
     /* virtual QStringList mimeTypes() const; */
 
-    /** Returns an object that contains serialized items of data corresponding to the list of indexes specified */
+    /**
+     * Returns an object that contains serialized items of data corresponding to the list of indexes specified */
     /* virtual QMimeData * mimeData( const QModelIndexList &indexes ) const; */
 
-    /** Handles the data supplied by a drag and drop operation that ended with the given action */
+    /**
+     * Handles the data supplied by a drag and drop operation that ended with the given action */
     /* virtual bool dropMimeData( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ); */
 
     QgsCptCityDataItem *dataItem( const QModelIndex &idx ) const;

@@ -29,7 +29,8 @@
 #include "qgsrasterhistogram.h"
 #include "qgsrectangle.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Feedback object tailored for raster block reading.
  *
  * @note added in QGIS 3.0
@@ -69,7 +70,8 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Base class for processing filters like renderers, reprojector, resampler etc.
  */
 class CORE_EXPORT QgsRasterInterface
@@ -96,10 +98,12 @@ class CORE_EXPORT QgsRasterInterface
 
     virtual ~QgsRasterInterface();
 
-    /** Clone itself, create deep copy */
+    /**
+     * Clone itself, create deep copy */
     virtual QgsRasterInterface *clone() const = 0;
 
-    /** Returns a bitmask containing the supported capabilities */
+    /**
+     * Returns a bitmask containing the supported capabilities */
     virtual int capabilities() const
     {
       return QgsRasterInterface::NoCapabilities;
@@ -110,10 +114,12 @@ class CORE_EXPORT QgsRasterInterface
      */
     QString capabilitiesString() const;
 
-    /** Returns data type for the band specified by number */
+    /**
+     * Returns data type for the band specified by number */
     virtual Qgis::DataType dataType( int bandNo ) const = 0;
 
-    /** Returns source data type for the band specified by number,
+    /**
+     * Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType */
     virtual Qgis::DataType sourceDataType( int bandNo ) const { return mInput ? mInput->sourceDataType( bandNo ) : Qgis::UnknownDataType; }
 
@@ -125,24 +131,29 @@ class CORE_EXPORT QgsRasterInterface
 
     int dataTypeSize( int bandNo ) { return QgsRasterBlock::typeSize( dataType( bandNo ) ); }
 
-    /** Get number of bands */
+    /**
+     * Get number of bands */
     virtual int bandCount() const = 0;
 
-    /** Get block size */
+    /**
+     * Get block size */
     virtual int xBlockSize() const { return mInput ? mInput->xBlockSize() : 0; }
     virtual int yBlockSize() const { return mInput ? mInput->yBlockSize() : 0; }
 
-    /** Get raster size */
+    /**
+     * Get raster size */
     virtual int xSize() const { return mInput ? mInput->xSize() : 0; }
     virtual int ySize() const { return mInput ? mInput->ySize() : 0; }
 
-    /** \brief helper function to create zero padded band names */
+    /**
+     * \brief helper function to create zero padded band names */
     virtual QString generateBandName( int theBandNumber ) const
     {
       return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber, 1 + static_cast< int >( log10( static_cast< double >( bandCount() ) ) ), 10, QChar( '0' ) );
     }
 
-    /** Read block of data using given extent and size.
+    /**
+     * Read block of data using given extent and size.
      *  Returns pointer to data.
      *  Caller is responsible to free the memory returned.
      * @param bandNo band number
@@ -153,20 +164,25 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) = 0;
 
-    /** Set input.
+    /**
+     * Set input.
       * Returns true if set correctly, false if cannot use that input */
     virtual bool setInput( QgsRasterInterface* input ) { mInput = input; return true; }
 
-    /** Current input */
+    /**
+     * Current input */
     virtual QgsRasterInterface * input() const { return mInput; }
 
-    /** Is on/off */
+    /**
+     * Is on/off */
     virtual bool on() const { return mOn; }
 
-    /** Set on/off */
+    /**
+     * Set on/off */
     virtual void setOn( bool on ) { mOn = on; }
 
-    /** Get source / raw input, the first in pipe, usually provider.
+    /**
+     * Get source / raw input, the first in pipe, usually provider.
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      */
@@ -176,7 +192,8 @@ class CORE_EXPORT QgsRasterInterface
       return mInput ? mInput->sourceInput() : this;
     }
 
-    /** Get source / raw input, the first in pipe, usually provider.
+    /**
+     * Get source / raw input, the first in pipe, usually provider.
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      */
@@ -186,7 +203,8 @@ class CORE_EXPORT QgsRasterInterface
       return mInput ? mInput->sourceInput() : this;
     }
 
-    /** \brief Get band statistics.
+    /**
+     * \brief Get band statistics.
      * @param theBandNo The band (number).
      * @param theStats Requested statistics
      * @param theExtent Extent used to calc statistics, if empty, whole raster extent is used.
@@ -198,7 +216,8 @@ class CORE_EXPORT QgsRasterInterface
         const QgsRectangle & theExtent = QgsRectangle(),
         int theSampleSize = 0 );
 
-    /** \brief Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
+    /**
+     * \brief Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
      * @return true if statistics are available (ready to use)
      */
     virtual bool hasStatistics( int theBandNo,
@@ -206,7 +225,8 @@ class CORE_EXPORT QgsRasterInterface
                                 const QgsRectangle & theExtent = QgsRectangle(),
                                 int theSampleSize = 0 );
 
-    /** \brief Get histogram. Histograms are cached in providers.
+    /**
+     * \brief Get histogram. Histograms are cached in providers.
      * @param theBandNo The band (number).
      * @param theBinCount Number of bins (intervals,buckets). If 0, the number of bins is decided automaticaly according to data type, raster size etc.
      * @param theMinimum Minimum value, if NaN, raster minimum value will be used.
@@ -225,7 +245,8 @@ class CORE_EXPORT QgsRasterInterface
                                           int theSampleSize = 0,
                                           bool theIncludeOutOfRange = false );
 
-    /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram()
+    /**
+     * \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram()
      * @note theBinCount, theMinimun and theMaximum not optional in python bindings
      */
     virtual bool hasHistogram( int theBandNo,
@@ -236,7 +257,8 @@ class CORE_EXPORT QgsRasterInterface
                                int theSampleSize = 0,
                                bool theIncludeOutOfRange = false );
 
-    /** \brief Find values for cumulative pixel count cut.
+    /**
+     * \brief Find values for cumulative pixel count cut.
      * @param theBandNo The band (number).
      * @param theLowerCount The lower count as fraction of 1, e.g. 0.02 = 2%
      * @param theUpperCount The upper count as fraction of 1, e.g. 0.98 = 98%
@@ -253,25 +275,31 @@ class CORE_EXPORT QgsRasterInterface
                                 const QgsRectangle & theExtent = QgsRectangle(),
                                 int theSampleSize = 0 );
 
-    /** Write base class members to xml. */
+    /**
+     * Write base class members to xml. */
     virtual void writeXml( QDomDocument& doc, QDomElement& parentElem ) const { Q_UNUSED( doc ); Q_UNUSED( parentElem ); }
-    /** Sets base class members from xml. Usually called from create() methods of subclasses */
+
+    /**
+     * Sets base class members from xml. Usually called from create() methods of subclasses */
     virtual void readXml( const QDomElement& filterElem ) { Q_UNUSED( filterElem ); }
 
   protected:
     // QgsRasterInterface used as input
     QgsRasterInterface* mInput;
 
-    /** \brief List  of cached statistics, all bands mixed */
+    /**
+     * \brief List  of cached statistics, all bands mixed */
     QList <QgsRasterBandStats> mStatistics;
 
-    /** \brief List  of cached histograms, all bands mixed */
+    /**
+     * \brief List  of cached histograms, all bands mixed */
     QList <QgsRasterHistogram> mHistograms;
 
     // On/off state, if off, it does not do anything, replicates input
     bool mOn;
 
-    /** Fill in histogram defaults if not specified
+    /**
+     * Fill in histogram defaults if not specified
      * @note theBinCount, theMinimun and theMaximum not optional in python bindings
      */
     void initHistogram( QgsRasterHistogram &theHistogram, int theBandNo,
@@ -282,7 +310,8 @@ class CORE_EXPORT QgsRasterInterface
                         int theSampleSize = 0,
                         bool theIncludeOutOfRange = false );
 
-    /** Fill in statistics defaults if not specified */
+    /**
+     * Fill in statistics defaults if not specified */
     void initStatistics( QgsRasterBandStats &theStatistics, int theBandNo,
                          int theStats = QgsRasterBandStats::All,
                          const QgsRectangle & theExtent = QgsRectangle(),

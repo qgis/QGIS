@@ -5,6 +5,7 @@
     copyright            : (C) 2015 by Radim Blazek
     email                : radim.blazek@gmail.com
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -64,14 +65,17 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     explicit QgsGrassModuleInputModel( QObject *parent = 0 );
     ~QgsGrassModuleInputModel();
 
-    /** Get singleton instance of this class. */
+    /**
+     * Get singleton instance of this class. */
     static QgsGrassModuleInputModel* instance();
 
     QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override;
 
 
   public slots:
-    /** Reload current mapset */
+
+    /**
+     * Reload current mapset */
     void reload();
 
     void onMapsetChanged();
@@ -225,7 +229,8 @@ class QgsGrassModuleInputSelectedView : public QTreeView
 };
 
 
-/** \class QgsGrassModuleInput
+/**
+ * \class QgsGrassModuleInput
  *  \brief Class representing raster or vector module input
  */
 class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
@@ -233,7 +238,9 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
-    /** \brief Constructor
+
+    /**
+     * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */

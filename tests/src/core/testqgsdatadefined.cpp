@@ -22,7 +22,8 @@
 #include "qgsdatadefined.h"
 #include "qgsapplication.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * Unit tests for QgsDataDefined
  */
 class TestQgsDataDefined: public QObject

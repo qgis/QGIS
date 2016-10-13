@@ -23,7 +23,8 @@
 class QDomDocument;
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Abstract base class for the legend item types
 */
 class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
@@ -44,7 +45,9 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
     };
 
     virtual void writeXml( QDomElement& elem, QDomDocument& doc ) const = 0;
-    /** Read item content from xml
+
+    /**
+     * Read item content from xml
       @param itemElem item to read from
       @param xServerAvailable Read item icons if true (QIcon needs x-server)*/
     virtual void readXml( const QDomElement& itemElem, bool xServerAvailable = true ) = 0;
@@ -72,7 +75,8 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
 
 class QgsSymbol;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsComposerSymbolItem
  */
 class CORE_EXPORT QgsComposerSymbolItem: public QgsComposerLegendItem
@@ -88,7 +92,8 @@ class CORE_EXPORT QgsComposerSymbolItem: public QgsComposerLegendItem
     virtual void writeXml( QDomElement& elem, QDomDocument& doc ) const override;
     virtual void readXml( const QDomElement& itemElem, bool xServerAvailable = true ) override;
 
-    /** Set symbol (takes ownership)*/
+    /**
+     * Set symbol (takes ownership)*/
     void setSymbol( QgsSymbol* s );
     QgsSymbol* symbol() {return mSymbol;}
 
@@ -98,7 +103,8 @@ class CORE_EXPORT QgsComposerSymbolItem: public QgsComposerLegendItem
     QgsSymbol* mSymbol;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsComposerRasterSymbolItem
  */
 class CORE_EXPORT QgsComposerRasterSymbolItem : public QgsComposerLegendItem
@@ -126,7 +132,8 @@ class CORE_EXPORT QgsComposerRasterSymbolItem : public QgsComposerLegendItem
     QColor mColor;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsComposerLayerItem
  */
 class CORE_EXPORT QgsComposerLayerItem : public QgsComposerLegendItem
@@ -156,7 +163,8 @@ class CORE_EXPORT QgsComposerLayerItem : public QgsComposerLegendItem
     bool mShowFeatureCount;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsComposerGroupItem
  */
 class CORE_EXPORT QgsComposerGroupItem: public QgsComposerLegendItem
@@ -173,7 +181,8 @@ class CORE_EXPORT QgsComposerGroupItem: public QgsComposerLegendItem
     ItemType itemType() const override { return GroupItem; }
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsComposerStyleItem
  */
 class CORE_EXPORT QgsComposerStyleItem: public QStandardItem

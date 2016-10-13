@@ -18,7 +18,8 @@
 
 #include "qgseditorwidgetconfig.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Holder for the widget type and its configuration for a field.
  *
  * @note added in QGIS 3.0
@@ -26,6 +27,7 @@
 class CORE_EXPORT QgsEditorWidgetSetup
 {
   public:
+
     /**
      * Constructor
      */

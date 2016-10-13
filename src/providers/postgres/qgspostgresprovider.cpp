@@ -651,7 +651,8 @@ QString QgsPostgresProvider::dataComment() const
 }
 
 
-/** @todo XXX Perhaps this should be promoted to QgsDataProvider? */
+/**
+ * @todo XXX Perhaps this should be promoted to QgsDataProvider? */
 QString QgsPostgresProvider::endianString()
 {
   switch ( QgsApplication::endian() )
@@ -3994,12 +3995,15 @@ QGISEXTERN QgsPostgresProvider * classFactory( const QString *uri )
 {
   return new QgsPostgresProvider( *uri );
 }
-/** Required key function (used to map the plugin to a data store type)
+
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
   return  POSTGRES_KEY;
 }
+
 /**
  * Required description function
  */
@@ -4007,6 +4011,7 @@ QGISEXTERN QString description()
 {
   return POSTGRES_DESCRIPTION;
 }
+
 /**
  * Required isProvider function. Used to determine if this shared library
  * is a data provider plugin

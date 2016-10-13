@@ -20,7 +20,8 @@
 
 #include <QMutex>
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsLocaleNumC
 {

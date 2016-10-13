@@ -104,7 +104,9 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName
     txtName->setText( connName );
   }
 }
-/** Autoconnected SLOTS **/
+
+/**
+ * Autoconnected SLOTS **/
 void QgsPgNewConnection::accept()
 {
   QSettings settings;
@@ -176,7 +178,8 @@ void QgsPgNewConnection::on_cb_geometryColumnsOnly_clicked()
     cb_publicSchemaOnly->setEnabled( true );
 }
 
-/** End  Autoconnected SLOTS **/
+/**
+ * End  Autoconnected SLOTS **/
 
 QgsPgNewConnection::~QgsPgNewConnection()
 {

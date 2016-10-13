@@ -27,7 +27,8 @@
  * See details in QEP #17
  ****************************************************************************/
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsLineString
  * \brief Line string geometry type, with support for z-dimension and m-values.
  * \note added in QGIS 2.10
@@ -41,7 +42,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool operator==( const QgsCurve& other ) const override;
     bool operator!=( const QgsCurve& other ) const override;
 
-    /** Returns the specified point from inside the line string.
+    /**
+     * Returns the specified point from inside the line string.
      * @param i index of point, starting at 0 for the first point
      */
     QgsPointV2 pointN( int i ) const;
@@ -49,7 +51,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     double xAt( int index ) const override;
     double yAt( int index ) const override;
 
-    /** Returns the z-coordinate of the specified node in the line string.
+    /**
+     * Returns the z-coordinate of the specified node in the line string.
      * @param index index of node, where the first node in the line is 0
      * @returns z-coordinate of node, or 0.0 if index is out of bounds or the line
      * does not have a z dimension
@@ -57,7 +60,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     double zAt( int index ) const;
 
-    /** Returns the m value of the specified node in the line string.
+    /**
+     * Returns the m value of the specified node in the line string.
      * @param index index of node, where the first node in the line is 0
      * @returns m value of node, or 0.0 if index is out of bounds or the line
      * does not have m values
@@ -65,7 +69,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     double mAt( int index ) const;
 
-    /** Sets the x-coordinate of the specified node in the line string.
+    /**
+     * Sets the x-coordinate of the specified node in the line string.
      * @param index index of node, where the first node in the line is 0. Corresponding
      * node must already exist in line string.
      * @param x x-coordinate of node
@@ -73,7 +78,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void setXAt( int index, double x );
 
-    /** Sets the y-coordinate of the specified node in the line string.
+    /**
+     * Sets the y-coordinate of the specified node in the line string.
      * @param index index of node, where the first node in the line is 0. Corresponding
      * node must already exist in line string.
      * @param y y-coordinate of node
@@ -81,7 +87,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void setYAt( int index, double y );
 
-    /** Sets the z-coordinate of the specified node in the line string.
+    /**
+     * Sets the z-coordinate of the specified node in the line string.
      * @param index index of node, where the first node in the line is 0. Corresponding
      * node must already exist in line string, and the line string must have z-dimension.
      * @param z z-coordinate of node
@@ -89,7 +96,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void setZAt( int index, double z );
 
-    /** Sets the m value of the specified node in the line string.
+    /**
+     * Sets the m value of the specified node in the line string.
      * @param index index of node, where the first node in the line is 0. Corresponding
      * node must already exist in line string, and the line string must have m values.
      * @param m m value of node
@@ -97,26 +105,31 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void setMAt( int index, double m );
 
-    /** Resets the line string to match the specified list of points. The line string will
+    /**
+     * Resets the line string to match the specified list of points. The line string will
      * inherit the dimensionality of the first point in the list.
      * @param points new points for line string. If empty, line string will be cleared.
      */
     void setPoints( const QgsPointSequence &points );
 
-    /** Appends the contents of another line string to the end of this line string.
+    /**
+     * Appends the contents of another line string to the end of this line string.
      * @param line line to append. Ownership is not transferred.
      */
     void append( const QgsLineString* line );
 
-    /** Adds a new vertex to the end of the line string.
+    /**
+     * Adds a new vertex to the end of the line string.
      * @param pt vertex to add
      */
     void addVertex( const QgsPointV2& pt );
 
-    /** Closes the line string by appending the first point to the end of the line, if it is not already closed.*/
+    /**
+     * Closes the line string by appending the first point to the end of the line, if it is not already closed.*/
     void close();
 
-    /** Returns the geometry converted to the more generic curve type QgsCompoundCurve
+    /**
+     * Returns the geometry converted to the more generic curve type QgsCompoundCurve
         @return the converted geometry. Caller takes ownership*/
     QgsAbstractGeometry* toCurveType() const override;
 
@@ -141,7 +154,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     virtual double length() const override;
     virtual QgsPointV2 startPoint() const override;
     virtual QgsPointV2 endPoint() const override;
-    /** Returns a new line string geometry corresponding to a segmentized approximation
+
+    /**
+     * Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
@@ -193,7 +208,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     void importVerticesFromWkb( const QgsConstWkbPtr& wkb );
 
-    /** Resets the line string to match the line string in a WKB geometry.
+    /**
+     * Resets the line string to match the line string in a WKB geometry.
      * @param type WKB type
      * @param wkb WKB representation of line geometry
      */

@@ -5,6 +5,7 @@
     copyright            : (C) 2006 by Radim Blazek
     email                : radim.blazek@gmail.com
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,7 +24,8 @@ class QLabel;
 class QPushButton;
 class QgisInterface;
 
-/** \class QgsGrassUtils
+/**
+ * \class QgsGrassUtils
  *  \brief Various utilities.
  */
 class QgsGrassUtils
@@ -51,7 +53,8 @@ class QgsGrassUtils
     static QString htmlBrowserPath();
 };
 
-/** \class QgsGrassElementDialog
+/**
+ * \class QgsGrassElementDialog
  *  \brief Get name for new element
  */
 class QgsGrassElementDialog: public QObject

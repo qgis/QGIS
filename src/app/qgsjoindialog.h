@@ -30,13 +30,16 @@ class APP_EXPORT QgsJoinDialog: public QDialog, private Ui::QgsJoinDialogBase
     QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> alreadyJoinedLayers, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsJoinDialog();
 
-    /** Configure the dialog for an existing join */
+    /**
+     * Configure the dialog for an existing join */
     void setJoinInfo( const QgsVectorJoinInfo& joinInfo );
 
-    /** Returns the join info */
+    /**
+     * Returns the join info */
     QgsVectorJoinInfo joinInfo() const;
 
-    /** Returns true if user wants to create an attribute index on the join field*/
+    /**
+     * Returns true if user wants to create an attribute index on the join field*/
     bool createAttributeIndex() const;
 
   private slots:
@@ -45,7 +48,9 @@ class APP_EXPORT QgsJoinDialog: public QDialog, private Ui::QgsJoinDialogBase
     void checkDefinitionValid();
 
   private:
-    /** Target layer*/
+
+    /**
+     * Target layer*/
     QgsVectorLayer* mLayer;
 };
 

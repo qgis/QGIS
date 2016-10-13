@@ -25,13 +25,16 @@
 class QColor;
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Renderer for paletted raster images.
 */
 class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 {
   public:
-    /** Renderer owns color array*/
+
+    /**
+     * Renderer owns color array*/
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray, int nColors, const QVector<QString>& labels = QVector<QString>() );
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors, const QVector<QString>& labels = QVector<QString>() );
     ~QgsPalettedRasterRenderer();
@@ -40,21 +43,27 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
-    /** Returns number of colors*/
+    /**
+     * Returns number of colors*/
     int nColors() const { return mNColors; }
-    /** Returns copy of color array (caller takes ownership)*/
+
+    /**
+     * Returns copy of color array (caller takes ownership)*/
     QColor* colors() const;
 
-    /** Returns copy of rgb array (caller takes ownership)
+    /**
+     * Returns copy of rgb array (caller takes ownership)
      @note not available in python bindings
      */
     QRgb* rgbArray() const;
 
-    /** Return optional category label
+    /**
+     * Return optional category label
      *  @note added in 2.1 */
     QString label( int idx ) const { return mLabels.value( idx ); }
 
-    /** Set category label
+    /**
+     * Set category label
      *  @note added in 2.1 */
     void setLabel( int idx, const QString& label );
 
@@ -66,11 +75,17 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
   private:
     int mBand;
-    /** Color array*/
+
+    /**
+     * Color array*/
     QRgb* mColors;
-    /** Number of colors*/
+
+    /**
+     * Number of colors*/
     int mNColors;
-    /** Optional category labels, size of vector may be < mNColors */
+
+    /**
+     * Optional category labels, size of vector may be < mNColors */
     QVector<QString> mLabels;
 
     QgsPalettedRasterRenderer( const QgsPalettedRasterRenderer& );

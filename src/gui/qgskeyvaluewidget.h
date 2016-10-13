@@ -21,7 +21,9 @@
 #include <QMap>
 
 ///@cond PRIVATE
-/** @ingroup gui
+
+/**
+ * @ingroup gui
  * Table model to edit a QVariantMap.
  * @note added in QGIS 3.0
  * @note not available in Python bindings
@@ -52,7 +54,8 @@ class GUI_EXPORT QgsKeyValueModel : public QAbstractTableModel
 ///@endcond
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget allowing to edit a QVariantMap, using a table.
  * @note added in QGIS 3.0
  */
@@ -61,6 +64,7 @@ class GUI_EXPORT QgsKeyValueWidget: public QgsTableWidgetBase
     Q_OBJECT
     Q_PROPERTY( QVariantMap map READ map WRITE setMap )
   public:
+
     /**
      * Constructor.
      */

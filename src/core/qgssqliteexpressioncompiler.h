@@ -20,7 +20,8 @@
 
 #include "qgssqlexpressioncompiler.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSQLiteExpressionCompiler
  * \brief Expression compiler for translation to SQlite SQL WHERE clauses.
  *
@@ -34,7 +35,8 @@ class CORE_EXPORT QgsSQLiteExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
 
-    /** Constructor for expression compiler.
+    /**
+     * Constructor for expression compiler.
      * @param fields fields from provider
      */
     explicit QgsSQLiteExpressionCompiler( const QgsFields& fields );
