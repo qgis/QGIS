@@ -113,7 +113,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
         if reply.error() != QNetworkReply.NoError:
             html = self.tr('<h2>No help available for this algorithm</h2><p>{}</p>'.format(reply.errorString()))
         else:
-            html = unicode(reply.readAll())
+            html = str(reply.readAll()).decode('utf-8')
         reply.deleteLater()
         self.txtHelp.setHtml(html)
 
