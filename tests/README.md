@@ -16,7 +16,6 @@ Individual tests can be run using `ctest`.
 
 For example if the output of `make check` ends like this:
 
-
 ```
    The following tests FAILED:
          77 - PyQgsLocalServer (Failed)
@@ -30,6 +29,17 @@ You could re-run the failing test with:
 
 The parameter `-V` enables verbose mode and `-R` takes a regular expression as
 parameter and will only run matching tests.
+
+
+For python tests, you can run a specific test inside a unit file
+with something like this:
+
+```
+ QGIS_PREFIX_PATH=output PYTHONPATH=output/python:$PYTHONPATH \
+   python ${srcdir}/tests/src/python/test_qgsvectorfilewriter.py
+   TestQgsVectorLayer.testOverwriteLayer
+```
+
 
 Advanced configuration
 ----------------------
