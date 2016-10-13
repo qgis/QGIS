@@ -119,6 +119,11 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     static QString endianString();
 
     /**
+     * Returns a list of unquoted column names from an uri key
+     */
+    static QStringList parseUriKey( const QString& key );
+
+    /**
      * Changes the stored extent for this layer to the supplied extent.
      * For example, this is called when the extent worker thread has a result.
      */
@@ -132,11 +137,16 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     virtual void updateExtents() override;
 
-    /** Determine the fields making up the primary key
+    /**
+     * Determine the fields making up the primary key
      */
     bool determinePrimaryKey();
 
-    /** Determine the fields making up the primary key from the uri attribute keyColumn
+    /**
+     * Determine the fields making up the primary key from the uri attribute keyColumn
+     *
+     * Fills mPrimaryKeyType and mPrimaryKeyAttrs
+     * from mUri
      */
     void determinePrimaryKeyFromUriKeyColumn();
 
