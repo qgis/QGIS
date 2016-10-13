@@ -1399,6 +1399,9 @@
    <property name="text">
     <string>Open &amp;Attribute Table</string>
    </property>
+   <property name="shortcut">
+    <string>F6</string>
+   </property>
   </action>
   <action name="mActionToggleEditing">
    <property name="checkable">
