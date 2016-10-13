@@ -60,8 +60,8 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     enum ItemDataRole
     {
-      PathRole = Qt::UserRole, /*!< Item path used to access path in the tree, see QgsDataItem::mPath */
-      CommentRole = Qt::UserRole + 1, /*!< Item comment */
+      PathRole = Qt::UserRole, //!< Item path used to access path in the tree, see QgsDataItem::mPath
+      CommentRole = Qt::UserRole + 1, //!< Item comment
     };
     // implemented methods from QAbstractItemModel for read-only access
 

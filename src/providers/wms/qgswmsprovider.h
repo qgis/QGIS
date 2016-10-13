@@ -475,8 +475,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
     typedef struct TileImage
     {
       TileImage( QRectF r, QImage i ): rect( r ), img( i ) {}
-      QRectF rect; //!< destination rectangle for a tile (in screen coordinates)
-      QImage img;  //!< cached tile to be drawn
+      QRectF rect; //!< Destination rectangle for a tile (in screen coordinates)
+      QImage img;  //!< Cached tile to be drawn
     } TileImage;
     //! Get tiles from a different resolution to cover the missing areas
     void fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangle& viewExtent, int imageWidth, QList<QRectF>& missing, double tres, int resOffset, QList<TileImage> &otherResTiles );

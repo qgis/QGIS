@@ -36,13 +36,13 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
   public:
     enum FieldRoles
     {
-      FieldNameRole = Qt::UserRole + 1,  /*!< return field name if index corresponds to a field */
-      FieldIndexRole = Qt::UserRole + 2, /*!< return field index if index corresponds to a field */
-      ExpressionRole = Qt::UserRole + 3, /*!< return field name or expression */
-      IsExpressionRole = Qt::UserRole + 4, /*!< return if index corresponds to an expression */
-      ExpressionValidityRole = Qt::UserRole + 5, /*!< return if expression is valid or not */
-      FieldTypeRole = Qt::UserRole + 6, /*!< return the field type (if a field, return QVariant if expression) */
-      FieldOriginRole = Qt::UserRole + 7, /*!< return the field origin (if a field, returns QVariant if expression) */
+      FieldNameRole = Qt::UserRole + 1,  //!< Return field name if index corresponds to a field
+      FieldIndexRole = Qt::UserRole + 2, //!< Return field index if index corresponds to a field
+      ExpressionRole = Qt::UserRole + 3, //!< Return field name or expression
+      IsExpressionRole = Qt::UserRole + 4, //!< Return if index corresponds to an expression
+      ExpressionValidityRole = Qt::UserRole + 5, //!< Return if expression is valid or not
+      FieldTypeRole = Qt::UserRole + 6, //!< Return the field type (if a field, return QVariant if expression)
+      FieldOriginRole = Qt::UserRole + 7, //!< Return the field origin (if a field, returns QVariant if expression)
     };
 
     /**

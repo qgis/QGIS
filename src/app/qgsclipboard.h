@@ -57,9 +57,9 @@ class APP_EXPORT QgsClipboard : public QObject
     //! Available formats for copying features as text
     enum CopyFormat
     {
-      AttributesOnly, /*!< Tab delimited text, attributes only */
-      AttributesWithWKT, /*!< Tab delimited text, with geometry in WKT format */
-      GeoJSON, /*!< GeoJSON FeatureCollection format */
+      AttributesOnly, //!< Tab delimited text, attributes only
+      AttributesWithWKT, //!< Tab delimited text, with geometry in WKT format
+      GeoJSON, //!< GeoJSON FeatureCollection format
     };
 
     /**

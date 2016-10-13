@@ -47,19 +47,19 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     //! @note added in QGIS 2.16
     enum FilterFlag
     {
-      EqualTo = 1 << 1, /*!< Supports equal to */
-      NotEqualTo = 1 << 2, /*!< Supports not equal to */
-      GreaterThan = 1 << 3, /*!< Supports greater than */
-      LessThan = 1 << 4, /*!< Supports less than */
-      GreaterThanOrEqualTo = 1 << 5, /*!< Supports >= */
-      LessThanOrEqualTo = 1 << 6, /*!< Supports <= */
-      Between = 1 << 7, /*!< Supports searches between two values */
-      CaseInsensitive = 1 << 8, /*!< Supports case insensitive searching */
-      Contains = 1 << 9, /*!< Supports value "contains" searching */
-      DoesNotContain = 1 << 10, /*!< Supports value does not contain searching */
-      IsNull = 1 << 11, /*!< Supports searching for null values */
-      IsNotBetween = 1 << 12, /*!< Supports searching for values outside of a set range */
-      IsNotNull = 1 << 13, /*!< Supports searching for non-null values */
+      EqualTo = 1 << 1, //!< Supports equal to
+      NotEqualTo = 1 << 2, //!< Supports not equal to
+      GreaterThan = 1 << 3, //!< Supports greater than
+      LessThan = 1 << 4, //!< Supports less than
+      GreaterThanOrEqualTo = 1 << 5, //!< Supports >=
+      LessThanOrEqualTo = 1 << 6, //!< Supports <=
+      Between = 1 << 7, //!< Supports searches between two values
+      CaseInsensitive = 1 << 8, //!< Supports case insensitive searching
+      Contains = 1 << 9, //!< Supports value "contains" searching
+      DoesNotContain = 1 << 10, //!< Supports value does not contain searching
+      IsNull = 1 << 11, //!< Supports searching for null values
+      IsNotBetween = 1 << 12, //!< Supports searching for values outside of a set range
+      IsNotNull = 1 << 13, //!< Supports searching for non-null values
     };
     Q_DECLARE_FLAGS( FilterFlags, FilterFlag )
 

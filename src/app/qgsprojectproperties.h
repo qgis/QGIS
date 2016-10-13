@@ -192,9 +192,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Formats for displaying coordinates
     enum CoordinateFormat
     {
-      DecimalDegrees, /*!< Decimal degrees */
-      DegreesMinutes, /*!< Degrees, decimal minutes */
-      DegreesMinutesSeconds, /*!< Degrees, minutes, seconds */
+      DecimalDegrees, //!< Decimal degrees
+      DegreesMinutes, //!< Degrees, decimal minutes
+      DegreesMinutesSeconds, //!< Degrees, minutes, seconds
       MapUnits, /*! Show coordinates in map units */
     };
 

@@ -38,8 +38,8 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     //! Widget layout
     enum Layout
     {
-      LayoutDefault = 0, /*!< Use the default (rectangular) layout */
-      LayoutVertical, /*!< Use a narrower, vertically stacked layout */
+      LayoutDefault = 0, //!< Use the default (rectangular) layout
+      LayoutVertical, //!< Use a narrower, vertically stacked layout
     };
 
     /**

@@ -37,8 +37,8 @@ class GRASS_LIB_EXPORT QgsGrassFeatureSource : public QgsAbstractFeatureSource
     enum Selection
     {
 
-      NotSelected = 0, /*!< not selected */
-      Selected = 1, /*!< line/area selected */
+      NotSelected = 0, //!< Not selected
+      Selected = 1, //!< Line/area selected
       Used = 2 /*!< the line was already used to create feature read in this cycle.
                 * The codes Used must be reset to Selected if getFirstFeature() or select() is called.
                 * Distinction between Selected and Used is used if attribute table exists, in which case

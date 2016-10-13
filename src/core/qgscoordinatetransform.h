@@ -48,8 +48,8 @@ class CORE_EXPORT QgsCoordinateTransform
     //! Enum used to indicate the direction (forward or inverse) of the transform
     enum TransformDirection
     {
-      ForwardTransform,     /*!< Transform from source to destination CRS. */
-      ReverseTransform      /*!< Transform from destination to source CRS. */
+      ForwardTransform,     //!< Transform from source to destination CRS.
+      ReverseTransform      //!< Transform from destination to source CRS.
     };
 
     /**

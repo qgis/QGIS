@@ -342,12 +342,12 @@ struct QgsWmtsTileMatrix
   QString title, abstract;
   QStringList keywords;
   double scaleDenom;
-  QgsPoint topLeft;  //!< top-left corner of the tile matrix in map units
-  int tileWidth;     //!< width of a tile in pixels
-  int tileHeight;    //!< height of a tile in pixels
-  int matrixWidth;   //!< number of tiles horizontally
-  int matrixHeight;  //!< number of tiles vertically
-  double tres;       //!< pixel span in map units
+  QgsPoint topLeft;  //!< Top-left corner of the tile matrix in map units
+  int tileWidth;     //!< Width of a tile in pixels
+  int tileHeight;    //!< Height of a tile in pixels
+  int matrixWidth;   //!< Number of tiles horizontally
+  int matrixHeight;  //!< Number of tiles vertically
+  double tres;       //!< Pixel span in map units
 
   //! Returns extent of a tile in map coordinates.
   //! (same function as tileBBox() but returns QRectF instead of QgsRectangle)
@@ -365,12 +365,12 @@ struct QgsWmtsTileMatrix
 
 struct QgsWmtsTileMatrixSet
 {
-  QString identifier;   //!< tile matrix set identifier
-  QString title;        //!< human readable tile matrix set name
-  QString abstract;     //!< brief description of the tile matrix set
-  QStringList keywords; //!< list of words/phrases to describe the dataset
+  QString identifier;   //!< Tile matrix set identifier
+  QString title;        //!< Human readable tile matrix set name
+  QString abstract;     //!< Brief description of the tile matrix set
+  QStringList keywords; //!< List of words/phrases to describe the dataset
   QString crs;          //!< CRS of the tile matrix set
-  QString wkScaleSet;   //!< optional reference to a well-known scale set
+  QString wkScaleSet;   //!< Optional reference to a well-known scale set
   //! available tile matrixes (key = pixel span in map units)
   QMap<double, QgsWmtsTileMatrix> tileMatrices;
 
@@ -420,15 +420,15 @@ struct QgsWmtsStyle
  */
 struct QgsWmtsDimension
 {
-  QString identifier;   //!< name of the dimensional axis
-  QString title;        //!< human readable name
-  QString abstract;     //!< brief description of the dimension
-  QStringList keywords; //!< list of words/phrases to describe the dataset
-  QString UOM;          //!< units of measure of dimensional axis
-  QString unitSymbol;   //!< symbol of the units
-  QString defaultValue; //!< default value to be used if value is not specified in request
-  bool current;         //!< indicates whether temporal data are normally kept current
-  QStringList values;   //!< available values for this dimension
+  QString identifier;   //!< Name of the dimensional axis
+  QString title;        //!< Human readable name
+  QString abstract;     //!< Brief description of the dimension
+  QStringList keywords; //!< List of words/phrases to describe the dataset
+  QString UOM;          //!< Units of measure of dimensional axis
+  QString unitSymbol;   //!< Symbol of the units
+  QString defaultValue; //!< Default value to be used if value is not specified in request
+  bool current;         //!< Indicates whether temporal data are normally kept current
+  QStringList values;   //!< Available values for this dimension
 };
 
 struct QgsWmtsTileLayer

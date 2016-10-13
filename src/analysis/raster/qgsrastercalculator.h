@@ -45,12 +45,12 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     //! Result of the calculation
     enum Result
     {
-      Success = 0, /*!< Calculation sucessful */
-      CreateOutputError = 1, /*!< Error creating output data file */
-      InputLayerError = 2, /*!< Error reading input layer */
-      Cancelled = 3, /*!< User cancelled calculation */
-      ParserError = 4, /*!< Error parsing formula */
-      MemoryError = 5, /*!< Error allocating memory for result */
+      Success = 0, //!< Calculation sucessful
+      CreateOutputError = 1, //!< Error creating output data file
+      InputLayerError = 2, //!< Error reading input layer
+      Cancelled = 3, //!< User cancelled calculation
+      ParserError = 4, //!< Error parsing formula
+      MemoryError = 5, //!< Error allocating memory for result
     };
 
     /**

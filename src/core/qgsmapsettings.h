@@ -337,8 +337,8 @@ class CORE_EXPORT QgsMapSettings
 
 
     // derived properties
-    bool mValid; //!< whether the actual settings are valid (set in updateDerived())
-    QgsRectangle mVisibleExtent; //!< extent with some additional white space that matches the output aspect ratio
+    bool mValid; //!< Whether the actual settings are valid (set in updateDerived())
+    QgsRectangle mVisibleExtent; //!< Extent with some additional white space that matches the output aspect ratio
     double mMapUnitsPerPixel;
     double mScale;
 

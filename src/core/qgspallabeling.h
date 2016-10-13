@@ -253,16 +253,16 @@ class CORE_EXPORT QgsPalLayerSettings
 
     enum UpsideDownLabels
     {
-      Upright, /*!< upside-down labels (90 <= angle < 270) are shown upright */
-      ShowDefined, /*!< show upside down when rotation is layer- or data-defined */
-      ShowAll /*!< show upside down for all labels, including dynamic ones */
+      Upright, //!< Upside-down labels (90 <= angle < 270) are shown upright
+      ShowDefined, //!< Show upside down when rotation is layer- or data-defined
+      ShowAll //!< Show upside down for all labels, including dynamic ones
     };
 
     enum DirectionSymbols
     {
-      SymbolLeftRight, /*!< place direction symbols on left/right of label */
-      SymbolAbove, /*!< place direction symbols on above label */
-      SymbolBelow /*!< place direction symbols on below label */
+      SymbolLeftRight, //!< Place direction symbols on left/right of label
+      SymbolAbove, //!< Place direction symbols on above label
+      SymbolBelow //!< Place direction symbols on below label
     };
 
     enum MultiLineAlign

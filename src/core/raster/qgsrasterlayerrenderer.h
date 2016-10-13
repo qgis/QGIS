@@ -73,9 +73,9 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
         //! when notified of new data in data provider it launches a preview draw of the raster
         virtual void onNewData() override;
       private:
-        QgsRasterLayerRenderer* mR;   //!< parent renderer instance
-        int mMinimalPreviewInterval;  //!< in miliseconds
-        QTime mLastPreview;           //!< when last preview has been generated
+        QgsRasterLayerRenderer* mR;   //!< Parent renderer instance
+        int mMinimalPreviewInterval;  //!< In miliseconds
+        QTime mLastPreview;           //!< When last preview has been generated
     };
 
     //! feedback class for cancellation and preview generation

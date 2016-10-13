@@ -44,9 +44,9 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! Status of expression compilation for filter expression requests
     enum CompileStatus
     {
-      NoCompilation, /*!< Expression could not be compiled or not attempt was made to compile expression */
-      PartiallyCompiled, /*!< Expression was partially compiled, but extra checks need to be applied to features*/
-      Compiled, /*!< Expression was fully compiled and delegated to data provider source*/
+      NoCompilation, //!< Expression could not be compiled or not attempt was made to compile expression
+      PartiallyCompiled, //!< Expression was partially compiled, but extra checks need to be applied to features
+      Compiled, //!< Expression was fully compiled and delegated to data provider source
     };
 
     //! base class constructor - stores the iteration parameters
@@ -136,8 +136,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! reference counting (to allow seamless copying of QgsFeatureIterator instances)
     //! TODO QGIS3: make this private
     int refs;
-    void ref(); //!< add reference
-    void deref(); //!< remove reference, delete if refs == 0
+    void ref(); //!< Add reference
+    void deref(); //!< Remove reference, delete if refs == 0
     friend class QgsFeatureIterator;
 
     //! Number of features already fetched by iterator

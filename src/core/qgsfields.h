@@ -40,11 +40,11 @@ class CORE_EXPORT QgsFields
 
     enum FieldOrigin
     {
-      OriginUnknown,   //!< it has not been specified where the field comes from
-      OriginProvider,  //!< field comes from the underlying data provider of the vector layer  (originIndex = index in provider's fields)
-      OriginJoin,      //!< field comes from a joined layer   (originIndex / 1000 = index of the join, originIndex % 1000 = index within the join)
-      OriginEdit,      //!< field has been temporarily added in editing mode (originIndex = index in the list of added attributes)
-      OriginExpression //!< field is calculated from an expression
+      OriginUnknown,   //!< It has not been specified where the field comes from
+      OriginProvider,  //!< Field comes from the underlying data provider of the vector layer  (originIndex = index in provider's fields)
+      OriginJoin,      //!< Field comes from a joined layer   (originIndex / 1000 = index of the join, originIndex % 1000 = index within the join)
+      OriginEdit,      //!< Field has been temporarily added in editing mode (originIndex = index in the list of added attributes)
+      OriginExpression //!< Field is calculated from an expression
     };
 
     typedef struct Field
@@ -64,9 +64,9 @@ class CORE_EXPORT QgsFields
       //! @note added in 2.6
       bool operator!=( const Field& other ) const { return !( *this == other ); }
 
-      QgsField field;      //!< field
-      FieldOrigin origin;  //!< origin of the field
-      int originIndex;     //!< index specific to the origin
+      QgsField field;      //!< Field
+      FieldOrigin origin;  //!< Origin of the field
+      int originIndex;     //!< Index specific to the origin
     } Field;
 
     /**

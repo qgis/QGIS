@@ -66,9 +66,9 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      */
     enum ContentSource
     {
-      LayerAttributes = 0, /*!< table shows attributes from features in a vector layer */
-      AtlasFeature, /*!< table shows attributes from the current atlas feature */
-      RelationChildren /*!< table shows attributes from related child features */
+      LayerAttributes = 0, //!< Table shows attributes from features in a vector layer
+      AtlasFeature, //!< Table shows attributes from the current atlas feature
+      RelationChildren //!< Table shows attributes from related child features
     };
 
     QgsComposerAttributeTableV2( QgsComposition* composition, bool createUndoCommands );

@@ -54,8 +54,8 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     enum Behaviour
     {
-      ShowDialog = 0, /*!< show a color picker dialog when clicked */
-      SignalOnly /*!< emit colorClicked signal only, no dialog */
+      ShowDialog = 0, //!< Show a color picker dialog when clicked
+      SignalOnly //!< Emit colorClicked signal only, no dialog
     };
 
     /**

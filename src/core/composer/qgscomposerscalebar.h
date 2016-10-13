@@ -56,8 +56,8 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      */
     enum SegmentSizeMode
     {
-      SegmentSizeFixed = 0, /*!< Scale bar segment size is fixed to a map unit*/
-      SegmentSizeFitWidth = 1 /*!< Scale bar segment size is calculated to fit a size range*/
+      SegmentSizeFixed = 0, //!< Scale bar segment size is fixed to a map unit
+      SegmentSizeFitWidth = 1 //!< Scale bar segment size is calculated to fit a size range
     };
 
     QgsComposerScaleBar( QgsComposition* composition );

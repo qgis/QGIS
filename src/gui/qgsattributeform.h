@@ -43,19 +43,19 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! Form modes
     enum Mode
     {
-      SingleEditMode, /*!< Single edit mode, for editing a single feature */
+      SingleEditMode, //!< Single edit mode, for editing a single feature
       AddFeatureMode, /*!< Add feature mode, for setting attributes for a new feature. In this mode the dialog will be editable even with an invalid feature and
       will add a new feature when the form is accepted. */
-      MultiEditMode, /*!< Multi edit mode, for editing fields of multiple features at once */
-      SearchMode, /*!< Form values are used for searching/filtering the layer */
+      MultiEditMode, //!< Multi edit mode, for editing fields of multiple features at once
+      SearchMode, //!< Form values are used for searching/filtering the layer
     };
 
     //! Filter types
     enum FilterType
     {
-      ReplaceFilter, /*!< Filter should replace any existing filter */
-      FilterAnd, /*!< Filter should be combined using "AND" */
-      FilterOr, /*!< Filter should be combined using "OR" */
+      ReplaceFilter, //!< Filter should replace any existing filter
+      FilterAnd, //!< Filter should be combined using "AND"
+      FilterOr, //!< Filter should be combined using "OR"
     };
 
     explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature = QgsFeature(),

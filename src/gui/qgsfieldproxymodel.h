@@ -35,15 +35,15 @@ class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
     //! Field type filters
     enum Filter
     {
-      String = 1, /*!< String fields */
-      Int = 2, /*!< Integer fields */
-      LongLong = 4, /*!< Longlong fields */
-      Double = 8, /*!< Double fields */
-      Numeric = Int | LongLong | Double, /*!< All numeric fields */
-      Date = 16, /*!< Date or datetime fields */
-      Time = 32, /*!< Time fields */
-      HideReadOnly = 64,  /*!< Hide read-only fields */
-      AllTypes = Numeric | Date | String | Time, /*!< All field types */
+      String = 1, //!< String fields
+      Int = 2, //!< Integer fields
+      LongLong = 4, //!< Longlong fields
+      Double = 8, //!< Double fields
+      Numeric = Int | LongLong | Double, //!< All numeric fields
+      Date = 16, //!< Date or datetime fields
+      Time = 32, //!< Time fields
+      HideReadOnly = 64,  //!< Hide read-only fields
+      AllTypes = Numeric | Date | String | Time, //!< All field types
     };
     Q_DECLARE_FLAGS( Filters, Filter )
 

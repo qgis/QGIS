@@ -39,11 +39,11 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      */
     enum ResizeMode
     {
-      Zoom, /*!< enlarges image to fit frame while maintaining aspect ratio of picture */
-      Stretch, /*!< stretches image to fit frame, ignores aspect ratio */
-      Clip, /*!< draws image at original size and clips any portion which falls outside frame */
-      ZoomResizeFrame, /*!< enlarges image to fit frame, then resizes frame to fit resultant image */
-      FrameToImageSize /*!< sets size of frame to match original size of image without scaling */
+      Zoom, //!< Enlarges image to fit frame while maintaining aspect ratio of picture
+      Stretch, //!< Stretches image to fit frame, ignores aspect ratio
+      Clip, //!< Draws image at original size and clips any portion which falls outside frame
+      ZoomResizeFrame, //!< Enlarges image to fit frame, then resizes frame to fit resultant image
+      FrameToImageSize //!< Sets size of frame to match original size of image without scaling
     };
 
     /**

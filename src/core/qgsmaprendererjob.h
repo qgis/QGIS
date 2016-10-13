@@ -50,7 +50,7 @@ struct LayerRenderJob
   double opacity;
   bool cached; // if true, img already contains cached image from previous rendering
   QString layerId;
-  int renderingTime; //!< time it took to render the layer in ms (it is -1 if not rendered or still rendering)
+  int renderingTime; //!< Time it took to render the layer in ms (it is -1 if not rendered or still rendering)
 };
 
 typedef QList<LayerRenderJob> LayerRenderJobs;

@@ -31,6 +31,12 @@ s#^(\s*)/\*[*!]\s*([^\s*].*)\s*$#$1/** \u$2\n#;
 # Space around doxygen (ie start with /** on its own line)
 s#^(\s*)/\*\*(?!\*)\s*(.+)$#$1/**\n$1 * $2#;
 
+# Convert single line /*!< comments */ to //!< comment
+s#\/\*!<\h*(.*?)\h*\*\/#//!< $1#;
+
+# Uppercase initial character in //!< comment
+s#\/\/!<\s*(.)(.*)#//!< \u$1$2#;
+
 if( /^\s*#include/ ) {
 	push @inc, $_ unless exists $inc{$_};
 	$inc{$_}=1;

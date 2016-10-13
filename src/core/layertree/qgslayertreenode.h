@@ -71,8 +71,8 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Enumeration of possible tree node types
     enum NodeType
     {
-      NodeGroup,   //!< container of other groups and layers
-      NodeLayer    //!< leaf node pointing to a layer
+      NodeGroup,   //!< Container of other groups and layers
+      NodeLayer    //!< Leaf node pointing to a layer
     };
 
     ~QgsLayerTreeNode();

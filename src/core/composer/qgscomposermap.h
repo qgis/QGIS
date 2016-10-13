@@ -77,7 +77,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     enum AtlasScalingMode
     {
-      Fixed,      /*!< The current scale of the map is used for each feature of the atlas */
+      Fixed,      //!< The current scale of the map is used for each feature of the atlas
       Predefined, /*!< A scale is chosen from the predefined scales. The smallest scale from
                     the list of scales where the atlas feature is fully visible is chosen.
                     @see QgsAtlasComposition::setPredefinedScales.

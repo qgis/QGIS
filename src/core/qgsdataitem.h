@@ -118,7 +118,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     {
       NotPopulated, //!< Children not yet created
       Populating,   //!< Creating children in separate thread (populating or refreshing)
-      Populated     //!< children created
+      Populated     //!< Children created
     };
 
     //! @note added in 2.8
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsDataItem : public QObject
       NoCapabilities = 0,
       SetCrs         = 1 << 0, //!< Can set CRS on layer or group of layers
       Fertile        = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
-      Fast           = 1 << 2  //!< createChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QSettings
+      Fast           = 1 << 2  //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QSettings
     };
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
@@ -351,7 +351,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       TableLayer,
       Database,
       Table,
-      Plugin     //!< added in 2.10
+      Plugin     //!< Added in 2.10
     };
 
     QgsLayerItem( QgsDataItem* parent, const QString& name, const QString& path, const QString& uri, LayerType layerType, const QString& providerKey );

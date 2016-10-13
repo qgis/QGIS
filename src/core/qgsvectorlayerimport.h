@@ -51,7 +51,7 @@ class CORE_EXPORT QgsVectorLayerImport
       ErrInvalidProvider,
       ErrProviderUnsupportedFeature,
       ErrConnectionFailed,
-      ErrUserCancelled, /*!< User cancelled the import*/
+      ErrUserCancelled, //!< User cancelled the import
     };
 
     /**

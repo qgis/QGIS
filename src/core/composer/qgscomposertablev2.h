@@ -105,10 +105,10 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      */
     enum HeaderHAlignment
     {
-      FollowColumn, /*!< header uses the same alignment as the column */
-      HeaderLeft, /*!< align headers left */
-      HeaderCenter, /*!< align headers to center */
-      HeaderRight /*!< align headers right */
+      FollowColumn, //!< Header uses the same alignment as the column
+      HeaderLeft, //!< Align headers left
+      HeaderCenter, //!< Align headers to center
+      HeaderRight //!< Align headers right
     };
 
     /**
@@ -116,9 +116,9 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      */
     enum HeaderMode
     {
-      FirstFrame = 0, /*!< header shown on first frame only */
-      AllFrames, /*!< headers shown on all frames */
-      NoHeaders /*!< no headers shown for table */
+      FirstFrame = 0, //!< Header shown on first frame only
+      AllFrames, //!< Headers shown on all frames
+      NoHeaders //!< No headers shown for table
     };
 
     /**
@@ -126,9 +126,9 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      */
     enum EmptyTableMode
     {
-      HeadersOnly = 0, /*!< show header rows only */
-      HideTable, /*!< hides entire table if empty */
-      ShowMessage /*!< shows preset message instead of table contents*/
+      HeadersOnly = 0, //!< Show header rows only
+      HideTable, //!< Hides entire table if empty
+      ShowMessage //!< Shows preset message instead of table contents
     };
 
     /**
@@ -136,8 +136,8 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      */
     enum WrapBehaviour
     {
-      TruncateText = 0, /*!< text which doesn't fit inside the cell is truncated */
-      WrapText /*!< text which doesn't fit inside the cell is wrapped. Note that this only applies to text in columns with a fixed width. */
+      TruncateText = 0, //!< Text which doesn't fit inside the cell is truncated
+      WrapText //!< Text which doesn't fit inside the cell is wrapped. Note that this only applies to text in columns with a fixed width.
     };
 
     /**
@@ -145,15 +145,15 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      */
     enum CellStyleGroup
     {
-      OddColumns, /*!< Style odd numbered columns */
-      EvenColumns, /*!< Style even numbered columns */
-      OddRows, /*!< Style odd numbered rows */
-      EvenRows, /*!< Style even numbered rows */
-      FirstColumn, /*!< Style first column only */
-      LastColumn, /*!< Style last column only */
-      HeaderRow, /*!< Style header row */
-      FirstRow, /*!< Style first row only */
-      LastRow /*!< Style last row only */
+      OddColumns, //!< Style odd numbered columns
+      EvenColumns, //!< Style even numbered columns
+      OddRows, //!< Style odd numbered rows
+      EvenRows, //!< Style even numbered rows
+      FirstColumn, //!< Style first column only
+      LastColumn, //!< Style last column only
+      HeaderRow, //!< Style header row
+      FirstRow, //!< Style first row only
+      LastRow //!< Style last row only
     };
 
     QgsComposerTableV2( QgsComposition* composition, bool createUndoCommands );

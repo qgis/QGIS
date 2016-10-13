@@ -32,8 +32,8 @@ class ANALYSIS_EXPORT Triangulation
     //! Enumeration describing the behaviour, if two forced lines cross.
     enum forcedCrossBehaviour
     {
-      SnappingType_VERTICE,  //!< the second inserted forced line is snapped to the closest vertice of the first inserted forced line.
-      DELETE_FIRST,          //!< the status of the first inserted forced line is reset to that of a normal edge (so that the second inserted forced line remain and the first not)
+      SnappingType_VERTICE,  //!< The second inserted forced line is snapped to the closest vertice of the first inserted forced line.
+      DELETE_FIRST,          //!< The status of the first inserted forced line is reset to that of a normal edge (so that the second inserted forced line remain and the first not)
       INSERT_VERTICE
     };
     virtual ~Triangulation();

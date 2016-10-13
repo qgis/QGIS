@@ -41,8 +41,8 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      */
     enum ShiftDirection
     {
-      ShiftUp, /*!< shift the row/column up */
-      ShiftDown /*!< shift the row/column down */
+      ShiftUp, //!< Shift the row/column up
+      ShiftDown //!< Shift the row/column down
     };
 
     /**
@@ -151,8 +151,8 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      */
     enum ColumnFilterType
     {
-      ShowSortedColumns, /*!< show only sorted columns */
-      ShowUnsortedColumns/*!< show only unsorted columns */
+      ShowSortedColumns, //!< Show only sorted columns
+      ShowUnsortedColumns//!< Show only unsorted columns
     };
 
     /**

@@ -62,8 +62,8 @@ class GUI_EXPORT QgsMapTool : public QObject
       Transient = 1 << 1, /*!< Indicates that this map tool performs a transient (one-off) operation.
                                If it does, the tool can be operated once and then a previous map
                                tool automatically restored. */
-      EditTool = 1 << 2, /*!< Map tool is an edit tool, which can only be used when layer is editable*/
-      AllowZoomRect = 1 << 3, /*!< Allow zooming by rectangle (by holding shift and dragging) while the tool is active*/
+      EditTool = 1 << 2, //!< Map tool is an edit tool, which can only be used when layer is editable
+      AllowZoomRect = 1 << 3, //!< Allow zooming by rectangle (by holding shift and dragging) while the tool is active
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

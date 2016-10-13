@@ -45,29 +45,29 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     //! Marker symbol shapes
     enum Shape
     {
-      Square, /*!< Square */
-      Diamond, /*!< Diamond */
-      Pentagon, /*!< Pentagon */
-      Hexagon, /*!< Hexagon */
-      Triangle, /*!< Triangle */
-      EquilateralTriangle, /*!< Equilateral triangle*/
-      Star, /*!< Star*/
-      Arrow, /*!< Arrow*/
-      Circle, /*!< Circle*/
-      Cross, /*!< Cross (lines only)*/
-      CrossFill, /*!< Solid filled cross*/
-      Cross2, /*!< Rotated cross (lines only), "x" shape*/
-      Line, /*!< Vertical line*/
-      ArrowHead, /*!< Right facing arrow head (unfilled, lines only)*/
-      ArrowHeadFilled, /*!< Right facing filled arrow head*/
-      SemiCircle, /*!< Semi circle (top half)*/
-      ThirdCircle, /*!< One third circle (top left third)*/
-      QuarterCircle, /*!< Quarter circle (top left quarter)*/
-      QuarterSquare, /*!< Quarter square (top left quarter)*/
-      HalfSquare, /*!< Half square (left half)*/
-      DiagonalHalfSquare, /*!< Diagonal half square (bottom left half)*/
-      RightHalfTriangle, /*!< Right half of triangle*/
-      LeftHalfTriangle, /*!< Left half of triangle*/
+      Square, //!< Square
+      Diamond, //!< Diamond
+      Pentagon, //!< Pentagon
+      Hexagon, //!< Hexagon
+      Triangle, //!< Triangle
+      EquilateralTriangle, //!< Equilateral triangle
+      Star, //!< Star
+      Arrow, //!< Arrow
+      Circle, //!< Circle
+      Cross, //!< Cross (lines only)
+      CrossFill, //!< Solid filled cross
+      Cross2, //!< Rotated cross (lines only), "x" shape
+      Line, //!< Vertical line
+      ArrowHead, //!< Right facing arrow head (unfilled, lines only)
+      ArrowHeadFilled, //!< Right facing filled arrow head
+      SemiCircle, //!< Semi circle (top half)
+      ThirdCircle, //!< One third circle (top left third)
+      QuarterCircle, //!< Quarter circle (top left quarter)
+      QuarterSquare, //!< Quarter square (top left quarter)
+      HalfSquare, //!< Half square (left half)
+      DiagonalHalfSquare, //!< Diagonal half square (bottom left half)
+      RightHalfTriangle, //!< Right half of triangle
+      LeftHalfTriangle, //!< Left half of triangle
     };
 
     //! Returns a list of all available shape types.

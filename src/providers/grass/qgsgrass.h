@@ -260,9 +260,9 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Error codes returned by error()
     enum GERROR
     {
-      OK, /*!< OK. No error. */
-      WARNING, /*!< Warning, non fatal error. Should be printed by application. */
-      FATAL /*!< Fatal error */
+      OK, //!< OK. No error.
+      WARNING, //!< Warning, non fatal error. Should be printed by application.
+      FATAL //!< Fatal error
     };
 
     //! Reset error code (to OK). Call this before a piece of code where an error is expected
