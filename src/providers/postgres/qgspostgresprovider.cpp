@@ -202,7 +202,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
       QString delim;
       Q_FOREACH ( int idx, mPrimaryKeyAttrs )
       {
-        key += delim + quotedIdentifier( mAttributeFields.at( idx ).name() );
+        key += delim + mAttributeFields.at( idx ).name();
         delim = ',';
       }
     }
