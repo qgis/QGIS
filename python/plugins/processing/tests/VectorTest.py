@@ -67,13 +67,11 @@ class VectorTest(unittest.TestCase):
         def linkTestfile(f, t):
             os.link(os.path.join(dataFolder, f), os.path.join(tmpdir, t))
 
-        linkTestfile('wkt_data.csv', 'b.csv')
-        name = vector.ogrLayerName(tmpdir)
-        self.assertEqual(name, 'b')
         linkTestfile('geom_data.csv', 'a.csv')
         name = vector.ogrLayerName(tmpdir)
-        self.assertEqual(name, 'a') # alphabetically ordered
+        self.assertEqual(name, 'a')
 
+        linkTestfile('wkt_data.csv', 'b.csv')
         name = vector.ogrLayerName(tmpdir + '|layerid=0')
         self.assertEqual(name, 'a')
         name = vector.ogrLayerName(tmpdir + '|layerid=1')
