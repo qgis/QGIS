@@ -313,3 +313,49 @@ void QgsLayerTreeView::refreshLayerSymbology( const QString& layerId )
   if ( nodeLayer )
     layerTreeModel()->refreshLayerLegend( nodeLayer );
 }
+
+
+static void _expandAllLegendNodes( QgsLayerTreeLayer* nodeLayer, bool expanded, QgsLayerTreeModel* model )
+{
+  // for layers we also need to find out with legend nodes contain some children and make them expanded/collapsed
+  // if we are collapsing, we just write out an empty list
+  QStringList lst;
+  if ( expanded )
+  {
+    Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer ) )
+    {
+      QString parentKey = legendNode->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString();
+      if ( !parentKey.isEmpty() && !lst.contains( parentKey ) )
+        lst << parentKey;
+    }
+  }
+  nodeLayer->setCustomProperty( "expandedLegendNodes", lst );
+}
+
+
+static void _expandAllNodes( QgsLayerTreeGroup* parent, bool expanded, QgsLayerTreeModel* model )
+{
+  Q_FOREACH ( QgsLayerTreeNode* node, parent->children() )
+  {
+    node->setExpanded( expanded );
+    if ( QgsLayerTree::isGroup( node ) )
+      _expandAllNodes( QgsLayerTree::toGroup( node ), expanded, model );
+    else if ( QgsLayerTree::isLayer( node ) )
+      _expandAllLegendNodes( QgsLayerTree::toLayer( node ), expanded, model );
+  }
+}
+
+
+void QgsLayerTreeView::expandAllNodes()
+{
+  // unfortunately expandAll() does not emit expanded() signals
+  _expandAllNodes( layerTreeModel()->rootGroup(), true, layerTreeModel() );
+  expandAll();
+}
+
+void QgsLayerTreeView::collapseAllNodes()
+{
+  // unfortunately collapseAll() does not emit collapsed() signals
+  _expandAllNodes( layerTreeModel()->rootGroup(), false, layerTreeModel() );
+  collapseAll();
+}
