@@ -1,0 +1,119 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    ToolsTest
+    ---------------------
+    Date                 : July 2017
+    Copyright            : (C) 2017 by Nyall Dawson
+    Email                : nyall dot dawson at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Nyall Dawson'
+__date__ = 'July 2016'
+__copyright__ = '(C) 2016, Nyall Dawson'
+
+# This will get replaced with a git SHA1 when you do a git archive
+
+__revision__ = '$Format:%H$'
+
+from qgis.testing import start_app, unittest
+from processing.tests.TestData import points2
+from processing.tools import vector
+from qgis.core import (QgsVectorLayer, QgsFeatureRequest)
+from processing.core.ProcessingConfig import ProcessingConfig
+
+import os.path
+import errno
+import shutil
+
+dataFolder = os.path.join(os.path.dirname(__file__), '../../../../tests/testdata/')
+tmpBaseFolder = os.path.join(os.sep, 'tmp', 'qgis_test', str(os.getpid()))
+
+
+def mkDirP(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
+
+start_app()
+
+
+class VectorTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        mkDirP(tmpBaseFolder)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(tmpBaseFolder)
+        pass
+
+    # See http://hub.qgis.org/issues/15698
+    def test_ogrLayerName(self):
+        tmpdir = os.path.join(tmpBaseFolder, 'ogrLayerName')
+        os.mkdir(tmpdir)
+
+        def linkTestfile(f, t):
+            os.link(os.path.join(dataFolder, f), os.path.join(tmpdir, t))
+
+        linkTestfile('geom_data.csv', 'a.csv')
+        name = vector.ogrLayerName(tmpdir)
+        self.assertEqual(name, 'a')
+
+        linkTestfile('wkt_data.csv', 'b.csv')
+        name = vector.ogrLayerName(tmpdir + '|layerid=0')
+        self.assertEqual(name, 'a')
+        name = vector.ogrLayerName(tmpdir + '|layerid=1')
+        self.assertEqual(name, 'b')
+
+        name = vector.ogrLayerName(tmpdir + '|layerid=2')
+        self.assertEqual(name, 'invalid-layerid')
+
+        name = vector.ogrLayerName(tmpdir + '|layername=f')
+        self.assertEqual(name, 'f') # layername takes precedence
+
+        name = vector.ogrLayerName(tmpdir + '|layerid=0|layername=f2')
+        self.assertEqual(name, 'f2') # layername takes precedence
+
+        name = vector.ogrLayerName(tmpdir + '|layername=f2|layerid=0')
+        self.assertEqual(name, 'f2') # layername takes precedence
+
+    def testFeatures(self):
+        ProcessingConfig.initialize()
+
+        test_data = points2()
+        test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
+
+        # test with all features
+        features = vector.features(test_layer)
+        self.assertEqual(len(features), 8)
+        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7]))
+
+        previous_value = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
+
+        # using selected features, but no selection
+        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
+        test_layer.removeSelection()
+        features = vector.features(test_layer)
+        self.assertEqual(len(features), 8)
+        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7]))
+
+        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
+
+
+if __name__ == '__main__':
+    unittest.main()
