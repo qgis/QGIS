@@ -34,6 +34,8 @@ import cStringIO
 
 import psycopg2
 
+from osgeo import ogr
+
 from qgis.PyQt.QtCore import QVariant, QSettings
 from qgis.core import (QGis, QgsFields, QgsField, QgsGeometry, QgsRectangle,
                        QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer,
@@ -509,20 +511,26 @@ def ogrConnectionString(uri):
 
 
 def ogrLayerName(uri):
-    if 'host' in uri:
-        regex = re.compile('(table=")(.+?)(\.)(.+?)"')
-        r = regex.search(uri)
-        return '"' + r.groups()[1] + '.' + r.groups()[3] + '"'
-    elif 'dbname' in uri:
-        regex = re.compile('(table=")(.+?)"')
-        r = regex.search(uri)
-        return r.groups()[1]
-    elif 'layername' in uri:
-        regex = re.compile('(layername=)(.*)')
-        r = regex.search(uri)
-        return r.groups()[1]
-    else:
-        return os.path.basename(os.path.splitext(uri)[0])
+    fields = uri.split('|')
+    ogruri = fields[0]
+    fields = fields[1:]
+    layerid = 0
+    for f in fields:
+        if f.startswith('layername='):
+            # Name encoded in uri, nothing more needed
+            return f.split('=')[1]
+        if f.startswith('layerid='):
+            layerid = int(f.split('=')[1])
+            # Last layerid= takes precedence, to allow of layername to
+            # take precedence
+    ds = ogr.Open(ogruri)
+    if not ds:
+        return "invalid-uri"
+    ly = ds.GetLayer(layerid)
+    if not ly:
+        return "invalid-layerid"
+    name = ly.GetName()
+    return name
 
 
 class VectorWriter:
