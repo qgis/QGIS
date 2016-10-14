@@ -25,6 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterCrs
@@ -93,9 +95,9 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         self.addParameter(ParameterCrs(self.S_SRS,
                                        self.tr('Override source CRS'), '', optional=True))
         self.addParameter(ParameterString(self.HOST,
-                                          self.tr('Host'), 'localhost', optional=False))
+                                          self.tr('Host'), os.environ.get('PGHOST') or 'localhost', optional=True))
         self.addParameter(ParameterString(self.PORT,
-                                          self.tr('Port'), '5432', optional=False))
+                                          self.tr('Port'), os.environ.get('PGPORT') or '5432', optional=True))
         self.addParameter(ParameterString(self.USER,
                                           self.tr('Username'), '', optional=False))
         self.addParameter(ParameterString(self.DBNAME,
@@ -160,8 +162,8 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         ssrs = unicode(self.getParameterValue(self.S_SRS))
         tsrs = unicode(self.getParameterValue(self.T_SRS))
         asrs = unicode(self.getParameterValue(self.A_SRS))
-        host = unicode(self.getParameterValue(self.HOST))
-        port = unicode(self.getParameterValue(self.PORT))
+        host = unicode(self.getParameterValue(self.HOST)) or os.environ.get('PGHOST')
+        port = unicode(self.getParameterValue(self.PORT)) or os.environ.get('PGPORT')
         user = unicode(self.getParameterValue(self.USER))
         dbname = unicode(self.getParameterValue(self.DBNAME))
         password = unicode(self.getParameterValue(self.PASSWORD))
