@@ -870,6 +870,9 @@ void QgsMarkerLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbo
     }
   }
 
+
+  context.renderContext().painter()->save();
+
   if ( qgsDoubleNear( offset, 0.0 ) )
   {
     if ( placement == Interval )
@@ -896,6 +899,8 @@ void QgsMarkerLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbo
         renderPolylineVertex( points2, context, placement );
     }
   }
+
+  context.renderContext().painter()->restore();
 }
 
 void QgsMarkerLineSymbolLayer::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
