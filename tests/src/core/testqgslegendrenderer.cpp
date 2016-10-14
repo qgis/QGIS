@@ -114,6 +114,7 @@ class TestQgsLegendRenderer : public QObject
     void testBasic();
     void testBigMarker();
     void testMapUnits();
+    void testTallSymbol();
     void testLongSymbolText();
     void testThreeColumns();
     void testFilterByMap();
@@ -336,6 +337,28 @@ void TestQgsLegendRenderer::testMapUnits()
   settings.setMapScale( 1000 );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testTallSymbol()
+{
+  QString testName = "legend_tall_symbol";
+
+  QgsCategorizedSymbolRenderer* catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer*>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategoryLabel( 1, "This is\nthree lines\nlong label" );
+
+  mVL2->setName( "This is a two lines\nlong label" );
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsLegendSettings settings;
+  settings.setWrapChar( "\n" );
+  settings.setSymbolSize( QSizeF( 10.0, 10.0 ) );
+  _setStandardTestFont( settings );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+
+  mVL2->setName( "Polygon Layer" );
 }
 
 void TestQgsLegendRenderer::testLongSymbolText()
