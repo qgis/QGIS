@@ -62,10 +62,9 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
   QFont symbolLabelFont = settings.style( QgsComposerLegendStyle::SymbolLabel ).font();
 
   double textHeight = settings.fontHeightCharacterMM( symbolLabelFont, QChar( '0' ) );
-  // itemHeight here is not realy item height, it is only for symbol
-  // vertical alignment purpose, i.e. ok take single line height
-  // if there are more lines, thos run under the symbol
-  double itemHeight = qMax( static_cast< double >( settings.symbolSize().height() ), textHeight );
+  QStringList lines = settings.splitStringForWrapping( data( Qt::DisplayRole ).toString() );
+  double labelHeight = lines.count() * textHeight + ( lines.count() - 1 ) * settings.lineSpacing();
+  double itemHeight = qMax( static_cast< double >( settings.symbolSize().height() ), labelHeight );
 
   ItemMetrics im;
   im.symbolSize = drawSymbol( settings, ctx, itemHeight );
@@ -108,9 +107,9 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings& set
 
     // Vertical alignment of label with symbol
     if ( labelSize.height() < symbolSize.height() )
-      labelY += symbolSize.height() / 2 + textHeight / 2;  // label centered with symbol
-    else
-      labelY += textHeight; // label starts at top and runs under symbol
+      labelY += symbolSize.height() / 2 - labelSize.height() / 2;  // label centered with symbol
+
+    labelY += textHeight;
   }
 
   for ( QStringList::Iterator itemPart = lines.begin(); itemPart != lines.end(); ++itemPart )
