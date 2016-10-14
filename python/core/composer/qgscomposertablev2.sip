@@ -310,6 +310,46 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      */
     QColor gridColor() const;
 
+    /** Sets whether the grid's horizontal lines should be drawn in the table
+     * @param horizontalGird set to true to draw grid's horizontal lines
+     * @see setShowGrid
+     * @see setGridStrokeWidth
+     * @see setGridColor
+     * @see setVerticalGrid
+     * @note added in QGIS 3.0
+     */
+    void setHorizontalGrid( const bool horizontalGrid );
+
+    /** Returns whether the grid's horizontal lines are drawn in the table
+     * @returns true if grid's horizontal lines are drawn
+     * @see setShowGrid
+     * @see setGridStrokeWidth
+     * @see setGridColor
+     * @see setVerticalGrid
+     * @note added in QGIS 3.0
+     */
+    bool horizontalGrid() const;
+
+    /** Sets whether the grid's vertical lines should be drawn in the table
+     * @param verticalGird set to true to draw grid's vertical lines
+     * @see setShowGrid
+     * @see setGridStrokeWidth
+     * @see setGridColor
+     * @see setHorizontalGrid
+     * @note added in QGIS 3.0
+     */
+    void setVerticalGrid( const bool verticalGrid );
+
+    /** Returns whether the grid's vertical lines are drawn in the table
+     * @returns true if grid's vertical lines are drawn
+     * @see setShowGrid
+     * @see setGridStrokeWidth
+     * @see setGridColor
+     * @see setHorizontalGrid
+     * @note added in QGIS 3.0
+     */
+    bool verticalGrid() const;
+
     /** Sets color used for background of table.
      * @param color table background color
      * @see backgroundColor

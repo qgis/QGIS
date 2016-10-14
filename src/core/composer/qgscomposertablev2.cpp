@@ -58,6 +58,8 @@ QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool create
     , mShowGrid( true )
     , mGridStrokeWidth( 0.5 )
     , mGridColor( Qt::black )
+    , mHorizontalGrid( true )
+    , mVerticalGrid( true )
     , mBackgroundColor( Qt::white )
     , mWrapBehaviour( TruncateText )
 {
@@ -120,6 +122,8 @@ bool QgsComposerTableV2::writeXml( QDomElement& elem, QDomDocument & doc, bool i
   elem.setAttribute( "contentFontColor", QgsSymbolLayerUtils::encodeColor( mContentFontColor ) );
   elem.setAttribute( "gridStrokeWidth", QString::number( mGridStrokeWidth ) );
   elem.setAttribute( "gridColor", QgsSymbolLayerUtils::encodeColor( mGridColor ) );
+  elem.setAttribute( "horizontalGrid", mHorizontalGrid );
+  elem.setAttribute( "verticalGrid", mVerticalGrid );
   elem.setAttribute( "showGrid", mShowGrid );
   elem.setAttribute( "backgroundColor", QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
   elem.setAttribute( "wrapBehaviour", QString::number( static_cast< int >( mWrapBehaviour ) ) );
@@ -187,6 +191,8 @@ bool QgsComposerTableV2::readXml( const QDomElement &itemElem, const QDomDocumen
   mContentFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "contentFontColor", "0,0,0,255" ) );
   mCellMargin = itemElem.attribute( "cellMargin", "1.0" ).toDouble();
   mGridStrokeWidth = itemElem.attribute( "gridStrokeWidth", "0.5" ).toDouble();
+  mHorizontalGrid = itemElem.attribute( "horizontalGrid", "1" ).toInt();
+  mVerticalGrid = itemElem.attribute( "verticalGrid", "1" ).toInt();
   mShowGrid = itemElem.attribute( "showGrid", "1" ).toInt();
   mGridColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "gridColor", "0,0,0,255" ) );
   mBackgroundColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "backgroundColor", "255,255,255,0" ) );
@@ -243,18 +249,18 @@ int QgsComposerTableV2::rowsVisible( double frameHeight, int firstRow, bool incl
   if ( includeHeader )
   {
     //frame has a header
-    headerHeight = 2 * ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin +  QgsComposerUtils::fontAscentMM( mHeaderFont );
+    headerHeight = 2 * ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin +  QgsComposerUtils::fontAscentMM( mHeaderFont );
   }
   else
   {
     //frame has no header text, just the stroke
-    headerHeight = ( mShowGrid ? mGridStrokeWidth : 0 );
+    headerHeight = ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 );
   }
 
   //remaining height available for content rows
   double contentHeight = frameHeight - headerHeight;
 
-  double gridHeight = ( mShowGrid ? mGridStrokeWidth : 0 );
+  double gridHeight = ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 );
 
   int currentRow = firstRow;
   while ( contentHeight > 0 && currentRow <= mTableContents.count() )
@@ -266,7 +272,7 @@ int QgsComposerTableV2::rowsVisible( double frameHeight, int firstRow, bool incl
 
   if ( includeEmptyRows && contentHeight > 0 )
   {
-    double rowHeight = ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin + QgsComposerUtils::fontAscentMM( mContentFont );
+    double rowHeight = ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin + QgsComposerUtils::fontAscentMM( mContentFont );
     currentRow += qMax( floor( contentHeight / rowHeight ), 0.0 );
   }
 
@@ -341,7 +347,8 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
   //calculate which rows to show in this frame
   QPair< int, int > rowsToShow = rowRange( frameIndex );
 
-  double gridSize = mShowGrid ? mGridStrokeWidth : 0;
+  double gridSizeX = mShowGrid && mVerticalGrid ? mGridStrokeWidth : 0;
+  double gridSizeY = mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0;
   double cellHeaderHeight = QgsComposerUtils::fontAscentMM( mHeaderFont ) + 2 * mCellMargin;
   double cellBodyHeight = QgsComposerUtils::fontAscentMM( mContentFont ) + 2 * mCellMargin;
   QRectF cell;
@@ -375,8 +382,8 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
   //draw the text
   p->setPen( Qt::SolidLine );
 
-  double currentX = gridSize;
-  double currentY = gridSize;
+  double currentX = gridSizeX;
+  double currentY = gridSizeY;
   if ( drawHeader )
   {
     //draw the headers
@@ -425,12 +432,12 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
 
       currentX += mMaxColumnWidthMap[ col ];
       currentX += mCellMargin;
-      currentX += gridSize;
+      currentX += gridSizeX;
       col++;
     }
 
     currentY += cellHeaderHeight;
-    currentY += gridSize;
+    currentY += gridSizeY;
   }
 
   //now draw the body cells
@@ -441,7 +448,7 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
     for ( int row = rowsToShow.first; row < rowsToShow.second; ++row )
     {
       rowsDrawn++;
-      currentX = gridSize;
+      currentX = gridSizeX;
       int col = 0;
 
       //calculate row height
@@ -481,11 +488,11 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
 
         currentX += mMaxColumnWidthMap[ col ];
         currentX += mCellMargin;
-        currentX += gridSize;
+        currentX += gridSizeX;
         col++;
       }
       currentY += rowHeight;
-      currentY += gridSize;
+      currentY += gridSizeY;
     }
   }
 
@@ -497,13 +504,13 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
     //draw background of empty rows
     for ( int row = rowsDrawn; row < numberRowsToDraw; ++row )
     {
-      currentX = gridSize;
+      currentX = gridSizeX;
       int col = 0;
 
       if ( mergeCells )
       {
         p->setBrush( backgroundColor( row + 10000, 0 ) );
-        p->drawRect( QRectF( gridSize, currentY, mTableSize.width() - 2 * gridSize, cellBodyHeight ) );
+        p->drawRect( QRectF( gridSizeX, currentY, mTableSize.width() - 2 * gridSizeX, cellBodyHeight ) );
       }
       else
       {
@@ -517,11 +524,11 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
 
           // currentY = gridSize;
           currentX += mMaxColumnWidthMap[ col ] + 2 * mCellMargin;
-          currentX += gridSize;
+          currentX += gridSizeX;
           col++;
         }
       }
-      currentY += cellBodyHeight + gridSize;
+      currentY += cellBodyHeight + gridSizeY;
     }
     p->restore();
   }
@@ -534,15 +541,21 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
     gridPen.setColor( mGridColor );
     gridPen.setJoinStyle( Qt::MiterJoin );
     p->setPen( gridPen );
-    drawHorizontalGridLines( p, rowsToShow.first, rowsToShow.second + numberEmptyRows, drawHeader );
-    drawVerticalGridLines( p, mMaxColumnWidthMap, rowsToShow.first, rowsToShow.second + numberEmptyRows, drawHeader, mergeCells );
+    if ( mHorizontalGrid )
+    {
+      drawHorizontalGridLines( p, rowsToShow.first, rowsToShow.second + numberEmptyRows, drawHeader );
+    }
+    if ( mVerticalGrid )
+    {
+      drawVerticalGridLines( p, mMaxColumnWidthMap, rowsToShow.first, rowsToShow.second + numberEmptyRows, drawHeader, mergeCells );
+    }
   }
 
   //special case - no records and table is set to ShowMessage mode
   if ( emptyTable && mEmptyTableMode == QgsComposerTableV2::ShowMessage )
   {
-    double messageX = gridSize + mCellMargin;
-    double messageY = gridSize + ( drawHeader ? cellHeaderHeight + gridSize : 0 );
+    double messageX = gridSizeX + mCellMargin;
+    double messageY = gridSizeY + ( drawHeader ? cellHeaderHeight + gridSizeY : 0 );
     cell = QRectF( messageX, messageY, mTableSize.width() - messageX, cellBodyHeight );
     QgsComposerUtils::drawText( p, cell, mEmptyTableMessage, mContentFont, mContentFontColor, Qt::AlignHCenter, Qt::AlignVCenter, static_cast< Qt::TextFlag >( 0 ) );
   }
@@ -725,6 +738,34 @@ void QgsComposerTableV2::setGridColor( const QColor &color )
 
   mGridColor = color;
   update();
+
+  emit changed();
+}
+
+void QgsComposerTableV2::setHorizontalGrid( const bool horizontalGrid )
+{
+  if ( horizontalGrid == mHorizontalGrid )
+  {
+    return;
+  }
+
+  mHorizontalGrid = horizontalGrid;
+  //since grid spacing has changed, we need to recalculate the table size
+  recalculateTableSize();
+
+  emit changed();
+}
+
+void QgsComposerTableV2::setVerticalGrid( const bool verticalGrid )
+{
+  if ( verticalGrid == mVerticalGrid )
+  {
+    return;
+  }
+
+  mVerticalGrid = verticalGrid;
+  //since grid spacing has changed, we need to recalculate the table size
+  recalculateTableSize();
 
   emit changed();
 }
@@ -1002,7 +1043,7 @@ double QgsComposerTableV2::totalWidth()
     totalWidth += maxColWidthIt.value();
   }
   totalWidth += ( 2 * mMaxColumnWidthMap.size() * mCellMargin );
-  totalWidth += ( mMaxColumnWidthMap.size() + 1 ) * ( mShowGrid ? mGridStrokeWidth : 0 );
+  totalWidth += ( mMaxColumnWidthMap.size() + 1 ) * ( mShowGrid && mVerticalGrid ? mGridStrokeWidth : 0 );
 
   return totalWidth;
 }
@@ -1216,22 +1257,22 @@ void QgsComposerTableV2::drawVerticalGridLines( QPainter *painter, const QMap<in
   double tableHeight = 0;
   if ( hasHeader )
   {
-    tableHeight += ( mShowGrid ? mGridStrokeWidth : 0 ) + mCellMargin * 2 + QgsComposerUtils::fontAscentMM( mHeaderFont );
+    tableHeight += ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 ) + mCellMargin * 2 + QgsComposerUtils::fontAscentMM( mHeaderFont );
   }
-  tableHeight += ( mShowGrid ? mGridStrokeWidth : 0 );
+  tableHeight += ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 );
   double headerHeight = tableHeight;
 
   double cellBodyHeight = QgsComposerUtils::fontAscentMM( mContentFont );
   for ( int row = firstRow; row < lastRow; ++row )
   {
     double rowHeight = row < mTableContents.count() ? mMaxRowHeightMap[row + 1] : cellBodyHeight;
-    tableHeight += rowHeight + ( mShowGrid ? mGridStrokeWidth : 0 ) + mCellMargin * 2;
+    tableHeight += rowHeight + ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 ) + mCellMargin * 2;
   }
 
-  double halfGridStrokeWidth = ( mShowGrid ? mGridStrokeWidth : 0 ) / 2.0;
+  double halfGridStrokeWidth = ( mShowGrid && mVerticalGrid ? mGridStrokeWidth : 0 ) / 2.0;
   double currentX = halfGridStrokeWidth;
   painter->drawLine( QPointF( currentX, halfGridStrokeWidth ), QPointF( currentX, tableHeight - halfGridStrokeWidth ) );
-  currentX += ( mShowGrid ? mGridStrokeWidth : 0 );
+  currentX += ( mShowGrid && mVerticalGrid ? mGridStrokeWidth : 0 );
   QMap<int, double>::const_iterator maxColWidthIt = maxWidthMap.constBegin();
   int col = 1;
   for ( ; maxColWidthIt != maxWidthMap.constEnd(); ++maxColWidthIt )
@@ -1246,7 +1287,7 @@ void QgsComposerTableV2::drawVerticalGridLines( QPainter *painter, const QMap<in
       painter->drawLine( QPointF( currentX, halfGridStrokeWidth ), QPointF( currentX, headerHeight - halfGridStrokeWidth ) );
     }
 
-    currentX += ( mShowGrid ? mGridStrokeWidth : 0 );
+    currentX += ( mShowGrid && mVerticalGrid ? mGridStrokeWidth : 0 );
     col++;
   }
 }
