@@ -31,10 +31,66 @@ from processing.tools import vector
 from qgis.core import (QgsVectorLayer, QgsFeatureRequest)
 from processing.core.ProcessingConfig import ProcessingConfig
 
+import os.path
+import errno
+import shutil
+
+dataFolder = os.path.join(os.path.dirname(__file__), '../../../../tests/testdata/')
+tmpBaseFolder = os.path.join(os.sep, 'tmp', 'qgis_test', str(os.getpid()))
+
+
+def mkDirP(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
+
 start_app()
 
 
 class VectorTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        mkDirP(tmpBaseFolder)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(tmpBaseFolder)
+        pass
+
+    # See http://hub.qgis.org/issues/15698
+    def test_ogrLayerName(self):
+        tmpdir = os.path.join(tmpBaseFolder, 'ogrLayerName')
+        os.mkdir(tmpdir)
+
+        def linkTestfile(f, t):
+            os.link(os.path.join(dataFolder, f), os.path.join(tmpdir, t))
+
+        linkTestfile('geom_data.csv', 'a.csv')
+        name = vector.ogrLayerName(tmpdir)
+        self.assertEqual(name, 'a')
+
+        linkTestfile('wkt_data.csv', 'b.csv')
+        name = vector.ogrLayerName(tmpdir + '|layerid=0')
+        self.assertEqual(name, 'a')
+        name = vector.ogrLayerName(tmpdir + '|layerid=1')
+        self.assertEqual(name, 'b')
+
+        name = vector.ogrLayerName(tmpdir + '|layerid=2')
+        self.assertEqual(name, 'invalid-layerid')
+
+        name = vector.ogrLayerName(tmpdir + '|layername=f')
+        self.assertEqual(name, 'f') # layername takes precedence
+
+        name = vector.ogrLayerName(tmpdir + '|layerid=0|layername=f2')
+        self.assertEqual(name, 'f2') # layername takes precedence
+
+        name = vector.ogrLayerName(tmpdir + '|layername=f2|layerid=0')
+        self.assertEqual(name, 'f2') # layername takes precedence
 
     def testFeatures(self):
         ProcessingConfig.initialize()
