@@ -41,14 +41,19 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString& uri )
     QString typeName = url.queryItemValue( QgsWFSConstants::URI_PARAM_TYPENAME );
     QString version = url.queryItemValue( QgsWFSConstants::URI_PARAM_VERSION );
     QString filter = url.queryItemValue( QgsWFSConstants::URI_PARAM_FILTER );
-    mAuth.mUserName = url.queryItemValue( QgsWFSConstants::URI_PARAM_USERNAME );
-    // In QgsDataSourceURI, the "username" param is named "user", check it
-    if ( mAuth.mUserName.isEmpty() )
-    {
-      mAuth.mUserName = url.queryItemValue( QgsWFSConstants::URI_PARAM_USER );
-    }
-    mAuth.mPassword = url.queryItemValue( QgsWFSConstants::URI_PARAM_PASSWORD );
     mAuth.mAuthCfg = url.queryItemValue( QgsWFSConstants::URI_PARAM_AUTHCFG );
+    // NOTE: A defined authcfg overrides any older username/password auth
+    //       Only check for older auth if it is undefined
+    if ( mAuth.mAuthCfg.isEmpty() )
+    {
+      mAuth.mUserName = url.queryItemValue( QgsWFSConstants::URI_PARAM_USERNAME );
+      // In QgsDataSourceURI, the "username" param is named "user", check it
+      if ( mAuth.mUserName.isEmpty() )
+      {
+        mAuth.mUserName = url.queryItemValue( QgsWFSConstants::URI_PARAM_USER );
+      }
+      mAuth.mPassword = url.queryItemValue( QgsWFSConstants::URI_PARAM_PASSWORD );
+    }
 
     // Now remove all stuff that is not the core URL
     url.removeQueryItem( "SERVICE" );
@@ -90,19 +95,24 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString& uri )
 const QString QgsWFSDataSourceURI::uri( bool expandAuthConfig ) const
 {
   QgsDataSourceUri theURI( mURI );
-  // Add auth params back into the uri
+  // Add authcfg param back into the uri (must be non-empty value)
   if ( ! mAuth.mAuthCfg.isEmpty() )
   {
     theURI.setAuthConfigId( mAuth.mAuthCfg );
   }
-  if ( ! mAuth.mUserName.isEmpty() )
+  else
   {
-    theURI.setUsername( mAuth.mUserName );
+    // Add any older username/password auth params back in (allow empty values)
+    if ( ! mAuth.mUserName.isNull() )
+    {
+      theURI.setUsername( mAuth.mUserName );
+    }
+    if ( ! mAuth.mPassword.isNull() )
+    {
+      theURI.setPassword( mAuth.mPassword );
+    }
   }
-  if ( ! mAuth.mPassword.isEmpty() )
-  {
-    theURI.setPassword( mAuth.mPassword );
-  }
+  // NOTE: avoid expanding authcfg here; it is handled during network access
   return theURI.uri( expandAuthConfig );
 }
 
