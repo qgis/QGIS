@@ -357,6 +357,44 @@ void QgsComposerAttributeTableWidget::on_mGridColorButton_colorChanged( const QC
   }
 }
 
+void QgsComposerAttributeTableWidget::on_mDrawHorizontalGrid_toggled( bool state )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mComposerTable->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table horizontal grid toggled" ) );
+  }
+  mComposerTable->setHorizontalGrid( state );
+  if ( composition )
+  {
+    composition->endMultiFrameCommand();
+  }
+}
+
+void QgsComposerAttributeTableWidget::on_mDrawVerticalGrid_toggled( bool state )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mComposerTable->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table vertical grid toggled" ) );
+  }
+  mComposerTable->setVerticalGrid( state );
+  if ( composition )
+  {
+    composition->endMultiFrameCommand();
+  }
+}
+
 void QgsComposerAttributeTableWidget::on_mShowGridGroupCheckBox_toggled( bool state )
 {
   if ( !mComposerTable )
@@ -428,6 +466,8 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
   mMarginSpinBox->setValue( mComposerTable->cellMargin() );
   mGridStrokeWidthSpinBox->setValue( mComposerTable->gridStrokeWidth() );
   mGridColorButton->setColor( mComposerTable->gridColor() );
+  mDrawHorizontalGrid->setChecked( mComposerTable->horizontalGrid() );
+  mDrawVerticalGrid->setChecked( mComposerTable->verticalGrid() );
   if ( mComposerTable->showGrid() )
   {
     mShowGridGroupCheckBox->setChecked( true );
@@ -568,6 +608,8 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
   mGridColorButton->blockSignals( b );
   mGridStrokeWidthSpinBox->blockSignals( b );
   mBackgroundColorButton->blockSignals( b );
+  mDrawHorizontalGrid->blockSignals( b );
+  mDrawVerticalGrid->blockSignals( b );
   mShowGridGroupCheckBox->blockSignals( b );
   mShowOnlyVisibleFeaturesCheckBox->blockSignals( b );
   mUniqueOnlyCheckBox->blockSignals( b );
