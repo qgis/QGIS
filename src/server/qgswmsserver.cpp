@@ -2213,35 +2213,46 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
 #endif
 
   QgsFeatureIterator fit = layer->getFeatures( fReq );
+  QgsFeatureRendererV2* r2 = layer->rendererV2();
+  if ( r2 )
+  {
+    r2->startRender( renderContext, layer->pendingFields() );
+  }
 
   bool featureBBoxInitialized = false;
   while ( fit.nextFeature( feature ) )
   {
+    if ( layer->wkbType() == QGis::WKBNoGeometry && ! searchRect.isEmpty() )
+    {
+      break;
+    }
+
     ++featureCounter;
     if ( featureCounter > nFeatures )
     {
       break;
     }
 
-    QgsFeatureRendererV2* r2 = layer->rendererV2();
-    if ( !r2 )
+    if ( layer->wkbType() != QGis::WKBNoGeometry && ! searchRect.isEmpty() )
     {
-      continue;
-    }
+      if ( !r2 )
+      {
+        continue;
+      }
 
-    renderContext.expressionContext().setFeature( feature );
+      renderContext.expressionContext().setFeature( feature );
 
-    //check if feature is rendered at all
-    r2->startRender( renderContext, layer->pendingFields() );
-    bool renderV2 = r2->willRenderFeature( feature, renderContext );
-    r2->stopRender( renderContext );
-    if ( !renderV2 )
-    {
-      continue;
+
+      //check if feature is rendered at all
+      bool render = r2->willRenderFeature( feature, renderContext );
+      if ( !render )
+      {
+        continue;
+      }
     }
 
     QgsRectangle box;
-    if ( hasGeometry )
+    if ( layer->wkbType() != QGis::WKBNoGeometry && hasGeometry )
     {
       box = mapRender->layerExtentToOutputExtent( layer, feature.constGeometry()->boundingBox() );
       if ( featureBBox ) //extend feature info bounding box if requested
@@ -2335,7 +2346,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       }
 
       //append feature bounding box to feature info xml
-      if ( hasGeometry && mapRender && mConfigParser )
+      if ( layer->wkbType() != QGis::WKBNoGeometry && hasGeometry && mapRender && mConfigParser )
       {
         QDomElement bBoxElem = infoDocument.createElement( "BoundingBox" );
         bBoxElem.setAttribute( version == "1.1.1" ? "SRS" : "CRS", outputCrs.authid() );
@@ -2347,7 +2358,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       }
 
       //also append the wkt geometry as an attribute
-      if ( addWktGeometry && hasGeometry )
+      if ( layer->wkbType() != QGis::WKBNoGeometry && addWktGeometry && hasGeometry )
       {
         QgsGeometry *geom = feature.geometry();
         if ( geom )
@@ -2366,6 +2377,10 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
         }
       }
     }
+  }
+  if ( r2 )
+  {
+    r2->stopRender( renderContext );
   }
 
   return 0;
