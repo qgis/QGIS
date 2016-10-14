@@ -203,6 +203,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void openProject( const QString & fileName );
 
     void openLayerDefinition( const QString & filename );
+
+    //! Open a composer template file and create a new composition
+    void openTemplate( const QString& fileName );
+
     /** Opens a qgis project file
       @returns false if unable to open the project
       */

@@ -5116,6 +5116,47 @@ void QgisApp::openLayerDefinition( const QString & path )
   }
 }
 
+void QgisApp::openTemplate( const QString& fileName )
+{
+  QFile templateFile;
+  templateFile.setFileName( fileName );
+
+  if ( !templateFile.open( QIODevice::ReadOnly ) )
+  {
+    messageBar()->pushMessage( tr( "Load template" ), tr( "Could not read template file" ), QgsMessageBar::WARNING );
+    return;
+  }
+
+  QString title;
+  if ( !uniqueComposerTitle( this, title, true ) )
+  {
+    return;
+  }
+
+  QgsComposer* newComposer = createNewComposer( title );
+  if ( !newComposer )
+  {
+    messageBar()->pushMessage( tr( "Load template" ), tr( "Could not create composer" ), QgsMessageBar::WARNING );
+    return;
+  }
+
+  bool loadedOk = false;
+  QDomDocument templateDoc;
+  if ( templateDoc.setContent( &templateFile, false ) )
+  {
+    loadedOk = newComposer->loadFromTemplate( templateDoc, true );
+    newComposer->activate();
+  }
+
+  if ( !loadedOk )
+  {
+    newComposer->close();
+    deleteComposer( newComposer );
+    newComposer = nullptr;
+    messageBar()->pushMessage( tr( "Load template" ), tr( "Could not load template file" ), QgsMessageBar::WARNING );
+  }
+}
+
 // Open the project file corresponding to the
 // path at the given index in mRecentProjectPaths
 void QgisApp::openProject( QAction *action )
@@ -5241,6 +5282,10 @@ void QgisApp::openFile( const QString & fileName )
   else if ( fi.completeSuffix() == "qlr" )
   {
     openLayerDefinition( fileName );
+  }
+  else if ( fi.completeSuffix() == "qpt" )
+  {
+    openTemplate( fileName );
   }
   else if ( fi.completeSuffix() == "py" )
   {
