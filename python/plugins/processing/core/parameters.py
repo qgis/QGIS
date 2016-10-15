@@ -747,7 +747,7 @@ class ParameterString(Parameter):
         self.evaluateExpressions = parseBool(evaluateExpressions)
 
     def setValue(self, obj):
-        if obj is None:
+        if not bool(obj):
             if not self.optional:
                 return False
             self.value = None
