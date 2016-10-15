@@ -202,17 +202,20 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
             arguments.append('"' + shapeEncoding + '"')
         arguments.append('-f')
         arguments.append('PostgreSQL')
-        arguments.append('PG:"host=' + host)
-        arguments.append('port=' + port)
-        if len(dbname) > 0:
+        arguments.append('PG:"')
+        if host:
+            arguments.append(' host=' + host)
+        if port:
+            arguments.append('port=' + port)
+        if dbname:
             arguments.append('dbname=' + dbname)
-        if len(password) > 0:
+        if password:
             arguments.append('password=' + password)
-        if len(schema) > 0:
+        if schema:
             arguments.append('active_schema=' + schema)
-        else:
-            arguments.append('active_schema=public')
-        arguments.append('user=' + user + '"')
+        if user:
+            arguments.append('user=' + user)
+        arguments.append('"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
         arguments.append(ogrLayerName(inLayer))
