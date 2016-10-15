@@ -150,18 +150,34 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options'), '', optional=True))
 
-    def getConsoleCommands(self):
-        inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
-        ssrs = unicode(self.getParameterValue(self.S_SRS))
-        tsrs = unicode(self.getParameterValue(self.T_SRS))
-        asrs = unicode(self.getParameterValue(self.A_SRS))
+    def getConnectionString(self):
         host = unicode(self.getParameterValue(self.HOST))
         port = unicode(self.getParameterValue(self.PORT))
         user = unicode(self.getParameterValue(self.USER))
         dbname = unicode(self.getParameterValue(self.DBNAME))
         password = unicode(self.getParameterValue(self.PASSWORD))
         schema = unicode(self.getParameterValue(self.SCHEMA))
+        arguments = []
+        if host:
+            arguments.append('host=' + host)
+        if port:
+            arguments.append('port=' + port)
+        if dbname:
+            arguments.append('dbname=' + dbname)
+        if password:
+            arguments.append('password=' + password)
+        if schema:
+            arguments.append('active_schema=' + schema)
+        if user:
+            arguments.append('user=' + user)
+        return GdalUtils.escapeAndJoin(arguments)
+
+    def getConsoleCommands(self):
+        inLayer = self.getParameterValue(self.INPUT_LAYER)
+        ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        ssrs = unicode(self.getParameterValue(self.S_SRS))
+        tsrs = unicode(self.getParameterValue(self.T_SRS))
+        asrs = unicode(self.getParameterValue(self.A_SRS))
         table = unicode(self.getParameterValue(self.TABLE))
         pk = unicode(self.getParameterValue(self.PK))
         pkstring = "-lco FID=" + pk
@@ -194,17 +210,9 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         arguments.append('--config PG_USE_COPY YES')
         arguments.append('-f')
         arguments.append('PostgreSQL')
-        arguments.append('PG:"host=' + host)
-        arguments.append('port=' + port)
-        if len(dbname) > 0:
-            arguments.append('dbname=' + dbname)
-        if len(password) > 0:
-            arguments.append('password=' + password)
-        if len(schema) > 0:
-            arguments.append('active_schema=' + schema)
-        else:
-            arguments.append('active_schema=public')
-        arguments.append('user=' + user + '"')
+        arguments.append('PG:"')
+        arguments.append(self.getConnectionString())
+        arguments.append('"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
         arguments.append(ogrLayerName(inLayer))
