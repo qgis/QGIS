@@ -1,0 +1,6 @@
+v.voronoi
+v.voronoi.skeleton - Extract skeletons for input areas.
+Vector (v.*)
+ParameterVector|input|Input polygon layer|2|False
+Hardcoded|-s
+OutputVector|output|Area skeleton
