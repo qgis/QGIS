@@ -123,7 +123,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings& set
     if ( ctx )
     {
       settings.drawText( ctx->painter, labelX, labelY, *itemPart, symbolLabelFont );
-      if ( itemPart != lines.end() )
+      if ( itemPart != ( lines.end() - 1 ) )
         labelY += textDescent + settings.lineSpacing() + textHeight;
     }
   }

@@ -412,7 +412,7 @@ QSizeF QgsLegendRenderer::drawTitle( QPainter* painter, QPointF point, Qt::Align
     size.rwidth() = qMax( width, size.rwidth() );
 
     y += height;
-    if ( titlePart != lines.end() )
+    if ( titlePart != ( lines.end() - 1 ) )
     {
       y += mSettings.lineSpacing();
     }
@@ -538,7 +538,7 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer* nodeLayer, QPainter
     if ( painter ) mSettings.drawText( painter, point.x(), y, *layerItemPart, layerFont );
     qreal width = mSettings.textWidthMillimeters( layerFont, *layerItemPart );
     size.rwidth() = qMax( width, size.width() );
-    if ( layerItemPart != lines.end() )
+    if ( layerItemPart != ( lines.end() - 1 ) )
     {
       y += mSettings.lineSpacing();
     }
@@ -567,7 +567,7 @@ QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup* nodeGroup, QPainter
     if ( painter ) mSettings.drawText( painter, point.x(), y, *groupPart, groupFont );
     qreal width = mSettings.textWidthMillimeters( groupFont, *groupPart );
     size.rwidth() = qMax( width, size.width() );
-    if ( groupPart != lines.end() )
+    if ( groupPart != ( lines.end() - 1 ) )
     {
       y += mSettings.lineSpacing();
     }
