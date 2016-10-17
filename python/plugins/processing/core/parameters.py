@@ -1513,7 +1513,7 @@ paramClasses = [c for c in list(sys.modules[__name__].__dict__.values()) if iscl
 
 def getParameterFromString(s):
     # Try the parameter definitions used in description files
-    if '|' in s:
+    if '|' in s and (s.startswith("Parameter") or s.startswith("*Parameter")):
         isAdvanced = False
         if s.startswith("*"):
             s = s[1:]
@@ -1535,3 +1535,5 @@ def getParameterFromString(s):
                     return param
             except AttributeError:
                 pass
+            except:
+                return None
