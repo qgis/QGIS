@@ -94,15 +94,15 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         self.addParameter(ParameterCrs(self.S_SRS,
                                        self.tr('Override source CRS'), '', optional=True))
         self.addParameter(ParameterString(self.HOST,
-                                          self.tr('Host'), 'localhost', optional=False))
+                                          self.tr('Host'), 'localhost', optional=True))
         self.addParameter(ParameterString(self.PORT,
-                                          self.tr('Port'), '5432', optional=False))
+                                          self.tr('Port'), '5432', optional=True))
         self.addParameter(ParameterString(self.USER,
-                                          self.tr('Username'), '', optional=False))
+                                          self.tr('Username'), '', optional=True))
         self.addParameter(ParameterString(self.DBNAME,
-                                          self.tr('Database name'), '', optional=False))
+                                          self.tr('Database name'), '', optional=True))
         self.addParameter(ParameterString(self.PASSWORD,
-                                          self.tr('Password'), '', optional=False))
+                                          self.tr('Password'), '', optional=True))
         self.addParameter(ParameterString(self.SCHEMA,
                                           self.tr('Schema name'), 'public', optional=True))
         self.addParameter(ParameterString(self.TABLE,
