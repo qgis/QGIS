@@ -37,7 +37,7 @@ A new window will open with a text definition.
 **copy the text definition** there.
 
 The first string from the command goes to the key `algorithm`, the subsequent
-ones to params and the last one(s) to results.
+ones to `params` and the last one(s) to `results`.
 
 The above translates to
 
