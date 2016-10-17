@@ -105,10 +105,10 @@ class Union(GeoAlgorithm):
                     ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
                                            self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
             else:
-                for id in intersects:
+                request = QgsFeatureRequest().setFilterFids(intersects)
+                for inFeatB in vlayerB.getFeatures(request):
                     count += 1
-                    request = QgsFeatureRequest().setFilterFid(id)
-                    inFeatB = next(vlayerB.getFeatures(request))
+
                     atMapB = inFeatB.attributes()
                     tmpGeom = inFeatB.geometry()
 
@@ -197,9 +197,8 @@ class Union(GeoAlgorithm):
                     ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
                                            self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
             else:
-                for id in intersects:
-                    request = QgsFeatureRequest().setFilterFid(id)
-                    inFeatB = next(vlayerA.getFeatures(request))
+                request = QgsFeatureRequest().setFilterFids(intersects)
+                for inFeatB in vlayerA.getFeatures(request):
                     atMapB = inFeatB.attributes()
                     tmpGeom = inFeatB.geometry()
 

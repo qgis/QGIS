@@ -79,9 +79,8 @@ class SplitLinesWithLines(GeoAlgorithm):
             if len(lines) > 0:  # hasIntersections
                 splittingLines = []
 
-                for i in lines:
-                    request = QgsFeatureRequest().setFilterFid(i)
-                    inFeatB = next(layerB.getFeatures(request))
+                request = QgsFeatureRequest().setFilterFids(lines).setSubsetOfAttributes([])
+                for inFeatB in layerB.getFeatures(request):
                     # check if trying to self-intersect
                     if sameLayer:
                         if inFeatA.id() == inFeatB.id():

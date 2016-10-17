@@ -82,8 +82,8 @@ class SelectByAttributeSum(GeoAlgorithm):
                 progress.setInfo(self.tr('No adjacent features found.'))
                 break
 
-            for i in intersected:
-                ft = next(layer.getFeatures(req.setFilterFid(i)))
+            req = QgsFeatureRequest().setFilterFids(intersected).setSubsetOfAttributes([fieldName], layer.fields())
+            for ft in layer.getFeatures(req):
                 tmpGeom = ft.geometry()
                 if tmpGeom.touches(geom):
                     geom = tmpGeom.combine(geom)

@@ -111,7 +111,7 @@ class SelectByAttribute(GeoAlgorithm):
 
         qExp = QgsExpression(expr)
         if not qExp.hasParserError():
-            qReq = QgsFeatureRequest(qExp)
+            qReq = QgsFeatureRequest(qExp).setSubsetOfAttributes([])
         else:
             raise GeoAlgorithmExecutionException(qExp.parserErrorString())
         selected = [f.id() for f in layer.getFeatures(qReq)]

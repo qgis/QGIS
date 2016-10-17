@@ -109,7 +109,7 @@ class HubDistancePoints(GeoAlgorithm):
             src = f.geometry().boundingBox().center()
 
             neighbors = index.nearestNeighbor(src, 1)
-            ft = next(layerHubs.getFeatures(QgsFeatureRequest().setFilterFid(neighbors[0])))
+            ft = next(layerHubs.getFeatures(QgsFeatureRequest().setFilterFid(neighbors[0]).setSubsetOfAttributes([fieldName], layerHubs.fields())))
             closest = ft.geometry().boundingBox().center()
             hubDist = distance.measureLine(src, closest)
 

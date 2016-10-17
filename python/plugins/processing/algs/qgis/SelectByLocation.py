@@ -105,9 +105,8 @@ class SelectByLocation(GeoAlgorithm):
             bbox = vector.bufferedBoundingBox(geom.boundingBox(), 0.51 * precision)
             intersects = index.intersects(bbox)
 
-            for i in intersects:
-                request = QgsFeatureRequest().setFilterFid(i)
-                feat = next(inputLayer.getFeatures(request))
+            request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
+            for feat in inputLayer.getFeatures(request):
                 tmpGeom = vector.snapToPrecision(feat.geometry(), precision)
 
                 res = False

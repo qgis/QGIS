@@ -95,7 +95,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         for current, feat in enumerate(features):
             neighbourID = spatialIndex.nearestNeighbor(
                 feat.geometry().asPoint(), 2)[1]
-            request = QgsFeatureRequest().setFilterFid(neighbourID)
+            request = QgsFeatureRequest().setFilterFid(neighbourID).setSubsetOfAttributes([])
             neighbour = next(layer.getFeatures(request))
             sumDist += distance.measureLine(neighbour.geometry().asPoint(),
                                             feat.geometry().asPoint())

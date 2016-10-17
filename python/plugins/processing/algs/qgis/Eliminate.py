@@ -246,7 +246,7 @@ class Eliminate(GeoAlgorithm):
                 geom2Eliminate = feat.geometry()
                 bbox = geom2Eliminate.boundingBox()
                 fit = processLayer.getFeatures(
-                    QgsFeatureRequest().setFilterRect(bbox))
+                    QgsFeatureRequest().setFilterRect(bbox).setSubsetOfAttributes([]))
                 mergeWithFid = None
                 mergeWithGeom = None
                 max = 0

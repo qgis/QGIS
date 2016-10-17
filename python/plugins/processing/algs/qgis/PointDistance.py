@@ -136,9 +136,8 @@ class PointDistance(GeoAlgorithm):
             featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
             distList = []
             vari = 0.0
-            for i in featList:
-                request = QgsFeatureRequest().setFilterFid(i)
-                outFeat = next(targetLayer.getFeatures(request))
+            request = QgsFeatureRequest().setFilterFids(featList).setSubsetOfAttributes([outIdx])
+            for outFeat in targetLayer.getFeatures(request):
                 outID = outFeat.attributes()[outIdx]
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(),
