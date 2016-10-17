@@ -64,6 +64,38 @@ class QgsProject : QObject
      */
     QFileInfo fileInfo() const;
 
+    /**
+     * Returns the project's native coordinate reference system.
+     * @note added in QGIS 2.18
+     * @see setCrs()
+     * @see ellipsoid()
+     */
+    QgsCoordinateReferenceSystem crs() const;
+
+    /**
+     * Sets the project's native coordinate reference system.
+     * @note added in QGIS 2.18
+     * @see crs()
+     * @see setEllipsoid()
+     */
+    void setCrs( const QgsCoordinateReferenceSystem& crs );
+
+    /**
+     * Returns a proj string representing the project's ellipsoid setting, eg "WGS84".
+     * @see setEllipsoid()
+     * @see crs()
+     * @note added in QGIS 2.18
+     */
+    QString ellipsoid() const;
+
+    /**
+     * Sets the project's ellipsoid from a proj string representation, eg "WGS84".
+     * @see ellipsoid()
+     * @see setCrs()
+     * @note added in QGIS 2.18
+     */
+    void setEllipsoid( const QString& ellipsoid );
+
     /** Clear the project - removes all settings and resets it back to an empty, default state.
      * @note added in 2.4
      */
@@ -258,15 +290,32 @@ class QgsProject : QObject
 
     /** Convenience function to query default distance measurement units for project.
      * @note added in QGIS 2.14
+     * @see setDistanceUnits()
      * @see areaUnits()
      */
     QgsUnitTypes::DistanceUnit distanceUnits() const;
+
+    /**
+     * Sets the default distance measurement units for the project.
+     * @note added in QGIS 2.18
+     * @see distanceUnits()
+     * @see setAreaUnits()
+     */
+    void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 
     /** Convenience function to query default area measurement units for project.
      * @note added in QGIS 2.14
      * @see distanceUnits()
      */
     QgsUnitTypes::AreaUnit areaUnits() const;
+
+    /**
+     * Sets the default area measurement units for the project.
+     * @note added in QGIS 2.18
+     * @see areaUnits()
+     * @see setDistanceUnits()
+     */
+    void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 
     /** Return project's home path
       @return home path of project (or QString::null if not set) */

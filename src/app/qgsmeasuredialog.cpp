@@ -79,7 +79,7 @@ void QgsMeasureDialog::updateSettings()
   mDistanceUnits = QgsProject::instance()->distanceUnits();
   mAreaUnits = QgsProject::instance()->areaUnits();
   mDa.setSourceCrs( mTool->canvas()->mapSettings().destinationCrs().srsid() );
-  mDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   // Only use ellipsoidal calculation when project wide transformation is enabled.
   if ( mTool->canvas()->mapSettings().hasCrsTransformEnabled() )
   {

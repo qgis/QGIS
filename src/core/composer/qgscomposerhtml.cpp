@@ -548,7 +548,7 @@ void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVector
   {
     mDistanceArea->setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
   }
-  mDistanceArea->setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  mDistanceArea->setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   // create JSON representation of feature
   QgsJSONExporter exporter( layer );

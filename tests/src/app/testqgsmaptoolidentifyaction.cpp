@@ -130,11 +130,9 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   canvas->setCrsTransformEnabled( true );
   canvas->setDestinationCrs( srs );
   canvas->setExtent( f1.geometry().boundingBox() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
-  QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceMeters ) );
+  QgsProject::instance()->setCrs( srs );
+  QgsProject::instance()->setEllipsoid( QString( "WGS84" ) );
+  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
   QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
 
@@ -146,7 +144,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   QVERIFY( qgsDoubleNear( length, 26932.2, 0.1 ) );
 
   //check that project units are respected
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceFeet ) );
+  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.data() );
   QCOMPARE( result.length(), 1 );
   derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length" )];
@@ -186,11 +184,9 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   canvas->setCrsTransformEnabled( true );
   canvas->setDestinationCrs( srs );
   canvas->setExtent( f1.geometry().boundingBox() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
-  QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceMeters ) );
+  QgsProject::instance()->setCrs( srs );
+  QgsProject::instance()->setEllipsoid( QString( "WGS84" ) );
+  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
   QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
 
@@ -202,7 +198,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   QCOMPARE( perimeter, 128289.074 );
 
   //check that project units are respected
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceFeet ) );
+  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.data() );
   QCOMPARE( result.length(), 1 );
   derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter" )];
@@ -243,11 +239,9 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   canvas->setCrsTransformEnabled( true );
   canvas->setDestinationCrs( srs );
   canvas->setExtent( f1.geometry().boundingBox() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
-  QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareMeters ) );
+  QgsProject::instance()->setCrs( srs );
+  QgsProject::instance()->setEllipsoid( QString( "WGS84" ) );
+  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
 
   QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
 
@@ -259,7 +253,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QVERIFY( qgsDoubleNear( area, 1009089817.0, 1.0 ) );
 
   //check that project units are respected
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareMiles ) );
+  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.data() );
   QCOMPARE( result.length(), 1 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area" )];
@@ -268,7 +262,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
 
   //test unchecked "keep base units" setting
   s.setValue( "/qgis/measure/keepbaseunit", false );
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareFeet ) );
+  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareFeet );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer*>() << tempLayer.data() );
   QCOMPARE( result.length(), 1 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area" )];

@@ -444,6 +444,36 @@ QFileInfo QgsProject::fileInfo() const
   return QFileInfo( imp_->file );
 }
 
+QgsCoordinateReferenceSystem QgsProject::crs() const
+{
+  QgsCoordinateReferenceSystem projectCrs;
+  long currentCRS = readNumEntry( "SpatialRefSys", "/ProjectCRSID", -1 );
+  if ( currentCRS != -1 )
+  {
+    projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
+  }
+  return projectCrs;
+}
+
+void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", crs.toProj4() );
+  writeEntry( "SpatialRefSys", "/ProjectCRSID", static_cast< int >( crs.srsid() ) );
+  writeEntry( "SpatialRefSys", "/ProjectCrs", crs.authid() );
+  setDirty( true );
+}
+
+QString QgsProject::ellipsoid() const
+{
+  return readEntry( "Measure", "/Ellipsoid", GEO_NONE );
+}
+
+void QgsProject::setEllipsoid( const QString& ellipsoid )
+{
+  writeEntry( "Measure", "/Ellipsoid", ellipsoid );
+  setDirty( true );
+}
+
 void QgsProject::clear()
 {
   imp_->clear();
@@ -2108,6 +2138,11 @@ QgsUnitTypes::DistanceUnit QgsProject::distanceUnits() const
   return ok ? type : QgsUnitTypes::DistanceMeters;
 }
 
+void QgsProject::setDistanceUnits( QgsUnitTypes::DistanceUnit unit )
+{
+  writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( unit ) );
+}
+
 QgsUnitTypes::AreaUnit QgsProject::areaUnits() const
 {
   QString areaUnitString = QgsProject::instance()->readEntry( "Measurement", "/AreaUnits", QString() );
@@ -2119,6 +2154,11 @@ QgsUnitTypes::AreaUnit QgsProject::areaUnits() const
   bool ok = false;
   QgsUnitTypes::AreaUnit type = QgsUnitTypes::decodeAreaUnit( s.value( "/qgis/measure/areaunits" ).toString(), &ok );
   return ok ? type : QgsUnitTypes::AreaSquareMeters;
+}
+
+void QgsProject::setAreaUnits( QgsUnitTypes::AreaUnit unit )
+{
+  writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( unit ) );
 }
 
 void QgsProjectBadLayerDefaultHandler::handleBadLayers( const QList<QDomNode>& /*layers*/, const QDomDocument& /*projectDom*/ )

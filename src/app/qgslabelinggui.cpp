@@ -590,7 +590,7 @@ void QgsLabelingGui::init()
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs().srsid() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mFieldExpressionWidget->setGeomCalculator( myDa );
 
   // set placement methods page based on geometry type

@@ -178,7 +178,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs().srsid() );
   myDa.setEllipsoidalMode( mMapCanvas->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mSizeFieldExpressionWidget->setGeomCalculator( myDa );
 
   //insert all attributes into the combo boxes
@@ -871,7 +871,7 @@ QString QgsDiagramProperties::showExpressionBuilder( const QString& initialExpre
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs().srsid() );
   myDa.setEllipsoidalMode( mMapCanvas->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   dlg.setGeomCalculator( myDa );
 
   if ( dlg.exec() == QDialog::Accepted )

@@ -87,11 +87,9 @@ void TestQgsAttributeTable::testFieldCalculation()
   // set project CRS and ellipsoid
   QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
-  QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceMeters ) );
+  QgsProject::instance()->setCrs( srs );
+  QgsProject::instance()->setEllipsoid( QString( "WGS84" ) );
+  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
   // run length calculation
   QScopedPointer< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.data() ) );
@@ -106,7 +104,7 @@ void TestQgsAttributeTable::testFieldCalculation()
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
 
   // change project length unit, check calculation respects unit
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceFeet ) );
+  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
   QScopedPointer< QgsAttributeTableDialog > dlg2( new QgsAttributeTableDialog( tempLayer.data() ) );
   tempLayer->startEditing();
   dlg2->runFieldCalculation( tempLayer.data(), "col1", "$length" );
@@ -140,11 +138,9 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   // set project CRS and ellipsoid
   QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
-  QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareMeters ) );
+  QgsProject::instance()->setCrs( srs );
+  QgsProject::instance()->setEllipsoid( QString( "WGS84" ) );
+  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
 
   // run area calculation
   QScopedPointer< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.data() ) );
@@ -159,7 +155,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 1.0 ) );
 
   // change project area unit, check calculation respects unit
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareMiles ) );
+  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
   QScopedPointer< QgsAttributeTableDialog > dlg2( new QgsAttributeTableDialog( tempLayer.data() ) );
   tempLayer->startEditing();
   dlg2->runFieldCalculation( tempLayer.data(), "col1", "$area" );

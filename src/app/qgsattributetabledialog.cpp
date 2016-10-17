@@ -126,7 +126,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   myDa->setSourceCrs( mLayer->crs() );
   myDa->setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa->setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa->setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   mEditorContext.setDistanceArea( *myDa );
   mEditorContext.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
@@ -559,7 +559,7 @@ void QgsAttributeTableDialog::filterExpressionBuilder()
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs().srsid() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   dlg.setGeomCalculator( myDa );
 
   if ( dlg.exec() == QDialog::Accepted )
@@ -920,7 +920,7 @@ void QgsAttributeTableDialog::setFilterExpression( const QString& filterString, 
 
   myDa.setSourceCrs( mLayer->crs().srsid() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   // parse search string and build parsed tree
   QgsExpression filterExpression( filter );

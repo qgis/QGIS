@@ -4435,9 +4435,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( defCrs );
   mMapCanvas->setDestinationCrs( srs );
   // write the projections _proj string_ to project settings
-  prj->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
-  prj->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
-  prj->writeEntry( "SpatialRefSys", "/ProjectCRSID", static_cast< int >( srs.srsid() ) );
+  prj->setCrs( srs );
   prj->setDirty( false );
   if ( srs.mapUnits() != QgsUnitTypes::DistanceUnknownUnit )
   {
@@ -7306,7 +7304,7 @@ void QgisApp::selectByForm()
 
   myDa.setSourceCrs( vlayer->crs().srsid() );
   myDa.setEllipsoidalMode( mMapCanvas->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   QgsAttributeEditorContext context;
   context.setDistanceArea( myDa );
@@ -8582,6 +8580,7 @@ void QgisApp::setProjectCrsFromLayer()
   QgsCoordinateReferenceSystem crs = mLayerTreeView->currentLayer()->crs();
   mMapCanvas->freeze();
   mMapCanvas->setDestinationCrs( crs );
+  QgsProject::instance()->setCrs( crs );
   if ( crs.mapUnits() != QgsUnitTypes::DistanceUnknownUnit )
   {
     mMapCanvas->setMapUnits( crs.mapUnits() );

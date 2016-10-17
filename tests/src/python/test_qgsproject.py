@@ -16,7 +16,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsProject, QgsMessageLog
+from qgis.core import QgsProject, QgsMessageLog, QgsUnitTypes, QgsCoordinateReferenceSystem
 
 from qgis.testing import start_app, unittest
 
@@ -110,6 +110,35 @@ class TestQgsProject(unittest.TestCase):
 
     def catchMessage(self):
         self.messageCaught = True
+
+    def testCrs(self):
+        prj = QgsProject.instance()
+        prj.clear()
+
+        self.assertFalse(prj.crs().isValid())
+        prj.setCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:3111'))
+        self.assertEqual(prj.crs().authid(), 'EPSG:3111')
+
+    def testEllipsoid(self):
+        prj = QgsProject.instance()
+        prj.clear()
+
+        prj.setEllipsoid('WGS84')
+        self.assertEqual(prj.ellipsoid(), 'WGS84')
+
+    def testDistanceUnits(self):
+        prj = QgsProject.instance()
+        prj.clear()
+
+        prj.setDistanceUnits(QgsUnitTypes.DistanceFeet)
+        self.assertEqual(prj.distanceUnits(), QgsUnitTypes.DistanceFeet)
+
+    def testAreaUnits(self):
+        prj = QgsProject.instance()
+        prj.clear()
+
+        prj.setAreaUnits(QgsUnitTypes.AreaSquareFeet)
+        self.assertEqual(prj.areaUnits(), QgsUnitTypes.AreaSquareFeet)
 
 if __name__ == '__main__':
     unittest.main()

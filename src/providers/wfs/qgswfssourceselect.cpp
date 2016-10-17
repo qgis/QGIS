@@ -179,9 +179,8 @@ QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString>& crsSet ) const
   }
 
   //first: project CRS
-  long ProjectCRSID = QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectCRSID", -1 );
+  QgsCoordinateReferenceSystem projectRefSys = QgsProject::instance()->crs();
   //convert to EPSG
-  QgsCoordinateReferenceSystem projectRefSys = QgsCoordinateReferenceSystem::fromSrsId( ProjectCRSID );
   QString ProjectCRS;
   if ( projectRefSys.isValid() )
   {

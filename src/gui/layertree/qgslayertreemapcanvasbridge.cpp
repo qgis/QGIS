@@ -20,6 +20,7 @@
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
 
 QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup *root, QgsMapCanvas *canvas, QObject* parent )
     : QObject( parent )
@@ -146,6 +147,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
         if ( layerNode->layer()->isSpatial() )
         {
           mCanvas->setDestinationCrs( layerNode->layer()->crs() );
+          QgsProject::instance()->setCrs( layerNode->layer()->crs() );
           mCanvas->setMapUnits( layerNode->layer()->crs().mapUnits() );
           break;
         }
@@ -182,6 +184,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
       if ( layerNode->layer() && layerNode->layer()->crs().isValid() && layerNode->layer()->crs() != mFirstCRS )
       {
         mCanvas->setDestinationCrs( mFirstCRS );
+        QgsProject::instance()->setCrs( mFirstCRS );
         mCanvas->setCrsTransformEnabled( true );
         break;
       }

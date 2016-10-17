@@ -40,8 +40,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   {
     //only show project CRS if OTF reprojection is enabled - otherwise the
     //CRS stored in the project can be misleading
-    QString projectCrsString = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs" );
-    mProjectCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( projectCrsString );
+    mProjectCrs = QgsProject::instance()->crs();
     addProjectCrsOption();
   }
 

@@ -548,7 +548,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   QgsDistanceArea da;
   da.setSourceCrs( mSource->mCrsId );
   da.setEllipsoidalMode( true );
-  da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  da.setEllipsoid( QgsProject::instance()->ellipsoid() );
   exp->setGeomCalculator( &da );
   exp->setDistanceUnits( QgsProject::instance()->distanceUnits() );
   exp->setAreaUnits( QgsProject::instance()->areaUnits() );

@@ -104,7 +104,7 @@ void TestQgsProject::testProjectUnits()
   QCOMPARE( prj->distanceUnits(), QgsUnitTypes::DistanceFeet );
 
   //test setting new units for project
-  prj->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceNauticalMiles ) );
+  prj->setDistanceUnits( QgsUnitTypes::DistanceNauticalMiles );
   QCOMPARE( prj->distanceUnits(), QgsUnitTypes::DistanceNauticalMiles );
 
   // AREA
@@ -121,7 +121,7 @@ void TestQgsProject::testProjectUnits()
   QCOMPARE( prj->areaUnits(), QgsUnitTypes::AreaSquareYards );
 
   //test setting new units for project
-  prj->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaAcres ) );
+  prj->setAreaUnits( QgsUnitTypes::AreaAcres );
   QCOMPARE( prj->areaUnits(), QgsUnitTypes::AreaAcres );
 }
 

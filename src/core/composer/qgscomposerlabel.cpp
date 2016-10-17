@@ -265,7 +265,7 @@ void QgsComposerLabel::refreshExpressionContext()
     mDistanceArea->setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
   }
   mDistanceArea->setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
-  mDistanceArea->setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  mDistanceArea->setEllipsoid( QgsProject::instance()->ellipsoid() );
   contentChanged();
 
   update();

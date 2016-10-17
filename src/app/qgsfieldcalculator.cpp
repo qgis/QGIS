@@ -60,7 +60,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent )
   QgsDistanceArea myDa;
   myDa.setSourceCrs( vl->crs().srsid() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   builder->setGeomCalculator( myDa );
 
   //default values for field width and precision
@@ -160,7 +160,7 @@ void QgsFieldCalculator::accept()
 
   myDa.setSourceCrs( mVectorLayer->crs().srsid() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   QString calcString = builder->expressionText();
   QgsExpression exp( calcString );

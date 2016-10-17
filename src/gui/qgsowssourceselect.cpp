@@ -93,15 +93,11 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString& service, QWidget * parent
   {
     connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
     //set the current project CRS if available
-    long currentCRS = QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectCRSID", -1 );
-    if ( currentCRS != -1 )
+    QgsCoordinateReferenceSystem currentRefSys = QgsProject::instance()->crs();
+    //convert CRS id to epsg
+    if ( currentRefSys.isValid() )
     {
-      //convert CRS id to epsg
-      QgsCoordinateReferenceSystem currentRefSys = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
-      if ( currentRefSys.isValid() )
-      {
-        mSelectedCRS = currentRefSys.authid();
-      }
+      mSelectedCRS = currentRefSys.authid();
     }
   }
   else
@@ -383,8 +379,7 @@ void QgsOWSSourceSelect::on_mChangeCRSButton_clicked()
   mySelector->setMessage();
   mySelector->setOgcWmsCrsFilter( mSelectedLayersCRSs );
 
-  QString myDefaultCrs = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs", GEO_EPSG_CRS_AUTHID );
-  QgsCoordinateReferenceSystem defaultCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( myDefaultCrs );
+  QgsCoordinateReferenceSystem defaultCRS = QgsProject::instance()->crs();
   if ( defaultCRS.isValid() )
   {
     mySelector->setSelectedCrsId( defaultCRS.srsid() );

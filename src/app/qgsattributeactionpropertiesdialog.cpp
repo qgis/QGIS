@@ -52,7 +52,7 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsActio
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs().srsid() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   mFieldExpression->setLayer( mLayer );
   mFieldExpression->setGeomCalculator( myDa );
@@ -81,7 +81,7 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsVecto
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs().srsid() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   mFieldExpression->setLayer( mLayer );
   mFieldExpression->setGeomCalculator( myDa );

@@ -352,7 +352,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   QMap< QString, QString > derivedAttributes;
 
   // init distance/area calculator
-  QString ellipsoid = QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE );
+  QString ellipsoid = QgsProject::instance()->ellipsoid();
   QgsDistanceArea calc;
   calc.setEllipsoidalMode( mCanvas->hasCrsTransformEnabled() );
   calc.setEllipsoid( ellipsoid );

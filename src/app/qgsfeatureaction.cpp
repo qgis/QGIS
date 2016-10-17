@@ -57,7 +57,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 
   myDa.setSourceCrs( mLayer->crs() );
   myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   context.setDistanceArea( myDa );
   context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );

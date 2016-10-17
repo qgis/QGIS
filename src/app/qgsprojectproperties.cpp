@@ -783,9 +783,7 @@ void QgsProjectProperties::apply()
     QgsDebugMsg( QString( "Selected CRS " ) + srs.description() );
     // write the currently selected projections _proj string_ to project settings
     QgsDebugMsg( QString( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( projectionSelector->selectedProj4String() ) );
-    QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", projectionSelector->selectedProj4String() );
-    QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) projectionSelector->selectedCrsId() );
-    QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", projectionSelector->selectedAuthId() );
+    QgsProject::instance()->setCrs( srs );
 
     // Set the map units to the projected coordinates if we are projecting
     if ( isProjected() )
@@ -837,10 +835,10 @@ void QgsProjectProperties::apply()
   emit displayPrecisionChanged();
 
   QgsUnitTypes::DistanceUnit distanceUnits = static_cast< QgsUnitTypes::DistanceUnit >( mDistanceUnitsCombo->currentData().toInt() );
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( distanceUnits ) );
+  QgsProject::instance()->setDistanceUnits( distanceUnits );
 
   QgsUnitTypes::AreaUnit areaUnits = static_cast< QgsUnitTypes::AreaUnit >( mAreaUnitsCombo->currentData().toInt() );
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( areaUnits ) );
+  QgsProject::instance()->setAreaUnits( areaUnits );
 
   QgsProject::instance()->writeEntry( "Paths", "/Absolute", cbxAbsolutePath->currentIndex() == 0 );
 
@@ -855,13 +853,13 @@ void QgsProjectProperties::apply()
       major = QLocale::system().toDouble( leSemiMajor->text() );
       minor = QLocale::system().toDouble( leSemiMinor->text() );
     }
-    QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "PARAMETER:%1:%2" )
-                                        .arg( major, 0, 'g', 17 )
-                                        .arg( minor, 0, 'g', 17 ) );
+    QgsProject::instance()->setEllipsoid( QString( "PARAMETER:%1:%2" )
+                                          .arg( major, 0, 'g', 17 )
+                                          .arg( minor, 0, 'g', 17 ) );
   }
   else
   {
-    QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", mEllipsoidList[ mEllipsoidIndex ].acronym );
+    QgsProject::instance()->setEllipsoid( mEllipsoidList[ mEllipsoidIndex ].acronym );
   }
 
   //set the color for selections
@@ -2001,7 +1999,7 @@ void QgsProjectProperties::projectionSelectorInitialized()
   QgsDebugMsg( "Setting up ellipsoid" );
 
   // Reading ellipsoid from setttings
-  QStringList mySplitEllipsoid = QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ).split( ':' );
+  QStringList mySplitEllipsoid = QgsProject::instance()->ellipsoid().split( ':' );
 
   int myIndex = 0;
   for ( int i = 0; i < mEllipsoidList.length(); i++ )
