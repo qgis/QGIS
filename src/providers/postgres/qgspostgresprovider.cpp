@@ -895,6 +895,7 @@ bool QgsPostgresProvider::loadFields()
                 fieldTypeName == "ltree" ||
                 fieldTypeName == "uuid" ||
                 fieldTypeName == "xml" ||
+                fieldTypeName == "json" ||
                 fieldTypeName.startsWith( "time" ) ||
                 fieldTypeName.startsWith( "date" ) )
       {
