@@ -160,8 +160,6 @@ void QgsSimpleMarkerSymbolLayerBase::startRender( QgsSymbolRenderContext &contex
   else
     mPath = transform.map( mPath );
 
-  prepareExpressions( context );
-
   QgsMarkerSymbolLayer::startRender( context );
 }
 
@@ -1909,7 +1907,6 @@ void QgsSvgMarkerSymbolLayer::startRender( QgsSymbolRenderContext& context )
 {
   QgsMarkerSymbolLayer::startRender( context ); // get anchor point expressions
   Q_UNUSED( context );
-  prepareExpressions( context );
 }
 
 void QgsSvgMarkerSymbolLayer::stopRender( QgsSymbolRenderContext& context )
@@ -2574,7 +2571,6 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext& context )
   mChrWidth =  mFontMetrics->width( mChr );
   mChrOffset = QPointF( mChrWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
   mOrigSize = mSize; // save in case the size would be data defined
-  prepareExpressions( context );
 }
 
 void QgsFontMarkerSymbolLayer::stopRender( QgsSymbolRenderContext& context )

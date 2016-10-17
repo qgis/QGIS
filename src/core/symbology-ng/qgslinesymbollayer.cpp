@@ -228,9 +228,6 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext& context )
   if ( ! selectionIsOpaque )
     selColor.setAlphaF( context.alpha() );
   mSelPen.setColor( selColor );
-
-  //prepare expressions for data defined properties
-  prepareExpressions( context );
 }
 
 void QgsSimpleLineSymbolLayer::stopRender( QgsSymbolRenderContext& context )
@@ -815,9 +812,6 @@ void QgsMarkerLineSymbolLayer::startRender( QgsSymbolRenderContext& context )
   mMarker->setRenderHints( hints );
 
   mMarker->startRender( context.renderContext(), context.fields() );
-
-  //prepare expressions for data defined properties
-  prepareExpressions( context );
 }
 
 void QgsMarkerLineSymbolLayer::stopRender( QgsSymbolRenderContext& context )

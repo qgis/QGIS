@@ -353,7 +353,6 @@ void QgsEllipseSymbolLayer::startRender( QgsSymbolRenderContext& context )
   mPen.setJoinStyle( mPenJoinStyle );
   mPen.setWidthF( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
   mBrush.setColor( mColor );
-  prepareExpressions( context );
 }
 
 void QgsEllipseSymbolLayer::stopRender( QgsSymbolRenderContext & )

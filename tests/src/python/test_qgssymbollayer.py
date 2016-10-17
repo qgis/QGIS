@@ -27,7 +27,7 @@ import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import pyqtWrapperType, Qt, QDir, QFile, QIODevice, QPointF
+from qgis.PyQt.QtCore import pyqtWrapperType, Qt, QDir, QFile, QIODevice, QPointF, QSize
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 
@@ -65,7 +65,12 @@ from qgis.core import (QgsCentroidFillSymbolLayer,
                        QgsFeature,
                        QgsRenderContext,
                        QgsRenderChecker,
-                       QgsRectangle
+                       QgsRectangle,
+                       QgsVectorLayer,
+                       QgsMapLayerRegistry,
+                       QgsMultiRenderChecker,
+                       QgsSingleSymbolRenderer,
+                       QgsDataDefined
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -73,6 +78,8 @@ from utilities import unitTestDataPath
 # Convenience instances in case you may need them
 # not used in this test
 start_app()
+
+TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsSymbolLayer(unittest.TestCase):
@@ -393,6 +400,35 @@ class TestQgsSymbolLayer(unittest.TestCase):
 
         self.assertTrue(self.imageCheck('symbol_layer', 'symbollayer_disabled', image))
 
+    def testRenderFillLayerDataDefined(self):
+        """ test that rendering a fill symbol with data defined enabled layer works"""
+
+        polys_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        polys_layer = QgsVectorLayer(polys_shp, 'Polygons', 'ogr')
+        QgsMapLayerRegistry.instance().addMapLayer(polys_layer)
+
+        layer = QgsSimpleFillSymbolLayer()
+        layer.setDataDefinedProperty("enabled", QgsDataDefined("Name='Lake'"))
+        layer.setBorderStyle(Qt.NoPen)
+        layer.setColor(QColor(100, 150, 150))
+
+        symbol = QgsFillSymbol()
+        symbol.changeSymbolLayer(0, layer)
+        polys_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-133, 22, -70, 52))
+        ms.setLayers([polys_layer.id()])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_layer')
+        renderchecker.setControlName('expected_filllayer_ddenabled')
+        self.assertTrue(renderchecker.runTest('filllayer_ddenabled'))
+        QgsMapLayerRegistry.instance().removeMapLayer(polys_layer)
+
     def testRenderLineLayerDisabled(self):
         """ test that rendering a line symbol with disabled layer works"""
         layer = QgsSimpleLineSymbolLayer()
@@ -429,6 +465,35 @@ class TestQgsSymbolLayer(unittest.TestCase):
 
         self.assertTrue(self.imageCheck('symbol_layer', 'symbollayer_disabled', image))
 
+    def testRenderLineLayerDataDefined(self):
+        """ test that rendering a line symbol with data defined enabled layer works"""
+
+        lines_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        lines_layer = QgsVectorLayer(lines_shp, 'Lines', 'ogr')
+        QgsMapLayerRegistry.instance().addMapLayer(lines_layer)
+
+        layer = QgsSimpleLineSymbolLayer()
+        layer.setDataDefinedProperty("enabled", QgsDataDefined("Name='Highway'"))
+        layer.setColor(QColor(100, 150, 150))
+        layer.setWidth(5)
+
+        symbol = QgsLineSymbol()
+        symbol.changeSymbolLayer(0, layer)
+        lines_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-133, 22, -70, 52))
+        ms.setLayers([lines_layer.id()])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_layer')
+        renderchecker.setControlName('expected_linelayer_ddenabled')
+        self.assertTrue(renderchecker.runTest('linelayer_ddenabled'))
+        QgsMapLayerRegistry.instance().removeMapLayer(lines_layer)
+
     def testRenderMarkerLayerDisabled(self):
         """ test that rendering a marker symbol with disabled layer works"""
         layer = QgsSimpleMarkerSymbolLayer()
@@ -462,6 +527,36 @@ class TestQgsSymbolLayer(unittest.TestCase):
         painter.end()
 
         self.assertTrue(self.imageCheck('symbol_layer', 'symbollayer_disabled', image))
+
+    def testRenderMarkerLayerDataDefined(self):
+        """ test that rendering a marker symbol with data defined enabled layer works"""
+
+        points_shp = os.path.join(TEST_DATA_DIR, 'points.shp')
+        points_layer = QgsVectorLayer(points_shp, 'Points', 'ogr')
+        QgsMapLayerRegistry.instance().addMapLayer(points_layer)
+
+        layer = QgsSimpleMarkerSymbolLayer()
+        layer.setDataDefinedProperty("enabled", QgsDataDefined("Class='Biplane'"))
+        layer.setColor(QColor(100, 150, 150))
+        layer.setSize(5)
+        layer.setOutlineStyle(Qt.NoPen)
+
+        symbol = QgsMarkerSymbol()
+        symbol.changeSymbolLayer(0, layer)
+        points_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-133, 22, -70, 52))
+        ms.setLayers([points_layer.id()])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_layer')
+        renderchecker.setControlName('expected_markerlayer_ddenabled')
+        self.assertTrue(renderchecker.runTest('markerlayer_ddenabled'))
+        QgsMapLayerRegistry.instance().removeMapLayer(points_layer)
 
     def testQgsSimpleFillSymbolLayer(self):
         """Create a new style from a .sld file and match test.

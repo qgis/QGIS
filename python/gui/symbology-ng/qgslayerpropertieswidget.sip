@@ -1,4 +1,4 @@
-class QgsLayerPropertiesWidget : QgsPanelWidget
+class QgsLayerPropertiesWidget : QgsPanelWidget, QgsExpressionContextGenerator
 {
 %TypeHeaderCode
 #include <qgslayerpropertieswidget.h>

@@ -258,7 +258,6 @@ void QgsSimpleFillSymbolLayer::startRender( QgsSymbolRenderContext& context )
   mPen.setStyle( mBorderStyle );
   mPen.setWidthF( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mBorderWidth, mBorderWidthUnit, mBorderWidthMapUnitScale ) );
   mPen.setJoinStyle( mPenJoinStyle );
-  prepareExpressions( context );
 }
 
 void QgsSimpleFillSymbolLayer::stopRender( QgsSymbolRenderContext& context )
@@ -838,9 +837,6 @@ void QgsGradientFillSymbolLayer::startRender( QgsSymbolRenderContext& context )
   QColor selColor = context.renderContext().selectionColor();
   if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
-
-  //update mBrush to use a gradient fill with specified properties
-  prepareExpressions( context );
 }
 
 void QgsGradientFillSymbolLayer::stopRender( QgsSymbolRenderContext& context )
@@ -1132,8 +1128,6 @@ void QgsShapeburstFillSymbolLayer::startRender( QgsSymbolRenderContext& context 
   QColor selColor = context.renderContext().selectionColor();
   if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
-
-  prepareExpressions( context );
 }
 
 void QgsShapeburstFillSymbolLayer::stopRender( QgsSymbolRenderContext& context )
@@ -1996,8 +1990,6 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolRenderContext& context )
   {
     mOutline->startRender( context.renderContext(), context.fields() );
   }
-
-  prepareExpressions( context );
 }
 
 void QgsSVGFillSymbolLayer::stopRender( QgsSymbolRenderContext& context )
@@ -2831,8 +2823,6 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolRenderContext& context
   {
     mFillLineSymbol->startRender( context.renderContext(), context.fields() );
   }
-
-  prepareExpressions( context );
 }
 
 void QgsLinePatternFillSymbolLayer::stopRender( QgsSymbolRenderContext & )
@@ -3257,7 +3247,6 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolRenderContext& contex
   {
     mOutline->startRender( context.renderContext(), context.fields() );
   }
-  prepareExpressions( context );
 }
 
 void QgsPointPatternFillSymbolLayer::stopRender( QgsSymbolRenderContext& context )
@@ -3451,6 +3440,8 @@ QgsSymbolLayer* QgsCentroidFillSymbolLayer::create( const QgsStringMap& properti
   if ( properties.contains( "point_on_all_parts" ) )
     sl->setPointOnAllParts( properties["point_on_all_parts"].toInt() != 0 );
 
+  sl->restoreDataDefinedProperties( properties );
+
   return sl;
 }
 
@@ -3533,6 +3524,7 @@ QgsStringMap QgsCentroidFillSymbolLayer::properties() const
   QgsStringMap map;
   map["point_on_surface"] = QString::number( mPointOnSurface );
   map["point_on_all_parts"] = QString::number( mPointOnAllParts );
+  saveDataDefinedProperties( map );
   return map;
 }
 
@@ -3544,6 +3536,7 @@ QgsCentroidFillSymbolLayer* QgsCentroidFillSymbolLayer::clone() const
   x->setSubSymbol( mMarker->clone() );
   x->setPointOnSurface( mPointOnSurface );
   x->setPointOnAllParts( mPointOnAllParts );
+  copyDataDefinedProperties( x );
   copyPaintEffect( x );
   return x;
 }
@@ -3760,7 +3753,6 @@ void QgsRasterFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPo
 
 void QgsRasterFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  prepareExpressions( context );
   applyPattern( mBrush, mImageFilePath, mWidth, mAlpha, context );
 }
 
