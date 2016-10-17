@@ -162,6 +162,11 @@ void QgsPaintEffect::end( QgsRenderContext &context )
   context.setPainter( mPrevPainter );
   mPrevPainter = nullptr;
 
+  // clear any existing pen/brush - sometimes these are not correctly restored when restoring a painter
+  // with a QPicture destination - see #15696
+  context.painter()->setPen( Qt::NoPen );
+  context.painter()->setBrush( Qt::NoBrush );
+
   //draw using effect
   render( *mTempPicture, context );
 
