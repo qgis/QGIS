@@ -55,7 +55,13 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
 
   public slots:
     void updateScales( const QStringList &scales = QStringList() );
-    //! Function to set the min scale
+
+    /**
+     * Set the minimum allowed scale.
+     * Anything scale lower than the minimum scale will automatically
+     * be converted to the minimum scale.
+     * Except for 0 which is always allowed.
+     */
     void setMinScale( double scale );
 
   protected:
