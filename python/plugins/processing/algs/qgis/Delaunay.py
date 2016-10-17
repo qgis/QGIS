@@ -81,7 +81,7 @@ class Delaunay(GeoAlgorithm):
         features = vector.features(layer)
         total = 100.0 / len(features)
         for current, inFeat in enumerate(features):
-            geom = inFeat.geometry()
+            geom = QgsGeometry(inFeat.geometry())
             if geom.isMultipart():
                 points = geom.asMultiPoint()
             else:
@@ -118,7 +118,7 @@ class Delaunay(GeoAlgorithm):
                 fid, n = ptDict[ids[index]]
                 request = QgsFeatureRequest().setFilterFid(fid)
                 inFeat = next(layer.getFeatures(request))
-                geom = inFeat.geometry()
+                geom = QgsGeometry(inFeat.geometry())
                 if geom.isMultipart():
                     point = QgsPoint(geom.asMultiPoint()[n])
                 else:
