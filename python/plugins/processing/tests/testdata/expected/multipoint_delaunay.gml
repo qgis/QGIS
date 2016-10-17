@@ -14,81 +14,73 @@
   <gml:featureMember>
     <ogr:multipoint_delauney fid="multipoint_delauney.0">
       <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>7,-1 8,-1 0,-5 7,-1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:POINTA>8.000000000000000</ogr:POINTA>
-      <ogr:POINTB>7.000000000000000</ogr:POINTB>
-      <ogr:POINTC>6.000000000000000</ogr:POINTC>
+      <ogr:POINTA>7.000000000000000</ogr:POINTA>
+      <ogr:POINTB>6.000000000000000</ogr:POINTB>
+      <ogr:POINTC>5.000000000000000</ogr:POINTC>
     </ogr:multipoint_delauney>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:multipoint_delauney fid="multipoint_delauney.1">
       <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,-5 4,1 7,-1 0,-5</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:POINTA>6.000000000000000</ogr:POINTA>
-      <ogr:POINTB>5.000000000000000</ogr:POINTB>
-      <ogr:POINTC>8.000000000000000</ogr:POINTC>
+      <ogr:POINTA>5.000000000000000</ogr:POINTA>
+      <ogr:POINTB>4.000000000000000</ogr:POINTB>
+      <ogr:POINTC>7.000000000000000</ogr:POINTC>
     </ogr:multipoint_delauney>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:multipoint_delauney fid="multipoint_delauney.2">
       <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,-1 4,1 0,-5 0,-1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:POINTA>9.000000000000000</ogr:POINTA>
-      <ogr:POINTB>5.000000000000000</ogr:POINTB>
-      <ogr:POINTC>6.000000000000000</ogr:POINTC>
-    </ogr:multipoint_delauney>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:multipoint_delauney fid="multipoint_delauney.3">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1,1 0,-1 0,0 1,1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:POINTA>1.000000000000000</ogr:POINTA>
-      <ogr:POINTB>9.000000000000000</ogr:POINTB>
-      <ogr:POINTC>0.000000000000000</ogr:POINTC>
-    </ogr:multipoint_delauney>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:multipoint_delauney fid="multipoint_delauney.4">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1,1 4,1 0,-1 1,1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:POINTA>1.000000000000000</ogr:POINTA>
-      <ogr:POINTB>5.000000000000000</ogr:POINTB>
-      <ogr:POINTC>9.000000000000000</ogr:POINTC>
-    </ogr:multipoint_delauney>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:multipoint_delauney fid="multipoint_delauney.5">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2,2 4,1 1,1 2,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:POINTA>2.000000000000000</ogr:POINTA>
-      <ogr:POINTB>5.000000000000000</ogr:POINTB>
-      <ogr:POINTC>1.000000000000000</ogr:POINTC>
-    </ogr:multipoint_delauney>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:multipoint_delauney fid="multipoint_delauney.6">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>5,2 7,-1 4,1 5,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:POINTA>4.000000000000000</ogr:POINTA>
-      <ogr:POINTB>8.000000000000000</ogr:POINTB>
-      <ogr:POINTC>5.000000000000000</ogr:POINTC>
-    </ogr:multipoint_delauney>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:multipoint_delauney fid="multipoint_delauney.7">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>3,3 4,1 2,2 3,3</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:POINTA>3.000000000000000</ogr:POINTA>
-      <ogr:POINTB>5.000000000000000</ogr:POINTB>
-      <ogr:POINTC>2.000000000000000</ogr:POINTC>
-    </ogr:multipoint_delauney>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:multipoint_delauney fid="multipoint_delauney.8">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>3,3 5,2 4,1 3,3</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:POINTA>3.000000000000000</ogr:POINTA>
+      <ogr:POINTA>8.000000000000000</ogr:POINTA>
       <ogr:POINTB>4.000000000000000</ogr:POINTB>
       <ogr:POINTC>5.000000000000000</ogr:POINTC>
     </ogr:multipoint_delauney>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:multipoint_delauney fid="multipoint_delauney.9">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>5,2 8,-1 7,-1 5,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:POINTA>4.000000000000000</ogr:POINTA>
-      <ogr:POINTB>7.000000000000000</ogr:POINTB>
+    <ogr:multipoint_delauney fid="multipoint_delauney.3">
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1,1 4,1 0,-1 1,1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:POINTA>0.000000000000000</ogr:POINTA>
+      <ogr:POINTB>4.000000000000000</ogr:POINTB>
       <ogr:POINTC>8.000000000000000</ogr:POINTC>
+    </ogr:multipoint_delauney>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:multipoint_delauney fid="multipoint_delauney.4">
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2,2 4,1 1,1 2,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:POINTA>1.000000000000000</ogr:POINTA>
+      <ogr:POINTB>4.000000000000000</ogr:POINTB>
+      <ogr:POINTC>0.000000000000000</ogr:POINTC>
+    </ogr:multipoint_delauney>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:multipoint_delauney fid="multipoint_delauney.5">
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>5,2 7,-1 4,1 5,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:POINTA>3.000000000000000</ogr:POINTA>
+      <ogr:POINTB>7.000000000000000</ogr:POINTB>
+      <ogr:POINTC>4.000000000000000</ogr:POINTC>
+    </ogr:multipoint_delauney>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:multipoint_delauney fid="multipoint_delauney.6">
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>3,3 4,1 2,2 3,3</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:POINTA>2.000000000000000</ogr:POINTA>
+      <ogr:POINTB>4.000000000000000</ogr:POINTB>
+      <ogr:POINTC>1.000000000000000</ogr:POINTC>
+    </ogr:multipoint_delauney>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:multipoint_delauney fid="multipoint_delauney.7">
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>3,3 5,2 4,1 3,3</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:POINTA>2.000000000000000</ogr:POINTA>
+      <ogr:POINTB>3.000000000000000</ogr:POINTB>
+      <ogr:POINTC>4.000000000000000</ogr:POINTC>
+    </ogr:multipoint_delauney>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:multipoint_delauney fid="multipoint_delauney.8">
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>5,2 8,-1 7,-1 5,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:POINTA>3.000000000000000</ogr:POINTA>
+      <ogr:POINTB>6.000000000000000</ogr:POINTB>
+      <ogr:POINTC>7.000000000000000</ogr:POINTC>
     </ogr:multipoint_delauney>
   </gml:featureMember>
 </ogr:FeatureCollection>

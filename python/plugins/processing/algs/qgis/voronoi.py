@@ -391,17 +391,18 @@ class Site(object):
         # fix_print_with_import
         print("Site #%d (%g, %g)" % (self.sitenum, self.x, self.y))
 
-    def __cmp__(self, other):
+    def __eq__(self, other):
+        return (self.x==other.x) and (self.y==other.y)
+
+    def __lt__(self, other):
         if self.y < other.y:
-            return -1
+            return True
         elif self.y > other.y:
-            return 1
+            return False
         elif self.x < other.x:
-            return -1
+            return True
         elif self.x > other.x:
-            return 1
-        else:
-            return 0
+            return False
 
     def distance(self, other):
         dx = self.x - other.x
@@ -505,17 +506,18 @@ class Halfedge(object):
         # fix_print_with_import
         print("ystar: ", self.ystar)
 
-    def __cmp__(self, other):
-        if self.ystar > other.ystar:
-            return 1
-        elif self.ystar < other.ystar:
-            return -1
-        elif self.vertex.x > other.vertex.x:
-            return 1
+    def __eq__(self, other):
+        return (self.vertex.x==other.vertex.x) and (self.ystar==other.ystar)
+
+    def __lt__(self, other):
+        if self.ystar < other.ystar:
+            return True
+        elif self.ystar > other.ystar:
+            return False
         elif self.vertex.x < other.vertex.x:
-            return -1
-        else:
-            return 0
+            return True
+        elif self.vertex.x > other.vertex.x:
+            return False
 
     def leftreg(self, default):
         if not self.edge:
@@ -791,7 +793,7 @@ class SiteList(object):
         def __iter__(this):
             return this
 
-        def next(this):
+        def __next__(this):
             try:
                 return next(this.generator)
             except StopIteration:
