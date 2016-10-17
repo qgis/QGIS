@@ -212,7 +212,6 @@ def load(fileName, name=None, crs=None, style=None):
                 style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
             qgslayer.loadNamedStyle(style)
             QgsMapLayerRegistry.instance().addMapLayers([qgslayer])
-            iface.legendInterface().refreshLayerLegend(qgslayer)
         else:
             if prjSetting:
                 settings.setValue('/Projections/defaultBehaviour', prjSetting)
