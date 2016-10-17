@@ -130,7 +130,7 @@ bool QgsScaleComboBox::setScaleString( const QString& scaleTxt )
   bool ok;
   double newScale = toDouble( scaleTxt, &ok );
   double oldScale = mScale;
-  if ( newScale < mMinScale )
+  if ( newScale < mMinScale && newScale != 0 )
   {
     newScale = mMinScale;
   }
@@ -246,7 +246,7 @@ double QgsScaleComboBox::toDouble( const QString& scaleString, bool * returnOk )
 void QgsScaleComboBox::setMinScale( double scale )
 {
   mMinScale = scale;
-  if ( mScale < scale )
+  if ( mScale < scale && mScale != 0 )
   {
     setScale( scale );
   }
