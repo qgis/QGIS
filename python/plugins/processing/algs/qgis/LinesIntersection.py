@@ -101,8 +101,12 @@ class LinesIntersection(GeoAlgorithm):
             hasIntersections = False
             lines = spatialIndex.intersects(inGeom.boundingBox())
 
+            engine = None
             if len(lines) > 0:
                 hasIntersections = True
+                # use prepared geometries for faster intersection tests
+                engine = QgsGeometry.createGeometryEngine(inGeom.geometry())
+                engine.prepareGeometry()
 
             if hasIntersections:
                 request = QgsFeatureRequest().setFilterFids(lines)
@@ -113,7 +117,7 @@ class LinesIntersection(GeoAlgorithm):
                     attrsA = inFeatA.attributes()
                     attrsB = inFeatB.attributes()
 
-                    if inGeom.intersects(tmpGeom):
+                    if engine.intersects(tmpGeom.geometry()):
                         tempGeom = inGeom.intersection(tmpGeom)
                         if tempGeom.type() == QgsWkbTypes.PointGeometry:
                             if tempGeom.isMultipart():

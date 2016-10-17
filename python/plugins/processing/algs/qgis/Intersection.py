@@ -89,9 +89,16 @@ class Intersection(GeoAlgorithm):
             atMapA = inFeatA.attributes()
             intersects = index.intersects(geom.boundingBox())
             request = QgsFeatureRequest().setFilterFids(intersects)
+
+            engine = None
+            if len(intersects) > 0:
+                # use prepared geometries for faster intersection tests
+                engine = QgsGeometry.createGeometryEngine(geom.geometry())
+                engine.prepareGeometry()
+
             for inFeatB in vlayerB.getFeatures(request):
                 tmpGeom = inFeatB.geometry()
-                if geom.intersects(tmpGeom):
+                if engine.intersects(tmpGeom.geometry()):
                     atMapB = inFeatB.attributes()
                     int_geom = QgsGeometry(geom.intersection(tmpGeom))
                     if int_geom.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(int_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:

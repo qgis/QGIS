@@ -76,6 +76,12 @@ class SplitLinesWithLines(GeoAlgorithm):
             inLines = [inGeom]
             lines = spatialIndex.intersects(inGeom.boundingBox())
 
+            engine = None
+            if len(lines) > 0:
+                # use prepared geometries for faster intersection tests
+                engine = QgsGeometry.createGeometryEngine(inGeom.geometry())
+                engine.prepareGeometry()
+
             if len(lines) > 0:  # hasIntersections
                 splittingLines = []
 
@@ -88,7 +94,7 @@ class SplitLinesWithLines(GeoAlgorithm):
 
                     splitGeom = inFeatB.geometry()
 
-                    if inGeom.intersects(splitGeom):
+                    if engine.intersects(splitGeom.geometry()):
                         splittingLines.append(splitGeom)
 
                 if len(splittingLines) > 0:
@@ -96,11 +102,14 @@ class SplitLinesWithLines(GeoAlgorithm):
                         splitterPList = vector.extractPoints(splitGeom)
                         outLines = []
 
+                        split_geom_engine = QgsGeometry.createGeometryEngine(splitGeom.geometry())
+                        split_geom_engine.prepareGeometry()
+
                         while len(inLines) > 0:
                             inGeom = inLines.pop()
                             inPoints = vector.extractPoints(inGeom)
 
-                            if inGeom.intersects(splitGeom):
+                            if split_geom_engine.intersects(inGeom.geometry()):
                                 try:
                                     result, newGeometries, topoTestPoints = inGeom.splitGeometry(splitterPList, False)
                                 except:

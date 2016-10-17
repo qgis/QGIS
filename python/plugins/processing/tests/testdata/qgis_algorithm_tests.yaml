@@ -1083,3 +1083,33 @@ tests:
       OUTPUT_LAYER:
         hash: 7fe0e0174185fd743e23760f33615adf10f771b4275f320db6f7f4f8
         type: rasterhash
+
+  - algorithm: qgis:lineintersections
+    name: Line Intersection
+    params:
+      INPUT_A:
+        name: lines.gml
+        type: vector
+      INPUT_B:
+        name: simplify_lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/line_intersection.gml
+        type: vector
+
+  - algorithm: qgis:sumlinelengths
+    name: Sum line lengths
+    params:
+      COUNT_FIELD: line_count
+      LEN_FIELD: line_len
+      LINES:
+        name: lines.gml
+        type: vector
+      POLYGONS:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/sum_line_length.gml
+        type: vector

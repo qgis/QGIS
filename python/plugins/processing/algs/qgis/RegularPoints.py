@@ -108,6 +108,11 @@ class RegularPoints(GeoAlgorithm):
         count = 0
         total = 100.0 / (area / pSpacing)
         y = extent.yMaximum() - inset
+
+        extent_geom = QgsGeometry.fromRect(extent)
+        extent_engine = QgsGeometry.createGeometryEngine(extent_geom.geometry())
+        extent_engine.prepareGeometry()
+
         while y >= extent.yMinimum():
             x = extent.xMinimum() + inset
             while x <= extent.xMaximum():
@@ -118,7 +123,7 @@ class RegularPoints(GeoAlgorithm):
                 else:
                     geom = QgsGeometry().fromPoint(QgsPoint(x, y))
 
-                if geom.intersects(extent):
+                if extent_engine.intersects(geom.geometry()):
                     f.setAttribute('id', count)
                     f.setGeometry(geom)
                     writer.addFeature(f)

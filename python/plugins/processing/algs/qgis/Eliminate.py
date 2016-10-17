@@ -253,10 +253,14 @@ class Eliminate(GeoAlgorithm):
                 min = -1
                 selFeat = QgsFeature()
 
+                # use prepared geometries for faster intersection tests
+                engine = QgsGeometry.createGeometryEngine(geom2Eliminate.geometry())
+                engine.prepareGeometry()
+
                 while fit.nextFeature(selFeat):
                     selGeom = selFeat.geometry()
 
-                    if geom2Eliminate.intersects(selGeom):
+                    if engine.intersects(selGeom.geometry()):
                         # We have a candidate
                         iGeom = geom2Eliminate.intersection(selGeom)
 
