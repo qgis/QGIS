@@ -1192,6 +1192,8 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
     setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
   }
 
+  readCustomProperties( layer_node );
+
   return true;
 }
 
