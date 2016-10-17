@@ -44,6 +44,7 @@ QgsSymbolLayer* QgsGeometryGeneratorSymbolLayer::create( const QgsStringMap& pro
   {
     symbolLayer->setSubSymbol( QgsFillSymbol::createSimple( properties ) );
   }
+  symbolLayer->restoreDataDefinedProperties( properties );
 
   return symbolLayer;
 }
@@ -117,6 +118,7 @@ QgsSymbolLayer* QgsGeometryGeneratorSymbolLayer::clone() const
 
   clone->setSymbolType( mSymbolType );
 
+  copyDataDefinedProperties( clone );
   copyPaintEffect( clone );
 
   return clone;
@@ -138,6 +140,7 @@ QgsStringMap QgsGeometryGeneratorSymbolLayer::properties() const
       props.insert( "SymbolType", "Fill" );
       break;
   }
+  saveDataDefinedProperties( props );
 
   return props;
 }
@@ -180,7 +183,9 @@ bool QgsGeometryGeneratorSymbolLayer::setSubSymbol( QgsSymbol* symbol )
 
 QSet<QString> QgsGeometryGeneratorSymbolLayer::usedAttributes() const
 {
-  return mSymbol->usedAttributes() + mExpression->referencedColumns();
+  return QgsSymbolLayer::usedAttributes()
+         + mSymbol->usedAttributes()
+         + mExpression->referencedColumns();
 }
 
 bool QgsGeometryGeneratorSymbolLayer::isCompatibleWithSymbol( QgsSymbol* symbol ) const

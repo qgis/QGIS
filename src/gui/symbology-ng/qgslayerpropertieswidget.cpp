@@ -33,6 +33,9 @@
 #include "qgsvectorfieldsymbollayerwidget.h"
 #include "qgssymbol.h" //for the unit
 #include "qgspanelwidget.h"
+#include "qgsdatadefined.h"
+#include "qgsmapcanvas.h"
+#include "qgsvectorlayer.h"
 
 static bool _initWidgetFunction( const QString& name, QgsSymbolLayerWidgetFunc f )
 {
@@ -112,7 +115,10 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const
   // update layer type combo box
   int idx = cboLayerType->findData( mLayer->layerType() );
   cboLayerType->setCurrentIndex( idx );
+
+  connect( mEnabledCheckBox, SIGNAL( toggled( bool ) ), mEnabledDDBtn, SLOT( setEnabled( bool ) ) );
   mEnabledCheckBox->setChecked( mLayer->enabled() );
+
   // set the corresponding widget
   updateSymbolLayerWidget( layer );
   connect( cboLayerType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( layerTypeChanged() ) );
@@ -122,6 +128,25 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const
   this->connectChildPanel( mEffectWidget );
 
   mEffectWidget->setPaintEffect( mLayer->paintEffect() );
+
+  const QgsDataDefined* dd = mLayer->getDataDefinedProperty( QgsSymbolLayer::EXPR_LAYER_ENABLED );
+  mEnabledDDBtn->init( mVectorLayer, dd, QgsDataDefinedButton::AnyType, QgsDataDefinedButton::boolDesc() );
+  connect( mEnabledDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedEnable() ) );
+  connect( mEnabledDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedEnable() ) );
+  mEnabledDDBtn->registerExpressionContextGenerator( this );
+}
+
+void QgsLayerPropertiesWidget::updateDataDefinedEnable()
+{
+  QgsDataDefined* dd = mLayer->getDataDefinedProperty( QgsSymbolLayer::EXPR_LAYER_ENABLED );
+  if ( !dd )
+  {
+    dd = new QgsDataDefined();
+    mLayer->setDataDefinedProperty( QgsSymbolLayer::EXPR_LAYER_ENABLED, dd );
+  }
+  mEnabledDDBtn->updateDataDefined( dd );
+
+  emit changed();
 }
 
 void QgsLayerPropertiesWidget::setContext( const QgsSymbolWidgetContext& context )
@@ -197,6 +222,58 @@ void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayer* layer )
   }
   // When anything is not right
   stackedWidget->setCurrentWidget( pageDummy );
+}
+
+QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
+{
+  if ( mContext.expressionContext() )
+    return *mContext.expressionContext();
+
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::atlasScope( nullptr );
+
+  if ( mContext.mapCanvas() )
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
+    << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+
+  expContext << QgsExpressionContextUtils::layerScope( mVectorLayer );
+
+  QgsExpressionContextScope* symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
+  if ( mLayer )
+  {
+    //cheat a bit - set the symbol color variable to match the symbol layer's color (when we should really be using the *symbols*
+    //color, but that's not accessible here). 99% of the time these will be the same anyway
+    symbolScope->setVariable( QgsExpressionContext::EXPR_SYMBOL_COLOR, mLayer->color() );
+  }
+  expContext << symbolScope;
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1, true ) );
+
+  // additional scopes
+  Q_FOREACH ( const QgsExpressionContextScope& scope, mContext.additionalExpressionContextScopes() )
+  {
+    expContext.appendScope( new QgsExpressionContextScope( scope ) );
+  }
+
+  //TODO - show actual value
+  expContext.setOriginalValueVariable( QVariant() );
+
+  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR
+                                      << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
+                                      << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
+                                      << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE );
+
+  return expContext;
 }
 
 void QgsLayerPropertiesWidget::layerTypeChanged()

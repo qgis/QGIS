@@ -278,6 +278,16 @@ class CORE_EXPORT QgsSymbolLayer
      */
     void setPaintEffect( QgsPaintEffect* effect );
 
+    /** Prepares all data defined property expressions for evaluation. This should
+     * be called prior to evaluating data defined properties.
+     * @param context symbol render context
+     * @note added in QGIS 2.12
+     */
+    virtual void prepareExpressions( const QgsSymbolRenderContext& context );
+
+    //! Data defined layer enabled string
+    static const QString EXPR_LAYER_ENABLED;
+
   protected:
     QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked = false );
 
@@ -298,13 +308,6 @@ class CORE_EXPORT QgsSymbolLayer
     static const bool selectionIsOpaque = true;  // Selection ignores symbol alpha
     static const bool selectFillBorder = false;  // Fill symbol layer also selects border symbology
     static const bool selectFillStyle = false;   // Fill symbol uses symbol layer style..
-
-    /** Prepares all data defined property expressions for evaluation. This should
-     * be called prior to evaluating data defined properties.
-     * @param context symbol render context
-     * @note added in QGIS 2.12
-     */
-    virtual void prepareExpressions( const QgsSymbolRenderContext& context );
 
     /** Saves all data defined properties to a string map.
      * @param stringMap destination string map

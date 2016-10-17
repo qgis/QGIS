@@ -400,6 +400,7 @@ void QgsSymbol::startRender( QgsRenderContext& context, const QgsFields& fields 
     if ( !layer->enabled() )
       continue;
 
+    layer->prepareExpressions( symbolContext );
     layer->startRender( symbolContext );
   }
 }
@@ -609,6 +610,14 @@ QgsSymbolLayerList QgsSymbol::cloneLayers() const
 void QgsSymbol::renderUsingLayer( QgsSymbolLayer* layer, QgsSymbolRenderContext& context )
 {
   Q_ASSERT( layer->type() == Hybrid );
+
+  if ( layer->hasDataDefinedProperty( QgsSymbolLayer::EXPR_LAYER_ENABLED ) )
+  {
+    bool ok = false;
+    bool enabled = layer->evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_LAYER_ENABLED, context, QVariant(), &ok ).toBool();
+    if ( ok && !enabled )
+      return;
+  }
 
   QgsGeometryGeneratorSymbolLayer* generatorLayer = static_cast<QgsGeometryGeneratorSymbolLayer*>( layer );
 
@@ -1403,6 +1412,14 @@ void QgsMarkerSymbol::renderPointUsingLayer( QgsMarkerSymbolLayer* layer, QPoint
 {
   static QPointF nullPoint( 0, 0 );
 
+  if ( layer->hasDataDefinedProperty( QgsSymbolLayer::EXPR_LAYER_ENABLED ) )
+  {
+    bool ok = false;
+    bool enabled = layer->evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_LAYER_ENABLED, context, QVariant(), &ok ).toBool();
+    if ( ok && !enabled )
+      return;
+  }
+
   QgsPaintEffect* effect = layer->paintEffect();
   if ( effect && effect->enabled() )
   {
@@ -1676,6 +1693,14 @@ void QgsLineSymbol::renderPolyline( const QPolygonF& points, const QgsFeature* f
 
 void QgsLineSymbol::renderPolylineUsingLayer( QgsLineSymbolLayer *layer, const QPolygonF &points, QgsSymbolRenderContext &context )
 {
+  if ( layer->hasDataDefinedProperty( QgsSymbolLayer::EXPR_LAYER_ENABLED ) )
+  {
+    bool ok = false;
+    bool enabled = layer->evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_LAYER_ENABLED, context, QVariant(), &ok ).toBool();
+    if ( ok && !enabled )
+      return;
+  }
+
   QgsPaintEffect* effect = layer->paintEffect();
   if ( effect && effect->enabled() )
   {
@@ -1748,6 +1773,14 @@ void QgsFillSymbol::renderPolygon( const QPolygonF& points, QList<QPolygonF>* ri
 
 void QgsFillSymbol::renderPolygonUsingLayer( QgsSymbolLayer* layer, const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
 {
+  if ( layer->hasDataDefinedProperty( QgsSymbolLayer::EXPR_LAYER_ENABLED ) )
+  {
+    bool ok = false;
+    bool enabled = layer->evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_LAYER_ENABLED, context, QVariant(), &ok ).toBool();
+    if ( ok && !enabled )
+      return;
+  }
+
   QgsSymbol::SymbolType layertype = layer->type();
 
   QgsPaintEffect* effect = layer->paintEffect();
