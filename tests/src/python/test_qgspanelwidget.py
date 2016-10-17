@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.PyQt.QtWidgets import QWidget
+from qgis.PyQt.QtWidgets import QWidget, QDialog
 from qgis.gui import QgsPanelWidget
 from qgis.testing import start_app, unittest
 
@@ -48,6 +48,12 @@ class TestQgsPanelWidget(unittest.TestCase):
         # widget with QgsPanelWidget grandparent
         w5 = QWidget(w4)
         self.assertEqual(QgsPanelWidget.findParentPanel(w5), w3)
+
+        # chain should be broken when a new window is encountered
+        n = QgsPanelWidget()
+        n2 = QDialog(n)
+        n3 = QWidget(n2)
+        self.assertFalse(QgsPanelWidget.findParentPanel(n3))
 
 
 if __name__ == '__main__':
