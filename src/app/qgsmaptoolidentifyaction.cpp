@@ -74,7 +74,7 @@ QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
 {
   if ( !mResultsDialog )
   {
-    mResultsDialog = new QgsIdentifyResultsDialog( mCanvas, mCanvas->window() );
+    mResultsDialog = new QgsIdentifyResultsDialog( QgisApp::instance() );
 
     connect( mResultsDialog, SIGNAL( formatChanged( QgsRasterLayer * ) ), this, SLOT( formatChanged( QgsRasterLayer * ) ) );
     connect( mResultsDialog, SIGNAL( copyToClipboard( QgsFeatureStore & ) ), this, SLOT( handleCopyToClipboard( QgsFeatureStore & ) ) );

@@ -302,8 +302,8 @@ double QgsComposerScaleBar::mapWidth() const
   else
   {
     QgsDistanceArea da;
-    da.setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
-    da.setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
+    da.setEllipsoidalMode( mComposerMap->mapSettings().hasCrsTransformEnabled() );
+    da.setSourceCrs( mComposerMap->mapSettings().destinationCrs().srsid() );
     da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", "WGS84" ) );
 
     QgsUnitTypes::DistanceUnit units = QgsUnitTypes::DistanceMeters;

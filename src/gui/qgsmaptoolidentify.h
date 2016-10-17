@@ -129,6 +129,9 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     //! this menu can also be customized
     QgsIdentifyMenu* identifyMenu() {return mIdentifyMenu;}
 
+    //! sets the tool's map canvas
+    virtual void setMapCanvas( QgsMapCanvas* mapCanvas ) override;
+
   public slots:
     void formatChanged( QgsRasterLayer *layer );
 

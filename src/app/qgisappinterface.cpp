@@ -56,6 +56,12 @@ QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
            this, SIGNAL( currentLayerChanged( QgsMapLayer * ) ) );
   connect( qgis, SIGNAL( currentThemeChanged( QString ) ),
            this, SIGNAL( currentThemeChanged( QString ) ) );
+  connect( qgis, SIGNAL( currentMapCanvasChanged( QgsMapCanvas* ) ),
+           this, SIGNAL( currentMapCanvasChanged( QgsMapCanvas* ) ) );
+  connect( qgis, SIGNAL( mapCanvasAdded( QgsMapCanvas* ) ),
+           this, SIGNAL( mapCanvasAdded( QgsMapCanvas* ) ) );
+  connect( qgis, SIGNAL( mapCanvasRemoved( QgsMapCanvas* ) ),
+           this, SIGNAL( mapCanvasRemoved( QgsMapCanvas* ) ) );
   connect( qgis, SIGNAL( composerAdded( QgsComposerView* ) ),
            this, SIGNAL( composerAdded( QgsComposerView* ) ) );
   connect( qgis, SIGNAL( composerWillBeRemoved( QgsComposerView* ) ),
@@ -339,6 +345,79 @@ void QgisAppInterface::addUserInputWidget( QWidget *widget )
   qgis->addUserInputWidget( widget );
 }
 
+QList<QgsMapCanvas*> QgisAppInterface::mapCanvases()
+{
+  QList<QgsMapCanvas*> canvasList;
+
+  if ( qgis )
+  {
+    const QSet<QgsMapCanvas*> tempList = qgis->mapCanvases();
+    QSet<QgsMapCanvas*>::const_iterator it = tempList.constBegin();
+
+    for ( ; it != tempList.constEnd(); ++it )
+    {
+      if ( *it )
+      {
+        canvasList << *it;
+      }
+    }
+  }
+  return canvasList;
+}
+
+QgsMapCanvas* QgisAppInterface::createNewMapCanvas( const QString& mapName, bool activateObject, bool floatingWidget, const QRect& geometryForWidget )
+{
+  return qgis ? qgis->createNewMapCanvas( mapName, activateObject, floatingWidget, geometryForWidget ) : nullptr;
+}
+
+bool QgisAppInterface::deleteMapCanvas( const QString& mapName )
+{
+  return qgis ? qgis->deleteMapCanvas( mapName ) : false;
+}
+
+QgsMapCanvas* QgisAppInterface::defaultMapCanvas()
+{
+  return qgis ? qgis->defaultMapCanvas() : nullptr;
+}
+
+QgsMapCanvas* QgisAppInterface::getMapCanvas( const QString& mapName )
+{
+  return qgis ? qgis->getMapCanvas( mapName ) : nullptr;
+}
+
+QgsMapCanvas* QgisAppInterface::getMapCanvas( QgsMapLayer* mapLayer )
+{
+  return qgis ? qgis->getMapCanvas( mapLayer ) : nullptr;
+}
+
+bool QgisAppInterface::setActiveMapCanvas( const QString& mapName )
+{
+  return qgis ? qgis->setActiveMapCanvas( mapName ) : false;
+}
+
+bool QgisAppInterface::setActiveMapCanvas( QgsMapCanvas *mapCanvas )
+{
+  return qgis ? qgis->setActiveMapCanvas( mapCanvas ) : false;
+}
+
+bool QgisAppInterface::connectChangeableCanvas( const QgsMapCanvas* sender, const char* signal, const QObject* receiver, const char* member )
+{
+  return qgis ? qgis->connectChangeableCanvas( sender, signal, receiver, member ) : false;
+}
+bool QgisAppInterface::connectChangeableCanvas( const QObject* sender, const char* signal, const QgsMapCanvas* receiver, const char* member )
+{
+  return qgis ? qgis->connectChangeableCanvas( sender, signal, receiver, member ) : false;
+}
+
+bool QgisAppInterface::disconnectChangeableCanvas( const QgsMapCanvas* sender, const char* signal, const QObject* receiver, const char* member )
+{
+  return qgis ? qgis->disconnectChangeableCanvas( sender, signal, receiver, member ) : false;
+}
+bool QgisAppInterface::disconnectChangeableCanvas( const QObject* sender, const char* signal, const QgsMapCanvas* receiver, const char* member )
+{
+  return qgis ? qgis->disconnectChangeableCanvas( sender, signal, receiver, member ) : false;
+}
+
 QList<QgsComposerView*> QgisAppInterface::activeComposers()
 {
   QList<QgsComposerView*> composerViewList;
@@ -533,6 +612,7 @@ QAction *QgisAppInterface::actionSaveProject() { return qgis->actionSaveProject(
 QAction *QgisAppInterface::actionSaveProjectAs() { return qgis->actionSaveProjectAs(); }
 QAction *QgisAppInterface::actionSaveMapAsImage() { return qgis->actionSaveMapAsImage(); }
 QAction *QgisAppInterface::actionProjectProperties() { return qgis->actionProjectProperties(); }
+QAction *QgisAppInterface::actionNewMapCanvas() { return qgis->actionNewMapCanvas(); }
 QAction *QgisAppInterface::actionPrintComposer() { return qgis->actionNewPrintComposer(); }
 QAction *QgisAppInterface::actionShowComposerManager() { return qgis->actionShowComposerManager(); }
 QAction *QgisAppInterface::actionExit() { return qgis->actionExit(); }

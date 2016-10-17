@@ -1,4 +1,4 @@
-class QgsRubberBand: QgsMapCanvasItem
+class QgsRubberBand: QObject, QgsMapCanvasItem
 {
 %TypeHeaderCode
 #include <qgsrubberband.h>
@@ -41,7 +41,7 @@ class QgsRubberBand: QgsMapCanvasItem
      *  @param geometryType Defines how the data should be drawn onto the screen. (Use QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry or QgsWkbTypes::PointGeometry)
      */
     QgsRubberBand( QgsMapCanvas* mapCanvas /TransferThis/, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
-    ~QgsRubberBand();
+    virtual ~QgsRubberBand();
 
     /**
      * Set the color for the rubberband

@@ -168,7 +168,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   mrbPath = new QgsRubberBand( mPlugin->iface()->mapCanvas(), QgsWkbTypes::LineGeometry );
   mrbPath->setWidth( 2 );
 
-  connect( mPlugin->iface()->mapCanvas(), SIGNAL( extentsChanged() ), this, SLOT( mapCanvasExtentsChanged() ) );
+  mPlugin->iface()->connectChangeableCanvas( mPlugin->iface()->mapCanvas(), SIGNAL( extentsChanged() ), this, SLOT( mapCanvasExtentsChanged() ) );
 
 } //RgShortestPathWidget::RgShortestPathWidget()
 RgShortestPathWidget::~RgShortestPathWidget()

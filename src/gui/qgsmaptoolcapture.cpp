@@ -69,7 +69,11 @@ QgsMapToolCapture::~QgsMapToolCapture()
 {
   delete mSnappingMarker;
 
+  // To avoid possible crash calling to triggerRepaint of currentVectorLayer in stopCapturing()
+  QgsMapCanvas* currentCanvas = mCanvas;
+  mCanvas = nullptr;
   stopCapturing();
+  mCanvas = currentCanvas;
 
   if ( mValidator )
   {
@@ -95,6 +99,14 @@ void QgsMapToolCapture::deactivate()
   mSnappingMarker = nullptr;
 
   QgsMapToolAdvancedDigitizing::deactivate();
+}
+
+void QgsMapToolCapture::setMapCanvas( QgsMapCanvas* mapCanvas )
+{
+  if ( mapCanvas != mCanvas && !isCapturing() )
+  {
+    QgsMapTool::setMapCanvas( mapCanvas );
+  }
 }
 
 void QgsMapToolCapture::validationFinished()

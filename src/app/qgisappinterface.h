@@ -168,6 +168,36 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     /** Return a pointer to the map canvas used by qgisapp */
     QgsMapCanvas * mapCanvas() override;
 
+    //! Return the collection of map canvas instances managed
+    QList<QgsMapCanvas*> mapCanvases() override;
+
+    //! Create a new map canvas with the specified unique name
+    QgsMapCanvas* createNewMapCanvas( const QString& mapName, bool activateObject = true, bool floatingWidget = true, const QRect& geometryForWidget = QRect() ) override;
+    //! Delete the map canvas with the specified name
+    bool deleteMapCanvas( const QString& mapName ) override;
+
+    //! Get the default map canvas of the application
+    QgsMapCanvas* defaultMapCanvas() override;
+    //! Get the map canvas with the specified name
+    QgsMapCanvas* getMapCanvas( const QString& mapName ) override;
+    //! Get the map canvas that manages the specified layer
+    QgsMapCanvas* getMapCanvas( QgsMapLayer* mapLayer ) override;
+
+    //! Set the active MapCanvas instance of the application (canvas gets selected in the legend)
+    bool setActiveMapCanvas( const QString& mapName ) override;
+    //! Set the active MapCanvas instance of the application (canvas gets selected in the legend)
+    bool setActiveMapCanvas( QgsMapCanvas *mapCanvas ) override;
+
+    //! Creates a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+    bool connectChangeableCanvas( const QgsMapCanvas* sender, const char* signal, const QObject* receiver, const char* member ) override;
+    //! Creates a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+    bool connectChangeableCanvas( const QObject* sender, const char* signal, const QgsMapCanvas* receiver, const char* member ) override;
+
+    //! Removes a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+    bool disconnectChangeableCanvas( const QgsMapCanvas* sender, const char* signal, const QObject* receiver, const char* member ) override;
+    //! Removes a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+    bool disconnectChangeableCanvas( const QObject* sender, const char* signal, const QgsMapCanvas* receiver, const char* member ) override;
+
     /**
      * Returns a pointer to the layer tree canvas bridge
      *
@@ -356,6 +386,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QAction *actionSaveProjectAs() override;
     virtual QAction *actionSaveMapAsImage() override;
     virtual QAction *actionProjectProperties() override;
+    virtual QAction *actionNewMapCanvas() override;
     virtual QAction *actionPrintComposer() override;
     virtual QAction *actionShowComposerManager() override;
     virtual QAction *actionExit() override;

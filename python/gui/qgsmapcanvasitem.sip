@@ -48,6 +48,12 @@ class QgsMapCanvasItem : QGraphicsItem
 
     //! transformation from map coordinates to screen coordinates
     QPointF toCanvasCoordinates( const QgsPoint& point ) const;
+
+    //! sets the map canvas
+    virtual void setMapCanvas( QgsMapCanvas* mapCanvas );
+
+    //! returns pointer to the map canvas
+    QgsMapCanvas* mapCanvas();
 };
 
 

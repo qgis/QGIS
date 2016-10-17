@@ -375,6 +375,9 @@ class QgsComposition : QGraphicsScene
     //! @note added in 2.4
     const QgsMapSettings& mapSettings() const;
 
+    //! Returns the settings of the specified map canvas
+    virtual const QgsMapSettings& mapSettings( const QgsComposerMap* map ) const;
+
     QgsComposition::PlotStyle plotStyle() const;
     void setPlotStyle( const QgsComposition::PlotStyle style );
 

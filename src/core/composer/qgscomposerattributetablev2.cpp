@@ -423,10 +423,10 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
   if ( mComposerMap && mShowOnlyVisibleFeatures )
   {
     selectionRect = *mComposerMap->currentMapExtent();
-    if ( layer && mComposition->mapSettings().hasCrsTransformEnabled() )
+    if ( layer && mComposition->mapSettings( mComposerMap ).hasCrsTransformEnabled() )
     {
       //transform back to layer CRS
-      QgsCoordinateTransform coordTransform( layer->crs(), mComposition->mapSettings().destinationCrs() );
+      QgsCoordinateTransform coordTransform( layer->crs(), mComposition->mapSettings( mComposerMap ).destinationCrs() );
       try
       {
         selectionRect = coordTransform.transformBoundingBox( selectionRect, QgsCoordinateTransform::ReverseTransform );

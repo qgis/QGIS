@@ -245,6 +245,9 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     static const QIcon& iconGroup();
 
+    //! Returns the QIcon to draw a NodeMapGroup
+    static const QIcon& iconMapGroup();
+
     //! Filter nodes from QgsMapLayerLegend according to the current filtering rules
     QList<QgsLayerTreeModelLegendNode*> filterLegendNodes( const QList<QgsLayerTreeModelLegendNode*>& nodes );
 

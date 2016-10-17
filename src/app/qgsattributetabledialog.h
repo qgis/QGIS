@@ -209,6 +209,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QMenu* mFilterColumnsMenu;
     QSignalMapper* mFilterActionMapper;
 
+    QgsMapCanvas* mMapCanvas;
     QgsVectorLayer* mLayer;
     QgsRubberBand* mRubberBand;
     QgsSearchWidgetWrapper* mCurrentSearchWidgetWrapper;

@@ -119,7 +119,11 @@ eVisGenericEventBrowserGui::~eVisGenericEventBrowserGui()
   //Clean up, disconnect the highlighting routine and refesh the canvase to clear highlighting symbol
   if ( mCanvas )
   {
-    disconnect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderSymbol( QPainter * ) ) );
+    if ( mInterface )
+      mInterface->disconnectChangeableCanvas( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderSymbol( QPainter * ) ) );
+    else
+      disconnect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderSymbol( QPainter * ) ) );
+
     mCanvas->refresh();
   }
 
@@ -252,7 +256,10 @@ bool eVisGenericEventBrowserGui::initBrowser()
   }
 
   //Connect rendering routine for highlighting symbols and load symbols
-  connect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderSymbol( QPainter * ) ) );
+  if ( mInterface )
+    mInterface->connectChangeableCanvas( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderSymbol( QPainter * ) ) );
+  else
+    connect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderSymbol( QPainter * ) ) );
 
   mDataProvider = mVectorLayer->dataProvider();
 

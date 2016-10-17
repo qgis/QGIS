@@ -437,6 +437,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! @note added in 2.4
     const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
+    //! Returns the settings of the specified map canvas
+    virtual const QgsMapSettings& mapSettings( const QgsComposerMap* map ) const;
+
     QgsComposition::PlotStyle plotStyle() const { return mPlotStyle; }
     void setPlotStyle( const QgsComposition::PlotStyle style ) { mPlotStyle = style; }
 

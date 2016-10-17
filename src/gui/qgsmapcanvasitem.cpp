@@ -140,3 +140,26 @@ void QgsMapCanvasItem::updatePosition()
   setRect( mRect, false );
   setRotation( mMapCanvas->rotation() - mRectRotation );
 }
+
+void QgsMapCanvasItem::setMapCanvas( QgsMapCanvas* mapCanvas )
+{
+  if ( mMapCanvas != mapCanvas )
+  {
+    if ( mMapCanvas && mMapCanvas->scene() )
+    {
+      mMapCanvas->scene()->removeItem( this );
+    }
+
+    mMapCanvas = mapCanvas;
+
+    if ( mMapCanvas && mMapCanvas->scene() )
+    {
+      mMapCanvas->scene()->addItem( this );
+    }
+  }
+}
+
+QgsMapCanvas* QgsMapCanvasItem::mapCanvas()
+{
+  return mMapCanvas;
+}

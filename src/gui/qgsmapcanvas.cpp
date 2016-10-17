@@ -1295,6 +1295,10 @@ void QgsMapCanvas::endZoomRect( QPoint pos )
 
 void QgsMapCanvas::mousePressEvent( QMouseEvent* e )
 {
+  // ignore action when the tool is working with other MapCanvas (Multimap mode)
+  if ( mMapTool && mMapTool->canvas() != this )
+    return;
+
   //use middle mouse button for panning, map tools won't receive any events in that case
   if ( e->button() == Qt::MidButton )
   {
@@ -1306,6 +1310,21 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent* e )
     // call handler of current map tool
     if ( mMapTool )
     {
+      // left button was pressed in an edit tool? check whether current layer has an edit session started
+      if ( mMapTool->flags() & QgsMapTool::EditTool )
+      {
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
+
+        if ( !vlayer || !vlayer->editBuffer() )
+        {
+          emit messageEmitted( tr( "No active and editable vector layer" ),
+                               tr( "To edit features, choose a vector layer in the legend and start an edit session" ),
+                               QgsMessageBar::INFO );
+
+          return;
+        }
+      }
+
       if ( mMapTool->flags() & QgsMapTool::AllowZoomRect && e->button() == Qt::LeftButton
            && e->modifiers() & Qt::ShiftModifier )
       {
@@ -1333,6 +1352,10 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent* e )
 
 void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
 {
+  // ignore action when the tool is working with other MapCanvas (Multimap mode)
+  if ( mMapTool && mMapTool->canvas() != this )
+    return;
+
   //use middle mouse button for panning, map tools won't receive any events in that case
   if ( e->button() == Qt::MidButton )
   {
@@ -1350,6 +1373,17 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
     // call handler of current map tool
     if ( mMapTool )
     {
+      // left button was pressed in an edit tool? check whether current layer has an edit session started
+      if ( mMapTool->flags() & QgsMapTool::EditTool )
+      {
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
+
+        if ( !vlayer || !vlayer->editBuffer() )
+        {
+          return;
+        }
+      }
+
       // right button was pressed in zoom tool? return to previous non zoom tool
       if ( e->button() == Qt::RightButton && mMapTool->flags() & QgsMapTool::Transient )
       {
@@ -1498,8 +1532,15 @@ void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
     QgsPoint center  = getCoordinateTransform()->toMapPoint( x, y );
     QgsRectangle r = mapSettings().visibleExtent();
     r.scale( scaleFactor, &center );
+
+    QgsRectangle lastViewExtent = extent();
     setExtent( r, true );
-    refresh();
+
+    // avoid unnecessary updates
+    if ( lastViewExtent != extent() )
+    {
+      refresh();
+    }
   }
 }
 
@@ -1869,6 +1910,21 @@ void QgsMapCanvas::readProject( const QDomDocument & doc )
   {
     QDomNode node = nodes.item( 0 );
 
+    // Search the specific MapCanvas node using the name
+    if ( nodes.count() > 1 )
+    {
+      for ( int i = 0; i < nodes.size(); ++i )
+      {
+        QDomElement elementNode = nodes.at( i ).toElement();
+
+        if ( elementNode.hasAttribute( "name" ) && elementNode.attribute( "name", "" ) == objectName() )
+        {
+          node = nodes.at( i );
+          break;
+        }
+      }
+    }
+
     QgsMapSettings tmpSettings;
     tmpSettings.readXml( node );
     setMapUnits( tmpSettings.mapUnits() );
@@ -1900,6 +1956,7 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
   QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element ok
 
   QDomElement mapcanvasNode = doc.createElement( "mapcanvas" );
+  mapcanvasNode.setAttribute( "name", objectName() );
   qgisNode.appendChild( mapcanvasNode );
 
   mSettings.writeXml( mapcanvasNode, doc );
@@ -1982,8 +2039,15 @@ void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPoint* center )
   {
     QgsRectangle r = mapSettings().extent();
     r.scale( scaleFactor, center );
+
+    QgsRectangle lastViewExtent = extent();
     setExtent( r, true );
-    refresh();
+
+    // avoid unnecessary updates
+    if ( lastViewExtent != extent() )
+    {
+      refresh();
+    }
   }
 }
 

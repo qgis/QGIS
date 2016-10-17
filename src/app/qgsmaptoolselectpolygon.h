@@ -36,6 +36,9 @@ class APP_EXPORT QgsMapToolSelectPolygon : public QgsMapTool
     //! Overridden mouse press event
     virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
+    //! sets the tool's map canvas
+    virtual void setMapCanvas( QgsMapCanvas* mapCanvas ) override;
+
   private:
 
     //! used for storing all of the maps point for the polygon

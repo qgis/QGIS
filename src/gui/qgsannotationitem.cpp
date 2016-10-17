@@ -413,6 +413,7 @@ void QgsAnnotationItem::_writeXml( QDomDocument& doc, QDomElement& itemElem ) co
     return;
   }
   QDomElement annotationElem = doc.createElement( "AnnotationItem" );
+  annotationElem.setAttribute( "mapCanvas", mMapCanvas->objectName() );
   annotationElem.setAttribute( "mapPositionFixed", mMapPositionFixed );
   annotationElem.setAttribute( "mapPosX", qgsDoubleToString( mMapPosition.x() ) );
   annotationElem.setAttribute( "mapPosY", qgsDoubleToString( mMapPosition.y() ) );

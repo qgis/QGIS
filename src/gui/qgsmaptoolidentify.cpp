@@ -695,3 +695,11 @@ void QgsMapToolIdentify::formatChanged( QgsRasterLayer *layer )
   }
 }
 
+void QgsMapToolIdentify::setMapCanvas( QgsMapCanvas *mapCanvas )
+{
+  if ( mIdentifyMenu )
+  {
+    mIdentifyMenu->setMapCanvas( mapCanvas );
+  }
+  QgsMapTool::setMapCanvas( mapCanvas );
+}

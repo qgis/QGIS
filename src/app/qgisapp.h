@@ -56,6 +56,7 @@ class QgsFeature;
 class QgsGeometry;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
+class QgsLayerTreeNode;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapLayerConfigWidgetFactory;
@@ -138,6 +139,33 @@ class QgsDiagramProperties;
 
 class QgsLegendFilterButton;
 
+//! Changeable signal/slot entry to autoupdate when the current MapCanvas changes
+class QgsChangeableMapCanvasSignalSlotEntry
+{
+  public:
+    //! Constructor
+    QgsChangeableMapCanvasSignalSlotEntry( const QObject* sender, const char* signal, const QObject* receiver, const char* member )
+        : senderObject( sender )
+        , signalName( signal )
+        , receiverObject( receiver )
+        , memberName( member )
+    {
+    }
+
+    //! Creates a connection of the given type from the signal in the sender MapCanvas object to the method in the receiver object
+    bool connect();
+    //! Removes a connection of the given type from the signal in the sender MapCanvas object to the method in the receiver object
+    bool disconnect();
+    //! Trace members
+    void trace();
+
+  public:
+    const QObject* senderObject;
+    const std::string signalName;
+    const QObject* receiverObject;
+    const std::string memberName;
+};
+
 /** \class QgisApp
  * \brief Main window for the Qgis application
  */
@@ -151,6 +179,43 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgisApp();
     //! Destructor
     ~QgisApp();
+
+    //! Event filter manager
+    virtual bool eventFilter( QObject* object, QEvent* event ) override;
+
+    //! Return the collection of map canvas instances managed
+    QSet<QgsMapCanvas*> mapCanvases() const;
+
+    //! QgisApp runs with multimap support enabled
+    bool multimapEnabled();
+
+    //! Create a new map canvas with the specified unique name
+    QgsMapCanvas* createNewMapCanvas( const QString& mapName, bool activateObject = true, bool floatingWidget = true, const QRect& geometryForWidget = QRect() );
+    //! Delete the map canvas with the specified name
+    bool deleteMapCanvas( const QString& mapName );
+
+    //! Get the default map canvas of the application
+    QgsMapCanvas* defaultMapCanvas() const;
+    //! Get the map canvas with the specified name
+    QgsMapCanvas* getMapCanvas( const QString& mapName ) const;
+    //! Get the map canvas that manages the specified layer
+    QgsMapCanvas* getMapCanvas( QgsMapLayer* mapLayer ) const;
+
+    //! Set the active MapCanvas instance of the application (canvas gets selected in the legend)
+    bool setActiveMapCanvas( const QString& mapName );
+    //! Set the active MapCanvas instance of the application (canvas gets selected in the legend)
+    bool setActiveMapCanvas( QgsMapCanvas* mapCanvas );
+
+    //! Creates a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+    bool connectChangeableCanvas( const QgsMapCanvas* sender, const char* signal, const QObject* receiver, const char* member );
+    //! Creates a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+    bool connectChangeableCanvas( const QObject* sender, const char* signal, const QgsMapCanvas* receiver, const char* member );
+
+    //! Removes a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+    bool disconnectChangeableCanvas( const QgsMapCanvas* sender, const char* signal, const QObject* receiver, const char* member );
+    //! Removes a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+    bool disconnectChangeableCanvas( const QObject* sender, const char* signal, const QgsMapCanvas* receiver, const char* member );
+
     /**
      * Add a vector layer to the canvas, returns pointer to it
      */
@@ -308,6 +373,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSaveMapAsImage() { return mActionSaveMapAsImage; }
     QAction *actionProjectProperties() { return mActionProjectProperties; }
     QAction *actionShowComposerManager() { return mActionShowComposerManager; }
+    QAction *actionNewMapCanvas() { return mActionNewMapCanvas; }
     QAction *actionNewPrintComposer() { return mActionNewPrintComposer; }
     QAction *actionExit() { return mActionExit; }
 
@@ -777,6 +843,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Assign layer CRS to project
     void setProjectCrsFromLayer();
 
+    //! Current TreeNode changed
+    void activeTreeNodeChanged( const QModelIndex& current, const QModelIndex& previous );
+    //! Validate the parent of a new TreeNode added
+    void newTreeNodeAdded( QgsLayerTreeNode* node, int indexFrom, int indexTo );
+    //! Remove the specified multimap orphan nodes
+    void removeMultimapOrphanNodes( const QList<QgsLayerTreeNode*> orphanNodes, bool clearDirty );
+
     /** Zooms so that the pixels of the raster layer occupies exactly one screen pixel.
         Only works on raster layers*/
     void legendLayerZoomNative();
@@ -974,6 +1047,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void newSpatialiteLayer();
     //! Create a new empty GeoPackage layer
     void newGeoPackageLayer();
+    //! Create a new empty map canvas
+    void newMapCanvas();
     //! Print the current map view frame
     void newPrintComposer();
     void showComposerManager();
@@ -1331,6 +1406,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Set the layer for the map style dock. Doesn't show the style dock */
     void setMapStyleDockLayer( QgsMapLayer *layer );
 
+    /** A map canvas instance has been renamed */
+    void mapCanvasRenamed( const QString& oldName, const QString& newName );
+
   signals:
     /** Emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
@@ -1356,6 +1434,21 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Signal emitted when the current theme is changed so plugins
      * can change there tool button icons. */
     void currentThemeChanged( const QString& );
+
+    /**
+     * This signal is emitted when the current (selected) map canvas is changed
+     */
+    void currentMapCanvasChanged( QgsMapCanvas* mapCanvas );
+
+    /**
+     * This signal is emitted when a new map canvas instance has been created
+     */
+    void mapCanvasAdded( QgsMapCanvas* mapCanvas );
+
+    /**
+     * This signal is emitted when a map canvas instance has been removed
+     */
+    void mapCanvasRemoved( QgsMapCanvas* mapCanvas );
 
     /** This signal is emitted when a new composer instance has been created
        */
@@ -1428,6 +1521,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       @return empty geometry in case of error or if canceled */
     QgsGeometry unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList, bool &canceled );
 
+    //! Set the active MapCanvas instance of the application (canvas gets selected in the legend)
+    bool setActiveMapCanvasPrivate( const QString& mapName, bool activateInLegend );
+    //! Set the active MapCanvas instance of the application (canvas gets selected in the legend)
+    bool setActiveMapCanvasPrivate( QgsMapCanvas* mapCanvas, bool activateInLegend );
+
+    /** Deletes all the non-default map canvases */
+    void deleteMapCanvases( bool exitingApplicaton = false );
+
     /** Deletes all the composer objects and clears mPrintComposers*/
     void deletePrintComposers();
 
@@ -1477,6 +1578,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void duplicateVectorStyle( QgsVectorLayer* srcLayer, QgsVectorLayer* destLayer );
 
     QgisAppStyleSheet *mStyleSheetBuilder;
+
+    //! Members to manage changeable signal/slot entries to autoupdate when the current MapCanvas changes
+    QList<QgsChangeableMapCanvasSignalSlotEntry*> mChangeableSignalEntries;
+    QList<QgsChangeableMapCanvasSignalSlotEntry*> mChangeableMemberEntries;
+  private slots:
+    void onSenderEntryDestroyed( QObject* obj );
+    void onReceiverEntryDestroyed( QObject* obj );
+  private:
 
     // actions for menus and toolbars -----------------
 
@@ -1657,8 +1766,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *mToolPopupOverviews;
     //! Popup menu for the display tools
     QMenu *mToolPopupDisplay;
-    //! Map canvas
+    //! Map canvas (Current map canvas in the application)
     QgsMapCanvas *mMapCanvas;
+    //! QgisApp runs with multimap support enabled
+    bool mMultimapEnabled;
+    //! Default Map canvas
+    QgsMapCanvas *mDefaultMapCanvas;
+    //! Map canvas before last HoverEnter message of the cursor
+    QgsMapCanvas *mLastMapCanvas;
     //! Overview map canvas
     QgsMapOverviewCanvas *mOverviewCanvas;
     //! Table of contents (legend) for the map
@@ -1682,6 +1797,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QSplashScreen *mSplash;
     //! list of recently opened/saved project files
     QList<QgsWelcomePageItemsModel::RecentProjectData> mRecentProjects;
+    //! Collection of non-default map canvases of this project, managed by QgisApp in a multimap view style
+    QHash<QString, QDockWidget*> mMapCanvases;
     //! Print composers of this project, accessible by id string
     QSet<QgsComposer*> mPrintComposers;
     /** QGIS-internal vector feature clipboard */
@@ -1778,8 +1895,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction* mActionStyleDock;
 
     QgsLegendFilterButton* mLegendExpressionFilterButton;
-
-    QgsSnappingUtils* mSnappingUtils;
 
     QList<QgsMapLayerConfigWidgetFactory*> mMapLayerPanelFactories;
 

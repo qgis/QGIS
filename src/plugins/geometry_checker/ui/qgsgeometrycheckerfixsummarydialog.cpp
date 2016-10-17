@@ -66,7 +66,7 @@ void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget* table, QgsGeome
 {
   int prec = 7 - std::floor( qMax( 0., std::log10( qMax( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QString( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
-  double layerToMap = mIface->mapCanvas()->mapSettings().layerToMapUnits( mLayer );
+  double layerToMap = mIface->getMapCanvas( mLayer )->mapSettings().layerToMapUnits( mLayer );
   QVariant value;
   if ( error->valueType() == QgsGeometryCheckError::ValueLength )
   {

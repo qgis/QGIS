@@ -256,6 +256,15 @@ class QgsComposerMap : QgsComposerItem
     /** Sets canvas pointer (necessary to query and draw map canvas items)*/
     void setMapCanvas( QGraphicsView* canvas /Transfer/ );
 
+    /** Returns the canvas pointer */
+    QGraphicsView* mapCanvas() const;
+
+    /** Returns the canvas name */
+    QString mapCanvasName() const;
+
+    /** Returns the map settings of the canvas */
+    const QgsMapSettings& mapSettings() const;
+
     void setDrawCanvasItems( bool b );
     bool drawCanvasItems() const;
 

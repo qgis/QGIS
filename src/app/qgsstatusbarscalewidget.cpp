@@ -95,6 +95,11 @@ void QgsStatusBarScaleWidget::setFont( const QFont &font )
   mScale->lineEdit()->setFont( font );
 }
 
+void QgsStatusBarScaleWidget::setMapCanvas( QgsMapCanvas* mapCanvas )
+{
+  mMapCanvas = mapCanvas;
+}
+
 void QgsStatusBarScaleWidget::updateScales( const QStringList &scales )
 {
   mScale->updateScales( scales );

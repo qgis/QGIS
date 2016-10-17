@@ -64,6 +64,10 @@ class QgsRubberSelectId
      * \brief Show rubber band
      */
     void show();
+
+    //! returns pointer to the map canvas
+    QgsMapCanvas* mapCanvas();
+
   private:
     //! Set Style
     void setStyle();

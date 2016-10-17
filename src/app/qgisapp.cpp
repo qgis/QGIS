@@ -127,6 +127,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgscoordinateutils.h"
 #include "qgscredentialdialog.h"
+#include "qgscsexception.h"
 #include "qgscursors.h"
 #include "qgscustomdrophandler.h"
 #include "qgscustomization.h"
@@ -372,6 +373,8 @@ class QTreeWidgetItem;
   set set title text to the project file name
   else
   set the title text to project title
+  if the multimap mode is enabled
+  set the title text with the current map name
   */
 static void setTitleBarText_( QWidget & qgisApp )
 {
@@ -404,6 +407,11 @@ static void setTitleBarText_( QWidget & qgisApp )
     caption += " - " + QgsProject::instance()->title();
   }
 
+  if ( QgisApp::instance()->multimapEnabled() )
+  {
+    caption += " ( Map: '" + QgisApp::instance()->mapCanvas()->objectName() + "' )";
+  }
+
   qgisApp.setWindowTitle( caption );
 } // setTitleBarText_( QWidget * qgisApp )
 
@@ -416,6 +424,21 @@ static QgsMessageOutput *messageOutputViewer_()
     return new QgsMessageViewer( QgisApp::instance() );
   else
     return new QgsMessageOutputConsole();
+}
+
+/**
+ * Returns the QgsLayerTreeNode of the specified MapCanvas instance
+ */
+static QgsLayerTreeNode* findMapTreeNode( QgsLayerTreeView *layerTreeView, QgsMapCanvas *mapCanvas )
+{
+  Q_FOREACH ( QgsLayerTreeNode *treeNode, layerTreeView->layerTreeModel()->rootGroup()->children() )
+  {
+    if ( QgsLayerTree::isMapGroup( treeNode ) && QgsLayerTree::toGroup( treeNode )->name() == mapCanvas->objectName() )
+    {
+      return treeNode;
+    }
+  }
+  return nullptr;
 }
 
 static void customSrsValidation_( QgsCoordinateReferenceSystem &srs )
@@ -474,10 +497,106 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
   }
 }
 
+void QgisApp::activeTreeNodeChanged( const QModelIndex &current, const QModelIndex &previous )
+{
+  Q_UNUSED( previous );
+
+  if ( QgsLayerTreeNode* currentNode = mLayerTreeView->layerTreeModel()->index2node( current ) )
+  {
+    if ( QgsLayerTree::isMapGroup( currentNode ) )
+    {
+      setActiveMapCanvasPrivate( QgsLayerTree::toGroup( currentNode )->name(), false );
+    }
+    else
+    {
+      currentNode = currentNode->parent();
+
+      while ( currentNode != nullptr )
+      {
+        if ( QgsLayerTree::isMapGroup( currentNode ) )
+        {
+          setActiveMapCanvasPrivate( QgsLayerTree::toGroup( currentNode )->name(), false );
+          break;
+        }
+        currentNode = currentNode->parent();
+      }
+    }
+  }
+  updateNewLayerInsertionPoint();
+}
+
+void QgisApp::newTreeNodeAdded( QgsLayerTreeNode* node, int indexFrom, int indexTo )
+{
+  QgsLayerTreeGroup* parentGroup = mLayerTreeView->layerTreeModel()->rootGroup();
+
+  // Validate new TreeNodes to avoid nodes without a map QgsLayerTreeGroup parent
+  if ( mMultimapEnabled && node == parentGroup )
+  {
+    QList<QgsLayerTreeNode*> childrenToMove;
+
+    for ( int i = indexFrom; i <= indexTo; ++i )
+    {
+      QgsLayerTreeNode* child = parentGroup->children().at( i );
+
+      if ( !QgsLayerTree::isMapGroup( child ) && child->customProperty( "multimapOrphan", 0 ).toInt() == 0 )
+      {
+        childrenToMove << child;
+      }
+    }
+    if ( childrenToMove.size() > 0 )
+    {
+      QgsLayerTreeGroup* mapGroup = qobject_cast<QgsLayerTreeGroup *>( findMapTreeNode( mLayerTreeView, mMapCanvas ) );
+
+      Q_FOREACH ( QgsLayerTreeNode* child, childrenToMove )
+      {
+        QgsLayerTreeNode* node = child->clone();
+        child->setCustomProperty( "multimapOrphan", 1 );
+        mapGroup->addChildNode( node );
+
+        if ( mLayerTreeView->currentNode() == child )
+        {
+          QModelIndex index = mLayerTreeView->layerTreeModel()->node2index( node );
+          mLayerTreeView->setCurrentIndex( index );
+        }
+      }
+
+      // delay the removal of node from a parent node. There may be other slots
+      // connected to tree node's signals that might disrupt the execution flow
+      QMetaObject::invokeMethod( this, "removeMultimapOrphanNodes", Qt::QueuedConnection, Q_ARG( QList<QgsLayerTreeNode*>, childrenToMove ), Q_ARG( bool, false ) );
+    }
+  }
+  updateNewLayerInsertionPoint();
+}
+
+void QgisApp::removeMultimapOrphanNodes( const QList<QgsLayerTreeNode*> orphanNodes, bool clearDirty )
+{
+  Q_FOREACH ( QgsLayerTreeNode* node, orphanNodes )
+  {
+    QgsLayerTreeGroup* parentGroup = QgsLayerTree::toGroup( node->parent() );
+    parentGroup->removeChildNode( node );
+  }
+  if ( clearDirty )
+  {
+    QgsProject::instance()->setDirty( false );
+  }
+}
+
 void QgisApp::activeLayerChanged( QgsMapLayer* layer )
 {
-  if ( mMapCanvas )
-    mMapCanvas->setCurrentLayer( layer );
+  QgsMapCanvas* mapCanvas = mMultimapEnabled ? getMapCanvas( layer ) : mDefaultMapCanvas;
+
+  if ( !mapCanvas )
+  {
+    QgsLayerTreeGroup* mapGroup = mLayerTreeView->currentMapGroupNode();
+
+    if ( mapGroup )
+      mapCanvas = getMapCanvas( mapGroup->name() );
+  }
+
+  if ( !mapCanvas && !layer )
+    Q_FOREACH ( QgsMapCanvas* canvas, mapCanvases() ) canvas->setCurrentLayer( nullptr );
+  if ( mapCanvas )
+    mapCanvas->setCurrentLayer( layer );
 
   if ( mUndoWidget )
   {
@@ -584,7 +703,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     , mWebMenu( nullptr )
     , mToolPopupOverviews( nullptr )
     , mToolPopupDisplay( nullptr )
+    , mMultimapEnabled( false )
+    , mDefaultMapCanvas( nullptr )
+    , mLastMapCanvas( nullptr )
     , mLayerTreeCanvasBridge( nullptr )
+    , mQgisInterface( nullptr )
     , mSplash( splash )
     , mInternalClipboard( nullptr )
     , mShowProjectionTab( false )
@@ -594,7 +717,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     , mpTileScaleWidget( nullptr )
     , mpGpsWidget( nullptr )
     , mTracer( nullptr )
-    , mSnappingUtils( nullptr )
     , mProjectLastModified()
     , mWelcomePage( nullptr )
     , mCentralContainer( nullptr )
@@ -674,13 +796,23 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   centralLayout->setContentsMargins( 0, 0, 0, 0 );
 
   // "theMapCanvas" used to find this canonical instance later
+  mMultimapEnabled = settings.value( "/qgis/multimapEnabled", false ).toBool();
   startProfile( "Creating map canvas" );
-  mMapCanvas = new QgsMapCanvas( centralWidget );
-  mMapCanvas->setObjectName( "theMapCanvas" );
-  connect( mMapCanvas, SIGNAL( messageEmitted( const QString&, const QString&, QgsMessageBar::MessageLevel ) ),
-           this, SLOT( displayMessage( const QString&, const QString&, QgsMessageBar::MessageLevel ) ) );
+  mMapCanvas = mDefaultMapCanvas = new QgsMapCanvas( centralWidget );
+  mMapCanvas->setObjectName( QgisApp::tr( "Default Map" ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( messageEmitted( const QString&, const QString&, QgsMessageBar::MessageLevel ) ),
+                           this, SLOT( displayMessage( const QString&, const QString&, QgsMessageBar::MessageLevel ) ) );
   mMapCanvas->setWhatsThis( tr( "Map canvas. This is where raster and vector "
                                 "layers are displayed when added to the map" ) );
+
+  if ( mMultimapEnabled )
+  {
+    mMapCanvas->setAttribute( Qt::WA_Hover );
+    mMapCanvas->installEventFilter( this );
+  }
+
+  // Needed because used by a QMetaObject::invokeMethod()
+  qRegisterMetaType< QList<QgsLayerTreeNode*> >( "QList<QgsLayerTreeNode*>" );
 
   // set canvas color right away
   int myRed = settings.value( "/qgis/default_canvas_color_red", 255 ).toInt();
@@ -703,7 +835,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   centralLayout->addWidget( mCentralContainer, 0, 0, 2, 1 );
 
-  connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( showMapCanvas() ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( showMapCanvas() ) );
 
   mCentralContainer->setCurrentIndex( mProjOpen ? 0 : 1 );
 
@@ -755,21 +887,19 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mBookMarksDockWidget->setObjectName( "BookmarksDockWidget" );
   endProfile();
 
-  startProfile( "Snapping utils" );
-  mSnappingUtils = new QgsMapCanvasSnappingUtils( mMapCanvas, this );
-  mMapCanvas->setSnappingUtils( mSnappingUtils );
-  connect( QgsProject::instance(), SIGNAL( snapSettingsChanged() ), mSnappingUtils, SLOT( readConfigFromProject() ) );
-  connect( this, SIGNAL( projectRead() ), mSnappingUtils, SLOT( readConfigFromProject() ) );
+  // initialize the plugin manager
+  startProfile( "Plugin manager" );
+  mPluginManager = new QgsPluginManager( this, restorePlugins );
   endProfile();
 
   functionProfile( &QgisApp::createActions, this, "Create actions" );
   functionProfile( &QgisApp::createActionGroups, this, "Create action group" );
   functionProfile( &QgisApp::createMenus, this, "Create menus" );
+  functionProfile( &QgisApp::initLayerTreeView, this, "Init Layer tree view" );
   functionProfile( &QgisApp::createToolBars, this, "Toolbars" );
   functionProfile( &QgisApp::createStatusBar, this, "Status bar" );
   functionProfile( &QgisApp::createCanvasTools, this, "Create canvas tools" );
   mMapCanvas->freeze();
-  functionProfile( &QgisApp::initLayerTreeView, this, "Init Layer tree view" );
   functionProfile( &QgisApp::createOverview, this, "Create overview" );
   functionProfile( &QgisApp::createMapTips, this, "Create map tips" );
   functionProfile( &QgisApp::createDecorations, this, "Create decorations" );
@@ -785,13 +915,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   projectsTemplateWatcher->addPath( templateDirName );
   connect( projectsTemplateWatcher, SIGNAL( directoryChanged( QString ) ), this, SLOT( updateProjectFromTemplates() ) );
 
-  // initialize the plugin manager
-  startProfile( "Plugin manager" );
-  mPluginManager = new QgsPluginManager( this, restorePlugins );
-  endProfile();
-
   addDockWidget( Qt::LeftDockWidgetArea, mUndoDock );
   mUndoDock->hide();
+
+  startProfile( "Snapping utils" );
+  QgsSnappingUtils* snappingUtils = mMapCanvas->snappingUtils();
+  connect( QgsProject::instance(), SIGNAL( snapSettingsChanged() ), snappingUtils, SLOT( readConfigFromProject() ) );
+  connect( this, SIGNAL( projectRead() ), snappingUtils, SLOT( readConfigFromProject() ) );
+  endProfile();
 
   startProfile( "Layer Style dock" );
   mMapStylingDock = new QgsDockWidget( this );
@@ -807,7 +938,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   endProfile();
 
   startProfile( "Snapping dialog" );
-  mSnappingDialog = new QgsSnappingDialog( this, mMapCanvas );
+  mSnappingDialog = new QgsSnappingDialog( this );
   mSnappingDialog->setObjectName( "SnappingOption" );
   endProfile();
 
@@ -866,7 +997,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   connect( mInternalClipboard, SIGNAL( changed() ), this, SLOT( clipboardChanged() ) );
-  mQgisInterface = new QgisAppInterface( this ); // create the interfce
+
+  if ( !mQgisInterface )
+    mQgisInterface = new QgisAppInterface( this ); // create the interface
 
 #ifdef Q_OS_MAC
   // action for Window menu (create before generating WindowTitleChange event))
@@ -1136,6 +1269,9 @@ QgisApp::QgisApp()
     , mToolPopupOverviews( nullptr )
     , mToolPopupDisplay( nullptr )
     , mMapCanvas( nullptr )
+    , mMultimapEnabled( false )
+    , mDefaultMapCanvas( nullptr )
+    , mLastMapCanvas( nullptr )
     , mOverviewCanvas( nullptr )
     , mLayerTreeView( nullptr )
     , mLayerTreeCanvasBridge( nullptr )
@@ -1178,19 +1314,32 @@ QgisApp::QgisApp()
     , mActionFilterLegend( nullptr )
     , mActionStyleDock( nullptr )
     , mLegendExpressionFilterButton( nullptr )
-    , mSnappingUtils( nullptr )
     , mProjectLastModified()
     , mWelcomePage( nullptr )
     , mCentralContainer( nullptr )
     , mProjOpen( 0 )
 {
+  QSettings settings;
+
   smInstance = this;
   setupUi( this );
   mInternalClipboard = new QgsClipboard;
-  mMapCanvas = new QgsMapCanvas();
-  connect( mMapCanvas, SIGNAL( messageEmitted( const QString&, const QString&, QgsMessageBar::MessageLevel ) ),
-           this, SLOT( displayMessage( const QString&, const QString&, QgsMessageBar::MessageLevel ) ) );
+  mMultimapEnabled = settings.value( "/qgis/multimapEnabled", false ).toBool();
+  mMapCanvas = mDefaultMapCanvas = new QgsMapCanvas();
+  mMapCanvas->setObjectName( QgisApp::tr( "Default Map" ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( messageEmitted( const QString&, const QString&, QgsMessageBar::MessageLevel ) ),
+                           this, SLOT( displayMessage( const QString&, const QString&, QgsMessageBar::MessageLevel ) ) );
   mMapCanvas->freeze();
+
+  if ( mMultimapEnabled )
+  {
+    mMapCanvas->setAttribute( Qt::WA_Hover );
+    mMapCanvas->installEventFilter( this );
+  }
+
+  // Needed because used by a QMetaObject::invokeMethod()
+  qRegisterMetaType< QList<QgsLayerTreeNode*> >( "QList<QgsLayerTreeNode*>" );
+
   mLayerTreeView = new QgsLayerTreeView( this );
   mUndoWidget = new QgsUndoWidget( nullptr, mMapCanvas );
   mInfoBar = new QgsMessageBar( centralWidget() );
@@ -1199,10 +1348,9 @@ QgisApp::QgisApp()
 
 QgisApp::~QgisApp()
 {
-  mMapCanvas->stopRendering();
+  stopRendering();
 
   delete mInternalClipboard;
-  delete mQgisInterface;
   delete mStyleSheetBuilder;
 
   delete mMapTools.mZoomIn;
@@ -1253,6 +1401,8 @@ QgisApp::~QgisApp()
 
   delete mpGpsWidget;
 
+  delete mBookMarksDockWidget;
+
   delete mOverviewMapCursor;
 
   delete mComposerManager;
@@ -1263,7 +1413,11 @@ QgisApp::~QgisApp()
   delete mWelcomePage;
 
   deletePrintComposers();
+  deleteMapCanvases( true );
   removeAnnotationItems();
+
+  delete mQgisInterface;
+  mQgisInterface = nullptr;
 
   // cancel request for FileOpen events
   QgsApplication::setFileOpenEventReceiver( nullptr );
@@ -1511,6 +1665,7 @@ void QgisApp::createActions()
   connect( mActionSaveProject, SIGNAL( triggered() ), this, SLOT( fileSave() ) );
   connect( mActionSaveProjectAs, SIGNAL( triggered() ), this, SLOT( fileSaveAs() ) );
   connect( mActionSaveMapAsImage, SIGNAL( triggered() ), this, SLOT( saveMapAsImage() ) );
+  connect( mActionNewMapCanvas, SIGNAL( triggered() ), this, SLOT( newMapCanvas() ) );
   connect( mActionNewPrintComposer, SIGNAL( triggered() ), this, SLOT( newPrintComposer() ) );
   connect( mActionShowComposerManager, SIGNAL( triggered() ), this, SLOT( showComposerManager() ) );
   connect( mActionExit, SIGNAL( triggered() ), this, SLOT( fileExit() ) );
@@ -1925,6 +2080,8 @@ void QgisApp::createMenus()
     mSettingsMenu->removeAction( mActionProjectProperties );
     mProjectMenu->insertAction( before, mActionProjectProperties );
     mProjectMenu->insertSeparator( before );
+    mSettingsMenu->removeAction( mActionNewMapCanvas );
+    mProjectMenu->insertAction( before, mActionNewMapCanvas );
   }
 
   // View Menu
@@ -2319,8 +2476,8 @@ void QgisApp::createStatusBar()
                                   "of rendering layers and other time-intensive operations" ) );
   statusBar()->addPermanentWidget( mProgressBar, 1 );
 
-  connect( mMapCanvas, SIGNAL( renderStarting() ), this, SLOT( canvasRefreshStarted() ) );
-  connect( mMapCanvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( canvasRefreshFinished() ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( renderStarting() ), this, SLOT( canvasRefreshStarted() ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( canvasRefreshFinished() ) );
 
   // Bumped the font up one point size since 8 was too
   // small on some platforms. A point size of 9 still provides
@@ -2338,15 +2495,15 @@ void QgisApp::createStatusBar()
   mScaleWidget = new QgsStatusBarScaleWidget( mMapCanvas, statusBar() );
   mScaleWidget->setObjectName( "mScaleWidget" );
   mScaleWidget->setFont( myFont );
-  connect( mScaleWidget, SIGNAL( scaleLockChanged( bool ) ), mMapCanvas, SLOT( setScaleLocked( bool ) ) );
+  connectChangeableCanvas( mScaleWidget, SIGNAL( scaleLockChanged( bool ) ), mMapCanvas, SLOT( setScaleLocked( bool ) ) );
   statusBar()->addPermanentWidget( mScaleWidget, 0 );
 
   // zoom widget
   mMagnifierWidget = new QgsStatusBarMagnifierWidget( statusBar() );
   mMagnifierWidget->setObjectName( "mMagnifierWidget" );
   mMagnifierWidget->setFont( myFont );
-  connect( mMapCanvas, SIGNAL( magnificationChanged( double ) ), mMagnifierWidget, SLOT( updateMagnification( double ) ) );
-  connect( mMagnifierWidget, SIGNAL( magnificationChanged( double ) ), mMapCanvas, SLOT( setMagnificationFactor( double ) ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( magnificationChanged( double ) ), mMagnifierWidget, SLOT( updateMagnification( double ) ) );
+  connectChangeableCanvas( mMagnifierWidget, SIGNAL( magnificationChanged( double ) ), mMapCanvas, SLOT( setMagnificationFactor( double ) ) );
   mMagnifierWidget->updateMagnification( QSettings().value( "/qgis/magnifier_factor_default", 1.0 ).toDouble() );
   statusBar()->addPermanentWidget( mMagnifierWidget, 0 );
 
@@ -2495,6 +2652,7 @@ void QgisApp::setTheme( const QString& theThemeName )
   mActionOpenProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.svg" ) );
   mActionSaveProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.svg" ) );
   mActionSaveProjectAs->setIcon( QgsApplication::getThemeIcon( "/mActionFileSaveAs.svg" ) );
+  mActionNewMapCanvas->setIcon( QgsApplication::getThemeIcon( "/mActionAddMap.svg" ) );
   mActionNewPrintComposer->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.svg" ) );
   mActionShowComposerManager->setIcon( QgsApplication::getThemeIcon( "/mActionComposerManager.svg" ) );
   mActionSaveMapAsImage->setIcon( QgsApplication::getThemeIcon( "/mActionSaveMapAsImage.svg" ) );
@@ -2650,44 +2808,44 @@ void QgisApp::setupConnections()
   connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( saveWindowState() ) );
 
   // signal when mouse moved over window (coords display in status bar)
-  connect( mMapCanvas, SIGNAL( xyCoordinates( const QgsPoint & ) ),
-           this, SLOT( saveLastMousePosition( const QgsPoint & ) ) );
-  connect( mMapCanvas, SIGNAL( extentsChanged() ),
-           this, SLOT( extentChanged() ) );
-  connect( mMapCanvas, SIGNAL( scaleChanged( double ) ),
-           this, SLOT( showScale( double ) ) );
-  connect( mMapCanvas, SIGNAL( rotationChanged( double ) ),
-           this, SLOT( showRotation() ) );
-  connect( mMapCanvas, SIGNAL( scaleChanged( double ) ),
-           this, SLOT( updateMouseCoordinatePrecision() ) );
-  connect( mMapCanvas, SIGNAL( mapToolSet( QgsMapTool *, QgsMapTool * ) ),
-           this, SLOT( mapToolChanged( QgsMapTool *, QgsMapTool * ) ) );
-  connect( mMapCanvas, SIGNAL( selectionChanged( QgsMapLayer * ) ),
-           this, SLOT( selectionChanged( QgsMapLayer * ) ) );
-  connect( mMapCanvas, SIGNAL( extentsChanged() ),
-           this, SLOT( markDirty() ) );
-  connect( mMapCanvas, SIGNAL( layersChanged() ),
-           this, SLOT( markDirty() ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( xyCoordinates( const QgsPoint & ) ),
+                           this, SLOT( saveLastMousePosition( const QgsPoint & ) ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( extentsChanged() ),
+                           this, SLOT( extentChanged() ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( scaleChanged( double ) ),
+                           this, SLOT( showScale( double ) ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( rotationChanged( double ) ),
+                           this, SLOT( showRotation() ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( scaleChanged( double ) ),
+                           this, SLOT( updateMouseCoordinatePrecision() ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( mapToolSet( QgsMapTool *, QgsMapTool * ) ),
+                           this, SLOT( mapToolChanged( QgsMapTool *, QgsMapTool * ) ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( selectionChanged( QgsMapLayer * ) ),
+                           this, SLOT( selectionChanged( QgsMapLayer * ) ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( extentsChanged() ),
+                           this, SLOT( markDirty() ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( layersChanged() ),
+                           this, SLOT( markDirty() ) );
 
-  connect( mMapCanvas, SIGNAL( zoomLastStatusChanged( bool ) ),
-           mActionZoomLast, SLOT( setEnabled( bool ) ) );
-  connect( mMapCanvas, SIGNAL( zoomNextStatusChanged( bool ) ),
-           mActionZoomNext, SLOT( setEnabled( bool ) ) );
-  connect( mRenderSuppressionCBox, SIGNAL( toggled( bool ) ),
-           mMapCanvas, SLOT( setRenderFlag( bool ) ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( zoomLastStatusChanged( bool ) ),
+                           mActionZoomLast, SLOT( setEnabled( bool ) ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( zoomNextStatusChanged( bool ) ),
+                           mActionZoomNext, SLOT( setEnabled( bool ) ) );
+  connectChangeableCanvas( mRenderSuppressionCBox, SIGNAL( toggled( bool ) ),
+                           mMapCanvas, SLOT( setRenderFlag( bool ) ) );
 
-  connect( mMapCanvas, SIGNAL( destinationCrsChanged() ),
-           this, SLOT( reprojectAnnotations() ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( destinationCrsChanged() ),
+                           this, SLOT( reprojectAnnotations() ) );
 
   // connect MapCanvas keyPress event so we can check if selected feature collection must be deleted
-  connect( mMapCanvas, SIGNAL( keyPressed( QKeyEvent * ) ),
-           this, SLOT( mapCanvas_keyPressed( QKeyEvent * ) ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( keyPressed( QKeyEvent * ) ),
+                           this, SLOT( mapCanvas_keyPressed( QKeyEvent * ) ) );
 
   // connect renderer
-  connect( mMapCanvas, SIGNAL( hasCrsTransformEnabledChanged( bool ) ),
-           this, SLOT( hasCrsTransformEnabled( bool ) ) );
-  connect( mMapCanvas, SIGNAL( destinationCrsChanged() ),
-           this, SLOT( destinationCrsChanged() ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( hasCrsTransformEnabledChanged( bool ) ),
+                           this, SLOT( hasCrsTransformEnabled( bool ) ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( destinationCrsChanged() ),
+                           this, SLOT( destinationCrsChanged() ) );
 
   // connect legend signals
   connect( mLayerTreeView, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
@@ -2700,7 +2858,7 @@ void QgisApp::setupConnections()
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ),
            this, SLOT( markDirty() ) );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ),
-           this, SLOT( updateNewLayerInsertionPoint() ) );
+           this, SLOT( newTreeNodeAdded( QgsLayerTreeNode*, int, int ) ) );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ),
            this, SLOT( markDirty() ) );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( removedChildren( QgsLayerTreeNode*, int, int ) ),
@@ -2997,13 +3155,16 @@ void QgisApp::initLayerTreeView()
   model->setAutoCollapseLegendNodes( 10 );
 
   mLayerTreeView->setModel( model );
-  mLayerTreeView->setMenuProvider( new QgsAppLayerTreeViewMenuProvider( mLayerTreeView, mMapCanvas ) );
+  mLayerTreeView->setMenuProvider( new QgsAppLayerTreeViewMenuProvider( mLayerTreeView ) );
 
   setupLayerTreeViewFromSettings();
 
+  if ( !mQgisInterface )
+    mQgisInterface = new QgisAppInterface( this ); // create the interface
+
   connect( mLayerTreeView, SIGNAL( doubleClicked( QModelIndex ) ), this, SLOT( layerTreeViewDoubleClicked( QModelIndex ) ) );
   connect( mLayerTreeView, SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( activeLayerChanged( QgsMapLayer* ) ) );
-  connect( mLayerTreeView->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( updateNewLayerInsertionPoint() ) );
+  connect( mLayerTreeView->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( activeTreeNodeChanged( QModelIndex, QModelIndex ) ) );
   connect( QgsProject::instance()->layerTreeRegistryBridge(), SIGNAL( addedLayersToLayerTree( QList<QgsMapLayer*> ) ),
            this, SLOT( autoSelectAddedLayer( QList<QgsMapLayer*> ) ) );
 
@@ -3094,7 +3255,7 @@ void QgisApp::initLayerTreeView()
   addDockWidget( Qt::LeftDockWidgetArea, mLayerOrderDock );
   mLayerOrderDock->hide();
 
-  connect( mMapCanvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( updateFilterLegend() ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( updateFilterLegend() ) );
 }
 
 void QgisApp::setupLayerTreeViewFromSettings()
@@ -3159,7 +3320,7 @@ void QgisApp::autoSelectAddedLayer( QList<QgsMapLayer*> layers )
 void QgisApp::createMapTips()
 {
   // Set up the timer for maptips. The timer is reset everytime the mouse is moved
-  mpMapTipsTimer = new QTimer( mMapCanvas );
+  mpMapTipsTimer = new QTimer( mDefaultMapCanvas );
   // connect the timer to the maptips slot
   connect( mpMapTipsTimer, SIGNAL( timeout() ), this, SLOT( showMapTip() ) );
   // set the interval to 0.850 seconds - timer will be started next time the mouse moves
@@ -3189,7 +3350,7 @@ void QgisApp::createDecorations()
   addDecorationItem( mDecorationCopyright );
   addDecorationItem( mDecorationNorthArrow );
   addDecorationItem( mDecorationScaleBar );
-  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderDecorationItems( QPainter * ) ) );
+  connectChangeableCanvas( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderDecorationItems( QPainter * ) ) );
   connect( this, SIGNAL( newProject() ), this, SLOT( projectReadDecorationItems() ) );
   connect( this, SIGNAL( projectRead() ), this, SLOT( projectReadDecorationItems() ) );
 }
@@ -4472,6 +4633,24 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   mNonEditMapTool = mMapTools.mTouch;  // signals are not yet setup to catch this
 #endif
 
+  // add default map root legend group
+  if ( mMultimapEnabled )
+  {
+    QgsLayerTreeGroup *rootGroup = mLayerTreeView->layerTreeModel()->rootGroup();
+    QgsLayerTreeGroup *mapGroup = new QgsLayerTreeGroup( mDefaultMapCanvas->objectName(), Qt::Checked, QgsLayerTreeNode::NodeMapGroup );
+    rootGroup->addChildNode( mapGroup );
+
+    QModelIndex index = mLayerTreeView->layerTreeModel()->node2index( mapGroup );
+    mLayerTreeView->setCurrentIndex( index );
+
+    mActionNewMapCanvas->setVisible( true );
+    mActionNewMapCanvas->setEnabled( mCentralContainer->currentIndex() == 0 );
+  }
+  else
+  {
+    mActionNewMapCanvas->setVisible( false );
+  }
+
 } // QgisApp::fileNew(bool thePromptToSaveFlag)
 
 bool QgisApp::fileNewFromTemplate( const QString& fileName )
@@ -5253,6 +5432,15 @@ void QgisApp::openFile( const QString & fileName )
   }
 }
 
+void QgisApp::newMapCanvas()
+{
+  int i = 1;
+  QString prefix = "Map ";
+  QString name = prefix + QString::number( i );
+  while ( mMapCanvases.contains( name ) ) name = prefix + QString::number( ++i );
+
+  createNewMapCanvas( name );
+}
 
 void QgisApp::newPrintComposer()
 {
@@ -5493,8 +5681,7 @@ void QgisApp::removeWindow( QAction *action )
 
 void QgisApp::stopRendering()
 {
-  if ( mMapCanvas )
-    mMapCanvas->stopRendering();
+  Q_FOREACH ( QgsMapCanvas* mapCanvas, mapCanvases() ) mapCanvas->stopRendering();
 }
 
 //reimplements method from base (gui) class
@@ -6426,6 +6613,523 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& 
   return unionGeom;
 }
 
+bool QgisApp::eventFilter( QObject* object, QEvent* event )
+{
+  if ( event->type() == QEvent::Close )
+  {
+    QDockWidget* mapWidget = qobject_cast<QDockWidget*>( object );
+
+    if ( mapWidget )
+    {
+      QgsMapCanvas* mapCanvas = qobject_cast<QgsMapCanvas*>( mapWidget->widget() );
+
+      if ( mapCanvas && mMapCanvases.contains( mapCanvas->objectName() ) )
+      {
+        if ( mapCanvas->layerCount() == 0 || QMessageBox::information( this, QgisApp::tr( "Close?" ), QgisApp::tr( "Do you want to close the current map?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+        {
+          QgisApp::instance()->deleteMapCanvas( mapCanvas->objectName() );
+          return true;
+        }
+        event->ignore();
+        return true;
+      }
+    }
+  }
+  else if ( event->type() == QEvent::HoverEnter && mMapCanvases.size() > 0 )
+  {
+    QgsMapCanvas* mapCanvas = qobject_cast<QgsMapCanvas*>( object );
+
+    if ( mapCanvas )
+    {
+      mLastMapCanvas = mMapCanvas;
+      setActiveMapCanvasPrivate( mapCanvas, false );
+      return true;
+    }
+  }
+  else if ( event->type() == QEvent::HoverLeave && mMapCanvases.size() > 0 )
+  {
+    QgsMapCanvas* mapCanvas = qobject_cast<QgsMapCanvas*>( object );
+
+    if ( mapCanvas && mLastMapCanvas )
+    {
+      setActiveMapCanvasPrivate( mLastMapCanvas, false );
+      mLastMapCanvas = nullptr;
+      return true;
+    }
+  }
+  return QObject::eventFilter( object, event );
+}
+
+QSet<QgsMapCanvas*> QgisApp::mapCanvases() const
+{
+  QSet<QgsMapCanvas*> canvasList;
+
+  canvasList.insert( mDefaultMapCanvas );
+
+  Q_FOREACH ( QDockWidget* mapWidget, mMapCanvases.values() )
+  {
+    canvasList.insert( static_cast<QgsMapCanvas*>( mapWidget->widget() ) );
+  }
+  return canvasList;
+}
+
+bool QgisApp::multimapEnabled()
+{
+  // QgisApp runs with multimap support enabled
+  return mMultimapEnabled;
+}
+
+QgsMapCanvas* QgisApp::createNewMapCanvas( const QString& mapName, bool activateObject, bool floatingWidget, const QRect& geometryForWidget )
+{
+  if ( mapName == mDefaultMapCanvas->objectName() || mMapCanvases.contains( mapName ) )
+  {
+    QString errorMessage = QgisApp::tr( "MapCanvas name '%1' already exists!" ).arg( mapName );
+    QgsDebugMsg( errorMessage );
+    messageBar()->pushMessage( QgisApp::tr( "Error creating a new map canvas" ), errorMessage, QgsMessageBar::WARNING );
+
+    return nullptr;
+  }
+
+  QgsMapCanvas *mapCanvas = new QgsMapCanvas( this );
+  mapCanvas->setObjectName( mapName );
+  mapCanvas->freeze( true );
+  mapCanvas->setAttribute( Qt::WA_Hover, true );
+  mapCanvas->installEventFilter( this );
+
+  // Tracer for this map canvas, we dont need save the pointer, there is a static QHash which manages
+  QgsMapCanvasTracer* tracer = new QgsMapCanvasTracer( mapCanvas, messageBar() );
+  tracer->setActionEnableTracing( mActionEnableTracing );
+
+  QgsSnappingUtils *snappingUtils = mapCanvas->snappingUtils();
+  connect( QgsProject::instance(), SIGNAL( snapSettingsChanged() ), snappingUtils, SLOT( readConfigFromProject() ) );
+  connect( this, SIGNAL( projectRead() ), snappingUtils, SLOT( readConfigFromProject() ) );
+
+  QDockWidget *mapWidget = new QDockWidget( mapName, this );
+  mapWidget->setObjectName( mapName );
+  mapWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
+  mapWidget->setWidget( mapCanvas );
+
+  if ( geometryForWidget.isEmpty() )
+  {
+    mapWidget->resize( 400, 400 );
+  }
+  else
+  {
+    mapWidget->setGeometry( geometryForWidget );
+  }
+  mapWidget->setFloating( floatingWidget );
+  mapWidget->installEventFilter( this );
+
+  QSettings settings;
+
+  // set the color for selections
+  // the default can be set in qgisoptions
+  // use project properties to override the color on a per project basis
+  int myRed = settings.value( "/qgis/default_selection_color_red", 255 ).toInt();
+  int myGreen = settings.value( "/qgis/default_selection_color_green", 255 ).toInt();
+  int myBlue = settings.value( "/qgis/default_selection_color_blue", 0 ).toInt();
+  int myAlpha = settings.value( "/qgis/default_selection_color_alpha", 255 ).toInt();
+  mapCanvas->setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+
+  // set the canvas to the default background color
+  // the default can be set in qgisoptions
+  // use project properties to override the color on a per project basis
+  myRed = settings.value( "/qgis/default_canvas_color_red", 255 ).toInt();
+  myGreen = settings.value( "/qgis/default_canvas_color_green", 255 ).toInt();
+  myBlue = settings.value( "/qgis/default_canvas_color_blue", 255 ).toInt();
+  mapCanvas->setCanvasColor( QColor( myRed, myGreen, myBlue ) );
+
+  // set project CRS
+  QString defCrs = settings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
+  QgsCoordinateReferenceSystem srs;
+  srs.createFromOgcWmsCrs( defCrs );
+  mapCanvas->setDestinationCrs( srs );
+  if ( srs.mapUnits() != QgsUnitTypes::DistanceUnknownUnit )
+  {
+    mapCanvas->setMapUnits( srs.mapUnits() );
+  }
+
+  // enable OTF CRS transformation if necessary
+  mapCanvas->setCrsTransformEnabled( settings.value( "/Projections/otfTransformEnabled", 0 ).toBool() );
+
+  // set the initial map tool
+  mapCanvas->setMapTool( mMapCanvas->mapTool() );
+
+  // add new map root legend group
+  QgsLayerTreeGroup *rootGroup = mLayerTreeView->layerTreeModel()->rootGroup();
+  QgsLayerTreeGroup *mapGroup = rootGroup->findGroup( mapName );
+  if ( !mapGroup )
+  {
+    mapGroup = new QgsLayerTreeGroup( mapName, Qt::Checked, QgsLayerTreeNode::NodeMapGroup );
+    rootGroup->addChildNode( mapGroup );
+  }
+  connect( mapGroup, SIGNAL( nameChanged( const QString&, const QString& ) ), this, SLOT( mapCanvasRenamed( const QString&, const QString& ) ) );
+
+  // all OK!
+  QMainWindow::addDockWidget( Qt::RightDockWidgetArea, mapWidget );
+  mMapCanvases.insert( mapName, mapWidget );
+  mapCanvas->freeze( false );
+
+  if ( activateObject )
+  {
+    QModelIndex index = mLayerTreeView->layerTreeModel()->node2index( mapGroup );
+    mLayerTreeView->setCurrentIndex( index );
+    mapWidget->activateWindow();
+  }
+  emit mapCanvasAdded( mapCanvas );
+
+  markDirty();
+
+  return mapCanvas;
+}
+
+bool QgisApp::deleteMapCanvas( const QString& mapName )
+{
+  if ( mMapCanvases.contains( mapName ) )
+  {
+    QDockWidget  *mapWidget = mMapCanvases[ mapName ];
+    QgsMapCanvas *mapCanvas = qobject_cast<QgsMapCanvas*>( mapWidget->widget() );
+
+    if ( mMapCanvas == mapCanvas )
+    {
+      setActiveMapCanvas( mDefaultMapCanvas );
+
+      // Reset objects likely using this canvas
+      QgsPoint mapPos;
+      QPoint pixelPos;
+      mpMaptip->showMapTip( nullptr, mapPos, pixelPos, mMapCanvas );
+    }
+    mMapCanvases.remove( mapName );
+    mapWidget->removeEventFilter( this );
+    mapCanvas->removeEventFilter( this );
+
+    QgsMapCanvasTracer* tracer = QgsMapCanvasTracer::tracerForCanvas( mapCanvas );
+    if ( tracer ) delete tracer;
+
+    QgsLayerTreeNode *mapGroup = findMapTreeNode( mLayerTreeView, mapCanvas );
+    if ( mapGroup )
+    {
+      disconnect( mapGroup, SIGNAL( nameChanged( QgsMapCanvas*, const QString&, const QString& ) ), this, SLOT( mapCanvasRenamed( QgsMapCanvas*, const QString&, const QString& ) ) );
+      mLayerTreeView->layerTreeModel()->rootGroup()->removeChildNode( mapGroup );
+    }
+
+    QMainWindow::removeDockWidget( mapWidget );
+    mapWidget->setWidget( nullptr );
+
+    emit mapCanvasRemoved( mapCanvas );
+    delete mapCanvas;
+    delete mapWidget;
+
+    markDirty();
+
+    return true;
+  }
+  return false;
+}
+
+QgsMapCanvas* QgisApp::defaultMapCanvas() const
+{
+  return mDefaultMapCanvas;
+}
+
+QgsMapCanvas* QgisApp::getMapCanvas( const QString& mapName ) const
+{
+  if ( mapName == mDefaultMapCanvas->objectName() )
+  {
+    return mDefaultMapCanvas;
+  }
+  return mMapCanvases.contains( mapName ) ? qobject_cast<QgsMapCanvas*>( mMapCanvases[ mapName ]->widget() ) : nullptr;
+}
+
+QgsMapCanvas* QgisApp::getMapCanvas( QgsMapLayer* mapLayer ) const
+{
+  if ( mapLayer )
+  {
+    if ( mDefaultMapCanvas )
+    {
+      Q_FOREACH ( const QString& layerID, mDefaultMapCanvas->mapSettings().layers() )
+      {
+        QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
+
+        if ( layer == mapLayer )
+          return mDefaultMapCanvas;
+      }
+    }
+    if ( mMapCanvases.size() > 0 )
+    {
+      Q_FOREACH ( QDockWidget* mapWidget, mMapCanvases.values() )
+      {
+        QgsMapCanvas* mapCanvas = static_cast<QgsMapCanvas*>( mapWidget->widget() );
+
+        Q_FOREACH ( const QString& layerID, mapCanvas->mapSettings().layers() )
+        {
+          QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
+
+          if ( layer == mapLayer )
+            return mapCanvas;
+        }
+      }
+    }
+    return nullptr;
+  }
+  return mMultimapEnabled ? nullptr : mDefaultMapCanvas;
+}
+
+bool QgsChangeableMapCanvasSignalSlotEntry::connect()
+{
+  return QObject::connect( senderObject, signalName.c_str(), receiverObject, memberName.c_str() );
+}
+
+bool QgsChangeableMapCanvasSignalSlotEntry::disconnect()
+{
+  return QObject::disconnect( senderObject, signalName.c_str(), receiverObject, memberName.c_str() );
+}
+
+void QgsChangeableMapCanvasSignalSlotEntry::trace()
+{
+  QgsDebugMsg( QString( "SignalSlotEntry: '%1'->'%2()' '%3'->'%4()'" )
+               .arg( senderObject->objectName() )
+               .arg( signalName.c_str() )
+               .arg( receiverObject->objectName() )
+               .arg( memberName.c_str() ) );
+}
+
+//! Creates a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+bool QgisApp::connectChangeableCanvas( const QgsMapCanvas* sender, const char* signal, const QObject* receiver, const char* member )
+{
+  if ( mMultimapEnabled )
+  {
+    QgsChangeableMapCanvasSignalSlotEntry* entry = new QgsChangeableMapCanvasSignalSlotEntry( sender, signal, receiver, member );
+    mChangeableSignalEntries.append( entry );
+
+    QObject::connect( receiver, SIGNAL( destroyed( QObject* ) ), this, SLOT( onReceiverEntryDestroyed( QObject* ) ) );
+    return entry->connect();
+  }
+  else
+  {
+    return QObject::connect( sender, signal, receiver, member );
+  }
+}
+//! Creates a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+bool QgisApp::connectChangeableCanvas( const QObject* sender, const char* signal, const QgsMapCanvas* receiver, const char* member )
+{
+  if ( mMultimapEnabled )
+  {
+    QgsChangeableMapCanvasSignalSlotEntry* entry = new QgsChangeableMapCanvasSignalSlotEntry( sender, signal, receiver, member );
+    mChangeableMemberEntries.append( entry );
+
+    QObject::connect( sender, SIGNAL( destroyed( QObject* ) ), this, SLOT( onSenderEntryDestroyed( QObject* ) ) );
+    return entry->connect();
+  }
+  else
+  {
+    return QObject::connect( sender, signal, receiver, member );
+  }
+}
+
+void QgisApp::onSenderEntryDestroyed( QObject* obj )
+{
+  QList<QgsChangeableMapCanvasSignalSlotEntry*>::const_iterator it = mChangeableMemberEntries.begin();
+
+  while ( it != mChangeableMemberEntries.end() )
+  {
+    QgsChangeableMapCanvasSignalSlotEntry* entry = *it;
+
+    if ( entry->senderObject == obj )
+    {
+      mChangeableMemberEntries.removeOne( entry );
+      entry->disconnect();
+      delete entry;
+    }
+    else
+      ++it;
+  }
+}
+void QgisApp::onReceiverEntryDestroyed( QObject* obj )
+{
+  QList<QgsChangeableMapCanvasSignalSlotEntry*>::const_iterator it = mChangeableSignalEntries.begin();
+
+  while ( it != mChangeableSignalEntries.end() )
+  {
+    QgsChangeableMapCanvasSignalSlotEntry* entry = *it;
+
+    if ( entry->receiverObject == obj )
+    {
+      mChangeableSignalEntries.removeOne( entry );
+      entry->disconnect();
+      delete entry;
+    }
+    else
+      ++it;
+  }
+}
+
+//! Removes a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+bool QgisApp::disconnectChangeableCanvas( const QgsMapCanvas* sender, const char* signal, const QObject* receiver, const char* member )
+{
+  if ( mMultimapEnabled )
+  {
+    QList<QgsChangeableMapCanvasSignalSlotEntry*>::const_iterator it = mChangeableSignalEntries.begin();
+    bool ok = false;
+
+    std::string signalName( signal );
+    std::string memberName( member );
+
+    while ( it != mChangeableSignalEntries.end() )
+    {
+      QgsChangeableMapCanvasSignalSlotEntry* entry = *it;
+
+      if ( entry->receiverObject == receiver && entry->signalName == signalName && entry->memberName == memberName )
+      {
+        mChangeableSignalEntries.removeOne( entry );
+        ok |= entry->disconnect();
+        delete entry;
+      }
+      else
+        ++it;
+    }
+    return ok;
+  }
+  else
+  {
+    return QObject::disconnect( sender, signal, receiver, member );
+  }
+}
+//! Removes a changeable MapCanvas connection of the given type from the signal in the sender object to the method in the receiver object
+bool QgisApp::disconnectChangeableCanvas( const QObject* sender, const char* signal, const QgsMapCanvas* receiver, const char* member )
+{
+  if ( mMultimapEnabled )
+  {
+    QList<QgsChangeableMapCanvasSignalSlotEntry*>::const_iterator it = mChangeableMemberEntries.begin();
+    bool ok = false;
+
+    std::string signalName( signal );
+    std::string memberName( member );
+
+    while ( it != mChangeableMemberEntries.end() )
+    {
+      QgsChangeableMapCanvasSignalSlotEntry* entry = *it;
+
+      if ( entry->senderObject == sender && entry->signalName == signalName && entry->memberName == memberName )
+      {
+        mChangeableMemberEntries.removeOne( entry );
+        ok |= entry->disconnect();
+        delete entry;
+      }
+      else
+        ++it;
+    }
+    return ok;
+  }
+  else
+  {
+    return QObject::disconnect( sender, signal, receiver, member );
+  }
+}
+
+void QgisApp::mapCanvasRenamed( const QString& oldName, const QString& newName )
+{
+  if ( mMapCanvases.contains( oldName ) )
+  {
+    QDockWidget  *mapWidget = mMapCanvases[ oldName ];
+    QgsMapCanvas *mapCanvas = qobject_cast<QgsMapCanvas*>( mapWidget->widget() );
+
+    mMapCanvases.remove( oldName );
+    mMapCanvases.insert( newName, mapWidget );
+
+    mapCanvas->setObjectName( newName );
+    mapWidget->setObjectName( newName );
+    mapWidget->setWindowTitle( newName );
+  }
+}
+
+bool QgisApp::setActiveMapCanvas( const QString& mapName )
+{
+  return setActiveMapCanvasPrivate( getMapCanvas( mapName ), true );
+}
+bool QgisApp::setActiveMapCanvas( QgsMapCanvas* mapCanvas )
+{
+  return setActiveMapCanvasPrivate( mapCanvas, true );
+}
+bool QgisApp::setActiveMapCanvasPrivate( const QString& mapName, bool activateInLegend )
+{
+  return setActiveMapCanvasPrivate( getMapCanvas( mapName ), activateInLegend );
+}
+bool QgisApp::setActiveMapCanvasPrivate( QgsMapCanvas* mapCanvas, bool activateInLegend )
+{
+  if ( !mQgisInterface )
+  {
+    return false;
+  }
+  if ( !mapCanvas )
+  {
+    mapCanvas = mDefaultMapCanvas;
+  }
+  if ( mMapCanvas != mapCanvas )
+  {
+    QgsMapCanvas* previousCanvas = mMapCanvas ? mMapCanvas : mDefaultMapCanvas;
+    QgsMapTool* activeTool = previousCanvas->mapTool();
+
+    // Change the canvas to the current tool, checking whether it was canceled ( See QgsMeasureTool::setMapCanvas() )
+    if ( activeTool )
+    {
+      activeTool->setMapCanvas( mMapCanvas = mapCanvas );
+      mapCanvas = activeTool->canvas();
+
+      if ( mapCanvas == previousCanvas )
+      {
+        mMapCanvas = previousCanvas;
+        return false;
+      }
+    }
+    mMapCanvas = mapCanvas;
+
+    // Update the changeable signal/slot entries
+    Q_FOREACH ( QgsChangeableMapCanvasSignalSlotEntry* entry, mChangeableSignalEntries )
+    {
+      entry->disconnect();
+      entry->senderObject = mapCanvas;
+      entry->connect();
+    }
+    Q_FOREACH ( QgsChangeableMapCanvasSignalSlotEntry* entry, mChangeableMemberEntries )
+    {
+      entry->disconnect();
+      entry->receiverObject = mapCanvas;
+      entry->connect();
+    }
+
+    if ( activeTool && activeTool != mapCanvas->mapTool() )
+    {
+      previousCanvas->unsetMapTool( activeTool );
+      mapCanvas->setMapTool( activeTool );
+    }
+    if ( mCoordsEdit )
+    {
+      mCoordsEdit->setMapCanvas( mapCanvas );
+    }
+    if ( mScaleWidget )
+    {
+      mScaleWidget->setMapCanvas( mapCanvas );
+    }
+
+    if ( activateInLegend )
+    {
+      QgsLayerTreeNode *mapGroup = findMapTreeNode( mLayerTreeView, mapCanvas );
+
+      if ( mapGroup )
+      {
+        QModelIndex index = mLayerTreeView->layerTreeModel()->node2index( mapGroup );
+        mLayerTreeView->setCurrentIndex( index );
+      }
+    }
+    emit currentMapCanvasChanged( mapCanvas );
+
+    QgsDebugMsg( QString( "MapCanvas '%1' activated!" ).arg( mapCanvas->objectName() ) );
+    setTitleBarText_( *this );
+  }
+  return true;
+}
+
 bool QgisApp::uniqueComposerTitle( QWidget* parent, QString& composerTitle, bool acceptEmpty, const QString& currentName )
 {
   if ( !parent )
@@ -6621,6 +7325,40 @@ bool QgisApp::loadComposersFromProject( const QDomDocument& doc )
   return true;
 }
 
+void QgisApp::deleteMapCanvases( bool exitingApplicaton )
+{
+  if ( mMultimapEnabled )
+  {
+    setActiveMapCanvasPrivate( mDefaultMapCanvas, false );
+
+    // Delete all changeable signal/slot entries
+    if ( exitingApplicaton )
+    {
+      Q_FOREACH ( QgsChangeableMapCanvasSignalSlotEntry* entry, mChangeableSignalEntries )
+      {
+        entry->disconnect();
+      }
+      mChangeableSignalEntries.clear();
+
+      Q_FOREACH ( QgsChangeableMapCanvasSignalSlotEntry* entry, mChangeableMemberEntries )
+      {
+        entry->disconnect();
+      }
+      mChangeableMemberEntries.clear();
+    }
+
+    if ( mMapCanvases.size() > 0 )
+    {
+      Q_FOREACH ( QString mapName, mMapCanvases.keys() )
+      {
+        deleteMapCanvas( mapName );
+      }
+      mMapCanvases.clear();
+    }
+  }
+  mLastMapCanvas = nullptr;
+}
+
 void QgisApp::deletePrintComposers()
 {
   QSet<QgsComposer*>::iterator it = mPrintComposers.begin();
@@ -6662,7 +7400,7 @@ void QgisApp::on_mPrintComposersMenu_aboutToShow()
 
 bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
 {
-  if ( !mMapCanvas )
+  if ( !mDefaultMapCanvas )
   {
     return false;
   }
@@ -6677,31 +7415,71 @@ bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
   QDomNodeList textItemList = doc.elementsByTagName( "TextAnnotationItem" );
   for ( int i = 0; i < textItemList.size(); ++i )
   {
-    QgsTextAnnotationItem* newTextItem = new QgsTextAnnotationItem( mMapCanvas );
-    newTextItem->readXml( doc, textItemList.at( i ).toElement() );
+    QDomElement element = textItemList.at( i ).toElement();
+
+    QgsMapCanvas* mapCanvas = mDefaultMapCanvas;
+    QDomElement annotationElem = element.firstChildElement( "AnnotationItem" );
+    if ( !annotationElem.isNull() )
+    {
+      QString mapName = annotationElem.attribute( "mapCanvas", "" );
+      if ( mapName.length() > 0 && !( mapCanvas = getMapCanvas( mapName ) ) ) continue;
+    }
+
+    QgsTextAnnotationItem* newTextItem = new QgsTextAnnotationItem( mapCanvas );
+    newTextItem->readXml( doc, element );
   }
 
   QDomNodeList formItemList = doc.elementsByTagName( "FormAnnotationItem" );
   for ( int i = 0; i < formItemList.size(); ++i )
   {
-    QgsFormAnnotationItem* newFormItem = new QgsFormAnnotationItem( mMapCanvas );
-    newFormItem->readXml( doc, formItemList.at( i ).toElement() );
+    QDomElement element = formItemList.at( i ).toElement();
+
+    QgsMapCanvas* mapCanvas = mDefaultMapCanvas;
+    QDomElement annotationElem = element.firstChildElement( "AnnotationItem" );
+    if ( !annotationElem.isNull() )
+    {
+      QString mapName = annotationElem.attribute( "mapCanvas", "" );
+      if ( mapName.length() > 0 && !( mapCanvas = getMapCanvas( mapName ) ) ) continue;
+    }
+
+    QgsFormAnnotationItem* newFormItem = new QgsFormAnnotationItem( mapCanvas );
+    newFormItem->readXml( doc, element );
   }
 
 #ifdef WITH_QTWEBKIT
   QDomNodeList htmlItemList = doc.elementsByTagName( "HtmlAnnotationItem" );
   for ( int i = 0; i < htmlItemList.size(); ++i )
   {
-    QgsHtmlAnnotationItem* newHtmlItem = new QgsHtmlAnnotationItem( mMapCanvas );
-    newHtmlItem->readXml( doc, htmlItemList.at( i ).toElement() );
+    QDomElement element = htmlItemList.at( i ).toElement();
+
+    QgsMapCanvas* mapCanvas = mDefaultMapCanvas;
+    QDomElement annotationElem = element.firstChildElement( "AnnotationItem" );
+    if ( !annotationElem.isNull() )
+    {
+      QString mapName = annotationElem.attribute( "mapCanvas", "" );
+      if ( mapName.length() > 0 && !( mapCanvas = getMapCanvas( mapName ) ) ) continue;
+    }
+
+    QgsHtmlAnnotationItem* newHtmlItem = new QgsHtmlAnnotationItem( mapCanvas );
+    newHtmlItem->readXml( doc, element );
   }
 #endif
 
   QDomNodeList svgItemList = doc.elementsByTagName( "SVGAnnotationItem" );
   for ( int i = 0; i < svgItemList.size(); ++i )
   {
-    QgsSvgAnnotationItem* newSvgItem = new QgsSvgAnnotationItem( mMapCanvas );
-    newSvgItem->readXml( doc, svgItemList.at( i ).toElement() );
+    QDomElement element = svgItemList.at( i ).toElement();
+
+    QgsMapCanvas* mapCanvas = mDefaultMapCanvas;
+    QDomElement annotationElem = element.firstChildElement( "AnnotationItem" );
+    if ( !annotationElem.isNull() )
+    {
+      QString mapName = annotationElem.attribute( "mapCanvas", "" );
+      if ( mapName.length() > 0 && !( mapCanvas = getMapCanvas( mapName ) ) ) continue;
+    }
+
+    QgsSvgAnnotationItem* newSvgItem = new QgsSvgAnnotationItem( mapCanvas );
+    newSvgItem->readXml( doc, element );
   }
   return true;
 }
@@ -6746,14 +7524,14 @@ QList<QgsAnnotationItem*> QgisApp::annotationItems()
 {
   QList<QgsAnnotationItem*> itemList;
 
-  if ( !mMapCanvas )
+  if ( !mDefaultMapCanvas )
   {
     return itemList;
   }
 
-  if ( mMapCanvas )
+  Q_FOREACH ( QgsMapCanvas* mapCanvas, mapCanvases() )
   {
-    QList<QGraphicsItem*> graphicsItems = mMapCanvas->items();
+    QList<QGraphicsItem*> graphicsItems = mapCanvas->items();
     QList<QGraphicsItem*>::iterator gIt = graphicsItems.begin();
     for ( ; gIt != graphicsItems.end(); ++gIt )
     {
@@ -6769,23 +7547,29 @@ QList<QgsAnnotationItem*> QgisApp::annotationItems()
 
 void QgisApp::removeAnnotationItems()
 {
-  if ( !mMapCanvas )
+  if ( !mDefaultMapCanvas )
   {
     return;
   }
-  QGraphicsScene* scene = mMapCanvas->scene();
-  if ( !scene )
+
+  Q_FOREACH ( QgsMapCanvas* mapCanvas, mapCanvases() )
   {
-    return;
-  }
-  QList<QgsAnnotationItem*> itemList = annotationItems();
-  QList<QgsAnnotationItem*>::iterator itemIt = itemList.begin();
-  for ( ; itemIt != itemList.end(); ++itemIt )
-  {
-    if ( *itemIt )
+    QGraphicsScene* scene = mapCanvas->scene();
+    if ( !scene )
     {
-      scene->removeItem( *itemIt );
-      delete *itemIt;
+      return;
+    }
+
+    QList<QGraphicsItem*> graphicsItems = mapCanvas->items();
+    QList<QGraphicsItem*>::iterator gIt = graphicsItems.begin();
+    for ( ; gIt != graphicsItems.end(); ++gIt )
+    {
+      QgsAnnotationItem* currentItem = dynamic_cast<QgsAnnotationItem*>( *gIt );
+      if ( currentItem )
+      {
+        scene->removeItem( currentItem );
+        delete currentItem;
+      }
     }
   }
 }
@@ -8200,12 +8984,31 @@ void QgisApp::removingLayers( const QStringList& theLayers )
 {
   Q_FOREACH ( const QString &layerId, theLayers )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>(
-                               QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
-    if ( !vlayer || !vlayer->isEditable() )
-      return;
+    QgsMapLayer *layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
 
-    toggleEditing( vlayer, false );
+    QgsDataProvider *provider = nullptr;
+
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+    if ( vlayer )
+    {
+      if ( vlayer->isEditable() )
+      {
+        toggleEditing( vlayer, false );
+      }
+      provider = vlayer->dataProvider();
+    }
+
+    QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+    if ( rlayer )
+    {
+      provider = rlayer->dataProvider();
+    }
+
+    if ( provider )
+    {
+      disconnect( provider, SIGNAL( dataChanged() ), layer, SLOT( triggerRepaint() ) );
+      disconnectChangeableCanvas( provider, SIGNAL( dataChanged() ), mMapCanvas, SLOT( refresh() ) );
+    }
   }
 }
 
@@ -8249,9 +9052,19 @@ void QgisApp::removeLayer()
 
   Q_FOREACH ( QgsLayerTreeNode* node, selectedNodes )
   {
+    if ( QgsLayerTree::isMapGroup( node ) && QgsLayerTree::toGroup( node )->name() != mDefaultMapCanvas->objectName() )
+    {
+      deleteMapCanvas( QgsLayerTree::toGroup( node )->name() );
+      continue;
+    }
+
     QgsLayerTreeGroup* parentGroup = qobject_cast<QgsLayerTreeGroup*>( node->parent() );
     if ( parentGroup )
+    {
+      QModelIndex index = mLayerTreeView->layerTreeModel()->node2index( parentGroup );
+      mLayerTreeView->setCurrentIndex( index );
       parentGroup->removeChildNode( node );
+    }
   }
 
   showStatusMessage( tr( "%n legend entries removed.", "number of removed legend entries", selectedNodes.count() ) );
@@ -9398,7 +10211,9 @@ void QgisApp::closeProject()
   mActionFilterLegend->setChecked( false );
 
   deletePrintComposers();
+  deleteMapCanvases();
   removeAnnotationItems();
+
   // clear out any stuff from project
   mMapCanvas->freeze( true );
   QList<QgsMapCanvasLayer> emptyList;
@@ -10075,7 +10890,10 @@ void QgisApp::showMapCanvas()
 {
   // Map layers changed -> switch to map canvas
   if ( mCentralContainer )
+  {
     mCentralContainer->setCurrentIndex( 0 );
+    mActionNewMapCanvas->setEnabled( true );
+  }
 }
 
 void QgisApp::markDirty()
@@ -10086,6 +10904,59 @@ void QgisApp::markDirty()
 
 void QgisApp::extentChanged()
 {
+  // synchronize extent of map canvases when required
+  if ( mMultimapEnabled && mMapCanvases.size() > 0 && mMapCanvas->layerCount() > 0 )
+  {
+    QgsLayerTreeGroup* mapGroup = qobject_cast<QgsLayerTreeGroup *>( findMapTreeNode( mLayerTreeView, mMapCanvas ) );
+
+    if ( mapGroup && mapGroup->customProperty( "synchronizeExtent", false ).toBool() )
+    {
+      QgsCoordinateReferenceSystem destinationCrs = mMapCanvas->mapSettings().destinationCrs();
+      QgsPoint center = mMapCanvas->center();
+
+      Q_FOREACH ( QgsMapCanvas* mapCanvas, mapCanvases() )
+      {
+        if ( mapCanvas != mMapCanvas && mapCanvas->layerCount() > 0 )
+        {
+          mapGroup = qobject_cast<QgsLayerTreeGroup *>( findMapTreeNode( mLayerTreeView, mapCanvas ) );
+
+          if ( mapGroup && mapGroup->customProperty( "synchronizeExtent", false ).toBool() )
+          {
+            QgsCoordinateReferenceSystem newDestinationCrs = mapCanvas->mapSettings().destinationCrs();
+            QgsPoint newCenter = center;
+
+            if ( destinationCrs != newDestinationCrs )
+            {
+              QgsCoordinateTransform ct( destinationCrs, newDestinationCrs );
+
+              try
+              {
+                newCenter = ct.transform( center );
+              }
+              catch ( QgsCsException &cse )
+              {
+                QgsMessageLog::logMessage( QString( "Transform error caught synchronizing the extent of a map: %1" ).arg( cse.what() ) );
+                continue;
+              }
+            }
+
+            double factorScale = mMapCanvas->scale() / mapCanvas->scale();
+            QgsPoint theCenter = mapCanvas->center();
+            double epsilon = newDestinationCrs.isGeographic() ? 0.000001 : 0.01;
+
+            // avoid unnecessary updates
+            if ( !qgsDoubleNear( factorScale, 1.0, 0.001 ) ||
+                 !qgsDoubleNear( newCenter.x(), theCenter.x(), epsilon ) ||
+                 !qgsDoubleNear( newCenter.y(), theCenter.y(), epsilon ) )
+            {
+              mapCanvas->zoomByFactor( factorScale, &newCenter );
+            }
+          }
+        }
+      }
+    }
+  }
+
   // allow symbols in the legend update their preview if they use map units
   mLayerTreeView->layerTreeModel()->setLegendMapViewData( mMapCanvas->mapUnitsPerPixel(), mMapCanvas->mapSettings().outputDpi(), mMapCanvas->scale() );
 }
@@ -10131,7 +11002,7 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *>& theLayers )
     if ( provider )
     {
       connect( provider, SIGNAL( dataChanged() ), layer, SLOT( triggerRepaint() ) );
-      connect( provider, SIGNAL( dataChanged() ), mMapCanvas, SLOT( refresh() ) );
+      connectChangeableCanvas( provider, SIGNAL( dataChanged() ), mMapCanvas, SLOT( refresh() ) );
     }
   }
 }
@@ -10237,7 +11108,7 @@ void QgisApp::projectProperties()
   //pass any refresh signals off to canvases
   // Line below was commented out by wonder three years ago (r4949).
   // It is needed to refresh scale bar after changing display units.
-  connect( pp, SIGNAL( refresh() ), mMapCanvas, SLOT( refresh() ) );
+  connectChangeableCanvas( pp, SIGNAL( refresh() ), mMapCanvas, SLOT( refresh() ) );
 
   // Display the modal dialog box.
   pp->exec();
@@ -10250,6 +11121,7 @@ void QgisApp::projectProperties()
   setTitleBarText_( *this );
 
   // delete the property sheet object
+  disconnectChangeableCanvas( pp, SIGNAL( refresh() ), mMapCanvas, SLOT( refresh() ) );
   delete pp;
 } // QgisApp::projectProperties
 
@@ -11244,9 +12116,40 @@ void QgisApp::writeProject( QDomDocument &doc )
   QDomElement oldLegendElem = QgsLayerTreeUtils::writeOldLegend( doc, QgsLayerTree::toGroup( clonedRoot ),
                               mLayerTreeCanvasBridge->hasCustomLayerOrder(), mLayerTreeCanvasBridge->customLayerOrder() );
   delete clonedRoot;
-  doc.firstChildElement( "qgis" ).appendChild( oldLegendElem );
+  QDomElement qgisNode = doc.firstChildElement( "qgis" );
+  qgisNode.appendChild( oldLegendElem );
 
   QgsProject::instance()->writeEntry( "Legend", "filterByMap", static_cast< bool >( layerTreeView()->layerTreeModel()->legendFilterMapSettings() ) );
+
+  // Save the position of the MapWidgets in a MultiMap state.
+  if ( mMapCanvases.count() > 0 )
+  {
+    QDomElement mapWidgetsNode = doc.createElement( "mapwidgets" );
+
+    // Save the full window state to restore it when the project is loaded, only we need it if there are no-floating maps.
+    // (We compress the stream to minimize the size of the qgs file).
+    Q_FOREACH ( QDockWidget* mapWidget, mMapCanvases.values() )
+    {
+      if ( !mapWidget->isFloating() )
+      {
+        mapWidgetsNode.setAttribute( "state", QString( qCompress( saveState() ).toHex().constData() ) );
+        mapWidgetsNode.setAttribute( "geometry", QString( qCompress( saveGeometry() ).toHex().constData() ) );
+        break;
+      }
+    }
+
+    Q_FOREACH ( QDockWidget* mapWidget, mMapCanvases.values() )
+    {
+      QDomElement node = doc.createElement( "mapwidget" );
+      node.setAttribute( "name", mapWidget->widget()->objectName() );
+      node.setAttribute( "x", mapWidget->x() );
+      node.setAttribute( "y", mapWidget->y() );
+      node.setAttribute( "width", mapWidget->width() );
+      node.setAttribute( "height", mapWidget->height() );
+      mapWidgetsNode.appendChild( node );
+    }
+    qgisNode.appendChild( mapWidgetsNode );
+  }
 
   projectChanged( doc );
 }
@@ -11254,6 +12157,89 @@ void QgisApp::writeProject( QDomDocument &doc )
 void QgisApp::readProject( const QDomDocument &doc )
 {
   projectChanged( doc );
+
+  // Configure the Multimap settings.
+  if ( mMultimapEnabled )
+  {
+    QSettings settings;
+
+    QDomNodeList nodes = doc.elementsByTagName( "mapwidgets" );
+    QByteArray windowState;
+    QByteArray windowGeometry;
+
+    // We will restore the full window state of the application.
+    if ( nodes.count() > 0 )
+    {
+      QString state = nodes.at( 0 ).toElement().attribute( "state", "" );
+      QString geometry = nodes.at( 0 ).toElement().attribute( "geometry", "" );
+
+      if ( state.length() > 0 && geometry.size() > 0 )
+      {
+        windowState = qUncompress( QByteArray::fromHex( state.toAscii() ) );
+        windowGeometry = qUncompress( QByteArray::fromHex( geometry.toAscii() ) );
+      }
+    }
+
+    nodes = doc.elementsByTagName( "mapwidget" );
+
+    for ( int i = 0; i < nodes.size(); ++i )
+    {
+      QDomElement elementNode = nodes.at( i ).toElement();
+
+      QString mapName = elementNode.attribute( "name", "" );
+      int x = elementNode.attribute( "x", "0" ).toInt();
+      int y = elementNode.attribute( "y", "0" ).toInt();
+      int w = elementNode.attribute( "width", "400" ).toInt();
+      int h = elementNode.attribute( "height", "400" ).toInt();
+
+      QgsMapCanvas* mapCanvas = getMapCanvas( mapName );
+      if ( !mapCanvas )
+      {
+        mapCanvas = createNewMapCanvas( mapName, false, true, QRect( x, y, w, h ) );
+        mapCanvas->readProject( doc );
+      }
+    }
+
+    // Restore the full window state of the application including the map widgets of the project.
+    // TODO: It would be better to restore only the state of map widgets, but Qt doesn't support
+    // a similar method to "restoreDockWidget" but using the state settings as parameter without
+    // modifying the other widgets.
+    if ( windowState.size() > 0 )
+    {
+      restoreState( windowState );
+      restoreGeometry( windowGeometry );
+    }
+  }
+  else
+  {
+    QgsLayerTreeGroup* rootGroup = mLayerTreeView->layerTreeModel()->rootGroup();
+
+    // Remove MapTreeGroups for backwards compatibility
+    QList<QgsLayerTreeNode*> childrenToRemove;
+
+    Q_FOREACH ( QgsLayerTreeNode* node, rootGroup->children() )
+    {
+      if ( QgsLayerTree::isMapGroup( node ) )
+      {
+        childrenToRemove << node;
+      }
+    }
+    if ( childrenToRemove.size() > 0 )
+    {
+      Q_FOREACH ( QgsLayerTreeNode* node, childrenToRemove )
+      {
+        if ( QgsLayerTree::toGroup( node )->name() == mDefaultMapCanvas->objectName() )
+        {
+          QgsLayerTreeGroup* mapGroup = QgsLayerTree::toGroup( node );
+          Q_FOREACH ( QgsLayerTreeNode* child, mapGroup->children() ) rootGroup->addChildNode( child->clone() );
+        }
+      }
+
+      // delay the removal of node from a parent node. There may be other slots
+      // connected to tree node's signals that might disrupt the execution flow
+      QMetaObject::invokeMethod( this, "removeMultimapOrphanNodes", Qt::QueuedConnection, Q_ARG( QList<QgsLayerTreeNode*>, childrenToRemove ), Q_ARG( bool, true ) );
+    }
+  }
 
   // force update of canvas, without automatic changes to extent and OTF projections
   bool autoEnableCrsTransform = mLayerTreeCanvasBridge->autoEnableCrsTransform();

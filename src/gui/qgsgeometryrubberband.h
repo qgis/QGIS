@@ -29,8 +29,10 @@ struct QgsVertexId;
 
 /** \ingroup gui
  * A rubberband class for QgsAbstractGeometry (considering curved geometries)*/
-class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
+class GUI_EXPORT QgsGeometryRubberBand: public QObject, public QgsMapCanvasItem
 {
+    Q_OBJECT
+
   public:
     enum IconType
     {
@@ -61,7 +63,7 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     };
 
     QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
-    ~QgsGeometryRubberBand();
+    virtual ~QgsGeometryRubberBand();
 
     /** Sets geometry (takes ownership). Geometry is expected to be in map coordinates */
     void setGeometry( QgsAbstractGeometry* geom );
@@ -95,6 +97,10 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
 
     void drawVertex( QPainter* p, double x, double y );
     QgsRectangle rubberBandRectangle() const;
+
+  private slots:
+    //! called when a map canvas instance has been deleted
+    void mapCanvasRemoved( QgsMapCanvas* mapCanvas );
 };
 
 #endif // QGSGEOMETRYRUBBERBAND_H

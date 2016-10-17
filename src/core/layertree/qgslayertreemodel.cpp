@@ -21,6 +21,7 @@
 
 #include <QMimeData>
 #include <QTextStream>
+#include <QMessageBox>
 
 #include "qgsdataitem.h"
 #include "qgsmaphittest.h"
@@ -203,6 +204,9 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 )
   {
+    if ( QgsLayerTree::isMapGroup( node ) )
+      return iconMapGroup();
+
     if ( QgsLayerTree::isGroup( node ) )
       return iconGroup();
 
@@ -332,8 +336,20 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
   if ( !index.isValid() )
   {
     Qt::ItemFlags rootFlags = Qt::ItemFlags();
+
     if ( testFlag( AllowNodeReorder ) )
       rootFlags |= Qt::ItemIsDropEnabled;
+
+    // If map groups exist, we can not drag to root node
+    Q_FOREACH ( QgsLayerTreeNode* treeNode, rootGroup()->children() )
+    {
+      if ( QgsLayerTree::isMapGroup( treeNode ) )
+      {
+        rootFlags &= ~Qt::ItemIsDropEnabled;
+        break;
+      }
+    }
+
     return rootFlags;
   }
 
@@ -360,6 +376,17 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
 
   if ( testFlag( AllowNodeReorder ) && QgsLayerTree::isGroup( node ) && !isEmbedded )
     f |= Qt::ItemIsDropEnabled;
+
+  // The map group is not draggable, and the name is not editable for the default map canvas
+  if ( QgsLayerTree::isMapGroup( node ) )
+  {
+    f &= ~Qt::ItemIsDragEnabled;
+
+    if ( QgsLayerTree::toGroup( node )->name() == tr( "Default Map" ) )
+    {
+      f &= ~Qt::ItemIsEditable;
+    }
+  }
 
   return f;
 }
@@ -412,6 +439,26 @@ bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value
       QgsLayerTreeLayer* layer = QgsLayerTree::toLayer( node );
       layer->setLayerName( value.toString() );
       emit dataChanged( index, index );
+    }
+    else if ( QgsLayerTree::isMapGroup( node ) )
+    {
+      QString newMapName = value.toString();
+
+      // Validate new map canvas name
+      Q_FOREACH ( QgsLayerTreeNode* treeNode, rootGroup()->children() )
+      {
+        if ( treeNode != node && QgsLayerTree::isMapGroup( treeNode ) && QgsLayerTree::toGroup( treeNode )->name() == newMapName )
+        {
+          QMessageBox::critical( nullptr, tr( "Error" ), tr( "MapCanvas name already exists!" ), QMessageBox::Ok, Qt::NoButton );
+          return QAbstractItemModel::setData( index, value, role );
+        }
+      }
+
+      if ( newMapName != QgsLayerTree::toGroup( node )->name() )
+      {
+        QgsLayerTree::toGroup( node )->setName( newMapName );
+        emit dataChanged( index, index );
+      }
     }
     else if ( QgsLayerTree::isGroup( node ) )
     {
@@ -544,7 +591,7 @@ void QgsLayerTreeModel::setCurrentIndex( const QModelIndex& currentIndex )
 
 void QgsLayerTreeModel::setLayerTreeNodeFont( int nodeType, const QFont& font )
 {
-  if ( nodeType == QgsLayerTreeNode::NodeGroup )
+  if ( nodeType == QgsLayerTreeNode::NodeGroup || nodeType == QgsLayerTreeNode::NodeMapGroup )
   {
     if ( mFontGroup != font )
     {
@@ -569,7 +616,7 @@ void QgsLayerTreeModel::setLayerTreeNodeFont( int nodeType, const QFont& font )
 
 QFont QgsLayerTreeModel::layerTreeNodeFont( int nodeType ) const
 {
-  if ( nodeType == QgsLayerTreeNode::NodeGroup )
+  if ( nodeType == QgsLayerTreeNode::NodeGroup || nodeType == QgsLayerTreeNode::NodeMapGroup )
     return mFontGroup;
   else if ( nodeType == QgsLayerTreeNode::NodeLayer )
     return mFontLayer;
@@ -1096,6 +1143,16 @@ const QIcon& QgsLayerTreeModel::iconGroup()
     icon = QgsApplication::getThemeIcon( "/mActionFolder.svg" );
 
   return icon;
+}
+
+const QIcon& QgsLayerTreeModel::iconMapGroup()
+{
+  static QIcon mapicon;
+
+  if ( mapicon.isNull() )
+    mapicon = QgsApplication::getThemeIcon( "/mActionMap.png" );
+
+  return mapicon;
 }
 
 QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::filterLegendNodes( const QList<QgsLayerTreeModelLegendNode*>& nodes )

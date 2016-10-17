@@ -641,6 +641,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
         QgsClipboard::AttributesWithWKT : QgsClipboard::AttributesOnly ) );
   leNullValue->setText( mSettings->value( "qgis/nullValue", "NULL" ).toString() );
   cbxIgnoreShapeEncoding->setChecked( mSettings->value( "/qgis/ignoreShapeEncoding", true ).toBool() );
+  mMultiMapCheckBox->setChecked( mSettings->value( "/qgis/multimapEnabled", false ).toBool() );
 
   cmbLegendDoubleClickAction->setCurrentIndex( mSettings->value( "/qgis/legendDoubleClickAction", 0 ).toInt() );
 
@@ -1203,6 +1204,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
   bool legendLayersCapitalise = mSettings->value( "/qgis/capitaliseLayerName", false ).toBool();
   mSettings->setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
+  mSettings->setValue( "/qgis/multimapEnabled", mMultiMapCheckBox->isChecked() );
 
   // Default simplify drawing configuration
   QgsVectorSimplifyMethod::SimplifyHints simplifyHints = QgsVectorSimplifyMethod::NoSimplification;

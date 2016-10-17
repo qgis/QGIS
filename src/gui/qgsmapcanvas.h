@@ -763,6 +763,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     friend class TestQgsMapCanvas;
 
+    friend class QgisInterface;
+
 }; // class QgsMapCanvas
 
 

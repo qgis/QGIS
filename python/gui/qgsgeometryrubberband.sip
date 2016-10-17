@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 /** A rubberband class for QgsAbstractGeometry (considering curved geometries)*/
-class QgsGeometryRubberBand: QgsMapCanvasItem
+class QgsGeometryRubberBand: QObject, QgsMapCanvasItem
 {
 %TypeHeaderCode
 #include "qgsgeometryrubberband.h"
@@ -51,7 +51,7 @@ class QgsGeometryRubberBand: QgsMapCanvasItem
     };
 
     QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
-    ~QgsGeometryRubberBand();
+    virtual ~QgsGeometryRubberBand();
 
     /** Sets geometry (takes ownership). Geometry is expected to be in map coordinates */
     void setGeometry( QgsAbstractGeometry* geom /Transfer/ );

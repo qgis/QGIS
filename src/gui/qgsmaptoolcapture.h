@@ -49,6 +49,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! deactive the tool
     virtual void deactivate() override;
 
+    //! sets the tool's map canvas
+    virtual void setMapCanvas( QgsMapCanvas* mapCanvas ) override;
+
     /** Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS*/
     int addCurve( QgsCurve* c );
 

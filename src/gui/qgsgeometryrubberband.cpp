@@ -19,6 +19,7 @@
 #include "qgsabstractgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgspointv2.h"
+#include "qgisinterface.h"
 #include <QPainter>
 
 QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geomType ): QgsMapCanvasItem( mapCanvas ),
@@ -26,6 +27,8 @@ QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTyp
 {
   mPen = QPen( QColor( 255, 0, 0 ) );
   mBrush = QBrush( QColor( 255, 0, 0 ) );
+
+  connect( QgisInterface::instance(), SIGNAL( mapCanvasRemoved( QgsMapCanvas* ) ), this, SLOT( mapCanvasRemoved( QgsMapCanvas* ) ) );
 }
 
 QgsGeometryRubberBand::~QgsGeometryRubberBand()
@@ -158,4 +161,14 @@ QgsRectangle QgsGeometryRubberBand::rubberBandRectangle() const
   qreal s = ( mIconSize - 1 ) / 2.0 * scale;
   qreal p = mPen.width() * scale;
   return mGeometry->boundingBox().buffer( s + p );
+}
+
+void QgsGeometryRubberBand::mapCanvasRemoved( QgsMapCanvas* mapCanvas )
+{
+  if ( mMapCanvas == mapCanvas && mMapCanvas != QgisInterface::instance()->defaultMapCanvas() )
+  {
+    setVisible( false );
+    setGeometry( nullptr );
+    setMapCanvas( QgisInterface::instance()->mapCanvas() );
+  }
 }

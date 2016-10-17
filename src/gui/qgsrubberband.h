@@ -29,8 +29,10 @@ class QPaintEvent;
  * A class for drawing transient features (e.g. digitising lines) on the map.
  * It may be used
  */
-class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
+class GUI_EXPORT QgsRubberBand: public QObject, public QgsMapCanvasItem
 {
+    Q_OBJECT
+
   public:
 
     /** Icons */
@@ -68,7 +70,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
      */
     QgsRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
-    ~QgsRubberBand();
+    virtual ~QgsRubberBand();
 
     /**
      * Set the color for the rubberband
@@ -265,6 +267,9 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     static QgsPolyline getPolyline( const QList<QgsPoint> & points );
 
+  private slots:
+    //! called when a map canvas instance has been deleted
+    void mapCanvasRemoved( QgsMapCanvas* mapCanvas );
 };
 
 #endif

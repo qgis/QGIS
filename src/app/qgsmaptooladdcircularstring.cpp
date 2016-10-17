@@ -172,6 +172,14 @@ void QgsMapToolAddCircularString::activate()
   QgsMapToolCapture::activate();
 }
 
+void QgsMapToolAddCircularString::setMapCanvas( QgsMapCanvas* mapCanvas )
+{
+  if ( mCanvas != mapCanvas && ( !mTempRubberBand || !mTempRubberBand->geometry() ) )
+  {
+    QgsMapToolCapture::setMapCanvas( mapCanvas );
+  }
+}
+
 void QgsMapToolAddCircularString::createCenterPointRubberBand()
 {
   if ( !mShowCenterPointRubberBand || mPoints.size() < 2 || mPoints.size() % 2 != 0 )

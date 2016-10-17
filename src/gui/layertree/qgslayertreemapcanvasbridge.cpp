@@ -15,6 +15,7 @@
 
 #include "qgslayertreemapcanvasbridge.h"
 
+#include "qgisinterface.h"
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
@@ -29,7 +30,6 @@ QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup *roo
     , mHasCustomLayerOrder( false )
     , mAutoSetupOnFirstLayer( true )
     , mAutoEnableCrsTransform( true )
-    , mLastLayerCount( !root->findLayers().isEmpty() )
 {
   connect( root, SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ), this, SLOT( nodeAddedChildren( QgsLayerTreeNode*, int, int ) ) );
   connect( root, SIGNAL( customPropertyChanged( QgsLayerTreeNode*, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode*, QString ) ) );
@@ -115,89 +115,129 @@ void QgsLayerTreeMapCanvasBridge::setCustomLayerOrder( const QStringList& order 
 
 void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 {
-  QList<QgsMapCanvasLayer> layers;
+  QgisInterface* qgisInterface = QgisInterface::instance();
 
-  if ( mHasCustomLayerOrder )
+  QgsMapCanvas* defaultMapCanvas = qgisInterface ? qgisInterface->defaultMapCanvas() : mCanvas;
+  QList<QgsLayerTreeGroup*> mapGroupNodes;
+
+  if ( qgisInterface )
   {
-    Q_FOREACH ( const QString& layerId, mCustomLayerOrder )
+    Q_FOREACH ( QgsLayerTreeNode *treeNode, mRoot->children() )
     {
-      QgsLayerTreeLayer* nodeLayer = mRoot->findLayer( layerId );
-      if ( nodeLayer )
-        layers << QgsMapCanvasLayer( nodeLayer->layer(), nodeLayer->isVisible() == Qt::Checked, nodeLayer->customProperty( "overview", 0 ).toInt() );
+      if ( QgsLayerTree::isMapGroup( treeNode ) )
+      {
+        QgsMapCanvas* mapCanvas = qgisInterface->getMapCanvas( QgsLayerTree::toGroup( treeNode )->name() );
+        if ( !mapCanvas ) continue;
+
+        if ( !mLastLayersCount.contains( mapCanvas ) )
+        {
+          mLastLayersCount.insert( mapCanvas, !QgsLayerTree::toGroup( treeNode )->findLayers().isEmpty() );
+          mFirstCRSs.insert( mapCanvas, QgsCoordinateReferenceSystem() );
+        }
+        mapGroupNodes.append( QgsLayerTree::toGroup( treeNode ) );
+      }
     }
   }
-  else
-    setCanvasLayers( mRoot, layers );
-
-  QList<QgsLayerTreeLayer*> layerNodes = mRoot->findLayers();
-  int currentLayerCount = layerNodes.count();
-  bool firstLayers = mAutoSetupOnFirstLayer && mLastLayerCount == 0 && currentLayerCount != 0;
-
-  if ( firstLayers )
+  if ( defaultMapCanvas && mapGroupNodes.size() == 0 )
   {
-    // also setup destination CRS and map units if the OTF projections are not yet enabled
-    if ( !mCanvas->mapSettings().hasCrsTransformEnabled() )
+    if ( !mLastLayersCount.contains( defaultMapCanvas ) )
     {
+      mLastLayersCount.insert( defaultMapCanvas, !mRoot->findLayers().isEmpty() );
+      mFirstCRSs.insert( defaultMapCanvas, QgsCoordinateReferenceSystem() );
+    }
+    mapGroupNodes.append( mRoot );
+  }
+
+  Q_FOREACH ( QgsLayerTreeGroup* mapGroup, mapGroupNodes )
+  {
+    QgsMapCanvas* mapCanvas = mapGroup == mRoot ? defaultMapCanvas : ( qgisInterface ? qgisInterface->getMapCanvas( mapGroup->name() ) : mCanvas );
+    if ( !mapCanvas ) continue;
+
+    QList<QgsMapCanvasLayer> layers;
+
+    if ( mHasCustomLayerOrder )
+    {
+      Q_FOREACH ( const QString& layerId, mCustomLayerOrder )
+      {
+        QgsLayerTreeLayer* nodeLayer = mapGroup->findLayer( layerId );
+        if ( nodeLayer )
+          layers << QgsMapCanvasLayer( nodeLayer->layer(), nodeLayer->isVisible() == Qt::Checked, nodeLayer->customProperty( "overview", 0 ).toInt() );
+      }
+    }
+    else
+      setCanvasLayers( mapGroup, layers );
+
+    QList<QgsLayerTreeLayer*> layerNodes = mapGroup->findLayers();
+    int currentLayerCount = layerNodes.count();
+    bool firstLayers = mAutoSetupOnFirstLayer && mLastLayersCount[ mapCanvas ] == 0 && currentLayerCount != 0;
+
+    if ( firstLayers )
+    {
+      // also setup destination CRS and map units if the OTF projections are not yet enabled
+      if ( !mapCanvas->mapSettings().hasCrsTransformEnabled() )
+      {
+        Q_FOREACH ( QgsLayerTreeLayer* layerNode, layerNodes )
+        {
+          if ( !layerNode->layer() )
+            continue;
+
+          if ( layerNode->layer()->isSpatial() )
+          {
+            mapCanvas->setDestinationCrs( layerNode->layer()->crs() );
+            mapCanvas->setMapUnits( layerNode->layer()->crs().mapUnits() );
+            break;
+          }
+        }
+      }
+    }
+
+    mapCanvas->setLayerSet( layers );
+
+    if ( firstLayers )
+    {
+      // if we are moving from zero to non-zero layers, let's zoom to those data
+      mapCanvas->zoomToFullExtent();
+    }
+
+    if ( !mFirstCRSs[ mapCanvas ].isValid() )
+    {
+      // find out what is the first used CRS in case we may need to turn on OTF projections later
       Q_FOREACH ( QgsLayerTreeLayer* layerNode, layerNodes )
       {
-        if ( !layerNode->layer() )
-          continue;
-
-        if ( layerNode->layer()->isSpatial() )
+        if ( layerNode->layer() && layerNode->layer()->crs().isValid() )
         {
-          mCanvas->setDestinationCrs( layerNode->layer()->crs() );
-          mCanvas->setMapUnits( layerNode->layer()->crs().mapUnits() );
+          mFirstCRSs[ mapCanvas ] = layerNode->layer()->crs();
           break;
         }
       }
     }
-  }
 
-  mCanvas->setLayerSet( layers );
-
-  if ( firstLayers )
-  {
-    // if we are moving from zero to non-zero layers, let's zoom to those data
-    mCanvas->zoomToFullExtent();
-  }
-
-  if ( !mFirstCRS.isValid() )
-  {
-    // find out what is the first used CRS in case we may need to turn on OTF projections later
-    Q_FOREACH ( QgsLayerTreeLayer* layerNode, layerNodes )
+    if ( mAutoEnableCrsTransform && mFirstCRSs[ mapCanvas ].isValid() && !mapCanvas->mapSettings().hasCrsTransformEnabled() )
     {
-      if ( layerNode->layer() && layerNode->layer()->crs().isValid() )
+      // check whether all layers still have the same CRS
+      Q_FOREACH ( QgsLayerTreeLayer* layerNode, layerNodes )
       {
-        mFirstCRS = layerNode->layer()->crs();
-        break;
+        if ( layerNode->layer() && layerNode->layer()->crs().isValid() && layerNode->layer()->crs() != mFirstCRSs[ mapCanvas ] )
+        {
+          mapCanvas->setDestinationCrs( mFirstCRSs[ mapCanvas ] );
+          mapCanvas->setCrsTransformEnabled( true );
+          break;
+        }
       }
     }
-  }
 
-  if ( mAutoEnableCrsTransform && mFirstCRS.isValid() && !mCanvas->mapSettings().hasCrsTransformEnabled() )
-  {
-    // check whether all layers still have the same CRS
-    Q_FOREACH ( QgsLayerTreeLayer* layerNode, layerNodes )
-    {
-      if ( layerNode->layer() && layerNode->layer()->crs().isValid() && layerNode->layer()->crs() != mFirstCRS )
-      {
-        mCanvas->setDestinationCrs( mFirstCRS );
-        mCanvas->setCrsTransformEnabled( true );
-        break;
-      }
-    }
+    mLastLayersCount[ mapCanvas ] = currentLayerCount;
+    if ( currentLayerCount == 0 )
+      mFirstCRSs[ mapCanvas ] = QgsCoordinateReferenceSystem();
   }
-
-  mLastLayerCount = currentLayerCount;
-  if ( currentLayerCount == 0 )
-    mFirstCRS = QgsCoordinateReferenceSystem();
 
   mPendingCanvasUpdate = false;
 }
 
 void QgsLayerTreeMapCanvasBridge::readProject( const QDomDocument& doc )
 {
-  mFirstCRS = QgsCoordinateReferenceSystem(); // invalidate on project load
+  mLastLayersCount.clear(); // invalidate on project load
+  mFirstCRSs.clear();
 
   QDomElement elem = doc.documentElement().firstChildElement( "layer-tree-canvas" );
   if ( elem.isNull() )

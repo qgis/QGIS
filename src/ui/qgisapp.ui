@@ -52,6 +52,7 @@
     <addaction name="mActionSaveMapAsImage"/>
     <addaction name="mActionDxfExport"/>
     <addaction name="separator"/>
+    <addaction name="mActionNewMapCanvas"/>
     <addaction name="mActionNewPrintComposer"/>
     <addaction name="mActionShowComposerManager"/>
     <addaction name="mPrintComposersMenu"/>
@@ -327,6 +328,7 @@
    <addaction name="mActionOpenProject"/>
    <addaction name="mActionSaveProject"/>
    <addaction name="mActionSaveProjectAs"/>
+   <addaction name="mActionNewMapCanvas"/>
    <addaction name="mActionNewPrintComposer"/>
    <addaction name="mActionShowComposerManager"/>
   </widget>
@@ -625,6 +627,18 @@
    </property>
    <property name="text">
     <string>Save as &amp;Image...</string>
+   </property>
+  </action>
+  <action name="mActionNewMapCanvas">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddMap.svg</normaloff>:/images/themes/default/mActionAddMap.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New &amp;Map</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
    </property>
   </action>
   <action name="mActionNewPrintComposer">

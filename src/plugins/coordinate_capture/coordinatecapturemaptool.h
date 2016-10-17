@@ -45,6 +45,9 @@ class CoordinateCaptureMapTool : public QgsMapTool
     //! Overridden mouse release event
     virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
+    //! called when set as currently active map tool
+    virtual void activate() override;
+
     //! called when map tool is being deactivated
     virtual void deactivate() override;
 
@@ -57,7 +60,6 @@ class CoordinateCaptureMapTool : public QgsMapTool
 
     //! Rubber band for highlighting identified feature
     QgsRubberBand * mpRubberBand;
-    QPointer<QgsMapCanvas> mpMapCanvas;
 
 };
 

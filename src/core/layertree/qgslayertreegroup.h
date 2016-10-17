@@ -32,13 +32,14 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 {
     Q_OBJECT
   public:
-    QgsLayerTreeGroup( const QString& name = QString(), Qt::CheckState checked = Qt::Checked );
+    //! Constructor
+    QgsLayerTreeGroup( const QString& name = QString(), Qt::CheckState checked = Qt::Checked, NodeType nodeType = NodeGroup );
     QgsLayerTreeGroup( const QgsLayerTreeGroup& other );
 
     //! Get group's name
     QString name() const { return mName; }
     //! Set group's name
-    void setName( const QString& n ) { mName = n; }
+    void setName( const QString& n );
 
     //! Insert a new group node with given name at specified position. Newly created node is owned by this group.
     QgsLayerTreeGroup* insertGroup( int index, const QString& name );
@@ -102,6 +103,10 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     //! of -1 will determine automatically (either first one currently checked or none)
     //! @note added in 2.12
     void setIsMutuallyExclusive( bool enabled, int initialChildIndex = -1 );
+
+  signals:
+    //! Emitted when the node was renamed
+    void nameChanged( const QString& oldName, const QString& newName );
 
   protected slots:
     void layerDestroyed();

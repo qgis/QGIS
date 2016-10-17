@@ -254,10 +254,9 @@ void QgsIdentifyResultsWebViewItem::loadFinished( bool ok )
 //       action
 //     name value
 
-QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
+QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QWidget *parent, Qt::WindowFlags f )
     : QDialog( parent, f )
     , mActionPopup( nullptr )
-    , mCanvas( canvas )
     , mDock( nullptr )
 {
   setupUi( this );
@@ -347,6 +346,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( mOpenFormAction, SIGNAL( triggered( bool ) ), this, SLOT( featureForm() ) );
   connect( mClearResultsAction, SIGNAL( triggered( bool ) ), this, SLOT( clear() ) );
   connect( mHelpToolButton, SIGNAL( clicked() ), this, SLOT( helpRequested() ) );
+  connect( QgisApp::instance(), SIGNAL( mapCanvasRemoved( QgsMapCanvas* ) ), this, SLOT( mapCanvasRemoved( QgsMapCanvas* ) ) );
 }
 
 QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
@@ -1559,14 +1559,18 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   if ( !featItem->feature().geometry() || featItem->feature().geometry().wkbType() == QgsWkbTypes::Unknown )
     return;
 
+  QgsMapCanvas *mapCanvas = QgisApp::instance()->getMapCanvas( layer );
+  if ( !mapCanvas )
+    return;
+
   QgsHighlight *highlight = nullptr;
   if ( vlayer )
   {
-    highlight = new QgsHighlight( mCanvas, featItem->feature(), vlayer );
+    highlight = new QgsHighlight( mapCanvas, featItem->feature(), vlayer );
   }
   else
   {
-    highlight = new QgsHighlight( mCanvas, featItem->feature().geometry(), layer );
+    highlight = new QgsHighlight( mapCanvas, featItem->feature().geometry(), layer );
     highlight->setWidth( 2 );
   }
 
@@ -1608,18 +1612,22 @@ void QgsIdentifyResultsDialog::zoomToFeature()
   if ( !feat.hasGeometry() )
     return;
 
+  QgsMapCanvas *mapCanvas = QgisApp::instance()->getMapCanvas( layer );
+  if ( !mapCanvas )
+    return;
+
   // TODO: verify CRS for raster WMS features
-  QgsRectangle rect = mCanvas->mapSettings().layerExtentToOutputExtent( layer, feat.geometry().boundingBox() );
+  QgsRectangle rect = mapCanvas->mapSettings().layerExtentToOutputExtent( layer, feat.geometry().boundingBox() );
 
   if ( rect.isEmpty() )
   {
     QgsPoint c = rect.center();
-    rect = mCanvas->extent();
+    rect = mapCanvas->extent();
     rect.scale( 0.5, &c );
   }
 
-  mCanvas->setExtent( rect );
-  mCanvas->refresh();
+  mapCanvas->setExtent( rect );
+  mapCanvas->refresh();
 }
 
 void QgsIdentifyResultsDialog::featureForm()
@@ -1918,6 +1926,23 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
     for ( int j = 0; j < subItem->childCount(); j++ )
     {
       subItem->child( j )->setExpanded( true );
+    }
+  }
+}
+
+void QgsIdentifyResultsDialog::mapCanvasRemoved( QgsMapCanvas* mapCanvas )
+{
+  if ( mHighlights.size() > 0 )
+  {
+    Q_FOREACH ( QTreeWidgetItem* featItem, mHighlights.keys() )
+    {
+      QgsHighlight *h = mHighlights.value( featItem );
+
+      if ( h->mapCanvas() == mapCanvas )
+      {
+        mHighlights.remove( featItem );
+        delete h;
+      }
     }
   }
 }

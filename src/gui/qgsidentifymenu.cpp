@@ -157,6 +157,11 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
   }
 }
 
+void QgsIdentifyMenu::setMapCanvas( QgsMapCanvas* mapCanvas )
+{
+  mCanvas = mapCanvas;
+}
+
 void QgsIdentifyMenu::closeEvent( QCloseEvent* e )
 {
   deleteRubberBands();

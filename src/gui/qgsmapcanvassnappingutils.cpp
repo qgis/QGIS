@@ -33,14 +33,23 @@ QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas* canvas, QObj
   canvasCurrentLayerChanged();
 }
 
+QgsMapCanvasSnappingUtils::~QgsMapCanvasSnappingUtils()
+{
+  disconnect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
+  disconnect( mCanvas, SIGNAL( destinationCrsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
+  disconnect( mCanvas, SIGNAL( layersChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
+  disconnect( mCanvas, SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( canvasCurrentLayerChanged() ) );
+  mCanvas = nullptr;
+}
+
 void QgsMapCanvasSnappingUtils::canvasMapSettingsChanged()
 {
-  setMapSettings( mCanvas->mapSettings() );
+  if ( mCanvas ) setMapSettings( mCanvas->mapSettings() );
 }
 
 void QgsMapCanvasSnappingUtils::canvasCurrentLayerChanged()
 {
-  setCurrentLayer( qobject_cast<QgsVectorLayer*>( mCanvas->currentLayer() ) );
+  setCurrentLayer( mCanvas ? qobject_cast<QgsVectorLayer*>( mCanvas->currentLayer() ) : nullptr );
 }
 
 void QgsMapCanvasSnappingUtils::prepareIndexStarting( int count )
