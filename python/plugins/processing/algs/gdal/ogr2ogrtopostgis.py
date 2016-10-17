@@ -155,17 +155,17 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
                                           self.tr('Additional creation options'), '', optional=True))
 
     def getConnectionString(self):
-        host = str(self.getParameterValue(self.HOST))
-        port = str(self.getParameterValue(self.PORT))
-        user = str(self.getParameterValue(self.USER))
-        dbname = str(self.getParameterValue(self.DBNAME))
-        password = str(self.getParameterValue(self.PASSWORD))
-        schema = str(self.getParameterValue(self.SCHEMA))
+        host = self.getParameterValue(self.HOST)
+        port = self.getParameterValue(self.PORT)
+        user = self.getParameterValue(self.USER)
+        dbname = self.getParameterValue(self.DBNAME)
+        password = self.getParameterValue(self.PASSWORD)
+        schema = self.getParameterValue(self.SCHEMA)
         arguments = []
         if host:
             arguments.append('host=' + host)
         if port:
-            arguments.append('port=' + port)
+            arguments.append('port=' + str(port))
         if dbname:
             arguments.append('dbname=' + dbname)
         if password:
