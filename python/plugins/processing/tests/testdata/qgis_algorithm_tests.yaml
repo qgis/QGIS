@@ -1113,3 +1113,14 @@ tests:
       OUTPUT:
         name: expected/sum_line_length.gml
         type: vector
+
+  - algorithm: qgis:delaunaytriangulation
+    name: Delaunay triangulation (multipoint data)
+    params:
+      INPUT:
+        name: multipoints.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/multipoint_delaunay.gml
+        type: vector
