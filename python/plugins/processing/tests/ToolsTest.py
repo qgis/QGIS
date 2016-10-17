@@ -92,6 +92,12 @@ class VectorTest(unittest.TestCase):
         name = vector.ogrLayerName(tmpdir + '|layername=f2|layerid=0')
         self.assertEqual(name, 'f2') # layername takes precedence
 
+        name = vector.ogrLayerName('dbname=\'/tmp/x.sqlite\' table="t" (geometry) sql=')
+        self.assertEqual(name, 't')
+
+        name = vector.ogrLayerName('dbname=\'/tmp/x.sqlite\' table="s.t" (geometry) sql=')
+        self.assertEqual(name, 's.t')
+
     def testFeatures(self):
         ProcessingConfig.initialize()
 

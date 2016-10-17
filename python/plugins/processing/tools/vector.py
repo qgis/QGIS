@@ -518,6 +518,19 @@ def ogrConnectionString(uri):
 
 
 def ogrLayerName(uri):
+    if 'host' in uri:
+        regex = re.compile('table="(.+?)\.(.+?)"')
+        r = regex.search(uri)
+        return '"' + r.groups()[0] + '.' + r.groups()[1] + '"'
+    elif 'dbname' in uri:
+        regex = re.compile('table="(.+?)"')
+        r = regex.search(uri)
+        return r.groups()[0]
+    elif 'layername' in uri:
+        regex = re.compile('(layername=)([^|]*)')
+        r = regex.search(uri)
+        return r.groups()[1]
+
     fields = uri.split('|')
     ogruri = fields[0]
     fields = fields[1:]
