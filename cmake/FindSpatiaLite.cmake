@@ -48,7 +48,7 @@ FIND_PATH(SPATIALITE_INCLUDE_DIR spatialite.h
   "$ENV{LIB_DIR}/include/spatialite"
   )
 
-FIND_LIBRARY(SPATIALITE_LIBRARY NAMES spatialite spatialite_i PATHS
+FIND_LIBRARY(SPATIALITE_LIBRARY NAMES spatialite_i spatialite PATHS
   /usr/lib
   $ENV{LIB}
   $ENV{LIB_DIR}/lib
