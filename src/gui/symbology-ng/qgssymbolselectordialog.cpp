@@ -191,6 +191,16 @@ class SymbolLayerItem : public QStandardItem
           }
         }
       }
+      else if ( role == Qt::ForegroundRole && mIsLayer )
+      {
+        QBrush brush( Qt::black, Qt::SolidPattern );
+        if ( !mLayer->enabled() )
+        {
+          brush.setColor( Qt::lightGray );
+        }
+        return brush;
+      }
+
 //      if ( role == Qt::SizeHintRole )
 //        return QVariant( QSize( 32, 32 ) );
       if ( role == Qt::CheckStateRole )
