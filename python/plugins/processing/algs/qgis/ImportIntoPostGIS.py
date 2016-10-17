@@ -94,7 +94,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         convertLowerCase = self.getParameterValue(self.LOWERCASE_NAMES)
         dropStringLength = self.getParameterValue(self.DROP_STRING_LENGTH)
         forceSinglePart = self.getParameterValue(self.FORCE_SINGLEPART)
-        primaryKeyField = self.getParameterValue(self.PRIMARY_KEY)
+        primaryKeyField = self.getParameterValue(self.PRIMARY_KEY) or 'id'
         encoding = self.getParameterValue(self.ENCODING)
 
         layerUri = self.getParameterValue(self.INPUT)
@@ -103,6 +103,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         table = self.getParameterValue(self.TABLENAME).strip()
         if table == '':
             table = layer.name()
+            table = "_".join(table.split(".")[:-1])
         table = table.replace(' ', '').lower()[0:62]
         providerName = 'postgres'
 
@@ -126,10 +127,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
             geomColumn = None
 
         uri = db.uri
-        if primaryKeyField:
-            uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
-        else:
-            uri.setDataSource(schema, table, geomColumn, '')
+        uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
 
         if encoding:
             layer.setProviderEncoding(encoding)
