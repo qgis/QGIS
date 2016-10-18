@@ -148,7 +148,7 @@ class QgsPoint
     double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint /Out/, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
     /** Calculates azimuth between this point and other one (clockwise in degree, starting from north) */
-    double azimuth( const QgsPoint& other );
+    double azimuth( const QgsPoint& other ) const;
 
     /** Compares this point with another point with a fuzzy tolerance
      * @param other point to compare with
