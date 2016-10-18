@@ -17,6 +17,7 @@ ADD_PYTHON_TEST(PyQgsAttributeFormEditorWidget test_qgsattributeformeditorwidget
 ADD_PYTHON_TEST(PyQgsAttributeTableConfig test_qgsattributetableconfig.py)
 ADD_PYTHON_TEST(PyQgsAttributeTableModel test_qgsattributetablemodel.py)
 #ADD_PYTHON_TEST(PyQgsAuthenticationSystem test_qgsauthsystem.py)
+ADD_PYTHON_TEST(PyQgsBearingUtils test_qgsbearingutils.py)
 ADD_PYTHON_TEST(PyQgsBlendModes test_qgsblendmodes.py)
 ADD_PYTHON_TEST(PyQgsCategorizedSymbolRenderer test_qgscategorizedsymbolrenderer.py)
 ADD_PYTHON_TEST(PyQgsColorButton test_qgscolorbutton.py)
