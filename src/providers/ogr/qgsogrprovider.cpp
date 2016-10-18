@@ -3251,8 +3251,14 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH 
       layerName = encoding->fromUnicode( modifiedLayerName );
     }
   }
-  QByteArray sql = "SELECT * FROM " + quotedIdentifier( layerName, ogrDriverName );
-  sql += " WHERE " + encoding->fromUnicode( subsetString );
+  QByteArray sql;
+  if ( subsetString.startsWith( "SELECT ", Qt::CaseInsensitive ) )
+    sql = encoding->fromUnicode( subsetString );
+  else
+  {
+    sql = "SELECT * FROM " + quotedIdentifier( layerName, ogrDriverName );
+    sql += " WHERE " + encoding->fromUnicode( subsetString );
+  }
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
   return OGR_DS_ExecuteSQL( ds, sql.constData(), nullptr, nullptr );
