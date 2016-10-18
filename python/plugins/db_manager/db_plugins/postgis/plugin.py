@@ -152,6 +152,8 @@ class PGDatabase(Database):
 
         item.runVacuumAnalyze()
 
+    def hasLowercaseFieldNamesOption(self):
+        return True
 
 class PGSchema(Schema):
 
