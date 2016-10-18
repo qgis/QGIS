@@ -535,6 +535,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void transactionGroupsChanged();
 
+    /**
+     * Emitted when the topological editing flag has changed.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void topologicalEditingChanged();
+
   public slots:
     /**
      * Flag the project as dirty (modified). If this flag is set, the user will

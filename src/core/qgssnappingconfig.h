@@ -162,12 +162,6 @@ class CORE_EXPORT QgsSnappingConfig
     //! set the type of units
     void setUnits( QgsTolerance::UnitType units );
 
-    //! return if the topological editing is enabled
-    bool topologicalEditing() const;
-
-    //! set if the topological editing is enabled
-    void setTopologicalEditing( bool enabled );
-
     //! return if the snapping on intersection is enabled
     bool intersectionSnapping() const;
 
@@ -235,7 +229,6 @@ class CORE_EXPORT QgsSnappingConfig
     SnappingType mType;
     double mTolerance;
     QgsTolerance::UnitType mUnits;
-    bool mTopologicalEditing;
     bool mIntersectionSnapping;
 
     QHash<QgsVectorLayer*, IndividualLayerSettings> mIndividualLayerSettings;

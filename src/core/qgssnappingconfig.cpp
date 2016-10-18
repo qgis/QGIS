@@ -135,7 +135,6 @@ bool QgsSnappingConfig::operator==( const QgsSnappingConfig& other ) const
          && mType == other.mType
          && mTolerance == other.mTolerance
          && mUnits == other.mUnits
-         && mTopologicalEditing == other.mTopologicalEditing
          && mIntersectionSnapping == other.mIntersectionSnapping
          && mIndividualLayerSettings == other.mIndividualLayerSettings;
 }
@@ -169,7 +168,6 @@ void QgsSnappingConfig::reset()
   {
     mUnits = units;
   }
-  mTopologicalEditing = false;
   mIntersectionSnapping = false;
 
   // set advanced config
@@ -254,16 +252,6 @@ void QgsSnappingConfig::setUnits( QgsTolerance::UnitType units )
   mUnits = units;
 }
 
-bool QgsSnappingConfig::topologicalEditing() const
-{
-  return mTopologicalEditing;
-}
-
-void QgsSnappingConfig::setTopologicalEditing( bool enabled )
-{
-  mTopologicalEditing = enabled;
-}
-
 bool QgsSnappingConfig::intersectionSnapping() const
 {
   return mIntersectionSnapping;
@@ -335,9 +323,6 @@ void QgsSnappingConfig::readProject( const QDomDocument& doc )
   if ( snapSettingsElem.hasAttribute( "unit" ) )
     mUnits = ( QgsTolerance::UnitType )snapSettingsElem.attribute( "unit" ).toInt();
 
-  if ( snapSettingsElem.hasAttribute( "topological-editing" ) )
-    mTopologicalEditing = snapSettingsElem.attribute( "topological-editing" ) == "1";
-
   if ( snapSettingsElem.hasAttribute( "intersection-snapping" ) )
     mIntersectionSnapping = snapSettingsElem.attribute( "intersection-snapping" ) == "1";
 
@@ -384,7 +369,6 @@ void QgsSnappingConfig::writeProject( QDomDocument& doc )
   snapSettingsElem.setAttribute( "type", ( int )mType );
   snapSettingsElem.setAttribute( "tolerance", mTolerance );
   snapSettingsElem.setAttribute( "unit", ( int )mUnits );
-  snapSettingsElem.setAttribute( "topological-editing", QString::number( mTopologicalEditing ) );
   snapSettingsElem.setAttribute( "intersection-snapping", QString::number( mIntersectionSnapping ) );
 
   QDomElement ilsElement = doc.createElement( "individual-layer-settings" );
