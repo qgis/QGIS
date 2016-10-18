@@ -403,7 +403,7 @@ class ParameterExtent(Parameter):
 
     def evaluate(self, alg):
         if self.optional and not bool(self.value):
-            self.value = self.getMinCoveringExtent()
+            self.value = self.getMinCoveringExtent(alg)
 
     def getMinCoveringExtent(self, alg):
         first = True
