@@ -467,8 +467,15 @@ class QgsProject : QObject
      */
     void variablesChanged();
 
-  public slots:
+    /**
+     * Emitted whenever a new transaction group has been created or a
+     * transaction group has been removed.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void transactionGroupsChanged();
 
+  public slots:
     /**
      * Flag the project as dirty (modified). If this flag is set, the user will
      * be asked to save changes to the project before closing the current project.

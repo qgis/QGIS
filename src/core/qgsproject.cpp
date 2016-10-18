@@ -995,6 +995,8 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
 {
   QMap<QString, QgsMapLayer*> existingMaps = QgsMapLayerRegistry::instance()->mapLayers();
 
+  bool tgChanged = false;
+
   Q_FOREACH ( QgsMapLayer* layer, layers )
   {
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
@@ -1013,14 +1015,16 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
           {
             tg = new QgsTransactionGroup();
             mTransactionGroups.insert( qMakePair( key, connString ), tg );
-
-            connect( tg, SIGNAL( commitError( QString ) ), this, SLOT( displayMapToolMessage( QString ) ) );
+            tgChanged = true;
           }
           tg->addLayer( vlayer );
         }
       }
       vlayer->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, evaluateDefaultValues() );
     }
+
+    if ( tgChanged )
+      emit transactionGroupsChanged();
 
     connect( layer, SIGNAL( configChanged() ), this, SLOT( setDirty() ) );
 
@@ -1039,18 +1043,22 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
 
 void QgsProject::cleanTransactionGroups( bool force )
 {
+  bool changed = false;
   for ( QMap< QPair< QString, QString>, QgsTransactionGroup*>::Iterator tg = mTransactionGroups.begin(); tg != mTransactionGroups.end(); )
   {
     if ( tg.value()->isEmpty() || force )
     {
       delete tg.value();
       tg = mTransactionGroups.erase( tg );
+      changed = true;
     }
     else
     {
       ++tg;
     }
   }
+  if ( changed )
+    emit transactionGroupsChanged();
 }
 
 bool QgsProject::read( QDomNode &layerNode )

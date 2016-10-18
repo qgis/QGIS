@@ -513,9 +513,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! emitted when an old project file is read.
     void oldProjectVersionWarning( const QString& );
 
-    //! emitted when a layer from a projects was read
-    // @param i current layer
-    // @param n number of layers
+    /**
+     * Emitted when a layer from a projects was read.
+     * @param i current layer
+     * @param n number of layers
+     */
     void layerLoaded( int i, int n );
 
     void loadingLayer( const QString& );
@@ -536,8 +538,15 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void variablesChanged();
 
-  public slots:
+    /**
+     * Emitted whenever a new transaction group has been created or a
+     * transaction group has been removed.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void transactionGroupsChanged();
 
+  public slots:
     /**
      * Flag the project as dirty (modified). If this flag is set, the user will
      * be asked to save changes to the project before closing the current project.

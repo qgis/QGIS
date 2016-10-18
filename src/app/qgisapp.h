@@ -726,6 +726,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 #endif
 
   private slots:
+    void onTransactionGroupsChanged();
+
     //! validate a SRS
     void validateCrs( QgsCoordinateReferenceSystem &crs );
 
