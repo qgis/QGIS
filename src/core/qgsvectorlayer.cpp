@@ -1947,7 +1947,14 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   mConditionalStyles->writeXml( node, doc );
 
   // save expression fields
-  mExpressionFieldBuffer->writeXml( node, doc );
+  if ( !mExpressionFieldBuffer )
+  {
+    // can happen when saving style on a invalid layer
+    QgsExpressionFieldBuffer dummy;
+    dummy.writeXml( node, doc );
+  }
+  else
+    mExpressionFieldBuffer->writeXml( node, doc );
 
   // save readonly state
   node.toElement().setAttribute( QStringLiteral( "readOnly" ), mReadOnly );
