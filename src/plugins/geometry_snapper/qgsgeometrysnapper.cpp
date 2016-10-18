@@ -45,11 +45,7 @@ QgsGeometrySnapper::QgsGeometrySnapper( QgsVectorLayer *adjustLayer, QgsVectorLa
   QgsFeature feature;
   QgsFeatureRequest req;
   req.setSubsetOfAttributes( QgsAttributeList() );
-  QgsFeatureIterator it = mReferenceLayer->getFeatures( req );
-  while ( it.nextFeature( feature ) )
-  {
-    mIndex.insertFeature( feature );
-  }
+  mIndex = QgsSpatialIndex( mReferenceLayer->getFeatures( req ) );
 }
 
 QFuture<void> QgsGeometrySnapper::processFeatures()
