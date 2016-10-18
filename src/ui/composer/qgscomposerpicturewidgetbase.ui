@@ -60,9 +60,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-166</y>
-        <width>313</width>
-        <height>719</height>
+        <y>-312</y>
+        <width>314</width>
+        <height>871</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -463,6 +463,16 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+          <item row="2" column="1">
+           <widget class="QComboBox" name="mNorthTypeComboBox"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>North alignment</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0">
            <widget class="QCheckBox" name="mRotationFromComposerMapCheckBox">
             <property name="text">
@@ -477,6 +487,29 @@
            <widget class="QgsDoubleSpinBox" name="mPictureRotationSpinBox">
             <property name="suffix">
              <string> °</string>
+            </property>
+            <property name="minimum">
+             <double>-360.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>360.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Offset</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QgsDoubleSpinBox" name="mPictureRotationOffsetSpinBox">
+            <property name="suffix">
+             <string> °</string>
+            </property>
+            <property name="minimum">
+             <double>-360.000000000000000</double>
             </property>
             <property name="maximum">
              <double>360.000000000000000</double>
