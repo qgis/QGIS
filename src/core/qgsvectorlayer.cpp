@@ -1994,7 +1994,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
   mConditionalStyles->readXml( node );
 
-  readCustomProperties( node );
+  readCustomProperties( node, "variable" );
 
   return true;
 }
