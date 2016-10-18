@@ -189,20 +189,17 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
     case QgsAttributeForm::SingleEditMode:
       setFeature( mFeature );
       mSearchButtonBox->setVisible( false );
-      mTopMessageWidget->show();
       break;
 
     case QgsAttributeForm::AddFeatureMode:
       synchronizeEnabledState();
       mSearchButtonBox->setVisible( false );
-      mTopMessageWidget->show();
       break;
 
     case QgsAttributeForm::MultiEditMode:
       resetMultiEdit( false );
       synchronizeEnabledState();
       mSearchButtonBox->setVisible( false );
-      mTopMessageWidget->show();
       break;
 
     case QgsAttributeForm::SearchMode:
