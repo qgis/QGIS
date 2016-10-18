@@ -210,7 +210,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         arguments = []
         arguments.append('-progress')
         arguments.append('--config PG_USE_COPY YES')
-        if len(shapeEncoding) > 0:
+        if shapeEncoding:
             arguments.append('--config')
             arguments.append('SHAPE_ENCODING')
             arguments.append('"' + shapeEncoding + '"')
