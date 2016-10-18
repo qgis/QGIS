@@ -17,9 +17,6 @@
  *                                                                         *
  ***************************************************************************/
 
-//
-// QT4 includes make sure to use the new <CamelCase> style!
-//
 #include <QAction>
 #include <QApplication>
 #include <QBitmap>
