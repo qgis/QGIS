@@ -75,7 +75,7 @@ class Intersection(GeoAlgorithm):
         vlayerB = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT2))
 
-        geomType = vlayerA.wkbType()
+        geomType = QgsWkbTypes.multiType(vlayerA.wkbType())
         fields = vector.combineVectorFields(vlayerA, vlayerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                                                                      geomType, vlayerA.crs())

@@ -69,7 +69,7 @@ class Difference(GeoAlgorithm):
             self.getParameterValue(Difference.OVERLAY))
         ignoreInvalid = self.getParameterValue(Difference.IGNORE_INVALID)
 
-        geomType = layerA.wkbType()
+        geomType = QgsWkbTypes.multiType(layerA.wkbType())
         writer = self.getOutputFromName(
             Difference.OUTPUT).getVectorWriter(layerA.fields(),
                                                geomType,
