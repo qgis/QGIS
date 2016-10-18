@@ -286,6 +286,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** Clean shapefile from features which are marked as deleted */
     void repack();
 
+    /** Invalidate extent and optionnaly force its low level recomputation */
+    void invalidateCachedExtent( bool bForceRecomputeExtent );
+
     enum OpenMode
     {
       OpenModeInitial,
@@ -305,6 +308,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool mFirstFieldIsFid;
     OGRDataSourceH ogrDataSource;
     OGREnvelope* mExtent;
+    bool mForceRecomputeExtent;
 
     /** This member variable receives the same value as extent_
      in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak*/
