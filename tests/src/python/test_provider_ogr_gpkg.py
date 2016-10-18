@@ -171,7 +171,13 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(1 0.5)'))
         lyr.CreateFeature(f)
         f = None
+        gdal.ErrorReset()
+        ds.ExecuteSQL('RECOMPUTE EXTENT ON test')
+        has_error = gdal.GetLastErrorMsg() != ''
         ds = None
+        if has_error:
+            print('Too old GDAL trunk version. Please update')
+            return
 
         vl = QgsVectorLayer(u'{}'.format(tmpfile), u'test', u'ogr')
 
