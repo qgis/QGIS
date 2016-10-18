@@ -412,7 +412,7 @@ class ParameterStringTest(unittest.TestCase):
         optionalParameter.setValue('check')
         self.assertEqual(optionalParameter.value, 'check')
         self.assertTrue(optionalParameter.setValue(None))
-        self.assertEqual(optionalParameter.value, None)
+        self.assertEqual(optionalParameter.value, '')
 
         requiredParameter = ParameterCrs('myName', 'myDesc', default='test', optional=False)
         self.assertEqual(requiredParameter.value, 'test')
