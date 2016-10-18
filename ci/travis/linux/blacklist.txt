@@ -1,4 +1,3 @@
-PyQgsComposerPicture
 PyQgsJSONUtils
 PyQgsLocalServer
 PyQgsPalLabelingServer

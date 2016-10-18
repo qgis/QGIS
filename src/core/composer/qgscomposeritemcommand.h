@@ -118,6 +118,7 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       ComposerPictureRotation,
       ComposerPictureFillColor,
       ComposerPictureOutlineColor,
+      ComposerPictureNorthOffset,
       // composer scalebar
       ScaleBarLineWidth,
       ScaleBarHeight,

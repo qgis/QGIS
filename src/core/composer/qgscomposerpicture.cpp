@@ -29,6 +29,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgssvgcache.h"
 #include "qgslogger.h"
+#include "qgsbearingutils.h"
+#include "qgsmapsettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -46,6 +48,8 @@ QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
     , mMode( Unknown )
     , mPictureRotation( 0 )
     , mRotationMap( nullptr )
+    , mNorthMode( GridNorth )
+    , mNorthOffset( 0.0 )
     , mResizeMode( QgsComposerPicture::Zoom )
     , mPictureAnchor( UpperLeft )
     , mSvgFillColor( QColor( 255, 255, 255 ) )
@@ -63,6 +67,8 @@ QgsComposerPicture::QgsComposerPicture()
     , mMode( Unknown )
     , mPictureRotation( 0 )
     , mRotationMap( nullptr )
+    , mNorthMode( GridNorth )
+    , mNorthOffset( 0.0 )
     , mResizeMode( QgsComposerPicture::Zoom )
     , mPictureAnchor( UpperLeft )
     , mSvgFillColor( QColor( 255, 255, 255 ) )
@@ -408,6 +414,43 @@ void QgsComposerPicture::remotePictureLoaded()
   mLoaded = true;
 }
 
+void QgsComposerPicture::updateMapRotation()
+{
+  if ( !mRotationMap )
+    return;
+
+  // take map rotation
+  double rotation = mRotationMap->mapRotation();
+
+  // handle true north
+  switch ( mNorthMode )
+  {
+    case GridNorth:
+      break; // nothing to do
+
+    case TrueNorth:
+    {
+      QgsPoint center = mRotationMap->currentMapExtent()->center();
+      QgsCoordinateReferenceSystem crs = mComposition->mapSettings().destinationCrs();
+
+      try
+      {
+        double bearing = QgsBearingUtils::bearingTrueNorth( crs, center );
+        rotation += bearing;
+      }
+      catch ( QgsException& e )
+      {
+        Q_UNUSED( e );
+        QgsDebugMsg( QString( "Caught exception %1" ).arg( e.what() ) );
+      }
+      break;
+    }
+  }
+
+  rotation += mNorthOffset;
+  setPictureRotation( rotation );
+}
+
 void QgsComposerPicture::loadPicture( const QString &path )
 {
   if ( path.startsWith( "http" ) )
@@ -633,7 +676,8 @@ void QgsComposerPicture::setRotationMap( int composerMapId )
 
   if ( composerMapId == -1 ) //disable rotation from map
   {
-    QObject::disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( setPictureRotation( double ) ) );
+    disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( updateMapRotation() ) );
+    disconnect( mRotationMap, SIGNAL( extentChanged() ), this, SLOT( updateMapRotation() ) );
     mRotationMap = nullptr;
   }
 
@@ -644,10 +688,12 @@ void QgsComposerPicture::setRotationMap( int composerMapId )
   }
   if ( mRotationMap )
   {
-    QObject::disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( setPictureRotation( double ) ) );
+    disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( updateMapRotation() ) );
+    disconnect( mRotationMap, SIGNAL( extentChanged() ), this, SLOT( updateMapRotation() ) );
   }
   mPictureRotation = map->mapRotation();
-  QObject::connect( map, SIGNAL( mapRotationChanged( double ) ), this, SLOT( setPictureRotation( double ) ) );
+  connect( map, SIGNAL( mapRotationChanged( double ) ), this, SLOT( updateMapRotation() ) );
+  connect( map, SIGNAL( extentChanged() ), this, SLOT( updateMapRotation() ) );
   mRotationMap = map;
   update();
   emit pictureRotationChanged( mPictureRotation );
@@ -722,6 +768,8 @@ bool QgsComposerPicture::writeXml( QDomElement& elem, QDomDocument & doc ) const
   {
     composerPictureElem.setAttribute( "mapId", mRotationMap->id() );
   }
+  composerPictureElem.setAttribute( "northMode", mNorthMode );
+  composerPictureElem.setAttribute( "northOffset", mNorthOffset );
 
   _writeXml( composerPictureElem, doc );
   elem.appendChild( composerPictureElem );
@@ -788,6 +836,9 @@ bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocumen
   }
 
   //rotation map
+  mNorthMode = static_cast< NorthMode >( itemElem.attribute( "northMode", "0" ).toInt() );
+  mNorthOffset = itemElem.attribute( "northOffset", "0" ).toDouble();
+
   int rotationMapId = itemElem.attribute( "mapId", "-1" ).toInt();
   if ( rotationMapId == -1 )
   {
@@ -798,10 +849,12 @@ bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocumen
 
     if ( mRotationMap )
     {
-      QObject::disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
+      disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( updateMapRotation() ) );
+      disconnect( mRotationMap, SIGNAL( extentChanged() ), this, SLOT( updateMapRotation() ) );
     }
     mRotationMap = mComposition->getComposerMapById( rotationMapId );
-    QObject::connect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
+    connect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( updateMapRotation() ) );
+    connect( mRotationMap, SIGNAL( extentChanged() ), this, SLOT( updateMapRotation() ) );
   }
 
   refreshPicture();
@@ -820,6 +873,18 @@ int QgsComposerPicture::rotationMap() const
   {
     return mRotationMap->id();
   }
+}
+
+void QgsComposerPicture::setNorthMode( QgsComposerPicture::NorthMode mode )
+{
+  mNorthMode = mode;
+  updateMapRotation();
+}
+
+void QgsComposerPicture::setNorthOffset( double offset )
+{
+  mNorthOffset = offset;
+  updateMapRotation();
 }
 
 void QgsComposerPicture::setPictureAnchor( QgsComposerItem::ItemPositionMode anchor )
