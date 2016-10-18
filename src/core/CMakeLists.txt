@@ -81,6 +81,7 @@ SET(QGIS_CORE_SRCS
   qgsactionmanager.cpp
   qgsaggregatecalculator.cpp
   qgsattributetableconfig.cpp
+  qgsbearingutils.cpp
   qgsbrowsermodel.cpp
   qgscachedfeatureiterator.cpp
   qgscacheindex.cpp
@@ -613,6 +614,7 @@ SET(QGIS_CORE_HDRS
   qgsannotation.h
   qgsattributetableconfig.h
   qgsattributeaction.h
+  qgsbearingutils.h
   qgscachedfeatureiterator.h
   qgscacheindex.h
   qgscacheindexfeatureid.h

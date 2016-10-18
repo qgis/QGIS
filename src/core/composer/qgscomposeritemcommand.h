@@ -109,6 +109,7 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       LegendRasterBorderWidth,
       //composer picture
       ComposerPictureRotation,
+      ComposerPictureNorthOffset,
       // composer scalebar
       ScaleBarLineWidth,
       ScaleBarHeight,
