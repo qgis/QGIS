@@ -10,10 +10,12 @@ class QgsMapLayer : QObject
 %End
 
 %ConvertToSubClassCode
-  if (sipCpp->inherits("QgsMapLayer"))
+  QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( sipCpp );
+
+  sipType = 0;
+
+  if ( layer )
   {
-    sipType = sipType_QgsMapLayer;
-    QgsMapLayer* layer = qobject_cast<QgsMapLayer*>(sipCpp);
     if (layer->type() == QgsMapLayer::VectorLayer)
     {
       sipType = sipType_QgsVectorLayer;
@@ -27,11 +29,6 @@ class QgsMapLayer : QObject
       sipType = sipType_QgsPluginLayer;
     }
   }
-  else
-  {
-    sipType = 0;
-  }
-
 %End
 
   public:
