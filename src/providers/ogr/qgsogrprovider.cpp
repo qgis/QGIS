@@ -287,6 +287,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     , mFirstFieldIsFid( false )
     , ogrDataSource( nullptr )
     , mExtent( nullptr )
+    , mForceRecomputeExtent( false )
     , ogrLayer( nullptr )
     , ogrOrigLayer( nullptr )
     , mLayerIndex( 0 )
@@ -483,7 +484,7 @@ bool QgsOgrProvider::setSubsetString( const QString& theSQL, bool updateFeatureC
   loadFields();
   QgsDebugMsg( "Done checking validity" );
 
-  updateExtents();
+  invalidateCachedExtent( false );
 
   emit dataChanged();
 
@@ -978,6 +979,17 @@ QgsRectangle QgsOgrProvider::extent()
     // get the extent_ (envelope) of the layer
     QgsDebugMsg( "Starting get extent" );
 
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,2)
+    if ( mForceRecomputeExtent && mValid && ogrDriverName == "GPKG" && ogrDataSource && ogrOrigLayer )
+    {
+      QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
+      // works with unquoted layerName
+      QByteArray sql = QByteArray( "RECOMPUTE EXTENT ON " ) + layerName;
+      QgsDebugMsg( QString( "SQL: %1" ).arg( FROM8( sql ) ) );
+      OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), nullptr, nullptr );
+    }
+#endif
+
     // TODO: This can be expensive, do we really need it!
     if ( ogrLayer == ogrOrigLayer )
     {
@@ -1021,6 +1033,12 @@ QgsRectangle QgsOgrProvider::extent()
 
 void QgsOgrProvider::updateExtents()
 {
+  invalidateCachedExtent( true );
+}
+
+void QgsOgrProvider::invalidateCachedExtent( bool bForceRecomputeExtent )
+{
+  mForceRecomputeExtent = bForceRecomputeExtent;
   delete mExtent;
   mExtent = nullptr;
 }
@@ -1665,6 +1683,8 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     }
     mShapefileMayBeCorrupted = true;
 
+    invalidateCachedExtent( true );
+
     OGR_F_Destroy( theOGRFeature );
   }
   QgsOgrConnPool::instance()->invalidateConnections( dataSourceUri() );
@@ -1734,7 +1754,7 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
 
   clearMinMaxCache();
 
-  updateExtents();
+  invalidateCachedExtent( true );
 
   return returnvalue;
 }
@@ -3442,7 +3462,7 @@ void QgsOgrProvider::close()
   mValid = false;
   setProperty( "_debug_open_mode", "invalid" );
 
-  updateExtents();
+  invalidateCachedExtent( false );
 }
 
 void QgsOgrProvider::reloadData()
