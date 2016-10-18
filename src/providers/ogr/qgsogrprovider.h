@@ -171,6 +171,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     virtual bool leaveUpdateMode() override;
 
+    virtual bool isSaveAndLoadStyleToDBSupported() override;
+
     /** Return vector file filter string
      *
      * Returns a string suitable for a QFileDialog of vector file formats
@@ -303,7 +305,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
     QString ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const;
-    OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString& typeName ) const;
     QgsFields mAttributeFields;
     bool mFirstFieldIsFid;
     OGRDataSourceH ogrDataSource;
