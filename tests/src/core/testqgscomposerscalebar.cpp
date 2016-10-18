@@ -25,6 +25,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsfontutils.h"
+#include "qgsproject.h"
 
 #include <QLocale>
 #include <QObject>
@@ -74,6 +75,8 @@ void TestQgsComposerScaleBar::initTestCase()
   // other locales may render the number differently (e.g. "10 000" in cs_CZ)
   // so we enforce C locale to make sure we get expected result
   QLocale::setDefault( QLocale::c() );
+
+  QgsProject::instance()->setEllipsoid( "WGS84" );
 
   mMapSettings = new QgsMapSettings();
 
