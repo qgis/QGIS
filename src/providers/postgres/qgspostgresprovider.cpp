@@ -1707,7 +1707,13 @@ QVariant QgsPostgresProvider::defaultValue( int fieldId ) const
 
     QgsPostgresResult res( connectionRO()->PQexec( QString( "SELECT %1" ).arg( defVal.toString() ) ) );
 
-    return convertValue( fld.type(), fld.subType(), res.PQgetvalue( 0, 0 ) );
+    if ( res.result() )
+      return convertValue( fld.type(), fld.subType(), res.PQgetvalue( 0, 0 ) );
+    else
+    {
+      pushError( tr( "Could not execute query" ) );
+      return QVariant();
+    }
   }
 
   return defVal;

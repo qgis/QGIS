@@ -445,7 +445,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
   signals:
     /** Signals an error in this provider */
-    void raiseError( const QString& msg );
+    void raiseError( const QString& msg ) const;
 
   protected:
     void clearMinMaxCache();
@@ -465,7 +465,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /** The names of the providers native types*/
     QList< NativeType > mNativeTypes;
 
-    void pushError( const QString& msg );
+    void pushError( const QString& msg ) const;
 
     /** Old-style mapping of index to name for QgsPalLabeling fix */
     QgsAttrPalIndexNameHash mAttrPalIndexName;
@@ -479,7 +479,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     QMap<QString, QVariant::Type> mOldTypeList;
 
     /** List of errors */
-    QStringList mErrors;
+    mutable QStringList mErrors;
 
     static QStringList smEncodings;
 

@@ -606,7 +606,7 @@ QStringList QgsVectorDataProvider::errors() const
   return mErrors;
 }
 
-void QgsVectorDataProvider::pushError( const QString& msg )
+void QgsVectorDataProvider::pushError( const QString& msg ) const
 {
   QgsDebugMsg( msg );
   mErrors << msg;
