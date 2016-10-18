@@ -160,7 +160,7 @@ void QgsSubstitutionListWidget::on_mButtonImport_clicked()
   if ( root.tagName() != "substitutions" )
   {
     QMessageBox::warning( nullptr, tr( "Import substitutions" ),
-                          tr( "The selected file in not an substitutions list." ),
+                          tr( "The selected file is not a substitution list." ),
                           QMessageBox::Ok,
                           QMessageBox::Ok );
     return;
