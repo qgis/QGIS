@@ -765,7 +765,11 @@ bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
   Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
   {
     QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
-    if ( eww && dst.count() > eww->fieldIdx() )
+
+    if ( !eww )
+      continue;
+
+    if ( dst.count() > eww->fieldIdx() )
     {
       QVariant dstVar = dst.at( eww->fieldIdx() );
       QVariant srcVar = eww->value();
