@@ -33,6 +33,7 @@ from qgis.PyQt.QtGui import QCursor, QColor, QPalette
 
 from qgis.core import QgsMapLayerRegistry
 from qgis.gui import QgsMessageBar
+from qgis.utils import iface
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -43,12 +44,16 @@ from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmExecutor import runalg, runalgIterating
 from processing.gui.Postprocessing import handleAlgorithmResults
 
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterMultipleInput
+
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputTable
 
-
-from qgis.utils import iface
+from processing.tools import dataobjects
 
 
 class AlgorithmDialog(AlgorithmDialogBase):
