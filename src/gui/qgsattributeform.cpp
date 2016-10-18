@@ -44,6 +44,7 @@
 #include <QSettings>
 #include <QToolButton>
 #include <QMenu>
+#include <QSvgWidget>
 
 int QgsAttributeForm::sFormCounter = 0;
 
@@ -185,20 +186,20 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
     case QgsAttributeForm::SingleEditMode:
       setFeature( mFeature );
       mSearchButtonBox->setVisible( false );
-      mInvalidConstraintMessage->show();
+      mTopMessageWidget->show();
       break;
 
     case QgsAttributeForm::AddFeatureMode:
       synchronizeEnabledState();
       mSearchButtonBox->setVisible( false );
-      mInvalidConstraintMessage->show();
+      mTopMessageWidget->show();
       break;
 
     case QgsAttributeForm::MultiEditMode:
       resetMultiEdit( false );
       synchronizeEnabledState();
       mSearchButtonBox->setVisible( false );
-      mInvalidConstraintMessage->show();
+      mTopMessageWidget->show();
       break;
 
     case QgsAttributeForm::SearchMode:
@@ -211,7 +212,7 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
       }
       else
       {
-        mInvalidConstraintMessage->hide();
+        mTopMessageWidget->hide();
       }
       break;
   }
@@ -792,9 +793,8 @@ bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
 
 void QgsAttributeForm::clearInvalidConstraintsMessage()
 {
-  mInvalidConstraintMessage->hide();
+  mTopMessageWidget->hide();
   mInvalidConstraintMessage->clear();
-  mInvalidConstraintMessage->setStyleSheet( QString() );
 }
 
 void QgsAttributeForm::displayInvalidConstraintMessage( const QStringList& f,
@@ -809,14 +809,10 @@ void QgsAttributeForm::displayInvalidConstraintMessage( const QStringList& f,
   for ( int i = 0; i < size; i++ )
     descriptions += QString( "<li>%1: <i>%2</i></li>" ).arg( f[i] ).arg( d[i] );
 
-  QString icPath = QgsApplication::iconPath( "/mIconWarning.svg" );
+  QString msg = QString( "<b>%1</b><ul>%2</ul>" ).arg( tr( "Invalid fields" ) ).arg( descriptions ) ;
 
-  QString title = QString( "<img src=\"%1\">     <b>%2:" ).arg( icPath ).arg( tr( "Invalid fields" ) );
-  QString msg = QString( "%1</b><ul>%2</ul>" ).arg( title ).arg( descriptions ) ;
-
-  mInvalidConstraintMessage->show();
   mInvalidConstraintMessage->setText( msg );
-  mInvalidConstraintMessage->setStyleSheet( "QLabel { background-color : #ffc800; }" );
+  mTopMessageWidget->show();
 }
 
 void QgsAttributeForm::registerContainerInformation( QgsAttributeForm::ContainerInformation* info )
@@ -1070,9 +1066,18 @@ void QgsAttributeForm::init()
   mMessageBar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
   vl->addWidget( mMessageBar );
 
+  mTopMessageWidget = new QWidget();
+  mTopMessageWidget->hide();
+  mTopMessageWidget->setLayout( new QHBoxLayout() );
+
+  QSvgWidget* warningIcon = new QSvgWidget( QgsApplication::iconPath( "/mIconWarning.svg" ) );
+  warningIcon->setFixedSize( 48, 48 );
+  mTopMessageWidget->layout()->addWidget( warningIcon );
   mInvalidConstraintMessage = new QLabel( this );
-  mInvalidConstraintMessage->hide();
-  vl->addWidget( mInvalidConstraintMessage );
+  mTopMessageWidget->layout()->addWidget( mInvalidConstraintMessage );
+  mTopMessageWidget->hide();
+
+  vl->addWidget( mTopMessageWidget );
 
   setLayout( vl );
 

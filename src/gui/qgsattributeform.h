@@ -339,6 +339,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QgsMessageBarItem* mMultiEditUnsavedMessageBarItem;
     QgsMessageBarItem* mMultiEditMessageBarItem;
     QLabel* mInvalidConstraintMessage;
+    QWidget* mTopMessageWidget;
     QList<QgsWidgetWrapper*> mWidgets;
     QgsAttributeEditorContext mContext;
     QDialogButtonBox* mButtonBox;
