@@ -68,6 +68,17 @@ MACRO (PLUGIN_INSTALL plugin subdir )
   ENDFOREACH(file)
 ENDMACRO (PLUGIN_INSTALL)
 
+ADD_CUSTOM_TARGET(staged-plugins-copy-init-py ALL DEPENDS staged-plugins)
+
+# Dummy file to stage to output/python/plugins for testing purposes
+ADD_CUSTOM_COMMAND(TARGET staged-plugins-copy-init-py
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${PYTHON_OUTPUT_DIRECTORY}/plugins"
+    COMMAND ${CMAKE_COMMAND} -E copy __init__.py "${PYTHON_OUTPUT_DIRECTORY}/plugins"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    DEPENDS __init__.py
+)
+
 ADD_SUBDIRECTORY(GdalTools)
 ADD_SUBDIRECTORY(db_manager)
 ADD_SUBDIRECTORY(processing)
