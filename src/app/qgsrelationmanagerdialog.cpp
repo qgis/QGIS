@@ -46,6 +46,7 @@ void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer* >& layers
 
 void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
 {
+  mRelationsTable->setSortingEnabled( false );
   int row = mRelationsTable->rowCount();
   mRelationsTable->insertRow( row );
 
@@ -74,6 +75,7 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   item = new QTableWidgetItem( rel.id() );
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 5, item );
+  mRelationsTable->setSortingEnabled( true );
 }
 
 void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
