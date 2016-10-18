@@ -512,16 +512,43 @@ def ogrConnectionString(uri):
     return '"' + ogrstr + '"'
 
 
+#
+# The uri parameter is an URI from any QGIS provider,
+# so could have different formats.
+# Example formats:
+#
+# -- PostgreSQL provider
+# port=5493 sslmode=disable key='edge_id' srid=0 type=LineString table="city_data"."edge" (geom) sql=
+#
+# -- Spatialite provider
+# dbname='/tmp/x.sqlite' table="t" (geometry) sql='
+#
+# -- OGR provider (single-layer directory)
+# /tmp/x.gdb
+#
+# -- OGR provider (multi-layer directory)
+# /tmp/x.gdb|layerid=1
+#
+# -- OGR provider (multi-layer directory)
+# /tmp/x.gdb|layername=thelayer
+#
 def ogrLayerName(uri):
-    if 'host' in uri:
-        regex = re.compile('table="(.+?)\.(.+?)"')
-        r = regex.search(uri)
-        return '"' + r.groups()[0] + '.' + r.groups()[1] + '"'
-    elif 'dbname' in uri:
-        regex = re.compile('table="(.+?)"')
-        r = regex.search(uri)
-        return r.groups()[0]
-    elif 'layername' in uri:
+
+    # handle URIs of database providers
+    if ' table=' in uri:
+        # Matches table="schema"."table"
+        re_table_schema = re.compile(' table="([^"]*)"\."([^"]*)"')
+        r = re_table_schema.search(uri)
+        if r:
+            return r.groups()[0] + '.' + r.groups()[1]
+        # Matches table="table"
+        re_table = re.compile(' table="([^"]*)"')
+        r = re_table.search(uri)
+        if r:
+            return r.groups()[0]
+
+    # handle URIs of OGR provider with explicit layername
+    if 'layername' in uri:
         regex = re.compile('(layername=)([^|]*)')
         r = regex.search(uri)
         return r.groups()[1]
