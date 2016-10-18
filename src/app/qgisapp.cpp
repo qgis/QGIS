@@ -215,7 +215,6 @@
 #include "qgsselectbyformdialog.h"
 #include "qgsshortcutsmanager.h"
 #include "qgssinglebandgrayrenderer.h"
-#include "qgssnappingdialog.h"
 #include "qgssnappingwidget.h"
 #include "qgssourceselectdialog.h"
 #include "qgssponsors.h"
@@ -814,9 +813,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QString mainSnappingWidgetMode = QSettings().value( "/qgis/mainSnappingWidgetMode", "dialog" ).toString();
   if ( mainSnappingWidgetMode == "dock" )
   {
-    QgsSnappingDock* dock = new QgsSnappingDock( tr( "Snapping and Digitizing Options" ), QgisApp::instance() );
+    QgsDockWidget* dock = new QgsDockWidget( tr( "Snapping and Digitizing Options" ), QgisApp::instance() );
     dock->setAllowedAreas( Qt::AllDockWidgetAreas );
     dock->setWidget( mSnappingDialogWidget );
+    dock->setObjectName( "Snapping and Digitizing Options" );
     addDockWidget( Qt::LeftDockWidgetArea, dock );
     mSnappingDialogContainer = dock;
     dock->hide();
