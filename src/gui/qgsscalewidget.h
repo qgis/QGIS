@@ -55,7 +55,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
     //! Function to read the selected scale as double
     double scale() const { return mScaleComboBox->scale();}
     //! Function to set the selected scale from double
-    void setScale( double scale ) { return mScaleComboBox->setScale( scale ); }
+    void setScale( double scale );
     //! Function to read the min scale
     double minScale() const { return mScaleComboBox->minScale(); }
 

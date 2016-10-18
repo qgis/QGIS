@@ -53,6 +53,13 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
       Unknown
     };
 
+    //! Method for syncing rotation to a map's North direction
+    enum NorthMode
+    {
+      GridNorth = 0, /*!< Align to grid north */
+      TrueNorth, /*!< Align to true north */
+    };
+
     QgsComposerPicture( QgsComposition *composition );
     ~QgsComposerPicture();
 
@@ -154,6 +161,38 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @see setRotationMap
      */
     bool useRotationMap() const { return mRotationMap; }
+
+    /**
+     * Returns the mode used to align the picture to a map's North.
+     * @see setNorthMode()
+     * @see northOffset()
+     * @note added in QGIS 2.18
+     */
+    NorthMode northMode() const { return mNorthMode; }
+
+    /**
+     * Sets the mode used to align the picture to a map's North.
+     * @see northMode()
+     * @see setNorthOffset()
+     * @note added in QGIS 2.18
+     */
+    void setNorthMode( NorthMode mode );
+
+    /**
+     * Returns the offset added to the picture's rotation from a map's North.
+     * @see setNorthOffset()
+     * @see northMode()
+     * @note added in QGIS 2.18
+     */
+    double northOffset() const { return mNorthOffset; }
+
+    /**
+     * Sets the offset added to the picture's rotation from a map's North.
+     * @see northOffset()
+     * @see setNorthMode()
+     * @note added in QGIS 2.18
+     */
+    void setNorthOffset( double offset );
 
     /** Returns the resize mode used for drawing the picture within the composer
      * item's frame.
@@ -366,6 +405,12 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     double mPictureRotation;
     /** Map that sets the rotation (or 0 if this picture uses map independent rotation)*/
     const QgsComposerMap* mRotationMap;
+
+    //! Mode used to align to North
+    NorthMode mNorthMode;
+    //! Offset for north arrow
+    double mNorthOffset;
+
     /** Width of the picture (in mm)*/
     double mPictureWidth;
     /** Height of the picture (in mm)*/
@@ -404,6 +449,8 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
   private slots:
 
     void remotePictureLoaded();
+
+    void updateMapRotation();
 };
 
 #endif

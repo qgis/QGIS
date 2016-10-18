@@ -117,6 +117,8 @@ QgsSymbolLayerV2* QgsGeometryGeneratorSymbolLayerV2::clone() const
 
   clone->setSymbolType( mSymbolType );
 
+  copyPaintEffect( clone );
+
   return clone;
 }
 

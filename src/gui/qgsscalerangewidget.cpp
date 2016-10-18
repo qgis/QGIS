@@ -90,6 +90,8 @@ void QgsScaleRangeWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
 
 void QgsScaleRangeWidget::setMinimumScale( double scale )
 {
+  if ( qIsInf( scale ) )
+    scale = 0;
   mMinimumScaleWidget->setScale( scale );
 }
 
@@ -100,6 +102,8 @@ double QgsScaleRangeWidget::minimumScale()
 
 void QgsScaleRangeWidget::setMaximumScale( double scale )
 {
+  if ( qIsInf( scale ) )
+    scale = 0;
   mMaximumScaleWidget->setScale( scale );
 }
 
@@ -110,12 +114,20 @@ double QgsScaleRangeWidget::maximumScale()
 
 double QgsScaleRangeWidget::minimumScaleDenom()
 {
-  return qRound( 1.0 / maximumScale() );
+  double scale = maximumScale();
+  if ( scale == 0 )
+    return 0;
+  else
+    return qRound( 1.0 / scale );
 }
 
 double QgsScaleRangeWidget::maximumScaleDenom()
 {
-  return qRound( 1.0 / minimumScale() );
+  double scale = minimumScale();
+  if ( scale == 0 )
+    return 0;
+  else
+    return qRound( 1.0 / scale );
 }
 
 void QgsScaleRangeWidget::setScaleRange( double min, double max )
