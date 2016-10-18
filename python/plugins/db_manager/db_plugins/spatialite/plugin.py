@@ -51,7 +51,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
 
     @classmethod
     def typeNameString(self):
-        return 'SpatiaLite/Geopackage'
+        return 'SpatiaLite'
 
     @classmethod
     def providerName(self):
@@ -89,7 +89,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
     def addConnectionActionSlot(self, item, action, parent, index):
         QApplication.restoreOverrideCursor()
         try:
-            filename = QFileDialog.getOpenFileName(parent, "Choose Sqlite/Spatialite/Geopackage file")
+            filename = QFileDialog.getOpenFileName(parent, "Choose Sqlite/Spatialite file")
             if not filename:
                 return
         finally:
@@ -183,21 +183,13 @@ class SLTable(Table):
         return ogrUri
 
     def mimeUri(self):
-        if self.database().connector.isGpkg():
-            # QGIS has no provider to load Geopackage vectors, let's use OGR
-            return u"vector:ogr:%s:%s" % (self.name, self.ogrUri())
         return Table.mimeUri(self)
 
     def toMapLayer(self):
         from qgis.core import QgsVectorLayer
 
-        if self.database().connector.isGpkg():
-            # QGIS has no provider to load Geopackage vectors, let's use OGR
-            provider = "ogr"
-            uri = self.ogrUri()
-        else:
-            provider = self.database().dbplugin().providerName()
-            uri = self.uri().uri()
+        provider = self.database().dbplugin().providerName()
+        uri = self.uri().uri()
 
         return QgsVectorLayer(uri, self.name, provider)
 
@@ -282,12 +274,8 @@ class SLRasterTable(SLTable, RasterTable):
     def toMapLayer(self):
         from qgis.core import QgsRasterLayer, QgsContrastEnhancement
 
-        if self.database().connector.isGpkg():
-            # QGIS has no provider to load Geopackage rasters, let's use GDAL
-            uri = self.ogrUri()
-        else:
-            # QGIS has no provider to load Rasterlite rasters, let's use GDAL
-            uri = self.rasterliteGdalUri()
+        # QGIS has no provider to load Rasterlite rasters, let's use GDAL
+        uri = self.rasterliteGdalUri()
 
         rl = QgsRasterLayer(uri, self.name)
         if rl.isValid():
