@@ -1322,6 +1322,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Set the layer for the map style dock. Doesn't show the style dock */
     void setMapStyleDockLayer( QgsMapLayer *layer );
 
+    //! Handles processing of dropped mimedata
+    void dropEventTimeout();
+
   signals:
     /** Emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
