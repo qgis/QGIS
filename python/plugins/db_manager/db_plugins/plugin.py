@@ -550,6 +550,9 @@ class Database(DbItemObject):
     def spatialIndexClause(self, src_table, src_column, dest_table, dest_table_column):
         return None
 
+    def hasLowercaseFieldNamesOption(self):
+        return False
+
 
 class Schema(DbItemObject):
 
