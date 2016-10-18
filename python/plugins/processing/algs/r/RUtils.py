@@ -35,7 +35,7 @@ import subprocess
 from qgis.PyQt.QtCore import QSettings, QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import userFolder, isWindows, mkdir
+from processing.tools.system import userFolder, isWindows, mkdir, getTempFilenameInTempFolder
 
 
 class RUtils(object):

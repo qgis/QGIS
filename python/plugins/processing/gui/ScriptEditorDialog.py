@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'December 2012'
@@ -98,8 +97,8 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.btnPaste.clicked.connect(self.editor.paste)
         self.btnUndo.clicked.connect(self.editor.undo)
         self.btnRedo.clicked.connect(self.editor.redo)
-        self.btnIncreaseFont.clicked.connect(self.increaseFontSize)
-        self.btnDecreaseFont.clicked.connect(self.decreaseFontSize)
+        self.btnIncreaseFont.clicked.connect(self.editor.zoomIn)
+        self.btnDecreaseFont.clicked.connect(self.editor.zoomOut)
         self.editor.textChanged.connect(lambda: self.setHasChanged(True))
 
         self.alg = alg
@@ -139,15 +138,6 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         self.editor.setLexerType(self.algType)
 
-    def increaseFontSize(self):
-        font = self.editor.defaultFont
-        self.editor.setFonts(font.pointSize() + 1)
-        self.editor.initLexer()
-
-    def decreaseFontSize(self):
-        font = self.editor.defaultFont
-        self.editor.setFonts(font.pointSize() - 1)
-        self.editor.initLexer()
 
     def showSnippets(self, evt):
         popupmenu = QMenu()
@@ -173,9 +163,9 @@ class ScriptEditorDialog(BASE, WIDGET):
     def editHelp(self):
         if self.alg is None:
             if self.algType == self.SCRIPT_PYTHON:
-                alg = ScriptAlgorithm(None, str(self.editor.text()))
+                alg = ScriptAlgorithm(None, self.editor.text())
             elif self.algType == self.SCRIPT_R:
-                alg = RAlgorithm(None, str(self.editor.text()))
+                alg = RAlgorithm(None, self.editor.text())
         else:
             alg = self.alg
 
@@ -200,7 +190,7 @@ class ScriptEditorDialog(BASE, WIDGET):
             scriptDir = RUtils.RScriptsFolders()[0]
             filterName = self.tr('Processing R script (*.rsx)')
 
-        self.filename, selected_filter = QFileDialog.getOpenFileName(
+        self.filename = QFileDialog.getOpenFileName(
             self, self.tr('Open script'), scriptDir, filterName)
 
         if self.filename == '':
@@ -231,9 +221,9 @@ class ScriptEditorDialog(BASE, WIDGET):
                 scriptDir = RUtils.RScriptsFolders()[0]
                 filterName = self.tr('Processing R script (*.rsx)')
 
-            self.filename, filter = QFileDialog.getSaveFileName(self,
+            self.filename = str(QFileDialog.getSaveFileName(self,
                                                                 self.tr('Save script'), scriptDir,
-                                                                filterName)
+                                                                filterName))
 
         if self.filename:
             if self.algType == self.SCRIPT_PYTHON and \
@@ -243,7 +233,7 @@ class ScriptEditorDialog(BASE, WIDGET):
                     not self.filename.lower().endswith('.rsx'):
                 self.filename += '.rsx'
 
-            text = str(self.editor.text())
+            text = self.editor.text()
             if self.alg is not None:
                 self.alg.script = text
             try:
@@ -273,10 +263,10 @@ class ScriptEditorDialog(BASE, WIDGET):
 
     def runAlgorithm(self):
         if self.algType == self.SCRIPT_PYTHON:
-            alg = ScriptAlgorithm(None, str(self.editor.text()))
+            alg = ScriptAlgorithm(None, self.editor.text())
             alg.provider = algList.getProviderFromName('script')
         if self.algType == self.SCRIPT_R:
-            alg = RAlgorithm(None, str(self.editor.text()))
+            alg = RAlgorithm(None, self.editor.text())
             alg.provider = algList.getProviderFromName('r')
 
         dlg = alg.getCustomParametersDialog()

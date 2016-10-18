@@ -150,7 +150,7 @@ class ListMultiSelectWidget(QGroupBox):
 
     def _setupUI(self):
         self.setSizePolicy(
-            QSizePolicy.Preferred, QSizePolicy.Ignored)
+            QSizePolicy.Preferred, QSizePolicy.Preferred)
 
         self.setMinimumHeight(180)
 
