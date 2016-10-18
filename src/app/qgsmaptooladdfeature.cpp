@@ -296,7 +296,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 
         //use always topological editing for avoidIntersection.
         //Otherwise, no way to guarantee the geometries don't have a small gap in between.
-        QStringList intersectionLayers = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList" );
+        QStringList intersectionLayers = QgsProject::instance()->avoidIntersectionsList();
         bool avoidIntersection = !intersectionLayers.isEmpty();
         if ( avoidIntersection ) //try to add topological points also to background layers
         {

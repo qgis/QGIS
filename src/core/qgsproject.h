@@ -79,6 +79,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QString homePath READ homePath NOTIFY homePathChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs )
     Q_PROPERTY( QgsSnappingConfig snappingConfig READ snappingConfig WRITE setSnappingConfig NOTIFY snappingConfigChanged )
+    Q_PROPERTY( QStringList avoidIntersectionsList READ avoidIntersectionsList WRITE setAvoidIntersectionsList NOTIFY avoidIntersectionsListChanged )
 
   public:
 
@@ -468,6 +469,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setSnappingConfig( const QgsSnappingConfig& snappingConfig );
 
+    /**
+     * A list of layers with which intersections should be avoided.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QStringList avoidIntersectionsList() const;
+
+    /**
+     * A list of layers with which intersections should be avoided.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setAvoidIntersectionsList( const QStringList& avoidIntersectionsList );
+
   signals:
     //! emitted when project is being read
     void readProject( const QDomDocument& );
@@ -541,6 +556,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @note Added in QGIS 3.0
      */
     void topologicalEditingChanged();
+
+    /**
+     * Emitted whenever avoidIntersectionsList has changed.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void avoidIntersectionsListChanged();
 
   public slots:
     /**

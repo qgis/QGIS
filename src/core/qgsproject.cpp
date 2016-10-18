@@ -1002,6 +1002,17 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
   }
 }
 
+QStringList QgsProject::avoidIntersectionsList() const
+{
+  return readListEntry( "Digitizing", "/AvoidIntersectionsList", QStringList() );
+}
+
+void QgsProject::setAvoidIntersectionsList( const QStringList& avoidIntersectionsList )
+{
+  writeEntry( "Digitizing", "/AvoidIntersectionsList", avoidIntersectionsList );
+  emit avoidIntersectionsListChanged();
+}
+
 QgsExpressionContext QgsProject::createExpressionContext() const
 {
   QgsExpressionContext context;
