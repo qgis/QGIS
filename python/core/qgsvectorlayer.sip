@@ -662,11 +662,11 @@ class QgsVectorLayer : QgsMapLayer
      * @param description
      * @param useAsDefault
      * @param uiFileContent
-     * @param msgError
+     * @param msgError (out)
      */
     virtual void saveStyleToDatabase( const QString& name, const QString& description,
                                       bool useAsDefault, const QString& uiFileContent,
-                                      QString &msgError );
+                                      QString &msgError /Out/ );
 
     /**
      * Lists all the style in db split into related to the layer and not related to
@@ -682,7 +682,7 @@ class QgsVectorLayer : QgsMapLayer
     /**
      * Will return the named style corresponding to style id provided
      */
-    virtual QString getStyleFromDatabase( const QString& styleId, QString &msgError );
+    virtual QString getStyleFromDatabase( const QString& styleId, QString &msgError /Out/ );
 
     /**
      * Load a named style from file/local db/datasource db
@@ -690,13 +690,13 @@ class QgsVectorLayer : QgsMapLayer
      * @param theResultFlag will be set to true if a named style is correctly loaded
      * @param loadFromLocalDb if true forces to load from local db instead of datasource one
      */
-    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag, bool loadFromLocalDb );
+    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag /Out/, bool loadFromLocalDb );
 
     /**
      * Calls loadNamedStyle( theURI, theResultFlag, false );
      * Retained for backward compatibility
      */
-    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag );
+    virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag /Out/ );
 
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.
