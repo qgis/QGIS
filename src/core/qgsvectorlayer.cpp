@@ -4394,7 +4394,7 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFl
 QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag, bool loadFromLocalDB )
 {
   QgsDataSourceURI dsUri( theURI );
-  if ( !loadFromLocalDB && !dsUri.database().isEmpty() )
+  if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDBSupported() )
   {
     QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
     QLibrary *myLib = pReg->providerLibrary( mProviderKey );
