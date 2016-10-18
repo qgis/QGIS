@@ -44,6 +44,13 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   mOutlineColorButton->setColorDialogTitle( tr( "Select outline color" ) );
   mOutlineColorButton->setContext( "composer" );
 
+  mNorthTypeComboBox->blockSignals( true );
+  mNorthTypeComboBox->addItem( tr( "Grid north" ), QgsComposerPicture::GridNorth );
+  mNorthTypeComboBox->addItem( tr( "True north" ), QgsComposerPicture::TrueNorth );
+  mNorthTypeComboBox->blockSignals( false );
+  mPictureRotationOffsetSpinBox->setClearValue( 0.0 );
+  mPictureRotationSpinBox->setClearValue( 0.0 );
+
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, picture );
   mainLayout->addWidget( itemPropertiesWidget );
@@ -273,6 +280,8 @@ void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged(
     mPicture->setRotationMap( -1 );
     mPictureRotationSpinBox->setEnabled( true );
     mComposerMapComboBox->setEnabled( false );
+    mNorthTypeComboBox->setEnabled( false );
+    mPictureRotationOffsetSpinBox->setEnabled( false );
     mPicture->setPictureRotation( mPictureRotationSpinBox->value() );
   }
   else
@@ -286,6 +295,8 @@ void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged(
 
     mPicture->setRotationMap( composerId );
     mPictureRotationSpinBox->setEnabled( false );
+    mNorthTypeComboBox->setEnabled( true );
+    mPictureRotationOffsetSpinBox->setEnabled( true );
     mComposerMapComboBox->setEnabled( true );
   }
   mPicture->endCommand();
@@ -388,6 +399,8 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mPictureLineEdit->blockSignals( true );
     mComposerMapComboBox->blockSignals( true );
     mRotationFromComposerMapCheckBox->blockSignals( true );
+    mNorthTypeComboBox->blockSignals( true );
+    mPictureRotationOffsetSpinBox->blockSignals( true );
     mResizeModeComboBox->blockSignals( true );
     mAnchorPointComboBox->blockSignals( true );
     mFillColorButton->blockSignals( true );
@@ -410,13 +423,19 @@ void QgsComposerPictureWidget::setGuiElementValues()
       {
         mComposerMapComboBox->setCurrentIndex( itemId );
       }
+      mNorthTypeComboBox->setEnabled( true );
+      mPictureRotationOffsetSpinBox->setEnabled( true );
     }
     else
     {
       mRotationFromComposerMapCheckBox->setCheckState( Qt::Unchecked );
       mPictureRotationSpinBox->setEnabled( true );
       mComposerMapComboBox->setEnabled( false );
+      mNorthTypeComboBox->setEnabled( false );
+      mPictureRotationOffsetSpinBox->setEnabled( false );
     }
+    mNorthTypeComboBox->setCurrentIndex( mNorthTypeComboBox->findData( mPicture->northMode() ) );
+    mPictureRotationOffsetSpinBox->setValue( mPicture->northOffset() );
 
     mResizeModeComboBox->setCurrentIndex(( int )mPicture->resizeMode() );
     //disable picture rotation for non-zoom modes
@@ -444,6 +463,8 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mPictureRotationSpinBox->blockSignals( false );
     mPictureLineEdit->blockSignals( false );
     mComposerMapComboBox->blockSignals( false );
+    mNorthTypeComboBox->blockSignals( false );
+    mPictureRotationOffsetSpinBox->blockSignals( false );
     mResizeModeComboBox->blockSignals( false );
     mAnchorPointComboBox->blockSignals( false );
     mFillColorButton->blockSignals( false );
@@ -724,6 +745,22 @@ void QgsComposerPictureWidget::showEvent( QShowEvent * event )
 {
   Q_UNUSED( event );
   refreshMapComboBox();
+}
+
+void QgsComposerPictureWidget::on_mPictureRotationOffsetSpinBox_valueChanged( double d )
+{
+  mPicture->beginCommand( tr( "Picture North offset changed" ), QgsComposerMergeCommand::ComposerPictureNorthOffset );
+  mPicture->setNorthOffset( d );
+  mPicture->endCommand();
+  mPicture->update();
+}
+
+void QgsComposerPictureWidget::on_mNorthTypeComboBox_currentIndexChanged( int index )
+{
+  mPicture->beginCommand( tr( "Picture North mode changed" ) );
+  mPicture->setNorthMode( static_cast< QgsComposerPicture::NorthMode >( mNorthTypeComboBox->itemData( index ).toInt() ) );
+  mPicture->endCommand();
+  mPicture->update();
 }
 
 void QgsComposerPictureWidget::resizeEvent( QResizeEvent * event )
