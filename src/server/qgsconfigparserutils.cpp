@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgscsexception.h"
 #include "qgsmaplayer.h"
 #include "qgsrectangle.h"
 
@@ -95,8 +96,16 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
   if ( !layerExtent.isNull() )
   {
     QgsCoordinateTransform exGeoTransform( layerCRS, wgs84 );
-    wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
+    try
+    {
+      wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
+    }
+    catch ( const QgsCsException & )
+    {
+      wgs84BoundingRect = QgsRectangle();
+    }
   }
+
   if ( version == "1.1.1" )   // WMS Version 1.1.1
   {
     ExGeoBBoxElement = doc.createElement( "LatLonBoundingBox" );
@@ -146,16 +155,19 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
   bBoxElement.setAttribute( "maxy", QString::number( r.yMaximum() ) );
   */
 
-  QDomElement lastCRSElem = layerElem.lastChildElement( version == "1.1.1" ? "SRS" : "CRS" );
-  if ( !lastCRSElem.isNull() )
+  if ( !wgs84BoundingRect.isNull() ) //LatLonBoundingBox / Ex_GeographicBounding box is optional
   {
-    layerElem.insertAfter( ExGeoBBoxElement, lastCRSElem );
-    //layerElem.insertAfter( bBoxElement, ExGeoBBoxElement );
-  }
-  else
-  {
-    layerElem.appendChild( ExGeoBBoxElement );
-    //layerElem.appendChild( bBoxElement );
+    QDomElement lastCRSElem = layerElem.lastChildElement( version == "1.1.1" ? "SRS" : "CRS" );
+    if ( !lastCRSElem.isNull() )
+    {
+      layerElem.insertAfter( ExGeoBBoxElement, lastCRSElem );
+      //layerElem.insertAfter( bBoxElement, ExGeoBBoxElement );
+    }
+    else
+    {
+      layerElem.appendChild( ExGeoBBoxElement );
+      //layerElem.appendChild( bBoxElement );
+    }
   }
 
   //In case the number of advertised CRS is constrained
@@ -193,6 +205,11 @@ void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomD
   {
     QgsCoordinateTransform crsTransform( layerCRS, crs );
     crsExtent = crsTransform.transformBoundingBox( layerExtent );
+  }
+
+  if ( crsExtent.isNull() )
+  {
+    return;
   }
 
   //BoundingBox element

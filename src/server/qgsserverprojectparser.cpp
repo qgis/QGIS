@@ -20,6 +20,7 @@
 #include "qgsproject.h"
 #include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
+#include "qgscsexception.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmslayercache.h"
@@ -722,6 +723,11 @@ void QgsServerProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& gr
       continue;
 
     QgsRectangle bbox = layerBoundingBoxInProjectCrs( childElem, doc );
+    if ( bbox.isNull() )
+    {
+      continue;
+    }
+
     if ( !bbox.isEmpty() )
     {
       if ( firstBBox )
@@ -895,7 +901,15 @@ QgsRectangle QgsServerProjectParser::layerBoundingBoxInProjectCrs( const QDomEle
   QgsCoordinateTransform t( layerCrs, projectCrs() );
 
   //transform
-  BBox = t.transformBoundingBox( BBox );
+  try
+  {
+    BBox = t.transformBoundingBox( BBox );
+  }
+  catch ( const QgsCsException & )
+  {
+    BBox = QgsRectangle();
+  }
+
   return BBox;
 }
 
