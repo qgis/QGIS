@@ -253,7 +253,7 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="0" colspan="2">
+      <item row="8" column="0" colspan="2">
        <widget class="QCheckBox" name="chkSpatialIndex">
         <property name="text">
          <string>Create spatial index</string>
@@ -264,6 +264,13 @@
        <widget class="QCheckBox" name="chkDropTable">
         <property name="text">
          <string>Replace destination table (if exists)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QCheckBox" name="chkLowercaseFieldNames">
+        <property name="text">
+         <string>Convert field names to lowercase</string>
         </property>
        </widget>
       </item>
