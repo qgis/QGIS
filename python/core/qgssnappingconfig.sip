@@ -131,12 +131,6 @@ class QgsSnappingConfig
     //! set the type of units
     void setUnits( QgsTolerance::UnitType units );
 
-    //! return if the topological editing is enabled
-    bool topologicalEditing() const;
-
-    //! set if the topological editing is enabled
-    void setTopologicalEditing( bool enabled );
-
     //! return if the snapping on intersection is enabled
     bool intersectionSnapping() const;
 

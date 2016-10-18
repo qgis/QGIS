@@ -40,7 +40,7 @@
 
 
 
-QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas *canvas, QWidget* parent )
+QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas* canvas, QWidget* parent )
     : QWidget( parent )
     , mProject( project )
     , mCanvas( canvas )
@@ -227,6 +227,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject* project, QgsMapCanvas *canvas,
 
   // connect settings changed and map units changed to properly update the widget
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingWidget::projectSnapSettingsChanged );
+  connect( project, &QgsProject::topologicalEditingChanged, this, &QgsSnappingWidget::projectTopologicalEditingChanged );
   connect( mCanvas, SIGNAL( mapUnitsChanged() ), this, SLOT( updateToleranceDecimals() ) );
 
   // modeChanged determines if widget are visible or not based on mode
@@ -293,14 +294,17 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
     mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData( config.units() ) );
   }
 
-  if ( config.topologicalEditing() != mTopologicalEditingAction->isChecked() )
-  {
-    mTopologicalEditingAction->setChecked( config.topologicalEditing() );
-  }
-
   if ( config.intersectionSnapping() != mIntersectionSnappingAction->isChecked() )
   {
     mIntersectionSnappingAction->setChecked( config.intersectionSnapping() );
+  }
+}
+
+void QgsSnappingWidget::projectTopologicalEditingChanged()
+{
+  if ( QgsProject::instance()->topologicalEditing() != mTopologicalEditingAction->isChecked() )
+  {
+    mTopologicalEditingAction->setChecked( QgsProject::instance()->topologicalEditing() );
   }
 }
 
@@ -338,8 +342,7 @@ void QgsSnappingWidget::changeUnit( int idx )
 
 void QgsSnappingWidget::enableTopologicalEditing( bool enabled )
 {
-  mConfig.setTopologicalEditing( enabled );
-  mProject->setSnappingConfig( mConfig );
+  QgsProject::instance()->setTopologicalEditing( enabled );
 }
 
 void QgsSnappingWidget::enableIntersectionSnapping( bool enabled )

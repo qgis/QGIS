@@ -292,7 +292,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       if ( addFeature( vlayer, f.data(), false ) )
       {
         //add points to other features to keep topology up-to-date
-        int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+        bool topologicalEditing = QgsProject::instance()->topologicalEditing();
 
         //use always topological editing for avoidIntersection.
         //Otherwise, no way to guarantee the geometries don't have a small gap in between.

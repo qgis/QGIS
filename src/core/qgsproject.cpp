@@ -2029,12 +2029,12 @@ void QgsProject::setEvaluateDefaultValues( bool evaluateDefaultValues )
 void QgsProject::setTopologicalEditing( bool enabled )
 {
   QgsProject::instance()->writeEntry( "Digitizing", "/TopologicalEditing", ( enabled ? 1 : 0 ) );
-  // todo emit snapSettingsChanged();
+  emit topologicalEditingChanged();
 }
 
 bool QgsProject::topologicalEditing() const
 {
-  return ( QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 ) > 0 );
+  return QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
 }
 
 QgsUnitTypes::DistanceUnit QgsProject::distanceUnits() const

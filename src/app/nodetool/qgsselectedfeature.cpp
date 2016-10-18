@@ -35,14 +35,11 @@ QgsSelectedFeature::QgsSelectedFeature( QgsFeatureId featureId,
     , mChangingGeometry( false )
     , mValidator( nullptr )
 {
-  QgsDebugCall;
   setSelectedFeature( featureId, vlayer, canvas );
 }
 
 QgsSelectedFeature::~QgsSelectedFeature()
 {
-  QgsDebugCall;
-
   deleteVertexMap();
 
   while ( !mGeomErrorMarkers.isEmpty() )
@@ -63,15 +60,12 @@ QgsSelectedFeature::~QgsSelectedFeature()
 
 void QgsSelectedFeature::currentLayerChanged( QgsMapLayer *layer )
 {
-  QgsDebugCall;
   if ( layer == mVlayer )
     deleteLater();
 }
 
 void QgsSelectedFeature::updateGeometry( const QgsGeometry *geom )
 {
-  QgsDebugCall;
-
   delete mGeometry;
 
   if ( !geom )
@@ -119,7 +113,6 @@ void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLa
 
 void QgsSelectedFeature::beforeRollBack()
 {
-  QgsDebugCall;
   disconnect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
   deleteVertexMap();
 }
@@ -165,7 +158,6 @@ void QgsSelectedFeature::geometryChanged( QgsFeatureId fid, const QgsGeometry &g
 
 void QgsSelectedFeature::validateGeometry( QgsGeometry *g )
 {
-  QgsDebugCall;
   QSettings settings;
   if ( settings.value( "/qgis/digitizing/validate_geometries", 1 ).toInt() == 0 )
     return;
@@ -242,7 +234,7 @@ void QgsSelectedFeature::deleteSelectedVertexes()
   if ( nSelected == 0 )
     return;
 
-  int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+  bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QMultiMap<double, QgsSnappingResult> currentResultList;
 
   mVlayer->beginEditCommand( QObject::tr( "Deleted vertices" ) );
@@ -328,7 +320,7 @@ void QgsSelectedFeature::moveSelectedVertexes( QgsVector v )
     return;
 
   mVlayer->beginEditCommand( QObject::tr( "Moved vertices" ) );
-  int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+  bool topologicalEditing = QgsProject::instance()->topologicalEditing();
 
   beginGeometryChange();
 

@@ -73,6 +73,8 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
   private slots:
     void projectSnapSettingsChanged();
 
+    void projectTopologicalEditingChanged();
+
     void enableSnapping( bool checked );
 
     void changeTolerance( double tolerance );
