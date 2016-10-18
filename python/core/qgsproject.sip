@@ -390,6 +390,20 @@ class QgsProject : QObject
      */
     void setSnappingConfig( const QgsSnappingConfig& snappingConfig );
 
+    /**
+     * A list of layers with which intersections should be avoided.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QStringList avoidIntersectionsList() const;
+
+    /**
+     * A list of layers with which intersections should be avoided.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setAvoidIntersectionsList(const QStringList& avoidIntersectionsList);
+
   signals:
     //! emitted when project is being read
     void readProject( const QDomDocument & );
@@ -461,6 +475,13 @@ class QgsProject : QObject
      * @note Added in QGIS 3.0
      */
     void topologicalEditingChanged();
+
+    /**
+     * Emitted whenever avoidIntersectionsList has changed.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void avoidIntersectionsListChanged();
 
   public slots:
     /**

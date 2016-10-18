@@ -62,9 +62,8 @@ class CORE_EXPORT QgsSnappingConfig
          * @param type
          * @param tolerance
          * @param units
-         * @param avoidIntersection
          */
-        IndividualLayerSettings( bool enabled, QgsSnappingConfig::SnappingType type, double tolerance, QgsTolerance::UnitType units, bool avoidIntersection = false );
+        IndividualLayerSettings( bool enabled, QgsSnappingConfig::SnappingType type, double tolerance, QgsTolerance::UnitType units );
 
         /**
          * Constructs an invalid setting
@@ -98,12 +97,6 @@ class CORE_EXPORT QgsSnappingConfig
         //! set the type of units
         void setUnits( QgsTolerance::UnitType units );
 
-        //! return if it shall avoid intersection (polygon layers only)
-        bool avoidIntersection() const;
-
-        //! set if it shall avoid intersection (polygon layers only)
-        void setAvoidIntersection( bool avoidIntersection );
-
         /**
          * Compare this configuration to other.
          */
@@ -117,7 +110,6 @@ class CORE_EXPORT QgsSnappingConfig
         SnappingType mType;
         double mTolerance;
         QgsTolerance::UnitType mUnits;
-        bool mAvoidIntersection;
     };
 
     /**

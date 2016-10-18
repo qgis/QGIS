@@ -30,17 +30,15 @@ QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings()
     , mType( Vertex )
     , mTolerance( 0 )
     , mUnits( QgsTolerance::Pixels )
-    , mAvoidIntersection( false )
 {}
 
 
-QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units, bool avoidIntersection )
+QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units )
     : mValid( true )
     , mEnabled( enabled )
     , mType( type )
     , mTolerance( tolerance )
     , mUnits( units )
-    , mAvoidIntersection( avoidIntersection )
 {}
 
 bool QgsSnappingConfig::IndividualLayerSettings::valid() const
@@ -88,24 +86,13 @@ void QgsSnappingConfig::IndividualLayerSettings::setUnits( QgsTolerance::UnitTyp
   mUnits = units;
 }
 
-bool QgsSnappingConfig::IndividualLayerSettings::avoidIntersection() const
-{
-  return mAvoidIntersection;
-}
-
-void QgsSnappingConfig::IndividualLayerSettings::setAvoidIntersection( bool avoidIntersection )
-{
-  mAvoidIntersection = avoidIntersection;
-}
-
 bool QgsSnappingConfig::IndividualLayerSettings::operator !=( const QgsSnappingConfig::IndividualLayerSettings& other ) const
 {
   return mValid != other.mValid
          || mEnabled != other.mEnabled
          || mType != other.mType
          || mTolerance != other.mTolerance
-         || mUnits != other.mUnits
-         || mAvoidIntersection != other.mAvoidIntersection;
+         || mUnits != other.mUnits;
 }
 
 bool QgsSnappingConfig::IndividualLayerSettings::operator ==( const QgsSnappingConfig::IndividualLayerSettings& other ) const
@@ -114,8 +101,7 @@ bool QgsSnappingConfig::IndividualLayerSettings::operator ==( const QgsSnappingC
          && mEnabled == other.mEnabled
          && mType == other.mType
          && mTolerance == other.mTolerance
-         && mUnits == other.mUnits
-         && mAvoidIntersection == other.mAvoidIntersection;
+         && mUnits == other.mUnits;
 }
 
 
@@ -347,7 +333,6 @@ void QgsSnappingConfig::readProject( const QDomDocument& doc )
       SnappingType type = ( SnappingType )settingElement.attribute( "type" ).toInt();
       double tolerance = settingElement.attribute( "tolerance" ).toDouble();
       QgsTolerance::UnitType units = ( QgsTolerance::UnitType )settingElement.attribute( "units" ).toInt();
-      bool avoidIntersection = settingElement.attribute( "avoid-intersection" ) == "1";
 
       QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
       if ( !ml || ml->type() != QgsMapLayer::VectorLayer )
@@ -355,7 +340,7 @@ void QgsSnappingConfig::readProject( const QDomDocument& doc )
 
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
 
-      IndividualLayerSettings setting = IndividualLayerSettings( enabled, type, tolerance, units, avoidIntersection );
+      IndividualLayerSettings setting = IndividualLayerSettings( enabled, type, tolerance, units );
       mIndividualLayerSettings.insert( vl, setting );
     }
   }
@@ -382,7 +367,6 @@ void QgsSnappingConfig::writeProject( QDomDocument& doc )
     layerElement.setAttribute( "type", ( int )setting.type() );
     layerElement.setAttribute( "tolerance", setting.tolerance() );
     layerElement.setAttribute( "units", ( int )setting.units() );
-    layerElement.setAttribute( "avoid-intersection", QString::number( setting.avoidIntersection() ) );
     ilsElement.appendChild( layerElement );
   }
   snapSettingsElem.appendChild( ilsElement );

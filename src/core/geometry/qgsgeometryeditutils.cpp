@@ -241,10 +241,8 @@ QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstract
     return nullptr;
   }
 
-  //read avoid intersections list from project properties
-  bool listReadOk;
-  QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", QStringList(), &listReadOk );
-  if ( !listReadOk )
+  QStringList avoidIntersectionsList = QgsProject::instance()->avoidIntersectionsList();
+  if ( avoidIntersectionsList.isEmpty() )
     return nullptr; //no intersections stored in project does not mean error
 
   QList< QgsAbstractGeometry* > nearGeometries;
