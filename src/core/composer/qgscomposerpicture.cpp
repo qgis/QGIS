@@ -695,7 +695,7 @@ void QgsComposerPicture::setRotationMap( int composerMapId )
   connect( map, SIGNAL( mapRotationChanged( double ) ), this, SLOT( updateMapRotation() ) );
   connect( map, SIGNAL( extentChanged() ), this, SLOT( updateMapRotation() ) );
   mRotationMap = map;
-  update();
+  updateMapRotation();
   emit pictureRotationChanged( mPictureRotation );
 }
 
