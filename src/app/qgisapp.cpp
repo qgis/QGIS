@@ -1277,10 +1277,17 @@ void QgisApp::dragEnterEvent( QDragEnterEvent *event )
 
 void QgisApp::dropEvent( QDropEvent *event )
 {
-  mMapCanvas->freeze();
+  // dragging app is locked for the duration of dropEvent. This causes explorer windows to hang
+  // while large projects/layers are loaded. So instead we return from dropEvent as quickly as possible
+  // and do the actual handling of the drop after a very short timeout
+  QTimer* timer = new QTimer( this );
+  timer->setSingleShot( true );
+  timer->setInterval( 50 );
+
   // get the file list
   QList<QUrl>::iterator i;
   QList<QUrl>urls = event->mimeData()->urls();
+  QStringList files;
   for ( i = urls.begin(); i != urls.end(); ++i )
   {
     QString fileName = i->toLocalFile();
@@ -1333,13 +1340,37 @@ void QgisApp::dropEvent( QDropEvent *event )
     // so we test for length to make sure we have something
     if ( !fileName.isEmpty() )
     {
-      openFile( fileName );
+      files << fileName;
     }
   }
+  timer->setProperty( "files", files );
 
+  QgsMimeDataUtils::UriList lst;
   if ( QgsMimeDataUtils::isUriList( event->mimeData() ) )
   {
-    QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
+    lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
+  }
+  timer->setProperty( "uris", QVariant::fromValue( lst ) );
+
+  connect( timer, SIGNAL( timeout() ), this, SLOT( dropEventTimeout() ) );
+
+  event->acceptProposedAction();
+  timer->start();
+}
+
+void QgisApp::dropEventTimeout()
+{
+  mMapCanvas->freeze();
+  QStringList files = sender()->property( "files" ).toStringList();
+
+  Q_FOREACH ( const QString& file, files )
+  {
+    openFile( file );
+  }
+
+  QgsMimeDataUtils::UriList lst = sender()->property( "uris" ).value<QgsMimeDataUtils::UriList>();
+  if ( !lst.isEmpty() )
+  {
     Q_FOREACH ( const QgsMimeDataUtils::Uri& u, lst )
     {
       QString uri = crsAndFormatAdjustedLayerUri( u.uri, u.supportedCrs, u.supportedFormats );
@@ -1358,9 +1389,10 @@ void QgisApp::dropEvent( QDropEvent *event )
       }
     }
   }
+  sender()->deleteLater();
+
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
-  event->acceptProposedAction();
 }
 
 bool QgisApp::event( QEvent * event )
