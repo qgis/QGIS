@@ -70,33 +70,41 @@ class VectorTest(unittest.TestCase):
         def linkTestfile(f, t):
             os.link(os.path.join(dataFolder, f), os.path.join(tmpdir, t))
 
+        # URI from OGR provider
         linkTestfile('geom_data.csv', 'a.csv')
         name = vector.ogrLayerName(tmpdir)
         self.assertEqual(name, 'a')
 
+        # URI from OGR provider
         linkTestfile('wkt_data.csv', 'b.csv')
         name = vector.ogrLayerName(tmpdir + '|layerid=0')
         self.assertEqual(name, 'a')
         name = vector.ogrLayerName(tmpdir + '|layerid=1')
         self.assertEqual(name, 'b')
 
+        # URI from OGR provider
         name = vector.ogrLayerName(tmpdir + '|layerid=2')
         self.assertEqual(name, 'invalid-layerid')
 
+        # URI from OGR provider
         name = vector.ogrLayerName(tmpdir + '|layername=f')
         self.assertEqual(name, 'f') # layername takes precedence
 
+        # URI from OGR provider
         name = vector.ogrLayerName(tmpdir + '|layerid=0|layername=f2')
         self.assertEqual(name, 'f2') # layername takes precedence
 
+        # URI from OGR provider
         name = vector.ogrLayerName(tmpdir + '|layername=f2|layerid=0')
         self.assertEqual(name, 'f2') # layername takes precedence
 
+        # URI from Sqlite provider
         name = vector.ogrLayerName('dbname=\'/tmp/x.sqlite\' table="t" (geometry) sql=')
         self.assertEqual(name, 't')
 
-        name = vector.ogrLayerName('dbname=\'/tmp/x.sqlite\' table="s.t" (geometry) sql=')
-        self.assertEqual(name, 's.t')
+        # URI from PostgreSQL provider
+        name = vector.ogrLayerName('port=5493 sslmode=disable key=\'edge_id\' srid=0 type=LineString table="city_data"."edge" (geom) sql=')
+        self.assertEqual(name, 'city_data.edge')
 
     def testFeatures(self):
         ProcessingConfig.initialize()
