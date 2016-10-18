@@ -44,7 +44,7 @@ sub parse {
 						if $label =~ /^\s+/ || $label =~ /\s+$/ || $label !~ /^[A-Z0-9(]/;	
 					$label =~ s/^\s+//;
 					$label =~ s/\s+$//;
-					$label =~ ucfirst $label;
+					$label = ucfirst $label;
 					$labels{$label} = 1;
 				} else {
 					parse($a->{$b});
