@@ -156,7 +156,6 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
     def testBug15351_commit_closeIter_closeProvider(self):
         self.internalTestBug15351('commit_closeIter_closeProvider')
 
-    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 1, 2))
     def testGeopackageExtentUpdate(self):
         ''' test http://hub.qgis.org/issues/15273 '''
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageExtentUpdate.gpkg')
