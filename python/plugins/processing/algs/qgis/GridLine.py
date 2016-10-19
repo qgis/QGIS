@@ -76,6 +76,8 @@ class GridLine(GeoAlgorithm):
         extent = self.getParameterValue(self.EXTENT).split(',')
         hSpacing = self.getParameterValue(self.HSPACING)
         vSpacing = self.getParameterValue(self.VSPACING)
+        hOverlay = self.getParameterValue(self.HOVERLAY)
+        vOverlay = self.getParameterValue(self.VOVERLAY)
         crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.CRS))
 
         bbox = QgsRectangle(float(extent[0]), float(extent[2]),
@@ -84,7 +86,7 @@ class GridLine(GeoAlgorithm):
         width = bbox.width()
         height = bbox.height()
         originX = bbox.xMinimum()
-        originY = bbox.yMaximum()
+        originY = bbox.yMinimum()
 
         if hSpacing <= 0 or vSpacing <= 0:
             raise GeoAlgorithmExecutionException(
@@ -131,11 +133,11 @@ class GridLine(GeoAlgorithm):
             _cols = columns
             _rows = rows
             start = 1
-        for col in xrange(start, _cols + 1):
+        for col in range(start, _cols + 1):
             polyline = []
             y = originY
             
-            for row in xrange(start, _rows+1):
+            for row in range(start, _rows+1):
                 polyline.append(QgsPoint(x, y))
                 if vOverlay != 0:
                     if row % 2 == 0:
@@ -167,11 +169,11 @@ class GridLine(GeoAlgorithm):
             _cols = columns
             _rows = rows
             start = 1
-        for row in xrange(start, _rows + 1):
+        for row in range(start, _rows + 1):
             polyline = []
             x = originX
                 
-            for col in xrange(start, _cols+1):
+            for col in range(start, _cols+1):
                 polyline.append(QgsPoint(x, y))
                 if vOverlay != 0:
                     if col % 2 == 0:
