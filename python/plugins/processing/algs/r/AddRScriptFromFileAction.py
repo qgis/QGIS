@@ -2,11 +2,11 @@
 
 """
 ***************************************************************************
-    EditScriptAction.py
+    AddRScriptFromFileAction.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    Date                 : October 2016
+    Copyright            : (C) 2016 by Matteo Ghetta
+    Email                : matteo dot ghetta at gmail dot com
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'April 2014'
-__copyright__ = '(C) 201, Victor Olaya'
+__author__ = 'Matteo Ghetta'
+__date__ = 'October 2016'
+__copyright__ = '(C) 2016, Matteo Ghetta'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
