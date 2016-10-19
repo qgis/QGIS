@@ -39,7 +39,8 @@ from processing.core.parameters import (Parameter,
                                         ParameterPoint,
                                         ParameterString,
                                         ParameterVector,
-                                        ParameterTableField)
+                                        ParameterTableField,
+                                        ParameterSelection)
 from processing.tools import dataobjects
 from processing.tests.TestData import points2
 
@@ -178,7 +179,7 @@ class ParameterPointTest(unittest.TestCase):
         optionalParameter.setValue('1,2')
         self.assertEqual(optionalParameter.value, '1,2')
         self.assertTrue(optionalParameter.setValue(None))
-        # Extent is unique in that it will let you set `None`, whereas other
+        # Point like Extent is unique in that it will let you set `None`, whereas other
         # optional parameters become "default" when assigning None.
         self.assertEqual(optionalParameter.value, None)
 
@@ -188,6 +189,53 @@ class ParameterPointTest(unittest.TestCase):
         self.assertEqual(requiredParameter.value, '1,2')
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, '1,2')
+
+
+class ParameterSelectionTest(unittest.TestCase):
+
+    def testSetValue(self):
+        parameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'])
+        self.assertIsNone(parameter.value)
+        self.assertEqual(parameter.setValue(1), True)
+        self.assertEqual(parameter.value, 1)
+        self.assertEqual(parameter.setValue('1'), True)
+        self.assertEqual(parameter.value, 1)
+        self.assertEqual(parameter.setValue(1.0), True)
+        self.assertEqual(parameter.value, 1)
+        self.assertEqual(parameter.setValue('1a'), False)
+        self.assertEqual(parameter.setValue([1]), False)
+
+    def testMultiple(self):
+        parameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'], multiple=True)
+        self.assertEqual(parameter.setValue(1), True)
+        self.assertEqual(parameter.value, 1)
+        self.assertEqual(parameter.setValue([0, 1]), True)
+        self.assertEqual(parameter.value, [0, 1])
+        self.assertEqual(parameter.setValue(['0', '1']), True)
+        self.assertEqual(parameter.value, [0, 1])
+
+    def testDefault(self):
+        parameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'], default=0)
+        self.assertEqual(parameter.value, 0)
+        parameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'], default=0.0)
+        self.assertEqual(parameter.value, 0)
+        parameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'], default='a')
+        self.assertEqual(parameter.value, 0)
+
+    def testOptional(self):
+        optionalParameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'], default=0, optional=True)
+        self.assertEqual(optionalParameter.value, 0)
+        optionalParameter.setValue(1)
+        self.assertEqual(optionalParameter.value, 1)
+        self.assertTrue(optionalParameter.setValue(None))
+        self.assertEqual(optionalParameter.value, 0)
+
+        requiredParameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'], default=0, optional=False)
+        self.assertEqual(requiredParameter.value, 0)
+        requiredParameter.setValue(1)
+        self.assertEqual(requiredParameter.value, 1)
+        self.assertFalse(requiredParameter.setValue(None))
+        self.assertEqual(requiredParameter.value, 1)
 
 
 class ParameterFileTest(unittest.TestCase):

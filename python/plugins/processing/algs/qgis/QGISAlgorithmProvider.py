@@ -163,6 +163,7 @@ from .Slope import Slope
 from .Ruggedness import Ruggedness
 from .Hillshade import Hillshade
 from .ReliefAuto import ReliefAuto
+from .ZonalStatisticsQgis import ZonalStatisticsQgis
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -220,7 +221,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         OffsetLine(), PolygonCentroids(), Translate(),
                         SingleSidedBuffer(), PointsAlongGeometry(),
                         Aspect(), Slope(), Ruggedness(), Hillshade(),
-                        ReliefAuto(),
+                        ReliefAuto(), ZonalStatisticsQgis()
                         ]
 
         if hasMatplotlib:
