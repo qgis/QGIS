@@ -73,7 +73,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     /**
      * Sets any provider side constraints which may affect this field's behaviour.
      */
-    void setProviderConstraints( QgsVectorDataProvider::Constraints constraints );
+    void setProviderConstraints( QgsField::Constraints constraints );
 
     /**
      * Setter for checkbox for not null

@@ -54,8 +54,21 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( QString alias READ alias WRITE setAlias )
     Q_PROPERTY( QString defaultValueExpression READ defaultValueExpression WRITE setDefaultValueExpression )
+    Q_PROPERTY( Constraints constraints READ constraints WRITE setConstraints )
 
   public:
+
+    /**
+     * Constraints which may be present on a field.
+     * @note added in QGIS 3.0
+     */
+    enum Constraint
+    {
+      ConstraintNotNull = 1, //!< Field may not be null
+      ConstraintUnique = 1 << 1, //!< Field must have a unique value
+    };
+    Q_DECLARE_FLAGS( Constraints, Constraint )
+
     /** Constructor. Constructs a new QgsField object.
      * @param name Field name
      * @param type Field variant type, currently supported: String / Int / Double
@@ -208,6 +221,20 @@ class CORE_EXPORT QgsField
      */
     void setDefaultValueExpression( const QString& expression );
 
+    /**
+     * Returns any constraints which are present for the field.
+     * @note added in QGIS 3.0
+     * @see setConstraints()
+     */
+    Constraints constraints() const;
+
+    /**
+     * Sets constraints which are present for the field.
+     * @note added in QGIS 3.0
+     * @see constraints()
+     */
+    void setConstraints( Constraints constraints );
+
     /** Returns the alias for the field (the friendly displayed name of the field ),
      * or an empty string if there is no alias.
      * @see setAlias()
@@ -260,6 +287,8 @@ class CORE_EXPORT QgsField
 
 
 }; // class QgsField
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsField::Constraints )
 
 Q_DECLARE_METATYPE( QgsField )
 

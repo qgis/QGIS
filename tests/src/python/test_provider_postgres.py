@@ -26,7 +26,7 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsFeature,
     QgsTransactionGroup,
-    QgsVectorDataProvider,
+    QgsField,
     NULL
 )
 from qgis.gui import QgsEditorWidgetRegistry
@@ -444,13 +444,20 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(vl.fields()), 4)
 
         # test some bad field indexes
-        self.assertEqual(vl.dataProvider().fieldConstraints(-1), QgsVectorDataProvider.Constraints())
-        self.assertEqual(vl.dataProvider().fieldConstraints(1001), QgsVectorDataProvider.Constraints())
+        self.assertEqual(vl.dataProvider().fieldConstraints(-1), QgsField.Constraints())
+        self.assertEqual(vl.dataProvider().fieldConstraints(1001), QgsField.Constraints())
 
-        self.assertTrue(vl.dataProvider().fieldConstraints(0) & QgsVectorDataProvider.ConstraintNotNull)
-        self.assertFalse(vl.dataProvider().fieldConstraints(1) & QgsVectorDataProvider.ConstraintNotNull)
-        self.assertTrue(vl.dataProvider().fieldConstraints(2) & QgsVectorDataProvider.ConstraintNotNull)
-        self.assertFalse(vl.dataProvider().fieldConstraints(3) & QgsVectorDataProvider.ConstraintNotNull)
+        self.assertTrue(vl.dataProvider().fieldConstraints(0) & QgsField.ConstraintNotNull)
+        self.assertFalse(vl.dataProvider().fieldConstraints(1) & QgsField.ConstraintNotNull)
+        self.assertTrue(vl.dataProvider().fieldConstraints(2) & QgsField.ConstraintNotNull)
+        self.assertFalse(vl.dataProvider().fieldConstraints(3) & QgsField.ConstraintNotNull)
+
+        # test that constraints have been saved to fields correctly
+        fields = vl.fields()
+        self.assertTrue(fields.at(0).constraints() & QgsField.ConstraintNotNull)
+        self.assertFalse(fields.at(1).constraints() & QgsField.ConstraintNotNull)
+        self.assertTrue(fields.at(2).constraints() & QgsField.ConstraintNotNull)
+        self.assertFalse(fields.at(3).constraints() & QgsField.ConstraintNotNull)
 
     def testUniqueConstraint(self):
         vl = QgsVectorLayer('%s table="qgis_test"."constraints" sql=' % (self.dbconn), "constraints", "postgres")
@@ -458,13 +465,20 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(vl.fields()), 4)
 
         # test some bad field indexes
-        self.assertEqual(vl.dataProvider().fieldConstraints(-1), QgsVectorDataProvider.Constraints())
-        self.assertEqual(vl.dataProvider().fieldConstraints(1001), QgsVectorDataProvider.Constraints())
+        self.assertEqual(vl.dataProvider().fieldConstraints(-1), QgsField.Constraints())
+        self.assertEqual(vl.dataProvider().fieldConstraints(1001), QgsField.Constraints())
 
-        self.assertTrue(vl.dataProvider().fieldConstraints(0) & QgsVectorDataProvider.ConstraintUnique)
-        self.assertTrue(vl.dataProvider().fieldConstraints(1) & QgsVectorDataProvider.ConstraintUnique)
-        self.assertTrue(vl.dataProvider().fieldConstraints(2) & QgsVectorDataProvider.ConstraintUnique)
-        self.assertFalse(vl.dataProvider().fieldConstraints(3) & QgsVectorDataProvider.ConstraintUnique)
+        self.assertTrue(vl.dataProvider().fieldConstraints(0) & QgsField.ConstraintUnique)
+        self.assertTrue(vl.dataProvider().fieldConstraints(1) & QgsField.ConstraintUnique)
+        self.assertTrue(vl.dataProvider().fieldConstraints(2) & QgsField.ConstraintUnique)
+        self.assertFalse(vl.dataProvider().fieldConstraints(3) & QgsField.ConstraintUnique)
+
+        # test that constraints have been saved to fields correctly
+        fields = vl.fields()
+        self.assertTrue(fields.at(0).constraints() & QgsField.ConstraintUnique)
+        self.assertTrue(fields.at(1).constraints() & QgsField.ConstraintUnique)
+        self.assertTrue(fields.at(2).constraints() & QgsField.ConstraintUnique)
+        self.assertFalse(fields.at(3).constraints() & QgsField.ConstraintUnique)
 
     # See http://hub.qgis.org/issues/15188
     def testNumericPrecision(self):

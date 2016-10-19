@@ -180,6 +180,16 @@ void QgsField::setDefaultValueExpression( const QString& expression )
   d->defaultValueExpression = expression;
 }
 
+QgsField::Constraints QgsField::constraints() const
+{
+  return d->constraints;
+}
+
+void QgsField::setConstraints( Constraints constraints )
+{
+  d->constraints = constraints;
+}
+
 QString QgsField::alias() const
 {
   return d->alias;
@@ -303,15 +313,16 @@ QDataStream& operator<<( QDataStream& out, const QgsField& field )
   out << field.comment();
   out << field.alias();
   out << field.defaultValueExpression();
+  out << field.constraints();
   out << static_cast< quint32 >( field.subType() );
   return out;
 }
 
 QDataStream& operator>>( QDataStream& in, QgsField& field )
 {
-  quint32 type, subType, length, precision;
+  quint32 type, subType, length, precision, constraints;
   QString name, typeName, comment, alias, defaultValueExpression;
-  in >> name >> type >> typeName >> length >> precision >> comment >> alias >> defaultValueExpression >> subType;
+  in >> name >> type >> typeName >> length >> precision >> comment >> alias >> defaultValueExpression >> constraints >> subType;
   field.setName( name );
   field.setType( static_cast< QVariant::Type >( type ) );
   field.setTypeName( typeName );
@@ -320,6 +331,7 @@ QDataStream& operator>>( QDataStream& in, QgsField& field )
   field.setComment( comment );
   field.setAlias( alias );
   field.setDefaultValueExpression( defaultValueExpression );
+  field.setConstraints( static_cast< QgsField::Constraints>( constraints ) );
   field.setSubType( static_cast< QVariant::Type >( subType ) );
   return in;
 }

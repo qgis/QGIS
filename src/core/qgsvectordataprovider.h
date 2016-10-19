@@ -107,17 +107,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
                                            RenameAttributes;
 
     /**
-     * Constraints which may be present on a field.
-     * @note added in QGIS 3.0
-     */
-    enum Constraint
-    {
-      ConstraintNotNull = 1, //!< Field may not be null
-      ConstraintUnique = 1 << 1, //!< Field must have a unique value
-    };
-    Q_DECLARE_FLAGS( Constraints, Constraint )
-
-    /**
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
@@ -297,7 +286,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * field index.
      * @note added in QGIS 3.0
      */
-    virtual Constraints fieldConstraints( int fieldIndex ) const;
+    virtual QgsField::Constraints fieldConstraints( int fieldIndex ) const;
 
     /**
      * Changes geometries of existing features
@@ -538,7 +527,5 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorDataProvider::Capabilities )
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorDataProvider::Constraints )
-
 
 #endif

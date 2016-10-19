@@ -84,6 +84,7 @@ void TestQgsField::create()
 void TestQgsField::copy()
 {
   QgsField original( QStringLiteral( "original" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
+  original.setConstraints( QgsField::ConstraintNotNull );  
   QgsField copy( original );
   QVERIFY( copy == original );
 
@@ -95,6 +96,7 @@ void TestQgsField::copy()
 void TestQgsField::assignment()
 {
   QgsField original( QStringLiteral( "original" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
+  original.setConstraints( QgsField::ConstraintNotNull );
   QgsField copy;
   copy = original;
   QVERIFY( copy == original );
@@ -123,6 +125,8 @@ void TestQgsField::gettersSetters()
   QCOMPARE( field.alias(), QString( "alias" ) );
   field.setDefaultValueExpression( QStringLiteral( "1+2" ) );
   QCOMPARE( field.defaultValueExpression(), QString( "1+2" ) );
+  field.setConstraints( QgsField::ConstraintNotNull );
+  QCOMPARE( field.constraints(), QgsField::ConstraintNotNull );
 }
 
 void TestQgsField::isNumeric()
@@ -157,6 +161,7 @@ void TestQgsField::equality()
   field1.setPrecision( 2 );
   field1.setTypeName( QStringLiteral( "typename1" ) ); //typename is NOT required for equality
   field1.setComment( QStringLiteral( "comment1" ) ); //comment is NOT required for equality
+  field1.setConstraints( QgsField::ConstraintNotNull );
   QgsField field2;
   field2.setName( QStringLiteral( "name" ) );
   field2.setType( QVariant::Int );
@@ -164,6 +169,7 @@ void TestQgsField::equality()
   field2.setPrecision( 2 );
   field2.setTypeName( QStringLiteral( "typename2" ) ); //typename is NOT required for equality
   field2.setComment( QStringLiteral( "comment2" ) ); //comment is NOT required for equality
+  field2.setConstraints( QgsField::ConstraintNotNull );
   QVERIFY( field1 == field2 );
   QVERIFY( !( field1 != field2 ) );
 
@@ -192,11 +198,16 @@ void TestQgsField::equality()
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
   field2.setDefaultValueExpression( QString() );
+  field2.setConstraints( QgsField::ConstraintUnique );
+  QVERIFY( !( field1 == field2 ) );
+  QVERIFY( field1 != field2 );
+  field2.setConstraints( QgsField::ConstraintNotNull );
 }
 
 void TestQgsField::asVariant()
 {
   QgsField original( QStringLiteral( "original" ), QVariant::Double, QStringLiteral( "double" ), 5, 2, QStringLiteral( "comment" ) );
+  original.setConstraints( QgsField::ConstraintNotNull );
 
   //convert to and from a QVariant
   QVariant var = QVariant::fromValue( original );
@@ -375,6 +386,7 @@ void TestQgsField::dataStream()
   original.setComment( QStringLiteral( "comment1" ) );
   original.setAlias( QStringLiteral( "alias" ) );
   original.setDefaultValueExpression( QStringLiteral( "default" ) );
+  original.setConstraints( QgsField::ConstraintNotNull );
 
   QByteArray ba;
   QDataStream ds( &ba, QIODevice::ReadWrite );

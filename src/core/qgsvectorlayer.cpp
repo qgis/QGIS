@@ -4189,3 +4189,19 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
 
   return true;
 }
+
+QgsField::Constraints QgsVectorLayer::fieldConstraints( int fieldIndex ) const
+{
+  if ( fieldIndex < 0 || fieldIndex >= mFields.count() )
+    return 0;
+
+  QgsField::Constraints constraints = mFields.at( fieldIndex ).constraints();
+
+  // make sure provider constraints are always present!
+  if ( mFields.fieldOrigin( fieldIndex ) == QgsFields::OriginProvider )
+  {
+    constraints |= mDataProvider->fieldConstraints( mFields.fieldOriginIndex( fieldIndex ) );
+  }
+
+  return constraints;
+}

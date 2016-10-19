@@ -998,14 +998,16 @@ bool QgsPostgresProvider::loadFields()
     mAttrPalIndexName.insert( i, fieldName );
     mDefaultValues.insert( mAttributeFields.size(), defValMap[tableoid][attnum] );
 
-    Constraints constraints = 0;
-    if ( notNullMap[tableoid][attnum] )
-      constraints |= ConstraintNotNull;
-    if ( uniqueMap[tableoid][attnum] )
-      constraints |= ConstraintUnique;
-    mFieldConstraints.insert( mAttributeFields.size(), constraints );
+    QgsField newField = QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment, fieldSubType );
 
-    mAttributeFields.append( QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment, fieldSubType ) );
+    QgsField::Constraints constraints = 0;
+    if ( notNullMap[tableoid][attnum] )
+      constraints |= QgsField::ConstraintNotNull;
+    if ( uniqueMap[tableoid][attnum] )
+      constraints |= QgsField::ConstraintUnique;
+    newField.setConstraints( constraints );
+
+    mAttributeFields.append( newField );
   }
 
   setEditorWidgets();
@@ -1736,9 +1738,12 @@ QVariant QgsPostgresProvider::defaultValue( int fieldId ) const
   return defVal;
 }
 
-QgsVectorDataProvider::Constraints QgsPostgresProvider::fieldConstraints( int fieldIndex ) const
+QgsField::Constraints QgsPostgresProvider::fieldConstraints( int fieldIndex ) const
 {
-  return mFieldConstraints.value( fieldIndex, 0 );
+  if ( fieldIndex < 0 || fieldIndex >= mAttributeFields.count() )
+    return 0;
+
+  return mAttributeFields.at( fieldIndex ).constraints();
 }
 
 QString QgsPostgresProvider::paramValue( const QString& fieldValue, const QString &defaultValue ) const

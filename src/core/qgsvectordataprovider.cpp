@@ -98,7 +98,7 @@ QVariant QgsVectorDataProvider::defaultValue( int fieldId ) const
   return QVariant();
 }
 
-QgsVectorDataProvider::Constraints QgsVectorDataProvider::fieldConstraints( int fieldIndex ) const
+QgsField::Constraints QgsVectorDataProvider::fieldConstraints( int fieldIndex ) const
 {
   Q_UNUSED( fieldIndex );
   return 0;

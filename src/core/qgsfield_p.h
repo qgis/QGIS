@@ -55,6 +55,7 @@ class QgsFieldPrivate : public QSharedData
         , length( len )
         , precision( prec )
         , comment( comment )
+        , constraints( 0 )
     {
     }
 
@@ -69,6 +70,7 @@ class QgsFieldPrivate : public QSharedData
         , comment( other.comment )
         , alias( other.alias )
         , defaultValueExpression( other.defaultValueExpression )
+        , constraints( other.constraints )
     {
     }
 
@@ -78,7 +80,8 @@ class QgsFieldPrivate : public QSharedData
     {
       return (( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
               && ( length == other.length ) && ( precision == other.precision )
-              && ( alias == other.alias ) && ( defaultValueExpression == other.defaultValueExpression ) );
+              && ( alias == other.alias ) && ( defaultValueExpression == other.defaultValueExpression )
+              && ( constraints == other.constraints ) );
     }
 
     //! Name
@@ -107,6 +110,9 @@ class QgsFieldPrivate : public QSharedData
 
     //! Default value expression
     QString defaultValueExpression;
+
+    //! Constraints
+    QgsField::Constraints constraints;
 
     QgsEditorWidgetSetup editorWidgetSetup;
 };
