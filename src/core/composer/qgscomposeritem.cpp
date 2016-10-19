@@ -524,7 +524,13 @@ void QgsComposerItem::drawSelectionBoxes( QPainter* p )
     selectedItemPen.setWidth( 0 );
     p->setPen( selectedItemPen );
     p->setBrush( Qt::NoBrush );
-    p->drawPolygon( rect() );
+
+    // drawPolygon causes issues on windows - corners of path may be missing resulting in triangles being drawn
+    // instead of rectangles! (Same cause as #13343)
+    QPainterPath path;
+    path.addPolygon( rect() );
+    p->drawPath( path );
+
     p->restore();
   }
 
