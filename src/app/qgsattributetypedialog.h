@@ -21,6 +21,7 @@
 
 #include "qgseditorconfigwidget.h"
 #include "qgsfeature.h"
+#include "qgsvectordataprovider.h"
 
 class QDialog;
 
@@ -70,6 +71,11 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     bool fieldEditable() const;
 
     /**
+     * Sets any provider side constraints which may affect this field's behaviour.
+     */
+    void setProviderConstraints( QgsVectorDataProvider::Constraints constraints );
+
+    /**
      * Setter for checkbox for not null
      */
     void setNotNull( bool notNull );
@@ -78,6 +84,16 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      * Getter for checkbox for not null
      */
     bool notNull() const;
+
+    /**
+     * Setter for unique constraint checkbox
+     */
+    void setUnique( bool unique );
+
+    /**
+     * Getter for unique constraint checkbox state
+     */
+    bool unique() const;
 
     /**
      * Setter for constraint expression description

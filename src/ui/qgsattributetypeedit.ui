@@ -31,6 +31,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="mUniqueCheckBox">
+        <property name="text">
+         <string>Unique</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <property name="topMargin">
          <number>0</number>
@@ -145,15 +152,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsExpressionLineEdit</class>
-   <extends>QWidget</extends>
-   <header>qgsexpressionlineedit.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsExpressionLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgsexpressionlineedit.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -169,6 +176,7 @@
   <tabstop>labelOnTopCheckBox</tabstop>
   <tabstop>mExpressionWidget</tabstop>
   <tabstop>notNullCheckBox</tabstop>
+  <tabstop>mUniqueCheckBox</tabstop>
   <tabstop>constraintExpressionWidget</tabstop>
   <tabstop>leConstraintExpressionDescription</tabstop>
  </tabstops>

@@ -559,6 +559,12 @@ void QgsFieldsProperties::attributeTypeDialog()
   attributeTypeDialog.setFieldEditable( cfg.mEditable );
   attributeTypeDialog.setLabelOnTop( cfg.mLabelOnTop );
   attributeTypeDialog.setNotNull( cfg.mNotNull );
+
+  if ( mLayer->fields().fieldOrigin( index ) == QgsFields::OriginProvider )
+  {
+    attributeTypeDialog.setProviderConstraints( mLayer->dataProvider()->fieldConstraints( mLayer->fields().fieldOriginIndex( index ) ) );
+  }
+
   attributeTypeDialog.setConstraintExpression( cfg.mConstraint );
   attributeTypeDialog.setConstraintExpressionDescription( cfg.mConstraintDescription );
   attributeTypeDialog.setDefaultValueExpression( mLayer->defaultValueExpression( index ) );

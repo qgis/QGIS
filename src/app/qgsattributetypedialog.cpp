@@ -176,6 +176,23 @@ bool QgsAttributeTypeDialog::fieldEditable() const
   return isFieldEditableCheckBox->isChecked();
 }
 
+void QgsAttributeTypeDialog::setProviderConstraints( QgsVectorDataProvider::Constraints constraints )
+{
+  if ( constraints & QgsVectorDataProvider::ConstraintNotNull )
+  {
+    notNullCheckBox->setChecked( true );
+    notNullCheckBox->setEnabled( false );
+    notNullCheckBox->setToolTip( tr( "The provider for this layer has a NOT NULL constraint set on the field." ) );
+  }
+
+  if ( constraints & QgsVectorDataProvider::ConstraintUnique )
+  {
+    mUniqueCheckBox->setChecked( true );
+    mUniqueCheckBox->setEnabled( false );
+    mUniqueCheckBox->setToolTip( tr( "The provider for this layer has a UNIQUE constraint set on the field." ) );
+  }
+}
+
 void QgsAttributeTypeDialog::setNotNull( bool notNull )
 {
   notNullCheckBox->setChecked( notNull );
@@ -199,6 +216,16 @@ QString QgsAttributeTypeDialog::constraintExpressionDescription()
 bool QgsAttributeTypeDialog::notNull() const
 {
   return notNullCheckBox->isChecked();
+}
+
+void QgsAttributeTypeDialog::setUnique( bool unique )
+{
+  mUniqueCheckBox->setChecked( unique );
+}
+
+bool QgsAttributeTypeDialog::unique() const
+{
+  return mUniqueCheckBox->isChecked();
 }
 
 void QgsAttributeTypeDialog::setConstraintExpression( const QString &str )
