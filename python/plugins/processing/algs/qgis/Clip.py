@@ -67,7 +67,7 @@ class Clip(GeoAlgorithm):
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             source_layer.fields(),
-            source_layer.wkbType(),
+            QgsWkbTypes.multiType(source_layer.wkbType()),
             source_layer.crs())
 
         # first build up a list of clip geometries
