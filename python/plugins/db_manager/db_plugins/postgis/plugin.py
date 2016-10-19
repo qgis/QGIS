@@ -88,6 +88,9 @@ class PostGisDBPlugin(DBPlugin):
 
         settings.endGroup()
 
+        if hasattr(authcfg, 'isNull') and authcfg.isNull():
+            authcfg = ''
+
         if service:
             uri.setConnection(service, database, username, password, sslmode, authcfg)
         else:
