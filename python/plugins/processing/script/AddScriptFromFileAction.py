@@ -48,7 +48,7 @@ class AddScriptFromFileAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'script.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'scriptfile.svg'))
 
     def execute(self):
         settings = QSettings()
