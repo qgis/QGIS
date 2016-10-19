@@ -1200,7 +1200,7 @@ int main( int argc, char *argv[] )
     QList< QPair<QgsVectorLayer *, int > > layers;
     if ( !dxfPreset.isEmpty() )
     {
-      Q_FOREACH ( const QString& layer, QgsProject::instance()->mapThemeCollection()->presetVisibleLayers( dxfPreset ) )
+      Q_FOREACH ( const QString& layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfPreset ) )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( layer ) );
         if ( !vl )

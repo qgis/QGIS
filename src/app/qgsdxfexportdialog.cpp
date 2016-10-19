@@ -346,7 +346,7 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
   }
   else
   {
-    visibleLayers = QgsProject::instance()->mapThemeCollection()->presetVisibleLayers( name ).toSet();
+    visibleLayers = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( name ).toSet();
   }
 
   if ( visibleLayers.isEmpty() )
@@ -452,7 +452,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mLayerTitleAsName->setChecked( QgsProject::instance()->readEntry( "dxf", "/lastDxfLayerTitleAsName", s.value( "qgis/lastDxfLayerTitleAsName", "false" ).toString() ) != "false" );
   mMapExtentCheckBox->setChecked( QgsProject::instance()->readEntry( "dxf", "/lastDxfMapRectangle", s.value( "qgis/lastDxfMapRectangle", "false" ).toString() ) != "false" );
 
-  QStringList ids = QgsProject::instance()->mapThemeCollection()->presets();
+  QStringList ids = QgsProject::instance()->mapThemeCollection()->mapThemes();
   ids.prepend( "" );
   mVisibilityPresets->addItems( ids );
   mVisibilityPresets->setCurrentIndex( mVisibilityPresets->findText( QgsProject::instance()->readEntry( "dxf", "/lastVisibliltyPreset", "" ) ) );

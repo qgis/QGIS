@@ -537,8 +537,8 @@ QStringList QgsComposerMap::layersToRender( const QgsExpressionContext* context 
       presetName = exprVal.toString();
     }
 
-    if ( QgsProject::instance()->mapThemeCollection()->hasPreset( presetName ) )
-      renderLayerSet = QgsProject::instance()->mapThemeCollection()->presetVisibleLayers( presetName );
+    if ( QgsProject::instance()->mapThemeCollection()->hasMapTheme( presetName ) )
+      renderLayerSet = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
     else  // fallback to using map canvas layers
       renderLayerSet = mComposition->mapSettings().layers();
   }
@@ -598,8 +598,8 @@ QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender( const QgsExp
       presetName = exprVal.toString();
     }
 
-    if ( QgsProject::instance()->mapThemeCollection()->hasPreset( presetName ) )
-      return QgsProject::instance()->mapThemeCollection()->presetStyleOverrides( presetName );
+    if ( QgsProject::instance()->mapThemeCollection()->hasMapTheme( presetName ) )
+      return QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverride( presetName );
     else
       return QMap<QString, QString>();
   }

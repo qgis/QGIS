@@ -74,14 +74,14 @@ class APP_EXPORT QgsMapThemes : public QObject
     QgsMapThemes(); // singleton
 
     //! Applies current layer state to a preset record
-    void applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const QgsMapThemeCollection::PresetRecord& rec );
+    void applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const QgsMapThemeCollection::MapThemeRecord& rec );
     //! Applies layer checked legend symbols to a preset record
-    void addPerLayerCheckedLegendSymbols( QgsMapThemeCollection::PresetRecord& rec );
+    void addPerLayerCheckedLegendSymbols( QgsMapThemeCollection::MapThemeRecord& rec );
     //! Applies current layer styles to a preset record
-    void addPerLayerCurrentStyle( QgsMapThemeCollection::PresetRecord& rec );
+    void addPerLayerCurrentStyle( QgsMapThemeCollection::MapThemeRecord& rec );
 
     //! Returns the current state of the map canvas as a preset record
-    QgsMapThemeCollection::PresetRecord currentState();
+    QgsMapThemeCollection::MapThemeRecord currentState();
 
     //! Applies a preset for the project's collection to the canvas
     void applyState( const QString& presetName );

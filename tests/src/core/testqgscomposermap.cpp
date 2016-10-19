@@ -349,9 +349,8 @@ void TestQgsComposerMap::dataDefinedStyles()
   mComposerMap->setFrameEnabled( true );
   mComposition->addComposerMap( mComposerMap );
 
-  QgsMapThemeCollection::PresetRecord rec;
-  rec.mVisibleLayerIDs << mPointsLayer->id();
-  rec.mVisibleLayerIDs << mLinesLayer->id();
+  QgsMapThemeCollection::MapThemeRecord rec;
+  rec.setVisibleLayerIds( QStringList() << mPointsLayer->id() << mLinesLayer->id() );
 
   QgsProject::instance()->mapThemeCollection()->insert( "test preset", rec );
 

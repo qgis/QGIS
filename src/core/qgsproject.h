@@ -76,6 +76,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged )
     Q_PROPERTY( QString homePath READ homePath NOTIFY homePathChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs )
+    Q_PROPERTY( QgsMapThemeCollection* mapThemeCollection READ mapThemeCollection )
 
   public:
 
@@ -615,7 +616,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! map of transaction group: QPair( providerKey, connString ) -> transactionGroup
     QMap< QPair< QString, QString>, QgsTransactionGroup*> mTransactionGroups;
 
-    QScopedPointer<QgsMapThemeCollection> mVisibilityPresetCollection;
+    QScopedPointer<QgsMapThemeCollection> mMapThemeCollection;
 };
 
 

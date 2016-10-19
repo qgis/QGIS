@@ -480,7 +480,7 @@ void QgsProject::clear()
   mEmbeddedLayers.clear();
   mRelationManager->clear();
 
-  mVisibilityPresetCollection.reset( new QgsMapThemeCollection() );
+  mMapThemeCollection.reset( new QgsMapThemeCollection() );
 
   mRootGroup->removeAllChildren();
 
@@ -916,8 +916,8 @@ bool QgsProject::read()
 
   mRootGroup->removeCustomProperty( "loading" );
 
-  mVisibilityPresetCollection.reset( new QgsMapThemeCollection() );
-  mVisibilityPresetCollection->readXml( *doc );
+  mMapThemeCollection.reset( new QgsMapThemeCollection() );
+  mMapThemeCollection->readXml( *doc );
 
   // reassign change dependencies now that all layers are loaded
   QMap<QString, QgsMapLayer*> existingMaps = QgsMapLayerRegistry::instance()->mapLayers();
@@ -1203,7 +1203,7 @@ bool QgsProject::write()
     imp_->properties_.writeXml( "properties", qgisNode, *doc );
   }
 
-  mVisibilityPresetCollection->writeXml( *doc );
+  mMapThemeCollection->writeXml( *doc );
 
   // now wrap it up and ship it to the project file
   doc->normalize();             // XXX I'm not entirely sure what this does
@@ -2195,7 +2195,7 @@ QgsLayerTreeGroup *QgsProject::layerTreeRoot() const
 
 QgsMapThemeCollection* QgsProject::mapThemeCollection()
 {
-  return mVisibilityPresetCollection.data();
+  return mMapThemeCollection.data();
 }
 
 void QgsProject::setNonIdentifiableLayers( QList<QgsMapLayer*> layers )

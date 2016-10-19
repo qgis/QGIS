@@ -158,7 +158,7 @@ void QgsComposerMapWidget::aboutToShowKeepLayersVisibilityPresetsMenu()
     return;
 
   menu->clear();
-  Q_FOREACH ( const QString& presetName, QgsProject::instance()->mapThemeCollection()->presets() )
+  Q_FOREACH ( const QString& presetName, QgsProject::instance()->mapThemeCollection()->mapThemes() )
   {
     menu->addAction( presetName, this, SLOT( keepLayersVisibilityPresetSelected() ) );
   }
@@ -206,7 +206,7 @@ void QgsComposerMapWidget::keepLayersVisibilityPresetSelected()
 
     mKeepLayerStylesCheckBox->setChecked( true );
 
-    mComposerMap->setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->presetStyleOverrides( presetName ) );
+    mComposerMap->setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverride( presetName ) );
 
     mComposerMap->cache();
     mComposerMap->update();
@@ -219,7 +219,7 @@ void QgsComposerMapWidget::onPresetsChanged()
   {
     QStringList lst;
     lst.append( tr( "(none)" ) );
-    lst += QgsProject::instance()->mapThemeCollection()->presets();
+    lst += QgsProject::instance()->mapThemeCollection()->mapThemes();
     model->setStringList( lst );
 
     // select the previously selected item again
