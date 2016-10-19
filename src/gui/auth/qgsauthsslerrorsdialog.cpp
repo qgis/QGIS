@@ -111,11 +111,13 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
     emit sslErrorsCAtoImport(allowedCaErrors);
 #else
     btnAddCainCAs->setVisible( false );
+    teSslErrorsMessages->setVisible( false );
 #endif // Q_OS_WIN
   }
   else
   {
     btnAddCainCAs->setVisible( false );
+    teSslErrorsMessages->setVisible( false );
     btnChainInfo->setVisible( false );
     btnChainCAs->setVisible( false );
     grpbxSslConfig->setVisible( false );
