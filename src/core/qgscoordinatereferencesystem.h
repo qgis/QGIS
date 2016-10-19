@@ -186,6 +186,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 {
     Q_GADGET
 
+    Q_PROPERTY( QgsUnitTypes::DistanceUnit mapUnits READ mapUnits )
+
   public:
 
     //! Enumeration of types of IDs accepted in createFromId() method
