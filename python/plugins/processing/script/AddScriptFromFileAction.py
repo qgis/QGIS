@@ -26,6 +26,7 @@ __copyright__ = '(C) 201, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+from shutil import copyfile
 
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 from qgis.PyQt.QtGui import QIcon
@@ -52,20 +53,34 @@ class AddScriptFromFileAction(ToolboxAction):
     def execute(self):
         settings = QSettings()
         lastDir = settings.value('Processing/lastScriptsDir', '')
-        filename = QFileDialog.getOpenFileName(self.toolbox,
-                                               self.tr('Script files', 'AddScriptFromFileAction'), lastDir,
-                                               self.tr('Script files (*.py *.PY)', 'AddScriptFromFileAction'))
+        filename, selected_filter = QFileDialog.getOpenFileNames(self.toolbox,
+                                                        self.tr('Script files', 'AddScriptFromFileAction')), (lastDir,
+                                                        self.tr('Script files (*.py *.PY)', 'AddScriptFromFileAction'))
+
         if filename:
             try:
-                settings.setValue('Processing/lastScriptsDir',
-                                  QFileInfo(filename).absoluteDir().absolutePath())
-                script = ScriptAlgorithm(filename)
+                # settings.setValue('Processing/lastScriptsDir',
+                                #   QFileInfo(filename).absoluteDir().absolutePath())
+                for f in filename:
+                    if f.endswith('.py'):
+                        script = ScriptAlgorithm(f)
             except WrongScriptException:
                 QMessageBox.warning(self.toolbox,
                                     self.tr('Error reading script', 'AddScriptFromFileAction'),
                                     self.tr('The selected file does not contain a valid script', 'AddScriptFromFileAction'))
                 return
-            destFilename = os.path.join(ScriptUtils.scriptsFolders()[0], os.path.basename(filename))
-            with open(destFilename, 'w') as f:
-                f.write(script.script)
+
+            destFilename = []
+            for scr in filename:
+                if scr.endswith('.py'):
+                    destFilename.append(os.path.join(ScriptUtils.defaultScriptsFolder(), os.path.basename(scr)))
+
+            for j in destFilename:
+                with open(j, 'w') as f:
+                    f.write(script.script)
+
+            for file in filename:
+                if file.endswith('.help'):
+                    copyfile(file, os.path.join(ScriptUtils.defaultScriptsFolder(), os.path.basename(os.path.normpath(file))))
+
             algList.reloadProvider('script')
