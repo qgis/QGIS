@@ -1257,6 +1257,24 @@ class QgsVectorLayer : QgsMapLayer
      */
     QString defaultValueExpression( int index ) const;
 
+    /**
+     * Returns any constraints which are present for a specified
+     * field index. These constraints may be inherited from the layer's data provider
+     * or may be set manually on the vector layer from within QGIS.
+     * @note added in QGIS 3.0
+     * @see setFieldConstraints()
+     */
+    QgsField::Constraints fieldConstraints( int fieldIndex ) const;
+
+    /**
+     * Sets the constraints for a specified field index. Any constraints inherited from the layer's
+     * data provider will be kept intact and cannot be cleared. Ie, calling this method only allows for new
+     * constraints to be added on top of the existing provider constraints.
+     * @note added in QGIS 3.0
+     * @see fieldConstraints()
+     */
+    void setFieldConstraints( int index, QgsField::Constraints constraints );
+
     /** Calculates a list of unique values contained within an attribute in the layer. Note that
      * in some circumstances when unsaved changes are present for the layer then the returned list
      * may contain outdated values (for instance when the attribute value in a saved feature has

@@ -1440,6 +1440,26 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
       mDefaultExpressionMap.insert( field, expression );
     }
   }
+
+  // constraints
+  mFieldConstraints.clear();
+  QDomNode constraintsNode = layer_node.namedItem( "constraints" );
+  if ( !constraintsNode.isNull() )
+  {
+    QDomNodeList constraintNodeList = constraintsNode.toElement().elementsByTagName( "constraint" );
+    for ( int i = 0; i < constraintNodeList.size(); ++i )
+    {
+      QDomElement constraintElem = constraintNodeList.at( i ).toElement();
+
+      QString field = constraintElem.attribute( "field", QString() );
+      int constraints = constraintElem.attribute( "constraints", QString( "0" ) ).toInt();
+      if ( field.isEmpty() || constraints == 0 )
+        continue;
+
+      mFieldConstraints.insert( field, static_cast< QgsField::Constraints >( constraints ) );
+    }
+  }
+
   updateFields();
 
   QDomNode depsNode = layer_node.namedItem( QStringLiteral( "dataDependencies" ) );
@@ -1645,6 +1665,17 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
     defaultsElem.appendChild( defaultElem );
   }
   layer_node.appendChild( defaultsElem );
+
+  // constraints
+  QDomElement constraintsElem = document.createElement( "constraints" );
+  Q_FOREACH ( const QgsField& field, mFields )
+  {
+    QDomElement constraintElem = document.createElement( "constraint" );
+    constraintElem.setAttribute( "field", field.name() );
+    constraintElem.setAttribute( "constraints", field.constraints() );
+    constraintsElem.appendChild( constraintElem );
+  }
+  layer_node.appendChild( constraintsElem );
 
   // change dependencies
   QDomElement dataDependenciesElement = document.createElement( QStringLiteral( "dataDependencies" ) );
@@ -2901,6 +2932,17 @@ void QgsVectorLayer::updateFields()
 
     mFields[ index ].setDefaultValueExpression( defaultIt.value() );
   }
+  QMap< QString, QgsField::Constraints >::const_iterator constraintIt = mFieldConstraints.constBegin();
+  for ( ; constraintIt != mFieldConstraints.constEnd(); ++constraintIt )
+  {
+    int index = mFields.lookupField( constraintIt.key() );
+    if ( index < 0 )
+      continue;
+
+    // always keep provider constraints intact
+    mFields[ index ].setConstraints( mFields.at( index ).constraints() | constraintIt.value() );
+  }
+
   if ( oldFields != mFields )
   {
     emit updatedFields();
@@ -4204,4 +4246,20 @@ QgsField::Constraints QgsVectorLayer::fieldConstraints( int fieldIndex ) const
   }
 
   return constraints;
+}
+
+void QgsVectorLayer::setFieldConstraints( int index, QgsField::Constraints constraints )
+{
+  if ( index < 0 || index >= mFields.count() )
+    return;
+
+  if ( constraints == 0 )
+  {
+    mFieldConstraints.remove( mFields.at( index ).name() );
+  }
+  else
+  {
+    mFieldConstraints.insert( mFields.at( index ).name(), constraints );
+  }
+  updateFields();
 }

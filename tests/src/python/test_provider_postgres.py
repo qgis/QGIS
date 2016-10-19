@@ -480,6 +480,27 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(fields.at(2).constraints() & QgsField.ConstraintUnique)
         self.assertFalse(fields.at(3).constraints() & QgsField.ConstraintUnique)
 
+    def testConstraintOverwrite(self):
+        """ test that Postgres provider constraints can't be overwritten by vector layer method """
+        vl = QgsVectorLayer('%s table="qgis_test"."constraints" sql=' % (self.dbconn), "constraints", "postgres")
+        self.assertTrue(vl.isValid())
+
+        self.assertTrue(vl.dataProvider().fieldConstraints(0) & QgsField.ConstraintNotNull)
+        self.assertTrue(vl.fields().at(0).constraints() & QgsField.ConstraintNotNull)
+
+        # add a constraint at the layer level
+        vl.setFieldConstraints(0, QgsField.ConstraintUnique)
+
+        # should be no change at provider level
+        self.assertTrue(vl.dataProvider().fieldConstraints(0) & QgsField.ConstraintNotNull)
+
+        # but layer should still keep provider constraints...
+        self.assertTrue(vl.fields().at(0).constraints() & QgsField.ConstraintNotNull)
+        self.assertTrue(vl.fieldConstraints(0) & QgsField.ConstraintNotNull)
+        # ...in addition to layer level constraint
+        self.assertTrue(vl.fields().at(0).constraints() & QgsField.ConstraintUnique)
+        self.assertTrue(vl.fieldConstraints(0) & QgsField.ConstraintUnique)
+
     # See http://hub.qgis.org/issues/15188
     def testNumericPrecision(self):
         uri = 'point?field=f1:int'

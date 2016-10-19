@@ -1773,6 +1773,63 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.setDefaultValueExpression(1, 'not a valid expression')
         self.assertFalse(layer.defaultValue(1))
 
+    def testGetSetConstraints(self):
+        """ test getting and setting field constraints """
+        layer = createLayerWithOnePoint()
+
+        self.assertFalse(layer.fieldConstraints(0))
+        self.assertFalse(layer.fieldConstraints(1))
+        self.assertFalse(layer.fieldConstraints(2))
+
+        layer.setFieldConstraints(0, QgsField.ConstraintNotNull)
+        self.assertEqual(layer.fieldConstraints(0), QgsField.ConstraintNotNull)
+        self.assertFalse(layer.fieldConstraints(1))
+        self.assertFalse(layer.fieldConstraints(2))
+        self.assertEqual(layer.fields().at(0).constraints(), QgsField.ConstraintNotNull)
+
+        layer.setFieldConstraints(1, QgsField.ConstraintNotNull | QgsField.ConstraintUnique)
+        self.assertEqual(layer.fieldConstraints(0), QgsField.ConstraintNotNull)
+        self.assertEqual(layer.fieldConstraints(1), QgsField.ConstraintNotNull | QgsField.ConstraintUnique)
+        self.assertFalse(layer.fieldConstraints(2))
+        self.assertEqual(layer.fields().at(0).constraints(), QgsField.ConstraintNotNull)
+        self.assertEqual(layer.fields().at(1).constraints(), QgsField.ConstraintNotNull | QgsField.ConstraintUnique)
+
+        layer.setFieldConstraints(1, QgsField.Constraints())
+        self.assertEqual(layer.fieldConstraints(0), QgsField.ConstraintNotNull)
+        self.assertFalse(layer.fieldConstraints(1))
+        self.assertFalse(layer.fieldConstraints(2))
+        self.assertEqual(layer.fields().at(0).constraints(), QgsField.ConstraintNotNull)
+        self.assertFalse(layer.fields().at(1).constraints())
+
+    def testSaveRestoreConstraints(self):
+        """ test saving and restoring constraints from xml"""
+        layer = createLayerWithOnePoint()
+
+        # no constraints
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("maplayer")
+        self.assertTrue(layer.writeXml(elem, doc))
+
+        layer2 = createLayerWithOnePoint()
+        self.assertTrue(layer2.readXml(elem))
+        self.assertFalse(layer2.fieldConstraints(0))
+        self.assertFalse(layer2.fieldConstraints(1))
+
+        # set some constraints
+        layer.setFieldConstraints(0, QgsField.ConstraintNotNull)
+        layer.setFieldConstraints(1, QgsField.ConstraintNotNull | QgsField.ConstraintUnique)
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("maplayer")
+        self.assertTrue(layer.writeXml(elem, doc))
+
+        layer3 = createLayerWithOnePoint()
+        self.assertTrue(layer3.readXml(elem))
+        self.assertEqual(layer3.fieldConstraints(0), QgsField.ConstraintNotNull)
+        self.assertEqual(layer3.fieldConstraints(1), QgsField.ConstraintNotNull | QgsField.ConstraintUnique)
+        self.assertEqual(layer3.fields().at(0).constraints(), QgsField.ConstraintNotNull)
+        self.assertEqual(layer3.fields().at(1).constraints(), QgsField.ConstraintNotNull | QgsField.ConstraintUnique)
+
     def testGetFeatureLimitWithEdits(self):
         """ test getting features with a limit, when edits are present """
         layer = createLayerWithOnePoint()
