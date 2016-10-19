@@ -58,7 +58,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         if self.canUseAutoExtent():
             if hasattr(self.leText, 'setPlaceholderText'):
                 self.leText.setPlaceholderText(
-                    self.tr('[Leave blank to use min covering extent]'))
+                    self.tr('[Use "auto" to use min covering extent]'))
 
         self.btnSelect.clicked.connect(self.selectExtent)
 
@@ -112,7 +112,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         popupmenu.exec_(QCursor.pos())
 
     def useMinCoveringExtent(self):
-        self.leText.setText('')
+        self.leText.setText('auto')
 
     def getMinCoveringExtent(self):
         first = True
@@ -205,10 +205,10 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.dialog.activateWindow()
 
     def getValue(self):
-        if unicode(self.leText.text()).strip() != '':
-            return unicode(self.leText.text())
-        else:
+        if unicode(self.leText.text()).strip() == 'auto':
             return self.getMinCoveringExtent()
+        else:
+            return unicode(self.leText.text())
 
     def setExtentFromString(self, s):
         self.leText.setText(s)
