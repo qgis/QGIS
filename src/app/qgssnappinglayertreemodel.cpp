@@ -143,6 +143,7 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject* project, QObje
     , mIndividualLayerSettings( project->snappingConfig().individualLayerSettings() )
 {
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
+  connect( project, &QgsProject::avoidIntersectionsListChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
 }
 
 QgsSnappingLayerTreeModel::~QgsSnappingLayerTreeModel()
