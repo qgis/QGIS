@@ -25,7 +25,7 @@ QgsLegendSettings::QgsLegendSettings()
     , mBoxSpace( 2 )
     , mSymbolSize( 7, 4 )
     , mWmsLegendSize( 50, 25 )
-    , mLineSpacing( 1.5 )
+    , mLineSpacing( 1 )
     , mColumnSpace( 2 )
     , mColumnCount( 1 )
     , mSplitLayer( false )
@@ -38,10 +38,10 @@ QgsLegendSettings::QgsLegendSettings()
     , mMapScale( 1 )
     , mDpi( 96 ) // based on QImage's default DPI
 {
-  rstyle( QgsComposerLegendStyle::Title ).setMargin( QgsComposerLegendStyle::Bottom, 2 );
-  rstyle( QgsComposerLegendStyle::Group ).setMargin( QgsComposerLegendStyle::Top, 2 );
-  rstyle( QgsComposerLegendStyle::Subgroup ).setMargin( QgsComposerLegendStyle::Top, 2 );
-  rstyle( QgsComposerLegendStyle::Symbol ).setMargin( QgsComposerLegendStyle::Top, 2 );
+  rstyle( QgsComposerLegendStyle::Title ).setMargin( QgsComposerLegendStyle::Bottom, 3.5 );
+  rstyle( QgsComposerLegendStyle::Group ).setMargin( QgsComposerLegendStyle::Top, 3 );
+  rstyle( QgsComposerLegendStyle::Subgroup ).setMargin( QgsComposerLegendStyle::Top, 3 );
+  rstyle( QgsComposerLegendStyle::Symbol ).setMargin( QgsComposerLegendStyle::Top, 2.5 );
   rstyle( QgsComposerLegendStyle::SymbolLabel ).setMargin( QgsComposerLegendStyle::Top, 2 );
   rstyle( QgsComposerLegendStyle::SymbolLabel ).setMargin( QgsComposerLegendStyle::Left, 2 );
   rstyle( QgsComposerLegendStyle::Title ).rfont().setPointSizeF( 16.0 );

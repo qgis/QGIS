@@ -60,12 +60,14 @@ bool QgsLayerTreeModelLegendNode::setData( const QVariant& value, int role )
 QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( const QgsLegendSettings& settings, ItemContext* ctx )
 {
   QFont symbolLabelFont = settings.style( QgsComposerLegendStyle::SymbolLabel ).font();
-
   double textHeight = settings.fontHeightCharacterMM( symbolLabelFont, QChar( '0' ) );
-  // itemHeight here is not realy item height, it is only for symbol
-  // vertical alignment purpose, i.e. ok take single line height
-  // if there are more lines, thos run under the symbol
-  double itemHeight = qMax( static_cast< double >( settings.symbolSize().height() ), textHeight );
+  double textDescent = settings.fontDescentMillimeters( symbolLabelFont );
+
+  QStringList lines = settings.splitStringForWrapping( data( Qt::DisplayRole ).toString() );
+
+  double labelHeight = lines.count() * textHeight + ( lines.count() - 1 ) * ( textDescent + settings.lineSpacing() );
+
+  double itemHeight = qMax( static_cast< double >( settings.symbolSize().height() ), labelHeight );
 
   ItemMetrics im;
   im.symbolSize = drawSymbol( settings, ctx, itemHeight );
@@ -93,10 +95,11 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings& set
 
   QFont symbolLabelFont = settings.style( QgsComposerLegendStyle::SymbolLabel ).font();
   double textHeight = settings.fontHeightCharacterMM( symbolLabelFont, QChar( '0' ) );
+  double textDescent = settings.fontDescentMillimeters( symbolLabelFont );
 
   QStringList lines = settings.splitStringForWrapping( data( Qt::DisplayRole ).toString() );
 
-  labelSize.rheight() = lines.count() * textHeight + ( lines.count() - 1 ) * settings.lineSpacing();
+  labelSize.rheight() = lines.count() * textHeight + ( lines.count() - 1 ) * ( textDescent + settings.lineSpacing() );
 
   double labelX = 0.0, labelY = 0.0;
   if ( ctx )
@@ -108,9 +111,9 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings& set
 
     // Vertical alignment of label with symbol
     if ( labelSize.height() < symbolSize.height() )
-      labelY += symbolSize.height() / 2 + textHeight / 2;  // label centered with symbol
-    else
-      labelY += textHeight; // label starts at top and runs under symbol
+      labelY += symbolSize.height() / 2 - labelSize.height() / 2;  // label centered with symbol
+
+    labelY += textHeight;
   }
 
   for ( QStringList::Iterator itemPart = lines.begin(); itemPart != lines.end(); ++itemPart )
@@ -120,8 +123,8 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings& set
     if ( ctx )
     {
       settings.drawText( ctx->painter, labelX, labelY, *itemPart, symbolLabelFont );
-      if ( itemPart != lines.end() )
-        labelY += settings.lineSpacing() + textHeight;
+      if ( itemPart != ( lines.end() - 1 ) )
+        labelY += textDescent + settings.lineSpacing() + textHeight;
     }
   }
 
