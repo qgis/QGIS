@@ -663,7 +663,7 @@ void QgsLayerTreeModel::setLegendMapViewData( double mapUnitsPerPixel, int dpi, 
   refreshScaleBasedLayers();
 }
 
-void QgsLayerTreeModel::legendMapViewData( double* mapUnitsPerPixel, int* dpi, double* scale )
+void QgsLayerTreeModel::legendMapViewData( double* mapUnitsPerPixel, int* dpi, double* scale ) const
 {
   if ( mapUnitsPerPixel ) *mapUnitsPerPixel = mLegendMapViewMupp;
   if ( dpi ) *dpi = mLegendMapViewDpi;
@@ -1269,6 +1269,22 @@ void QgsLayerTreeModel::tryBuildLegendTree( LayerLegendData& data )
   }
 }
 
+QgsRenderContext* QgsLayerTreeModel::createTemporaryRenderContext() const
+{
+  double scale = 0.0;
+  double mupp = 0.0;
+  int dpi = 0;
+  legendMapViewData( &mupp, &dpi, &scale );
+  bool validData = !qgsDoubleNear( mupp, 0.0 ) && dpi != 0 && !qgsDoubleNear( scale, 0.0 );
+
+  // setup temporary render context
+  QScopedPointer<QgsRenderContext> context( new QgsRenderContext );
+  context->setScaleFactor( dpi / 25.4 );
+  context->setRendererScale( scale );
+  context->setMapToPixel( QgsMapToPixel( mupp ) );
+  return validData ? context.take() : nullptr;
+}
+
 
 QgsLayerTreeModelLegendNode* QgsLayerTreeModel::index2legendNode( const QModelIndex& index )
 {
@@ -1470,6 +1486,8 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
   // we do that here because for symbols with size defined in map units
   // the symbol sizes changes depends on the zoom level
 
+  QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
+
   Q_FOREACH ( const LayerLegendData& data, mLegend )
   {
     QList<QgsSymbolLegendNode*> symbolNodes;
@@ -1479,7 +1497,7 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
       QgsSymbolLegendNode* n = dynamic_cast<QgsSymbolLegendNode*>( legendNode );
       if ( n )
       {
-        const QSize sz( n->minimumIconSize() );
+        const QSize sz( n->minimumIconSize( *context ) );
         const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
         widthMax[parentKey] = qMax( sz.width(), widthMax.contains( parentKey ) ? widthMax[parentKey] : 0 );
         n->setIconSize( sz );

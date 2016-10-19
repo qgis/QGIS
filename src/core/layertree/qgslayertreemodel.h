@@ -31,6 +31,7 @@ class QgsMapHitTest;
 class QgsMapLayer;
 class QgsMapSettings;
 class QgsExpression;
+class QgsRenderContext;
 
 /** \ingroup core
  * The QgsLayerTreeModel class is model implementation for Qt item views framework.
@@ -191,7 +192,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Get hints about map view - to be used in legend nodes. Arguments that are not null will receive values.
     //! If there are no valid map view data (from previous call to setLegendMapViewData()), returned values are zeros.
     //! @note added in 2.6
-    void legendMapViewData( double *mapUnitsPerPixel, int *dpi, double *scale );
+    void legendMapViewData( double *mapUnitsPerPixel, int *dpi, double *scale ) const;
 
     //! Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
     //! @note added in 2.10
@@ -328,6 +329,11 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     int mLegendMapViewDpi;
     double mLegendMapViewScale;
     QTimer mDeferLegendInvalidationTimer;
+
+  private:
+
+    //! Returns a temporary render context
+    QgsRenderContext* createTemporaryRenderContext() const;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayerTreeModel::Flags )

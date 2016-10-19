@@ -171,9 +171,22 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     //! @note added in 2.10
     QSize iconSize() const { return mIconSize; }
 
-    //! Get the minimum icon size to prevent cropping
-    //! @note added in 2.10
+    /**
+     * Calculates the minimum icon size to prevent cropping. When evaluating
+     * the size for multiple icons it is more efficient to create a single
+     * render context in advance and use the variant which accepts a QgsRenderContext
+     * argument.
+     * @note added in 2.10
+     */
     QSize minimumIconSize() const;
+
+    /**
+     * Calculates the minimum icon size to prevent cropping. When evaluating
+     * the size for multiple icons it is more efficient to create a single
+     * render context in advance and call this method instead of minimumIconSize().
+     * @note added in QGIS 2.18
+     */
+    QSize minimumIconSize( QgsRenderContext &context ) const;
 
     /** Returns the symbol used by the legend node.
      * @see setSymbol()

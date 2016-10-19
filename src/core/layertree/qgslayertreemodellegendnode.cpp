@@ -158,22 +158,26 @@ Qt::ItemFlags QgsSymbolLegendNode::flags() const
 
 QSize QgsSymbolLegendNode::minimumIconSize() const
 {
+  QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
+  return minimumIconSize( *context );
+}
+
+QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext& context ) const
+{
   QSize minSz( 16, 16 );
   if ( mItem.symbol() && mItem.symbol()->type() == QgsSymbol::Marker )
   {
-    QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
     minSz = QgsImageOperation::nonTransparentImageRect(
               QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), QSize( 512, 512 ),
-                  context.data() ).toImage(),
+                  &context ).toImage(),
               minSz,
               true ).size();
   }
   else if ( mItem.symbol() && mItem.symbol()->type() == QgsSymbol::Line )
   {
-    QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
     minSz = QgsImageOperation::nonTransparentImageRect(
               QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), QSize( minSz.width(), 512 ),
-                  context.data() ).toImage(),
+                  &context ).toImage(),
               minSz,
               true ).size();
   }
