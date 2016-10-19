@@ -92,7 +92,8 @@ class warp(GdalAlgorithm):
 
         if GdalUtils.version() >= 2000000:
             self.addParameter(ParameterCrs(self.EXT_CRS,
-                                           self.tr('CRS of the raster extent'), ''))
+                                           self.tr('CRS of the raster extent, leave blank for using Destination SRS'),
+                                           optional=True))
 
         params = []
         params.append(ParameterSelection(self.RTYPE,
@@ -136,7 +137,7 @@ class warp(GdalAlgorithm):
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
         tfw = str(self.getParameterValue(self.TFW))
-        rastext = str(self.getParameterValue(self.RAST_EXT))
+        rastext = self.getParameterValue(self.RAST_EXT)
         rastext_crs = self.getParameterValue(self.EXT_CRS)
 
         arguments = []
@@ -174,11 +175,9 @@ class warp(GdalAlgorithm):
             rastext.append(regionCoords[3])
         except IndexError:
             rastext = []
-        if rastext:
-            arguments.extend(rastext)
 
         if GdalUtils.version() >= 2000000:
-            if rastext and rastext_crs is not None:
+            if rastext and rastext_crs:
                 arguments.append('-te_srs')
                 arguments.append(rastext_crs)
 

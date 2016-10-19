@@ -348,7 +348,7 @@ class ParameterExtent(Parameter):
         # The value is a string in the form "xmin, xmax, ymin, ymax"
 
     def setValue(self, value):
-        if value is None:
+        if not value:
             if not self.optional:
                 return False
             self.value = None

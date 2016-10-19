@@ -59,7 +59,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         if self.param.optional:
             if hasattr(self.leText, 'setPlaceholderText'):
                 self.leText.setPlaceholderText(
-                    self.tr('[Leave blank to use min covering extent]'))
+                    self.tr('[Use "auto" to use min covering extent]'))
 
         self.btnSelect.clicked.connect(self.selectExtent)
 
@@ -104,7 +104,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         popupmenu.exec_(QCursor.pos())
 
     def useMinCoveringExtent(self):
-        self.leText.setText('')
+        self.leText.setText('auto')
 
     def useLayerExtent(self):
         CANVAS_KEY = 'Use canvas extent'
@@ -153,7 +153,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.dialog.activateWindow()
 
     def getValue(self):
-        if str(self.leText.text()).strip() != '':
+        if str(self.leText.text()).strip() == '':
             return str(self.leText.text())
         else:
             return None
