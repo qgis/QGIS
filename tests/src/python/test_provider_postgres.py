@@ -26,6 +26,7 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsFeature,
     QgsTransactionGroup,
+    QgsVectorDataProvider,
     NULL
 )
 from qgis.gui import QgsEditorWidgetRegistry
@@ -436,6 +437,34 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         value_idx = vl.fields().lookupField('value')
         self.assertTrue(isinstance(f.attributes()[value_idx], list))
         self.assertEqual(f.attributes()[value_idx], [1.1, 2, -5.12345])
+
+    def testNotNullConstraint(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."constraints" sql=' % (self.dbconn), "constraints", "postgres")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 4)
+
+        # test some bad field indexes
+        self.assertEqual(vl.dataProvider().fieldConstraints(-1), QgsVectorDataProvider.Constraints())
+        self.assertEqual(vl.dataProvider().fieldConstraints(1001), QgsVectorDataProvider.Constraints())
+
+        self.assertTrue(vl.dataProvider().fieldConstraints(0) & QgsVectorDataProvider.ConstraintNotNull)
+        self.assertFalse(vl.dataProvider().fieldConstraints(1) & QgsVectorDataProvider.ConstraintNotNull)
+        self.assertTrue(vl.dataProvider().fieldConstraints(2) & QgsVectorDataProvider.ConstraintNotNull)
+        self.assertFalse(vl.dataProvider().fieldConstraints(3) & QgsVectorDataProvider.ConstraintNotNull)
+
+    def testUniqueConstraint(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."constraints" sql=' % (self.dbconn), "constraints", "postgres")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 4)
+
+        # test some bad field indexes
+        self.assertEqual(vl.dataProvider().fieldConstraints(-1), QgsVectorDataProvider.Constraints())
+        self.assertEqual(vl.dataProvider().fieldConstraints(1001), QgsVectorDataProvider.Constraints())
+
+        self.assertTrue(vl.dataProvider().fieldConstraints(0) & QgsVectorDataProvider.ConstraintUnique)
+        self.assertTrue(vl.dataProvider().fieldConstraints(1) & QgsVectorDataProvider.ConstraintUnique)
+        self.assertTrue(vl.dataProvider().fieldConstraints(2) & QgsVectorDataProvider.ConstraintUnique)
+        self.assertFalse(vl.dataProvider().fieldConstraints(3) & QgsVectorDataProvider.ConstraintUnique)
 
     # See http://hub.qgis.org/issues/15188
     def testNumericPrecision(self):

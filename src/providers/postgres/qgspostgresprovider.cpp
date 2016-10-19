@@ -718,6 +718,7 @@ bool QgsPostgresProvider::loadFields()
 
   QMap<int, QMap<int, QString> > fmtFieldTypeMap, descrMap, defValMap;
   QMap<int, QMap<int, int> > attTypeIdMap;
+  QMap<int, QMap<int, bool> > notNullMap, uniqueMap;
   if ( result.PQnfields() > 0 )
   {
     // Collect table oids
@@ -742,9 +743,13 @@ bool QgsPostgresProvider::loadFields()
       QString tableoidsFilter = '(' + tableoidsList.join( QStringLiteral( "," ) ) + ')';
 
       // Collect formatted field types
-      sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), pg_catalog.pg_get_expr(adbin,adrelid), atttypid"
+      sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), pg_catalog.pg_get_expr(adbin,adrelid), atttypid, attnotnull::int, indisunique::int"
             " FROM pg_attribute"
             " LEFT OUTER JOIN pg_attrdef ON attrelid=adrelid AND attnum=adnum"
+
+            // find unique constraints if present. Text cast required to handle int2vector comparison. Distinct required as multiple unique constraints may exist
+            " LEFT OUTER JOIN ( SELECT DISTINCT indrelid, indkey, indisunique FROM pg_index WHERE indisunique ) uniq ON attrelid=indrelid AND attnum::text=indkey::text "
+
             " WHERE attrelid IN " + tableoidsFilter;
       QgsPostgresResult fmtFieldTypeResult( connectionRO()->PQexec( sql ) );
       for ( int i = 0; i < fmtFieldTypeResult.PQntuples(); ++i )
@@ -755,10 +760,14 @@ bool QgsPostgresProvider::loadFields()
         QString descr = fmtFieldTypeResult.PQgetvalue( i, 3 );
         QString defVal = fmtFieldTypeResult.PQgetvalue( i, 4 );
         int attType = fmtFieldTypeResult.PQgetvalue( i, 5 ).toInt();
+        bool attNotNull = fmtFieldTypeResult.PQgetvalue( i, 6 ).toInt();
+        bool uniqueConstraint = fmtFieldTypeResult.PQgetvalue( i, 7 ).toInt();
         fmtFieldTypeMap[attrelid][attnum] = formatType;
         descrMap[attrelid][attnum] = descr;
         defValMap[attrelid][attnum] = defVal;
         attTypeIdMap[attrelid][attnum] = attType;
+        notNullMap[attrelid][attnum] = attNotNull;
+        uniqueMap[attrelid][attnum] = uniqueConstraint;
       }
     }
   }
@@ -988,6 +997,14 @@ bool QgsPostgresProvider::loadFields()
 
     mAttrPalIndexName.insert( i, fieldName );
     mDefaultValues.insert( mAttributeFields.size(), defValMap[tableoid][attnum] );
+
+    Constraints constraints = 0;
+    if ( notNullMap[tableoid][attnum] )
+      constraints |= ConstraintNotNull;
+    if ( uniqueMap[tableoid][attnum] )
+      constraints |= ConstraintUnique;
+    mFieldConstraints.insert( mAttributeFields.size(), constraints );
+
     mAttributeFields.append( QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment, fieldSubType ) );
   }
 
@@ -1717,6 +1734,11 @@ QVariant QgsPostgresProvider::defaultValue( int fieldId ) const
   }
 
   return defVal;
+}
+
+QgsVectorDataProvider::Constraints QgsPostgresProvider::fieldConstraints( int fieldIndex ) const
+{
+  return mFieldConstraints.value( fieldIndex, 0 );
 }
 
 QString QgsPostgresProvider::paramValue( const QString& fieldValue, const QString &defaultValue ) const

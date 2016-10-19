@@ -56,6 +56,17 @@ class QgsVectorDataProvider : QgsDataProvider
     static const int EditingCapabilities;
 
     /**
+     * Constraints which may be present on a field.
+     * @note added in QGIS 3.0
+     */
+    enum Constraint
+    {
+      ConstraintNotNull, //!< Field may not be null
+      ConstraintUnique, //!< Field must have a unique value
+    };
+    typedef QFlags<QgsVectorDataProvider::Constraint> Constraints;
+
+    /**
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
@@ -229,6 +240,13 @@ class QgsVectorDataProvider : QgsDataProvider
      * Returns the default value for field specified by @c fieldId
      */
     virtual QVariant defaultValue( int fieldId ) const;
+
+    /**
+     * Returns any constraints which are present at the provider for a specified
+     * field index.
+     * @note added in QGIS 3.0
+     */
+    virtual QgsVectorDataProvider::Constraints fieldConstraints( int fieldIndex ) const;
 
     /**
      * Changes geometries of existing features
@@ -434,3 +452,4 @@ class QgsVectorDataProvider : QgsDataProvider
 };
 
 QFlags<QgsVectorDataProvider::Capability> operator|(QgsVectorDataProvider::Capability f1, QFlags<QgsVectorDataProvider::Capability> f2);
+QFlags<QgsVectorDataProvider::Constraint> operator|(QgsVectorDataProvider::Constraint f1, QFlags<QgsVectorDataProvider::Constraint> f2);

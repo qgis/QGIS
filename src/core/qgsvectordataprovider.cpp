@@ -98,6 +98,12 @@ QVariant QgsVectorDataProvider::defaultValue( int fieldId ) const
   return QVariant();
 }
 
+QgsVectorDataProvider::Constraints QgsVectorDataProvider::fieldConstraints( int fieldIndex ) const
+{
+  Q_UNUSED( fieldIndex );
+  return 0;
+}
+
 bool QgsVectorDataProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
   Q_UNUSED( geometry_map );
