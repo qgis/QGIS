@@ -168,6 +168,9 @@ class PGDatabase(Database):
 
         item.runRefreshMaterializedView()
 
+    def hasLowercaseFieldNamesOption(self):
+        return True
+
 
 class PGSchema(Schema):
 
