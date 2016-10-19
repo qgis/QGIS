@@ -806,19 +806,62 @@ QRect QgsImageOperation::nonTransparentImageRect( const QImage &image, QSize min
   int ymin = height;
   int ymax = 0;
 
-  for ( int x = 0; x < width; ++x )
+  // scan down till we hit something
+  for ( int y = 0; y < height; ++y )
   {
-    for ( int y = 0; y < height; ++y )
+    const QRgb* imgScanline = reinterpret_cast< const QRgb* >( image.constScanLine( y ) );
+    for ( int x = 0; x < width; ++x )
     {
-      if ( qAlpha( image.pixel( x, y ) ) )
+      if ( qAlpha( imgScanline[x] ) )
       {
-        xmin = qMin( x, xmin );
-        xmax = qMax( x, xmax );
-        ymin = qMin( y, ymin );
-        ymax = qMax( y, ymax );
+        ymin = y;
+        xmin = x;
+        xmax = x;
       }
     }
   }
+
+  //scan up till we hit something
+  for ( int y = height - 1; y > ymin; --y )
+  {
+    const QRgb* imgScanline = reinterpret_cast< const QRgb* >( image.constScanLine( y ) );
+    for ( int x = 0; x < width; ++x )
+    {
+      if ( qAlpha( imgScanline[x] ) )
+      {
+        ymax = y;
+        xmin = qMin( xmin, x );
+        xmax = qMax( xmax, x );
+      }
+    }
+  }
+
+  //scan left to right till we hit something, using a refined y region
+  for ( int y = ymin; y <= ymax; ++y )
+  {
+    const QRgb* imgScanline = reinterpret_cast< const QRgb* >( image.constScanLine( y ) );
+    for ( int x = 0; x < xmin; ++x )
+    {
+      if ( qAlpha( imgScanline[x] ) )
+      {
+        xmin = x;
+      }
+    }
+  }
+
+  //scan right to left till we hit something, using the refined y region
+  for ( int y = ymin; y <= ymax; ++y )
+  {
+    const QRgb* imgScanline = reinterpret_cast< const QRgb* >( image.constScanLine( y ) );
+    for ( int x = width - 1; x > xmax; --x )
+    {
+      if ( qAlpha( imgScanline[x] ) )
+      {
+        xmax = x;
+      }
+    }
+  }
+
   if ( minSize.isValid() )
   {
     if ( xmax - xmin < minSize.width() ) // centers image on x
