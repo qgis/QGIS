@@ -95,7 +95,7 @@ class GridPolygon(GeoAlgorithm):
         width = bbox.width()
         height = bbox.height()
         originX = bbox.xMinimum()
-        originY = bbox.yMaximum()
+        originY = bbox.yMinimum()
 
         if hSpacing <= 0 or vSpacing <= 0:
             raise GeoAlgorithmExecutionException(
@@ -141,10 +141,10 @@ class GridPolygon(GeoAlgorithm):
         columns = int(math.ceil(float(width) / (hSpacing-hOverlay)))
         rows = int(math.ceil(float(height) / (vSpacing-vOverlay)))
 
-        for col in xrange(0, columns):
+        for col in range(0, columns):
             x1 = originX + (col * hSpacing - col * hOverlay)
             x2 = x1 + hSpacing
-            for row in xrange(0, rows):
+            for row in range(0, rows):
                 y1 = originY + (row * vSpacing - row * vOverlay)
                 y2 = y1 + vSpacing
 
@@ -184,13 +184,13 @@ class GridPolygon(GeoAlgorithm):
         xc = originX
         yc = originY
         
-        for col in xrange(0, columns):
+        for col in range(0, columns):
             if col % 2 == 0:
                 yc = originY
             else:
                 yc = originY + vo
             
-            for row in xrange(0, rows):
+            for row in range(0, rows):
                 if row % 2 == 0:
                     diamond = self._diamond(xc, yc, halfVSpacing, halfHSpacing)
                     ft.setGeometry(QgsGeometry.fromPolygon([diamond]))
@@ -234,13 +234,13 @@ class GridPolygon(GeoAlgorithm):
         xc = originX
         yc = originY
         
-        for col in xrange(0, columns):
+        for col in range(0, columns):
             if col % 2 == 0:
                 yc = originY
             else:
                 yc = originY + ho
             
-            for row in xrange(0, rows):
+            for row in range(0, rows):
                 if row % 2 == 0:
                     hexagon = self._hexagon(xc, yc, xVertexLo, xVertexHi, halfHSpacing, halfVSpacing)
                     ft.setGeometry(QgsGeometry.fromPolygon([hexagon]))
