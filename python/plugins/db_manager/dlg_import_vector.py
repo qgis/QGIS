@@ -76,6 +76,10 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
             self.editPrimaryKey.setText(self.default_pk)
             self.editGeomColumn.setText(self.default_geom)
+
+            self.chkLowercaseFieldNames.setEnabled(self.db.hasLowercaseFieldNamesOption())
+            if not self.chkLowercaseFieldNames.isEnabled():
+                self.chkLowercaseFieldNames.setChecked(False)
         else:
             # set default values
             self.checkSupports()
