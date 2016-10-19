@@ -47,7 +47,7 @@ class AddRScriptFromFileAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'rfile.png'))
+        return QIcon(os.path.join(pluginPath, 'images', 'rfile.svg'))
 
 
     def execute(self):
