@@ -141,7 +141,7 @@ class SagaAlgorithm212(GeoAlgorithm):
                     continue
                 layer = dataobjects.getObjectFromUri(param.value, False)
                 if layer:
-                    filename = dataobjects.exportVectorLayer(layer)
+                    filename = dataobjects.exportVectorLayer(layer, ["shp"])
                     self.exportedLayers[param.value] = filename
                 elif not param.value.endswith('shp'):
                     raise GeoAlgorithmExecutionException(
@@ -179,7 +179,7 @@ class SagaAlgorithm212(GeoAlgorithm):
                     for layerfile in layers:
                         layer = dataobjects.getObjectFromUri(layerfile, False)
                         if layer:
-                            filename = dataobjects.exportVectorLayer(layer)
+                            filename = dataobjects.exportVectorLayer(layer, ["shp"])
                             self.exportedLayers[layerfile] = filename
                         elif not layerfile.endswith('shp'):
                             raise GeoAlgorithmExecutionException(

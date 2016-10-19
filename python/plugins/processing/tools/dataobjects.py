@@ -151,6 +151,14 @@ def extent(layers):
         return unicode(xmin) + ',' + unicode(xmax) + ',' + unicode(ymin) + ',' + unicode(ymax)
 
 
+def getLayerCRS(layer):
+    if not isinstance(layer, (QgsRasterLayer, QgsVectorLayer)):
+        layer = getObjectFromUri(layer)
+        if layer is None:
+            return None
+    return layer.crs().authid()
+
+
 def loadList(layers):
     for layer in layers:
         load(layer)
@@ -273,7 +281,7 @@ def getObjectFromUri(uri, forceLoad=True):
         return None
 
 
-def exportVectorLayer(layer, supported=None):
+def exportVectorLayer(layer, supported=None, exportFormat="shp"):
     """Takes a QgsVectorLayer and returns the filename to refer to it,
     which allows external apps which support only file-based layers to
     use it. It performs the necessary export in case the input layer
@@ -282,22 +290,27 @@ def exportVectorLayer(layer, supported=None):
     selection and it should be used, exporting just the selected
     features.
 
-    Currently, the output is restricted to shapefiles, so anything
-    that is not in a shapefile will get exported. It also export to
-    a new file if the original one contains non-ascii characters.
+    Currently, the output is restricted to shapefiles (and Spatialite DBs
+    for GDAL/OGR algorithms), so anything that is not in a shapefile
+    (or Spatialite DB for GDAL/OGR algorithms) will get exported. It also
+    exports to a new file if the original one contains non-ascii characters.
     """
 
-    supported = supported or ["shp"]
+    supported = supported or ["shp", "sqlite"]
+    ogrDriver = {"shp": "ESRI Shapefile", "sqlite": "SQLite"}
+    dataSourceOptions = {"shp": [], "sqlite": ["SPATIALITE=YES"]}
     settings = QSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
 
-    output = getTempFilename('shp')
+    output = getTempFilename(exportFormat)
     provider = layer.dataProvider()
     useSelection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
     if useSelection and layer.selectedFeatureCount() != 0:
         writer = QgsVectorFileWriter(output, systemEncoding,
                                      layer.pendingFields(),
-                                     provider.geometryType(), layer.crs())
+                                     provider.geometryType(), layer.crs(),
+                                     ogrDriver[exportFormat],
+                                     dataSourceOptions[exportFormat])
         selection = layer.selectedFeatures()
         for feat in selection:
             writer.addFeature(feat)
@@ -309,12 +322,13 @@ def exportVectorLayer(layer, supported=None):
             unicode(layer.source()).decode('ascii')
         except UnicodeEncodeError:
             isASCII = False
-        if not os.path.splitext(layer.source())[1].lower() in supported or not isASCII:
+        if not os.path.splitext(layer.source())[1][1:].lower() in supported or not isASCII:
             writer = QgsVectorFileWriter(
                 output, systemEncoding,
                 layer.pendingFields(), provider.geometryType(),
-                layer.crs()
-            )
+                layer.crs(),
+                ogrDriver[exportFormat],
+                dataSourceOptions[exportFormat])
             for feat in layer.getFeatures():
                 writer.addFeature(feat)
             del writer

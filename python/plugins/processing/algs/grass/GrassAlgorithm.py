@@ -96,7 +96,6 @@ class GrassAlgorithm(GeoAlgorithm):
             self._icon = QIcon(os.path.join(pluginPath, 'images', 'grass.svg'))
         return self._icon
 
-
     def help(self):
         return False, 'http://grass.osgeo.org/grass64/manuals/' + self.grassName + '.html'
 
@@ -162,7 +161,7 @@ class GrassAlgorithm(GeoAlgorithm):
                     elif isinstance(output, OutputVector):
                         vectorOutputs += 1
                     if isinstance(output, OutputHTML):
-                        self.addOutput(OutputFile("rawoutput", output.description + 
+                        self.addOutput(OutputFile("rawoutput", output.description +
                                                   " (raw output)", "txt"))
                 line = lines.readline().strip('\n').strip()
             except Exception as e:
@@ -449,14 +448,14 @@ class GrassAlgorithm(GeoAlgorithm):
         if not os.path.exists(orgFilename) or not orgFilename.endswith('shp'):
             layer = dataobjects.getObjectFromUri(orgFilename, False)
             if layer:
-                filename = dataobjects.exportVectorLayer(layer)
+                filename = dataobjects.exportVectorLayer(layer, ["shp"])
         else:
             layer = dataobjects.getObjectFromUri(orgFilename, False)
             if layer:
                 useSelection = \
                     ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
                 if useSelection and layer.selectedFeatureCount() != 0:
-                    filename = dataobjects.exportVectorLayer(layer)
+                    filename = dataobjects.exportVectorLayer(layer, ["shp"])
                 else:
                     filename = orgFilename
             else:

@@ -35,59 +35,10 @@ from processing.core.outputs import OutputVector
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools.dataobjects import getLayerCRS
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString, ogrLayerName
-
-
-FORMATS = [
-    'ESRI Shapefile',
-    'GeoJSON',
-    'GeoRSS',
-    'SQLite',
-    'GMT',
-    'MapInfo File',
-    'INTERLIS 1',
-    'INTERLIS 2',
-    'GML',
-    'Geoconcept',
-    'DXF',
-    'DGN',
-    'CSV',
-    'BNA',
-    'S57',
-    'KML',
-    'GPX',
-    'PGDump',
-    'GPSTrackMaker',
-    'ODS',
-    'XLSX',
-    'PDF',
-]
-
-EXTS = [
-    '.shp',
-    '.geojson',
-    '.xml',
-    '.sqlite',
-    '.gmt',
-    '.tab',
-    '.ili',
-    '.ili',
-    '.gml',
-    '.txt',
-    '.dxf',
-    '.dgn',
-    '.csv',
-    '.bna',
-    '.000',
-    '.kml',
-    '.gpx',
-    '.pgdump',
-    '.gtm',
-    '.ods',
-    '.xlsx',
-    '.pdf',
-]
+from processing.tools.vector import (ogrConnectionString, ogrLayerName,
+                                     ogrFormats, ogrExtensions)
 
 
 class Ogr2Ogr(GdalAlgorithm):
@@ -104,7 +55,7 @@ class Ogr2Ogr(GdalAlgorithm):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterSelection(self.FORMAT,
-                                             self.tr('Destination Format'), FORMATS))
+                                             self.tr('Destination Format'), ogrFormats()))
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Creation options'), '', optional=True))
 
@@ -118,8 +69,8 @@ class Ogr2Ogr(GdalAlgorithm):
         outFile = output.value
 
         formatIdx = self.getParameterValue(self.FORMAT)
-        outFormat = FORMATS[formatIdx]
-        ext = EXTS[formatIdx]
+        outFormat = ogrFormats()[formatIdx]
+        ext = ogrExtensions()[formatIdx]
         if not outFile.endswith(ext):
             outFile += ext
             output.value = outFile
@@ -133,6 +84,12 @@ class Ogr2Ogr(GdalAlgorithm):
         arguments = []
         arguments.append('-f')
         arguments.append(outFormat)
+
+        crs = getLayerCRS(inLayer)
+        if crs:
+            arguments.append('-a_srs')
+            arguments.append(crs)
+
         if len(options) > 0:
             arguments.append(options)
 
