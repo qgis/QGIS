@@ -154,6 +154,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      * @see setLineSpacing
      */
     double lineSpacing() const;
+
     /** Sets the spacing in-between multiple lines
      * @param spacing Double value to use as spacing in between multiple lines
      * @note added in 3.0
