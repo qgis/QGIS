@@ -149,6 +149,18 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setStyleMargin( QgsLegendStyle::Style s, double margin );
     void setStyleMargin( QgsLegendStyle::Style s, QgsLegendStyle::Side side, double margin );
 
+    /** Returns the spacing in-between lines in mm
+     * @note added in 3.0
+     * @see setLineSpacing
+     */
+    double lineSpacing() const;
+    /** Sets the spacing in-between multiple lines
+     * @param spacing Double value to use as spacing in between multiple lines
+     * @note added in 3.0
+     * @see lineSpacing
+     */
+    void setLineSpacing( double spacing );
+
     double boxSpace() const;
     void setBoxSpace( double s );
 

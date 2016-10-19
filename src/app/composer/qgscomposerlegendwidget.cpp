@@ -144,6 +144,7 @@ void QgsComposerLegendWidget::setGuiElements()
   mIconLabelSpaceSpinBox->setValue( mLegend->style( QgsLegendStyle::SymbolLabel ).margin( QgsLegendStyle::Left ) );
   mBoxSpaceSpinBox->setValue( mLegend->boxSpace() );
   mColumnSpaceSpinBox->setValue( mLegend->columnSpace() );
+  mLineSpacingSpinBox->setValue( mLegend->lineSpacing() );
 
   mRasterBorderGroupBox->setChecked( mLegend->drawRasterBorder() );
   mRasterBorderWidthSpinBox->setValue( mLegend->rasterBorderWidth() );
@@ -450,6 +451,17 @@ void QgsComposerLegendWidget::on_mColumnSpaceSpinBox_valueChanged( double d )
   }
 }
 
+void QgsComposerLegendWidget::on_mLineSpacingSpinBox_valueChanged( double d )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Legend line space" ), QgsComposerMergeCommand::LegendLineSpacing );
+    mLegend->setLineSpacing( d );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
 
 static void _moveLegendNode( QgsLayerTreeLayer* nodeLayer, int legendNodeIndex, int offset )
 {
