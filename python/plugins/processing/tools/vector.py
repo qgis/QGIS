@@ -225,7 +225,7 @@ def spatialindex(layer):
     request.setSubsetOfAttributes([])
     if ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED) \
             and layer.selectedFeatureCount() > 0:
-        idx = layer.selectedFeaturesIterator(request)
+        idx = QgsSpatialIndex(layer.selectedFeaturesIterator(request))
     else:
         idx = QgsSpatialIndex(layer.getFeatures(request))
     return idx
