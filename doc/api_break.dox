@@ -740,7 +740,7 @@ QgsEditorWidgetRegistry::instance()->findBest() must be used instead.
 - setExpression() has been renamed to setConstraintExpression()
 - expressionDescription() has been renamed to constraintDescription()
 - setExpressionDesctiption() has been renamed to setConstraintDescription()
-
+- notNull() and setNotNull() have been removed. Use QgsVectorLayer.setFieldConstraints()/fieldConstraints(), or QgsField.constraints() instead.
 
 QgsExpression        {#qgis_api_break_3_0_QgsExpression}
 -------------

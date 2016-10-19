@@ -42,7 +42,6 @@ class QgsEditFormConfigPrivate : public QSharedData
         , mConstraintsDescription( o.mConstraintsDescription )
         , mFieldEditables( o.mFieldEditables )
         , mLabelOnTop( o.mLabelOnTop )
-        , mNotNull( o.mNotNull )
         , mEditorWidgetTypes( o.mEditorWidgetTypes )
         , mWidgetConfigs( o.mWidgetConfigs )
         , mEditorLayout( o.mEditorLayout )
@@ -69,7 +68,6 @@ class QgsEditFormConfigPrivate : public QSharedData
     QMap< QString, QString> mConstraintsDescription;
     QMap< QString, bool> mFieldEditables;
     QMap< QString, bool> mLabelOnTop;
-    QMap< QString, bool> mNotNull;
 
     QMap<QString, QString> mEditorWidgetTypes;
     QMap<QString, QgsEditorWidgetConfig > mWidgetConfigs;

@@ -674,7 +674,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant& value )
       break;
   }
 
-  if ( eww->layer()->editFormConfig().notNull( eww->fieldIdx() ) )
+  if ( eww->layer()->fieldConstraints( eww->fieldIdx() ) & QgsField::ConstraintNotNull )
   {
     QLabel* buddy = mBuddyMap.value( eww->widget() );
 

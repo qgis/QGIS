@@ -558,12 +558,15 @@ void QgsFieldsProperties::attributeTypeDialog()
 
   attributeTypeDialog.setFieldEditable( cfg.mEditable );
   attributeTypeDialog.setLabelOnTop( cfg.mLabelOnTop );
-  attributeTypeDialog.setNotNull( cfg.mNotNull );
+  attributeTypeDialog.setNotNull( cfg.mConstraints & QgsField::ConstraintNotNull );
+  attributeTypeDialog.setUnique( cfg.mConstraints & QgsField::ConstraintUnique );
 
+  QgsField::Constraints providerConstraints = 0;
   if ( mLayer->fields().fieldOrigin( index ) == QgsFields::OriginProvider )
   {
-    attributeTypeDialog.setProviderConstraints( mLayer->dataProvider()->fieldConstraints( mLayer->fields().fieldOriginIndex( index ) ) );
+    providerConstraints = mLayer->dataProvider()->fieldConstraints( mLayer->fields().fieldOriginIndex( index ) );
   }
+  attributeTypeDialog.setProviderConstraints( providerConstraints );
 
   attributeTypeDialog.setConstraintExpression( cfg.mConstraint );
   attributeTypeDialog.setConstraintExpressionDescription( cfg.mConstraintDescription );
@@ -577,7 +580,17 @@ void QgsFieldsProperties::attributeTypeDialog()
 
   cfg.mEditable = attributeTypeDialog.fieldEditable();
   cfg.mLabelOnTop = attributeTypeDialog.labelOnTop();
-  cfg.mNotNull = attributeTypeDialog.notNull();
+
+  cfg.mConstraints = 0;
+  if ( attributeTypeDialog.notNull() && !( providerConstraints & QgsField::ConstraintNotNull ) )
+  {
+    cfg.mConstraints |= QgsField::ConstraintNotNull;
+  }
+  if ( attributeTypeDialog.unique() && !( providerConstraints & QgsField::ConstraintUnique ) )
+  {
+    cfg.mConstraints |= QgsField::ConstraintUnique;
+  }
+
   cfg.mConstraintDescription = attributeTypeDialog.constraintExpressionDescription();
   cfg.mConstraint = attributeTypeDialog.constraintExpression();
   mLayer->setDefaultValueExpression( index, attributeTypeDialog.defaultValueExpression() );
@@ -962,12 +975,13 @@ void QgsFieldsProperties::apply()
 
     editFormConfig.setReadOnly( i, !cfg.mEditable );
     editFormConfig.setLabelOnTop( i, cfg.mLabelOnTop );
-    editFormConfig.setNotNull( i, cfg.mNotNull );
     editFormConfig.setContraintDescription( i, cfg.mConstraintDescription );
     editFormConfig.setConstraintExpression( i, cfg.mConstraint );
 
     editFormConfig.setWidgetType( name, cfg.mEditorWidgetType );
     editFormConfig.setWidgetConfig( name, cfg.mEditorWidgetConfig );
+
+    mLayer->setFieldConstraints( i, cfg.mConstraints );
 
     if ( mFieldsList->item( i, attrWMSCol )->checkState() == Qt::Unchecked )
     {
@@ -1032,7 +1046,7 @@ QgsFieldsProperties::FieldConfig::FieldConfig()
     : mEditable( true )
     , mEditableEnabled( true )
     , mLabelOnTop( false )
-    , mNotNull( false )
+    , mConstraints( 0 )
     , mConstraintDescription( QString() )
     , mButton( nullptr )
 {
@@ -1045,7 +1059,7 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin
                      && layer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression;
   mLabelOnTop = layer->editFormConfig().labelOnTop( idx );
-  mNotNull = layer->editFormConfig().notNull( idx );
+  mConstraints = layer->fieldConstraints( idx );
   mConstraint = layer->editFormConfig().constraintExpression( idx );
   mConstraintDescription = layer->editFormConfig().constraintDescription( idx );
   const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( layer, layer->fields().field( idx ).name() );

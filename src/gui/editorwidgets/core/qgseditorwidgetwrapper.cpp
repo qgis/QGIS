@@ -136,7 +136,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft )
   else
     mValidConstraint = true;
 
-  if ( layer()->editFormConfig().notNull( mFieldIdx ) )
+  if ( layer()->fieldConstraints( mFieldIdx ) & QgsField::ConstraintNotNull )
   {
     if ( !expression.isEmpty() )
     {

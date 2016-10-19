@@ -220,14 +220,6 @@ void QgsEditFormConfig::setContraintDescription( int idx, const QString &descr )
   }
 }
 
-bool QgsEditFormConfig::notNull( int idx ) const
-{
-  if ( idx >= 0 && idx < d->mFields.count() )
-    return d->mNotNull.value( d->mFields.at( idx ).name(), false );
-  else
-    return false;
-}
-
 void QgsEditFormConfig::setReadOnly( int idx, bool readOnly )
 {
   if ( idx >= 0 && idx < d->mFields.count() )
@@ -299,15 +291,6 @@ void QgsEditFormConfig::setSuppress( QgsEditFormConfig::FeatureFormSuppress s )
 {
   d.detach();
   d->mSuppressForm = s;
-}
-
-void QgsEditFormConfig::setNotNull( int idx, bool notnull )
-{
-  if ( idx >= 0 && idx < d->mFields.count() )
-  {
-    d.detach();
-    d->mNotNull[ d->mFields.at( idx ).name()] = notnull;
-  }
 }
 
 void QgsEditFormConfig::readXml( const QDomNode& node )
