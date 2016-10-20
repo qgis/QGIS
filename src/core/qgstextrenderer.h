@@ -1211,9 +1211,37 @@ class CORE_EXPORT QgsTextRenderer
                           QgsRenderContext& context, const QgsTextFormat& format,
                           TextPart part, bool drawAsOutlines = true );
 
+    /**
+     * Returns the total width (in painter units) required to render text using the specified format,
+     * considering only the text component and ignoring buffers, shadows and backgrounds.
+     * @see renderWidth()
+     * @see textHeight()
+     */
+    static double textWidth( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines );
 
-    static double textWidth( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines,
-                             QFontMetricsF* fm = 0 );
+    /**
+     * Returns the total height (in painter units) required to render text using the specified format,
+     * considering only the text component and ignoring buffers, shadows and backgrounds.
+     * @see renderHeight()
+     * @see textWidth()
+     */
+    static double textHeight( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines );
+
+    /**
+     * Returns the total width (in painter units) required to render text using the specified format, including
+     * any non text component like shadows, buffers and backgrounds.
+     * @see textWidth()
+     */
+    static double renderWidth( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines );
+
+    /**
+     * Returns the total height (in painter units) required to render text using the specified format, including
+     * any non text component like shadows, buffers and backgrounds.
+     * @see textHeight()
+     * @see renderWidth()
+     */
+    static double renderHeight( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines );
+
   private:
 
     enum DrawMode
@@ -1294,6 +1322,8 @@ class CORE_EXPORT QgsTextRenderer
 
     static QgsTextFormat updateShadowPosition( const QgsTextFormat& format );
 
+    static double textWidth( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines,
+                             QFontMetricsF* fm = 0 );
 
     static double textHeight( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines, DrawMode mode,
                               QFontMetricsF* fm = 0 );
