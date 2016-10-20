@@ -152,6 +152,7 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRendererWidget::renderer()
 
   QgsColorRampShader::ColorRamp_TYPE interpolation = static_cast< QgsColorRampShader::ColorRamp_TYPE >( mColorInterpolationComboBox->currentData().toInt() );
   colorRampShader->setColorRampType( interpolation );
+  colorRampShader->setColorRampName( mColorRampComboBox->currentText() );
   rasterShader->setRasterShaderFunction( colorRampShader );
 
   int bandNumber = mBandComboBox->currentData().toInt();
@@ -792,6 +793,14 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
       const QgsColorRampShader* colorRampShader = dynamic_cast<const QgsColorRampShader*>( rasterShader->rasterShaderFunction() );
       if ( colorRampShader )
       {
+        int idx = mColorRampComboBox->findText( colorRampShader->colorRampName() );
+        if ( idx == -1 )
+        {
+          QSettings settings;
+          QString defaultPalette = settings.value( "/Raster/defaultPalette", "Spectral" ).toString();
+          idx = mColorRampComboBox->findText( defaultPalette );
+        }
+        mColorRampComboBox->setCurrentIndex( idx );
         mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( colorRampShader->colorRampType() ) );
 
         const QList<QgsColorRampShader::ColorRampItem> colorRampItemList = colorRampShader->colorRampItemList();
