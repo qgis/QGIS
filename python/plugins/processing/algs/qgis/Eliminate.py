@@ -107,7 +107,7 @@ class Eliminate(GeoAlgorithm):
             selectType = inLayer.fields()[selectindex].type()
             selectionError = False
 
-            if selectType == QVariant.Int or selectType == QVariant.LongLong:
+            if selectType in [QVariant.Int, QVariant.LongLong, QVariant.UInt, QVariant.ULongLong]:
                 try:
                     y = int(comparisonvalue)
                 except ValueError:
@@ -167,7 +167,7 @@ class Eliminate(GeoAlgorithm):
                     if aValue is None:
                         continue
 
-                    if selectType == QVariant.Int or selectType == QVariant.LongLong:
+                    if selectType in [QVariant.Int, QVariant.LongLong, QVariant.UInt, QVariant.ULongLong]:
                         x = int(aValue)
                     elif selectType == QVariant.Double:
                         x = float(aValue)
