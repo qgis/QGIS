@@ -20,6 +20,9 @@
 #include "qgsmapsettings.h"
 #include "qgstolerance.h"
 #include "qgspointlocator.h"
+#include "qgssnappingconfig.h"
+
+class QgsSnappingConfig;
 
 /** \ingroup core
  * This class has all the configuration of snapping and can return answers to snapping queries.
@@ -41,6 +44,9 @@
 class CORE_EXPORT QgsSnappingUtils : public QObject
 {
     Q_OBJECT
+
+    Q_PROPERTY( QgsSnappingConfig config READ config WRITE setConfig NOTIFY configChanged )
+
   public:
     QgsSnappingUtils( QObject* parent = nullptr );
     ~QgsSnappingUtils();
@@ -61,7 +67,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     /** Assign current map settings to the utils - used for conversion between screen coords to map coords */
     void setMapSettings( const QgsMapSettings& settings );
-    const QgsMapSettings& mapSettings() const { return mMapSettings; }
+    QgsMapSettings mapSettings() const { return mMapSettings; }
 
     /** Set current layer so that if mode is SnapCurrentLayer we know which layer to use */
     void setCurrentLayer( QgsVectorLayer* layer );
@@ -79,11 +85,6 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
       SnapAdvanced,        //!< snap according to the configuration set in setLayers()
     };
 
-    /** Set how the snapping to map is done */
-    void setSnapToMapMode( SnapToMapMode mode );
-    /** Find out how the snapping to map is done */
-    SnapToMapMode snapToMapMode() const { return mSnapToMapMode; }
-
     enum IndexingStrategy
     {
       IndexAlwaysFull,    //!< For all layers build index of full extent. Uses more memory, but queries are faster.
@@ -95,11 +96,6 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     void setIndexingStrategy( IndexingStrategy strategy ) { mStrategy = strategy; }
     /** Find out which strategy is used for indexing - by default hybrid indexing is used */
     IndexingStrategy indexingStrategy() const { return mStrategy; }
-
-    /** Configure options used when the mode is snap to current layer or to all layers */
-    void setDefaultSettings( int type, double tolerance, QgsTolerance::UnitType unit );
-    /** Query options used when the mode is snap to current layer or to all layers */
-    void defaultSettings( int& type, double& tolerance, QgsTolerance::UnitType& unit );
 
     /**
      * Configures how a certain layer should be handled in a snapping operation
@@ -150,28 +146,27 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
       QgsTolerance::UnitType unit;
     };
 
-    /** Set layers which will be used for snapping */
-    void setLayers( const QList<LayerConfig>& layers );
     /** Query layers used for snapping */
     QList<LayerConfig> layers() const { return mLayers; }
-
-    /** Set whether to consider intersections of nearby segments for snapping */
-    void setSnapOnIntersections( bool enabled );
-    /** Query whether to consider intersections of nearby segments for snapping */
-    bool snapOnIntersections() const { return mSnapOnIntersection; }
 
     /** Get extra information about the instance
      * @note added in QGIS 2.14
      */
     QString dump();
 
-  public slots:
-    /** Read snapping configuration from the project */
-    void readConfigFromProject();
+    /**
+     * The snapping configuration controls the behavior of this object
+     */
+    QgsSnappingConfig config() const;
+
+    /**
+     * The snapping configuration controls the behavior of this object
+     */
+    void setConfig( const QgsSnappingConfig& snappingConfig );
 
   signals:
-    /** Emitted when snapping configuration has been changed
-     * @note added in QGIS 2.14
+    /**
+     * Emitted when the snapping settings object changes.
      */
     void configChanged();
 
@@ -181,10 +176,8 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! Called when finished indexing a layer. When index == count the indexing is complete
     virtual void prepareIndexProgress( int index ) { Q_UNUSED( index ); }
 
-  private slots:
-    void onLayersWillBeRemoved( const QStringList& layerIds );
-
   private:
+    void onIndividualLayerSettingsChanged( const QHash<QgsVectorLayer*, QgsSnappingConfig::IndividualLayerSettings> layerSettings );
     //! Get destination CRS from map settings, or an invalid CRS if projections are disabled
     QgsCoordinateReferenceSystem destinationCrs() const;
 
@@ -208,14 +201,11 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     QgsMapSettings mMapSettings;
     QgsVectorLayer* mCurrentLayer;
 
+    QgsSnappingConfig mSnappingConfig;
+
     // configuration
-    SnapToMapMode mSnapToMapMode;
     IndexingStrategy mStrategy;
-    int mDefaultType;
-    double mDefaultTolerance;
-    QgsTolerance::UnitType mDefaultUnit;
     QList<LayerConfig> mLayers;
-    bool mSnapOnIntersection;
 
     // internal data
     typedef QMap<QgsVectorLayer*, QgsPointLocator*> LocatorsMap;

@@ -32,6 +32,7 @@
 //#include <QDomDocument>
 #include "qgssnapper.h"
 #include "qgsunittypes.h"
+#include "qgssnappingconfig.h"
 #include "qgsprojectversion.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgscoordinatereferencesystem.h"
@@ -44,12 +45,13 @@ class QDomNode;
 class QgsLayerTreeGroup;
 class QgsLayerTreeRegistryBridge;
 class QgsMapLayer;
+class QgsMapThemeCollection;
 class QgsProjectBadLayerHandler;
 class QgsRelationManager;
-class QgsVectorLayer;
-class QgsMapThemeCollection;
-class QgsTransactionGroup;
 class QgsTolerance;
+class QgsTransactionGroup;
+class QgsVectorLayer;
+
 
 /** \ingroup core
  * Reads and writes project states.
@@ -76,6 +78,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged )
     Q_PROPERTY( QString homePath READ homePath NOTIFY homePathChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs )
+    Q_PROPERTY( QgsSnappingConfig snappingConfig READ snappingConfig WRITE setSnappingConfig NOTIFY snappingConfigChanged )
+    Q_PROPERTY( QStringList avoidIntersectionsList READ avoidIntersectionsList WRITE setAvoidIntersectionsList NOTIFY avoidIntersectionsListChanged )
 
   public:
 
@@ -332,14 +336,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath, const QStringList &invisibleLayers );
 
-    /** Convenience function to set snap settings per layer */
-    void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance,
-                                  bool avoidIntersection );
-
-    /** Convenience function to query snap settings of a layer */
-    bool snapSettingsForLayer( const QString& layerId, bool& enabled, QgsSnapper::SnappingType& type, QgsTolerance::UnitType& units, double& tolerance,
-                               bool& avoidIntersection ) const;
-
     /** Convenience function to set topological editing */
     void setTopologicalEditing( bool enabled );
 
@@ -459,33 +455,40 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsExpressionContext createExpressionContext() const override;
 
-  protected:
-    /** Set error message from read/write operation
-     * @note not available in Python bindings
+    /**
+     * The snapping configuration for this project.
+     *
+     * @note Added in QGIS 3.0
      */
-    void setError( const QString& errorMessage );
+    QgsSnappingConfig snappingConfig() const;
 
-    /** Clear error message
-     * @note not available in Python bindings
+    /**
+     * The snapping configuration for this project.
+     *
+     * @note Added in QGIS 3.0
      */
-    void clearError();
+    void setSnappingConfig( const QgsSnappingConfig& snappingConfig );
 
-    //! Creates layer and adds it to maplayer registry
-    //! @note not available in python bindings
-    bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
+    /**
+     * A list of layers with which intersections should be avoided.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QStringList avoidIntersectionsList() const;
 
-    //! @note not available in python bindings
-    void initializeEmbeddedSubtree( const QString& projectFilePath, QgsLayerTreeGroup* group );
-
-    //! @note not available in python bindings
-    void loadEmbeddedNodes( QgsLayerTreeGroup* group );
+    /**
+     * A list of layers with which intersections should be avoided.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setAvoidIntersectionsList( const QStringList& avoidIntersectionsList );
 
   signals:
     //! emitted when project is being read
-    void readProject( const QDomDocument & );
+    void readProject( const QDomDocument& );
 
     //! emitted when project is being written
-    void writeProject( QDomDocument & );
+    void writeProject( QDomDocument& );
 
     /**
      * Emitted, after the basic initialization of a layer from the project
@@ -495,7 +498,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @param mapLayer  The map layer which is being initialized
      * @param layerNode The layer node from the project file
      */
-    void readMapLayer( QgsMapLayer *mapLayer, const QDomElement &layerNode );
+    void readMapLayer( QgsMapLayer* mapLayer, const QDomElement& layerNode );
 
     /**
      * Emitted, when a layer is being saved. You can use this method to save
@@ -522,8 +525,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     void loadingLayer( const QString& );
 
-    void snapSettingsChanged();
-
     //! Emitted when the list of layer which are excluded from map identification changes
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 
@@ -532,6 +533,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     //! Emitted when the home path of the project changes
     void homePathChanged();
+
+    //! emitted whenever the configuration for snapping has changed
+    void snappingConfigChanged();
 
     /** Emitted whenever the expression variables stored in the project have been changed.
      * @note added in QGIS 3.0
@@ -545,6 +549,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @note Added in QGIS 3.0
      */
     void transactionGroupsChanged();
+
+    /**
+     * Emitted when the topological editing flag has changed.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void topologicalEditingChanged();
+
+    /**
+     * Emitted whenever avoidIntersectionsList has changed.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void avoidIntersectionsListChanged();
 
   public slots:
     /**
@@ -565,6 +583,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer*>& layers );
+    void onMapLayersRemoved( const QList<QgsMapLayer*>& layers );
     void cleanTransactionGroups( bool force = false );
 
   private:
@@ -593,6 +612,26 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void processLayerJoins( QgsVectorLayer* layer );
 
+    /** Set error message from read/write operation
+     * @note not available in Python bindings
+     */
+    void setError( const QString& errorMessage );
+
+    /** Clear error message
+     * @note not available in Python bindings
+     */
+    void clearError();
+
+    //! Creates layer and adds it to maplayer registry
+    //! @note not available in python bindings
+    bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
+
+    //! @note not available in python bindings
+    void initializeEmbeddedSubtree( const QString& projectFilePath, QgsLayerTreeGroup* group );
+
+    //! @note not available in python bindings
+    void loadEmbeddedNodes( QgsLayerTreeGroup* group );
+
     QString mErrorMessage;
 
     QgsProjectBadLayerHandler* mBadLayerHandler;
@@ -603,8 +642,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QHash< QString, QPair< QString, bool> > mEmbeddedLayers;
 
-    void snapSettings( QStringList& layerIdList, QStringList& enabledList, QStringList& snapTypeList, QStringList& snapUnitList, QStringList& toleranceUnitList,
-                       QStringList& avoidIntersectionList ) const;
+    QgsSnappingConfig mSnappingConfig;
 
     QgsRelationManager* mRelationManager;
 

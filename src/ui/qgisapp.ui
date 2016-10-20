@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1018</width>
-     <height>25</height>
+     <height>28</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -52,6 +52,7 @@
     <addaction name="mActionSaveMapAsImage"/>
     <addaction name="mActionDxfExport"/>
     <addaction name="separator"/>
+    <addaction name="mActionSnappingOptions"/>
     <addaction name="mActionNewPrintComposer"/>
     <addaction name="mActionShowComposerManager"/>
     <addaction name="mPrintComposersMenu"/>
@@ -229,7 +230,6 @@
     <addaction name="mActionConfigureShortcuts"/>
     <addaction name="mActionCustomization"/>
     <addaction name="mActionOptions"/>
-    <addaction name="mActionSnappingOptions"/>
    </widget>
    <widget class="QMenu" name="mRasterMenu">
     <property name="title">
@@ -562,6 +562,17 @@
    </property>
    <property name="toolTip">
     <string>Web Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="mSnappingToolBar">
+   <property name="windowTitle">
+    <string>Snapping toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -2158,7 +2169,7 @@ Acts on currently active editable layer</string>
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset>
      <normaloff>:/images/themes/default/mActionRotateFeature.png</normaloff>:/images/themes/default/mActionRotateFeature.png</iconset>
    </property>
    <property name="text">

@@ -22,6 +22,7 @@
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
+#include "qgssnappingconfig.h"
 
 #include <QGraphicsProxyWidget>
 #include <QMouseEvent>
@@ -84,24 +85,20 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent* e )
     QgsSnappingUtils* snapping = mCanvas->snappingUtils();
 
     // store previous settings
-    int oldType;
-    double oldSearchRadius;
-    QgsTolerance::UnitType oldSearchRadiusUnit;
-    QgsSnappingUtils::SnapToMapMode oldMode = snapping->snapToMapMode();
-    snapping->defaultSettings( oldType, oldSearchRadius, oldSearchRadiusUnit );
-
+    QgsSnappingConfig oldConfig = snapping->config();
+    QgsSnappingConfig config = snapping->config();
     // setup new settings (temporary)
     QSettings settings;
-    snapping->setSnapToMapMode( QgsSnappingUtils::SnapAllLayers );
-    snapping->setDefaultSettings( QgsPointLocator::Edge,
-                                  settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble(),
-                                  ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt() );
+    config.setMode( QgsSnappingConfig::AllLayers );
+    config.setType( QgsSnappingConfig::Segment );
+    config.setTolerance( settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble() );
+    config.setUnits( static_cast<QgsTolerance::UnitType>( settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt() ) );
+    snapping->setConfig( config );
 
     QgsPointLocator::Match match = snapping->snapToMap( e->pos() );
 
     // restore old settings
-    snapping->setSnapToMapMode( oldMode );
-    snapping->setDefaultSettings( oldType, oldSearchRadius, oldSearchRadiusUnit );
+    snapping->setConfig( oldConfig );
 
     if ( match.hasEdge() && match.layer() )
     {

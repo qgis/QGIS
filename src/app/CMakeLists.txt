@@ -49,6 +49,8 @@ SET(QGIS_APP_SRCS
   qgsmaplayerstyleguiutils.cpp
   qgsrulebasedlabelingwidget.cpp
   qgssavestyletodbdialog.cpp
+  qgssnappinglayertreemodel.cpp
+  qgssnappingwidget.cpp
   qgsstatusbarcoordinateswidget.cpp
   qgsstatusbarmagnifierwidget.cpp
   qgsstatusbarscalewidget.cpp
@@ -117,7 +119,6 @@ SET(QGIS_APP_SRCS
   qgsstatisticalsummarydockwidget.cpp
   qgssubstitutionlistwidget.cpp
   qgstextannotationdialog.cpp
-  qgssnappingdialog.cpp
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
   qgstipgui.cpp
@@ -228,6 +229,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaplayerstyleguiutils.h
   qgsrulebasedlabelingwidget.h
   qgssavestyletodbdialog.h
+  qgssnappinglayertreemodel.h
+  qgssnappingwidget.h
   qgsstatusbarcoordinateswidget.h
   qgsstatusbarmagnifierwidget.h
   qgsstatusbarscalewidget.h
@@ -290,7 +293,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsrelationmanagerdialog.h
   qgsrelationadddlg.h
   qgsselectbyformdialog.h
-  qgssnappingdialog.h
   qgssponsors.h
   qgsstatisticalsummarydockwidget.h
   qgssubstitutionlistwidget.h

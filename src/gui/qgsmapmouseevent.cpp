@@ -18,6 +18,7 @@
 #include "qgsmapcanvas.h"
 
 #include "qgssnappingutils.h"
+#include "qgssnappingconfig.h"
 
 /// @cond PRIVATE
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
@@ -62,18 +63,18 @@ QgsPoint QgsMapMouseEvent::snapPoint( SnappingMode snappingMode )
   }
 
   QgsSnappingUtils* snappingUtils = mMapCanvas->snappingUtils();
-  QgsSnappingUtils::SnapToMapMode canvasMode = snappingUtils->snapToMapMode();
   if ( snappingMode == SnapAllLayers )
   {
-    int type;
-    double tolerance;
-    QgsTolerance::UnitType unit;
-    snappingUtils->defaultSettings( type, tolerance, unit );
-    snappingUtils->setSnapToMapMode( QgsSnappingUtils::SnapAllLayers );
-    snappingUtils->setDefaultSettings( QgsPointLocator::Vertex | QgsPointLocator::Edge, tolerance, unit );
+    QgsSnappingConfig canvasConfig = snappingUtils->config();
+    QgsSnappingConfig localConfig = snappingUtils->config();
+
+    localConfig.setMode( QgsSnappingConfig::AllLayers );
+    localConfig.setType( QgsSnappingConfig::VertexAndSegment );
+    snappingUtils->setConfig( localConfig );
+
     mSnapMatch = snappingUtils->snapToMap( mMapPoint );
-    snappingUtils->setSnapToMapMode( canvasMode );
-    snappingUtils->setDefaultSettings( type, tolerance, unit );
+
+    snappingUtils->setConfig( canvasConfig );
   }
   else
   {
@@ -119,16 +120,17 @@ QList<QgsPoint> QgsMapMouseEvent::snapSegment( SnappingMode snappingMode, bool* 
     {
       // run snapToMap with only edges on all layers
       QgsSnappingUtils* snappingUtils = mMapCanvas->snappingUtils();
-      QgsSnappingUtils::SnapToMapMode canvasMode = snappingUtils->snapToMapMode();
-      int type;
-      double tolerance;
-      QgsTolerance::UnitType unit;
-      snappingUtils->defaultSettings( type, tolerance, unit );
-      snappingUtils->setSnapToMapMode( QgsSnappingUtils::SnapAllLayers );
-      snappingUtils->setDefaultSettings( QgsPointLocator::Edge, tolerance, unit );
+
+      QgsSnappingConfig canvasConfig = snappingUtils->config();
+      QgsSnappingConfig localConfig = snappingUtils->config();
+
+      localConfig.setMode( QgsSnappingConfig::AllLayers );
+      localConfig.setType( QgsSnappingConfig::Segment );
+      snappingUtils->setConfig( localConfig );
+
       match = snappingUtils->snapToMap( mOriginalMapPoint );
-      snappingUtils->setSnapToMapMode( canvasMode );
-      snappingUtils->setDefaultSettings( type, tolerance, unit );
+
+      snappingUtils->setConfig( canvasConfig );
     }
     if ( match.isValid() && match.hasEdge() )
     {

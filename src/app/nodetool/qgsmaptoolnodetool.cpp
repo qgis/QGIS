@@ -150,7 +150,7 @@ void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
         if ( vertexEntry->isSelected() )
           mMoveVertices[mSelectedFeature->featureId()].append( qMakePair( vertexEntry->vertexId(), toMapCoordinates( vlayer, vertexEntry->point() ) ) );
       }
-      if ( QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 ) )
+      if ( QgsProject::instance()->topologicalEditing() )
       {
         createTopologyRubberBands();
       }
@@ -492,10 +492,9 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QgsMapMouseEvent* e )
       {
         pressLayerCoords = toLayerCoordinates( vlayer, mClosestMapVertex );
 
-        int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
-        if ( topologicalEditing )
+        if ( QgsProject::instance()->topologicalEditing() )
         {
-          //insert vertices for snap, but don't add them to features which already has a vertex being moved
+          //insert vertices for snap, but don't add them to features which already have a vertex being moved
           insertSegmentVerticesForSnap( snapResults, vlayer, movedFids );
         }
       }
@@ -608,7 +607,7 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QgsMapMouseEvent* e )
   QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
   Q_ASSERT( vlayer );
 
-  int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+  bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QMultiMap<double, QgsSnappingResult> currentResultList;
 
   QList<QgsSnappingResult> snapResults;

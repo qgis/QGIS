@@ -31,7 +31,6 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsprojectlayergroupdialog.h"
-#include "qgssnappingdialog.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"

@@ -110,6 +110,11 @@ class CORE_EXPORT QgsVector
  */
 class CORE_EXPORT QgsPoint
 {
+    Q_GADGET
+
+    Q_PROPERTY( double x READ x WRITE setX )
+    Q_PROPERTY( double y READ y WRITE setY )
+
   public:
     /// Default constructor
     QgsPoint()
