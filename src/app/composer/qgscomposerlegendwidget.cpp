@@ -42,6 +42,23 @@
 #include <QInputDialog>
 
 
+static int _unfilteredLegendNodeIndex( QgsLayerTreeModelLegendNode* legendNode )
+{
+  return legendNode->model()->layerOriginalLegendNodes( legendNode->layerNode() ).indexOf( legendNode );
+}
+
+static int _originalLegendNodeIndex( QgsLayerTreeModelLegendNode* legendNode )
+{
+  // figure out index of the legend node as it comes out of the map layer legend.
+  // first legend nodes may be reordered, output of that is available in layerOriginalLegendNodes().
+  // next the nodes may be further filtered (by scale, map content etc).
+  // so here we go in reverse order: 1. find index before filtering, 2. find index before reorder
+  int unfilteredNodeIndex = _unfilteredLegendNodeIndex( legendNode );
+  QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( legendNode->layerNode() );
+  return ( unfilteredNodeIndex >= 0 && unfilteredNodeIndex < order.count() ? order[unfilteredNodeIndex] : -1 );
+}
+
+
 QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
     : QgsComposerItemBaseWidget( nullptr, legend )
     , mLegend( legend )
@@ -480,7 +497,7 @@ void QgsComposerLegendWidget::on_mMoveDownToolButton_clicked()
   }
   else // legend node
   {
-    _moveLegendNode( legendNode->layerNode(), index.row(), 1 );
+    _moveLegendNode( legendNode->layerNode(), _unfilteredLegendNodeIndex( legendNode ), 1 );
     mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
   }
 
@@ -517,7 +534,7 @@ void QgsComposerLegendWidget::on_mMoveUpToolButton_clicked()
   }
   else // legend node
   {
-    _moveLegendNode( legendNode->layerNode(), index.row(), -1 );
+    _moveLegendNode( legendNode->layerNode(), _unfilteredLegendNodeIndex( legendNode ), -1 );
     mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
   }
 
@@ -688,7 +705,7 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
     if ( QgsLayerTreeModelLegendNode* legendNode = mItemTreeView->layerTreeModel()->index2legendNode( index ) )
     {
       QgsLayerTreeLayer* nodeLayer = legendNode->layerNode();
-      nodesWithRemoval[nodeLayer].append( index.row() );
+      nodesWithRemoval[nodeLayer].append( _unfilteredLegendNodeIndex( legendNode ) );
     }
   }
   Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, nodesWithRemoval.keys() )
@@ -1011,11 +1028,7 @@ void QgsComposerLegendWidget::on_mItemTreeView_doubleClicked( const QModelIndex 
   }
   else if ( legendNode )
   {
-    QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( legendNode->layerNode() );
-    //find unfiltered row number
-    QList<QgsLayerTreeModelLegendNode*> layerLegendNodes = model->layerOriginalLegendNodes( legendNode->layerNode() );
-    int unfilteredRowIndex = layerLegendNodes.indexOf( legendNode );
-    int originalIndex = ( unfilteredRowIndex >= 0 && unfilteredRowIndex < order.count() ? order[unfilteredRowIndex] : -1 );
+    int originalIndex = _originalLegendNodeIndex( legendNode );
     QgsMapLayerLegendUtils::setLegendNodeUserLabel( legendNode->layerNode(), originalIndex, newText );
     model->refreshLayerLegend( legendNode->layerNode() );
   }
