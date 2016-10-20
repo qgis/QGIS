@@ -442,7 +442,7 @@ def bufferedBoundingBox(bbox, buffer_size):
 
 
 def ogrConnectionString(uri):
-    """Generates OGR connection sting from layer source
+    """Generates OGR connection string from layer source
     """
     ogrstr = None
 
@@ -558,6 +558,10 @@ def ogrLayerName(uri):
         r = regex.search(uri)
         return r.groups()[1]
 
+    # handle URIs from QGIS memory layers
+    if re.match('^(multi)?(point|linestring|polygon)(25d|(z?m?))?(\?|$)', uri, re.I):
+        return 'memory_layer'
+
     fields = uri.split('|')
     ogruri = fields[0]
     fields = fields[1:]
@@ -578,6 +582,72 @@ def ogrLayerName(uri):
         return "invalid-layerid"
     name = ly.GetName()
     return name
+
+
+
+def ogrFormats():
+    return [
+        'ESRI Shapefile',
+        'GeoJSON',
+        'GeoRSS',
+        'SQLite',
+        'GMT',
+        'MapInfo File',
+        'INTERLIS 1',
+        'INTERLIS 2',
+        'GML',
+        'Geoconcept',
+        'DXF',
+        'DGN',
+        'CSV',
+        'BNA',
+        'S57',
+        'KML',
+        'GPX',
+        'PGDump',
+        'GPSTrackMaker',
+        'ODS',
+        'XLSX',
+        'PDF',
+    ]
+
+
+def ogrExtensions():
+    return [
+        '.shp',
+        '.geojson',
+        '.xml',
+        '.sqlite',
+        '.gmt',
+        '.tab',
+        '.ili',
+        '.ili',
+        '.gml',
+        '.txt',
+        '.dxf',
+        '.dgn',
+        '.csv',
+        '.bna',
+        '.000',
+        '.kml',
+        '.gpx',
+        '.pgdump',
+        '.gtm',
+        '.ods',
+        '.xlsx',
+        '.pdf',
+    ]
+
+
+def ogrFormatName(extension):
+    """ Returns OGR format name corresponding to a file extension
+    """
+    formats = ogrFormats()
+    extensions = ogrExtensions()
+    extension = extension.lower()
+    if extension in extensions:
+        return formats[extensions.index(extension)]
+    return None
 
 
 class VectorWriter:

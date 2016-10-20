@@ -25,6 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os.path
+
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -34,7 +36,8 @@ from processing.core.outputs import OutputVector
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
-from processing.tools.vector import ogrConnectionString
+from processing.tools.dataobjects import getLayerCRS
+from processing.tools.vector import ogrConnectionString, ogrFormatName
 
 
 DIALECTS = [None, 'ogrsql', 'sqlite']
@@ -87,5 +90,15 @@ class OgrSql(GdalAlgorithm):
         layer = self.getParameterValue(self.INPUT)
         conn = ogrConnectionString(layer)[1:-1]
         arguments.append(conn)
+
+        formatName = ogrFormatName(os.path.splitext(outFile)[1])
+        if formatName:
+            arguments.append('-f')
+            arguments.append(formatName)
+
+        crs = getLayerCRS(layer)
+        if crs:
+            arguments.append('-a_srs')
+            arguments.append(crs)
 
         return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]

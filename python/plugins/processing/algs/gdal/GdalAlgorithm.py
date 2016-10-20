@@ -54,8 +54,20 @@ class GdalAlgorithm(GeoAlgorithm):
         for i, c in enumerate(commands):
             for layer in layers:
                 if layer.source() in c:
-                    exported = dataobjects.exportVectorLayer(layer, supported)
+                    exported = dataobjects.exportVectorLayer(layer, supported, "sqlite")
                     exportedFileName = os.path.splitext(os.path.split(exported)[1])[0]
+
+                    if layer.dataProvider().name() == 'memory':
+                        if 'memory_clip_layer' in c:
+                            # Ogr2OgrClip alg may get 2 memory layers, deal with the clip layer
+                            clipSource = c.split("-clipsrc ")[1].split("-clipsrclayer")[0].strip()
+                            if layer.source() == clipSource:
+                                c = re.sub('["\'\s]{}["\'\s]'.format('memory_clip_layer'), " " + exportedFileName + " ", c)
+                            else:
+                                c = c.replace('memory_layer', exportedFileName)
+                        else:
+                            c = c.replace('memory_layer', exportedFileName)
+
                     c = c.replace(layer.source(), exported)
                     if os.path.isfile(layer.source()):
                         fileName = os.path.splitext(os.path.split(layer.source())[1])[0]

@@ -25,6 +25,8 @@ __copyright__ = '(C) 2015, Giovanni Manghi'
 
 __revision__ = '$Format:%H$'
 
+import os.path
+
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterBoolean
@@ -34,8 +36,10 @@ from processing.core.outputs import OutputVector
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools.dataobjects import getLayerCRS
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString, ogrLayerName
+from processing.tools.vector import (ogrConnectionString, ogrLayerName,
+                                     ogrFormatName)
 
 
 class Ogr2OgrDissolve(GdalAlgorithm):
@@ -120,6 +124,16 @@ class Ogr2OgrDissolve(GdalAlgorithm):
         options = unicode(self.getParameterValue(self.OPTIONS))
 
         arguments = []
+        formatName = ogrFormatName(os.path.splitext(outFile)[1])
+        if formatName:
+            arguments.append('-f')
+            arguments.append(formatName)
+
+        crs = getLayerCRS(inLayer)
+        if crs:
+            arguments.append('-a_srs')
+            arguments.append(crs)
+
         arguments.append(output)
         arguments.append(ogrLayer)
         arguments.append(ogrLayerName(inLayer))

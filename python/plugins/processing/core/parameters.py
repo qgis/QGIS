@@ -466,7 +466,7 @@ class ParameterMultipleInput(ParameterDataObject):
             for layerfile in layers:
                 layer = dataobjects.getObjectFromUri(layerfile, False)
                 if layer:
-                    filename = dataobjects.exportVectorLayer(layer)
+                    filename = dataobjects.exportVectorLayer(layer, ["shp"])
                     self.exported = self.exported.replace(layerfile, filename)
             return self.exported
 
@@ -1000,7 +1000,7 @@ class ParameterVector(ParameterDataObject):
     def getSafeExportedLayer(self):
         """Returns not the value entered by the user, but a string with
         a filename which contains the data of this layer, but saved in
-        a standard format (currently always a shapefile) so that it can
+        a standard format (by default a shapefile) so that it can
         be opened by most external applications.
 
         If there is a selection and QGIS is configured to use just the
@@ -1024,7 +1024,7 @@ class ParameterVector(ParameterDataObject):
             return self.exported
         layer = dataobjects.getObjectFromUri(self.value, False)
         if layer:
-            self.exported = dataobjects.exportVectorLayer(layer)
+            self.exported = dataobjects.exportVectorLayer(layer, ["shp"])
         else:
             self.exported = self.value
         return self.exported
