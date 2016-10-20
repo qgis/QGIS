@@ -68,7 +68,7 @@ void QgsMapThemes::addPerLayerCheckedLegendSymbols( QgsMapThemeCollection::MapTh
     bool hasCheckableItems = false;
     bool someItemsUnchecked = false;
     QSet<QString> checkedItems;
-    Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer ) )
+    Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer, true ) )
     {
       if ( legendNode->flags() & Qt::ItemIsUserCheckable )
       {
@@ -217,7 +217,7 @@ void QgsMapThemes::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const 
         {
           const QSet<QString>& checkedNodes = rec.perLayerCheckedLegendSymbols().value( nodeLayer->layerId() );
           // some nodes are not checked
-          Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer ) )
+          Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer, true ) )
           {
             Qt::CheckState shouldHaveState = checkedNodes.contains( legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() ) ? Qt::Checked : Qt::Unchecked;
             if (( legendNode->flags() & Qt::ItemIsUserCheckable ) &&
@@ -228,7 +228,7 @@ void QgsMapThemes::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const 
         else
         {
           // all nodes should be checked
-          Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer ) )
+          Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer, true ) )
           {
             if (( legendNode->flags() & Qt::ItemIsUserCheckable ) &&
                 legendNode->data( Qt::CheckStateRole ).toInt() != Qt::Checked )
