@@ -293,7 +293,7 @@ void QgsPanningWidget::setPolygon( const QPolygon& p )
   mPoly = p;
 
   //ensure polygon is closed
-  if ( mPoly.at( 0 ) != mPoly.at( mPoly.length() - 1 ) )
+  if ( mPoly.at( 0 ) != mPoly.at( mPoly.size() - 1 ) )
     mPoly.append( mPoly.at( 0 ) );
 
   setGeometry( p.boundingRect() );
