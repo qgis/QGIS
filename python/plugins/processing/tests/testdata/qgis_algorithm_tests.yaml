@@ -124,6 +124,7 @@ tests:
       INPUT2:
         name: polys.gml
         type: vector
+      IGNORE_NULL: True
     results:
       OUTPUT:
         name: expected/intersection_collection_fallback.shp
