@@ -9,9 +9,9 @@ Set OTB environment
 --------------------
 
 export PYTHONPATH=/path/to/OTB/install/lib/otb/python/:$PYTHONPATH
-# Environment variable for old OTB versions
+# Environment variable for old OTB versions (< 5.2) 
 export ITK_AUTOLOAD_PATH=/path/to/OTB/install/lib/otb/applications/
-# Environment variable for new OTB versions
+# Environment variable for new OTB versions (>= 5.2)
 export OTB_APPLICATION_PATH=/path/to/OTB/install/lib/otb/applications/
 # Set LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/path/to/OTB/install/lib/:$LD_LIBRARY_PATH
@@ -19,7 +19,7 @@ export LD_LIBRARY_PATH=/path/to/OTB/install/lib/:$LD_LIBRARY_PATH
 Set QGIS environment
 ---------------------
 export QGIS_PREFIX_PATH=/path/to/QGIS/install
-export PYTHONPATH=:/usr/share/qgis/python/plugins:~/.qgis2/python/plugins:$PYTHONPATH
+export PYTHONPATH=$QGIS_PREFIX_PATH/share/qgis/python:$QGIS_PREFIX_PATH/share/qgis/python/plugins:$PYTHONPATH
 # Set LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=$QGIS_PREFIX_PATH/lib/:$LD_LIBRARY_PATH
 # Add maintenance folder to python path
