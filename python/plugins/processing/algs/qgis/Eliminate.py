@@ -115,7 +115,7 @@ class Eliminate(GeoAlgorithm):
             selectType = processLayer.fields()[selectindex].type()
             selectionError = False
 
-            if selectType == 2:
+            if selectType == 2 or selectType == 4:
                 try:
                     y = int(comparisonvalue)
                 except ValueError:
@@ -175,7 +175,7 @@ class Eliminate(GeoAlgorithm):
                     if aValue is None:
                         continue
 
-                    if selectType == 2:
+                    if selectType == 2 or selectType == 4:
                         x = int(aValue)
                     elif selectType == 6:
                         x = float(aValue)
