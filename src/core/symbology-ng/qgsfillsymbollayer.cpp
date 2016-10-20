@@ -2654,7 +2654,8 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext& 
   width += 2 * xBuffer;
   height += 2 * yBuffer;
 
-  if ( width > 10000 || height > 10000 ) //protect symbol layer from eating too much memory
+  //protect from zero width/height image and symbol layer from eating too much memory
+  if ( width > 10000 || height > 10000 || width == 0 || height == 0 )
   {
     return;
   }
