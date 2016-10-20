@@ -21,6 +21,7 @@
 %Include qgsannotation.sip
 %Include qgsapplication.sip
 %Include qgsattributeaction.sip
+%Include qgsbearingutils.sip
 %Include qgsbrowsermodel.sip
 %Include qgsclipper.sip
 %Include qgscolorscheme.sip

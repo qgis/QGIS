@@ -352,7 +352,7 @@ double QgsPoint::sqrDist( const QgsPoint& other ) const
   return sqrDist( other.x(), other.y() );
 }
 
-double QgsPoint::azimuth( const QgsPoint& other )
+double QgsPoint::azimuth( const QgsPoint& other ) const
 {
   double dx = other.x() - m_x;
   double dy = other.y() - m_y;

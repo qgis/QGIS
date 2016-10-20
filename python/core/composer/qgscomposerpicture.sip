@@ -30,6 +30,13 @@ class QgsComposerPicture: QgsComposerItem
       Unknown
     };
 
+    //! Method for syncing rotation to a map's North direction
+    enum NorthMode
+    {
+      GridNorth, /*!< Align to grid north */
+      TrueNorth, /*!< Align to true north */
+    };
+
     QgsComposerPicture( QgsComposition *composition /TransferThis/);
     ~QgsComposerPicture();
 
@@ -131,6 +138,38 @@ class QgsComposerPicture: QgsComposerItem
      * @see setRotationMap
      */
     bool useRotationMap() const;
+
+     /**
+     * Returns the mode used to align the picture to a map's North.
+     * @see setNorthMode()
+     * @see northOffset()
+     * @note added in QGIS 2.18
+     */
+    NorthMode northMode() const;
+
+    /**
+     * Sets the mode used to align the picture to a map's North.
+     * @see northMode()
+     * @see setNorthOffset()
+     * @note added in QGIS 2.18
+     */
+    void setNorthMode( NorthMode mode );
+
+    /**
+     * Returns the offset added to the picture's rotation from a map's North.
+     * @see setNorthOffset()
+     * @see northMode()
+     * @note added in QGIS 2.18
+     */
+    double northOffset() const;
+
+    /**
+     * Sets the offset added to the picture's rotation from a map's North.
+     * @see northOffset()
+     * @see setNorthMode()
+     * @note added in QGIS 2.18
+     */
+    void setNorthOffset( double offset );
 
     /** Returns the resize mode used for drawing the picture within the composer
      * item's frame.
