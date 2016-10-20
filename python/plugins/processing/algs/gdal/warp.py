@@ -143,13 +143,13 @@ class warp(GdalAlgorithm):
         arguments = []
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-        if len(srccrs) > 0:
+        if srccrs:
             arguments.append('-s_srs')
             arguments.append(srccrs)
-        if len(dstcrs) > 0:
+        if dstcrs:
             arguments.append('-t_srs')
             arguments.append(dstcrs)
-        if noData and len(noData) > 0:
+        if noData:
             arguments.append('-dstnodata')
             arguments.append(noData)
         arguments.append('-r')
@@ -165,21 +165,19 @@ class warp(GdalAlgorithm):
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:
             extra = str(extra)
-        regionCoords = rastext.split(',')
-        try:
-            rastext = []
-            rastext.append('-te')
-            rastext.append(regionCoords[0])
-            rastext.append(regionCoords[2])
-            rastext.append(regionCoords[1])
-            rastext.append(regionCoords[3])
-        except IndexError:
-            rastext = []
+        if rastext:
+            regionCoords = rastext.split(',')
+            if len(regionCoords) >= 4:
+                arguments.append('-te')
+                arguments.append(regionCoords[0])
+                arguments.append(regionCoords[2])
+                arguments.append(regionCoords[1])
+                arguments.append(regionCoords[3])
 
-        if GdalUtils.version() >= 2000000:
-            if rastext and rastext_crs:
-                arguments.append('-te_srs')
-                arguments.append(rastext_crs)
+                if GdalUtils.version() >= 2000000:
+                    if rastext_crs:
+                        arguments.append('-te_srs')
+                        arguments.append(rastext_crs)
 
         if extra and len(extra) > 0:
             arguments.append(extra)
