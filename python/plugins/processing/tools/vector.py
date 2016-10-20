@@ -591,7 +591,7 @@ def ogrLayerName(uri):
     return name
 
 
-# If you add something to ogrDisplayFormats, make sure you also update 
+# If you add something to ogrDisplayFormats, make sure you also update
 # ogrFormats and ogrExtensions. The order matters!
 def ogrDisplayFormats():
     return [
@@ -619,6 +619,7 @@ def ogrDisplayFormats():
         'XLSX - MS Office Open XML spreadsheet',
         'PDF - Geospatial PDF',
     ]
+
 
 def ogrFormats():
     return [

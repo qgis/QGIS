@@ -38,7 +38,7 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.dataobjects import getLayerCRS
 from processing.tools.system import isWindows
 from processing.tools.vector import (ogrConnectionString, ogrLayerName,
-                                     ogrDisplayFormats, ogrFormats, 
+                                     ogrDisplayFormats, ogrFormats,
                                      ogrExtensions)
 
 

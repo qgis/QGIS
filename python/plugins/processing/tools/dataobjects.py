@@ -297,21 +297,21 @@ def exportVectorLayer(layer, supported=None, exportFormat="shp"):
     """
 
     supported = supported or ["shp", "sqlite", "gpkg"]
-    ogrDriver = { 
-                  "shp": "ESRI Shapefile", 
-                  "sqlite": "SQLite",
+    ogrDriver = {
+        "shp": "ESRI Shapefile",
+        "sqlite": "SQLite",
                   "gpkg": "GPKG"
-                }
+    }
     datasetCreationOptions = {
-                  "shp": [], 
-                  "sqlite": ["SPATIALITE=YES"],
-                  "gpkg": []
-                }
+        "shp": [],
+        "sqlite": ["SPATIALITE=YES"],
+        "gpkg": []
+    }
     layerCreationOptions = {
-                  "shp": [],
-                  "sqlite": [],
-                  "gpkg": ["GEOMETRY_NAME=geometry"]
-                }
+        "shp": [],
+        "sqlite": [],
+        "gpkg": ["GEOMETRY_NAME=geometry"]
+    }
     settings = QSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
 

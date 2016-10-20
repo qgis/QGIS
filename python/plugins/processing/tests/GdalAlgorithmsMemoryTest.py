@@ -108,7 +108,7 @@ class GdalAlgorithmsMemoryTest(unittest.TestCase):
         output_layer = dataobjects.getObjectFromUri(res['OUTPUT_LAYER'])
         #self.assertEqual(output_layer.extent(), memory_layer.extent()) # Failing due to precision!
         self.assertEqual(output_layer.featureCount(), memory_layer.featureCount())
-        self.assertEqual(len(output_layer.fields()) - 1, len(memory_layer.fields())) #+fid
+        self.assertEqual(len(output_layer.fields()) - 1, len(memory_layer.fields()))  # +fid
         self.assertTrue(output_layer.fieldNameIndex('verylongname') != -1) # No laundering
 
     def testOGRBufferVectors(self):
