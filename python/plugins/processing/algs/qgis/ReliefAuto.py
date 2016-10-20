@@ -60,9 +60,9 @@ class ReliefAuto(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.Z_FACTOR,
                                           self.tr('Z factor'), 1.0, 999999.99, 1.0))
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
-                                    self.tr('Refilef')))
+                                    self.tr('Relief')))
         self.addOutput(OutputTable(self.FREQUENCY_DISTRIBUTION,
-                                   self.tr('Frequesncy distribution')))
+                                   self.tr('Frequency distribution')))
 
     def processAlgorithm(self, progress):
         inputFile = self.getParameterValue(self.INPUT_LAYER)
