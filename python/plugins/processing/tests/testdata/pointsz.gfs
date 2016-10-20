@@ -11,5 +11,10 @@
       <ExtentYMin>-5.00000</ExtentYMin>
       <ExtentYMax>3.00000</ExtentYMax>
     </DatasetSpecificInfo>
+    <PropertyDefn>
+      <Name>elev</Name>
+      <ElementPath>elev</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
   </GMLFeatureClass>
 </GMLFeatureClassList>
