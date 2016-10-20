@@ -156,7 +156,7 @@ class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
      * render context in advance and call this method instead of minimumIconSize().
      * @note added in QGIS 2.18
      */
-    QSize minimumIconSize( QgsRenderContext &context ) const;
+    QSize minimumIconSize( QgsRenderContext* context ) const;
 
     /** Returns the symbol used by the legend node.
      * @see setSymbol()

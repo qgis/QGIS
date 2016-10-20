@@ -1497,7 +1497,7 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
       QgsSymbolLegendNode* n = dynamic_cast<QgsSymbolLegendNode*>( legendNode );
       if ( n )
       {
-        const QSize sz( n->minimumIconSize( *context ) );
+        const QSize sz( n->minimumIconSize( context.data() ) );
         const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
         widthMax[parentKey] = qMax( sz.width(), widthMax.contains( parentKey ) ? widthMax[parentKey] : 0 );
         n->setIconSize( sz );
