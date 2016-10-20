@@ -341,7 +341,7 @@ void TestQgsLegendRenderer::testTallSymbol()
 {
   QString testName = "legend_tall_symbol";
 
-  QgsCategorizedSymbolRendererV2* catRenderer = dynamic_cast<QgsCategorizedSymbolRendererV2*>( mVL3->renderer() );
+  QgsCategorizedSymbolRendererV2* catRenderer = dynamic_cast<QgsCategorizedSymbolRendererV2*>( mVL3->rendererV2() );
   QVERIFY( catRenderer );
   catRenderer->updateCategoryLabel( 1, "This is\nthree lines\nlong label" );
 
