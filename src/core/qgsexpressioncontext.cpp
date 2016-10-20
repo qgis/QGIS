@@ -219,7 +219,6 @@ QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext& other )
   mCachedValues = other.mCachedValues;
 }
 
-#ifdef HAS_MOVE_SEMANTICS
 QgsExpressionContext& QgsExpressionContext::operator=( QgsExpressionContext && other )
 {
   if ( this != &other )
@@ -234,7 +233,6 @@ QgsExpressionContext& QgsExpressionContext::operator=( QgsExpressionContext && o
   }
   return *this;
 }
-#endif
 
 QgsExpressionContext& QgsExpressionContext::operator=( const QgsExpressionContext & other )
 {

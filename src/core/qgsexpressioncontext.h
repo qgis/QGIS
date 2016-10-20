@@ -264,9 +264,7 @@ class CORE_EXPORT QgsExpressionContext
 
     QgsExpressionContext& operator=( const QgsExpressionContext& other );
 
-#ifdef HAS_MOVE_SEMANTICS
     QgsExpressionContext& operator=( QgsExpressionContext && other );
-#endif
 
     ~QgsExpressionContext();
 

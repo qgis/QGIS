@@ -347,16 +347,6 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
 #   https://gist.github.com/yamaya/2924292
 
 SET(CMAKE_CXX_STANDARD 11)
-SET(USE_CXX_11 TRUE)
-
-#allow override keyword if available
-IF(NOT USE_CXX_11)
-  ADD_DEFINITIONS("-Doverride=")
-  ADD_DEFINITIONS("-Dnoexcept=")
-  ADD_DEFINITIONS("-Dnullptr=0")
-ELSE()
-  ADD_DEFINITIONS("-DHAS_MOVE_SEMANTICS")
-ENDIF()
 
 #############################################################
 # enable warnings
