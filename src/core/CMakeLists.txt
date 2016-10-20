@@ -488,6 +488,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgstracer.h
   qgstransaction.h
   qgstransactiongroup.h
+  qgsunittypes.h
   qgsvectordataprovider.h
   qgsvectorlayercache.h
   qgsvectorlayereditbuffer.h
@@ -705,7 +706,6 @@ SET(QGIS_CORE_HDRS
   qgstextlabelfeature.h
   qgstolerance.h
   qgstracer.h
-  qgsunittypes.h
 
   qgsvectordataprovider.h
   qgsvectorlayercache.h
