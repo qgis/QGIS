@@ -85,12 +85,16 @@ class Intersection(GeoAlgorithm):
         for current, inFeatA in enumerate(selectionA):
             progress.setPercentage(int(current * total))
             geom = QgsGeometry(inFeatA.geometry())
+            if not geom.isGeosValid():
+                raise GeoAlgorithmExecutionException(
+                    self.tr('Input layer A contains invalid geometries. Unable to complete intersection algorithm.'))
             atMapA = inFeatA.attributes()
             intersects = index.intersects(geom.boundingBox())
-            for i in intersects:
-                request = QgsFeatureRequest().setFilterFid(i)
-                inFeatB = vlayerB.getFeatures(request).next()
+            for inFeatB in vlayerB.getFeatures(QgsFeatureRequest().setFilterFids(intersects)):
                 tmpGeom = QgsGeometry(inFeatB.geometry())
+                if not tmpGeom.isGeosValid():
+                    raise GeoAlgorithmExecutionException(
+                        self.tr('Input layer B contains invalid geometries. Unable to complete intersection algorithm.'))
                 if geom.intersects(tmpGeom):
                     atMapB = inFeatB.attributes()
                     int_geom = QgsGeometry(geom.intersection(tmpGeom))
