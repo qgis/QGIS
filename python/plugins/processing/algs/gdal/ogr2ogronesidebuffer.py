@@ -25,6 +25,8 @@ __copyright__ = '(C) 2015, Giovanni Manghi'
 
 __revision__ = '$Format:%H$'
 
+import os.path
+
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterBoolean
@@ -35,8 +37,10 @@ from processing.core.outputs import OutputVector
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+from processing.tools.dataobjects import getLayerCRS
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString, ogrLayerName
+from processing.tools.vector import (ogrConnectionString, ogrLayerName,
+                                     ogrFormatName)
 
 
 class Ogr2OgrOneSideBuffer(GdalAlgorithm):
@@ -102,6 +106,16 @@ class Ogr2OgrOneSideBuffer(GdalAlgorithm):
         layername = ogrLayerName(inLayer)
 
         arguments = []
+        formatName = ogrFormatName(os.path.splitext(outFile)[1])
+        if formatName:
+            arguments.append('-f')
+            arguments.append(formatName)
+
+        crs = getLayerCRS(inLayer)
+        if crs:
+            arguments.append('-a_srs')
+            arguments.append(crs)
+
         arguments.append(output)
         arguments.append(ogrLayer)
         arguments.append(layername)
@@ -111,14 +125,14 @@ class Ogr2OgrOneSideBuffer(GdalAlgorithm):
 
         if dissolveall or field is not None:
             if operation == 0:
-                sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})), * FROM '{}'".format(geometry, distance, leftright, layername)
+                sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})), * FROM \"{}\"".format(geometry, distance, leftright, layername)
             else:
-                sql = "SELECT ST_Union(ST_OffsetCurve({}, {}, {})) * FROM '{}'".format(geometry, distance, leftright, layername)
+                sql = "SELECT ST_Union(ST_OffsetCurve({}, {}, {})) * FROM \"{}\"".format(geometry, distance, leftright, layername)
         else:
             if operation == 0:
-                sql = "SELECT ST_SingleSidedBuffer({},{},{}), * FROM '{}'".format(geometry, distance, leftright, layername)
+                sql = "SELECT ST_SingleSidedBuffer({},{},{}), * FROM \"{}\"".format(geometry, distance, leftright, layername)
             else:
-                sql = "SELECT ST_OffsetCurve({}, {}, {}), * FROM '{}'".format(geometry, distance, leftright, layername)
+                sql = "SELECT ST_OffsetCurve({}, {}, {}), * FROM \"{}\"".format(geometry, distance, leftright, layername)
 
         if field is not None:
             sql = '"{} GROUP BY {}"'.format(sql, field)

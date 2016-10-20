@@ -1,0 +1,11 @@
+{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "properties": { "ID": 1, "POLY_NUM_A": 1.1, "POLY_ST_A": "string a", "ID_2": 2, "POLY_NUM_B": 1.0, "POLY_ST_B": "string a" }, "geometry": { "type": "Point", "coordinates": [ 270781.079739438020624, 4458932.921718955971301 ] } },
+{ "type": "Feature", "properties": { "ID": 2, "POLY_NUM_A": 1.1, "POLY_ST_A": "string a", "ID_2": 1, "POLY_NUM_B": 2.0, "POLY_ST_B": "string b" }, "geometry": { "type": "Point", "coordinates": [ 270792.323368578916416, 4458970.550978196784854 ] } },
+{ "type": "Feature", "properties": { "ID": 3, "POLY_NUM_A": 1.1, "POLY_ST_A": "string a", "ID_2": 0, "POLY_NUM_B": 0.0, "POLY_ST_B": null }, "geometry": { "type": "Point", "coordinates": [ 270779.2129507259815, 4458950.363271683454514 ] } },
+{ "type": "Feature", "properties": { "ID": 4, "POLY_NUM_A": 2.2, "POLY_ST_A": "string b", "ID_2": 2, "POLY_NUM_B": 1.0, "POLY_ST_B": "string a" }, "geometry": { "type": "Point", "coordinates": [ 270835.778383893251885, 4458920.321865953505039 ] } },
+{ "type": "Feature", "properties": { "ID": 5, "POLY_NUM_A": 2.2, "POLY_ST_A": "string b", "ID_2": 1, "POLY_NUM_B": 2.0, "POLY_ST_B": "string b" }, "geometry": { "type": "Point", "coordinates": [ 270843.900531549355946, 4458961.550766184926033 ] } },
+{ "type": "Feature", "properties": { "ID": 6, "POLY_NUM_A": 2.2, "POLY_ST_A": "string b", "ID_2": 0, "POLY_NUM_B": 0.0, "POLY_ST_B": null }, "geometry": { "type": "Point", "coordinates": [ 270861.657573897275142, 4458931.483957334421575 ] } }
+]
+}

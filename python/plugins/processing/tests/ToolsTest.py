@@ -26,9 +26,10 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 from qgis.testing import start_app, unittest
-from processing.tests.TestData import points2
-from processing.tools import vector
-from qgis.core import (QgsVectorLayer, QgsFeatureRequest)
+from processing.tests.TestData import points2, polygonsGeoJson
+from processing.tools import vector, dataobjects
+from qgis.core import (QgsVectorLayer, QgsFeatureRequest, QgsGeometry,
+                       QgsDataSourceURI, QgsFeature, QgsPoint)
 from processing.core.ProcessingConfig import ProcessingConfig
 
 import os.path
@@ -36,6 +37,7 @@ import errno
 import shutil
 
 dataFolder = os.path.join(os.path.dirname(__file__), '../../../../tests/testdata/')
+processingDataFolder = os.path.abspath((os.path.join(os.path.dirname(__file__), 'testdata/')))
 tmpBaseFolder = os.path.join(os.sep, 'tmp', 'qgis_test', str(os.getpid()))
 
 
@@ -105,6 +107,85 @@ class VectorTest(unittest.TestCase):
         # URI from PostgreSQL provider
         name = vector.ogrLayerName('port=5493 sslmode=disable key=\'edge_id\' srid=0 type=LineString table="city_data"."edge" (geom) sql=')
         self.assertEqual(name, 'city_data.edge')
+
+        # test GML file
+        name = vector.ogrLayerName(os.path.join(processingDataFolder, 'dissolve_polys.gml'))
+        self.assertEqual(name, 'dissolve_polys')
+
+        # test GeoJSON file
+        name = vector.ogrLayerName(polygonsGeoJson())
+        self.assertEqual(name, 'OGRGeoJSON') # Layer name for all GeoJSON files
+
+        # test Memory layers
+        name = vector.ogrLayerName('point?abc=d')
+        self.assertEqual(name, 'memory_layer')
+        name = vector.ogrLayerName('MultiPolygon?abc=d')
+        self.assertEqual(name, 'memory_layer')
+        name = vector.ogrLayerName('linestring?d=e')
+        self.assertEqual(name, 'memory_layer')
+        name = vector.ogrLayerName('multipoint')
+        self.assertEqual(name, 'memory_layer')
+        name = vector.ogrLayerName('Point25d?abc=d')
+        self.assertEqual(name, 'memory_layer')
+        name = vector.ogrLayerName('MultiLineStringZM?abc=d')
+        self.assertEqual(name, 'memory_layer')
+        name = vector.ogrLayerName('polygonM?a=b')
+        self.assertEqual(name, 'memory_layer')
+        name = vector.ogrLayerName('multipointz')
+        self.assertEqual(name, 'memory_layer')
+        name = vector.ogrLayerName('point25dM?abc=d')
+        self.assertEqual(name, 'invalid-uri')
+        name = vector.ogrLayerName(' linestring?d=e')
+        self.assertEqual(name, 'invalid-uri')
+        name = vector.ogrLayerName('linestring&abc=d')
+        self.assertEqual(name, 'invalid-uri')
+
+    def test_exportVectorLayer(self):
+        test_data = points2()
+        test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
+        test_geojson_data = polygonsGeoJson()
+        test_geojson_layer = QgsVectorLayer(test_geojson_data, 'geojson test', 'ogr')
+        test_memory_layer = QgsVectorLayer('Point?crs=epsg:4326&field=id:integer&field=verylongname:string(20)', 'memory test', 'memory')
+        mlPr = test_memory_layer.dataProvider()
+        fet1 = QgsFeature()
+        fet1.setGeometry(QgsGeometry.fromPoint(QgsPoint(-74.5, 4.5)))
+        fet1.setAttributes([1, u'Bogotá'])
+        fet2 = QgsFeature()
+        fet2.setGeometry(QgsGeometry.fromPoint(QgsPoint(-72.2, 10.4)))
+        fet2.setAttributes([2, u'Riohacha'])
+        mlPr.addFeatures([fet1, fet2])
+
+        # test SHP with default supported and exportFormat
+        exported = dataobjects.exportVectorLayer(test_layer)
+        self.assertEqual(exported, test_data)
+
+        # test SHP with supported and exportFormat
+        exported = dataobjects.exportVectorLayer(test_layer, ["shp"], "sqlite")
+        self.assertEqual(exported, test_data)
+
+        # test SHP with supported and exportFormat
+        exported = dataobjects.exportVectorLayer(test_layer, ["shp", "sqlite"], "sqlite")
+        self.assertEqual(exported, test_data)
+
+        # test GeoJSON with supported and exportFormat
+        exported = dataobjects.exportVectorLayer(test_geojson_layer, ["shp", "geojson", "sqlite"], "sqlite")
+        self.assertEqual(exported, test_geojson_data)
+
+        # test Memory layer with supported and exportFormat
+        exported = dataobjects.exportVectorLayer(test_memory_layer, ["shp", "sqlite"], "sqlite")
+        self.assertEqual(os.path.splitext(exported)[1][1:].lower(), "sqlite")
+        uri = QgsDataSourceURI()
+        uri.setDatabase(exported)
+        schema = ''
+        table = vector.ogrLayerName(exported)
+        geom_column = 'GEOMETRY'
+        uri.setDataSource(schema, table, geom_column)
+        test_spatialite_layer = QgsVectorLayer(uri.uri(), 'spatialite test', 'spatialite')
+        self.assertTrue(test_spatialite_layer.isValid())
+        self.assertEqual(test_spatialite_layer.featureCount(), 2)
+        self.assertEqual(len(test_spatialite_layer.fields()), 3) # +ogc_fid
+        self.assertTrue(test_spatialite_layer.fieldNameIndex('verylongname') != -1) # No laundering
+        self.assertEqual(test_spatialite_layer.getFeatures().next()[2], u'Bogotá')
 
     def testFeatures(self):
         ProcessingConfig.initialize()
