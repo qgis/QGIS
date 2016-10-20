@@ -91,8 +91,8 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
 
 #ifdef Q_OS_WIN
     // in case of a specific set of errors
-    connect( this, SIGNAL( sslErrorsCAtoImport(QList<QSslError>&) ),
-             this, SLOT( widgetAllowAddCAsToKeystore(QList<QSslError>&) ) );
+    connect( this, SIGNAL( sslErrorsCAtoImport( QList<QSslError>& ) ),
+             this, SLOT( widgetAllowAddCAsToKeystore( QList<QSslError>& ) ) );
 
     btnAddCainCAs->setVisible( true );
     QList<QSslError> allowedCaErrors;
@@ -100,15 +100,15 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
     {
       switch ( err.error() )
       {
-      case QSslError::UnableToGetLocalIssuerCertificate:
-      case QSslError::CertificateUntrusted:
-        allowedCaErrors.append(err);
-        break;
-      default:
-        break;
+        case QSslError::UnableToGetLocalIssuerCertificate:
+        case QSslError::CertificateUntrusted:
+          allowedCaErrors.append( err );
+          break;
+        default:
+          break;
       }
     }
-    emit sslErrorsCAtoImport(allowedCaErrors);
+    emit sslErrorsCAtoImport( allowedCaErrors );
 #else
     btnAddCainCAs->setVisible( false );
     teSslErrorsMessages->setVisible( false );
@@ -147,24 +147,24 @@ void QgsAuthSslErrorsDialog::widgetAllowAddCAsToKeystore( QList<QSslError> &erro
 
     // set message related to the error
     teSslErrorsMessages->setVisible( true );
-    QString msg = QObject::tr("<html>"
-                              "<p align='center'><strong>Certificate Authority unrecognised</strong></p>"
-                              "<br>To import CAs into Windows keystore, click <strong>Open</strong> button below or browse:"
-                              "<br><strong>%1</strong><br>"
-                              "in a Kyestore API capable browser (no Firefox)"
-                              "<br>The <strong>Open</strong> button will open the link with the default browser"
-                              "<br><br>After loaded the web page, <strong>!!! restart QGIS !!!</strong>"
-                              "</html>").arg(QString(mUrl.toString()));
-    teSslErrorsMessages->setHtml(msg);
+    QString msg = QObject::tr( "<html>"
+                               "<p align='center'><strong>Certificate Authority unrecognised</strong></p>"
+                               "<br>To import CAs into Windows keystore, click <strong>Open</strong> button below or browse:"
+                               "<br><strong>%1</strong><br>"
+                               "in a Kyestore API capable browser (no Firefox)"
+                               "<br>The <strong>Open</strong> button will open the link with the default browser"
+                               "<br><br>After loaded the web page, <strong>!!! restart QGIS !!!</strong>"
+                               "</html>" ).arg( QString( mUrl.toString() ) );
+    teSslErrorsMessages->setHtml( msg );
 
-    QTimer::singleShot(100, this, SLOT(blinkImportCAsButton()));
+    QTimer::singleShot( 100, this, SLOT( blinkImportCAsButton() ) );
   }
 }
 
 void QgsAuthSslErrorsDialog::blinkImportCAsButton()
 {
   static bool low;
-  QString lowStyleSheet = QString("{color: %1;}").arg(QColor( 0, 0, 0 ).name());
+  QString lowStyleSheet = QString( "{color: %1;}" ).arg( QColor( 0, 0, 0 ).name() );
   QString highStyleSheet = QgsAuthGuiUtils::redTextStyleSheet();
 
   QString styleSheet;
@@ -175,14 +175,14 @@ void QgsAuthSslErrorsDialog::blinkImportCAsButton()
   btnAddCainCAs->setStyleSheet( styleSheet );
 
   low = !low;
-  QTimer::singleShot(500, this, SLOT(blinkImportCAsButton()));
+  QTimer::singleShot( 500, this, SLOT( blinkImportCAsButton() ) );
 }
 
 void QgsAuthSslErrorsDialog::on_btnAddCainCAs_clicked()
 {
-  if ( !QDesktopServices::openUrl(mUrl) )
+  if ( !QDesktopServices::openUrl( mUrl ) )
   {
-    QgsDebugMsg( QObject::tr("Cannot open default browser to the linK: %1").arg(QString(mUrl.toString())) );
+    QgsDebugMsg( QObject::tr( "Cannot open default browser to the linK: %1" ).arg( QString( mUrl.toString() ) ) );
   }
   else
   {
@@ -192,8 +192,8 @@ void QgsAuthSslErrorsDialog::on_btnAddCainCAs_clicked()
     // BTW cache reload is affected by this issue: https://hub.qgis.org/issues/15687
     // so generally speaking rebuildCache could not be useful. I leave reload because
     // ssl CA issue can be solved later (seems an openssl problem) leaving restart unecessary
-    QTimer::singleShot(3000, QgsAuthManager::instance(), SLOT( rebuildSslCaches() ));
-    QTimer::singleShot(7000, QgsAuthManager::instance(), SLOT( rebuildSslCaches() ));
+    QTimer::singleShot( 3000, QgsAuthManager::instance(), SLOT( rebuildSslCaches() ) );
+    QTimer::singleShot( 7000, QgsAuthManager::instance(), SLOT( rebuildSslCaches() ) );
 
     // NOTE: a reply.close()/.abort() could be necessary to garantee that new SSL handshake
     // could accept new CA list. Btw I preferred to avoid reply manipulation in GUI leaving
