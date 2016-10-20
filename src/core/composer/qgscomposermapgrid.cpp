@@ -1090,13 +1090,14 @@ void QgsComposerMapGrid::drawCoordinateAnnotations( QgsRenderContext& context, c
 
 void QgsComposerMapGrid::drawCoordinateAnnotation( QgsRenderContext& context, QPointF pos, QString annotationString, const AnnotationCoordinate coordinateType, GridExtension* extension ) const
 {
-  if ( !mComposerMap )
+  if ( !mComposerMap || !context.painter() )
   {
     return;
   }
   QgsComposerMapGrid::BorderSide frameBorder = borderForLineCoord( pos, coordinateType );
 
   double dotsPerMM = context.painter()->device()->logicalDpiX() / 25.4;
+
 
   double textWidth = dotsPerMM * QgsTextRenderer::textWidth( context, mAnnotationFormat, QStringList() << annotationString );
 //  double textWidth = QgsComposerUtils::textWidthMM( mGridAnnotationFont, annotationString );
