@@ -1467,6 +1467,8 @@ in code which previously passed a null pointer to QgsVectorLayerImport.</li>
 
 <ul>
 <li>Has been renamed to QgsMapThemeCollection</li>
+<li>The nested class PresetRecord has been renamed to MapThemeRecord</li>
+<li>Various member functions have been renamed from *preset* to *mapTheme*</li>
 </ul>
 
 \subsection qgis_api_break_3_0_QgsVectorFileWriter QgsVectorFileWriter
