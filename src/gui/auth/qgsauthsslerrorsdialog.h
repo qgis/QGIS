@@ -77,7 +77,7 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
     /** Emitted when a set of sslErrors has bee found that need
         to activate button to import CAs in windows keystore
         using external browser */
-    void sslErrorsCAtoImport( QList<QSslError> &errors);
+    void sslErrorsCAtoImport( QList<QSslError> &errors );
 #endif // Q_OS_WIN
 
   private:
