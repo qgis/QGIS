@@ -81,7 +81,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QgsMapThemeCollection* mapThemeCollection READ mapThemeCollection )
     Q_PROPERTY( QgsSnappingConfig snappingConfig READ snappingConfig WRITE setSnappingConfig NOTIFY snappingConfigChanged )
     Q_PROPERTY( QStringList avoidIntersectionsList READ avoidIntersectionsList WRITE setAvoidIntersectionsList NOTIFY avoidIntersectionsListChanged )
-    Q_PROPERTY( QgsMapThemeCollection* mapThemeCollection READ mapThemeCollection )
 
   public:
 
