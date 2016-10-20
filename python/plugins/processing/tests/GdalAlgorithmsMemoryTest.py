@@ -82,8 +82,8 @@ class GdalAlgorithmsMemoryTest(unittest.TestCase):
         self.assertEqual(len(output_layer.fields()), len(memory_layer.fields()))
 
         # Conversion to SHP with SQL clause
-        res = general.runalg("gdalogr:convertformat", memory_layer, 1,
-                             '-dialect sqlite -sql "SELECT ST_Buffer( geometry , 20 ),* FROM \"memory_layer\""',
+        res = general.runalg("gdalogr:convertformat", memory_layer, 0,
+                             "-dialect sqlite -sql 'SELECT ST_Buffer( geometry , 20 ),* FROM \"memory_layer\"'",
                              None)
         output_layer = dataobjects.getObjectFromUri(res['OUTPUT_LAYER'])
         self.assertEqual(output_layer.extent(), expected_layer.extent())
@@ -123,9 +123,9 @@ class GdalAlgorithmsMemoryTest(unittest.TestCase):
         base_data_points = points2()
         base_layer_points = QgsVectorLayer(base_data_points, 'base points', 'ogr')
         base_data_polygons = polygons()
-        base_layer_polygons = QgsVectorLayer(base_data_points, 'base polygons', 'ogr')
+        base_layer_polygons = QgsVectorLayer(base_data_polygons, 'base polygons', 'ogr')
         memory_layer_points = vector.duplicateInMemory(base_layer_points, 'memory points', True)
-        memory_layer_polygons = vector.duplicateInMemory(base_layer_points, 'memory polygons', True)
+        memory_layer_polygons = vector.duplicateInMemory(base_layer_polygons, 'memory polygons', True)
         expected_data = os.path.join(expectedFolder, 'clipped_points.geojson')
         expected_layer = QgsVectorLayer(expected_data, 'expected', 'ogr')
 
