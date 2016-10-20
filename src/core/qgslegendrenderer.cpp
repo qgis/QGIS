@@ -594,8 +594,7 @@ QgsComposerLegendStyle::Style QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNo
     return QgsComposerLegendStyle::Group;
   else if ( QgsLayerTree::isLayer( node ) )
   {
-    QList<QgsLayerTreeModelLegendNode*> legendNodes = model->layerLegendNodes( QgsLayerTree::toLayer( node ) );
-    if ( legendNodes.count() == 1 && legendNodes[0]->isEmbeddedInParent() )
+    if ( model->legendNodeEmbeddedInParent( QgsLayerTree::toLayer( node ) ) )
       return QgsComposerLegendStyle::Hidden;
     return QgsComposerLegendStyle::Subgroup;
   }

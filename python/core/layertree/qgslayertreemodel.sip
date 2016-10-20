@@ -94,14 +94,20 @@ class QgsLayerTreeModel : QAbstractItemModel
     QModelIndex legendNode2index( QgsLayerTreeModelLegendNode* legendNode );
 
     //! Return filtered list of active legend nodes attached to a particular layer node
+    //! (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
     //! @note added in 2.6
+    //! @note skipNodeEmbeddedInParent added in 2.18
     //! @see layerOriginalLegendNodes()
-    QList<QgsLayerTreeModelLegendNode*> layerLegendNodes( QgsLayerTreeLayer* nodeLayer );
+    QList<QgsLayerTreeModelLegendNode*> layerLegendNodes( QgsLayerTreeLayer* nodeLayer, bool skipNodeEmbeddedInParent = false );
 
     //! Return original (unfiltered) list of legend nodes attached to a particular layer node
     //! @note added in 2.14
     //! @see layerLegendNodes()
     QList<QgsLayerTreeModelLegendNode*> layerOriginalLegendNodes( QgsLayerTreeLayer* nodeLayer );
+
+    //! Return legend node that may be embbeded in parent (i.e. its icon will be used for layer's icon).
+    //! @note added in 2.18
+    QgsLayerTreeModelLegendNode* legendNodeEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
 
     /** Searches through the layer tree to find a legend node with a matching layer ID
      * and rule key.
@@ -252,8 +258,6 @@ class QgsLayerTreeModel : QAbstractItemModel
     QVariant legendNodeData( QgsLayerTreeModelLegendNode* node, int role ) const;
     Qt::ItemFlags legendNodeFlags( QgsLayerTreeModelLegendNode* node ) const;
     bool legendEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
-    /** Return legend node that may be embbeded in parent (i.e. its icon will be used for layer's icon). */
-    QgsLayerTreeModelLegendNode* legendNodeEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
     QIcon legendIconEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
     void legendCleanup();
     void legendInvalidateMapBasedData();
