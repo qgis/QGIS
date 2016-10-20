@@ -56,10 +56,9 @@ class Clip(GeoAlgorithm):
         layerB = dataobjects.getObjectFromUri(
             self.getParameterValue(Clip.OVERLAY))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layerA.pendingFields(),
-            layerA.dataProvider().geometryType(),
-            layerA.dataProvider().crs())
+        geomType = QGis.multiType(layerA.wkbType())
+        fields = layerA.pendingFields()
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, geomType, layerA.crs())
 
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
