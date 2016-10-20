@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    dataobject.py
+    dataobjects.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -153,7 +153,7 @@ def extent(layers):
 
 def getLayerCRS(layer):
     if not isinstance(layer, (QgsRasterLayer, QgsVectorLayer)):
-        layer = getObjectFromUri(layer)
+        layer = getObjectFromUri(layer, False)
         if layer is None:
             return None
     return layer.crs().authid()
@@ -290,15 +290,28 @@ def exportVectorLayer(layer, supported=None, exportFormat="shp"):
     selection and it should be used, exporting just the selected
     features.
 
-    Currently, the output is restricted to shapefiles (and Spatialite DBs
+    Currently, the output is restricted to shapefiles (and GeoPackage
     for GDAL/OGR algorithms), so anything that is not in a shapefile
-    (or Spatialite DB for GDAL/OGR algorithms) will get exported. It also
+    (or GeoPackage for GDAL/OGR algorithms) will get exported. It also
     exports to a new file if the original one contains non-ascii characters.
     """
 
-    supported = supported or ["shp", "sqlite"]
-    ogrDriver = {"shp": "ESRI Shapefile", "sqlite": "SQLite"}
-    dataSourceOptions = {"shp": [], "sqlite": ["SPATIALITE=YES"]}
+    supported = supported or ["shp", "sqlite", "gpkg"]
+    ogrDriver = { 
+                  "shp": "ESRI Shapefile", 
+                  "sqlite": "SQLite",
+                  "gpkg": "GPKG"
+                }
+    datasetCreationOptions = {
+                  "shp": [], 
+                  "sqlite": ["SPATIALITE=YES"],
+                  "gpkg": []
+                }
+    layerCreationOptions = {
+                  "shp": [],
+                  "sqlite": [],
+                  "gpkg": ["GEOMETRY_NAME=geometry"]
+                }
     settings = QSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
 
@@ -310,7 +323,8 @@ def exportVectorLayer(layer, supported=None, exportFormat="shp"):
                                      layer.pendingFields(),
                                      provider.geometryType(), layer.crs(),
                                      ogrDriver[exportFormat],
-                                     dataSourceOptions[exportFormat])
+                                     datasetCreationOptions[exportFormat],
+                                     layerCreationOptions[exportFormat])
         selection = layer.selectedFeatures()
         for feat in selection:
             writer.addFeature(feat)
@@ -328,7 +342,8 @@ def exportVectorLayer(layer, supported=None, exportFormat="shp"):
                 layer.pendingFields(), provider.geometryType(),
                 layer.crs(),
                 ogrDriver[exportFormat],
-                dataSourceOptions[exportFormat])
+                datasetCreationOptions[exportFormat],
+                layerCreationOptions[exportFormat])
             for feat in layer.getFeatures():
                 writer.addFeature(feat)
             del writer

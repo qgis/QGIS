@@ -83,7 +83,7 @@ class GdalAlgorithmsMemoryTest(unittest.TestCase):
 
         # Conversion to SHP with SQL clause
         res = general.runalg("gdalogr:convertformat", memory_layer, 0,
-                             "-dialect sqlite -sql 'SELECT ST_Buffer( geometry , 20 ),* FROM \"memory_layer\"'",
+                             "-sql 'SELECT ST_Buffer( geometry , 20 ),* FROM \"memory_layer\"'",
                              None)
         output_layer = dataobjects.getObjectFromUri(res['OUTPUT_LAYER'])
         self.assertEqual(output_layer.extent(), expected_layer.extent())
@@ -95,11 +95,20 @@ class GdalAlgorithmsMemoryTest(unittest.TestCase):
         pr.addAttributes([QgsField("verylongname", QVariant.String)])
         memory_layer.updateFields()
         output_path = os.path.join(tmpBaseFolder, 'converted.geojson')
-        res = general.runalg("gdalogr:convertformat", memory_layer, 1, "", output_path)
+        res = general.runalg("gdalogr:convertformat", memory_layer, 2, "", output_path)
         output_layer = dataobjects.getObjectFromUri(res['OUTPUT_LAYER'])
         self.assertEqual(output_layer.extent(), memory_layer.extent())
         self.assertEqual(output_layer.featureCount(), memory_layer.featureCount())
         self.assertEqual(len(output_layer.fields()), len(memory_layer.fields()))
+        self.assertTrue(output_layer.fieldNameIndex('verylongname') != -1) # No laundering
+
+        # Simple conversion to GeoPackage (no laundering)
+        output_path = os.path.join(tmpBaseFolder, 'converted.gpkg')
+        res = general.runalg("gdalogr:convertformat", memory_layer, 1, "", output_path)
+        output_layer = dataobjects.getObjectFromUri(res['OUTPUT_LAYER'])
+        #self.assertEqual(output_layer.extent(), memory_layer.extent()) # Failing due to precision!
+        self.assertEqual(output_layer.featureCount(), memory_layer.featureCount())
+        self.assertEqual(len(output_layer.fields()) - 1, len(memory_layer.fields())) #+fid
         self.assertTrue(output_layer.fieldNameIndex('verylongname') != -1) # No laundering
 
     def testOGRBufferVectors(self):

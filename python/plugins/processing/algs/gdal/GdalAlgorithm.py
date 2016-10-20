@@ -54,7 +54,7 @@ class GdalAlgorithm(GeoAlgorithm):
         for i, c in enumerate(commands):
             for layer in layers:
                 if layer.source() in c:
-                    exported = dataobjects.exportVectorLayer(layer, supported, "sqlite")
+                    exported = dataobjects.exportVectorLayer(layer, supported, "gpkg")
                     exportedFileName = os.path.splitext(os.path.split(exported)[1])[0]
 
                     if layer.dataProvider().name() == 'memory':
@@ -74,6 +74,7 @@ class GdalAlgorithm(GeoAlgorithm):
                         c = re.sub('[\s]{}[\s]'.format(fileName), ' ' + exportedFileName + ' ', c)
                         c = re.sub('[\s]{}'.format(fileName), ' ' + exportedFileName, c)
                         c = re.sub('["\']{}["\']'.format(fileName), "'" + exportedFileName + "'", c)
+                        c = re.sub('[\\"]{}[\\\\"]'.format(fileName), "\"" + exportedFileName + "\\\\", c)
 
             commands[i] = c
         GdalUtils.runGdal(commands, progress)

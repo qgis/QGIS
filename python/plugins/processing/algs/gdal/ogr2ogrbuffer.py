@@ -39,7 +39,7 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.dataobjects import getLayerCRS
 from processing.tools.system import isWindows
 from processing.tools.vector import (ogrConnectionString, ogrLayerName,
-                                     ogrFormatName)
+                                     ogrFormatName, getLayerFieldList)
 
 
 class Ogr2OgrBuffer(GdalAlgorithm):
@@ -113,10 +113,11 @@ class Ogr2OgrBuffer(GdalAlgorithm):
         arguments.append(geometry)
         arguments.append(',')
         arguments.append(distance)
+        fieldList = getLayerFieldList(inLayer)
         if dissolveall or field != 'None':
-            arguments.append(')),*')
+            arguments.append(')),%s' % fieldList)
         else:
-            arguments.append('),*')
+            arguments.append('),%s' % fieldList)
         arguments.append('FROM')
         arguments.append(layername)
         if field != 'None':

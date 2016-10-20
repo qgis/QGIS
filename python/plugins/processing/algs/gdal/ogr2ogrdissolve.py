@@ -39,7 +39,7 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.dataobjects import getLayerCRS
 from processing.tools.system import isWindows
 from processing.tools.vector import (ogrConnectionString, ogrLayerName,
-                                     ogrFormatName)
+                                     ogrFormatName, getLayerFieldList)
 
 
 class Ogr2OgrDissolve(GdalAlgorithm):
@@ -99,8 +99,9 @@ class Ogr2OgrDissolve(GdalAlgorithm):
         fields = self.getParameterValue(self.FIELDS)
         querystart = '-dialect sqlite -sql "SELECT ST_Union(' + geometry + ')'
         queryend = ' FROM ' + layername + ' GROUP BY ' + field + '"'
+        fieldList = getLayerFieldList(inLayer)
         if fields:
-            queryfields = ",*"
+            queryfields = ',%s' % fieldList
         else:
             queryfields = "," + field
         if count:

@@ -75,7 +75,7 @@ class OgrInfo(GdalAlgorithm):
             for layer in layers:
                 if layer.source() in c:
                     if layer.dataProvider().name() == 'memory':
-                        exported = dataobjects.exportVectorLayer(layer, supported, "sqlite")
+                        exported = dataobjects.exportVectorLayer(layer, supported, "gpkg")
                         exportedFileName = os.path.splitext(os.path.split(exported)[1])[0]
                         c = c.replace(layer.source(), exported)
                         if os.path.isfile(layer.source()):

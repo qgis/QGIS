@@ -29,7 +29,7 @@ from qgis.testing import start_app, unittest
 from processing.tests.TestData import points2, polygonsGeoJson
 from processing.tools import vector, dataobjects
 from qgis.core import (QgsVectorLayer, QgsFeatureRequest, QgsGeometry,
-                       QgsDataSourceURI, QgsFeature, QgsPoint)
+                       QgsFeature, QgsPoint)
 from processing.core.ProcessingConfig import ProcessingConfig
 
 import os.path
@@ -160,32 +160,26 @@ class VectorTest(unittest.TestCase):
         self.assertEqual(exported, test_data)
 
         # test SHP with supported and exportFormat
-        exported = dataobjects.exportVectorLayer(test_layer, ["shp"], "sqlite")
+        exported = dataobjects.exportVectorLayer(test_layer, ["shp"], "gpkg")
         self.assertEqual(exported, test_data)
 
         # test SHP with supported and exportFormat
-        exported = dataobjects.exportVectorLayer(test_layer, ["shp", "sqlite"], "sqlite")
+        exported = dataobjects.exportVectorLayer(test_layer, ["shp", "gpkg"], "gpkg")
         self.assertEqual(exported, test_data)
 
         # test GeoJSON with supported and exportFormat
-        exported = dataobjects.exportVectorLayer(test_geojson_layer, ["shp", "geojson", "sqlite"], "sqlite")
+        exported = dataobjects.exportVectorLayer(test_geojson_layer, ["shp", "geojson", "gpkg"], "gpkg")
         self.assertEqual(exported, test_geojson_data)
 
         # test Memory layer with supported and exportFormat
-        exported = dataobjects.exportVectorLayer(test_memory_layer, ["shp", "sqlite"], "sqlite")
-        self.assertEqual(os.path.splitext(exported)[1][1:].lower(), "sqlite")
-        uri = QgsDataSourceURI()
-        uri.setDatabase(exported)
-        schema = ''
-        table = vector.ogrLayerName(exported)
-        geom_column = 'GEOMETRY'
-        uri.setDataSource(schema, table, geom_column)
-        test_spatialite_layer = QgsVectorLayer(uri.uri(), 'spatialite test', 'spatialite')
-        self.assertTrue(test_spatialite_layer.isValid())
-        self.assertEqual(test_spatialite_layer.featureCount(), 2)
-        self.assertEqual(len(test_spatialite_layer.fields()), 3) # +ogc_fid
-        self.assertTrue(test_spatialite_layer.fieldNameIndex('verylongname') != -1) # No laundering
-        self.assertEqual(test_spatialite_layer.getFeatures().next()[2], u'Bogotá')
+        exported = dataobjects.exportVectorLayer(test_memory_layer, ["shp", "gpkg"], "gpkg")
+        self.assertEqual(os.path.splitext(exported)[1][1:].lower(), "gpkg")
+        test_geopackage_layer = QgsVectorLayer(exported, 'test', 'ogr')
+        self.assertTrue(test_geopackage_layer.isValid())
+        self.assertEqual(test_geopackage_layer.featureCount(), 2)
+        self.assertEqual(len(test_geopackage_layer.fields()), 3) # +fid
+        self.assertTrue(test_geopackage_layer.fieldNameIndex('verylongname') != -1) # No laundering
+        self.assertEqual(test_geopackage_layer.getFeatures().next()[2], u'Bogotá')
 
     def testFeatures(self):
         ProcessingConfig.initialize()

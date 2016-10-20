@@ -38,7 +38,8 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.dataobjects import getLayerCRS
 from processing.tools.system import isWindows
 from processing.tools.vector import (ogrConnectionString, ogrLayerName,
-                                     ogrFormats, ogrExtensions)
+                                     ogrDisplayFormats, ogrFormats, 
+                                     ogrExtensions)
 
 
 class Ogr2Ogr(GdalAlgorithm):
@@ -55,7 +56,7 @@ class Ogr2Ogr(GdalAlgorithm):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterSelection(self.FORMAT,
-                                             self.tr('Destination Format'), ogrFormats()))
+                                             self.tr('Destination Format'), ogrDisplayFormats()))
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Creation options'), '', optional=True))
 

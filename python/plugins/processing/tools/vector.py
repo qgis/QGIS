@@ -341,6 +341,13 @@ def combineVectorFields(layerA, layerB):
     return fields
 
 
+def getLayerFieldList(uri):
+    """ Returns an escaped list of field names to pass to SQL SELECT clauses
+    """
+    layer = dataobjects.getObjectFromUri(uri, False)
+    return ",".join(["\"%s\"" % f.name() for f in layer.fields()])
+
+
 def duplicateInMemory(layer, newName='', addToRegistry=False):
     """Return a memory copy of a layer
 
@@ -584,9 +591,39 @@ def ogrLayerName(uri):
     return name
 
 
+# If you add something to ogrDisplayFormats, make sure you also update 
+# ogrFormats and ogrExtensions. The order matters!
+def ogrDisplayFormats():
+    return [
+        'ESRI Shapefile',
+        'GeoPackage',
+        'GeoJSON',
+        'GeoRSS',
+        'SQLite',
+        'GMT ASCII Vectors',
+        'MapInfo File',
+        'INTERLIS 1',
+        'INTERLIS 2',
+        'GML - Geography Markup Language',
+        'Geoconcept',
+        'AutoCAD DXF',
+        'Microstation DGN',
+        'CSV - Comma Separated Value',
+        'Atlas BNA',
+        'S57',
+        'KML - Keyhole Markup Language',
+        'GPX - GPS Exchange Format',
+        'PGDump - PostgreSQL SQL dump',
+        'GPSTrackMaker',
+        'ODS - Open Document Spreadsheet',
+        'XLSX - MS Office Open XML spreadsheet',
+        'PDF - Geospatial PDF',
+    ]
+
 def ogrFormats():
     return [
         'ESRI Shapefile',
+        'GPKG',
         'GeoJSON',
         'GeoRSS',
         'SQLite',
@@ -614,6 +651,7 @@ def ogrFormats():
 def ogrExtensions():
     return [
         '.shp',
+        '.gpkg',
         '.geojson',
         '.xml',
         '.sqlite',
