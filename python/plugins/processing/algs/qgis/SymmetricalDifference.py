@@ -65,7 +65,7 @@ class SymmetricalDifference(GeoAlgorithm):
         layerB = dataobjects.getObjectFromUri(
             self.getParameterValue(self.OVERLAY))
 
-        geomType = QgsWKBTypes.multiType(layerA.wkbType())
+        geomType = QgsWKBTypes.multiType(QGis.fromOldWkbType(layerA.wkbType()))
         fields = vector.combineVectorFields(layerA, layerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields, geomType, layerA.crs())
