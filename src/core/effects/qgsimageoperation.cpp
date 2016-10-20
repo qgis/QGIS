@@ -809,21 +809,28 @@ QRect QgsImageOperation::nonTransparentImageRect( const QImage &image, QSize min
   // scan down till we hit something
   for ( int y = 0; y < height; ++y )
   {
+    bool found = false;
     const QRgb* imgScanline = reinterpret_cast< const QRgb* >( image.constScanLine( y ) );
     for ( int x = 0; x < width; ++x )
     {
       if ( qAlpha( imgScanline[x] ) )
       {
         ymin = y;
+        ymax = y;
         xmin = x;
         xmax = x;
+        found = true;
+        break;
       }
     }
+    if ( found )
+      break;
   }
 
   //scan up till we hit something
-  for ( int y = height - 1; y > ymin; --y )
+  for ( int y = height - 1; y >= ymin; --y )
   {
+    bool found = false;
     const QRgb* imgScanline = reinterpret_cast< const QRgb* >( image.constScanLine( y ) );
     for ( int x = 0; x < width; ++x )
     {
@@ -832,8 +839,12 @@ QRect QgsImageOperation::nonTransparentImageRect( const QImage &image, QSize min
         ymax = y;
         xmin = qMin( xmin, x );
         xmax = qMax( xmax, x );
+        found = true;
+        break;
       }
     }
+    if ( found )
+      break;
   }
 
   //scan left to right till we hit something, using a refined y region
