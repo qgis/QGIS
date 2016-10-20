@@ -53,7 +53,7 @@ def colorDiff(c1, c2):
 
 
 def imageFromPath(path):
-    if (path[:7] == 'http://' or path[:7] == 'file://'):
+    if (path[:7] == 'http://' or path[:8] == 'https://' or path[:7] == 'file://'):
         #fetch remote image
         data = urllib2.urlopen(path).read()
         image = QImage()
