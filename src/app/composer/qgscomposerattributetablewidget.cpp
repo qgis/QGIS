@@ -66,7 +66,7 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
 
   mComposerMapComboBox->setComposition( mComposerTable->composition() );
   mComposerMapComboBox->setItemType( QgsComposerItem::ComposerMap );
-  connect( mComposerMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( composerMapChanged( const QgsComposerItem* ) ) );
+  connect( mComposerMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( composerMapChanged( QgsComposerItem* ) ) );
 
   mHeaderFontColorButton->setColorDialogTitle( tr( "Select header font color" ) );
   mHeaderFontColorButton->setAllowAlpha( true );
@@ -176,7 +176,7 @@ void QgsComposerAttributeTableWidget::on_mAttributesPushButton_clicked()
   }
 }
 
-void QgsComposerAttributeTableWidget::composerMapChanged( const QgsComposerItem* item )
+void QgsComposerAttributeTableWidget::composerMapChanged( QgsComposerItem* item )
 {
   if ( !mComposerTable )
   {
