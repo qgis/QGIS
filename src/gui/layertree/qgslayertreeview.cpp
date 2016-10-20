@@ -138,7 +138,7 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex& index, int start, i
     if ( QgsMapLayer* layer = nodeLayer->layer() )
     {
       int widgetsCount = layer->customProperty( QStringLiteral( "embeddedWidgets/count" ), 0 ).toInt();
-      QList<QgsLayerTreeModelLegendNode*> legendNodes = layerTreeModel()->layerLegendNodes( nodeLayer );
+      QList<QgsLayerTreeModelLegendNode*> legendNodes = layerTreeModel()->layerLegendNodes( nodeLayer, true );
       for ( int i = 0; i < widgetsCount; ++i )
       {
         QString providerId = layer->customProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
@@ -159,7 +159,7 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex& index, int start, i
     if ( expandedNodeKeys.isEmpty() )
       return;
 
-    Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( parentNode ) ) )
+    Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( parentNode ), true ) )
     {
       QString ruleKey = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
       if ( expandedNodeKeys.contains( ruleKey ) )
@@ -345,7 +345,7 @@ static void _expandAllLegendNodes( QgsLayerTreeLayer* nodeLayer, bool expanded, 
   QStringList lst;
   if ( expanded )
   {
-    Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer ) )
+    Q_FOREACH ( QgsLayerTreeModelLegendNode* legendNode, model->layerLegendNodes( nodeLayer, true ) )
     {
       QString parentKey = legendNode->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString();
       if ( !parentKey.isEmpty() && !lst.contains( parentKey ) )
