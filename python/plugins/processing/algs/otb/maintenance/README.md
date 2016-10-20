@@ -5,7 +5,7 @@ Set OTB environment
 --------------------
 ```
 export PYTHONPATH=/path/to/OTB/install/lib/otb/python/:$PYTHONPATH
-# Environment variable for old OTB versions (< 5.2) 
+# Environment variable for old OTB versions (< 5.2)
 export ITK_AUTOLOAD_PATH=/path/to/OTB/install/lib/otb/applications/
 # Environment variable for new OTB versions (>= 5.2)
 export OTB_APPLICATION_PATH=/path/to/OTB/install/lib/otb/applications/
