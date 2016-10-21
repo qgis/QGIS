@@ -207,7 +207,7 @@ unless( $dopoint ) {
 	$newminor++;
 
 	print "Updating master...\n";
-	run( "git checkout master", "checkout master failed" );
+	run( "git checkout $branch", "checkout master failed" );
 
 	if($dopremajor) {
 		print " Creating master_$newmajor...\n";
@@ -230,7 +230,7 @@ unless( $dopoint ) {
 	run( "dch --newversion $newmajor.$newminor.0 'New development version $newmajor.$newminor after branch of $release'", "dch failed" );
 	run( "git commit -a -m 'Bump version to $newmajor.$newminor'", "bump version failed" );
 
-	push @topush, "master";
+	push @topush, $branch;
 }
 
 push @topush, $relbranch;
