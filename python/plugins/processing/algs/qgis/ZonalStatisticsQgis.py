@@ -68,7 +68,7 @@ class ZonalStatisticsQgis(GeoAlgorithm):
                       self.tr('Majority'): QgsZonalStatistics.Count,
                       self.tr('Variety'): QgsZonalStatistics.Count,
                       self.tr('All'): QgsZonalStatistics.All
-                     }
+                      }
 
         self.name, self.i18n_name = self.trAlgorithm('Zonal Statistics (QGIS)')
         self.group, self.i18n_group = self.trAlgorithm('Raster tools')
@@ -84,9 +84,9 @@ class ZonalStatisticsQgis(GeoAlgorithm):
         self.addParameter(ParameterString(self.COLUMN_PREFIX,
                                           self.tr('Output column prefix'), '_'))
         self.addParameter(ParameterSelection(self.STATISTICS,
-                                          self.tr('Statistics to calculate'),
-                                          list(self.STATS.keys()),
-                                          multiple=True))
+                                             self.tr('Statistics to calculate'),
+                                             list(self.STATS.keys()),
+                                             multiple=True))
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Zonal statistics'),
                                     True,
@@ -104,7 +104,7 @@ class ZonalStatisticsQgis(GeoAlgorithm):
         keys = list(self.STATS.keys())
         selectedStats = 0
         for i in st:
-           selectedStats |= self.STATS[keys[i]]
+            selectedStats |= self.STATS[keys[i]]
 
         zs = QgsZonalStatistics(vectorLayer,
                                 rasterPath,

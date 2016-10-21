@@ -87,7 +87,7 @@ class Delaunay(GeoAlgorithm):
             if geom.isMultipart():
                 points = geom.asMultiPoint()
             else:
-                points = [ geom.asPoint() ]
+                points = [geom.asPoint()]
             for n, point in enumerate(points):
                 x = point.x()
                 y = point.y()

@@ -109,7 +109,7 @@ def run(item, action, mainwindow):
         uri = db.uri()
 
         # Force use of estimated metadata (topologies can be big)
-        uri.setUseEstimatedMetadata( True )
+        uri.setUseEstimatedMetadata(True)
 
         # FACES
         group = legend.addGroup(u'Faces', False, supergroup)

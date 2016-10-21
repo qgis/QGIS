@@ -392,7 +392,7 @@ class Site(object):
         print("Site #%d (%g, %g)" % (self.sitenum, self.x, self.y))
 
     def __eq__(self, other):
-        return (self.x==other.x) and (self.y==other.y)
+        return (self.x == other.x) and (self.y == other.y)
 
     def __lt__(self, other):
         if self.y < other.y:
@@ -507,7 +507,7 @@ class Halfedge(object):
         print("ystar: ", self.ystar)
 
     def __eq__(self, other):
-        return (self.vertex.x==other.vertex.x) and (self.ystar==other.ystar)
+        return (self.vertex.x == other.vertex.x) and (self.ystar == other.ystar)
 
     def __lt__(self, other):
         if self.ystar < other.ystar:

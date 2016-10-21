@@ -138,7 +138,6 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         self.editor.setLexerType(self.algType)
 
-
     def showSnippets(self, evt):
         popupmenu = QMenu()
         for name, snippet in list(self.snippets.items()):
@@ -222,8 +221,8 @@ class ScriptEditorDialog(BASE, WIDGET):
                 filterName = self.tr('Processing R script (*.rsx)')
 
             self.filename = str(QFileDialog.getSaveFileName(self,
-                                                                self.tr('Save script'), scriptDir,
-                                                                filterName))
+                                                            self.tr('Save script'), scriptDir,
+                                                            filterName))
 
         if self.filename:
             if self.algType == self.SCRIPT_PYTHON and \

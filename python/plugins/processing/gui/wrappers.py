@@ -598,8 +598,6 @@ class VectorWidgetWrapper(WidgetWrapper):
             items.append((getExtendedLayerName(layer), layer))
         self.widget.update(items)
 
-
-
     def refresh(self):
         self._populate(self.widget)
 

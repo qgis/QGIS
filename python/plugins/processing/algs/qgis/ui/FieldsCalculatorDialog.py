@@ -100,7 +100,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         exp_context.lastScope().setVariable("row_number", 1)
         exp_context.setHighlightedVariables(["row_number"])
         self.builder.setExpressionContext(exp_context)
-        
+
     def updateLayer(self):
         self.layer = dataobjects.getObject(self.cmbInputLayer.currentText())
         self.builder.setLayer(self.layer)
