@@ -359,7 +359,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         def testKey(lyr, key, kfnames):
             self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.import_test')
-            uri = '%s table="qgis_test"."import_test" (g) key=\'%s\'' % (self.dbconn, key)
+            uri = '%s table="qgis_test"."import_test" (g)' % self.dbconn
+            if key is not None:
+                uri += ' key=\'%s\'' % key
             err = QgsVectorLayerImport.importLayer(lyr, uri, "postgres", lyr.crs())
             self.assertEqual(err[0], QgsVectorLayerImport.NoError,
                              'unexpected import error {0}'.format(err))
@@ -367,9 +369,17 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             self.assertTrue(olyr.isValid())
             flds = lyr.fields()
             oflds = olyr.fields()
-            self.assertEquals(oflds.size(), flds.size())
-            for i in range(0, oflds.size()):
-                self.assertEqual(oflds[i].name(), flds[i].name())
+            if key is None:
+                # if the pkey was not given, it will create a pkey
+                self.assertEquals(oflds.size(), flds.size() + 1)
+                self.assertEquals(oflds[0].name(), kfnames[0])
+                for i in range(flds.size()):
+                    self.assertEqual(oflds[i+1].name(), flds[i].name())
+            else:
+                # pkey was given, no extra field generated
+                self.assertEquals(oflds.size(), flds.size())
+                for i in range(oflds.size()):
+                    self.assertEqual(oflds[i].name(), flds[i].name())
             pks = olyr.pkAttributeList()
             self.assertEquals(len(pks), len(kfnames))
             for i in range(0, len(kfnames)):
@@ -379,6 +389,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         testKey(lyr, '"f1"', ['f1'])
         testKey(lyr, '"f1","F2"', ['f1', 'F2'])
         testKey(lyr, '"f1","F2","f3"', ['f1', 'F2', 'f3'])
+        testKey(lyr, None, ['id'])
 
 
 if __name__ == '__main__':
