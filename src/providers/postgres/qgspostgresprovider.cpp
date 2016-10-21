@@ -198,35 +198,35 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 #endif
 
   //fill type names into sets
-  mNativeTypes
-  // integer types
-  << QgsVectorDataProvider::NativeType( tr( "Whole number (smallint - 16bit)" ), "int2", QVariant::Int, -1, -1, 0, 0 )
-  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 32bit)" ), "int4", QVariant::Int, -1, -1, 0, 0 )
-  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64bit)" ), "int8", QVariant::LongLong, -1, -1, 0, 0 )
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (numeric)" ), "numeric", QVariant::Double, 1, 20, 0, 20 )
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (decimal)" ), "decimal", QVariant::Double, 1, 20, 0, 20 )
+  setNativeTypes( QList<NativeType>()
+                  // integer types
+                  << QgsVectorDataProvider::NativeType( tr( "Whole number (smallint - 16bit)" ), "int2", QVariant::Int, -1, -1, 0, 0 )
+                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 32bit)" ), "int4", QVariant::Int, -1, -1, 0, 0 )
+                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64bit)" ), "int8", QVariant::LongLong, -1, -1, 0, 0 )
+                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (numeric)" ), "numeric", QVariant::Double, 1, 20, 0, 20 )
+                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (decimal)" ), "decimal", QVariant::Double, 1, 20, 0, 20 )
 
-  // floating point
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "real", QVariant::Double, -1, -1, -1, -1 )
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "double precision", QVariant::Double, -1, -1, -1, -1 )
+                  // floating point
+                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "real", QVariant::Double, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "double precision", QVariant::Double, -1, -1, -1, -1 )
 
-  // string types
-  << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "char", QVariant::String, 1, 255, -1, -1 )
-  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255, -1, -1 )
-  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), "text", QVariant::String, -1, -1, -1, -1 )
+                  // string types
+                  << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "char", QVariant::String, 1, 255, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), "text", QVariant::String, -1, -1, -1, -1 )
 
-  // date type
-  << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, -1, -1, -1, -1 )
-  << QgsVectorDataProvider::NativeType( tr( "Time" ), "time", QVariant::Time, -1, -1, -1, -1 )
-  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "timestamp without time zone", QVariant::DateTime, -1, -1, -1, -1 )
+                  // date type
+                  << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Time" ), "time", QVariant::Time, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "timestamp without time zone", QVariant::DateTime, -1, -1, -1, -1 )
 
-  // complex types
-  << QgsVectorDataProvider::NativeType( tr( "Map" ), "hstore", QVariant::Map, -1, -1, -1, -1, QVariant::String )
-  << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 32bit)" ), "int4[]", QVariant::List, -1, -1, -1, -1, QVariant::Int )
-  << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 64bit)" ), "int8[]", QVariant::List, -1, -1, -1, -1, QVariant::LongLong )
-  << QgsVectorDataProvider::NativeType( tr( "Array of number (double)" ), "double precision[]", QVariant::List, -1, -1, -1, -1, QVariant::Double )
-  << QgsVectorDataProvider::NativeType( tr( "Array of text" ), "text[]", QVariant::StringList, -1, -1, -1, -1, QVariant::String )
-  ;
+                  // complex types
+                  << QgsVectorDataProvider::NativeType( tr( "Map" ), "hstore", QVariant::Map, -1, -1, -1, -1, QVariant::String )
+                  << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 32bit)" ), "int4[]", QVariant::List, -1, -1, -1, -1, QVariant::Int )
+                  << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 64bit)" ), "int8[]", QVariant::List, -1, -1, -1, -1, QVariant::LongLong )
+                  << QgsVectorDataProvider::NativeType( tr( "Array of number (double)" ), "double precision[]", QVariant::List, -1, -1, -1, -1, QVariant::Double )
+                  << QgsVectorDataProvider::NativeType( tr( "Array of text" ), "text[]", QVariant::StringList, -1, -1, -1, -1, QVariant::String )
+                );
 
   QString key;
   switch ( mPrimaryKeyType )
@@ -4034,6 +4034,11 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer*
     }
   }
   return result;
+}
+
+QgsAttrPalIndexNameHash QgsPostgresProvider::palAttributeIndexNames() const
+{
+  return mAttrPalIndexName;
 }
 
 /**

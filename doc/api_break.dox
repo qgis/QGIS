@@ -224,16 +224,24 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 \subsection qgis_api_break_3_0_DataProviders Data Providers
 
 <ul>
-<li>Many methods in QgsDataProvider, QgsVectorDataProvider and QgsRasterDataProvider have been made const-correct.
-This has no effect on PyQGIS code, but c++ code implementing third-party providers will need to update the
-signatures of these methods to match. Affected methods are:
-<ul>
-<li>QgsDataProvider: crs(), extent(), isValid(), supportsSubsetString(), subsetString()</li>
-<li>QgsVectorDataProvider: getFeatures(), minimumValue(), maximumValue(), uniqueValues(), enumValues(), defaultValue(),
-attributeIndexes(), pkAttributeIndexes(), isSaveAndLoadStyleToDBSupported()</li>
-<li>QgsRasterInterface: extent()</li>
-</ul
-</li>
+  <li>Many methods in QgsDataProvider, QgsVectorDataProvider and QgsRasterDataProvider have been made const-correct.
+    This has no effect on PyQGIS code, but c++ code implementing third-party providers will need to update the
+    signatures of these methods to match. Affected methods are:
+    <ul>
+      <li>QgsDataProvider: crs(), extent(), isValid(), supportsSubsetString(), subsetString()</li>
+      <li>QgsVectorDataProvider: getFeatures(), minimumValue(), maximumValue(), uniqueValues(), enumValues(), defaultValue(),
+      attributeIndexes(), pkAttributeIndexes(), isSaveAndLoadStyleToDBSupported()</li>
+      <li>QgsRasterInterface: extent()</li>
+    </ul>
+  </li>
+  <li>Many protected member variables have been wrapped in setter/getter methods.
+    This should generally only affect 3rd party providers
+    <ul>
+      <li>mCacheMinMaxDirty: use clearMinMaxCache()</li>
+      <li>mNativeTypes: use setNativeTypes()</li>
+      <li>mAttrPalIndexName: overwrite palAttributeIndexNames()</li>
+    </ul>
+  </li>
 </ul>
 
 \subsection qgis_api_break_3_0_Qgis Qgis

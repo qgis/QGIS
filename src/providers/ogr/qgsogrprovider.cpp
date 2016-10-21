@@ -372,22 +372,24 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
   open( OpenModeInitial );
 
-  mNativeTypes
-  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 1, 10 )
+  setNativeTypes( QList<NativeType>()
+                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 1, 10 )
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
-  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64 bit)" ), "integer64", QVariant::LongLong, 1, 10 )
+                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64 bit)" ), "integer64", QVariant::LongLong, 1, 10 )
 #endif
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double", QVariant::Double, 1, 20, 0, 15 )
-  << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), "string", QVariant::String, 1, 255 )
-  << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 );
+                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double", QVariant::Double, 1, 20, 0, 15 )
+                  << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), "string", QVariant::String, 1, 255 )
+                  << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 )
+                );
 
   // Some drivers do not support datetime type
   // Please help to fill this list
   if ( ogrDriverName != "ESRI Shapefile" )
   {
-    mNativeTypes
-    << QgsVectorDataProvider::NativeType( tr( "Time" ), "time", QVariant::Time, -1, -1 )
-    << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "datetime", QVariant::DateTime );
+    setNativeTypes( QList<NativeType>()
+                    << QgsVectorDataProvider::NativeType( tr( "Time" ), "time", QVariant::Time, -1, -1 )
+                    << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "datetime", QVariant::DateTime )
+                  );
   }
 
   QgsOgrConnPool::instance()->ref( dataSourceUri() );
@@ -866,7 +868,7 @@ void QgsOgrProvider::loadFields()
 #ifdef ANDROID
       QString name = OGR_Fld_GetNameRef( fldDef );
 #else
-      QString name = mEncoding->toUnicode( OGR_Fld_GetNameRef( fldDef ) );
+      QString name = textEncoding()->toUnicode( OGR_Fld_GetNameRef( fldDef ) );
 #endif
 
       if ( mAttributeFields.indexFromName( name ) != -1 )
@@ -893,7 +895,7 @@ void QgsOgrProvider::loadFields()
 #ifdef ANDROID
           OGR_GetFieldTypeName( ogrType ),
 #else
-          mEncoding->toUnicode( OGR_GetFieldTypeName( ogrType ) ),
+          textEncoding()->toUnicode( OGR_GetFieldTypeName( ogrType ) ),
 #endif
           width, prec
         )
@@ -1229,8 +1231,8 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
           QgsDebugMsg( QString( "Writing string attribute %1 with %2, encoding %3" )
                        .arg( qgisAttId )
                        .arg( attrVal.toString(),
-                             mEncoding->name().constData() ) );
-          OGR_F_SetFieldString( feature, ogrAttId, mEncoding->fromUnicode( attrVal.toString() ).constData() );
+                             textEncoding()->name().data() ) );
+          OGR_F_SetFieldString( feature, ogrAttId, textEncoding()->fromUnicode( attrVal.toString() ).constData() );
           break;
 
         default:
@@ -1353,7 +1355,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
         continue;
     }
 
-    OGRFieldDefnH fielddefn = OGR_Fld_Create( mEncoding->fromUnicode( iter->name() ).constData(), type );
+    OGRFieldDefnH fielddefn = OGR_Fld_Create( textEncoding()->fromUnicode( iter->name() ).constData(), type );
     int width = iter->length();
     if ( iter->precision() )
       width += 1;
@@ -1458,7 +1460,7 @@ bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap& renamedAttributes 
     }
 
     //type does not matter, it will not be used
-    OGRFieldDefnH fld = OGR_Fld_Create( mEncoding->fromUnicode( renameIt.value() ), OFTReal );
+    OGRFieldDefnH fld = OGR_Fld_Create( textEncoding()->fromUnicode( renameIt.value() ), OFTReal );
     if ( OGR_L_AlterFieldDefn( ogrLayer, ogrFieldIndex, fld, ALTER_NAME_FLAG ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error renaming field %1: %2" ).arg( fieldIndex ).arg( CPLGetLastErrorMsg() ) );
@@ -1586,7 +1588,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
                                     0 );
             break;
           case OFTString:
-            OGR_F_SetFieldString( of, f, mEncoding->fromUnicode( it2->toString() ).constData() );
+            OGR_F_SetFieldString( of, f, textEncoding()->fromUnicode( it2->toString() ).constData() );
             break;
           default:
             pushError( tr( "Type %1 of attribute %2 of feature %3 unknown." ).arg( type ).arg( fid ).arg( f ) );
@@ -1720,7 +1722,7 @@ bool QgsOgrProvider::createAttributeIndex( int field )
   QByteArray quotedLayerName = quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
   QByteArray dropSql = "DROP INDEX ON " + quotedLayerName;
   OGR_DS_ExecuteSQL( ogrDataSource, dropSql.constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), nullptr );
-  QByteArray createSql = "CREATE INDEX ON " + quotedLayerName + " USING " + mEncoding->fromUnicode( fields().at( field ).name() );
+  QByteArray createSql = "CREATE INDEX ON " + quotedLayerName + " USING " + textEncoding()->fromUnicode( fields().at( field ).name() );
   OGR_DS_ExecuteSQL( ogrDataSource, createSql.constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), nullptr );
 
   QFileInfo fi( mFilePath );     // to get the base name
@@ -2792,17 +2794,17 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   // avoid GDAL #4509
   return QgsVectorDataProvider::uniqueValues( index, uniqueValues, limit );
 #else
-  QByteArray sql = "SELECT DISTINCT " + quotedIdentifier( mEncoding->fromUnicode( fld.name() ) );
+  QByteArray sql = "SELECT DISTINCT " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
   sql += " FROM " + quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += " WHERE " + mEncoding->fromUnicode( mSubsetString );
+    sql += " WHERE " + textEncoding()->fromUnicode( mSubsetString );
   }
 
-  sql += " ORDER BY " + mEncoding->fromUnicode( fld.name() ) + " ASC";  // quoting of fieldname produces a syntax error
+  sql += " ORDER BY " + textEncoding()->fromUnicode( fld.name() ) + " ASC";  // quoting of fieldname produces a syntax error
 
-  QgsDebugMsg( QString( "SQL: %1" ).arg( mEncoding->toUnicode( sql ) ) );
+  QgsDebugMsg( QString( "SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ) );
   OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), nullptr, nullptr );
   if ( !l )
   {
@@ -2813,7 +2815,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   OGRFeatureH f;
   while (( f = OGR_L_GetNextFeature( l ) ) )
   {
-    uniqueValues << ( OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() ) );
+    uniqueValues << ( OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() ) );
     OGR_F_Destroy( f );
 
     if ( limit >= 0 && uniqueValues.size() >= limit )
@@ -2833,18 +2835,18 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
   QgsField fld = mAttributeFields.at( index );
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
-  QByteArray sql = "SELECT MIN(" + mEncoding->fromUnicode( fld.name() );
+  QByteArray sql = "SELECT MIN(" + textEncoding()->fromUnicode( fld.name() );
   sql += ") FROM " + quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += " WHERE " + mEncoding->fromUnicode( mSubsetString );
+    sql += " WHERE " + textEncoding()->fromUnicode( mSubsetString );
   }
 
   OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), nullptr, nullptr );
   if ( !l )
   {
-    QgsDebugMsg( QString( "Failed to execute SQL: %1" ).arg( mEncoding->toUnicode( sql ) ) );
+    QgsDebugMsg( QString( "Failed to execute SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ) );
     return QgsVectorDataProvider::minimumValue( index );
   }
 
@@ -2855,7 +2857,7 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
     return QVariant();
   }
 
-  QVariant value = OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
+  QVariant value = OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
   OGR_F_Destroy( f );
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
@@ -2872,18 +2874,18 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
   QgsField fld = mAttributeFields.at( index );
 
   // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
-  QByteArray sql = "SELECT MAX(" + mEncoding->fromUnicode( fld.name() );
+  QByteArray sql = "SELECT MAX(" + textEncoding()->fromUnicode( fld.name() );
   sql += ") FROM " + quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   if ( !mSubsetString.isEmpty() )
   {
-    sql += " WHERE " + mEncoding->fromUnicode( mSubsetString );
+    sql += " WHERE " + textEncoding()->fromUnicode( mSubsetString );
   }
 
   OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.constData(), nullptr, nullptr );
   if ( !l )
   {
-    QgsDebugMsg( QString( "Failed to execute SQL: %1" ).arg( mEncoding->toUnicode( sql ) ) );
+    QgsDebugMsg( QString( "Failed to execute SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ) );
     return QgsVectorDataProvider::maximumValue( index );
   }
 
@@ -2894,7 +2896,7 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
     return QVariant();
   }
 
-  QVariant value = OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
+  QVariant value = OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
   OGR_F_Destroy( f );
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
@@ -3230,7 +3232,7 @@ OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type 
 
 OGRLayerH QgsOgrProvider::setSubsetString( OGRLayerH layer, OGRDataSourceH ds )
 {
-  return QgsOgrProviderUtils::setSubsetString( layer, ds, mEncoding, mSubsetString );
+  return QgsOgrProviderUtils::setSubsetString( layer, ds, textEncoding(), mSubsetString );
 }
 
 OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec* encoding, const QString& subsetString )

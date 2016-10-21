@@ -147,32 +147,32 @@ QgsMssqlProvider::QgsMssqlProvider( const QString& uri )
   }
 
   //fill type names into sets
-  mNativeTypes
-  // integer types
-  << QgsVectorDataProvider::NativeType( tr( "8 Bytes integer" ), "bigint", QVariant::Int )
-  << QgsVectorDataProvider::NativeType( tr( "4 Bytes integer" ), "int", QVariant::Int )
-  << QgsVectorDataProvider::NativeType( tr( "2 Bytes integer" ), "smallint", QVariant::Int )
-  << QgsVectorDataProvider::NativeType( tr( "1 Bytes integer" ), "tinyint", QVariant::Int )
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (numeric)" ), "numeric", QVariant::Double, 1, 20, 0, 20 )
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (decimal)" ), "decimal", QVariant::Double, 1, 20, 0, 20 )
+  setNativeTypes( QList<NativeType>()
+                  // integer types
+                  << QgsVectorDataProvider::NativeType( tr( "8 Bytes integer" ), "bigint", QVariant::Int )
+                  << QgsVectorDataProvider::NativeType( tr( "4 Bytes integer" ), "int", QVariant::Int )
+                  << QgsVectorDataProvider::NativeType( tr( "2 Bytes integer" ), "smallint", QVariant::Int )
+                  << QgsVectorDataProvider::NativeType( tr( "1 Bytes integer" ), "tinyint", QVariant::Int )
+                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (numeric)" ), "numeric", QVariant::Double, 1, 20, 0, 20 )
+                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (decimal)" ), "decimal", QVariant::Double, 1, 20, 0, 20 )
 
-  // floating point
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "real", QVariant::Double )
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "float", QVariant::Double )
+                  // floating point
+                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "real", QVariant::Double )
+                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "float", QVariant::Double )
 
-  // date/time types
-  << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, -1, -1, -1, -1 )
-  << QgsVectorDataProvider::NativeType( tr( "Time" ), "time", QVariant::Time, -1, -1, -1, -1 )
-  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "datetime", QVariant::DateTime, -1, -1, -1, -1 )
+                  // date/time types
+                  << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Time" ), "time", QVariant::Time, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "datetime", QVariant::DateTime, -1, -1, -1, -1 )
 
-  // string types
-  << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "char", QVariant::String, 1, 255 )
-  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255 )
-  << QgsVectorDataProvider::NativeType( tr( "Text, fixed length unicode (nchar)" ), "nchar", QVariant::String, 1, 255 )
-  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length unicode (nvarchar)" ), "nvarchar", QVariant::String, 1, 255 )
-  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), "text", QVariant::String )
-  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length unicode (ntext)" ), "text", QVariant::String )
-  ;
+                  // string types
+                  << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "char", QVariant::String, 1, 255 )
+                  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255 )
+                  << QgsVectorDataProvider::NativeType( tr( "Text, fixed length unicode (nchar)" ), "nchar", QVariant::String, 1, 255 )
+                  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length unicode (nvarchar)" ), "nvarchar", QVariant::String, 1, 255 )
+                  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), "text", QVariant::String )
+                  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length unicode (ntext)" ), "text", QVariant::String )
+                );
 }
 
 QgsMssqlProvider::~QgsMssqlProvider()

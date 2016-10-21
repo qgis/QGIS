@@ -250,8 +250,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     int layerIndex() const { return mLayerIndex; }
 
-    QTextCodec* textEncoding() { return mEncoding; }
-
     QByteArray quotedIdentifier( QByteArray field ) const;
 
     /**

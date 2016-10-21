@@ -339,12 +339,12 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * Return list of indexes of fields that make up the primary key
      */
-    virtual QgsAttributeList pkAttributeIndexes() const { return QgsAttributeList(); }
+    virtual QgsAttributeList pkAttributeIndexes() const;
 
     /**
      * Return list of indexes to names for QgsPalLabeling fix
      */
-    virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const { return mAttrPalIndexName; }
+    virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const;
 
     /**
      * check if provider supports type of field
@@ -403,19 +403,18 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     QStringList errors() const;
 
-
     /**
      * It returns false by default.
      * Must be implemented by providers that support saving and loading styles to db returning true
      */
-    virtual bool isSaveAndLoadStyleToDBSupported() const { return false; }
+    virtual bool isSaveAndLoadStyleToDBSupported() const;
 
     static QVariant convertValue( QVariant::Type type, const QString& value );
 
     /**
      * Returns the transaction this data provider is included in, if any.
      */
-    virtual QgsTransaction* transaction() const { return nullptr; }
+    virtual QgsTransaction* transaction() const;
 
     /**
      * Forces a reload of the underlying datasource if the provider implements this
@@ -424,10 +423,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * This forces QGIS to reopen a file or connection.
      * This can be required if the underlying file is replaced.
      */
-    virtual void forceReload()
-    {
-      emit dataChanged();
-    }
+    virtual void forceReload();
 
     /**
      * Get the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
@@ -444,15 +440,58 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const;
 
   signals:
-    /** Signals an error in this provider */
+    /**
+     * Signals an error in this provider
+     *
+     * @note Added const in QGIS 3.0
+     */
     void raiseError( const QString& msg ) const;
 
   protected:
+    /**
+     * Invalidates the min/max cache. This will force the provider to recalculate the
+     * cache the next time it is requested.
+     */
     void clearMinMaxCache();
 
-    //! Populates the cache of minimum and maximum attribute values.
+    /**
+     * Populates the cache of minimum and maximum attribute values.
+     */
     void fillMinMaxCache() const;
 
+    /**
+     * Push a notification about errors that happened in this providers scope.
+     * Errors should be translated strings that require the users immediate
+     * attention.
+     *
+     * For general debug information use QgsMessageLog::logMessage() instead.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void pushError( const QString& msg ) const;
+
+    /**
+     * Converts the geometry to the provider type if possible / necessary
+     * @return the converted geometry or nullptr if no conversion was necessary or possible
+     */
+    QgsGeometry* convertToProviderType( const QgsGeometry& geom ) const;
+
+    /**
+     * Set the list of native types supported by this provider.
+     * Usually done in the constructor.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setNativeTypes( const QList<NativeType>& nativeTypes );
+
+    /**
+     * Get this providers encoding
+     *
+     * @note Added in QGIS 3.0
+     */
+    QTextCodec* textEncoding() const;
+
+  private:
     mutable bool mCacheMinMaxDirty;
     mutable QMap<int, QVariant> mCacheMinValues, mCacheMaxValues;
 
@@ -465,19 +504,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /** The names of the providers native types*/
     QList< NativeType > mNativeTypes;
 
-    /**
-     * Raises an error message from the provider.
-     */
-    void pushError( const QString& msg ) const;
-
-    /** Old-style mapping of index to name for QgsPalLabeling fix */
-    QgsAttrPalIndexNameHash mAttrPalIndexName;
-
-    /** Converts the geometry to the provider type if possible / necessary
-    @return the converted geometry or nullptr if no conversion was necessary or possible*/
-    QgsGeometry* convertToProviderType( const QgsGeometry& geom ) const;
-
-  private:
     /** Old notation **/
     QMap<QString, QVariant::Type> mOldTypeList;
 

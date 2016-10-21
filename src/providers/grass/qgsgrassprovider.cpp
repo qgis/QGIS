@@ -261,16 +261,17 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
   connect( mLayer->map(), SIGNAL( dataChanged() ), SLOT( onDataChanged() ) );
 
   // TODO: types according to database
-  mNativeTypes
-  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, -1, -1, -1, -1 )
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double precision", QVariant::Double, -1, -1, -1, -1 )
+  setNativeTypes( QList<NativeType>()
+                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double precision", QVariant::Double, -1, -1, -1, -1 )
 #if GRASS_VERSION_MAJOR < 7
-  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255, -1, -1 );
+                  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255, -1, -1 )
 #else
-  << QgsVectorDataProvider::NativeType( tr( "Text" ), "text", QVariant::String );
+                  << QgsVectorDataProvider::NativeType( tr( "Text" ), "text", QVariant::String )
 #endif
-  // TODO:
-  // << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 );
+                  // TODO:
+                  // << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 );
+                );
 
   mValid = true;
 
@@ -1020,7 +1021,7 @@ QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
     dbColumn *column = db_get_table_column( databaseTable, i );
     db_convert_column_value_to_string( column, &dbstr );
 
-    QString v = mEncoding->toUnicode( db_get_string( &dbstr ) );
+    QString v = textEncoding()->toUnicode( db_get_string( &dbstr ) );
     QgsDebugMsg( QString( "Value: %1" ).arg( v ) );
     att->insert( i, QVariant( v ) );
   }

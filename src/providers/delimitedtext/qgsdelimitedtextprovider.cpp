@@ -83,12 +83,12 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString& uri )
 {
 
   // Add supported types to enable creating expression fields in field calculator
-  mNativeTypes
-  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 0, 10 )
-  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64 bit)" ), "int8", QVariant::LongLong )
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "double precision", QVariant::Double, -1, -1, -1, -1 )
-  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), "text", QVariant::String, -1, -1, -1, -1 )
-  ;
+  setNativeTypes( QList< NativeType >()
+                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 0, 10 )
+                  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64 bit)" ), "int8", QVariant::LongLong )
+                  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "double precision", QVariant::Double, -1, -1, -1, -1 )
+                  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), "text", QVariant::String, -1, -1, -1, -1 )
+                );
 
   QgsDebugMsg( "Delimited text file uri is " + uri );
 
@@ -1076,7 +1076,7 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString& subset, bool upda
     }
   }
 
-  mCacheMinMaxDirty = true;
+  clearMinMaxCache();
   emit dataChanged();
   return valid;
 }

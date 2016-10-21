@@ -19,7 +19,6 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgstolerance.h"
 #include "qgisapp.h"
