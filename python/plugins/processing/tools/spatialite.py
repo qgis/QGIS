@@ -29,13 +29,15 @@ __revision__ = '$Format:%H$'
 
 from qgis.utils import spatialite_connect
 
+import sqlite3 as sqlite
+
 
 class DbError(Exception):
 
     def __init__(self, message, query=None):
         # Save error. funny that the variables are in utf-8
-        self.message = str(message, 'utf-8')
-        self.query = (str(query, 'utf-8') if query is not None else None)
+        self.message = str(message)
+        self.query = (str(query) if query is not None else None)
 
     def __str__(self):
         return 'MESSAGE: %s\nQUERY: %s' % (self.message, self.query)
