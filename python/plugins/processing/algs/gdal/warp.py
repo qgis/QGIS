@@ -91,7 +91,7 @@ class warp(GdalAlgorithm):
 
         if GdalUtils.version() >= 2000000:
             self.addParameter(ParameterCrs(self.EXT_CRS,
-                                           self.tr('CRS of the raster extent'), ''))
+                                           self.tr('CRS of the raster extent'), '', optional=True))
 
         params = []
         params.append(ParameterSelection(self.RTYPE,
