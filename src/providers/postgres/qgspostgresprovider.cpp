@@ -3546,6 +3546,9 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
         fldIdx = -1; // it is incremented in the for loop, i.e. restarts at 0
       }
     }
+
+    pkList = QStringList( primaryKey );
+    pkType = QStringList( "serial" );
   }
   else
   {
