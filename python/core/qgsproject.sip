@@ -20,16 +20,14 @@ class QgsProject : QObject
 %End
 
   public:
-
-    // TODO XXX Should have semantics for saving project if dirty as last gasp?
-    ~QgsProject();
-
     //! Returns the QgsProject singleton instance
-    static QgsProject * instance();
+    static QgsProject* instance();
+
+    ~QgsProject();
 
     /** Sets the project's title.
      * @param title new title
-     *  @note added in 2.4
+     * @note added in 2.4
      * @see title()
      */
     void setTitle( const QString& title );
@@ -163,7 +161,7 @@ class QgsProject : QObject
      * @note The key string must be valid xml tag names in order to be saved to the file.
      * @note available in python bindings as writeEntryBool
      */
-    bool writeEntry( const QString & scope, const QString & key, bool value ) /PyName=writeEntryBool/;
+    bool writeEntry( const QString& scope, const QString& key, bool value ) /PyName=writeEntryBool/;
 
     /**
      * Write a double entry to the project file.
@@ -206,34 +204,34 @@ class QgsProject : QObject
      */
     bool writeEntry( const QString& scope, const QString& key, const QStringList& value );
 
-    /** Key value accessors
+    /**
+     * Key value accessors
      *
      * keys would be the familiar QSettings-like '/' delimited entries,
      * implying a hierarchy of keys and corresponding values
-     *
      */
-    QStringList readListEntry( const QString & scope, const QString & key, const QStringList& def = QStringList(), bool *ok = 0 ) const;
+    QStringList readListEntry( const QString& scope, const QString& key, const QStringList& def = QStringList(), bool *ok = 0 ) const;
 
-    QString readEntry( const QString & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
-    int readNumEntry( const QString & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
-    double readDoubleEntry( const QString & scope, const QString & key, double def = 0, bool * ok = 0 ) const;
-    bool readBoolEntry( const QString & scope, const QString & key, bool def = false, bool * ok = 0 ) const;
+    QString readEntry( const QString& scope, const QString& key, const QString& def = QString::null, bool* ok = 0 ) const;
+    int readNumEntry( const QString& scope, const QString& key, int def = 0, bool* ok = 0 ) const;
+    double readDoubleEntry( const QString& scope, const QString& key, double def = 0, bool* ok = 0 ) const;
+    bool readBoolEntry( const QString& scope, const QString& key, bool def = false, bool* ok = 0 ) const;
 
     /** Remove the given key */
-    bool removeEntry( const QString & scope, const QString & key );
+    bool removeEntry( const QString& scope, const QString& key );
 
 
     /** Return keys with values -- do not return keys that contain other keys
      *
      * @note equivalent to QSettings entryList()
      */
-    QStringList entryList( const QString & scope, const QString & key ) const;
+    QStringList entryList( const QString& scope, const QString& key ) const;
 
     /** Return keys with keys -- do not return keys that contain only values
      *
      * @note equivalent to QSettings subkeyList()
      */
-    QStringList subkeyList( const QString & scope, const QString & key ) const;
+    QStringList subkeyList( const QString& scope, const QString& key ) const;
 
 
     /** Dump out current project properties to stderr
@@ -243,7 +241,11 @@ class QgsProject : QObject
      */
     void dumpProperties() const;
 
-    /** Prepare a filename to save it to the project file */
+    /**
+     * Prepare a filename to save it to the project file.
+     * Creates an absolute or relative path according to the project settings.
+     * Paths written to the project file should be prepared with this method.
+    */
     QString writePath( const QString& filename, const QString& relativeBasePath = QString::null ) const;
 
     /** Turn filename read from the project file to an absolute path */
@@ -325,8 +327,9 @@ class QgsProject : QObject
      */
     QgsLayerTreeRegistryBridge* layerTreeRegistryBridge() const;
 
-    /** Returns pointer to the project's visibility preset collection.
+    /** Returns pointer to the project's map theme collection.
      * @note added in QGIS 2.12
+     * @note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
      */
     QgsMapThemeCollection* mapThemeCollection();
 
@@ -363,7 +366,8 @@ class QgsProject : QObject
      *
      * @note Added in QGIS 2.16
      */
-    void setAutoTransaction(bool autoTransaction );
+    void setAutoTransaction( bool autoTransaction );
+
     /**
      * Should default values be evaluated on provider side when requested and not when committed.
      *
@@ -383,10 +387,15 @@ class QgsProject : QObject
 
     /**
      * The snapping configuration for this project.
+     *
+     * @note Added in QGIS 3.0
      */
     QgsSnappingConfig snappingConfig() const;
+
     /**
      * The snapping configuration for this project.
+     *
+     * @note Added in QGIS 3.0
      */
     void setSnappingConfig( const QgsSnappingConfig& snappingConfig );
 
@@ -402,14 +411,27 @@ class QgsProject : QObject
      *
      * @note Added in QGIS 3.0
      */
-    void setAvoidIntersectionsList(const QStringList& avoidIntersectionsList);
+    void setAvoidIntersectionsList( const QStringList& avoidIntersectionsList );
+
+    /**
+     * A map of custom project variables.
+     * To get all available variables including generated ones
+     * use QgsExpressionContextUtils::projectScope() instead.
+     */
+    QgsStringMap variables() const;
+
+    /**
+     * A map of custom project variables.
+     * Be careful not to set generated variables.
+     */
+    void setVariables( const QgsStringMap& variables );
 
   signals:
     //! emitted when project is being read
-    void readProject( const QDomDocument & );
+    void readProject( const QDomDocument& );
 
     //! emitted when project is being written
-    void writeProject( QDomDocument & );
+    void writeProject( QDomDocument& );
 
     /**
      * Emitted, after the basic initialization of a layer from the project
@@ -419,7 +441,7 @@ class QgsProject : QObject
      * @param mapLayer  The map layer which is being initialized
      * @param layerNode The layer node from the project file
      */
-    void readMapLayer( QgsMapLayer *mapLayer, const QDomElement &layerNode );
+    void readMapLayer( QgsMapLayer* mapLayer, const QDomElement& layerNode );
 
     /**
      * Emitted, when a layer is being saved. You can use this method to save
@@ -437,9 +459,11 @@ class QgsProject : QObject
     //! emitted when an old project file is read.
     void oldProjectVersionWarning( const QString& );
 
-    //! emitted when a layer from a projects was read
-    // @param i current layer
-    // @param n number of layers
+    /**
+     * Emitted when a layer from a projects was read.
+     * @param i current layer
+     * @param n number of layers
+     */
     void layerLoaded( int i, int n );
 
     void loadingLayer( const QString& );
@@ -493,41 +517,12 @@ class QgsProject : QObject
      */
     void setDirty( bool b = true );
 
-    /** Causes the project to emit the variablesChanged() signal. This should
-     * be called whenever expression variables related to the project are changed.
-     * @see variablesChanged()
-     * @note added in QGIS 3.0
-     */
-    void emitVariablesChanged();
-
   private:
-
-    QgsProject(); // private 'cause it's a singleton
-
-}; // QgsProject
-
-
-/** Interface for classes that handle missing layer files when reading project file. */
-class QgsProjectBadLayerHandler
-{
-%TypeHeaderCode
-#include <qgsproject.h>
-%End
-
-  public:
-    virtual void handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom ) = 0;
-    virtual ~QgsProjectBadLayerHandler();
-};
-
-
-/** Default bad layer handler which ignores any missing layers. */
-class QgsProjectBadLayerDefaultHandler : QgsProjectBadLayerHandler
-{
-%TypeHeaderCode
-#include <qgsproject.h>
-%End
-
-  public:
-    virtual void handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom );
+    /**
+     * Create a new QgsProject.
+     * Private since it's (still) a singleton.
+     * You want to use QgsProject::instance() instead.
+     */
+    explicit QgsProject( QObject* parent = nullptr );
 
 };

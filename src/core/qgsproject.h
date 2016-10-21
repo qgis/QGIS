@@ -29,13 +29,14 @@
 #include <QFileInfo>
 #include <QStringList>
 
-//#include <QDomDocument>
+//#include <QDomDocument>qgp
 #include "qgssnapper.h"
 #include "qgsunittypes.h"
 #include "qgssnappingconfig.h"
 #include "qgsprojectversion.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsprojectproperty.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -78,17 +79,15 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged )
     Q_PROPERTY( QString homePath READ homePath NOTIFY homePathChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs )
-    Q_PROPERTY( QgsMapThemeCollection* mapThemeCollection READ mapThemeCollection )
+    Q_PROPERTY( QgsMapThemeCollection* mapThemeCollection READ mapThemeCollection NOTIFY mapThemeCollectionChanged )
     Q_PROPERTY( QgsSnappingConfig snappingConfig READ snappingConfig WRITE setSnappingConfig NOTIFY snappingConfigChanged )
     Q_PROPERTY( QStringList avoidIntersectionsList READ avoidIntersectionsList WRITE setAvoidIntersectionsList NOTIFY avoidIntersectionsListChanged )
 
   public:
-
-    // TODO XXX Should have semantics for saving project if dirty as last gasp?
-    ~QgsProject();
-
     //! Returns the QgsProject singleton instance
-    static QgsProject * instance();
+    static QgsProject* instance();
+
+    ~QgsProject();
 
     /** Sets the project's title.
      * @param title new title
@@ -226,7 +225,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @note The key string must be valid xml tag names in order to be saved to the file.
      * @note available in python bindings as writeEntryBool
      */
-    bool writeEntry( const QString & scope, const QString & key, bool value );
+    bool writeEntry( const QString& scope, const QString& key, bool value );
 
     /**
      * Write a double entry to the project file.
@@ -269,35 +268,35 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     bool writeEntry( const QString& scope, const QString& key, const QStringList& value );
 
-    /** Key value accessors
+    /**
+     * Key value accessors
      *
      * keys would be the familiar QSettings-like '/' delimited entries,
      * implying a hierarchy of keys and corresponding values
-     *
      */
-    QStringList readListEntry( const QString & scope, const QString & key, const QStringList& def = QStringList(), bool *ok = nullptr ) const;
+    QStringList readListEntry( const QString& scope, const QString& key, const QStringList& def = QStringList(), bool* ok = nullptr ) const;
 
-    QString readEntry( const QString & scope, const QString & key, const QString & def = QString::null, bool * ok = nullptr ) const;
-    int readNumEntry( const QString & scope, const QString & key, int def = 0, bool * ok = nullptr ) const;
-    double readDoubleEntry( const QString & scope, const QString & key, double def = 0, bool * ok = nullptr ) const;
-    bool readBoolEntry( const QString & scope, const QString & key, bool def = false, bool * ok = nullptr ) const;
+    QString readEntry( const QString& scope, const QString& key, const QString& def = QString::null, bool* ok = nullptr ) const;
+    int readNumEntry( const QString& scope, const QString& key, int def = 0, bool* ok = nullptr ) const;
+    double readDoubleEntry( const QString& scope, const QString& key, double def = 0, bool* ok = nullptr ) const;
+    bool readBoolEntry( const QString& scope, const QString& key, bool def = false, bool* ok = nullptr ) const;
 
 
     /** Remove the given key */
-    bool removeEntry( const QString & scope, const QString & key );
+    bool removeEntry( const QString& scope, const QString& key );
 
 
     /** Return keys with values -- do not return keys that contain other keys
      *
      * @note equivalent to QSettings entryList()
      */
-    QStringList entryList( const QString & scope, const QString & key ) const;
+    QStringList entryList( const QString& scope, const QString& key ) const;
 
     /** Return keys with keys -- do not return keys that contain only values
      *
      * @note equivalent to QSettings subkeyList()
      */
-    QStringList subkeyList( const QString & scope, const QString & key ) const;
+    QStringList subkeyList( const QString& scope, const QString& key ) const;
 
 
     /** Dump out current project properties to stderr
@@ -306,8 +305,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //           and redundantly prints sub-keys.
     void dumpProperties() const;
 
-    /** Prepare a filename to save it to the project file. Creates an absolute or relative path to writes
-     * it to the project file.
+    /**
+     * Prepare a filename to save it to the project file.
+     * Creates an absolute or relative path according to the project settings.
+     * Paths written to the project file should be prepared with this method.
     */
     QString writePath( const QString& filename, const QString& relativeBasePath = QString::null ) const;
 
@@ -484,6 +485,19 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setAvoidIntersectionsList( const QStringList& avoidIntersectionsList );
 
+    /**
+     * A map of custom project variables.
+     * To get all available variables including generated ones
+     * use QgsExpressionContextUtils::projectScope() instead.
+     */
+    QgsStringMap variables() const;
+
+    /**
+     * A map of custom project variables.
+     * Be careful not to set generated variables.
+     */
+    void setVariables( const QgsStringMap& variables );
+
   signals:
     //! emitted when project is being read
     void readProject( const QDomDocument& );
@@ -565,6 +579,19 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void avoidIntersectionsListChanged();
 
+    /**
+     * Emitted when the map theme collection changes.
+     * This only happens when the map theme collection is reset.
+     * Any pointer previously received from mapThemeCollection()
+     * must no longer be used after this signal is emitted.
+     * You must still connect to signals from the map theme collection
+     * if you want to be notified about new map themes being added and
+     * map themes being removed.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void mapThemeCollectionChanged();
+
   public slots:
     /**
      * Flag the project as dirty (modified). If this flag is set, the user will
@@ -575,30 +602,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setDirty( bool b = true );
 
-    /** Causes the project to emit the variablesChanged() signal. This should
-     * be called whenever expression variables related to the project are changed.
-     * @see variablesChanged()
-     * @note added in QGIS 3.0
-     */
-    void emitVariablesChanged();
-
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer*>& layers );
     void onMapLayersRemoved( const QList<QgsMapLayer*>& layers );
     void cleanTransactionGroups( bool force = false );
 
   private:
+    /**
+     * Create a new QgsProject.
+     * Private since it's (still) a singleton.
+     * You want to use QgsProject::instance() instead.
+     */
+    explicit QgsProject( QObject* parent = nullptr );
 
-    QgsProject(); // private 'cause it's a singleton
-
-    QgsProject( QgsProject const & ); // private 'cause it's a singleton
-
-    struct Imp;
-
-    /// implementation handle
-    QScopedPointer<Imp> imp_;
-
-    static QgsProject * theProject_;
+    static QgsProject* sProject;
 
     /** Read map layers from project file.
      * @param doc DOM document to parse
@@ -606,7 +623,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * because the layers were removed or re-located after the project was last saved
      * @returns true if function worked; else is false
     */
-    bool _getMapLayers( QDomDocument const &doc, QList<QDomNode>& brokenNodes );
+    bool _getMapLayers( const QDomDocument& doc, QList<QDomNode>& brokenNodes );
 
     /** Processes any joins attached to a newly added layer.
      * @param layer layer to process
@@ -655,28 +672,16 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QMap< QPair< QString, QString>, QgsTransactionGroup*> mTransactionGroups;
 
     QScopedPointer<QgsMapThemeCollection> mMapThemeCollection;
+
+    QgsStringMap mVariables;
+
+    QFile mFile;                 // current physical project file
+    mutable QgsPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
+    QString mTitle;              // project title
+    bool mAutoTransaction;       // transaction grouped editing
+    bool mEvaluateDefaultValues; // evaluate default values immediately
+    bool mDirty;                 // project has been modified since it has been read or saved
 };
-
-
-/** \ingroup core
- * Interface for classes that handle missing layer files when reading project file. */
-class CORE_EXPORT QgsProjectBadLayerHandler
-{
-  public:
-    virtual void handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom ) = 0;
-    virtual ~QgsProjectBadLayerHandler() {}
-};
-
-
-/** \ingroup core
- * Default bad layer handler which ignores any missing layers. */
-class CORE_EXPORT QgsProjectBadLayerDefaultHandler : public QgsProjectBadLayerHandler
-{
-  public:
-    virtual void handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom ) override;
-
-};
-
 
 /** Return the version string found in the given DOM document
    @returns the version string or an empty string if none found

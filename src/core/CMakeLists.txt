@@ -178,6 +178,7 @@ SET(QGIS_CORE_SRCS
   qgspoint.cpp
   qgspointlocator.cpp
   qgsproject.cpp
+  qgsprojectbadlayerhandler.cpp
   qgsprojectfiletransform.cpp
   qgssnappingconfig.cpp
   qgsprojectproperty.cpp
@@ -677,7 +678,7 @@ SET(QGIS_CORE_HDRS
   qgspallabeling.h
   qgspluginlayerregistry.h
   qgspointlocator.h
-  qgsproject.h
+  qgsprojectbadlayerhandler.h
   qgsprojectfiletransform.h
   qgsprojectproperty.h
   qgssnappingconfig.h

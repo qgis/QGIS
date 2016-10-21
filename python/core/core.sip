@@ -110,6 +110,7 @@
 %Include qgspoint.sip
 %Include qgspointlocator.sip
 %Include qgsproject.sip
+%Include qgsprojectbadlayerhandler.sip
 %Include qgsprojectproperty.sip
 %Include qgssnappingconfig.sip
 %Include qgsprojectversion.sip

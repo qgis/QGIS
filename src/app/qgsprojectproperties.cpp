@@ -1187,8 +1187,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->relationManager()->setRelations( mRelationManagerDlg->relations() );
 
   //save variables
-  QgsExpressionContextUtils::setProjectVariables( mVariableEditor->variablesInActiveScope() );
-  QgsProject::instance()->emitVariablesChanged();
+  QgsProject::instance()->setVariables( mVariableEditor->variablesInActiveScope() );
 
   emit refresh();
 }

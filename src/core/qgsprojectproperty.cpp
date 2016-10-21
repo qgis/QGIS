@@ -482,4 +482,9 @@ bool QgsPropertyKey::isLeaf() const
   }
 
   return false;
+}
+
+void QgsPropertyKey::setName( const QString& name )
+{
+  mName = name;
 } // QgsPropertyKey::isLeaf

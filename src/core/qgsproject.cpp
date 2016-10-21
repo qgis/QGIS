@@ -29,7 +29,6 @@
 #include "qgspluginlayerregistry.h"
 #include "qgsprojectfiletransform.h"
 #include "qgssnappingconfig.h"
-#include "qgsprojectproperty.h"
 #include "qgsprojectversion.h"
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
@@ -41,6 +40,7 @@
 #include "qgstransaction.h"
 #include "qgstransactiongroup.h"
 #include "qgsvectordataprovider.h"
+#include "qgsprojectbadlayerhandler.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -59,7 +59,7 @@
 #endif
 
 // canonical project instance
-QgsProject *QgsProject::theProject_ = nullptr;
+QgsProject *QgsProject::sProject = nullptr;
 
 /**
     Take the given scope and key and convert them to a string list of key
@@ -111,12 +111,12 @@ QStringList makeKeyTokens_( const QString& scope, const QString& key )
 
    @return null if not found, otherwise located Property
 */
-QgsProperty *findKey_( const QString& scope,
+QgsProperty* findKey_( const QString& scope,
                        const QString& key,
                        QgsPropertyKey& rootProperty )
 {
-  QgsPropertyKey *currentProperty = &rootProperty;
-  QgsProperty *nextProperty;           // link to next property down hiearchy
+  QgsPropertyKey* currentProperty = &rootProperty;
+  QgsProperty* nextProperty;           // link to next property down hiearchy
 
   QStringList keySequence = makeKeyTokens_( scope, key );
 
@@ -315,52 +315,16 @@ void removeKey_( const QString& scope,
 
 }
 
-
-// TODO QGIS 3.0 - move to private members. This pattern is adding complexity without any current benefits.
-
-struct QgsProject::Imp
-{
-  QFile file;                 // current physical project file
-  QgsPropertyKey properties_; // property hierarchy
-  QString title;              // project title
-  bool autoTransaction;       // transaction grouped editing
-  bool evaluateDefaultValues; // evaluate default values immediately
-  bool dirty;                 // project has been modified since it has been read or saved
-
-  Imp()
-      : title()
-      , autoTransaction( false )
-      , evaluateDefaultValues( false )
-      , dirty( false )
-  {                             // top property node is the root
-    // "properties" that contains all plug-in
-    // and extra property keys and values
-    properties_.name() = "properties"; // root property node always this value
-  }
-
-  /** Clear project properties when a new project is started
-   */
-  void clear()
-  {
-    // QgsDebugMsg( "Clearing project properties Impl->clear();" );
-
-    file.setFileName( QString() );
-    properties_.clearKeys();
-    title.clear();
-    autoTransaction = false;
-    evaluateDefaultValues = false;
-    dirty = false;
-  }
-
-};
-
-
-QgsProject::QgsProject()
-    : imp_( new QgsProject::Imp )
-    , mBadLayerHandler( new QgsProjectBadLayerDefaultHandler() )
+QgsProject::QgsProject( QObject* parent )
+    : QObject( parent )
+    , mBadLayerHandler( new QgsProjectBadLayerHandler() )
     , mRelationManager( new QgsRelationManager( this ) )
     , mRootGroup( new QgsLayerTreeGroup )
+    , mAutoTransaction( false )
+    , mEvaluateDefaultValues( false )
+    , mDirty( false )
 {
+  mProperties.setName( "properties" );
   clear();
 
   // bind the layer tree to the map layer registry.
@@ -383,16 +347,19 @@ QgsProject::~QgsProject()
 
 QgsProject *QgsProject::instance()
 {
-  if ( !theProject_ )
+  if ( !sProject )
   {
-    theProject_ = new QgsProject;
+    sProject = new QgsProject;
   }
-  return theProject_;
+  return sProject;
 }
 
-void QgsProject::setTitle( const QString &title )
+void QgsProject::setTitle( const QString& title )
 {
-  imp_->title = title;
+  if ( title == mTitle )
+    return;
+
+  mTitle = title;
 
   setDirty( true );
 }
@@ -400,33 +367,28 @@ void QgsProject::setTitle( const QString &title )
 
 QString QgsProject::title() const
 {
-  return imp_->title;
+  return mTitle;
 }
 
 
 bool QgsProject::isDirty() const
 {
-  return imp_->dirty;
+  return mDirty;
 }
 
 void QgsProject::setDirty( bool b )
 {
-  imp_->dirty = b;
-}
-
-void QgsProject::emitVariablesChanged()
-{
-  emit variablesChanged();
+  mDirty = b;
 }
 
 void QgsProject::setFileName( const QString& name )
 {
-  if ( name == imp_->file.fileName() )
+  if ( name == mFile.fileName() )
     return;
 
   QString oldHomePath = homePath();
 
-  imp_->file.setFileName( name );
+  mFile.setFileName( name );
   emit fileNameChanged();
 
   QString newHomePath = homePath();
@@ -438,12 +400,12 @@ void QgsProject::setFileName( const QString& name )
 
 QString QgsProject::fileName() const
 {
-  return imp_->file.fileName();
+  return mFile.fileName();
 }
 
 QFileInfo QgsProject::fileInfo() const
 {
-  return QFileInfo( imp_->file );
+  return QFileInfo( mFile );
 }
 
 QgsCoordinateReferenceSystem QgsProject::crs() const
@@ -478,12 +440,20 @@ void QgsProject::setEllipsoid( const QString& ellipsoid )
 
 void QgsProject::clear()
 {
-  imp_->clear();
+  mFile.setFileName( QString() );
+  mProperties.clearKeys();
+  mTitle.clear();
+  mAutoTransaction = false;
+  mEvaluateDefaultValues = false;
+  mDirty = false;
+  mVariables.clear();
+
   mEmbeddedLayers.clear();
   mRelationManager->clear();
   mSnappingConfig.reset();
 
   mMapThemeCollection.reset( new QgsMapThemeCollection() );
+  emit mapThemeCollectionChanged();
 
   mRootGroup->removeAllChildren();
 
@@ -786,7 +756,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
 bool QgsProject::read( const QFileInfo& file )
 {
-  imp_->file.setFileName( file.filePath() );
+  mFile.setFileName( file.filePath() );
 
   return read();
 }
@@ -797,11 +767,11 @@ bool QgsProject::read()
 
   QScopedPointer<QDomDocument> doc( new QDomDocument( "qgis" ) );
 
-  if ( !imp_->file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+  if ( !mFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    imp_->file.close();
+    mFile.close();
 
-    setError( tr( "Unable to open %1" ).arg( imp_->file.fileName() ) );
+    setError( tr( "Unable to open %1" ).arg( mFile.fileName() ) );
 
     return false;
   }
@@ -810,7 +780,7 @@ bool QgsProject::read()
   int line, column;
   QString errorMsg;
 
-  if ( !doc->setContent( &imp_->file, &errorMsg, &line, &column ) )
+  if ( !doc->setContent( &mFile, &errorMsg, &line, &column ) )
   {
     // want to make this class as GUI independent as possible; so commented out
 #if 0
@@ -823,18 +793,18 @@ bool QgsProject::read()
 
     QgsDebugMsg( errorString );
 
-    imp_->file.close();
+    mFile.close();
 
-    setError( tr( "%1 for file %2" ).arg( errorString, imp_->file.fileName() ) );
+    setError( tr( "%1 for file %2" ).arg( errorString, mFile.fileName() ) );
 
     return false;
   }
 
-  imp_->file.close();
+  mFile.close();
 
 
-  QgsDebugMsg( "Opened document " + imp_->file.fileName() );
-  QgsDebugMsg( "Project title: " + imp_->title );
+  QgsDebugMsg( "Opened document " + mFile.fileName() );
+  QgsDebugMsg( "Project title: " + mTitle );
 
   // get project version string, if any
   QgsProjectVersion fileVersion =  getVersion( *doc );
@@ -857,26 +827,26 @@ bool QgsProject::read()
   }
 
   // start new project, just keep the file name
-  QString fileName = imp_->file.fileName();
+  QString fileName = mFile.fileName();
   clear();
-  imp_->file.setFileName( fileName );
+  mFile.setFileName( fileName );
 
   // now get any properties
-  _getProperties( *doc, imp_->properties_ );
+  _getProperties( *doc, mProperties );
 
-  QgsDebugMsg( QString::number( imp_->properties_.count() ) + " properties read" );
+  QgsDebugMsg( QString::number( mProperties.count() ) + " properties read" );
 
-  dump_( imp_->properties_ );
+  dump_( mProperties );
 
   // now get project title
-  _getTitle( *doc, imp_->title );
+  _getTitle( *doc, mTitle );
 
   QDomNodeList nl = doc->elementsByTagName( "autotransaction" );
   if ( nl.count() )
   {
     QDomElement transactionElement = nl.at( 0 ).toElement();
     if ( transactionElement.attribute( "active", "0" ).toInt() == 1 )
-      imp_->autoTransaction = true;
+      mAutoTransaction = true;
   }
 
   nl = doc->elementsByTagName( "evaluateDefaultValues" );
@@ -884,7 +854,7 @@ bool QgsProject::read()
   {
     QDomElement evaluateDefaultValuesElement = nl.at( 0 ).toElement();
     if ( evaluateDefaultValuesElement.attribute( "active", "0" ).toInt() == 1 )
-      imp_->evaluateDefaultValues = true;
+      mEvaluateDefaultValues = true;
   }
 
   // read the layer tree from project file
@@ -919,9 +889,9 @@ bool QgsProject::read()
       QgsDebugMsg( "there are " + QString::number( brokenNodes.size() ) + " broken layers" );
     }
 
-    // we let a custom handler to decide what to do with missing layers
+    // we let a custom handler decide what to do with missing layers
     // (default implementation ignores them, there's also a GUI handler that lets user choose correct path)
-    mBadLayerHandler->handleBadLayers( brokenNodes, *doc );
+    mBadLayerHandler->handleBadLayers( brokenNodes );
   }
 
   mLayerTreeRegistryBridge->setEnabled( true );
@@ -935,6 +905,7 @@ bool QgsProject::read()
   mRootGroup->removeCustomProperty( "loading" );
 
   mMapThemeCollection.reset( new QgsMapThemeCollection() );
+  emit mapThemeCollectionChanged();
   mMapThemeCollection->readXml( *doc );
 
   // reassign change dependencies now that all layers are loaded
@@ -946,6 +917,24 @@ bool QgsProject::read()
 
   mSnappingConfig.readProject( *doc );
   emit snappingConfigChanged();
+
+  //add variables defined in project file
+  QStringList variableNames = readListEntry( "Variables", "/variableNames" );
+  QStringList variableValues = readListEntry( "Variables", "/variableValues" );
+
+  mVariables.clear();
+  if ( variableNames.length() == variableValues.length() )
+  {
+    for ( int i = 0; i < variableNames.length(); ++i )
+    {
+      mVariables.insert( variableNames.at( i ), variableValues.at( i ) );
+    }
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Project Variables Invalid" ), tr( "The project contains invalid variable settings." ) );
+  }
+  emit variablesChanged();
 
   // read the project: used by map canvas and legend
   emit readProject( *doc );
@@ -1000,6 +989,35 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
     }
 
   }
+}
+
+QgsStringMap QgsProject::variables() const
+{
+  return mVariables;
+}
+
+void QgsProject::setVariables( const QgsStringMap& variables )
+{
+  if ( variables == mVariables )
+    return;
+
+  //write variable to project
+  QStringList variableNames;
+  QStringList variableValues;
+
+  QMap< QString, QString >::const_iterator it = variables.constBegin();
+  for ( ; it != variables.constEnd(); ++it )
+  {
+    variableNames << it.key();
+    variableValues << it.value();
+  }
+
+  writeEntry( "Variables", "/variableNames", variableNames );
+  writeEntry( "Variables", "/variableValues", variableValues );
+
+  mVariables = variables;
+
+  emit variablesChanged();
 }
 
 QStringList QgsProject::avoidIntersectionsList() const
@@ -1128,7 +1146,7 @@ bool QgsProject::read( QDomNode &layerNode )
 
 bool QgsProject::write( QFileInfo const &file )
 {
-  imp_->file.setFileName( file.filePath() );
+  mFile.setFileName( file.filePath() );
 
   return write();
 }
@@ -1140,11 +1158,11 @@ bool QgsProject::write()
   // if we have problems creating or otherwise writing to the project file,
   // let's find out up front before we go through all the hand-waving
   // necessary to create all the Dom objects
-  QFileInfo myFileInfo( imp_->file );
+  QFileInfo myFileInfo( mFile );
   if ( myFileInfo.exists() && !myFileInfo.isWritable() )
   {
     setError( tr( "%1 is not writable. Please adjust permissions (if possible) and try again." )
-              .arg( imp_->file.fileName() ) );
+              .arg( mFile.fileName() ) );
     return false;
   }
 
@@ -1167,11 +1185,11 @@ bool QgsProject::write()
   qgisNode.appendChild( titleNode );
 
   QDomElement transactionNode = doc->createElement( "autotransaction" );
-  transactionNode.setAttribute( "active", imp_->autoTransaction ? "1" : "0" );
+  transactionNode.setAttribute( "active", mAutoTransaction ? "1" : "0" );
   qgisNode.appendChild( transactionNode );
 
   QDomElement evaluateDefaultValuesNode = doc->createElement( "evaluateDefaultValues" );
-  evaluateDefaultValuesNode.setAttribute( "active", imp_->evaluateDefaultValues ? "1" : "0" );
+  evaluateDefaultValuesNode.setAttribute( "active", mEvaluateDefaultValues ? "1" : "0" );
   qgisNode.appendChild( evaluateDefaultValuesNode );
 
   QDomText titleText = doc->createTextNode( title() );  // XXX why have title TWICE?
@@ -1236,14 +1254,14 @@ bool QgsProject::write()
 
   // now add the optional extra properties
 
-  dump_( imp_->properties_ );
+  dump_( mProperties );
 
-  QgsDebugMsg( QString( "there are %1 property scopes" ).arg( static_cast<int>( imp_->properties_.count() ) ) );
+  QgsDebugMsg( QString( "there are %1 property scopes" ).arg( static_cast<int>( mProperties.count() ) ) );
 
-  if ( !imp_->properties_.isEmpty() ) // only worry about properties if we
+  if ( !mProperties.isEmpty() ) // only worry about properties if we
     // actually have any properties
   {
-    imp_->properties_.writeXml( "properties", qgisNode, *doc );
+    mProperties.writeXml( "properties", qgisNode, *doc );
   }
 
   mMapThemeCollection->writeXml( *doc );
@@ -1257,16 +1275,16 @@ bool QgsProject::write()
     QFile backupFile( fileName() + '~' );
     bool ok = true;
     ok &= backupFile.open( QIODevice::WriteOnly | QIODevice::Truncate );
-    ok &= imp_->file.open( QIODevice::ReadOnly );
+    ok &= mFile.open( QIODevice::ReadOnly );
 
     QByteArray ba;
-    while ( ok && !imp_->file.atEnd() )
+    while ( ok && !mFile.atEnd() )
     {
-      ba = imp_->file.read( 10240 );
+      ba = mFile.read( 10240 );
       ok &= backupFile.write( ba ) == ba.size();
     }
 
-    imp_->file.close();
+    mFile.close();
     backupFile.close();
 
     if ( !ok )
@@ -1280,12 +1298,12 @@ bool QgsProject::write()
     utime( backupFile.fileName().toUtf8().constData(), &tb );
   }
 
-  if ( !imp_->file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  if ( !mFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
-    imp_->file.close();         // even though we got an error, let's make
+    mFile.close();         // even though we got an error, let's make
     // sure it's closed anyway
 
-    setError( tr( "Unable to save to file %1" ).arg( imp_->file.fileName() ) );
+    setError( tr( "Unable to save to file %1" ).arg( mFile.fileName() ) );
     return false;
   }
 
@@ -1303,12 +1321,12 @@ bool QgsProject::write()
     while ( ok && !tempFile.atEnd() )
     {
       ba = tempFile.read( 10240 );
-      ok &= imp_->file.write( ba ) == ba.size();
+      ok &= mFile.write( ba ) == ba.size();
     }
 
-    ok &= imp_->file.error() == QFile::NoError;
+    ok &= mFile.error() == QFile::NoError;
 
-    imp_->file.close();
+    mFile.close();
   }
 
   tempFile.close();
@@ -1318,7 +1336,7 @@ bool QgsProject::write()
     setError( tr( "Unable to save to file %1. Your project "
                   "may be corrupted on disk. Try clearing some space on the volume and "
                   "check file permissions before pressing save again." )
-              .arg( imp_->file.fileName() ) );
+              .arg( mFile.fileName() ) );
     return false;
   }
 
@@ -1333,43 +1351,43 @@ bool QgsProject::writeEntry( const QString& scope, QString const& key, bool valu
 {
   setDirty( true );
 
-  return addKey_( scope, key, &imp_->properties_, value );
+  return addKey_( scope, key, &mProperties, value );
 }
 
 bool QgsProject::writeEntry( const QString& scope, const QString& key, double value )
 {
   setDirty( true );
 
-  return addKey_( scope, key, &imp_->properties_, value );
+  return addKey_( scope, key, &mProperties, value );
 }
 
 bool QgsProject::writeEntry( const QString& scope, QString const& key, int value )
 {
   setDirty( true );
 
-  return addKey_( scope, key, &imp_->properties_, value );
+  return addKey_( scope, key, &mProperties, value );
 }
 
 bool QgsProject::writeEntry( const QString& scope, const QString& key, const QString& value )
 {
   setDirty( true );
 
-  return addKey_( scope, key, &imp_->properties_, value );
+  return addKey_( scope, key, &mProperties, value );
 }
 
 bool QgsProject::writeEntry( const QString& scope, const QString& key, const QStringList& value )
 {
   setDirty( true );
 
-  return addKey_( scope, key, &imp_->properties_, value );
+  return addKey_( scope, key, &mProperties, value );
 }
 
 QStringList QgsProject::readListEntry( const QString& scope,
                                        const QString &key,
                                        const QStringList& def,
-                                       bool *ok ) const
+                                       bool* ok ) const
 {
-  QgsProperty *property = findKey_( scope, key, imp_->properties_ );
+  QgsProperty* property = findKey_( scope, key, mProperties );
 
   QVariant value;
 
@@ -1396,7 +1414,7 @@ QString QgsProject::readEntry( const QString& scope,
                                const QString& def,
                                bool* ok ) const
 {
-  QgsProperty *property = findKey_( scope, key, imp_->properties_ );
+  QgsProperty *property = findKey_( scope, key, mProperties );
 
   QVariant value;
 
@@ -1418,7 +1436,7 @@ QString QgsProject::readEntry( const QString& scope,
 int QgsProject::readNumEntry( const QString& scope, const QString &key, int def,
                               bool* ok ) const
 {
-  QgsProperty *property = findKey_( scope, key, imp_->properties_ );
+  QgsProperty *property = findKey_( scope, key, mProperties );
 
   QVariant value;
 
@@ -1446,7 +1464,7 @@ double QgsProject::readDoubleEntry( const QString& scope, const QString& key,
                                     double def,
                                     bool* ok ) const
 {
-  QgsProperty *property = findKey_( scope, key, imp_->properties_ );
+  QgsProperty *property = findKey_( scope, key, mProperties );
   if ( property )
   {
     QVariant value = property->value();
@@ -1465,7 +1483,7 @@ double QgsProject::readDoubleEntry( const QString& scope, const QString& key,
 bool QgsProject::readBoolEntry( const QString& scope, const QString &key, bool def,
                                 bool* ok ) const
 {
-  QgsProperty *property = findKey_( scope, key, imp_->properties_ );
+  QgsProperty *property = findKey_( scope, key, mProperties );
 
   if ( property )
   {
@@ -1485,17 +1503,17 @@ bool QgsProject::readBoolEntry( const QString& scope, const QString &key, bool d
 
 bool QgsProject::removeEntry( const QString& scope, const QString& key )
 {
-  removeKey_( scope, key, imp_->properties_ );
+  removeKey_( scope, key, mProperties );
 
   setDirty( true );
 
-  return !findKey_( scope, key, imp_->properties_ );
+  return !findKey_( scope, key, mProperties );
 }
 
 
 QStringList QgsProject::entryList( const QString& scope, const QString& key ) const
 {
-  QgsProperty *foundProperty = findKey_( scope, key, imp_->properties_ );
+  QgsProperty *foundProperty = findKey_( scope, key, mProperties );
 
   QStringList entries;
 
@@ -1512,7 +1530,7 @@ QStringList QgsProject::entryList( const QString& scope, const QString& key ) co
 
 QStringList QgsProject::subkeyList( const QString& scope, const QString& key ) const
 {
-  QgsProperty *foundProperty = findKey_( scope, key, imp_->properties_ );
+  QgsProperty *foundProperty = findKey_( scope, key, mProperties );
 
   QStringList entries;
 
@@ -1529,7 +1547,7 @@ QStringList QgsProject::subkeyList( const QString& scope, const QString& key ) c
 
 void QgsProject::dumpProperties() const
 {
-  dump_( imp_->properties_ );
+  dump_( mProperties );
 }
 
 QString QgsProject::readPath( QString src ) const
@@ -2020,7 +2038,7 @@ void QgsProject::initializeEmbeddedSubtree( const QString &projectFilePath, QgsL
 
 bool QgsProject::evaluateDefaultValues() const
 {
-  return imp_->evaluateDefaultValues;
+  return mEvaluateDefaultValues;
 }
 
 void QgsProject::setEvaluateDefaultValues( bool evaluateDefaultValues )
@@ -2034,7 +2052,7 @@ void QgsProject::setEvaluateDefaultValues( bool evaluateDefaultValues )
     }
   }
 
-  imp_->evaluateDefaultValues = evaluateDefaultValues;
+  mEvaluateDefaultValues = evaluateDefaultValues;
 }
 
 void QgsProject::setTopologicalEditing( bool enabled )
@@ -2082,11 +2100,6 @@ QgsUnitTypes::AreaUnit QgsProject::areaUnits() const
 void QgsProject::setAreaUnits( QgsUnitTypes::AreaUnit unit )
 {
   writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( unit ) );
-}
-
-void QgsProjectBadLayerDefaultHandler::handleBadLayers( const QList<QDomNode>& /*layers*/, const QDomDocument& /*projectDom*/ )
-{
-  // just ignore any bad layers
 }
 
 QString QgsProject::homePath() const
@@ -2150,14 +2163,14 @@ QStringList QgsProject::nonIdentifiableLayers() const
 
 bool QgsProject::autoTransaction() const
 {
-  return imp_->autoTransaction;
+  return mAutoTransaction;
 }
 
 void QgsProject::setAutoTransaction( bool autoTransaction )
 {
-  if ( autoTransaction != imp_->autoTransaction )
+  if ( autoTransaction != mAutoTransaction )
   {
-    imp_->autoTransaction = autoTransaction;
+    mAutoTransaction = autoTransaction;
 
     if ( autoTransaction )
       onMapLayersAdded( QgsMapLayerRegistry::instance()->mapLayers().values() );

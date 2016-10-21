@@ -185,19 +185,26 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
 class CORE_EXPORT QgsPropertyKey : public QgsProperty
 {
   public:
-    QgsPropertyKey( const QString &name = "" );
+    /**
+     * Create a new QgsPropertyKey with the specified identifier.
+     */
+    QgsPropertyKey( const QString& name = QString() );
     virtual ~QgsPropertyKey();
 
-    /// every key has a name
-    // @{
-    // @note not available in python bindings
+    /**
+     * The name of the property is used as identifier.
+     */
     QString name() const { return mName; }
 
-    QString &name() { return mName; }
-    // @}
+    /**
+     * The name of the property is used as identifier.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setName( const QString& name );
 
-
-    /** If this key has a value, it will be stored by its name in its
+    /**
+     * If this key has a value, it will be stored by its name in its
      * properties
      */
     QVariant value() const override;
