@@ -1,4 +1,16 @@
-qgis (2.17.0) UNRELEASED; urgency=medium
+qgis (2.19.0) UNRELEASED; urgency=medium
+
+  * New development version 2.19 after branch of 2.18
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 21 Oct 2016 14:14:53 +0200
+
+qgis (2.18.0) unstable; urgency=medium
+
+  * Release of 2.18.0
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 21 Oct 2016 14:14:53 +0200
+
+qgis (2.17.0) unstable; urgency=medium
 
   * New development version 2.17 after branch of 2.16
   * drop support for debian wheezy and ubuntu wily
@@ -6,7 +18,7 @@ qgis (2.17.0) UNRELEASED; urgency=medium
   * lintian fixes
   * add version constraint to libqgis-customwidgets dependency.
 
- -- Jürgen E. Fischer <jef@norbit.de>  Thu, 04 Aug 2016 11:38:39 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 21 Oct 2016 14:14:02 +0200
 
 qgis (2.16.0) unstable; urgency=medium
 
