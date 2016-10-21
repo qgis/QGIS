@@ -32,6 +32,10 @@ QgsAfsSourceSelect::QgsAfsSourceSelect( QWidget* parent, Qt::WindowFlags fl, boo
   {
     buttonBox->button( QDialogButtonBox::Close )->hide();
   }
+
+  // import/export of connections not supported yet
+  btnLoad->hide();
+  btnSave->hide();
 }
 
 bool QgsAfsSourceSelect::connectToService( const QgsOWSConnection &connection )

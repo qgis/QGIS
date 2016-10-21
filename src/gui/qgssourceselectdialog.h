@@ -99,8 +99,6 @@ class GUI_EXPORT QgsSourceSelectDialog : public QDialog, protected Ui::QgsSource
     void changeCRSFilter();
     void connectToServer();
     void filterChanged( QString text );
-    void on_btnLoad_clicked();
-    void on_btnSave_clicked();
     void on_cmbConnections_activated( int index );
     void on_buttonBox_helpRequested() const;
     void treeWidgetItemDoubleClicked( const QModelIndex & index );
