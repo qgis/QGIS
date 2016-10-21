@@ -412,28 +412,7 @@ void QgsSourceSelectDialog::on_cmbConnections_activated( int index )
   QgsOwsConnection::setSelectedConnection( mServiceName, cmbConnections->currentText() );
 }
 
-void QgsSourceSelectDialog::on_btnSave_clicked()
-{
-  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::WFS );
-  dlg.exec();
-}
-
-void QgsSourceSelectDialog::on_btnLoad_clicked()
-{
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), QStringLiteral( "." ),
-                     tr( "XML files (*.xml *XML)" ) );
-  if ( fileName.isEmpty() )
-  {
-    return;
-  }
-
-  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::WFS, fileName );
-  dlg.exec();
-  populateConnectionList();
-  emit connectionsChanged();
-}
-
-void QgsSourceSelectDialog::treeWidgetItemDoubleClicked( const QModelIndex& index )
+void QgsSourceSelectDialog::treeWidgetItemDoubleClicked( const QModelIndex & index )
 {
   QgsDebugMsg( "double click called" );
   QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
