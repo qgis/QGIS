@@ -37,7 +37,7 @@ can be an attribute or the z-coordinates in case of 25D types*/
 class ANALYSIS_EXPORT QgsInterpolator
 {
   public:
-    /** Describes the type of input data*/
+    //! Describes the type of input data
     enum InputType
     {
       POINTS,
@@ -45,7 +45,7 @@ class ANALYSIS_EXPORT QgsInterpolator
       BREAK_LINES
     };
 
-    /** A layer together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)*/
+    //! A layer together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)
     struct LayerData
     {
       QgsVectorLayer* vectorLayer;
@@ -76,7 +76,7 @@ class ANALYSIS_EXPORT QgsInterpolator
 
     QVector<vertexData> mCachedBaseData;
 
-    /** Flag that tells if the cache already has been filled*/
+    //! Flag that tells if the cache already has been filled
     bool mDataIsCached;
 
     //Information about the input vector layers and the attributes (or z-values) that are used for interpolation

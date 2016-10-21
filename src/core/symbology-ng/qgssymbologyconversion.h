@@ -29,7 +29,7 @@ class CORE_EXPORT QgsSymbologyConversion
 {
   public:
 
-    /** Read old renderer definition from XML and create matching new renderer */
+    //! Read old renderer definition from XML and create matching new renderer
     static QgsFeatureRenderer* readOldRenderer( const QDomNode& layerNode, QgsWkbTypes::GeometryType geomType );
 
     static QString penStyle2QString( Qt::PenStyle penstyle );

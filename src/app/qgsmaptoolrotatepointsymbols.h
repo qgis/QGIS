@@ -50,27 +50,27 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolPointSymbol
 
   private:
 
-    /** Last azimut between mouse and edited point*/
+    //! Last azimut between mouse and edited point
     double mCurrentMouseAzimut;
-    /** Last feature rotation*/
+    //! Last feature rotation
     double mCurrentRotationFeature;
     bool mRotating;
     QSet<int> mCurrentRotationAttributes;
-    /** Item that displays rotation during mouse move*/
+    //! Item that displays rotation during mouse move
     QgsPointRotationItem* mRotationItem;
-    /** True if ctrl was pressed during the last mouse move event*/
+    //! True if ctrl was pressed during the last mouse move event
     bool mCtrlPressed;
     //! Clone of first found marker symbol for feature with rotation attribute set
     QScopedPointer< QgsMarkerSymbol > mMarkerSymbol;
 
     void drawArrow( double azimut ) const;
-    /** Calculates the azimut between mousePos and mSnappedPoint*/
+    //! Calculates the azimut between mousePos and mSnappedPoint
     double calculateAzimut( QPoint mousePos );
-    /** Create item with the point symbol for a specific feature. This will be used to show the rotation to the user*/
+    //! Create item with the point symbol for a specific feature. This will be used to show the rotation to the user
     void createPixmapItem( QgsMarkerSymbol *markerSymbol );
-    /** Sets the rotation of the pixmap item*/
+    //! Sets the rotation of the pixmap item
     void setPixmapItemRotation( double rotation );
-    /** Rounds value to 15 degree integer (used if ctrl pressed)*/
+    //! Rounds value to 15 degree integer (used if ctrl pressed)
     static int roundTo15Degrees( double n );
 
 };

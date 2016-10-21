@@ -77,10 +77,10 @@ class CORE_EXPORT QgsRasterPipe
      */
     bool set( QgsRasterInterface * theInterface );
 
-    /** Remove and delete interface at given index if possible */
+    //! Remove and delete interface at given index if possible
     bool remove( int idx );
 
-    /** Remove and delete interface from pipe if possible */
+    //! Remove and delete interface from pipe if possible
     bool remove( QgsRasterInterface * theInterface );
 
     int size() const { return mInterfaces.size(); }
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsRasterPipe
      *  Returns true on success */
     bool setOn( int idx, bool on );
 
-    /** Test if interface at index may be swithed on/off */
+    //! Test if interface at index may be swithed on/off
     bool canSetOn( int idx, bool on );
 
     // Getters for special types of interfaces
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterNuller * nuller() const;
 
   private:
-    /** Get known parent type_info of interface parent */
+    //! Get known parent type_info of interface parent
     Role interfaceRole( QgsRasterInterface * iface ) const;
 
     // Interfaces in pipe, the first is always provider
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsRasterPipe
     // Check if index is in bounds
     bool checkBounds( int idx ) const;
 
-    /** Get known interface by role */
+    //! Get known interface by role
     QgsRasterInterface * interface( Role role ) const;
 
     /** \brief Try to connect interfaces in pipe and to the provider at beginning.

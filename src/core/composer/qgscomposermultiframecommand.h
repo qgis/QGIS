@@ -41,7 +41,7 @@ class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
     QDomDocument previousState() const { return mPreviousState.cloneNode().toDocument(); }
     QDomDocument afterState() const { return mAfterState.cloneNode().toDocument(); }
 
-    /** Returns true if previous state and after state are valid and different*/
+    //! Returns true if previous state and after state are valid and different
     bool containsChange() const;
 
     const QgsComposerMultiFrame* multiFrame() const { return mMultiFrame; }

@@ -18,13 +18,13 @@
 
 #include "qgsserverinterface.h"
 
-/** Constructor */
+//! Constructor
 QgsServerInterface::QgsServerInterface():
     mConfigFilePath( QString() )
 {
 }
 
-/** Destructor */
+//! Destructor
 QgsServerInterface::~QgsServerInterface()
 {
 }

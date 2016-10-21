@@ -155,7 +155,7 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
                                     const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
     ~QgsAuthCertInfoDialog();
 
-    /** Get access to embedded info widget */
+    //! Get access to embedded info widget
     QgsAuthCertInfo *certInfoWidget() { return mCertInfoWdgt; }
 
     /** Whether the trust cache has been rebuilt

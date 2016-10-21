@@ -42,7 +42,7 @@ class APP_EXPORT QgsMapToolPointSymbol: public QgsMapToolEdit
     QgsVectorLayer* mActiveLayer;
     QgsFeatureId mFeatureNumber;
 
-    /** Screen coordinate of the snaped feature*/
+    //! Screen coordinate of the snaped feature
     QPoint mSnappedPoint;
 
     virtual void canvasPressOnFeature( QgsMapMouseEvent* e, const QgsFeature& feature, const QgsPoint& snappedPoint ) = 0;

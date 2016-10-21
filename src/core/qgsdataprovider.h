@@ -307,10 +307,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual void reloadData() {}
 
-    /** Time stamp of data source in the moment when data/metadata were loaded by provider */
+    //! Time stamp of data source in the moment when data/metadata were loaded by provider
     virtual QDateTime timestamp() const { return mTimestamp; }
 
-    /** Current time stamp of data source */
+    //! Current time stamp of data source
     virtual QDateTime dataTimestamp() const { return QDateTime(); }
 
     /** Get current status error. This error describes some principal problem
@@ -427,13 +427,13 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     QDateTime mTimestamp;
 
-    /** \brief Error */
+    //! \brief Error
     QgsError mError;
 
-    /** Add error message */
+    //! Add error message
     void appendError( const QgsErrorMessage & theMessage ) { mError.append( theMessage );}
 
-    /** Set error message */
+    //! Set error message
     void setError( const QgsError & theError ) { mError = theError;}
 
   private:

@@ -64,7 +64,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
       ComposerFrame
     };
 
-    /** Describes the action (move or resize in different directon) to be done during mouse move*/
+    //! Describes the action (move or resize in different directon) to be done during mouse move
     enum MouseMoveAction
     {
       MoveItem,
@@ -98,10 +98,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      */
     enum ZoomMode
     {
-      Zoom = 0, /*!< Zoom to center of content */
-      ZoomRecenter, /*!< Zoom and recenter content to point */
-      ZoomToPoint, /*!< Zoom while maintaining relative position of point */
-      NoZoom /*!< No zoom */
+      Zoom = 0, //!< Zoom to center of content
+      ZoomRecenter, //!< Zoom and recenter content to point
+      ZoomToPoint, //!< Zoom while maintaining relative position of point
+      NoZoom //!< No zoom
     };
 
     /** Constructor
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue = true );
     virtual ~QgsComposerItem();
 
-    /** Return correct graphics item type. */
+    //! Return correct graphics item type.
     virtual int type() const override { return ComposerItem; }
 
     /** Returns whether this item has been removed from the composition. Items removed
@@ -139,13 +139,13 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      */
     void setIsRemoved( const bool removed ) { mRemovedFromComposition = removed; }
 
-    /** \brief Set selected, selected item should be highlighted */
+    //! \brief Set selected, selected item should be highlighted
     virtual void setSelected( bool s );
 
-    /** \brief Is selected */
+    //! \brief Is selected
     virtual bool selected() const { return QGraphicsRectItem::isSelected(); }
 
-    /** Moves item in canvas coordinates*/
+    //! Moves item in canvas coordinates
     void move( double dx, double dy );
 
     /** Move Content of item. Does nothing per default (but implemented in composer map)
@@ -216,10 +216,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      corresponds to 1 scene size unit*/
     virtual void setSceneRect( const QRectF& rectangle );
 
-    /** Writes parameter that are not subclass specific in document. Usually called from writeXml methods of subclasses*/
+    //! Writes parameter that are not subclass specific in document. Usually called from writeXml methods of subclasses
     bool _writeXml( QDomElement& itemElem, QDomDocument& doc ) const;
 
-    /** Reads parameter that are not subclass specific in document. Usually called from readXml methods of subclasses*/
+    //! Reads parameter that are not subclass specific in document. Usually called from readXml methods of subclasses
     bool _readXml( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Whether this item has a frame or not.
@@ -389,7 +389,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      */
     void setEffectsEnabled( const bool effectsEnabled );
 
-    /** Composite operations for item groups do nothing per default*/
+    //! Composite operations for item groups do nothing per default
     virtual void addItem( QgsComposerItem* item ) { Q_UNUSED( item ); }
     virtual void removeItems() {}
 
@@ -401,7 +401,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     void beginCommand( const QString& commandText, QgsComposerMergeCommand::Context c = QgsComposerMergeCommand::Unknown );
 
     virtual void endItemCommand() { endCommand(); }
-    /** Finish current command and push it onto the undo stack */
+    //! Finish current command and push it onto the undo stack
     void endCommand();
     void cancelCommand();
 
@@ -430,7 +430,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      */
     double itemRotation( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
 
-    /** Updates item, with the possibility to do custom update for subclasses*/
+    //! Updates item, with the possibility to do custom update for subclasses
     virtual void updateItem() { QGraphicsRectItem::update(); }
 
     /** Get item's id (which is not necessarly unique)
@@ -546,52 +546,52 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr ) override;
 
   protected:
-    /** True if item has been removed from the composition*/
+    //! True if item has been removed from the composition
     bool mRemovedFromComposition;
 
     QgsComposerItem::MouseMoveAction mCurrentMouseMoveAction;
-    /** Start point of the last mouse move action (in scene coordinates)*/
+    //! Start point of the last mouse move action (in scene coordinates)
     QPointF mMouseMoveStartPos;
-    /** Position of the last mouse move event (in scene coordinates)*/
+    //! Position of the last mouse move event (in scene coordinates)
     QPointF mLastMouseEventPos;
 
-    /** Rectangle used during move and resize actions*/
+    //! Rectangle used during move and resize actions
     QGraphicsRectItem* mBoundingResizeRectangle;
     QGraphicsLineItem* mHAlignSnapItem;
     QGraphicsLineItem* mVAlignSnapItem;
 
-    /** True if item fram needs to be painted*/
+    //! True if item fram needs to be painted
     bool mFrame;
-    /** True if item background needs to be painted*/
+    //! True if item background needs to be painted
     bool mBackground;
-    /** Background color*/
+    //! Background color
     QColor mBackgroundColor;
-    /** Frame join style*/
+    //! Frame join style
     Qt::PenJoinStyle mFrameJoinStyle;
 
     /** True if item position  and size cannot be changed with mouse move
      */
     bool mItemPositionLocked;
 
-    /** Backup to restore item appearance if no view scale factor is available*/
+    //! Backup to restore item appearance if no view scale factor is available
     mutable double mLastValidViewScaleFactor;
 
-    /** Item rotation in degrees, clockwise*/
+    //! Item rotation in degrees, clockwise
     double mItemRotation;
     /** Temporary evaluated item rotation in degrees, clockwise. Data defined rotation may mean
      * this value differs from mItemRotation.
      */
     double mEvaluatedItemRotation;
 
-    /** Composition blend mode for item*/
+    //! Composition blend mode for item
     QPainter::CompositionMode mBlendMode;
     bool mEffectsEnabled;
     QgsComposerEffect *mEffect;
 
-    /** Item transparency*/
+    //! Item transparency
     int mTransparency;
 
-    /** Whether item should be excluded in exports*/
+    //! Whether item should be excluded in exports
     bool mExcludeFromExports;
 
     /** Temporary evaluated item exclusion. Data defined properties may mean
@@ -599,10 +599,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      */
     bool mEvaluatedExcludeFromExports;
 
-    /** The item's position mode */
+    //! The item's position mode
     ItemPositionMode mLastUsedPositionMode;
 
-    /** Whether or not this item is part of a group*/
+    //! Whether or not this item is part of a group
     bool mIsGroupMember;
 
     /** The layer that needs to be exported
@@ -616,10 +616,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      */
     virtual void drawSelectionBoxes( QPainter* p );
 
-    /** Draw black frame around item*/
+    //! Draw black frame around item
     virtual void drawFrame( QPainter* p );
 
-    /** Draw background*/
+    //! Draw background
     virtual void drawBackground( QPainter* p );
 
     /** Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
@@ -633,10 +633,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     //some utility functions
 
-    /** Return horizontal align snap item. Creates a new graphics line if 0*/
+    //! Return horizontal align snap item. Creates a new graphics line if 0
     QGraphicsLineItem* hAlignSnapItem();
     void deleteHAlignSnapItem();
-    /** Return vertical align snap item. Creates a new graphics line if 0*/
+    //! Return vertical align snap item. Creates a new graphics line if 0
     QGraphicsLineItem* vAlignSnapItem();
     void deleteVAlignSnapItem();
     void deleteAlignItems();
@@ -661,9 +661,9 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     bool shouldDrawItem() const;
 
   signals:
-    /** Is emitted on item rotation change*/
+    //! Is emitted on item rotation change
     void itemRotationChanged( double newRotation );
-    /** Emitted if the rectangle changes*/
+    //! Emitted if the rectangle changes
     void sizeChanged();
     /** Emitted if the item's frame style changes
      * @note: this function was introduced in version 2.2

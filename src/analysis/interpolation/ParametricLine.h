@@ -28,19 +28,19 @@ class Vector3D;
 class ANALYSIS_EXPORT ParametricLine
 {
   protected:
-    /** Degree of the parametric Line*/
+    //! Degree of the parametric Line
     int mDegree;
-    /** Pointer to the parent object. If there isn't one, mParent is 0*/
+    //! Pointer to the parent object. If there isn't one, mParent is 0
     ParametricLine* mParent;
-    /** MControlPoly stores the points of the control polygon*/
+    //! MControlPoly stores the points of the control polygon
     QVector<Point3D*>* mControlPoly;
   public:
-    /** Default constructor*/
+    //! Default constructor
     ParametricLine();
     /** Constructor, par is a pointer to the parent object, controlpoly the controlpolygon
       */
     ParametricLine( ParametricLine* par, QVector<Point3D*>* controlpoly );
-    /** Destructor*/
+    //! Destructor
     virtual ~ParametricLine();
     virtual void add( ParametricLine* pl ) = 0;
     virtual void calcFirstDer( float t, Vector3D* v ) = 0;

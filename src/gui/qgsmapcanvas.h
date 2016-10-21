@@ -91,10 +91,10 @@ class GUI_EXPORT QgsMapCanvasLayer
   private:
     QgsMapLayer* mLayer;
 
-    /** Flag whether layer is visible */
+    //! Flag whether layer is visible
     bool mVisible;
 
-    /** Flag whether layer is shown in overview */
+    //! Flag whether layer is shown in overview
     bool mInOverview;
 };
 
@@ -234,10 +234,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
         @param ids the feature ids*/
     void panToFeatureIds( QgsVectorLayer* layer, const QgsFeatureIds& ids );
 
-    /** Pan to the selected features of current (vector) layer keeping same extent. */
+    //! Pan to the selected features of current (vector) layer keeping same extent.
     void panToSelected( QgsVectorLayer* layer = nullptr );
 
-    /** \brief Sets the map tool currently being used on the canvas */
+    //! \brief Sets the map tool currently being used on the canvas
     void setMapTool( QgsMapTool* mapTool );
 
     /** \brief Unset the current map tool or last non zoom tool
@@ -248,19 +248,19 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void unsetMapTool( QgsMapTool* mapTool );
 
-    /** Returns the currently active tool*/
+    //! Returns the currently active tool
     QgsMapTool* mapTool();
 
-    /** Write property of QColor bgColor. */
+    //! Write property of QColor bgColor.
     void setCanvasColor( const QColor & _newVal );
-    /** Read property of QColor bgColor. */
+    //! Read property of QColor bgColor.
     QColor canvasColor() const;
 
-    /** Set color of selected vector features */
+    //! Set color of selected vector features
     //! @note added in 2.4
     void setSelectionColor( const QColor& color );
 
-    /** Emits signal scaleChanged to update scale in main window */
+    //! Emits signal scaleChanged to update scale in main window
     void updateScale();
 
     //! return the map layer at position index in the layer stack
@@ -431,7 +431,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
   public slots:
 
-    /** Repaints the canvas map*/
+    //! Repaints the canvas map
     void refresh();
 
     //! Receives signal about selection change, and pass it on with layer info
@@ -451,7 +451,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! State of render suppression flag
     bool renderFlag() {return mRenderFlag;}
 
-    /** A simple helper method to find out if on the fly projections are enabled or not */
+    //! A simple helper method to find out if on the fly projections are enabled or not
     bool hasCrsTransformEnabled();
 
     //! stop rendering (if there is any right now)
@@ -527,11 +527,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void renderComplete( QPainter * );
 
     // ### QGIS 3: renamte to mapRefreshFinished()
-    /** Emitted when canvas finished a refresh request. */
+    //! Emitted when canvas finished a refresh request.
     void mapCanvasRefreshed();
 
     // ### QGIS 3: rename to mapRefreshStarted()
-    /** Emitted when the canvas is about to be rendered. */
+    //! Emitted when the canvas is about to be rendered.
     void renderStarting();
 
     //! Emitted when a new set of layers has been received

@@ -43,7 +43,7 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
      */
     QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
-    /** @returns the current feature renderer */
+    //! @returns the current feature renderer
     virtual QgsFeatureRenderer* renderer() override;
 
     virtual void setContext( const QgsSymbolWidgetContext& context ) override;

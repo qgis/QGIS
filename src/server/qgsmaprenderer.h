@@ -61,7 +61,7 @@ class SERVER_EXPORT QgsMapRenderer : public QObject
 
   public:
 
-    /** Output units for pen width and point marker width/height*/
+    //! Output units for pen width and point marker width/height
     enum OutputUnits
     {
       Millimeters,

@@ -97,7 +97,7 @@ QgsMapLayer::LayerType QgsMapLayer::type() const
   return mLayerType;
 }
 
-/** Get this layer's unique ID */
+//! Get this layer's unique ID
 QString QgsMapLayer::id() const
 {
   return mID;
@@ -115,7 +115,7 @@ void QgsMapLayer::setName( const QString& name )
   emit nameChanged();
 }
 
-/** Read property of QString layerName. */
+//! Read property of QString layerName.
 QString QgsMapLayer::name() const
 {
   QgsDebugMsgLevel( "returning name '" + mLayerName + '\'', 4 );
@@ -140,7 +140,7 @@ QgsRectangle QgsMapLayer::extent() const
   return mExtent;
 }
 
-/** Write blend mode for layer */
+//! Write blend mode for layer
 void QgsMapLayer::setBlendMode( QPainter::CompositionMode blendMode )
 {
   mBlendMode = blendMode;
@@ -148,7 +148,7 @@ void QgsMapLayer::setBlendMode( QPainter::CompositionMode blendMode )
   emit styleChanged();
 }
 
-/** Read blend mode for layer */
+//! Read blend mode for layer
 QPainter::CompositionMode QgsMapLayer::blendMode() const
 {
   return mBlendMode;

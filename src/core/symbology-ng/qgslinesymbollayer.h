@@ -128,7 +128,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     QgsUnitTypes::RenderUnit mCustomDashPatternUnit;
     QgsMapUnitScale mCustomDashPatternMapUnitScale;
 
-    /** Vector with an even number of entries for the */
+    //! Vector with an even number of entries for the
     QVector<qreal> mCustomDashVector;
 
     bool mDrawInsidePolygon;

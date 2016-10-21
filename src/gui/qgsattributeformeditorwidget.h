@@ -47,9 +47,9 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
     //! Widget modes
     enum Mode
     {
-      DefaultMode, /*!< Default mode, only the editor widget is shown */
-      MultiEditMode, /*!< Multi edit mode, both the editor widget and a QgsMultiEditToolButton is shown */
-      SearchMode, /*!< Layer search/filter mode */
+      DefaultMode, //!< Default mode, only the editor widget is shown
+      MultiEditMode, //!< Multi edit mode, both the editor widget and a QgsMultiEditToolButton is shown
+      SearchMode, //!< Layer search/filter mode
     };
 
     /** Constructor for QgsAttributeFormEditorWidget.

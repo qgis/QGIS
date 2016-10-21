@@ -29,14 +29,14 @@ class GUI_EXPORT QgsAuthMethodEdit : public QWidget
     Q_OBJECT
 
   public:
-    /** Validate the configuration of subclasses */
+    //! Validate the configuration of subclasses
     virtual bool validateConfig() = 0;
 
-    /** The configuration key-vale map of subclasses */
+    //! The configuration key-vale map of subclasses
     virtual QgsStringMap configMap() const = 0;
 
   signals:
-    /** Emitted when the configuration validatity changes */
+    //! Emitted when the configuration validatity changes
     void validityChanged( bool valid );
 
   public slots:
@@ -46,10 +46,10 @@ class GUI_EXPORT QgsAuthMethodEdit : public QWidget
      */
     virtual void loadConfig( const QgsStringMap &configmap ) = 0;
 
-    /** Clear GUI controls in subclassed widget, optionally reloading any previously loaded config map */
+    //! Clear GUI controls in subclassed widget, optionally reloading any previously loaded config map
     virtual void resetConfig() = 0;
 
-    /** Clear GUI controls in subclassed widget */
+    //! Clear GUI controls in subclassed widget
     virtual void clearConfig() = 0;
 
   protected:

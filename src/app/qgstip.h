@@ -30,24 +30,24 @@
 class APP_EXPORT QgsTip
 {
   public:
-    /** Constructor */
+    //! Constructor
     QgsTip() {}
-    /** Destructor */
+    //! Destructor
     ~QgsTip() {}
     //
     // Accessors
     //
-    /** Get the tip title */
+    //! Get the tip title
     QString title() {return mTitle;}
-    /** Get the tip content */
+    //! Get the tip content
     QString content() {return mContent;}
 
     //
     // Mutators
     //
-    /** Set the tip title */
+    //! Set the tip title
     void setTitle( const QString& theTitle ) {mTitle = theTitle;}
-    /** Set the tip content*/
+    //! Set the tip content
     void setContent( const QString& theContent ) {mContent = theContent;}
   private:
     QString mTitle;

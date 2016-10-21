@@ -53,16 +53,16 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
     void setIconPath( const QString & iconPath );
     QIcon icon() const { return mIcon; }
 
-    /** Connect listener to frameChanged() signal */
+    //! Connect listener to frameChanged() signal
     void connectFrameChanged( const QObject * receiver, const char * method );
-    /** Disconnect listener from frameChanged() signal */
+    //! Disconnect listener from frameChanged() signal
     void disconnectFrameChanged( const QObject * receiver, const char * method );
 
   public slots:
     void onFrameChanged();
 
   signals:
-    /** Emitted when icon changed */
+    //! Emitted when icon changed
     void frameChanged();
 
   private:
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsDataItem : public QObject
       Project //! Represents a QGIS project
     };
 
-    /** Create new data item. */
+    //! Create new data item.
     QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, const QString& name, const QString& path );
     virtual ~QgsDataItem();
 
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     {
       NotPopulated, //!< Children not yet created
       Populating,   //!< Creating children in separate thread (populating or refreshing)
-      Populated     //!< children created
+      Populated     //!< Children created
     };
 
     //! @note added in 2.8
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsDataItem : public QObject
       NoCapabilities = 0,
       SetCrs         = 1 << 0, //!< Can set CRS on layer or group of layers
       Fertile        = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
-      Fast           = 1 << 2  //!< createChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QSettings
+      Fast           = 1 << 2  //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QSettings
     };
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     // deleteLater() items anc clear the vector
     static void deleteLater( QVector<QgsDataItem*> &items );
 
-    /** Move object and all its descendants to thread */
+    //! Move object and all its descendants to thread
     void moveToThread( QThread * targetThread );
 
   protected:
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     // @param foreground run createChildren in foreground
     virtual void populate( bool foreground = false );
 
-    /** Remove children recursively and set as not populated. This is used when refreshing collapsed items. */
+    //! Remove children recursively and set as not populated. This is used when refreshing collapsed items.
     virtual void depopulate();
 
     virtual void refresh();
@@ -321,7 +321,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       TableLayer,
       Database,
       Table,
-      Plugin     //!< added in 2.10
+      Plugin     //!< Added in 2.10
     };
 
     QgsLayerItem( QgsDataItem* parent, const QString& name, const QString& path, const QString& uri, LayerType layerType, const QString& providerKey );
@@ -336,13 +336,13 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     // --- New virtual methods for layer item derived classes ---
 
-    /** Returns QgsMapLayer::LayerType */
+    //! Returns QgsMapLayer::LayerType
     QgsMapLayer::LayerType mapLayerType() const;
 
-    /** Returns layer uri or empty string if layer cannot be created */
+    //! Returns layer uri or empty string if layer cannot be created
     QString uri() const { return mUri; }
 
-    /** Returns provider key */
+    //! Returns provider key
     QString providerKey() const { return mProviderKey; }
 
     /** Returns the supported CRS
@@ -362,15 +362,15 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
   protected:
 
-    /** The provider key */
+    //! The provider key
     QString mProviderKey;
-    /** The URI */
+    //! The URI
     QString mUri;
-    /** The layer type */
+    //! The layer type
     LayerType mLayerType;
-    /** The list of supported CRS */
+    //! The list of supported CRS
     QStringList mSupportedCRS;
-    /** The list of supported formats */
+    //! The list of supported formats
     QStringList mSupportFormats;
 
   public:
@@ -381,7 +381,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static const QIcon &iconRaster();
     static const QIcon &iconDefault();
 
-    /** @return the layer name */
+    //! @return the layer name
     virtual QString layerName() const { return name(); }
 };
 
@@ -439,7 +439,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     virtual QIcon icon() override;
     virtual QWidget *paramWidget() override;
 
-    /** Check if the given path is hidden from the browser model */
+    //! Check if the given path is hidden from the browser model
     static bool hiddenPath( QString path );
 
   public slots:

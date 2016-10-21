@@ -70,7 +70,7 @@ class CORE_EXPORT QgsRenderChecker
 
     void setControlPathSuffix( const QString& theName );
 
-    /** Get an md5 hash that uniquely identifies an image */
+    //! Get an md5 hash that uniquely identifies an image
     QString imageToHash( const QString& theImageFile );
 
     void setRenderedImage( const QString& theImageFileName ) { mRenderedImageFile = theImageFileName; }

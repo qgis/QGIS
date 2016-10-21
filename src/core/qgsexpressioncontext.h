@@ -100,13 +100,13 @@ class CORE_EXPORT QgsExpressionContextScope
           , readOnly( readOnly )
       {}
 
-      /** Variable name */
+      //! Variable name
       QString name;
 
-      /** Variable value */
+      //! Variable value
       QVariant value;
 
-      /** True if variable should not be editable by users */
+      //! True if variable should not be editable by users
       bool readOnly;
     };
 

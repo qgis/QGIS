@@ -221,11 +221,11 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     double estimateMaxBleed() const override;
 
-    /** Type of gradient, eg linear or radial*/
+    //! Type of gradient, eg linear or radial
     GradientType gradientType() const { return mGradientType; }
     void setGradientType( GradientType gradientType ) { mGradientType = gradientType; }
 
-    /** Gradient color mode, controls how gradient color stops are created*/
+    //! Gradient color mode, controls how gradient color stops are created
     GradientColorType gradientColorType() const { return mGradientColorType; }
     void setGradientColorType( GradientColorType gradientColorType ) { mGradientColorType = gradientColorType; }
 
@@ -244,39 +244,39 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
      */
     void setColorRamp( QgsColorRamp* ramp );
 
-    /** Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor*/
+    //! Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor
     QColor color2() const { return mColor2; }
     void setColor2( const QColor& color2 ) { mColor2 = color2; }
 
-    /** Coordinate mode for gradient. Controls how the gradient stops are positioned.*/
+    //! Coordinate mode for gradient. Controls how the gradient stops are positioned.
     GradientCoordinateMode coordinateMode() const { return mCoordinateMode; }
     void setCoordinateMode( GradientCoordinateMode coordinateMode ) { mCoordinateMode = coordinateMode; }
 
-    /** Gradient spread mode. Controls how the gradient behaves outside of the predefined stops*/
+    //! Gradient spread mode. Controls how the gradient behaves outside of the predefined stops
     GradientSpread gradientSpread() const { return mGradientSpread; }
     void setGradientSpread( GradientSpread gradientSpread ) { mGradientSpread = gradientSpread; }
 
-    /** Starting point of gradient fill, in the range [0,0] - [1,1]*/
+    //! Starting point of gradient fill, in the range [0,0] - [1,1]
     void setReferencePoint1( QPointF referencePoint ) { mReferencePoint1 = referencePoint; }
     QPointF referencePoint1() const { return mReferencePoint1; }
 
-    /** Sets the starting point of the gradient to be the feature centroid*/
+    //! Sets the starting point of the gradient to be the feature centroid
     void setReferencePoint1IsCentroid( bool isCentroid ) { mReferencePoint1IsCentroid = isCentroid; }
     bool referencePoint1IsCentroid() const { return mReferencePoint1IsCentroid; }
 
-    /** End point of gradient fill, in the range [0,0] - [1,1]*/
+    //! End point of gradient fill, in the range [0,0] - [1,1]
     void setReferencePoint2( QPointF referencePoint ) { mReferencePoint2 = referencePoint; }
     QPointF referencePoint2() const { return mReferencePoint2; }
 
-    /** Sets the end point of the gradient to be the feature centroid*/
+    //! Sets the end point of the gradient to be the feature centroid
     void setReferencePoint2IsCentroid( bool isCentroid ) { mReferencePoint2IsCentroid = isCentroid; }
     bool referencePoint2IsCentroid() const { return mReferencePoint2IsCentroid; }
 
-    /** Offset for gradient fill*/
+    //! Offset for gradient fill
     void setOffset( QPointF offset ) { mOffset = offset; }
     QPointF offset() const { return mOffset; }
 
-    /** Units for gradient fill offset*/
+    //! Units for gradient fill offset
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
     QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
@@ -314,13 +314,13 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
     //helper functions for data defined symbology
     void applyDataDefinedSymbology( QgsSymbolRenderContext& context, const QPolygonF& points );
 
-    /** Applies the gradient to a brush*/
+    //! Applies the gradient to a brush
     void applyGradient( const QgsSymbolRenderContext& context, QBrush& brush, const QColor& color, const QColor& color2,
                         GradientColorType gradientColorType, QgsColorRamp *gradientRamp, GradientType gradientType,
                         GradientCoordinateMode coordinateMode, GradientSpread gradientSpread,
                         QPointF referencePoint1, QPointF referencePoint2, const double angle );
 
-    /** Rotates a reference point by a specified angle around the point (0.5, 0.5)*/
+    //! Rotates a reference point by a specified angle around the point (0.5, 0.5)
     QPointF rotateReferencePoint( QPointF refPoint, double angle );
 };
 
@@ -616,12 +616,12 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     QBrush mBrush;
     double mNextAngle; // mAngle / data defined angle
 
-    /** Outline width*/
+    //! Outline width
     double mOutlineWidth;
     QgsUnitTypes::RenderUnit mOutlineWidthUnit;
     QgsMapUnitScale mOutlineWidthMapUnitScale;
 
-    /** Custom outline*/
+    //! Custom outline
     QgsLineSymbol* mOutline;
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext& context ) { Q_UNUSED( context ); }
@@ -789,7 +789,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
   protected:
 
-    /** Path to the image file*/
+    //! Path to the image file
     QString mImageFilePath;
     FillCoordinateMode mCoordinateMode;
     double mAlpha;
@@ -806,7 +806,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
   private:
 
-    /** Applies the image pattern to the brush*/
+    //! Applies the image pattern to the brush
     void applyPattern( QBrush& brush, const QString& imageFilePath, const double width, const double alpha,
                        const QgsSymbolRenderContext& context );
 };
@@ -886,18 +886,18 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsMapUnitScale mapUnitScale() const override;
 
   protected:
-    /** Width of the pattern (in output units)*/
+    //! Width of the pattern (in output units)
     double mPatternWidth;
     QgsUnitTypes::RenderUnit mPatternWidthUnit;
     QgsMapUnitScale mPatternWidthMapUnitScale;
 
-    /** SVG data*/
+    //! SVG data
     QByteArray mSvgData;
-    /** Path to the svg file (or empty if constructed directly from data)*/
+    //! Path to the svg file (or empty if constructed directly from data)
     QString mSvgFilePath;
-    /** SVG view box (to keep the aspect ratio */
+    //! SVG view box (to keep the aspect ratio
     QRectF mSvgViewBox;
-    /** SVG pattern image */
+    //! SVG pattern image
     QImage* mSvgPattern;
 
     //param(fill), param(outline), param(outline-width) are going
@@ -910,11 +910,11 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     void applyDataDefinedSettings( QgsSymbolRenderContext& context ) override;
 
   private:
-    /** Helper function that gets the view box from the byte array*/
+    //! Helper function that gets the view box from the byte array
     void storeViewBox();
     void setDefaultSvgParams(); //fills mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth with default values for mSvgFilePath
 
-    /** Applies the svg pattern to the brush*/
+    //! Applies the svg pattern to the brush
     void applyPattern( QBrush& brush, const QString& svgFilePath, double patternWidth, QgsUnitTypes::RenderUnit patternWidthUnit, const QColor& svgFillColor, const QColor& svgOutlineColor,
                        double svgOutlineWidth, QgsUnitTypes::RenderUnit svgOutlineWidthUnit, const QgsSymbolRenderContext& context, const QgsMapUnitScale& patternWidthMapUnitScale, const QgsMapUnitScale &svgOutlineWidthMapUnitScale );
 };
@@ -1027,18 +1027,18 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QSet<QString> usedAttributes() const override;
 
   protected:
-    /** Distance (in mm or map units) between lines*/
+    //! Distance (in mm or map units) between lines
     double mDistance;
     QgsUnitTypes::RenderUnit mDistanceUnit;
     QgsMapUnitScale mDistanceMapUnitScale;
-    /** Line width (in mm or map units)*/
+    //! Line width (in mm or map units)
     double mLineWidth;
     QgsUnitTypes::RenderUnit mLineWidthUnit;
     QgsMapUnitScale mLineWidthMapUnitScale;
     QColor mColor;
-    /** Vector line angle in degrees (0 = horizontal, counterclockwise)*/
+    //! Vector line angle in degrees (0 = horizontal, counterclockwise)
     double mLineAngle;
-    /** Offset perpendicular to line direction*/
+    //! Offset perpendicular to line direction
     double mOffset;
     QgsUnitTypes::RenderUnit mOffsetUnit;
     QgsMapUnitScale mOffsetMapUnitScale;
@@ -1046,10 +1046,10 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void applyDataDefinedSettings( QgsSymbolRenderContext& context ) override;
 
   private:
-    /** Applies the svg pattern to the brush*/
+    //! Applies the svg pattern to the brush
     void applyPattern( const QgsSymbolRenderContext& context, QBrush& brush, double lineAngle, double distance, double lineWidth, const QColor& color );
 
-    /** Fill line*/
+    //! Fill line
     QgsLineSymbol* mFillLineSymbol;
 };
 

@@ -33,7 +33,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 {
   public:
 
-    /** Icons */
+    //! Icons
     enum IconType
     {
       /**
@@ -247,10 +247,10 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     QBrush mBrush;
     QPen mPen;
 
-    /** The size of the icon for points. */
+    //! The size of the icon for points.
     int mIconSize;
 
-    /** Icon to be shown. */
+    //! Icon to be shown.
     IconType mIconType;
 
     /**

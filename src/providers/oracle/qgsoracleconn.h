@@ -130,10 +130,10 @@ class QgsOracleConn : public QObject
 
     void retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes );
 
-    /** Gets information about the spatial tables */
+    //! Gets information about the spatial tables
     bool tableInfo( bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables );
 
-    /** Get primary key candidates (all int4 columns) */
+    //! Get primary key candidates (all int4 columns)
     QStringList pkCandidates( QString ownerName, QString viewName );
 
     static QString fieldExpression( const QgsField &fld );

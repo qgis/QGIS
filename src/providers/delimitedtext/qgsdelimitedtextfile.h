@@ -323,9 +323,9 @@ class QgsDelimitedTextFile : public QObject
      */
     void resetDefinition();
 
-    /** Parse reqular expression delimited fields */
+    //! Parse reqular expression delimited fields
     Status parseRegexp( QString &buffer, QStringList &fields );
-    /** Parse quote delimited fields, where quote and escape are different */
+    //! Parse quote delimited fields, where quote and escape are different
     Status parseQuoted( QString &buffer, QStringList &fields );
 
     /** Return the next line from the data file.  If skipBlank is true then

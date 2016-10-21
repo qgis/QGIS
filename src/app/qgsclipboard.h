@@ -57,9 +57,9 @@ class APP_EXPORT QgsClipboard : public QObject
     //! Available formats for copying features as text
     enum CopyFormat
     {
-      AttributesOnly, /*!< Tab delimited text, attributes only */
-      AttributesWithWKT, /*!< Tab delimited text, with geometry in WKT format */
-      GeoJSON, /*!< GeoJSON FeatureCollection format */
+      AttributesOnly, //!< Tab delimited text, attributes only
+      AttributesWithWKT, //!< Tab delimited text, with geometry in WKT format
+      GeoJSON, //!< GeoJSON FeatureCollection format
     };
 
     /**
@@ -145,7 +145,7 @@ class APP_EXPORT QgsClipboard : public QObject
     void systemClipboardChanged();
 
   signals:
-    /** Emitted when content changed */
+    //! Emitted when content changed
     void changed();
 
   private:
@@ -181,7 +181,7 @@ class APP_EXPORT QgsClipboard : public QObject
     QgsFields mFeatureFields;
     QgsCoordinateReferenceSystem mCRS;
 
-    /** True when the data from the system clipboard should be read */
+    //! True when the data from the system clipboard should be read
     bool mUseSystemClipboard;
 
     friend class TestQgisAppClipboard;

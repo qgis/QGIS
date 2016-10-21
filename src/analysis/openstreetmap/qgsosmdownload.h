@@ -82,8 +82,8 @@ class ANALYSIS_EXPORT QgsOSMDownload : public QObject
     bool isFinished() const;
 
   signals:
-    void finished(); //!< emitted when the network reply has finished (with success or with an error)
-    void downloadProgress( qint64, qint64 ); //!< normally the total length is not known (until we reach end)
+    void finished(); //!< Emitted when the network reply has finished (with success or with an error)
+    void downloadProgress( qint64, qint64 ); //!< Normally the total length is not known (until we reach end)
 
   private slots:
     void onReadyRead();

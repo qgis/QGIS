@@ -198,7 +198,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
       EpsgCrsId       //!< EPSG code
     };
 
-    /** Constructs an invalid CRS object */
+    //! Constructs an invalid CRS object
     QgsCoordinateReferenceSystem();
 
     ~QgsCoordinateReferenceSystem();
@@ -398,7 +398,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     static void setupESRIWktFix();
 
-    /** Returns whether this CRS is correctly initialized and usable */
+    //! Returns whether this CRS is correctly initialized and usable
     bool isValid() const;
 
     /** Perform some validation on this CRS. If the CRS doesn't validate the
@@ -559,7 +559,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     bool saveAsUserCrs( const QString& name );
 
-    /** Returns auth id of related geographic CRS*/
+    //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;
 
     /** Returns a list of recently used projections
@@ -637,7 +637,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     void debugPrint();
 
-    /** A string based associative array used for passing records around */
+    //! A string based associative array used for passing records around
     typedef QMap<QString, QString> RecordMap;
     /** Get a record from the srs.db or qgis.db backends, given an sql statment.
      * @note only handles queries that return a single record.

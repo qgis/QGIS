@@ -35,13 +35,13 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     QgsComposerLabel( QgsComposition *composition );
     ~QgsComposerLabel();
 
-    /** Return correct graphics item type. */
+    //! Return correct graphics item type.
     virtual int type() const override { return ComposerLabel; }
 
-    /** \brief Reimplementation of QCanvasItem::paint*/
+    //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
-    /** Resizes the widget such that the text fits to the item. Keeps top left point*/
+    //! Resizes the widget such that the text fits to the item. Keeps top left point
     void adjustSizeToText();
 
     QString text() { return mText; }
@@ -50,7 +50,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     int htmlState() { return mHtmlState; }
     void setHtmlState( int state );
 
-    /** Returns the text as it appears on screen (with replaced data field) */
+    //! Returns the text as it appears on screen (with replaced data field)
     QString displayText() const;
 
     QFont font() const;
@@ -116,9 +116,9 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
      */
     void setMarginY( const double margin );
 
-    /** Sets text color */
+    //! Sets text color
     void setFontColor( const QColor& c ) { mFontColor = c; }
-    /** Get font color */
+    //! Get font color
     QColor fontColor() const { return mFontColor; }
 
     /** Stores state in Dom element
@@ -166,18 +166,18 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     double htmlUnitsToMM(); //calculate scale factor
     bool mHtmlLoaded;
 
-    /** Helper function to calculate x/y shift for adjustSizeToText() depending on rotation, current size and alignment*/
+    //! Helper function to calculate x/y shift for adjustSizeToText() depending on rotation, current size and alignment
     void itemShiftAdjustSize( double newWidth, double newHeight, double& xShift, double& yShift ) const;
 
-    /** Called when the content is changed to handle HTML loading */
+    //! Called when the content is changed to handle HTML loading
     void contentChanged();
 
     // Font
     QFont mFont;
 
-    /** Horizontal margin between contents and frame (in mm)*/
+    //! Horizontal margin between contents and frame (in mm)
     double mMarginX;
-    /** Vertical margin between contents and frame (in mm)*/
+    //! Vertical margin between contents and frame (in mm)
     double mMarginY;
 
     // Font color
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     // Vertical Alignment
     Qt::AlignmentFlag mVAlignment;
 
-    /** Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)*/
+    //! Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)
     void replaceDateText( QString& text ) const;
 
     //! Creates an encoded stylesheet url using the current font and label appearance settings

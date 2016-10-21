@@ -9252,13 +9252,13 @@ void QgisApp::unregisterMapLayerPropertiesFactory( QgsMapLayerConfigWidgetFactor
     mMapStyleWidget->setPageFactories( mMapLayerPanelFactories );
 }
 
-/** Get a pointer to the currently selected map layer */
+//! Get a pointer to the currently selected map layer
 QgsMapLayer *QgisApp::activeLayer()
 {
   return mLayerTreeView ? mLayerTreeView->currentLayer() : nullptr;
 }
 
-/** Set the current layer */
+//! Set the current layer
 bool QgisApp::setActiveLayer( QgsMapLayer *layer )
 {
   if ( !layer )

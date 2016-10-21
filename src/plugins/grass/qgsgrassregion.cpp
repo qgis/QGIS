@@ -33,7 +33,7 @@
 #include <QSettings>
 
 
-/** Map tool which uses rubber band for changing grass region */
+//! Map tool which uses rubber band for changing grass region
 QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
 {
@@ -129,7 +129,7 @@ void QgsGrassRegionEdit::setTransform()
 
 void QgsGrassRegionEdit::transform( QgsMapCanvas *canvas, QVector<QgsPoint> &points, const QgsCoordinateTransform& coordinateTransform, QgsCoordinateTransform::TransformDirection direction )
 {
-  /** Coordinate transform */
+  //! Coordinate transform
   if ( canvas->hasCrsTransformEnabled() )
   {
     //QgsDebugMsg ( "srcCrs = " +  coordinateTransform->sourceCrs().toWkt() );

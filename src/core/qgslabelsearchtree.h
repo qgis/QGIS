@@ -36,7 +36,7 @@ class CORE_EXPORT QgsLabelSearchTree
     QgsLabelSearchTree();
     ~QgsLabelSearchTree();
 
-    /** Removes and deletes all the entries*/
+    //! Removes and deletes all the entries
     void clear();
 
     /** Returns label position(s) at a given point. QgsLabelSearchTree keeps ownership, don't delete the LabelPositions

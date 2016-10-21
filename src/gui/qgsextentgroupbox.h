@@ -44,9 +44,9 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
 
     enum ExtentState
     {
-      OriginalExtent,  //!<  layer's extent
-      CurrentExtent,   //!<  map canvas extent
-      UserExtent,      //!<  extent manually entered/modified by the user
+      OriginalExtent,  //!< Layer's extent
+      CurrentExtent,   //!< Map canvas extent
+      UserExtent,      //!< Extent manually entered/modified by the user
     };
 
     //! Setup original extent - should be called as part of initialization

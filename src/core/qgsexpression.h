@@ -541,13 +541,13 @@ class CORE_EXPORT QgsExpression
 
         virtual ~Function() {}
 
-        /** The name of the function. */
+        //! The name of the function.
         QString name() const { return mName; }
 
-        /** The number of parameters this function takes. */
+        //! The number of parameters this function takes.
         int params() const { return mParameterList.isEmpty() ? mParams : mParameterList.count(); }
 
-        /** The mininum number of parameters this function takes. */
+        //! The mininum number of parameters this function takes.
         int minParams() const
         {
           if ( mParameterList.isEmpty() )
@@ -567,7 +567,7 @@ class CORE_EXPORT QgsExpression
         */
         const ParameterList& parameters() const { return mParameterList; }
 
-        /** Does this function use a geometry object. */
+        //! Does this function use a geometry object.
         bool usesGeometry() const { return mUsesGeometry; }
 
         /** Returns a list of possible aliases for the function. These include
@@ -606,7 +606,7 @@ class CORE_EXPORT QgsExpression
         */
         QStringList groups() const { return mGroups; }
 
-        /** The help text for the function. */
+        //! The help text for the function.
         const QString helpText() const { return mHelpText.isEmpty() ? QgsExpression::helpText( mName ) : mHelpText; }
 
         /** Returns result of evaluating the function.
@@ -898,7 +898,7 @@ class CORE_EXPORT QgsExpression
       public:
         NodeList() : mHasNamedNodes( false ) {}
         virtual ~NodeList() { qDeleteAll( mList ); }
-        /** Takes ownership of the provided node */
+        //! Takes ownership of the provided node
         void append( Node* node ) { mList.append( node ); mNameList.append( QString() ); }
 
         /** Adds a named node. Takes ownership of the provided node.
@@ -920,7 +920,7 @@ class CORE_EXPORT QgsExpression
         //! @note added in QGIS 2.16
         QStringList names() const { return mNameList; }
 
-        /** Creates a deep copy of this list. Ownership is transferred to the caller */
+        //! Creates a deep copy of this list. Ownership is transferred to the caller
         NodeList* clone() const;
 
         virtual QString dump() const;
@@ -1076,7 +1076,7 @@ class CORE_EXPORT QgsExpression
             : mValue( value )
         {}
 
-        /** The value of the literal. */
+        //! The value of the literal.
         inline QVariant value() const { return mValue; }
 
         virtual NodeType nodeType() const override { return ntLiteral; }
@@ -1102,7 +1102,7 @@ class CORE_EXPORT QgsExpression
             , mIndex( -1 )
         {}
 
-        /** The name of the column. */
+        //! The name of the column.
         QString name() const { return mName; }
 
         virtual NodeType nodeType() const override { return ntColumnRef; }

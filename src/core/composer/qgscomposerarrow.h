@@ -54,10 +54,10 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
 
     ~QgsComposerArrow();
 
-    /** Return composer item type. */
+    //! Return composer item type.
     virtual int type() const override { return ComposerArrow; }
 
-    /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
+    //! \brief Reimplementation of QCanvasItem::paint - draw on canvas
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     /** Modifies position of start and endpoint and calls QgsComposerItem::setSceneRect
@@ -210,17 +210,17 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     QPen mPen;
     QBrush mBrush;
 
-    /** Width of the arrow marker in mm. May be specified by the user. The height is automatically adapted*/
+    //! Width of the arrow marker in mm. May be specified by the user. The height is automatically adapted
     double mArrowHeadWidth;
-    /** Height of the arrow marker in mm. Is calculated from arrow marker width and apsect ratio of svg*/
+    //! Height of the arrow marker in mm. Is calculated from arrow marker width and apsect ratio of svg
     double mStartArrowHeadHeight;
     double mStopArrowHeadHeight;
 
-    /** Path to the start marker file*/
+    //! Path to the start marker file
     QString mStartMarkerFile;
-    /** Path to the end marker file*/
+    //! Path to the end marker file
     QString mEndMarkerFile;
-    /** Default marker, no marker or svg marker*/
+    //! Default marker, no marker or svg marker
     MarkerMode mMarkerMode;
 
     double mArrowHeadOutlineWidth;
@@ -237,13 +237,13 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      *  Needs to be called whenever the arrow width/height, the outline with or the endpoints are changed
      */
     void adaptItemSceneRect();
-    /** Computes the margin around the line necessary to include the markers */
+    //! Computes the margin around the line necessary to include the markers
     double computeMarkerMargin() const;
-    /** Draws the default marker at the line end*/
+    //! Draws the default marker at the line end
     void drawHardcodedMarker( QPainter* p, MarkerType type );
-    /** Draws a user-defined marker (must be an svg file)*/
+    //! Draws a user-defined marker (must be an svg file)
     void drawSVGMarker( QPainter* p, MarkerType type, const QString& markerPath );
-    /** Apply default graphics settings*/
+    //! Apply default graphics settings
     void init();
     /** Creates the default line symbol
      * @note added in QGIS 2.5

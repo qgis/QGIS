@@ -29,7 +29,7 @@ class QgsRasterShader;
 class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 {
   public:
-    /** Note: takes ownership of QgsRasterShader*/
+    //! Note: takes ownership of QgsRasterShader
     QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band, QgsRasterShader* shader );
     ~QgsSingleBandPseudoColorRenderer();
     QgsSingleBandPseudoColorRenderer * clone() const override;
@@ -38,7 +38,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
     QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
 
-    /** Takes ownership of the shader*/
+    //! Takes ownership of the shader
     void setShader( QgsRasterShader* shader );
     QgsRasterShader* shader() { return mShader; }
     //! @note available in python as constShader

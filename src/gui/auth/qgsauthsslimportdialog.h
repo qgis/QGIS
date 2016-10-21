@@ -88,7 +88,7 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
     ~QgsAuthSslImportDialog();
 
   public slots:
-    /** Overridden slot of base dialog */
+    //! Overridden slot of base dialog
     void accept() override;
 
   private slots:

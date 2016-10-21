@@ -209,7 +209,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
       return mIsValid;
     }
 
-    /** Removes +nadgrids and +towgs84 from proj4 string*/
+    //! Removes +nadgrids and +towgs84 from proj4 string
     QString stripDatumTransform( const QString& proj4 ) const
     {
       QStringList parameterSplit = proj4.split( '+', QString::SkipEmptyParts );
@@ -286,7 +286,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
       return transformString;
     }
 
-    /** In certain situations, null grid shifts have to be added to src / dst proj string*/
+    //! In certain situations, null grid shifts have to be added to src / dst proj string
     void addNullGridShifts( QString& srcProjString, QString& destProjString ) const
     {
       //if one transformation uses ntv2, the other one needs to be null grid shift
