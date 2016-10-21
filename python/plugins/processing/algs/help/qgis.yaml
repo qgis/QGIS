@@ -333,6 +333,9 @@ qgis:polygonize:  >
 qgis:polygonstolines: >
   This algorithm takes a polygon layer and creates a line layer, with lines representing the rings of the polygons in the input layer.
 
+qgis:spatialiteexecutesql: >
+  This algorithm performs a SQL database query on a Spatialite database.
+  
 qgis:postgisexecutesql: >
   This algorithm performs a SQL database query on a PostGIS database connected to QGIS.
 

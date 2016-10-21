@@ -131,6 +131,7 @@ from .RandomPointsPolygonsFixed import RandomPointsPolygonsFixed
 from .RandomPointsPolygonsVariable import RandomPointsPolygonsVariable
 from .RandomPointsAlongLines import RandomPointsAlongLines
 from .PointsToPaths import PointsToPaths
+from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .PostGISExecuteSQL import PostGISExecuteSQL
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .SetVectorStyle import SetVectorStyle
@@ -213,6 +214,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RandomPointsLayer(), RandomPointsPolygonsFixed(),
                         RandomPointsPolygonsVariable(),
                         RandomPointsAlongLines(), PointsToPaths(),
+                        SpatialiteExecuteSQL(),
                         PostGISExecuteSQL(), ImportIntoPostGIS(),
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
