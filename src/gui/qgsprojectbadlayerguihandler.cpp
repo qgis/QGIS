@@ -24,6 +24,7 @@
 #include "qgslogger.h"
 #include "qgisgui.h"
 #include "qgsproviderregistry.h"
+#include "qgsproject.h"
 
 QgsProjectBadLayerGuiHandler::QgsProjectBadLayerGuiHandler()
 {
@@ -31,10 +32,8 @@ QgsProjectBadLayerGuiHandler::QgsProjectBadLayerGuiHandler()
 
 bool QgsProjectBadLayerGuiHandler::mIgnore = false;
 
-void QgsProjectBadLayerGuiHandler::handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom )
+void QgsProjectBadLayerGuiHandler::handleBadLayers( const QList<QDomNode>& layers )
 {
-  Q_UNUSED( projectDom );
-
   QgsDebugMsg( QString( "%1 bad layers found" ).arg( layers.size() ) );
 
   // make sure we have arrow cursor (and not a wait cursor)
@@ -81,113 +80,35 @@ void QgsProjectBadLayerGuiHandler::handleBadLayers( const QList<QDomNode>& layer
   QApplication::restoreOverrideCursor();
 }
 
-QgsProjectBadLayerGuiHandler::DataType QgsProjectBadLayerGuiHandler::dataType( QDomNode & layerNode )
+bool QgsProjectBadLayerGuiHandler::findLayer( const QString& fileFilters, const QDomNode& constLayerNode )
 {
-  QString type = layerNode.toElement().attribute( "type" );
+  // XXX actually we could possibly get away with a copy of the node
+  QDomNode& layerNode = const_cast<QDomNode&>( constLayerNode );
 
-  if ( QString::null == type )
+  bool retVal = false;
+
+  switch ( providerType( layerNode ) )
   {
-    QgsDebugMsg( "cannot find ``type'' attribute" );
+    case IS_FILE:
+      QgsDebugMsg( "layer is file based" );
+      retVal = findMissingFile( fileFilters, layerNode );
+      break;
 
-    return IS_BOGUS;
+    case IS_DATABASE:
+      QgsDebugMsg( "layer is database based" );
+      break;
+
+    case IS_URL:
+      QgsDebugMsg( "layer is URL based" );
+      break;
+
+    case IS_Unknown:
+      QgsDebugMsg( "layer has an unknown type" );
+      break;
   }
-
-  if ( "raster" == type )
-  {
-    QgsDebugMsg( "is a raster" );
-
-    return IS_RASTER;
-  }
-  else if ( "vector" == type )
-  {
-    QgsDebugMsg( "is a vector" );
-
-    return IS_VECTOR;
-  }
-
-  QgsDebugMsg( "is unknown type " + type );
-
-  return IS_BOGUS;
-} // dataType_( QDomNode & layerNode )
-
-
-QString QgsProjectBadLayerGuiHandler::dataSource( QDomNode & layerNode )
-{
-  QDomNode dataSourceNode = layerNode.namedItem( "datasource" );
-
-  if ( dataSourceNode.isNull() )
-  {
-    QgsDebugMsg( "cannot find datasource node" );
-
-    return QString::null;
-  }
-
-  return dataSourceNode.toElement().text();
-
-} // dataSource( QDomNode & layerNode )
-
-
-
-
-QgsProjectBadLayerGuiHandler::ProviderType QgsProjectBadLayerGuiHandler::providerType( QDomNode & layerNode )
-{
-  // XXX but what about rasters that can be URLs?  _Can_ they be URLs?
-
-  switch ( dataType( layerNode ) )
-  {
-    case IS_VECTOR:
-    {
-      QString ds = dataSource( layerNode );
-
-      QgsDebugMsg( "datasource is " + ds );
-
-      if ( ds.contains( "host=" ) )
-      {
-        return IS_URL;
-      }
-#ifdef HAVE_POSTGRESQL
-      else if ( ds.contains( "dbname=" ) )
-      {
-        return IS_DATABASE;
-      }
-#endif
-      // be default, then, this should be a file based layer data source
-      // XXX is this a reasonable assumption?
-
-      return IS_FILE;
-    }
-
-    case IS_RASTER:         // rasters are currently only accessed as
-      // physical files
-      return IS_FILE;
-
-    default:
-      QgsDebugMsg( "unknown ``type'' attribute" );
-  }
-
-  return IS_Unknown;
-
-} // providerType
-
-
-
-void QgsProjectBadLayerGuiHandler::setDataSource( QDomNode & layerNode, QString const & dataSource )
-{
-  QDomNode dataSourceNode = layerNode.namedItem( "datasource" );
-  QDomElement dataSourceElement = dataSourceNode.toElement();
-  QDomText dataSourceText = dataSourceElement.firstChild().toText();
-
-  QgsDebugMsg( "datasource changed from " + dataSourceText.data() );
-
-  dataSourceText.setData( dataSource );
-
-  QgsDebugMsg( "to " + dataSourceText.data() );
-} // setDataSource
-
-
-
-
-bool QgsProjectBadLayerGuiHandler::findMissingFile( QString const & fileFilters, QDomNode & layerNode )
+  return retVal;
+}
+bool QgsProjectBadLayerGuiHandler::findMissingFile( const QString& fileFilters, QDomNode& layerNode )
 {
   // Prepend that file name to the valid file format filter list since it
   // makes it easier for the user to not only find the original file, but to
@@ -250,44 +171,9 @@ bool QgsProjectBadLayerGuiHandler::findMissingFile( QString const & fileFilters,
     }
   }
   return retVal;
-} // findMissingFile
+}
 
-
-
-
-bool QgsProjectBadLayerGuiHandler::findLayer( QString const & fileFilters, QDomNode const & constLayerNode )
-{
-  // XXX actually we could possibly get away with a copy of the node
-  QDomNode & layerNode = const_cast<QDomNode&>( constLayerNode );
-
-  bool retVal = false;
-
-  switch ( providerType( layerNode ) )
-  {
-    case IS_FILE:
-      QgsDebugMsg( "layer is file based" );
-      retVal = findMissingFile( fileFilters, layerNode );
-      break;
-
-    case IS_DATABASE:
-      QgsDebugMsg( "layer is database based" );
-      break;
-
-    case IS_URL:
-      QgsDebugMsg( "layer is URL based" );
-      break;
-
-    case IS_Unknown:
-      QgsDebugMsg( "layer has an unknown type" );
-      break;
-  }
-  return retVal;
-} // findLayer
-
-
-
-
-void QgsProjectBadLayerGuiHandler::findLayers( QString const & fileFilters, QList<QDomNode> const & layerNodes )
+void QgsProjectBadLayerGuiHandler::findLayers( const QString& fileFilters, const QList<QDomNode>& layerNodes )
 {
 
   for ( QList<QDomNode>::const_iterator i = layerNodes.begin();
@@ -300,6 +186,4 @@ void QgsProjectBadLayerGuiHandler::findLayers( QString const & fileFilters, QLis
       break;
     }
   }
-
-} // findLayers
-
+}

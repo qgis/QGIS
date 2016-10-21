@@ -128,7 +128,9 @@ void TestQgsProject::testProjectUnits()
 void TestQgsProject::variablesChanged()
 {
   QSignalSpy spyVariablesChanged( QgsProject::instance(), SIGNAL( variablesChanged() ) );
-  QgsProject::instance()->emitVariablesChanged();
+  QgsStringMap vars;
+  vars.insert( "variable", "1" );
+  QgsProject::instance()->setVariables( vars );
   QVERIFY( spyVariablesChanged.count() == 1 );
 }
 

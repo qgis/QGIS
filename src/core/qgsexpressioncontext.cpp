@@ -630,21 +630,13 @@ QgsExpressionContextScope* QgsExpressionContextUtils::projectScope()
 
   QgsExpressionContextScope* scope = new QgsExpressionContextScope( QObject::tr( "Project" ) );
 
-  //add variables defined in project file
-  QStringList variableNames = project->readListEntry( "Variables", "/variableNames" );
-  QStringList variableValues = project->readListEntry( "Variables", "/variableValues" );
+  const QgsStringMap vars = QgsProject::instance()->variables();
 
-  int varIndex = 0;
-  Q_FOREACH ( const QString& variableName, variableNames )
+  QgsStringMap::const_iterator it = vars.constBegin();
+
+  for ( ; it != vars.constEnd(); ++it )
   {
-    if ( varIndex >= variableValues.length() )
-    {
-      break;
-    }
-
-    QString varValueString = variableValues.at( varIndex );
-    varIndex++;
-    scope->setVariable( variableName, varValueString );
+    scope->setVariable( it.key(), it.value() );
   }
 
   //add other known project variables
@@ -661,34 +653,16 @@ void QgsExpressionContextUtils::setProjectVariable( const QString& name, const Q
 {
   QgsProject* project = QgsProject::instance();
 
-  //write variable to project
-  QStringList variableNames = project->readListEntry( "Variables", "/variableNames" );
-  QStringList variableValues = project->readListEntry( "Variables", "/variableValues" );
+  QgsStringMap vars = project->variables();
 
-  variableNames << name;
-  variableValues << value.toString();
+  vars.insert( name, value.toString() );
 
-  project->writeEntry( "Variables", "/variableNames", variableNames );
-  project->writeEntry( "Variables", "/variableValues", variableValues );
+  project->setVariables( vars );
 }
 
-void QgsExpressionContextUtils::setProjectVariables( const QgsStringMap &variables )
+void QgsExpressionContextUtils::setProjectVariables( const QgsStringMap& variables )
 {
-  QgsProject* project = QgsProject::instance();
-
-  //write variable to project
-  QStringList variableNames;
-  QStringList variableValues;
-
-  QMap< QString, QString >::const_iterator it = variables.constBegin();
-  for ( ; it != variables.constEnd(); ++it )
-  {
-    variableNames << it.key();
-    variableValues << it.value();
-  }
-
-  project->writeEntry( "Variables", "/variableNames", variableNames );
-  project->writeEntry( "Variables", "/variableValues", variableValues );
+  QgsProject::instance()->setVariables( variables );
 }
 
 QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( const QgsMapLayer* layer )
