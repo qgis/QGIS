@@ -4,8 +4,8 @@
 ***************************************************************************
     ToolsTest
     ---------------------
-    Date                 : July 2017
-    Copyright            : (C) 2017 by Nyall Dawson
+    Date                 : July 2016
+    Copyright            : (C) 2016 by Nyall Dawson
     Email                : nyall dot dawson at gmail dot com
 ***************************************************************************
 *                                                                         *
