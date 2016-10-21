@@ -374,7 +374,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                 self.assertEquals(oflds.size(), flds.size() + 1)
                 self.assertEquals(oflds[0].name(), kfnames[0])
                 for i in range(flds.size()):
-                    self.assertEqual(oflds[i+1].name(), flds[i].name())
+                    self.assertEqual(oflds[i + 1].name(), flds[i].name())
             else:
                 # pkey was given, no extra field generated
                 self.assertEquals(oflds.size(), flds.size())
