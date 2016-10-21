@@ -193,7 +193,15 @@ void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomD
   if ( !layerExtent.isNull() )
   {
     QgsCoordinateTransform crsTransform( layerCRS, crs );
-    crsExtent = crsTransform.transformBoundingBox( layerExtent );
+    try
+    {
+      crsExtent = crsTransform.transformBoundingBox( layerExtent );
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse );
+      return;
+    }
   }
 
   //BoundingBox element
