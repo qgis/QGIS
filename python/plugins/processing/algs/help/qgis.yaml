@@ -362,6 +362,8 @@ qgis:refactorfields: >
 
 qgis:regularpoints:
 
+qgis:removenullgeometries: >
+  This algorithms removes any features which do not have a geometry from a vector layer. All other features will be copied unchanged.
 
 qgis:reprojectlayer: >
   This algorithm reprojects a vector layer. It creates a new layer with the same features as the input one, but with geometries reprojected to a new CRS.
