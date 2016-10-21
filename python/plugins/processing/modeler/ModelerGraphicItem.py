@@ -43,7 +43,7 @@ class ModelerGraphicItem(QGraphicsItem):
     BOX_WIDTH = 200
 
     def __init__(self, element, model):
-        super(ModelerGraphicItem, self).__init__(None, None)
+        super(ModelerGraphicItem, self).__init__(None)
         self.model = model
         self.element = element
         if isinstance(element, ModelerParameter):
@@ -337,7 +337,7 @@ class FlatButtonGraphicItem(QGraphicsItem):
     HEIGHT = 16
 
     def __init__(self, icon, position, action):
-        super(FlatButtonGraphicItem, self).__init__(None, None)
+        super(FlatButtonGraphicItem, self).__init__(None)
         self.setAcceptHoverEvents(True)
         self.setFlag(QGraphicsItem.ItemIsMovable, False)
         self.pixmap = icon.pixmap(self.WIDTH, self.HEIGHT,

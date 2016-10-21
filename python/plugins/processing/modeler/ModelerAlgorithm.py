@@ -237,7 +237,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         newone.provider = self.provider
 
         newone.algs = {}
-        for algname, alg in self.algs.iteritems():
+        for algname, alg in self.algs.items():
             newone.algs[algname] = Algorithm()
             newone.algs[algname].__dict__.update(copy.deepcopy(alg.todict()))
         newone.inputs = copy.deepcopy(self.inputs)

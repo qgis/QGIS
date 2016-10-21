@@ -57,7 +57,7 @@ class ModelerArrowItem(QGraphicsPathItem):
 
     def __init__(self, startItem, startIndex, endItem, endIndex,
                  parent=None, scene=None):
-        super(ModelerArrowItem, self).__init__(parent, scene)
+        super(ModelerArrowItem, self).__init__(parent)
         self.arrowHead = QPolygonF()
         self.endIndex = endIndex
         self.startIndex = startIndex
