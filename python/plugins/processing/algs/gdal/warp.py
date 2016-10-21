@@ -91,8 +91,7 @@ class warp(GdalAlgorithm):
 
         if GdalUtils.version() >= 2000000:
             self.addParameter(ParameterCrs(self.EXT_CRS,
-                                           self.tr('CRS of the raster extent, leave blank for using Destination SRS'),
-                                           optional=True))
+                                           self.tr('CRS of the raster extent'), ''))
 
         params = []
         params.append(ParameterSelection(self.RTYPE,
@@ -136,7 +135,7 @@ class warp(GdalAlgorithm):
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
         tfw = unicode(self.getParameterValue(self.TFW))
-        rastext = self.getParameterValue(self.RAST_EXT)
+        rastext = unicode(self.getParameterValue(self.RAST_EXT))
         rastext_crs = self.getParameterValue(self.EXT_CRS)
 
         arguments = []
@@ -164,17 +163,21 @@ class warp(GdalAlgorithm):
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:
             extra = unicode(extra)
+        regionCoords = rastext.split(',')
+        try:
+            rastext = []
+            rastext.append('-te')
+            rastext.append(regionCoords[0])
+            rastext.append(regionCoords[2])
+            rastext.append(regionCoords[1])
+            rastext.append(regionCoords[3])
+        except IndexError:
+            rastext = []
         if rastext:
-            regionCoords = rastext.split(',')
-            if len(regionCoords) >= 4:
-                arguments.append('-te')
-                arguments.append(regionCoords[0])
-                arguments.append(regionCoords[2])
-                arguments.append(regionCoords[1])
-                arguments.append(regionCoords[3])
+            arguments.extend(rastext)
 
         if GdalUtils.version() >= 2000000:
-            if rastext and rastext_crs:
+            if rastext and rastext_crs is not None:
                 arguments.append('-te_srs')
                 arguments.append(rastext_crs)
 
