@@ -757,7 +757,7 @@ QgsGrassFeatureSource::QgsGrassFeatureSource( const QgsGrassProvider* p )
     , mGrassType( p->mGrassType )
     , mQgisType( p->mQgisType )
     , mFields( p->fields() )
-    , mEncoding( p->mEncoding )
+    , mEncoding( p->textEncoding() )
     , mEditing( p->mEditBuffer )
 {
   Q_ASSERT( mLayer );

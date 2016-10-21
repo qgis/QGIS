@@ -343,7 +343,6 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     QStringList errors() const;
 
-
     /**
      * It returns false by default.
      * Must be implemented by providers that support saving and loading styles to db returning true
@@ -381,24 +380,57 @@ class QgsVectorDataProvider : QgsDataProvider
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const;
 
   signals:
-    /** Signals an error in this provider */
-    void raiseError( const QString& msg );
+    /**
+     * Signals an error in this provider
+     *
+     * @note Added const in QGIS 3.0
+     */
+    void raiseError( const QString& msg ) const;
 
   protected:
+    /**
+     * Invalidates the min/max cache. This will force the provider to recalculate the
+     * cache the next time it is requested.
+     */
     void clearMinMaxCache();
 
-    //! Populates the cache of minimum and maximum attribute values.
+    /**
+     * Populates the cache of minimum and maximum attribute values.
+     */
     void fillMinMaxCache() const;
 
     /**
-     * Raises an error message from the provider.
+     * Push a notification about errors that happened in this providers scope.
+     * Errors should be translated strings that require the users immediate
+     * attention.
+     *
+     * For general debug information use QgsMessageLog::logMessage() instead.
+     *
+     * @note Added in QGIS 3.0
      */
     void pushError( const QString& msg ) const;
 
-
-    /** Converts the geometry to the provider type if possible / necessary
-    @return the converted geometry or nullptr if no conversion was necessary or possible*/
+    /**
+     * Converts the geometry to the provider type if possible / necessary
+     * @return the converted geometry or nullptr if no conversion was necessary or possible
+     */
     QgsGeometry* convertToProviderType( const QgsGeometry& geom ) const /Factory/;
+
+    /**
+     * Set the list of native types supported by this provider.
+     * Usually done in the constructor.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setNativeTypes(const QList<QgsVectorDataProvider::NativeType>& nativeTypes);
+
+    /**
+     * Get this providers encoding
+     *
+     * @note Added in QGIS 3.0
+     */
+    QTextCodec* textEncoding() const;
+
 };
 
 QFlags<QgsVectorDataProvider::Capability> operator|(QgsVectorDataProvider::Capability f1, QFlags<QgsVectorDataProvider::Capability> f2);

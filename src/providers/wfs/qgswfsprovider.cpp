@@ -666,7 +666,7 @@ bool QgsWFSProvider::setSubsetString( const QString& theSQL, bool updateFeatureC
   mShared->invalidateCache();
 
   mSubsetString = theSQL;
-  mCacheMinMaxDirty = true;
+  clearMinMaxCache();
 
   // update URI
   mShared->mFields = mThisTypenameFields;

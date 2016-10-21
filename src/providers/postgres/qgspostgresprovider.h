@@ -270,6 +270,11 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const override;
 
+    /**
+     * Return list of indexes to names for QgsPalLabeling fix
+     */
+    virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
+
   signals:
     /**
      *   This is emitted whenever the worker thread has fully calculated the
@@ -356,6 +361,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Search all the layers using the given table.
      */
     static QList<QgsVectorLayer*> searchLayers( const QList<QgsVectorLayer*>& layers, const QString& connectionInfo, const QString& schema, const QString& tableName );
+
+    /** Old-style mapping of index to name for QgsPalLabeling fix */
+    QgsAttrPalIndexNameHash mAttrPalIndexName;
 
     QgsFields mAttributeFields;
     QString mDataComment;

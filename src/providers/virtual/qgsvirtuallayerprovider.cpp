@@ -494,7 +494,7 @@ QString QgsVirtualLayerProvider::subsetString() const
 bool QgsVirtualLayerProvider::setSubsetString( const QString& subset, bool updateFeatureCount )
 {
   mSubset = subset;
-  mCacheMinMaxDirty = true;
+  clearMinMaxCache();
   if ( updateFeatureCount )
     updateStatistics();
   return true;
