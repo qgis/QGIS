@@ -193,12 +193,12 @@ class ParameterExtent(Parameter):
 
     USE_MIN_COVERING_EXTENT = 'USE_MIN_COVERING_EXTENT'
 
-    def __init__(self, name='', description='', default=None, optional=True):
+    def __init__(self, name='', description='', default=None, optional=False):
         Parameter.__init__(self, name, description, default, optional)
         # The value is a string in the form "xmin, xmax, ymin, ymax"
 
     def setValue(self, text):
-        if not text:
+        if text is None:
             if not self.optional:
                 return False
             self.value = None
