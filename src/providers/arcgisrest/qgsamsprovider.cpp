@@ -66,7 +66,7 @@ void QgsAmsLegendFetcher::handleFinished()
   }
   QVariantMap queryResults = doc.object().toVariantMap();
   QgsDataSourceUri dataSource( mProvider->dataSourceUri() );
-  QList< QPair<QString, QImage> > legendEntries;
+  QVector< QPair<QString, QImage> > legendEntries;
   foreach ( const QVariant& result, queryResults["layers"].toList() )
   {
     QVariantMap queryResultMap = result.toMap();
