@@ -387,7 +387,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties>& laye
       if ( alreadyFoundGeometry )
       {
         QgsDebugMsg( QString( "Will ignore geometry field %1 from typename %2" ).
-                     arg( mLayerProperties[i].mGeometryAttribute ).arg( mLayerProperties[i].mName ) );
+                     arg( mLayerProperties[i].mGeometryAttribute, mLayerProperties[i].mName ) );
         mLayerProperties[i].mGeometryAttribute.clear();
       }
       alreadyFoundGeometry = true;

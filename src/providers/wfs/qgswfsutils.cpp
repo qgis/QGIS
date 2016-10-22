@@ -61,7 +61,7 @@ QString QgsWFSUtils::getCacheDirectory( bool createIfNotExisting )
     QMutexLocker locker( &gmMutex );
     if ( !QDir( baseDirectory ).exists( processPath ) )
     {
-      QgsDebugMsg( QString( "Creating our cache dir %1/%2" ).arg( baseDirectory ).arg( processPath ) );
+      QgsDebugMsg( QString( "Creating our cache dir %1/%2" ).arg( baseDirectory, processPath ) );
       QDir( baseDirectory ).mkpath( processPath );
     }
     if ( gmCounter == 0 && gmKeepAliveWorks )

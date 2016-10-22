@@ -118,7 +118,7 @@ QgsAfsProvider::QgsAfsProvider( const QString& uri )
   QVariantMap objectIdData = QgsArcGisRestUtils::getObjectIds( mDataSource.param( "url" ), errorTitle, errorMessage );
   if ( objectIdData.isEmpty() )
   {
-    appendError( QgsErrorMessage( tr( "getObjectIds failed: %1 - %2" ).arg( errorTitle ).arg( errorMessage ), "AFSProvider" ) );
+    appendError( QgsErrorMessage( tr( "getObjectIds failed: %1 - %2" ).arg( errorTitle, errorMessage ), "AFSProvider" ) );
     return;
   }
   if ( !objectIdData["objectIdFieldName"].isValid() || !objectIdData["objectIds"].isValid() )

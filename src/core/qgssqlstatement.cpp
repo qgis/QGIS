@@ -237,7 +237,7 @@ bool QgsSQLStatement::doBasicValidationChecks( QString& errorMsgOut ) const
     {
       if ( !errorMsgOut.isEmpty() )
         errorMsgOut += " ";
-      errorMsgOut += QString( tr( "Table %1 is referenced by column %2, but not selected in FROM / JOIN." ) ).arg( pair.first ).arg( pair.second );
+      errorMsgOut += QString( tr( "Table %1 is referenced by column %2, but not selected in FROM / JOIN." ) ).arg( pair.first, pair.second );
     }
   }
 

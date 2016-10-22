@@ -41,7 +41,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
   QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( connection.uri().param( "url" ), errorTitle, errorMessage );
   if ( serviceInfoMap.isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Error" ), tr( "Failed to retrieve service capabilities:\n%1: %2" ).arg( errorTitle ).arg( errorMessage ) );
+    QMessageBox::warning( this, tr( "Error" ), tr( "Failed to retrieve service capabilities:\n%1: %2" ).arg( errorTitle, errorMessage ) );
     return false;
   }
 
@@ -58,7 +58,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
     QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( connection.uri().param( "url" ) + "/" + layerInfoMap["id"].toString(), errorTitle, errorMessage );
     if ( layerData.isEmpty() )
     {
-      layerErrors.append( tr( "Layer %1: %2 - %3" ).arg( layerInfoMap["id"].toString() ).arg( errorTitle ).arg( errorMessage ) );
+      layerErrors.append( tr( "Layer %1: %2 - %3" ).arg( layerInfoMap["id"].toString(), errorTitle, errorMessage ) );
       continue;
     }
     // insert the typenames, titles and abstracts into the tree view

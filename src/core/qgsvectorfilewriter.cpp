@@ -281,7 +281,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   {
     if ( fileEncoding.compare( metadata.compulsoryEncoding, Qt::CaseInsensitive ) != 0 )
     {
-      QgsDebugMsg( QString( "forced %1 encoding for %2" ).arg( metadata.compulsoryEncoding ).arg( driverName ) );
+      QgsDebugMsg( QString( "forced %1 encoding for %2" ).arg( metadata.compulsoryEncoding, driverName ) );
       fileEncoding = metadata.compulsoryEncoding;
     }
 

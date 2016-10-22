@@ -291,12 +291,12 @@ QVariantList QgsJSONUtils::parseArray( const QString& json, QVariant::Type type 
   QVariantList result;
   if ( error.error != QJsonParseError::NoError )
   {
-    QgsLogger::warning( QString( "Cannot parse json (%1): %2" ).arg( error.errorString() ).arg( json ) );
+    QgsLogger::warning( QString( "Cannot parse json (%1): %2" ).arg( error.errorString(), json ) );
     return result;
   }
   if ( !jsonDoc.isArray() )
   {
-    QgsLogger::warning( QString( "Cannot parse json (%1) as array: %2" ).arg( error.errorString() ).arg( json ) );
+    QgsLogger::warning( QString( "Cannot parse json (%1) as array: %2" ).arg( error.errorString(), json ) );
     return result;
   }
   Q_FOREACH ( const QJsonValue cur, jsonDoc.array() )

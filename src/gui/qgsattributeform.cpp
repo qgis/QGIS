@@ -793,9 +793,9 @@ void QgsAttributeForm::displayInvalidConstraintMessage( const QStringList& f,
   int size = f.size() > max ? max : f.size();
   QString descriptions;
   for ( int i = 0; i < size; i++ )
-    descriptions += QString( "<li>%1: <i>%2</i></li>" ).arg( f[i] ).arg( d[i] );
+    descriptions += QString( "<li>%1: <i>%2</i></li>" ).arg( f[i], d[i] );
 
-  QString msg = QString( "<b>%1</b><ul>%2</ul>" ).arg( tr( "Invalid fields" ) ).arg( descriptions ) ;
+  QString msg = QString( "<b>%1</b><ul>%2</ul>" ).arg( tr( "Invalid fields" ), descriptions ) ;
 
   mInvalidConstraintMessage->setText( msg );
   mTopMessageWidget->show();

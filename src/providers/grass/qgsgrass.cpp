@@ -1579,7 +1579,7 @@ QStringList QgsGrass::grassObjects( const QgsGrassObject& mapsetObject, QgsGrass
       catch ( QgsGrass::Exception &e )
       {
         // TODO: notify somehow user
-        QgsDebugMsg( QString( "Cannot run %1: %2" ).arg( cmd ).arg( e.what() ) );
+        QgsDebugMsg( QString( "Cannot run %1: %2" ).arg( cmd, e.what() ) );
       }
     }
 #endif

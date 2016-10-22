@@ -150,7 +150,7 @@ void QgsAfsConnectionItem::deleteConnection()
 QgsAfsLayerItem::QgsAfsLayerItem( QgsDataItem* parent, const QString &name, const QString &url, const QString &title, const QString& authid )
     : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Vector, "arcgisfeatureserver" )
 {
-  mUri = QString( "crs='%1' url='%2'" ).arg( authid ).arg( url );
+  mUri = QString( "crs='%1' url='%2'" ).arg( authid, url );
   setState( Populated );
   mIconName = "mIconConnect.png";
 }
