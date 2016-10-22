@@ -54,9 +54,6 @@ class Eliminate(GeoAlgorithm):
     MODE_SMALLEST_AREA = 1
     MODE_BOUNDARY = 2
 
-    def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'eliminate.png'))
-
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Eliminate sliver polygons')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
