@@ -1106,8 +1106,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsDebugMsg( "PROFILE TIMES" );
   QgsDebugMsg( QString( "PROFILE TIMES TOTAL - %1 " ).arg( mProfiler->totalTime() ) );
 #ifdef QGISDEBUG
-  QList<QPair<QString, double> >::const_iterator it = mProfiler->profileTimes().constBegin();
-  for ( ; it != mProfiler->profileTimes().constEnd(); ++it )
+  QList<QPair<QString, double> > profileTimes = mProfiler->profileTimes();
+  QList<QPair<QString, double> >::const_iterator it = profileTimes.constBegin();
+  for ( ; it != profileTimes.constEnd(); ++it )
   {
     QString name = ( *it ).first;
     double time = ( *it ).second;
