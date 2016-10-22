@@ -2036,7 +2036,7 @@ void QgsSvgMarkerSymbolLayerWidget::on_mFileToolButton_clicked()
 
 void QgsSvgMarkerSymbolLayerWidget::on_mFileLineEdit_textEdited( const QString& text )
 {
-  if ( !QFileInfo( text ).exists() )
+  if ( !QFileInfo::exists( text ) )
   {
     return;
   }
@@ -2047,7 +2047,7 @@ void QgsSvgMarkerSymbolLayerWidget::on_mFileLineEdit_textEdited( const QString& 
 
 void QgsSvgMarkerSymbolLayerWidget::on_mFileLineEdit_editingFinished()
 {
-  if ( !QFileInfo( mFileLineEdit->text() ).exists() )
+  if ( !QFileInfo::exists( mFileLineEdit->text() ) )
   {
     QUrl url( mFileLineEdit->text() );
     if ( !url.isValid() )

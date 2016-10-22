@@ -759,7 +759,7 @@ void QgsGrass::setMapsetSearchPathWatcher()
 
   QString searchFilePath = getDefaultMapsetPath() + "/SEARCH_PATH";
 
-  if ( QFileInfo( searchFilePath ).exists() )
+  if ( QFileInfo::exists( searchFilePath ) )
   {
     QgsDebugMsg( "add watcher on SEARCH_PATH file " + searchFilePath );
     mMapsetSearchPathWatcher->addPath( searchFilePath );
@@ -781,7 +781,7 @@ void QgsGrass::onSearchPathFileChanged( const QString & path )
   {
     // changed or removed
     loadMapsetSearchPath();
-    if ( !QFileInfo( searchFilePath ).exists() ) // removed
+    if ( !QFileInfo::exists( searchFilePath ) ) // removed
     {
       // reset watcher to mapset
       setMapsetSearchPathWatcher();
@@ -790,7 +790,7 @@ void QgsGrass::onSearchPathFileChanged( const QString & path )
   else
   {
     // mapset directory changed
-    if ( QFileInfo( searchFilePath ).exists() ) // search path file added
+    if ( QFileInfo::exists( searchFilePath ) ) // search path file added
     {
       loadMapsetSearchPath();
       setMapsetSearchPathWatcher();

@@ -84,7 +84,7 @@ void QgsOSMImportDialog::dbFileNameChanged( const QString& fileName )
 void QgsOSMImportDialog::onOK()
 {
   // output file exists?
-  if ( QFileInfo( editDbFileName->text() ).exists() )
+  if ( QFileInfo::exists( editDbFileName->text() ) )
   {
     int res = QMessageBox::question( this, tr( "OpenStreetMap import" ), tr( "Output database file exists already. Overwrite?" ), QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )

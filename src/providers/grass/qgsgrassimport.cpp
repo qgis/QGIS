@@ -804,7 +804,7 @@ bool QgsGrassExternal::import()
     QString cmd = QgsGrass::gisbase() + "/bin/r.external";
     QStringList arguments;
 
-    if ( QFileInfo( mSource ).exists() )
+    if ( QFileInfo::exists( mSource ) )
     {
       arguments << "input=" + mSource;
     }

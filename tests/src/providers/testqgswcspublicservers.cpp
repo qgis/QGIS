@@ -374,7 +374,7 @@ void TestQgsWcsPublicServers::test()
         QString myPath = myVersionDirPath + '/' + myCoverage.identifier;
         QString myLogPath = myPath + ".log";
 
-        if ( QFileInfo( myLogPath ).exists() && !mForce )
+        if ( QFileInfo::exists( myLogPath ) && !mForce )
         {
           //QMap<QString, QString> log = readLog( myLogPath );
           //if ( !log.value( "identifier" ).isEmpty() && log.value( "error" ).isEmpty() ) continue;
