@@ -87,8 +87,6 @@ QString QgsValueMapWidgetFactory::representValue( QgsVectorLayer* vl, int fieldI
   Q_UNUSED( cache )
 
   QString valueInternalText;
-  QString valueDisplayText;
-  QSettings settings;
   if ( value.isNull() )
     valueInternalText = QString( VALUEMAP_NULL_TEXT );
   else

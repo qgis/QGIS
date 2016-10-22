@@ -3862,7 +3862,6 @@ static QString getNextString( const QString& txt, int& i, const QString& sep )
   }
   else
   {
-    QString ret;
     int sepPos = cur.indexOf( sep );
     if ( sepPos < 0 )
     {

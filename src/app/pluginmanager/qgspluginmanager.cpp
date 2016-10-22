@@ -1240,7 +1240,6 @@ void QgsPluginManager::on_wvDetails_linkClicked( const QUrl & url )
     if ( url.host() == "plugin.vote" )
     {
       QString params = url.path();
-      QString response;
       sendVote( params.split( '/' )[1].toInt(), params.split( '/' )[2].toInt() );
     }
   }

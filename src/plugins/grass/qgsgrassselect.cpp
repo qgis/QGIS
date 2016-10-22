@@ -248,7 +248,6 @@ void QgsGrassSelect::setMaps()
 
   // Mapset directory
   QString ldpath = egisdbase->text() + "/" + elocation->currentText() + "/" + emapset->currentText();
-  QDir ld = QDir( ldpath );
 
   int idx = 0;
   int sel = -1;

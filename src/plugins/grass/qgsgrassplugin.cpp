@@ -720,9 +720,6 @@ void QgsGrassPlugin::redrawRegion()
 
 void QgsGrassPlugin::openMapset()
 {
-
-  QString element;
-
   QgsGrassSelect *sel = new QgsGrassSelect( qGisInterface->mainWindow(), QgsGrassSelect::MAPSET );
 
   if ( !sel->exec() )

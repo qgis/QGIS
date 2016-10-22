@@ -825,10 +825,6 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   // Check if this parameter is required
   mRequired = gnode.toElement().attribute( "required" ) == "yes";
 
-  QDomNode promptNode = gnode.namedItem( "gisprompt" );
-  QDomElement promptElem = promptNode.toElement();
-  QString element = promptElem.attribute( "element" );
-
   // Read "layeroption" is defined
   QString opt = qdesc.attribute( "layeroption" );
   if ( ! opt.isNull() )
@@ -1482,10 +1478,6 @@ QgsGrassModuleFile::QgsGrassModuleFile(
     mTitle = tr( "File" );
   }
   adjustTitle();
-
-  QDomNode promptNode = gnode.namedItem( "gisprompt" );
-  QDomElement promptElem = promptNode.toElement();
-  QString element = promptElem.attribute( "element" );
 
   if ( qdesc.attribute( "type" ).toLower() == "new" )
   {
