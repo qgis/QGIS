@@ -37,7 +37,7 @@ QVector<QgsDataItem*> QgsAfsRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
 
-  foreach ( QString connName, QgsOwsConnection::connectionList( "ArcGisFeatureServer" ) )
+  Q_FOREACH ( const QString& connName, QgsOwsConnection::connectionList( "ArcGisFeatureServer" ) )
   {
     QgsOwsConnection connection( "ArcGisFeatureServer", connName );
     QString path = "afs:/" + connName;

@@ -202,7 +202,7 @@ static QgsAbstractGeometry* parseEsriGeometryMultiPoint( const QVariantMap& geom
     return nullptr;
 
   QgsMultiPointV2* multiPoint = new QgsMultiPointV2();
-  foreach ( QVariant coordData, coordsList )
+  Q_FOREACH ( const QVariant& coordData, coordsList )
   {
     QVariantList coordList = coordData.toList();
     QgsPointV2* p = parsePoint( coordList, pointType );

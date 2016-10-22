@@ -410,7 +410,7 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
   }
 
   QString concatenatedTypenames;
-  Q_FOREACH ( QString typeName, typenameList )
+  Q_FOREACH ( const QString& typeName, typenameList )
   {
     if ( !concatenatedTypenames.isEmpty() )
       concatenatedTypenames += ",";
@@ -441,7 +441,7 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
   mShared->mLayerPropertiesList.clear();
   QMap < QString, QgsFields > mapTypenameToFields;
   QMap < QString, QString > mapTypenameToGeometryAttribute;
-  Q_FOREACH ( QString typeName, typenameList )
+  Q_FOREACH ( const QString& typeName, typenameList )
   {
     QString geometryAttribute;
     QgsFields fields;
@@ -558,7 +558,7 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
       else
       {
         // * syntax
-        Q_FOREACH ( QString typeName, typenameList )
+        Q_FOREACH ( const QString& typeName, typenameList )
         {
           const QgsFields tableFields = mapTypenameToFields[typeName];
           for ( int i = 0; i < tableFields.size();i++ )

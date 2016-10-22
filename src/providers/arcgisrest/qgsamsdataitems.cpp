@@ -33,7 +33,7 @@ QVector<QgsDataItem*> QgsAmsRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
 
-  foreach ( QString connName, QgsOwsConnection::connectionList( "ArcGisMapServer" ) )
+  Q_FOREACH ( const QString& connName, QgsOwsConnection::connectionList( "ArcGisMapServer" ) )
   {
     QgsOwsConnection connection( "ArcGisMapServer", connName );
     QString path = "ams:/" + connName;

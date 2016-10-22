@@ -3293,7 +3293,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   }
 
   QList<QDomElement> listElem;
-  Q_FOREACH ( QString columnName, node->usingColumns() )
+  Q_FOREACH ( const QString& columnName, node->usingColumns() )
   {
     QDomElement eqElem = mDoc.createElement( mFilterPrefix + ":PropertyIsEqualTo" );
     QDomElement propElem1 = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
@@ -3312,7 +3312,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   else if ( listElem.size() > 1 )
   {
     QDomElement andElem = mDoc.createElement( mFilterPrefix + ":And" );
-    Q_FOREACH ( QDomElement elem, listElem )
+    Q_FOREACH ( const QDomElement& elem, listElem )
     {
       andElem.appendChild( elem );
     }
@@ -3383,7 +3383,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   else if ( listElem.size() > 1 )
   {
     QDomElement andElem = mDoc.createElement( mFilterPrefix + ":And" );
-    Q_FOREACH ( QDomElement elem, listElem )
+    Q_FOREACH ( const QDomElement& elem, listElem )
     {
       andElem.appendChild( elem );
     }

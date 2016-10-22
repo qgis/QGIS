@@ -231,7 +231,7 @@ bool QgsSQLStatement::doBasicValidationChecks( QString& errorMsgOut ) const
   QgsSQLStatementCollectTableNames v;
   mRootNode->accept( v );
 
-  Q_FOREACH ( QgsSQLStatementCollectTableNames::TableColumnPair pair, v.tableNamesReferenced )
+  Q_FOREACH ( const QgsSQLStatementCollectTableNames::TableColumnPair& pair, v.tableNamesReferenced )
   {
     if ( !v.tableNamesDeclared.contains( pair.first ) )
     {

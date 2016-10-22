@@ -3264,7 +3264,7 @@ static QVariant fcnArrayRemoveAll( const QVariantList& values, const QgsExpressi
 static QVariant fcnArrayCat( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QVariantList list;
-  Q_FOREACH ( QVariant cur, values )
+  Q_FOREACH ( const QVariant& cur, values )
   {
     list += getListValue( cur, parent );
   }
@@ -3274,7 +3274,11 @@ static QVariant fcnArrayCat( const QVariantList& values, const QgsExpressionCont
 static QVariant fcnArrayIntersect( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   const QVariantList array1 = getListValue( values.at( 0 ), parent );
-  Q_FOREACH ( QVariant cur, getListValue( values.at( 1 ), parent ) ) if ( array1.contains( cur ) ) return QVariant( true );
+  Q_FOREACH ( const QVariant& cur, getListValue( values.at( 1 ), parent ) )
+  {
+    if ( array1.contains( cur ) )
+      return QVariant( true );
+  }
   return QVariant( false );
 }
 
@@ -3315,7 +3319,7 @@ static QVariant fcnMapInsert( const QVariantList& values, const QgsExpressionCon
 static QVariant fcnMapConcat( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
 {
   QVariantMap result;
-  Q_FOREACH ( QVariant cur, values )
+  Q_FOREACH ( const QVariant& cur, values )
   {
     const QVariantMap curMap = getMapValue( cur, parent );
     for ( QVariantMap::const_iterator it = curMap.constBegin(); it != curMap.constEnd(); ++it )

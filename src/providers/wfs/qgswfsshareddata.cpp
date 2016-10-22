@@ -383,7 +383,7 @@ bool QgsWFSSharedData::createCache()
     {
       mCacheTablename = "features";
       sql = QString( "CREATE TABLE %1 (%2 INTEGER PRIMARY KEY" ).arg( mCacheTablename, fidName );
-      Q_FOREACH ( QgsField field, cacheFields )
+      Q_FOREACH ( const QgsField& field, cacheFields )
       {
         QString type( "VARCHAR" );
         if ( field.type() == QVariant::Int )
@@ -830,7 +830,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
   QVector<QgsWFSFeatureGmlIdPair> updatedFeatureList;
 
   QgsRectangle localComputedExtent( mComputedExtent );
-  Q_FOREACH ( QgsWFSFeatureGmlIdPair featPair, featureList )
+  Q_FOREACH ( const QgsWFSFeatureGmlIdPair& featPair, featureList )
   {
     const QgsFeature& gmlFeature = featPair.first;
 

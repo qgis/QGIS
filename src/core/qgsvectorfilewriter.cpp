@@ -263,7 +263,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         {
           QFileInfoList fileList = dir.entryInfoList(
                                      QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst );
-          Q_FOREACH ( QFileInfo info, fileList )
+          Q_FOREACH ( const QFileInfo& info, fileList )
           {
             QFile::remove( info.absoluteFilePath() );
           }
