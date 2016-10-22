@@ -20,7 +20,7 @@
 #include <QStringList>
 
 //constants
-const QString QgsFeatureRequest::AllAttributes = QString( "#!allattributes!#" );
+const QString QgsFeatureRequest::AllAttributes = QStringLiteral( "#!allattributes!#" );
 
 QgsFeatureRequest::QgsFeatureRequest()
     : mFilter( FilterNone )
@@ -138,7 +138,7 @@ QgsFeatureRequest& QgsFeatureRequest::combineFilterExpression( const QString& ex
 {
   if ( mFilterExpression )
   {
-    setFilterExpression( QString( "(%1) AND (%2)" ).arg( mFilterExpression->expression(), expression ) );
+    setFilterExpression( QStringLiteral( "(%1) AND (%2)" ).arg( mFilterExpression->expression(), expression ) );
   }
   else
   {
@@ -342,7 +342,7 @@ void QgsFeatureRequest::OrderByClause::setNullsFirst( bool nullsFirst )
 
 QString QgsFeatureRequest::OrderByClause::dump() const
 {
-  return QString( "%1 %2 %3" )
+  return QStringLiteral( "%1 %2 %3" )
          .arg( mExpression.expression(),
                mAscending ? "ASC" : "DESC",
                mNullsFirst ? "NULLS FIRST" : "NULLS LAST" );
@@ -373,9 +373,9 @@ void QgsFeatureRequest::OrderBy::save( QDomElement& elem ) const
   for ( it = constBegin(); it != constEnd(); ++it )
   {
     const OrderByClause& clause = *it;
-    QDomElement clauseElem = doc.createElement( "orderByClause" );
-    clauseElem.setAttribute( "asc", clause.ascending() );
-    clauseElem.setAttribute( "nullsFirst", clause.nullsFirst() );
+    QDomElement clauseElem = doc.createElement( QStringLiteral( "orderByClause" ) );
+    clauseElem.setAttribute( QStringLiteral( "asc" ), clause.ascending() );
+    clauseElem.setAttribute( QStringLiteral( "nullsFirst" ), clause.nullsFirst() );
     clauseElem.appendChild( doc.createTextNode( clause.expression().expression() ) );
 
     elem.appendChild( clauseElem );
@@ -392,8 +392,8 @@ void QgsFeatureRequest::OrderBy::load( const QDomElement& elem )
   {
     QDomElement clauseElem = clauses.at( i ).toElement();
     QString expression = clauseElem.text();
-    bool asc = clauseElem.attribute( "asc" ).toInt() != 0;
-    bool nullsFirst  = clauseElem.attribute( "nullsFirst" ).toInt() != 0;
+    bool asc = clauseElem.attribute( QStringLiteral( "asc" ) ).toInt() != 0;
+    bool nullsFirst  = clauseElem.attribute( QStringLiteral( "nullsFirst" ) ).toInt() != 0;
 
     append( OrderByClause( expression, asc, nullsFirst ) );
   }
@@ -426,5 +426,5 @@ QString QgsFeatureRequest::OrderBy::dump() const
     results << clause.dump();
   }
 
-  return results.join( ", " );
+  return results.join( QStringLiteral( ", " ) );
 }

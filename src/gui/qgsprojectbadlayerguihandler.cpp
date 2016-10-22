@@ -123,13 +123,13 @@ bool QgsProjectBadLayerGuiHandler::findMissingFile( const QString& fileFilters, 
   {
     case IS_VECTOR:
     {
-      memoryQualifier = "lastVectorFileFilter";
+      memoryQualifier = QStringLiteral( "lastVectorFileFilter" );
 
       break;
     }
     case IS_RASTER:
     {
-      memoryQualifier = "lastRasterFileFilter";
+      memoryQualifier = QStringLiteral( "lastRasterFileFilter" );
 
       break;
     }

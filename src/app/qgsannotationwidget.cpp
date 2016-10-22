@@ -44,13 +44,13 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * par
     mFrameColorButton->setColor( mItem->frameColor() );
     mFrameColorButton->setColorDialogTitle( tr( "Select frame color" ) );
     mFrameColorButton->setAllowAlpha( true );
-    mFrameColorButton->setContext( "symbology" );
+    mFrameColorButton->setContext( QStringLiteral( "symbology" ) );
     mFrameColorButton->setNoColorString( tr( "Transparent frame" ) );
     mFrameColorButton->setShowNoColor( true );
     mBackgroundColorButton->setColor( mItem->frameBackgroundColor() );
     mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
     mBackgroundColorButton->setAllowAlpha( true );
-    mBackgroundColorButton->setContext( "symbology" );
+    mBackgroundColorButton->setContext( QStringLiteral( "symbology" ) );
     mBackgroundColorButton->setNoColorString( tr( "Transparent" ) );
     mBackgroundColorButton->setShowNoColor( true );
 

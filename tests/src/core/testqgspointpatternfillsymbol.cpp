@@ -93,7 +93,7 @@ void TestQgsPointPatternFillSymbol::initTestCase()
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
+                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
@@ -115,7 +115,7 @@ void TestQgsPointPatternFillSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
-  mReport += "<h1>Point Pattern Fill Tests</h1>\n";
+  mReport += QLatin1String( "<h1>Point Pattern Fill Tests</h1>\n" );
 
 }
 void TestQgsPointPatternFillSymbol::cleanupTestCase()
@@ -134,12 +134,12 @@ void TestQgsPointPatternFillSymbol::cleanupTestCase()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillSymbol()
 {
-  mReport += "<h2>Point pattern fill symbol renderer test</h2>\n";
+  mReport += QLatin1String( "<h2>Point pattern fill symbol renderer test</h2>\n" );
 
   QgsStringMap properties;
-  properties.insert( "color", "0,0,0,255" );
-  properties.insert( "name", "circle" );
-  properties.insert( "size", "5.0" );
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
   QgsMarkerSymbol* pointSymbol = QgsMarkerSymbol::createSimple( properties );
 
   mPointPatternFill->setSubSymbol( pointSymbol );
@@ -148,14 +148,14 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbol()
 
 void TestQgsPointPatternFillSymbol::dataDefinedSubSymbol()
 {
-  mReport += "<h2>Point pattern symbol data defined sub symbol test</h2>\n";
+  mReport += QLatin1String( "<h2>Point pattern symbol data defined sub symbol test</h2>\n" );
 
   QgsStringMap properties;
-  properties.insert( "color", "0,0,0,255" );
-  properties.insert( "name", "circle" );
-  properties.insert( "size", "5.0" );
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
   QgsMarkerSymbol* pointSymbol = QgsMarkerSymbol::createSimple( properties );
-  pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( "color", new QgsDataDefined( QString( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
+  pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QStringLiteral( "color" ), new QgsDataDefined( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
   mPointPatternFill->setSubSymbol( pointSymbol );
   QVERIFY( imageCheck( "datadefined_subsymbol" ) );
 }
@@ -172,7 +172,7 @@ bool TestQgsPointPatternFillSymbol::imageCheck( const QString& theTestType )
   mMapSettings.setExtent( mpPolysLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
-  myChecker.setControlPathPrefix( "symbol_pointpatternfill" );
+  myChecker.setControlPathPrefix( QStringLiteral( "symbol_pointpatternfill" ) );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   bool myResultFlag = myChecker.runTest( theTestType );

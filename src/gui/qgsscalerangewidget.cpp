@@ -37,9 +37,9 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
                           "This limit is inclusive, that means the layer will be displayed on this scale." ) );
 
   mMinimumScaleIconLabel = new QLabel( this );
-  mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomOut.svg" ) );
+  mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( QStringLiteral( "/mActionZoomOut.svg" ) ) );
   mMaximumScaleIconLabel = new QLabel( this );
-  mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomIn.svg" ) );
+  mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( QStringLiteral( "/mActionZoomIn.svg" ) ) );
 
   mMinimumScaleWidget = new QgsScaleWidget( this );
   mMaximumScaleWidget = new QgsScaleWidget( this );
@@ -73,10 +73,10 @@ QgsScaleRangeWidget::~QgsScaleRangeWidget()
 
 void QgsScaleRangeWidget::reloadProjectScales()
 {
-  bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
+  bool projectScales = QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) );
   if ( projectScales )
   {
-    QStringList scalesList = QgsProject::instance()->readListEntry( "Scales", "/ScalesList" );
+    QStringList scalesList = QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
     mMinimumScaleWidget->updateScales( scalesList );
     mMaximumScaleWidget->updateScales( scalesList );
   }

@@ -27,9 +27,9 @@ QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget* parent )
     : QWidget( parent )
 {
   QSettings settings;
-  int minimumFactor = ( int ) 100 * settings.value( "/qgis/magnifier_factor_min", 0.1 ).toDouble();
-  int maximumFactor = ( int ) 100 * settings.value( "/qgis/magnifier_factor_max", 10 ).toDouble();
-  int defaultFactor = ( int ) 100 * settings.value( "/qgis/magnifier_factor_default", 1.0 ).toDouble();
+  int minimumFactor = ( int ) 100 * settings.value( QStringLiteral( "/qgis/magnifier_factor_min" ), 0.1 ).toDouble();
+  int maximumFactor = ( int ) 100 * settings.value( QStringLiteral( "/qgis/magnifier_factor_max" ), 10 ).toDouble();
+  int defaultFactor = ( int ) 100 * settings.value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble();
 
   // label
   mLabel = new QLabel();
@@ -41,7 +41,7 @@ QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget* parent )
   mLabel->setToolTip( tr( "Magnifier" ) );
 
   mSpinBox = new QgsDoubleSpinBox();
-  mSpinBox->setSuffix( "%" );
+  mSpinBox->setSuffix( QStringLiteral( "%" ) );
   mSpinBox->setKeyboardTracking( false );
   mSpinBox->setMaximumWidth( 120 );
   mSpinBox->setDecimals( 0 );

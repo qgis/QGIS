@@ -90,16 +90,16 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WindowFlags fl, boo
 
   QSettings settings;
   QgsDebugMsg( "restoring settings" );
-  restoreGeometry( settings.value( "/Windows/WFSSourceSelect/geometry" ).toByteArray() );
-  cbxUseTitleLayerName->setChecked( settings.value( "/Windows/WFSSourceSelect/UseTitleLayerName", false ).toBool() );
-  cbxFeatureCurrentViewExtent->setChecked( settings.value( "/Windows/WFSSourceSelect/FeatureCurrentViewExtent", true ).toBool() );
-  mHoldDialogOpen->setChecked( settings.value( "/Windows/WFSSourceSelect/HoldDialogOpen", false ).toBool() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/WFSSourceSelect/geometry" ) ).toByteArray() );
+  cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "/Windows/WFSSourceSelect/UseTitleLayerName" ), false ).toBool() );
+  cbxFeatureCurrentViewExtent->setChecked( settings.value( QStringLiteral( "/Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool() );
+  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "/Windows/WFSSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   mModel = new QStandardItemModel();
-  mModel->setHorizontalHeaderItem( MODEL_IDX_TITLE, new QStandardItem( "Title" ) );
-  mModel->setHorizontalHeaderItem( MODEL_IDX_NAME, new QStandardItem( "Name" ) );
-  mModel->setHorizontalHeaderItem( MODEL_IDX_ABSTRACT, new QStandardItem( "Abstract" ) );
-  mModel->setHorizontalHeaderItem( MODEL_IDX_SQL, new QStandardItem( "Sql" ) );
+  mModel->setHorizontalHeaderItem( MODEL_IDX_TITLE, new QStandardItem( QStringLiteral( "Title" ) ) );
+  mModel->setHorizontalHeaderItem( MODEL_IDX_NAME, new QStandardItem( QStringLiteral( "Name" ) ) );
+  mModel->setHorizontalHeaderItem( MODEL_IDX_ABSTRACT, new QStandardItem( QStringLiteral( "Abstract" ) ) );
+  mModel->setHorizontalHeaderItem( MODEL_IDX_SQL, new QStandardItem( QStringLiteral( "Sql" ) ) );
 
   mModelProxy = new QSortFilterProxyModel( this );
   mModelProxy->setSourceModel( mModel );
@@ -114,10 +114,10 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
 {
   QSettings settings;
   QgsDebugMsg( "saving settings" );
-  settings.setValue( "/Windows/WFSSourceSelect/geometry", saveGeometry() );
-  settings.setValue( "/Windows/WFSSourceSelect/UseTitleLayerName", cbxUseTitleLayerName->isChecked() );
-  settings.setValue( "/Windows/WFSSourceSelect/FeatureCurrentViewExtent", cbxFeatureCurrentViewExtent->isChecked() );
-  settings.setValue( "/Windows/WFSSourceSelect/HoldDialogOpen", mHoldDialogOpen->isChecked() );
+  settings.setValue( QStringLiteral( "/Windows/WFSSourceSelect/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/WFSSourceSelect/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
+  settings.setValue( QStringLiteral( "/Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), cbxFeatureCurrentViewExtent->isChecked() );
+  settings.setValue( QStringLiteral( "/Windows/WFSSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 
   delete mItemDelegate;
   delete mProjectionSelector;
@@ -175,7 +175,7 @@ QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString>& crsSet ) const
 {
   if ( crsSet.size() < 1 )
   {
-    return "";
+    return QLatin1String( "" );
   }
 
   //first: project CRS
@@ -231,7 +231,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     QMessageBox* box = new QMessageBox( QMessageBox::Critical, title, mCapabilities->errorMessage(), QMessageBox::Ok, this );
     box->setAttribute( Qt::WA_DeleteOnClose );
     box->setModal( true );
-    box->setObjectName( "WFSCapabilitiesErrorBox" );
+    box->setObjectName( QStringLiteral( "WFSCapabilitiesErrorBox" ) );
     if ( !property( "hideDialogs" ).toBool() )
       box->open();
 
@@ -495,9 +495,9 @@ void QgsWFSTableSelectedCallback::tableSelected( const QString& name )
   if ( !p.geometryAttribute().isEmpty() )
   {
     QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( p.geometryAttribute() ) );
-    fieldList << QgsSQLComposerDialog::PairNameType( fieldName, "geometry" );
+    fieldList << QgsSQLComposerDialog::PairNameType( fieldName, QStringLiteral( "geometry" ) );
   }
-  fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", "" );
+  fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", QLatin1String( "" ) );
 
   mDialog->addColumnNames( fieldList, name );
 }
@@ -521,7 +521,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
     QMessageBox* box = new QMessageBox( QMessageBox::Critical, tr( "Server exception" ), tr( "DescribeFeatureType failed" ), QMessageBox::Ok, this );
     box->setAttribute( Qt::WA_DeleteOnClose );
     box->setModal( true );
-    box->setObjectName( "WFSFeatureTypeErrorBox" );
+    box->setObjectName( QStringLiteral( "WFSFeatureTypeErrorBox" ) );
     if ( !property( "hideDialogs" ).toBool() )
       box->open();
 
@@ -622,9 +622,9 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
   if ( !p.geometryAttribute().isEmpty() )
   {
     QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( p.geometryAttribute() ) );
-    fieldList << QgsSQLComposerDialog::PairNameType( fieldName, "geometry" );
+    fieldList << QgsSQLComposerDialog::PairNameType( fieldName, QStringLiteral( "geometry" ) );
   }
-  fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", "" );
+  fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", QLatin1String( "" ) );
 
   d->addColumnNames( fieldList, QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ) );
 

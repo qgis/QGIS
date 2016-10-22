@@ -56,13 +56,13 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString& uri )
     }
 
     // Now remove all stuff that is not the core URL
-    url.removeQueryItem( "SERVICE" );
-    url.removeQueryItem( "VERSION" );
-    url.removeQueryItem( "TYPENAME" );
-    url.removeQueryItem( "REQUEST" );
-    url.removeQueryItem( "BBOX" );
-    url.removeQueryItem( "SRSNAME" );
-    url.removeQueryItem( "FILTER" );
+    url.removeQueryItem( QStringLiteral( "SERVICE" ) );
+    url.removeQueryItem( QStringLiteral( "VERSION" ) );
+    url.removeQueryItem( QStringLiteral( "TYPENAME" ) );
+    url.removeQueryItem( QStringLiteral( "REQUEST" ) );
+    url.removeQueryItem( QStringLiteral( "BBOX" ) );
+    url.removeQueryItem( QStringLiteral( "SRSNAME" ) );
+    url.removeQueryItem( QStringLiteral( "FILTER" ) );
     url.removeQueryItem( QgsWFSConstants::URI_PARAM_USERNAME );
     url.removeQueryItem( QgsWFSConstants::URI_PARAM_PASSWORD );
     url.removeQueryItem( QgsWFSConstants::URI_PARAM_AUTHCFG );
@@ -82,7 +82,7 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString& uri )
 
     setFilter( filter );
     if ( !bbox.isEmpty() )
-      mURI.setParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX, "1" );
+      mURI.setParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX, QStringLiteral( "1" ) );
   }
   else
   {
@@ -122,7 +122,7 @@ QUrl QgsWFSDataSourceURI::baseURL( bool bIncludeServiceWFS ) const
   QUrl url( mURI.param( QgsWFSConstants::URI_PARAM_URL ) );
   if ( bIncludeServiceWFS )
   {
-    url.addQueryItem( "SERVICE", "WFS" );
+    url.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WFS" ) );
   }
   return url;
 }
@@ -208,7 +208,7 @@ bool QgsWFSDataSourceURI::isRestrictedToRequestBBOX() const
     return true;
 
   // accept previously used version with typo
-  if ( mURI.hasParam( "retrictToRequestBBOX" ) && mURI.param( "retrictToRequestBBOX" ).toInt() == 1 )
+  if ( mURI.hasParam( QStringLiteral( "retrictToRequestBBOX" ) ) && mURI.param( QStringLiteral( "retrictToRequestBBOX" ) ).toInt() == 1 )
     return true;
 
   return false;
@@ -245,6 +245,6 @@ QString QgsWFSDataSourceURI::build( const QString& baseUri,
   uri.setSRSName( crsString );
   uri.setSql( sql );
   if ( restrictToCurrentViewExtent )
-    uri.mURI.setParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX, "1" );
+    uri.mURI.setParam( QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX, QStringLiteral( "1" ) );
   return uri.uri();
 }

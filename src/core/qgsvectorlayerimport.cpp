@@ -76,7 +76,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
   {
     delete myLib;
     mError = ErrProviderUnsupportedFeature;
-    mErrorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( providerKey, "createEmptyLayer" );
+    mErrorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( providerKey, QStringLiteral( "createEmptyLayer" ) );
     return;
   }
 
@@ -180,7 +180,7 @@ bool QgsVectorLayerImport::flushBuffer()
     mErrorMessage = QObject::tr( "Creation error for features from #%1 to #%2. Provider errors was: \n%3" )
                     .arg( mFeatureBuffer.first().id() )
                     .arg( mFeatureBuffer.last().id() )
-                    .arg( errors.join( "\n" ) );
+                    .arg( errors.join( QStringLiteral( "\n" ) ) );
 
     mError = ErrFeatureWriteFailed;
     mErrorCount += mFeatureBuffer.count();
@@ -241,15 +241,15 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   bool forceSinglePartGeom = false;
   if ( options )
   {
-    overwrite = options->take( "overwrite" ).toBool();
-    forceSinglePartGeom = options->take( "forceSinglePartGeometryType" ).toBool();
+    overwrite = options->take( QStringLiteral( "overwrite" ) ).toBool();
+    forceSinglePartGeom = options->take( QStringLiteral( "forceSinglePartGeometryType" ) ).toBool();
   }
 
   QgsFields fields = skipAttributeCreation ? QgsFields() : layer->fields();
   QgsWkbTypes::Type wkbType = layer->wkbType();
 
   // Special handling for Shapefiles
-  if ( layer->providerType() == "ogr" && layer->storageType() == "ESRI Shapefile" )
+  if ( layer->providerType() == QLatin1String( "ogr" ) && layer->storageType() == QLatin1String( "ESRI Shapefile" ) )
   {
     // convert field names to lowercase
     for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )

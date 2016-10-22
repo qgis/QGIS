@@ -41,29 +41,29 @@ QgsEditorWidgetConfig QgsValueRelationConfigDlg::config()
 {
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( "Layer", mLayerName->currentLayer() ? mLayerName->currentLayer()->id() : QString() );
-  cfg.insert( "Key", mKeyColumn->currentField() );
-  cfg.insert( "Value", mValueColumn->currentField() );
-  cfg.insert( "AllowMulti", mAllowMulti->isChecked() );
-  cfg.insert( "AllowNull", mAllowNull->isChecked() );
-  cfg.insert( "OrderByValue", mOrderByValue->isChecked() );
-  cfg.insert( "FilterExpression", mFilterExpression->toPlainText() );
-  cfg.insert( "UseCompleter", mUseCompleter->isChecked() );
+  cfg.insert( QStringLiteral( "Layer" ), mLayerName->currentLayer() ? mLayerName->currentLayer()->id() : QString() );
+  cfg.insert( QStringLiteral( "Key" ), mKeyColumn->currentField() );
+  cfg.insert( QStringLiteral( "Value" ), mValueColumn->currentField() );
+  cfg.insert( QStringLiteral( "AllowMulti" ), mAllowMulti->isChecked() );
+  cfg.insert( QStringLiteral( "AllowNull" ), mAllowNull->isChecked() );
+  cfg.insert( QStringLiteral( "OrderByValue" ), mOrderByValue->isChecked() );
+  cfg.insert( QStringLiteral( "FilterExpression" ), mFilterExpression->toPlainText() );
+  cfg.insert( QStringLiteral( "UseCompleter" ), mUseCompleter->isChecked() );
 
   return cfg;
 }
 
 void QgsValueRelationConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
 {
-  QgsVectorLayer* lyr = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( config.value( "Layer" ).toString() ) );
+  QgsVectorLayer* lyr = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( config.value( QStringLiteral( "Layer" ) ).toString() ) );
   mLayerName->setLayer( lyr );
-  mKeyColumn->setField( config.value( "Key" ).toString() );
-  mValueColumn->setField( config.value( "Value" ).toString() );
-  mAllowMulti->setChecked( config.value( "AllowMulti" ).toBool() );
-  mAllowNull->setChecked( config.value( "AllowNull" ).toBool() );
-  mOrderByValue->setChecked( config.value( "OrderByValue" ).toBool() );
-  mFilterExpression->setPlainText( config.value( "FilterExpression" ).toString() );
-  mUseCompleter->setChecked( config.value( "UseCompleter" ).toBool() );
+  mKeyColumn->setField( config.value( QStringLiteral( "Key" ) ).toString() );
+  mValueColumn->setField( config.value( QStringLiteral( "Value" ) ).toString() );
+  mAllowMulti->setChecked( config.value( QStringLiteral( "AllowMulti" ) ).toBool() );
+  mAllowNull->setChecked( config.value( QStringLiteral( "AllowNull" ) ).toBool() );
+  mOrderByValue->setChecked( config.value( QStringLiteral( "OrderByValue" ) ).toBool() );
+  mFilterExpression->setPlainText( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
+  mUseCompleter->setChecked( config.value( QStringLiteral( "UseCompleter" ) ).toBool() );
 }
 
 void QgsValueRelationConfigDlg::editExpression()
@@ -77,7 +77,7 @@ void QgsValueRelationConfigDlg::editExpression()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( vl );
 
-  QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this, "generic", context );
+  QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Edit filter expression" ) );
 
   if ( dlg.exec() == QDialog::Accepted )

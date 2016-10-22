@@ -51,7 +51,7 @@ QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const
 QString QgsSQLiteExpressionCompiler::quotedIdentifier( const QString& identifier )
 {
   QString id( identifier );
-  id.replace( '\"', "\"\"" );
+  id.replace( '\"', QLatin1String( "\"\"" ) );
   return id.prepend( '\"' ).append( '\"' );
 }
 
@@ -60,7 +60,7 @@ QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant& value, bool& o
   ok = true;
 
   if ( value.isNull() )
-    return "NULL";
+    return QStringLiteral( "NULL" );
 
   switch ( value.type() )
   {
@@ -80,7 +80,7 @@ QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant& value, bool& o
       // """A string constant is formed by enclosing the string in single quotes (').
       // A single quote within the string can be encoded by putting two single quotes
       // in a row - as in Pascal. C-style escapes using the backslash character are not supported because they are not standard SQL. """
-      return v.replace( '\'', "''" ).prepend( '\'' ).append( '\'' );
+      return v.replace( '\'', QLatin1String( "''" ) ).prepend( '\'' ).append( '\'' );
   }
 }
 

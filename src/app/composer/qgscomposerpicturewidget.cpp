@@ -40,10 +40,10 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
 
   mFillColorButton->setAllowAlpha( true );
   mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );
-  mFillColorButton->setContext( "composer" );
+  mFillColorButton->setContext( QStringLiteral( "composer" ) );
   mOutlineColorButton->setAllowAlpha( true );
   mOutlineColorButton->setColorDialogTitle( tr( "Select outline color" ) );
-  mOutlineColorButton->setContext( "composer" );
+  mOutlineColorButton->setContext( QStringLiteral( "composer" ) );
 
   mNorthTypeComboBox->blockSignals( true );
   mNorthTypeComboBox->addItem( tr( "Grid north" ), QgsComposerPicture::GridNorth );
@@ -98,7 +98,7 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
 
   if ( openDir.isEmpty() )
   {
-    openDir = s.value( "/UI/lastComposerPictureDir", QDir::homePath() ).toString();
+    openDir = s.value( QStringLiteral( "/UI/lastComposerPictureDir" ), QDir::homePath() ).toString();
   }
 
   //show file dialog
@@ -112,11 +112,11 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
   QFileInfo fileInfo( filePath );
   if ( !fileInfo.exists() || !fileInfo.isReadable() )
   {
-    QMessageBox::critical( nullptr, "Invalid file", "Error, file does not exist or is not readable" );
+    QMessageBox::critical( nullptr, QStringLiteral( "Invalid file" ), QStringLiteral( "Error, file does not exist or is not readable" ) );
     return;
   }
 
-  s.setValue( "/UI/lastComposerPictureDir", fileInfo.absolutePath() );
+  s.setValue( QStringLiteral( "/UI/lastComposerPictureDir" ), fileInfo.absolutePath() );
 
   mPictureLineEdit->blockSignals( true );
   mPictureLineEdit->setText( filePath );
@@ -191,12 +191,12 @@ void QgsComposerPictureWidget::on_mAddDirectoryButton_clicked()
 
   //update the image directory list in the settings
   QSettings s;
-  QStringList userDirList = s.value( "/Composer/PictureWidgetDirectories" ).toStringList();
+  QStringList userDirList = s.value( QStringLiteral( "/Composer/PictureWidgetDirectories" ) ).toStringList();
   if ( !userDirList.contains( directory ) )
   {
     userDirList.append( directory );
   }
-  s.setValue( "/Composer/PictureWidgetDirectories", userDirList );
+  s.setValue( QStringLiteral( "/Composer/PictureWidgetDirectories" ), userDirList );
 }
 
 void QgsComposerPictureWidget::on_mRemoveDirectoryButton_clicked()
@@ -220,9 +220,9 @@ void QgsComposerPictureWidget::on_mRemoveDirectoryButton_clicked()
 
   //update the image directory list in the settings
   QSettings s;
-  QStringList userDirList = s.value( "/Composer/PictureWidgetDirectories" ).toStringList();
+  QStringList userDirList = s.value( QStringLiteral( "/Composer/PictureWidgetDirectories" ) ).toStringList();
   userDirList.removeOne( directoryToRemove );
-  s.setValue( "/Composer/PictureWidgetDirectories", userDirList );
+  s.setValue( QStringLiteral( "/Composer/PictureWidgetDirectories" ), userDirList );
 }
 
 void QgsComposerPictureWidget::on_mResizeModeComboBox_currentIndexChanged( int index )
@@ -445,7 +445,7 @@ void QgsComposerPictureWidget::updateSvgParamGui( bool resetValues )
     return;
 
   QString picturePath = mPicture->picturePath();
-  if ( !picturePath.endsWith( ".svg", Qt::CaseInsensitive ) )
+  if ( !picturePath.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
   {
     mFillColorButton->setEnabled( false );
     mOutlineColorButton->setEnabled( false );
@@ -509,7 +509,7 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
   QFileInfoList fileList = directory.entryInfoList( QDir::Files );
   QFileInfoList::const_iterator fileIt = fileList.constBegin();
 
-  QProgressDialog progress( "Adding Icons...", "Abort", 0, fileList.size() - 1, this );
+  QProgressDialog progress( QStringLiteral( "Adding Icons..." ), QStringLiteral( "Abort" ), 0, fileList.size() - 1, this );
   //cancel button does not seem to work properly with modal dialog
   //progress.setWindowModality(Qt::WindowModal);
 
@@ -564,7 +564,7 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
       listItem->setIcon( icon );
     }
 
-    listItem->setText( "" );
+    listItem->setText( QLatin1String( "" ) );
     //store the absolute icon file path as user data
     listItem->setData( Qt::UserRole, fileIt->absoluteFilePath() );
     ++counter;
@@ -605,7 +605,7 @@ void QgsComposerPictureWidget::addStandardDirectoriesToPreview()
 
   //include additional user-defined directories for images
   QSettings s;
-  QStringList userDirList = s.value( "/Composer/PictureWidgetDirectories" ).toStringList();
+  QStringList userDirList = s.value( QStringLiteral( "/Composer/PictureWidgetDirectories" ) ).toStringList();
   QStringList::const_iterator userDirIt = userDirList.constBegin();
   for ( ; userDirIt != userDirList.constEnd(); ++userDirIt )
   {
@@ -620,7 +620,7 @@ bool QgsComposerPictureWidget::testSvgFile( const QString& filename ) const
 {
   //QSvgRenderer crashes with some (non-svg) xml documents.
   //So at least we try to sort out the ones with different suffixes
-  if ( !filename.endsWith( ".svg" ) )
+  if ( !filename.endsWith( QLatin1String( ".svg" ) ) )
   {
     return false;
   }

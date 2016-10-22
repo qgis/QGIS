@@ -55,8 +55,8 @@
 #define ERRMSG(message) QGS_ERROR_MESSAGE(message,"GDAL provider")
 #define ERR(message) QgsError(message,"GDAL provider")
 
-static QString PROVIDER_KEY = "gdal";
-static QString PROVIDER_DESCRIPTION = "GDAL provider";
+static QString PROVIDER_KEY = QStringLiteral( "gdal" );
+static QString PROVIDER_DESCRIPTION = QStringLiteral( "GDAL provider" );
 
 struct QgsGdalProgress
 {
@@ -155,7 +155,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
 
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
   QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
-  if ( vsiPrefix != "" )
+  if ( vsiPrefix != QLatin1String( "" ) )
   {
     if ( !uri.startsWith( vsiPrefix ) )
       setDataSourceUri( vsiPrefix + uri );
@@ -169,7 +169,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
 
   if ( !mGdalBaseDataset )
   {
-    QString msg = QString( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    QString msg = QStringLiteral( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
     appendError( ERRMSG( msg ) );
     return;
   }
@@ -194,7 +194,7 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
   {
     if ( OSRAutoIdentifyEPSG( hCRS ) == OGRERR_NONE )
     {
-      QString authid = QString( "%1:%2" )
+      QString authid = QStringLiteral( "%1:%2" )
                        .arg( OSRGetAuthorityName( hCRS, nullptr ),
                              OSRGetAuthorityCode( hCRS, nullptr ) );
       QgsDebugMsg( "authid recognized as " + authid );
@@ -256,17 +256,17 @@ QString QgsGdalProvider::metadata()
 {
   QString myMetadata;
   myMetadata += QString( GDALGetDescription( GDALGetDatasetDriver( mGdalDataset ) ) );
-  myMetadata += "<br>";
+  myMetadata += QLatin1String( "<br>" );
   myMetadata += QString( GDALGetMetadataItem( GDALGetDatasetDriver( mGdalDataset ), GDAL_DMD_LONGNAME, nullptr ) );
 
   // my added code (MColetti)
 
-  myMetadata += "<p class=\"glossy\">";
+  myMetadata += QLatin1String( "<p class=\"glossy\">" );
   myMetadata += tr( "Dataset Description" );
-  myMetadata += "</p>\n";
-  myMetadata += "<p>";
+  myMetadata += QLatin1String( "</p>\n" );
+  myMetadata += QLatin1String( "<p>" );
   myMetadata += FROM8( GDALGetDescription( mGdalDataset ) );
-  myMetadata += "</p>\n";
+  myMetadata += QLatin1String( "</p>\n" );
 
 
   char ** GDALmetadata = GDALGetMetadata( mGdalDataset, nullptr );
@@ -313,15 +313,15 @@ QString QgsGdalProvider::metadata()
 
   // end my added code
 
-  myMetadata += "<p class=\"glossy\">";
+  myMetadata += QLatin1String( "<p class=\"glossy\">" );
   myMetadata += tr( "Dimensions" );
-  myMetadata += "</p>\n";
-  myMetadata += "<p>";
+  myMetadata += QLatin1String( "</p>\n" );
+  myMetadata += QLatin1String( "<p>" );
   myMetadata += tr( "X: %1 Y: %2 Bands: %3" )
                 .arg( GDALGetRasterXSize( mGdalDataset ) )
                 .arg( GDALGetRasterYSize( mGdalDataset ) )
                 .arg( GDALGetRasterCount( mGdalDataset ) );
-  myMetadata += "</p>\n";
+  myMetadata += QLatin1String( "</p>\n" );
 
   //just use the first band
   if ( GDALGetRasterCount( mGdalDataset ) > 0 )
@@ -350,23 +350,23 @@ QString QgsGdalProvider::metadata()
   }
   else
   {
-    myMetadata += "<p class=\"glossy\">";
+    myMetadata += QLatin1String( "<p class=\"glossy\">" );
     myMetadata += tr( "Origin" );
-    myMetadata += "</p>\n";
-    myMetadata += "<p>";
+    myMetadata += QLatin1String( "</p>\n" );
+    myMetadata += QLatin1String( "<p>" );
     myMetadata += QString::number( mGeoTransform[0] );
     myMetadata += ',';
     myMetadata += QString::number( mGeoTransform[3] );
-    myMetadata += "</p>\n";
+    myMetadata += QLatin1String( "</p>\n" );
 
-    myMetadata += "<p class=\"glossy\">";
+    myMetadata += QLatin1String( "<p class=\"glossy\">" );
     myMetadata += tr( "Pixel Size" );
-    myMetadata += "</p>\n";
-    myMetadata += "<p>";
+    myMetadata += QLatin1String( "</p>\n" );
+    myMetadata += QLatin1String( "<p>" );
     myMetadata += QString::number( mGeoTransform[1] );
     myMetadata += ',';
     myMetadata += QString::number( mGeoTransform[5] );
-    myMetadata += "</p>\n";
+    myMetadata += QLatin1String( "</p>\n" );
   }
 
   return myMetadata;
@@ -917,13 +917,13 @@ QString QgsGdalProvider::generateBandName( int theBandNumber ) const
             i != metadata.end(); ++i )
       {
         QString val( *i );
-        if ( !val.startsWith( "NETCDF_DIM_EXTRA" ) && !val.contains( "#units=" ) )
+        if ( !val.startsWith( QLatin1String( "NETCDF_DIM_EXTRA" ) ) && !val.contains( QLatin1String( "#units=" ) ) )
           continue;
         QStringList values = val.split( '=' );
         val = values.at( 1 );
-        if ( values.at( 0 ) == "NETCDF_DIM_EXTRA" )
+        if ( values.at( 0 ) == QLatin1String( "NETCDF_DIM_EXTRA" ) )
         {
-          dimExtraValues = val.replace( QString( "{" ), QString() ).replace( QString( "}" ), QString() ).split( ',' );
+          dimExtraValues = val.replace( QStringLiteral( "{" ), QString() ).replace( QStringLiteral( "}" ), QString() ).split( ',' );
           //http://qt-project.org/doc/qt-4.8/qregexp.html#capturedTexts
         }
         else
@@ -944,7 +944,7 @@ QString QgsGdalProvider::generateBandName( int theBandNumber ) const
                 i != metadata.end(); ++i )
           {
             QString val( *i );
-            if ( !val.startsWith( "NETCDF_DIM_" ) )
+            if ( !val.startsWith( QLatin1String( "NETCDF_DIM_" ) ) )
               continue;
             QStringList values = val.split( '=' );
             for ( QStringList::const_iterator j = dimExtraValues.begin();
@@ -953,7 +953,7 @@ QString QgsGdalProvider::generateBandName( int theBandNumber ) const
               QString dim = ( *j );
               if ( values.at( 0 ) != "NETCDF_DIM_" + dim )
                 continue;
-              if ( unitsMap.contains( dim ) && unitsMap[ dim ] != "" && unitsMap[ dim ] != "none" )
+              if ( unitsMap.contains( dim ) && unitsMap[ dim ] != QLatin1String( "" ) && unitsMap[ dim ] != QLatin1String( "none" ) )
                 bandNameValues.append( dim + '=' + values.at( 1 ) + " (" + unitsMap[ dim ] + ')' );
               else
                 bandNameValues.append( dim + '=' + values.at( 1 ) );
@@ -962,7 +962,7 @@ QString QgsGdalProvider::generateBandName( int theBandNumber ) const
         }
 
         if ( !bandNameValues.isEmpty() )
-          return tr( "Band" ) + QString( " %1 / %2" ) .arg( theBandNumber, 1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) ).arg( bandNameValues.join( " / " ) );
+          return tr( "Band" ) + QStringLiteral( " %1 / %2" ) .arg( theBandNumber, 1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) ).arg( bandNameValues.join( QStringLiteral( " / " ) ) );
       }
     }
   }
@@ -1091,7 +1091,7 @@ int QgsGdalProvider::capabilities() const
   GDALDriverH myDriver = GDALGetDatasetDriver( mGdalDataset );
   QString name = GDALGetDriverShortName( myDriver );
   QgsDebugMsg( "driver short name = " + name );
-  if ( name != "WMS" )
+  if ( name != QLatin1String( "WMS" ) )
   {
     capability |= QgsRasterDataProvider::Size;
   }
@@ -1198,12 +1198,12 @@ bool QgsGdalProvider::isValid() const
 
 QString QgsGdalProvider::lastErrorTitle()
 {
-  return QString( "Not implemented" );
+  return QStringLiteral( "Not implemented" );
 }
 
 QString QgsGdalProvider::lastError()
 {
-  return QString( "Not implemented" );
+  return QStringLiteral( "Not implemented" );
 }
 
 QString QgsGdalProvider::name() const
@@ -1234,7 +1234,7 @@ QStringList QgsGdalProvider::subLayers( GDALDatasetH dataset )
     for ( int i = 0; metadata[i]; i++ )
     {
       QString layer = QString::fromUtf8( metadata[i] );
-      int pos = layer.indexOf( "_NAME=" );
+      int pos = layer.indexOf( QLatin1String( "_NAME=" ) );
       if ( pos >= 0 )
       {
         subLayers << layer.mid( pos + 6 );
@@ -1536,8 +1536,8 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
 
   if ( mGdalDataset != mGdalBaseDataset )
   {
-    QgsLogger::warning( "Pyramid building not currently supported for 'warped virtual dataset'." );
-    return "ERROR_VIRTUAL";
+    QgsLogger::warning( QStringLiteral( "Pyramid building not currently supported for 'warped virtual dataset'." ) );
+    return QStringLiteral( "ERROR_VIRTUAL" );
   }
 
   // check if building internally
@@ -1550,7 +1550,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
 
     if ( !myQFile.isWritable() )
     {
-      return "ERROR_WRITE_ACCESS";
+      return QStringLiteral( "ERROR_WRITE_ACCESS" );
     }
 
     // libtiff < 4.0 has a bug that prevents safe building of overviews on JPEG compressed files
@@ -1563,7 +1563,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
       QString myCompressionType = QString( GDALGetMetadataItem( mGdalDataset, "COMPRESSION", "IMAGE_STRUCTURE" ) );
       if ( "JPEG" == myCompressionType )
       {
-        return "ERROR_JPEG_COMPRESSION";
+        return QStringLiteral( "ERROR_JPEG_COMPRESSION" );
       }
     }
 
@@ -1584,14 +1584,14 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
         mGdalBaseDataset = gdalOpen( TO8F( dataSourceUri() ), GA_ReadOnly );
         //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
         mGdalDataset = mGdalBaseDataset;
-        return "ERROR_WRITE_FORMAT";
+        return QStringLiteral( "ERROR_WRITE_FORMAT" );
       }
     }
   }
 
   // are we using Erdas Imagine external overviews?
   QgsStringMap myConfigOptionsOld;
-  myConfigOptionsOld[ "USE_RRD" ] = CPLGetConfigOption( "USE_RRD", "NO" );
+  myConfigOptionsOld[ QStringLiteral( "USE_RRD" )] = CPLGetConfigOption( "USE_RRD", "NO" );
   if ( theFormat == QgsRaster::PyramidsErdas )
     CPLSetConfigOption( "USE_RRD", "YES" );
   else
@@ -1697,7 +1697,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
       }
 
       // TODO print exact error message
-      return "FAILED_NOT_SUPPORTED";
+      return QStringLiteral( "FAILED_NOT_SUPPORTED" );
     }
     else
     {
@@ -1708,7 +1708,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
   }
   catch ( CPLErr )
   {
-    QgsLogger::warning( "Pyramid overview building failed!" );
+    QgsLogger::warning( QStringLiteral( "Pyramid overview building failed!" ) );
   }
 
   // restore former configOptions
@@ -1988,8 +1988,8 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
 
   char **myGdalDriverMetadata;        // driver metadata strings
 
-  QString myGdalDriverLongName( "" ); // long name for the given driver
-  QString myGdalDriverExtension( "" );  // file name extension for given driver
+  QString myGdalDriverLongName( QLatin1String( "" ) ); // long name for the given driver
+  QString myGdalDriverExtension( QLatin1String( "" ) );  // file name extension for given driver
   QString myGdalDriverDescription;    // QString wrapper of GDAL driver description
 
   QStringList metadataTokens;   // essentially the metadata string delimited by '='
@@ -2012,7 +2012,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
   // driver, which will be found in DMD_LONGNAME, which will have the
   // same form.
 
-  theFileFiltersString = "";
+  theFileFiltersString = QLatin1String( "" );
 
   QgsDebugMsg( QString( "GDAL driver count: %1" ).arg( GDALGetDriverCount() ) );
 
@@ -2043,7 +2043,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
     myGdalDriverDescription = GDALGetDescription( myGdalDriver );
     // QgsDebugMsg(QString("got driver string %1").arg(myGdalDriverDescription));
 
-    myGdalDriverExtension = myGdalDriverLongName = "";
+    myGdalDriverExtension = myGdalDriverLongName = QLatin1String( "" );
 
     myGdalDriverMetadata = GDALGetMetadata( myGdalDriver, nullptr );
 
@@ -2085,33 +2085,33 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
       if ( !( myGdalDriverExtension.isEmpty() || myGdalDriverLongName.isEmpty() ) )
       {
         // XXX add check for SDTS; in that case we want (*CATD.DDF)
-        QString glob = "*." + myGdalDriverExtension.replace( '/', " *." );
+        QString glob = "*." + myGdalDriverExtension.replace( '/', QLatin1String( " *." ) );
         theExtensions << myGdalDriverExtension.remove( '/' ).remove( '*' ).remove( '.' );
         // Add only the first JP2 driver found to the filter list (it's the one GDAL uses)
-        if ( myGdalDriverDescription == "JPEG2000" ||
-             myGdalDriverDescription.startsWith( "JP2" ) ) // JP2ECW, JP2KAK, JP2MrSID
+        if ( myGdalDriverDescription == QLatin1String( "JPEG2000" ) ||
+             myGdalDriverDescription.startsWith( QLatin1String( "JP2" ) ) ) // JP2ECW, JP2KAK, JP2MrSID
         {
           if ( jp2Driver )
             break; // skip if already found a JP2 driver
 
           jp2Driver = myGdalDriver;   // first JP2 driver found
-          glob += " *.j2k";           // add alternate extension
-          theExtensions << "j2k";
+          glob += QLatin1String( " *.j2k" );         // add alternate extension
+          theExtensions << QStringLiteral( "j2k" );
         }
-        else if ( myGdalDriverDescription == "GTiff" )
+        else if ( myGdalDriverDescription == QLatin1String( "GTiff" ) )
         {
-          glob += " *.tiff";
-          theExtensions << "tiff";
+          glob += QLatin1String( " *.tiff" );
+          theExtensions << QStringLiteral( "tiff" );
         }
-        else if ( myGdalDriverDescription == "JPEG" )
+        else if ( myGdalDriverDescription == QLatin1String( "JPEG" ) )
         {
-          glob += " *.jpeg";
-          theExtensions << "jpeg";
+          glob += QLatin1String( " *.jpeg" );
+          theExtensions << QStringLiteral( "jpeg" );
         }
-        else if ( myGdalDriverDescription == "VRT" )
+        else if ( myGdalDriverDescription == QLatin1String( "VRT" ) )
         {
-          glob += " *.ovr";
-          theExtensions << "ovr";
+          glob += QLatin1String( " *.ovr" );
+          theExtensions << QStringLiteral( "ovr" );
         }
 
         theFileFiltersString += createFileFilter_( myGdalDriverLongName, glob );
@@ -2139,41 +2139,41 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
       // them appropriately
 
       // USGS DEMs use "*.dem"
-      if ( myGdalDriverDescription.startsWith( "USGSDEM" ) )
+      if ( myGdalDriverDescription.startsWith( QLatin1String( "USGSDEM" ) ) )
       {
-        theFileFiltersString += createFileFilter_( myGdalDriverLongName, "*.dem" );
-        theExtensions << "dem";
+        theFileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "*.dem" ) );
+        theExtensions << QStringLiteral( "dem" );
       }
-      else if ( myGdalDriverDescription.startsWith( "DTED" ) )
+      else if ( myGdalDriverDescription.startsWith( QLatin1String( "DTED" ) ) )
       {
         // DTED use "*.dt0, *.dt1, *.dt2"
-        QString glob = "*.dt0";
-        glob += " *.dt1";
-        glob += " *.dt2";
+        QString glob = QStringLiteral( "*.dt0" );
+        glob += QLatin1String( " *.dt1" );
+        glob += QLatin1String( " *.dt2" );
         theFileFiltersString += createFileFilter_( myGdalDriverLongName, glob );
-        theExtensions << "dt0" << "dt1" << "dt2";
+        theExtensions << QStringLiteral( "dt0" ) << QStringLiteral( "dt1" ) << QStringLiteral( "dt2" );
       }
-      else if ( myGdalDriverDescription.startsWith( "MrSID" ) )
+      else if ( myGdalDriverDescription.startsWith( QLatin1String( "MrSID" ) ) )
       {
         // MrSID use "*.sid"
-        theFileFiltersString += createFileFilter_( myGdalDriverLongName, "*.sid" );
-        theExtensions << "sid";
+        theFileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "*.sid" ) );
+        theExtensions << QStringLiteral( "sid" );
       }
-      else if ( myGdalDriverDescription.startsWith( "EHdr" ) )
+      else if ( myGdalDriverDescription.startsWith( QLatin1String( "EHdr" ) ) )
       {
-        theFileFiltersString += createFileFilter_( myGdalDriverLongName, "*.bil" );
-        theExtensions << "bil";
+        theFileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "*.bil" ) );
+        theExtensions << QStringLiteral( "bil" );
       }
-      else if ( myGdalDriverDescription.startsWith( "AIG" ) )
+      else if ( myGdalDriverDescription.startsWith( QLatin1String( "AIG" ) ) )
       {
-        theFileFiltersString += createFileFilter_( myGdalDriverLongName, "hdr.adf" );
-        theWildcards << "hdr.adf";
+        theFileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "hdr.adf" ) );
+        theWildcards << QStringLiteral( "hdr.adf" );
       }
-      else if ( myGdalDriverDescription == "HDF4" )
+      else if ( myGdalDriverDescription == QLatin1String( "HDF4" ) )
       {
         // HDF4 extension missing in driver metadata
-        theFileFiltersString += createFileFilter_( myGdalDriverLongName, "*.hdf" );
-        theExtensions << "hdf";
+        theFileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "*.hdf" ) );
+        theExtensions << QStringLiteral( "hdf" );
       }
       else
       {
@@ -2184,17 +2184,17 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
   }                           // each loaded GDAL driver
 
   // sort file filters alphabetically
-  QStringList filters = theFileFiltersString.split( ";;", QString::SkipEmptyParts );
+  QStringList filters = theFileFiltersString.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
   filters.sort();
-  theFileFiltersString = filters.join( ";;" ) + ";;";
+  theFileFiltersString = filters.join( QStringLiteral( ";;" ) ) + ";;";
 
   // VSIFileHandler (see qgsogrprovider.cpp) - second
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
   QSettings settings;
-  if ( settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString() != "no" )
+  if ( settings.value( QStringLiteral( "/qgis/scanZipInBrowser2" ), "basic" ).toString() != QLatin1String( "no" ) )
   {
-    theFileFiltersString.prepend( createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), "*.zip *.gz *.tar *.tar.gz *.tgz" ) );
-    theExtensions << "zip" << "gz" << "tar" << "tar.gz" << "tgz";
+    theFileFiltersString.prepend( createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), QStringLiteral( "*.zip *.gz *.tar *.tar.gz *.tgz" ) ) );
+    theExtensions << QStringLiteral( "zip" ) << QStringLiteral( "gz" ) << QStringLiteral( "tar" ) << QStringLiteral( "tar.gz" ) << QStringLiteral( "tgz" );
   }
 #endif
 
@@ -2202,7 +2202,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
   theFileFiltersString.prepend( QObject::tr( "All files" ) + " (*);;" );
 
   // cleanup
-  if ( theFileFiltersString.endsWith( ";;" ) ) theFileFiltersString.chop( 2 );
+  if ( theFileFiltersString.endsWith( QLatin1String( ";;" ) ) ) theFileFiltersString.chop( 2 );
 
   QgsDebugMsg( "Raster filter list built: " + theFileFiltersString );
   QgsDebugMsg( "Raster extension list built: " + theExtensions.join( " " ) );
@@ -2221,7 +2221,7 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
   // TODO suppress error messages and report in debug, like in OGR provider
   QString vsiPrefix = QgsZipItem::vsiPrefix( fileName );
-  if ( vsiPrefix != "" )
+  if ( vsiPrefix != QLatin1String( "" ) )
   {
     if ( !fileName.startsWith( vsiPrefix ) )
       fileName = vsiPrefix + fileName;
@@ -2518,7 +2518,7 @@ void QgsGdalProvider::initBaseDataset()
       || GDALGetGCPCount( mGdalBaseDataset ) > 0
       || GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
   {
-    QgsLogger::warning( "Creating Warped VRT." );
+    QgsLogger::warning( QStringLiteral( "Creating Warped VRT." ) );
 
     mGdalDataset =
       GDALAutoCreateWarpedVRT( mGdalBaseDataset, nullptr, nullptr,
@@ -2526,7 +2526,7 @@ void QgsGdalProvider::initBaseDataset()
 
     if ( !mGdalDataset )
     {
-      QgsLogger::warning( "Warped VRT Creation failed." );
+      QgsLogger::warning( QStringLiteral( "Warped VRT Creation failed." ) );
       mGdalDataset = mGdalBaseDataset;
       GDALReferenceDataset( mGdalDataset );
     }
@@ -2597,7 +2597,7 @@ void QgsGdalProvider::initBaseDataset()
          GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
     {
       // Warped VRT of RPC is in EPSG:4326
-      mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( "EPSG:4326" );
+      mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
     }
     else
     {
@@ -2778,7 +2778,7 @@ QGISEXTERN QgsGdalProvider * create(
   GDALDriverH driver = GDALGetDriverByName( format.toLocal8Bit().data() );
   if ( !driver )
   {
-    QgsError error( "Cannot load GDAL driver " + format, "GDAL provider" );
+    QgsError error( "Cannot load GDAL driver " + format, QStringLiteral( "GDAL provider" ) );
     return new QgsGdalProvider( uri, error );
   }
 
@@ -2791,7 +2791,7 @@ QGISEXTERN QgsGdalProvider * create(
   CSLDestroy( papszOptions );
   if ( !dataset )
   {
-    QgsError error( QString( "Cannot create new dataset  %1:\n%2" ).arg( uri, QString::fromUtf8( CPLGetLastErrorMsg() ) ), "GDAL provider" );
+    QgsError error( QStringLiteral( "Cannot create new dataset  %1:\n%2" ).arg( uri, QString::fromUtf8( CPLGetLastErrorMsg() ) ), QStringLiteral( "GDAL provider" ) );
     QgsDebugMsg( error.summary() );
     return new QgsGdalProvider( uri, error );
   }
@@ -2889,11 +2889,11 @@ QGISEXTERN QString helpCreationOptionsFormat( QString format )
   {
     // first report details and help page
     char ** GDALmetadata = GDALGetMetadata( myGdalDriver, nullptr );
-    message += "Format Details:\n";
-    message += QString( "  Extension: %1\n" ).arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_EXTENSION ) );
-    message += QString( "  Short Name: %1" ).arg( GDALGetDriverShortName( myGdalDriver ) );
-    message += QString( "  /  Long Name: %1\n" ).arg( GDALGetDriverLongName( myGdalDriver ) );
-    message += QString( "  Help page:  http://www.gdal.org/%1\n\n" ).arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_HELPTOPIC ) );
+    message += QLatin1String( "Format Details:\n" );
+    message += QStringLiteral( "  Extension: %1\n" ).arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_EXTENSION ) );
+    message += QStringLiteral( "  Short Name: %1" ).arg( GDALGetDriverShortName( myGdalDriver ) );
+    message += QStringLiteral( "  /  Long Name: %1\n" ).arg( GDALGetDriverLongName( myGdalDriver ) );
+    message += QStringLiteral( "  Help page:  http://www.gdal.org/%1\n\n" ).arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_HELPTOPIC ) );
 
     // next get creation options
     // need to serialize xml to get newlines, should we make the basic xml prettier?
@@ -2917,7 +2917,7 @@ QGISEXTERN QString validateCreationOptionsFormat( const QStringList& createOptio
 {
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
   if ( ! myGdalDriver )
-    return "invalid GDAL driver";
+    return QStringLiteral( "invalid GDAL driver" );
 
   char** papszOptions = papszFromStringList( createOptions );
   // get error string?
@@ -2925,7 +2925,7 @@ QGISEXTERN QString validateCreationOptionsFormat( const QStringList& createOptio
   CSLDestroy( papszOptions );
 
   if ( !ok )
-    return "Failed GDALValidateCreationOptions() test";
+    return QStringLiteral( "Failed GDALValidateCreationOptions() test" );
   return QString();
 }
 
@@ -2941,7 +2941,7 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList& createOptio
   // next do specific validations, depending on format and dataset
   // only check certain destination formats
   QStringList formatsCheck;
-  formatsCheck << "gtiff";
+  formatsCheck << QStringLiteral( "gtiff" );
   if ( ! formatsCheck.contains( format.toLower() ) )
     return QString();
 
@@ -2956,27 +2956,27 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList& createOptio
 
   // gtiff files - validate PREDICTOR option
   // see gdal: frmts/gtiff/geotiff.cpp and libtiff: tif_predict.c)
-  if ( format.toLower() == "gtiff" && optionsMap.contains( "PREDICTOR" ) )
+  if ( format.toLower() == QLatin1String( "gtiff" ) && optionsMap.contains( QStringLiteral( "PREDICTOR" ) ) )
   {
-    QString value = optionsMap.value( "PREDICTOR" );
+    QString value = optionsMap.value( QStringLiteral( "PREDICTOR" ) );
     GDALDataType nDataType = ( !mGdalDataType.isEmpty() ) ? ( GDALDataType ) mGdalDataType.at( 0 ) : GDT_Unknown;
     int nBitsPerSample = nDataType != GDT_Unknown ? GDALGetDataTypeSize( nDataType ) : 0;
     QgsDebugMsg( QString( "PREDICTOR: %1 nbits: %2 type: %3" ).arg( value ).arg( nBitsPerSample ).arg(( GDALDataType ) mGdalDataType.at( 0 ) ) );
     // PREDICTOR=2 only valid for 8/16/32 bits per sample
     // TODO check for NBITS option (see geotiff.cpp)
-    if ( value == "2" )
+    if ( value == QLatin1String( "2" ) )
     {
       if ( nBitsPerSample != 8 && nBitsPerSample != 16 &&
            nBitsPerSample != 32 )
       {
-        message = QString( "PREDICTOR=%1 only valid for 8/16/32 bits per sample (using %2)" ).arg( value ).arg( nBitsPerSample );
+        message = QStringLiteral( "PREDICTOR=%1 only valid for 8/16/32 bits per sample (using %2)" ).arg( value ).arg( nBitsPerSample );
       }
     }
     // PREDICTOR=3 only valid for float/double precision
-    else if ( value == "3" )
+    else if ( value == QLatin1String( "3" ) )
     {
       if ( nDataType != GDT_Float32 && nDataType != GDT_Float64 )
-        message = "PREDICTOR=3 only valid for float/double precision";
+        message = QStringLiteral( "PREDICTOR=3 only valid for float/double precision" );
     }
   }
 
@@ -2990,7 +2990,7 @@ QString QgsGdalProvider::validatePyramidsConfigOptions( QgsRaster::RasterPyramid
   if ( pyramidsFormat == QgsRaster::PyramidsErdas )
   {
     if ( ! theConfigOptions.isEmpty() )
-      return "Erdas Imagine format does not support config options";
+      return QStringLiteral( "Erdas Imagine format does not support config options" );
     else
       return QString();
   }
@@ -2998,18 +2998,18 @@ QString QgsGdalProvider::validatePyramidsConfigOptions( QgsRaster::RasterPyramid
   else if ( pyramidsFormat == QgsRaster::PyramidsInternal )
   {
     QStringList supportedFormats;
-    supportedFormats << "gtiff" << "georaster" << "hfa" << "gpkg" << "rasterlite" << "nitf";
+    supportedFormats << QStringLiteral( "gtiff" ) << QStringLiteral( "georaster" ) << QStringLiteral( "hfa" ) << QStringLiteral( "gpkg" ) << QStringLiteral( "rasterlite" ) << QStringLiteral( "nitf" );
     if ( ! supportedFormats.contains( fileFormat.toLower() ) )
-      return QString( "Internal pyramids format only supported for gtiff/georaster/gpkg/rasterlite/nitf files (using %1)" ).arg( fileFormat );
+      return QStringLiteral( "Internal pyramids format only supported for gtiff/georaster/gpkg/rasterlite/nitf files (using %1)" ).arg( fileFormat );
   }
   else
   {
     // for gtiff external pyramids, validate gtiff-specific values
     // PHOTOMETRIC_OVERVIEW=YCBCR requires a source raster with only 3 bands (RGB)
-    if ( theConfigOptions.contains( "PHOTOMETRIC_OVERVIEW=YCBCR" ) )
+    if ( theConfigOptions.contains( QStringLiteral( "PHOTOMETRIC_OVERVIEW=YCBCR" ) ) )
     {
       if ( GDALGetRasterCount( mGdalDataset ) != 3 )
-        return "PHOTOMETRIC_OVERVIEW=YCBCR requires a source raster with only 3 bands (RGB)";
+        return QStringLiteral( "PHOTOMETRIC_OVERVIEW=YCBCR requires a source raster with only 3 bands (RGB)" );
     }
   }
 
@@ -3037,16 +3037,16 @@ QGISEXTERN QList<QPair<QString, QString> > *pyramidResamplingMethods()
 
   if ( methods.isEmpty() )
   {
-    methods.append( QPair<QString, QString>( "NEAREST", QObject::tr( "Nearest Neighbour" ) ) );
-    methods.append( QPair<QString, QString>( "AVERAGE", QObject::tr( "Average" ) ) );
-    methods.append( QPair<QString, QString>( "GAUSS", QObject::tr( "Gauss" ) ) );
-    methods.append( QPair<QString, QString>( "CUBIC", QObject::tr( "Cubic" ) ) );
+    methods.append( QPair<QString, QString>( QStringLiteral( "NEAREST" ), QObject::tr( "Nearest Neighbour" ) ) );
+    methods.append( QPair<QString, QString>( QStringLiteral( "AVERAGE" ), QObject::tr( "Average" ) ) );
+    methods.append( QPair<QString, QString>( QStringLiteral( "GAUSS" ), QObject::tr( "Gauss" ) ) );
+    methods.append( QPair<QString, QString>( QStringLiteral( "CUBIC" ), QObject::tr( "Cubic" ) ) );
 #if GDAL_VERSION_MAJOR >= 2
     methods.append( QPair<QString, QString>( "CUBICSPLINE", QObject::tr( "Cubic Spline" ) ) );
     methods.append( QPair<QString, QString>( "LANCZOS", QObject::tr( "Lanczos" ) ) );
 #endif
-    methods.append( QPair<QString, QString>( "MODE", QObject::tr( "Mode" ) ) );
-    methods.append( QPair<QString, QString>( "NONE", QObject::tr( "None" ) ) );
+    methods.append( QPair<QString, QString>( QStringLiteral( "MODE" ), QObject::tr( "Mode" ) ) );
+    methods.append( QPair<QString, QString>( QStringLiteral( "NONE" ), QObject::tr( "None" ) ) );
   }
 
   return &methods;

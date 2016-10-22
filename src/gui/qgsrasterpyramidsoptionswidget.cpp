@@ -54,9 +54,9 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
 
   // keep it in sync with qgsrasterlayerproperties.cpp
   tmpStr = mySettings.value( prefix + "format", "external" ).toString();
-  if ( tmpStr == "internal" )
+  if ( tmpStr == QLatin1String( "internal" ) )
     cbxPyramidsFormat->setCurrentIndex( INTERNAL );
-  else if ( tmpStr == "external_erdas" )
+  else if ( tmpStr == QLatin1String( "external_erdas" ) )
     cbxPyramidsFormat->setCurrentIndex( ERDAS );
   else
     cbxPyramidsFormat->setCurrentIndex( GTIFF );
@@ -128,17 +128,17 @@ void QgsRasterPyramidsOptionsWidget::apply()
 
   // mySettings.setValue( prefix + "internal", cbxPyramidsInternal->isChecked() );
   if ( cbxPyramidsFormat->currentIndex() == INTERNAL )
-    tmpStr = "internal";
+    tmpStr = QStringLiteral( "internal" );
   else if ( cbxPyramidsFormat->currentIndex() == ERDAS )
-    tmpStr = "external_erdas";
+    tmpStr = QStringLiteral( "external_erdas" );
   else
-    tmpStr = "external";
+    tmpStr = QStringLiteral( "external" );
   mySettings.setValue( prefix + "format", tmpStr );
   mySettings.setValue( prefix + "resampling", resamplingMethod() );
   mySettings.setValue( prefix + "overviewStr", lePyramidsLevels->text().trimmed() );
 
   // overview list
-  tmpStr = "";
+  tmpStr = QLatin1String( "" );
   Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
   {
     if ( mOverviewCheckBoxes[ i ]->isChecked() )

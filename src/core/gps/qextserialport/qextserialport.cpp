@@ -52,7 +52,7 @@ QextSerialPort::QextSerialPort(QextSerialPort::QueryMode mode)
     setPortName("/dev/tty00");
 
 #else
-    setPortName("/dev/ttyS0");
+    setPortName(QStringLiteral("/dev/ttyS0"));
 #endif
 
     construct();

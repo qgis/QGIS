@@ -35,7 +35,7 @@
 //
 
 // Version string
-QString Qgis::QGIS_VERSION( QString::fromUtf8( VERSION ) );
+QString Qgis::QGIS_VERSION( QStringLiteral( VERSION ) );
 
 // development version
 const char* Qgis::QGIS_DEV_VERSION = QGSVERSION;
@@ -45,10 +45,10 @@ const char* Qgis::QGIS_DEV_VERSION = QGSVERSION;
 const int Qgis::QGIS_VERSION_INT = VERSION_INT;
 
 // Release name
-QString Qgis::QGIS_RELEASE_NAME( QString::fromUtf8( RELEASE_NAME ) );
+QString Qgis::QGIS_RELEASE_NAME( QStringLiteral( RELEASE_NAME ) );
 
 #if GDAL_VERSION_NUM >= 1800
-const QString GEOPROJ4 = "+proj=longlat +datum=WGS84 +no_defs";
+const QString GEOPROJ4 = QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" );
 #else
 const QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 #endif
@@ -70,9 +70,9 @@ const QString PROJECT_SCALES =
   "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
   "1:10000,1:5000,1:2500,1:1000,1:500";
 
-const QString GEO_EPSG_CRS_AUTHID = "EPSG:4326";
+const QString GEO_EPSG_CRS_AUTHID = QStringLiteral( "EPSG:4326" );
 
-const QString GEO_NONE = "NONE";
+const QString GEO_NONE = QStringLiteral( "NONE" );
 
 const double Qgis::DEFAULT_SEARCH_RADIUS_MM = 2.;
 
@@ -212,17 +212,17 @@ bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs )
 
 QString qgsVsiPrefix( const QString& path )
 {
-  if ( path.startsWith( "/vsizip/", Qt::CaseInsensitive ) ||
-       path.endsWith( ".zip", Qt::CaseInsensitive ) )
-    return "/vsizip/";
-  else if ( path.startsWith( "/vsitar/", Qt::CaseInsensitive ) ||
-            path.endsWith( ".tar", Qt::CaseInsensitive ) ||
-            path.endsWith( ".tar.gz", Qt::CaseInsensitive ) ||
-            path.endsWith( ".tgz", Qt::CaseInsensitive ) )
-    return "/vsitar/";
-  else if ( path.startsWith( "/vsigzip/", Qt::CaseInsensitive ) ||
-            path.endsWith( ".gz", Qt::CaseInsensitive ) )
-    return "/vsigzip/";
+  if ( path.startsWith( QLatin1String( "/vsizip/" ), Qt::CaseInsensitive ) ||
+       path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
+    return QStringLiteral( "/vsizip/" );
+  else if ( path.startsWith( QLatin1String( "/vsitar/" ), Qt::CaseInsensitive ) ||
+            path.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) ||
+            path.endsWith( QLatin1String( ".tar.gz" ), Qt::CaseInsensitive ) ||
+            path.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) )
+    return QStringLiteral( "/vsitar/" );
+  else if ( path.startsWith( QLatin1String( "/vsigzip/" ), Qt::CaseInsensitive ) ||
+            path.endsWith( QLatin1String( ".gz" ), Qt::CaseInsensitive ) )
+    return QStringLiteral( "/vsigzip/" );
   else
-    return "";
+    return QLatin1String( "" );
 }

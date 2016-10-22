@@ -200,7 +200,7 @@ class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect
     QgsDropShadowEffect();
     virtual ~QgsDropShadowEffect();
 
-    virtual QString type() const override { return QString( "dropShadow" ); }
+    virtual QString type() const override { return QStringLiteral( "dropShadow" ); }
     virtual QgsDropShadowEffect* clone() const override;
 
   protected:
@@ -230,7 +230,7 @@ class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect
     QgsInnerShadowEffect();
     virtual ~QgsInnerShadowEffect();
 
-    virtual QString type() const override { return QString( "innerShadow" ); }
+    virtual QString type() const override { return QStringLiteral( "innerShadow" ); }
     virtual QgsInnerShadowEffect* clone() const override;
 
   protected:

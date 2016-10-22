@@ -32,7 +32,11 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
 
   public:
 
-    QgsRasterPyramidsOptionsWidget( QWidget* parent = nullptr, const QString& provider = "gdal" );
+    /**
+     * Constructor for QgsRasterPyramidsOptionsWidget.
+     */
+    QgsRasterPyramidsOptionsWidget( QWidget* parent = nullptr, const QString& provider = QStringLiteral( "gdal" ) );
+
     ~QgsRasterPyramidsOptionsWidget();
 
     QStringList configOptions() const { return mSaveOptionsWidget->options(); }

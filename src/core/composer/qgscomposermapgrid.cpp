@@ -111,11 +111,11 @@ bool QgsComposerMapGridStack::readXml( const QDomElement &elem, const QDomDocume
   removeItems();
 
   //read grid stack
-  QDomNodeList mapGridNodeList = elem.elementsByTagName( "ComposerMapGrid" );
+  QDomNodeList mapGridNodeList = elem.elementsByTagName( QStringLiteral( "ComposerMapGrid" ) );
   for ( int i = 0; i < mapGridNodeList.size(); ++i )
   {
     QDomElement mapGridElem = mapGridNodeList.at( i ).toElement();
-    QgsComposerMapGrid* mapGrid = new QgsComposerMapGrid( mapGridElem.attribute( "name" ), mComposerMap );
+    QgsComposerMapGrid* mapGrid = new QgsComposerMapGrid( mapGridElem.attribute( QStringLiteral( "name" ) ), mComposerMap );
     mapGrid->readXml( mapGridElem, doc );
     mItems.append( mapGrid );
   }
@@ -221,7 +221,7 @@ void QgsComposerMapGrid::init()
 
   //get default composer font from settings
   QSettings settings;
-  QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
+  QString defaultFontString = settings.value( QStringLiteral( "/Composer/defaultFont" ) ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mGridAnnotationFont.setFamily( defaultFontString );
@@ -241,9 +241,9 @@ void QgsComposerMapGrid::createDefaultGridLineSymbol()
 {
   delete mGridLineSymbol;
   QgsStringMap properties;
-  properties.insert( "color", "0,0,0,255" );
-  properties.insert( "width", "0.3" );
-  properties.insert( "capstyle", "flat" );
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "0.3" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
   mGridLineSymbol = QgsLineSymbol::createSimple( properties );
 }
 
@@ -251,9 +251,9 @@ void QgsComposerMapGrid::createDefaultGridMarkerSymbol()
 {
   delete mGridMarkerSymbol;
   QgsStringMap properties;
-  properties.insert( "name", "circle" );
-  properties.insert( "size", "2.0" );
-  properties.insert( "color", "0,0,0,255" );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "2.0" ) );
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   mGridMarkerSymbol = QgsMarkerSymbol::createSimple( properties );
 }
 
@@ -280,61 +280,61 @@ bool QgsComposerMapGrid::writeXml( QDomElement& elem, QDomDocument& doc ) const
     return false;
   }
 
-  QDomElement mapGridElem = doc.createElement( "ComposerMapGrid" );
-  mapGridElem.setAttribute( "gridStyle", mGridStyle );
-  mapGridElem.setAttribute( "intervalX", qgsDoubleToString( mGridIntervalX ) );
-  mapGridElem.setAttribute( "intervalY", qgsDoubleToString( mGridIntervalY ) );
-  mapGridElem.setAttribute( "offsetX", qgsDoubleToString( mGridOffsetX ) );
-  mapGridElem.setAttribute( "offsetY", qgsDoubleToString( mGridOffsetY ) );
-  mapGridElem.setAttribute( "crossLength", qgsDoubleToString( mCrossLength ) );
+  QDomElement mapGridElem = doc.createElement( QStringLiteral( "ComposerMapGrid" ) );
+  mapGridElem.setAttribute( QStringLiteral( "gridStyle" ), mGridStyle );
+  mapGridElem.setAttribute( QStringLiteral( "intervalX" ), qgsDoubleToString( mGridIntervalX ) );
+  mapGridElem.setAttribute( QStringLiteral( "intervalY" ), qgsDoubleToString( mGridIntervalY ) );
+  mapGridElem.setAttribute( QStringLiteral( "offsetX" ), qgsDoubleToString( mGridOffsetX ) );
+  mapGridElem.setAttribute( QStringLiteral( "offsetY" ), qgsDoubleToString( mGridOffsetY ) );
+  mapGridElem.setAttribute( QStringLiteral( "crossLength" ), qgsDoubleToString( mCrossLength ) );
 
-  QDomElement lineStyleElem = doc.createElement( "lineStyle" );
+  QDomElement lineStyleElem = doc.createElement( QStringLiteral( "lineStyle" ) );
   QDomElement gridLineStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mGridLineSymbol, doc );
   lineStyleElem.appendChild( gridLineStyleElem );
   mapGridElem.appendChild( lineStyleElem );
 
-  QDomElement markerStyleElem = doc.createElement( "markerStyle" );
+  QDomElement markerStyleElem = doc.createElement( QStringLiteral( "markerStyle" ) );
   QDomElement gridMarkerStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mGridMarkerSymbol, doc );
   markerStyleElem.appendChild( gridMarkerStyleElem );
   mapGridElem.appendChild( markerStyleElem );
 
-  mapGridElem.setAttribute( "gridFrameStyle", mGridFrameStyle );
-  mapGridElem.setAttribute( "gridFrameSideFlags", mGridFrameSides );
-  mapGridElem.setAttribute( "gridFrameWidth", qgsDoubleToString( mGridFrameWidth ) );
-  mapGridElem.setAttribute( "gridFramePenThickness", qgsDoubleToString( mGridFramePenThickness ) );
-  mapGridElem.setAttribute( "gridFramePenColor", QgsSymbolLayerUtils::encodeColor( mGridFramePenColor ) );
-  mapGridElem.setAttribute( "frameFillColor1", QgsSymbolLayerUtils::encodeColor( mGridFrameFillColor1 ) );
-  mapGridElem.setAttribute( "frameFillColor2", QgsSymbolLayerUtils::encodeColor( mGridFrameFillColor2 ) );
-  mapGridElem.setAttribute( "leftFrameDivisions", mLeftFrameDivisions );
-  mapGridElem.setAttribute( "rightFrameDivisions", mRightFrameDivisions );
-  mapGridElem.setAttribute( "topFrameDivisions", mTopFrameDivisions );
-  mapGridElem.setAttribute( "bottomFrameDivisions", mBottomFrameDivisions );
+  mapGridElem.setAttribute( QStringLiteral( "gridFrameStyle" ), mGridFrameStyle );
+  mapGridElem.setAttribute( QStringLiteral( "gridFrameSideFlags" ), mGridFrameSides );
+  mapGridElem.setAttribute( QStringLiteral( "gridFrameWidth" ), qgsDoubleToString( mGridFrameWidth ) );
+  mapGridElem.setAttribute( QStringLiteral( "gridFramePenThickness" ), qgsDoubleToString( mGridFramePenThickness ) );
+  mapGridElem.setAttribute( QStringLiteral( "gridFramePenColor" ), QgsSymbolLayerUtils::encodeColor( mGridFramePenColor ) );
+  mapGridElem.setAttribute( QStringLiteral( "frameFillColor1" ), QgsSymbolLayerUtils::encodeColor( mGridFrameFillColor1 ) );
+  mapGridElem.setAttribute( QStringLiteral( "frameFillColor2" ), QgsSymbolLayerUtils::encodeColor( mGridFrameFillColor2 ) );
+  mapGridElem.setAttribute( QStringLiteral( "leftFrameDivisions" ), mLeftFrameDivisions );
+  mapGridElem.setAttribute( QStringLiteral( "rightFrameDivisions" ), mRightFrameDivisions );
+  mapGridElem.setAttribute( QStringLiteral( "topFrameDivisions" ), mTopFrameDivisions );
+  mapGridElem.setAttribute( QStringLiteral( "bottomFrameDivisions" ), mBottomFrameDivisions );
   if ( mCRS.isValid() )
   {
     mCRS.writeXml( mapGridElem, doc );
   }
 
-  mapGridElem.setAttribute( "annotationFormat", mGridAnnotationFormat );
-  mapGridElem.setAttribute( "showAnnotation", mShowGridAnnotation );
-  mapGridElem.setAttribute( "annotationExpression", mGridAnnotationExpressionString );
-  mapGridElem.setAttribute( "leftAnnotationDisplay", mLeftGridAnnotationDisplay );
-  mapGridElem.setAttribute( "rightAnnotationDisplay", mRightGridAnnotationDisplay );
-  mapGridElem.setAttribute( "topAnnotationDisplay", mTopGridAnnotationDisplay );
-  mapGridElem.setAttribute( "bottomAnnotationDisplay", mBottomGridAnnotationDisplay );
-  mapGridElem.setAttribute( "leftAnnotationPosition", mLeftGridAnnotationPosition );
-  mapGridElem.setAttribute( "rightAnnotationPosition", mRightGridAnnotationPosition );
-  mapGridElem.setAttribute( "topAnnotationPosition", mTopGridAnnotationPosition );
-  mapGridElem.setAttribute( "bottomAnnotationPosition", mBottomGridAnnotationPosition );
-  mapGridElem.setAttribute( "leftAnnotationDirection", mLeftGridAnnotationDirection );
-  mapGridElem.setAttribute( "rightAnnotationDirection", mRightGridAnnotationDirection );
-  mapGridElem.setAttribute( "topAnnotationDirection", mTopGridAnnotationDirection );
-  mapGridElem.setAttribute( "bottomAnnotationDirection", mBottomGridAnnotationDirection );
-  mapGridElem.setAttribute( "frameAnnotationDistance", QString::number( mAnnotationFrameDistance ) );
-  mapGridElem.appendChild( QgsFontUtils::toXmlElement( mGridAnnotationFont, doc, "annotationFontProperties" ) );
-  mapGridElem.setAttribute( "annotationFontColor", QgsSymbolLayerUtils::encodeColor( mGridAnnotationFontColor ) );
-  mapGridElem.setAttribute( "annotationPrecision", mGridAnnotationPrecision );
-  mapGridElem.setAttribute( "unit", mGridUnit );
-  mapGridElem.setAttribute( "blendMode", mBlendMode );
+  mapGridElem.setAttribute( QStringLiteral( "annotationFormat" ), mGridAnnotationFormat );
+  mapGridElem.setAttribute( QStringLiteral( "showAnnotation" ), mShowGridAnnotation );
+  mapGridElem.setAttribute( QStringLiteral( "annotationExpression" ), mGridAnnotationExpressionString );
+  mapGridElem.setAttribute( QStringLiteral( "leftAnnotationDisplay" ), mLeftGridAnnotationDisplay );
+  mapGridElem.setAttribute( QStringLiteral( "rightAnnotationDisplay" ), mRightGridAnnotationDisplay );
+  mapGridElem.setAttribute( QStringLiteral( "topAnnotationDisplay" ), mTopGridAnnotationDisplay );
+  mapGridElem.setAttribute( QStringLiteral( "bottomAnnotationDisplay" ), mBottomGridAnnotationDisplay );
+  mapGridElem.setAttribute( QStringLiteral( "leftAnnotationPosition" ), mLeftGridAnnotationPosition );
+  mapGridElem.setAttribute( QStringLiteral( "rightAnnotationPosition" ), mRightGridAnnotationPosition );
+  mapGridElem.setAttribute( QStringLiteral( "topAnnotationPosition" ), mTopGridAnnotationPosition );
+  mapGridElem.setAttribute( QStringLiteral( "bottomAnnotationPosition" ), mBottomGridAnnotationPosition );
+  mapGridElem.setAttribute( QStringLiteral( "leftAnnotationDirection" ), mLeftGridAnnotationDirection );
+  mapGridElem.setAttribute( QStringLiteral( "rightAnnotationDirection" ), mRightGridAnnotationDirection );
+  mapGridElem.setAttribute( QStringLiteral( "topAnnotationDirection" ), mTopGridAnnotationDirection );
+  mapGridElem.setAttribute( QStringLiteral( "bottomAnnotationDirection" ), mBottomGridAnnotationDirection );
+  mapGridElem.setAttribute( QStringLiteral( "frameAnnotationDistance" ), QString::number( mAnnotationFrameDistance ) );
+  mapGridElem.appendChild( QgsFontUtils::toXmlElement( mGridAnnotationFont, doc, QStringLiteral( "annotationFontProperties" ) ) );
+  mapGridElem.setAttribute( QStringLiteral( "annotationFontColor" ), QgsSymbolLayerUtils::encodeColor( mGridAnnotationFontColor ) );
+  mapGridElem.setAttribute( QStringLiteral( "annotationPrecision" ), mGridAnnotationPrecision );
+  mapGridElem.setAttribute( QStringLiteral( "unit" ), mGridUnit );
+  mapGridElem.setAttribute( QStringLiteral( "blendMode" ), mBlendMode );
 
   bool ok = QgsComposerMapItem::writeXml( mapGridElem, doc );
   elem.appendChild( mapGridElem );
@@ -352,28 +352,28 @@ bool QgsComposerMapGrid::readXml( const QDomElement& itemElem, const QDomDocumen
   bool ok = QgsComposerMapItem::readXml( itemElem, doc );
 
   //grid
-  mGridStyle = QgsComposerMapGrid::GridStyle( itemElem.attribute( "gridStyle", "0" ).toInt() );
-  mGridIntervalX = itemElem.attribute( "intervalX", "0" ).toDouble();
-  mGridIntervalY = itemElem.attribute( "intervalY", "0" ).toDouble();
-  mGridOffsetX = itemElem.attribute( "offsetX", "0" ).toDouble();
-  mGridOffsetY = itemElem.attribute( "offsetY", "0" ).toDouble();
-  mCrossLength = itemElem.attribute( "crossLength", "3" ).toDouble();
-  mGridFrameStyle = static_cast< QgsComposerMapGrid::FrameStyle >( itemElem.attribute( "gridFrameStyle", "0" ).toInt() );
-  mGridFrameSides = static_cast< QgsComposerMapGrid::FrameSideFlags >( itemElem.attribute( "gridFrameSideFlags", "15" ).toInt() );
-  mGridFrameWidth = itemElem.attribute( "gridFrameWidth", "2.0" ).toDouble();
-  mGridFramePenThickness = itemElem.attribute( "gridFramePenThickness", "0.3" ).toDouble();
-  mGridFramePenColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "gridFramePenColor", "0,0,0" ) );
-  mGridFrameFillColor1 = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "frameFillColor1", "255,255,255,255" ) );
-  mGridFrameFillColor2 = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "frameFillColor2", "0,0,0,255" ) );
-  mLeftFrameDivisions = QgsComposerMapGrid::DisplayMode( itemElem.attribute( "leftFrameDivisions", "0" ).toInt() );
-  mRightFrameDivisions = QgsComposerMapGrid::DisplayMode( itemElem.attribute( "rightFrameDivisions", "0" ).toInt() );
-  mTopFrameDivisions = QgsComposerMapGrid::DisplayMode( itemElem.attribute( "topFrameDivisions", "0" ).toInt() );
-  mBottomFrameDivisions = QgsComposerMapGrid::DisplayMode( itemElem.attribute( "bottomFrameDivisions", "0" ).toInt() );
+  mGridStyle = QgsComposerMapGrid::GridStyle( itemElem.attribute( QStringLiteral( "gridStyle" ), QStringLiteral( "0" ) ).toInt() );
+  mGridIntervalX = itemElem.attribute( QStringLiteral( "intervalX" ), QStringLiteral( "0" ) ).toDouble();
+  mGridIntervalY = itemElem.attribute( QStringLiteral( "intervalY" ), QStringLiteral( "0" ) ).toDouble();
+  mGridOffsetX = itemElem.attribute( QStringLiteral( "offsetX" ), QStringLiteral( "0" ) ).toDouble();
+  mGridOffsetY = itemElem.attribute( QStringLiteral( "offsetY" ), QStringLiteral( "0" ) ).toDouble();
+  mCrossLength = itemElem.attribute( QStringLiteral( "crossLength" ), QStringLiteral( "3" ) ).toDouble();
+  mGridFrameStyle = static_cast< QgsComposerMapGrid::FrameStyle >( itemElem.attribute( QStringLiteral( "gridFrameStyle" ), QStringLiteral( "0" ) ).toInt() );
+  mGridFrameSides = static_cast< QgsComposerMapGrid::FrameSideFlags >( itemElem.attribute( QStringLiteral( "gridFrameSideFlags" ), QStringLiteral( "15" ) ).toInt() );
+  mGridFrameWidth = itemElem.attribute( QStringLiteral( "gridFrameWidth" ), QStringLiteral( "2.0" ) ).toDouble();
+  mGridFramePenThickness = itemElem.attribute( QStringLiteral( "gridFramePenThickness" ), QStringLiteral( "0.3" ) ).toDouble();
+  mGridFramePenColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "gridFramePenColor" ), QStringLiteral( "0,0,0" ) ) );
+  mGridFrameFillColor1 = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "frameFillColor1" ), QStringLiteral( "255,255,255,255" ) ) );
+  mGridFrameFillColor2 = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "frameFillColor2" ), QStringLiteral( "0,0,0,255" ) ) );
+  mLeftFrameDivisions = QgsComposerMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "leftFrameDivisions" ), QStringLiteral( "0" ) ).toInt() );
+  mRightFrameDivisions = QgsComposerMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "rightFrameDivisions" ), QStringLiteral( "0" ) ).toInt() );
+  mTopFrameDivisions = QgsComposerMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "topFrameDivisions" ), QStringLiteral( "0" ) ).toInt() );
+  mBottomFrameDivisions = QgsComposerMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "bottomFrameDivisions" ), QStringLiteral( "0" ) ).toInt() );
 
-  QDomElement lineStyleElem = itemElem.firstChildElement( "lineStyle" );
+  QDomElement lineStyleElem = itemElem.firstChildElement( QStringLiteral( "lineStyle" ) );
   if ( !lineStyleElem.isNull() )
   {
-    QDomElement symbolElem = lineStyleElem.firstChildElement( "symbol" );
+    QDomElement symbolElem = lineStyleElem.firstChildElement( QStringLiteral( "symbol" ) );
     if ( !symbolElem.isNull() )
     {
       delete mGridLineSymbol;
@@ -384,16 +384,16 @@ bool QgsComposerMapGrid::readXml( const QDomElement& itemElem, const QDomDocumen
   {
     //old project file, read penWidth /penColorRed, penColorGreen, penColorBlue
     mGridLineSymbol = QgsLineSymbol::createSimple( QgsStringMap() );
-    mGridLineSymbol->setWidth( itemElem.attribute( "penWidth", "0" ).toDouble() );
-    mGridLineSymbol->setColor( QColor( itemElem.attribute( "penColorRed", "0" ).toInt(),
-                                       itemElem.attribute( "penColorGreen", "0" ).toInt(),
-                                       itemElem.attribute( "penColorBlue", "0" ).toInt() ) );
+    mGridLineSymbol->setWidth( itemElem.attribute( QStringLiteral( "penWidth" ), QStringLiteral( "0" ) ).toDouble() );
+    mGridLineSymbol->setColor( QColor( itemElem.attribute( QStringLiteral( "penColorRed" ), QStringLiteral( "0" ) ).toInt(),
+                                       itemElem.attribute( QStringLiteral( "penColorGreen" ), QStringLiteral( "0" ) ).toInt(),
+                                       itemElem.attribute( QStringLiteral( "penColorBlue" ), QStringLiteral( "0" ) ).toInt() ) );
   }
 
-  QDomElement markerStyleElem = itemElem.firstChildElement( "markerStyle" );
+  QDomElement markerStyleElem = itemElem.firstChildElement( QStringLiteral( "markerStyle" ) );
   if ( !markerStyleElem.isNull() )
   {
-    QDomElement symbolElem = markerStyleElem.firstChildElement( "symbol" );
+    QDomElement symbolElem = markerStyleElem.firstChildElement( QStringLiteral( "symbol" ) );
     if ( !symbolElem.isNull() )
     {
       delete mGridMarkerSymbol;
@@ -404,34 +404,34 @@ bool QgsComposerMapGrid::readXml( const QDomElement& itemElem, const QDomDocumen
   if ( !mCRS.readXml( itemElem ) )
     mCRS = QgsCoordinateReferenceSystem();
 
-  mBlendMode = static_cast< QPainter::CompositionMode >( itemElem.attribute( "blendMode", "0" ).toUInt() );
+  mBlendMode = static_cast< QPainter::CompositionMode >( itemElem.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() );
 
   //annotation
-  mShowGridAnnotation = ( itemElem.attribute( "showAnnotation", "0" ) != "0" );
-  mGridAnnotationFormat = QgsComposerMapGrid::AnnotationFormat( itemElem.attribute( "annotationFormat", "0" ).toInt() );
-  mGridAnnotationExpressionString = itemElem.attribute( "annotationExpression" );
+  mShowGridAnnotation = ( itemElem.attribute( QStringLiteral( "showAnnotation" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
+  mGridAnnotationFormat = QgsComposerMapGrid::AnnotationFormat( itemElem.attribute( QStringLiteral( "annotationFormat" ), QStringLiteral( "0" ) ).toInt() );
+  mGridAnnotationExpressionString = itemElem.attribute( QStringLiteral( "annotationExpression" ) );
   mGridAnnotationExpression.reset();
-  mLeftGridAnnotationPosition = QgsComposerMapGrid::AnnotationPosition( itemElem.attribute( "leftAnnotationPosition", "0" ).toInt() );
-  mRightGridAnnotationPosition = QgsComposerMapGrid::AnnotationPosition( itemElem.attribute( "rightAnnotationPosition", "0" ).toInt() );
-  mTopGridAnnotationPosition = QgsComposerMapGrid::AnnotationPosition( itemElem.attribute( "topAnnotationPosition", "0" ).toInt() );
-  mBottomGridAnnotationPosition = QgsComposerMapGrid::AnnotationPosition( itemElem.attribute( "bottomAnnotationPosition", "0" ).toInt() );
-  mLeftGridAnnotationDisplay = QgsComposerMapGrid::DisplayMode( itemElem.attribute( "leftAnnotationDisplay", "0" ).toInt() );
-  mRightGridAnnotationDisplay = QgsComposerMapGrid::DisplayMode( itemElem.attribute( "rightAnnotationDisplay", "0" ).toInt() );
-  mTopGridAnnotationDisplay = QgsComposerMapGrid::DisplayMode( itemElem.attribute( "topAnnotationDisplay", "0" ).toInt() );
-  mBottomGridAnnotationDisplay = QgsComposerMapGrid::DisplayMode( itemElem.attribute( "bottomAnnotationDisplay", "0" ).toInt() );
+  mLeftGridAnnotationPosition = QgsComposerMapGrid::AnnotationPosition( itemElem.attribute( QStringLiteral( "leftAnnotationPosition" ), QStringLiteral( "0" ) ).toInt() );
+  mRightGridAnnotationPosition = QgsComposerMapGrid::AnnotationPosition( itemElem.attribute( QStringLiteral( "rightAnnotationPosition" ), QStringLiteral( "0" ) ).toInt() );
+  mTopGridAnnotationPosition = QgsComposerMapGrid::AnnotationPosition( itemElem.attribute( QStringLiteral( "topAnnotationPosition" ), QStringLiteral( "0" ) ).toInt() );
+  mBottomGridAnnotationPosition = QgsComposerMapGrid::AnnotationPosition( itemElem.attribute( QStringLiteral( "bottomAnnotationPosition" ), QStringLiteral( "0" ) ).toInt() );
+  mLeftGridAnnotationDisplay = QgsComposerMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "leftAnnotationDisplay" ), QStringLiteral( "0" ) ).toInt() );
+  mRightGridAnnotationDisplay = QgsComposerMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "rightAnnotationDisplay" ), QStringLiteral( "0" ) ).toInt() );
+  mTopGridAnnotationDisplay = QgsComposerMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "topAnnotationDisplay" ), QStringLiteral( "0" ) ).toInt() );
+  mBottomGridAnnotationDisplay = QgsComposerMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "bottomAnnotationDisplay" ), QStringLiteral( "0" ) ).toInt() );
 
-  mLeftGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( "leftAnnotationDirection", "0" ).toInt() );
-  mRightGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( "rightAnnotationDirection", "0" ).toInt() );
-  mTopGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( "topAnnotationDirection", "0" ).toInt() );
-  mBottomGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( "bottomAnnotationDirection", "0" ).toInt() );
-  mAnnotationFrameDistance = itemElem.attribute( "frameAnnotationDistance", "0" ).toDouble();
-  if ( !QgsFontUtils::setFromXmlChildNode( mGridAnnotationFont, itemElem, "annotationFontProperties" ) )
+  mLeftGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( QStringLiteral( "leftAnnotationDirection" ), QStringLiteral( "0" ) ).toInt() );
+  mRightGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( QStringLiteral( "rightAnnotationDirection" ), QStringLiteral( "0" ) ).toInt() );
+  mTopGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( QStringLiteral( "topAnnotationDirection" ), QStringLiteral( "0" ) ).toInt() );
+  mBottomGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( QStringLiteral( "bottomAnnotationDirection" ), QStringLiteral( "0" ) ).toInt() );
+  mAnnotationFrameDistance = itemElem.attribute( QStringLiteral( "frameAnnotationDistance" ), QStringLiteral( "0" ) ).toDouble();
+  if ( !QgsFontUtils::setFromXmlChildNode( mGridAnnotationFont, itemElem, QStringLiteral( "annotationFontProperties" ) ) )
   {
-    mGridAnnotationFont.fromString( itemElem.attribute( "annotationFont", "" ) );
+    mGridAnnotationFont.fromString( itemElem.attribute( QStringLiteral( "annotationFont" ), QLatin1String( "" ) ) );
   }
-  mGridAnnotationFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "annotationFontColor", "0,0,0,255" ) );
-  mGridAnnotationPrecision = itemElem.attribute( "annotationPrecision", "3" ).toInt();
-  int gridUnitInt =  itemElem.attribute( "unit", QString::number( MapUnit ) ).toInt();
+  mGridAnnotationFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "annotationFontColor" ), QStringLiteral( "0,0,0,255" ) ) );
+  mGridAnnotationPrecision = itemElem.attribute( QStringLiteral( "annotationPrecision" ), QStringLiteral( "3" ) ).toInt();
+  int gridUnitInt =  itemElem.attribute( QStringLiteral( "unit" ), QString::number( MapUnit ) ).toInt();
   mGridUnit = ( gridUnitInt <= static_cast< int >( CM ) ) ? static_cast< GridUnit >( gridUnitInt ) : MapUnit;
   return ok;
 }
@@ -1475,8 +1475,8 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
   }
   else if ( mGridAnnotationFormat == CustomFormat )
   {
-    expressionContext.lastScope()->setVariable( "grid_number", value );
-    expressionContext.lastScope()->setVariable( "grid_axis", coord == QgsComposerMapGrid::Longitude ? "x" : "y" );
+    expressionContext.lastScope()->setVariable( QStringLiteral( "grid_number" ), value );
+    expressionContext.lastScope()->setVariable( QStringLiteral( "grid_axis" ), coord == QgsComposerMapGrid::Longitude ? "x" : "y" );
     if ( !mGridAnnotationExpression.data() )
     {
       mGridAnnotationExpression.reset( new QgsExpression( mGridAnnotationExpressionString ) );
@@ -1524,7 +1524,7 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
   {
     if ( split.size() < 2 )
     {
-      return "";
+      return QLatin1String( "" );
     }
     return split.at( 1 );
   }
@@ -2210,9 +2210,9 @@ QgsExpressionContext QgsComposerMapGrid::createExpressionContext() const
 {
   QgsExpressionContext context = QgsComposerObject::createExpressionContext();
   context.appendScope( new QgsExpressionContextScope( tr( "Grid" ) ) );
-  context.lastScope()->setVariable( "grid_number", 0 );
-  context.lastScope()->setVariable( "grid_axis", "x" );
-  context.setHighlightedVariables( QStringList() << "grid_number" << "grid_axis" );
+  context.lastScope()->setVariable( QStringLiteral( "grid_number" ), 0 );
+  context.lastScope()->setVariable( QStringLiteral( "grid_axis" ), "x" );
+  context.setHighlightedVariables( QStringList() << QStringLiteral( "grid_number" ) << QStringLiteral( "grid_axis" ) );
   return context;
 }
 

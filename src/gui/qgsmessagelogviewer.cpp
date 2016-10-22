@@ -69,10 +69,10 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
     tabWidget->setCurrentIndex( tabWidget->count() - 1 );
   }
 
-  QString prefix = QString( "%1\t%2\t" )
+  QString prefix = QStringLiteral( "%1\t%2\t" )
                    .arg( QDateTime::currentDateTime().toString( Qt::ISODate ) )
                    .arg( level );
-  w->appendPlainText( message.prepend( prefix ).replace( '\n', "\n\t\t\t" ) );
+  w->appendPlainText( message.prepend( prefix ).replace( '\n', QLatin1String( "\n\t\t\t" ) ) );
   w->verticalScrollBar()->setValue( w->verticalScrollBar()->maximum() );
 }
 

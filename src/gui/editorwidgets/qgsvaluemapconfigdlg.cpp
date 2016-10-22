@@ -51,7 +51,7 @@ QgsEditorWidgetConfig QgsValueMapConfigDlg::config()
       continue;
 
     QString ks = ki->text();
-    if (( ks == settings.value( "qgis/nullValue", "NULL" ).toString() ) && !( ki->flags() & Qt::ItemIsEditable ) )
+    if (( ks == settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() ) && !( ki->flags() & Qt::ItemIsEditable ) )
       ks = VALUEMAP_NULL_TEXT;
 
     if ( !vi || vi->text().isNull() )
@@ -132,7 +132,7 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
 
   if ( insertNull )
   {
-    setRow( row, VALUEMAP_NULL_TEXT, "<NULL>" );
+    setRow( row, VALUEMAP_NULL_TEXT, QStringLiteral( "<NULL>" ) );
     ++row;
   }
 
@@ -151,11 +151,11 @@ void QgsValueMapConfigDlg::setRow( int row, const QString& value, const QString&
   QTableWidgetItem* valueCell;
   QTableWidgetItem* descriptionCell = new QTableWidgetItem( description );
   tableWidget->insertRow( row );
-  if ( value == QString( VALUEMAP_NULL_TEXT ) )
+  if ( value == QStringLiteral( VALUEMAP_NULL_TEXT ) )
   {
     QFont cellFont;
     cellFont.setItalic( true );
-    valueCell = new QTableWidgetItem( settings.value( "qgis/nullValue", "NULL" ).toString() );
+    valueCell = new QTableWidgetItem( settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() );
     valueCell->setFont( cellFont );
     valueCell->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
     descriptionCell->setFont( cellFont );
@@ -170,7 +170,7 @@ void QgsValueMapConfigDlg::setRow( int row, const QString& value, const QString&
 
 void QgsValueMapConfigDlg::addNullButtonPushed()
 {
-  setRow( tableWidget->rowCount() - 1, VALUEMAP_NULL_TEXT, "<NULL>" );
+  setRow( tableWidget->rowCount() - 1, VALUEMAP_NULL_TEXT, QStringLiteral( "<NULL>" ) );
 }
 
 void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
@@ -242,8 +242,8 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
       val = val.mid( 1, val.length() - 2 );
     }
 
-    if ( key == settings.value( "qgis/nullValue", "NULL" ).toString() )
-      key = QString( VALUEMAP_NULL_TEXT );
+    if ( key == settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString() )
+      key = QStringLiteral( VALUEMAP_NULL_TEXT );
 
     map[ key ] = val;
   }

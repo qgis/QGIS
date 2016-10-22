@@ -144,12 +144,12 @@ void QgsGeometrySnapperDialog::validateInput()
 
 void QgsGeometrySnapperDialog::selectOutputFile()
 {
-  QString filterString = QgsVectorFileWriter::filterForDriver( "ESRI Shapefile" );
+  QString filterString = QgsVectorFileWriter::filterForDriver( QStringLiteral( "ESRI Shapefile" ) );
   QMap<QString, QString> filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
   Q_FOREACH ( const QString& filter, filterFormatMap.keys() )
   {
     QString driverName = filterFormatMap.value( filter );
-    if ( driverName != "ESRI Shapefile" ) // Default entry, first in list (see above)
+    if ( driverName != QLatin1String( "ESRI Shapefile" ) ) // Default entry, first in list (see above)
     {
       filterString += ";;" + filter;
     }
@@ -172,9 +172,9 @@ void QgsGeometrySnapperDialog::selectOutputFile()
     QgsVectorFileWriter::MetaData mdata;
     if ( QgsVectorFileWriter::driverMetadata( mOutputDriverName, mdata ) )
     {
-      if ( !filename.endsWith( QString( ".%1" ).arg( mdata.ext ), Qt::CaseInsensitive ) )
+      if ( !filename.endsWith( QStringLiteral( ".%1" ).arg( mdata.ext ), Qt::CaseInsensitive ) )
       {
-        filename += QString( ".%1" ).arg( mdata.ext );
+        filename += QStringLiteral( ".%1" ).arg( mdata.ext );
       }
     }
     lineEditOutput->setText( filename );
@@ -228,7 +228,7 @@ void QgsGeometrySnapperDialog::run()
       QMessageBox::critical( this, tr( "Layer Creation Failed" ), tr( "Failed to create the output layer: %1" ).arg( errMsg ) );
       return;
     }
-    QgsVectorLayer* newlayer = new QgsVectorLayer( filename, QFileInfo( filename ).completeBaseName(), "ogr" );
+    QgsVectorLayer* newlayer = new QgsVectorLayer( filename, QFileInfo( filename ).completeBaseName(), QStringLiteral( "ogr" ) );
 
     if ( selectedOnly )
     {
@@ -261,12 +261,12 @@ void QgsGeometrySnapperDialog::run()
     {
       QString outputFileName = lineEditOutput->text();
       QFile( outputFileName ).remove();
-      if ( mOutputDriverName == "ESRI Shapefile" )
+      if ( mOutputDriverName == QLatin1String( "ESRI Shapefile" ) )
       {
-        QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), "dbf" ) ).remove();
-        QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), "prj" ) ).remove();
-        QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), "qpj" ) ).remove();
-        QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), "shx" ) ).remove();
+        QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), QStringLiteral( "dbf" ) ) ).remove();
+        QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), QStringLiteral( "prj" ) ) ).remove();
+        QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), QStringLiteral( "qpj" ) ) ).remove();
+        QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), QStringLiteral( "shx" ) ) ).remove();
       }
       return;
     }
@@ -313,7 +313,7 @@ void QgsGeometrySnapperDialog::run()
   /** Show errors **/
   if ( !snapper.getErrors().isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Errors occurred" ), tr( "<p>The following errors occurred:</p><ul><li>%1</li></ul>" ).arg( snapper.getErrors().join( "</li><li>" ) ) );
+    QMessageBox::warning( this, tr( "Errors occurred" ), tr( "<p>The following errors occurred:</p><ul><li>%1</li></ul>" ).arg( snapper.getErrors().join( QStringLiteral( "</li><li>" ) ) ) );
   }
   hide() ;
 }

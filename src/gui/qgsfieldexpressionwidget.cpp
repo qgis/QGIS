@@ -46,7 +46,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
 
   mButton = new QToolButton( this );
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  mButton->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
 
   layout->addWidget( mCombo );
   layout->addWidget( mButton );
@@ -217,7 +217,7 @@ void QgsFieldExpressionWidget::editExpression()
 
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
 
-  QgsExpressionBuilderDialog dlg( vl, currentExpression, this, "generic", context );
+  QgsExpressionBuilderDialog dlg( vl, currentExpression, this, QStringLiteral( "generic" ), context );
   if ( !mDa.isNull() )
   {
     dlg.setGeomCalculator( *mDa );
@@ -287,7 +287,7 @@ void QgsFieldExpressionWidget::currentFieldChanged()
   }
   else
   {
-    mCombo->setToolTip( "" );
+    mCombo->setToolTip( QLatin1String( "" ) );
   }
 
   emit fieldChanged( fieldName );

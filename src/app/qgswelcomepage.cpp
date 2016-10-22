@@ -41,7 +41,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget* parent )
   QWidget* recentProjctsContainer = new QWidget;
   recentProjctsContainer->setLayout( new QVBoxLayout );
   recentProjctsContainer->layout()->setContentsMargins( 3, 3, 3, 0 );
-  QLabel* recentProjectsTitle = new QLabel( QString( "<h1>%1</h1>" ).arg( tr( "Recent Projects" ) ) );
+  QLabel* recentProjectsTitle = new QLabel( QStringLiteral( "<h1>%1</h1>" ).arg( tr( "Recent Projects" ) ) );
   recentProjctsContainer->layout()->addWidget( recentProjectsTitle );
 
   QListView* recentProjectsListView = new QListView();
@@ -60,7 +60,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget* parent )
   mVersionInformation->setVisible( false );
 
   mVersionInfo = new QgsVersionInfo();
-  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( "/qgis/checkVersion", true ).toBool() && !skipVersionCheck )
+  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( QStringLiteral( "/qgis/checkVersion" ), true ).toBool() && !skipVersionCheck )
   {
     connect( mVersionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
     mVersionInfo->checkVersion();
@@ -92,7 +92,7 @@ void QgsWelcomePage::versionInfoReceived()
   if ( versionInfo->newVersionAvailable() )
   {
     mVersionInformation->setVisible( true );
-    mVersionInformation->setText( QString( "<b>%1</b>: %2" )
+    mVersionInformation->setText( QStringLiteral( "<b>%1</b>: %2" )
                                   .arg( tr( "There is a new QGIS version available" ),
                                         versionInfo->downloadInfo() ) );
     mVersionInformation->setStyleSheet( "QLabel{"

@@ -67,7 +67,7 @@ QString QgsKeyValueWidgetFactory::representValue( QgsVectorLayer* vl, int fieldI
   if ( value.isNull() )
   {
     QSettings settings;
-    return settings.value( "qgis/nullValue", "NULL" ).toString();
+    return settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
   }
 
   QString result;

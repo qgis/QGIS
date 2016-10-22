@@ -333,7 +333,7 @@ void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
     {
       if ( QgsLayerTreeModelLegendNode* legendNode = qobject_cast<QgsLayerTreeModelLegendNode*>( atom.nucleons.at( j ).item ) )
       {
-        QString key = QString( "%1-%2" ).arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( atom.column );
+        QString key = QStringLiteral( "%1-%2" ).arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( atom.column );
         maxSymbolWidth[key] = qMax( atom.nucleons.at( j ).symbolSize.width(), maxSymbolWidth[key] );
       }
     }
@@ -345,7 +345,7 @@ void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
     {
       if ( QgsLayerTreeModelLegendNode* legendNode = qobject_cast<QgsLayerTreeModelLegendNode*>( atom.nucleons.at( j ).item ) )
       {
-        QString key = QString( "%1-%2" ).arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( atom.column );
+        QString key = QStringLiteral( "%1-%2" ).arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( atom.column );
         double space = mSettings.style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Right ) +
                        mSettings.style( QgsComposerLegendStyle::SymbolLabel ).margin( QgsComposerLegendStyle::Left );
         atom.nucleons[j].labelXOffset =  maxSymbolWidth[key] + space;
@@ -580,12 +580,12 @@ QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup* nodeGroup, QPainter
 
 QgsComposerLegendStyle::Style QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNode* node, QgsLayerTreeModel* model )
 {
-  QString style = node->customProperty( "legend/title-style" ).toString();
-  if ( style == "hidden" )
+  QString style = node->customProperty( QStringLiteral( "legend/title-style" ) ).toString();
+  if ( style == QLatin1String( "hidden" ) )
     return QgsComposerLegendStyle::Hidden;
-  else if ( style == "group" )
+  else if ( style == QLatin1String( "group" ) )
     return QgsComposerLegendStyle::Group;
-  else if ( style == "subgroup" )
+  else if ( style == QLatin1String( "subgroup" ) )
     return QgsComposerLegendStyle::Subgroup;
 
   // use a default otherwise
@@ -613,20 +613,20 @@ void QgsLegendRenderer::setNodeLegendStyle( QgsLayerTreeNode* node, QgsComposerL
   switch ( style )
   {
     case QgsComposerLegendStyle::Hidden:
-      str = "hidden";
+      str = QStringLiteral( "hidden" );
       break;
     case QgsComposerLegendStyle::Group:
-      str = "group";
+      str = QStringLiteral( "group" );
       break;
     case QgsComposerLegendStyle::Subgroup:
-      str = "subgroup";
+      str = QStringLiteral( "subgroup" );
       break;
     default:
       break; // nothing
   }
 
   if ( !str.isEmpty() )
-    node->setCustomProperty( "legend/title-style", str );
+    node->setCustomProperty( QStringLiteral( "legend/title-style" ), str );
   else
-    node->removeCustomProperty( "legend/title-style" );
+    node->removeCustomProperty( QStringLiteral( "legend/title-style" ) );
 }

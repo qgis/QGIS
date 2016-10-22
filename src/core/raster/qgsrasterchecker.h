@@ -61,7 +61,7 @@ class CORE_EXPORT QgsRasterChecker
     bool compare( double verifiedVal, double expectedVal, double theTolerance );
     void compare( const QString& theParamName, int verifiedVal, int expectedVal, QString &theReport, bool &theOk );
     void compare( const QString& theParamName, double verifiedVal, double expectedVal, QString &theReport, bool &theOk, double theTolerance = 0 );
-    void compareRow( const QString& theParamName, const QString& verifiedVal, const QString& expectedVal, QString &theReport, bool theOk, const QString& theDifference = "", const QString& theTolerance = "" );
+    void compareRow( const QString& theParamName, const QString& verifiedVal, const QString& expectedVal, QString &theReport, bool theOk, const QString& theDifference = QStringLiteral( "" ), const QString& theTolerance = QStringLiteral( "" ) );
     double tolerance( double val, int places = 6 );
 }; // class QgsRasterChecker
 

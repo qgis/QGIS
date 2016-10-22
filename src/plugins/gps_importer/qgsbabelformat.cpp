@@ -115,13 +115,13 @@ QStringList QgsSimpleBabelFormat::importCommand( const QString& babel,
 {
   QStringList args;
   args
-  << QString( "\"%1\"" ).arg( babel )
+  << QStringLiteral( "\"%1\"" ).arg( babel )
   << featuretype
-  << "-i"
+  << QStringLiteral( "-i" )
   << mFormat
-  << "-o" << "gpx"
-  << QString( "\"%1\"" ).arg( input )
-  << QString( "\"%1\"" ).arg( output );
+  << QStringLiteral( "-o" ) << QStringLiteral( "gpx" )
+  << QStringLiteral( "\"%1\"" ).arg( input )
+  << QStringLiteral( "\"%1\"" ).arg( output );
   return args;
 }
 
@@ -157,14 +157,14 @@ QStringList QgsBabelCommand::importCommand( const QString& babel,
   QStringList::const_iterator iter;
   for ( iter = mImportCmd.begin(); iter != mImportCmd.end(); ++iter )
   {
-    if ( *iter == "%babel" )
+    if ( *iter == QLatin1String( "%babel" ) )
       copy.append( babel );
-    else if ( *iter == "%type" )
+    else if ( *iter == QLatin1String( "%type" ) )
       copy.append( featuretype );
-    else if ( *iter == "%in" )
-      copy.append( QString( "\"%1\"" ).arg( input ) );
-    else if ( *iter == "%out" )
-      copy.append( QString( "\"%1\"" ).arg( output ) );
+    else if ( *iter == QLatin1String( "%in" ) )
+      copy.append( QStringLiteral( "\"%1\"" ).arg( input ) );
+    else if ( *iter == QLatin1String( "%out" ) )
+      copy.append( QStringLiteral( "\"%1\"" ).arg( output ) );
     else
       copy.append( *iter );
   }
@@ -181,14 +181,14 @@ QStringList QgsBabelCommand::exportCommand( const QString& babel,
   QStringList::const_iterator iter;
   for ( iter = mExportCmd.begin(); iter != mExportCmd.end(); ++iter )
   {
-    if ( *iter == "%babel" )
+    if ( *iter == QLatin1String( "%babel" ) )
       copy.append( babel );
-    else if ( *iter == "%type" )
+    else if ( *iter == QLatin1String( "%type" ) )
       copy.append( featuretype );
-    else if ( *iter == "%in" )
-      copy.append( QString( "\"%1\"" ).arg( input ) );
-    else if ( *iter == "%out" )
-      copy.append( QString( "\"%1\"" ).arg( output ) );
+    else if ( *iter == QLatin1String( "%in" ) )
+      copy.append( QStringLiteral( "\"%1\"" ).arg( input ) );
+    else if ( *iter == QLatin1String( "%out" ) )
+      copy.append( QStringLiteral( "\"%1\"" ).arg( output ) );
     else
       copy.append( *iter );
   }

@@ -31,7 +31,7 @@ QgsLayerTreeTransparencyWidget::QgsLayerTreeTransparencyWidget( QgsMapLayer* lay
     : mLayer( layer )
 {
   setAutoFillBackground( true ); // override the content from model
-  QLabel* l = new QLabel( "Transparency", this );
+  QLabel* l = new QLabel( QStringLiteral( "Transparency" ), this );
   mSlider = new QSlider( Qt::Horizontal, this );
   mSlider->setRange( 0, 100 );
   QHBoxLayout* lay = new QHBoxLayout();
@@ -102,7 +102,7 @@ void QgsLayerTreeTransparencyWidget::layerTrChanged()
 
 QString QgsLayerTreeTransparencyWidget::Provider::id() const
 {
-  return "transparency";
+  return QStringLiteral( "transparency" );
 }
 
 QString QgsLayerTreeTransparencyWidget::Provider::name() const

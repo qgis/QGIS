@@ -75,7 +75,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   QWidget * parent,
   Qt::WindowFlags fl
 )
-    : QgsOptionsDialogBase( "VectorLayerProperties", parent, fl )
+    : QgsOptionsDialogBase( QStringLiteral( "VectorLayerProperties" ), parent, fl )
     , mLayer( lyr )
     , mMetadataFilled( false )
     , mOriginalSubsetSQL( lyr->subsetString() )
@@ -209,7 +209,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       }
       cboProviderEncoding->setCurrentIndex( encindex );
     }
-    else if ( mLayer->dataProvider()->name() == "ogr" )
+    else if ( mLayer->dataProvider()->name() == QLatin1String( "ogr" ) )
     {
       // if OGR_L_TestCapability(OLCStringsAsUTF8) returns true, OGR provider encoding can be set to only UTF-8
       // so make encoding box grayed out
@@ -284,9 +284,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   QSettings settings;
   // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
   // this will be read by restoreOptionsBaseUi()
-  if ( !settings.contains( QString( "/Windows/VectorLayerProperties/tab" ) ) )
+  if ( !settings.contains( QStringLiteral( "/Windows/VectorLayerProperties/tab" ) ) )
   {
-    settings.setValue( QString( "/Windows/VectorLayerProperties/tab" ),
+    settings.setValue( QStringLiteral( "/Windows/VectorLayerProperties/tab" ),
                        mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
@@ -356,9 +356,9 @@ void QgsVectorLayerProperties::insertFieldOrExpression()
 {
   // Convert the selected field to an expression and
   // insert it into the action at the cursor position
-  QString expression = "[% \"";
+  QString expression = QStringLiteral( "[% \"" );
   expression += mMapTipExpressionFieldWidget->asExpression();
-  expression += "\" %]";
+  expression += QLatin1String( "\" %]" );
 
   mMapTipWidget->insertText( expression );
 }
@@ -400,7 +400,7 @@ void QgsVectorLayerProperties::syncToLayer()
   mSimplifyDrawingGroupBox->setChecked( simplifyMethod.simplifyHints() != QgsVectorSimplifyMethod::NoSimplification );
   mSimplifyDrawingSpinBox->setValue( simplifyMethod.threshold() );
 
-  QString remark = QString( " (%1)" ).arg( tr( "Not supported" ) );
+  QString remark = QStringLiteral( " (%1)" ).arg( tr( "Not supported" ) );
   if ( !( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) )
   {
     mSimplifyDrawingAtProvider->setChecked( false );
@@ -434,7 +434,7 @@ void QgsVectorLayerProperties::syncToLayer()
   mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData(( int )simplifyMethod.simplifyAlgorithm() ) );
 
   QStringList myScalesList = PROJECT_SCALES.split( ',' );
-  myScalesList.append( "1:1" );
+  myScalesList.append( QStringLiteral( "1:1" ) );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
   mSimplifyMaximumScaleComboBox->setScale( 1.0 / simplifyMethod.maximumScale() );
 
@@ -629,7 +629,7 @@ void QgsVectorLayerProperties::onCancel()
   {
     // need to reset style to previous - style applied directly to the layer (not in apply())
     QString myMessage;
-    QDomDocument doc( "qgis" );
+    QDomDocument doc( QStringLiteral( "qgis" ) );
     int errorLine, errorColumn;
     doc.setContent( mOldStyle.xmlData(), false, &myMessage, &errorLine, &errorColumn );
     mLayer->importNamedStyle( doc, myMessage );
@@ -769,7 +769,7 @@ void QgsVectorLayerProperties::saveDefaultStyle_clicked()
       case 0:
         return;
       case 2:
-        mLayer->saveStyleToDatabase( "", "", true, "", errorMsg );
+        mLayer->saveStyleToDatabase( QLatin1String( "" ), QLatin1String( "" ), true, QLatin1String( "" ), errorMsg );
         if ( errorMsg.isNull() )
         {
           return;
@@ -792,7 +792,7 @@ void QgsVectorLayerProperties::saveDefaultStyle_clicked()
 void QgsVectorLayerProperties::loadStyle_clicked()
 {
   QSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", QDir::homePath() ).toString();
+  QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), myLastUsedDir,
                        tr( "QGIS Layer Style File" ) + " (*.qml);;" + tr( "SLD File" ) + " (*.sld)" );
@@ -806,7 +806,7 @@ void QgsVectorLayerProperties::loadStyle_clicked()
   QString myMessage;
   bool defaultLoadedFlag = false;
 
-  if ( myFileName.endsWith( ".sld", Qt::CaseInsensitive ) )
+  if ( myFileName.endsWith( QLatin1String( ".sld" ), Qt::CaseInsensitive ) )
   {
     // load from SLD
     myMessage = mLayer->loadSldStyle( myFileName, defaultLoadedFlag );
@@ -828,7 +828,7 @@ void QgsVectorLayerProperties::loadStyle_clicked()
 
   QFileInfo myFI( myFileName );
   QString myPath = myFI.path();
-  myQSettings.setValue( "style/lastStyleDir", myPath );
+  myQSettings.setValue( QStringLiteral( "style/lastStyleDir" ), myPath );
 
   activateWindow(); // set focus back to properties dialog
 }
@@ -855,7 +855,7 @@ void QgsVectorLayerProperties::saveStyleAsMenuTriggered( QAction *action )
 void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
 {
   QSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", QDir::homePath() ).toString();
+  QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   if ( styleType == DB )
   {
@@ -897,12 +897,12 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
     if ( styleType == SLD )
     {
       format = tr( "SLD File" ) + " (*.sld)";
-      extension = ".sld";
+      extension = QStringLiteral( ".sld" );
     }
     else
     {
       format = tr( "QGIS Layer Style File" ) + " (*.qml)";
-      extension = ".qml";
+      extension = QStringLiteral( ".qml" );
     }
 
     QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file" ),
@@ -947,7 +947,7 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
     QFileInfo myFI( myOutputFileName );
     QString myPath = myFI.path();
     // Persist last used dir
-    myQSettings.setValue( "style/lastStyleDir", myPath );
+    myQSettings.setValue( QStringLiteral( "style/lastStyleDir" ), myPath );
   }
 }
 
@@ -1029,7 +1029,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
       return;
     }
 
-    QDomDocument myDocument( "qgis" );
+    QDomDocument myDocument( QStringLiteral( "qgis" ) );
     myDocument.setContent( qmlStyle );
 
     if ( mLayer->importNamedStyle( myDocument, errorMsg ) )
@@ -1184,7 +1184,7 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorJoinInfo& joi
   const QStringList* list = join.joinFieldNamesSubset();
   if ( list )
   {
-    joinItem->setText( 5, QString( "%1" ).arg( list->count() ) );
+    joinItem->setText( 5, QStringLiteral( "%1" ).arg( list->count() ) );
   }
   else
   {
@@ -1214,7 +1214,7 @@ QgsExpressionContext QgsVectorLayerProperties::createExpressionContext() const
 void QgsVectorLayerProperties::openPanel( QgsPanelWidget *panel )
 {
   QDialog* dlg = new QDialog();
-  QString key =  QString( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
+  QString key =  QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
   QSettings settings;
   dlg->restoreGeometry( settings.value( key ).toByteArray() );
   dlg->setWindowTitle( panel->panelTitle() );

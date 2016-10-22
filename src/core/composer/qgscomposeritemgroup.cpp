@@ -176,13 +176,13 @@ void QgsComposerItemGroup::drawFrame( QPainter* p )
 
 bool QgsComposerItemGroup::writeXml( QDomElement& elem, QDomDocument & doc ) const
 {
-  QDomElement group = doc.createElement( "ComposerItemGroup" );
+  QDomElement group = doc.createElement( QStringLiteral( "ComposerItemGroup" ) );
 
   QSet<QgsComposerItem*>::const_iterator itemIt = mItems.begin();
   for ( ; itemIt != mItems.end(); ++itemIt )
   {
-    QDomElement item = doc.createElement( "ComposerItemGroupElement" );
-    item.setAttribute( "uuid", ( *itemIt )->uuid() );
+    QDomElement item = doc.createElement( QStringLiteral( "ComposerItemGroupElement" ) );
+    item.setAttribute( QStringLiteral( "uuid" ), ( *itemIt )->uuid() );
     group.appendChild( item );
   }
 
@@ -194,7 +194,7 @@ bool QgsComposerItemGroup::writeXml( QDomElement& elem, QDomDocument & doc ) con
 bool QgsComposerItemGroup::readXml( const QDomElement& itemElem, const QDomDocument& doc )
 {
   //restore general composer item properties
-  QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
+  QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
@@ -203,14 +203,14 @@ bool QgsComposerItemGroup::readXml( const QDomElement& itemElem, const QDomDocum
 
   QList<QGraphicsItem *> items = mComposition->items();
 
-  QDomNodeList elementNodes = itemElem.elementsByTagName( "ComposerItemGroupElement" );
+  QDomNodeList elementNodes = itemElem.elementsByTagName( QStringLiteral( "ComposerItemGroupElement" ) );
   for ( int i = 0; i < elementNodes.count(); ++i )
   {
     QDomNode elementNode = elementNodes.at( i );
     if ( !elementNode.isElement() )
       continue;
 
-    QString uuid = elementNode.toElement().attribute( "uuid" );
+    QString uuid = elementNode.toElement().attribute( QStringLiteral( "uuid" ) );
 
     for ( QList<QGraphicsItem *>::iterator it = items.begin(); it != items.end(); ++it )
     {

@@ -22,94 +22,94 @@
 
 QString createDatabaseURI( const QString& connectionType, const QString& host, const QString& database, QString port, const QString& user, const QString& password )
 {
-  QString uri = "";
+  QString uri = QLatin1String( "" );
 
   //todo:add default ports for all kind of databases
-  if ( connectionType == "ESRI Personal GeoDatabase" )
+  if ( connectionType == QLatin1String( "ESRI Personal GeoDatabase" ) )
   {
     uri = "PGeo:" + database;
   }
-  else if ( connectionType == "ESRI ArcSDE" )
+  else if ( connectionType == QLatin1String( "ESRI ArcSDE" ) )
   {
     if ( port.isEmpty() )
-      port = "5151";
+      port = QStringLiteral( "5151" );
 
     uri = "SDE:" + host + ",PORT:" + port + ',' + database + ',' + user + ',' + password;
   }
-  else if ( connectionType == "Informix DataBlade" )
+  else if ( connectionType == QLatin1String( "Informix DataBlade" ) )
   {
     //not tested
     uri = "IDB:dbname=" + database;
 
     if ( !host.isEmpty() )
-      uri += QString( " server=%1" ).arg( host );
+      uri += QStringLiteral( " server=%1" ).arg( host );
 
     if ( !user.isEmpty() )
     {
-      uri += QString( " user=%1" ).arg( user );
+      uri += QStringLiteral( " user=%1" ).arg( user );
 
       if ( !password.isEmpty() )
-        uri += QString( " pass=%1" ).arg( password );
+        uri += QStringLiteral( " pass=%1" ).arg( password );
     }
   }
-  else if ( connectionType == "Ingres" )
+  else if ( connectionType == QLatin1String( "Ingres" ) )
   {
     //not tested
     uri = "@driver=ingres,dbname=" + database;
     if ( !user.isEmpty() )
     {
-      uri += QString( ",userid=%1" ).arg( user );
+      uri += QStringLiteral( ",userid=%1" ).arg( user );
 
       if ( !password.isEmpty() )
-        uri += QString( ",password=%1" ).arg( password );
+        uri += QStringLiteral( ",password=%1" ).arg( password );
     }
   }
-  else if ( connectionType == "MySQL" )
+  else if ( connectionType == QLatin1String( "MySQL" ) )
   {
     uri = "MySQL:" + database;
 
     if ( !host.isEmpty() )
     {
-      uri += QString( ",host=%1" ).arg( host );
+      uri += QStringLiteral( ",host=%1" ).arg( host );
 
       if ( !port.isEmpty() )
-        uri += QString( ",port=%1" ).arg( port );
+        uri += QStringLiteral( ",port=%1" ).arg( port );
     }
 
     if ( !user.isEmpty() )
     {
-      uri += QString( ",user=%1" ).arg( user );
+      uri += QStringLiteral( ",user=%1" ).arg( user );
 
       if ( !password.isEmpty() )
-        uri += QString( ",password=%1" ).arg( password );
+        uri += QStringLiteral( ",password=%1" ).arg( password );
     }
   }
-  else if ( connectionType == "MSSQL" )
+  else if ( connectionType == QLatin1String( "MSSQL" ) )
   {
-    uri = "MSSQL:";
+    uri = QStringLiteral( "MSSQL:" );
 
     if ( !host.isEmpty() )
     {
-      uri += QString( ";server=%1" ).arg( host );
+      uri += QStringLiteral( ";server=%1" ).arg( host );
 
       if ( !port.isEmpty() )
-        uri += QString( ",%1" ).arg( port );
+        uri += QStringLiteral( ",%1" ).arg( port );
     }
 
     if ( !user.isEmpty() )
     {
-      uri += QString( ";uid=%1" ).arg( user );
+      uri += QStringLiteral( ";uid=%1" ).arg( user );
 
       if ( !password.isEmpty() )
-        uri += QString( ";pwd=%1" ).arg( password );
+        uri += QStringLiteral( ";pwd=%1" ).arg( password );
     }
     else
-      uri += ";trusted_connection=yes";
+      uri += QLatin1String( ";trusted_connection=yes" );
 
     if ( !database.isEmpty() )
-      uri += QString( ";database=%1" ).arg( database );
+      uri += QStringLiteral( ";database=%1" ).arg( database );
   }
-  else if ( connectionType == "Oracle Spatial" )
+  else if ( connectionType == QLatin1String( "Oracle Spatial" ) )
   {
     uri = "OCI:" + user;
 
@@ -140,7 +140,7 @@ QString createDatabaseURI( const QString& connectionType, const QString& host, c
       }
     }
   }
-  else if ( connectionType == "ODBC" )
+  else if ( connectionType == QLatin1String( "ODBC" ) )
   {
     if ( !user.isEmpty() )
     {
@@ -159,27 +159,27 @@ QString createDatabaseURI( const QString& connectionType, const QString& host, c
       uri = "ODBC:" + database;
     }
   }
-  else if ( connectionType == "OGDI Vectors" )
+  else if ( connectionType == QLatin1String( "OGDI Vectors" ) )
   {
   }
-  else if ( connectionType == "PostgreSQL" )
+  else if ( connectionType == QLatin1String( "PostgreSQL" ) )
   {
     uri = "PG:dbname='" + database + '\'';
 
     if ( !host.isEmpty() )
     {
-      uri += QString( " host='%1'" ).arg( host );
+      uri += QStringLiteral( " host='%1'" ).arg( host );
 
       if ( !port.isEmpty() )
-        uri += QString( " port='%1'" ).arg( port );
+        uri += QStringLiteral( " port='%1'" ).arg( port );
     }
 
     if ( !user.isEmpty() )
     {
-      uri += QString( " user='%1'" ).arg( user );
+      uri += QStringLiteral( " user='%1'" ).arg( user );
 
       if ( !password.isEmpty() )
-        uri += QString( " password='%1'" ).arg( password );
+        uri += QStringLiteral( " password='%1'" ).arg( password );
     }
 
     uri += ' ';
@@ -192,18 +192,18 @@ QString createDatabaseURI( const QString& connectionType, const QString& host, c
 
 QString createProtocolURI( const QString& type, const QString& url )
 {
-  QString uri = "";
-  if ( type == "GeoJSON" )
+  QString uri = QLatin1String( "" );
+  if ( type == QLatin1String( "GeoJSON" ) )
   {
     uri = url;
   }
-  else if ( type == "CouchDB" )
+  else if ( type == QLatin1String( "CouchDB" ) )
   {
-    uri = QString( "couchdb:%1" ).arg( url );
+    uri = QStringLiteral( "couchdb:%1" ).arg( url );
   }
-  else if ( type == "DODS/OPeNDAP" )
+  else if ( type == QLatin1String( "DODS/OPeNDAP" ) )
   {
-    uri = QString( "DODS:%1" ).arg( url );
+    uri = QStringLiteral( "DODS:%1" ).arg( url );
   }
   QgsDebugMsg( "Connection type is=" + type + " and uri=" + uri );
   return uri;

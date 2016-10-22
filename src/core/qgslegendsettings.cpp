@@ -20,7 +20,7 @@
 QgsLegendSettings::QgsLegendSettings()
     : mTitle( QObject::tr( "Legend" ) )
     , mTitleAlignment( Qt::AlignLeft )
-    , mWrapChar( "" )
+    , mWrapChar( QLatin1String( "" ) )
     , mFontColor( QColor( 0, 0, 0 ) )
     , mBoxSpace( 2 )
     , mSymbolSize( 7, 4 )

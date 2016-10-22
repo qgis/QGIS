@@ -74,10 +74,10 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
 {
   static QPixmap selectedIcon;
   if ( selectedIcon.isNull() )
-    selectedIcon = QgsApplication::getThemePixmap( "/mIconSelected.svg" );
+    selectedIcon = QgsApplication::getThemePixmap( QStringLiteral( "/mIconSelected.svg" ) );
   static QPixmap deselectedIcon;
   if ( deselectedIcon.isNull() )
-    deselectedIcon = QgsApplication::getThemePixmap( "/mIconDeselected.svg" );
+    deselectedIcon = QgsApplication::getThemePixmap( QStringLiteral( "/mIconDeselected.svg" ) );
 
   QString text = index.model()->data( index, Qt::EditRole ).toString();
   QgsFeatureListModel::FeatureInfo featInfo = index.model()->data( index, Qt::UserRole ).value<QgsFeatureListModel::FeatureInfo>();

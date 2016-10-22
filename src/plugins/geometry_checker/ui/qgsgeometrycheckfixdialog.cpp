@@ -87,7 +87,7 @@ void QgsGeometryCheckerFixDialog::setupNextError()
   mFixBtn->setVisible( true );
   mFixBtn->setFocus();
   mSkipBtn->setVisible( true );
-  mStatusLabel->setText( "" );
+  mStatusLabel->setText( QLatin1String( "" ) );
   mResolutionsBox->setEnabled( true );
 
   QgsGeometryCheckError* error = mErrors.at( 0 );

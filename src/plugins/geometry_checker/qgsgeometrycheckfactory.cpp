@@ -33,7 +33,7 @@
 #include "utils/qgsfeaturepool.h"
 
 
-QString QgsGeometryCheckFactory::sSettingsGroup = "/geometry_checker/previous_values/";
+QString QgsGeometryCheckFactory::sSettingsGroup = QStringLiteral( "/geometry_checker/previous_values/" );
 
 
 template<> void QgsGeometryCheckFactoryT<QgsGeometryAngleCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab& ui ) const

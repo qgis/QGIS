@@ -82,7 +82,7 @@ class CORE_EXPORT QgsFontUtils
      * @returns QFont
      * @note Added in QGIS 2.1
      */
-    static QFont getStandardTestFont( const QString& style = "Roman", int pointsize = 12 );
+    static QFont getStandardTestFont( const QString& style = QStringLiteral( "Roman" ), int pointsize = 12 );
 
     /** Returns a DOM element containing the properties of the font.
      * @param font font

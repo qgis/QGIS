@@ -32,17 +32,17 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node )
 {
   QDomElement elem = node.toElement();
 
-  if ( elem.tagName() != "relation" )
+  if ( elem.tagName() != QLatin1String( "relation" ) )
   {
     QgsLogger::warning( QApplication::translate( "QgsRelation", "Cannot create relation. Unexpected tag '%1'" ).arg( elem.tagName() ) );
   }
 
   QgsRelation relation;
 
-  QString referencingLayerId = elem.attribute( "referencingLayer" );
-  QString referencedLayerId = elem.attribute( "referencedLayer" );
-  QString id = elem.attribute( "id" );
-  QString name = elem.attribute( "name" );
+  QString referencingLayerId = elem.attribute( QStringLiteral( "referencingLayer" ) );
+  QString referencedLayerId = elem.attribute( QStringLiteral( "referencedLayer" ) );
+  QString id = elem.attribute( QStringLiteral( "id" ) );
+  QString name = elem.attribute( QStringLiteral( "name" ) );
 
   const QMap<QString, QgsMapLayer*>& mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
 
@@ -74,13 +74,13 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node )
   relation.mRelationId = id;
   relation.mRelationName = name;
 
-  QDomNodeList references = elem.elementsByTagName( "fieldRef" );
+  QDomNodeList references = elem.elementsByTagName( QStringLiteral( "fieldRef" ) );
   for ( int i = 0; i < references.size(); ++i )
   {
     QDomElement refEl = references.at( i ).toElement();
 
-    QString referencingField = refEl.attribute( "referencingField" );
-    QString referencedField = refEl.attribute( "referencedField" );
+    QString referencingField = refEl.attribute( QStringLiteral( "referencingField" ) );
+    QString referencedField = refEl.attribute( QStringLiteral( "referencedField" ) );
 
     relation.addFieldPair( referencingField, referencedField );
   }
@@ -92,17 +92,17 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node )
 
 void QgsRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
 {
-  QDomElement elem = doc.createElement( "relation" );
-  elem.setAttribute( "id", mRelationId );
-  elem.setAttribute( "name", mRelationName );
-  elem.setAttribute( "referencingLayer", mReferencingLayerId );
-  elem.setAttribute( "referencedLayer", mReferencedLayerId );
+  QDomElement elem = doc.createElement( QStringLiteral( "relation" ) );
+  elem.setAttribute( QStringLiteral( "id" ), mRelationId );
+  elem.setAttribute( QStringLiteral( "name" ), mRelationName );
+  elem.setAttribute( QStringLiteral( "referencingLayer" ), mReferencingLayerId );
+  elem.setAttribute( QStringLiteral( "referencedLayer" ), mReferencedLayerId );
 
   Q_FOREACH ( const FieldPair& fields, mFieldPairs )
   {
-    QDomElement referenceElem = doc.createElement( "fieldRef" );
-    referenceElem.setAttribute( "referencingField", fields.first );
-    referenceElem.setAttribute( "referencedField", fields.second );
+    QDomElement referenceElem = doc.createElement( QStringLiteral( "fieldRef" ) );
+    referenceElem.setAttribute( QStringLiteral( "referencingField" ), fields.first );
+    referenceElem.setAttribute( QStringLiteral( "referencedField" ), fields.second );
     elem.appendChild( referenceElem );
   }
 
@@ -175,21 +175,21 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature& feature ) const
 
     if ( val.isNull() )
     {
-      conditions << QString( "\"%1\" IS NULL" ).arg( fieldPair.referencingField() );
+      conditions << QStringLiteral( "\"%1\" IS NULL" ).arg( fieldPair.referencingField() );
     }
     else if ( referencingField.type() == QVariant::String )
     {
       // Use quotes
-      conditions << QString( "\"%1\" = '%2'" ).arg( fieldPair.referencingField(), val.toString() );
+      conditions << QStringLiteral( "\"%1\" = '%2'" ).arg( fieldPair.referencingField(), val.toString() );
     }
     else
     {
       // No quotes
-      conditions << QString( "\"%1\" = %2" ).arg( fieldPair.referencingField(), val.toString() );
+      conditions << QStringLiteral( "\"%1\" = %2" ).arg( fieldPair.referencingField(), val.toString() );
     }
   }
 
-  return conditions.join( " AND " );
+  return conditions.join( QStringLiteral( " AND " ) );
 }
 
 QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes& attributes ) const
@@ -206,12 +206,12 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes&
     if ( referencedField.type() == QVariant::String )
     {
       // Use quotes
-      conditions << QString( "\"%1\" = '%2'" ).arg( fieldPair.referencedField(), attributes.at( referencingIdx ).toString() );
+      conditions << QStringLiteral( "\"%1\" = '%2'" ).arg( fieldPair.referencedField(), attributes.at( referencingIdx ).toString() );
     }
     else
     {
       // No quotes
-      conditions << QString( "\"%1\" = %2" ).arg( fieldPair.referencedField(), attributes.at( referencingIdx ).toString() );
+      conditions << QStringLiteral( "\"%1\" = %2" ).arg( fieldPair.referencedField(), attributes.at( referencingIdx ).toString() );
     }
   }
 
@@ -219,7 +219,7 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes&
 
   QgsDebugMsg( QString( "Filter conditions: '%1'" ).arg( conditions.join( " AND " ) ) );
 
-  myRequest.setFilterExpression( conditions.join( " AND " ) );
+  myRequest.setFilterExpression( conditions.join( QStringLiteral( " AND " ) ) );
 
   return myRequest;
 }
@@ -250,7 +250,7 @@ QString QgsRelation::id() const
 
 void QgsRelation::generateId()
 {
-  mRelationId = QString( "%1_%2_%3_%4" )
+  mRelationId = QStringLiteral( "%1_%2_%3_%4" )
                 .arg( referencingLayerId(),
                       mFieldPairs.at( 0 ).referencingField(),
                       referencedLayerId(),

@@ -44,7 +44,7 @@ QVariant QgsCheckboxSearchWidgetWrapper::value() const
   QVariant v;
 
   if ( mCheckBox )
-    v = mCheckBox->isChecked() ? config( "CheckedState" ) : config( "UncheckedState" );
+    v = mCheckBox->isChecked() ? config( QStringLiteral( "CheckedState" ) ) : config( QStringLiteral( "UncheckedState" ) );
 
   return v;
 }
@@ -129,9 +129,9 @@ void QgsCheckboxSearchWidgetWrapper::setExpression( QString exp )
 {
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
-  QString str = QString( "%1 = '%3'" )
+  QString str = QStringLiteral( "%1 = '%3'" )
                 .arg( QgsExpression::quotedColumnRef( fieldName ),
-                      exp.replace( '\'', "''" )
+                      exp.replace( '\'', QLatin1String( "''" ) )
                     );
   mExpression = str;
 }

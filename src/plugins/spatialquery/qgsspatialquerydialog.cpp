@@ -37,7 +37,7 @@ QgsSpatialQueryDialog::QgsSpatialQueryDialog( QWidget* parent, QgisInterface* if
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "SpatialQuery/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "SpatialQuery/geometry" ) ).toByteArray() );
 
   mLayerReference = mLayerTarget = nullptr;
   mIface = iface;
@@ -50,7 +50,7 @@ QgsSpatialQueryDialog::QgsSpatialQueryDialog( QWidget* parent, QgisInterface* if
 QgsSpatialQueryDialog::~QgsSpatialQueryDialog()
 {
   QSettings settings;
-  settings.setValue( "SpatialQuery/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "SpatialQuery/geometry" ), saveGeometry() );
 
   disconnectAll();
   delete mRubberSelectId;
@@ -205,24 +205,24 @@ void QgsSpatialQueryDialog::showResultQuery( QDateTime *datetimeStart, QDateTime
   teStatus->append( msg );
   msg = tr( "Begin at %L1" ).arg( datetimeStart->toString() );
   teStatus->append( msg );
-  teStatus->append( "" );
-  msg = QString( "%1" ).arg( getDescriptionLayerShow( true ) );
+  teStatus->append( QLatin1String( "" ) );
+  msg = QStringLiteral( "%1" ).arg( getDescriptionLayerShow( true ) );
   teStatus->append( msg );
   msg = tr( "< %1 >" ).arg( cbOperation->currentText() );
   teStatus->append( msg );
-  msg = QString( "%1" ).arg( getDescriptionLayerShow( false ) );
+  msg = QStringLiteral( "%1" ).arg( getDescriptionLayerShow( false ) );
   teStatus->append( msg );
   msg = tr( "Total of features = %1" ).arg( mFeatureResult.size() );
   teStatus->append( msg );
-  teStatus->append( "" );
+  teStatus->append( QLatin1String( "" ) );
   teStatus->append( tr( "Total of invalid features:" ) );
   teStatus->append( getDescriptionInvalidFeaturesShow( true ) );
   teStatus->append( getDescriptionInvalidFeaturesShow( false ) );
-  teStatus->append( "" );
+  teStatus->append( QLatin1String( "" ) );
   double timeProcess = ( double )datetimeStart->secsTo( *datetimeEnd ) / 60.0;
   msg = tr( "Finish at %L1 (processing time %L2 minutes)" ).arg( datetimeEnd->toString() ).arg( timeProcess, 0, 'f', 2 );
   teStatus->append( msg );
-  teStatus->append( "" );
+  teStatus->append( QLatin1String( "" ) );
 
   ckbLogProcessing->setChecked( false );
   QVariant item = QVariant::fromValue(( int )itemsResult );
@@ -264,8 +264,8 @@ QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, const Q
   {
     lstFID.append( FID_TO_STRING( item.next() ) );
   }
-  QString qFormat( "%1 in (%2)" );
-  QString qReturn  = qFormat.arg( fieldFID, lstFID.join( "," ) );
+  QString qFormat( QStringLiteral( "%1 in (%2)" ) );
+  QString qReturn  = qFormat.arg( fieldFID, lstFID.join( QStringLiteral( "," ) ) );
   lstFID.clear();
   return qReturn;
 } // QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, QString fieldFID )
@@ -274,13 +274,13 @@ QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreat
 {
   QString providerType = mLayerTarget->providerType().toUpper();
   // OGR
-  if ( providerType  == "OGR" )
+  if ( providerType  == QLatin1String( "OGR" ) )
   {
-    fieldFID = QString( "FID" );
+    fieldFID = QStringLiteral( "FID" );
     return verifyOk;
   }
   // Database Postgis and Spatialite
-  if ( providerType  == "POSTGRES" || providerType  == "SPATIALITE" )
+  if ( providerType  == QLatin1String( "POSTGRES" ) || providerType  == QLatin1String( "SPATIALITE" ) )
   {
     fieldFID = mLayerTarget->dataProvider()->fields().at( 0 ).name();
     msg = tr( "Using the field \"%1\" for subset" ).arg( fieldFID );
@@ -322,7 +322,7 @@ QString QgsSpatialQueryDialog::getDescriptionLayerShow( bool isTarget )
                           ? tr( "%1 of %2" ).arg( lyr->selectedFeatureCount() ).arg( lyr->featureCount() )
                           : tr( "all = %1" ).arg( lyr->featureCount() );
 
-  return QString( "%1 (%2)" ).arg( lyr->name(), sDescFeatures );
+  return QStringLiteral( "%1 (%2)" ).arg( lyr->name(), sDescFeatures );
 } // QString QgsSpatialQueryDialog::getDescriptionLayerShow(bool isTarget)
 
 QString QgsSpatialQueryDialog::getDescriptionInvalidFeaturesShow( bool isTarget )
@@ -347,7 +347,7 @@ QString QgsSpatialQueryDialog::getDescriptionInvalidFeaturesShow( bool isTarget 
                           ? tr( "%1 of %2(selected features)" ).arg( totalInvalid ).arg( lyr->selectedFeatureCount() )
                           : tr( "%1 of %2" ).arg( totalInvalid ).arg( lyr->featureCount() );
 
-  return QString( "%1: %2" ).arg( lyr->name(), sDescFeatures );
+  return QStringLiteral( "%1: %2" ).arg( lyr->name(), sDescFeatures );
 } // QString QgsSpatialQueryDialog::getDescriptionInvalidFeatures(bool isTarget)
 
 void QgsSpatialQueryDialog::connectAll()
@@ -408,15 +408,15 @@ QIcon QgsSpatialQueryDialog::getIconTypeGeometry( QgsWkbTypes::GeometryType geom
   QString theName;
   if ( geomType == QgsWkbTypes::PointGeometry )
   {
-    theName = "/mIconPointLayer.svg";
+    theName = QStringLiteral( "/mIconPointLayer.svg" );
   }
   else if ( geomType == QgsWkbTypes::LineGeometry )
   {
-    theName = "/mIconLineLayer.svg";
+    theName = QStringLiteral( "/mIconLineLayer.svg" );
   }
   else // Polygon
   {
-    theName = "/mIconPolygonLayer.svg";
+    theName = QStringLiteral( "/mIconPolygonLayer.svg" );
   }
   // Copy from qgisapp.cpp
   QString myPreferredPath = QgsApplication::activeThemePath() + QDir::separator() + theName;
@@ -823,7 +823,7 @@ void QgsSpatialQueryDialog::on_pbCreateLayerItems_clicked()
   }
 
   QString subset = getSubsetFIDs( fids, fieldFID );
-  QString name = QString( "%1 < %2 > %3" ).arg( mLayerTarget->name(), cbOperation->currentText(), mLayerReference->name() );
+  QString name = QStringLiteral( "%1 < %2 > %3" ).arg( mLayerTarget->name(), cbOperation->currentText(), mLayerReference->name() );
   if ( ! addLayerSubset( name, subset ) )
   {
     msg = tr( "The query from \"%1\" using \"%2\" in field not possible." ).arg( mLayerTarget->name(), fieldFID );
@@ -849,7 +849,7 @@ void QgsSpatialQueryDialog::on_pbCreateLayerSelected_clicked()
   }
 
   QString subset = getSubsetFIDs( fids, fieldFID );
-  QString name = QString( "%1 selected" ).arg( mLayerTarget->name() );
+  QString name = QStringLiteral( "%1 selected" ).arg( mLayerTarget->name() );
   if ( ! addLayerSubset( name, subset ) )
   {
     msg = tr( "The query from \"%1\" using \"%2\" in field not possible." ).arg( mLayerTarget->name(), fieldFID );

@@ -49,7 +49,7 @@ QgsOwsConnection::QgsOwsConnection( const QString & theService, const QString & 
   QStringList connStringParts;
 
   mConnectionInfo = settings.value( key + "/url" ).toString();
-  mUri.setParam( "url", settings.value( key + "/url" ).toString() );
+  mUri.setParam( QStringLiteral( "url" ), settings.value( key + "/url" ).toString() );
 
   // Check for credentials and prepend to the connection info
   QString username = settings.value( credentialsKey + "/username" ).toString();
@@ -57,14 +57,14 @@ QgsOwsConnection::QgsOwsConnection( const QString & theService, const QString & 
   if ( !username.isEmpty() )
   {
     // check for a password, if none prompt to get it
-    mUri.setParam( "username", username );
-    mUri.setParam( "password", password );
+    mUri.setParam( QStringLiteral( "username" ), username );
+    mUri.setParam( QStringLiteral( "password" ), password );
   }
 
   QString authcfg = settings.value( credentialsKey + "/authcfg" ).toString();
   if ( !authcfg.isEmpty() )
   {
-    mUri.setParam( "authcfg", authcfg );
+    mUri.setParam( QStringLiteral( "authcfg" ), authcfg );
   }
   mConnectionInfo.append( ",authcfg=" + authcfg );
 
@@ -74,19 +74,19 @@ QgsOwsConnection::QgsOwsConnection( const QString & theService, const QString & 
   bool invertAxisOrientation = settings.value( key + "/invertAxisOrientation", false ).toBool();
   if ( ignoreGetMap )
   {
-    mUri.setParam( "IgnoreGetMapUrl", "1" );
+    mUri.setParam( QStringLiteral( "IgnoreGetMapUrl" ), QStringLiteral( "1" ) );
   }
   if ( ignoreGetFeatureInfo )
   {
-    mUri.setParam( "IgnoreGetFeatureInfoUrl", "1" );
+    mUri.setParam( QStringLiteral( "IgnoreGetFeatureInfoUrl" ), QStringLiteral( "1" ) );
   }
   if ( ignoreAxisOrientation )
   {
-    mUri.setParam( "IgnoreAxisOrientation", "1" );
+    mUri.setParam( QStringLiteral( "IgnoreAxisOrientation" ), QStringLiteral( "1" ) );
   }
   if ( invertAxisOrientation )
   {
-    mUri.setParam( "InvertAxisOrientation", "1" );
+    mUri.setParam( QStringLiteral( "InvertAxisOrientation" ), QStringLiteral( "1" ) );
   }
 
   QgsDebugMsg( QString( "encoded uri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );

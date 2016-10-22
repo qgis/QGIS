@@ -65,13 +65,13 @@ void TestQgsAttributeForm::cleanup()
 void TestQgsAttributeForm::testFieldConstraint()
 {
   // make a temporary vector layer
-  QString def = "Point?field=col0:integer";
-  QgsVectorLayer* layer = new QgsVectorLayer( def, "test", "memory" );
-  layer->editFormConfig().setWidgetType( "col0", "TextEdit" );
+  QString def = QStringLiteral( "Point?field=col0:integer" );
+  QgsVectorLayer* layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  layer->editFormConfig().setWidgetType( QStringLiteral( "col0" ), QStringLiteral( "TextEdit" ) );
 
   // add a feature to the vector layer
   QgsFeature ft( layer->dataProvider()->fields(), 1 );
-  ft.setAttribute( "col0", 0 );
+  ft.setAttribute( QStringLiteral( "col0" ), 0 );
 
   // build a form for this feature
   QgsAttributeForm form( layer );
@@ -79,8 +79,8 @@ void TestQgsAttributeForm::testFieldConstraint()
 
   // testing stuff
   QSignalSpy spy( &form, SIGNAL( attributeChanged( QString, QVariant ) ) );
-  QString validLabel = "col0<font color=\"green\">*</font>";
-  QString invalidLabel = "col0<font color=\"red\">*</font>";
+  QString validLabel = QStringLiteral( "col0<font color=\"green\">*</font>" );
+  QString invalidLabel = QStringLiteral( "col0<font color=\"red\">*</font>" );
 
   // set constraint
   QgsEditFormConfig config = layer->editFormConfig();
@@ -96,7 +96,7 @@ void TestQgsAttributeForm::testFieldConstraint()
   QCOMPARE( label->text(), QString( "col0" ) );
 
   // set a not null constraint
-  config.setConstraintExpression( 0, "col0 is not null" );
+  config.setConstraintExpression( 0, QStringLiteral( "col0 is not null" ) );
   layer->setEditFormConfig( config );
 
   // set value to 1
@@ -120,15 +120,15 @@ void TestQgsAttributeForm::testFieldConstraint()
 void TestQgsAttributeForm::testFieldMultiConstraints()
 {
   // make a temporary layer to check through
-  QString def = "Point?field=col0:integer&field=col1:integer&field=col2:integer&field=col3:integer";
-  QgsVectorLayer* layer = new QgsVectorLayer( def, "test", "memory" );
+  QString def = QStringLiteral( "Point?field=col0:integer&field=col1:integer&field=col2:integer&field=col3:integer" );
+  QgsVectorLayer* layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
 
   // add features to the vector layer
   QgsFeature ft( layer->dataProvider()->fields(), 1 );
-  ft.setAttribute( "col0", 0 );
-  ft.setAttribute( "col1", 1 );
-  ft.setAttribute( "col2", 2 );
-  ft.setAttribute( "col3", 3 );
+  ft.setAttribute( QStringLiteral( "col0" ), 0 );
+  ft.setAttribute( QStringLiteral( "col1" ), 1 );
+  ft.setAttribute( QStringLiteral( "col2" ), 2 );
+  ft.setAttribute( QStringLiteral( "col3" ), 3 );
 
   // set constraints for each field
   QgsEditFormConfig config = layer->editFormConfig();
@@ -144,8 +144,8 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
 
   // testing stuff
   QSignalSpy spy( &form, SIGNAL( attributeChanged( QString, QVariant ) ) );
-  QString val = "<font color=\"green\">*</font>";
-  QString inv = "<font color=\"red\">*</font>";
+  QString val = QStringLiteral( "<font color=\"green\">*</font>" );
+  QString inv = QStringLiteral( "<font color=\"red\">*</font>" );
 
   // get wrappers for each widget
   QgsEditorWidgetWrapper *ww0, *ww1, *ww2, *ww3;
@@ -167,10 +167,10 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   QCOMPARE( label3->text(), QString( "col3" ) );
 
   // update constraint
-  config.setConstraintExpression( 0, "col0 < (col1 * col2)" );
+  config.setConstraintExpression( 0, QStringLiteral( "col0 < (col1 * col2)" ) );
   config.setConstraintExpression( 1, QString() );
   config.setConstraintExpression( 2, QString() );
-  config.setConstraintExpression( 3, "col0 = 2" );
+  config.setConstraintExpression( 3, QStringLiteral( "col0 = 2" ) );
   layer->setEditFormConfig( config );
 
   // change value
@@ -196,12 +196,12 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
 void TestQgsAttributeForm::testOKButtonStatus()
 {
   // make a temporary vector layer
-  QString def = "Point?field=col0:integer";
-  QgsVectorLayer* layer = new QgsVectorLayer( def, "test", "memory" );
+  QString def = QStringLiteral( "Point?field=col0:integer" );
+  QgsVectorLayer* layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
 
   // add a feature to the vector layer
   QgsFeature ft( layer->dataProvider()->fields(), 1 );
-  ft.setAttribute( "col0", 0 );
+  ft.setAttribute( QStringLiteral( "col0" ), 0 );
   ft.setValid( true );
 
   // set constraint
@@ -235,13 +235,13 @@ void TestQgsAttributeForm::testOKButtonStatus()
   QCOMPARE( okButton->isEnabled(), true );
 
   // invalid constraint and editable layer : OK button disabled
-  config.setConstraintExpression( 0, "col0 = 0" );
+  config.setConstraintExpression( 0, QStringLiteral( "col0 = 0" ) );
   layer->setEditFormConfig( config );
   ww->setValue( 1 );
   QCOMPARE( okButton->isEnabled(), false );
 
   // valid constraint and editable layer : OK button enabled
-  config.setConstraintExpression( 0, "col0 = 2" );
+  config.setConstraintExpression( 0, QStringLiteral( "col0 = 2" ) );
   layer->setEditFormConfig( config );
   ww->setValue( 2 );
   QCOMPARE( okButton->isEnabled(), true );

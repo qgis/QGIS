@@ -75,9 +75,9 @@ QgsDataDefined* scaleWholeSymbol( double scaleFactorX, double scaleFactorY, cons
   QgsDataDefined* scaledDD = new QgsDataDefined( dd );
   QString exprString = dd.useExpression() ? dd.expressionString() : dd.field();
   scaledDD->setExpressionString(
-    ( !qgsDoubleNear( scaleFactorX, 0.0 ) ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : "'0'" ) +
+    ( !qgsDoubleNear( scaleFactorX, 0.0 ) ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : QStringLiteral( "'0'" ) ) +
     "|| ',' || " +
-    ( !qgsDoubleNear( scaleFactorY, 0.0 ) ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : "'0'" ) );
+    ( !qgsDoubleNear( scaleFactorY, 0.0 ) ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : QStringLiteral( "'0'" ) ) );
   scaledDD->setUseExpression( true );
   return scaledDD;
 }
@@ -272,19 +272,19 @@ QgsSymbol* QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   switch ( geomType )
   {
     case QgsWkbTypes::PointGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Marker", "" );
+      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ), QLatin1String( "" ) );
       break;
     case QgsWkbTypes::LineGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Line", "" );
+      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ), QLatin1String( "" ) );
       break;
     case QgsWkbTypes::PolygonGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Fill", "" );
+      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ), QLatin1String( "" ) );
       break;
     default:
-      defaultSymbol = "";
+      defaultSymbol = QLatin1String( "" );
       break;
   }
-  if ( defaultSymbol != "" )
+  if ( defaultSymbol != QLatin1String( "" ) )
     s = QgsStyle::defaultStyle()->symbol( defaultSymbol );
 
   // if no default found for this type, get global default (as previously)
@@ -308,11 +308,11 @@ QgsSymbol* QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   }
 
   // set alpha transparency
-  s->setAlpha( QgsProject::instance()->readDoubleEntry( "DefaultStyles", "/AlphaInt", 255 ) / 255.0 );
+  s->setAlpha( QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ), 255 ) / 255.0 );
 
   // set random color, it project prefs allow
-  if ( defaultSymbol == "" ||
-       QgsProject::instance()->readBoolEntry( "DefaultStyles", "/RandomColors", true ) )
+  if ( defaultSymbol == QLatin1String( "" ) ||
+       QgsProject::instance()->readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) )
   {
     s->setColor( QColor::fromHsv( qrand() % 360, 64 + qrand() % 192, 128 + qrand() % 128 ) );
   }
@@ -478,7 +478,7 @@ void QgsSymbol::drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext
 
 void QgsSymbol::exportImage( const QString& path, const QString& format, QSize size )
 {
-  if ( format.toLower() == "svg" )
+  if ( format.toLower() == QLatin1String( "svg" ) )
   {
     QSvgGenerator generator;
     generator.setFileName( path );
@@ -560,18 +560,18 @@ QString QgsSymbol::dump() const
   switch ( type() )
   {
     case QgsSymbol::Marker:
-      t = "MARKER";
+      t = QStringLiteral( "MARKER" );
       break;
     case QgsSymbol::Line:
-      t = "LINE";
+      t = QStringLiteral( "LINE" );
       break;
     case QgsSymbol::Fill:
-      t = "FILL";
+      t = QStringLiteral( "FILL" );
       break;
     default:
       Q_ASSERT( 0 && "unknown symbol type" );
   }
-  QString s = QString( "%1 SYMBOL (%2 layers) color %3" ).arg( t ).arg( mLayers.count() ).arg( QgsSymbolLayerUtils::encodeColor( color() ) );
+  QString s = QStringLiteral( "%1 SYMBOL (%2 layers) color %3" ).arg( t ).arg( mLayers.count() ).arg( QgsSymbolLayerUtils::encodeColor( color() ) );
 
   for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
@@ -582,10 +582,10 @@ QString QgsSymbol::dump() const
 
 void QgsSymbol::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
 {
-  props[ "alpha" ] = QString::number( alpha() );
+  props[ QStringLiteral( "alpha" )] = QString::number( alpha() );
   double scaleFactor = 1.0;
-  props[ "uom" ] = QgsSymbolLayerUtils::encodeSldUom( outputUnit(), &scaleFactor );
-  props[ "uomScale" ] = ( !qgsDoubleNear( scaleFactor, 1.0 ) ? qgsDoubleToString( scaleFactor ) : "" );
+  props[ QStringLiteral( "uom" )] = QgsSymbolLayerUtils::encodeSldUom( outputUnit(), &scaleFactor );
+  props[ QStringLiteral( "uomScale" )] = ( !qgsDoubleNear( scaleFactor, 1.0 ) ? qgsDoubleToString( scaleFactor ) : QLatin1String( "" ) );
 
   for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
@@ -1130,18 +1130,18 @@ void QgsMarkerSymbol::setDataDefinedAngle( const QgsDataDefined& dd )
     const QgsMarkerSymbolLayer* markerLayer = static_cast<const QgsMarkerSymbolLayer*>( layer );
     if ( dd.hasDefaultValues() )
     {
-      layer->removeDataDefinedProperty( "angle" );
+      layer->removeDataDefinedProperty( QStringLiteral( "angle" ) );
     }
     else
     {
       if ( qgsDoubleNear( markerLayer->angle(), symbolRotation ) )
       {
-        layer->setDataDefinedProperty( "angle", new QgsDataDefined( dd ) );
+        layer->setDataDefinedProperty( QStringLiteral( "angle" ), new QgsDataDefined( dd ) );
       }
       else
       {
         QgsDataDefined* rotatedDD = rotateWholeSymbol( markerLayer->angle() - symbolRotation, dd );
-        layer->setDataDefinedProperty( "angle", rotatedDD );
+        layer->setDataDefinedProperty( QStringLiteral( "angle" ), rotatedDD );
       }
     }
   }
@@ -1158,9 +1158,9 @@ QgsDataDefined QgsMarkerSymbol::dataDefinedAngle() const
     if ( layer->type() !=  QgsSymbol::Marker )
       continue;
     const QgsMarkerSymbolLayer* markerLayer = static_cast<const QgsMarkerSymbolLayer*>( layer );
-    if ( qgsDoubleNear( markerLayer->angle(), symbolRotation ) && markerLayer->getDataDefinedProperty( "angle" ) )
+    if ( qgsDoubleNear( markerLayer->angle(), symbolRotation ) && markerLayer->getDataDefinedProperty( QStringLiteral( "angle" ) ) )
     {
-      symbolDD = markerLayer->getDataDefinedProperty( "angle" );
+      symbolDD = markerLayer->getDataDefinedProperty( QStringLiteral( "angle" ) );
       break;
     }
   }
@@ -1174,7 +1174,7 @@ QgsDataDefined QgsMarkerSymbol::dataDefinedAngle() const
     if ( layer->type() !=  QgsSymbol::Marker )
       continue;
     const QgsMarkerSymbolLayer* markerLayer = static_cast<const QgsMarkerSymbolLayer*>( layer );
-    QgsDataDefined* layerAngleDD = markerLayer->getDataDefinedProperty( "angle" );
+    QgsDataDefined* layerAngleDD = markerLayer->getDataDefinedProperty( QStringLiteral( "angle" ) );
 
     if ( qgsDoubleNear( markerLayer->angle(), symbolRotation ) )
     {
@@ -1304,23 +1304,23 @@ void QgsMarkerSymbol::setDataDefinedSize( const QgsDataDefined &dd )
 
     if ( dd.hasDefaultValues() )
     {
-      markerLayer->removeDataDefinedProperty( "size" );
-      markerLayer->removeDataDefinedProperty( "offset" );
+      markerLayer->removeDataDefinedProperty( QStringLiteral( "size" ) );
+      markerLayer->removeDataDefinedProperty( QStringLiteral( "offset" ) );
     }
     else
     {
       if ( qgsDoubleNear( symbolSize, 0.0 ) || qgsDoubleNear( markerLayer->size(), symbolSize ) )
       {
-        markerLayer->setDataDefinedProperty( "size", new QgsDataDefined( dd ) );
+        markerLayer->setDataDefinedProperty( QStringLiteral( "size" ), new QgsDataDefined( dd ) );
       }
       else
       {
-        markerLayer->setDataDefinedProperty( "size", scaleWholeSymbol( markerLayer->size() / symbolSize, dd ) );
+        markerLayer->setDataDefinedProperty( QStringLiteral( "size" ), scaleWholeSymbol( markerLayer->size() / symbolSize, dd ) );
       }
 
       if ( !qgsDoubleNear( markerLayer->offset().x(), 0.0 ) || !qgsDoubleNear( markerLayer->offset().y(), 0.0 ) )
       {
-        markerLayer->setDataDefinedProperty( "offset", scaleWholeSymbol(
+        markerLayer->setDataDefinedProperty( QStringLiteral( "offset" ), scaleWholeSymbol(
                                                markerLayer->offset().x() / symbolSize,
                                                markerLayer->offset().y() / symbolSize, dd ) );
       }
@@ -1340,9 +1340,9 @@ QgsDataDefined QgsMarkerSymbol::dataDefinedSize() const
     if ( layer->type() !=  QgsSymbol::Marker )
       continue;
     const QgsMarkerSymbolLayer* markerLayer = static_cast<const QgsMarkerSymbolLayer*>( layer );
-    if ( qgsDoubleNear( markerLayer->size(), symbolSize ) && markerLayer->getDataDefinedProperty( "size" ) )
+    if ( qgsDoubleNear( markerLayer->size(), symbolSize ) && markerLayer->getDataDefinedProperty( QStringLiteral( "size" ) ) )
     {
-      symbolDD = markerLayer->getDataDefinedProperty( "size" );
+      symbolDD = markerLayer->getDataDefinedProperty( QStringLiteral( "size" ) );
       break;
     }
   }
@@ -1357,8 +1357,8 @@ QgsDataDefined QgsMarkerSymbol::dataDefinedSize() const
       continue;
     const QgsMarkerSymbolLayer* markerLayer = static_cast<const QgsMarkerSymbolLayer*>( layer );
 
-    QgsDataDefined* layerSizeDD = markerLayer->getDataDefinedProperty( "size" );
-    QgsDataDefined* layerOffsetDD = markerLayer->getDataDefinedProperty( "offset" );
+    QgsDataDefined* layerSizeDD = markerLayer->getDataDefinedProperty( QStringLiteral( "size" ) );
+    QgsDataDefined* layerOffsetDD = markerLayer->getDataDefinedProperty( QStringLiteral( "offset" ) );
 
     if ( qgsDoubleNear( markerLayer->size(), symbolSize ) )
     {
@@ -1572,23 +1572,23 @@ void QgsLineSymbol::setDataDefinedWidth( const QgsDataDefined& dd )
     {
       if ( dd.hasDefaultValues() )
       {
-        lineLayer->removeDataDefinedProperty( "width" );
-        lineLayer->removeDataDefinedProperty( "offset" );
+        lineLayer->removeDataDefinedProperty( QStringLiteral( "width" ) );
+        lineLayer->removeDataDefinedProperty( QStringLiteral( "offset" ) );
       }
       else
       {
         if ( qgsDoubleNear( symbolWidth, 0.0 ) || qgsDoubleNear( lineLayer->width(), symbolWidth ) )
         {
-          lineLayer->setDataDefinedProperty( "width", new QgsDataDefined( dd ) );
+          lineLayer->setDataDefinedProperty( QStringLiteral( "width" ), new QgsDataDefined( dd ) );
         }
         else
         {
-          lineLayer->setDataDefinedProperty( "width", scaleWholeSymbol( lineLayer->width() / symbolWidth, dd ) );
+          lineLayer->setDataDefinedProperty( QStringLiteral( "width" ), scaleWholeSymbol( lineLayer->width() / symbolWidth, dd ) );
         }
 
         if ( !qgsDoubleNear( lineLayer->offset(), 0.0 ) )
         {
-          lineLayer->setDataDefinedProperty( "offset", scaleWholeSymbol( lineLayer->offset() / symbolWidth, dd ) );
+          lineLayer->setDataDefinedProperty( QStringLiteral( "offset" ), scaleWholeSymbol( lineLayer->offset() / symbolWidth, dd ) );
         }
       }
     }
@@ -1605,9 +1605,9 @@ QgsDataDefined QgsLineSymbol::dataDefinedWidth() const
   for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     const QgsLineSymbolLayer* layer = dynamic_cast<const QgsLineSymbolLayer*>( *it );
-    if ( layer && qgsDoubleNear( layer->width(), symbolWidth ) && layer->getDataDefinedProperty( "width" ) )
+    if ( layer && qgsDoubleNear( layer->width(), symbolWidth ) && layer->getDataDefinedProperty( QStringLiteral( "width" ) ) )
     {
-      symbolDD = layer->getDataDefinedProperty( "width" );
+      symbolDD = layer->getDataDefinedProperty( QStringLiteral( "width" ) );
       break;
     }
   }
@@ -1622,8 +1622,8 @@ QgsDataDefined QgsLineSymbol::dataDefinedWidth() const
       continue;
     const QgsLineSymbolLayer* lineLayer = static_cast<const QgsLineSymbolLayer*>( layer );
 
-    QgsDataDefined* layerWidthDD = lineLayer->getDataDefinedProperty( "width" );
-    QgsDataDefined* layerOffsetDD = lineLayer->getDataDefinedProperty( "offset" );
+    QgsDataDefined* layerWidthDD = lineLayer->getDataDefinedProperty( QStringLiteral( "width" ) );
+    QgsDataDefined* layerOffsetDD = lineLayer->getDataDefinedProperty( QStringLiteral( "offset" ) );
 
     if ( qgsDoubleNear( lineLayer->width(), symbolWidth ) )
     {

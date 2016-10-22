@@ -138,23 +138,23 @@ void QgsRasterShader::writeXml( QDomDocument& doc, QDomElement& parent ) const
     return;
   }
 
-  QDomElement rasterShaderElem = doc.createElement( "rastershader" );
+  QDomElement rasterShaderElem = doc.createElement( QStringLiteral( "rastershader" ) );
   QgsColorRampShader* colorRampShader = dynamic_cast<QgsColorRampShader*>( mRasterShaderFunction );
   if ( colorRampShader )
   {
-    QDomElement colorRampShaderElem = doc.createElement( "colorrampshader" );
-    colorRampShaderElem.setAttribute( "colorRampType", colorRampShader->colorRampTypeAsQString() );
-    colorRampShaderElem.setAttribute( "clip", colorRampShader->clip() );
+    QDomElement colorRampShaderElem = doc.createElement( QStringLiteral( "colorrampshader" ) );
+    colorRampShaderElem.setAttribute( QStringLiteral( "colorRampType" ), colorRampShader->colorRampTypeAsQString() );
+    colorRampShaderElem.setAttribute( QStringLiteral( "clip" ), colorRampShader->clip() );
     //items
     QList<QgsColorRampShader::ColorRampItem> itemList = colorRampShader->colorRampItemList();
     QList<QgsColorRampShader::ColorRampItem>::const_iterator itemIt = itemList.constBegin();
     for ( ; itemIt != itemList.constEnd(); ++itemIt )
     {
-      QDomElement itemElem = doc.createElement( "item" );
-      itemElem.setAttribute( "label", itemIt->label );
-      itemElem.setAttribute( "value", QgsRasterBlock::printValue( itemIt->value ) );
-      itemElem.setAttribute( "color", itemIt->color.name() );
-      itemElem.setAttribute( "alpha", itemIt->color.alpha() );
+      QDomElement itemElem = doc.createElement( QStringLiteral( "item" ) );
+      itemElem.setAttribute( QStringLiteral( "label" ), itemIt->label );
+      itemElem.setAttribute( QStringLiteral( "value" ), QgsRasterBlock::printValue( itemIt->value ) );
+      itemElem.setAttribute( QStringLiteral( "color" ), itemIt->color.name() );
+      itemElem.setAttribute( QStringLiteral( "alpha" ), itemIt->color.alpha() );
       colorRampShaderElem.appendChild( itemElem );
     }
     rasterShaderElem.appendChild( colorRampShaderElem );
@@ -165,12 +165,12 @@ void QgsRasterShader::writeXml( QDomDocument& doc, QDomElement& parent ) const
 void QgsRasterShader::readXml( const QDomElement& elem )
 {
   //only colorrampshader
-  QDomElement colorRampShaderElem = elem.firstChildElement( "colorrampshader" );
+  QDomElement colorRampShaderElem = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
   if ( !colorRampShaderElem.isNull() )
   {
     QgsColorRampShader* colorRampShader = new QgsColorRampShader();
-    colorRampShader->setColorRampType( colorRampShaderElem.attribute( "colorRampType", "INTERPOLATED" ) );
-    colorRampShader->setClip( colorRampShaderElem.attribute( "clip", "0" ) == "1" );
+    colorRampShader->setColorRampType( colorRampShaderElem.attribute( QStringLiteral( "colorRampType" ), QStringLiteral( "INTERPOLATED" ) ) );
+    colorRampShader->setClip( colorRampShaderElem.attribute( QStringLiteral( "clip" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) );
 
     QList<QgsColorRampShader::ColorRampItem> itemList;
     QDomElement itemElem;
@@ -178,15 +178,15 @@ void QgsRasterShader::readXml( const QDomElement& elem )
     double itemValue;
     QColor itemColor;
 
-    QDomNodeList itemNodeList = colorRampShaderElem.elementsByTagName( "item" );
+    QDomNodeList itemNodeList = colorRampShaderElem.elementsByTagName( QStringLiteral( "item" ) );
     itemList.reserve( itemNodeList.size() );
     for ( int i = 0; i < itemNodeList.size(); ++i )
     {
       itemElem = itemNodeList.at( i ).toElement();
-      itemValue = itemElem.attribute( "value" ).toDouble();
-      itemLabel = itemElem.attribute( "label" );
-      itemColor.setNamedColor( itemElem.attribute( "color" ) );
-      itemColor.setAlpha( itemElem.attribute( "alpha", "255" ).toInt() );
+      itemValue = itemElem.attribute( QStringLiteral( "value" ) ).toDouble();
+      itemLabel = itemElem.attribute( QStringLiteral( "label" ) );
+      itemColor.setNamedColor( itemElem.attribute( QStringLiteral( "color" ) ) );
+      itemColor.setAlpha( itemElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt() );
 
       itemList.push_back( QgsColorRampShader::ColorRampItem( itemValue, itemColor, itemLabel ) );
     }

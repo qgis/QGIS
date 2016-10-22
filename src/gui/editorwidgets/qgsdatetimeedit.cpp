@@ -31,18 +31,18 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
     , mIsEmpty( false )
 {
   mClearButton = new QToolButton( this );
-  mClearButton->setIcon( QgsApplication::getThemeIcon( "/mIconClear.svg" ) );
+  mClearButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClear.svg" ) ) );
   mClearButton->setCursor( Qt::ArrowCursor );
-  mClearButton->setStyleSheet( "position: absolute; border: none; padding: 0px;" );
+  mClearButton->setStyleSheet( QStringLiteral( "position: absolute; border: none; padding: 0px;" ) );
   mClearButton->hide();
   connect( mClearButton, SIGNAL( clicked() ), this, SLOT( clear() ) );
 
-  mNullLabel = new QLineEdit( QSettings().value( "qgis/nullValue", "NULL" ).toString(), this );
+  mNullLabel = new QLineEdit( QSettings().value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString(), this );
   mNullLabel->setReadOnly( true );
-  mNullLabel->setStyleSheet( "position: absolute; border: none; font-style: italic; color: grey;" );
+  mNullLabel->setStyleSheet( QStringLiteral( "position: absolute; border: none; font-style: italic; color: grey;" ) );
   mNullLabel->hide();
 
-  setStyleSheet( QString( ".QWidget, QLineEdit, QToolButton { padding-right: %1px; }" ).arg( mClearButton->sizeHint().width() + spinButtonWidth() + frameWidth() + 1 ) );
+  setStyleSheet( QStringLiteral( ".QWidget, QLineEdit, QToolButton { padding-right: %1px; }" ).arg( mClearButton->sizeHint().width() + spinButtonWidth() + frameWidth() + 1 ) );
 
   QSize msz = minimumSizeHint();
   setMinimumSize( qMax( msz.width(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ),

@@ -26,7 +26,7 @@
 
 
 QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode )
-    : QgsSourceSelectDialog( "ArcGisMapServer", QgsSourceSelectDialog::MapService, parent, fl )
+    : QgsSourceSelectDialog( QStringLiteral( "ArcGisMapServer" ), QgsSourceSelectDialog::MapService, parent, fl )
 {
   if ( embeddedMode )
   {
@@ -37,50 +37,50 @@ QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget* parent, Qt::WindowFlags fl, boo
 bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
 {
   QString errorTitle, errorMessage;
-  QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( connection.uri().param( "url" ), errorTitle, errorMessage );
+  QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( connection.uri().param( QStringLiteral( "url" ) ), errorTitle, errorMessage );
   if ( serviceInfoMap.isEmpty() )
   {
     QMessageBox::warning( this, tr( "Error" ), tr( "Failed to retrieve service capabilities:\n%1: %2" ).arg( errorTitle, errorMessage ) );
     return false;
   }
 
-  populateImageEncodings( serviceInfoMap["supportedImageFormatTypes"].toString().split( "," ) );
+  populateImageEncodings( serviceInfoMap[QStringLiteral( "supportedImageFormatTypes" )].toString().split( QStringLiteral( "," ) ) );
 
   QStringList layerErrors;
   foreach ( const QVariant& layerInfo, serviceInfoMap["layers"].toList() )
   {
     QVariantMap layerInfoMap = layerInfo.toMap();
-    if ( !layerInfoMap["id"].isValid() )
+    if ( !layerInfoMap[QStringLiteral( "id" )].isValid() )
     {
       continue;
     }
 
     // Get layer info
-    QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( connection.uri().param( "url" ) + "/" + layerInfoMap["id"].toString(), errorTitle, errorMessage );
+    QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( connection.uri().param( QStringLiteral( "url" ) ) + "/" + layerInfoMap[QStringLiteral( "id" )].toString(), errorTitle, errorMessage );
     if ( layerData.isEmpty() )
     {
-      layerErrors.append( QString( "Layer %1: %2 - %3" ).arg( layerInfoMap["id"].toString(), errorTitle, errorMessage ) );
+      layerErrors.append( QStringLiteral( "Layer %1: %2 - %3" ).arg( layerInfoMap[QStringLiteral( "id" )].toString(), errorTitle, errorMessage ) );
       continue;
     }
     // insert the typenames, titles and abstracts into the tree view
-    QStandardItem* idItem = new QStandardItem( layerData["id"].toString() );
-    QStandardItem* nameItem = new QStandardItem( layerData["name"].toString() );
-    QStandardItem* abstractItem = new QStandardItem( layerData["description"].toString() );
-    abstractItem->setToolTip( layerData["description"].toString() );
+    QStandardItem* idItem = new QStandardItem( layerData[QStringLiteral( "id" )].toString() );
+    QStandardItem* nameItem = new QStandardItem( layerData[QStringLiteral( "name" )].toString() );
+    QStandardItem* abstractItem = new QStandardItem( layerData[QStringLiteral( "description" )].toString() );
+    abstractItem->setToolTip( layerData[QStringLiteral( "description" )].toString() );
 
-    QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::parseSpatialReference( serviceInfoMap["spatialReference"].toMap() );
+    QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::parseSpatialReference( serviceInfoMap[QStringLiteral( "spatialReference" )].toMap() );
     if ( !crs.isValid() )
     {
-      layerErrors.append( tr( "Layer %1: unable to parse spatial reference" ).arg( layerInfoMap["id"].toString() ) );
+      layerErrors.append( tr( "Layer %1: unable to parse spatial reference" ).arg( layerInfoMap[QStringLiteral( "id" )].toString() ) );
       continue;
     }
-    mAvailableCRS[layerData["name"].toString()] = QList<QString>()  << crs.authid();
+    mAvailableCRS[layerData[QStringLiteral( "name" )].toString()] = QList<QString>()  << crs.authid();
 
     mModel->appendRow( QList<QStandardItem*>() << idItem << nameItem << abstractItem );
   }
   if ( !layerErrors.isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Error" ), tr( "Failed to query some layers:\n%1" ).arg( layerErrors.join( "\n" ) ) );
+    QMessageBox::warning( this, tr( "Error" ), tr( "Failed to query some layers:\n%1" ).arg( layerErrors.join( QStringLiteral( "\n" ) ) ) );
   }
   return true;
 }
@@ -92,8 +92,8 @@ QString QgsAmsSourceSelect::getLayerURI( const QgsOwsConnection& connection,
     const QgsRectangle& /*bBox*/ ) const
 {
   QgsDataSourceUri ds = connection.uri();
-  ds.setParam( "layer", layerTitle );
-  ds.setParam( "crs", crs );
-  ds.setParam( "format", getSelectedImageEncoding() );
+  ds.setParam( QStringLiteral( "layer" ), layerTitle );
+  ds.setParam( QStringLiteral( "crs" ), crs );
+  ds.setParam( QStringLiteral( "format" ), getSelectedImageEncoding() );
   return ds.uri();
 }

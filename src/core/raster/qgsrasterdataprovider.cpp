@@ -255,7 +255,7 @@ QString QgsRasterDataProvider::makeTableCell( QString const & value )
 // convenience function for building metadata() HTML table cells
 QString QgsRasterDataProvider::makeTableCells( QStringList const & values )
 {
-  QString s( "<tr>" );
+  QString s( QStringLiteral( "<tr>" ) );
 
   for ( QStringList::const_iterator i = values.begin();
         i != values.end();
@@ -264,7 +264,7 @@ QString QgsRasterDataProvider::makeTableCells( QStringList const & values )
     s += QgsRasterDataProvider::makeTableCell( *i );
   }
 
-  s += "</tr>";
+  s += QLatin1String( "</tr>" );
 
   return s;
 } // makeTableCell_
@@ -343,7 +343,7 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoi
 
 QString QgsRasterDataProvider::lastErrorFormat()
 {
-  return "text/plain";
+  return QStringLiteral( "text/plain" );
 }
 
 typedef QList<QPair<QString, QString> > *pyramidResamplingMethods_t();
@@ -451,15 +451,15 @@ QString QgsRasterDataProvider::identifyFormatName( QgsRaster::IdentifyFormat for
   switch ( format )
   {
     case QgsRaster::IdentifyFormatValue:
-      return "Value";
+      return QStringLiteral( "Value" );
     case QgsRaster::IdentifyFormatText:
-      return "Text";
+      return QStringLiteral( "Text" );
     case QgsRaster::IdentifyFormatHtml:
-      return "Html";
+      return QStringLiteral( "Html" );
     case QgsRaster::IdentifyFormatFeature:
-      return "Feature";
+      return QStringLiteral( "Feature" );
     default:
-      return "Undefined";
+      return QStringLiteral( "Undefined" );
   }
 }
 
@@ -476,16 +476,16 @@ QString QgsRasterDataProvider::identifyFormatLabel( QgsRaster::IdentifyFormat fo
     case QgsRaster::IdentifyFormatFeature:
       return tr( "Feature" );
     default:
-      return "Undefined";
+      return QStringLiteral( "Undefined" );
   }
 }
 
 QgsRaster::IdentifyFormat QgsRasterDataProvider::identifyFormatFromName( const QString& formatName )
 {
-  if ( formatName == "Value" ) return QgsRaster::IdentifyFormatValue;
-  if ( formatName == "Text" ) return QgsRaster::IdentifyFormatText;
-  if ( formatName == "Html" ) return QgsRaster::IdentifyFormatHtml;
-  if ( formatName == "Feature" ) return QgsRaster::IdentifyFormatFeature;
+  if ( formatName == QLatin1String( "Value" ) ) return QgsRaster::IdentifyFormatValue;
+  if ( formatName == QLatin1String( "Text" ) ) return QgsRaster::IdentifyFormatText;
+  if ( formatName == QLatin1String( "Html" ) ) return QgsRaster::IdentifyFormatHtml;
+  if ( formatName == QLatin1String( "Feature" ) ) return QgsRaster::IdentifyFormatFeature;
   return QgsRaster::IdentifyFormatUndefined;
 }
 

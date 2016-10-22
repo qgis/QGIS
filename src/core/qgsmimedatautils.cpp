@@ -44,7 +44,7 @@ QgsMimeDataUtils::Uri::Uri( QString& encData )
   name = decoded[2];
   uri = decoded[3];
 
-  if ( layerType == "raster" && decoded.size() == 6 )
+  if ( layerType == QLatin1String( "raster" ) && decoded.size() == 6 )
   {
     supportedCrs = decode( decoded[4] );
     supportedFormats = decode( decoded[5] );
@@ -114,14 +114,14 @@ static void _addLayerTreeNodeToUriList( QgsLayerTreeNode* node, QgsMimeDataUtils
     QgsMimeDataUtils::Uri uri;
     if ( QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( nodeLayer->layer() ) )
     {
-      uri.layerType = "vector";
+      uri.layerType = QStringLiteral( "vector" );
       uri.name = vlayer->name();
       uri.providerKey = vlayer->dataProvider()->name();
       uri.uri = vlayer->dataProvider()->dataSourceUri();
     }
     else if ( QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer*>( nodeLayer->layer() ) )
     {
-      uri.layerType = "raster";
+      uri.layerType = QStringLiteral( "raster" );
       uri.name = rlayer->name();
       uri.providerKey = rlayer->dataProvider()->name();
       uri.uri = rlayer->dataProvider()->dataSourceUri();
@@ -149,8 +149,8 @@ QString QgsMimeDataUtils::encode( const QStringList& items )
   Q_FOREACH ( const QString& item, items )
   {
     QString str = item;
-    str.replace( '\\', "\\\\" );
-    str.replace( ':', "\\:" );
+    str.replace( '\\', QLatin1String( "\\\\" ) );
+    str.replace( ':', QLatin1String( "\\:" ) );
     encoded += str + ':';
   }
   return encoded.left( encoded.length() - 1 );
@@ -174,7 +174,7 @@ QStringList QgsMimeDataUtils::decode( const QString& encoded )
     else if ( c == ':' && !inEscape )
     {
       items.append( item );
-      item = "";
+      item = QLatin1String( "" );
     }
     else
     {

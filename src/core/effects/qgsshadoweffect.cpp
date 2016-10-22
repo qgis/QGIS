@@ -96,54 +96,54 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
 QgsStringMap QgsShadowEffect::properties() const
 {
   QgsStringMap props;
-  props.insert( "enabled", mEnabled ? "1" : "0" );
-  props.insert( "draw_mode", QString::number( int( mDrawMode ) ) );
-  props.insert( "blend_mode", QString::number( int( mBlendMode ) ) );
-  props.insert( "transparency", QString::number( mTransparency ) );
-  props.insert( "blur_level", QString::number( mBlurLevel ) );
-  props.insert( "offset_angle", QString::number( mOffsetAngle ) );
-  props.insert( "offset_distance", QString::number( mOffsetDist ) );
-  props.insert( "offset_unit", QgsUnitTypes::encodeUnit( mOffsetUnit ) );
-  props.insert( "offset_unit_scale", QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale ) );
-  props.insert( "color", QgsSymbolLayerUtils::encodeColor( mColor ) );
+  props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
+  props.insert( QStringLiteral( "draw_mode" ), QString::number( int( mDrawMode ) ) );
+  props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
+  props.insert( QStringLiteral( "transparency" ), QString::number( mTransparency ) );
+  props.insert( QStringLiteral( "blur_level" ), QString::number( mBlurLevel ) );
+  props.insert( QStringLiteral( "offset_angle" ), QString::number( mOffsetAngle ) );
+  props.insert( QStringLiteral( "offset_distance" ), QString::number( mOffsetDist ) );
+  props.insert( QStringLiteral( "offset_unit" ), QgsUnitTypes::encodeUnit( mOffsetUnit ) );
+  props.insert( QStringLiteral( "offset_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale ) );
+  props.insert( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
   return props;
 }
 
 void QgsShadowEffect::readProperties( const QgsStringMap &props )
 {
   bool ok;
-  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( "blend_mode" ).toInt( &ok ) );
+  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
   }
-  double transparency = props.value( "transparency" ).toDouble( &ok );
+  double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
   if ( ok )
   {
     mTransparency = transparency;
   }
-  mEnabled = props.value( "enabled", "1" ).toInt();
-  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( "draw_mode", "2" ).toInt() );
-  int level = props.value( "blur_level" ).toInt( &ok );
+  mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
+  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
+  int level = props.value( QStringLiteral( "blur_level" ) ).toInt( &ok );
   if ( ok )
   {
     mBlurLevel = level;
   }
-  int angle = props.value( "offset_angle" ).toInt( &ok );
+  int angle = props.value( QStringLiteral( "offset_angle" ) ).toInt( &ok );
   if ( ok )
   {
     mOffsetAngle = angle;
   }
-  double distance = props.value( "offset_distance" ).toDouble( &ok );
+  double distance = props.value( QStringLiteral( "offset_distance" ) ).toDouble( &ok );
   if ( ok )
   {
     mOffsetDist = distance;
   }
-  mOffsetUnit = QgsUnitTypes::decodeRenderUnit( props.value( "offset_unit" ) );
-  mOffsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( "offset_unit_scale" ) );
-  if ( props.contains( "color" ) )
+  mOffsetUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "offset_unit" ) ) );
+  mOffsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "offset_unit_scale" ) ) );
+  if ( props.contains( QStringLiteral( "color" ) ) )
   {
-    mColor = QgsSymbolLayerUtils::decodeColor( props.value( "color" ) );
+    mColor = QgsSymbolLayerUtils::decodeColor( props.value( QStringLiteral( "color" ) ) );
   }
 }
 

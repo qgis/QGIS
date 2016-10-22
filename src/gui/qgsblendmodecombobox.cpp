@@ -42,20 +42,20 @@ QgsBlendModeComboBox::~QgsBlendModeComboBox()
 QStringList QgsBlendModeComboBox::blendModesList() const
 {
   return QStringList() << tr( "Normal" )
-         << "-"
+         << QStringLiteral( "-" )
          << tr( "Lighten" )
          << tr( "Screen" )
          << tr( "Dodge" )
          << tr( "Addition" )
-         << "-"
+         << QStringLiteral( "-" )
          << tr( "Darken" )
          << tr( "Multiply" )
          << tr( "Burn" )
-         << "-"
+         << QStringLiteral( "-" )
          << tr( "Overlay" )
          << tr( "Soft light" )
          << tr( "Hard light" )
-         << "-"
+         << QStringLiteral( "-" )
          << tr( "Difference" )
          << tr( "Subtract" );
 }
@@ -79,7 +79,7 @@ void QgsBlendModeComboBox::updateModes()
   int blendModeIndex = 0;
   for ( ; blendModeIt != myBlendModesList.constEnd(); ++blendModeIt )
   {
-    if ( *blendModeIt == "-" )
+    if ( *blendModeIt == QLatin1String( "-" ) )
     {
       // Add separator
       insertSeparator( index );

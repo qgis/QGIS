@@ -130,12 +130,12 @@ void QgsGeometryCheckerSetupTab::validateInput()
 
 void QgsGeometryCheckerSetupTab::selectOutputFile()
 {
-  QString filterString = QgsVectorFileWriter::filterForDriver( "ESRI Shapefile" );
+  QString filterString = QgsVectorFileWriter::filterForDriver( QStringLiteral( "ESRI Shapefile" ) );
   QMap<QString, QString> filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
   Q_FOREACH ( const QString& filter, filterFormatMap.keys() )
   {
     QString driverName = filterFormatMap.value( filter );
-    if ( driverName != "ESRI Shapefile" ) // Default entry, first in list (see above)
+    if ( driverName != QLatin1String( "ESRI Shapefile" ) ) // Default entry, first in list (see above)
     {
       filterString += ";;" + filter;
     }
@@ -158,9 +158,9 @@ void QgsGeometryCheckerSetupTab::selectOutputFile()
     QgsVectorFileWriter::MetaData mdata;
     if ( QgsVectorFileWriter::driverMetadata( mOutputDriverName, mdata ) )
     {
-      if ( !filename.endsWith( QString( ".%1" ).arg( mdata.ext ), Qt::CaseInsensitive ) )
+      if ( !filename.endsWith( QStringLiteral( ".%1" ).arg( mdata.ext ), Qt::CaseInsensitive ) )
       {
-        filename += QString( ".%1" ).arg( mdata.ext );
+        filename += QStringLiteral( ".%1" ).arg( mdata.ext );
       }
     }
     ui.lineEditOutput->setText( filename );
@@ -226,7 +226,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
       unsetCursor();
       return;
     }
-    QgsVectorLayer* newlayer = new QgsVectorLayer( filename, QFileInfo( filename ).completeBaseName(), "ogr" );
+    QgsVectorLayer* newlayer = new QgsVectorLayer( filename, QFileInfo( filename ).completeBaseName(), QStringLiteral( "ogr" ) );
 
     if ( selectedOnly )
     {
@@ -260,12 +260,12 @@ void QgsGeometryCheckerSetupTab::runChecks()
       {
         QString outputFileName = ui.lineEditOutput->text();
         QFile( outputFileName ).remove();
-        if ( mOutputDriverName == "ESRI Shapefile" )
+        if ( mOutputDriverName == QLatin1String( "ESRI Shapefile" ) )
         {
-          QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), "dbf" ) ).remove();
-          QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), "prj" ) ).remove();
-          QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), "qpj" ) ).remove();
-          QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), "shx" ) ).remove();
+          QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), QStringLiteral( "dbf" ) ) ).remove();
+          QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), QStringLiteral( "prj" ) ) ).remove();
+          QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), QStringLiteral( "qpj" ) ) ).remove();
+          QFile( QString( outputFileName ).replace( QRegExp( "shp$" ), QStringLiteral( "shx" ) ) ).remove();
         }
       }
       return;

@@ -56,12 +56,12 @@ void QgsAppPluginManagerInterface::clearPythonPluginMetadata()
 //! add a single plugin to the metadata registry
 void QgsAppPluginManagerInterface::addPluginMetadata( const QMap<QString, QString>& metadata )
 {
-  if ( metadata.isEmpty() || !metadata.contains( "id" ) )
+  if ( metadata.isEmpty() || !metadata.contains( QStringLiteral( "id" ) ) )
   {
     QgsDebugMsg( "Warning: incomplete metadata" );
     return;
   }
-  mPluginManager->addPluginMetadata( metadata.value( "id" ), metadata );
+  mPluginManager->addPluginMetadata( metadata.value( QStringLiteral( "id" ) ), metadata );
 }
 
 

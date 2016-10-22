@@ -51,12 +51,12 @@ QgsEditorWidgetConfig QgsValueMapWidgetFactory::readConfig( const QDomElement& c
 
   QgsEditorWidgetConfig cfg;
 
-  QDomNodeList nodes = configElement.elementsByTagName( "value" );
+  QDomNodeList nodes = configElement.elementsByTagName( QStringLiteral( "value" ) );
 
   for ( int i = 0; i < nodes.size(); ++i )
   {
     QDomElement elem = nodes.at( i ).toElement();
-    cfg.insert( elem.attribute( "key" ), elem.attribute( "value" ) );
+    cfg.insert( elem.attribute( QStringLiteral( "key" ) ), elem.attribute( QStringLiteral( "value" ) ) );
   }
 
   return cfg;
@@ -71,10 +71,10 @@ void QgsValueMapWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config,
 
   while ( it != config.constEnd() )
   {
-    QDomElement elem = doc.createElement( "value" );
+    QDomElement elem = doc.createElement( QStringLiteral( "value" ) );
 
-    elem.setAttribute( "key", it.key() );
-    elem.setAttribute( "value", it.value().toString() );
+    elem.setAttribute( QStringLiteral( "key" ), it.key() );
+    elem.setAttribute( QStringLiteral( "value" ), it.value().toString() );
 
     configElement.appendChild( elem );
 
@@ -88,11 +88,11 @@ QString QgsValueMapWidgetFactory::representValue( QgsVectorLayer* vl, int fieldI
 
   QString valueInternalText;
   if ( value.isNull() )
-    valueInternalText = QString( VALUEMAP_NULL_TEXT );
+    valueInternalText = QStringLiteral( VALUEMAP_NULL_TEXT );
   else
     valueInternalText = value.toString();
 
-  return config.key( valueInternalText, QVariant( QString( "(%1)" ).arg( vl->fields().at( fieldIdx ).displayString( value ) ) ).toString() );
+  return config.key( valueInternalText, QVariant( QStringLiteral( "(%1)" ).arg( vl->fields().at( fieldIdx ).displayString( value ) ) ).toString() );
 }
 
 QVariant QgsValueMapWidgetFactory::sortValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const

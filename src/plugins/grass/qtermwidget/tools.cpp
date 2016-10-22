@@ -16,7 +16,7 @@ QString get_kb_layout_dir()
 #else
 //    qDebug() << __FILE__ << __FUNCTION__;
 
-    QString rval = "";
+    QString rval = QLatin1String("");
     QString k(KB_LAYOUT_DIR);
     QDir d(k);
 
@@ -54,7 +54,7 @@ QString get_color_schemes_dir()
 #else
 //    qDebug() << __FILE__ << __FUNCTION__;
 
-    QString rval = "";
+    QString rval = QLatin1String("");
     QString k(COLORSCHEMES_DIR);
     QDir d(k);
 

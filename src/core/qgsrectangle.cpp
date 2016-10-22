@@ -248,13 +248,13 @@ QString QgsRectangle::asWktCoordinates() const
 QString QgsRectangle::asWktPolygon() const
 {
   QString rep =
-    QString( "POLYGON((" ) +
+    QStringLiteral( "POLYGON((" ) +
     qgsDoubleToString( xmin ) + ' ' + qgsDoubleToString( ymin ) + ", " +
     qgsDoubleToString( xmax ) + ' ' + qgsDoubleToString( ymin ) + ", " +
     qgsDoubleToString( xmax ) + ' ' + qgsDoubleToString( ymax ) + ", " +
     qgsDoubleToString( xmin ) + ' ' + qgsDoubleToString( ymax ) + ", " +
     qgsDoubleToString( xmin ) + ' ' + qgsDoubleToString( ymin ) +
-    QString( "))" );
+    QStringLiteral( "))" );
 
   return rep;
 }
@@ -290,9 +290,9 @@ QString QgsRectangle::toString( int thePrecision ) const
 {
   QString rep;
   if ( isEmpty() )
-    rep = "Empty";
+    rep = QStringLiteral( "Empty" );
   else
-    rep = QString( "%1,%2 : %3,%4" )
+    rep = QStringLiteral( "%1,%2 : %3,%4" )
           .arg( xmin, 0, 'f', thePrecision )
           .arg( ymin, 0, 'f', thePrecision )
           .arg( xmax, 0, 'f', thePrecision )

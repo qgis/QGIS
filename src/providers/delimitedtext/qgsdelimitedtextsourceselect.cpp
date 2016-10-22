@@ -38,8 +38,8 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
     , mFile( new QgsDelimitedTextFile() )
     , mExampleRowCount( 20 )
     , mBadRowCount( 0 )
-    , mPluginKey( "/Plugin-DelimitedText" )
-    , mLastFileType( "" )
+    , mPluginKey( QStringLiteral( "/Plugin-DelimitedText" ) )
+    , mLastFileType( QLatin1String( "" ) )
 {
 
   setupUi( this );
@@ -68,7 +68,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
 
   cmbEncoding->clear();
   cmbEncoding->addItems( QgsVectorDataProvider::availableEncodings() );
-  cmbEncoding->setCurrentIndex( cmbEncoding->findText( "UTF-8" ) );
+  cmbEncoding->setCurrentIndex( cmbEncoding->findText( QStringLiteral( "UTF-8" ) ) );
 
   loadSettings();
   updateFieldsAndEnable();
@@ -153,11 +153,11 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
 
   if ( cbxPointIsComma->isChecked() )
   {
-    url.addQueryItem( "decimalPoint", "," );
+    url.addQueryItem( QStringLiteral( "decimalPoint" ), QStringLiteral( "," ) );
   }
   if ( cbxXyDms->isChecked() )
   {
-    url.addQueryItem( "xyDms", "yes" );
+    url.addQueryItem( QStringLiteral( "xyDms" ), QStringLiteral( "yes" ) );
   }
 
   if ( geomTypeXY->isChecked() )
@@ -165,9 +165,9 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
     if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
     {
       QString field = cmbXField->currentText();
-      url.addQueryItem( "xField", field );
+      url.addQueryItem( QStringLiteral( "xField" ), field );
       field = cmbYField->currentText();
-      url.addQueryItem( "yField", field );
+      url.addQueryItem( QStringLiteral( "yField" ), field );
     }
   }
   else if ( geomTypeWKT->isChecked() )
@@ -175,21 +175,21 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
     if ( ! cmbWktField->currentText().isEmpty() )
     {
       QString field = cmbWktField->currentText();
-      url.addQueryItem( "wktField", field );
+      url.addQueryItem( QStringLiteral( "wktField" ), field );
     }
     if ( cmbGeometryType->currentIndex() > 0 )
     {
-      url.addQueryItem( "geomType", cmbGeometryType->currentText() );
+      url.addQueryItem( QStringLiteral( "geomType" ), cmbGeometryType->currentText() );
     }
   }
   else
   {
-    url.addQueryItem( "geomType", "none" );
+    url.addQueryItem( QStringLiteral( "geomType" ), QStringLiteral( "none" ) );
   }
 
-  if ( ! geomTypeNone->isChecked() ) url.addQueryItem( "spatialIndex", cbxSpatialIndex->isChecked() ? "yes" : "no" );
-  url.addQueryItem( "subsetIndex", cbxSubsetIndex->isChecked() ? "yes" : "no" );
-  url.addQueryItem( "watchFile", cbxWatchFile->isChecked() ? "yes" : "no" );
+  if ( ! geomTypeNone->isChecked() ) url.addQueryItem( QStringLiteral( "spatialIndex" ), cbxSpatialIndex->isChecked() ? "yes" : "no" );
+  url.addQueryItem( QStringLiteral( "subsetIndex" ), cbxSubsetIndex->isChecked() ? "yes" : "no" );
+  url.addQueryItem( QStringLiteral( "watchFile" ), cbxWatchFile->isChecked() ? "yes" : "no" );
 
   // store the settings
   saveSettings();
@@ -197,7 +197,7 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
 
 
   // add the layer to the map
-  emit addVectorLayer( QString::fromAscii( url.toEncoded() ), txtLayerName->text(), "delimitedtext" );
+  emit addVectorLayer( QString::fromAscii( url.toEncoded() ), txtLayerName->text(), QStringLiteral( "delimitedtext" ) );
 
   accept();
 }
@@ -209,7 +209,7 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_rejected()
 
 QString QgsDelimitedTextSourceSelect::selectedChars()
 {
-  QString chars = "";
+  QString chars = QLatin1String( "" );
   if ( cbxDelimComma->isChecked() )
     chars.append( ',' );
   if ( cbxDelimSpace->isChecked() )
@@ -248,15 +248,15 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString& subkey, bool loa
 
   // and how to use the delimiter
   QString delimiterType = settings.value( key + "/delimiterType", "" ).toString();
-  if ( delimiterType == "chars" )
+  if ( delimiterType == QLatin1String( "chars" ) )
   {
     delimiterChars->setChecked( true );
   }
-  else if ( delimiterType == "regexp" )
+  else if ( delimiterType == QLatin1String( "regexp" ) )
   {
     delimiterRegexp->setChecked( true );
   }
-  else if ( delimiterType == "csv" )
+  else if ( delimiterType == QLatin1String( "csv" ) )
   {
     delimiterCSV->setChecked( true );
   }
@@ -285,8 +285,8 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString& subkey, bool loa
   if ( loadGeomSettings )
   {
     QString geomColumnType = settings.value( key + "/geomColumnType", "xy" ).toString();
-    if ( geomColumnType == "xy" ) geomTypeXY->setChecked( true );
-    else if ( geomColumnType == "wkt" ) geomTypeWKT->setChecked( true );
+    if ( geomColumnType == QLatin1String( "xy" ) ) geomTypeXY->setChecked( true );
+    else if ( geomColumnType == QLatin1String( "wkt" ) ) geomTypeWKT->setChecked( true );
     else geomTypeNone->setChecked( true );
     cbxXyDms->setChecked( settings.value( key + "/xyDms", "false" ) == "true" );
     swGeomType->setCurrentIndex( bgGeomType->checkedId() );
@@ -322,9 +322,9 @@ void QgsDelimitedTextSourceSelect::saveSettings( const QString& subkey, bool sav
   settings.setValue( key + "/watchFile", cbxWatchFile->isChecked() ? "true" : "false" );
   if ( saveGeomSettings )
   {
-    QString geomColumnType = "none";
-    if ( geomTypeXY->isChecked() ) geomColumnType = "xy";
-    if ( geomTypeWKT->isChecked() ) geomColumnType = "wkt";
+    QString geomColumnType = QStringLiteral( "none" );
+    if ( geomTypeXY->isChecked() ) geomColumnType = QStringLiteral( "xy" );
+    if ( geomTypeWKT->isChecked() ) geomColumnType = QStringLiteral( "wkt" );
     settings.setValue( key + "/geomColumnType", geomColumnType );
     settings.setValue( key + "/xyDms", cbxXyDms->isChecked() ? "true" : "false" );
   }
@@ -443,7 +443,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
     for ( int i = 0; i < tblSample->columnCount(); i++ )
     {
-      QString value = i < nv ? values[i] : "";
+      QString value = i < nv ? values[i] : QLatin1String( "" );
       if ( value.length() > MAX_SAMPLE_LENGTH ) value = value.mid( 0, MAX_SAMPLE_LENGTH ) + "...";
       QTableWidgetItem *item = new QTableWidgetItem( value );
       tblSample->setItem( counter - 1, i, item );
@@ -524,11 +524,11 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   // Now try setting optional X,Y fields - will only reset the fields if
   // not already set.
 
-  trySetXYField( fieldList, isValidCoordinate, "longitude", "latitude" );
-  trySetXYField( fieldList, isValidCoordinate, "lon", "lat" );
-  trySetXYField( fieldList, isValidCoordinate, "east", "north" );
-  trySetXYField( fieldList, isValidCoordinate, "x", "y" );
-  trySetXYField( fieldList, isValidCoordinate, "e", "n" );
+  trySetXYField( fieldList, isValidCoordinate, QStringLiteral( "longitude" ), QStringLiteral( "latitude" ) );
+  trySetXYField( fieldList, isValidCoordinate, QStringLiteral( "lon" ), QStringLiteral( "lat" ) );
+  trySetXYField( fieldList, isValidCoordinate, QStringLiteral( "east" ), QStringLiteral( "north" ) );
+  trySetXYField( fieldList, isValidCoordinate, QStringLiteral( "x" ), QStringLiteral( "y" ) );
+  trySetXYField( fieldList, isValidCoordinate, QStringLiteral( "e" ), QStringLiteral( "n" ) );
 
   // And also a WKT field if there is one
 
@@ -663,7 +663,7 @@ bool QgsDelimitedTextSourceSelect::validate()
 {
   // Check that input data is valid - provide a status message if not..
 
-  QString message( "" );
+  QString message( QLatin1String( "" ) );
   bool enabled = false;
 
   if ( txtFilePath->text().trimmed().isEmpty() )

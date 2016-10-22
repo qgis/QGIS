@@ -201,7 +201,7 @@ QString QgsField::displayString( const QVariant& v ) const
   if ( v.isNull() )
   {
     QSettings settings;
-    return settings.value( "qgis/nullValue", "NULL" ).toString();
+    return settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
   }
 
   if ( d->type == QVariant::Double && d->precision > 0 )

@@ -72,7 +72,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * @param uri String containing the required parameters to connect to the database
      * and query the table.
      */
-    explicit QgsPostgresProvider( QString const &uri = "" );
+    explicit QgsPostgresProvider( QString const &uri = QLatin1String( "" ) );
 
     //! Destructor
     virtual ~QgsPostgresProvider();

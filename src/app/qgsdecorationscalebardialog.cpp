@@ -27,7 +27,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/DecorationScaleBar/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationScaleBar/geometry" ) ).toByteArray() );
 
   QPushButton* applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
@@ -72,14 +72,14 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
   cboStyle->setCurrentIndex( mDeco.mStyleIndex );
 
   pbnChangeColor->setColor( mDeco.mColor );
-  pbnChangeColor->setContext( "gui" );
+  pbnChangeColor->setContext( QStringLiteral( "gui" ) );
   pbnChangeColor->setColorDialogTitle( tr( "Select scalebar color" ) );
 }
 
 QgsDecorationScaleBarDialog::~QgsDecorationScaleBarDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/DecorationScaleBar/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/DecorationScaleBar/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationScaleBarDialog::on_buttonBox_helpRequested()

@@ -28,13 +28,13 @@
 
 
 QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem* parent, QString name, const QgsDataSourceUri& uri, QString featureType, QString title, QString crsString )
-    : QgsLayerItem( parent, title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, "WFS" )
+    : QgsLayerItem( parent, title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, QStringLiteral( "WFS" ) )
 {
   QSettings settings;
-  bool useCurrentViewExtent = settings.value( "/Windows/WFSSourceSelect/FeatureCurrentViewExtent", true ).toBool();
+  bool useCurrentViewExtent = settings.value( QStringLiteral( "/Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool();
   mUri = QgsWFSDataSourceURI::build( uri.uri(), featureType, crsString, QString(), useCurrentViewExtent );
   setState( Populated );
-  mIconName = "mIconConnect.png";
+  mIconName = QStringLiteral( "mIconConnect.png" );
 }
 
 QgsWfsLayerItem::~QgsWfsLayerItem()
@@ -48,7 +48,7 @@ QgsWfsConnectionItem::QgsWfsConnectionItem( QgsDataItem* parent, QString name, Q
     , mUri( uri )
     , mCapabilities( nullptr )
 {
-  mIconName = "mIconWfs.svg";
+  mIconName = QStringLiteral( "mIconWfs.svg" );
 }
 
 QgsWfsConnectionItem::~QgsWfsConnectionItem()
@@ -129,7 +129,7 @@ QgsWfsRootItem::QgsWfsRootItem( QgsDataItem* parent, QString name, QString path 
     : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
-  mIconName = "mIconWfs.svg";
+  mIconName = QStringLiteral( "mIconWfs.svg" );
   populate();
 }
 
@@ -202,17 +202,17 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   QgsDebugMsg( "thePath = " + thePath );
   if ( thePath.isEmpty() )
   {
-    return new QgsWfsRootItem( parentItem, "WFS", "wfs:" );
+    return new QgsWfsRootItem( parentItem, QStringLiteral( "WFS" ), QStringLiteral( "wfs:" ) );
   }
 
   // path schema: wfs:/connection name (used by OWS)
-  if ( thePath.startsWith( "wfs:/" ) )
+  if ( thePath.startsWith( QLatin1String( "wfs:/" ) ) )
   {
     QString connectionName = thePath.split( '/' ).last();
     if ( QgsWfsConnection::connectionList().contains( connectionName ) )
     {
       QgsWfsConnection connection( connectionName );
-      return new QgsWfsConnectionItem( parentItem, "WFS", thePath, connection.uri().uri() );
+      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), thePath, connection.uri().uri() );
     }
   }
 

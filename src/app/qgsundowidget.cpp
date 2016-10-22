@@ -135,7 +135,7 @@ void QgsUndoWidget::setUndoStack( QUndoStack* undoStack )
 
   mUndoView = new QUndoView( dockWidgetContents );
   mUndoView->setStack( undoStack );
-  mUndoView->setObjectName( "undoView" );
+  mUndoView->setObjectName( QStringLiteral( "undoView" ) );
   gridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
 //  setWidget( dockWidgetContents );
   connect( mUndoStack, SIGNAL( canUndoChanged( bool ) ), this, SLOT( undoChanged( bool ) ) );
@@ -153,27 +153,27 @@ void QgsUndoWidget::setUndoStack( QUndoStack* undoStack )
 void QgsUndoWidget::setupUi( QWidget *UndoWidget )
 {
   if ( UndoWidget->objectName().isEmpty() )
-    UndoWidget->setObjectName( QString::fromUtf8( "UndoWidget" ) );
+    UndoWidget->setObjectName( QStringLiteral( "UndoWidget" ) );
   UndoWidget->resize( 200, 223 );
   UndoWidget->setMinimumSize( QSize( 200, 220 ) );
   dockWidgetContents = new QWidget( UndoWidget );
-  dockWidgetContents->setObjectName( QString::fromUtf8( "dockWidgetContents" ) );
+  dockWidgetContents->setObjectName( QStringLiteral( "dockWidgetContents" ) );
   gridLayout = new QGridLayout( dockWidgetContents );
-  gridLayout->setObjectName( QString::fromUtf8( "gridLayout" ) );
+  gridLayout->setObjectName( QStringLiteral( "gridLayout" ) );
   gridLayout->setContentsMargins( 0, 0, 0, 0 );
   spacerItem = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
 
   gridLayout->addItem( spacerItem, 0, 0, 1, 1 );
 
   undoButton = new QPushButton( dockWidgetContents );
-  undoButton->setObjectName( QString::fromUtf8( "undoButton" ) );
-  undoButton->setIcon( QgsApplication::getThemeIcon( "mActionUndo.svg" ) );
+  undoButton->setObjectName( QStringLiteral( "undoButton" ) );
+  undoButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionUndo.svg" ) ) );
 
   gridLayout->addWidget( undoButton, 1, 0, 1, 1 );
 
   redoButton = new QPushButton( dockWidgetContents );
-  redoButton->setObjectName( QString::fromUtf8( "redoButton" ) );
-  redoButton->setIcon( QgsApplication::getThemeIcon( "mActionRedo.svg" ) );
+  redoButton->setObjectName( QStringLiteral( "redoButton" ) );
+  redoButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRedo.svg" ) ) );
 
   gridLayout->addWidget( redoButton, 1, 1, 1, 1 );
 

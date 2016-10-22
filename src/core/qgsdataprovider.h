@@ -74,7 +74,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
       CustomData   = 3000          //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
     };
 
-    QgsDataProvider( QString const & uri = "" )
+    /**
+     * Constructor for QgsDataProvider.
+     */
+    QgsDataProvider( QString const & uri = QLatin1String( "" ) )
         : mDataSourceURI( uri )
     {}
 
@@ -112,7 +115,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QString dataSourceUri( bool expandAuthConfig = false ) const
     {
-      if ( expandAuthConfig && mDataSourceURI.contains( "authcfg" ) )
+      if ( expandAuthConfig && mDataSourceURI.contains( QLatin1String( "authcfg" ) ) )
       {
         QgsDataSourceUri uri( mDataSourceURI );
         return uri.uri( expandAuthConfig );
@@ -284,7 +287,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QString fileVectorFilters() const
     {
-      return "";
+      return QLatin1String( "" );
     }
 
 
@@ -299,7 +302,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QString fileRasterFilters() const
     {
-      return "";
+      return QLatin1String( "" );
     }
 
     /** Reloads the data from the source. Needs to be implemented by providers with data caches to

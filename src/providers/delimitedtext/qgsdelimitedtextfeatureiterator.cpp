@@ -455,7 +455,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int f
         }
         else
         {
-          dvalue = QString( value ).replace( mSource->mDecimalPoint, "." ).toDouble( &ok );
+          dvalue = QString( value ).replace( mSource->mDecimalPoint, QLatin1String( "." ) ).toDouble( &ok );
         }
       }
       if ( ok )
@@ -500,9 +500,9 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
   QUrl url = p->mFile->url();
 
   // make sure watcher not created when using iterator (e.g. for rendering, see issue #15558)
-  if ( url.hasQueryItem( "watchFile" ) )
+  if ( url.hasQueryItem( QStringLiteral( "watchFile" ) ) )
   {
-    url.removeQueryItem( "watchFile" );
+    url.removeQueryItem( QStringLiteral( "watchFile" ) );
   }
 
   mFile = new QgsDelimitedTextFile();

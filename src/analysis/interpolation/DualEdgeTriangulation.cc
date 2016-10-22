@@ -3090,12 +3090,12 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
   QString shapeFileName = fileName;
 
   QgsFields fields;
-  fields.append( QgsField( "type", QVariant::String, "String" ) );
+  fields.append( QgsField( QStringLiteral( "type" ), QVariant::String, QStringLiteral( "String" ) ) );
 
   // add the extension if not present
-  if ( shapeFileName.indexOf( ".shp" ) == -1 )
+  if ( shapeFileName.indexOf( QLatin1String( ".shp" ) ) == -1 )
   {
-    shapeFileName += ".shp";
+    shapeFileName += QLatin1String( ".shp" );
   }
 
   //delete already existing files
@@ -3107,7 +3107,7 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
     }
   }
 
-  QgsVectorFileWriter writer( shapeFileName, "Utf-8", fields, QgsWkbTypes::LineString );
+  QgsVectorFileWriter writer( shapeFileName, QStringLiteral( "Utf-8" ), fields, QgsWkbTypes::LineString );
   if ( writer.hasError() != QgsVectorFileWriter::NoError )
   {
     return false;
@@ -3147,11 +3147,11 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
       {
         if ( currentEdge->getBreak() )
         {
-          attributeString = "break line";
+          attributeString = QStringLiteral( "break line" );
         }
         else
         {
-          attributeString = "structure line";
+          attributeString = QStringLiteral( "structure line" );
         }
       }
       edgeLineFeature.setAttribute( 0, attributeString );

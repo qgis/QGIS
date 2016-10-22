@@ -41,7 +41,7 @@ void QgsOWSServer::applyAccessControlLayerFilters( QgsMapLayer* mapLayer, QHash<
       }
       if ( !layer->setSubsetString( sql ) )
       {
-        QgsMessageLog::logMessage( "Layer does not support Subset String" );
+        QgsMessageLog::logMessage( QStringLiteral( "Layer does not support Subset String" ) );
       }
     }
   }

@@ -94,7 +94,7 @@ void TestQgsFilledMarkerSymbol::initTestCase()
   QString pointFileName = mTestDataDir + "points.shp";
   QFileInfo pointFileInfo( pointFileName );
   mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
-                                      pointFileInfo.completeBaseName(), "ogr" );
+                                      pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
@@ -125,7 +125,7 @@ void TestQgsFilledMarkerSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QStringList() << mpPointsLayer->id() );
-  mReport += "<h1>Filled Marker Tests</h1>\n";
+  mReport += QLatin1String( "<h1>Filled Marker Tests</h1>\n" );
 
 }
 void TestQgsFilledMarkerSymbol::cleanupTestCase()
@@ -153,9 +153,9 @@ void TestQgsFilledMarkerSymbol::dataDefinedShape()
 {
   mFilledMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Circle );
   mFilledMarkerLayer->setSize( 10 );
-  mFilledMarkerLayer->setDataDefinedProperty( "name", new QgsDataDefined( true, true, "if(\"class\"='Jet','square','star')" ) );
-  bool result = imageCheck( "filledmarker_datadefinedshape" );
-  mFilledMarkerLayer->removeDataDefinedProperty( "name" );
+  mFilledMarkerLayer->setDataDefinedProperty( QStringLiteral( "name" ), new QgsDataDefined( true, true, QStringLiteral( "if(\"class\"='Jet','square','star')" ) ) );
+  bool result = imageCheck( QStringLiteral( "filledmarker_datadefinedshape" ) );
+  mFilledMarkerLayer->removeDataDefinedProperty( QStringLiteral( "name" ) );
   QVERIFY( result );
 }
 
@@ -164,12 +164,12 @@ void TestQgsFilledMarkerSymbol::bounds()
   mFilledMarkerLayer->setColor( QColor( 200, 200, 200 ) );
   mFilledMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Circle );
   mFilledMarkerLayer->setSize( 5 );
-  mFilledMarkerLayer->setDataDefinedProperty( "size", new QgsDataDefined( true, true, "min(\"importance\" * 2, 6)" ) );
+  mFilledMarkerLayer->setDataDefinedProperty( QStringLiteral( "size" ), new QgsDataDefined( true, true, QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
 
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
-  bool result = imageCheck( "filledmarker_bounds" );
+  bool result = imageCheck( QStringLiteral( "filledmarker_bounds" ) );
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
-  mFilledMarkerLayer->removeDataDefinedProperty( "size" );
+  mFilledMarkerLayer->removeDataDefinedProperty( QStringLiteral( "size" ) );
   QVERIFY( result );
 }
 
@@ -185,7 +185,7 @@ bool TestQgsFilledMarkerSymbol::imageCheck( const QString& theTestType )
   mMapSettings.setExtent( mpPointsLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
-  myChecker.setControlPathPrefix( "symbol_filledmarker" );
+  myChecker.setControlPathPrefix( QStringLiteral( "symbol_filledmarker" ) );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   bool myResultFlag = myChecker.runTest( theTestType );

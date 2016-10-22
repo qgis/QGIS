@@ -43,9 +43,9 @@ bool QgsAuthBasicEdit::validateConfig()
 QgsStringMap QgsAuthBasicEdit::configMap() const
 {
   QgsStringMap config;
-  config.insert( "username", leUsername->text() );
-  config.insert( "password", lePassword->text() );
-  config.insert( "realm", leRealm->text() );
+  config.insert( QStringLiteral( "username" ), leUsername->text() );
+  config.insert( QStringLiteral( "password" ), lePassword->text() );
+  config.insert( QStringLiteral( "realm" ), leRealm->text() );
 
   return config;
 }
@@ -55,9 +55,9 @@ void QgsAuthBasicEdit::loadConfig( const QgsStringMap &configmap )
   clearConfig();
 
   mConfigMap = configmap;
-  leUsername->setText( configmap.value( "username" ) );
-  lePassword->setText( configmap.value( "password" ) );
-  leRealm->setText( configmap.value( "realm" ) );
+  leUsername->setText( configmap.value( QStringLiteral( "username" ) ) );
+  lePassword->setText( configmap.value( QStringLiteral( "password" ) ) );
+  leRealm->setText( configmap.value( QStringLiteral( "realm" ) ) );
 
   validateConfig();
 }

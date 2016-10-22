@@ -68,7 +68,7 @@ void TestQgsComposerPaper::initTestCase()
   mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
-  mReport = "<h1>Composer Paper Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Composer Paper Tests</h1>\n" );
 }
 
 void TestQgsComposerPaper::cleanupTestCase()
@@ -99,8 +99,8 @@ void TestQgsComposerPaper::cleanup()
 
 void TestQgsComposerPaper::defaultPaper()
 {
-  QgsCompositionChecker checker( "composerpaper_default", mComposition );
-  checker.setControlPathPrefix( "composer_paper" );
+  QgsCompositionChecker checker( QStringLiteral( "composerpaper_default" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
@@ -114,8 +114,8 @@ void TestQgsComposerPaper::transparentPaper()
   mComposition->setPageStyleSymbol( fillSymbol );
   delete fillSymbol;
 
-  QgsCompositionChecker checker( "composerpaper_transparent", mComposition );
-  checker.setControlPathPrefix( "composer_paper" );
+  QgsCompositionChecker checker( QStringLiteral( "composerpaper_transparent" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
@@ -130,8 +130,8 @@ void TestQgsComposerPaper::borderedPaper()
   mComposition->setPageStyleSymbol( fillSymbol );
   delete fillSymbol;
 
-  QgsCompositionChecker checker( "composerpaper_bordered", mComposition );
-  checker.setControlPathPrefix( "composer_paper" );
+  QgsCompositionChecker checker( QStringLiteral( "composerpaper_bordered" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
@@ -143,8 +143,8 @@ void TestQgsComposerPaper::markerLinePaper()
   mComposition->setPageStyleSymbol( markerLineSymbol );
   delete markerLineSymbol;
 
-  QgsCompositionChecker checker( "composerpaper_markerborder", mComposition );
-  checker.setControlPathPrefix( "composer_paper" );
+  QgsCompositionChecker checker( QStringLiteral( "composerpaper_markerborder" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
@@ -159,8 +159,8 @@ void TestQgsComposerPaper::hiddenPages()
   delete fillSymbol;
 
   mComposition->setPagesVisible( false );
-  QgsCompositionChecker checker( "composerpaper_hidden", mComposition );
-  checker.setControlPathPrefix( "composer_paper" );
+  QgsCompositionChecker checker( QStringLiteral( "composerpaper_hidden" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
   bool result = checker.testComposition( mReport );
   mComposition->setPagesVisible( true );
   QVERIFY( result );

@@ -416,7 +416,7 @@ void QgsRuleBasedRendererWidget::saveSectionWidth( int section, int oldSize, int
 void QgsRuleBasedRendererWidget::restoreSectionWidths()
 {
   QSettings settings;
-  QString path = "/Windows/RuleBasedTree/sectionWidth/";
+  QString path = QStringLiteral( "/Windows/RuleBasedTree/sectionWidth/" );
   QHeaderView* head = viewRules->header();
   head->resizeSection( 0, settings.value( path + QString::number( 0 ), 150 ).toInt() );
   head->resizeSection( 1, settings.value( path + QString::number( 1 ), 150 ).toInt() );
@@ -693,13 +693,13 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Ru
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/QgsRendererRulePropsDialog/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/QgsRendererRulePropsDialog/geometry" ) ).toByteArray() );
 }
 
 QgsRendererRulePropsDialog::~QgsRendererRulePropsDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/QgsRendererRulePropsDialog/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/QgsRendererRulePropsDialog/geometry" ), saveGeometry() );
 }
 
 void QgsRendererRulePropsDialog::testFilter()
@@ -741,7 +741,7 @@ void QgsRendererRulePropsWidget::buildExpression()
     context.appendScope( new QgsExpressionContextScope( scope ) );
   }
 
-  QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, "generic", context );
+  QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, QStringLiteral( "generic" ), context );
 
   if ( dlg.exec() )
     editFilter->setText( dlg.expressionText() );
@@ -833,7 +833,7 @@ static QString _formatScale( int denom )
 {
   if ( denom != 0 )
   {
-    QString txt = QString( "1:%L1" ).arg( denom );
+    QString txt = QStringLiteral( "1:%L1" ).arg( denom );
     return txt;
   }
   else
@@ -905,13 +905,13 @@ QVariant QgsRuleBasedRendererModel::data( const QModelIndex &index, int role ) c
           {
             if ( mFeatureCountMap[rule].duplicateCount > 0 )
             {
-              QString tip = "<p style='margin:0px;'><ul>";
+              QString tip = QStringLiteral( "<p style='margin:0px;'><ul>" );
               Q_FOREACH ( QgsRuleBasedRenderer::Rule* duplicateRule, mFeatureCountMap[rule].duplicateCountMap.keys() )
               {
-                QString label = duplicateRule->label().replace( '&', "&amp;" ).replace( '>', "&gt;" ).replace( '<', "&lt;" );
+                QString label = duplicateRule->label().replace( '&', QLatin1String( "&amp;" ) ).replace( '>', QLatin1String( "&gt;" ) ).replace( '<', QLatin1String( "&lt;" ) );
                 tip += tr( "<li><nobr>%1 features also in rule %2</nobr></li>" ).arg( mFeatureCountMap[rule].duplicateCountMap[duplicateRule] ).arg( label );
               }
-              tip += "</ul>";
+              tip += QLatin1String( "</ul>" );
               return tip;
             }
             else
@@ -1082,7 +1082,7 @@ Qt::DropActions QgsRuleBasedRendererModel::supportedDropActions() const
 QStringList QgsRuleBasedRendererModel::mimeTypes() const
 {
   QStringList types;
-  types << "application/vnd.text.list";
+  types << QStringLiteral( "application/vnd.text.list" );
   return types;
 }
 
@@ -1105,11 +1105,11 @@ QMimeData *QgsRuleBasedRendererModel::mimeData( const QModelIndexList &indexes )
     QDomDocument doc;
     QgsSymbolMap symbols;
 
-    QDomElement rootElem = doc.createElement( "rule_mime" );
-    rootElem.setAttribute( "type", "renderer" ); // for determining whether rules are from renderer or labeling
+    QDomElement rootElem = doc.createElement( QStringLiteral( "rule_mime" ) );
+    rootElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "renderer" ) ); // for determining whether rules are from renderer or labeling
     QDomElement rulesElem = rule->save( doc, symbols );
     rootElem.appendChild( rulesElem );
-    QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, "symbols", doc );
+    QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc );
     rootElem.appendChild( symbolsElem );
     doc.appendChild( rootElem );
 
@@ -1118,7 +1118,7 @@ QMimeData *QgsRuleBasedRendererModel::mimeData( const QModelIndexList &indexes )
     stream << doc.toString( -1 );
   }
 
-  mimeData->setData( "application/vnd.text.list", encodedData );
+  mimeData->setData( QStringLiteral( "application/vnd.text.list" ), encodedData );
   return mimeData;
 }
 
@@ -1127,15 +1127,15 @@ QMimeData *QgsRuleBasedRendererModel::mimeData( const QModelIndexList &indexes )
 void _labeling2rendererRules( QDomElement& ruleElem )
 {
   // labeling rules recognize only "description"
-  if ( ruleElem.hasAttribute( "description" ) )
-    ruleElem.setAttribute( "label", ruleElem.attribute( "description" ) );
+  if ( ruleElem.hasAttribute( QStringLiteral( "description" ) ) )
+    ruleElem.setAttribute( QStringLiteral( "label" ), ruleElem.attribute( QStringLiteral( "description" ) ) );
 
   // run recursively
-  QDomElement childRuleElem = ruleElem.firstChildElement( "rule" );
+  QDomElement childRuleElem = ruleElem.firstChildElement( QStringLiteral( "rule" ) );
   while ( !childRuleElem.isNull() )
   {
     _labeling2rendererRules( childRuleElem );
-    childRuleElem = childRuleElem.nextSiblingElement( "rule" );
+    childRuleElem = childRuleElem.nextSiblingElement( QStringLiteral( "rule" ) );
   }
 }
 
@@ -1148,13 +1148,13 @@ bool QgsRuleBasedRendererModel::dropMimeData( const QMimeData *data,
   if ( action == Qt::IgnoreAction )
     return true;
 
-  if ( !data->hasFormat( "application/vnd.text.list" ) )
+  if ( !data->hasFormat( QStringLiteral( "application/vnd.text.list" ) ) )
     return false;
 
   if ( parent.column() > 0 )
     return false;
 
-  QByteArray encodedData = data->data( "application/vnd.text.list" );
+  QByteArray encodedData = data->data( QStringLiteral( "application/vnd.text.list" ) );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
   int rows = 0;
 
@@ -1173,16 +1173,16 @@ bool QgsRuleBasedRendererModel::dropMimeData( const QMimeData *data,
     if ( !doc.setContent( text ) )
       continue;
     QDomElement rootElem = doc.documentElement();
-    if ( rootElem.tagName() != "rule_mime" )
+    if ( rootElem.tagName() != QLatin1String( "rule_mime" ) )
       continue;
-    if ( rootElem.attribute( "type" ) == "labeling" )
-      rootElem.appendChild( doc.createElement( "symbols" ) );
-    QDomElement symbolsElem = rootElem.firstChildElement( "symbols" );
+    if ( rootElem.attribute( QStringLiteral( "type" ) ) == QLatin1String( "labeling" ) )
+      rootElem.appendChild( doc.createElement( QStringLiteral( "symbols" ) ) );
+    QDomElement symbolsElem = rootElem.firstChildElement( QStringLiteral( "symbols" ) );
     if ( symbolsElem.isNull() )
       continue;
     QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
-    QDomElement ruleElem = rootElem.firstChildElement( "rule" );
-    if ( rootElem.attribute( "type" ) == "labeling" )
+    QDomElement ruleElem = rootElem.firstChildElement( QStringLiteral( "rule" ) );
+    if ( rootElem.attribute( QStringLiteral( "type" ) ) == QLatin1String( "labeling" ) )
       _labeling2rendererRules( ruleElem );
     QgsRuleBasedRenderer::Rule* rule = QgsRuleBasedRenderer::Rule::create( ruleElem, symbolMap );
 

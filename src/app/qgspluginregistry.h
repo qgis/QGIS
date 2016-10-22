@@ -104,7 +104,7 @@ class APP_EXPORT QgsPluginRegistry
 
     //! Check current QGIS version against requested minimal and optionally maximal QGIS version
     //! if maxVersion not specified, the default value is assumed: floor(minVersion) + 0.99.99
-    bool checkQgisVersion( const QString& minVersion, const QString& maxVersion = "" ) const;
+    bool checkQgisVersion( const QString& minVersion, const QString& maxVersion = QLatin1String( "" ) ) const;
 
   private:
     static QgsPluginRegistry* _instance;

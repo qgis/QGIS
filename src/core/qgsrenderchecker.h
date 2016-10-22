@@ -124,7 +124,7 @@ class CORE_EXPORT QgsRenderChecker
      * @param theRenderedImageFile to optionally override the output filename
      * @note: make sure to call setExpectedImage and setRenderedImage first.
      */
-    bool compareImages( const QString& theTestName, unsigned int theMismatchCount = 0, const QString& theRenderedImageFile = "" );
+    bool compareImages( const QString& theTestName, unsigned int theMismatchCount = 0, const QString& theRenderedImageFile = QLatin1String( "" ) );
     /** Get a list of all the anomalies. An anomaly is a rendered difference
      * file where there is some red pixel content (indicating a render check
      * mismatch), but where the output was still acceptible. If the render
@@ -202,8 +202,8 @@ inline bool compareWkt( const QString& a, const QString& b, double tolerance = 0
   QRegExp re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
 
   QString a0( a ), b0( b );
-  a0.replace( re, "#" );
-  b0.replace( re, "#" );
+  a0.replace( re, QStringLiteral( "#" ) );
+  b0.replace( re, QStringLiteral( "#" ) );
 
   QgsDebugMsg( QString( "a0:%1 b0:%2" ).arg( a0, b0 ) );
 

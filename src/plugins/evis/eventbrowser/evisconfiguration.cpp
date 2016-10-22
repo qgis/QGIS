@@ -33,21 +33,21 @@ eVisConfiguration::eVisConfiguration()
 {
   QSettings myQSettings;
 
-  setApplyPathRulesToDocs( myQSettings.value( "/eVis/applypathrulestodocs", false ).toBool() );
+  setApplyPathRulesToDocs( myQSettings.value( QStringLiteral( "/eVis/applypathrulestodocs" ), false ).toBool() );
 
-  setEventImagePathField( myQSettings.value( "/eVis/eventimagepathfield", "" ).toString() );
-  setEventImagePathRelative( myQSettings.value( "/eVis/eventimagepathrelative", false ).toBool() );
+  setEventImagePathField( myQSettings.value( QStringLiteral( "/eVis/eventimagepathfield" ), "" ).toString() );
+  setEventImagePathRelative( myQSettings.value( QStringLiteral( "/eVis/eventimagepathrelative" ), false ).toBool() );
 
-  setDisplayCompassBearing( myQSettings.value( "/eVis/displaycompassbearing", false ).toBool() );
-  setCompassBearingField( myQSettings.value( "/eVis/compassbearingfield", "" ).toString() );
+  setDisplayCompassBearing( myQSettings.value( QStringLiteral( "/eVis/displaycompassbearing" ), false ).toBool() );
+  setCompassBearingField( myQSettings.value( QStringLiteral( "/eVis/compassbearingfield" ), "" ).toString() );
 
-  setManualCompassOffset( myQSettings.value( "/eVis/manualcompassoffset", false ).toBool() );
-  setCompassOffset( myQSettings.value( "/eVis/compassoffset", "0.0" ).toDouble() );
-  setAttributeCompassOffset( myQSettings.value( "/eVis/attributecompassoffset", false ).toBool() );
-  setCompassOffsetField( myQSettings.value( "/eVis/compassoffsetfield", "" ).toString() );
+  setManualCompassOffset( myQSettings.value( QStringLiteral( "/eVis/manualcompassoffset" ), false ).toBool() );
+  setCompassOffset( myQSettings.value( QStringLiteral( "/eVis/compassoffset" ), "0.0" ).toDouble() );
+  setAttributeCompassOffset( myQSettings.value( QStringLiteral( "/eVis/attributecompassoffset" ), false ).toBool() );
+  setCompassOffsetField( myQSettings.value( QStringLiteral( "/eVis/compassoffsetfield" ), "" ).toString() );
 
-  setBasePath( myQSettings.value( "/eVis/basepath", QDir::homePath() ).toString() );
-  mUseOnlyFilename = myQSettings.value( "/eVis/useonlyfilename", false ).toBool();
+  setBasePath( myQSettings.value( QStringLiteral( "/eVis/basepath" ), QDir::homePath() ).toString() );
+  mUseOnlyFilename = myQSettings.value( QStringLiteral( "/eVis/useonlyfilename" ), false ).toBool();
 }
 
 QString eVisConfiguration::basePath()

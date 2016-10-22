@@ -406,7 +406,7 @@ QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent , QgsP
   layout->addWidget( mEnabledCheckBox );
 
   mButton = new QToolButton( this );
-  mButton->setIcon( QgsApplication::getThemeIcon( "mIconPaintEffects.svg" ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconPaintEffects.svg" ) ) );
   mButton->setToolTip( tr( "Customise effects" ) );
   layout->addWidget( mButton );
 

@@ -37,7 +37,7 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, Q
 
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
   mFontColorButton->setAllowAlpha( true );
-  mFontColorButton->setContext( "symbology" );
+  mFontColorButton->setContext( QStringLiteral( "symbology" ) );
 
   setCurrentFontPropertiesToGui();
 

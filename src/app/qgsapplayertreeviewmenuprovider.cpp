@@ -58,8 +58,8 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
     // global menu
     menu->addAction( actions->actionAddGroup( menu ) );
 
-    menu->addAction( QgsApplication::getThemeIcon( "/mActionExpandTree.svg" ), tr( "&Expand All" ), mView, SLOT( expandAll() ) );
-    menu->addAction( QgsApplication::getThemeIcon( "/mActionCollapseTree.svg" ), tr( "&Collapse All" ), mView, SLOT( collapseAll() ) );
+    menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionExpandTree.svg" ) ), tr( "&Expand All" ), mView, SLOT( expandAll() ) );
+    menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCollapseTree.svg" ) ), tr( "&Collapse All" ), mView, SLOT( collapseAll() ) );
 
     // TODO: update drawing order
   }
@@ -70,9 +70,9 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
     {
       menu->addAction( actions->actionZoomToGroup( mCanvas, menu ) );
 
-      menu->addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+      menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
-      menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ),
+      menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetCRS.png" ) ),
                        tr( "&Set Group CRS" ), QgisApp::instance(), SLOT( legendGroupSetCrs() ) );
 
       menu->addAction( actions->actionRenameGroupOrLayer( menu ) );
@@ -104,16 +104,16 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( rlayer )
       {
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionZoomActual.svg" ), tr( "&Zoom to Native Resolution (100%)" ), QgisApp::instance(), SLOT( legendLayerZoomNative() ) );
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomActual.svg" ) ), tr( "&Zoom to Native Resolution (100%)" ), QgisApp::instance(), SLOT( legendLayerZoomNative() ) );
 
         if ( rlayer->rasterType() != QgsRasterLayer::Palette )
           menu->addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
       }
 
-      menu->addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+      menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
       // duplicate layer
-      QAction* duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( "/mActionDuplicateLayer.svg" ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
+      QAction* duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateLayer.svg" ) ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
 
       if ( layer && layer->isSpatial() )
       {
@@ -124,10 +124,10 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
           menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), SLOT( zoomToLayerScale() ) );
 
         // set layer crs
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCrs() ) );
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetCRS.png" ) ), tr( "Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCrs() ) );
 
         // assign layer crs to project
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCrsFromLayer() ) );
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetProjectCRS.png" ) ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCrsFromLayer() ) );
       }
 
       // style-related actions
@@ -170,7 +170,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
             QgsColorSchemeRegistry::instance()->schemes( recentSchemes );
             if ( !recentSchemes.isEmpty() )
             {
-              QgsColorSwatchGridAction* recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menuStyleManager, "symbology", menuStyleManager );
+              QgsColorSwatchGridAction* recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menuStyleManager, QStringLiteral( "symbology" ), menuStyleManager );
               recentColorAction->setProperty( "layerId", vlayer->id() );
               recentColorAction->setDismissOnColorSelection( false );
               menuStyleManager->addAction( recentColorAction );
@@ -205,7 +205,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QAction *allEditsAction = QgisApp::instance()->actionAllEdits();
 
         // attribute table
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionOpenTable.svg" ), tr( "&Open Attribute Table" ),
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
                          QgisApp::instance(), SLOT( attributeTable() ) );
 
         // allow editing
@@ -227,7 +227,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
           menu->addAction( allEditsAction );
 
         // disable duplication of memory layers
-        if ( vlayer->storageType() == "Memory storage" && mView->selectedLayerNodes().count() == 1 )
+        if ( vlayer->storageType() == QLatin1String( "Memory storage" ) && mView->selectedLayerNodes().count() == 1 )
           duplicateLayersAction->setEnabled( false );
 
         // save as vector file
@@ -268,7 +268,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( mView->selectedNodes( true ).count() >= 2 )
         menu->addAction( actions->actionGroupSelected( menu ) );
 
-      if ( layer && layer->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer*>( layer )->providerType() == "virtual" )
+      if ( layer && layer->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer*>( layer )->providerType() == QLatin1String( "virtual" ) )
       {
         menu->addAction( tr( "Edit virtual layer settings" ), QgisApp::instance(), SLOT( addVirtualLayer() ) );
       }
@@ -282,9 +282,9 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       // symbology item
       if ( symbolNode->flags() & Qt::ItemIsUserCheckable )
       {
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" ), tr( "&Show All Items" ),
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ), tr( "&Show All Items" ),
                          symbolNode, SLOT( checkAllItems() ) );
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionHideAllLayers.svg" ), tr( "&Hide All Items" ),
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHideAllLayers.svg" ) ), tr( "&Hide All Items" ),
                          symbolNode, SLOT( uncheckAllItems() ) );
         menu->addSeparator();
       }
@@ -307,7 +307,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QgsColorSchemeRegistry::instance()->schemes( recentSchemes );
         if ( !recentSchemes.isEmpty() )
         {
-          QgsColorSwatchGridAction* recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menu, "symbology", menu );
+          QgsColorSwatchGridAction* recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menu, QStringLiteral( "symbology" ), menu );
           recentColorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
           recentColorAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
           recentColorAction->setDismissOnColorSelection( false );

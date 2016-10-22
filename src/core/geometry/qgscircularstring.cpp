@@ -303,9 +303,9 @@ QDomElement QgsCircularString::asGML3( QDomDocument& doc, int precision, const Q
   QgsPointSequence pts;
   points( pts );
 
-  QDomElement elemCurve = doc.createElementNS( ns, "Curve" );
-  QDomElement elemSegments = doc.createElementNS( ns, "segments" );
-  QDomElement elemArcString = doc.createElementNS( ns, "ArcString" );
+  QDomElement elemCurve = doc.createElementNS( ns, QStringLiteral( "Curve" ) );
+  QDomElement elemSegments = doc.createElementNS( ns, QStringLiteral( "segments" ) );
+  QDomElement elemArcString = doc.createElementNS( ns, QStringLiteral( "ArcString" ) );
   elemArcString.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D() ) );
   elemSegments.appendChild( elemArcString );
   elemCurve.appendChild( elemSegments );

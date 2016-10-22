@@ -56,7 +56,7 @@ class QgsGeometrySelfIntersectionCheck : public QgsGeometryCheck
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Self intersection" ); }
-    QString errorName() const override { return "QgsGeometrySelfIntersectionCheck"; }
+    QString errorName() const override { return QStringLiteral( "QgsGeometrySelfIntersectionCheck" ); }
   private:
     enum ResolutionMethod { ToMultiObject, ToSingleObjects, NoChange };
 };

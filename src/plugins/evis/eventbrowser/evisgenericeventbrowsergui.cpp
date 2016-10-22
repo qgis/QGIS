@@ -56,7 +56,7 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgisInt
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/eVis/browser-geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/eVis/browser-geometry" ) ).toByteArray() );
 
   mCurrentFeatureIndex = 0;
   mInterface = interface;
@@ -114,7 +114,7 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgsMapC
 eVisGenericEventBrowserGui::~eVisGenericEventBrowserGui()
 {
   QSettings settings;
-  settings.setValue( "/eVis/browser-geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/eVis/browser-geometry" ), saveGeometry() );
 
   //Clean up, disconnect the highlighting routine and refesh the canvase to clear highlighting symbol
   if ( mCanvas )
@@ -141,8 +141,8 @@ bool eVisGenericEventBrowserGui::initBrowser()
 
   connect( treeEventData, SIGNAL( itemDoubleClicked( QTreeWidgetItem *, int ) ), this, SLOT( launchExternalApplication( QTreeWidgetItem *, int ) ) );
 
-  mHighlightSymbol.load( ":/evis/eVisHighlightSymbol.png" );
-  mPointerSymbol.load( ":/evis/eVisPointerSymbol.png" );
+  mHighlightSymbol.load( QStringLiteral( ":/evis/eVisHighlightSymbol.png" ) );
+  mPointerSymbol.load( QStringLiteral( ":/evis/eVisPointerSymbol.png" ) );
   mCompassOffset = 0.0;
 
   //Flag to let us know if the browser fully loaded
@@ -320,15 +320,15 @@ bool eVisGenericEventBrowserGui::initBrowser()
 
   //Load file associations into Configure External Applications tab gui items
   QSettings myQSettings;
-  myQSettings.beginWriteArray( "/eVis/filetypeassociations" );
+  myQSettings.beginWriteArray( QStringLiteral( "/eVis/filetypeassociations" ) );
   int myTotalAssociations = myQSettings.childGroups().count();
   int myIterator = 0;
   while ( myIterator < myTotalAssociations )
   {
     myQSettings.setArrayIndex( myIterator );
     tableFileTypeAssociations->insertRow( tableFileTypeAssociations->rowCount() );
-    tableFileTypeAssociations->setItem( myIterator, 0, new QTableWidgetItem( myQSettings.value( "extension", "" ).toString() ) );
-    tableFileTypeAssociations->setItem( myIterator, 1, new QTableWidgetItem( myQSettings.value( "application", "" ).toString() ) );
+    tableFileTypeAssociations->setItem( myIterator, 0, new QTableWidgetItem( myQSettings.value( QStringLiteral( "extension" ), "" ).toString() ) );
+    tableFileTypeAssociations->setItem( myIterator, 1, new QTableWidgetItem( myQSettings.value( QStringLiteral( "application" ), "" ).toString() ) );
     myIterator++;
   }
   myQSettings.endArray();
@@ -428,41 +428,41 @@ void eVisGenericEventBrowserGui::accept()
 
   if ( chkboxSaveEventImagePathData->isChecked() )
   {
-    myQSettings.setValue( "/eVis/eventimagepathfield", cboxEventImagePathField->currentText() );
-    myQSettings.setValue( "/eVis/eventimagepathrelative", chkboxEventImagePathRelative->isChecked() );
+    myQSettings.setValue( QStringLiteral( "/eVis/eventimagepathfield" ), cboxEventImagePathField->currentText() );
+    myQSettings.setValue( QStringLiteral( "/eVis/eventimagepathrelative" ), chkboxEventImagePathRelative->isChecked() );
   }
 
   if ( chkboxSaveCompassBearingData->isChecked() )
   {
-    myQSettings.setValue( "/eVis/compassbearingfield", cboxCompassBearingField->currentText() );
-    myQSettings.setValue( "/eVis/displaycompassbearing", chkboxDisplayCompassBearing->isChecked() );
+    myQSettings.setValue( QStringLiteral( "/eVis/compassbearingfield" ), cboxCompassBearingField->currentText() );
+    myQSettings.setValue( QStringLiteral( "/eVis/displaycompassbearing" ), chkboxDisplayCompassBearing->isChecked() );
   }
 
   if ( chkboxSaveCompassOffsetData->isChecked() )
   {
-    myQSettings.setValue( "/eVis/manualcompassoffset", rbtnManualCompassOffset->isChecked() );
-    myQSettings.setValue( "/eVis/compassoffset", dsboxCompassOffset->value() );
-    myQSettings.setValue( "/eVis/attributecompassoffset", rbtnAttributeCompassOffset->isChecked() );
-    myQSettings.setValue( "/eVis/compassoffsetfield", cboxCompassOffsetField->currentText() );
+    myQSettings.setValue( QStringLiteral( "/eVis/manualcompassoffset" ), rbtnManualCompassOffset->isChecked() );
+    myQSettings.setValue( QStringLiteral( "/eVis/compassoffset" ), dsboxCompassOffset->value() );
+    myQSettings.setValue( QStringLiteral( "/eVis/attributecompassoffset" ), rbtnAttributeCompassOffset->isChecked() );
+    myQSettings.setValue( QStringLiteral( "/eVis/compassoffsetfield" ), cboxCompassOffsetField->currentText() );
   }
 
   if ( chkboxSaveBasePathData->isChecked() )
   {
-    myQSettings.setValue( "/eVis/basepath", leBasePath->text() );
+    myQSettings.setValue( QStringLiteral( "/eVis/basepath" ), leBasePath->text() );
   }
 
   if ( chkboxSaveUseOnlyFilenameData->isChecked() )
   {
-    myQSettings.setValue( "/eVis/useonlyfilename", chkboxUseOnlyFilename->isChecked() );
+    myQSettings.setValue( QStringLiteral( "/eVis/useonlyfilename" ), chkboxUseOnlyFilename->isChecked() );
   }
 
   if ( chkboxSaveApplyPathRulesToDocs->isChecked() )
   {
-    myQSettings.setValue( "/eVis/applypathrulestodocs", chkboxApplyPathRulesToDocs->isChecked() );
+    myQSettings.setValue( QStringLiteral( "/eVis/applypathrulestodocs" ), chkboxApplyPathRulesToDocs->isChecked() );
   }
 
-  myQSettings.remove( "/eVis/filetypeassociations" );
-  myQSettings.beginWriteArray( "/eVis/filetypeassociations" );
+  myQSettings.remove( QStringLiteral( "/eVis/filetypeassociations" ) );
+  myQSettings.beginWriteArray( QStringLiteral( "/eVis/filetypeassociations" ) );
   int myIterator = 0;
   int myIndex = 0;
   while ( myIterator < tableFileTypeAssociations->rowCount() )
@@ -470,8 +470,8 @@ void eVisGenericEventBrowserGui::accept()
     myQSettings.setArrayIndex( myIndex );
     if ( tableFileTypeAssociations->item( myIterator, 0 ) && tableFileTypeAssociations->item( myIterator, 1 ) )
     {
-      myQSettings.setValue( "extension", tableFileTypeAssociations->item( myIterator, 0 )->text() );
-      myQSettings.setValue( "application", tableFileTypeAssociations->item( myIterator, 1 )->text() );
+      myQSettings.setValue( QStringLiteral( "extension" ), tableFileTypeAssociations->item( myIterator, 0 )->text() );
+      myQSettings.setValue( QStringLiteral( "application" ), tableFileTypeAssociations->item( myIterator, 1 )->text() );
       myIndex++;
     }
     myIterator++;
@@ -522,7 +522,7 @@ void eVisGenericEventBrowserGui::displayImage()
   //This if statement is a bit of a hack, have to track down where the 0 is comming from on initalization
   if ( "0" != mEventImagePath && 0 == displayArea->currentIndex() )
   {
-    if ( mEventImagePath.startsWith( "http://", Qt::CaseInsensitive ) )
+    if ( mEventImagePath.startsWith( QLatin1String( "http://" ), Qt::CaseInsensitive ) )
     {
       imageDisplayArea->displayUrlImage( mEventImagePath );
     }
@@ -665,7 +665,7 @@ void eVisGenericEventBrowserGui::restoreDefaultOptions()
   rbtnManualCompassOffset->setChecked( true );
   dsboxCompassOffset->setValue( 0.0 );
 
-  leBasePath->setText( "" );
+  leBasePath->setText( QLatin1String( "" ) );
   chkboxUseOnlyFilename->setChecked( false );
 
   chkboxSaveEventImagePathData->setChecked( false );
@@ -701,14 +701,14 @@ void eVisGenericEventBrowserGui::setBasePathToDataSource()
 #ifdef Q_OS_WIN
   mySourceUri.replace( "\\\\", "\\" );
 #else
-  if ( mySourceUri.startsWith( "http://", Qt::CaseInsensitive ) )
+  if ( mySourceUri.startsWith( QLatin1String( "http://" ), Qt::CaseInsensitive ) )
   {
-    mySourceUri.replace( "//", "/" );
-    mySourceUri.replace( "http:/", "http://", Qt::CaseInsensitive );
+    mySourceUri.replace( QLatin1String( "//" ), QLatin1String( "/" ) );
+    mySourceUri.replace( QLatin1String( "http:/" ), QLatin1String( "http://" ), Qt::CaseInsensitive );
   }
   else
   {
-    mySourceUri.replace( "//", "/" );
+    mySourceUri.replace( QLatin1String( "//" ), QLatin1String( "/" ) );
   }
 #endif
 
@@ -1049,7 +1049,7 @@ void eVisGenericEventBrowserGui::on_pbtnResetApplyPathRulesToDocs_clicked()
 
 void eVisGenericEventBrowserGui::on_pbtnResetBasePathData_clicked()
 {
-  leBasePath->setText( "" );
+  leBasePath->setText( QLatin1String( "" ) );
   if ( chkboxEventImagePathRelative->isChecked() )
   {
     setBasePathToDataSource();

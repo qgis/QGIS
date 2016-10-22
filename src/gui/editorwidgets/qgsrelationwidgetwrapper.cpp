@@ -91,7 +91,7 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
 
   w->setEditorContext( myContext );
 
-  QgsRelation nmrel = QgsProject::instance()->relationManager()->relation( config( "nm-rel" ).toString() );
+  QgsRelation nmrel = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "nm-rel" ) ).toString() );
 
   // If this widget is already embedded by the same relation, reduce functionality
   const QgsAttributeEditorContext* ctx = &context();

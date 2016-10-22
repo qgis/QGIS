@@ -86,7 +86,7 @@ QgsZonalStatisticsDialog::QgsZonalStatisticsDialog( QgisInterface* iface ): QDia
   varietyItem->setData( Qt::UserRole, QgsZonalStatistics::Variety );
   mStatsListWidget->addItem( varietyItem );
   QSettings settings;
-  restoreGeometry( settings.value( "Plugin-ZonalStatistics/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Plugin-ZonalStatistics/geometry" ) ).toByteArray() );
 
   insertAvailableLayers();
   mColumnPrefixLineEdit->setText( proposeAttributePrefix() );
@@ -97,13 +97,13 @@ QgsZonalStatisticsDialog::QgsZonalStatisticsDialog(): QDialog( nullptr ), mIface
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "Plugin-ZonalStatistics/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Plugin-ZonalStatistics/geometry" ) ).toByteArray() );
 }
 
 QgsZonalStatisticsDialog::~QgsZonalStatisticsDialog()
 {
   QSettings settings;
-  settings.setValue( "Plugin-ZonalStatistics/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "Plugin-ZonalStatistics/geometry" ), saveGeometry() );
 }
 
 void QgsZonalStatisticsDialog::insertAvailableLayers()
@@ -119,7 +119,7 @@ void QgsZonalStatisticsDialog::insertAvailableLayers()
     if ( rl )
     {
       QgsRasterDataProvider* rp = rl->dataProvider();
-      if ( rp && rp->name() == "gdal" )
+      if ( rp && rp->name() == QLatin1String( "gdal" ) )
       {
         mRasterLayerComboBox->addItem( rl->name(), QVariant( rl->id() ) );
       }
@@ -195,10 +195,10 @@ QString QgsZonalStatisticsDialog::proposeAttributePrefix() const
 {
   if ( !polygonLayer() )
   {
-    return "";
+    return QLatin1String( "" );
   }
 
-  QString proposedPrefix = "";
+  QString proposedPrefix = QLatin1String( "" );
   while ( !prefixIsValid( proposedPrefix ) )
   {
     proposedPrefix.prepend( '_' );

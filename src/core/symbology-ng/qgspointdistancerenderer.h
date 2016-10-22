@@ -87,7 +87,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
     void stopRender( QgsRenderContext& context ) override;
     QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
-    QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" ) override;
+    QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = QLatin1String( "" ) ) override;
     void setEmbeddedRenderer( QgsFeatureRenderer* r ) override;
     const QgsFeatureRenderer* embeddedRenderer() const override;
     void setLegendSymbolItem( const QString& key, QgsSymbol* symbol ) override;

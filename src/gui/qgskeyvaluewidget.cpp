@@ -123,7 +123,7 @@ bool QgsKeyValueModel::insertRows( int position, int rows, const QModelIndex & p
   beginInsertRows( QModelIndex(), position, position + rows - 1 );
   for ( int i = 0; i < rows; ++i )
   {
-    mLines.insert( position, Line( "", QVariant() ) );
+    mLines.insert( position, Line( QLatin1String( "" ), QVariant() ) );
   }
   endInsertRows();
   return true;

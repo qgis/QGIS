@@ -37,7 +37,7 @@ QgsInterpolationDialog::QgsInterpolationDialog( QWidget* parent, QgisInterface* 
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Interpolation/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Interpolation/geometry" ) ).toByteArray() );
 
   //enter available layers into the combo box
   QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
@@ -59,7 +59,7 @@ QgsInterpolationDialog::QgsInterpolationDialog( QWidget* parent, QgisInterface* 
   //only inverse distance weighting available for now
   mInterpolationMethodComboBox->insertItem( 0, tr( "Triangular interpolation (TIN)" ) );
   mInterpolationMethodComboBox->insertItem( 1, tr( "Inverse Distance Weighting (IDW)" ) );
-  mInterpolationMethodComboBox->setCurrentIndex( settings.value( "/Interpolation/lastMethod", 0 ).toInt() );
+  mInterpolationMethodComboBox->setCurrentIndex( settings.value( QStringLiteral( "/Interpolation/lastMethod" ), 0 ).toInt() );
 
   enableOrDisableOkButton();
 }
@@ -67,8 +67,8 @@ QgsInterpolationDialog::QgsInterpolationDialog( QWidget* parent, QgisInterface* 
 QgsInterpolationDialog::~QgsInterpolationDialog()
 {
   QSettings settings;
-  settings.setValue( "/Interpolation/geometry", saveGeometry() );
-  settings.setValue( "/Interpolation/lastMethod", mInterpolationMethodComboBox->currentIndex() );
+  settings.setValue( QStringLiteral( "/Interpolation/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/Interpolation/lastMethod" ), mInterpolationMethodComboBox->currentIndex() );
 }
 
 void QgsInterpolationDialog::enableOrDisableOkButton()
@@ -151,7 +151,7 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
     currentLayerData.vectorLayer = theVectorLayer;
 
     QString interpolationAttString = mLayersTreeWidget->topLevelItem( i )->text( 1 );
-    if ( interpolationAttString == "Z_COORD" )
+    if ( interpolationAttString == QLatin1String( "Z_COORD" ) )
     {
       currentLayerData.zCoordInterpolation = true;
       currentLayerData.interpolationAttribute = -1;
@@ -264,7 +264,7 @@ void QgsInterpolationDialog::on_mAddPushButton_clicked()
   QString interpolationAttribute;
   if ( mUseZCoordCheckBox->checkState() == Qt::Checked )
   {
-    interpolationAttribute = "Z_COORD";
+    interpolationAttribute = QStringLiteral( "Z_COORD" );
   }
   else
   {
@@ -304,7 +304,7 @@ void QgsInterpolationDialog::on_mOutputFileButton_clicked()
 {
   //get last output file dir
   QSettings s;
-  QString lastOutputDir = s.value( "/Interpolation/lastOutputDir", QDir::homePath() ).toString();
+  QString lastOutputDir = s.value( QStringLiteral( "/Interpolation/lastOutputDir" ), QDir::homePath() ).toString();
 
   QString rasterFileName = QFileDialog::getSaveFileName( nullptr, tr( "Save interpolated raster as..." ), lastOutputDir );
   if ( !rasterFileName.isEmpty() )
@@ -314,7 +314,7 @@ void QgsInterpolationDialog::on_mOutputFileButton_clicked()
     QDir fileDir = rasterFileInfo.absoluteDir();
     if ( fileDir.exists() )
     {
-      s.setValue( "/Interpolation/lastOutputDir", rasterFileInfo.absolutePath() );
+      s.setValue( QStringLiteral( "/Interpolation/lastOutputDir" ), rasterFileInfo.absolutePath() );
     }
   }
   enableOrDisableOkButton();
@@ -322,7 +322,7 @@ void QgsInterpolationDialog::on_mOutputFileButton_clicked()
 
 void QgsInterpolationDialog::on_mOutputFileLineEdit_textChanged()
 {
-  if ( mOutputFileLineEdit->text().endsWith( ".asc" ) )
+  if ( mOutputFileLineEdit->text().endsWith( QLatin1String( ".asc" ) ) )
   {
     enableOrDisableOkButton();
   }

@@ -224,7 +224,7 @@ void QgsCompositionWidget::setDataDefinedProperty( const QgsDataDefinedButton* d
   }
 
   const QMap< QString, QString >& map = ddBtn->definedProperty();
-  mComposition->setDataDefinedProperty( property, map.value( "active" ).toInt(), map.value( "useexpr" ).toInt(), map.value( "expression" ), map.value( "field" ) );
+  mComposition->setDataDefinedProperty( property, map.value( QStringLiteral( "active" ) ).toInt(), map.value( QStringLiteral( "useexpr" ) ).toInt(), map.value( QStringLiteral( "expression" ) ), map.value( QStringLiteral( "field" ) ) );
 }
 
 QgsComposerObject::DataDefinedProperty QgsCompositionWidget::ddPropertyForWidget( QgsDataDefinedButton *widget )

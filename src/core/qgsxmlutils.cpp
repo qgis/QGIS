@@ -37,10 +37,10 @@ QgsRectangle QgsXmlUtils::readRectangle( const QDomElement& element )
 {
   QgsRectangle aoi;
 
-  QDomNode xminNode = element.namedItem( "xmin" );
-  QDomNode yminNode = element.namedItem( "ymin" );
-  QDomNode xmaxNode = element.namedItem( "xmax" );
-  QDomNode ymaxNode = element.namedItem( "ymax" );
+  QDomNode xminNode = element.namedItem( QStringLiteral( "xmin" ) );
+  QDomNode yminNode = element.namedItem( QStringLiteral( "ymin" ) );
+  QDomNode xmaxNode = element.namedItem( QStringLiteral( "xmax" ) );
+  QDomNode ymaxNode = element.namedItem( QStringLiteral( "ymax" ) );
 
   QDomElement exElement = xminNode.toElement();
   double xmin = exElement.text().toDouble();
@@ -68,19 +68,19 @@ QDomElement QgsXmlUtils::writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDo
   QString unitsString = QgsUnitTypes::encodeUnit( units );
   // maintain compatibility with old projects
   if ( units == QgsUnitTypes::DistanceUnknownUnit )
-    unitsString = "unknown";
+    unitsString = QStringLiteral( "unknown" );
 
-  QDomElement unitsNode = doc.createElement( "units" );
+  QDomElement unitsNode = doc.createElement( QStringLiteral( "units" ) );
   unitsNode.appendChild( doc.createTextNode( unitsString ) );
   return unitsNode;
 }
 
 QDomElement QgsXmlUtils::writeRectangle( const QgsRectangle& rect, QDomDocument& doc )
 {
-  QDomElement xMin = doc.createElement( "xmin" );
-  QDomElement yMin = doc.createElement( "ymin" );
-  QDomElement xMax = doc.createElement( "xmax" );
-  QDomElement yMax = doc.createElement( "ymax" );
+  QDomElement xMin = doc.createElement( QStringLiteral( "xmin" ) );
+  QDomElement yMin = doc.createElement( QStringLiteral( "ymin" ) );
+  QDomElement xMax = doc.createElement( QStringLiteral( "xmax" ) );
+  QDomElement yMax = doc.createElement( QStringLiteral( "ymax" ) );
 
   QDomText xMinText = doc.createTextNode( qgsDoubleToString( rect.xMinimum() ) );
   QDomText yMinText = doc.createTextNode( qgsDoubleToString( rect.yMinimum() ) );
@@ -92,7 +92,7 @@ QDomElement QgsXmlUtils::writeRectangle( const QgsRectangle& rect, QDomDocument&
   xMax.appendChild( xMaxText );
   yMax.appendChild( yMaxText );
 
-  QDomElement extentNode = doc.createElement( "extent" );
+  QDomElement extentNode = doc.createElement( QStringLiteral( "extent" ) );
   extentNode.appendChild( xMin );
   extentNode.appendChild( yMin );
   extentNode.appendChild( xMax );

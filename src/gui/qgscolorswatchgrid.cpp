@@ -330,7 +330,7 @@ const QPixmap& QgsColorSwatchGrid::transparentBackground()
   static QPixmap transpBkgrd;
 
   if ( transpBkgrd.isNull() )
-    transpBkgrd = QgsApplication::getThemePixmap( "/transp-background_8x8.png" );
+    transpBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
 
   return transpBkgrd;
 }

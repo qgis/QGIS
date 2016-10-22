@@ -543,7 +543,7 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 
     QgsSingleCategoryDiagramRenderer* clone() const override;
 
-    QString rendererName() const override { return "SingleCategory"; }
+    QString rendererName() const override { return QStringLiteral( "SingleCategory" ); }
 
     QList<QString> diagramAttributes() const override { return mSettings.categoryAttributes; }
 
@@ -585,7 +585,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext(), const QgsFields& fields = QgsFields() ) const override;
 
-    QString rendererName() const override { return "LinearlyInterpolated"; }
+    QString rendererName() const override { return QStringLiteral( "LinearlyInterpolated" ); }
 
     void setLowerValue( double val ) { mInterpolationSettings.lowerValue = val; }
     double lowerValue() const { return mInterpolationSettings.lowerValue; }

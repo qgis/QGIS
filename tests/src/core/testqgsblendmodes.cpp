@@ -96,7 +96,7 @@ void TestQgsBlendModes::initTestCase()
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
-                                      myPointFileInfo.completeBaseName(), "ogr" );
+                                      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPointsLayer );
 
@@ -104,7 +104,7 @@ void TestQgsBlendModes::initTestCase()
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
+                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
@@ -117,7 +117,7 @@ void TestQgsBlendModes::initTestCase()
   QString myLinesFileName = mTestDataDir + "lines.shp";
   QFileInfo myLineFileInfo( myLinesFileName );
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
-                                     myLineFileInfo.completeBaseName(), "ogr" );
+                                     myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   mpLinesLayer->setSimplifyMethod( simplifyMethod );
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpLinesLayer );
@@ -165,7 +165,7 @@ void TestQgsBlendModes::vectorBlending()
   mpLinesLayer->setBlendMode( QPainter::CompositionMode_Difference );
   mpPolysLayer->setBlendMode( QPainter::CompositionMode_Difference );
   mMapSettings->setExtent( mExtent );
-  bool res = imageCheck( "vector_blendmodes" );
+  bool res = imageCheck( QStringLiteral( "vector_blendmodes" ) );
 
   //Reset layers
   mpLinesLayer->setBlendMode( QPainter::CompositionMode_SourceOver );
@@ -185,7 +185,7 @@ void TestQgsBlendModes::featureBlending()
   //Set feature blending modes for point layer
   mpLinesLayer->setFeatureBlendMode( QPainter::CompositionMode_Plus );
   mMapSettings->setExtent( mExtent );
-  bool res = imageCheck( "vector_featureblendmodes" );
+  bool res = imageCheck( QStringLiteral( "vector_featureblendmodes" ) );
 
   //Reset layers
   mpLinesLayer->setFeatureBlendMode( QPainter::CompositionMode_SourceOver );
@@ -204,7 +204,7 @@ void TestQgsBlendModes::vectorLayerTransparency()
   //Set feature blending modes for point layer
   mpLinesLayer->setLayerTransparency( 50 );
   mMapSettings->setExtent( mExtent );
-  bool res = imageCheck( "vector_layertransparency" );
+  bool res = imageCheck( QStringLiteral( "vector_layertransparency" ) );
 
   //Reset layers
   mpLinesLayer->setLayerTransparency( 0 );

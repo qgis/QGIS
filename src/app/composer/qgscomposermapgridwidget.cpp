@@ -59,7 +59,7 @@ QgsComposerMapGridWidget::QgsComposerMapGridWidget( QgsComposerMapGrid* mapGrid,
 
   mAnnotationFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
   mAnnotationFontColorButton->setAllowAlpha( true );
-  mAnnotationFontColorButton->setContext( "composer" );
+  mAnnotationFontColorButton->setContext( QStringLiteral( "composer" ) );
 
   insertAnnotationDisplayEntries( mAnnotationDisplayLeftComboBox );
   insertAnnotationDisplayEntries( mAnnotationDisplayRightComboBox );
@@ -78,19 +78,19 @@ QgsComposerMapGridWidget::QgsComposerMapGridWidget( QgsComposerMapGrid* mapGrid,
 
   mGridFramePenColorButton->setColorDialogTitle( tr( "Select grid frame color" ) );
   mGridFramePenColorButton->setAllowAlpha( true );
-  mGridFramePenColorButton->setContext( "composer" );
+  mGridFramePenColorButton->setContext( QStringLiteral( "composer" ) );
   mGridFramePenColorButton->setNoColorString( tr( "Transparent frame" ) );
   mGridFramePenColorButton->setShowNoColor( true );
 
   mGridFrameFill1ColorButton->setColorDialogTitle( tr( "Select grid frame fill color" ) );
   mGridFrameFill1ColorButton->setAllowAlpha( true );
-  mGridFrameFill1ColorButton->setContext( "composer" );
+  mGridFrameFill1ColorButton->setContext( QStringLiteral( "composer" ) );
   mGridFrameFill1ColorButton->setNoColorString( tr( "Transparent fill" ) );
   mGridFrameFill1ColorButton->setShowNoColor( true );
 
   mGridFrameFill2ColorButton->setColorDialogTitle( tr( "Select grid frame fill color" ) );
   mGridFrameFill2ColorButton->setAllowAlpha( true );
-  mGridFrameFill2ColorButton->setContext( "composer" );
+  mGridFrameFill2ColorButton->setContext( QStringLiteral( "composer" ) );
   mGridFrameFill2ColorButton->setNoColorString( tr( "Transparent fill" ) );
   mGridFrameFill2ColorButton->setShowNoColor( true );
 
@@ -431,15 +431,15 @@ void QgsComposerMapGridWidget::initAnnotationDirectionBox( QComboBox* c, QgsComp
 bool QgsComposerMapGridWidget::hasPredefinedScales() const
 {
   // first look at project's scales
-  QStringList scales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
-  bool hasProjectScales( QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" ) );
+  QStringList scales( QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) ) );
+  bool hasProjectScales( QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
   if ( !hasProjectScales || scales.isEmpty() )
   {
     // default to global map tool scales
     QSettings settings;
-    QString scalesStr( settings.value( "Map/scales", PROJECT_SCALES ).toString() );
+    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString() );
     QStringList myScalesList = scalesStr.split( ',' );
-    return !myScalesList.isEmpty() && myScalesList[0] != "";
+    return !myScalesList.isEmpty() && myScalesList[0] != QLatin1String( "" );
   }
   return true;
 }
@@ -1072,7 +1072,7 @@ void QgsComposerMapGridWidget::on_mAnnotationFormatButton_clicked()
 
   QgsExpressionContext expressionContext = mComposerMapGrid->createExpressionContext();
 
-  QgsExpressionBuilderDialog exprDlg( nullptr, mComposerMapGrid->annotationExpression(), this, "generic", expressionContext );
+  QgsExpressionBuilderDialog exprDlg( nullptr, mComposerMapGrid->annotationExpression(), this, QStringLiteral( "generic" ), expressionContext );
   exprDlg.setWindowTitle( tr( "Expression based annotation" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )

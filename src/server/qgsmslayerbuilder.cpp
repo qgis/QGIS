@@ -46,25 +46,25 @@ QString QgsMSLayerBuilder::layerNameFromUri( const QString& uri ) const
   }
 
   //http based?
-  if ( uri.startsWith( "http", Qt::CaseInsensitive ) )
+  if ( uri.startsWith( QLatin1String( "http" ), Qt::CaseInsensitive ) )
   {
     return uri;
   }
 
   //database?
-  if ( uri.contains( "dbname" ) )
+  if ( uri.contains( QLatin1String( "dbname" ) ) )
   {
     //take tablename
     Q_FOREACH ( const QString& token, uri.split( " " ) )
     {
-      if ( token.startsWith( "table" ) )
+      if ( token.startsWith( QLatin1String( "table" ) ) )
       {
-        return token.section( "=", 1, 1 );
+        return token.section( QStringLiteral( "=" ), 1, 1 );
       }
     }
   }
 
-  return "";
+  return QLatin1String( "" );
 }
 
 QString QgsMSLayerBuilder::createTempFile() const
@@ -82,7 +82,7 @@ QString QgsMSLayerBuilder::createTempFile() const
   if ( !tempFileDir.exists() ) //make sure the directory exists
   {
     QDir tmpDir( QDir::tempPath() );
-    tmpDir.mkdir( "qgis_wms_serv" );
+    tmpDir.mkdir( QStringLiteral( "qgis_wms_serv" ) );
   }
   tempFilePath = QDir::tempPath() + "/qgis_wms_serv/" + tempFileName;
   return tempFilePath;

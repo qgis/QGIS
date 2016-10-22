@@ -33,14 +33,14 @@ QgsLayerTreeViewDefaultActions::QgsLayerTreeViewDefaultActions( QgsLayerTreeView
 
 QAction* QgsLayerTreeViewDefaultActions::actionAddGroup( QObject* parent )
 {
-  QAction* a = new QAction( QgsApplication::getThemeIcon( "/mActionAddGroup.svg" ), tr( "&Add Group" ), parent );
+  QAction* a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddGroup.svg" ) ), tr( "&Add Group" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( addGroup() ) );
   return a;
 }
 
 QAction* QgsLayerTreeViewDefaultActions::actionRemoveGroupOrLayer( QObject* parent )
 {
-  QAction* a = new QAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ), tr( "&Remove" ), parent );
+  QAction* a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( removeGroupOrLayer() ) );
   return a;
 }
@@ -54,7 +54,7 @@ QAction* QgsLayerTreeViewDefaultActions::actionShowInOverview( QObject* parent )
   QAction* a = new QAction( tr( "&Show in Overview" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( showInOverview() ) );
   a->setCheckable( true );
-  a->setChecked( node->customProperty( "overview", 0 ).toInt() );
+  a->setChecked( node->customProperty( QStringLiteral( "overview" ), 0 ).toInt() );
   return a;
 }
 
@@ -74,13 +74,13 @@ QAction* QgsLayerTreeViewDefaultActions::actionShowFeatureCount( QObject* parent
   QAction* a = new QAction( tr( "Show Feature Count" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( showFeatureCount() ) );
   a->setCheckable( true );
-  a->setChecked( node->customProperty( "showFeatureCount", 0 ).toInt() );
+  a->setChecked( node->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() );
   return a;
 }
 
 QAction* QgsLayerTreeViewDefaultActions::actionZoomToLayer( QgsMapCanvas* canvas, QObject* parent )
 {
-  QAction* a = new QAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.svg" ),
+  QAction* a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ),
                             tr( "&Zoom to Layer" ), parent );
   a->setData( QVariant::fromValue( reinterpret_cast<void*>( canvas ) ) );
   connect( a, SIGNAL( triggered() ), this, SLOT( zoomToLayer() ) );
@@ -89,7 +89,7 @@ QAction* QgsLayerTreeViewDefaultActions::actionZoomToLayer( QgsMapCanvas* canvas
 
 QAction* QgsLayerTreeViewDefaultActions::actionZoomToGroup( QgsMapCanvas* canvas, QObject* parent )
 {
-  QAction* a = new QAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.svg" ),
+  QAction* a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ),
                             tr( "&Zoom to Group" ), parent );
   a->setData( QVariant::fromValue( reinterpret_cast<void*>( canvas ) ) );
   connect( a, SIGNAL( triggered() ), this, SLOT( zoomToGroup() ) );
@@ -152,9 +152,9 @@ void QgsLayerTreeViewDefaultActions::showInOverview()
   QgsLayerTreeNode* node = mView->currentNode();
   if ( !node )
     return;
-  int newValue = node->customProperty( "overview", 0 ).toInt();
+  int newValue = node->customProperty( QStringLiteral( "overview" ), 0 ).toInt();
   Q_FOREACH ( QgsLayerTreeLayer* l, mView->selectedLayerNodes() )
-    l->setCustomProperty( "overview", newValue ? 0 : 1 );
+    l->setCustomProperty( QStringLiteral( "overview" ), newValue ? 0 : 1 );
 }
 
 void QgsLayerTreeViewDefaultActions::showFeatureCount()
@@ -163,9 +163,9 @@ void QgsLayerTreeViewDefaultActions::showFeatureCount()
   if ( !QgsLayerTree::isLayer( node ) )
     return;
 
-  int newValue = node->customProperty( "showFeatureCount", 0 ).toInt();
+  int newValue = node->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt();
   Q_FOREACH ( QgsLayerTreeLayer* l, mView->selectedLayerNodes() )
-    l->setCustomProperty( "showFeatureCount", newValue ? 0 : 1 );
+    l->setCustomProperty( QStringLiteral( "showFeatureCount" ), newValue ? 0 : 1 );
 }
 
 

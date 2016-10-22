@@ -93,7 +93,7 @@ void QgsRuleBasedLabeling::Rule::setSettings( QgsPalLayerSettings* settings )
 
 void QgsRuleBasedLabeling::Rule::initFilter()
 {
-  if ( mElseRule || mFilterExp.compare( "ELSE", Qt::CaseInsensitive ) == 0 )
+  if ( mElseRule || mFilterExp.compare( QLatin1String( "ELSE" ), Qt::CaseInsensitive ) == 0 )
   {
     mElseRule = true;
     mFilter = nullptr;
@@ -182,26 +182,26 @@ QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::clone() const
 QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::create( const QDomElement& ruleElem )
 {
   QgsPalLayerSettings* settings = nullptr;
-  QDomElement settingsElem = ruleElem.firstChildElement( "settings" );
+  QDomElement settingsElem = ruleElem.firstChildElement( QStringLiteral( "settings" ) );
   if ( !settingsElem.isNull() )
   {
     settings = new QgsPalLayerSettings;
     settings->readXml( settingsElem );
   }
 
-  QString filterExp = ruleElem.attribute( "filter" );
-  QString description = ruleElem.attribute( "description" );
-  int scaleMinDenom = ruleElem.attribute( "scalemindenom", "0" ).toInt();
-  int scaleMaxDenom = ruleElem.attribute( "scalemaxdenom", "0" ).toInt();
-  QString ruleKey = ruleElem.attribute( "key" );
+  QString filterExp = ruleElem.attribute( QStringLiteral( "filter" ) );
+  QString description = ruleElem.attribute( QStringLiteral( "description" ) );
+  int scaleMinDenom = ruleElem.attribute( QStringLiteral( "scalemindenom" ), QStringLiteral( "0" ) ).toInt();
+  int scaleMaxDenom = ruleElem.attribute( QStringLiteral( "scalemaxdenom" ), QStringLiteral( "0" ) ).toInt();
+  QString ruleKey = ruleElem.attribute( QStringLiteral( "key" ) );
   Rule* rule = new Rule( settings, scaleMinDenom, scaleMaxDenom, filterExp, description );
 
   if ( !ruleKey.isEmpty() )
     rule->mRuleKey = ruleKey;
 
-  rule->setActive( ruleElem.attribute( "active", "1" ).toInt() );
+  rule->setActive( ruleElem.attribute( QStringLiteral( "active" ), QStringLiteral( "1" ) ).toInt() );
 
-  QDomElement childRuleElem = ruleElem.firstChildElement( "rule" );
+  QDomElement childRuleElem = ruleElem.firstChildElement( QStringLiteral( "rule" ) );
   while ( !childRuleElem.isNull() )
   {
     Rule* childRule = create( childRuleElem );
@@ -213,7 +213,7 @@ QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::create( const QDomElement
     {
       //QgsDebugMsg( "failed to init a child rule!" );
     }
-    childRuleElem = childRuleElem.nextSiblingElement( "rule" );
+    childRuleElem = childRuleElem.nextSiblingElement( QStringLiteral( "rule" ) );
   }
 
   return rule;
@@ -221,23 +221,23 @@ QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::create( const QDomElement
 
 QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument& doc ) const
 {
-  QDomElement ruleElem = doc.createElement( "rule" );
+  QDomElement ruleElem = doc.createElement( QStringLiteral( "rule" ) );
 
   if ( mSettings )
   {
     ruleElem.appendChild( mSettings->writeXml( doc ) );
   }
   if ( !mFilterExp.isEmpty() )
-    ruleElem.setAttribute( "filter", mFilterExp );
+    ruleElem.setAttribute( QStringLiteral( "filter" ), mFilterExp );
   if ( mScaleMinDenom != 0 )
-    ruleElem.setAttribute( "scalemindenom", mScaleMinDenom );
+    ruleElem.setAttribute( QStringLiteral( "scalemindenom" ), mScaleMinDenom );
   if ( mScaleMaxDenom != 0 )
-    ruleElem.setAttribute( "scalemaxdenom", mScaleMaxDenom );
+    ruleElem.setAttribute( QStringLiteral( "scalemaxdenom" ), mScaleMaxDenom );
   if ( !mDescription.isEmpty() )
-    ruleElem.setAttribute( "description", mDescription );
+    ruleElem.setAttribute( QStringLiteral( "description" ), mDescription );
   if ( !mIsActive )
-    ruleElem.setAttribute( "active", 0 );
-  ruleElem.setAttribute( "key", mRuleKey );
+    ruleElem.setAttribute( QStringLiteral( "active" ), 0 );
+  ruleElem.setAttribute( QStringLiteral( "key" ), mRuleKey );
 
   for ( RuleList::const_iterator it = mChildren.constBegin(); it != mChildren.constEnd(); ++it )
   {
@@ -389,7 +389,7 @@ QgsRuleBasedLabeling::~QgsRuleBasedLabeling()
 
 QgsRuleBasedLabeling*QgsRuleBasedLabeling::create( const QDomElement& element )
 {
-  QDomElement rulesElem = element.firstChildElement( "rules" );
+  QDomElement rulesElem = element.firstChildElement( QStringLiteral( "rules" ) );
 
   Rule* root = Rule::create( rulesElem );
   if ( !root )
@@ -401,16 +401,16 @@ QgsRuleBasedLabeling*QgsRuleBasedLabeling::create( const QDomElement& element )
 
 QString QgsRuleBasedLabeling::type() const
 {
-  return "rule-based";
+  return QStringLiteral( "rule-based" );
 }
 
 QDomElement QgsRuleBasedLabeling::save( QDomDocument& doc ) const
 {
-  QDomElement elem = doc.createElement( "labeling" );
-  elem.setAttribute( "type", "rule-based" );
+  QDomElement elem = doc.createElement( QStringLiteral( "labeling" ) );
+  elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "rule-based" ) );
 
   QDomElement rulesElem = mRootRule->save( doc );
-  rulesElem.setTagName( "rules" ); // instead of just "rule"
+  rulesElem.setTagName( QStringLiteral( "rules" ) ); // instead of just "rule"
   elem.appendChild( rulesElem );
 
   return elem;

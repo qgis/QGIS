@@ -105,7 +105,7 @@ bool QgsStyle::addSymbol( const QString& name, QgsSymbol* symbol, bool update )
 bool QgsStyle::saveSymbol( const QString& name, QgsSymbol* symbol, int groupid, const QStringList& tags )
 {
   // TODO add support for groups
-  QDomDocument doc( "dummy" );
+  QDomDocument doc( QStringLiteral( "dummy" ) );
   QDomElement symEl = QgsSymbolLayerUtils::saveSymbol( name, symbol, doc );
   if ( symEl.isNull() )
   {
@@ -210,7 +210,7 @@ bool QgsStyle::addColorRamp( const QString& name, QgsColorRamp* colorRamp, bool 
 bool QgsStyle::saveColorRamp( const QString& name, QgsColorRamp* ramp, int groupid, const QStringList& tags )
 {
   // insert it into the database
-  QDomDocument doc( "dummy" );
+  QDomDocument doc( QStringLiteral( "dummy" ) );
   QDomElement rampEl = QgsSymbolLayerUtils::saveColorRamp( name, ramp, doc );
   if ( rampEl.isNull() )
   {
@@ -295,7 +295,7 @@ bool QgsStyle::load( const QString& filename )
   // Open the sqlite database
   if ( !openDB( filename ) )
   {
-    mErrorString = "Unable to open database file specified";
+    mErrorString = QStringLiteral( "Unable to open database file specified" );
     QgsDebugMsg( mErrorString );
     return false;
   }
@@ -502,7 +502,7 @@ QgsSymbolGroupMap QgsStyle::childGroupNames( const QString& parent )
   sqlite3_stmt *ppStmt;
 
   // decide the query to be run based on parent group
-  if ( parent == "" || parent == QString() )
+  if ( parent == QLatin1String( "" ) || parent == QString() )
   {
     query = sqlite3_mprintf( "SELECT * FROM symgroup WHERE parent=0" );
   }
@@ -699,7 +699,7 @@ void QgsStyle::rename( StyleEntity type, int id, const QString& newName )
       return;
   }
   if ( !runEmptyQuery( query ) )
-    mErrorString = "Could not rename!";
+    mErrorString = QStringLiteral( "Could not rename!" );
 }
 
 char* QgsStyle::getGroupRemoveQuery( int id )
@@ -830,7 +830,7 @@ QStringList QgsStyle::findSymbols( StyleEntity type, const QString& qword )
   sqlite3_finalize( ppStmt );
 
 
-  QString dummy = tagids.join( ", " );
+  QString dummy = tagids.join( QStringLiteral( ", " ) );
 
   if ( type == SymbolEntity )
   {
@@ -853,7 +853,7 @@ QStringList QgsStyle::findSymbols( StyleEntity type, const QString& qword )
   sqlite3_finalize( ppStmt );
 
 
-  dummy = symbolids.join( ", " );
+  dummy = symbolids.join( QStringLiteral( ", " ) );
   query = sqlite3_mprintf( "SELECT name FROM %q  WHERE id IN (%q)",
                            item.toUtf8().constData(), dummy.toUtf8().constData() );
   nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
@@ -1054,52 +1054,52 @@ QString QgsStyle::getName( const QString& table, int id ) const
 
 int QgsStyle::symbolId( const QString& name )
 {
-  return getId( "symbol", name );
+  return getId( QStringLiteral( "symbol" ), name );
 }
 
 int QgsStyle::colorrampId( const QString& name )
 {
-  return getId( "colorramp", name );
+  return getId( QStringLiteral( "colorramp" ), name );
 }
 
 int QgsStyle::groupId( const QString& name )
 {
-  return getId( "symgroup", name );
+  return getId( QStringLiteral( "symgroup" ), name );
 }
 
 QString QgsStyle::groupName( int groupId ) const
 {
-  return getName( "symgroup", groupId );
+  return getName( QStringLiteral( "symgroup" ), groupId );
 }
 
 int QgsStyle::tagId( const QString& name )
 {
-  return getId( "tag", name );
+  return getId( QStringLiteral( "tag" ), name );
 }
 
 int QgsStyle::smartgroupId( const QString& name )
 {
-  return getId( "smartgroup", name );
+  return getId( QStringLiteral( "smartgroup" ), name );
 }
 
 int QgsStyle::addSmartgroup( const QString& name, const QString& op, const QgsSmartConditionMap& conditions )
 {
-  QDomDocument doc( "dummy" );
-  QDomElement smartEl = doc.createElement( "smartgroup" );
-  smartEl.setAttribute( "name", name );
-  smartEl.setAttribute( "operator", op );
+  QDomDocument doc( QStringLiteral( "dummy" ) );
+  QDomElement smartEl = doc.createElement( QStringLiteral( "smartgroup" ) );
+  smartEl.setAttribute( QStringLiteral( "name" ), name );
+  smartEl.setAttribute( QStringLiteral( "operator" ), op );
 
   QStringList constraints;
-  constraints << "tag" << "group" << "name" << "!tag" << "!group" << "!name";
+  constraints << QStringLiteral( "tag" ) << QStringLiteral( "group" ) << QStringLiteral( "name" ) << QStringLiteral( "!tag" ) << QStringLiteral( "!group" ) << QStringLiteral( "!name" );
 
   Q_FOREACH ( const QString &constraint, constraints )
   {
     QStringList parameters = conditions.values( constraint );
     Q_FOREACH ( const QString &param, parameters )
     {
-      QDomElement condEl = doc.createElement( "condition" );
-      condEl.setAttribute( "constraint", constraint );
-      condEl.setAttribute( "param", param );
+      QDomElement condEl = doc.createElement( QStringLiteral( "condition" ) );
+      condEl.setAttribute( QStringLiteral( "constraint" ), constraint );
+      condEl.setAttribute( QStringLiteral( "param" ), param );
       smartEl.appendChild( condEl );
     }
   }
@@ -1195,29 +1195,29 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
       QgsDebugMsg( QString( "Cannot open smartgroup id: %1" ).arg( id ) );
     }
     QDomElement smartEl = doc.documentElement();
-    QString op = smartEl.attribute( "operator" );
+    QString op = smartEl.attribute( QStringLiteral( "operator" ) );
     QDomNodeList conditionNodes = smartEl.childNodes();
 
     bool firstSet = true;
     for ( int i = 0; i < conditionNodes.count(); i++ )
     {
       QDomElement condEl = conditionNodes.at( i ).toElement();
-      QString constraint = condEl.attribute( "constraint" );
-      QString param = condEl.attribute( "param" );
+      QString constraint = condEl.attribute( QStringLiteral( "constraint" ) );
+      QString param = condEl.attribute( QStringLiteral( "param" ) );
 
       QStringList resultNames;
       // perform suitable action for the given constraint
-      if ( constraint == "tag" )
+      if ( constraint == QLatin1String( "tag" ) )
       {
         resultNames = symbolsWithTag( type, tagId( param ) );
       }
-      else if ( constraint == "group" )
+      else if ( constraint == QLatin1String( "group" ) )
       {
         // XXX Validating group id might be a good idea here
         resultNames = symbolsOfGroup( type, groupId( param ) );
 
       }
-      else if ( constraint == "name" )
+      else if ( constraint == QLatin1String( "name" ) )
       {
         if ( type == SymbolEntity )
         {
@@ -1228,7 +1228,7 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
           resultNames = colorRampNames().filter( param, Qt::CaseInsensitive );
         }
       }
-      else if ( constraint == "!tag" )
+      else if ( constraint == QLatin1String( "!tag" ) )
       {
         resultNames = type == SymbolEntity ? symbolNames() : colorRampNames();
         QStringList unwanted = symbolsWithTag( type, tagId( param ) );
@@ -1237,7 +1237,7 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
           resultNames.removeAll( name );
         }
       }
-      else if ( constraint == "!group" )
+      else if ( constraint == QLatin1String( "!group" ) )
       {
         resultNames = type == SymbolEntity ? symbolNames() : colorRampNames();
         QStringList unwanted = symbolsOfGroup( type, groupId( param ) );
@@ -1246,7 +1246,7 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
           resultNames.removeAll( name );
         }
       }
-      else if ( constraint == "!name" )
+      else if ( constraint == QLatin1String( "!name" ) )
       {
         QStringList all = type == SymbolEntity ? symbolNames() : colorRampNames();
         Q_FOREACH ( const QString &str, all )
@@ -1264,11 +1264,11 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
       }
       else
       {
-        if ( op == "OR" )
+        if ( op == QLatin1String( "OR" ) )
         {
           symbols << resultNames;
         }
-        else if ( op == "AND" )
+        else if ( op == QLatin1String( "AND" ) )
         {
           QStringList dummy = symbols;
           symbols.clear();
@@ -1316,8 +1316,8 @@ QgsSmartConditionMap QgsStyle::smartgroup( int id )
     for ( int i = 0; i < conditionNodes.count(); i++ )
     {
       QDomElement condEl = conditionNodes.at( i ).toElement();
-      QString constraint = condEl.attribute( "constraint" );
-      QString param = condEl.attribute( "param" );
+      QString constraint = condEl.attribute( QStringLiteral( "constraint" ) );
+      QString param = condEl.attribute( QStringLiteral( "param" ) );
 
       condition.insert( constraint, param );
     }
@@ -1351,7 +1351,7 @@ QString QgsStyle::smartgroupOperator( int id )
       QgsDebugMsg( QString( "Cannot open smartgroup id: %1" ).arg( id ) );
     }
     QDomElement smartEl = doc.documentElement();
-    op = smartEl.attribute( "operator" );
+    op = smartEl.attribute( QStringLiteral( "operator" ) );
   }
 
   sqlite3_finalize( ppStmt );
@@ -1367,14 +1367,14 @@ bool QgsStyle::exportXml( const QString& filename )
     return false;
   }
 
-  QDomDocument doc( "qgis_style" );
-  QDomElement root = doc.createElement( "qgis_style" );
-  root.setAttribute( "version", STYLE_CURRENT_VERSION );
+  QDomDocument doc( QStringLiteral( "qgis_style" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgis_style" ) );
+  root.setAttribute( QStringLiteral( "version" ), STYLE_CURRENT_VERSION );
   doc.appendChild( root );
 
   // TODO work on the groups and tags
-  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( mSymbols, "symbols", doc );
-  QDomElement rampsElem = doc.createElement( "colorramps" );
+  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( mSymbols, QStringLiteral( "symbols" ), doc );
+  QDomElement rampsElem = doc.createElement( QStringLiteral( "colorramps" ) );
 
   // save color ramps
   for ( QMap<QString, QgsColorRamp*>::const_iterator itr = mColorRamps.constBegin(); itr != mColorRamps.constEnd(); ++itr )
@@ -1406,18 +1406,18 @@ bool QgsStyle::exportXml( const QString& filename )
 bool QgsStyle::importXml( const QString& filename )
 {
   mErrorString = QString();
-  QDomDocument doc( "style" );
+  QDomDocument doc( QStringLiteral( "style" ) );
   QFile f( filename );
   if ( !f.open( QFile::ReadOnly ) )
   {
-    mErrorString = "Unable to open the specified file";
+    mErrorString = QStringLiteral( "Unable to open the specified file" );
     QgsDebugMsg( "Error opening the style XML file." );
     return false;
   }
 
   if ( !doc.setContent( &f ) )
   {
-    mErrorString = QString( "Unable to understand the style file: %1" ).arg( filename );
+    mErrorString = QStringLiteral( "Unable to understand the style file: %1" ).arg( filename );
     QgsDebugMsg( "XML Parsing error" );
     f.close();
     return false;
@@ -1425,14 +1425,14 @@ bool QgsStyle::importXml( const QString& filename )
   f.close();
 
   QDomElement docEl = doc.documentElement();
-  if ( docEl.tagName() != "qgis_style" )
+  if ( docEl.tagName() != QLatin1String( "qgis_style" ) )
   {
     mErrorString = "Incorrect root tag in style: " + docEl.tagName();
     return false;
   }
 
-  QString version = docEl.attribute( "version" );
-  if ( version != STYLE_CURRENT_VERSION && version != "0" )
+  QString version = docEl.attribute( QStringLiteral( "version" ) );
+  if ( version != STYLE_CURRENT_VERSION && version != QLatin1String( "0" ) )
   {
     mErrorString = "Unknown style file version: " + version;
     return false;
@@ -1440,7 +1440,7 @@ bool QgsStyle::importXml( const QString& filename )
 
   QgsSymbolMap symbols;
 
-  QDomElement symbolsElement = docEl.firstChildElement( "symbols" );
+  QDomElement symbolsElement = docEl.firstChildElement( QStringLiteral( "symbols" ) );
   QDomElement e = symbolsElement.firstChildElement();
 
   if ( version == STYLE_CURRENT_VERSION )
@@ -1448,12 +1448,12 @@ bool QgsStyle::importXml( const QString& filename )
     // For the new style, load symbols individualy
     while ( !e.isNull() )
     {
-      if ( e.tagName() == "symbol" )
+      if ( e.tagName() == QLatin1String( "symbol" ) )
       {
         QgsSymbol* symbol = QgsSymbolLayerUtils::loadSymbol( e );
         if ( symbol )
         {
-          symbols.insert( e.attribute( "name" ), symbol );
+          symbols.insert( e.attribute( QStringLiteral( "name" ) ), symbol );
         }
       }
       else
@@ -1476,16 +1476,16 @@ bool QgsStyle::importXml( const QString& filename )
   }
 
   // load color ramps
-  QDomElement rampsElement = docEl.firstChildElement( "colorramps" );
+  QDomElement rampsElement = docEl.firstChildElement( QStringLiteral( "colorramps" ) );
   e = rampsElement.firstChildElement();
   while ( !e.isNull() )
   {
-    if ( e.tagName() == "colorramp" )
+    if ( e.tagName() == QLatin1String( "colorramp" ) )
     {
       QgsColorRamp* ramp = QgsSymbolLayerUtils::loadColorRamp( e );
       if ( ramp )
       {
-        addColorRamp( e.attribute( "name" ), ramp );
+        addColorRamp( e.attribute( QStringLiteral( "name" ) ), ramp );
       }
     }
     else
@@ -1501,7 +1501,7 @@ bool QgsStyle::importXml( const QString& filename )
 
 bool QgsStyle::updateSymbol( StyleEntity type, const QString& name )
 {
-  QDomDocument doc( "dummy" );
+  QDomDocument doc( QStringLiteral( "dummy" ) );
   QDomElement symEl;
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );

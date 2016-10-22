@@ -36,18 +36,18 @@ QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget 
 
   // set contrast enhancement setting to default
   // ideally we should set it actual method last used to get min/max, but there is no way to know currently
-  QString contrastEnchacementLimits = mySettings.value( "/Raster/defaultContrastEnhancementLimits", "CumulativeCut" ).toString();
-  if ( contrastEnchacementLimits == "MinMax" )
+  QString contrastEnchacementLimits = mySettings.value( QStringLiteral( "/Raster/defaultContrastEnhancementLimits" ), "CumulativeCut" ).toString();
+  if ( contrastEnchacementLimits == QLatin1String( "MinMax" ) )
     mMinMaxRadioButton->setChecked( true );
-  else if ( contrastEnchacementLimits == "StdDev" )
+  else if ( contrastEnchacementLimits == QLatin1String( "StdDev" ) )
     mStdDevRadioButton->setChecked( true );
 
-  double myLower = 100.0 * mySettings.value( "/Raster/cumulativeCutLower", QString::number( QgsRasterLayer::CUMULATIVE_CUT_LOWER ) ).toDouble();
-  double myUpper = 100.0 * mySettings.value( "/Raster/cumulativeCutUpper", QString::number( QgsRasterLayer::CUMULATIVE_CUT_UPPER ) ).toDouble();
+  double myLower = 100.0 * mySettings.value( QStringLiteral( "/Raster/cumulativeCutLower" ), QString::number( QgsRasterLayer::CUMULATIVE_CUT_LOWER ) ).toDouble();
+  double myUpper = 100.0 * mySettings.value( QStringLiteral( "/Raster/cumulativeCutUpper" ), QString::number( QgsRasterLayer::CUMULATIVE_CUT_UPPER ) ).toDouble();
   mCumulativeCutLowerDoubleSpinBox->setValue( myLower );
   mCumulativeCutUpperDoubleSpinBox->setValue( myUpper );
 
-  mStdDevSpinBox->setValue( mySettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble() );
+  mStdDevSpinBox->setValue( mySettings.value( QStringLiteral( "/Raster/defaultStandardDeviation" ), 2.0 ).toDouble() );
 }
 
 QgsRasterMinMaxWidget::~QgsRasterMinMaxWidget()

@@ -54,19 +54,19 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
     // we cannot know before trying to actually load a dataset
     // if the provider is raster or vector
     // so we manually exclude well-known raster providers
-    if ( pk != "gdal" && pk != "ows" && pk != "wcs" && pk != "wms" )
+    if ( pk != QLatin1String( "gdal" ) && pk != QLatin1String( "ows" ) && pk != QLatin1String( "wcs" ) && pk != QLatin1String( "wms" ) )
     {
       mProviderList << pk;
     }
   }
 
-  QgsLayerTreeView* treeView = parent->findChild<QgsLayerTreeView*>( "theLayerTreeView" );
+  QgsLayerTreeView* treeView = parent->findChild<QgsLayerTreeView*>( QStringLiteral( "theLayerTreeView" ) );
   if ( treeView )
   {
     QgsLayerTreeModel* model = qobject_cast<QgsLayerTreeModel*>( treeView->model() );
     Q_FOREACH ( QgsLayerTreeLayer* layer, model->rootGroup()->findLayers() )
     {
-      if ( layer->layer()->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer*>( layer->layer() )->providerType() == "virtual" )
+      if ( layer->layer()->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer*>( layer->layer() )->providerType() == QLatin1String( "virtual" ) )
       {
         // store layer's id as user data
         mLayerNameCombo->addItem( layer->layer()->name(), layer->layer()->id() );
@@ -75,13 +75,13 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
   }
 
   if ( mLayerNameCombo->count() == 0 )
-    mLayerNameCombo->addItem( "virtual_layer" );
+    mLayerNameCombo->addItem( QStringLiteral( "virtual_layer" ) );
 
   // select the current layer, if any
   if ( treeView )
   {
     QList<QgsMapLayer*> selected = treeView->selectedLayers();
-    if ( selected.size() == 1 && selected[0]->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer*>( selected[0] )->providerType() == "virtual" )
+    if ( selected.size() == 1 && selected[0]->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer*>( selected[0] )->providerType() == QLatin1String( "virtual" ) )
     {
       mLayerNameCombo->setCurrentIndex( mLayerNameCombo->findData( selected[0]->id() ) );
     }
@@ -94,7 +94,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget* parent, Qt::W
   QsciAPIs* apis = new QsciAPIs( mQueryEdit->lexer() );
 
   Q_INIT_RESOURCE( sqlfunctionslist );
-  QFile fFile( ":/sqlfunctions/list.txt" );
+  QFile fFile( QStringLiteral( ":/sqlfunctions/list.txt" ) );
   if ( fFile.open( QIODevice::ReadOnly ) )
   {
     QTextStream in( &fFile );
@@ -229,7 +229,7 @@ void QgsVirtualLayerSourceSelect::onTestQuery()
 {
   QgsVirtualLayerDefinition def = getVirtualLayerDef();
 
-  QScopedPointer<QgsVectorLayer> vl( new QgsVectorLayer( def.toString(), "test", "virtual" ) );
+  QScopedPointer<QgsVectorLayer> vl( new QgsVectorLayer( def.toString(), QStringLiteral( "test" ), QStringLiteral( "virtual" ) ) );
   if ( vl->isValid() )
   {
     QMessageBox::information( nullptr, tr( "Virtual layer test" ), tr( "No error" ) );
@@ -253,7 +253,7 @@ void QgsVirtualLayerSourceSelect::onAddLayer()
 
   QComboBox* encodingCombo = new QComboBox();
   encodingCombo->addItems( QgsVectorDataProvider::availableEncodings() );
-  QString defaultEnc = QSettings().value( "/UI/encoding", "System" ).toString();
+  QString defaultEnc = QSettings().value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
   encodingCombo->setCurrentIndex( encodingCombo->findText( defaultEnc ) );
   mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, 2, encodingCombo );
 }
@@ -303,7 +303,7 @@ void QgsVirtualLayerSourceSelect::onImportLayer()
 
 void QgsVirtualLayerSourceSelect::on_buttonBox_accepted()
 {
-  QString layerName = "virtual_layer";
+  QString layerName = QStringLiteral( "virtual_layer" );
   int idx = mLayerNameCombo->currentIndex();
   if ( idx != -1 && !mLayerNameCombo->currentText().isEmpty() )
   {
@@ -320,12 +320,12 @@ void QgsVirtualLayerSourceSelect::on_buttonBox_accepted()
       int r = QMessageBox::warning( nullptr, tr( "Warning" ), tr( "A virtual layer of this name already exists, would you like to overwrite it?" ), QMessageBox::Yes | QMessageBox::No );
       if ( r == QMessageBox::Yes )
       {
-        emit replaceVectorLayer( id, def.toString(), layerName, "virtual" );
+        emit replaceVectorLayer( id, def.toString(), layerName, QStringLiteral( "virtual" ) );
         return;
       }
     }
   }
-  emit addVectorLayer( def.toString(), layerName, "virtual" );
+  emit addVectorLayer( def.toString(), layerName, QStringLiteral( "virtual" ) );
 }
 
 QGISEXTERN QgsVirtualLayerSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )

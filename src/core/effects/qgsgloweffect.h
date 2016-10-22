@@ -242,7 +242,7 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
     QgsOuterGlowEffect();
     virtual ~QgsOuterGlowEffect();
 
-    virtual QString type() const override { return QString( "outerGlow" ); }
+    virtual QString type() const override { return QStringLiteral( "outerGlow" ); }
     virtual QgsOuterGlowEffect* clone() const override;
 
   protected:
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect
     QgsInnerGlowEffect();
     virtual ~QgsInnerGlowEffect();
 
-    virtual QString type() const override { return QString( "innerGlow" ); }
+    virtual QString type() const override { return QStringLiteral( "innerGlow" ); }
     virtual QgsInnerGlowEffect* clone() const override;
 
   protected:

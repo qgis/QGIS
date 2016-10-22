@@ -53,9 +53,9 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle* style, QWidget* parent )
 
   QSettings settings;
 
-  restoreGeometry( settings.value( "/Windows/StyleV2Manager/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/StyleV2Manager/geometry" ) ).toByteArray() );
   mSplitter->setSizes( QList<int>() << 170 << 540 );
-  mSplitter->restoreState( settings.value( "/Windows/StyleV2Manager/splitter" ).toByteArray() );
+  mSplitter->restoreState( settings.value( QStringLiteral( "/Windows/StyleV2Manager/splitter" ) ).toByteArray() );
 
   tabItemType->setDocumentMode( true );
   searchBox->setPlaceholderText( tr( "Type here to filter symbols..." ) );
@@ -178,8 +178,8 @@ void QgsStyleManagerDialog::onFinished()
   }
 
   QSettings settings;
-  settings.setValue( "/Windows/StyleV2Manager/geometry", saveGeometry() );
-  settings.setValue( "/Windows/StyleV2Manager/splitter", mSplitter->saveState() );
+  settings.setValue( QStringLiteral( "/Windows/StyleV2Manager/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/StyleV2Manager/splitter" ), mSplitter->saveState() );
 }
 
 void QgsStyleManagerDialog::populateTypes()
@@ -497,7 +497,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget* parent, QgsStyle* st
   }
   else if ( rampType == tr( "cpt-city" ) )
   {
-    QgsCptCityColorRampDialog dlg( QgsCptCityColorRamp( "", "" ), parent );
+    QgsCptCityColorRampDialog dlg( QgsCptCityColorRamp( QLatin1String( "" ), QLatin1String( "" ) ), parent );
     if ( !dlg.exec() )
     {
       return QString();
@@ -635,7 +635,7 @@ bool QgsStyleManagerDialog::editColorRamp()
 
   QScopedPointer< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
 
-  if ( ramp->type() == "gradient" )
+  if ( ramp->type() == QLatin1String( "gradient" ) )
   {
     QgsGradientColorRamp* gradRamp = static_cast<QgsGradientColorRamp*>( ramp.data() );
     QgsGradientColorRampDialog dlg( *gradRamp, this );
@@ -645,7 +645,7 @@ bool QgsStyleManagerDialog::editColorRamp()
     }
     ramp.reset( dlg.ramp().clone() );
   }
-  else if ( ramp->type() == "random" )
+  else if ( ramp->type() == QLatin1String( "random" ) )
   {
     QgsLimitedRandomColorRamp* randRamp = static_cast<QgsLimitedRandomColorRamp*>( ramp.data() );
     QgsLimitedRandomColorRampDialog dlg( *randRamp, this );
@@ -655,7 +655,7 @@ bool QgsStyleManagerDialog::editColorRamp()
     }
     ramp.reset( dlg.ramp().clone() );
   }
-  else if ( ramp->type() == "colorbrewer" )
+  else if ( ramp->type() == QLatin1String( "colorbrewer" ) )
   {
     QgsColorBrewerColorRamp* brewerRamp = static_cast<QgsColorBrewerColorRamp*>( ramp.data() );
     QgsColorBrewerColorRampDialog dlg( *brewerRamp, this );
@@ -665,7 +665,7 @@ bool QgsStyleManagerDialog::editColorRamp()
     }
     ramp.reset( dlg.ramp().clone() );
   }
-  else if ( ramp->type() == "preset" )
+  else if ( ramp->type() == QLatin1String( "preset" ) )
   {
     QgsPresetSchemeColorRamp* presetRamp = static_cast<QgsPresetSchemeColorRamp*>( ramp.data() );
     QgsPresetColorRampDialog dlg( *presetRamp, this );
@@ -675,7 +675,7 @@ bool QgsStyleManagerDialog::editColorRamp()
     }
     ramp.reset( dlg.ramp().clone() );
   }
-  else if ( ramp->type() == "cpt-city" )
+  else if ( ramp->type() == QLatin1String( "cpt-city" ) )
   {
     QgsCptCityColorRamp* cptCityRamp = static_cast<QgsCptCityColorRamp*>( ramp.data() );
     QgsCptCityColorRampDialog dlg( *cptCityRamp, this );
@@ -800,7 +800,7 @@ void QgsStyleManagerDialog::exportItemsPNG()
                 QDir::home().absolutePath(),
                 QFileDialog::ShowDirsOnly
                 | QFileDialog::DontResolveSymlinks );
-  exportSelectedItemsImages( dir, "png", QSize( 32, 32 ) );
+  exportSelectedItemsImages( dir, QStringLiteral( "png" ), QSize( 32, 32 ) );
 }
 
 void QgsStyleManagerDialog::exportItemsSVG()
@@ -809,7 +809,7 @@ void QgsStyleManagerDialog::exportItemsSVG()
                 QDir::home().absolutePath(),
                 QFileDialog::ShowDirsOnly
                 | QFileDialog::DontResolveSymlinks );
-  exportSelectedItemsImages( dir, "svg", QSize( 32, 32 ) );
+  exportSelectedItemsImages( dir, QStringLiteral( "svg" ), QSize( 32, 32 ) );
 }
 
 
@@ -860,7 +860,7 @@ void QgsStyleManagerDialog::populateGroups()
   setBold( allSymbols );
   model->appendRow( allSymbols );
 
-  QStandardItem *group = new QStandardItem( "" ); //require empty name to get first order groups
+  QStandardItem *group = new QStandardItem( QLatin1String( "" ) ); //require empty name to get first order groups
   group->setData( "groups" );
   group->setEditable( false );
   buildGroupTree( group );
@@ -922,10 +922,10 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex& index )
   }
 
   QString category = index.data( Qt::UserRole + 1 ).toString();
-  if ( category == "all" || category == "groups" || category == "smartgroups" )
+  if ( category == QLatin1String( "all" ) || category == QLatin1String( "groups" ) || category == QLatin1String( "smartgroups" ) )
   {
     enableGroupInputs( false );
-    if ( category == "groups" || category == "smartgroups" )
+    if ( category == QLatin1String( "groups" ) || category == QLatin1String( "smartgroups" ) )
     {
       btnAddGroup->setEnabled( true );
       actnAddGroup->setEnabled( true );
@@ -978,9 +978,9 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex& index )
   actnGroupSymbols->setVisible( false );
   actnFinishGrouping->setVisible( false );
 
-  if ( index.parent().isValid() && ( index.data().toString() != "Ungrouped" ) )
+  if ( index.parent().isValid() && ( index.data().toString() != QLatin1String( "Ungrouped" ) ) )
   {
-    if ( index.parent().data( Qt::UserRole + 1 ).toString() == "smartgroups" )
+    if ( index.parent().data( Qt::UserRole + 1 ).toString() == QLatin1String( "smartgroups" ) )
     {
       actnEditSmartGroup->setVisible( !mGrouppingMode );
     }
@@ -1005,7 +1005,7 @@ void QgsStyleManagerDialog::addGroup()
 
   // Violation 1: Creating sub-groups of system defined groups
   QString parentData = parentIndex.data( Qt::UserRole + 1 ).toString();
-  if ( parentData == "all" || ( parentIndex.data() == "Ungrouped" && parentData == "0" ) )
+  if ( parentData == QLatin1String( "all" ) || ( parentIndex.data() == "Ungrouped" && parentData == QLatin1String( "0" ) ) )
   {
     int err = QMessageBox::critical( this, tr( "Invalid Selection" ),
                                      tr( "The parent group you have selected is not user editable.\n"
@@ -1015,7 +1015,7 @@ void QgsStyleManagerDialog::addGroup()
   }
 
   // Violation 2: Creating a nested tag
-  if ( parentIndex.parent().data( Qt::UserRole + 1 ).toString() == "smartgroups" )
+  if ( parentIndex.parent().data( Qt::UserRole + 1 ).toString() == QLatin1String( "smartgroups" ) )
   {
     int err = QMessageBox::critical( this, tr( "Operation Not Allowed" ),
                                      tr( "Creation of nested smart groups are not allowed\n"
@@ -1028,7 +1028,7 @@ void QgsStyleManagerDialog::addGroup()
   bool isGroup = true;
 
   int id;
-  if ( parentData == "smartgroups" )
+  if ( parentData == QLatin1String( "smartgroups" ) )
   {
     // create a smart group
 
@@ -1046,7 +1046,7 @@ void QgsStyleManagerDialog::addGroup()
     // create a simple child-group to the selected
 
     itemName = QString( tr( "New Group" ) );
-    int parentid = ( parentData == "groups" ) ? 0 : parentData.toInt(); // parentid is 0 for top-level groups
+    int parentid = ( parentData == QLatin1String( "groups" ) ) ? 0 : parentData.toInt(); // parentid is 0 for top-level groups
     id = mStyle->addGroup( itemName, parentid );
     if ( !id )
     {
@@ -1076,7 +1076,7 @@ void QgsStyleManagerDialog::removeGroup()
 
   // Violation: removing system groups
   QString data = index.data( Qt::UserRole + 1 ).toString();
-  if ( data == "all" || data == "groups" || data == "smartgroups" || index.data() == "Ungrouped" )
+  if ( data == QLatin1String( "all" ) || data == QLatin1String( "groups" ) || data == QLatin1String( "smartgroups" ) || index.data() == "Ungrouped" )
   {
     int err = QMessageBox::critical( this, tr( "Invalid selection" ),
                                      tr( "Cannot delete system defined categories.\n"
@@ -1086,7 +1086,7 @@ void QgsStyleManagerDialog::removeGroup()
   }
 
   QStandardItem *parentItem = model->itemFromIndex( index.parent() );
-  if ( parentItem->data( Qt::UserRole + 1 ).toString() == "smartgroups" )
+  if ( parentItem->data( Qt::UserRole + 1 ).toString() == QLatin1String( "smartgroups" ) )
   {
     mStyle->remove( QgsStyle::SmartgroupEntity, index.data( Qt::UserRole + 1 ).toInt() );
   }
@@ -1302,7 +1302,7 @@ void QgsStyleManagerDialog::symbolSelected( const QModelIndex& index )
     QStandardItem *item = static_cast<QStandardItemModel*>( listItems->model() )->itemFromIndex( index );
     QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
     mTagList = mStyle->tagsOfSymbol( type, item->data().toString() );
-    tagsLineEdit->setText( mTagList.join( "," ) );
+    tagsLineEdit->setText( mTagList.join( QStringLiteral( "," ) ) );
   }
 
   actnEditItem->setEnabled( index.isValid() && !mGrouppingMode );

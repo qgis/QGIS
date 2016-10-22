@@ -184,17 +184,17 @@ bool QgsRasterTransparency::isEmpty() const
 
 void QgsRasterTransparency::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
 {
-  QDomElement rasterTransparencyElem = doc.createElement( "rasterTransparency" );
+  QDomElement rasterTransparencyElem = doc.createElement( QStringLiteral( "rasterTransparency" ) );
   if ( !mTransparentSingleValuePixelList.isEmpty() )
   {
-    QDomElement singleValuePixelListElement = doc.createElement( "singleValuePixelList" );
+    QDomElement singleValuePixelListElement = doc.createElement( QStringLiteral( "singleValuePixelList" ) );
     QList<QgsRasterTransparency::TransparentSingleValuePixel>::const_iterator it = mTransparentSingleValuePixelList.constBegin();
     for ( ; it != mTransparentSingleValuePixelList.constEnd(); ++it )
     {
-      QDomElement pixelListElement = doc.createElement( "pixelListEntry" );
-      pixelListElement.setAttribute( "min", QgsRasterBlock::printValue( it->min ) );
-      pixelListElement.setAttribute( "max", QgsRasterBlock::printValue( it->max ) );
-      pixelListElement.setAttribute( "percentTransparent", QString::number( it->percentTransparent ) );
+      QDomElement pixelListElement = doc.createElement( QStringLiteral( "pixelListEntry" ) );
+      pixelListElement.setAttribute( QStringLiteral( "min" ), QgsRasterBlock::printValue( it->min ) );
+      pixelListElement.setAttribute( QStringLiteral( "max" ), QgsRasterBlock::printValue( it->max ) );
+      pixelListElement.setAttribute( QStringLiteral( "percentTransparent" ), QString::number( it->percentTransparent ) );
       singleValuePixelListElement.appendChild( pixelListElement );
     }
     rasterTransparencyElem.appendChild( singleValuePixelListElement );
@@ -202,15 +202,15 @@ void QgsRasterTransparency::writeXml( QDomDocument& doc, QDomElement& parentElem
   }
   if ( !mTransparentThreeValuePixelList.isEmpty() )
   {
-    QDomElement threeValuePixelListElement = doc.createElement( "threeValuePixelList" );
+    QDomElement threeValuePixelListElement = doc.createElement( QStringLiteral( "threeValuePixelList" ) );
     QList<QgsRasterTransparency::TransparentThreeValuePixel>::const_iterator it = mTransparentThreeValuePixelList.constBegin();
     for ( ; it != mTransparentThreeValuePixelList.constEnd(); ++it )
     {
-      QDomElement pixelListElement = doc.createElement( "pixelListEntry" );
-      pixelListElement.setAttribute( "red", QgsRasterBlock::printValue( it->red ) );
-      pixelListElement.setAttribute( "green", QgsRasterBlock::printValue( it->green ) );
-      pixelListElement.setAttribute( "blue", QgsRasterBlock::printValue( it->blue ) );
-      pixelListElement.setAttribute( "percentTransparent", QString::number( it->percentTransparent ) );
+      QDomElement pixelListElement = doc.createElement( QStringLiteral( "pixelListEntry" ) );
+      pixelListElement.setAttribute( QStringLiteral( "red" ), QgsRasterBlock::printValue( it->red ) );
+      pixelListElement.setAttribute( QStringLiteral( "green" ), QgsRasterBlock::printValue( it->green ) );
+      pixelListElement.setAttribute( QStringLiteral( "blue" ), QgsRasterBlock::printValue( it->blue ) );
+      pixelListElement.setAttribute( QStringLiteral( "percentTransparent" ), QString::number( it->percentTransparent ) );
       threeValuePixelListElement.appendChild( pixelListElement );
     }
     rasterTransparencyElem.appendChild( threeValuePixelListElement );
@@ -229,40 +229,40 @@ void QgsRasterTransparency::readXml( const QDomElement& elem )
   mTransparentThreeValuePixelList.clear();
   QDomElement currentEntryElem;
 
-  QDomElement singlePixelListElem = elem.firstChildElement( "singleValuePixelList" );
+  QDomElement singlePixelListElem = elem.firstChildElement( QStringLiteral( "singleValuePixelList" ) );
   if ( !singlePixelListElem.isNull() )
   {
-    QDomNodeList entryList = singlePixelListElem.elementsByTagName( "pixelListEntry" );
+    QDomNodeList entryList = singlePixelListElem.elementsByTagName( QStringLiteral( "pixelListEntry" ) );
     TransparentSingleValuePixel sp;
     for ( int i = 0; i < entryList.size(); ++i )
     {
       currentEntryElem = entryList.at( i ).toElement();
-      sp.percentTransparent = currentEntryElem.attribute( "percentTransparent" ).toDouble();
+      sp.percentTransparent = currentEntryElem.attribute( QStringLiteral( "percentTransparent" ) ).toDouble();
       // Backward compoatibility < 1.9 : pixelValue (before ranges)
-      if ( currentEntryElem.hasAttribute( "pixelValue" ) )
+      if ( currentEntryElem.hasAttribute( QStringLiteral( "pixelValue" ) ) )
       {
-        sp.min = sp.max = currentEntryElem.attribute( "pixelValue" ).toDouble();
+        sp.min = sp.max = currentEntryElem.attribute( QStringLiteral( "pixelValue" ) ).toDouble();
       }
       else
       {
-        sp.min = currentEntryElem.attribute( "min" ).toDouble();
-        sp.max = currentEntryElem.attribute( "max" ).toDouble();
+        sp.min = currentEntryElem.attribute( QStringLiteral( "min" ) ).toDouble();
+        sp.max = currentEntryElem.attribute( QStringLiteral( "max" ) ).toDouble();
       }
       mTransparentSingleValuePixelList.append( sp );
     }
   }
-  QDomElement threeValuePixelListElem = elem.firstChildElement( "threeValuePixelList" );
+  QDomElement threeValuePixelListElem = elem.firstChildElement( QStringLiteral( "threeValuePixelList" ) );
   if ( !threeValuePixelListElem.isNull() )
   {
-    QDomNodeList entryList = threeValuePixelListElem.elementsByTagName( "pixelListEntry" );
+    QDomNodeList entryList = threeValuePixelListElem.elementsByTagName( QStringLiteral( "pixelListEntry" ) );
     TransparentThreeValuePixel tp;
     for ( int i = 0; i < entryList.size(); ++i )
     {
       currentEntryElem = entryList.at( i ).toElement();
-      tp.red = currentEntryElem.attribute( "red" ).toDouble();
-      tp.green = currentEntryElem.attribute( "green" ).toDouble();
-      tp.blue = currentEntryElem.attribute( "blue" ).toDouble();
-      tp.percentTransparent = currentEntryElem.attribute( "percentTransparent" ).toDouble();
+      tp.red = currentEntryElem.attribute( QStringLiteral( "red" ) ).toDouble();
+      tp.green = currentEntryElem.attribute( QStringLiteral( "green" ) ).toDouble();
+      tp.blue = currentEntryElem.attribute( QStringLiteral( "blue" ) ).toDouble();
+      tp.percentTransparent = currentEntryElem.attribute( QStringLiteral( "percentTransparent" ) ).toDouble();
       mTransparentThreeValuePixelList.append( tp );
     }
   }

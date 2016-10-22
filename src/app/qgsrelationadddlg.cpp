@@ -35,8 +35,8 @@ QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
 
 void QgsRelationAddDlg::addLayers( const QList< QgsVectorLayer* >& layers )
 {
-  mCbxReferencingLayer->addItem( "", "" );
-  mCbxReferencedLayer->addItem( "", "" );
+  mCbxReferencingLayer->addItem( QLatin1String( "" ), "" );
+  mCbxReferencedLayer->addItem( QLatin1String( "" ), "" );
 
   Q_FOREACH ( QgsVectorLayer* layer, layers )
   {

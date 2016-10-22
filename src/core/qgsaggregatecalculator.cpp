@@ -125,45 +125,45 @@ QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( con
   if ( ok )
     *ok = true;
 
-  if ( normalized == "count" )
+  if ( normalized == QLatin1String( "count" ) )
     return Count;
-  else if ( normalized == "count_distinct" )
+  else if ( normalized == QLatin1String( "count_distinct" ) )
     return CountDistinct;
-  else if ( normalized == "count_missing" )
+  else if ( normalized == QLatin1String( "count_missing" ) )
     return CountMissing;
-  else if ( normalized == "min" )
+  else if ( normalized == QLatin1String( "min" ) )
     return Min;
-  else if ( normalized == "max" )
+  else if ( normalized == QLatin1String( "max" ) )
     return Max;
-  else if ( normalized == "sum" )
+  else if ( normalized == QLatin1String( "sum" ) )
     return Sum;
-  else if ( normalized == "mean" )
+  else if ( normalized == QLatin1String( "mean" ) )
     return Mean;
-  else if ( normalized == "median" )
+  else if ( normalized == QLatin1String( "median" ) )
     return Median;
-  else if ( normalized == "stdev" )
+  else if ( normalized == QLatin1String( "stdev" ) )
     return StDev;
-  else if ( normalized == "stdevsample" )
+  else if ( normalized == QLatin1String( "stdevsample" ) )
     return StDevSample;
-  else if ( normalized == "range" )
+  else if ( normalized == QLatin1String( "range" ) )
     return Range;
-  else if ( normalized == "minority" )
+  else if ( normalized == QLatin1String( "minority" ) )
     return Minority;
-  else if ( normalized == "majority" )
+  else if ( normalized == QLatin1String( "majority" ) )
     return Majority;
-  else if ( normalized == "q1" )
+  else if ( normalized == QLatin1String( "q1" ) )
     return FirstQuartile;
-  else if ( normalized == "q3" )
+  else if ( normalized == QLatin1String( "q3" ) )
     return ThirdQuartile;
-  else if ( normalized == "iqr" )
+  else if ( normalized == QLatin1String( "iqr" ) )
     return InterQuartileRange;
-  else if ( normalized == "min_length" )
+  else if ( normalized == QLatin1String( "min_length" ) )
     return StringMinimumLength;
-  else if ( normalized == "max_length" )
+  else if ( normalized == QLatin1String( "max_length" ) )
     return StringMaximumLength;
-  else if ( normalized == "concatenate" )
+  else if ( normalized == QLatin1String( "concatenate" ) )
     return StringConcatenate;
-  else if ( normalized == "collect" )
+  else if ( normalized == QLatin1String( "collect" ) )
     return GeometryCollect;
 
   if ( ok )

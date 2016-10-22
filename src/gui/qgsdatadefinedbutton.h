@@ -141,22 +141,22 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     /**
      * Whether the current data definition or expression is to be used
      */
-    bool isActive() const { return mProperty.value( "active" ).toInt(); }
+    bool isActive() const { return mProperty.value( QStringLiteral( "active" ) ).toInt(); }
 
     /**
      * Whether the current expression is to be used instead of field mapping
      */
-    bool useExpression() const { return mProperty.value( "useexpr" ).toInt(); }
+    bool useExpression() const { return mProperty.value( QStringLiteral( "useexpr" ) ).toInt(); }
 
     /**
      * The current defined expression
      */
-    QString getExpression() const { return mProperty.value( "expression" ); }
+    QString getExpression() const { return mProperty.value( QStringLiteral( "expression" ) ); }
 
     /**
      * The current defined field
      */
-    QString getField() const { return mProperty.value( "field" ); }
+    QString getField() const { return mProperty.value( QStringLiteral( "field" ) ); }
 
     /**
      * The current definition
@@ -329,17 +329,17 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     /**
      * Set whether the current expression is to be used instead of field mapping
      */
-    void setUseExpression( bool use ) { mProperty.insert( "useexpr", use ? "1" : "0" ); }
+    void setUseExpression( bool use ) { mProperty.insert( QStringLiteral( "useexpr" ), use ? "1" : "0" ); }
 
     /**
      * Set the current defined expression
      */
-    void setExpression( const QString& exp ) { mProperty.insert( "expression", exp ); }
+    void setExpression( const QString& exp ) { mProperty.insert( QStringLiteral( "expression" ), exp ); }
 
     /**
      * Set the current defined field
      */
-    void setField( const QString& field ) { mProperty.insert( "field", field ); }
+    void setField( const QString& field ) { mProperty.insert( QStringLiteral( "field" ), field ); }
 
   private:
     void showDescriptionDialog();

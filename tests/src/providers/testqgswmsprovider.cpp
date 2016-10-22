@@ -32,7 +32,7 @@ class TestQgsWmsProvider: public QObject
       QgsApplication::init();
       QgsApplication::initQgis();
 
-      QFile file( QString( TEST_DATA_DIR ) + "/provider/GetCapabilities.xml" );
+      QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilities.xml" );
       QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
       const QByteArray content = file.readAll();
       QVERIFY( content.size() > 0 );
@@ -51,26 +51,26 @@ class TestQgsWmsProvider: public QObject
 
     void legendGraphicsWithStyle()
     {
-      QgsWmsProvider provider( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg", mCapabilities );
+      QgsWmsProvider provider( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ), mCapabilities );
       QCOMPARE( provider.getLegendGraphicUrl(), QString( "http://www.example.com/fb.png?" ) );
     }
 
     void legendGraphicsWithSecondStyle()
     {
-      QgsWmsProvider provider( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=yt_style&format=image/jpg", mCapabilities );
+      QgsWmsProvider provider( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=yt_style&format=image/jpg" ), mCapabilities );
       QCOMPARE( provider.getLegendGraphicUrl(), QString( "http://www.example.com/yt.png?" ) );
     }
 
     void legendGraphicsWithoutStyleWithDefault()
     {
-      QgsWmsProvider provider( "http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg", mCapabilities );
+      QgsWmsProvider provider( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg" ), mCapabilities );
       //only one style, can guess default => use it
       QCOMPARE( provider.getLegendGraphicUrl(), QString( "http://www.example.com/buildings.png?" ) );
     }
 
     void legendGraphicsWithoutStyleWithoutDefault()
     {
-      QgsWmsProvider provider( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg", mCapabilities );
+      QgsWmsProvider provider( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg" ), mCapabilities );
       //two style, cannot guess default => use the WMS GetLegendGraphics
       QCOMPARE( provider.getLegendGraphicUrl(), QString( "http://localhost:8380/mapserv?" ) );
     }

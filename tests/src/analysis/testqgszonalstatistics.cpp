@@ -70,7 +70,7 @@ void TestQgsZonalStatistics::initTestCase()
     QVERIFY( QFile::copy( myTestDataPath + files.at( i ), myTempPath + files.at( i ) ) );
   }
 
-  mVectorLayer = new QgsVectorLayer( myTempPath + "polys.shp", "poly", "ogr" );
+  mVectorLayer = new QgsVectorLayer( myTempPath + "polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mVectorLayer );
 
@@ -84,7 +84,7 @@ void TestQgsZonalStatistics::cleanupTestCase()
 
 void TestQgsZonalStatistics::testStatistics()
 {
-  QgsZonalStatistics zs( mVectorLayer, mRasterPath, "", 1 );
+  QgsZonalStatistics zs( mVectorLayer, mRasterPath, QLatin1String( "" ), 1 );
   zs.calculateStatistics( nullptr );
 
   QgsFeature f;
@@ -111,7 +111,7 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "mean" ).toDouble(), 0.833333333333333 );
 
   // same with long prefix to ensure that field name truncation handled correctly
-  QgsZonalStatistics zsl( mVectorLayer, mRasterPath, "myqgis2_", 1 );
+  QgsZonalStatistics zsl( mVectorLayer, mRasterPath, QStringLiteral( "myqgis2_" ), 1 );
   zsl.calculateStatistics( nullptr );
 
   request.setFilterFid( 0 );

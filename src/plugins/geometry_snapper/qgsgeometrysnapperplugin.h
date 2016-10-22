@@ -28,7 +28,7 @@ static const QString sDescription = QApplication::translate( "QgsGeometrySnapper
 static const QString sCategory = QApplication::translate( "QgsGeometrySnapperPlugin", "Vector" );
 static const QString sPluginVersion = QApplication::translate( "QgsGeometrySnapperPlugin", "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
-static const QString sPluginIcon = ":/geometrysnapper/icons/geometrysnapper.png";
+static const QString sPluginIcon = QStringLiteral( ":/geometrysnapper/icons/geometrysnapper.png" );
 
 
 class QgsGeometrySnapperPlugin : public QObject, public QgisPlugin

@@ -52,14 +52,14 @@ QgsEditorWidgetConfig QgsValueRelationWidgetFactory::readConfig( const QDomEleme
 
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( "Layer", configElement.attribute( "Layer" ) );
-  cfg.insert( "Key", configElement.attribute( "Key" ) );
-  cfg.insert( "Value", configElement.attribute( "Value" ) );
-  cfg.insert( "FilterExpression", configElement.attribute( "FilterExpression" ) );
-  cfg.insert( "OrderByValue", configElement.attribute( "OrderByValue" ) );
-  cfg.insert( "AllowMulti", configElement.attribute( "AllowMulti" ) );
-  cfg.insert( "AllowNull", configElement.attribute( "AllowNull" ) );
-  cfg.insert( "UseCompleter", configElement.attribute( "UseCompleter" ) );
+  cfg.insert( QStringLiteral( "Layer" ), configElement.attribute( QStringLiteral( "Layer" ) ) );
+  cfg.insert( QStringLiteral( "Key" ), configElement.attribute( QStringLiteral( "Key" ) ) );
+  cfg.insert( QStringLiteral( "Value" ), configElement.attribute( QStringLiteral( "Value" ) ) );
+  cfg.insert( QStringLiteral( "FilterExpression" ), configElement.attribute( QStringLiteral( "FilterExpression" ) ) );
+  cfg.insert( QStringLiteral( "OrderByValue" ), configElement.attribute( QStringLiteral( "OrderByValue" ) ) );
+  cfg.insert( QStringLiteral( "AllowMulti" ), configElement.attribute( QStringLiteral( "AllowMulti" ) ) );
+  cfg.insert( QStringLiteral( "AllowNull" ), configElement.attribute( QStringLiteral( "AllowNull" ) ) );
+  cfg.insert( QStringLiteral( "UseCompleter" ), configElement.attribute( QStringLiteral( "UseCompleter" ) ) );
 
   return cfg;
 }
@@ -70,14 +70,14 @@ void QgsValueRelationWidgetFactory::writeConfig( const QgsEditorWidgetConfig& co
   Q_UNUSED( layer )
   Q_UNUSED( fieldIdx )
 
-  configElement.setAttribute( "Layer", config.value( "Layer" ).toString() );
-  configElement.setAttribute( "Key", config.value( "Key" ).toString() );
-  configElement.setAttribute( "Value", config.value( "Value" ).toString() );
-  configElement.setAttribute( "FilterExpression", config.value( "FilterExpression" ).toString() );
-  configElement.setAttribute( "OrderByValue", config.value( "OrderByValue" ).toBool() );
-  configElement.setAttribute( "AllowMulti", config.value( "AllowMulti" ).toBool() );
-  configElement.setAttribute( "AllowNull", config.value( "AllowNull" ).toBool() );
-  configElement.setAttribute( "UseCompleter", config.value( "UseCompleter" ).toBool() );
+  configElement.setAttribute( QStringLiteral( "Layer" ), config.value( QStringLiteral( "Layer" ) ).toString() );
+  configElement.setAttribute( QStringLiteral( "Key" ), config.value( QStringLiteral( "Key" ) ).toString() );
+  configElement.setAttribute( QStringLiteral( "Value" ), config.value( QStringLiteral( "Value" ) ).toString() );
+  configElement.setAttribute( QStringLiteral( "FilterExpression" ), config.value( QStringLiteral( "FilterExpression" ) ).toString() );
+  configElement.setAttribute( QStringLiteral( "OrderByValue" ), config.value( QStringLiteral( "OrderByValue" ) ).toBool() );
+  configElement.setAttribute( QStringLiteral( "AllowMulti" ), config.value( QStringLiteral( "AllowMulti" ) ).toBool() );
+  configElement.setAttribute( QStringLiteral( "AllowNull" ), config.value( QStringLiteral( "AllowNull" ) ).toBool() );
+  configElement.setAttribute( QStringLiteral( "UseCompleter" ), config.value( QStringLiteral( "UseCompleter" ) ).toBool() );
 }
 
 QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const
@@ -96,7 +96,7 @@ QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int f
     vrCache = QgsValueRelationWidgetWrapper::createCache( config );
   }
 
-  if ( config.value( "AllowMulti" ).toBool() )
+  if ( config.value( QStringLiteral( "AllowMulti" ) ).toBool() )
   {
     QStringList keyList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
     QStringList valueList;
@@ -109,14 +109,14 @@ QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int f
       }
     }
 
-    return valueList.join( ", " ).prepend( '{' ).append( '}' );
+    return valueList.join( QStringLiteral( ", " ) ).prepend( '{' ).append( '}' );
   }
   else
   {
     if ( value.isNull() )
     {
       QSettings settings;
-      return settings.value( "qgis/nullValue", "NULL" ).toString();
+      return settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
     }
 
     Q_FOREACH ( const QgsValueRelationWidgetWrapper::ValueRelationItem& item, vrCache )
@@ -128,7 +128,7 @@ QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int f
     }
   }
 
-  return QString( "(%1)" ).arg( value.toString() );
+  return QStringLiteral( "(%1)" ).arg( value.toString() );
 }
 
 QVariant QgsValueRelationWidgetFactory::sortValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const

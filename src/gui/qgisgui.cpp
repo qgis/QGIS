@@ -105,12 +105,12 @@ namespace QgisGui
 #endif
 
     QSettings settings;  // where we keep last used filter in persistent state
-    QString lastUsedDir = settings.value( "/UI/lastSaveAsImageDir", QDir::homePath() ).toString();
+    QString lastUsedDir = settings.value( QStringLiteral( "/UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
 
     // Prefer "png" format unless the user previously chose a different format
-    QString pngExtension = "png";
+    QString pngExtension = QStringLiteral( "png" );
     QString pngFilter = createFileFilter_( pngExtension );
-    QString selectedFilter = settings.value( "/UI/lastSaveAsImageFilter", pngFilter ).toString();
+    QString selectedFilter = settings.value( QStringLiteral( "/UI/lastSaveAsImageFilter" ), pngFilter ).toString();
 
     QString initialPath;
     if ( defaultFilename.isNull() )
@@ -127,14 +127,14 @@ namespace QgisGui
     QString outputFileName;
     QString ext;
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC) || defined(Q_OS_LINUX)
-    outputFileName = QFileDialog::getSaveFileName( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( ";;" ), &selectedFilter );
+    outputFileName = QFileDialog::getSaveFileName( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( QStringLiteral( ";;" ) ), &selectedFilter );
 
     if ( !outputFileName.isNull() )
     {
       ext = filterMap.value( selectedFilter, QString::null );
       if ( !ext.isNull() )
-        settings.setValue( "/UI/lastSaveAsImageFilter", selectedFilter );
-      settings.setValue( "/UI/lastSaveAsImageDir", QFileInfo( outputFileName ).absolutePath() );
+        settings.setValue( QStringLiteral( "/UI/lastSaveAsImageFilter" ), selectedFilter );
+      settings.setValue( QStringLiteral( "/UI/lastSaveAsImageDir" ), QFileInfo( outputFileName ).absolutePath() );
     }
 #else
 
@@ -178,7 +178,7 @@ namespace QgisGui
 
   QString createFileFilter_( QString const &longName, QString const &glob )
   {
-    return QString( "%1 (%2 %3)" ).arg( longName, glob.toLower(), glob.toUpper() );
+    return QStringLiteral( "%1 (%2 %3)" ).arg( longName, glob.toLower(), glob.toUpper() );
   }
 
   QString createFileFilter_( QString const &format )

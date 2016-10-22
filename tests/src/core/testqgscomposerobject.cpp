@@ -67,7 +67,7 @@ void TestQgsComposerObject::initTestCase()
   mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
-  mReport = "<h1>Composer Object Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Composer Object Tests</h1>\n" );
 }
 
 void TestQgsComposerObject::cleanupTestCase()
@@ -115,21 +115,21 @@ void TestQgsComposerObject::writeReadXml()
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
     DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
 
   //test writing with no node
-  QDomElement rootNode = doc.createElement( "qgis" );
+  QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
   QDomElement noNode;
   QCOMPARE( object->writeXml( noNode, doc ), false );
 
   //test writing with node
-  QDomElement composerObjectElem = doc.createElement( "ComposerObject" );
+  QDomElement composerObjectElem = doc.createElement( QStringLiteral( "ComposerObject" ) );
   rootNode.appendChild( composerObjectElem );
   QVERIFY( object->writeXml( composerObjectElem, doc ) );
 
   //check if object node was written
-  QDomNodeList evalNodeList = rootNode.elementsByTagName( "ComposerObject" );
+  QDomNodeList evalNodeList = rootNode.elementsByTagName( QStringLiteral( "ComposerObject" ) );
   QCOMPARE( evalNodeList.count(), 1 );
 
   //test reading node
@@ -148,7 +148,7 @@ void TestQgsComposerObject::writeReadXml()
 void TestQgsComposerObject::setRetrieveDDProperty()
 {
   QgsComposerObject* object = new QgsComposerObject( mComposition );
-  object->setDataDefinedProperty( QgsComposerObject::Transparency, true, true, QString( "10 + 40" ), QString() );
+  object->setDataDefinedProperty( QgsComposerObject::Transparency, true, true, QStringLiteral( "10 + 40" ), QString() );
   object->prepareDataDefinedExpressions();
 
   //test retrieving bad properties
@@ -174,7 +174,7 @@ void TestQgsComposerObject::setRetrieveDDProperty()
 void TestQgsComposerObject::evaluateDDProperty()
 {
   QgsComposerObject* object = new QgsComposerObject( mComposition );
-  object->setDataDefinedProperty( QgsComposerObject::Transparency, true, true, QString( "10 + 40" ), QString() );
+  object->setDataDefinedProperty( QgsComposerObject::Transparency, true, true, QStringLiteral( "10 + 40" ), QString() );
   object->prepareDataDefinedExpressions();
 
   QVariant result;
@@ -194,22 +194,22 @@ void TestQgsComposerObject::evaluateDDProperty()
 void TestQgsComposerObject::writeRetrieveDDProperty()
 {
   QgsComposerObject* object = new QgsComposerObject( mComposition );
-  object->setDataDefinedProperty( QgsComposerObject::TestProperty, true, true, QString( "10 + 40" ), QString() );
+  object->setDataDefinedProperty( QgsComposerObject::TestProperty, true, true, QStringLiteral( "10 + 40" ), QString() );
   object->prepareDataDefinedExpressions();
 
   //test writing object with dd settings
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
     DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
-  QDomElement rootNode = doc.createElement( "qgis" );
-  QDomElement composerObjectElem = doc.createElement( "ComposerObject" );
+  QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
+  QDomElement composerObjectElem = doc.createElement( QStringLiteral( "ComposerObject" ) );
   rootNode.appendChild( composerObjectElem );
   QVERIFY( object->writeXml( composerObjectElem, doc ) );
 
   //check if object node was written
-  QDomNodeList evalNodeList = rootNode.elementsByTagName( "ComposerObject" );
+  QDomNodeList evalNodeList = rootNode.elementsByTagName( QStringLiteral( "ComposerObject" ) );
   QCOMPARE( evalNodeList.count(), 1 );
 
   //test reading node containing dd settings
@@ -240,20 +240,20 @@ void TestQgsComposerObject::customProperties()
 
   QCOMPARE( object->customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
   QVERIFY( object->customProperties().isEmpty() );
-  object->setCustomProperty( "testprop", "testval" );
+  object->setCustomProperty( QStringLiteral( "testprop" ), "testval" );
   QCOMPARE( object->customProperty( "testprop", "defaultval" ).toString(), QString( "testval" ) );
   QCOMPARE( object->customProperties().length(), 1 );
   QCOMPARE( object->customProperties().at( 0 ), QString( "testprop" ) );
 
   //test no crash
-  object->removeCustomProperty( "badprop" );
+  object->removeCustomProperty( QStringLiteral( "badprop" ) );
 
-  object->removeCustomProperty( "testprop" );
+  object->removeCustomProperty( QStringLiteral( "testprop" ) );
   QVERIFY( object->customProperties().isEmpty() );
   QCOMPARE( object->customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
 
-  object->setCustomProperty( "testprop1", "testval1" );
-  object->setCustomProperty( "testprop2", "testval2" );
+  object->setCustomProperty( QStringLiteral( "testprop1" ), "testval1" );
+  object->setCustomProperty( QStringLiteral( "testprop2" ), "testval2" );
   QStringList keys = object->customProperties();
   QCOMPARE( keys.length(), 2 );
   QVERIFY( keys.contains( "testprop1" ) );
@@ -265,22 +265,22 @@ void TestQgsComposerObject::customProperties()
 void TestQgsComposerObject::writeRetrieveCustomProperties()
 {
   QgsComposerObject* object = new QgsComposerObject( mComposition );
-  object->setCustomProperty( "testprop", "testval" );
-  object->setCustomProperty( "testprop2", 5 );
+  object->setCustomProperty( QStringLiteral( "testprop" ), "testval" );
+  object->setCustomProperty( QStringLiteral( "testprop2" ), 5 );
 
   //test writing object with custom properties
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
     DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
-  QDomElement rootNode = doc.createElement( "qgis" );
-  QDomElement composerObjectElem = doc.createElement( "ComposerObject" );
+  QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
+  QDomElement composerObjectElem = doc.createElement( QStringLiteral( "ComposerObject" ) );
   rootNode.appendChild( composerObjectElem );
   QVERIFY( object->writeXml( composerObjectElem, doc ) );
 
   //check if object node was written
-  QDomNodeList evalNodeList = rootNode.elementsByTagName( "ComposerObject" );
+  QDomNodeList evalNodeList = rootNode.elementsByTagName( QStringLiteral( "ComposerObject" ) );
   QCOMPARE( evalNodeList.count(), 1 );
 
   //test reading node containing custom properties

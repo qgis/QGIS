@@ -281,8 +281,8 @@ class CORE_EXPORT QgsCoordinateTransform
 //! Output stream operator
 inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateTransform &r )
 {
-  QString mySummary( "\n%%%%%%%%%%%%%%%%%%%%%%%%\nCoordinate Transform def begins:" );
-  mySummary += "\n\tInitialised? : ";
+  QString mySummary( QStringLiteral( "\n%%%%%%%%%%%%%%%%%%%%%%%%\nCoordinate Transform def begins:" ) );
+  mySummary += QLatin1String( "\n\tInitialised? : " );
   //prevent warnings
   if ( r.isValid() )
   {
@@ -329,7 +329,7 @@ inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateTransfor
   }
 #endif
 
-  mySummary += ( "\nCoordinate Transform def ends \n%%%%%%%%%%%%%%%%%%%%%%%%\n" );
+  mySummary += QLatin1String( "\nCoordinate Transform def ends \n%%%%%%%%%%%%%%%%%%%%%%%%\n" );
   return os << mySummary.toLocal8Bit().data() << std::endl;
 }
 

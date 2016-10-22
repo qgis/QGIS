@@ -37,7 +37,7 @@
 static const QString name_ = QObject::tr( "Raster Terrain Analysis plugin" );
 static const QString description_ = QObject::tr( "A plugin for raster based terrain analysis" );
 static const QString version_ = QObject::tr( "Version 0.1" );
-static const QString icon_ = ":/raster/dem.png";
+static const QString icon_ = QStringLiteral( ":/raster/dem.png" );
 static const QString category_ = QObject::tr( "Raster" );
 
 QgsRasterTerrainAnalysisPlugin::QgsRasterTerrainAnalysisPlugin( QgisInterface* iface ): mIface( iface ), mTerrainAnalysisMenu( nullptr )
@@ -88,19 +88,19 @@ void QgsRasterTerrainAnalysisPlugin::initGui()
     }
 
     mTerrainAnalysisMenu = new QMenu( tr( "Terrain Analysis" ), rasterMenu );
-    mTerrainAnalysisMenu->setObjectName( "mTerrainAnalysisMenu" );
+    mTerrainAnalysisMenu->setObjectName( QStringLiteral( "mTerrainAnalysisMenu" ) );
     mTerrainAnalysisMenu->setIcon( QIcon( ":/raster/dem.png" ) );
     QAction *slopeAction = mTerrainAnalysisMenu->addAction( tr( "Slope" ), this, SLOT( slope() ) );
-    slopeAction->setObjectName( "slopeAction" );
+    slopeAction->setObjectName( QStringLiteral( "slopeAction" ) );
 
     QAction *aspectAction = mTerrainAnalysisMenu->addAction( tr( "Aspect..." ), this, SLOT( aspect() ) );
-    aspectAction->setObjectName( "aspectAction" );
+    aspectAction->setObjectName( QStringLiteral( "aspectAction" ) );
     QAction *hilshadeAction = mTerrainAnalysisMenu->addAction( tr( "Hillshade..." ), this, SLOT( hillshade() ) );
-    hilshadeAction->setObjectName( "hilshadeAction" );
+    hilshadeAction->setObjectName( QStringLiteral( "hilshadeAction" ) );
     QAction *reliefAction = mTerrainAnalysisMenu->addAction( tr( "Relief..." ), this, SLOT( relief() ) );
-    reliefAction->setObjectName( "reliefAction" );
+    reliefAction->setObjectName( QStringLiteral( "reliefAction" ) );
     QAction *ruggednesIndex = mTerrainAnalysisMenu->addAction( tr( "Ruggedness Index..." ), this, SLOT( ruggedness() ) );
-    ruggednesIndex->setObjectName( "ruggednesIndex" );
+    ruggednesIndex->setObjectName( QStringLiteral( "ruggednesIndex" ) );
 
     rasterMenu->addMenu( mTerrainAnalysisMenu );
 

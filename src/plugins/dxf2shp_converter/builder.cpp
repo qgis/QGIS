@@ -411,7 +411,7 @@ void Builder::print_shpObjects()
 
   SHPHandle hSHP;
 
-  if ( fname.endsWith( ".shp", Qt::CaseInsensitive ) )
+  if ( fname.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
   {
     QString fn( fname.mid( fname.length() - 4 ) );
 

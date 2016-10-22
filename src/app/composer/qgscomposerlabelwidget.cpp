@@ -36,7 +36,7 @@ QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QgsCo
   mainLayout->addWidget( itemPropertiesWidget );
 
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
-  mFontColorButton->setContext( "composer" );
+  mFontColorButton->setContext( QStringLiteral( "composer" ) );
 
   mMarginXDoubleSpinBox->setClearValue( 0.0 );
   mMarginYDoubleSpinBox->setClearValue( 0.0 );
@@ -141,13 +141,13 @@ void QgsComposerLabelWidget::on_mInsertExpressionButton_clicked()
   QString selText = mTextEdit->textCursor().selectedText();
 
   // edit the selected expression if there's one
-  if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
+  if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
     selText = selText.mid( 2, selText.size() - 4 );
 
   // use the atlas coverage layer, if any
   QgsVectorLayer* coverageLayer = atlasCoverageLayer();
   QgsExpressionContext context = mComposerLabel->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, "generic", context );
+  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, QStringLiteral( "generic" ), context );
 
   exprDlg.setWindowTitle( tr( "Insert expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )

@@ -21,7 +21,7 @@
 #include <QDomElement>
 
 QgsNullSymbolRenderer::QgsNullSymbolRenderer()
-    : QgsFeatureRenderer( "nullSymbol" )
+    : QgsFeatureRenderer( QStringLiteral( "nullSymbol" ) )
 {
 }
 
@@ -91,7 +91,7 @@ QSet<QString> QgsNullSymbolRenderer::usedAttributes() const
 
 QString QgsNullSymbolRenderer::dump() const
 {
-  return QString( "NULL" );
+  return QStringLiteral( "NULL" );
 }
 
 QgsFeatureRenderer* QgsNullSymbolRenderer::clone() const
@@ -115,7 +115,7 @@ QgsFeatureRenderer* QgsNullSymbolRenderer::create( QDomElement& element )
 QDomElement QgsNullSymbolRenderer::save( QDomDocument& doc )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
-  rendererElem.setAttribute( "type", "nullSymbol" );
+  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "nullSymbol" ) );
   return rendererElem;
 }
 

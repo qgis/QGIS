@@ -103,7 +103,7 @@ void QgsComposerItemCommand::saveState( QDomDocument& stateDoc ) const
   }
 
   stateDoc.clear();
-  QDomElement documentElement = stateDoc.createElement( "ComposerItemState" );
+  QDomElement documentElement = stateDoc.createElement( QStringLiteral( "ComposerItemState" ) );
   source->writeXml( documentElement, stateDoc );
   stateDoc.appendChild( documentElement );
 }

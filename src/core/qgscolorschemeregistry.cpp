@@ -86,7 +86,7 @@ void QgsColorSchemeRegistry::addUserSchemes()
     return;
   }
 
-  QFileInfoList fileInfoList = QDir( palettesDir ).entryInfoList( QStringList( "*.gpl" ), QDir::Files );
+  QFileInfoList fileInfoList = QDir( palettesDir ).entryInfoList( QStringList( QStringLiteral( "*.gpl" ) ), QDir::Files );
   QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
   for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
   {

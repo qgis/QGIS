@@ -64,11 +64,11 @@ void TestQgsRasterFileWriter::initTestCase()
   // disable any PAM stuff to make sure stats are consistent
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( '\n', "<br />" );
+  mySettings = mySettings.replace( '\n', QLatin1String( "<br />" ) );
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
-  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  mReport += "<h1>Raster File Writer Tests</h1>\n";
+  mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  mReport += QLatin1String( "<h1>Raster File Writer Tests</h1>\n" );
   mReport += "<p>" + mySettings + "</p>";
 }
 //runs after all tests
@@ -90,7 +90,7 @@ void TestQgsRasterFileWriter::writeTest()
   QDir dir( mTestDataDir + "/raster" );
 
   QStringList filters;
-  filters << "*.tif";
+  filters << QStringLiteral( "*.tif" );
   QStringList rasterNames = dir.entryList( filters, QDir::Files );
   bool allOK = true;
   Q_FOREACH ( const QString& rasterName, rasterNames )
@@ -133,7 +133,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
   QgsRasterPipe* pipe = new QgsRasterPipe();
   if ( !pipe->set( provider->clone() ) )
   {
-    logError( "Cannot set pipe provider" );
+    logError( QStringLiteral( "Cannot set pipe provider" ) );
     delete pipe;
     return false;
   }
@@ -147,7 +147,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
   }
   if ( !pipe->insert( 1, nuller ) )
   {
-    logError( "Cannot set pipe nuller" );
+    logError( QStringLiteral( "Cannot set pipe nuller" ) );
     delete pipe;
     return false;
   }
@@ -158,7 +158,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
   projector->setCrs( provider->crs(), provider->crs() );
   if ( !pipe->insert( 2, projector ) )
   {
-    logError( "Cannot set pipe projector" );
+    logError( QStringLiteral( "Cannot set pipe projector" ) );
     delete pipe;
     return false;
   }
@@ -169,7 +169,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
   delete pipe;
 
   QgsRasterChecker checker;
-  bool ok = checker.runTest( "gdal", tmpName, "gdal", myRasterFileInfo.filePath() );
+  bool ok = checker.runTest( QStringLiteral( "gdal" ), tmpName, QStringLiteral( "gdal" ), myRasterFileInfo.filePath() );
   mReport += checker.report();
 
   // All OK, we can delete the file

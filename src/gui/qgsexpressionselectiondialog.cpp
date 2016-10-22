@@ -26,12 +26,12 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* laye
 {
   setupUi( this );
 
-  setWindowTitle( QString( "Select by expression - %1" ).arg( layer->name() ) );
+  setWindowTitle( QStringLiteral( "Select by expression - %1" ).arg( layer->name() ) );
 
-  mActionSelect->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionSelect.svg" ) );
-  mActionAddToSelection->setIcon( QgsApplication::getThemeIcon( "/mIconSelectAdd.svg" ) );
-  mActionRemoveFromSelection->setIcon( QgsApplication::getThemeIcon( "/mIconSelectRemove.svg" ) );
-  mActionSelectIntersect->setIcon( QgsApplication::getThemeIcon( "/mIconSelectIntersect.svg" ) );
+  mActionSelect->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ) );
+  mActionAddToSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectAdd.svg" ) ) );
+  mActionRemoveFromSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectRemove.svg" ) ) );
+  mActionSelectIntersect->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectIntersect.svg" ) ) );
 
   mButtonSelect->addAction( mActionSelect );
   mButtonSelect->addAction( mActionAddToSelection );
@@ -42,7 +42,7 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* laye
   mExpressionBuilder->setLayer( layer );
   mExpressionBuilder->setExpressionText( startText );
   mExpressionBuilder->loadFieldNames();
-  mExpressionBuilder->loadRecent( "Selection" );
+  mExpressionBuilder->loadRecent( QStringLiteral( "Selection" ) );
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
@@ -51,7 +51,7 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* laye
   mExpressionBuilder->setExpressionContext( context );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/ExpressionSelectionDialog/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/ExpressionSelectionDialog/geometry" ) ).toByteArray() );
 }
 
 QgsExpressionBuilderWidget* QgsExpressionSelectionDialog::expressionBuilder()
@@ -108,7 +108,7 @@ void QgsExpressionSelectionDialog::closeEvent( QCloseEvent *closeEvent )
   QDialog::closeEvent( closeEvent );
 
   QSettings settings;
-  settings.setValue( "/Windows/ExpressionSelectionDialog/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/ExpressionSelectionDialog/geometry" ), saveGeometry() );
 }
 
 void QgsExpressionSelectionDialog::on_mPbnClose_clicked()
@@ -124,5 +124,5 @@ void QgsExpressionSelectionDialog::done( int r )
 
 void QgsExpressionSelectionDialog::saveRecent()
 {
-  mExpressionBuilder->saveToRecent( "Selection" );
+  mExpressionBuilder->saveToRecent( QStringLiteral( "Selection" ) );
 }

@@ -21,8 +21,8 @@
 
 #include <QString>
 
-static QString PROVIDER_KEY = "ows";
-static QString PROVIDER_DESCRIPTION = "OWS meta provider";
+static QString PROVIDER_KEY = QStringLiteral( "ows" );
+static QString PROVIDER_DESCRIPTION = QStringLiteral( "OWS meta provider" );
 
 QgsOwsProvider::QgsOwsProvider( const QString& uri )
     : QgsDataProvider( uri )

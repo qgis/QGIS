@@ -188,14 +188,14 @@ void QgsFormAnnotationItem::writeXml( QDomDocument& doc ) const
     return;
   }
 
-  QDomElement formAnnotationElem = doc.createElement( "FormAnnotationItem" );
+  QDomElement formAnnotationElem = doc.createElement( QStringLiteral( "FormAnnotationItem" ) );
   if ( mVectorLayer )
   {
-    formAnnotationElem.setAttribute( "vectorLayer", mVectorLayer->id() );
+    formAnnotationElem.setAttribute( QStringLiteral( "vectorLayer" ), mVectorLayer->id() );
   }
-  formAnnotationElem.setAttribute( "hasFeature", mHasAssociatedFeature );
-  formAnnotationElem.setAttribute( "feature", mFeature );
-  formAnnotationElem.setAttribute( "designerForm", mDesignerForm );
+  formAnnotationElem.setAttribute( QStringLiteral( "hasFeature" ), mHasAssociatedFeature );
+  formAnnotationElem.setAttribute( QStringLiteral( "feature" ), mFeature );
+  formAnnotationElem.setAttribute( QStringLiteral( "designerForm" ), mDesignerForm );
   _writeXml( doc, formAnnotationElem );
   documentElem.appendChild( formAnnotationElem );
 }
@@ -203,9 +203,9 @@ void QgsFormAnnotationItem::writeXml( QDomDocument& doc ) const
 void QgsFormAnnotationItem::readXml( const QDomDocument& doc, const QDomElement& itemElem )
 {
   mVectorLayer = nullptr;
-  if ( itemElem.hasAttribute( "vectorLayer" ) )
+  if ( itemElem.hasAttribute( QStringLiteral( "vectorLayer" ) ) )
   {
-    mVectorLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( itemElem.attribute( "vectorLayer", "" ) ) );
+    mVectorLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( itemElem.attribute( QStringLiteral( "vectorLayer" ), QLatin1String( "" ) ) ) );
     if ( mVectorLayer )
     {
       QObject::connect( mVectorLayer, SIGNAL( layerModified() ), this, SLOT( setFeatureForMapPosition() ) );
@@ -213,10 +213,10 @@ void QgsFormAnnotationItem::readXml( const QDomDocument& doc, const QDomElement&
       QObject::connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( updateVisibility() ) );
     }
   }
-  mHasAssociatedFeature = itemElem.attribute( "hasFeature", "0" ).toInt();
-  mFeature = itemElem.attribute( "feature", "0" ).toInt();
-  mDesignerForm = itemElem.attribute( "designerForm", "" );
-  QDomElement annotationElem = itemElem.firstChildElement( "AnnotationItem" );
+  mHasAssociatedFeature = itemElem.attribute( QStringLiteral( "hasFeature" ), QStringLiteral( "0" ) ).toInt();
+  mFeature = itemElem.attribute( QStringLiteral( "feature" ), QStringLiteral( "0" ) ).toInt();
+  mDesignerForm = itemElem.attribute( QStringLiteral( "designerForm" ), QLatin1String( "" ) );
+  QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {
     _readXml( doc, annotationElem );

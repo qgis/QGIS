@@ -37,7 +37,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     virtual bool operator==( const QgsCurve& other ) const override;
     virtual bool operator!=( const QgsCurve& other ) const override;
 
-    virtual QString geometryType() const override { return "CompoundCurve"; }
+    virtual QString geometryType() const override { return QStringLiteral( "CompoundCurve" ); }
     virtual int dimension() const override { return 1; }
     virtual QgsCompoundCurve* clone() const override;
     virtual void clear() override;
@@ -48,8 +48,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     int wkbSize() const override;
     unsigned char* asWkb( int& binarySize ) const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = QStringLiteral( "gml" ) ) const override;
+    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = QStringLiteral( "gml" ) ) const override;
     QString asJSON( int precision = 17 ) const override;
 
     //curve interface

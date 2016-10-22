@@ -72,7 +72,7 @@ void TestVectorLayerCache::initTestCase()
 
   // Backup test shape file and attributes
   QStringList backupFiles;
-  backupFiles << "points.shp" << "points.shx" << "points.dbf" << "points.prj";
+  backupFiles << QStringLiteral( "points.shp" ) << QStringLiteral( "points.shx" ) << QStringLiteral( "points.dbf" ) << QStringLiteral( "points.prj" );
 
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + '/';
@@ -96,7 +96,7 @@ void TestVectorLayerCache::initTestCase()
   QString myPointsFileName = mTmpFiles.value( myTestDataDir + "points.shp" );
   QFileInfo myPointFileInfo( myPointsFileName );
   mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
-                                     myPointFileInfo.completeBaseName(), "ogr" );
+                                     myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 }
 
 void TestVectorLayerCache::init()
@@ -127,7 +127,7 @@ void TestVectorLayerCache::cleanupTestCase()
   }
 
   // also clean up newly created .qix file
-  QFile::remove( QString( TEST_DATA_DIR ) + "/points.qix" );
+  QFile::remove( QStringLiteral( TEST_DATA_DIR ) + "/points.qix" );
 
   QgsApplication::exitQgis();
 }
@@ -156,14 +156,14 @@ void TestVectorLayerCache::testCacheAttrActions()
   // Add an attribute, make sure it is returned also if a cached feature is requested
   mPointsLayer->startEditing();
   QVariant::Type attrType = QVariant::Int;
-  mPointsLayer->addAttribute( QgsField( "newAttr", attrType, "Int", 5, 0 ) );
+  mPointsLayer->addAttribute( QgsField( QStringLiteral( "newAttr" ), attrType, QStringLiteral( "Int" ), 5, 0 ) );
   mPointsLayer->commitChanges();
 
   QVERIFY( mVectorLayerCache->featureAtId( 15, f ) );
   QVERIFY( f.attribute( "newAttr" ).isValid() );
 
   QgsFields allFields = mPointsLayer->fields();
-  int idx = allFields.indexFromName( "newAttr" );
+  int idx = allFields.indexFromName( QStringLiteral( "newAttr" ) );
 
   mPointsLayer->startEditing();
   mPointsLayer->deleteAttribute( idx );
@@ -206,7 +206,7 @@ void TestVectorLayerCache::testSubsetRequest()
 
   QgsFields fields = mPointsLayer->fields();
   QStringList requiredFields;
-  requiredFields << "Class" << "Cabin Crew";
+  requiredFields << QStringLiteral( "Class" ) << QStringLiteral( "Cabin Crew" );
 
   mVectorLayerCache->featureAtId( 16, f );
   QVariant a = f.attribute( 3 );

@@ -82,7 +82,7 @@ void QgsComposerConfigObject::setDataDefinedProperty( const QgsDataDefinedButton
   }
 
   const QMap< QString, QString >& map = ddBtn->definedProperty();
-  mComposerObject->setDataDefinedProperty( p, map.value( "active" ).toInt(), map.value( "useexpr" ).toInt(), map.value( "expression" ), map.value( "field" ) );
+  mComposerObject->setDataDefinedProperty( p, map.value( QStringLiteral( "active" ) ).toInt(), map.value( QStringLiteral( "useexpr" ) ).toInt(), map.value( QStringLiteral( "expression" ) ), map.value( QStringLiteral( "field" ) ) );
 }
 
 void QgsComposerConfigObject::registerDataDefinedButton( QgsDataDefinedButton* button, QgsComposerObject::DataDefinedProperty property,
@@ -570,10 +570,10 @@ void QgsComposerItemWidget::setValuesForGuiElements()
 
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
   mBackgroundColorButton->setAllowAlpha( true );
-  mBackgroundColorButton->setContext( "composer" );
+  mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
   mFrameColorButton->setColorDialogTitle( tr( "Select frame color" ) );
   mFrameColorButton->setAllowAlpha( true );
-  mFrameColorButton->setContext( "composer" );
+  mFrameColorButton->setContext( QStringLiteral( "composer" ) );
 
   setValuesForGuiPositionElements();
   setValuesForGuiNonPositionElements();

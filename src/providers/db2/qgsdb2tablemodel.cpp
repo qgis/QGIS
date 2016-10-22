@@ -75,7 +75,7 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
     wkbType = QgsWkbTypes::NoGeometry;
   }
 
-  bool needToDetect = wkbType == QgsWkbTypes::Unknown && layerProperty.type != "GEOMETRYCOLLECTION";
+  bool needToDetect = wkbType == QgsWkbTypes::Unknown && layerProperty.type != QLatin1String( "GEOMETRYCOLLECTION" );
 
   QList<QStandardItem*> childItemList;
 
@@ -94,11 +94,11 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
   QStandardItem *sridItem = new QStandardItem( layerProperty.srid );
   sridItem->setEditable( false );
 
-  QString pkText, pkCol = "";
+  QString pkText, pkCol = QLatin1String( "" );
   switch ( layerProperty.pkCols.size() )
   {
     case 0:
-      pkText = "";
+      pkText = QLatin1String( "" );
       break;
     case 1:
       pkText = layerProperty.pkCols[0];
@@ -116,7 +116,7 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
   pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
   pkItem->setData( pkCol, Qt::UserRole + 2 );
 
-  QStandardItem *selItem = new QStandardItem( "" );
+  QStandardItem *selItem = new QStandardItem( QLatin1String( "" ) );
   selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
   selItem->setCheckState( Qt::Checked );
   selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
@@ -216,8 +216,8 @@ void QgsDb2TableModel::setSql( const QModelIndex &index, const QString &sql )
 
 void QgsDb2TableModel::setGeometryTypesForTable( QgsDb2LayerProperty layerProperty )
 {
-  QStringList typeList = layerProperty.type.split( ",", QString::SkipEmptyParts );
-  QStringList sridList = layerProperty.srid.split( ",", QString::SkipEmptyParts );
+  QStringList typeList = layerProperty.type.split( QStringLiteral( "," ), QString::SkipEmptyParts );
+  QStringList sridList = layerProperty.srid.split( QStringLiteral( "," ), QString::SkipEmptyParts );
   Q_ASSERT( typeList.size() == sridList.size() );
 
   //find schema item and table item
@@ -404,38 +404,38 @@ QgsWkbTypes::Type QgsDb2TableModel::wkbTypeFromDb2( QString type, int dim )
 
   if ( dim == 3 )
   {
-    if ( type == "ST_POINT" )
+    if ( type == QLatin1String( "ST_POINT" ) )
       return QgsWkbTypes::Point25D;
-    if ( type == "ST_LINESTRING" )
+    if ( type == QLatin1String( "ST_LINESTRING" ) )
       return QgsWkbTypes::LineString25D;
-    if ( type == "ST_POLYGON" )
+    if ( type == QLatin1String( "ST_POLYGON" ) )
       return QgsWkbTypes::Polygon25D;
-    if ( type == "ST_MULTIPOINT" )
+    if ( type == QLatin1String( "ST_MULTIPOINT" ) )
       return QgsWkbTypes::MultiPoint25D;
-    if ( type == "ST_MULTILINESTRING" )
+    if ( type == QLatin1String( "ST_MULTILINESTRING" ) )
       return QgsWkbTypes::MultiLineString25D;
-    if ( type == "ST_MULTIPOLYGON" )
+    if ( type == QLatin1String( "ST_MULTIPOLYGON" ) )
       return QgsWkbTypes::MultiPolygon25D;
-    if ( type == "NONE" )
+    if ( type == QLatin1String( "NONE" ) )
       return QgsWkbTypes::NoGeometry;
     else
       return QgsWkbTypes::Unknown;
   }
   else
   {
-    if ( type == "ST_POINT" )
+    if ( type == QLatin1String( "ST_POINT" ) )
       return QgsWkbTypes::Point;
-    if ( type == "ST_LINESTRING" )
+    if ( type == QLatin1String( "ST_LINESTRING" ) )
       return QgsWkbTypes::LineString;
-    if ( type == "ST_POLYGON" )
+    if ( type == QLatin1String( "ST_POLYGON" ) )
       return QgsWkbTypes::Polygon;
-    if ( type == "ST_MULTIPOINT" )
+    if ( type == QLatin1String( "ST_MULTIPOINT" ) )
       return QgsWkbTypes::MultiPoint;
-    if ( type == "ST_MULTILINESTRING" )
+    if ( type == QLatin1String( "ST_MULTILINESTRING" ) )
       return QgsWkbTypes::MultiLineString;
-    if ( type == "ST_MULTIPOLYGON" )
+    if ( type == QLatin1String( "ST_MULTIPOLYGON" ) )
       return QgsWkbTypes::MultiPolygon;
-    if ( type == "NONE" )
+    if ( type == QLatin1String( "NONE" ) )
       return QgsWkbTypes::NoGeometry;
     else
       return QgsWkbTypes::Unknown;

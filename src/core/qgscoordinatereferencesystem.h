@@ -697,44 +697,44 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 //! Output stream operator
 inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateReferenceSystem &r )
 {
-  QString mySummary( "\n\tSpatial Reference System:" );
-  mySummary += "\n\t\tDescription : ";
+  QString mySummary( QStringLiteral( "\n\tSpatial Reference System:" ) );
+  mySummary += QLatin1String( "\n\t\tDescription : " );
   if ( !r.description().isNull() )
   {
     mySummary += r.description();
   }
   else
   {
-    mySummary += "Undefined";
+    mySummary += QLatin1String( "Undefined" );
   }
-  mySummary += "\n\t\tProjection  : ";
+  mySummary += QLatin1String( "\n\t\tProjection  : " );
   if ( !r.projectionAcronym().isNull() )
   {
     mySummary += r.projectionAcronym();
   }
   else
   {
-    mySummary += "Undefined";
+    mySummary += QLatin1String( "Undefined" );
   }
 
-  mySummary += "\n\t\tEllipsoid   : ";
+  mySummary += QLatin1String( "\n\t\tEllipsoid   : " );
   if ( !r.ellipsoidAcronym().isNull() )
   {
     mySummary += r.ellipsoidAcronym();
   }
   else
   {
-    mySummary += "Undefined";
+    mySummary += QLatin1String( "Undefined" );
   }
 
-  mySummary += "\n\t\tProj4String  : ";
+  mySummary += QLatin1String( "\n\t\tProj4String  : " );
   if ( !r.toProj4().isNull() )
   {
     mySummary += r.toProj4();
   }
   else
   {
-    mySummary += "Undefined";
+    mySummary += QLatin1String( "Undefined" );
   }
   // Using streams we need to use local 8 Bit
   return os << mySummary.toLocal8Bit().data() << std::endl;

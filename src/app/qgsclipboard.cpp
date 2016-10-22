@@ -82,12 +82,12 @@ QString QgsClipboard::generateClipboardText() const
 {
   QSettings settings;
   CopyFormat format = AttributesWithWKT;
-  if ( settings.contains( "/qgis/copyFeatureFormat" ) )
-    format = static_cast< CopyFormat >( settings.value( "/qgis/copyFeatureFormat", true ).toInt() );
+  if ( settings.contains( QStringLiteral( "/qgis/copyFeatureFormat" ) ) )
+    format = static_cast< CopyFormat >( settings.value( QStringLiteral( "/qgis/copyFeatureFormat" ), true ).toInt() );
   else
   {
     //old format setting
-    format = settings.value( "/qgis/copyGeometryAsWKT", true ).toBool() ? AttributesWithWKT : AttributesOnly;
+    format = settings.value( QStringLiteral( "/qgis/copyGeometryAsWKT" ), true ).toBool() ? AttributesWithWKT : AttributesOnly;
   }
 
   switch ( format )
@@ -101,14 +101,14 @@ QString QgsClipboard::generateClipboardText() const
       // first do the field names
       if ( format == AttributesWithWKT )
       {
-        textFields += "wkt_geom";
+        textFields += QStringLiteral( "wkt_geom" );
       }
 
       Q_FOREACH ( const QgsField& field, mFeatureFields )
       {
         textFields += field.name();
       }
-      textLines += textFields.join( "\t" );
+      textLines += textFields.join( QStringLiteral( "\t" ) );
       textFields.clear();
 
       // then the field contents
@@ -123,7 +123,7 @@ QString QgsClipboard::generateClipboardText() const
             textFields += it->geometry().exportToWkt();
           else
           {
-            textFields += settings.value( "qgis/nullValue", "NULL" ).toString();
+            textFields += settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
           }
         }
 
@@ -134,11 +134,11 @@ QString QgsClipboard::generateClipboardText() const
           textFields += attributes.at( idx ).toString();
         }
 
-        textLines += textFields.join( "\t" );
+        textLines += textFields.join( QStringLiteral( "\t" ) );
         textFields.clear();
       }
 
-      return textLines.join( "\n" );
+      return textLines.join( QStringLiteral( "\n" ) );
     }
     case GeoJSON:
     {

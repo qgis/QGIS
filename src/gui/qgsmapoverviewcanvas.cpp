@@ -37,7 +37,7 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapC
     , mJob( nullptr )
 {
   setAutoFillBackground( true );
-  setObjectName( "theOverviewCanvas" );
+  setObjectName( QStringLiteral( "theOverviewCanvas" ) );
   mPanningWidget = new QgsPanningWidget( this );
 
   mSettings.setFlag( QgsMapSettings::DrawLabeling, false );
@@ -282,7 +282,7 @@ QStringList QgsMapOverviewCanvas::layerSet() const
 QgsPanningWidget::QgsPanningWidget( QWidget* parent )
     : QWidget( parent )
 {
-  setObjectName( "panningWidget" );
+  setObjectName( QStringLiteral( "panningWidget" ) );
   setMinimumSize( 5, 5 );
   setAttribute( Qt::WA_NoSystemBackground );
 }

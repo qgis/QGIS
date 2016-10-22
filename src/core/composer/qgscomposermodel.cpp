@@ -230,10 +230,10 @@ QVariant QgsComposerModel::headerData( int section, Qt::Orientation orientation,
 {
   static QIcon lockIcon;
   if ( lockIcon.isNull() )
-    lockIcon = QgsApplication::getThemeIcon( "/locked.svg" );
+    lockIcon = QgsApplication::getThemeIcon( QStringLiteral( "/locked.svg" ) );
   static QIcon showIcon;
   if ( showIcon.isNull() )
-    showIcon = QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" );
+    showIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) );
 
   switch ( role )
   {
@@ -277,7 +277,7 @@ Qt::DropActions QgsComposerModel::supportedDropActions() const
 QStringList QgsComposerModel::mimeTypes() const
 {
   QStringList types;
-  types << "application/x-vnd.qgis.qgis.composeritemid";
+  types << QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" );
   return types;
 }
 
@@ -302,7 +302,7 @@ QMimeData* QgsComposerModel::mimeData( const QModelIndexList &indexes ) const
     }
   }
 
-  mimeData->setData( "application/x-vnd.qgis.qgis.composeritemid", encodedData );
+  mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" ), encodedData );
   return mimeData;
 }
 
@@ -324,7 +324,7 @@ bool QgsComposerModel::dropMimeData( const QMimeData *data,
     return true;
   }
 
-  if ( !data->hasFormat( "application/x-vnd.qgis.qgis.composeritemid" ) )
+  if ( !data->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" ) ) )
   {
     return false;
   }
@@ -336,7 +336,7 @@ bool QgsComposerModel::dropMimeData( const QMimeData *data,
 
   int beginRow = row != -1 ? row : rowCount( QModelIndex() );
 
-  QByteArray encodedData = data->data( "application/x-vnd.qgis.qgis.composeritemid" );
+  QByteArray encodedData = data->data( QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" ) );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
   QList<QgsComposerItem*> droppedItems;
   int rows = 0;

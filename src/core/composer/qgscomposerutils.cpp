@@ -261,12 +261,12 @@ double QgsComposerUtils::relativePosition( const double position, const double b
 
 QgsComposition::PaperOrientation QgsComposerUtils::decodePaperOrientation( const QString& orientationString, bool &ok )
 {
-  if ( orientationString.compare( "Portrait", Qt::CaseInsensitive ) == 0 )
+  if ( orientationString.compare( QLatin1String( "Portrait" ), Qt::CaseInsensitive ) == 0 )
   {
     ok = true;
     return QgsComposition::Portrait;
   }
-  if ( orientationString.compare( "Landscape", Qt::CaseInsensitive ) == 0 )
+  if ( orientationString.compare( QLatin1String( "Landscape" ), Qt::CaseInsensitive ) == 0 )
   {
     ok = true;
     return QgsComposition::Landscape;
@@ -278,32 +278,32 @@ QgsComposition::PaperOrientation QgsComposerUtils::decodePaperOrientation( const
 bool QgsComposerUtils::decodePresetPaperSize( const QString& presetString, double &width, double &height )
 {
   QList< QPair< QString, QSizeF > > presets;
-  presets << qMakePair( QString( "A5" ), QSizeF( 148, 210 ) );
-  presets << qMakePair( QString( "A4" ), QSizeF( 210, 297 ) );
-  presets << qMakePair( QString( "A3" ), QSizeF( 297, 420 ) );
-  presets << qMakePair( QString( "A2" ), QSizeF( 420, 594 ) );
-  presets << qMakePair( QString( "A1" ), QSizeF( 594, 841 ) );
-  presets << qMakePair( QString( "A0" ), QSizeF( 841, 1189 ) );
-  presets << qMakePair( QString( "B5" ), QSizeF( 176, 250 ) );
-  presets << qMakePair( QString( "B4" ), QSizeF( 250, 353 ) );
-  presets << qMakePair( QString( "B3" ), QSizeF( 353, 500 ) );
-  presets << qMakePair( QString( "B2" ), QSizeF( 500, 707 ) );
-  presets << qMakePair( QString( "B1" ), QSizeF( 707, 1000 ) );
-  presets << qMakePair( QString( "B0" ), QSizeF( 1000, 1414 ) );
+  presets << qMakePair( QStringLiteral( "A5" ), QSizeF( 148, 210 ) );
+  presets << qMakePair( QStringLiteral( "A4" ), QSizeF( 210, 297 ) );
+  presets << qMakePair( QStringLiteral( "A3" ), QSizeF( 297, 420 ) );
+  presets << qMakePair( QStringLiteral( "A2" ), QSizeF( 420, 594 ) );
+  presets << qMakePair( QStringLiteral( "A1" ), QSizeF( 594, 841 ) );
+  presets << qMakePair( QStringLiteral( "A0" ), QSizeF( 841, 1189 ) );
+  presets << qMakePair( QStringLiteral( "B5" ), QSizeF( 176, 250 ) );
+  presets << qMakePair( QStringLiteral( "B4" ), QSizeF( 250, 353 ) );
+  presets << qMakePair( QStringLiteral( "B3" ), QSizeF( 353, 500 ) );
+  presets << qMakePair( QStringLiteral( "B2" ), QSizeF( 500, 707 ) );
+  presets << qMakePair( QStringLiteral( "B1" ), QSizeF( 707, 1000 ) );
+  presets << qMakePair( QStringLiteral( "B0" ), QSizeF( 1000, 1414 ) );
   // North american formats
-  presets << qMakePair( QString( "Legal" ), QSizeF( 215.9, 355.6 ) );
-  presets << qMakePair( QString( "Letter" ), QSizeF( 215.9, 279.4 ) );
-  presets << qMakePair( QString( "ANSI A" ), QSizeF( 215.9, 279.4 ) );
-  presets << qMakePair( QString( "ANSI B" ), QSizeF( 279.4, 431.8 ) );
-  presets << qMakePair( QString( "ANSI C" ), QSizeF( 431.8, 558.8 ) );
-  presets << qMakePair( QString( "ANSI D" ), QSizeF( 558.8, 863.6 ) );
-  presets << qMakePair( QString( "ANSI E" ), QSizeF( 863.6, 1117.6 ) );
-  presets << qMakePair( QString( "Arch A" ), QSizeF( 228.6, 304.8 ) );
-  presets << qMakePair( QString( "Arch B" ), QSizeF( 304.8, 457.2 ) );
-  presets << qMakePair( QString( "Arch C" ), QSizeF( 457.2, 609.6 ) );
-  presets << qMakePair( QString( "Arch D" ), QSizeF( 609.6, 914.4 ) );
-  presets << qMakePair( QString( "Arch E" ), QSizeF( 914.4, 1219.2 ) );
-  presets << qMakePair( QString( "Arch E1" ), QSizeF( 762, 1066.8 ) );
+  presets << qMakePair( QStringLiteral( "Legal" ), QSizeF( 215.9, 355.6 ) );
+  presets << qMakePair( QStringLiteral( "Letter" ), QSizeF( 215.9, 279.4 ) );
+  presets << qMakePair( QStringLiteral( "ANSI A" ), QSizeF( 215.9, 279.4 ) );
+  presets << qMakePair( QStringLiteral( "ANSI B" ), QSizeF( 279.4, 431.8 ) );
+  presets << qMakePair( QStringLiteral( "ANSI C" ), QSizeF( 431.8, 558.8 ) );
+  presets << qMakePair( QStringLiteral( "ANSI D" ), QSizeF( 558.8, 863.6 ) );
+  presets << qMakePair( QStringLiteral( "ANSI E" ), QSizeF( 863.6, 1117.6 ) );
+  presets << qMakePair( QStringLiteral( "Arch A" ), QSizeF( 228.6, 304.8 ) );
+  presets << qMakePair( QStringLiteral( "Arch B" ), QSizeF( 304.8, 457.2 ) );
+  presets << qMakePair( QStringLiteral( "Arch C" ), QSizeF( 457.2, 609.6 ) );
+  presets << qMakePair( QStringLiteral( "Arch D" ), QSizeF( 609.6, 914.4 ) );
+  presets << qMakePair( QStringLiteral( "Arch E" ), QSizeF( 914.4, 1219.2 ) );
+  presets << qMakePair( QStringLiteral( "Arch E1" ), QSizeF( 762, 1066.8 ) );
 
   QList< QPair< QString, QSizeF > >::const_iterator presetIt = presets.constBegin();
   for ( ;presetIt != presets.constEnd(); ++presetIt )
@@ -356,8 +356,8 @@ void QgsComposerUtils::readDataDefinedProperty( const QgsComposerObject::DataDef
   }
 
   //set values for QgsDataDefined
-  QString active = ddElem.attribute( "active" );
-  if ( active.compare( "true", Qt::CaseInsensitive ) == 0 )
+  QString active = ddElem.attribute( QStringLiteral( "active" ) );
+  if ( active.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
   {
     dd->setActive( true );
   }
@@ -365,10 +365,10 @@ void QgsComposerUtils::readDataDefinedProperty( const QgsComposerObject::DataDef
   {
     dd->setActive( false );
   }
-  dd->setField( ddElem.attribute( "field" ) );
-  dd->setExpressionString( ddElem.attribute( "expr" ) );
-  QString useExpr = ddElem.attribute( "useExpr" );
-  if ( useExpr.compare( "true", Qt::CaseInsensitive ) == 0 )
+  dd->setField( ddElem.attribute( QStringLiteral( "field" ) ) );
+  dd->setExpressionString( ddElem.attribute( QStringLiteral( "expr" ) ) );
+  QString useExpr = ddElem.attribute( QStringLiteral( "useExpr" ) );
+  if ( useExpr.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
   {
     dd->setUseExpression( true );
   }
@@ -403,22 +403,22 @@ void QgsComposerUtils::writeDataDefinedPropertyMap( QDomElement &itemElem, QDomD
           QDomElement ddElem = doc.createElement( newElemName );
           if ( active )
           {
-            ddElem.setAttribute( "active", "true" );
+            ddElem.setAttribute( QStringLiteral( "active" ), QStringLiteral( "true" ) );
           }
           else
           {
-            ddElem.setAttribute( "active", "false" );
+            ddElem.setAttribute( QStringLiteral( "active" ), QStringLiteral( "false" ) );
           }
           if ( useExpr )
           {
-            ddElem.setAttribute( "useExpr", "true" );
+            ddElem.setAttribute( QStringLiteral( "useExpr" ), QStringLiteral( "true" ) );
           }
           else
           {
-            ddElem.setAttribute( "useExpr", "false" );
+            ddElem.setAttribute( QStringLiteral( "useExpr" ), QStringLiteral( "false" ) );
           }
-          ddElem.setAttribute( "expr", expr );
-          ddElem.setAttribute( "field", field );
+          ddElem.setAttribute( QStringLiteral( "expr" ), expr );
+          ddElem.setAttribute( QStringLiteral( "field" ), field );
           itemElem.appendChild( ddElem );
         }
       }

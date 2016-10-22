@@ -137,7 +137,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
   bool topologicalEditing = QgsProject::instance()->topologicalEditing();
 
   //snapping on intersection on?
-  int intersectionSnapping = QgsProject::instance()->readNumEntry( "Digitizing", "/IntersectionSnapping", 0 );
+  int intersectionSnapping = QgsProject::instance()->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/IntersectionSnapping" ), 0 );
 
   if ( topologicalEditing == 0 )
   {
@@ -167,25 +167,25 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
   bool ok, snappingDefinedInProject;
 
   QSettings settings;
-  QString snappingMode = QgsProject::instance()->readEntry( "Digitizing", "/SnappingMode", "current_layer", &snappingDefinedInProject );
-  QString defaultSnapToleranceUnit = snappingDefinedInProject ? QgsProject::instance()->readEntry( "Digitizing", "/DefaultSnapToleranceUnit" ) : settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", "0" ).toString();
-  QString defaultSnapType = snappingDefinedInProject ? QgsProject::instance()->readEntry( "Digitizing", "/DefaultSnapType" ) : settings.value( "/qgis/digitizing/default_snap_mode", "off" ).toString();
-  QString defaultSnapTolerance = snappingDefinedInProject ? QString::number( QgsProject::instance()->readDoubleEntry( "Digitizing", "/DefaultSnapTolerance" ) ) : settings.value( "/qgis/digitizing/default_snapping_tolerance", "0" ).toString();
+  QString snappingMode = QgsProject::instance()->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/SnappingMode" ), QStringLiteral( "current_layer" ), &snappingDefinedInProject );
+  QString defaultSnapToleranceUnit = snappingDefinedInProject ? QgsProject::instance()->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapToleranceUnit" ) ) : settings.value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), "0" ).toString();
+  QString defaultSnapType = snappingDefinedInProject ? QgsProject::instance()->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapType" ) ) : settings.value( QStringLiteral( "/qgis/digitizing/default_snap_mode" ), "off" ).toString();
+  QString defaultSnapTolerance = snappingDefinedInProject ? QString::number( QgsProject::instance()->readDoubleEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapTolerance" ) ) ) : settings.value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), "0" ).toString();
 
-  if ( !snappingDefinedInProject && defaultSnapType == "off" )
+  if ( !snappingDefinedInProject && defaultSnapType == QLatin1String( "off" ) )
   {
     return 0;
   }
 
-  if ( snappingMode == "current_layer" || !snappingDefinedInProject )
+  if ( snappingMode == QLatin1String( "current_layer" ) || !snappingDefinedInProject )
   {
     layerIdList.append( currentVectorLayer->id() );
-    enabledList.append( "enabled" );
+    enabledList.append( QStringLiteral( "enabled" ) );
     toleranceList.append( defaultSnapTolerance );
     toleranceUnitList.append( defaultSnapToleranceUnit );
     snapToList.append( defaultSnapType );
   }
-  else if ( snappingMode == "all_layers" )
+  else if ( snappingMode == QLatin1String( "all_layers" ) )
   {
     QList<QgsMapLayer*> allLayers = mMapCanvas->layers();
     QList<QgsMapLayer*>::const_iterator layerIt = allLayers.constBegin();
@@ -196,7 +196,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
         continue;
       }
       layerIdList.append(( *layerIt )->id() );
-      enabledList.append( "enabled" );
+      enabledList.append( QStringLiteral( "enabled" ) );
       toleranceList.append( defaultSnapTolerance );
       toleranceUnitList.append( defaultSnapToleranceUnit );
       snapToList.append( defaultSnapType );
@@ -204,11 +204,11 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
   }
   else //advanced
   {
-    layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", QStringList(), &ok );
-    enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", QStringList(), &ok );
-    toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", QStringList(), &ok );
-    toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", QStringList(), &ok );
-    snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", QStringList(), &ok );
+    layerIdList = QgsProject::instance()->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingList" ), QStringList(), &ok );
+    enabledList = QgsProject::instance()->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingEnabledList" ), QStringList(), &ok );
+    toleranceList = QgsProject::instance()->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingToleranceList" ), QStringList(), &ok );
+    toleranceUnitList = QgsProject::instance()->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnappingToleranceUnitList" ), QStringList(), &ok );
+    snapToList = QgsProject::instance()->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnapToList" ), QStringList(), &ok );
   }
 
   if ( !( layerIdList.size() == enabledList.size() &&
@@ -233,7 +233,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
   QStringList::const_iterator enabledIt( enabledList.constBegin() );
   for ( ; layerIt != layerIdList.constEnd(); ++layerIt, ++tolIt, ++tolUnitIt, ++snapIt, ++enabledIt )
   {
-    if ( *enabledIt != "enabled" )
+    if ( *enabledIt != QLatin1String( "enabled" ) )
     {
       // skip layer if snapping is not enabled
       continue;
@@ -251,15 +251,15 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
     snapLayer.mUnitType = ( QgsTolerance::UnitType ) tolUnitIt->toInt();
 
     // segment or vertex
-    if ( *snapIt == "to vertex" || *snapIt == "to_vertex" )
+    if ( *snapIt == QLatin1String( "to vertex" ) || *snapIt == QLatin1String( "to_vertex" ) )
     {
       snapLayer.mSnapTo = QgsSnapper::SnapToVertex;
     }
-    else if ( *snapIt == "to segment" || *snapIt == "to_segment" )
+    else if ( *snapIt == QLatin1String( "to segment" ) || *snapIt == QLatin1String( "to_segment" ) )
     {
       snapLayer.mSnapTo = QgsSnapper::SnapToSegment;
     }
-    else if ( *snapIt == "to vertex and segment" || *snapIt == "to_vertex_and_segment" )
+    else if ( *snapIt == QLatin1String( "to vertex and segment" ) || *snapIt == QLatin1String( "to_vertex_and_segment" ) )
     {
       snapLayer.mSnapTo = QgsSnapper::SnapToVertexAndSegment;
     }

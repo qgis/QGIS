@@ -199,14 +199,14 @@ QString QgsAttributeFormEditorWidget::currentFilterExpression() const
     // special case: Between search
     QString filter1 = mSearchWidgets.at( 0 )->createExpression( QgsSearchWidgetWrapper::GreaterThanOrEqualTo );
     QString filter2 = mSearchWidgets.at( 1 )->createExpression( QgsSearchWidgetWrapper::LessThanOrEqualTo );
-    return QString( "%1 AND %2" ).arg( filter1, filter2 );
+    return QStringLiteral( "%1 AND %2" ).arg( filter1, filter2 );
   }
   else if ( mSearchWidgetToolButton->activeFlags() & QgsSearchWidgetWrapper::IsNotBetween )
   {
     // special case: Is Not Between search
     QString filter1 = mSearchWidgets.at( 0 )->createExpression( QgsSearchWidgetWrapper::LessThan );
     QString filter2 = mSearchWidgets.at( 1 )->createExpression( QgsSearchWidgetWrapper::GreaterThan );
-    return QString( "%1 OR %2" ).arg( filter1, filter2 );
+    return QStringLiteral( "%1 OR %2" ).arg( filter1, filter2 );
   }
 
   return mSearchWidgets.at( 0 )->createExpression( mSearchWidgetToolButton->activeFlags() );

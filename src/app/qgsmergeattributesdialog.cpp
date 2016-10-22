@@ -68,11 +68,11 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   mTableWidget->setSelectionBehavior( QAbstractItemView::SelectRows );
   mTableWidget->setSelectionMode( QAbstractItemView::SingleSelection );
 
-  mFromSelectedPushButton->setIcon( QgsApplication::getThemeIcon( "mActionFromSelectedFeature.png" ) );
-  mRemoveFeatureFromSelectionButton->setIcon( QgsApplication::getThemeIcon( "mActionRemoveSelectedFeature.png" ) );
+  mFromSelectedPushButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFromSelectedFeature.png" ) ) );
+  mRemoveFeatureFromSelectionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRemoveSelectedFeature.png" ) ) );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/MergeAttributes/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/MergeAttributes/geometry" ) ).toByteArray() );
 
   connect( mSkipAllButton, SIGNAL( clicked() ), this, SLOT( setAllToSkip() ) );
   connect( mTableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( tableWidgetCellChanged( int, int ) ) );
@@ -87,13 +87,13 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog()
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/MergeAttributes/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/MergeAttributes/geometry" ) ).toByteArray() );
 }
 
 QgsMergeAttributesDialog::~QgsMergeAttributesDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/MergeAttributes/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/MergeAttributes/geometry" ), saveGeometry() );
 
   delete mSelectionRubberBand;
 }
@@ -118,7 +118,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   for ( int idx = 0; idx < mFields.count(); ++idx )
   {
     const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mVectorLayer, mFields.at( idx ).name() );
-    if ( setup.type() == "Hidden" || setup.type() == "Immutable" )
+    if ( setup.type() == QLatin1String( "Hidden" ) || setup.type() == QLatin1String( "Immutable" ) )
     {
       mHiddenAttributes.insert( idx );
       continue;
@@ -184,7 +184,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
   QgsFeatureList::const_iterator f_it = mFeatureList.constBegin();
   for ( ; f_it != mFeatureList.constEnd(); ++f_it )
   {
-    newComboBox->addItem( tr( "Feature %1" ).arg( f_it->id() ), QString( "f%1" ).arg( FID_TO_STRING( f_it->id() ) ) );
+    newComboBox->addItem( tr( "Feature %1" ).arg( f_it->id() ), QStringLiteral( "f%1" ).arg( FID_TO_STRING( f_it->id() ) ) );
   }
 
   switch ( columnType )
@@ -291,15 +291,15 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   //evaluate behaviour (feature value or min / max / mean )
   QString mergeBehaviourString = comboBox->currentData().toString();
   QVariant mergeResult; // result to show in the merge result field
-  if ( mergeBehaviourString == "concat" )
+  if ( mergeBehaviourString == QLatin1String( "concat" ) )
   {
     mergeResult = concatenationAttribute( col );
   }
-  else if ( mergeBehaviourString == "skip" )
+  else if ( mergeBehaviourString == QLatin1String( "skip" ) )
   {
     mergeResult = tr( "Skipped" );
   }
-  else if ( mergeBehaviourString == "manual" )
+  else if ( mergeBehaviourString == QLatin1String( "manual" ) )
   {
     return; //nothing to do
   }
@@ -379,7 +379,7 @@ QVariant QgsMergeAttributesDialog::concatenationAttribute( int col )
   {
     concatString << mTableWidget->item( i + 1, col )->text();
   }
-  return concatString.join( "," ); //todo: make separator user configurable
+  return concatString.join( QStringLiteral( "," ) ); //todo: make separator user configurable
 }
 
 void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
@@ -423,7 +423,7 @@ void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
     QComboBox* currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
     if ( currentComboBox )
     {
-      currentComboBox->setCurrentIndex( currentComboBox->findData( QString( "f%1" ).arg( FID_TO_STRING( featureId ) ) ) );
+      currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "f%1" ).arg( FID_TO_STRING( featureId ) ) ) );
     }
   }
 }
@@ -476,7 +476,7 @@ void QgsMergeAttributesDialog::on_mRemoveFeatureFromSelectionButton_clicked()
       continue;
 
     currentComboBox->blockSignals( true );
-    currentComboBox->removeItem( currentComboBox->findData( QString( "f%1" ).arg( FID_TO_STRING( featureId ) ) ) );
+    currentComboBox->removeItem( currentComboBox->findData( QStringLiteral( "f%1" ).arg( FID_TO_STRING( featureId ) ) ) );
     currentComboBox->blockSignals( false );
   }
 
@@ -557,7 +557,7 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
     if ( fieldIdx >= results.count() )
       results.resize( fieldIdx + 1 ); // make sure the results vector is long enough (maybe not necessary)
 
-    if ( comboBox->currentData().toString() != "skip" )
+    if ( comboBox->currentData().toString() != QLatin1String( "skip" ) )
     {
       results[fieldIdx] = currentItem->data( Qt::DisplayRole );
     }
@@ -595,7 +595,7 @@ QSet<int> QgsMergeAttributesDialog::skippedAttributeIndexes() const
       continue;
     }
 
-    if ( comboBox->currentData().toString() == "skip" )
+    if ( comboBox->currentData().toString() == QLatin1String( "skip" ) )
     {
       skipped << i;
     }

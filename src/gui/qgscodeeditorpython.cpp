@@ -72,7 +72,7 @@ void QgsCodeEditorPython::setSciLexerPython()
     mPapFile = QgsApplication::pkgDataPath() + "/python/qsci_apis/pyqgis.pap";
     apis->loadPrepared( mPapFile );
   }
-  else if ( mAPISFilesList.length() == 1 && mAPISFilesList[0].right( 3 ) == "pap" )
+  else if ( mAPISFilesList.length() == 1 && mAPISFilesList[0].right( 3 ) == QLatin1String( "pap" ) )
   {
     if ( !QFileInfo::exists( mAPISFilesList[0] ) )
     {

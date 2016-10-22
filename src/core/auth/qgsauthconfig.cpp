@@ -29,9 +29,9 @@
 // QgsAuthMethodConfig
 //////////////////////////////////////////////
 
-const QString QgsAuthMethodConfig::mConfigSep = "|||";
-const QString QgsAuthMethodConfig::mConfigKeySep = ":::";
-const QString QgsAuthMethodConfig::mConfigListSep = "```";
+const QString QgsAuthMethodConfig::mConfigSep = QStringLiteral( "|||" );
+const QString QgsAuthMethodConfig::mConfigKeySep = QStringLiteral( ":::" );
+const QString QgsAuthMethodConfig::mConfigListSep = QStringLiteral( "```" );
 
 const int QgsAuthMethodConfig::mConfigVersion = 1;
 
@@ -105,7 +105,7 @@ void QgsAuthMethodConfig::loadConfigString( const QString &configstr )
 
   if ( configMap().empty() )
   {
-    setConfig( "oldconfigstyle", configstr );
+    setConfig( QStringLiteral( "oldconfigstyle" ), configstr );
   }
 }
 
@@ -147,8 +147,8 @@ bool QgsAuthMethodConfig::uriToResource( const QString &accessurl, QString *reso
     QUrl url( accessurl );
     if ( url.isValid() )
     {
-      res = QString( "%1://%2:%3%4" ).arg( url.scheme(), url.host() )
-            .arg( url.port() ).arg( withpath ? url.path() : "" );
+      res = QStringLiteral( "%1://%2:%3%4" ).arg( url.scheme(), url.host() )
+            .arg( url.port() ).arg( withpath ? url.path() : QLatin1String( "" ) );
     }
   }
   *resource = res;
@@ -199,20 +199,20 @@ const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath,
 {
   QgsPkiBundle pkibundle;
   if ( !certPath.isEmpty() && !keyPath.isEmpty()
-       && ( certPath.endsWith( ".pem", Qt::CaseInsensitive )
-            || certPath.endsWith( ".der", Qt::CaseInsensitive ) )
-       && ( keyPath.endsWith( ".pem", Qt::CaseInsensitive )
-            || keyPath.endsWith( ".der", Qt::CaseInsensitive ) )
+       && ( certPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive )
+            || certPath.endsWith( QLatin1String( ".der" ), Qt::CaseInsensitive ) )
+       && ( keyPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive )
+            || keyPath.endsWith( QLatin1String( ".der" ), Qt::CaseInsensitive ) )
        && QFile::exists( certPath ) && QFile::exists( keyPath )
      )
   {
     // client cert
-    bool pem = certPath.endsWith( ".pem", Qt::CaseInsensitive );
+    bool pem = certPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
     QSslCertificate clientcert( fileData_( certPath, pem ), pem ? QSsl::Pem : QSsl::Der );
     pkibundle.setClientCert( clientcert );
 
     // client key
-    bool pem_key = keyPath.endsWith( ".pem", Qt::CaseInsensitive );
+    bool pem_key = keyPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
     QByteArray keydata( fileData_( keyPath, pem_key ) );
 
     QSslKey clientkey;
@@ -245,15 +245,15 @@ const QgsPkiBundle QgsPkiBundle::fromPkcs12Paths( const QString &bundlepath,
   QgsPkiBundle pkibundle;
   if ( QCA::isSupported( "pkcs12" )
        && !bundlepath.isEmpty()
-       && ( bundlepath.endsWith( ".p12", Qt::CaseInsensitive )
-            || bundlepath.endsWith( ".pfx", Qt::CaseInsensitive ) )
+       && ( bundlepath.endsWith( QLatin1String( ".p12" ), Qt::CaseInsensitive )
+            || bundlepath.endsWith( QLatin1String( ".pfx" ), Qt::CaseInsensitive ) )
        && QFile::exists( bundlepath ) )
   {
     QCA::SecureArray passarray;
     if ( !bundlepass.isNull() )
       passarray = QCA::SecureArray( bundlepass.toUtf8() );
     QCA::ConvertResult res;
-    QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, QString( "qca-ossl" ) ) );
+    QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, QStringLiteral( "qca-ossl" ) ) );
     if ( res == QCA::ConvertGood && !bundle.isNull() )
     {
       QCA::CertificateChain cert_chain( bundle.certificateChain() );
@@ -347,7 +347,7 @@ bool QgsPkiConfigBundle::isValid()
 // QgsAuthConfigSslServer
 //////////////////////////////////////////////
 
-const QString QgsAuthConfigSslServer::mConfSep = "|||";
+const QString QgsAuthConfigSslServer::mConfSep = QStringLiteral( "|||" );
 
 QgsAuthConfigSslServer::QgsAuthConfigSslServer()
     : mSslHostPort( QString() )
@@ -394,9 +394,9 @@ const QString QgsAuthConfigSslServer::configString() const
   {
     errs << QString::number( static_cast< int >( err ) );
   }
-  configlist << errs.join( "~~" );
+  configlist << errs.join( QStringLiteral( "~~" ) );
 
-  configlist << QString( "%1~~%2" ).arg( static_cast< int >( mSslPeerVerifyMode ) ).arg( mSslPeerVerifyDepth );
+  configlist << QStringLiteral( "%1~~%2" ).arg( static_cast< int >( mSslPeerVerifyMode ) ).arg( mSslPeerVerifyDepth );
 
   return configlist.join( mConfSep );
 }
@@ -417,13 +417,13 @@ void QgsAuthConfigSslServer::loadConfigString( const QString &config )
   mSslProtocol = static_cast< QSsl::SslProtocol >( configlist.at( 2 ).toInt() );
 
   mSslIgnoredErrors.clear();
-  QStringList errs( configlist.at( 3 ).split( "~~" ) );
+  QStringList errs( configlist.at( 3 ).split( QStringLiteral( "~~" ) ) );
   Q_FOREACH ( const QString& err, errs )
   {
     mSslIgnoredErrors.append( static_cast< QSslError::SslError >( err.toInt() ) );
   }
 
-  QStringList peerverify( configlist.at( 4 ).split( "~~" ) );
+  QStringList peerverify( configlist.at( 4 ).split( QStringLiteral( "~~" ) ) );
   mSslPeerVerifyMode = static_cast< QSslSocket::PeerVerifyMode >( peerverify.at( 0 ).toInt() );
   mSslPeerVerifyDepth = peerverify.at( 1 ).toInt();
 }

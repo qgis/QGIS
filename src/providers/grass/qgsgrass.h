@@ -438,7 +438,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      * @timeOut timeout
      */
     static QString getInfo( const QString&  info, const QString&  gisdbase,
-                            const QString& location, const QString&  mapset = "PERMANENT",
+                            const QString& location, const QString&  mapset = QStringLiteral( "PERMANENT" ),
                             const QString& map = QString::null, const QgsGrassObject::Type type = QgsGrassObject::None,
                             double x = 0.0, double y = 0.0,
                             const QgsRectangle& extent = QgsRectangle(), int sampleRows = 0,

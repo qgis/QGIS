@@ -21,10 +21,10 @@
 
 void QgsProjectBadLayerHandler::handleBadLayers( const QList<QDomNode>& layers )
 {
-  QgsMessageLog::instance()->logMessage( QString( "%1 bad layers dismissed:" ).arg( layers.size() ) );
+  QgsMessageLog::instance()->logMessage( QStringLiteral( "%1 bad layers dismissed:" ).arg( layers.size() ) );
   Q_FOREACH ( const QDomNode& layer, layers )
   {
-    QgsMessageLog::instance()->logMessage( QString( " * %1" ).arg( dataSource( layer ) ) );
+    QgsMessageLog::instance()->logMessage( QStringLiteral( " * %1" ).arg( dataSource( layer ) ) );
   }
 }
 
@@ -34,7 +34,7 @@ QgsProjectBadLayerHandler::~QgsProjectBadLayerHandler()
 
 QgsProjectBadLayerHandler::DataType QgsProjectBadLayerHandler::dataType( const QDomNode& layerNode )
 {
-  QString type = layerNode.toElement().attribute( "type" );
+  QString type = layerNode.toElement().attribute( QStringLiteral( "type" ) );
 
   if ( QString::null == type )
   {
@@ -63,7 +63,7 @@ QgsProjectBadLayerHandler::DataType QgsProjectBadLayerHandler::dataType( const Q
 
 QString QgsProjectBadLayerHandler::dataSource( const QDomNode& layerNode )
 {
-  QDomNode dataSourceNode = layerNode.namedItem( "datasource" );
+  QDomNode dataSourceNode = layerNode.namedItem( QStringLiteral( "datasource" ) );
 
   if ( dataSourceNode.isNull() )
   {
@@ -87,11 +87,11 @@ QgsProjectBadLayerHandler::ProviderType QgsProjectBadLayerHandler::providerType(
 
       QgsDebugMsg( "datasource is " + ds );
 
-      if ( ds.contains( "host=" ) )
+      if ( ds.contains( QLatin1String( "host=" ) ) )
       {
         return IS_URL;
       }
-      else if ( ds.contains( "dbname=" ) )
+      else if ( ds.contains( QLatin1String( "dbname=" ) ) )
       {
         return IS_DATABASE;
       }
@@ -114,7 +114,7 @@ QgsProjectBadLayerHandler::ProviderType QgsProjectBadLayerHandler::providerType(
 
 void QgsProjectBadLayerHandler::setDataSource( QDomNode& layerNode, const QString& dataSource )
 {
-  QDomNode dataSourceNode = layerNode.namedItem( "datasource" );
+  QDomNode dataSourceNode = layerNode.namedItem( QStringLiteral( "datasource" ) );
   QDomElement dataSourceElement = dataSourceNode.toElement();
   QDomText dataSourceText = dataSourceElement.firstChild().toText();
 

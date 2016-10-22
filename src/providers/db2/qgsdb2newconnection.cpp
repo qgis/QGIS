@@ -38,7 +38,7 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connNa
 {
   setupUi( this );
 
-  mAuthConfigSelect = new QgsAuthConfigSelect( this, "db2" );
+  mAuthConfigSelect = new QgsAuthConfigSelect( this, QStringLiteral( "db2" ) );
   tabAuthentication->insertTab( 1, mAuthConfigSelect, tr( "Configurations" ) );
 
   if ( !connName.isEmpty() )
@@ -55,13 +55,13 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connNa
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
 
 
-    if ( settings.value( key + "/saveUsername" ).toString() == "true" )
+    if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
     {
       txtUsername->setText( settings.value( key + "/username" ).toString() );
       chkStoreUsername->setChecked( true );
     }
 
-    if ( settings.value( key + "/savePassword" ).toString() == "true" )
+    if ( settings.value( key + "/savePassword" ).toString() == QLatin1String( "true" ) )
     {
       txtPassword->setText( settings.value( key + "/password" ).toString() );
       chkStorePassword->setChecked( true );
@@ -83,7 +83,7 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connNa
 void QgsDb2NewConnection::accept()
 {
   QSettings settings;
-  QString baseKey = "/DB2/connections/";
+  QString baseKey = QStringLiteral( "/DB2/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
   bool hasAuthConfigID = !mAuthConfigSelect->configId().isEmpty();
   QgsDebugMsg( QString( "hasAuthConfigID: %1" ).arg( hasAuthConfigID ) );
@@ -122,8 +122,8 @@ void QgsDb2NewConnection::accept()
   settings.setValue( baseKey + "/port", txtPort->text() );
   settings.setValue( baseKey + "/driver", txtDriver->text() );
   settings.setValue( baseKey + "/database", txtDatabase->text() );
-  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() && !hasAuthConfigID ? txtUsername->text() : "" );
-  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() && !hasAuthConfigID ? txtPassword->text() : "" );
+  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() && !hasAuthConfigID ? txtUsername->text() : QLatin1String( "" ) );
+  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() && !hasAuthConfigID ? txtPassword->text() : QLatin1String( "" ) );
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() && !hasAuthConfigID ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() && !hasAuthConfigID ? "true" : "false" );
   settings.setValue( baseKey + "/authcfg", mAuthConfigSelect->configId() );
@@ -183,7 +183,7 @@ bool QgsDb2NewConnection::testConnection()
   if ( errMsg.isEmpty() )
   {
     QgsDebugMsg( "connection open succeeded " + connInfo );
-    db2ConnectStatus -> setText( "DB2 connection open succeeded" );
+    db2ConnectStatus -> setText( QStringLiteral( "DB2 connection open succeeded" ) );
     return true;
   }
   else

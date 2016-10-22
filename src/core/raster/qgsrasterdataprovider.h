@@ -125,58 +125,58 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       switch ( colorInterpretation )
       {
         case QgsRaster::UndefinedColorInterpretation:
-          return "Undefined";
+          return QStringLiteral( "Undefined" );
 
         case QgsRaster::GrayIndex:
-          return "Gray";
+          return QStringLiteral( "Gray" );
 
         case QgsRaster::PaletteIndex:
-          return "Palette";
+          return QStringLiteral( "Palette" );
 
         case QgsRaster::RedBand:
-          return "Red";
+          return QStringLiteral( "Red" );
 
         case QgsRaster::GreenBand:
-          return "Green";
+          return QStringLiteral( "Green" );
 
         case QgsRaster::BlueBand:
-          return "Blue";
+          return QStringLiteral( "Blue" );
 
         case QgsRaster::AlphaBand:
-          return "Alpha";
+          return QStringLiteral( "Alpha" );
 
         case QgsRaster::HueBand:
-          return "Hue";
+          return QStringLiteral( "Hue" );
 
         case QgsRaster::SaturationBand:
-          return "Saturation";
+          return QStringLiteral( "Saturation" );
 
         case QgsRaster::LightnessBand:
-          return "Lightness";
+          return QStringLiteral( "Lightness" );
 
         case QgsRaster::CyanBand:
-          return "Cyan";
+          return QStringLiteral( "Cyan" );
 
         case QgsRaster::MagentaBand:
-          return "Magenta";
+          return QStringLiteral( "Magenta" );
 
         case QgsRaster::YellowBand:
-          return "Yellow";
+          return QStringLiteral( "Yellow" );
 
         case QgsRaster::BlackBand:
-          return "Black";
+          return QStringLiteral( "Black" );
 
         case QgsRaster::YCbCr_YBand:
-          return "YCbCr_Y";
+          return QStringLiteral( "YCbCr_Y" );
 
         case QgsRaster::YCbCr_CbBand:
-          return "YCbCr_Cb";
+          return QStringLiteral( "YCbCr_Cb" );
 
         case QgsRaster::YCbCr_CrBand:
-          return "YCbCr_Cr";
+          return QStringLiteral( "YCbCr_Cr" );
 
         default:
-          return "Unknown";
+          return QStringLiteral( "Unknown" );
       }
     }
     /** Reload data (data could change) */
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /** \brief Create pyramid overviews */
     virtual QString buildPyramids( const QList<QgsRasterPyramid> & thePyramidList,
-                                   const QString & theResamplingMethod = "NEAREST",
+                                   const QString & theResamplingMethod = QStringLiteral( "NEAREST" ),
                                    QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
                                    const QStringList & theConfigOptions = QStringList() )
     {
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       Q_UNUSED( theResamplingMethod );
       Q_UNUSED( theFormat );
       Q_UNUSED( theConfigOptions );
-      return "FAILED_NOT_SUPPORTED";
+      return QStringLiteral( "FAILED_NOT_SUPPORTED" );
     }
 
     /** \brief Accessor for ths raster layers pyramid list.

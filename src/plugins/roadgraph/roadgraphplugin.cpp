@@ -59,7 +59,7 @@ static const QString sName = QObject::tr( "Road graph plugin" );
 static const QString sDescription = QObject::tr( "Solves the shortest path problem by tracing along line layers." );
 static const QString sCategory = QObject::tr( "Vector" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
-static const QString sPluginIcon = ":/roadgraph/road-fast.png";
+static const QString sPluginIcon = QStringLiteral( ":/roadgraph/road-fast.png" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 //////////////////////////////////////////////////////////////////////
@@ -80,8 +80,8 @@ RoadGraphPlugin::RoadGraphPlugin( QgisInterface * theQgisInterface )
     , mQShortestPathDock( nullptr )
 {
   mSettings = new RgLineVectorLayerSettings();
-  mTimeUnitName = "h";
-  mDistanceUnitName = "km";
+  mTimeUnitName = QStringLiteral( "h" );
+  mDistanceUnitName = QStringLiteral( "km" );
   mTopologyToleranceFactor = 0.0;
 }
 
@@ -102,7 +102,7 @@ void RoadGraphPlugin::initGui()
 
   // Create the action for tool
   mQSettingsAction  = new QAction( QIcon( ":/roadgraph/road.png" ), tr( "Settings..." ), this );
-  mQSettingsAction->setObjectName( "mQSettingsAction" );
+  mQSettingsAction->setObjectName( QStringLiteral( "mQSettingsAction" ) );
 
   // Set the what's this text
   mQSettingsAction->setWhatsThis( tr( "Road graph plugin settings" ) );
@@ -174,19 +174,19 @@ void RoadGraphPlugin::property()
   mTopologyToleranceFactor = dlg.topologyTolerance();
 
   mSettings->write( QgsProject::instance() );
-  QgsProject::instance()->writeEntry( "roadgraphplugin", "/pluginTimeUnit", mTimeUnitName );
-  QgsProject::instance()->writeEntry( "roadgraphplugin", "/pluginDistanceUnit", mDistanceUnitName );
-  QgsProject::instance()->writeEntry( "roadgraphplugin", "/topologyToleranceFactor", mTopologyToleranceFactor );
+  QgsProject::instance()->writeEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/pluginTimeUnit" ), mTimeUnitName );
+  QgsProject::instance()->writeEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/pluginDistanceUnit" ), mDistanceUnitName );
+  QgsProject::instance()->writeEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/topologyToleranceFactor" ), mTopologyToleranceFactor );
   setGuiElementsToDefault();
 }
 
 void RoadGraphPlugin::projectRead()
 {
   mSettings->read( QgsProject::instance() );
-  mTimeUnitName = QgsProject::instance()->readEntry( "roadgraphplugin", "/pluginTimeUnit", "h" );
-  mDistanceUnitName = QgsProject::instance()->readEntry( "roadgraphplugin", "/pluginDistanceUnit", "km" );
+  mTimeUnitName = QgsProject::instance()->readEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/pluginTimeUnit" ), QStringLiteral( "h" ) );
+  mDistanceUnitName = QgsProject::instance()->readEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/pluginDistanceUnit" ), QStringLiteral( "km" ) );
   mTopologyToleranceFactor =
-    QgsProject::instance()->readDoubleEntry( "roadgraphplugin", "/topologyToleranceFactor", 0.0 );
+    QgsProject::instance()->readDoubleEntry( QStringLiteral( "roadgraphplugin" ), QStringLiteral( "/topologyToleranceFactor" ), 0.0 );
   setGuiElementsToDefault();
 }
 

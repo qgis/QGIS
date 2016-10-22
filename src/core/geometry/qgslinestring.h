@@ -122,7 +122,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     //reimplemented methods
 
-    virtual QString geometryType() const override { return "LineString"; }
+    virtual QString geometryType() const override { return QStringLiteral( "LineString" ); }
     virtual int dimension() const override { return 1; }
     virtual QgsLineString* clone() const override;
     virtual void clear() override;
@@ -133,8 +133,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     int wkbSize() const override;
     unsigned char* asWkb( int& binarySize ) const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = QStringLiteral( "gml" ) ) const override;
+    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = QStringLiteral( "gml" ) ) const override;
     QString asJSON( int precision = 17 ) const override;
 
     //curve interface

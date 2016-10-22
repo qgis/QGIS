@@ -91,19 +91,19 @@ QgsAttributeEditorElement* QgsAttributeEditorRelation::clone( QgsAttributeEditor
 }
 void QgsAttributeEditorField::saveConfiguration( QDomElement &elem ) const
 {
-  elem.setAttribute( "index", mIdx );
+  elem.setAttribute( QStringLiteral( "index" ), mIdx );
 }
 
 QString QgsAttributeEditorField::typeIdentifier() const
 {
-  return "attributeEditorField";
+  return QStringLiteral( "attributeEditorField" );
 }
 
 QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument& doc ) const
 {
   QDomElement elem = doc.createElement( typeIdentifier() );
-  elem.setAttribute( "name", mName );
-  elem.setAttribute( "showLabel", mShowLabel );
+  elem.setAttribute( QStringLiteral( "name" ), mName );
+  elem.setAttribute( QStringLiteral( "showLabel" ), mShowLabel );
 
   saveConfiguration( elem );
   return elem;
@@ -121,14 +121,14 @@ void QgsAttributeEditorElement::setShowLabel( bool showLabel )
 
 void QgsAttributeEditorRelation::saveConfiguration( QDomElement& elem ) const
 {
-  elem.setAttribute( "relation", mRelation.id() );
-  elem.setAttribute( "showLinkButton", mShowLinkButton );
-  elem.setAttribute( "showUnlinkButton", mShowUnlinkButton );
+  elem.setAttribute( QStringLiteral( "relation" ), mRelation.id() );
+  elem.setAttribute( QStringLiteral( "showLinkButton" ), mShowLinkButton );
+  elem.setAttribute( QStringLiteral( "showUnlinkButton" ), mShowUnlinkButton );
 }
 
 QString QgsAttributeEditorRelation::typeIdentifier() const
 {
-  return "attributeEditorRelation";
+  return QStringLiteral( "attributeEditorRelation" );
 }
 
 bool QgsAttributeEditorRelation::showLinkButton() const

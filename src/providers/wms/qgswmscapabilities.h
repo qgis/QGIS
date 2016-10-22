@@ -503,12 +503,12 @@ struct QgsWmsAuthorization
     }
     else if ( !mUserName.isNull() || !mPassword.isNull() )
     {
-      request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName, mPassword ).toLatin1().toBase64() );
+      request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toLatin1().toBase64() );
     }
 
     if ( !mReferer.isNull() )
     {
-      request.setRawHeader( "Referer", QString( "%1" ).arg( mReferer ).toLatin1() );
+      request.setRawHeader( "Referer", QStringLiteral( "%1" ).arg( mReferer ).toLatin1() );
     }
     return true;
   }

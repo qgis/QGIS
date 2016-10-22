@@ -50,7 +50,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     QgsBlurEffect();
     virtual ~QgsBlurEffect();
 
-    virtual QString type() const override { return QString( "blur" ); }
+    virtual QString type() const override { return QStringLiteral( "blur" ); }
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap& props ) override;
     virtual QgsBlurEffect* clone() const override;

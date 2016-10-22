@@ -41,7 +41,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
     {
       if ( mField.length() > 0 )
       {
-        QString re = QString( "-?\\d{0,%1}" ).arg( mField.length() );
+        QString re = QStringLiteral( "-?\\d{0,%1}" ).arg( mField.length() );
         mValidator = new QRegExpValidator( QRegExp( re ), parent );
       }
       else
@@ -55,17 +55,17 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
     {
       if ( mField.length() > 0 && mField.precision() > 0 )
       {
-        QString re = QString( "-?\\d{0,%1}(\\.\\d{0,%2})?" ).arg( mField.length() - mField.precision() ).arg( mField.precision() );
+        QString re = QStringLiteral( "-?\\d{0,%1}(\\.\\d{0,%2})?" ).arg( mField.length() - mField.precision() ).arg( mField.precision() );
         mValidator = new QRegExpValidator( QRegExp( re ), parent );
       }
       else if ( mField.length() > 0 && mField.precision() == 0 )
       {
-        QString re = QString( "-?\\d{0,%1}" ).arg( mField.length() );
+        QString re = QStringLiteral( "-?\\d{0,%1}" ).arg( mField.length() );
         mValidator = new QRegExpValidator( QRegExp( re ), parent );
       }
       else if ( mField.precision() > 0 )
       {
-        QString re = QString( "-?\\d*(\\.\\d{0,%1})?" ).arg( mField.precision() );
+        QString re = QStringLiteral( "-?\\d*(\\.\\d{0,%1})?" ).arg( mField.precision() );
         mValidator = new QRegExpValidator( QRegExp( re ), parent );
       }
       else
@@ -84,7 +84,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
   }
 
   QSettings settings;
-  mNullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
+  mNullValue = settings.value( QStringLiteral( "qgis/nullValue" ), "NULL" ).toString();
 }
 
 QgsFieldValidator::~QgsFieldValidator()
@@ -158,6 +158,6 @@ void QgsFieldValidator::fixup( QString &s ) const
   else if ( mField.type() == QVariant::Date )
   {
     // invalid dates will also translate to NULL
-    s = "";
+    s = QLatin1String( "" );
   }
 }

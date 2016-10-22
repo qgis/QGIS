@@ -438,14 +438,14 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
         << tr( "ERROR: field with index %1 is not the same!" ).arg( i )
         << tr( "Provider: %1" ).arg( L->providerType() )
         << tr( "Storage: %1" ).arg( L->storageType() )
-        << QString( "%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6" )
+        << QStringLiteral( "%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6" )
         .arg( tr( "expected field" ),
               oldField.name(),
               QVariant::typeToName( oldField.type() ),
               oldField.typeName() )
         .arg( oldField.length() )
         .arg( oldField.precision() )
-        << QString( "%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6" )
+        << QStringLiteral( "%1: name=%2 type=%3 typeName=%4 len=%5 precision=%6" )
         .arg( tr( "retrieved field" ),
               newField.name(),
               QVariant::typeToName( newField.type() ),
@@ -619,7 +619,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
     commitErrors << tr( "\n  Provider errors:" );
     Q_FOREACH ( QString e, provider->errors() )
     {
-      commitErrors << "    " + e.replace( '\n', "\n    " );
+      commitErrors << "    " + e.replace( '\n', QLatin1String( "\n    " ) );
     }
     provider->clearErrors();
   }

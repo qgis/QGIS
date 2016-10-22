@@ -41,7 +41,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
     : QAbstractTableModel( parent )
     , mLayerCache( layerCache )
     , mFieldCount( 0 )
-    , mSortCacheExpression( "" )
+    , mSortCacheExpression( QLatin1String( "" ) )
     , mSortFieldIndex( -1 )
     , mExtraColumns( 0 )
 {
@@ -252,7 +252,7 @@ void QgsAttributeTableModel::editCommandEnded()
 void QgsAttributeTableModel::attributeDeleted( int idx )
 {
   if ( mSortCacheAttributes.contains( idx ) )
-    prefetchSortData( "" );
+    prefetchSortData( QLatin1String( "" ) );
 }
 
 void QgsAttributeTableModel::layerDeleted()
@@ -766,7 +766,7 @@ void QgsAttributeTableModel::prefetchColumnData( int column )
 {
   if ( column == -1 || column >= mAttributes.count() )
   {
-    prefetchSortData( "" );
+    prefetchSortData( QLatin1String( "" ) );
   }
   else
   {

@@ -38,7 +38,7 @@ QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer* layer, const QgsAt
   connect( mForm, SIGNAL( closed() ), this, SLOT( close() ) );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/SelectByForm/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/SelectByForm/geometry" ) ).toByteArray() );
 
   setWindowTitle( tr( "Select features by value" ) );
 }
@@ -46,7 +46,7 @@ QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer* layer, const QgsAt
 QgsSelectByFormDialog::~QgsSelectByFormDialog()
 {
   QSettings settings;
-  settings.setValue( "/Windows/SelectByForm/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/SelectByForm/geometry" ), saveGeometry() );
 }
 
 void QgsSelectByFormDialog::setMessageBar( QgsMessageBar* messageBar )

@@ -76,7 +76,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     };
 
     //! Constructor with an optional file path
-    QgsVirtualLayerDefinition( const QString& filePath = "" );
+    QgsVirtualLayerDefinition( const QString& filePath = QStringLiteral( "" ) );
 
     //! Constructor to build a definition from a QUrl
     //! The path part of the URL is extracted as well as the following optional keys:
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     void addSource( const QString& name, const QString& ref );
 
     //! Add a layer with a source, a provider and an encoding
-    void addSource( const QString& name, const QString& source, const QString& provider, const QString& encoding = "" );
+    void addSource( const QString& name, const QString& source, const QString& provider, const QString& encoding = QStringLiteral( "" ) );
 
     //! List of source layers
     typedef QList<SourceLayer> SourceLayers;

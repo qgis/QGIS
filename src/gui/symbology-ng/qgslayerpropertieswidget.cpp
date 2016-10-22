@@ -63,27 +63,27 @@ static void _initWidgetFunctions()
   if ( initialized )
     return;
 
-  _initWidgetFunction( "SimpleLine", QgsSimpleLineSymbolLayerWidget::create );
-  _initWidgetFunction( "MarkerLine", QgsMarkerLineSymbolLayerWidget::create );
-  _initWidgetFunction( "ArrowLine", QgsArrowSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "SimpleLine" ), QgsSimpleLineSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "MarkerLine" ), QgsMarkerLineSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "ArrowLine" ), QgsArrowSymbolLayerWidget::create );
 
-  _initWidgetFunction( "SimpleMarker", QgsSimpleMarkerSymbolLayerWidget::create );
-  _initWidgetFunction( "FilledMarker", QgsFilledMarkerSymbolLayerWidget::create );
-  _initWidgetFunction( "SvgMarker", QgsSvgMarkerSymbolLayerWidget::create );
-  _initWidgetFunction( "FontMarker", QgsFontMarkerSymbolLayerWidget::create );
-  _initWidgetFunction( "EllipseMarker", QgsEllipseSymbolLayerWidget::create );
-  _initWidgetFunction( "VectorField", QgsVectorFieldSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "SimpleMarker" ), QgsSimpleMarkerSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "FilledMarker" ), QgsFilledMarkerSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "SvgMarker" ), QgsSvgMarkerSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "FontMarker" ), QgsFontMarkerSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "EllipseMarker" ), QgsEllipseSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "VectorField" ), QgsVectorFieldSymbolLayerWidget::create );
 
-  _initWidgetFunction( "SimpleFill", QgsSimpleFillSymbolLayerWidget::create );
-  _initWidgetFunction( "GradientFill", QgsGradientFillSymbolLayerWidget::create );
-  _initWidgetFunction( "ShapeburstFill", QgsShapeburstFillSymbolLayerWidget::create );
-  _initWidgetFunction( "RasterFill", QgsRasterFillSymbolLayerWidget::create );
-  _initWidgetFunction( "SVGFill", QgsSVGFillSymbolLayerWidget::create );
-  _initWidgetFunction( "CentroidFill", QgsCentroidFillSymbolLayerWidget::create );
-  _initWidgetFunction( "LinePatternFill", QgsLinePatternFillSymbolLayerWidget::create );
-  _initWidgetFunction( "PointPatternFill", QgsPointPatternFillSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "SimpleFill" ), QgsSimpleFillSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "GradientFill" ), QgsGradientFillSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "ShapeburstFill" ), QgsShapeburstFillSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "RasterFill" ), QgsRasterFillSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "SVGFill" ), QgsSVGFillSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "CentroidFill" ), QgsCentroidFillSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "LinePatternFill" ), QgsLinePatternFillSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "PointPatternFill" ), QgsPointPatternFillSymbolLayerWidget::create );
 
-  _initWidgetFunction( "GeometryGenerator", QgsGeometryGeneratorSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "GeometryGenerator" ), QgsGeometryGeneratorSymbolLayerWidget::create );
 
   initialized = true;
 }

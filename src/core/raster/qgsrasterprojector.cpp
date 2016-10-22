@@ -292,7 +292,7 @@ QString ProjectorData::cpToString()
     for ( int j = 0; j < mCPCols; j++ )
     {
       if ( j > 0 )
-        myString += "  ";
+        myString += QLatin1String( "  " );
       QgsPoint myPoint = mCPMatrix[i][j];
       if ( mCPLegalMatrix[i][j] )
       {
@@ -300,7 +300,7 @@ QString ProjectorData::cpToString()
       }
       else
       {
-        myString += "(-,-)";
+        myString += QLatin1String( "(-,-)" );
       }
     }
   }
@@ -742,7 +742,7 @@ QString QgsRasterProjector::precisionLabel( Precision precision )
     case Exact:
       return tr( "Exact" );
   }
-  return "Unknown";
+  return QStringLiteral( "Unknown" );
 }
 
 QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )

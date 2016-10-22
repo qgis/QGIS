@@ -75,7 +75,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
     wkbType = QgsWkbTypes::NoGeometry;
   }
 
-  bool needToDetect = wkbType == QgsWkbTypes::Unknown && layerProperty.type != "GEOMETRYCOLLECTION";
+  bool needToDetect = wkbType == QgsWkbTypes::Unknown && layerProperty.type != QLatin1String( "GEOMETRYCOLLECTION" );
 
   QList<QStandardItem*> childItemList;
 
@@ -94,11 +94,11 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
   QStandardItem *sridItem = new QStandardItem( layerProperty.srid );
   sridItem->setEditable( false );
 
-  QString pkText, pkCol = "";
+  QString pkText, pkCol = QLatin1String( "" );
   switch ( layerProperty.pkCols.size() )
   {
     case 0:
-      pkText = "";
+      pkText = QLatin1String( "" );
       break;
     case 1:
       pkText = layerProperty.pkCols[0];
@@ -116,7 +116,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
   pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
   pkItem->setData( pkCol, Qt::UserRole + 2 );
 
-  QStandardItem *selItem = new QStandardItem( "" );
+  QStandardItem *selItem = new QStandardItem( QLatin1String( "" ) );
   selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
   selItem->setCheckState( Qt::Checked );
   selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
@@ -402,55 +402,55 @@ QgsWkbTypes::Type QgsMssqlTableModel::wkbTypeFromMssql( QString type )
 {
   type = type.toUpper();
 
-  if ( type == "POINT" )
+  if ( type == QLatin1String( "POINT" ) )
   {
     return QgsWkbTypes::Point;
   }
-  else if ( type == "POINTM" )
+  else if ( type == QLatin1String( "POINTM" ) )
   {
     return QgsWkbTypes::Point25D;
   }
-  else if ( type == "MULTIPOINT" )
+  else if ( type == QLatin1String( "MULTIPOINT" ) )
   {
     return QgsWkbTypes::MultiPoint;
   }
-  else if ( type == "MULTIPOINTM" )
+  else if ( type == QLatin1String( "MULTIPOINTM" ) )
   {
     return QgsWkbTypes::MultiPoint25D;
   }
-  else if ( type == "LINESTRING" )
+  else if ( type == QLatin1String( "LINESTRING" ) )
   {
     return QgsWkbTypes::LineString;
   }
-  else if ( type == "LINESTRINGM" )
+  else if ( type == QLatin1String( "LINESTRINGM" ) )
   {
     return QgsWkbTypes::LineString25D;
   }
-  else if ( type == "MULTILINESTRING" )
+  else if ( type == QLatin1String( "MULTILINESTRING" ) )
   {
     return QgsWkbTypes::MultiLineString;
   }
-  else if ( type == "MULTILINESTRINGM" )
+  else if ( type == QLatin1String( "MULTILINESTRINGM" ) )
   {
     return QgsWkbTypes::MultiLineString25D;
   }
-  else if ( type == "POLYGON" )
+  else if ( type == QLatin1String( "POLYGON" ) )
   {
     return QgsWkbTypes::Polygon;
   }
-  else if ( type == "POLYGONM" )
+  else if ( type == QLatin1String( "POLYGONM" ) )
   {
     return QgsWkbTypes::Polygon25D;
   }
-  else if ( type == "MULTIPOLYGON" )
+  else if ( type == QLatin1String( "MULTIPOLYGON" ) )
   {
     return QgsWkbTypes::MultiPolygon;
   }
-  else if ( type == "MULTIPOLYGONM" )
+  else if ( type == QLatin1String( "MULTIPOLYGONM" ) )
   {
     return QgsWkbTypes::MultiPolygon25D;
   }
-  else if ( type == "NONE" )
+  else if ( type == QLatin1String( "NONE" ) )
   {
     return QgsWkbTypes::NoGeometry;
   }

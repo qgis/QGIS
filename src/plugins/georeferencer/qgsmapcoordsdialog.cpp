@@ -29,7 +29,7 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, const QgsPoint
   setupUi( this );
 
   QSettings s;
-  restoreGeometry( s.value( "/Plugin-GeoReferencer/MapCoordsWindow/geometry" ).toByteArray() );
+  restoreGeometry( s.value( QStringLiteral( "/Plugin-GeoReferencer/MapCoordsWindow/geometry" ) ).toByteArray() );
 
   setAttribute( Qt::WA_DeleteOnClose );
 
@@ -61,7 +61,7 @@ QgsMapCoordsDialog::~QgsMapCoordsDialog()
   delete mToolEmitPoint;
 
   QSettings settings;
-  settings.setValue( "/Plugin-GeoReferencer/MapCoordsWindow/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/MapCoordsWindow/geometry" ), saveGeometry() );
 }
 
 void QgsMapCoordsDialog::updateOK()

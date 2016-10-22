@@ -66,14 +66,14 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
 
 void QgsMeasureDialog::openConfigTab()
 {
-  QgisApp::instance()->showOptionsDialog( this, "mOptionsPageMapTools" );
+  QgisApp::instance()->showOptionsDialog( this, QStringLiteral( "mOptionsPageMapTools" ) );
 }
 
 void QgsMeasureDialog::updateSettings()
 {
   QSettings settings;
 
-  mDecimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
+  mDecimalPlaces = settings.value( QStringLiteral( "/qgis/measure/decimalplaces" ), "3" ).toInt();
   mCanvasUnits = mTool->canvas()->mapUnits();
   // Configure QgsDistanceArea
   mDistanceUnits = QgsProject::instance()->distanceUnits();
@@ -243,12 +243,12 @@ void QgsMeasureDialog::closeEvent( QCloseEvent *e )
 void QgsMeasureDialog::restorePosition()
 {
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/Measure/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/Measure/geometry" ) ).toByteArray() );
   int wh;
   if ( mMeasureArea )
-    wh = settings.value( "/Windows/Measure/hNoTable", 70 ).toInt();
+    wh = settings.value( QStringLiteral( "/Windows/Measure/hNoTable" ), 70 ).toInt();
   else
-    wh = settings.value( "/Windows/Measure/h", 200 ).toInt();
+    wh = settings.value( QStringLiteral( "/Windows/Measure/h" ), 200 ).toInt();
   resize( width(), wh );
   updateUi();
 }
@@ -256,7 +256,7 @@ void QgsMeasureDialog::restorePosition()
 void QgsMeasureDialog::saveWindowLocation()
 {
   QSettings settings;
-  settings.setValue( "/Windows/Measure/geometry", saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/Measure/geometry" ), saveGeometry() );
   const QString &key = mMeasureArea ? "/Windows/Measure/hNoTable" : "/Windows/Measure/h";
   settings.setValue( key, height() );
 }
@@ -264,7 +264,7 @@ void QgsMeasureDialog::saveWindowLocation()
 QString QgsMeasureDialog::formatDistance( double distance, bool convertUnits ) const
 {
   QSettings settings;
-  bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", true ).toBool();
+  bool baseUnit = settings.value( QStringLiteral( "/qgis/measure/keepbaseunit" ), true ).toBool();
 
   if ( convertUnits )
     distance = convertLength( distance, mDistanceUnits );
@@ -332,13 +332,13 @@ void QgsMeasureDialog::updateUi()
       if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Geographic &&
            QgsUnitTypes::unitType( mAreaUnits ) == QgsUnitTypes::Standard )
       {
-        toolTip += "<br> * Area is roughly converted to square meters by using scale at equator (1 degree = 111319.49 meters).";
+        toolTip += QLatin1String( "<br> * Area is roughly converted to square meters by using scale at equator (1 degree = 111319.49 meters)." );
         resultUnit = QgsUnitTypes::AreaSquareMeters;
       }
       else if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Standard &&
                 QgsUnitTypes::unitType( mAreaUnits ) == QgsUnitTypes::Geographic )
       {
-        toolTip += "<br> * Area is roughly converted to square degrees by using scale at equator (1 degree = 111319.49 meters).";
+        toolTip += QLatin1String( "<br> * Area is roughly converted to square degrees by using scale at equator (1 degree = 111319.49 meters)." );
         resultUnit = QgsUnitTypes::AreaSquareDegrees;
       }
 
@@ -406,13 +406,13 @@ void QgsMeasureDialog::updateUi()
       if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Geographic &&
            QgsUnitTypes::unitType( mDistanceUnits ) == QgsUnitTypes::Standard )
       {
-        toolTip += "<br> * Distance is roughly converted to meters by using scale at equator (1 degree = 111319.49 meters).";
+        toolTip += QLatin1String( "<br> * Distance is roughly converted to meters by using scale at equator (1 degree = 111319.49 meters)." );
         resultUnit = QgsUnitTypes::DistanceMeters;
       }
       else if ( QgsUnitTypes::unitType( resultUnit ) == QgsUnitTypes::Standard &&
                 QgsUnitTypes::unitType( mDistanceUnits ) == QgsUnitTypes::Geographic )
       {
-        toolTip += "<br> * Distance is roughly converted to degrees by using scale at equator (1 degree = 111319.49 meters).";
+        toolTip += QLatin1String( "<br> * Distance is roughly converted to degrees by using scale at equator (1 degree = 111319.49 meters)." );
         resultUnit = QgsUnitTypes::DistanceDegrees;
       }
 

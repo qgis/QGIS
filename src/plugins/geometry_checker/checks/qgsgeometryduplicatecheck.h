@@ -48,7 +48,7 @@ class QgsGeometryDuplicateCheckError : public QgsGeometryCheckError
       {
         str.append( QString::number( id ) );
       }
-      return str.join( ", " );
+      return str.join( QStringLiteral( ", " ) );
     }
 };
 
@@ -63,7 +63,7 @@ class QgsGeometryDuplicateCheck : public QgsGeometryCheck
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Duplicate" ); }
-    QString errorName() const override { return "QgsGeometryDuplicateCheck"; }
+    QString errorName() const override { return QStringLiteral( "QgsGeometryDuplicateCheck" ); }
 
   private:
     enum ResolutionMethod { NoChange, RemoveDuplicates };

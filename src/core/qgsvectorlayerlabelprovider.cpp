@@ -599,12 +599,12 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition* label, Q
       if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolAbove )
       {
         prependSymb = true;
-        symb = symb + QLatin1String( "\n" );
+        symb = symb + QStringLiteral( "\n" );
       }
       else if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolBelow )
       {
         prependSymb = false;
-        symb = QLatin1String( "\n" ) + symb;
+        symb = QStringLiteral( "\n" ) + symb;
       }
 
       if ( prependSymb )

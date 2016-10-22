@@ -35,19 +35,19 @@ QgsMultiLineString* QgsMultiLineString::clone() const
 
 bool QgsMultiLineString::fromWkt( const QString& wkt )
 {
-  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry*>() << new QgsLineString, "LineString" );
+  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry*>() << new QgsLineString, QStringLiteral( "LineString" ) );
 }
 
 QDomElement QgsMultiLineString::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QDomElement elemMultiLineString = doc.createElementNS( ns, "MultiLineString" );
+  QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsLineString*>( geom ) )
     {
       const QgsLineString* lineString = static_cast<const QgsLineString*>( geom );
 
-      QDomElement elemLineStringMember = doc.createElementNS( ns, "lineStringMember" );
+      QDomElement elemLineStringMember = doc.createElementNS( ns, QStringLiteral( "lineStringMember" ) );
       elemLineStringMember.appendChild( lineString->asGML2( doc, precision, ns ) );
       elemMultiLineString.appendChild( elemLineStringMember );
 
@@ -60,14 +60,14 @@ QDomElement QgsMultiLineString::asGML2( QDomDocument& doc, int precision, const 
 
 QDomElement QgsMultiLineString::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QDomElement elemMultiCurve = doc.createElementNS( ns, "MultiLineString" );
+  QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsLineString*>( geom ) )
     {
       const QgsLineString* lineString = static_cast<const QgsLineString*>( geom );
 
-      QDomElement elemCurveMember = doc.createElementNS( ns, "curveMember" );
+      QDomElement elemCurveMember = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
       elemCurveMember.appendChild( lineString->asGML3( doc, precision, ns ) );
       elemMultiCurve.appendChild( elemCurveMember );
     }
@@ -78,7 +78,7 @@ QDomElement QgsMultiLineString::asGML3( QDomDocument& doc, int precision, const 
 
 QString QgsMultiLineString::asJSON( int precision ) const
 {
-  QString json = "{\"type\": \"MultiLineString\", \"coordinates\": [";
+  QString json = QStringLiteral( "{\"type\": \"MultiLineString\", \"coordinates\": [" );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
     if ( dynamic_cast<const QgsCurve*>( geom ) )
@@ -89,11 +89,11 @@ QString QgsMultiLineString::asJSON( int precision ) const
       json += QgsGeometryUtils::pointsToJSON( pts, precision ) + ", ";
     }
   }
-  if ( json.endsWith( ", " ) )
+  if ( json.endsWith( QLatin1String( ", " ) ) )
   {
     json.chop( 2 ); // Remove last ", "
   }
-  json += "] }";
+  json += QLatin1String( "] }" );
   return json;
 }
 

@@ -227,7 +227,7 @@ bool QgsGeometryCollection::fromWkt( const QString& wkt )
                             << new QgsCurvePolygon
                             << new QgsMultiPointV2 << new QgsMultiLineString
                             << new QgsMultiPolygonV2 << new QgsGeometryCollection
-                            << new QgsMultiCurve << new QgsMultiSurface, "GeometryCollection" );
+                            << new QgsMultiCurve << new QgsMultiSurface, QStringLiteral( "GeometryCollection" ) );
 }
 
 int QgsGeometryCollection::wkbSize() const
@@ -287,10 +287,10 @@ QString QgsGeometryCollection::asWkt( int precision ) const
 
 QDomElement QgsGeometryCollection::asGML2( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QDomElement elemMultiGeometry = doc.createElementNS( ns, "MultiGeometry" );
+  QDomElement elemMultiGeometry = doc.createElementNS( ns, QStringLiteral( "MultiGeometry" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    QDomElement elemGeometryMember = doc.createElementNS( ns, "geometryMember" );
+    QDomElement elemGeometryMember = doc.createElementNS( ns, QStringLiteral( "geometryMember" ) );
     elemGeometryMember.appendChild( geom->asGML2( doc, precision, ns ) );
     elemMultiGeometry.appendChild( elemGeometryMember );
   }
@@ -299,10 +299,10 @@ QDomElement QgsGeometryCollection::asGML2( QDomDocument& doc, int precision, con
 
 QDomElement QgsGeometryCollection::asGML3( QDomDocument& doc, int precision, const QString& ns ) const
 {
-  QDomElement elemMultiGeometry = doc.createElementNS( ns, "MultiGeometry" );
+  QDomElement elemMultiGeometry = doc.createElementNS( ns, QStringLiteral( "MultiGeometry" ) );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
-    QDomElement elemGeometryMember = doc.createElementNS( ns, "geometryMember" );
+    QDomElement elemGeometryMember = doc.createElementNS( ns, QStringLiteral( "geometryMember" ) );
     elemGeometryMember.appendChild( geom->asGML3( doc, precision, ns ) );
     elemMultiGeometry.appendChild( elemGeometryMember );
   }
@@ -311,16 +311,16 @@ QDomElement QgsGeometryCollection::asGML3( QDomDocument& doc, int precision, con
 
 QString QgsGeometryCollection::asJSON( int precision ) const
 {
-  QString json = "{\"type\": \"GeometryCollection\", \"geometries\": [";
+  QString json = QStringLiteral( "{\"type\": \"GeometryCollection\", \"geometries\": [" );
   Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
   {
     json += geom->asJSON( precision ) + ", ";
   }
-  if ( json.endsWith( ", " ) )
+  if ( json.endsWith( QLatin1String( ", " ) ) )
   {
     json.chop( 2 ); // Remove last ", "
   }
-  json += "] }";
+  json += QLatin1String( "] }" );
   return json;
 }
 
@@ -503,7 +503,7 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QList<Q
     return false;
   mWkbType = parts.first;
 
-  QString defChildWkbType = QString( "%1%2%3 " ).arg( defaultChildWkbType, is3D() ? "Z" : "", isMeasure() ? "M" : "" );
+  QString defChildWkbType = QStringLiteral( "%1%2%3 " ).arg( defaultChildWkbType, is3D() ? "Z" : "", isMeasure() ? "M" : "" );
 
   Q_FOREACH ( const QString& childWkt, QgsGeometryUtils::wktGetChildBlocks( parts.second, defChildWkbType ) )
   {

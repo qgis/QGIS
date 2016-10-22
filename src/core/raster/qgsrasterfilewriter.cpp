@@ -32,8 +32,8 @@
 QgsRasterFileWriter::QgsRasterFileWriter( const QString& outputUrl )
     : mMode( Raw )
     , mOutputUrl( outputUrl )
-    , mOutputProviderKey( "gdal" )
-    , mOutputFormat( "GTiff" )
+    , mOutputProviderKey( QStringLiteral( "gdal" ) )
+    , mOutputFormat( QStringLiteral( "GTiff" ) )
     , mTiledMode( false )
     , mMaxTileWidth( 500 )
     , mMaxTileHeight( 500 )
@@ -48,8 +48,8 @@ QgsRasterFileWriter::QgsRasterFileWriter( const QString& outputUrl )
 
 QgsRasterFileWriter::QgsRasterFileWriter()
     : mMode( Raw )
-    , mOutputProviderKey( "gdal" )
-    , mOutputFormat( "GTiff" )
+    , mOutputProviderKey( QStringLiteral( "gdal" ) )
+    , mOutputFormat( QStringLiteral( "GTiff" ) )
     , mTiledMode( false )
     , mMaxTileWidth( 500 )
     , mMaxTileHeight( 500 )
@@ -642,44 +642,44 @@ void QgsRasterFileWriter::addToVRT( const QString& filename, int band, int xSize
 {
   QDomElement bandElem = mVRTBands.value( band - 1 );
 
-  QDomElement simpleSourceElem = mVRTDocument.createElement( "SimpleSource" );
+  QDomElement simpleSourceElem = mVRTDocument.createElement( QStringLiteral( "SimpleSource" ) );
 
   //SourceFilename
-  QDomElement sourceFilenameElem = mVRTDocument.createElement( "SourceFilename" );
-  sourceFilenameElem.setAttribute( "relativeToVRT", "1" );
+  QDomElement sourceFilenameElem = mVRTDocument.createElement( QStringLiteral( "SourceFilename" ) );
+  sourceFilenameElem.setAttribute( QStringLiteral( "relativeToVRT" ), QStringLiteral( "1" ) );
   QDomText sourceFilenameText = mVRTDocument.createTextNode( filename );
   sourceFilenameElem.appendChild( sourceFilenameText );
   simpleSourceElem.appendChild( sourceFilenameElem );
 
   //SourceBand
-  QDomElement sourceBandElem = mVRTDocument.createElement( "SourceBand" );
+  QDomElement sourceBandElem = mVRTDocument.createElement( QStringLiteral( "SourceBand" ) );
   QDomText sourceBandText = mVRTDocument.createTextNode( QString::number( band ) );
   sourceBandElem.appendChild( sourceBandText );
   simpleSourceElem.appendChild( sourceBandElem );
 
   //SourceProperties
-  QDomElement sourcePropertiesElem = mVRTDocument.createElement( "SourceProperties" );
-  sourcePropertiesElem.setAttribute( "RasterXSize", xSize );
-  sourcePropertiesElem.setAttribute( "RasterYSize", ySize );
-  sourcePropertiesElem.setAttribute( "BlockXSize", xSize );
-  sourcePropertiesElem.setAttribute( "BlockYSize", ySize );
-  sourcePropertiesElem.setAttribute( "DataType", "Byte" );
+  QDomElement sourcePropertiesElem = mVRTDocument.createElement( QStringLiteral( "SourceProperties" ) );
+  sourcePropertiesElem.setAttribute( QStringLiteral( "RasterXSize" ), xSize );
+  sourcePropertiesElem.setAttribute( QStringLiteral( "RasterYSize" ), ySize );
+  sourcePropertiesElem.setAttribute( QStringLiteral( "BlockXSize" ), xSize );
+  sourcePropertiesElem.setAttribute( QStringLiteral( "BlockYSize" ), ySize );
+  sourcePropertiesElem.setAttribute( QStringLiteral( "DataType" ), QStringLiteral( "Byte" ) );
   simpleSourceElem.appendChild( sourcePropertiesElem );
 
   //SrcRect
-  QDomElement srcRectElem = mVRTDocument.createElement( "SrcRect" );
-  srcRectElem.setAttribute( "xOff", "0" );
-  srcRectElem.setAttribute( "yOff", "0" );
-  srcRectElem.setAttribute( "xSize", xSize );
-  srcRectElem.setAttribute( "ySize", ySize );
+  QDomElement srcRectElem = mVRTDocument.createElement( QStringLiteral( "SrcRect" ) );
+  srcRectElem.setAttribute( QStringLiteral( "xOff" ), QStringLiteral( "0" ) );
+  srcRectElem.setAttribute( QStringLiteral( "yOff" ), QStringLiteral( "0" ) );
+  srcRectElem.setAttribute( QStringLiteral( "xSize" ), xSize );
+  srcRectElem.setAttribute( QStringLiteral( "ySize" ), ySize );
   simpleSourceElem.appendChild( srcRectElem );
 
   //DstRect
-  QDomElement dstRectElem = mVRTDocument.createElement( "DstRect" );
-  dstRectElem.setAttribute( "xOff", xOffset );
-  dstRectElem.setAttribute( "yOff", yOffset );
-  dstRectElem.setAttribute( "xSize", xSize );
-  dstRectElem.setAttribute( "ySize", ySize );
+  QDomElement dstRectElem = mVRTDocument.createElement( QStringLiteral( "DstRect" ) );
+  dstRectElem.setAttribute( QStringLiteral( "xOff" ), xOffset );
+  dstRectElem.setAttribute( QStringLiteral( "yOff" ), yOffset );
+  dstRectElem.setAttribute( QStringLiteral( "xSize" ), xSize );
+  dstRectElem.setAttribute( QStringLiteral( "ySize" ), ySize );
   simpleSourceElem.appendChild( dstRectElem );
 
   bandElem.appendChild( simpleSourceElem );
@@ -749,28 +749,28 @@ void QgsRasterFileWriter::buildPyramids( const QString& filename )
   if ( !res.isNull() )
   {
     QString title, message;
-    if ( res == "ERROR_WRITE_ACCESS" )
+    if ( res == QLatin1String( "ERROR_WRITE_ACCESS" ) )
     {
       title = QObject::tr( "Building pyramids failed - write access denied" );
       message = QObject::tr( "Write access denied. Adjust the file permissions and try again." );
     }
-    else if ( res == "ERROR_WRITE_FORMAT" )
+    else if ( res == QLatin1String( "ERROR_WRITE_FORMAT" ) )
     {
       title = QObject::tr( "Building pyramids failed." );
       message = QObject::tr( "The file was not writable. Some formats do not "
                              "support pyramid overviews. Consult the GDAL documentation if in doubt." );
     }
-    else if ( res == "FAILED_NOT_SUPPORTED" )
+    else if ( res == QLatin1String( "FAILED_NOT_SUPPORTED" ) )
     {
       title = QObject::tr( "Building pyramids failed." );
       message = QObject::tr( "Building pyramid overviews is not supported on this type of raster." );
     }
-    else if ( res == "ERROR_JPEG_COMPRESSION" )
+    else if ( res == QLatin1String( "ERROR_JPEG_COMPRESSION" ) )
     {
       title = QObject::tr( "Building pyramids failed." );
       message = QObject::tr( "Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library." );
     }
-    else if ( res == "ERROR_VIRTUAL" )
+    else if ( res == QLatin1String( "ERROR_VIRTUAL" ) )
     {
       title = QObject::tr( "Building pyramids failed." );
       message = QObject::tr( "Building pyramid overviews is not supported on this type of raster." );
@@ -804,15 +804,15 @@ int QgsRasterFileWriter::pyramidsProgress( double dfComplete, const char *pszMes
 void QgsRasterFileWriter::createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform, Qgis::DataType type, const QList<bool>& destHasNoDataValueList, const QList<double>& destNoDataValueList )
 {
   mVRTDocument.clear();
-  QDomElement VRTDatasetElem = mVRTDocument.createElement( "VRTDataset" );
+  QDomElement VRTDatasetElem = mVRTDocument.createElement( QStringLiteral( "VRTDataset" ) );
 
   //xsize / ysize
-  VRTDatasetElem.setAttribute( "rasterXSize", xSize );
-  VRTDatasetElem.setAttribute( "rasterYSize", ySize );
+  VRTDatasetElem.setAttribute( QStringLiteral( "rasterXSize" ), xSize );
+  VRTDatasetElem.setAttribute( QStringLiteral( "rasterYSize" ), ySize );
   mVRTDocument.appendChild( VRTDatasetElem );
 
   //CRS
-  QDomElement SRSElem = mVRTDocument.createElement( "SRS" );
+  QDomElement SRSElem = mVRTDocument.createElement( QStringLiteral( "SRS" ) );
   QDomText crsText = mVRTDocument.createTextNode( crs.toWkt() );
   SRSElem.appendChild( crsText );
   VRTDatasetElem.appendChild( SRSElem );
@@ -820,7 +820,7 @@ void QgsRasterFileWriter::createVRT( int xSize, int ySize, const QgsCoordinateRe
   //geotransform
   if ( geoTransform )
   {
-    QDomElement geoTransformElem = mVRTDocument.createElement( "GeoTransform" );
+    QDomElement geoTransformElem = mVRTDocument.createElement( QStringLiteral( "GeoTransform" ) );
     QString geoTransformString = QString::number( geoTransform[0] ) + ", " + QString::number( geoTransform[1] ) + ", " + QString::number( geoTransform[2] ) +
                                  ", "  + QString::number( geoTransform[3] ) + ", " + QString::number( geoTransform[4] ) + ", " + QString::number( geoTransform[5] );
     QDomText geoTransformText = mVRTDocument.createTextNode( geoTransformString );
@@ -839,32 +839,32 @@ void QgsRasterFileWriter::createVRT( int xSize, int ySize, const QgsCoordinateRe
   }
 
   QStringList colorInterp;
-  colorInterp << "Red" << "Green" << "Blue" << "Alpha";
+  colorInterp << QStringLiteral( "Red" ) << QStringLiteral( "Green" ) << QStringLiteral( "Blue" ) << QStringLiteral( "Alpha" );
 
   QMap<Qgis::DataType, QString> dataTypes;
-  dataTypes.insert( Qgis::Byte, "Byte" );
-  dataTypes.insert( Qgis::UInt16, "UInt16" );
-  dataTypes.insert( Qgis::Int16, "Int16" );
-  dataTypes.insert( Qgis::UInt32, "Int32" );
-  dataTypes.insert( Qgis::Float32, "Float32" );
-  dataTypes.insert( Qgis::Float64, "Float64" );
-  dataTypes.insert( Qgis::CInt16, "CInt16" );
-  dataTypes.insert( Qgis::CInt32, "CInt32" );
-  dataTypes.insert( Qgis::CFloat32, "CFloat32" );
-  dataTypes.insert( Qgis::CFloat64, "CFloat64" );
+  dataTypes.insert( Qgis::Byte, QStringLiteral( "Byte" ) );
+  dataTypes.insert( Qgis::UInt16, QStringLiteral( "UInt16" ) );
+  dataTypes.insert( Qgis::Int16, QStringLiteral( "Int16" ) );
+  dataTypes.insert( Qgis::UInt32, QStringLiteral( "Int32" ) );
+  dataTypes.insert( Qgis::Float32, QStringLiteral( "Float32" ) );
+  dataTypes.insert( Qgis::Float64, QStringLiteral( "Float64" ) );
+  dataTypes.insert( Qgis::CInt16, QStringLiteral( "CInt16" ) );
+  dataTypes.insert( Qgis::CInt32, QStringLiteral( "CInt32" ) );
+  dataTypes.insert( Qgis::CFloat32, QStringLiteral( "CFloat32" ) );
+  dataTypes.insert( Qgis::CFloat64, QStringLiteral( "CFloat64" ) );
 
   for ( int i = 1; i <= nBands; i++ )
   {
-    QDomElement VRTBand = mVRTDocument.createElement( "VRTRasterBand" );
+    QDomElement VRTBand = mVRTDocument.createElement( QStringLiteral( "VRTRasterBand" ) );
 
-    VRTBand.setAttribute( "band", QString::number( i ) );
+    VRTBand.setAttribute( QStringLiteral( "band" ), QString::number( i ) );
     QString dataType = dataTypes.value( type );
-    VRTBand.setAttribute( "dataType", dataType );
+    VRTBand.setAttribute( QStringLiteral( "dataType" ), dataType );
 
     if ( mMode == Image )
     {
-      VRTBand.setAttribute( "dataType", "Byte" );
-      QDomElement colorInterpElement = mVRTDocument.createElement( "ColorInterp" );
+      VRTBand.setAttribute( QStringLiteral( "dataType" ), QStringLiteral( "Byte" ) );
+      QDomElement colorInterpElement = mVRTDocument.createElement( QStringLiteral( "ColorInterp" ) );
       QDomText interpText = mVRTDocument.createTextNode( colorInterp.value( i - 1 ) );
       colorInterpElement.appendChild( interpText );
       VRTBand.appendChild( colorInterpElement );
@@ -872,7 +872,7 @@ void QgsRasterFileWriter::createVRT( int xSize, int ySize, const QgsCoordinateRe
 
     if ( !destHasNoDataValueList.isEmpty() && destHasNoDataValueList.value( i - 1 ) )
     {
-      VRTBand.setAttribute( "NoDataValue", QString::number( destNoDataValueList.value( i - 1 ) ) );
+      VRTBand.setAttribute( QStringLiteral( "NoDataValue" ), QString::number( destNoDataValueList.value( i - 1 ) ) );
     }
 
     mVRTBands.append( VRTBand );
@@ -974,11 +974,11 @@ QString QgsRasterFileWriter::partFileName( int fileIndex )
 {
   // .tif for now
   QFileInfo outputInfo( mOutputUrl );
-  return QString( "%1.%2.tif" ).arg( outputInfo.fileName() ).arg( fileIndex );
+  return QStringLiteral( "%1.%2.tif" ).arg( outputInfo.fileName() ).arg( fileIndex );
 }
 
 QString QgsRasterFileWriter::vrtFileName()
 {
   QFileInfo outputInfo( mOutputUrl );
-  return QString( "%1.vrt" ).arg( outputInfo.fileName() );
+  return QStringLiteral( "%1.vrt" ).arg( outputInfo.fileName() );
 }

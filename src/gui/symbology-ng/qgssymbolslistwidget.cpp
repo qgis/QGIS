@@ -70,7 +70,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, 
   connect( mClipFeaturesAction, SIGNAL( toggled( bool ) ), this, SLOT( clipFeaturesToggled( bool ) ) );
 
   // populate the groups
-  groupsCombo->addItem( "" );
+  groupsCombo->addItem( QLatin1String( "" ) );
   populateGroups();
   QStringList groups = style->smartgroupNames();
   Q_FOREACH ( const QString& group, groups )
@@ -85,7 +85,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, 
   connect( mStyle, SIGNAL( symbolSaved( QString, QgsSymbol* ) ), this, SLOT( symbolAddedToStyle( QString, QgsSymbol* ) ) );
   connect( openStyleManagerButton, SIGNAL( pressed() ), this, SLOT( openStyleManager() ) );
 
-  lblSymbolName->setText( "" );
+  lblSymbolName->setText( QLatin1String( "" ) );
   populateSymbolView();
 
   if ( mSymbol )
@@ -117,7 +117,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, 
   btnColor->setAcceptLiveUpdates( false );
   btnColor->setAllowAlpha( true );
   btnColor->setColorDialogTitle( tr( "Select color" ) );
-  btnColor->setContext( "symbology" );
+  btnColor->setContext( QStringLiteral( "symbology" ) );
 
   connect( btnSaveSymbol, SIGNAL( clicked() ), this, SLOT( saveSymbol() ) );
 }
@@ -567,7 +567,7 @@ void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( int index )
   else
   {
     int groupid;
-    if ( groupsCombo->itemData( index ).toString() == "smart" )
+    if ( groupsCombo->itemData( index ).toString() == QLatin1String( "smart" ) )
     {
       groupid = mStyle->smartgroupId( text );
       symbols = mStyle->symbolsOfSmartgroup( QgsStyle::SymbolEntity, groupid );

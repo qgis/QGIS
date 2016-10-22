@@ -39,11 +39,11 @@ QgsRemoteDataSourceBuilder::~QgsRemoteDataSourceBuilder()
 QgsMapLayer* QgsRemoteDataSourceBuilder::createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
 {
   QgsMapLayer* theLayer = nullptr;
-  if ( elem.tagName() == "RemoteRDS" )
+  if ( elem.tagName() == QLatin1String( "RemoteRDS" ) )
   {
     theLayer = rasterLayerFromRemoteRDS( elem, layerName, filesToRemove, layersToRemove, allowCaching );
   }
-  else if ( elem.tagName() == "RemoteVDS" )
+  else if ( elem.tagName() == QLatin1String( "RemoteVDS" ) )
   {
     theLayer = vectorLayerFromRemoteVDS( elem, layerName, filesToRemove, layersToRemove, allowCaching );
   }
@@ -103,10 +103,10 @@ QgsVectorLayer* QgsRemoteDataSourceBuilder::vectorLayerFromRemoteVDS( const QDom
   Q_UNUSED( layerName );
   Q_UNUSED( allowCaching );
   QString providerString;
-  QString formatString = remoteVDSElem.attribute( "format" );
-  if ( formatString.compare( "gml", Qt::CaseInsensitive ) == 0 )
+  QString formatString = remoteVDSElem.attribute( QStringLiteral( "format" ) );
+  if ( formatString.compare( QLatin1String( "gml" ), Qt::CaseInsensitive ) == 0 )
   {
-    providerString = "WFS";
+    providerString = QStringLiteral( "WFS" );
   }
   else
   {
@@ -140,7 +140,7 @@ QgsVectorLayer* QgsRemoteDataSourceBuilder::vectorLayerFromRemoteVDS( const QDom
   //create vector layer
 
   //SOS has a special datasource key...
-  if ( formatString.compare( "SOS", Qt::CaseInsensitive ) == 0 )
+  if ( formatString.compare( QLatin1String( "SOS" ), Qt::CaseInsensitive ) == 0 )
   {
     QString url = "url=" + tmpFile->fileName() + " method=FILE xml=";
     vl =  new QgsVectorLayer( url, layerNameFromUri( tmpFile->fileName() ), providerString );

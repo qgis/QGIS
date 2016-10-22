@@ -125,7 +125,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * @note added in QGIS 2.16
      */
     // TODO QGIS 3.0 - make pure virtual
-    virtual QString createExpression( FilterFlags flags ) const { Q_UNUSED( flags ); return "TRUE"; }
+    virtual QString createExpression( FilterFlags flags ) const { Q_UNUSED( flags ); return QStringLiteral( "TRUE" ); }
 
   public slots:
 

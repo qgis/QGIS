@@ -105,7 +105,7 @@ class eVisQueryDefinition
     /** \brief Mutator for auto connection flag */
     void setAutoConnect( const QString& autoconnect )
     {
-      if ( autoconnect.startsWith( "true", Qt::CaseInsensitive ) )
+      if ( autoconnect.startsWith( QLatin1String( "true" ), Qt::CaseInsensitive ) )
       {
         mAutoConnect = true;
       }

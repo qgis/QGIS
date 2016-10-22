@@ -27,14 +27,14 @@ QgsEditorWidgetConfig QgsPhotoConfigDlg::config()
 {
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( "Height", sbWidgetHeight->value() );
-  cfg.insert( "Width", sbWidgetWidth->value() );
+  cfg.insert( QStringLiteral( "Height" ), sbWidgetHeight->value() );
+  cfg.insert( QStringLiteral( "Width" ), sbWidgetWidth->value() );
 
   return cfg;
 }
 
 void QgsPhotoConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
 {
-  sbWidgetHeight->setValue( config.value( "Height", 0 ).toInt() );
-  sbWidgetWidth->setValue( config.value( "Width", 0 ).toInt() );
+  sbWidgetHeight->setValue( config.value( QStringLiteral( "Height" ), 0 ).toInt() );
+  sbWidgetWidth->setValue( config.value( QStringLiteral( "Width" ), 0 ).toInt() );
 }

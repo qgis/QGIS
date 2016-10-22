@@ -25,7 +25,7 @@
 
 
 QgsHillshadeRenderer::QgsHillshadeRenderer( QgsRasterInterface *input, int band, double lightAzimuth, double lightAngle ):
-    QgsRasterRenderer( input, "hillshade" )
+    QgsRasterRenderer( input, QStringLiteral( "hillshade" ) )
     , mBand( band )
     , mZFactor( 1 )
     , mLightAngle( lightAngle )
@@ -52,11 +52,11 @@ QgsRasterRenderer *QgsHillshadeRenderer::create( const QDomElement &elem, QgsRas
     return nullptr;
   }
 
-  int band = elem.attribute( "band", "0" ).toInt();
-  double azimuth = elem.attribute( "azimuth", "315" ).toDouble();
-  double angle = elem.attribute( "angle", "45" ).toDouble();
-  double zFactor = elem.attribute( "zfactor", "1" ).toDouble();
-  bool multiDirectional = elem.attribute( "multidirection", "0" ).toInt();
+  int band = elem.attribute( QStringLiteral( "band" ), QStringLiteral( "0" ) ).toInt();
+  double azimuth = elem.attribute( QStringLiteral( "azimuth" ), QStringLiteral( "315" ) ).toDouble();
+  double angle = elem.attribute( QStringLiteral( "angle" ), QStringLiteral( "45" ) ).toDouble();
+  double zFactor = elem.attribute( QStringLiteral( "zfactor" ), QStringLiteral( "1" ) ).toDouble();
+  bool multiDirectional = elem.attribute( QStringLiteral( "multidirection" ), QStringLiteral( "0" ) ).toInt();
   QgsHillshadeRenderer* r = new QgsHillshadeRenderer( input, band, azimuth , angle );
   r->readXml( elem );
 
@@ -72,14 +72,14 @@ void QgsHillshadeRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem 
     return;
   }
 
-  QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
+  QDomElement rasterRendererElem = doc.createElement( QStringLiteral( "rasterrenderer" ) );
   _writeXml( doc, rasterRendererElem );
 
-  rasterRendererElem.setAttribute( "band", mBand );
-  rasterRendererElem.setAttribute( "azimuth", QString::number( mLightAzimuth ) );
-  rasterRendererElem.setAttribute( "angle", QString::number( mLightAngle ) );
-  rasterRendererElem.setAttribute( "zfactor", QString::number( mZFactor ) );
-  rasterRendererElem.setAttribute( "multidirection", QString::number( mMultiDirectional ) );
+  rasterRendererElem.setAttribute( QStringLiteral( "band" ), mBand );
+  rasterRendererElem.setAttribute( QStringLiteral( "azimuth" ), QString::number( mLightAzimuth ) );
+  rasterRendererElem.setAttribute( QStringLiteral( "angle" ), QString::number( mLightAngle ) );
+  rasterRendererElem.setAttribute( QStringLiteral( "zfactor" ), QString::number( mZFactor ) );
+  rasterRendererElem.setAttribute( QStringLiteral( "multidirection" ), QString::number( mMultiDirectional ) );
   parentElem.appendChild( rasterRendererElem );
 }
 

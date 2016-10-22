@@ -593,7 +593,7 @@ class CORE_EXPORT QgsExpression
          * to users in expression builders.
          * @note added in QGIS 3.0
          */
-        virtual bool isDeprecated() const { return mGroups.isEmpty() ? false : mGroups.contains( "deprecated" ); }
+        virtual bool isDeprecated() const { return mGroups.isEmpty() ? false : mGroups.contains( QStringLiteral( "deprecated" ) ); }
 
         /** Returns the first group which the function belongs to.
          * @note consider using groups() instead, as some functions naturally belong in multiple groups

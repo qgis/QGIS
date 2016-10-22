@@ -29,7 +29,7 @@ class QgsGeometryDuplicateNodesCheck : public QgsGeometryCheck
     void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
     const QStringList& getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Duplicate node" ); }
-    QString errorName() const override { return "QgsGeometryDuplicateNodesCheck"; }
+    QString errorName() const override { return QStringLiteral( "QgsGeometryDuplicateNodesCheck" ); }
 
   private:
     enum ResolutionMethod { RemoveDuplicates, NoChange };

@@ -78,7 +78,7 @@ static const QString sDescription = QObject::tr( "An event visualization tool - 
 static const QString sCategory = QObject::tr( "Database" );
 static const QString sPluginVersion = QObject::tr( "Version 1.1.0" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
-static const QString sIcon = ":/evis/eVisEventBrowser.png";
+static const QString sIcon = QStringLiteral( ":/evis/eVisEventBrowser.png" );
 
 
 
@@ -104,11 +104,11 @@ void eVis::initGui()
 
   // Create the action for tool
   mDatabaseConnectionActionPointer = new QAction( QIcon( ":/evis/eVisDatabaseConnection.png" ), tr( "eVis Database Connection" ), this );
-  mDatabaseConnectionActionPointer->setObjectName( "mDatabaseConnectionActionPointer" );
+  mDatabaseConnectionActionPointer->setObjectName( QStringLiteral( "mDatabaseConnectionActionPointer" ) );
   mEventIdToolActionPointer = new QAction( QIcon( ":/evis/eVisEventIdTool.png" ), tr( "eVis Event Id Tool" ), this );
-  mEventIdToolActionPointer->setObjectName( "mEventIdToolActionPointer" );
+  mEventIdToolActionPointer->setObjectName( QStringLiteral( "mEventIdToolActionPointer" ) );
   mEventBrowserActionPointer = new QAction( QIcon( ":/evis/eVisEventBrowser.png" ), tr( "eVis Event Browser" ), this );
-  mEventBrowserActionPointer->setObjectName( "mEventBrowserActionPointer" );
+  mEventBrowserActionPointer->setObjectName( QStringLiteral( "mEventBrowserActionPointer" ) );
 
   // Set the what's this text
   mDatabaseConnectionActionPointer->setWhatsThis( tr( "Create layer from a database query" ) );
@@ -126,9 +126,9 @@ void eVis::initGui()
   mQGisIface->addDatabaseToolBarIcon( mEventIdToolActionPointer );
   mQGisIface->addDatabaseToolBarIcon( mEventBrowserActionPointer );
 
-  mQGisIface->addPluginToDatabaseMenu( "&eVis", mDatabaseConnectionActionPointer );
-  mQGisIface->addPluginToDatabaseMenu( "&eVis", mEventIdToolActionPointer );
-  mQGisIface->addPluginToDatabaseMenu( "&eVis", mEventBrowserActionPointer );
+  mQGisIface->addPluginToDatabaseMenu( QStringLiteral( "&eVis" ), mDatabaseConnectionActionPointer );
+  mQGisIface->addPluginToDatabaseMenu( QStringLiteral( "&eVis" ), mEventIdToolActionPointer );
+  mQGisIface->addPluginToDatabaseMenu( QStringLiteral( "&eVis" ), mEventBrowserActionPointer );
 
   mEventIdToolActionPointer->setCheckable( true );
 }
@@ -170,15 +170,15 @@ void eVis::launchEventBrowser()
 void eVis::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginDatabaseMenu( "&eVis", mDatabaseConnectionActionPointer );
+  mQGisIface->removePluginDatabaseMenu( QStringLiteral( "&eVis" ), mDatabaseConnectionActionPointer );
   mQGisIface->removeDatabaseToolBarIcon( mDatabaseConnectionActionPointer );
   delete mDatabaseConnectionActionPointer;
 
-  mQGisIface->removePluginDatabaseMenu( "&eVis", mEventIdToolActionPointer );
+  mQGisIface->removePluginDatabaseMenu( QStringLiteral( "&eVis" ), mEventIdToolActionPointer );
   mQGisIface->removeDatabaseToolBarIcon( mEventIdToolActionPointer );
   delete mEventIdToolActionPointer;
 
-  mQGisIface->removePluginDatabaseMenu( "&eVis", mEventBrowserActionPointer );
+  mQGisIface->removePluginDatabaseMenu( QStringLiteral( "&eVis" ), mEventBrowserActionPointer );
   mQGisIface->removeDatabaseToolBarIcon( mEventBrowserActionPointer );
   delete mEventBrowserActionPointer;
 

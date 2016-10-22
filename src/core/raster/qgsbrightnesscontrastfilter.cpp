@@ -203,10 +203,10 @@ void QgsBrightnessContrastFilter::writeXml( QDomDocument& doc, QDomElement& pare
     return;
   }
 
-  QDomElement filterElem = doc.createElement( "brightnesscontrast" );
+  QDomElement filterElem = doc.createElement( QStringLiteral( "brightnesscontrast" ) );
 
-  filterElem.setAttribute( "brightness", QString::number( mBrightness ) );
-  filterElem.setAttribute( "contrast", QString::number( mContrast ) );
+  filterElem.setAttribute( QStringLiteral( "brightness" ), QString::number( mBrightness ) );
+  filterElem.setAttribute( QStringLiteral( "contrast" ), QString::number( mContrast ) );
   parentElem.appendChild( filterElem );
 }
 
@@ -217,6 +217,6 @@ void QgsBrightnessContrastFilter::readXml( const QDomElement& filterElem )
     return;
   }
 
-  mBrightness = filterElem.attribute( "brightness", "0" ).toInt();
-  mContrast = filterElem.attribute( "contrast", "0" ).toInt();
+  mBrightness = filterElem.attribute( QStringLiteral( "brightness" ), QStringLiteral( "0" ) ).toInt();
+  mContrast = filterElem.attribute( QStringLiteral( "contrast" ), QStringLiteral( "0" ) ).toInt();
 }

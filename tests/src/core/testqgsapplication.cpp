@@ -58,14 +58,14 @@ void TestQgsApplication::cleanupTestCase()
 void TestQgsApplication::accountName()
 {
   QString loginName = QgsApplication::userLoginName();
-  qDebug() << QString( "Got login name: '%1'" ).arg( loginName );
+  qDebug() << QStringLiteral( "Got login name: '%1'" ).arg( loginName );
   QVERIFY( !loginName.isEmpty() );
   //test cached return works correctly
   QCOMPARE( loginName, QgsApplication::userLoginName() );
 
   //can't test contents, as it can be validly empty (eg on Travis). Just testing that we don't crash
   QString fullName = QgsApplication::userFullName();
-  qDebug() << QString( "Got full name: '%1'" ).arg( fullName );
+  qDebug() << QStringLiteral( "Got full name: '%1'" ).arg( fullName );
   //test cached return works correctly
   QCOMPARE( fullName, QgsApplication::userFullName() );
 }
@@ -73,7 +73,7 @@ void TestQgsApplication::accountName()
 void TestQgsApplication::osName()
 {
   // can't test expected result, so just check for non-empty result
-  qDebug() << QString( "Got OS name: '%1'" ).arg( QgsApplication::osName() );
+  qDebug() << QStringLiteral( "Got OS name: '%1'" ).arg( QgsApplication::osName() );
   QVERIFY( !QgsApplication::osName().isEmpty() );
 }
 
@@ -95,9 +95,9 @@ void TestQgsApplication::checkPaths()
 void TestQgsApplication::checkGdalSkip()
 {
   GDALAllRegister();
-  QgsApplication::skipGdalDriver( "GTiff" );
+  QgsApplication::skipGdalDriver( QStringLiteral( "GTiff" ) );
   QVERIFY( QgsApplication::skippedGdalDrivers().contains( "GTiff" ) );
-  QgsApplication::restoreGdalDriver( "GTiff" );
+  QgsApplication::restoreGdalDriver( QStringLiteral( "GTiff" ) );
   QVERIFY( !QgsApplication::skippedGdalDrivers().contains( "GTiff" ) );
 }
 

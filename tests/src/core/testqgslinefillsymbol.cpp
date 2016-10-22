@@ -93,7 +93,7 @@ void TestQgsLineFillSymbol::initTestCase()
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
+                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
@@ -115,7 +115,7 @@ void TestQgsLineFillSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
-  mReport += "<h1>Line Fill Symbol Tests</h1>\n";
+  mReport += QLatin1String( "<h1>Line Fill Symbol Tests</h1>\n" );
 
 }
 void TestQgsLineFillSymbol::cleanupTestCase()
@@ -134,12 +134,12 @@ void TestQgsLineFillSymbol::cleanupTestCase()
 
 void TestQgsLineFillSymbol::lineFillSymbol()
 {
-  mReport += "<h2>Line fill symbol renderer test</h2>\n";
+  mReport += QLatin1String( "<h2>Line fill symbol renderer test</h2>\n" );
 
   QgsStringMap properties;
-  properties.insert( "color", "0,0,0,255" );
-  properties.insert( "width", "1" );
-  properties.insert( "capstyle", "flat" );
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
   QgsLineSymbol* lineSymbol = QgsLineSymbol::createSimple( properties );
 
   mLineFill->setSubSymbol( lineSymbol );
@@ -148,14 +148,14 @@ void TestQgsLineFillSymbol::lineFillSymbol()
 
 void TestQgsLineFillSymbol::dataDefinedSubSymbol()
 {
-  mReport += "<h2>Line fill symbol data defined sub symbol test</h2>\n";
+  mReport += QLatin1String( "<h2>Line fill symbol data defined sub symbol test</h2>\n" );
 
   QgsStringMap properties;
-  properties.insert( "color", "0,0,0,255" );
-  properties.insert( "width", "1" );
-  properties.insert( "capstyle", "flat" );
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
   QgsLineSymbol* lineSymbol = QgsLineSymbol::createSimple( properties );
-  lineSymbol->symbolLayer( 0 )->setDataDefinedProperty( "color", new QgsDataDefined( QString( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
+  lineSymbol->symbolLayer( 0 )->setDataDefinedProperty( QStringLiteral( "color" ), new QgsDataDefined( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
   mLineFill->setSubSymbol( lineSymbol );
   QVERIFY( imageCheck( "datadefined_subsymbol" ) );
 }
@@ -172,7 +172,7 @@ bool TestQgsLineFillSymbol::imageCheck( const QString& theTestType )
   mMapSettings.setExtent( mpPolysLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
-  myChecker.setControlPathPrefix( "symbol_linefill" );
+  myChecker.setControlPathPrefix( QStringLiteral( "symbol_linefill" ) );
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   bool myResultFlag = myChecker.runTest( theTestType );

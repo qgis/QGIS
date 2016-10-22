@@ -23,7 +23,7 @@
 #include <QImage>
 
 QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterInterface* input, int band ):
-    QgsRasterRenderer( input, "singlebandcolordata" ), mBand( band )
+    QgsRasterRenderer( input, QStringLiteral( "singlebandcolordata" ) ), mBand( band )
 {
 
 }
@@ -46,7 +46,7 @@ QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& el
     return nullptr;
   }
 
-  int band = elem.attribute( "band", "-1" ).toInt();
+  int band = elem.attribute( QStringLiteral( "band" ), QStringLiteral( "-1" ) ).toInt();
   QgsRasterRenderer* r = new QgsSingleBandColorDataRenderer( input, band );
   r->readXml( elem );
   return r;
@@ -105,9 +105,9 @@ void QgsSingleBandColorDataRenderer::writeXml( QDomDocument& doc, QDomElement& p
   if ( parentElem.isNull() )
     return;
 
-  QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
+  QDomElement rasterRendererElem = doc.createElement( QStringLiteral( "rasterrenderer" ) );
   _writeXml( doc, rasterRendererElem );
-  rasterRendererElem.setAttribute( "band", mBand );
+  rasterRendererElem.setAttribute( QStringLiteral( "band" ), mBand );
   parentElem.appendChild( rasterRendererElem );
 }
 

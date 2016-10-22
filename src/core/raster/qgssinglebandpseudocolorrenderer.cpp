@@ -25,7 +25,7 @@
 #include <QImage>
 
 QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band, QgsRasterShader* shader ):
-    QgsRasterRenderer( input, "singlebandpseudocolor" )
+    QgsRasterRenderer( input, QStringLiteral( "singlebandpseudocolor" ) )
     , mShader( shader )
     , mBand( band )
     , mClassificationMin( std::numeric_limits<double>::quiet_NaN() )
@@ -88,9 +88,9 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& 
     return nullptr;
   }
 
-  int band = elem.attribute( "band", "-1" ).toInt();
+  int band = elem.attribute( QStringLiteral( "band" ), QStringLiteral( "-1" ) ).toInt();
   QgsRasterShader* shader = nullptr;
-  QDomElement rasterShaderElem = elem.firstChildElement( "rastershader" );
+  QDomElement rasterShaderElem = elem.firstChildElement( QStringLiteral( "rastershader" ) );
   if ( !rasterShaderElem.isNull() )
   {
     shader = new QgsRasterShader();
@@ -101,9 +101,9 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& 
   r->readXml( elem );
 
   // TODO: add _readXML in superclass?
-  r->setClassificationMin( elem.attribute( "classificationMin", "NaN" ).toDouble() );
-  r->setClassificationMax( elem.attribute( "classificationMax", "NaN" ).toDouble() );
-  r->setClassificationMinMaxOrigin( QgsRasterRenderer::minMaxOriginFromName( elem.attribute( "classificationMinMaxOrigin", "Unknown" ) ) );
+  r->setClassificationMin( elem.attribute( QStringLiteral( "classificationMin" ), QStringLiteral( "NaN" ) ).toDouble() );
+  r->setClassificationMax( elem.attribute( QStringLiteral( "classificationMax" ), QStringLiteral( "NaN" ) ).toDouble() );
+  r->setClassificationMinMaxOrigin( QgsRasterRenderer::minMaxOriginFromName( elem.attribute( QStringLiteral( "classificationMinMaxOrigin" ), QStringLiteral( "Unknown" ) ) ) );
 
   return r;
 }
@@ -215,16 +215,16 @@ void QgsSingleBandPseudoColorRenderer::writeXml( QDomDocument& doc, QDomElement&
     return;
   }
 
-  QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
+  QDomElement rasterRendererElem = doc.createElement( QStringLiteral( "rasterrenderer" ) );
   _writeXml( doc, rasterRendererElem );
-  rasterRendererElem.setAttribute( "band", mBand );
+  rasterRendererElem.setAttribute( QStringLiteral( "band" ), mBand );
   if ( mShader )
   {
     mShader->writeXml( doc, rasterRendererElem ); //todo: include color ramp items directly in this renderer
   }
-  rasterRendererElem.setAttribute( "classificationMin", QgsRasterBlock::printValue( mClassificationMin ) );
-  rasterRendererElem.setAttribute( "classificationMax", QgsRasterBlock::printValue( mClassificationMax ) );
-  rasterRendererElem.setAttribute( "classificationMinMaxOrigin", QgsRasterRenderer::minMaxOriginName( mClassificationMinMaxOrigin ) );
+  rasterRendererElem.setAttribute( QStringLiteral( "classificationMin" ), QgsRasterBlock::printValue( mClassificationMin ) );
+  rasterRendererElem.setAttribute( QStringLiteral( "classificationMax" ), QgsRasterBlock::printValue( mClassificationMax ) );
+  rasterRendererElem.setAttribute( QStringLiteral( "classificationMinMaxOrigin" ), QgsRasterRenderer::minMaxOriginName( mClassificationMinMaxOrigin ) );
 
   parentElem.appendChild( rasterRendererElem );
 }

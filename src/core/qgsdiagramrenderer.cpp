@@ -104,33 +104,33 @@ void QgsDiagramLayerSettings::readXml( const QDomElement& elem, const QgsVectorL
 {
   Q_UNUSED( layer )
 
-  placement = static_cast< Placement >( elem.attribute( "placement" ).toInt() );
-  placementFlags = static_cast< LinePlacementFlags >( elem.attribute( "linePlacementFlags" ).toInt() );
-  priority = elem.attribute( "priority" ).toInt();
-  zIndex = elem.attribute( "zIndex" ).toDouble();
-  obstacle = elem.attribute( "obstacle" ).toInt();
-  dist = elem.attribute( "dist" ).toDouble();
-  xPosColumn = elem.attribute( "xPosColumn" ).toInt();
-  yPosColumn = elem.attribute( "yPosColumn" ).toInt();
-  showColumn = elem.attribute( "showColumn" ).toInt();
-  showAll = ( elem.attribute( "showAll", "0" ) != "0" );
+  placement = static_cast< Placement >( elem.attribute( QStringLiteral( "placement" ) ).toInt() );
+  placementFlags = static_cast< LinePlacementFlags >( elem.attribute( QStringLiteral( "linePlacementFlags" ) ).toInt() );
+  priority = elem.attribute( QStringLiteral( "priority" ) ).toInt();
+  zIndex = elem.attribute( QStringLiteral( "zIndex" ) ).toDouble();
+  obstacle = elem.attribute( QStringLiteral( "obstacle" ) ).toInt();
+  dist = elem.attribute( QStringLiteral( "dist" ) ).toDouble();
+  xPosColumn = elem.attribute( QStringLiteral( "xPosColumn" ) ).toInt();
+  yPosColumn = elem.attribute( QStringLiteral( "yPosColumn" ) ).toInt();
+  showColumn = elem.attribute( QStringLiteral( "showColumn" ) ).toInt();
+  showAll = ( elem.attribute( QStringLiteral( "showAll" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
 }
 
 void QgsDiagramLayerSettings::writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
 {
   Q_UNUSED( layer )
 
-  QDomElement diagramLayerElem = doc.createElement( "DiagramLayerSettings" );
-  diagramLayerElem.setAttribute( "placement", placement );
-  diagramLayerElem.setAttribute( "linePlacementFlags", placementFlags );
-  diagramLayerElem.setAttribute( "priority", priority );
-  diagramLayerElem.setAttribute( "zIndex", zIndex );
-  diagramLayerElem.setAttribute( "obstacle", obstacle );
-  diagramLayerElem.setAttribute( "dist", QString::number( dist ) );
-  diagramLayerElem.setAttribute( "xPosColumn", xPosColumn );
-  diagramLayerElem.setAttribute( "yPosColumn", yPosColumn );
-  diagramLayerElem.setAttribute( "showColumn", showColumn );
-  diagramLayerElem.setAttribute( "showAll", showAll );
+  QDomElement diagramLayerElem = doc.createElement( QStringLiteral( "DiagramLayerSettings" ) );
+  diagramLayerElem.setAttribute( QStringLiteral( "placement" ), placement );
+  diagramLayerElem.setAttribute( QStringLiteral( "linePlacementFlags" ), placementFlags );
+  diagramLayerElem.setAttribute( QStringLiteral( "priority" ), priority );
+  diagramLayerElem.setAttribute( QStringLiteral( "zIndex" ), zIndex );
+  diagramLayerElem.setAttribute( QStringLiteral( "obstacle" ), obstacle );
+  diagramLayerElem.setAttribute( QStringLiteral( "dist" ), QString::number( dist ) );
+  diagramLayerElem.setAttribute( QStringLiteral( "xPosColumn" ), xPosColumn );
+  diagramLayerElem.setAttribute( QStringLiteral( "yPosColumn" ), yPosColumn );
+  diagramLayerElem.setAttribute( QStringLiteral( "showColumn" ), showColumn );
+  diagramLayerElem.setAttribute( QStringLiteral( "showAll" ), showAll );
   layerElem.appendChild( diagramLayerElem );
 }
 
@@ -157,26 +157,26 @@ void QgsDiagramSettings::readXml( const QDomElement& elem, const QgsVectorLayer*
 {
   Q_UNUSED( layer );
 
-  enabled = ( elem.attribute( "enabled", "1" ) != "0" );
-  if ( !QgsFontUtils::setFromXmlChildNode( font, elem, "fontProperties" ) )
+  enabled = ( elem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
+  if ( !QgsFontUtils::setFromXmlChildNode( font, elem, QStringLiteral( "fontProperties" ) ) )
   {
-    font.fromString( elem.attribute( "font" ) );
+    font.fromString( elem.attribute( QStringLiteral( "font" ) ) );
   }
-  backgroundColor.setNamedColor( elem.attribute( "backgroundColor" ) );
-  backgroundColor.setAlpha( elem.attribute( "backgroundAlpha" ).toInt() );
-  size.setWidth( elem.attribute( "width" ).toDouble() );
-  size.setHeight( elem.attribute( "height" ).toDouble() );
-  transparency = elem.attribute( "transparency", "0" ).toInt();
-  penColor.setNamedColor( elem.attribute( "penColor" ) );
-  int penAlpha = elem.attribute( "penAlpha", "255" ).toInt();
+  backgroundColor.setNamedColor( elem.attribute( QStringLiteral( "backgroundColor" ) ) );
+  backgroundColor.setAlpha( elem.attribute( QStringLiteral( "backgroundAlpha" ) ).toInt() );
+  size.setWidth( elem.attribute( QStringLiteral( "width" ) ).toDouble() );
+  size.setHeight( elem.attribute( QStringLiteral( "height" ) ).toDouble() );
+  transparency = elem.attribute( QStringLiteral( "transparency" ), QStringLiteral( "0" ) ).toInt();
+  penColor.setNamedColor( elem.attribute( QStringLiteral( "penColor" ) ) );
+  int penAlpha = elem.attribute( QStringLiteral( "penAlpha" ), QStringLiteral( "255" ) ).toInt();
   penColor.setAlpha( penAlpha );
-  penWidth = elem.attribute( "penWidth" ).toDouble();
+  penWidth = elem.attribute( QStringLiteral( "penWidth" ) ).toDouble();
 
-  minScaleDenominator = elem.attribute( "minScaleDenominator", "-1" ).toDouble();
-  maxScaleDenominator = elem.attribute( "maxScaleDenominator", "-1" ).toDouble();
-  if ( elem.hasAttribute( "scaleBasedVisibility" ) )
+  minScaleDenominator = elem.attribute( QStringLiteral( "minScaleDenominator" ), QStringLiteral( "-1" ) ).toDouble();
+  maxScaleDenominator = elem.attribute( QStringLiteral( "maxScaleDenominator" ), QStringLiteral( "-1" ) ).toDouble();
+  if ( elem.hasAttribute( QStringLiteral( "scaleBasedVisibility" ) ) )
   {
-    scaleBasedVisibility = ( elem.attribute( "scaleBasedVisibility", "1" ) != "0" );
+    scaleBasedVisibility = ( elem.attribute( QStringLiteral( "scaleBasedVisibility" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
   }
   else
   {
@@ -184,23 +184,23 @@ void QgsDiagramSettings::readXml( const QDomElement& elem, const QgsVectorLayer*
   }
 
   //diagram size unit type and scale
-  if ( elem.attribute( "sizeType" ) == "MapUnits" )
+  if ( elem.attribute( QStringLiteral( "sizeType" ) ) == QLatin1String( "MapUnits" ) )
   {
     //compatibility with pre-2.16 project files
     sizeType = QgsUnitTypes::RenderMapUnits;
   }
   else
   {
-    sizeType = QgsUnitTypes::decodeRenderUnit( elem.attribute( "sizeType" ) );
+    sizeType = QgsUnitTypes::decodeRenderUnit( elem.attribute( QStringLiteral( "sizeType" ) ) );
   }
-  sizeScale = QgsSymbolLayerUtils::decodeMapUnitScale( elem.attribute( "sizeScale" ) );
+  sizeScale = QgsSymbolLayerUtils::decodeMapUnitScale( elem.attribute( QStringLiteral( "sizeScale" ) ) );
 
   //line width unit type and scale
-  lineSizeUnit = QgsUnitTypes::decodeRenderUnit( elem.attribute( "lineSizeType" ) );
-  lineSizeScale = QgsSymbolLayerUtils::decodeMapUnitScale( elem.attribute( "lineSizeScale" ) );
+  lineSizeUnit = QgsUnitTypes::decodeRenderUnit( elem.attribute( QStringLiteral( "lineSizeType" ) ) );
+  lineSizeScale = QgsSymbolLayerUtils::decodeMapUnitScale( elem.attribute( QStringLiteral( "lineSizeScale" ) ) );
 
   //label placement method
-  if ( elem.attribute( "labelPlacementMethod" ) == "Height" )
+  if ( elem.attribute( QStringLiteral( "labelPlacementMethod" ) ) == QLatin1String( "Height" ) )
   {
     labelPlacementMethod = Height;
   }
@@ -210,15 +210,15 @@ void QgsDiagramSettings::readXml( const QDomElement& elem, const QgsVectorLayer*
   }
 
   // orientation
-  if ( elem.attribute( "diagramOrientation" ) == "Left" )
+  if ( elem.attribute( QStringLiteral( "diagramOrientation" ) ) == QLatin1String( "Left" ) )
   {
     diagramOrientation = Left;
   }
-  else if ( elem.attribute( "diagramOrientation" ) == "Right" )
+  else if ( elem.attribute( QStringLiteral( "diagramOrientation" ) ) == QLatin1String( "Right" ) )
   {
     diagramOrientation = Right;
   }
-  else if ( elem.attribute( "diagramOrientation" ) == "Down" )
+  else if ( elem.attribute( QStringLiteral( "diagramOrientation" ) ) == QLatin1String( "Down" ) )
   {
     diagramOrientation = Down;
   }
@@ -228,7 +228,7 @@ void QgsDiagramSettings::readXml( const QDomElement& elem, const QgsVectorLayer*
   }
 
   // scale dependency
-  if ( elem.attribute( "scaleDependency" ) == "Diameter" )
+  if ( elem.attribute( QStringLiteral( "scaleDependency" ) ) == QLatin1String( "Diameter" ) )
   {
     scaleByArea = false;
   }
@@ -237,26 +237,26 @@ void QgsDiagramSettings::readXml( const QDomElement& elem, const QgsVectorLayer*
     scaleByArea = true;
   }
 
-  barWidth = elem.attribute( "barWidth" ).toDouble();
+  barWidth = elem.attribute( QStringLiteral( "barWidth" ) ).toDouble();
 
-  angleOffset = elem.attribute( "angleOffset" ).toInt();
+  angleOffset = elem.attribute( QStringLiteral( "angleOffset" ) ).toInt();
 
-  minimumSize = elem.attribute( "minimumSize" ).toDouble();
+  minimumSize = elem.attribute( QStringLiteral( "minimumSize" ) ).toDouble();
 
   //colors
   categoryColors.clear();
-  QDomNodeList attributes = elem.elementsByTagName( "attribute" );
+  QDomNodeList attributes = elem.elementsByTagName( QStringLiteral( "attribute" ) );
 
   if ( attributes.length() > 0 )
   {
     for ( int i = 0; i < attributes.size(); i++ )
     {
       QDomElement attrElem = attributes.at( i ).toElement();
-      QColor newColor( attrElem.attribute( "color" ) );
+      QColor newColor( attrElem.attribute( QStringLiteral( "color" ) ) );
       newColor.setAlpha( 255 - transparency );
       categoryColors.append( newColor );
-      categoryAttributes.append( attrElem.attribute( "field" ) );
-      categoryLabels.append( attrElem.attribute( "label" ) );
+      categoryAttributes.append( attrElem.attribute( QStringLiteral( "field" ) ) );
+      categoryLabels.append( attrElem.attribute( QStringLiteral( "label" ) ) );
       if ( categoryLabels.back().isEmpty() )
       {
         categoryLabels.back() = categoryAttributes.back();
@@ -267,7 +267,7 @@ void QgsDiagramSettings::readXml( const QDomElement& elem, const QgsVectorLayer*
   {
     // Restore old format attributes and colors
 
-    QStringList colorList = elem.attribute( "colors" ).split( '/' );
+    QStringList colorList = elem.attribute( QStringLiteral( "colors" ) ).split( '/' );
     QStringList::const_iterator colorIt = colorList.constBegin();
     for ( ; colorIt != colorList.constEnd(); ++colorIt )
     {
@@ -278,7 +278,7 @@ void QgsDiagramSettings::readXml( const QDomElement& elem, const QgsVectorLayer*
 
     //attribute indices
     categoryAttributes.clear();
-    QStringList catList = elem.attribute( "categories" ).split( '/' );
+    QStringList catList = elem.attribute( QStringLiteral( "categories" ) ).split( '/' );
     QStringList::const_iterator catIt = catList.constBegin();
     for ( ; catIt != catList.constEnd(); ++catIt )
     {
@@ -292,84 +292,84 @@ void QgsDiagramSettings::writeXml( QDomElement& rendererElem, QDomDocument& doc,
 {
   Q_UNUSED( layer );
 
-  QDomElement categoryElem = doc.createElement( "DiagramCategory" );
-  categoryElem.setAttribute( "enabled", enabled );
-  categoryElem.appendChild( QgsFontUtils::toXmlElement( font, doc, "fontProperties" ) );
-  categoryElem.setAttribute( "backgroundColor", backgroundColor.name() );
-  categoryElem.setAttribute( "backgroundAlpha", backgroundColor.alpha() );
-  categoryElem.setAttribute( "width", QString::number( size.width() ) );
-  categoryElem.setAttribute( "height", QString::number( size.height() ) );
-  categoryElem.setAttribute( "penColor", penColor.name() );
-  categoryElem.setAttribute( "penAlpha", penColor.alpha() );
-  categoryElem.setAttribute( "penWidth", QString::number( penWidth ) );
-  categoryElem.setAttribute( "scaleBasedVisibility", scaleBasedVisibility );
-  categoryElem.setAttribute( "minScaleDenominator", QString::number( minScaleDenominator ) );
-  categoryElem.setAttribute( "maxScaleDenominator", QString::number( maxScaleDenominator ) );
-  categoryElem.setAttribute( "transparency", QString::number( transparency ) );
+  QDomElement categoryElem = doc.createElement( QStringLiteral( "DiagramCategory" ) );
+  categoryElem.setAttribute( QStringLiteral( "enabled" ), enabled );
+  categoryElem.appendChild( QgsFontUtils::toXmlElement( font, doc, QStringLiteral( "fontProperties" ) ) );
+  categoryElem.setAttribute( QStringLiteral( "backgroundColor" ), backgroundColor.name() );
+  categoryElem.setAttribute( QStringLiteral( "backgroundAlpha" ), backgroundColor.alpha() );
+  categoryElem.setAttribute( QStringLiteral( "width" ), QString::number( size.width() ) );
+  categoryElem.setAttribute( QStringLiteral( "height" ), QString::number( size.height() ) );
+  categoryElem.setAttribute( QStringLiteral( "penColor" ), penColor.name() );
+  categoryElem.setAttribute( QStringLiteral( "penAlpha" ), penColor.alpha() );
+  categoryElem.setAttribute( QStringLiteral( "penWidth" ), QString::number( penWidth ) );
+  categoryElem.setAttribute( QStringLiteral( "scaleBasedVisibility" ), scaleBasedVisibility );
+  categoryElem.setAttribute( QStringLiteral( "minScaleDenominator" ), QString::number( minScaleDenominator ) );
+  categoryElem.setAttribute( QStringLiteral( "maxScaleDenominator" ), QString::number( maxScaleDenominator ) );
+  categoryElem.setAttribute( QStringLiteral( "transparency" ), QString::number( transparency ) );
 
   //diagram size unit type and scale
-  categoryElem.setAttribute( "sizeType", QgsUnitTypes::encodeUnit( sizeType ) );
-  categoryElem.setAttribute( "sizeScale", QgsSymbolLayerUtils::encodeMapUnitScale( sizeScale ) );
+  categoryElem.setAttribute( QStringLiteral( "sizeType" ), QgsUnitTypes::encodeUnit( sizeType ) );
+  categoryElem.setAttribute( QStringLiteral( "sizeScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( sizeScale ) );
 
   //line width unit type and scale
-  categoryElem.setAttribute( "lineSizeType", QgsUnitTypes::encodeUnit( lineSizeUnit ) );
-  categoryElem.setAttribute( "lineSizeScale", QgsSymbolLayerUtils::encodeMapUnitScale( lineSizeScale ) );
+  categoryElem.setAttribute( QStringLiteral( "lineSizeType" ), QgsUnitTypes::encodeUnit( lineSizeUnit ) );
+  categoryElem.setAttribute( QStringLiteral( "lineSizeScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( lineSizeScale ) );
 
   // label placement method (text diagram)
   if ( labelPlacementMethod == Height )
   {
-    categoryElem.setAttribute( "labelPlacementMethod", "Height" );
+    categoryElem.setAttribute( QStringLiteral( "labelPlacementMethod" ), QStringLiteral( "Height" ) );
   }
   else
   {
-    categoryElem.setAttribute( "labelPlacementMethod", "XHeight" );
+    categoryElem.setAttribute( QStringLiteral( "labelPlacementMethod" ), QStringLiteral( "XHeight" ) );
   }
 
   if ( scaleByArea )
   {
-    categoryElem.setAttribute( "scaleDependency", "Area" );
+    categoryElem.setAttribute( QStringLiteral( "scaleDependency" ), QStringLiteral( "Area" ) );
   }
   else
   {
-    categoryElem.setAttribute( "scaleDependency", "Diameter" );
+    categoryElem.setAttribute( QStringLiteral( "scaleDependency" ), QStringLiteral( "Diameter" ) );
   }
 
   // orientation (histogram)
   switch ( diagramOrientation )
   {
     case Left:
-      categoryElem.setAttribute( "diagramOrientation", "Left" );
+      categoryElem.setAttribute( QStringLiteral( "diagramOrientation" ), QStringLiteral( "Left" ) );
       break;
 
     case Right:
-      categoryElem.setAttribute( "diagramOrientation", "Right" );
+      categoryElem.setAttribute( QStringLiteral( "diagramOrientation" ), QStringLiteral( "Right" ) );
       break;
 
     case Down:
-      categoryElem.setAttribute( "diagramOrientation", "Down" );
+      categoryElem.setAttribute( QStringLiteral( "diagramOrientation" ), QStringLiteral( "Down" ) );
       break;
 
     case Up:
-      categoryElem.setAttribute( "diagramOrientation", "Up" );
+      categoryElem.setAttribute( QStringLiteral( "diagramOrientation" ), QStringLiteral( "Up" ) );
       break;
 
     default:
-      categoryElem.setAttribute( "diagramOrientation", "Up" );
+      categoryElem.setAttribute( QStringLiteral( "diagramOrientation" ), QStringLiteral( "Up" ) );
       break;
   }
 
-  categoryElem.setAttribute( "barWidth", QString::number( barWidth ) );
-  categoryElem.setAttribute( "minimumSize", QString::number( minimumSize ) );
-  categoryElem.setAttribute( "angleOffset", QString::number( angleOffset ) );
+  categoryElem.setAttribute( QStringLiteral( "barWidth" ), QString::number( barWidth ) );
+  categoryElem.setAttribute( QStringLiteral( "minimumSize" ), QString::number( minimumSize ) );
+  categoryElem.setAttribute( QStringLiteral( "angleOffset" ), QString::number( angleOffset ) );
 
   int nCats = qMin( categoryColors.size(), categoryAttributes.size() );
   for ( int i = 0; i < nCats; ++i )
   {
-    QDomElement attributeElem = doc.createElement( "attribute" );
+    QDomElement attributeElem = doc.createElement( QStringLiteral( "attribute" ) );
 
-    attributeElem.setAttribute( "field", categoryAttributes.at( i ) );
-    attributeElem.setAttribute( "color", categoryColors.at( i ).name() );
-    attributeElem.setAttribute( "label", categoryLabels.at( i ) );
+    attributeElem.setAttribute( QStringLiteral( "field" ), categoryAttributes.at( i ) );
+    attributeElem.setAttribute( QStringLiteral( "color" ), categoryColors.at( i ).name() );
+    attributeElem.setAttribute( QStringLiteral( "label" ), categoryLabels.at( i ) );
     categoryElem.appendChild( attributeElem );
   }
 
@@ -496,16 +496,16 @@ void QgsDiagramRenderer::_readXml( const QDomElement& elem, const QgsVectorLayer
   Q_UNUSED( layer )
 
   delete mDiagram;
-  QString diagramType = elem.attribute( "diagramType" );
-  if ( diagramType == "Pie" )
+  QString diagramType = elem.attribute( QStringLiteral( "diagramType" ) );
+  if ( diagramType == QLatin1String( "Pie" ) )
   {
     mDiagram = new QgsPieDiagram();
   }
-  else if ( diagramType == "Text" )
+  else if ( diagramType == QLatin1String( "Text" ) )
   {
     mDiagram = new QgsTextDiagram();
   }
-  else if ( diagramType == "Histogram" )
+  else if ( diagramType == QLatin1String( "Histogram" ) )
   {
     mDiagram = new QgsHistogramDiagram();
   }
@@ -513,10 +513,10 @@ void QgsDiagramRenderer::_readXml( const QDomElement& elem, const QgsVectorLayer
   {
     mDiagram = nullptr;
   }
-  mShowAttributeLegend = ( elem.attribute( "attributeLegend", "1" ) != "0" );
-  mShowSizeLegend = ( elem.attribute( "sizeLegend", "0" ) != "0" );
-  QDomElement sizeLegendSymbolElem = elem.firstChildElement( "symbol" );
-  if ( !sizeLegendSymbolElem.isNull() && sizeLegendSymbolElem.attribute( "name" ) == "sizeSymbol" )
+  mShowAttributeLegend = ( elem.attribute( QStringLiteral( "attributeLegend" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
+  mShowSizeLegend = ( elem.attribute( QStringLiteral( "sizeLegend" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
+  QDomElement sizeLegendSymbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
+  if ( !sizeLegendSymbolElem.isNull() && sizeLegendSymbolElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "sizeSymbol" ) )
   {
     mSizeLegendSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( sizeLegendSymbolElem ) );
   }
@@ -529,11 +529,11 @@ void QgsDiagramRenderer::_writeXml( QDomElement& rendererElem, QDomDocument& doc
 
   if ( mDiagram )
   {
-    rendererElem.setAttribute( "diagramType", mDiagram->diagramName() );
+    rendererElem.setAttribute( QStringLiteral( "diagramType" ), mDiagram->diagramName() );
   }
-  rendererElem.setAttribute( "attributeLegend", mShowAttributeLegend );
-  rendererElem.setAttribute( "sizeLegend", mShowSizeLegend );
-  QDomElement sizeLegendSymbolElem = QgsSymbolLayerUtils::saveSymbol( "sizeSymbol", mSizeLegendSymbol.data(), doc );
+  rendererElem.setAttribute( QStringLiteral( "attributeLegend" ), mShowAttributeLegend );
+  rendererElem.setAttribute( QStringLiteral( "sizeLegend" ), mShowSizeLegend );
+  QDomElement sizeLegendSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "sizeSymbol" ), mSizeLegendSymbol.data(), doc );
   rendererElem.appendChild( sizeLegendSymbolElem );
 }
 
@@ -571,7 +571,7 @@ QList<QgsDiagramSettings> QgsSingleCategoryDiagramRenderer::diagramSettings() co
 
 void QgsSingleCategoryDiagramRenderer::readXml( const QDomElement& elem, const QgsVectorLayer* layer )
 {
-  QDomElement categoryElem = elem.firstChildElement( "DiagramCategory" );
+  QDomElement categoryElem = elem.firstChildElement( QStringLiteral( "DiagramCategory" ) );
   if ( categoryElem.isNull() )
   {
     return;
@@ -583,7 +583,7 @@ void QgsSingleCategoryDiagramRenderer::readXml( const QDomElement& elem, const Q
 
 void QgsSingleCategoryDiagramRenderer::writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
 {
-  QDomElement rendererElem = doc.createElement( "SingleCategoryDiagramRenderer" );
+  QDomElement rendererElem = doc.createElement( QStringLiteral( "SingleCategoryDiagramRenderer" ) );
   mSettings.writeXml( rendererElem, doc, layer );
   _writeXml( rendererElem, doc, layer );
   layerElem.appendChild( rendererElem );
@@ -648,22 +648,22 @@ QSizeF QgsLinearlyInterpolatedDiagramRenderer::diagramSize( const QgsFeature& fe
 
 void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement& elem, const QgsVectorLayer* layer )
 {
-  mInterpolationSettings.lowerValue = elem.attribute( "lowerValue" ).toDouble();
-  mInterpolationSettings.upperValue = elem.attribute( "upperValue" ).toDouble();
-  mInterpolationSettings.lowerSize.setWidth( elem.attribute( "lowerWidth" ).toDouble() );
-  mInterpolationSettings.lowerSize.setHeight( elem.attribute( "lowerHeight" ).toDouble() );
-  mInterpolationSettings.upperSize.setWidth( elem.attribute( "upperWidth" ).toDouble() );
-  mInterpolationSettings.upperSize.setHeight( elem.attribute( "upperHeight" ).toDouble() );
-  mInterpolationSettings.classificationAttributeIsExpression = elem.hasAttribute( "classificationAttributeExpression" );
+  mInterpolationSettings.lowerValue = elem.attribute( QStringLiteral( "lowerValue" ) ).toDouble();
+  mInterpolationSettings.upperValue = elem.attribute( QStringLiteral( "upperValue" ) ).toDouble();
+  mInterpolationSettings.lowerSize.setWidth( elem.attribute( QStringLiteral( "lowerWidth" ) ).toDouble() );
+  mInterpolationSettings.lowerSize.setHeight( elem.attribute( QStringLiteral( "lowerHeight" ) ).toDouble() );
+  mInterpolationSettings.upperSize.setWidth( elem.attribute( QStringLiteral( "upperWidth" ) ).toDouble() );
+  mInterpolationSettings.upperSize.setHeight( elem.attribute( QStringLiteral( "upperHeight" ) ).toDouble() );
+  mInterpolationSettings.classificationAttributeIsExpression = elem.hasAttribute( QStringLiteral( "classificationAttributeExpression" ) );
   if ( mInterpolationSettings.classificationAttributeIsExpression )
   {
-    mInterpolationSettings.classificationAttributeExpression = elem.attribute( "classificationAttributeExpression" );
+    mInterpolationSettings.classificationAttributeExpression = elem.attribute( QStringLiteral( "classificationAttributeExpression" ) );
   }
   else
   {
-    mInterpolationSettings.classificationAttribute = elem.attribute( "classificationAttribute" ).toInt();
+    mInterpolationSettings.classificationAttribute = elem.attribute( QStringLiteral( "classificationAttribute" ) ).toInt();
   }
-  QDomElement settingsElem = elem.firstChildElement( "DiagramCategory" );
+  QDomElement settingsElem = elem.firstChildElement( QStringLiteral( "DiagramCategory" ) );
   if ( !settingsElem.isNull() )
   {
     mSettings.readXml( settingsElem, layer );
@@ -673,20 +673,20 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement& elem, c
 
 void QgsLinearlyInterpolatedDiagramRenderer::writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
 {
-  QDomElement rendererElem = doc.createElement( "LinearlyInterpolatedDiagramRenderer" );
-  rendererElem.setAttribute( "lowerValue", QString::number( mInterpolationSettings.lowerValue ) );
-  rendererElem.setAttribute( "upperValue", QString::number( mInterpolationSettings.upperValue ) );
-  rendererElem.setAttribute( "lowerWidth", QString::number( mInterpolationSettings.lowerSize.width() ) );
-  rendererElem.setAttribute( "lowerHeight", QString::number( mInterpolationSettings.lowerSize.height() ) );
-  rendererElem.setAttribute( "upperWidth", QString::number( mInterpolationSettings.upperSize.width() ) );
-  rendererElem.setAttribute( "upperHeight", QString::number( mInterpolationSettings.upperSize.height() ) );
+  QDomElement rendererElem = doc.createElement( QStringLiteral( "LinearlyInterpolatedDiagramRenderer" ) );
+  rendererElem.setAttribute( QStringLiteral( "lowerValue" ), QString::number( mInterpolationSettings.lowerValue ) );
+  rendererElem.setAttribute( QStringLiteral( "upperValue" ), QString::number( mInterpolationSettings.upperValue ) );
+  rendererElem.setAttribute( QStringLiteral( "lowerWidth" ), QString::number( mInterpolationSettings.lowerSize.width() ) );
+  rendererElem.setAttribute( QStringLiteral( "lowerHeight" ), QString::number( mInterpolationSettings.lowerSize.height() ) );
+  rendererElem.setAttribute( QStringLiteral( "upperWidth" ), QString::number( mInterpolationSettings.upperSize.width() ) );
+  rendererElem.setAttribute( QStringLiteral( "upperHeight" ), QString::number( mInterpolationSettings.upperSize.height() ) );
   if ( mInterpolationSettings.classificationAttributeIsExpression )
   {
-    rendererElem.setAttribute( "classificationAttributeExpression", mInterpolationSettings.classificationAttributeExpression );
+    rendererElem.setAttribute( QStringLiteral( "classificationAttributeExpression" ), mInterpolationSettings.classificationAttributeExpression );
   }
   else
   {
-    rendererElem.setAttribute( "classificationAttribute", mInterpolationSettings.classificationAttribute );
+    rendererElem.setAttribute( QStringLiteral( "classificationAttribute" ), mInterpolationSettings.classificationAttribute );
   }
   mSettings.writeXml( rendererElem, doc, layer );
   _writeXml( rendererElem, doc, layer );
@@ -701,7 +701,7 @@ QList< QgsLayerTreeModelLegendNode* > QgsDiagramSettings::legendItems( QgsLayerT
   {
     QPixmap pix( 16, 16 );
     pix.fill( categoryColors[i] );
-    list << new QgsSimpleLegendNode( nodeLayer, categoryLabels[i], QIcon( pix ), nullptr, QString( "diagram_%1" ).arg( QString::number( i ) ) );
+    list << new QgsSimpleLegendNode( nodeLayer, categoryLabels[i], QIcon( pix ), nullptr, QStringLiteral( "diagram_%1" ).arg( QString::number( i ) ) );
   }
   return list;
 }

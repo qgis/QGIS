@@ -79,15 +79,15 @@ bool QgsPaintEffect::saveProperties( QDomDocument &doc, QDomElement &element ) c
     return false;
   }
 
-  QDomElement effectElement = doc.createElement( "effect" );
-  effectElement.setAttribute( QString( "type" ), type() );
+  QDomElement effectElement = doc.createElement( QStringLiteral( "effect" ) );
+  effectElement.setAttribute( QStringLiteral( "type" ), type() );
 
   QgsStringMap props = properties();
   for ( QgsStringMap::iterator it = props.begin(); it != props.end(); ++it )
   {
-    QDomElement propEl = doc.createElement( "prop" );
-    propEl.setAttribute( "k", it.key() );
-    propEl.setAttribute( "v", it.value() );
+    QDomElement propEl = doc.createElement( QStringLiteral( "prop" ) );
+    propEl.setAttribute( QStringLiteral( "k" ), it.key() );
+    propEl.setAttribute( QStringLiteral( "v" ), it.value() );
     effectElement.appendChild( propEl );
   }
 
@@ -108,14 +108,14 @@ bool QgsPaintEffect::readProperties( const QDomElement &element )
   QDomElement e = element.firstChildElement();
   while ( !e.isNull() )
   {
-    if ( e.tagName() != "prop" )
+    if ( e.tagName() != QLatin1String( "prop" ) )
     {
       QgsDebugMsg( "unknown tag " + e.tagName() );
     }
     else
     {
-      QString propKey = e.attribute( "k" );
-      QString propValue = e.attribute( "v" );
+      QString propKey = e.attribute( QStringLiteral( "k" ) );
+      QString propValue = e.attribute( QStringLiteral( "v" ) );
       props[propKey] = propValue;
     }
     e = e.nextSiblingElement();
@@ -299,26 +299,26 @@ QgsDrawSourceEffect* QgsDrawSourceEffect::clone() const
 QgsStringMap QgsDrawSourceEffect::properties() const
 {
   QgsStringMap props;
-  props.insert( "enabled", mEnabled ? "1" : "0" );
-  props.insert( "draw_mode", QString::number( int( mDrawMode ) ) );
-  props.insert( "blend_mode", QString::number( int( mBlendMode ) ) );
-  props.insert( "transparency", QString::number( mTransparency ) );
+  props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
+  props.insert( QStringLiteral( "draw_mode" ), QString::number( int( mDrawMode ) ) );
+  props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
+  props.insert( QStringLiteral( "transparency" ), QString::number( mTransparency ) );
   return props;
 }
 
 void QgsDrawSourceEffect::readProperties( const QgsStringMap &props )
 {
   bool ok;
-  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( "blend_mode" ).toInt( &ok ) );
+  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
   }
-  double transparency = props.value( "transparency" ).toDouble( &ok );
+  double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
   if ( ok )
   {
     mTransparency = transparency;
   }
-  mEnabled = props.value( "enabled", "1" ).toInt();
-  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( "draw_mode", "2" ).toInt() );
+  mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
+  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
 }

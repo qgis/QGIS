@@ -62,7 +62,7 @@ class TestQgsSnappingUtils : public QObject
       //         \ |
       //          \|
       //           + (1,0)
-      mVL = new QgsVectorLayer( "Polygon", "x", "memory" );
+      mVL = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature ff( 0 );
       QgsPolygon polygon;
       QgsPolyline polyline;
@@ -190,7 +190,7 @@ class TestQgsSnappingUtils : public QObject
       //         \/
       //         /\    .
       // (0,0)  x  x (1,0)
-      QgsVectorLayer* vl = new QgsVectorLayer( "LineString", "x", "memory" );
+      QgsVectorLayer* vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsPolyline polyline1, polyline2;
       polyline1 << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 );
       polyline2 << QgsPoint( 1, 0 ) << QgsPoint( 0, 1 );

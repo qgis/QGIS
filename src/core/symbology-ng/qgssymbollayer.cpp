@@ -31,65 +31,65 @@
 #include <QPointF>
 #include <QPolygonF>
 
-const QString QgsSymbolLayer::EXPR_SIZE( "size" );
-const QString QgsSymbolLayer::EXPR_ANGLE( "angle" );
-const QString QgsSymbolLayer::EXPR_NAME( "name" );
-const QString QgsSymbolLayer::EXPR_COLOR( "color" );
-const QString QgsSymbolLayer::EXPR_COLOR_BORDER( "color_border" );
-const QString QgsSymbolLayer::EXPR_OUTLINE_WIDTH( "outline_width" );
-const QString QgsSymbolLayer::EXPR_OUTLINE_STYLE( "outline_style" );
-const QString QgsSymbolLayer::EXPR_FILL( "fill" );
-const QString QgsSymbolLayer::EXPR_OUTLINE( "outline" );
-const QString QgsSymbolLayer::EXPR_OFFSET( "offset" );
-const QString QgsSymbolLayer::EXPR_CHAR( "char" );
-const QString QgsSymbolLayer::EXPR_FILL_COLOR( "fill_color" );
-const QString QgsSymbolLayer::EXPR_OUTLINE_COLOR( "outline_color" );
-const QString QgsSymbolLayer::EXPR_WIDTH( "width" );
-const QString QgsSymbolLayer::EXPR_HEIGHT( "height" );
-const QString QgsSymbolLayer::EXPR_SYMBOL_NAME( "symbol_name" );
-const QString QgsSymbolLayer::EXPR_ROTATION( "rotation" );
-const QString QgsSymbolLayer::EXPR_FILL_STYLE( "fill_style" );
-const QString QgsSymbolLayer::EXPR_WIDTH_BORDER( "width_border" );
-const QString QgsSymbolLayer::EXPR_BORDER_STYLE( "border_style" );
-const QString QgsSymbolLayer::EXPR_JOIN_STYLE( "join_style" );
-const QString QgsSymbolLayer::EXPR_BORDER_COLOR( "border_color" );
-const QString QgsSymbolLayer::EXPR_COLOR2( "color2" );
-const QString QgsSymbolLayer::EXPR_LINEANGLE( "lineangle" );
-const QString QgsSymbolLayer::EXPR_GRADIENT_TYPE( "gradient_type" );
-const QString QgsSymbolLayer::EXPR_COORDINATE_MODE( "coordinate_mode" );
-const QString QgsSymbolLayer::EXPR_SPREAD( "spread" );
-const QString QgsSymbolLayer::EXPR_REFERENCE1_X( "reference1_x" );
-const QString QgsSymbolLayer::EXPR_REFERENCE1_Y( "reference1_y" );
-const QString QgsSymbolLayer::EXPR_REFERENCE2_X( "reference2_x" );
-const QString QgsSymbolLayer::EXPR_REFERENCE2_Y( "reference2_y" );
-const QString QgsSymbolLayer::EXPR_REFERENCE1_ISCENTROID( "reference1_iscentroid" );
-const QString QgsSymbolLayer::EXPR_REFERENCE2_ISCENTROID( "reference2_iscentroid" );
-const QString QgsSymbolLayer::EXPR_BLUR_RADIUS( "blur_radius" );
-const QString QgsSymbolLayer::EXPR_DISTANCE( "distance" );
-const QString QgsSymbolLayer::EXPR_USE_WHOLE_SHAPE( "use_whole_shape" );
-const QString QgsSymbolLayer::EXPR_MAX_DISTANCE( "max_distance" );
-const QString QgsSymbolLayer::EXPR_IGNORE_RINGS( "ignore_rings" );
-const QString QgsSymbolLayer::EXPR_SVG_FILE( "svgFile" );
-const QString QgsSymbolLayer::EXPR_SVG_FILL_COLOR( "svgFillColor" );
-const QString QgsSymbolLayer::EXPR_SVG_OUTLINE_COLOR( "svgOutlineColor" );
-const QString QgsSymbolLayer::EXPR_SVG_OUTLINE_WIDTH( "svgOutlineWidth" );
-const QString QgsSymbolLayer::EXPR_LINEWIDTH( "linewidth" );
-const QString QgsSymbolLayer::EXPR_DISTANCE_X( "distance_x" );
-const QString QgsSymbolLayer::EXPR_DISTANCE_Y( "distance_y" );
-const QString QgsSymbolLayer::EXPR_DISPLACEMENT_X( "displacement_x" );
-const QString QgsSymbolLayer::EXPR_DISPLACEMENT_Y( "displacement_y" );
-const QString QgsSymbolLayer::EXPR_FILE( "file" );
-const QString QgsSymbolLayer::EXPR_ALPHA( "alpha" );
-const QString QgsSymbolLayer::EXPR_CUSTOMDASH( "customdash" );
-const QString QgsSymbolLayer::EXPR_LINE_STYLE( "line_style" );
-const QString QgsSymbolLayer::EXPR_JOINSTYLE( "joinstyle" );
-const QString QgsSymbolLayer::EXPR_CAPSTYLE( "capstyle" );
-const QString QgsSymbolLayer::EXPR_PLACEMENT( "placement" );
-const QString QgsSymbolLayer::EXPR_INTERVAL( "interval" );
-const QString QgsSymbolLayer::EXPR_OFFSET_ALONG_LINE( "offset_along_line" );
-const QString QgsSymbolLayer::EXPR_HORIZONTAL_ANCHOR_POINT( "horizontal_anchor_point" );
-const QString QgsSymbolLayer::EXPR_VERTICAL_ANCHOR_POINT( "vertical_anchor_point" );
-const QString QgsSymbolLayer::EXPR_LAYER_ENABLED( "enabled" );
+const QString QgsSymbolLayer::EXPR_SIZE( QStringLiteral( "size" ) );
+const QString QgsSymbolLayer::EXPR_ANGLE( QStringLiteral( "angle" ) );
+const QString QgsSymbolLayer::EXPR_NAME( QStringLiteral( "name" ) );
+const QString QgsSymbolLayer::EXPR_COLOR( QStringLiteral( "color" ) );
+const QString QgsSymbolLayer::EXPR_COLOR_BORDER( QStringLiteral( "color_border" ) );
+const QString QgsSymbolLayer::EXPR_OUTLINE_WIDTH( QStringLiteral( "outline_width" ) );
+const QString QgsSymbolLayer::EXPR_OUTLINE_STYLE( QStringLiteral( "outline_style" ) );
+const QString QgsSymbolLayer::EXPR_FILL( QStringLiteral( "fill" ) );
+const QString QgsSymbolLayer::EXPR_OUTLINE( QStringLiteral( "outline" ) );
+const QString QgsSymbolLayer::EXPR_OFFSET( QStringLiteral( "offset" ) );
+const QString QgsSymbolLayer::EXPR_CHAR( QStringLiteral( "char" ) );
+const QString QgsSymbolLayer::EXPR_FILL_COLOR( QStringLiteral( "fill_color" ) );
+const QString QgsSymbolLayer::EXPR_OUTLINE_COLOR( QStringLiteral( "outline_color" ) );
+const QString QgsSymbolLayer::EXPR_WIDTH( QStringLiteral( "width" ) );
+const QString QgsSymbolLayer::EXPR_HEIGHT( QStringLiteral( "height" ) );
+const QString QgsSymbolLayer::EXPR_SYMBOL_NAME( QStringLiteral( "symbol_name" ) );
+const QString QgsSymbolLayer::EXPR_ROTATION( QStringLiteral( "rotation" ) );
+const QString QgsSymbolLayer::EXPR_FILL_STYLE( QStringLiteral( "fill_style" ) );
+const QString QgsSymbolLayer::EXPR_WIDTH_BORDER( QStringLiteral( "width_border" ) );
+const QString QgsSymbolLayer::EXPR_BORDER_STYLE( QStringLiteral( "border_style" ) );
+const QString QgsSymbolLayer::EXPR_JOIN_STYLE( QStringLiteral( "join_style" ) );
+const QString QgsSymbolLayer::EXPR_BORDER_COLOR( QStringLiteral( "border_color" ) );
+const QString QgsSymbolLayer::EXPR_COLOR2( QStringLiteral( "color2" ) );
+const QString QgsSymbolLayer::EXPR_LINEANGLE( QStringLiteral( "lineangle" ) );
+const QString QgsSymbolLayer::EXPR_GRADIENT_TYPE( QStringLiteral( "gradient_type" ) );
+const QString QgsSymbolLayer::EXPR_COORDINATE_MODE( QStringLiteral( "coordinate_mode" ) );
+const QString QgsSymbolLayer::EXPR_SPREAD( QStringLiteral( "spread" ) );
+const QString QgsSymbolLayer::EXPR_REFERENCE1_X( QStringLiteral( "reference1_x" ) );
+const QString QgsSymbolLayer::EXPR_REFERENCE1_Y( QStringLiteral( "reference1_y" ) );
+const QString QgsSymbolLayer::EXPR_REFERENCE2_X( QStringLiteral( "reference2_x" ) );
+const QString QgsSymbolLayer::EXPR_REFERENCE2_Y( QStringLiteral( "reference2_y" ) );
+const QString QgsSymbolLayer::EXPR_REFERENCE1_ISCENTROID( QStringLiteral( "reference1_iscentroid" ) );
+const QString QgsSymbolLayer::EXPR_REFERENCE2_ISCENTROID( QStringLiteral( "reference2_iscentroid" ) );
+const QString QgsSymbolLayer::EXPR_BLUR_RADIUS( QStringLiteral( "blur_radius" ) );
+const QString QgsSymbolLayer::EXPR_DISTANCE( QStringLiteral( "distance" ) );
+const QString QgsSymbolLayer::EXPR_USE_WHOLE_SHAPE( QStringLiteral( "use_whole_shape" ) );
+const QString QgsSymbolLayer::EXPR_MAX_DISTANCE( QStringLiteral( "max_distance" ) );
+const QString QgsSymbolLayer::EXPR_IGNORE_RINGS( QStringLiteral( "ignore_rings" ) );
+const QString QgsSymbolLayer::EXPR_SVG_FILE( QStringLiteral( "svgFile" ) );
+const QString QgsSymbolLayer::EXPR_SVG_FILL_COLOR( QStringLiteral( "svgFillColor" ) );
+const QString QgsSymbolLayer::EXPR_SVG_OUTLINE_COLOR( QStringLiteral( "svgOutlineColor" ) );
+const QString QgsSymbolLayer::EXPR_SVG_OUTLINE_WIDTH( QStringLiteral( "svgOutlineWidth" ) );
+const QString QgsSymbolLayer::EXPR_LINEWIDTH( QStringLiteral( "linewidth" ) );
+const QString QgsSymbolLayer::EXPR_DISTANCE_X( QStringLiteral( "distance_x" ) );
+const QString QgsSymbolLayer::EXPR_DISTANCE_Y( QStringLiteral( "distance_y" ) );
+const QString QgsSymbolLayer::EXPR_DISPLACEMENT_X( QStringLiteral( "displacement_x" ) );
+const QString QgsSymbolLayer::EXPR_DISPLACEMENT_Y( QStringLiteral( "displacement_y" ) );
+const QString QgsSymbolLayer::EXPR_FILE( QStringLiteral( "file" ) );
+const QString QgsSymbolLayer::EXPR_ALPHA( QStringLiteral( "alpha" ) );
+const QString QgsSymbolLayer::EXPR_CUSTOMDASH( QStringLiteral( "customdash" ) );
+const QString QgsSymbolLayer::EXPR_LINE_STYLE( QStringLiteral( "line_style" ) );
+const QString QgsSymbolLayer::EXPR_JOINSTYLE( QStringLiteral( "joinstyle" ) );
+const QString QgsSymbolLayer::EXPR_CAPSTYLE( QStringLiteral( "capstyle" ) );
+const QString QgsSymbolLayer::EXPR_PLACEMENT( QStringLiteral( "placement" ) );
+const QString QgsSymbolLayer::EXPR_INTERVAL( QStringLiteral( "interval" ) );
+const QString QgsSymbolLayer::EXPR_OFFSET_ALONG_LINE( QStringLiteral( "offset_along_line" ) );
+const QString QgsSymbolLayer::EXPR_HORIZONTAL_ANCHOR_POINT( QStringLiteral( "horizontal_anchor_point" ) );
+const QString QgsSymbolLayer::EXPR_VERTICAL_ANCHOR_POINT( QStringLiteral( "vertical_anchor_point" ) );
+const QString QgsSymbolLayer::EXPR_LAYER_ENABLED( QStringLiteral( "enabled" ) );
 
 QgsDataDefined *QgsSymbolLayer::getDataDefinedProperty( const QString &property ) const
 {
@@ -336,7 +336,7 @@ void QgsSymbolLayer::restoreDataDefinedProperties( const QgsStringMap &stringMap
   QgsStringMap::const_iterator propIt = stringMap.constBegin();
   for ( ; propIt != stringMap.constEnd(); ++propIt )
   {
-    if ( propIt.key().endsWith( "_dd_expression" ) )
+    if ( propIt.key().endsWith( QLatin1String( "_dd_expression" ) ) )
     {
       //found a data defined property
 
@@ -347,7 +347,7 @@ void QgsSymbolLayer::restoreDataDefinedProperties( const QgsStringMap &stringMap
       if ( dd )
         setDataDefinedProperty( propertyName, dd );
     }
-    else if ( propIt.key().endsWith( "_expression" ) )
+    else if ( propIt.key().endsWith( QLatin1String( "_expression" ) ) )
     {
       //old style data defined property, upgrade
 
@@ -501,11 +501,11 @@ QPointF QgsMarkerSymbolLayer::_rotatedOffset( QPointF offset, double angle )
 
 QgsMarkerSymbolLayer::HorizontalAnchorPoint QgsMarkerSymbolLayer::decodeHorizontalAnchorPoint( const QString& str )
 {
-  if ( str.compare( "left", Qt::CaseInsensitive ) == 0 )
+  if ( str.compare( QLatin1String( "left" ), Qt::CaseInsensitive ) == 0 )
   {
     return QgsMarkerSymbolLayer::Left;
   }
-  else if ( str.compare( "right", Qt::CaseInsensitive ) == 0 )
+  else if ( str.compare( QLatin1String( "right" ), Qt::CaseInsensitive ) == 0 )
   {
     return QgsMarkerSymbolLayer::Right;
   }
@@ -517,11 +517,11 @@ QgsMarkerSymbolLayer::HorizontalAnchorPoint QgsMarkerSymbolLayer::decodeHorizont
 
 QgsMarkerSymbolLayer::VerticalAnchorPoint QgsMarkerSymbolLayer::decodeVerticalAnchorPoint( const QString& str )
 {
-  if ( str.compare( "top", Qt::CaseInsensitive ) == 0 )
+  if ( str.compare( QLatin1String( "top" ), Qt::CaseInsensitive ) == 0 )
   {
     return QgsMarkerSymbolLayer::Top;
   }
-  else if ( str.compare( "bottom", Qt::CaseInsensitive ) == 0 )
+  else if ( str.compare( QLatin1String( "bottom" ), Qt::CaseInsensitive ) == 0 )
   {
     return QgsMarkerSymbolLayer::Bottom;
   }
@@ -668,13 +668,13 @@ void QgsFillSymbolLayer::_renderPolygon( QPainter* p, const QPolygonF& points, c
 
 void QgsMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
 {
-  QDomElement symbolizerElem = doc.createElement( "se:PointSymbolizer" );
-  if ( !props.value( "uom", "" ).isEmpty() )
-    symbolizerElem.setAttribute( "uom", props.value( "uom", "" ) );
+  QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:PointSymbolizer" ) );
+  if ( !props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ).isEmpty() )
+    symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ) );
   element.appendChild( symbolizerElem );
 
   // <Geometry>
-  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( "geom", "" ) );
+  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QLatin1String( "" ) ) );
 
   writeSldMarker( doc, symbolizerElem, props );
 }

@@ -139,7 +139,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   // Format is "PARAMETER:<semi-major axis>:<semi minor axis>
   // Numbers must be with (optional) decimal point and no other separators (C locale)
   // Distances in meters.  Flattening is calculated.
-  if ( ellipsoid.startsWith( "PARAMETER" ) )
+  if ( ellipsoid.startsWith( QLatin1String( "PARAMETER" ) ) )
   {
     QStringList paramList = ellipsoid.split( ':' );
     bool semiMajorOk, semiMinorOk;
@@ -190,7 +190,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   }
 
   // get major semiaxis
-  if ( radius.left( 2 ) == "a=" )
+  if ( radius.left( 2 ) == QLatin1String( "a=" ) )
     mSemiMajor = radius.midRef( 2 ).toDouble();
   else
   {
@@ -201,12 +201,12 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   // get second parameter
   // one of values 'b' or 'f' is in field parameter2
   // second one must be computed using formula: invf = a/(a-b)
-  if ( parameter2.left( 2 ) == "b=" )
+  if ( parameter2.left( 2 ) == QLatin1String( "b=" ) )
   {
     mSemiMinor = parameter2.midRef( 2 ).toDouble();
     mInvFlattening = mSemiMajor / ( mSemiMajor - mSemiMinor );
   }
-  else if ( parameter2.left( 3 ) == "rf=" )
+  else if ( parameter2.left( 3 ) == QLatin1String( "rf=" ) )
   {
     mInvFlattening = parameter2.midRef( 3 ).toDouble();
     mSemiMinor = mSemiMajor - ( mSemiMajor / mInvFlattening );
@@ -229,7 +229,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   // familiar with the code (should also give a more descriptive name to the generated CRS)
   if ( destCRS.srsid() == 0 )
   {
-    QString myName = QString( " * %1 (%2)" )
+    QString myName = QStringLiteral( " * %1 (%2)" )
                      .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ),
                            destCRS.toProj4() );
     destCRS.saveAsUserCrs( myName );
@@ -252,7 +252,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
 // Also, b = a-(a/invf)
 bool  QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
 {
-  mEllipsoid = QString( "PARAMETER:%1:%2" ).arg( semiMajor ).arg( semiMinor );
+  mEllipsoid = QStringLiteral( "PARAMETER:%1:%2" ).arg( semiMajor ).arg( semiMinor );
   mSemiMajor = semiMajor;
   mSemiMinor = semiMinor;
   mInvFlattening = mSemiMajor / ( mSemiMajor - mSemiMinor );
@@ -1083,7 +1083,7 @@ QString QgsDistanceArea::formatDistance( double distance, int decimals, QgsUnitT
       break;
   }
 
-  return QString( "%L1%2" ).arg( distance, 0, 'f', decimals ).arg( unitLabel );
+  return QStringLiteral( "%L1%2" ).arg( distance, 0, 'f', decimals ).arg( unitLabel );
 }
 
 QString QgsDistanceArea::formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit )
@@ -1218,7 +1218,7 @@ QString QgsDistanceArea::formatArea( double area, int decimals, QgsUnitTypes::Ar
     }
   }
 
-  return QString( "%L1%2" ).arg( area, 0, 'f', decimals ).arg( unitLabel );
+  return QStringLiteral( "%L1%2" ).arg( area, 0, 'f', decimals ).arg( unitLabel );
 }
 
 double QgsDistanceArea::convertLengthMeasurement( double length, QgsUnitTypes::DistanceUnit toUnits ) const

@@ -242,7 +242,7 @@ class CORE_EXPORT QgsFeatureRenderer
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
     virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props = QgsStringMap() ) const
     {
-      element.appendChild( doc.createComment( QString( "FeatureRendererV2 %1 not implemented yet" ).arg( type() ) ) );
+      element.appendChild( doc.createComment( QStringLiteral( "FeatureRendererV2 %1 not implemented yet" ).arg( type() ) ) );
       ( void ) props; // warning avoidance
     }
 
@@ -270,7 +270,7 @@ class CORE_EXPORT QgsFeatureRenderer
 
     //! return a list of item text / symbol
     //! @note not available in python bindings
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" );
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = QLatin1String( "" ) );
 
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
     //! Default fallback implementation just uses legendSymbolItems() implementation

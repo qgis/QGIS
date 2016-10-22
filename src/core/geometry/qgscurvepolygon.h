@@ -36,7 +36,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsCurvePolygon& operator=( const QgsCurvePolygon& p );
     ~QgsCurvePolygon();
 
-    virtual QString geometryType() const override { return "CurvePolygon"; }
+    virtual QString geometryType() const override { return QStringLiteral( "CurvePolygon" ); }
     virtual int dimension() const override { return 2; }
     virtual QgsCurvePolygon* clone() const override;
     void clear() override;
@@ -47,8 +47,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     int wkbSize() const override;
     unsigned char* asWkb( int& binarySize ) const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = QStringLiteral( "gml" ) ) const override;
+    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = QStringLiteral( "gml" ) ) const override;
     QString asJSON( int precision = 17 ) const override;
 
     //surface interface

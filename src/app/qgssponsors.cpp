@@ -45,11 +45,11 @@ QgsSponsors::QgsSponsors( QWidget *parent )
                       "financially - a great big 'thank you' to you all!</p>" );
   txtSponsors->setText( intro );
   // read the SPONSORS file and populate the text widget
-  QFile sponsorsFile( QgsApplication::pkgDataPath() + QLatin1String( "/doc/release-sponsors.html" ) );
+  QFile sponsorsFile( QgsApplication::pkgDataPath() + QStringLiteral( "/doc/release-sponsors.html" ) );
   if ( sponsorsFile.open( QIODevice::ReadOnly ) )
   {
-    QString path = "images/";
-    QString newPath = QgsApplication::pkgDataPath() + QLatin1String( "/doc/images/" );
+    QString path = QStringLiteral( "images/" );
+    QString newPath = QgsApplication::pkgDataPath() + QStringLiteral( "/doc/images/" );
     QTextStream sponsorsStream( &sponsorsFile );
     // Always use UTF-8
     sponsorsStream.setCodec( "UTF-8" );

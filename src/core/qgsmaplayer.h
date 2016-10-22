@@ -532,7 +532,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QString loadSldStyle( const QString &uri, bool &resultFlag );
 
     virtual bool readSld( const QDomNode &node, QString &errorMessage )
-    { Q_UNUSED( node ); errorMessage = QString( "Layer type %1 not supported" ).arg( type() ); return false; }
+    { Q_UNUSED( node ); errorMessage = QStringLiteral( "Layer type %1 not supported" ).arg( type() ); return false; }
 
 
 
@@ -790,7 +790,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Read custom properties from project file.
       @param layerNode note to read from
       @param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)*/
-    void readCustomProperties( const QDomNode& layerNode, const QString& keyStartsWith = "" );
+    void readCustomProperties( const QDomNode& layerNode, const QString& keyStartsWith = QLatin1String( "" ) );
 
     /** Write custom properties to project file. */
     void writeCustomProperties( QDomNode & layerNode, QDomDocument & doc ) const;

@@ -452,24 +452,24 @@ void QgsSymbolLegendNode::invalidateMapBasedData()
 
 void QgsSymbolLegendNode::updateLabel()
 {
-  bool showFeatureCount = mLayerNode->customProperty( "showFeatureCount", 0 ).toBool();
+  bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
   QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( mLayerNode->layer() );
 
   if ( mEmbeddedInParent )
   {
     QString layerName = mLayerNode->layerName();
-    if ( !mLayerNode->customProperty( "legend/title-label" ).isNull() )
-      layerName = mLayerNode->customProperty( "legend/title-label" ).toString();
+    if ( !mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).isNull() )
+      layerName = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
 
     mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
     if ( showFeatureCount && vl && vl->featureCount() >= 0 )
-      mLabel += QString( " [%1]" ).arg( vl->featureCount() );
+      mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount() );
   }
   else
   {
     mLabel = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
     if ( showFeatureCount && vl && mItem.legacyRuleKey() )
-      mLabel += QString( " [%1]" ).arg( vl->featureCount( mItem.legacyRuleKey() ) );
+      mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount( mItem.legacyRuleKey() ) );
   }
 }
 
@@ -665,7 +665,7 @@ QImage QgsWmsLegendNode::renderMessage( const QString& msg ) const
   QPainter painter;
   painter.begin( &theImage );
   painter.setPen( QColor( 255, 0, 0 ) );
-  painter.setFont( QFont( "Chicago", fontHeight ) );
+  painter.setFont( QFont( QStringLiteral( "Chicago" ), fontHeight ) );
   painter.fillRect( 0, 0, w, h, QColor( 255, 255, 255 ) );
   painter.drawText( 0, margin + fontHeight, msg );
   //painter.drawText(0,2*(margin+fontHeight),QString("retrying in 5 seconds..."));
@@ -676,7 +676,7 @@ QImage QgsWmsLegendNode::renderMessage( const QString& msg ) const
 
 void QgsWmsLegendNode::getLegendGraphicProgress( qint64 cur, qint64 tot )
 {
-  QString msg = QString( "Downloading... %1/%2" ).arg( cur ).arg( tot );
+  QString msg = QStringLiteral( "Downloading... %1/%2" ).arg( cur ).arg( tot );
   //QgsDebugMsg ( QString("XXX %1").arg(msg) );
   mImage = renderMessage( msg );
   emit dataChanged();

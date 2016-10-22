@@ -163,12 +163,12 @@ void TestQgsOgrUtils::getOgrFeatureAttribute()
   oFeat = OGR_L_GetNextFeature( ogrLayer );
   QVERIFY( oFeat );
 
-  fields.append( QgsField( "int_field", QVariant::Int ) );
-  fields.append( QgsField( "dbl_field", QVariant::Double ) );
-  fields.append( QgsField( "date_field", QVariant::Date ) );
-  fields.append( QgsField( "time_field", QVariant::Time ) );
-  fields.append( QgsField( "datetime_field", QVariant::DateTime ) );
-  fields.append( QgsField( "string_field", QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "int_field" ), QVariant::Int ) );
+  fields.append( QgsField( QStringLiteral( "dbl_field" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "date_field" ), QVariant::Date ) );
+  fields.append( QgsField( QStringLiteral( "time_field" ), QVariant::Time ) );
+  fields.append( QgsField( QStringLiteral( "datetime_field" ), QVariant::DateTime ) );
+  fields.append( QgsField( QStringLiteral( "string_field" ), QVariant::String ) );
 
   // attribute index out of range
   val = QgsOgrUtils::getOgrFeatureAttribute( oFeat, fields, -1, QTextCodec::codecForName( "System" ), &ok );
@@ -230,12 +230,12 @@ void TestQgsOgrUtils::readOgrFeatureAttributes()
   oFeat = OGR_L_GetNextFeature( ogrLayer );
   QVERIFY( oFeat );
 
-  fields.append( QgsField( "int_field", QVariant::Int ) );
-  fields.append( QgsField( "dbl_field", QVariant::Double ) );
-  fields.append( QgsField( "date_field", QVariant::Date ) );
-  fields.append( QgsField( "time_field", QVariant::Time ) );
-  fields.append( QgsField( "datetime_field", QVariant::DateTime ) );
-  fields.append( QgsField( "string_field", QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "int_field" ), QVariant::Int ) );
+  fields.append( QgsField( QStringLiteral( "dbl_field" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "date_field" ), QVariant::Date ) );
+  fields.append( QgsField( QStringLiteral( "time_field" ), QVariant::Time ) );
+  fields.append( QgsField( QStringLiteral( "datetime_field" ), QVariant::DateTime ) );
+  fields.append( QgsField( QStringLiteral( "string_field" ), QVariant::String ) );
 
   QVERIFY( QgsOgrUtils::readOgrFeatureAttributes( oFeat, fields, f, QTextCodec::codecForName( "System" ) ) );
   QCOMPARE( f.attribute( "int_field" ), QVariant( 5 ) );
@@ -267,12 +267,12 @@ void TestQgsOgrUtils::readOgrFeature()
   oFeat = OGR_L_GetNextFeature( ogrLayer );
   QVERIFY( oFeat );
 
-  fields.append( QgsField( "int_field", QVariant::Int ) );
-  fields.append( QgsField( "dbl_field", QVariant::Double ) );
-  fields.append( QgsField( "date_field", QVariant::Date ) );
-  fields.append( QgsField( "time_field", QVariant::Time ) );
-  fields.append( QgsField( "datetime_field", QVariant::DateTime ) );
-  fields.append( QgsField( "string_field", QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "int_field" ), QVariant::Int ) );
+  fields.append( QgsField( QStringLiteral( "dbl_field" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "date_field" ), QVariant::Date ) );
+  fields.append( QgsField( QStringLiteral( "time_field" ), QVariant::Time ) );
+  fields.append( QgsField( QStringLiteral( "datetime_field" ), QVariant::DateTime ) );
+  fields.append( QgsField( QStringLiteral( "string_field" ), QVariant::String ) );
 
   f = QgsOgrUtils::readOgrFeature( oFeat, fields, QTextCodec::codecForName( "System" ) );
   QVERIFY( f.isValid() );
@@ -329,17 +329,17 @@ void TestQgsOgrUtils::readOgrFields()
 void TestQgsOgrUtils::stringToFeatureList()
 {
   QgsFields fields;
-  fields.append( QgsField( "name", QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "name" ), QVariant::String ) );
 
   //empty string
-  QgsFeatureList features = QgsOgrUtils::stringToFeatureList( "", fields, QTextCodec::codecForName( "System" ) );
+  QgsFeatureList features = QgsOgrUtils::stringToFeatureList( QLatin1String( "" ), fields, QTextCodec::codecForName( "System" ) );
   QVERIFY( features.isEmpty() );
   // bad string
-  features = QgsOgrUtils::stringToFeatureList( "asdasdas", fields, QTextCodec::codecForName( "System" ) );
+  features = QgsOgrUtils::stringToFeatureList( QStringLiteral( "asdasdas" ), fields, QTextCodec::codecForName( "System" ) );
   QVERIFY( features.isEmpty() );
 
   // geojson string with 1 feature
-  features = QgsOgrUtils::stringToFeatureList( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}}", fields, QTextCodec::codecForName( "System" ) );
+  features = QgsOgrUtils::stringToFeatureList( QStringLiteral( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}}" ), fields, QTextCodec::codecForName( "System" ) );
   QCOMPARE( features.length(), 1 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isEmpty() );
   QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
@@ -372,14 +372,14 @@ void TestQgsOgrUtils::stringToFeatureList()
 void TestQgsOgrUtils::stringToFields()
 {
   //empty string
-  QgsFields fields = QgsOgrUtils::stringToFields( "", QTextCodec::codecForName( "System" ) );
+  QgsFields fields = QgsOgrUtils::stringToFields( QLatin1String( "" ), QTextCodec::codecForName( "System" ) );
   QCOMPARE( fields.count(), 0 );
   // bad string
-  fields = QgsOgrUtils::stringToFields( "asdasdas", QTextCodec::codecForName( "System" ) );
+  fields = QgsOgrUtils::stringToFields( QStringLiteral( "asdasdas" ), QTextCodec::codecForName( "System" ) );
   QCOMPARE( fields.count(), 0 );
 
   // geojson string
-  fields = QgsOgrUtils::stringToFields( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\",\"height\":5.5}}", QTextCodec::codecForName( "System" ) );
+  fields = QgsOgrUtils::stringToFields( QStringLiteral( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\",\"height\":5.5}}" ), QTextCodec::codecForName( "System" ) );
   QCOMPARE( fields.count(), 2 );
   QCOMPARE( fields.at( 0 ).name(), QString( "name" ) );
   QCOMPARE( fields.at( 0 ).type(), QVariant::String );
