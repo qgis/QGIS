@@ -674,8 +674,8 @@ void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel& modelFrom,
                      "  VALUES (NULL,:name,:project_name,:xmin,:xmax,:ymin,:ymax,:projection_srid)",
                      qgisModel->database() );
 
-    query.bindValue( ":name", modelFrom.data( modelFrom.index( row, 1 ) ).value<QString>() );
-    query.bindValue( ":project_name", modelFrom.data( modelFrom.index( row, 2 ) ).value<QString>() );
+    query.bindValue( ":name", modelFrom.data( modelFrom.index( row, 1 ) ).toString() );
+    query.bindValue( ":project_name", modelFrom.data( modelFrom.index( row, 2 ) ).toString() );
     query.bindValue( ":xmin", modelFrom.data( modelFrom.index( row, 3 ) ).toDouble() );
     query.bindValue( ":ymin", modelFrom.data( modelFrom.index( row, 4 ) ).toDouble() );
     query.bindValue( ":xmax", modelFrom.data( modelFrom.index( row, 5 ) ).toDouble() );

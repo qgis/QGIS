@@ -360,7 +360,7 @@ void QgsDualView::copyCellContent() const
 
   if ( action && action->data().isValid() && action->data().canConvert<QModelIndex>() )
   {
-    QModelIndex index = action->data().value<QModelIndex>();
+    QModelIndex index = action->data().toModelIndex();
     QVariant var = masterModel()->data( index, Qt::DisplayRole );
     QApplication::clipboard()->setText( var.toString() );
   }
