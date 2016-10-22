@@ -28,7 +28,6 @@ __copyright__ = '(C) 2015, René-Luc Dhont'
 __revision__ = '$Format:%H$'
 
 from qgis.utils import spatialite_connect
-
 import sqlite3 as sqlite
 
 
@@ -124,3 +123,13 @@ class GeoDB(object):
         except DbError:
             self.con.rollback()
             raise
+
+    def create_spatial_index(self, table, geom_column='the_geom'):
+        sql = u"SELECT CreateSpatialIndex(%s, %s)" % (self._quote(table), self._quote(geom_column))
+        self._exec_sql_and_commit(sql)
+
+    def _quote(self, identifier):
+        """Quote identifier."""
+
+        # quote identifier, and double the double-quotes
+        return u"'%s'" % identifier.replace("'", "''")

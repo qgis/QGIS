@@ -198,6 +198,9 @@ qgis:hublines:
 qgis:hypsometriccurves: >
   This algorithm computes hypsometric curves  for an input Digital Elevation Model. Curves are produced as table files in an output folder specified by the user.
 
+qgis:importintospatialite: >
+  This algorithms imports a vector layer into a Spatialite database, creating a new table.
+
 qgis:importintopostgis: >
   This algorithms imports a vector layer into a PostGIS database, creating a new table.
 
