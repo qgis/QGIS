@@ -373,7 +373,7 @@ void QgsGrassSelect::setLayers()
   {
     for ( int j = 0; j < layers.count(); j++ )
     {
-      if ( layers[j].left( 1 ) == "1" )
+      if ( layers[j].at( 0 ) == '1' )
       {
         sel = j;
         break;

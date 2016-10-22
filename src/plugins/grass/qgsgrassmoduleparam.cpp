@@ -386,7 +386,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
               {
                 desc = val;
               }
-              desc.replace( 0, 1, desc.left( 1 ).toUpper() );
+              desc.replace( 0, 1, desc.at( 0 ).toUpper() );
 
               if ( mControlType == ComboBox )
               {
