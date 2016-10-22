@@ -387,7 +387,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint & thePoint, Qgs
   queryUrl.addQueryItem( "imageDisplay", QString( "%1,%2,%3" ).arg( theWidth ).arg( theHeight ).arg( theDpi ) );
   queryUrl.addQueryItem( "mapExtent", QString( "%1,%2,%3,%4" ).arg( theExtent.xMinimum(), 0, 'f' ).arg( theExtent.yMinimum(), 0, 'f' ).arg( theExtent.xMaximum(), 0, 'f' ).arg( theExtent.yMaximum(), 0, 'f' ) );
   queryUrl.addQueryItem( "tolerance", "10" );
-  QVariantList queryResults = QgsArcGisRestUtils::queryServiceJSON( queryUrl, mErrorTitle, mError )["results"].toList();
+  QVariantList queryResults = QgsArcGisRestUtils::queryServiceJSON( queryUrl, mErrorTitle, mError ).value( "results" ).toList();
 
   QMap<int, QVariant> entries;
 
