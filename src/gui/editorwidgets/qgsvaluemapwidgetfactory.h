@@ -38,7 +38,7 @@ class GUI_EXPORT QgsValueMapWidgetFactory : public QgsEditorWidgetFactory
     QString representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const override;
     QVariant sortValue( QgsVectorLayer *vl, int fieldIdx, const QgsEditorWidgetConfig &config, const QVariant &cache, const QVariant &value ) const override;
     Qt::AlignmentFlag alignmentFlag( QgsVectorLayer *vl, int fieldIdx, const QgsEditorWidgetConfig &config ) const override;
-    virtual QMap<const char*, int> supportedWidgetTypes() override;
+    virtual QHash<const char *, int> supportedWidgetTypes() override;
 };
 
 #endif // QGSVALUEMAPWIDGETFACTORY_H

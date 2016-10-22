@@ -79,9 +79,9 @@ unsigned int QgsRangeWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fi
   return 0;
 }
 
-QMap<const char*, int> QgsRangeWidgetFactory::supportedWidgetTypes()
+QHash<const char*, int> QgsRangeWidgetFactory::supportedWidgetTypes()
 {
-  QMap<const char*, int> map = QMap<const char*, int>();
+  QHash<const char*, int> map = QHash<const char*, int>();
   map.insert( QSlider::staticMetaObject.className(), 10 );
   map.insert( QDial::staticMetaObject.className(), 10 );
   map.insert( QSpinBox::staticMetaObject.className(), 10 );

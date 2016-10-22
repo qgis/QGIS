@@ -225,7 +225,7 @@ bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometry* geom, int partNum )
   return c->removeGeometry( partNum );
 }
 
-QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry& geom, QMap<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures )
+QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry& geom, QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures )
 {
   QScopedPointer<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( &geom ) );
   if ( geomEngine.isNull() )
@@ -256,7 +256,7 @@ QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstract
     if ( currentLayer )
     {
       QgsFeatureIds ignoreIds;
-      QMap<QgsVectorLayer*, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.find( currentLayer );
+      QHash<QgsVectorLayer*, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.find( currentLayer );
       if ( ignoreIt != ignoreFeatures.constEnd() )
         ignoreIds = ignoreIt.value();
 

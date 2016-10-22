@@ -38,7 +38,7 @@ QgsOWSConnectionItem::~QgsOWSConnectionItem()
 QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
 {
   QVector<QgsDataItem*> children;
-  QMap<QgsDataItem*, QString> serviceItems; // service/provider key
+  QHash<QgsDataItem*, QString> serviceItems; // service/provider key
 
   int layerCount = 0;
   // Try to open with WMS,WFS,WCS

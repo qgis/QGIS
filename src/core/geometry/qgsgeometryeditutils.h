@@ -60,7 +60,7 @@ class QgsGeometryEditUtils
      * @param geom geometry to alter
      * @param ignoreFeatures map of layer to feature id of features to ignore
      */
-    static QgsAbstractGeometry* avoidIntersections( const QgsAbstractGeometry& geom, QMap<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures = ( QMap<QgsVectorLayer*, QSet<QgsFeatureId> >() ) );
+    static QgsAbstractGeometry* avoidIntersections( const QgsAbstractGeometry& geom, QHash<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures = ( QHash<QgsVectorLayer*, QSet<QgsFeatureId> >() ) );
 };
 
 #endif // QGSGEOMETRYEDITUTILS_H

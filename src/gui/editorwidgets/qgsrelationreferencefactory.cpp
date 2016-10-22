@@ -109,9 +109,9 @@ void QgsRelationReferenceFactory::writeConfig( const QgsEditorWidgetConfig& conf
   }
 }
 
-QMap<const char*, int> QgsRelationReferenceFactory::supportedWidgetTypes()
+QHash<const char*, int> QgsRelationReferenceFactory::supportedWidgetTypes()
 {
-  QMap<const char*, int> map = QMap<const char*, int>();
+  QHash<const char*, int> map = QHash<const char*, int>();
   map.insert( QgsRelationReferenceWidget::staticMetaObject.className(), 10 );
   return map;
 }
