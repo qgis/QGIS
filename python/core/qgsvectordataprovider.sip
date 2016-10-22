@@ -390,7 +390,11 @@ class QgsVectorDataProvider : QgsDataProvider
     //! Populates the cache of minimum and maximum attribute values.
     void fillMinMaxCache() const;
 
-    void pushError( const QString& msg );
+    /**
+     * Raises an error message from the provider.
+     */
+    void pushError( const QString& msg ) const;
+
 
     /** Converts the geometry to the provider type if possible / necessary
     @return the converted geometry or nullptr if no conversion was necessary or possible*/

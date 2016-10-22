@@ -465,6 +465,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /** The names of the providers native types*/
     QList< NativeType > mNativeTypes;
 
+    /**
+     * Raises an error message from the provider.
+     */
     void pushError( const QString& msg ) const;
 
     /** Old-style mapping of index to name for QgsPalLabeling fix */
