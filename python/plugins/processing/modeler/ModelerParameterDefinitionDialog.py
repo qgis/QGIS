@@ -226,7 +226,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         self.requiredCheck.setText(self.tr('Mandatory'))
         self.requiredCheck.setChecked(True)
         if self.param is not None:
-            self.requiredCheck.setChecked(self.param.optional)
+            self.requiredCheck.setChecked(not self.param.optional)
         self.verticalLayout.addWidget(self.requiredCheck)
 
         self.buttonBox = QDialogButtonBox(self)
@@ -325,7 +325,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_CRS or
                 isinstance(self.param, ParameterCrs)):
             self.param = ParameterCrs(name, description, self.defaultTextBox.getValue())
-        self.param.optional = self.requiredCheck.isChecked()
+        self.param.optional = not self.requiredCheck.isChecked()
         self.close()
 
     def cancelPressed(self):
