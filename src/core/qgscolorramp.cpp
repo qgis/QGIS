@@ -72,7 +72,7 @@ QgsColorRamp* QgsGradientColorRamp::create( const QgsStringMap& props )
         continue;
 
       QColor c = QgsSymbolLayerUtils::decodeColor( stop.mid( i + 1 ) );
-      stops.append( QgsGradientStop( stop.left( i ).toDouble(), c ) );
+      stops.append( QgsGradientStop( stop.leftRef( i ).toDouble(), c ) );
     }
   }
 

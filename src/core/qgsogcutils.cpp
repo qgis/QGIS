@@ -2910,7 +2910,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
 static QString mapBinarySpatialToOgc( const QString& name )
 {
   QString nameCompare( name );
-  if ( name.size() > 3 && name.mid( 0, 3 ).compare( "ST_", Qt::CaseInsensitive ) == 0 )
+  if ( name.size() > 3 && name.midRef( 0, 3 ).compare( "ST_", Qt::CaseInsensitive ) == 0 )
     nameCompare = name.mid( 3 );
   QStringList spatialOps;
   spatialOps << "BBOX" << "Intersects" << "Contains" << "Crosses" << "Equals"
@@ -2926,7 +2926,7 @@ static QString mapBinarySpatialToOgc( const QString& name )
 static QString mapTernarySpatialToOgc( const QString& name )
 {
   QString nameCompare( name );
-  if ( name.size() > 3 && name.mid( 0, 3 ).compare( "ST_", Qt::CaseInsensitive ) == 0 )
+  if ( name.size() > 3 && name.midRef( 0, 3 ).compare( "ST_", Qt::CaseInsensitive ) == 0 )
     nameCompare = name.mid( 3 );
   if ( nameCompare.compare( "DWithin", Qt::CaseInsensitive ) == 0 )
     return "DWithin";

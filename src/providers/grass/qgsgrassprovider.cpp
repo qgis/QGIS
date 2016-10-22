@@ -525,7 +525,7 @@ int QgsGrassProvider::grassLayer( QString name )
     return -1;
   }
 
-  return name.left( pos ).toInt();
+  return name.leftRef( pos ).toInt();
 }
 
 int QgsGrassProvider::grassLayerType( QString name )

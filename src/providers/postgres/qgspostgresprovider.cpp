@@ -3852,7 +3852,7 @@ static QString getNextString( const QString& txt, int& i, const QString& sep )
     }
     i += stringRe.cap( 1 ).length() + 2;
     jumpSpace( txt, i );
-    if ( !txt.mid( i ).startsWith( sep ) && i < txt.length() )
+    if ( !txt.midRef( i ).startsWith( sep ) && i < txt.length() )
     {
       QgsLogger::warning( "Cannot find separator: " + txt.mid( i ) );
       return QString::null;
