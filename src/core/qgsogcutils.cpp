@@ -2910,7 +2910,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
 static QString mapBinarySpatialToOgc( const QString& name )
 {
   QString nameCompare( name );
-  if ( name.size() > 3 && name.mid( 0, 3 ).compare( "ST_", Qt::CaseInsensitive ) == 0 )
+  if ( name.size() > 3 && name.midRef( 0, 3 ).compare( "ST_", Qt::CaseInsensitive ) == 0 )
     nameCompare = name.mid( 3 );
   QStringList spatialOps;
   spatialOps << "BBOX" << "Intersects" << "Contains" << "Crosses" << "Equals"
@@ -2926,7 +2926,7 @@ static QString mapBinarySpatialToOgc( const QString& name )
 static QString mapTernarySpatialToOgc( const QString& name )
 {
   QString nameCompare( name );
-  if ( name.size() > 3 && name.mid( 0, 3 ).compare( "ST_", Qt::CaseInsensitive ) == 0 )
+  if ( name.size() > 3 && name.midRef( 0, 3 ).compare( "ST_", Qt::CaseInsensitive ) == 0 )
     nameCompare = name.mid( 3 );
   if ( nameCompare.compare( "DWithin", Qt::CaseInsensitive ) == 0 )
     return "DWithin";
@@ -3293,7 +3293,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   }
 
   QList<QDomElement> listElem;
-  Q_FOREACH ( QString columnName, node->usingColumns() )
+  Q_FOREACH ( const QString& columnName, node->usingColumns() )
   {
     QDomElement eqElem = mDoc.createElement( mFilterPrefix + ":PropertyIsEqualTo" );
     QDomElement propElem1 = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
@@ -3312,7 +3312,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   else if ( listElem.size() > 1 )
   {
     QDomElement andElem = mDoc.createElement( mFilterPrefix + ":And" );
-    Q_FOREACH ( QDomElement elem, listElem )
+    Q_FOREACH ( const QDomElement& elem, listElem )
     {
       andElem.appendChild( elem );
     }
@@ -3356,7 +3356,8 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   }
 
   // Process JOIN conditions
-  QString leftTable = node->tables().last()->name();
+  QList< QgsSQLStatement::NodeTableDef*> nodeTables = node->tables();
+  QString leftTable = nodeTables.at( nodeTables.length() - 1 )->name();
   Q_FOREACH ( QgsSQLStatement::NodeJoin* join, node->joins() )
   {
     QDomElement joinElem = toOgcFilter( join, leftTable );
@@ -3383,7 +3384,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   else if ( listElem.size() > 1 )
   {
     QDomElement andElem = mDoc.createElement( mFilterPrefix + ":And" );
-    Q_FOREACH ( QDomElement elem, listElem )
+    Q_FOREACH ( const QDomElement& elem, listElem )
     {
       andElem.appendChild( elem );
     }

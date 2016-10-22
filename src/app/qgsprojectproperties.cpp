@@ -1908,14 +1908,14 @@ void QgsProjectProperties::populateEllipsoidList()
       // Crash if no column?
       para1 = ( const char * )sqlite3_column_text( myPreparedStatement, 2 );
       para2 = ( const char * )sqlite3_column_text( myPreparedStatement, 3 );
-      myItem.semiMajor = para1.mid( 2 ).toDouble();
+      myItem.semiMajor = para1.midRef( 2 ).toDouble();
       if ( para2.left( 2 ) == "b=" )
       {
-        myItem.semiMinor = para2.mid( 2 ).toDouble();
+        myItem.semiMinor = para2.midRef( 2 ).toDouble();
       }
       else if ( para2.left( 3 ) == "rf=" )
       {
-        double invFlattening = para2.mid( 3 ).toDouble();
+        double invFlattening = para2.midRef( 3 ).toDouble();
         if ( invFlattening != 0.0 )
         {
           myItem.semiMinor = myItem.semiMajor - ( myItem.semiMajor / invFlattening );

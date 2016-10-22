@@ -207,8 +207,8 @@ bool QgsEditorWidgetRegistry::registerWidget( const QString& widgetId, QgsEditor
     mWidgetFactories.insert( widgetId, widgetFactory );
 
     // Use this factory as default where it provides the heighest priority
-    QMap<const char*, int> types = widgetFactory->supportedWidgetTypes();
-    QMap<const char*, int>::ConstIterator it;
+    QHash<const char*, int> types = widgetFactory->supportedWidgetTypes();
+    QHash<const char*, int>::ConstIterator it;
     it = types.constBegin();
 
     for ( ; it != types.constEnd(); ++it )

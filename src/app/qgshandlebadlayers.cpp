@@ -209,7 +209,7 @@ QString QgsHandleBadLayers::filename( int row )
 
 void QgsHandleBadLayers::setFilename( int row, const QString& filename )
 {
-  if ( !QFileInfo( filename ).exists() )
+  if ( !QFileInfo::exists( filename ) )
     return;
 
   QString type = mLayerList->item( row, 1 )->text();

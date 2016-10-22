@@ -507,7 +507,7 @@ void QgsRuleBasedRendererWidget::countFeatures()
   {
     return;
   }
-  QMap<QgsRuleBasedRenderer::Rule*, QgsRuleBasedRendererCount> countMap;
+  QHash<QgsRuleBasedRenderer::Rule*, QgsRuleBasedRendererCount> countMap;
 
   QgsRuleBasedRenderer::RuleList ruleList = mRenderer->rootRule()->descendants();
   // insert all so that we have counts 0
@@ -1285,7 +1285,7 @@ void QgsRuleBasedRendererModel::finishedAddingRules()
   emit endInsertRows();
 }
 
-void QgsRuleBasedRendererModel::setFeatureCounts( const QMap<QgsRuleBasedRenderer::Rule*, QgsRuleBasedRendererCount>& theCountMap )
+void QgsRuleBasedRendererModel::setFeatureCounts( const QHash<QgsRuleBasedRenderer::Rule*, QgsRuleBasedRendererCount>& theCountMap )
 {
   mFeatureCountMap = theCountMap;
   updateRule( QModelIndex() );

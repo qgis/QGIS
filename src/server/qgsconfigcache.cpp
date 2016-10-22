@@ -75,8 +75,7 @@ QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& file
   }
   QgsMessageLog::logMessage(
     QString( "QGIS server version %1, project version %2" )
-    .arg( thisVersion.text() )
-    .arg( fileVersion.text() ),
+    .arg( thisVersion.text(), fileVersion.text() ),
     "Server", QgsMessageLog::INFO
   );
   return new QgsServerProjectParser( doc, filePath );

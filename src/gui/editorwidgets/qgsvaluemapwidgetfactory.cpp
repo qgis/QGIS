@@ -87,8 +87,6 @@ QString QgsValueMapWidgetFactory::representValue( QgsVectorLayer* vl, int fieldI
   Q_UNUSED( cache )
 
   QString valueInternalText;
-  QString valueDisplayText;
-  QSettings settings;
   if ( value.isNull() )
     valueInternalText = QString( VALUEMAP_NULL_TEXT );
   else
@@ -111,9 +109,9 @@ Qt::AlignmentFlag QgsValueMapWidgetFactory::alignmentFlag( QgsVectorLayer* vl, i
   return Qt::AlignLeft;
 }
 
-QMap<const char*, int> QgsValueMapWidgetFactory::supportedWidgetTypes()
+QHash<const char*, int> QgsValueMapWidgetFactory::supportedWidgetTypes()
 {
-  QMap<const char*, int> map = QMap<const char*, int>();
+  QHash<const char*, int> map = QHash<const char*, int>();
   map.insert( QComboBox::staticMetaObject.className(), 10 );
   return map;
 }

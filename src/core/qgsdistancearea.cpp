@@ -191,7 +191,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
 
   // get major semiaxis
   if ( radius.left( 2 ) == "a=" )
-    mSemiMajor = radius.mid( 2 ).toDouble();
+    mSemiMajor = radius.midRef( 2 ).toDouble();
   else
   {
     QgsDebugMsg( QString( "setEllipsoid: wrong format of radius field: '%1'" ).arg( radius ) );
@@ -203,12 +203,12 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   // second one must be computed using formula: invf = a/(a-b)
   if ( parameter2.left( 2 ) == "b=" )
   {
-    mSemiMinor = parameter2.mid( 2 ).toDouble();
+    mSemiMinor = parameter2.midRef( 2 ).toDouble();
     mInvFlattening = mSemiMajor / ( mSemiMajor - mSemiMinor );
   }
   else if ( parameter2.left( 3 ) == "rf=" )
   {
-    mInvFlattening = parameter2.mid( 3 ).toDouble();
+    mInvFlattening = parameter2.midRef( 3 ).toDouble();
     mSemiMinor = mSemiMajor - ( mSemiMajor / mInvFlattening );
   }
   else

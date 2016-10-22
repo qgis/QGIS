@@ -64,7 +64,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
 
     bool mFeatureSaved;
 
-    static QMap<QgsVectorLayer *, QgsAttributeMap> sLastUsedValues;
+    static QHash<QgsVectorLayer *, QgsAttributeMap> sLastUsedValues;
 };
 
 #endif

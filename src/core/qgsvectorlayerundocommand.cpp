@@ -411,7 +411,9 @@ void QgsVectorLayerUndoCommandDeleteAttribute::undo()
     }
   }
 
-  mBuffer->L->editFormConfig().setWidgetConfig( mFieldName, mOldEditorWidgetConfig );
+  QgsEditFormConfig formConfig = mBuffer->L->editFormConfig();
+  formConfig.setWidgetConfig( mFieldName, mOldEditorWidgetConfig );
+  mBuffer->L->setEditFormConfig( formConfig );
 
   emit mBuffer->attributeAdded( mFieldIndex );
 }

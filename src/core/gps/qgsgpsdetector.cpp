@@ -48,7 +48,7 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
   {
     for ( int i = 0; i < 10; ++i )
     {
-      if ( QFileInfo( linuxDev.arg( i ) ).exists() )
+      if ( QFileInfo::exists( linuxDev.arg( i ) ) )
       {
         devs << QPair<QString, QString>( linuxDev.arg( i ), linuxDev.arg( i ) );
       }

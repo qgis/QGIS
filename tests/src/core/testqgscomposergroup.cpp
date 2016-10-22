@@ -69,8 +69,8 @@ void TestQgsComposerGroup::dumpUndoStack( const QUndoStack& us, QString prefix )
   for ( int i = 0; i < us.count(); ++i )
   {
     QgsDebugMsg( QString( "%4US %1: %2%3" )
-                 .arg( i ). arg( i >= us.index() ? "-" : "" )
-                 .arg( us.text( i ) ) .arg( prefix ) );
+                 .arg( i ). arg( i >= us.index() ? "-" : "",
+                                 us.text( i ), prefix ) );
   }
 }
 

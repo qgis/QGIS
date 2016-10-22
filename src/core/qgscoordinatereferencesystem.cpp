@@ -500,7 +500,7 @@ bool QgsCoordinateReferenceSystem::hasAxisInverted() const
     {
       OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
 
-      if ( OSRImportFromEPSGA( crs, d->mAuthId.mid( 5 ).toInt() ) == OGRERR_NONE )
+      if ( OSRImportFromEPSGA( crs, d->mAuthId.midRef( 5 ).toInt() ) == OGRERR_NONE )
       {
         OSRGetAxis( crs, OSRIsGeographic( crs ) ? "GEOGCS" : "PROJCS", 0, &orientation );
       }
@@ -1750,7 +1750,7 @@ bool QgsCoordinateReferenceSystem::loadWkts( QHash<int, QString> &wkts, const ch
         return false;
 
       bool ok;
-      int epsg = line.left( pos ).toInt( &ok );
+      int epsg = line.leftRef( pos ).toInt( &ok );
       if ( !ok )
         return false;
 
@@ -1791,7 +1791,7 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
         continue;
 
       bool ok;
-      int epsg = line.left( pos ).toInt( &ok );
+      int epsg = line.leftRef( pos ).toInt( &ok );
       if ( !ok )
         continue;
 

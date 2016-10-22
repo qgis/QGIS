@@ -362,7 +362,7 @@ QString QgsStringUtils::insertLinks( const QString& string, bool *foundLinks )
     {
       protoUrl.prepend( "http://" );
     }
-    QString anchor = QString( "<a href=\"%1\">%2</a>" ).arg( Qt::escape( protoUrl ) ).arg( Qt::escape( url ) );
+    QString anchor = QString( "<a href=\"%1\">%2</a>" ).arg( Qt::escape( protoUrl ), Qt::escape( url ) );
     converted.replace( urlRegEx.pos( 1 ), url.length(), anchor );
     offset = urlRegEx.pos( 1 ) + anchor.length();
   }
@@ -371,7 +371,7 @@ QString QgsStringUtils::insertLinks( const QString& string, bool *foundLinks )
   {
     found = true;
     QString email = emailRegEx.cap( 1 );
-    QString anchor = QString( "<a href=\"mailto:%1\">%1</a>" ).arg( Qt::escape( email ) ).arg( Qt::escape( email ) );
+    QString anchor = QString( "<a href=\"mailto:%1\">%1</a>" ).arg( Qt::escape( email ), Qt::escape( email ) );
     converted.replace( emailRegEx.pos( 1 ), email.length(), anchor );
     offset = emailRegEx.pos( 1 ) + anchor.length();
   }

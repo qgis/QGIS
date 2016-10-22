@@ -386,7 +386,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
               {
                 desc = val;
               }
-              desc.replace( 0, 1, desc.left( 1 ).toUpper() );
+              desc.replace( 0, 1, desc.at( 0 ).toUpper() );
 
               if ( mControlType == ComboBox )
               {
@@ -824,10 +824,6 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
 
   // Check if this parameter is required
   mRequired = gnode.toElement().attribute( "required" ) == "yes";
-
-  QDomNode promptNode = gnode.namedItem( "gisprompt" );
-  QDomElement promptElem = promptNode.toElement();
-  QString element = promptElem.attribute( "element" );
 
   // Read "layeroption" is defined
   QString opt = qdesc.attribute( "layeroption" );
@@ -1482,10 +1478,6 @@ QgsGrassModuleFile::QgsGrassModuleFile(
     mTitle = tr( "File" );
   }
   adjustTitle();
-
-  QDomNode promptNode = gnode.namedItem( "gisprompt" );
-  QDomElement promptElem = promptNode.toElement();
-  QString element = promptElem.attribute( "element" );
 
   if ( qdesc.attribute( "type" ).toLower() == "new" )
   {

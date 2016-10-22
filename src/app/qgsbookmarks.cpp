@@ -442,10 +442,10 @@ bool QgsProjectBookmarksTableModel::setData( const QModelIndex& index, const QVa
   switch ( index.column() )
   {
     case 1:
-      QgsProject::instance()->writeEntry( "Bookmarks", QString( "/Row-%1/Name" ).arg( index.row() ), value.value<QString>() );
+      QgsProject::instance()->writeEntry( "Bookmarks", QString( "/Row-%1/Name" ).arg( index.row() ), value.toString() );
       return true;
     case 2:
-      QgsProject::instance()->writeEntry( "Bookmarks", QString( "/Row-%1/Project" ).arg( index.row() ), value.value<QString>() );
+      QgsProject::instance()->writeEntry( "Bookmarks", QString( "/Row-%1/Project" ).arg( index.row() ), value.toString() );
       return true;
     case 3:
       QgsProject::instance()->writeEntry( "Bookmarks", QString( "/Row-%1/MinX" ).arg( index.row() ), value.toDouble() );
@@ -674,8 +674,8 @@ void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel& modelFrom,
                      "  VALUES (NULL,:name,:project_name,:xmin,:xmax,:ymin,:ymax,:projection_srid)",
                      qgisModel->database() );
 
-    query.bindValue( ":name", modelFrom.data( modelFrom.index( row, 1 ) ).value<QString>() );
-    query.bindValue( ":project_name", modelFrom.data( modelFrom.index( row, 2 ) ).value<QString>() );
+    query.bindValue( ":name", modelFrom.data( modelFrom.index( row, 1 ) ).toString() );
+    query.bindValue( ":project_name", modelFrom.data( modelFrom.index( row, 2 ) ).toString() );
     query.bindValue( ":xmin", modelFrom.data( modelFrom.index( row, 3 ) ).toDouble() );
     query.bindValue( ":ymin", modelFrom.data( modelFrom.index( row, 4 ) ).toDouble() );
     query.bindValue( ":xmax", modelFrom.data( modelFrom.index( row, 5 ) ).toDouble() );

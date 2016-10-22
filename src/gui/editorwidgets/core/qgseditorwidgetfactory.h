@@ -125,7 +125,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * @return A map of widget type names and weight values
      * @note not available in Python bindings
      */
-    virtual QMap<const char*, int> supportedWidgetTypes() { return QMap<const char*, int>(); }
+    virtual QHash<const char*, int> supportedWidgetTypes() { return QHash<const char*, int>(); }
 
     /**
      * Create a pretty String representation of the value.

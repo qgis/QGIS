@@ -670,7 +670,7 @@ bool QgsDelimitedTextSourceSelect::validate()
   {
     message = tr( "Please select an input file" );
   }
-  else if ( ! QFileInfo( txtFilePath->text() ).exists() )
+  else if ( ! QFileInfo::exists( txtFilePath->text() ) )
   {
     message = tr( "File %1 does not exist" ).arg( txtFilePath->text() );
   }

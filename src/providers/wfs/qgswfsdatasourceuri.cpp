@@ -30,7 +30,7 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString& uri )
     // Transform all param keys to lowercase
     typedef QPair<QString, QString> queryItem;
     QList<queryItem> items( url.queryItems() );
-    foreach ( queryItem item, items )
+    Q_FOREACH ( const queryItem& item, items )
     {
       url.removeQueryItem( item.first );
       url.addQueryItem( item.first.toLower(), item.second );

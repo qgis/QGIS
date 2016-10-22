@@ -873,7 +873,7 @@ void QgsGrassModule::viewOutput()
       bool onlyLayer1 = false;
       for ( int j = 0; j < layers.count(); j++ )
       {
-        if ( layers[j].left( 1 ) == "1" )
+        if ( layers[j].at( 0 ) == '1' )
         {
           onlyLayer1 = true;
           break;
@@ -889,7 +889,7 @@ void QgsGrassModule::viewOutput()
                       + map + "/" + layers[j];
 
         // skip 0_* layers
-        if ( onlyLayer1 && layers[j].left( 1 ) != "1" )
+        if ( onlyLayer1 && layers[j].at( 0 ) != '1' )
           continue;
 
         QString name = QgsGrassUtils::vectorLayerName(

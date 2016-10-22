@@ -86,7 +86,7 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
 
     virtual QVariant sortValue( QgsVectorLayer *vl, int fieldIdx, const QgsEditorWidgetConfig &config, const QVariant &cache, const QVariant &value ) const override;
 
-    virtual QMap<const char*, int> supportedWidgetTypes() override;
+    virtual QHash<const char *, int> supportedWidgetTypes() override;
 
   private:
     QgsAttributeEditorContext mEditorContext;

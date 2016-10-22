@@ -308,7 +308,7 @@ QString QgsProjectionSelector::selectedProj4String()
   if ( srsId.toLong() >= USER_CRS_START_ID )
   {
     databaseFileName = QgsApplication::qgisUserDbFilePath();
-    if ( !QFileInfo( databaseFileName ).exists() ) //its unlikely that this condition will ever be reached
+    if ( !QFileInfo::exists( databaseFileName ) ) //its unlikely that this condition will ever be reached
       return QString();
   }
   else //must be a system projection then
@@ -372,7 +372,7 @@ QString QgsProjectionSelector::getSelectedExpression( const QString& expression 
   if ( lvi->text( QGIS_CRS_ID_COLUMN ).toLong() >= USER_CRS_START_ID )
   {
     databaseFileName = QgsApplication::qgisUserDbFilePath();
-    if ( !QFileInfo( databaseFileName ).exists() )
+    if ( !QFileInfo::exists( databaseFileName ) )
     {
       return QString();
     }
@@ -483,7 +483,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   // if it doesnt exist we copy it in from the global resources dir
 
   //return straight away if the user has not created any custom projections
-  if ( !QFileInfo( databaseFileName ).exists() )
+  if ( !QFileInfo::exists( databaseFileName ) )
   {
     QgsDebugMsg( "Users qgis.db not found...skipping" );
     mUserProjListDone = true;
@@ -566,7 +566,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
   //read only filesystem because otherwise sqlite will try
   //to create the db file on the fly
 
-  if ( !QFileInfo( mSrsDatabaseFileName ).exists() )
+  if ( !QFileInfo::exists( mSrsDatabaseFileName ) )
   {
     mProjListDone = true;
     return;
@@ -888,7 +888,7 @@ long QgsProjectionSelector::getLargestCrsIdMatch( const QString& theSql )
 
   //check the db is available
   QString databaseFileName = QgsApplication::qgisUserDbFilePath();
-  if ( QFileInfo( databaseFileName ).exists() ) //only bother trying to open if the file exists
+  if ( QFileInfo::exists( databaseFileName ) ) //only bother trying to open if the file exists
   {
     result = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
     if ( result )

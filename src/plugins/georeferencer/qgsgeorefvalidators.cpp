@@ -57,7 +57,7 @@ QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) con
       rx.setPattern( "-?\\d{1,3}\\s60" );
       if ( rx.exactMatch( input ) )
       {
-        int in = input.left( input.indexOf( ' ' ) ).toInt();
+        int in = input.leftRef( input.indexOf( ' ' ) ).toInt();
         int grad =  input.startsWith( '-' ) ? in - 1 : in + 1;
         if ( grad <= 180 )
           input = QString::number( grad );

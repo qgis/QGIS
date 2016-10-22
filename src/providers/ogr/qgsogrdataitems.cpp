@@ -298,7 +298,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   if ( suffix == "dbf" )
   {
     QString pathShp = thePath.left( thePath.count() - 4 ) + ".shp";
-    if ( QFileInfo( pathShp ).exists() )
+    if ( QFileInfo::exists( pathShp ) )
       return nullptr;
   }
 

@@ -1229,7 +1229,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
           QgsDebugMsg( QString( "Writing string attribute %1 with %2, encoding %3" )
                        .arg( qgisAttId )
                        .arg( attrVal.toString(),
-                             mEncoding->name().data() ) );
+                             mEncoding->name().constData() ) );
           OGR_F_SetFieldString( feature, ogrAttId, mEncoding->fromUnicode( attrVal.toString() ).constData() );
           break;
 

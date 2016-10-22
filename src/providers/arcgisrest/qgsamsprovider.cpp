@@ -66,7 +66,7 @@ void QgsAmsLegendFetcher::handleFinished()
   }
   QVariantMap queryResults = doc.object().toVariantMap();
   QgsDataSourceUri dataSource( mProvider->dataSourceUri() );
-  QList< QPair<QString, QImage> > legendEntries;
+  QVector< QPair<QString, QImage> > legendEntries;
   foreach ( const QVariant& result, queryResults["layers"].toList() )
   {
     QVariantMap queryResultMap = result.toMap();
@@ -222,11 +222,11 @@ static inline QString dumpVariantMap( const QVariantMap& variantMap, const QStri
     QVariantMap childMap = variantMap[key].toMap();
     if ( childMap.isEmpty() )
     {
-      result += QString( "<tr><td>%1</td><td>%2</td></tr>" ).arg( key ).arg( variantMap[key].toString() );
+      result += QString( "<tr><td>%1</td><td>%2</td></tr>" ).arg( key, variantMap[key].toString() );
     }
     else
     {
-      result += QString( "<tr><td>%1</td><td>%2</td></tr>" ).arg( key ).arg( dumpVariantMap( childMap ) );
+      result += QString( "<tr><td>%1</td><td>%2</td></tr>" ).arg( key, dumpVariantMap( childMap ) );
     }
   }
   result += "</table>";
@@ -387,7 +387,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint & thePoint, Qgs
   queryUrl.addQueryItem( "imageDisplay", QString( "%1,%2,%3" ).arg( theWidth ).arg( theHeight ).arg( theDpi ) );
   queryUrl.addQueryItem( "mapExtent", QString( "%1,%2,%3,%4" ).arg( theExtent.xMinimum(), 0, 'f' ).arg( theExtent.yMinimum(), 0, 'f' ).arg( theExtent.xMaximum(), 0, 'f' ).arg( theExtent.yMaximum(), 0, 'f' ) );
   queryUrl.addQueryItem( "tolerance", "10" );
-  QVariantList queryResults = QgsArcGisRestUtils::queryServiceJSON( queryUrl, mErrorTitle, mError )["results"].toList();
+  QVariantList queryResults = QgsArcGisRestUtils::queryServiceJSON( queryUrl, mErrorTitle, mError ).value( "results" ).toList();
 
   QMap<int, QVariant> entries;
 
@@ -400,7 +400,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint & thePoint, Qgs
       QString valueStr;
       foreach ( const QString& attribute, attributesMap.keys() )
       {
-        valueStr += QString( "%1 = %2\n" ).arg( attribute ).arg( attributesMap[attribute].toString() );
+        valueStr += QString( "%1 = %2\n" ).arg( attribute, attributesMap[attribute].toString() );
       }
       entries.insert( entries.size(), valueStr );
     }

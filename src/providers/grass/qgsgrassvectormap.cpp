@@ -504,7 +504,7 @@ bool QgsGrassVectorMap::mapOutdated()
   {
     // If the cidx file has been deleted, the map is currently being modified
     // by an external tool. Do not update until the cidx file has been recreated.
-    if ( !QFileInfo( dp + "/cidx" ).exists() )
+    if ( !QFileInfo::exists( dp + "/cidx" ) )
     {
       QgsDebugMsg( "The map is being modified and is unavailable : " + mGrassObject.toString() );
       return false;

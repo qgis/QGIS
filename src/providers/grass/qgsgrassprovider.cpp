@@ -525,7 +525,7 @@ int QgsGrassProvider::grassLayer( QString name )
     return -1;
   }
 
-  return name.left( pos ).toInt();
+  return name.leftRef( pos ).toInt();
 }
 
 int QgsGrassProvider::grassLayerType( QString name )
@@ -1128,8 +1128,10 @@ void QgsGrassProvider::startEditing( QgsVectorLayer *vectorLayer )
 
   // TODO: enable cats editing once all consequences are implemented
   // disable cat and topo symbol editing
-  vectorLayer->editFormConfig().setReadOnly( mLayer->keyColumn(), true );
-  vectorLayer->editFormConfig().setReadOnly( mLayer->fields().size() - 1, true );
+  QgsEditFormConfig formConfig = vectorLayer->editFormConfig();
+  formConfig.setReadOnly( mLayer->keyColumn(), true );
+  formConfig.setReadOnly( mLayer->fields().size() - 1, true );
+  vectorLayer->setEditFormConfig( formConfig );
 
   mEditedCount++;
 

@@ -2115,7 +2115,7 @@ void QgsVectorLayer::removeFieldAlias( int attIndex )
     return;
 
   QString name = fields().at( attIndex ).name();
-  mFields.at( attIndex ).setAlias( QString() );
+  mFields[ attIndex ].setAlias( QString() );
   if ( mAttributeAliasMap.contains( name ) )
   {
     mAttributeAliasMap.remove( name );

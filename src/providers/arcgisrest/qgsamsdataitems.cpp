@@ -33,7 +33,7 @@ QVector<QgsDataItem*> QgsAmsRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
 
-  foreach ( QString connName, QgsOwsConnection::connectionList( "ArcGisMapServer" ) )
+  Q_FOREACH ( const QString& connName, QgsOwsConnection::connectionList( "ArcGisMapServer" ) )
   {
     QgsOwsConnection connection( "ArcGisMapServer", connName );
     QString path = "ams:/" + connName;
@@ -165,7 +165,7 @@ void QgsAmsConnectionItem::deleteConnection()
 QgsAmsLayerItem::QgsAmsLayerItem( QgsDataItem* parent, const QString& name, const QString &url, const QString& id, const QString& title, const QString& authid, const QString& format )
     : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Raster, "arcgismapserver" )
 {
-  mUri = QString( "crs='%1' format='%2' layer='%3' url='%4'" ).arg( authid ).arg( format ).arg( id ).arg( url );
+  mUri = QString( "crs='%1' format='%2' layer='%3' url='%4'" ).arg( authid, format, id, url );
   setState( Populated );
   mIconName = "mIconAms.svg";
 }

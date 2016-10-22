@@ -759,7 +759,7 @@ void QgsGrass::setMapsetSearchPathWatcher()
 
   QString searchFilePath = getDefaultMapsetPath() + "/SEARCH_PATH";
 
-  if ( QFileInfo( searchFilePath ).exists() )
+  if ( QFileInfo::exists( searchFilePath ) )
   {
     QgsDebugMsg( "add watcher on SEARCH_PATH file " + searchFilePath );
     mMapsetSearchPathWatcher->addPath( searchFilePath );
@@ -781,7 +781,7 @@ void QgsGrass::onSearchPathFileChanged( const QString & path )
   {
     // changed or removed
     loadMapsetSearchPath();
-    if ( !QFileInfo( searchFilePath ).exists() ) // removed
+    if ( !QFileInfo::exists( searchFilePath ) ) // removed
     {
       // reset watcher to mapset
       setMapsetSearchPathWatcher();
@@ -790,7 +790,7 @@ void QgsGrass::onSearchPathFileChanged( const QString & path )
   else
   {
     // mapset directory changed
-    if ( QFileInfo( searchFilePath ).exists() ) // search path file added
+    if ( QFileInfo::exists( searchFilePath ) ) // search path file added
     {
       loadMapsetSearchPath();
       setMapsetSearchPathWatcher();
@@ -942,7 +942,7 @@ QString QgsGrass::openMapset( const QString& gisdbase,
   QString processResult = QString( "exitStatus=%1, exitCode=%2, errorCode=%3, error=%4 stdout=%5, stderr=%6" )
                           .arg( process.exitStatus() ).arg( process.exitCode() )
                           .arg( process.error() ).arg( process.errorString(),
-                                                       process.readAllStandardOutput().data(), process.readAllStandardError().data() );
+                                                       process.readAllStandardOutput().constData(), process.readAllStandardError().constData() );
   QgsDebugMsg( "processResult: " + processResult );
 
   // lock exit code:
@@ -1579,7 +1579,7 @@ QStringList QgsGrass::grassObjects( const QgsGrassObject& mapsetObject, QgsGrass
       catch ( QgsGrass::Exception &e )
       {
         // TODO: notify somehow user
-        QgsDebugMsg( QString( "Cannot run %1: %2" ).arg( cmd ).arg( e.what() ) );
+        QgsDebugMsg( QString( "Cannot run %1: %2" ).arg( cmd, e.what() ) );
       }
     }
 #endif

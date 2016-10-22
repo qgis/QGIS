@@ -108,9 +108,9 @@ Qt::AlignmentFlag QgsDateTimeEditFactory::alignmentFlag( QgsVectorLayer* vl, int
   return Qt::AlignLeft;
 }
 
-QMap<const char*, int> QgsDateTimeEditFactory::supportedWidgetTypes()
+QHash<const char*, int> QgsDateTimeEditFactory::supportedWidgetTypes()
 {
-  QMap<const char*, int> map = QMap<const char*, int>();
+  QHash<const char*, int> map = QHash<const char*, int>();
   map.insert( QDateTimeEdit::staticMetaObject.className(), 10 );
   map.insert( QgsDateTimeEdit::staticMetaObject.className(), 10 );
   return map;

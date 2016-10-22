@@ -515,7 +515,9 @@ void QgsGrassPlugin::addFeature()
     grassProvider->setNewFeatureType( GV_AREA );
     formSuppress = QgsEditFormConfig::SuppressOn;
   }
-  vectorLayer->editFormConfig().setSuppress( formSuppress );
+  QgsEditFormConfig formConfig = vectorLayer->editFormConfig();
+  formConfig.setSuppress( formSuppress );
+  vectorLayer->setEditFormConfig( formConfig );
 }
 
 void QgsGrassPlugin::onSplitFeaturesTriggered( bool checked )
@@ -720,9 +722,6 @@ void QgsGrassPlugin::redrawRegion()
 
 void QgsGrassPlugin::openMapset()
 {
-
-  QString element;
-
   QgsGrassSelect *sel = new QgsGrassSelect( qGisInterface->mainWindow(), QgsGrassSelect::MAPSET );
 
   if ( !sel->exec() )

@@ -410,7 +410,7 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
   }
 
   QString concatenatedTypenames;
-  Q_FOREACH ( QString typeName, typenameList )
+  Q_FOREACH ( const QString& typeName, typenameList )
   {
     if ( !concatenatedTypenames.isEmpty() )
       concatenatedTypenames += ",";
@@ -422,7 +422,7 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
        concatenatedTypenames ) )
   {
     errorMsg = tr( "DescribeFeatureType failed for url %1: %2" ).
-               arg( dataSourceUri() ).arg( describeFeatureType.errorMessage() );
+               arg( dataSourceUri(), describeFeatureType.errorMessage() );
     return false;
   }
 
@@ -434,14 +434,14 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
   {
     QgsDebugMsg( response );
     errorMsg = tr( "DescribeFeatureType failed for url %1: %2" ).
-               arg( dataSourceUri() ).arg( errorMsg );
+               arg( dataSourceUri(), errorMsg );
     return false;
   }
 
   mShared->mLayerPropertiesList.clear();
   QMap < QString, QgsFields > mapTypenameToFields;
   QMap < QString, QString > mapTypenameToGeometryAttribute;
-  Q_FOREACH ( QString typeName, typenameList )
+  Q_FOREACH ( const QString& typeName, typenameList )
   {
     QString geometryAttribute;
     QgsFields fields;
@@ -451,7 +451,7 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
                                     geometryAttribute, fields, geomType, errorMsg ) )
     {
       errorMsg = tr( "Analysis of DescribeFeatureType response failed for url %1, typeName %2: %3" ).
-                 arg( dataSourceUri() ).arg( typeName ).arg( errorMsg );
+                 arg( dataSourceUri(), typeName, errorMsg );
       return false;
     }
 
@@ -558,7 +558,7 @@ bool QgsWFSProvider::processSQL( const QString& sqlString, QString& errorMsg, QS
       else
       {
         // * syntax
-        Q_FOREACH ( QString typeName, typenameList )
+        Q_FOREACH ( const QString& typeName, typenameList )
         {
           const QgsFields tableFields = mapTypenameToFields[typeName];
           for ( int i = 0; i < tableFields.size();i++ )
@@ -1109,7 +1109,7 @@ bool QgsWFSProvider::describeFeatureType( QString& geometryAttribute, QgsFields&
        mShared->mURI.typeName() ) )
   {
     QgsMessageLog::logMessage( tr( "DescribeFeatureType failed for url %1: %2" ).
-                               arg( dataSourceUri() ).arg( describeFeatureType.errorMessage() ), tr( "WFS" ) );
+                               arg( dataSourceUri(), describeFeatureType.errorMessage() ), tr( "WFS" ) );
     return false;
   }
 
@@ -1121,7 +1121,7 @@ bool QgsWFSProvider::describeFeatureType( QString& geometryAttribute, QgsFields&
   {
     QgsDebugMsg( response );
     QgsMessageLog::logMessage( tr( "DescribeFeatureType failed for url %1: %2" ).
-                               arg( dataSourceUri() ).arg( errorMsg ), tr( "WFS" ) );
+                               arg( dataSourceUri(), errorMsg ), tr( "WFS" ) );
     return false;
   }
 
@@ -1130,7 +1130,7 @@ bool QgsWFSProvider::describeFeatureType( QString& geometryAttribute, QgsFields&
                                   geometryAttribute, fields, geomType, errorMsg ) )
   {
     QgsMessageLog::logMessage( tr( "Analysis of DescribeFeatureType response failed for url %1: %2" ).
-                               arg( dataSourceUri() ).arg( errorMsg ), tr( "WFS" ) );
+                               arg( dataSourceUri(), errorMsg ), tr( "WFS" ) );
     return false;
   }
 
@@ -1449,7 +1449,7 @@ bool QgsWFSProvider::getCapabilities()
     if ( !getCapabilities.requestCapabilities( synchronous, forceRefresh ) )
     {
       QgsMessageLog::logMessage( tr( "GetCapabilities failed for url %1: %2" ).
-                                 arg( dataSourceUri() ).arg( getCapabilities.errorMessage() ), tr( "WFS" ) );
+                                 arg( dataSourceUri(), getCapabilities.errorMessage() ), tr( "WFS" ) );
       return false;
     }
 
@@ -1524,7 +1524,7 @@ bool QgsWFSProvider::getCapabilities()
   if ( !foundLayer )
   {
     QgsMessageLog::logMessage( tr( "Could not find typename %1 in capabilities for url %2" ).
-                               arg( thisLayerName ).arg( dataSourceUri() ), tr( "WFS" ) );
+                               arg( thisLayerName, dataSourceUri() ), tr( "WFS" ) );
   }
 
   return foundLayer;

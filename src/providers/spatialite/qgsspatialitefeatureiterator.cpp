@@ -498,7 +498,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
       {
         if ( ic <= mRequest.subsetOfAttributes().size() )
         {
-          const int attrIndex = mRequest.subsetOfAttributes()[ic-1];
+          const int attrIndex = mRequest.subsetOfAttributes().at( ic - 1 );
           const QgsField field = mSource->mFields.at( attrIndex );
           feature.setAttribute( attrIndex, getFeatureAttribute( stmt, ic, field.type(), field.subType() ) );
         }

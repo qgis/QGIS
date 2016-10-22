@@ -382,8 +382,8 @@ bool QgsWFSSharedData::createCache()
     if ( !ogrWaySuccessful )
     {
       mCacheTablename = "features";
-      sql = QString( "CREATE TABLE %1 (%2 INTEGER PRIMARY KEY" ).arg( mCacheTablename ).arg( fidName );
-      Q_FOREACH ( QgsField field, cacheFields )
+      sql = QString( "CREATE TABLE %1 (%2 INTEGER PRIMARY KEY" ).arg( mCacheTablename, fidName );
+      Q_FOREACH ( const QgsField& field, cacheFields )
       {
         QString type( "VARCHAR" );
         if ( field.type() == QVariant::Int )
@@ -421,7 +421,7 @@ bool QgsWFSSharedData::createCache()
 
     // We need an index on the gmlid, since we will check for duplicates, particularly
     // useful in the case we do overlapping BBOX requests
-    sql = QString( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename ).arg( QgsWFSConstants::FIELD_GMLID );
+    sql = QString( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename, QgsWFSConstants::FIELD_GMLID );
     rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
     {
@@ -431,7 +431,7 @@ bool QgsWFSSharedData::createCache()
 
     if ( mDistinctSelect )
     {
-      sql = QString( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename ).arg( QgsWFSConstants::FIELD_MD5 );
+      sql = QString( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename, QgsWFSConstants::FIELD_MD5 );
       rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
       {
@@ -830,7 +830,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair>& featu
   QVector<QgsWFSFeatureGmlIdPair> updatedFeatureList;
 
   QgsRectangle localComputedExtent( mComputedExtent );
-  Q_FOREACH ( QgsWFSFeatureGmlIdPair featPair, featureList )
+  Q_FOREACH ( const QgsWFSFeatureGmlIdPair& featPair, featureList )
   {
     const QgsFeature& gmlFeature = featPair.first;
 
@@ -985,7 +985,7 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
 
   if ( !success && !interrupted )
   {
-    QString errorMsgOut( tr( "Download of features for layer %1 failed or partially failed: %2. You may attempt reloading the layer with F5" ).arg( mURI.typeName() ).arg( errorMsg ) );
+    QString errorMsgOut( tr( "Download of features for layer %1 failed or partially failed: %2. You may attempt reloading the layer with F5" ).arg( mURI.typeName(), errorMsg ) );
     pushError( errorMsgOut );
   }
 

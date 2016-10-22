@@ -74,7 +74,7 @@ void QgsCodeEditorPython::setSciLexerPython()
   }
   else if ( mAPISFilesList.length() == 1 && mAPISFilesList[0].right( 3 ) == "pap" )
   {
-    if ( !QFileInfo( mAPISFilesList[0] ).exists() )
+    if ( !QFileInfo::exists( mAPISFilesList[0] ) )
     {
       QgsDebugMsg( QString( "The apis file %1 not found" ).arg( mAPISFilesList.at( 0 ) ) );
       return;
@@ -86,7 +86,7 @@ void QgsCodeEditorPython::setSciLexerPython()
   {
     for ( int i = 0; i < mAPISFilesList.size(); i++ )
     {
-      if ( !QFileInfo( mAPISFilesList[i] ).exists() )
+      if ( !QFileInfo::exists( mAPISFilesList[i] ) )
       {
         QgsDebugMsg( QString( "The apis file %1 was not found" ).arg( mAPISFilesList.at( i ) ) );
         return;

@@ -435,8 +435,8 @@ bool QgsGrassRasterImport::import()
     // TODO: best timeout?
     mProcess->waitForFinished( 30000 );
 
-    QString stdoutString = mProcess->readAllStandardOutput().data();
-    QString stderrString = mProcess->readAllStandardError().data();
+    QString stdoutString = mProcess->readAllStandardOutput().constData();
+    QString stderrString = mProcess->readAllStandardError().constData();
 
     QString processResult = QString( "exitStatus=%1, exitCode=%2, error=%3, errorString=%4 stdout=%5, stderr=%6" )
                             .arg( mProcess->exitStatus() ).arg( mProcess->exitCode() )
@@ -713,8 +713,8 @@ bool QgsGrassVectorImport::import()
   QgsDebugMsg( "waitForFinished" );
   mProcess->waitForFinished( 30000 );
 
-  QString stdoutString = mProcess->readAllStandardOutput().data();
-  QString stderrString = mProcess->readAllStandardError().data();
+  QString stdoutString = mProcess->readAllStandardOutput().constData();
+  QString stderrString = mProcess->readAllStandardError().constData();
 
   QString processResult = QString( "exitStatus=%1, exitCode=%2, error=%3, errorString=%4 stdout=%5, stderr=%6" )
                           .arg( mProcess->exitStatus() ).arg( mProcess->exitCode() )
@@ -804,7 +804,7 @@ bool QgsGrassExternal::import()
     QString cmd = QgsGrass::gisbase() + "/bin/r.external";
     QStringList arguments;
 
-    if ( QFileInfo( mSource ).exists() )
+    if ( QFileInfo::exists( mSource ) )
     {
       arguments << "input=" + mSource;
     }
