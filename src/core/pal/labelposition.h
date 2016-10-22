@@ -90,7 +90,7 @@ namespace pal
                      double alpha, double cost,
                      FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver );
 
-      /** Copy constructor */
+      //! Copy constructor
       LabelPosition( const LabelPosition& other );
 
       ~LabelPosition() { delete nextPart; }
@@ -124,16 +124,16 @@ namespace pal
        */
       bool isInConflict( LabelPosition *ls );
 
-      /** Return bounding box - amin: xmin,ymin - amax: xmax,ymax */
+      //! Return bounding box - amin: xmin,ymin - amax: xmax,ymax
       void getBoundingBox( double amin[2], double amax[2] ) const;
 
-      /** Get distance from this label to a point. If point lies inside, returns negative number. */
+      //! Get distance from this label to a point. If point lies inside, returns negative number.
       double getDistanceToPoint( double xp, double yp ) const;
 
-      /** Returns true if this label crosses the specified line */
+      //! Returns true if this label crosses the specified line
       bool crossesLine( PointSet* line ) const;
 
-      /** Returns true if this label crosses the boundary of the specified polygon */
+      //! Returns true if this label crosses the boundary of the specified polygon
       bool crossesBoundary( PointSet* polygon ) const;
 
       /** Returns cost of position intersection with polygon (testing area of intersection and center).
@@ -145,7 +145,7 @@ namespace pal
       */
       bool intersectsWithPolygon( PointSet* polygon ) const;
 
-      /** Shift the label by specified offset */
+      //! Shift the label by specified offset
       void offsetPosition( double xOffset, double yOffset );
 
       /** \brief return id
@@ -195,7 +195,7 @@ namespace pal
        */
       bool conflictsWithObstacle() const { return mHasObstacleConflict; }
 
-      /** Make sure the cost is less than 1 */
+      //! Make sure the cost is less than 1
       void validateCost();
 
       /**
@@ -243,7 +243,7 @@ namespace pal
         FeaturePart *obstacle;
       } PruneCtx;
 
-      /** Check whether the candidate in ctx overlap with obstacle feat */
+      //! Check whether the candidate in ctx overlap with obstacle feat
       static bool pruneCallback( LabelPosition *candidatePosition, void *ctx );
 
       // for counting number of overlaps

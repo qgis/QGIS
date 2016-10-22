@@ -37,10 +37,10 @@ class CORE_EXPORT QgsFeatureFilterProvider
 {
   public:
 
-    /** Constructor */
+    //! Constructor
     QgsFeatureFilterProvider() {}
 
-    /** Destructor */
+    //! Destructor
     virtual ~QgsFeatureFilterProvider() {}
 
     /** Add additional filters to the feature request to further restrict the features returned by the request.

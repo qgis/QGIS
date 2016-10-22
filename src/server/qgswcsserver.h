@@ -35,7 +35,7 @@ independent from any server side technology*/
 class QgsWCSServer: public QgsOWSServer
 {
   public:
-    /** Constructor. Takes parameter map and a pointer to a renderer object (does not take ownership)*/
+    //! Constructor. Takes parameter map and a pointer to a renderer object (does not take ownership)
     QgsWCSServer(
       const QString& configFilePath
       , QMap<QString, QString>& parameters
@@ -49,23 +49,23 @@ class QgsWCSServer: public QgsOWSServer
 
     void executeRequest() override;
 
-    /** Returns an XML file with the capabilities description (as described in the WFS specs)*/
+    //! Returns an XML file with the capabilities description (as described in the WFS specs)
     QDomDocument getCapabilities();
 
-    /** Returns an XML file with the describe Coverage (as described in the WCS specs)*/
+    //! Returns an XML file with the describe Coverage (as described in the WCS specs)
     QDomDocument describeCoverage();
 
-    /** Creates a file which is the result of the getCoverage request.*/
+    //! Creates a file which is the result of the getCoverage request.
     QByteArray* getCoverage();
 
-    /** Sets configuration parser for administration settings. Does not take ownership*/
+    //! Sets configuration parser for administration settings. Does not take ownership
     void setAdminConfigParser( QgsWCSProjectParser* parser ) { mConfigParser = parser; }
 
   private:
-    /** Don't use the default constructor*/
+    //! Don't use the default constructor
     QgsWCSServer();
 
-    /** Get service address from REQUEST_URI if not specified in the configuration*/
+    //! Get service address from REQUEST_URI if not specified in the configuration
     QString serviceUrl() const;
 
     QgsWCSProjectParser* mConfigParser;

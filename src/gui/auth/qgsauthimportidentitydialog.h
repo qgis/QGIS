@@ -33,20 +33,20 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     Q_OBJECT
 
   public:
-    /** Type of identity being imported */
+    //! Type of identity being imported
     enum IdentityType
     {
       CertIdentity = 0,
     };
 
-    /** Type of bundles supported */
+    //! Type of bundles supported
     enum BundleTypes
     {
       PkiPaths = 0,
       PkiPkcs12 = 1,
     };
 
-    /** Type of certificate/bundle validity output */
+    //! Type of certificate/bundle validity output
     enum Validity
     {
       Valid,
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
                                           QWidget *parent = nullptr );
     ~QgsAuthImportIdentityDialog();
 
-    /** Get identity type */
+    //! Get identity type
     QgsAuthImportIdentityDialog::IdentityType identityType();
 
     /** Get certificate/key bundle to be imported.
@@ -71,7 +71,7 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
      */
     const QPair<QSslCertificate, QSslKey> certBundleToImport();
 
-    /** Get certificate/key bundle to be imported as a PKI bundle object */
+    //! Get certificate/key bundle to be imported as a PKI bundle object
     const QgsPkiBundle pkiBundleToImport() { return mPkiBundle; }
 
   private slots:

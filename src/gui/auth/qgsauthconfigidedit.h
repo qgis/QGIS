@@ -40,27 +40,27 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
     explicit QgsAuthConfigIdEdit( QWidget *parent = nullptr, const QString &authcfg = QString(), bool allowEmpty = true );
     ~QgsAuthConfigIdEdit();
 
-    /** The authentication configuration ID, if valid, otherwise null QString */
+    //! The authentication configuration ID, if valid, otherwise null QString
     QString const configId();
 
-    /** Whether to allow no ID to be set */
+    //! Whether to allow no ID to be set
     bool allowEmptyId() { return mAllowEmpty;}
 
-    /** Validate the widget state and ID */
+    //! Validate the widget state and ID
     bool validate();
 
   signals:
-    /** Validity of the ID has changed */
+    //! Validity of the ID has changed
     void validityChanged( bool valid );
 
   public slots:
-    /** Set the authentication configuration ID, storing it, and validating the passed value */
+    //! Set the authentication configuration ID, storing it, and validating the passed value
     void setAuthConfigId( const QString &authcfg );
 
-    /** Set whether to allow no ID to be set */
+    //! Set whether to allow no ID to be set
     void setAllowEmptyId( bool allowed );
 
-    /** Clear all of the widget's editing state and contents */
+    //! Clear all of the widget's editing state and contents
     void clear();
 
   private slots:

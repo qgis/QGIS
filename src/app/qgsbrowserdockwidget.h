@@ -50,7 +50,7 @@ class QgsBrowserPropertiesWidget : public QWidget
     explicit QgsBrowserPropertiesWidget( QWidget* parent = nullptr );
     static QgsBrowserPropertiesWidget* createWidget( QgsDataItem* item, QWidget* parent = nullptr );
     virtual void setItem( QgsDataItem* item ) { Q_UNUSED( item ) }
-    /** Set content widget, usually item paramWidget. Takes ownership. */
+    //! Set content widget, usually item paramWidget. Takes ownership.
     virtual void setWidget( QWidget* widget );
 
     /** Sets whether the properties widget should display in condensed mode, ie, for display in a dock

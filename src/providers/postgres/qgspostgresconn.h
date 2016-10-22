@@ -35,7 +35,7 @@ extern "C"
 
 class QgsField;
 
-/** Spatial column types */
+//! Spatial column types
 enum QgsPostgresGeometryColumnType
 {
   sctNone,
@@ -55,7 +55,7 @@ enum QgsPostgresPrimaryKeyType
   pktFidMap
 };
 
-/** Schema properties structure */
+//! Schema properties structure
 struct QgsPostgresSchemaProperty
 {
   QString name;
@@ -63,7 +63,7 @@ struct QgsPostgresSchemaProperty
   QString owner;
 };
 
-/** Layer Property structure */
+//! Layer Property structure
 // TODO: Fill to Postgres/PostGIS specifications
 struct QgsPostgresLayerProperty
 {
@@ -335,7 +335,7 @@ class QgsPostgresConn : public QObject
     static bool allowGeometrylessTables( const QString& theConnName );
     static void deleteConnection( const QString& theConnName );
 
-    /** A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback} */
+    //! A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback}
     void lock() { mLock.lock(); }
     void unlock() { mLock.unlock(); }
 
@@ -386,7 +386,7 @@ class QgsPostgresConn : public QObject
     static QMap<QString, QgsPostgresConn *> sConnectionsRW;
     static QMap<QString, QgsPostgresConn *> sConnectionsRO;
 
-    /** Count number of spatial columns in a given relation */
+    //! Count number of spatial columns in a given relation
     void addColumnInfo( QgsPostgresLayerProperty& layerProperty, const QString& schemaName, const QString& viewName, bool fetchPkCandidates );
 
     //! List of the supported layers

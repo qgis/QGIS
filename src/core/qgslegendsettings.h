@@ -52,9 +52,9 @@ class CORE_EXPORT QgsLegendSettings
      */
     void setTitleAlignment( Qt::AlignmentFlag alignment ) { mTitleAlignment = alignment; }
 
-    /** Returns reference to modifiable style */
+    //! Returns reference to modifiable style
     QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s ) { return mStyleMap[s]; }
-    /** Returns style */
+    //! Returns style
     QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const { return mStyleMap.value( s ); }
     void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style ) { mStyleMap[s] = style; }
 
@@ -178,57 +178,57 @@ class CORE_EXPORT QgsLegendSettings
      */
     void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
 
-    /** Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE */
+    //! Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE
     QFont scaledFontPixelSize( const QFont& font ) const;
 
-    /** Calculates font to from point size to pixel size */
+    //! Calculates font to from point size to pixel size
     double pixelFontSize( double pointSize ) const;
 
-    /** Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE */
+    //! Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
     double textWidthMillimeters( const QFont& font, const QString& text ) const;
 
-    /** Returns the font height of a character in millimeters */
+    //! Returns the font height of a character in millimeters
     double fontHeightCharacterMM( const QFont& font, QChar c ) const;
 
-    /** Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE */
+    //! Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
     double fontAscentMillimeters( const QFont& font ) const;
 
-    /** Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE */
+    //! Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
     double fontDescentMillimeters( const QFont& font ) const;
 
   private:
 
     QString mTitle;
 
-    /** Title alignment, one of Qt::AlignLeft, Qt::AlignHCenter, Qt::AlignRight) */
+    //! Title alignment, one of Qt::AlignLeft, Qt::AlignHCenter, Qt::AlignRight)
     Qt::AlignmentFlag mTitleAlignment;
 
     QString mWrapChar;
 
     QColor mFontColor;
 
-    /** Space between item box and contents */
+    //! Space between item box and contents
     qreal mBoxSpace;
 
-    /** Width and height of symbol icon */
+    //! Width and height of symbol icon
     QSizeF mSymbolSize;
 
-    /** Width and height of WMS legendGraphic pixmap */
+    //! Width and height of WMS legendGraphic pixmap
     QSizeF mWmsLegendSize;
 
-    /** Spacing between lines when wrapped */
+    //! Spacing between lines when wrapped
     double mLineSpacing;
 
-    /** Space between columns */
+    //! Space between columns
     double mColumnSpace;
 
-    /** Number of legend columns */
+    //! Number of legend columns
     int mColumnCount;
 
-    /** Allow splitting layers into multiple columns */
+    //! Allow splitting layers into multiple columns
     bool mSplitLayer;
 
-    /** Use the same width (maximum) for all columns */
+    //! Use the same width (maximum) for all columns
     bool mEqualColumnWidth;
 
     bool mRasterSymbolBorder;
@@ -237,16 +237,16 @@ class CORE_EXPORT QgsLegendSettings
 
     QMap<QgsComposerLegendStyle::Style, QgsComposerLegendStyle> mStyleMap;
 
-    /** Conversion ratio between millimeters and map units - for symbols with size given in map units */
+    //! Conversion ratio between millimeters and map units - for symbols with size given in map units
     double mMmPerMapUnit;
 
-    /** Whether to use advanced effects like transparency for symbols - may require their rasterization */
+    //! Whether to use advanced effects like transparency for symbols - may require their rasterization
     bool mUseAdvancedEffects;
 
-    /** Denominator of map's scale */
+    //! Denominator of map's scale
     double mMapScale;
 
-    /** DPI to be used when rendering legend */
+    //! DPI to be used when rendering legend
     int mDpi;
 };
 

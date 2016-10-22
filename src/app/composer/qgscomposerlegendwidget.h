@@ -37,7 +37,7 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     explicit QgsComposerLegendWidget( QgsComposerLegend* legend );
     ~QgsComposerLegendWidget();
 
-    /** Updates the legend layers and groups*/
+    //! Updates the legend layers and groups
     void updateLegend();
 
     QgsComposerLegend* legend() { return mLegend; }
@@ -94,10 +94,10 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void setCurrentNodeStyleFromAction();
 
   private slots:
-    /** Sets GUI according to state of mLegend*/
+    //! Sets GUI according to state of mLegend
     void setGuiElements();
 
-    /** Update the enabling state of the filter by atlas button */
+    //! Update the enabling state of the filter by atlas button
     void updateFilterLegendByAtlasButton();
 
     void on_mItemTreeView_doubleClicked( const QModelIndex &index );

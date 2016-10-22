@@ -292,21 +292,21 @@ void CORE_EXPORT qgsFree( void *ptr );
 extern CORE_EXPORT const QString GEOWKT;
 extern CORE_EXPORT const QString PROJECT_SCALES;
 
-/** PROJ4 string that represents a geographic coord sys */
+//! PROJ4 string that represents a geographic coord sys
 extern CORE_EXPORT const QString GEOPROJ4;
-/** Magic number for a geographic coord sys in POSTGIS SRID */
+//! Magic number for a geographic coord sys in POSTGIS SRID
 const long GEOSRID = 4326;
-/** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
+//! Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id
 const long GEOCRS_ID = 3452;
-/** Magic number for a geographic coord sys in EpsgCrsId ID format */
+//! Magic number for a geographic coord sys in EpsgCrsId ID format
 const long GEO_EPSG_CRS_ID = 4326;
-/** Geographic coord sys from EPSG authority */
+//! Geographic coord sys from EPSG authority
 extern CORE_EXPORT const QString GEO_EPSG_CRS_AUTHID;
-/** The length of the string "+proj=" */
+//! The length of the string "+proj="
 const int PROJ_PREFIX_LEN = 6;
-/** The length of the string "+ellps=" */
+//! The length of the string "+ellps="
 const int ELLPS_PREFIX_LEN = 7;
-/** The length of the string "+lat_1=" */
+//! The length of the string "+lat_1="
 const int LAT_PREFIX_LEN = 7;
 /** Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
@@ -319,11 +319,11 @@ extern CORE_EXPORT const QString GEO_NONE;
 // Constants for point symbols
 //
 
-/** Magic number that determines the default point size for point symbols */
+//! Magic number that determines the default point size for point symbols
 const double DEFAULT_POINT_SIZE = 2.0;
 const double DEFAULT_LINE_WIDTH = 0.26;
 
-/** Default snapping tolerance for segments */
+//! Default snapping tolerance for segments
 const double DEFAULT_SEGMENT_EPSILON = 1e-8;
 
 typedef QMap<QString, QString> QgsStringMap;

@@ -59,7 +59,7 @@ class CORE_EXPORT QgsScaleCalculator
      */
     void setMapUnits( QgsUnitTypes::DistanceUnit mapUnits );
 
-    /** Returns current map units */
+    //! Returns current map units
     QgsUnitTypes::DistanceUnit mapUnits() const;
 
     /**

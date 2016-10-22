@@ -49,7 +49,7 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
 
     QgsGeometryRubberBand* createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const;
 
-    /** Returns the current vector layer of the map canvas or 0*/
+    //! Returns the current vector layer of the map canvas or 0
     QgsVectorLayer* currentVectorLayer();
 
     /** Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
@@ -58,9 +58,9 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      */
     int addTopologicalPoints( const QList<QgsPoint>& geom );
 
-    /** Display a timed message bar noting the active layer is not vector. */
+    //! Display a timed message bar noting the active layer is not vector.
     void notifyNotVectorLayer();
-    /** Display a timed message bar noting the active vector layer is not editable. */
+    //! Display a timed message bar noting the active vector layer is not editable.
     void notifyNotEditableLayer();
 };
 

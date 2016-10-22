@@ -21,7 +21,7 @@
 #include "ui_qgsidwinterpolatordialogbase.h"
 #include "qgsinterpolatordialog.h"
 
-/** A class that takes the input parameter for inverse distance weighting*/
+//! A class that takes the input parameter for inverse distance weighting
 class QgsIDWInterpolatorDialog: public QgsInterpolatorDialog, private Ui::QgsIDWInterpolatorDialogBase
 {
     Q_OBJECT

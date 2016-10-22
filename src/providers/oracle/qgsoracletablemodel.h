@@ -33,13 +33,13 @@ class QgsOracleTableModel : public QStandardItemModel
     QgsOracleTableModel();
     ~QgsOracleTableModel();
 
-    /** Adds entry for one database table to the model*/
+    //! Adds entry for one database table to the model
     void addTableEntry( const QgsOracleLayerProperty &property );
 
-    /** Sets an sql statement that belongs to a cell specified by a model index*/
+    //! Sets an sql statement that belongs to a cell specified by a model index
     void setSql( const QModelIndex& index, const QString& sql );
 
-    /** Returns the number of tables in the model*/
+    //! Returns the number of tables in the model
     int tableCount() const { return mTableCount; }
 
     enum columns
@@ -62,7 +62,7 @@ class QgsOracleTableModel : public QStandardItemModel
     static QIcon iconForWkbType( QgsWkbTypes::Type type );
 
   private:
-    /** Number of tables in the model*/
+    //! Number of tables in the model
     int mTableCount;
 };
 

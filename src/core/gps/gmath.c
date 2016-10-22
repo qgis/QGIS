@@ -24,7 +24,7 @@
  *
  */
 
-/** \file gmath.h */
+//! \file gmath.h
 
 #include "gmath.h"
 
@@ -100,8 +100,8 @@ double nmea_meters2dop( double meters )
  * \return Distance in meters
  */
 double nmea_distance(
-  const nmeaPOS *from_pos,    /**< From position in radians */
-  const nmeaPOS *to_pos       /**< To position in radians */
+  const nmeaPOS *from_pos,    //!< From position in radians
+  const nmeaPOS *to_pos       //!< To position in radians
 )
 {
   double dist = (( double )NMEA_EARTHRADIUS_M ) * acos(
@@ -119,10 +119,10 @@ double nmea_distance(
  * \return Distance in meters
  */
 double nmea_distance_ellipsoid(
-  const nmeaPOS *from_pos,    /**< From position in radians */
-  const nmeaPOS *to_pos,      /**< To position in radians */
-  double *from_azimuth,       /**< (O) azimuth at "from" position in radians */
-  double *to_azimuth          /**< (O) azimuth at "to" position in radians */
+  const nmeaPOS *from_pos,    //!< From position in radians
+  const nmeaPOS *to_pos,      //!< To position in radians
+  double *from_azimuth,       //!< (O) azimuth at "from" position in radians
+  double *to_azimuth          //!< (O) azimuth at "to" position in radians
 )
 {
   /* All variables */
@@ -233,10 +233,10 @@ double nmea_distance_ellipsoid(
  * \brief Horizontal move of point position
  */
 int nmea_move_horz(
-  const nmeaPOS *start_pos,   /**< Start position in radians */
-  nmeaPOS *end_pos,           /**< Result position in radians */
-  double azimuth,             /**< Azimuth (degree) [0, 359] */
-  double distance             /**< Distance (km) */
+  const nmeaPOS *start_pos,   //!< Start position in radians
+  nmeaPOS *end_pos,           //!< Result position in radians
+  double azimuth,             //!< Azimuth (degree) [0, 359]
+  double distance             //!< Distance (km)
 )
 {
   nmeaPOS p1 = *start_pos;
@@ -267,11 +267,11 @@ int nmea_move_horz(
  * http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf
  */
 int nmea_move_horz_ellipsoid(
-  const nmeaPOS *start_pos,   /**< Start position in radians */
-  nmeaPOS *end_pos,           /**< (O) Result position in radians */
-  double azimuth,             /**< Azimuth in radians */
-  double distance,            /**< Distance (km) */
-  double *end_azimuth         /**< (O) Azimuth at end position in radians */
+  const nmeaPOS *start_pos,   //!< Start position in radians
+  nmeaPOS *end_pos,           //!< (O) Result position in radians
+  double azimuth,             //!< Azimuth in radians
+  double distance,            //!< Distance (km)
+  double *end_azimuth         //!< (O) Azimuth at end position in radians
 )
 {
   /* Variables */

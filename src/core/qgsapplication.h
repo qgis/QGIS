@@ -108,10 +108,10 @@ class CORE_EXPORT QgsApplication : public QApplication
      * @note this function was added in version 2.7 */
     static QString developersMapFilePath();
 
-    /** Returns the path to the sponsors file. */
+    //! Returns the path to the sponsors file.
     static QString sponsorsFilePath();
 
-    /** Returns the path to the donors file. */
+    //! Returns the path to the donors file.
     static QString donorsFilePath();
 
     /**
@@ -262,7 +262,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! get application icon
     static QString appIconPath();
 
-    /** Constants for endian-ness */
+    //! Constants for endian-ness
     enum endian_t
     {
       XDR = 0,  // network, or big-endian, byte order
@@ -308,19 +308,19 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static void registerOgrDrivers();
 
-    /** Converts absolute path to path relative to target */
+    //! Converts absolute path to path relative to target
     static QString absolutePathToRelativePath( const QString& apath, const QString& targetPath );
-    /** Converts path relative to target to an absolute path */
+    //! Converts path relative to target to an absolute path
     static QString relativePathToAbsolutePath( const QString& rpath, const QString& targetPath );
 
-    /** Indicates whether running from build directory (not installed) */
+    //! Indicates whether running from build directory (not installed)
     static bool isRunningFromBuildDir() { return ABISYM( mRunningFromBuildDir ); }
 #ifdef _MSC_VER
     static QString cfgIntDir() { return ABISYM( mCfgIntDir ); }
 #endif
-    /** Returns path to the source directory. Valid only when running from build directory */
+    //! Returns path to the source directory. Valid only when running from build directory
     static QString buildSourcePath() { return ABISYM( mBuildSourcePath ); }
-    /** Returns path to the build output directory. Valid only when running from build directory */
+    //! Returns path to the build output directory. Valid only when running from build directory
     static QString buildOutputPath() { return ABISYM( mBuildOutputPath ); }
 
     /** Sets the GDAL_SKIP environment variable to include the specified driver
@@ -401,15 +401,15 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     static QString ABISYM( mConfigPath );
 
-    /** True when running from build directory, i.e. without 'make install' */
+    //! True when running from build directory, i.e. without 'make install'
     static bool ABISYM( mRunningFromBuildDir );
-    /** Path to the source directory. valid only when running from build directory. */
+    //! Path to the source directory. valid only when running from build directory.
     static QString ABISYM( mBuildSourcePath );
 #ifdef _MSC_VER
-    /** Configuration internal dir */
+    //! Configuration internal dir
     static QString ABISYM( mCfgIntDir );
 #endif
-    /** Path to the output directory of the build. valid only when running from build directory */
+    //! Path to the output directory of the build. valid only when running from build directory
     static QString ABISYM( mBuildOutputPath );
     /** List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
      * @see skipGdalDriver, restoreGdalDriver */

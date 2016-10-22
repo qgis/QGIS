@@ -638,7 +638,7 @@ class QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures: public QgsInte
 {
   public:
 
-    /** Constructor */
+    //! Constructor
     explicit QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures( QProgressDialog* dialog )
         : mDialog( dialog )
     {
@@ -3407,7 +3407,7 @@ QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression,
 }
 
 
-/** Write blend mode for features */
+//! Write blend mode for features
 void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlendMode )
 {
   mFeatureBlendMode = featureBlendMode;
@@ -3415,13 +3415,13 @@ void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlend
   emit styleChanged();
 }
 
-/** Read blend mode for layer */
+//! Read blend mode for layer
 QPainter::CompositionMode QgsVectorLayer::featureBlendMode() const
 {
   return mFeatureBlendMode;
 }
 
-/** Write transparency for layer */
+//! Write transparency for layer
 void QgsVectorLayer::setLayerTransparency( int layerTransparency )
 {
   mLayerTransparency = layerTransparency;
@@ -3429,7 +3429,7 @@ void QgsVectorLayer::setLayerTransparency( int layerTransparency )
   emit styleChanged();
 }
 
-/** Read transparency for layer */
+//! Read transparency for layer
 int QgsVectorLayer::layerTransparency() const
 {
   return mLayerTransparency;

@@ -144,14 +144,14 @@ class GUI_EXPORT QgsTreeWidgetItemObject: public QObject, public QgsTreeWidgetIt
      */
     explicit QgsTreeWidgetItemObject( int type = Type );
 
-    /** Constructs a tree widget item of the specified type and appends it to the items in the given parent. */
+    //! Constructs a tree widget item of the specified type and appends it to the items in the given parent.
     explicit QgsTreeWidgetItemObject( QTreeWidget * parent, int type = Type );
 
-    /** Sets the value for the item's column and role to the given value. */
+    //! Sets the value for the item's column and role to the given value.
     virtual void setData( int column, int role, const QVariant & value );
 
   signals:
-    /** This signal is emitted when the contents of the column in the specified item has been edited by the user. */
+    //! This signal is emitted when the contents of the column in the specified item has been edited by the user.
     void itemEdited( QTreeWidgetItem* item, int column );
 };
 

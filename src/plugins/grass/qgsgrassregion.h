@@ -127,7 +127,7 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
     QgsGrassRegionEdit* mRegionEdit;
 };
 
-/** Map tool which uses rubber band for changing grass region */
+//! Map tool which uses rubber band for changing grass region
 class QgsGrassRegionEdit : public QgsMapTool
 {
     Q_OBJECT

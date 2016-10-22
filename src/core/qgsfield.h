@@ -222,7 +222,7 @@ class CORE_EXPORT QgsField
      */
     void setAlias( const QString& alias );
 
-    /** Formats string for display*/
+    //! Formats string for display
     QString displayString( const QVariant& v ) const;
 
     /**
@@ -263,9 +263,9 @@ class CORE_EXPORT QgsField
 
 Q_DECLARE_METATYPE( QgsField )
 
-/** Writes the field to stream out. QGIS version compatibility is not guaranteed. */
+//! Writes the field to stream out. QGIS version compatibility is not guaranteed.
 CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsField& field );
-/** Reads a field from stream in into field. QGIS version compatibility is not guaranteed. */
+//! Reads a field from stream in into field. QGIS version compatibility is not guaranteed.
 CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsField& field );
 
 

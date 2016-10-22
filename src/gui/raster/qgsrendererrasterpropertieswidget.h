@@ -70,13 +70,13 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     void syncToLayer( QgsRasterLayer *layer );
 
   private slots:
-    /** Slot to reset all color rendering options to default */
+    //! Slot to reset all color rendering options to default
     void on_mResetColorRenderingBtn_clicked();
 
-    /** Enable or disable saturation controls depending on choice of grayscale mode */
+    //! Enable or disable saturation controls depending on choice of grayscale mode
     void toggleSaturationControls( int grayscaleMode );
 
-    /** Enable or disable colorize controls depending on checkbox */
+    //! Enable or disable colorize controls depending on checkbox
     void toggleColorizeControls( bool colorizeEnabled );
   private:
     void setRendererWidget( const QString& rendererName );

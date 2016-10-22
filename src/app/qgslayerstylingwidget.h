@@ -61,7 +61,7 @@ class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
     virtual void undo() override;
     virtual void redo() override;
 
-    /** Try to merge with other commands of this type when they are created in small time interval */
+    //! Try to merge with other commands of this type when they are created in small time interval
     virtual bool mergeWith( const QUndoCommand* other ) override;
 
   private:

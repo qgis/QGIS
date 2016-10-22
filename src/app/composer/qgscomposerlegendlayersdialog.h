@@ -34,7 +34,7 @@ class QgsComposerLegendLayersDialog: public QDialog, private Ui::QgsComposerLege
   private:
     QgsComposerLegendLayersDialog(); //forbidden
 
-    /** Stores the relation between items and map layer pointers. */
+    //! Stores the relation between items and map layer pointers.
     QMap<QListWidgetItem*, QgsMapLayer*> mItemLayerMap;
 };
 

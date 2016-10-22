@@ -34,10 +34,10 @@ class CORE_EXPORT QgsPythonRunner
         (and thus is able to run commands) */
     static bool isValid();
 
-    /** Execute a python statement */
+    //! Execute a python statement
     static bool run( const QString& command, const QString& messageOnError = QString() );
 
-    /** Eval a python statement */
+    //! Eval a python statement
     static bool eval( const QString& command, QString& result );
 
     /** Assign an instance of python runner so that run() can be used.
@@ -46,7 +46,7 @@ class CORE_EXPORT QgsPythonRunner
     static void setInstance( QgsPythonRunner* runner );
 
   protected:
-    /** Protected constructor: can be instantiated only from children */
+    //! Protected constructor: can be instantiated only from children
     QgsPythonRunner();
     virtual ~QgsPythonRunner();
 

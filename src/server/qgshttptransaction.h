@@ -91,12 +91,12 @@ class QgsHttpTransaction : public QObject
     @return true if proxy settings was applied, false else*/
     static bool applyProxySettings( QHttp& http, const QString& url );
 
-    /** Set the credentials (username and password) */
+    //! Set the credentials (username and password)
     void setCredentials( const QString& username, const QString &password );
 
-    /** Returns the network timeout in msec*/
+    //! Returns the network timeout in msec
     int networkTimeout() const { return mNetworkTimeoutMsec;}
-    /** Sets the network timeout in milliseconds*/
+    //! Sets the network timeout in milliseconds
     void setNetworkTimeout( int msec ) { mNetworkTimeoutMsec = msec;}
 
 
@@ -118,26 +118,26 @@ class QgsHttpTransaction : public QObject
 
     void networkTimedOut();
 
-    /** Aborts the current transaction*/
+    //! Aborts the current transaction
     void abort();
 
   signals:
 
-    /** Legacy code. This signal is currently not emitted and only kept for API compatibility*/
+    //! Legacy code. This signal is currently not emitted and only kept for API compatibility
     void setProgress( int done, int total );
 
-    /** Signal for progress update */
+    //! Signal for progress update
     void dataReadProgress( int theProgress );
-    /** Signal for adjusted number of steps*/
+    //! Signal for adjusted number of steps
     void totalSteps( int theTotalSteps );
 
-    /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
+    //! \brief emit a signal to be caught by qgisapp and display a msg on status bar
     void statusChanged( const QString& theStatusQString );
 
 
   private:
 
-    /** Default constructor is forbidden*/
+    //! Default constructor is forbidden
     QgsHttpTransaction();
 
     /**
@@ -214,7 +214,7 @@ class QgsHttpTransaction : public QObject
      */
     QString mPassword;
 
-    /** Network timeout in milliseconds*/
+    //! Network timeout in milliseconds
     int mNetworkTimeoutMsec;
 };
 

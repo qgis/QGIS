@@ -179,7 +179,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QgsFeatureSelectionModel* mFeatureSelectionModel;
     QgsIFeatureSelectionManager* mFeatureSelectionManager;
     QgsFeatureListViewDelegate* mItemDelegate;
-    bool mEditSelectionDrag; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing /**< TODO */
+    bool mEditSelectionDrag; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing //!< TODO
     int mRowAnchor;
     QItemSelectionModel::SelectionFlags mCtrlDragSelectionFlag;
 };

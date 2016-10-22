@@ -56,7 +56,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     virtual void clear() override;
     virtual QgsAbstractGeometry* boundary() const override;
 
-    /** Adds a geometry and takes ownership. Returns true in case of success.*/
+    //! Adds a geometry and takes ownership. Returns true in case of success.
     virtual bool addGeometry( QgsAbstractGeometry* g );
 
     /** Inserts a geometry before a specified index and takes ownership. Returns true in case of success.

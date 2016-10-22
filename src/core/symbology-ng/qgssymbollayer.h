@@ -406,17 +406,17 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     //! Symbol horizontal anchor points
     enum HorizontalAnchorPoint
     {
-      Left, /*!< Align to left side of symbol */
-      HCenter, /*!< Align to horizontal center of symbol */
-      Right, /*!< Align to right side of symbol */
+      Left, //!< Align to left side of symbol
+      HCenter, //!< Align to horizontal center of symbol
+      Right, //!< Align to right side of symbol
     };
 
     //! Symbol vertical anchor points
     enum VerticalAnchorPoint
     {
-      Top, /*!< Align to top of symbol */
-      VCenter, /*!< Align to vertical center of symbol */
-      Bottom, /*!< Align to bottom of symbol */
+      Top, //!< Align to top of symbol
+      VCenter, //!< Align to vertical center of symbol
+      Bottom, //!< Align to bottom of symbol
     };
 
     void startRender( QgsSymbolRenderContext& context ) override;
@@ -754,7 +754,7 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
 
   protected:
     QgsFillSymbolLayer( bool locked = false );
-    /** Default method to render polygon*/
+    //! Default method to render polygon
     void _renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
 
     double mAngle;

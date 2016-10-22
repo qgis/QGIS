@@ -151,7 +151,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     QgsIdentifyMenu* mIdentifyMenu;
 
-    /** Call the right method depending on layer type */
+    //! Call the right method depending on layer type
     bool identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPoint& point, const QgsRectangle& viewExtent, double mapUnitsPerPixel, const QgsMapToolIdentify::LayerType& layerType = AllLayers );
 
     bool identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, const QgsRectangle& viewExtent, double mapUnitsPerPixel );

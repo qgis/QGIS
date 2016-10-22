@@ -106,16 +106,16 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
 
   protected:
 
-    /** Friendly display name*/
+    //! Friendly display name
     QString mName;
 
-    /** Associated composer map*/
+    //! Associated composer map
     QgsComposerMap* mComposerMap;
 
-    /** Unique id*/
+    //! Unique id
     QString mUuid;
 
-    /** True if item is to be displayed on map*/
+    //! True if item is to be displayed on map
     bool mEnabled;
 
 };

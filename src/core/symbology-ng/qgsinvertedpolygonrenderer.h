@@ -70,9 +70,9 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
 
     virtual QString dump() const override;
 
-    /** Proxy that will call this method on the embedded renderer. */
+    //! Proxy that will call this method on the embedded renderer.
     virtual QSet<QString> usedAttributes() const override;
-    /** Proxy that will call this method on the embedded renderer. */
+    //! Proxy that will call this method on the embedded renderer.
     virtual Capabilities capabilities() override;
     /** Proxy that will call this method on the embedded renderer.
      */
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     /** Proxy that will call this method on the embedded renderer.
      */
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
-    /** Proxy that will call this method on the embedded renderer. */
+    //! Proxy that will call this method on the embedded renderer.
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
     /** Proxy that will call this method on the embedded renderer.
      * @note not available in python bindings
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
      */
     virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) override;
 
-    /** Creates a renderer out of an XML, for loading*/
+    //! Creates a renderer out of an XML, for loading
     static QgsFeatureRenderer* create( QDomElement& element );
 
     virtual QDomElement save( QDomDocument& doc ) override;
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     virtual bool legendSymbolItemChecked( const QString& key ) override;
     virtual void checkLegendSymbolItem( const QString& key, bool state = true ) override;
 
-    /** @returns true if the geometries are to be preprocessed (merged with an union) before rendering.*/
+    //! @returns true if the geometries are to be preprocessed (merged with an union) before rendering.
     bool preprocessingEnabled() const { return mPreprocessingEnabled; }
     /**
      * @param enabled enables or disables the preprocessing.
@@ -130,34 +130,34 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     static QgsInvertedPolygonRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer );
 
   private:
-    /** Private copy constructor. @see clone() */
+    //! Private copy constructor. @see clone()
     QgsInvertedPolygonRenderer( const QgsInvertedPolygonRenderer& );
-    /** Private assignment operator. @see clone() */
+    //! Private assignment operator. @see clone()
     QgsInvertedPolygonRenderer& operator=( const QgsInvertedPolygonRenderer& );
 
-    /** Embedded renderer */
+    //! Embedded renderer
     QScopedPointer<QgsFeatureRenderer> mSubRenderer;
 
-    /** Structure where the reversed geometry is built during renderFeature */
+    //! Structure where the reversed geometry is built during renderFeature
     struct CombinedFeature
     {
       QList<QgsGeometry> geometries; //< list of geometries
       QgsFeature feature;             //< one feature (for attriute-based rendering)
     };
     typedef QVector<CombinedFeature> FeatureCategoryVector;
-    /** Where features are stored, based on the index of their symbol category @see mSymbolCategories */
+    //! Where features are stored, based on the index of their symbol category @see mSymbolCategories
     FeatureCategoryVector mFeaturesCategories;
 
-    /** Maps a category to an index */
+    //! Maps a category to an index
     QMap<QByteArray, int> mSymbolCategories;
 
-    /** The polygon used as exterior ring that covers the current extent */
+    //! The polygon used as exterior ring that covers the current extent
     QgsPolygon mExtentPolygon;
 
-    /** The context used for rendering */
+    //! The context used for rendering
     QgsRenderContext mContext;
 
-    /** Fields of each feature*/
+    //! Fields of each feature
     QgsFields mFields;
 
     /** Class used to represent features that must be rendered
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     };
     QList<FeatureDecoration> mFeatureDecorations;
 
-    /** Whether to preprocess (merge) geometries before rendering*/
+    //! Whether to preprocess (merge) geometries before rendering
     bool mPreprocessingEnabled;
 };
 

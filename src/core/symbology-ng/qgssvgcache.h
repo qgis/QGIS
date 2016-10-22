@@ -76,9 +76,9 @@ class CORE_EXPORT QgsSvgCacheEntry
     QgsSvgCacheEntry* nextEntry;
     QgsSvgCacheEntry* previousEntry;
 
-    /** Don't consider image, picture, last used timestamp for comparison*/
+    //! Don't consider image, picture, last used timestamp for comparison
     bool operator==( const QgsSvgCacheEntry& other ) const;
-    /** Return memory usage in bytes*/
+    //! Return memory usage in bytes
     int dataSize() const;
 
   private:
@@ -172,15 +172,15 @@ class CORE_EXPORT QgsSvgCache : public QObject
                          bool& hasOutlineWidthParam, bool& hasDefaultOutlineWidth, double& defaultOutlineWidth,
                          bool& hasOutlineOpacityParam, bool& hasDefaultOutlineOpacity, double& defaultOutlineOpacity ) const;
 
-    /** Get image data*/
+    //! Get image data
     QByteArray getImageData( const QString &path ) const;
 
-    /** Get SVG content*/
+    //! Get SVG content
     const QByteArray& svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                   double widthScaleFactor, double rasterScaleFactor );
 
   signals:
-    /** Emit a signal to be caught by qgisapp and display a msg on status bar */
+    //! Emit a signal to be caught by qgisapp and display a msg on status bar
     void statusChanged( const QString&  theStatusQString );
 
   protected:
@@ -203,11 +203,11 @@ class CORE_EXPORT QgsSvgCache : public QObject
     void replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry );
     void cacheImage( QgsSvgCacheEntry* entry );
     void cachePicture( QgsSvgCacheEntry* entry, bool forceVectorOutput = false );
-    /** Returns entry from cache or creates a new entry if it does not exist already*/
+    //! Returns entry from cache or creates a new entry if it does not exist already
     QgsSvgCacheEntry* cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                   double widthScaleFactor, double rasterScaleFactor );
 
-    /** Removes the least used items until the maximum size is under the limit*/
+    //! Removes the least used items until the maximum size is under the limit
     void trimToMaximumSize();
 
     //Removes entry from the ordered list (but does not delete the entry itself)
@@ -217,9 +217,9 @@ class CORE_EXPORT QgsSvgCache : public QObject
     void downloadProgress( qint64, qint64 );
 
   private:
-    /** Entry pointers accessible by file name*/
+    //! Entry pointers accessible by file name
     QMultiHash< QString, QgsSvgCacheEntry* > mEntryLookup;
-    /** Estimated total size of all images, pictures and svgContent*/
+    //! Estimated total size of all images, pictures and svgContent
     long mTotalSize;
 
     //The svg cache keeps the entries on a double connected list, moving the current entry to the front.
@@ -230,7 +230,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
     //Maximum cache size
     static const long mMaximumSize = 20000000;
 
-    /** Replaces parameters in elements of a dom node and calls method for all child nodes*/
+    //! Replaces parameters in elements of a dom node and calls method for all child nodes
     void replaceElemParams( QDomElement& elem, const QColor& fill, const QColor& outline, double outlineWidth );
 
     void containsElemParams( const QDomElement& elem,
@@ -240,16 +240,16 @@ class CORE_EXPORT QgsSvgCache : public QObject
                              bool& hasOutlineWidthParam, bool& hasDefaultOutlineWidth, double& defaultOutlineWidth,
                              bool& hasOutlineOpacityParam, bool& hasDefaultOutlineOpacity, double& defaultOutlineOpacity ) const;
 
-    /** Calculates scaling for rendered image sizes to SVG logical sizes*/
+    //! Calculates scaling for rendered image sizes to SVG logical sizes
     double calcSizeScaleFactor( QgsSvgCacheEntry* entry, const QDomElement& docElem, QSizeF& viewboxSize ) const;
 
-    /** Release memory and remove cache entry from mEntryLookup*/
+    //! Release memory and remove cache entry from mEntryLookup
     void removeCacheEntry( const QString& s, QgsSvgCacheEntry* entry );
 
-    /** For debugging*/
+    //! For debugging
     void printEntryList();
 
-    /** SVG content to be rendered if SVG file was not found. */
+    //! SVG content to be rendered if SVG file was not found.
     QByteArray mMissingSvg;
 
     //! Mutex to prevent concurrent access to the class from multiple threads at once (may corrupt the entries otherwise).

@@ -166,9 +166,9 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     void setWeightExpression( const QString& expression ) { mWeightExpressionString = expression; }
 
   private:
-    /** Private copy constructor. @see clone() */
+    //! Private copy constructor. @see clone()
     QgsHeatmapRenderer( const QgsHeatmapRenderer& );
-    /** Private assignment operator. @see clone() */
+    //! Private assignment operator. @see clone()
     QgsHeatmapRenderer& operator=( const QgsHeatmapRenderer& );
 
     QVector<double> mValues;

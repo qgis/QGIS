@@ -93,16 +93,16 @@ class QgsComposerMapGridWidget: public QgsComposerItemBaseWidget, private Ui::Qg
 
   protected:
 
-    /** Sets the current composer map values to the GUI elements*/
+    //! Sets the current composer map values to the GUI elements
     virtual void updateGuiElements();
 
   protected slots:
-    /** Initializes data defined buttons to current atlas coverage layer*/
+    //! Initializes data defined buttons to current atlas coverage layer
     void populateDataDefinedButtons();
 
   private slots:
 
-    /** Sets the GUI elements to the values of mPicture*/
+    //! Sets the GUI elements to the values of mPicture
     void setGuiElementValues();
 
     void updateGridLineStyleFromWidget();
@@ -114,7 +114,7 @@ class QgsComposerMapGridWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     QgsComposerMap* mComposerMap;
     QgsComposerMapGrid* mComposerMapGrid;
 
-    /** Blocks / unblocks the signals of all GUI elements*/
+    //! Blocks / unblocks the signals of all GUI elements
     void blockAllSignals( bool b );
 
     void handleChangedFrameDisplay( QgsComposerMapGrid::BorderSide border, const QgsComposerMapGrid::DisplayMode mode );
@@ -135,10 +135,10 @@ class QgsComposerMapGridWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     void updateGridLineSymbolMarker();
     void updateGridMarkerSymbolMarker();
 
-    /** Enables/disables grid frame related controls*/
+    //! Enables/disables grid frame related controls
     void toggleFrameControls( bool frameEnabled, bool frameFillEnabled, bool frameSizeEnabled );
 
-    /** Is there some predefined scales, globally or as project's options ?*/
+    //! Is there some predefined scales, globally or as project's options ?
     bool hasPredefinedScales() const;
 
 };

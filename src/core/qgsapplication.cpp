@@ -583,13 +583,13 @@ QString QgsApplication::donorsFilePath()
   return ABISYM( mPkgDataPath ) + QLatin1String( "/doc/DONORS" );
 }
 
-/** Returns the path to the sponsors file. */
+//! Returns the path to the sponsors file.
 QString QgsApplication::translatorsFilePath()
 {
   return ABISYM( mPkgDataPath ) + QLatin1String( "/doc/TRANSLATORS" );
 }
 
-/** Returns the path to the licence file. */
+//! Returns the path to the licence file.
 QString QgsApplication::licenceFilePath()
 {
   return ABISYM( mPkgDataPath ) + QLatin1String( "/doc/LICENSE" );

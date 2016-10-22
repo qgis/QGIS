@@ -42,16 +42,16 @@ class QgsSymbol;
 class CORE_EXPORT QgsLegendRenderer
 {
   public:
-    /** Construct legend renderer. The ownership of legend model does not change */
+    //! Construct legend renderer. The ownership of legend model does not change
     QgsLegendRenderer( QgsLayerTreeModel* legendModel, const QgsLegendSettings& settings );
 
-    /** Run the layout algorithm and determine the size required for legend */
+    //! Run the layout algorithm and determine the size required for legend
     QSizeF minimumSize();
 
-    /** Set the preferred resulting legend size. */
+    //! Set the preferred resulting legend size.
     void setLegendSize( QSizeF s ) { mLegendSize = s; }
 
-    /** Find out preferred legend size set by the client. If null, the legend will be drawn with the minimum size */
+    //! Find out preferred legend size set by the client. If null, the legend will be drawn with the minimum size
     QSizeF legendSize() const { return mLegendSize; }
 
     /** Draw the legend with given painter. It will occupy the area reported in legendSize().
@@ -109,10 +109,10 @@ class CORE_EXPORT QgsLegendRenderer
 
     QSizeF paintAndDetermineSize( QPainter* painter );
 
-    /** Create list of atoms according to current layer splitting mode */
+    //! Create list of atoms according to current layer splitting mode
     QList<Atom> createAtomList( QgsLayerTreeGroup* parentGroup, bool splitLayer );
 
-    /** Divide atoms to columns and set columns on atoms */
+    //! Divide atoms to columns and set columns on atoms
     void setColumns( QList<Atom>& atomList );
 
     /** Draws title in the legend using the title font and the specified alignment
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsLegendRenderer
 
     Nucleon drawSymbolItem( QgsLayerTreeModelLegendNode* symbolItem, QPainter* painter = nullptr, QPointF point = QPointF(), double labelXOffset = 0 );
 
-    /** Draws a layer item */
+    //! Draws a layer item
     QSizeF drawLayerTitle( QgsLayerTreeLayer* nodeLayer, QPainter* painter = nullptr, QPointF point = QPointF() );
 
     /** Draws a group item.

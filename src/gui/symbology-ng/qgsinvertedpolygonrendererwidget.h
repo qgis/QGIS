@@ -45,15 +45,15 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, pr
      */
     QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
 
-    /** @returns the current feature renderer */
+    //! @returns the current feature renderer
     virtual QgsFeatureRenderer* renderer() override;
 
     void setContext( const QgsSymbolWidgetContext& context ) override;
 
   protected:
-    /** The mask renderer */
+    //! The mask renderer
     QScopedPointer<QgsInvertedPolygonRenderer> mRenderer;
-    /** The widget used to represent the mask's embedded renderer */
+    //! The widget used to represent the mask's embedded renderer
     QScopedPointer<QgsRendererWidget> mEmbeddedRendererWidget;
 
   private slots:

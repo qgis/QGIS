@@ -186,10 +186,10 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     enum Capability
     {
-      SymbolLevels          = 1,      //!< rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
-      MoreSymbolsPerFeature = 1 << 2, //!< may use more than one symbol to render a feature: symbolsForFeature() will return them
-      Filter                = 1 << 3, //!< features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
-      ScaleDependent        = 1 << 4  //!< depends on scale if feature will be rendered (rule based )
+      SymbolLevels          = 1,      //!< Rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
+      MoreSymbolsPerFeature = 1 << 2, //!< May use more than one symbol to render a feature: symbolsForFeature() will return them
+      Filter                = 1 << 3, //!< Features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
+      ScaleDependent        = 1 << 4  //!< Depends on scale if feature will be rendered (rule based )
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -426,9 +426,9 @@ class CORE_EXPORT QgsFeatureRenderer
 
     bool mUsingSymbolLevels;
 
-    /** The current type of editing marker */
+    //! The current type of editing marker
     int mCurrentVertexMarkerType;
-    /** The current size of editing marker */
+    //! The current size of editing marker
     int mCurrentVertexMarkerSize;
 
     QgsPaintEffect* mPaintEffect;

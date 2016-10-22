@@ -61,9 +61,9 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      */
     enum ContentSource
     {
-      LayerAttributes = 0, /*!< table shows attributes from features in a vector layer */
-      AtlasFeature, /*!< table shows attributes from the current atlas feature */
-      RelationChildren /*!< table shows attributes from related child features */
+      LayerAttributes = 0, //!< Table shows attributes from features in a vector layer
+      AtlasFeature, //!< Table shows attributes from the current atlas feature
+      RelationChildren //!< Table shows attributes from related child features
     };
 
     QgsComposerAttributeTableV2( QgsComposition* composition, bool createUndoCommands );
@@ -300,33 +300,33 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
 
   private:
 
-    /** Attribute source*/
+    //! Attribute source
     ContentSource mSource;
-    /** Associated vector layer*/
+    //! Associated vector layer
     QgsVectorLayer* mVectorLayer;
-    /** Relation id, if in relation children mode*/
+    //! Relation id, if in relation children mode
     QString mRelationId;
 
-    /** Current vector layer, if in atlas feature mode*/
+    //! Current vector layer, if in atlas feature mode
     QgsVectorLayer* mCurrentAtlasLayer;
 
-    /** Associated composer map (used to display the visible features)*/
+    //! Associated composer map (used to display the visible features)
     const QgsComposerMap* mComposerMap;
-    /** Maximum number of features that is displayed*/
+    //! Maximum number of features that is displayed
     int mMaximumNumberOfFeatures;
 
-    /** True if only unique rows should be shown*/
+    //! True if only unique rows should be shown
     bool mShowUniqueRowsOnly;
 
-    /** Shows only the features that are visible in the associated composer map (true by default)*/
+    //! Shows only the features that are visible in the associated composer map (true by default)
     bool mShowOnlyVisibleFeatures;
 
-    /** Shows only the features that intersect the current atlas feature*/
+    //! Shows only the features that intersect the current atlas feature
     bool mFilterToAtlasIntersection;
 
-    /** True if feature filtering enabled*/
+    //! True if feature filtering enabled
     bool mFilterFeatures;
-    /** Feature filter expression*/
+    //! Feature filter expression
     QString mFeatureFilter;
 
     QString mWrapString;
@@ -348,7 +348,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     QVariant replaceWrapChar( const QVariant &variant ) const;
 
   private slots:
-    /** Checks if this vector layer will be removed (and sets mVectorLayer to 0 if yes) */
+    //! Checks if this vector layer will be removed (and sets mVectorLayer to 0 if yes)
     void removeLayer( const QString& layerId );
 
     void atlasLayerChanged( QgsVectorLayer* layer );

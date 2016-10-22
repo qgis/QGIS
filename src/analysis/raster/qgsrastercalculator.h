@@ -44,12 +44,12 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     //! Result of the calculation
     enum Result
     {
-      Success = 0, /*!< Calculation sucessful */
-      CreateOutputError = 1, /*!< Error creating output data file */
-      InputLayerError = 2, /*!< Error reading input layer */
-      Cancelled = 3, /*!< User cancelled calculation */
-      ParserError = 4, /*!< Error parsing formula */
-      MemoryError = 5, /*!< Error allocating memory for result */
+      Success = 0, //!< Calculation sucessful
+      CreateOutputError = 1, //!< Error creating output data file
+      InputLayerError = 2, //!< Error reading input layer
+      Cancelled = 3, //!< User cancelled calculation
+      ParserError = 4, //!< Error parsing formula
+      MemoryError = 5, //!< Error allocating memory for result
     };
 
     /** QgsRasterCalculator constructor.
@@ -104,13 +104,13 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     QString mOutputFile;
     QString mOutputFormat;
 
-    /** Output raster extent*/
+    //! Output raster extent
     QgsRectangle mOutputRectangle;
     QgsCoordinateReferenceSystem mOutputCrs;
 
-    /** Number of output columns*/
+    //! Number of output columns
     int mNumOutputColumns;
-    /** Number of output rows*/
+    //! Number of output rows
     int mNumOutputRows;
 
     /***/

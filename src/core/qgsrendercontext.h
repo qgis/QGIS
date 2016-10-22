@@ -145,7 +145,7 @@ class CORE_EXPORT QgsRenderContext
 
     //setters
 
-    /** Sets coordinate transformation.*/
+    //! Sets coordinate transformation.
     void setCoordinateTransform( const QgsCoordinateTransform& t );
     void setMapToPixel( const QgsMapToPixel& mtp ) {mMapToPixel = mtp;}
     void setExtent( const QgsRectangle& extent ) {mExtent = extent;}
@@ -206,9 +206,9 @@ class CORE_EXPORT QgsRenderContext
      */
     const QgsExpressionContext& expressionContext() const { return mExpressionContext; }
 
-    /** Returns pointer to the unsegmentized geometry*/
+    //! Returns pointer to the unsegmentized geometry
     const QgsAbstractGeometry* geometry() const { return mGeometry; }
-    /** Sets pointer to original (unsegmentized) geometry*/
+    //! Sets pointer to original (unsegmentized) geometry
     void setGeometry( const QgsAbstractGeometry* geometry ) { mGeometry = geometry; }
 
     /** Set a filter feature provider used for additional filtering of rendered features.
@@ -228,60 +228,60 @@ class CORE_EXPORT QgsRenderContext
     /** Sets the segmentation tolerance applied when rendering curved geometries
     @param tolerance the segmentation tolerance*/
     void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
-    /** Gets the segmentation tolerance applied when rendering curved geometries*/
+    //! Gets the segmentation tolerance applied when rendering curved geometries
     double segmentationTolerance() const { return mSegmentationTolerance; }
 
     /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     @param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
-    /** Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)*/
+    //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
 
   private:
 
     Flags mFlags;
 
-    /** Painter for rendering operations*/
+    //! Painter for rendering operations
     QPainter* mPainter;
 
-    /** For transformation between coordinate systems. Can be invalid if on-the-fly reprojection is not used*/
+    //! For transformation between coordinate systems. Can be invalid if on-the-fly reprojection is not used
     QgsCoordinateTransform mCoordTransform;
 
     QgsRectangle mExtent;
 
     QgsMapToPixel mMapToPixel;
 
-    /** True if the rendering has been canceled*/
+    //! True if the rendering has been canceled
     bool mRenderingStopped;
 
-    /** Factor to scale line widths and point marker sizes*/
+    //! Factor to scale line widths and point marker sizes
     double mScaleFactor;
 
-    /** Factor to scale rasters*/
+    //! Factor to scale rasters
     double mRasterScaleFactor;
 
-    /** Map scale*/
+    //! Map scale
     double mRendererScale;
 
-    /** Labeling engine (can be nullptr)*/
+    //! Labeling engine (can be nullptr)
     QgsLabelingEngineInterface* mLabelingEngine;
 
-    /** Newer labeling engine implementation (can be nullptr) */
+    //! Newer labeling engine implementation (can be nullptr)
     QgsLabelingEngine* mLabelingEngine2;
 
-    /** Color used for features that are marked as selected */
+    //! Color used for features that are marked as selected
     QColor mSelectionColor;
 
-    /** Simplification object which holds the information about how to simplify the features for fast rendering */
+    //! Simplification object which holds the information about how to simplify the features for fast rendering
     QgsVectorSimplifyMethod mVectorSimplifyMethod;
 
-    /** Expression context */
+    //! Expression context
     QgsExpressionContext mExpressionContext;
 
-    /** Pointer to the (unsegmentized) geometry*/
+    //! Pointer to the (unsegmentized) geometry
     const QgsAbstractGeometry* mGeometry;
 
-    /** The feature filter provider */
+    //! The feature filter provider
     const QgsFeatureFilterProvider* mFeatureFilterProvider;
 
     double mSegmentationTolerance;

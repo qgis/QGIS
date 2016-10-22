@@ -38,8 +38,8 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      */
     enum ContentMode
     {
-      Url, /*!< Using this mode item fetches its content via a url*/
-      ManualHtml /*!< HTML content is manually set for the item*/
+      Url, //!< Using this mode item fetches its content via a url
+      ManualHtml //!< HTML content is manually set for the item
     };
 
     QgsComposerHtml( QgsComposition* c, bool createUndoCommands );
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      */
     void loadHtml( const bool useCache = false, const QgsExpressionContext* context = nullptr );
 
-    /** Recalculates the frame sizes for the current viewport dimensions*/
+    //! Recalculates the frame sizes for the current viewport dimensions
     void recalculateFrameSizes() override;
     void refreshExpressionContext();
 
@@ -264,10 +264,10 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     //fetches html content from a url and returns it as a string
     QString fetchHtml( const QUrl& url );
 
-    /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions */
+    //! Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions
     void setExpressionContext( const QgsFeature& feature, QgsVectorLayer* layer );
 
-    /** Calculates the max width of frames in the html multiframe*/
+    //! Calculates the max width of frames in the html multiframe
     double maxFrameWidth() const;
 };
 

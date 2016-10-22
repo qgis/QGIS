@@ -45,19 +45,19 @@ class QPainter;
 class QgsPolygonV2;
 class QgsLineString;
 
-/** Polyline is represented as a vector of points */
+//! Polyline is represented as a vector of points
 typedef QVector<QgsPoint> QgsPolyline;
 
-/** Polygon: first item of the list is outer ring, inner rings (if any) start from second item */
+//! Polygon: first item of the list is outer ring, inner rings (if any) start from second item
 typedef QVector<QgsPolyline> QgsPolygon;
 
-/** A collection of QgsPoints that share a common collection of attributes */
+//! A collection of QgsPoints that share a common collection of attributes
 typedef QVector<QgsPoint> QgsMultiPoint;
 
-/** A collection of QgsPolylines that share a common collection of attributes */
+//! A collection of QgsPolylines that share a common collection of attributes
 typedef QVector<QgsPolyline> QgsMultiPolyline;
 
-/** A collection of QgsPolygons that share a common collection of attributes */
+//! A collection of QgsPolygons that share a common collection of attributes
 typedef QVector<QgsPolygon> QgsMultiPolygon;
 
 class QgsRectangle;
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsGeometry
     //! Constructor
     QgsGeometry();
 
-    /** Copy constructor will prompt a deep copy of the object */
+    //! Copy constructor will prompt a deep copy of the object
     QgsGeometry( const QgsGeometry & );
 
     /** Assignments will prompt a deep copy of the object
@@ -117,23 +117,23 @@ class CORE_EXPORT QgsGeometry
      */
     bool isEmpty() const;
 
-    /** Creates a new geometry from a WKT string */
+    //! Creates a new geometry from a WKT string
     static QgsGeometry fromWkt( const QString& wkt );
-    /** Creates a new geometry from a QgsPoint object*/
+    //! Creates a new geometry from a QgsPoint object
     static QgsGeometry fromPoint( const QgsPoint& point );
-    /** Creates a new geometry from a QgsMultiPoint object */
+    //! Creates a new geometry from a QgsMultiPoint object
     static QgsGeometry fromMultiPoint( const QgsMultiPoint& multipoint );
-    /** Creates a new geometry from a QgsPolyline object */
+    //! Creates a new geometry from a QgsPolyline object
     static QgsGeometry fromPolyline( const QgsPolyline& polyline );
-    /** Creates a new geometry from a QgsMultiPolyline object*/
+    //! Creates a new geometry from a QgsMultiPolyline object
     static QgsGeometry fromMultiPolyline( const QgsMultiPolyline& multiline );
-    /** Creates a new geometry from a QgsPolygon */
+    //! Creates a new geometry from a QgsPolygon
     static QgsGeometry fromPolygon( const QgsPolygon& polygon );
-    /** Creates a new geometry from a QgsMultiPolygon */
+    //! Creates a new geometry from a QgsMultiPolygon
     static QgsGeometry fromMultiPolygon( const QgsMultiPolygon& multipoly );
-    /** Creates a new geometry from a QgsRectangle */
+    //! Creates a new geometry from a QgsRectangle
     static QgsGeometry fromRect( const QgsRectangle& rect );
-    /** Creates a new multipart geometry from a list of QgsGeometry objects*/
+    //! Creates a new multipart geometry from a list of QgsGeometry objects
     static QgsGeometry collectGeometry( const QList< QgsGeometry >& geometries );
 
     /**
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsGeometry
      */
     QgsWkbTypes::GeometryType type() const;
 
-    /** Returns true if WKB of the geometry is of WKBMulti* type */
+    //! Returns true if WKB of the geometry is of WKBMulti* type
     bool isMultipart() const;
 
     /** Compares the geometry with another geometry using GEOS
@@ -456,16 +456,16 @@ class CORE_EXPORT QgsGeometry
      */
     QgsGeometry makeDifference( const QgsGeometry& other ) const;
 
-    /** Returns the bounding box of this feature*/
+    //! Returns the bounding box of this feature
     QgsRectangle boundingBox() const;
 
-    /** Test for intersection with a rectangle (uses GEOS) */
+    //! Test for intersection with a rectangle (uses GEOS)
     bool intersects( const QgsRectangle& r ) const;
 
-    /** Test for intersection with a geometry (uses GEOS) */
+    //! Test for intersection with a geometry (uses GEOS)
     bool intersects( const QgsGeometry& geometry ) const;
 
-    /** Test for containment of a point (uses GEOS) */
+    //! Test for containment of a point (uses GEOS)
     bool contains( const QgsPoint* p ) const;
 
     /** Test for if geometry is contained in another (uses GEOS)
@@ -558,7 +558,7 @@ class CORE_EXPORT QgsGeometry
                                    JoinStyle joinStyle = JoinStyleRound,
                                    double mitreLimit = 2.0 ) const;
 
-    /** Returns a simplified version of this geometry using a specified tolerance value */
+    //! Returns a simplified version of this geometry using a specified tolerance value
     QgsGeometry simplify( double tolerance ) const;
 
     /** Returns the center of mass of a geometry
@@ -567,10 +567,10 @@ class CORE_EXPORT QgsGeometry
      */
     QgsGeometry centroid() const;
 
-    /** Returns a point within a geometry */
+    //! Returns a point within a geometry
     QgsGeometry pointOnSurface() const;
 
-    /** Returns the smallest convex polygon that contains all the points in the geometry. */
+    //! Returns the smallest convex polygon that contains all the points in the geometry.
     QgsGeometry convexHull() const;
 
     /**
@@ -602,7 +602,7 @@ class CORE_EXPORT QgsGeometry
      */
     double interpolateAngle( double distance ) const;
 
-    /** Returns a geometry representing the points shared by this geometry and other. */
+    //! Returns a geometry representing the points shared by this geometry and other.
     QgsGeometry intersection( const QgsGeometry& geometry ) const;
 
     /** Returns a geometry representing all the points in this geometry and other (a
@@ -620,13 +620,13 @@ class CORE_EXPORT QgsGeometry
      */
     QgsGeometry mergeLines() const;
 
-    /** Returns a geometry representing the points making up this geometry that do not make up other. */
+    //! Returns a geometry representing the points making up this geometry that do not make up other.
     QgsGeometry difference( const QgsGeometry& geometry ) const;
 
-    /** Returns a geometry representing the points making up this geometry that do not make up other. */
+    //! Returns a geometry representing the points making up this geometry that do not make up other.
     QgsGeometry symDifference( const QgsGeometry& geometry ) const;
 
-    /** Returns an extruded version of this geometry. */
+    //! Returns an extruded version of this geometry.
     QgsGeometry extrude( double x, double y );
 
     /** Exports the geometry to WKT
@@ -934,11 +934,11 @@ class CORE_EXPORT QgsGeometry
     static void convertToPolyline( const QgsPointSequence &input, QgsPolyline& output );
     static void convertPolygon( const QgsPolygonV2& input, QgsPolygon& output );
 
-    /** Try to convert the geometry to a point */
+    //! Try to convert the geometry to a point
     QgsGeometry convertToPoint( bool destMultipart ) const;
-    /** Try to convert the geometry to a line */
+    //! Try to convert the geometry to a line
     QgsGeometry convertToLine( bool destMultipart ) const;
-    /** Try to convert the geometry to a polygon */
+    //! Try to convert the geometry to a polygon
     QgsGeometry convertToPolygon( bool destMultipart ) const;
 
     /** Smooths a polyline using the Chaikin algorithm
@@ -972,9 +972,9 @@ class CORE_EXPORT QgsGeometry
 
 Q_DECLARE_METATYPE( QgsGeometry )
 
-/** Writes the geometry to stream out. QGIS version compatibility is not guaranteed. */
+//! Writes the geometry to stream out. QGIS version compatibility is not guaranteed.
 CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsGeometry& geometry );
-/** Reads a geometry from stream in into geometry. QGIS version compatibility is not guaranteed. */
+//! Reads a geometry from stream in into geometry. QGIS version compatibility is not guaranteed.
 CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsGeometry& geometry );
 
 #endif

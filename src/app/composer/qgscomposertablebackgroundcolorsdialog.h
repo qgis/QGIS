@@ -56,7 +56,7 @@ class QgsComposerTableBackgroundColorsDialog: public QDialog, private Ui::QgsCom
     QMap< QgsComposerTableV2::CellStyleGroup, QgsColorButton* > mColorButtonMap;
 
 
-    /** Sets the GUI elements to the values of the table*/
+    //! Sets the GUI elements to the values of the table
     void setGuiElementValues();
 
 

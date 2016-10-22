@@ -61,8 +61,8 @@ class GUI_EXPORT QgsMapTool : public QObject
       Transient = 1 << 1, /*!< Indicates that this map tool performs a transient (one-off) operation.
                                If it does, the tool can be operated once and then a previous map
                                tool automatically restored. */
-      EditTool = 1 << 2, /*!< Map tool is an edit tool, which can only be used when layer is editable*/
-      AllowZoomRect = 1 << 3, /*!< Allow zooming by rectangle (by holding shift and dragging) while the tool is active*/
+      EditTool = 1 << 2, //!< Map tool is an edit tool, which can only be used when layer is editable
+      AllowZoomRect = 1 << 3, //!< Allow zooming by rectangle (by holding shift and dragging) while the tool is active
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -106,17 +106,17 @@ class GUI_EXPORT QgsMapTool : public QObject
      * the previously used toolbutton to pop out. */
     void setAction( QAction* action );
 
-    /** Return associated action with map tool or NULL if no action is associated */
+    //! Return associated action with map tool or NULL if no action is associated
     QAction* action();
 
     /** Use this to associate a button to this maptool. It has the same meaning
      * as setAction() function except it works with a button instead of an QAction. */
     void setButton( QAbstractButton* button );
 
-    /** Return associated button with map tool or NULL if no button is associated */
+    //! Return associated button with map tool or NULL if no button is associated
     QAbstractButton* button();
 
-    /** Set a user defined cursor */
+    //! Set a user defined cursor
     virtual void setCursor( const QCursor& cursor );
 
     //! called when set as currently active map tool

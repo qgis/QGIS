@@ -58,14 +58,14 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
      */
     bool convertToOfflineProject( const QString& offlineDataPath, const QString& offlineDbFile, const QStringList& layerIds, bool onlySelected = false );
 
-    /** Return true if current project is offline */
+    //! Return true if current project is offline
     bool isOfflineProject() const;
 
-    /** Synchronize to remote layers */
+    //! Synchronize to remote layers
     void synchronize();
 
   signals:
-    /** Emit a signal that processing has started */
+    //! Emit a signal that processing has started
     void progressStarted();
 
     /** Emit a signal that the next layer of numLayers has started processing
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
      */
     void progressUpdated( int progress );
 
-    /** Emit a signal that processing of all layers has finished */
+    //! Emit a signal that processing of all layers has finished
     void progressStopped();
 
     /**

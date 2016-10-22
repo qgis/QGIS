@@ -59,7 +59,7 @@ class GUI_EXPORT QgsAuthCertManager : public QDialog
 
     ~QgsAuthCertManager();
 
-    /** Get access to embedded editors widget */
+    //! Get access to embedded editors widget
     QgsAuthCertEditors *certEditorsWidget() { return mCertEditors; }
 
   private:

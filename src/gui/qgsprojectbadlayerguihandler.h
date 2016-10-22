@@ -29,10 +29,10 @@ class GUI_EXPORT QgsProjectBadLayerGuiHandler : public QObject, public QgsProjec
   public:
     QgsProjectBadLayerGuiHandler();
 
-    /** Implementation of the handler */
+    //! Implementation of the handler
     virtual void handleBadLayers( const QList<QDomNode>& layers, const QDomDocument& projectDom ) override;
 
-    /** Flag to store the Ignore button press of MessageBox used by QgsLegend */
+    //! Flag to store the Ignore button press of MessageBox used by QgsLegend
     static bool mIgnore;
 
   protected:
@@ -73,10 +73,10 @@ class GUI_EXPORT QgsProjectBadLayerGuiHandler : public QObject, public QgsProjec
      */
     ProviderType providerType( QDomNode & layerNode );
 
-    /** Set the datasource element to the new value */
+    //! Set the datasource element to the new value
     void setDataSource( QDomNode & layerNode, const QString &dataSource );
 
-    /** This is used to locate files that have moved or otherwise are missing */
+    //! This is used to locate files that have moved or otherwise are missing
     bool findMissingFile( const QString &fileFilters, QDomNode &layerNode );
 
     /** Find relocated data source for the given layer

@@ -58,7 +58,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       bool operator<( const ColorRampItem& other ) const { return value < other.value; }
     };
 
-    /** Supported methods for color interpolation. */
+    //! Supported methods for color interpolation.
     enum ColorRamp_TYPE
     {
       INTERPOLATED, //!< Interpolates the color between two class breaks linearly.
@@ -66,28 +66,28 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       EXACT         //!< Assigns the color of the exact matching value in the color ramp item list
     };
 
-    /** \brief Get the custom colormap*/
+    //! \brief Get the custom colormap
     QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const {return mColorRampItemList.toList();}
 
-    /** \brief Get the color ramp type */
+    //! \brief Get the color ramp type
     QgsColorRampShader::ColorRamp_TYPE colorRampType() const {return mColorRampType;}
 
-    /** \brief Get the color ramp type as a string */
+    //! \brief Get the color ramp type as a string
     QString colorRampTypeAsQString();
 
-    /** \brief Set custom colormap */
+    //! \brief Set custom colormap
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ); //TODO: sort on set
 
-    /** \brief Set the color ramp type*/
+    //! \brief Set the color ramp type
     void setColorRampType( QgsColorRampShader::ColorRamp_TYPE theColorRampType );
 
-    /** \brief Set the color ramp type*/
+    //! \brief Set the color ramp type
     void setColorRampType( const QString& theType );
 
-    /** \brief Generates and new RGB value based on one input value */
+    //! \brief Generates and new RGB value based on one input value
     bool shade( double, int*, int*, int*, int* ) override;
 
-    /** \brief Generates and new RGB value based on original RGB value */
+    //! \brief Generates and new RGB value based on original RGB value
     bool shade( double, double, double, double, int*, int*, int*, int* ) override;
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const override;
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * interpolated for values between the item values (false)*/
     QVector<QgsColorRampShader::ColorRampItem> mColorRampItemList;
 
-    /** \brief The color ramp type */
+    //! \brief The color ramp type
     QgsColorRampShader::ColorRamp_TYPE mColorRampType;
 
     /** Look up table to speed up finding the right color.
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     double mLUTFactor;
     bool mLUTInitialized;
 
-    /** Do not render values out of range */
+    //! Do not render values out of range
     bool mClip;
 };
 

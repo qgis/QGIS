@@ -54,7 +54,7 @@ bool QgsPluginLayerType::showLayerProperties( QgsPluginLayer *layer )
 
 //=============================================================================
 
-/** Static calls to enforce singleton behaviour */
+//! Static calls to enforce singleton behaviour
 QgsPluginLayerRegistry* QgsPluginLayerRegistry::_instance = nullptr;
 QgsPluginLayerRegistry* QgsPluginLayerRegistry::instance()
 {

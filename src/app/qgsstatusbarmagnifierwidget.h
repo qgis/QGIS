@@ -40,7 +40,7 @@ class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
       */
     QgsStatusBarMagnifierWidget( QWidget* parent = nullptr );
 
-    /** Destructor */
+    //! Destructor
     virtual ~QgsStatusBarMagnifierWidget();
 
     void setDefaultFactor( double factor );

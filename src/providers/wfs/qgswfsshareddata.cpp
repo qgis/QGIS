@@ -975,7 +975,7 @@ void QgsWFSSharedData::pushError( const QString& errorMsg )
   emit raiseError( errorMsg );
 }
 
-/** Called by QgsWFSFeatureDownloader::run() at the end of the download process. */
+//! Called by QgsWFSFeatureDownloader::run() at the end of the download process.
 void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
                                       bool truncatedResponse,
                                       bool interrupted,
