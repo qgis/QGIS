@@ -1322,8 +1322,8 @@ class CORE_EXPORT QgsTextRenderer
 
     static QgsTextFormat updateShadowPosition( const QgsTextFormat& format );
 
-    static double textWidth( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines,
-                             QFontMetricsF* fm = 0 );
+    static double textWidthPrivate( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines,
+                                    QFontMetricsF* fm = 0 );
 
     static double textHeight( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines, DrawMode mode,
                               QFontMetricsF* fm = 0 );

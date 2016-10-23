@@ -1881,7 +1881,7 @@ void QgsTextRenderer::drawBuffer( QgsRenderContext& context, const QgsTextRender
   p->restore();
 }
 
-double QgsTextRenderer::textWidth( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList &textLines, QFontMetricsF* fm )
+double QgsTextRenderer::textWidthPrivate( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList &textLines, QFontMetricsF* fm )
 {
   //calculate max width of text lines
   QScopedPointer< QFontMetricsF > newFm;
@@ -1955,7 +1955,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
   {
     // need to calculate size of text
     QFontMetricsF fm( format.scaledFont( context ) );
-    double width = textWidth( context, format, textLines, &fm );
+    double width = textWidthPrivate( context, format, textLines, &fm );
     double height = textHeight( context, format, textLines, mode, &fm );
 
     switch ( mode )
