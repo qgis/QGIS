@@ -684,6 +684,7 @@ class QgsWmsStatistics
     static QMap<QString, Stat> sData;
 };
 
+Q_DECLARE_TYPEINFO( QgsWmsProvider::TilePosition, Q_PRIMITIVE_TYPE );
 
 #endif
 
