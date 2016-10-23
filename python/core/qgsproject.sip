@@ -507,6 +507,19 @@ class QgsProject : QObject
      */
     void avoidIntersectionsListChanged();
 
+    /**
+     * Emitted when the map theme collection changes.
+     * This only happens when the map theme collection is reset.
+     * Any pointer previously received from mapThemeCollection()
+     * must no longer be used after this signal is emitted.
+     * You must still connect to signals from the map theme collection
+     * if you want to be notified about new map themes being added and
+     * map themes being removed.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void mapThemeCollectionChanged();
+
   public slots:
     /**
      * Flag the project as dirty (modified). If this flag is set, the user will
