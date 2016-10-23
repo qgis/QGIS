@@ -259,8 +259,12 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
     return;
   }
 
+  QgsMultiPolygon finalMulti; //avoid expensive allocation for list for every feature
+  QgsPolygon newPoly;
+
   Q_FOREACH ( const CombinedFeature& cit, mFeaturesCategories )
   {
+    finalMulti.resize( 0 ); //preserve capacity - don't use clear!
     QgsFeature feat = cit.feature; // just a copy, so that we do not accumulate geometries again
     if ( mPreprocessingEnabled )
     {
@@ -283,7 +287,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       //
       // No validity check is done, on purpose, it will be very slow and painting
       // operations do not need geometries to be valid
-      QgsMultiPolygon finalMulti;
+
       finalMulti.append( mExtentPolygon );
       Q_FOREACH ( const QgsGeometry& geom, cit.geometries )
       {
@@ -312,9 +316,9 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
           // add interior rings as new polygons
           for ( int j = 1; j < multi[i].size(); j++ )
           {
-            QgsPolygon new_poly;
-            new_poly.append( multi[i][j] );
-            finalMulti.append( new_poly );
+            newPoly.resize( 0 ); //preserve capacity - don't use clear!
+            newPoly.append( multi[i][j] );
+            finalMulti.append( newPoly );
           }
         }
       }
