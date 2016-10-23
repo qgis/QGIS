@@ -5,7 +5,7 @@
     Eliminate.py
     ---------------------
     Date                 : August 2012
-    Copyright            : (C) 2013 by Bernhard Str�bl
+    Copyright            : (C) 2013 by Bernhard Ströbl
     Email                : bernhard.stroebl@jena.de
 ***************************************************************************
 *                                                                         *
