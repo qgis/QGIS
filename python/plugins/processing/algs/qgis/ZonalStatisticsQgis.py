@@ -57,16 +57,16 @@ class ZonalStatisticsQgis(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.STATS = {self.tr('Count'): QgsZonalStatistics.Count,
-                      self.tr('Sum'): QgsZonalStatistics.Count,
-                      self.tr('Mean'): QgsZonalStatistics.Count,
-                      self.tr('Median'): QgsZonalStatistics.Count,
-                      self.tr('Std. dev.'): QgsZonalStatistics.Count,
-                      self.tr('Min'): QgsZonalStatistics.Count,
-                      self.tr('Max'): QgsZonalStatistics.Count,
-                      self.tr('Range'): QgsZonalStatistics.Count,
-                      self.tr('Minority'): QgsZonalStatistics.Count,
-                      self.tr('Majority'): QgsZonalStatistics.Count,
-                      self.tr('Variety'): QgsZonalStatistics.Count,
+                      self.tr('Sum'): QgsZonalStatistics.Sum,
+                      self.tr('Mean'): QgsZonalStatistics.Mean,
+                      self.tr('Median'): QgsZonalStatistics.Median,
+                      self.tr('Std. dev.'): QgsZonalStatistics.StDev,
+                      self.tr('Min'): QgsZonalStatistics.Min,
+                      self.tr('Max'): QgsZonalStatistics.Max,
+                      self.tr('Range'): QgsZonalStatistics.Range,
+                      self.tr('Minority'): QgsZonalStatistics.Minority,
+                      self.tr('Majority'): QgsZonalStatistics.Majority,
+                      self.tr('Variety'): QgsZonalStatistics.Variety,
                       self.tr('All'): QgsZonalStatistics.All
                       }
 
