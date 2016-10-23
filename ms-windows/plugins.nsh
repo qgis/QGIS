@@ -23,6 +23,5 @@ WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "rasterterrainplugin
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "roadgraphplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "spatialqueryplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "topolplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "zonalstatisticsplugin" "true"
 
 ###############################  reg2nsis end  #################################
