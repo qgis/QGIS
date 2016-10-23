@@ -32,7 +32,7 @@ class GUI_EXPORT QgsDialog : public QDialog
     Q_OBJECT
   public:
     QgsDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
-               const QDialogButtonBox::StandardButtons& buttons = QDialogButtonBox::Close,
+               QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close,
                Qt::Orientation orientation = Qt::Horizontal );
     ~QgsDialog();
 

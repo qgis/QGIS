@@ -59,7 +59,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
   public:
     static int LAST_TYPE;
 
-    QgsGrassProvider( QString uri = QString() );
+    QgsGrassProvider( const QString &uri = QString() );
 
     virtual ~QgsGrassProvider();
 
@@ -339,12 +339,12 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     /** Returns GRASS layer number for given layer name or -1 if cannot
      *  get layer number
      */
-    static int grassLayer( QString );
+    static int grassLayer( const QString & );
 
     /** Returns GRASS layer type (GV_POINT, GV_LINES, GV_AREA) for
      *  given layer name or -1 if cannot get layer type
      */
-    static int grassLayerType( QString );
+    static int grassLayerType( const QString & );
 
     /** Return a provider name */
     QString name() const override;

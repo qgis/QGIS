@@ -130,7 +130,7 @@ QgsAttributeTableConfig::ActionWidgetStyle QgsAttributeTableConfig::actionWidget
   return mActionWidgetStyle;
 }
 
-void QgsAttributeTableConfig::setActionWidgetStyle( const ActionWidgetStyle& actionWidgetStyle )
+void QgsAttributeTableConfig::setActionWidgetStyle( ActionWidgetStyle actionWidgetStyle )
 {
   mActionWidgetStyle = actionWidgetStyle;
 }
@@ -240,7 +240,7 @@ Qt::SortOrder QgsAttributeTableConfig::sortOrder() const
   return mSortOrder;
 }
 
-void QgsAttributeTableConfig::setSortOrder( const Qt::SortOrder& sortOrder )
+void QgsAttributeTableConfig::setSortOrder( Qt::SortOrder sortOrder )
 {
   mSortOrder = sortOrder;
 }

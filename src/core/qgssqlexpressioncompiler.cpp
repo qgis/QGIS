@@ -15,7 +15,7 @@
 
 #include "qgssqlexpressioncompiler.h"
 
-QgsSqlExpressionCompiler::QgsSqlExpressionCompiler( const QgsFields& fields, const Flags& flags )
+QgsSqlExpressionCompiler::QgsSqlExpressionCompiler( const QgsFields& fields, Flags flags )
     : mResult( None )
     , mFields( fields )
     , mFlags( flags )

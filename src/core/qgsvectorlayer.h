@@ -640,7 +640,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @see   deselect(QgsFeatureId)
      * @see selectByExpression()
      */
-    void modifySelection( QgsFeatureIds selectIds, QgsFeatureIds deselectIds );
+    void modifySelection( const QgsFeatureIds& selectIds, const QgsFeatureIds &deselectIds );
 
     /** Select not selected features and deselect selected ones */
     void invertSelection();
@@ -831,7 +831,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param props a open ended set of properties that can drive/inform the SLD encoding
      * @return true in case of success
      */
-    bool writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage, QgsStringMap props = QgsStringMap() ) const;
+    bool writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage, const QgsStringMap &props = QgsStringMap() ) const;
 
     bool readSld( const QDomNode& node, QString& errorMessage ) override;
 

@@ -447,7 +447,7 @@ class QgsSymbolLayerUtils
      *  returns a copy of the original point
      * @note added in 3.0
      */
-    static QPointF rescaleUom( const QPointF& point, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props ) /PyName=rescalePointUom/;
+    static QPointF rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props ) /PyName=rescalePointUom/;
 
     /** Rescales the given array based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point

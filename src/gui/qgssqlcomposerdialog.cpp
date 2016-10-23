@@ -766,7 +766,7 @@ void QgsSQLComposerDialog::addApis( const QStringList& list )
   mQueryEdit->lexer()->setAPIs( apis );
 }
 
-void QgsSQLComposerDialog::setSupportMultipleTables( bool on, QString mainTypename )
+void QgsSQLComposerDialog::setSupportMultipleTables( bool on, const QString& mainTypename )
 {
   mJoinsLabels->setVisible( on );
   mTableJoins->setVisible( on );

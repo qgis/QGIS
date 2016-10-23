@@ -1400,7 +1400,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** This method will open a dialog so the user can select GDAL sublayers to load
      * @returns true if any items were loaded
      */
-    bool askUserForZipItemLayers( QString path );
+    bool askUserForZipItemLayers( const QString &path );
     /** This method will open a dialog so the user can select GDAL sublayers to load
      */
     void askUserForGDALSublayers( QgsRasterLayer *layer );

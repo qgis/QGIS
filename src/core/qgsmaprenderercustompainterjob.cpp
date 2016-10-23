@@ -173,7 +173,7 @@ QgsLabelingResults* QgsMapRendererCustomPainterJob::takeLabelingResults()
 }
 
 
-void QgsMapRendererCustomPainterJob::waitForFinishedWithEventLoop( const QEventLoop::ProcessEventsFlags& flags )
+void QgsMapRendererCustomPainterJob::waitForFinishedWithEventLoop( QEventLoop::ProcessEventsFlags flags )
 {
   QEventLoop loop;
   connect( &mFutureWatcher, SIGNAL( finished() ), &loop, SLOT( quit() ) );

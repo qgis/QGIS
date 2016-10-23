@@ -47,7 +47,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @returns distance to vertex (following geometry)
      * @note added in QGIS 2.16
      */
-    static double distanceToVertex( const QgsAbstractGeometry& geom, const QgsVertexId& id );
+    static double distanceToVertex( const QgsAbstractGeometry& geom, QgsVertexId id );
 
     /** Retrieves the vertices which are before and after the interpolated point at a specified distance along a linestring
      * (or polygon boundary).

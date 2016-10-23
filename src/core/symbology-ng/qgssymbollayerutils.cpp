@@ -3973,7 +3973,7 @@ double QgsSymbolLayerUtils::rescaleUom( double size, QgsUnitTypes::RenderUnit un
   return rescaled;
 }
 
-QPointF QgsSymbolLayerUtils::rescaleUom( const QPointF& point, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props )
+QPointF QgsSymbolLayerUtils::rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props )
 {
   double x = rescaleUom( point.x(), unit, props );
   double y = rescaleUom( point.y(), unit, props );

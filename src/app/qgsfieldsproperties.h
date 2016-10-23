@@ -98,7 +98,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         void setVisibilityExpression( const QgsOptionalExpression& visibilityExpression );
 
         RelationEditorConfiguration relationEditorConfiguration() const;
-        void setRelationEditorConfiguration( const RelationEditorConfiguration& relationEditorConfiguration );
+        void setRelationEditorConfiguration( RelationEditorConfiguration relationEditorConfiguration );
 
       private:
         Type mType;
@@ -272,7 +272,7 @@ class DragList : public QTableWidget
   protected:
     virtual QStringList mimeTypes() const override;
 
-    virtual QMimeData* mimeData( const QList<QTableWidgetItem*> items ) const override;
+    virtual QMimeData* mimeData( const QList<QTableWidgetItem *> items ) const override;
 };
 
 /**

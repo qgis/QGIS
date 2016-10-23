@@ -83,7 +83,7 @@ class CORE_EXPORT QgsSQLStatement
      * otherwise the original string.
      * @see quotedString(), quotedIdentifier()
      */
-    static QString quotedIdentifierIfNeeded( QString name );
+    static QString quotedIdentifierIfNeeded( const QString &name );
 
     /** Remove double quotes from an identifier.
      * @see quotedIdentifier()
@@ -403,7 +403,7 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         /** Constructor */
-        NodeFunction( QString name, NodeList* args ) : mName( name ), mArgs( args ) {}
+        NodeFunction( const QString& name, NodeList* args ) : mName( name ), mArgs( args ) {}
         virtual ~NodeFunction() { delete mArgs; }
 
         /** Return function name */
@@ -579,7 +579,7 @@ class CORE_EXPORT QgsSQLStatement
         /** Constructor with table definition, ON expression */
         NodeJoin( NodeTableDef* tabledef, Node* onExpr, JoinType type ) : mTableDef( tabledef ), mOnExpr( onExpr ), mType( type ) {}
         /** Constructor with table definition and USING columns */
-        NodeJoin( NodeTableDef* tabledef, QList<QString> usingColumns, JoinType type ) : mTableDef( tabledef ), mOnExpr( nullptr ), mUsingColumns( usingColumns ), mType( type ) {}
+        NodeJoin( NodeTableDef* tabledef, const QList<QString>& usingColumns, JoinType type ) : mTableDef( tabledef ), mOnExpr( nullptr ), mUsingColumns( usingColumns ), mType( type ) {}
         virtual ~NodeJoin() { delete mTableDef; delete mOnExpr; }
 
         /** Table definition */
@@ -643,17 +643,17 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         /** Constructor */
-        NodeSelect( QList<NodeTableDef*> tableList, QList<NodeSelectedColumn*> columns, bool distinct ) : mTableList( tableList ), mColumns( columns ), mDistinct( distinct ), mWhere( nullptr ) {}
+        NodeSelect( const QList<NodeTableDef*>& tableList, const QList<NodeSelectedColumn*>& columns, bool distinct ) : mTableList( tableList ), mColumns( columns ), mDistinct( distinct ), mWhere( nullptr ) {}
         virtual ~NodeSelect() { qDeleteAll( mTableList ); qDeleteAll( mColumns ); qDeleteAll( mJoins ); delete mWhere; qDeleteAll( mOrderBy ); }
 
         /** Set joins */
-        void setJoins( QList<NodeJoin*> joins ) { qDeleteAll( mJoins ); mJoins = joins; }
+        void setJoins( const QList<NodeJoin*>& joins ) { qDeleteAll( mJoins ); mJoins = joins; }
         /** Append a join */
         void appendJoin( NodeJoin* join ) { mJoins.append( join ); }
         /** Set where clause */
         void setWhere( Node* where ) { delete mWhere; mWhere = where; }
         /** Set order by columns */
-        void setOrderBy( QList<NodeColumnSorted*> orderBy ) { qDeleteAll( mOrderBy ); mOrderBy = orderBy; }
+        void setOrderBy( const QList<NodeColumnSorted*>& orderBy ) { qDeleteAll( mOrderBy ); mOrderBy = orderBy; }
 
         /** Return the list of tables */
         QList<NodeTableDef*> tables() const { return mTableList; }

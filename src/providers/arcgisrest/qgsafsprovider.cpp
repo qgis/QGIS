@@ -153,7 +153,7 @@ QgsFeatureIterator QgsAfsProvider::getFeatures( const QgsFeatureRequest& request
   return new QgsAfsFeatureIterator( new QgsAfsFeatureSource( this ), true, request );
 }
 
-bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fetchGeometry, const QList<int>& /*fetchAttributes*/, const QgsRectangle filterRect )
+bool QgsAfsProvider::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int>& /*fetchAttributes*/, const QgsRectangle& filterRect )
 {
   // If cached, return cached feature
   QMap<QgsFeatureId, QgsFeature>::const_iterator it = mCache.find( id );

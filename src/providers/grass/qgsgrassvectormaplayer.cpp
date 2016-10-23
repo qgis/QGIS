@@ -386,7 +386,7 @@ void QgsGrassVectorMapLayer::updateFields()
 #endif
 }
 
-QString QgsGrassVectorMapLayer::quotedValue( QVariant value )
+QString QgsGrassVectorMapLayer::quotedValue( const QVariant& value )
 {
   if ( value.isNull() )
   {
@@ -1069,7 +1069,7 @@ bool QgsGrassVectorMapLayer::isOrphan( int cat, QString &error )
   return recordExists( cat, error );
 }
 
-void QgsGrassVectorMapLayer::changeAttributeValue( int cat, QgsField field, QVariant value, QString &error )
+void QgsGrassVectorMapLayer::changeAttributeValue( int cat, const QgsField& field, const QVariant& value, QString &error )
 {
   QgsDebugMsg( QString( "cat = %1 field.name() = %2 value = %3" ).arg( cat ).arg( field.name(), value.toString() ) );
 

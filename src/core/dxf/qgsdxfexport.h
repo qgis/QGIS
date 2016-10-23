@@ -318,14 +318,14 @@ class CORE_EXPORT QgsDxfExport
      * @param settings label settings
      * @note not available in Python bindings
      */
-    void drawLabel( QString layerId, QgsRenderContext& context, pal::LabelPosition* label, const QgsPalLayerSettings &settings );
+    void drawLabel( const QString &layerId, QgsRenderContext& context, pal::LabelPosition* label, const QgsPalLayerSettings &settings );
 
     /** Register name of layer for feature
      * @param layerId id of layer
      * @param fid id of feature
      * @param layer dxf layer of feature
      */
-    void registerDxfLayer( QString layerId, QgsFeatureId fid, QString layer );
+    void registerDxfLayer( const QString &layerId, QgsFeatureId fid, const QString &layer );
 
   private:
     QList< QPair<QgsVectorLayer*, int> > mLayers;

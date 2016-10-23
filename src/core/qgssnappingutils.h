@@ -177,7 +177,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     virtual void prepareIndexProgress( int index ) { Q_UNUSED( index ); }
 
   private:
-    void onIndividualLayerSettingsChanged( const QHash<QgsVectorLayer*, QgsSnappingConfig::IndividualLayerSettings> layerSettings );
+    void onIndividualLayerSettingsChanged( const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &layerSettings );
     //! Get destination CRS from map settings, or an invalid CRS if projections are disabled
     QgsCoordinateReferenceSystem destinationCrs() const;
 

@@ -352,7 +352,7 @@ int QgsMapToolCapture::nextPoint( QPoint p, QgsPointV2 &layerPoint, QgsPointV2 &
   return nextPoint( mapPoint, layerPoint );
 }
 
-int QgsMapToolCapture::fetchLayerPoint( QgsPointLocator::Match match , QgsPointV2 &layerPoint )
+int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match& match , QgsPointV2 &layerPoint )
 {
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   QgsVectorLayer* sourceLayer = match.layer();
@@ -387,7 +387,7 @@ int QgsMapToolCapture::addVertex( const QgsPoint& point )
   return addVertex( point, QgsPointLocator::Match() );
 }
 
-int QgsMapToolCapture::addVertex( const QgsPoint& point, QgsPointLocator::Match match )
+int QgsMapToolCapture::addVertex( const QgsPoint& point, const QgsPointLocator::Match& match )
 {
   if ( mode() == CaptureNone )
   {

@@ -112,7 +112,7 @@ void QgsVectorLayerUndoCommandDeleteFeature::redo()
 
 
 
-QgsVectorLayerUndoCommandChangeGeometry::QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, QgsGeometry newGeom )
+QgsVectorLayerUndoCommandChangeGeometry::QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer* buffer, QgsFeatureId fid, const QgsGeometry& newGeom )
     : QgsVectorLayerUndoCommand( buffer )
     , mFid( fid )
     , mNewGeom( newGeom )

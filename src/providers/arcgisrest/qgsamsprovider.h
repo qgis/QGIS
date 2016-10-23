@@ -38,7 +38,7 @@ class QgsAmsLegendFetcher : public QgsImageFetcher
 
   private slots:
     void handleFinished();
-    void handleError( QString errorTitle, QString errorMsg );
+    void handleError( const QString &errorTitle, const QString &errorMsg );
 
   private:
     QgsAmsProvider* mProvider;

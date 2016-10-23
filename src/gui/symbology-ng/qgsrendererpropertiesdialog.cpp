@@ -137,7 +137,7 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer* layer,
   connect( mEffectWidget, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );
 }
 
-void QgsRendererPropertiesDialog::connectValueChanged( QList<QWidget *> widgets, const char *slot )
+void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget *>& widgets, const char *slot )
 {
   Q_FOREACH ( QWidget* widget, widgets )
   {

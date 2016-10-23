@@ -167,7 +167,7 @@ class CORE_EXPORT QgsSnappingConfig
     QgsSnappingConfig::IndividualLayerSettings individualLayerSettings( QgsVectorLayer* vl ) const;
 
     //! set individual layer snappings settings (applied if mode is AdvancedConfiguration)
-    void setIndividualLayerSettings( QgsVectorLayer* vl, QgsSnappingConfig::IndividualLayerSettings individualLayerSettings );
+    void setIndividualLayerSettings( QgsVectorLayer* vl, const IndividualLayerSettings &individualLayerSettings );
 
     /**
      * Compare this configuration to other.

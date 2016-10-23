@@ -91,7 +91,7 @@ QgsRenderContext::~QgsRenderContext()
   mFeatureFilterProvider = nullptr;
 }
 
-void QgsRenderContext::setFlags( const QgsRenderContext::Flags& flags )
+void QgsRenderContext::setFlags( QgsRenderContext::Flags flags )
 {
   mFlags = flags;
 }

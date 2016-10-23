@@ -397,7 +397,7 @@ void QgsVectorLayer::selectByIds( const QgsFeatureIds& ids, QgsVectorLayer::Sele
   emit selectionChanged( newSelection, deselectedFeatures, true );
 }
 
-void QgsVectorLayer::modifySelection( QgsFeatureIds selectIds, QgsFeatureIds deselectIds )
+void QgsVectorLayer::modifySelection( const QgsFeatureIds &selectIds, const QgsFeatureIds& deselectIds )
 {
   QgsFeatureIds intersectingIds = selectIds & deselectIds;
   if ( !intersectingIds.isEmpty() )
@@ -2053,7 +2053,7 @@ bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& error
   return writeSld( node, doc, errorMessage, QgsStringMap() );
 }
 
-bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage, QgsStringMap props ) const
+bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage, const QgsStringMap& props ) const
 {
   Q_UNUSED( errorMessage );
 

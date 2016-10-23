@@ -28,7 +28,7 @@ QgsFieldComboBox::QgsFieldComboBox( QWidget *parent )
   connect( this, SIGNAL( activated( int ) ), this, SLOT( indexChanged( int ) ) );
 }
 
-void QgsFieldComboBox::setFilters( const QgsFieldProxyModel::Filters& filters )
+void QgsFieldComboBox::setFilters( QgsFieldProxyModel::Filters filters )
 {
   mFieldProxyModel->setFilters( filters );
 }

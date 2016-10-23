@@ -6,7 +6,7 @@ class QgsComposerPolygon: QgsComposerNodesItem
   public:
 
     QgsComposerPolygon( QgsComposition* c );
-    QgsComposerPolygon( QPolygonF polygon, QgsComposition* c );
+    QgsComposerPolygon( const QPolygonF& polygon, QgsComposition* c );
     ~QgsComposerPolygon();
 
     /** Overridden to return shape name */
@@ -23,7 +23,7 @@ class QgsComposerPolygon: QgsComposerNodesItem
 
   protected:
 
-    bool _addNode( const int indexPoint, const QPointF &newPoint, const double radius );
+    bool _addNode( const int indexPoint, QPointF newPoint, const double radius );
 
     bool _removeNode( const int indexPoint );
 

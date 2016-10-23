@@ -73,7 +73,7 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
 {
     Q_OBJECT
   public:
-    QgsGrassImport( QgsGrassObject grassObject );
+    QgsGrassImport( const QgsGrassObject &grassObject );
     virtual ~QgsGrassImport();
     QgsGrassObject grassObject() const { return mGrassObject; }
     virtual void importInThread();
@@ -101,7 +101,7 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
 
   protected:
     static bool run( QgsGrassImport *imp );
-    void setError( QString error );
+    void setError( const QString &error );
     void addProgressRow( QString html );
     QgsGrassObject mGrassObject;
     QString mError;

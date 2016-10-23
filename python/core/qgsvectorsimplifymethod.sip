@@ -25,7 +25,7 @@ class QgsVectorSimplifyMethod
     typedef QFlags<QgsVectorSimplifyMethod::SimplifyHint> SimplifyHints;
 
     /** Sets the simplification hints of the vector layer managed */
-    void setSimplifyHints( const QFlags<QgsVectorSimplifyMethod::SimplifyHint>& simplifyHints );
+    void setSimplifyHints( QFlags<QgsVectorSimplifyMethod::SimplifyHint> simplifyHints );
     /** Gets the simplification hints of the vector layer managed */
     QFlags<QgsVectorSimplifyMethod::SimplifyHint> simplifyHints() const;
 
@@ -38,7 +38,7 @@ class QgsVectorSimplifyMethod
     };
 
     /** Sets the local simplification algorithm of the vector layer managed */
-    void setSimplifyAlgorithm( const SimplifyAlgorithm& simplifyAlgorithm );
+    void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm );
     /** Gets the local simplification algorithm of the vector layer managed */
     SimplifyAlgorithm simplifyAlgorithm() const;
 

@@ -69,7 +69,7 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
   public slots:
 
     //! Called when current value of search widget changes
-    void onValueChanged( QVariant value );
+    void onValueChanged( const QVariant &value );
 
   protected slots:
     void setExpression( QString exp ) override;

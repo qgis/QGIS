@@ -31,7 +31,7 @@
 QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
     const QgsVectorLayer* vl,
     const QgsDataDefined* datadefined,
-    const DataTypes& datatypes,
+    DataTypes datatypes,
     const QString& description )
     : QToolButton( parent )
     , mExpressionContextGenerator( nullptr )
@@ -143,7 +143,7 @@ void QgsDataDefinedButton::updateFieldLists()
 
 void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
                                  const QgsDataDefined* datadefined,
-                                 const DataTypes& datatypes,
+                                 DataTypes datatypes,
                                  const QString& description )
 {
   mVectorLayer = vl;

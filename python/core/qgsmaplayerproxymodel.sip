@@ -41,7 +41,7 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
      * @param filters are Filter flags
      * @note added in 2.3
      */
-    QgsMapLayerProxyModel* setFilters( const Filters& filters );
+    QgsMapLayerProxyModel* setFilters( Filters filters );
     const Filters& filters() const;
 
     //! offer the possibility to except some layers to be listed

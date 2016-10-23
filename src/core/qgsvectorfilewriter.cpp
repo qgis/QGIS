@@ -2216,7 +2216,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     QgsWkbTypes::Type overrideGeometryType,
     bool forceMulti,
     bool includeZ,
-    QgsAttributeList attributes,
+    const QgsAttributeList& attributes,
     FieldValueConverter* fieldValueConverter )
 {
   QgsCoordinateTransform ct;
@@ -2250,7 +2250,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     QgsWkbTypes::Type overrideGeometryType,
     bool forceMulti,
     bool includeZ,
-    QgsAttributeList attributes,
+    const QgsAttributeList& attributes,
     FieldValueConverter* fieldValueConverter )
 {
   SaveVectorOptions options;

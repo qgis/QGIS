@@ -53,7 +53,7 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
   public slots:
     void setLayer( QgsMapLayer* layer );
     void setDockMode( bool enabled );
-    void connectValueChanged( QList<QWidget*> widgets, const char* slot );
+    void connectValueChanged( const QList<QWidget *> &widgets, const char* slot );
 
     void init();
     void collapseSample( bool collapse );

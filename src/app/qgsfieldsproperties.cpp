@@ -1056,7 +1056,7 @@ QStringList DragList::mimeTypes() const
   return QStringList() << QLatin1String( "application/x-qgsattributetabledesignerelement" );
 }
 
-QMimeData* DragList::mimeData( const QList<QTableWidgetItem*> items ) const
+QMimeData* DragList::mimeData( const QList<QTableWidgetItem *> items ) const
 {
   if ( items.count() <= 0 )
     return nullptr;
@@ -1446,7 +1446,7 @@ QgsFieldsProperties::RelationEditorConfiguration QgsFieldsProperties::DesignerTr
   return mRelationEditorConfiguration;
 }
 
-void QgsFieldsProperties::DesignerTreeItemData::setRelationEditorConfiguration( const QgsFieldsProperties::RelationEditorConfiguration& relationEditorConfiguration )
+void QgsFieldsProperties::DesignerTreeItemData::setRelationEditorConfiguration( QgsFieldsProperties::RelationEditorConfiguration relationEditorConfiguration )
 {
   mRelationEditorConfiguration = relationEditorConfiguration;
 }

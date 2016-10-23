@@ -301,6 +301,6 @@ class QgsDxfExport
      * @param fid id of feature
      * @param layer dxf layer of feature
      */
-    void registerDxfLayer( QString layerId, QgsFeatureId fid, QString layer );
+    void registerDxfLayer( const QString& layerId, QgsFeatureId fid, const QString& layer );
 
 };

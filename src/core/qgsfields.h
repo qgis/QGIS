@@ -205,12 +205,12 @@ class CORE_EXPORT QgsFields
         inline QgsField& operator*() const { return d->field; }
         inline QgsField* operator->() const { return &d->field; }
         inline QgsField& operator[]( difference_type j ) const { return d[j].field; }
-        inline bool operator==( const iterator &o ) const noexcept { return d == o.d; }
-        inline bool operator!=( const iterator &o ) const noexcept { return d != o.d; }
-        inline bool operator<( const iterator& other ) const noexcept { return d < other.d; }
-        inline bool operator<=( const iterator& other ) const noexcept { return d <= other.d; }
-        inline bool operator>( const iterator& other ) const noexcept { return d > other.d; }
-        inline bool operator>=( const iterator& other ) const noexcept { return d >= other.d; }
+        inline bool operator==( const iterator &o ) const noexcept { return d == o.d; } // clazy:exclude=function-args-by-value
+        inline bool operator!=( const iterator &o ) const noexcept { return d != o.d; } // clazy:exclude=function-args-by-value
+        inline bool operator<( const iterator& other ) const noexcept { return d < other.d; } // clazy:exclude=function-args-by-value
+        inline bool operator<=( const iterator& other ) const noexcept { return d <= other.d; } // clazy:exclude=function-args-by-value
+        inline bool operator>( const iterator& other ) const noexcept { return d > other.d; } // clazy:exclude=function-args-by-value
+        inline bool operator>=( const iterator& other ) const noexcept { return d >= other.d; } // clazy:exclude=function-args-by-value
 
         inline iterator& operator++() { ++d; return *this; }
         inline iterator operator++( int ) { QgsFields::Field* n = d; ++d; return n; }
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsFields
     };
     friend class iterator;
 
-    class const_iterator
+    class const_iterator // clazy:exclude=rule-of-three
     {
       public:
         const QgsFields::Field* d;
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsFields
             : d( f ) {}
         inline const_iterator( const const_iterator &o )
             : d( o.d ) {}
-        inline explicit const_iterator( const iterator &o )
+        inline explicit const_iterator( const iterator &o ) // clazy:exclude=function-args-by-value
             : d( o.d ) {}
         inline const QgsField& operator*() const { return d->field; }
         inline const QgsField* operator->() const { return &d->field; }
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsFields
         inline const_iterator& operator-=( difference_type j ) { d -= j; return *this; }
         inline const_iterator operator+( difference_type j ) const { return const_iterator( d + j ); }
         inline const_iterator operator-( difference_type j ) const { return const_iterator( d -j ); }
-        inline int operator-( const_iterator j ) const { return int( d - j.d ); }
+        inline int operator-( const_iterator j ) const { return int( d - j.d ); } // clazy:exclude=function-args-by-ref
     };
     friend class const_iterator;
     ///@endcond

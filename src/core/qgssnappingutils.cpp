@@ -531,7 +531,7 @@ QgsCoordinateReferenceSystem QgsSnappingUtils::destinationCrs() const
   return mMapSettings.hasCrsTransformEnabled() ? mMapSettings.destinationCrs() : QgsCoordinateReferenceSystem();
 }
 
-void QgsSnappingUtils::onIndividualLayerSettingsChanged( const QHash<QgsVectorLayer*, QgsSnappingConfig::IndividualLayerSettings> layerSettings )
+void QgsSnappingUtils::onIndividualLayerSettingsChanged( const QHash<QgsVectorLayer*, QgsSnappingConfig::IndividualLayerSettings>& layerSettings )
 {
   mLayers.clear();
 

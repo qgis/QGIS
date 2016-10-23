@@ -60,7 +60,7 @@ class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
      * @param filters are Filter flags
      * @see filters()
      */
-    QgsFieldProxyModel* setFilters( const QgsFieldProxyModel::Filters& filters );
+    QgsFieldProxyModel* setFilters( QgsFieldProxyModel::Filters filters );
 
     /** Returns the filters controlling displayed fields.
      * @see setFilters()

@@ -33,7 +33,7 @@ inline QString qgsConnectionPool_ConnectionToName( QgsOgrConn* c )
   return c->path;
 }
 
-inline void qgsConnectionPool_ConnectionCreate( QString connInfo, QgsOgrConn*& c )
+inline void qgsConnectionPool_ConnectionCreate( const QString& connInfo, QgsOgrConn*& c )
 {
   c = new QgsOgrConn;
   QString filePath = connInfo.left( connInfo.indexOf( "|" ) );
@@ -63,7 +63,7 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
     Q_OBJECT
 
   public:
-    explicit QgsOgrConnPoolGroup( QString name )
+    explicit QgsOgrConnPoolGroup( const QString& name )
         : QgsConnectionPoolGroup<QgsOgrConn*>( name )
         , mRefCount( 0 )
     { initTimer( this ); }

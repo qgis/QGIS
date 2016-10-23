@@ -190,7 +190,7 @@ void QgsHttpRequestHandler::sendBody()
 }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-void QgsHttpRequestHandler::setPluginFilters( QgsServerFiltersMap pluginFilters )
+void QgsHttpRequestHandler::setPluginFilters( const QgsServerFiltersMap& pluginFilters )
 {
   mPluginFilters = pluginFilters;
 }
@@ -457,7 +457,7 @@ void QgsHttpRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoD
   setHttpResponse( &ba, infoFormat );
 }
 
-void QgsHttpRequestHandler::setServiceException( QgsMapServiceException ex )
+void QgsHttpRequestHandler::setServiceException( const QgsMapServiceException& ex )
 {
   // Safety measure to avoid potential leaks if called repeatedly
   delete mException;

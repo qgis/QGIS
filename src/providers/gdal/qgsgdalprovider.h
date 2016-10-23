@@ -221,7 +221,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     void closeDataset();
 
     /** Emit a signal to notify of the progress event. */
-    void emitProgress( int theType, double theProgress, QString theMessage );
+    void emitProgress( int theType, double theProgress, const QString &theMessage );
     void emitProgressUpdate( int theProgress );
 
     static QMap<QString, QString> supportedMimes();

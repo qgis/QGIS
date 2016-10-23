@@ -203,7 +203,7 @@ QgsFileWidget::RelativeStorage QgsExternalResourceWidget::relativeStorage() cons
   return mRelativeStorage;
 }
 
-void QgsExternalResourceWidget::setRelativeStorage( const QgsFileWidget::RelativeStorage& relativeStorage )
+void QgsExternalResourceWidget::setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage )
 {
   mFileWidget->setRelativeStorage( relativeStorage );
   mRelativeStorage = relativeStorage;

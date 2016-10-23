@@ -60,7 +60,7 @@ QgsOgrLayerItem::~QgsOgrLayerItem()
 }
 
 
-bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
+bool QgsOgrLayerItem::setCrs( const QgsCoordinateReferenceSystem& crs )
 {
   if ( !( mCapabilities & SetCrs ) )
     return false;

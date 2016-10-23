@@ -155,7 +155,7 @@ QIcon QgsSpatialQueryPlugin::getThemeIcon( const QString &theName )
   }
 }
 
-void QgsSpatialQueryPlugin::MsgDEBUG( QString sMSg )
+void QgsSpatialQueryPlugin::MsgDEBUG( const QString& sMSg )
 {
   QMessageBox::warning( nullptr, tr( "DEBUG" ), sMSg, QMessageBox::Ok );
 }

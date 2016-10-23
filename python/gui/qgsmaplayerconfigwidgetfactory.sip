@@ -14,7 +14,7 @@ class QgsMapLayerConfigWidgetFactory
     QgsMapLayerConfigWidgetFactory();
 
     /** Constructor */
-    QgsMapLayerConfigWidgetFactory( QString title, QIcon icon );
+    QgsMapLayerConfigWidgetFactory( const QString& title, const QIcon& icon );
 
     /** Destructor */
     virtual ~QgsMapLayerConfigWidgetFactory();

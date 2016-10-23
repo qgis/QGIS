@@ -200,7 +200,7 @@ void QgsArrowSymbolLayer::stopRender( QgsSymbolRenderContext& context )
   mSymbol->stopRender( context.renderContext() );
 }
 
-inline qreal euclidian_distance( const QPointF& po, const QPointF& pd )
+inline qreal euclidian_distance( QPointF po, QPointF pd )
 {
   return sqrt(( po.x() - pd.x() ) * ( po.x() - pd.x() ) + ( po.y() - pd.y() ) * ( po.y() - pd.y() ) );
 }
@@ -343,7 +343,7 @@ inline qreal clampAngle( qreal a )
  * Compute the circumscribed circle from three points
  * @return false if the three points are colinear
  */
-bool pointsToCircle( const QPointF& a, const QPointF& b, const QPointF& c, QPointF& center, qreal& radius )
+bool pointsToCircle( QPointF a, QPointF b, QPointF c, QPointF& center, qreal& radius )
 {
   qreal cx, cy;
 
@@ -385,13 +385,13 @@ bool pointsToCircle( const QPointF& a, const QPointF& b, const QPointF& c, QPoin
   return true;
 }
 
-QPointF circlePoint( const QPointF& center, qreal radius, qreal angle )
+QPointF circlePoint( QPointF center, qreal radius, qreal angle )
 {
   // Y is oriented downward
   return QPointF( cos( -angle ) * radius + center.x(), sin( -angle ) * radius + center.y() );
 }
 
-void pathArcTo( QPainterPath& path, const QPointF& circleCenter, qreal circleRadius, qreal angle_o, qreal angle_d, int direction )
+void pathArcTo( QPainterPath& path, QPointF circleCenter, qreal circleRadius, qreal angle_o, qreal angle_d, int direction )
 {
   QRectF circleRect( circleCenter - QPointF( circleRadius, circleRadius ), circleCenter + QPointF( circleRadius, circleRadius ) );
   if ( direction == 1 )
@@ -411,7 +411,7 @@ void pathArcTo( QPainterPath& path, const QPointF& circleCenter, qreal circleRad
 }
 
 // Draw a "spiral" arc defined by circle arcs around a center, a start and an end radius
-void spiralArcTo( QPainterPath& path, const QPointF& center, qreal startAngle, qreal startRadius, qreal endAngle, qreal endRadius, int direction )
+void spiralArcTo( QPainterPath& path, QPointF center, qreal startAngle, qreal startRadius, qreal endAngle, qreal endRadius, int direction )
 {
   // start point
   QPointF A = circlePoint( center, startRadius, startAngle );

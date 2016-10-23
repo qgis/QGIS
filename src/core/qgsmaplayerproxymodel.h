@@ -67,7 +67,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * @param filters are Filter flags
      * @note added in 2.3
      */
-    QgsMapLayerProxyModel* setFilters( const QgsMapLayerProxyModel::Filters& filters );
+    QgsMapLayerProxyModel* setFilters( QgsMapLayerProxyModel::Filters filters );
     const Filters& filters() const { return mFilters; }
 
     //! offer the possibility to except some layers to be listed

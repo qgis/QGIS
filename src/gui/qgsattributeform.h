@@ -325,14 +325,14 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     struct ContainerInformation
     {
-      ContainerInformation( QgsTabWidget* tabWidget, QWidget* widget, QgsExpression expression )
+      ContainerInformation( QgsTabWidget* tabWidget, QWidget* widget, const QgsExpression& expression )
           : tabWidget( tabWidget )
           , widget( widget )
           , expression( expression )
           , isVisible( true )
       {}
 
-      ContainerInformation( QWidget* widget, QgsExpression expression )
+      ContainerInformation( QWidget* widget, const QgsExpression& expression )
           : tabWidget( nullptr )
           , widget( widget )
           , expression( expression )

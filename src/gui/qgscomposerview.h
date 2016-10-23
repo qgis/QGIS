@@ -220,8 +220,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void addShape( Tool currentTool );
 
     /** Point based shape stuff */
-    void addPolygonNode( const QPointF & scenePoint );
-    void movePolygonNode( const QPointF & scenePoint );
+    void addPolygonNode( QPointF scenePoint );
+    void movePolygonNode( QPointF scenePoint );
     void displayNodes( const bool display = true );
     void setSelectedNode( QgsComposerNodesItem *shape, const int index );
     void unselectNode();

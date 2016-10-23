@@ -123,7 +123,7 @@ void QgsGrassImportProgress::setValue( int value )
 }
 
 //------------------------------ QgsGrassImport ------------------------------------
-QgsGrassImport::QgsGrassImport( QgsGrassObject grassObject )
+QgsGrassImport::QgsGrassImport( const QgsGrassObject& grassObject )
     : QObject()
     , mGrassObject( grassObject )
     , mCanceled( false )
@@ -147,7 +147,7 @@ QgsGrassImport::~QgsGrassImport()
   QgsGrassImportIcon::instance()->disconnectFrameChanged( this, SLOT( frameChanged() ) );
 }
 
-void QgsGrassImport::setError( QString error )
+void QgsGrassImport::setError( const QString& error )
 {
   QgsDebugMsg( "error: " + error );
   mError = error;

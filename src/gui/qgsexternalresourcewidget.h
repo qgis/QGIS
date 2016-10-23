@@ -106,7 +106,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * Configures if paths are handled absolute or relative and if relative,
      * which should be the base path.
      */
-    void setRelativeStorage( const QgsFileWidget::RelativeStorage& relativeStorage );
+    void setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage );
 
 
     /**

@@ -234,7 +234,7 @@ void QgsDb2SourceSelect::on_btnDelete_clicked()
   emit connectionsChanged();
 }
 
-void QgsDb2SourceSelect::deleteConnection( QString name )
+void QgsDb2SourceSelect::deleteConnection( const QString& name )
 {
   QString key = "/Db2/connections/" + name;
   QSettings settings;
@@ -389,7 +389,7 @@ void QgsDb2SourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QStri
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
-void QgsDb2SourceSelect::setLayerType( QgsDb2LayerProperty layerProperty )
+void QgsDb2SourceSelect::setLayerType( const QgsDb2LayerProperty& layerProperty )
 {
   mTableModel.setGeometryTypesForTable( layerProperty );
 }
@@ -612,7 +612,7 @@ void QgsDb2SourceSelect::setSql( const QModelIndex &index )
   delete vlayer;
 }
 
-void QgsDb2SourceSelect::addSearchGeometryColumn( QString connectionName, QgsDb2LayerProperty layerProperty, bool estimateMetadata )
+void QgsDb2SourceSelect::addSearchGeometryColumn( const QString& connectionName, const QgsDb2LayerProperty& layerProperty, bool estimateMetadata )
 {
   // store the column details and do the query in a thread
   if ( !mColumnTypeThread )
@@ -631,7 +631,7 @@ void QgsDb2SourceSelect::addSearchGeometryColumn( QString connectionName, QgsDb2
   emit addGeometryColumn( layerProperty );
 }
 
-QString QgsDb2SourceSelect::fullDescription( QString schema, QString table, QString column, QString type )
+QString QgsDb2SourceSelect::fullDescription( const QString& schema, const QString& table, const QString& column, const QString& type )
 {
   QString full_desc = "";
   if ( !schema.isEmpty() )
@@ -668,7 +668,7 @@ void QgsDb2SourceSelect::treeWidgetSelectionChanged( const QItemSelection &selec
 }
 
 
-QgsDb2GeomColumnTypeThread::QgsDb2GeomColumnTypeThread( QString connectionName, bool useEstimatedMetadata )
+QgsDb2GeomColumnTypeThread::QgsDb2GeomColumnTypeThread( const QString& connectionName, bool useEstimatedMetadata )
     : QThread()
     , mConnectionName( connectionName )
     , mUseEstimatedMetadata( useEstimatedMetadata )
@@ -677,7 +677,7 @@ QgsDb2GeomColumnTypeThread::QgsDb2GeomColumnTypeThread( QString connectionName, 
   qRegisterMetaType<QgsDb2LayerProperty>( "QgsDb2LayerProperty" );
 }
 
-void QgsDb2GeomColumnTypeThread::addGeometryColumn( QgsDb2LayerProperty layerProperty )
+void QgsDb2GeomColumnTypeThread::addGeometryColumn( const QgsDb2LayerProperty& layerProperty )
 {
   layerProperties << layerProperty;
 }

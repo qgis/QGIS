@@ -686,7 +686,7 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
   delete vlayer;
 }
 
-void QgsMssqlSourceSelect::addSearchGeometryColumn( QString connectionName, QgsMssqlLayerProperty layerProperty, bool estimateMetadata )
+void QgsMssqlSourceSelect::addSearchGeometryColumn( const QString& connectionName, const QgsMssqlLayerProperty& layerProperty, bool estimateMetadata )
 {
   // store the column details and do the query in a thread
   if ( !mColumnTypeThread )
@@ -741,7 +741,7 @@ void QgsMssqlSourceSelect::treeWidgetSelectionChanged( const QItemSelection &sel
   mAddButton->setEnabled( !selected.isEmpty() );
 }
 
-QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( QString connectionName, bool useEstimatedMetadata )
+QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( const QString& connectionName, bool useEstimatedMetadata )
     : QThread()
     , mConnectionName( connectionName )
     , mUseEstimatedMetadata( useEstimatedMetadata )
@@ -750,7 +750,7 @@ QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( QString connectionNa
   qRegisterMetaType<QgsMssqlLayerProperty>( "QgsMssqlLayerProperty" );
 }
 
-void QgsMssqlGeomColumnTypeThread::addGeometryColumn( QgsMssqlLayerProperty layerProperty )
+void QgsMssqlGeomColumnTypeThread::addGeometryColumn( const QgsMssqlLayerProperty& layerProperty )
 {
   layerProperties << layerProperty;
 }

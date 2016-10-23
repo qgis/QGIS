@@ -50,7 +50,7 @@ void QgsAmsLegendFetcher::start()
   mQuery->start( queryUrl, &mQueryReply );
 }
 
-void QgsAmsLegendFetcher::handleError( QString errorTitle, QString errorMsg )
+void QgsAmsLegendFetcher::handleError( const QString& errorTitle, const QString& errorMsg )
 {
   emit error( errorTitle + ": " + errorMsg );
 }

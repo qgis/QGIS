@@ -187,13 +187,13 @@ class CORE_EXPORT QgsDataItem : public QObject
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
     // This will _write_ selected crs in data source
-    virtual bool setCrs( QgsCoordinateReferenceSystem crs )
+    virtual bool setCrs( const QgsCoordinateReferenceSystem& crs )
     { Q_UNUSED( crs ); return false; }
 
     // ### QGIS 3 - rename to capabilities()
     virtual Capabilities capabilities2() const { return mCapabilities; }
 
-    virtual void setCapabilities( const Capabilities& capabilities ) { mCapabilities = capabilities; }
+    virtual void setCapabilities( Capabilities capabilities ) { mCapabilities = capabilities; }
 
     // static methods
 
@@ -236,7 +236,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
   protected:
     virtual void populate( const QVector<QgsDataItem*>& children );
-    virtual void refresh( QVector<QgsDataItem*> children );
+    virtual void refresh( const QVector<QgsDataItem *> &children );
     /** The item is scheduled to be deleted. E.g. if deleteLater() is called when
      * item is in Populating state (createChildren() running in another thread),
      * the deferredDelete() returns true and item will be deleted once Populating finished.
@@ -440,7 +440,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     virtual QWidget *paramWidget() override;
 
     /** Check if the given path is hidden from the browser model */
-    static bool hiddenPath( QString path );
+    static bool hiddenPath( const QString &path );
 
   public slots:
     virtual void childrenCreated() override;
@@ -555,7 +555,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 
     static QString vsiPrefix( const QString& uri ) { return qgsVsiPrefix( uri ); }
 
-    static QgsDataItem* itemFromPath( QgsDataItem* parent, QString path, QString name );
+    static QgsDataItem* itemFromPath( QgsDataItem* parent, const QString &path, const QString &name );
     //! @note available in python as itemFromFilePath
     static QgsDataItem* itemFromPath( QgsDataItem* parent, const QString& filePath, const QString& name, const QString& path );
 

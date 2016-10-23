@@ -410,7 +410,7 @@ void QgsWmsServer::appendFormats( QDomDocument &doc, QDomElement &elem, const QS
   }
 }
 
-QDomDocument QgsWmsServer::getCapabilities( QString version, bool fullProjectInformation )
+QDomDocument QgsWmsServer::getCapabilities( const QString& version, bool fullProjectInformation )
 {
   QgsMessageLog::logMessage( "Entering." );
   QDomDocument doc;

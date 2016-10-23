@@ -438,7 +438,7 @@ void QgsDataItem::refresh()
   }
 }
 
-void QgsDataItem::refresh( QVector<QgsDataItem*> children )
+void QgsDataItem::refresh( const QVector<QgsDataItem*>& children )
 {
   QgsDebugMsgLevel( "mPath = " + mPath, 2 );
 
@@ -896,7 +896,7 @@ void QgsDirectoryItem::directoryChanged()
   }
 }
 
-bool QgsDirectoryItem::hiddenPath( QString path )
+bool QgsDirectoryItem::hiddenPath( const QString& path )
 {
   QSettings settings;
   QStringList hiddenItems = settings.value( "/browser/hiddenPaths",
@@ -1417,7 +1417,7 @@ QVector<QgsDataItem*> QgsZipItem::createChildren()
   return children;
 }
 
-QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString path, QString name )
+QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, const QString& path, const QString& name )
 {
   return itemFromPath( parent, path, name, path );
 }

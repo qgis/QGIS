@@ -31,7 +31,7 @@ class QgsGdalLayerItem : public QgsLayerItem
                       QStringList *theSublayers = nullptr );
     ~QgsGdalLayerItem();
 
-    bool setCrs( QgsCoordinateReferenceSystem crs ) override;
+    bool setCrs( const QgsCoordinateReferenceSystem& crs ) override;
 
     QVector<QgsDataItem*> createChildren() override;
 

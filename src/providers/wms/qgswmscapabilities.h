@@ -615,7 +615,7 @@ class QgsWmsCapabilities
 
     bool isValid() const { return mValid; }
 
-    bool parseResponse( const QByteArray& response, const QgsWmsParserSettings& settings );
+    bool parseResponse( const QByteArray& response, QgsWmsParserSettings settings );
 
     QString lastError() const { return mError; }
     QString lastErrorFormat() const { return mErrorFormat; }

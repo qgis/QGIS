@@ -128,7 +128,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * @param widgets The list of widgets to check.
      * @param slot The slot to connect to the signals.
      */
-    void connectValueChanged( QList<QWidget *> widgets, const char *slot );
+    void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
 
     //! Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * event ) override;

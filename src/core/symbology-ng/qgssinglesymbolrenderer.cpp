@@ -104,8 +104,10 @@ QgsSingleSymbolRenderer* QgsSingleSymbolRenderer::clone() const
   return r;
 }
 
-void QgsSingleSymbolRenderer::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
+void QgsSingleSymbolRenderer::toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap &props ) const
 {
+  QgsStringMap newProps = props;
+
   QDomElement ruleElem = doc.createElement( "se:Rule" );
   element.appendChild( ruleElem );
 
@@ -113,9 +115,9 @@ void QgsSingleSymbolRenderer::toSld( QDomDocument& doc, QDomElement &element, Qg
   nameElem.appendChild( doc.createTextNode( "Single symbol" ) );
   ruleElem.appendChild( nameElem );
 
-  QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, props );
+  QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, newProps );
 
-  if ( mSymbol.data() ) mSymbol->toSld( doc, ruleElem, props );
+  if ( mSymbol.data() ) mSymbol->toSld( doc, ruleElem, newProps );
 }
 
 QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext &context )

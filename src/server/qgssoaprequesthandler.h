@@ -32,7 +32,7 @@ class QgsSOAPRequestHandler: public QgsHttpRequestHandler
     void setGetMapResponse( const QString& service, QImage* img );
     void setGetCapabilitiesResponse( const QDomDocument& doc ) override;
     void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) override;
-    void setServiceException( const QgsMapServiceException& ex );
+    void setServiceException( const QgsMapServiceException& ex ) override;
     void setXmlResponse( const QDomDocument& doc ) override;
     void setXmlResponse( const QDomDocument& doc, const QString& mimeType ) override;
     void setGetPrintResponse( QByteArray* ba ) override;

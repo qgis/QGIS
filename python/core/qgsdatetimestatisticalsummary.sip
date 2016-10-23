@@ -34,7 +34,7 @@ class QgsDateTimeStatisticalSummary
     /** Constructor for QgsDateTimeStatisticalSummary
      * @param stats flags for statistics to calculate
      */
-    QgsDateTimeStatisticalSummary( const QgsDateTimeStatisticalSummary::Statistics& stats = All );
+    QgsDateTimeStatisticalSummary( QgsDateTimeStatisticalSummary::Statistics stats = All );
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
      * are always calculated (eg count).
@@ -47,7 +47,7 @@ class QgsDateTimeStatisticalSummary
      * @param stats flags for statistics to calculate
      * @see statistics
      */
-    void setStatistics( const Statistics& stats );
+    void setStatistics( Statistics stats );
 
     /** Resets the calculated values
      */

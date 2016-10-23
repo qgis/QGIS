@@ -39,7 +39,7 @@
 #include <QTextEdit>
 
 //----------------------- QgsGrassItemActions ------------------------------
-QgsGrassItemActions::QgsGrassItemActions( QgsGrassObject grassObject, bool valid, QObject *parent )
+QgsGrassItemActions::QgsGrassItemActions( const QgsGrassObject& grassObject, bool valid, QObject *parent )
     : QObject( parent )
     , mGrassObject( grassObject )
     , mValid( valid )
@@ -265,7 +265,7 @@ QString QgsGrassItemActions::newVectorMap()
 }
 
 
-void QgsGrassItemActions::newLayer( QString type )
+void QgsGrassItemActions::newLayer( const QString& type )
 {
   QString name;
   if ( mGrassObject.type() == QgsGrassObject::Mapset )
@@ -316,7 +316,7 @@ void QgsGrassItemActions::newPolygonLayer()
 
 //----------------------- QgsGrassObjectItemBase ------------------------------
 
-QgsGrassObjectItemBase::QgsGrassObjectItemBase( QgsGrassObject grassObject )
+QgsGrassObjectItemBase::QgsGrassObjectItemBase( const QgsGrassObject& grassObject )
     : mGrassObject( grassObject )
 {
 }
@@ -434,7 +434,7 @@ void QgsGrassMapsetItem::setState( State state )
   QgsDirectoryItem::setState( state );
 }
 
-bool QgsGrassMapsetItem::objectInImports( QgsGrassObject grassObject )
+bool QgsGrassMapsetItem::objectInImports( const QgsGrassObject& grassObject )
 {
   Q_FOREACH ( QgsGrassImport* import, mImports )
   {

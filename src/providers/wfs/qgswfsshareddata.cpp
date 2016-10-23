@@ -479,7 +479,7 @@ bool QgsWFSSharedData::createCache()
   return true;
 }
 
-int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator* iterator, QgsRectangle rect )
+int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator* iterator, const QgsRectangle& rect )
 {
   // This locks prevents 2 readers to register at the same time (and particularly
   // destroy the current mDownloader at the same time)
@@ -979,7 +979,7 @@ void QgsWFSSharedData::pushError( const QString& errorMsg )
 void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
                                       bool truncatedResponse,
                                       bool interrupted,
-                                      QString errorMsg )
+                                      const QString& errorMsg )
 {
   QMutexLocker locker( &mMutex );
 

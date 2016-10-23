@@ -166,7 +166,7 @@ QgsWmsCapabilities::QgsWmsCapabilities()
 {
 }
 
-bool QgsWmsCapabilities::parseResponse( const QByteArray& response, const QgsWmsParserSettings& settings )
+bool QgsWmsCapabilities::parseResponse( const QByteArray& response, QgsWmsParserSettings settings )
 {
   mParserSettings = settings;
   mValid = false;

@@ -92,7 +92,7 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer* layer
   currentStyleChanged( active );
 }
 
-void QgsMapLayerStyleManagerWidget::styleClicked( QModelIndex index )
+void QgsMapLayerStyleManagerWidget::styleClicked( const QModelIndex &index )
 {
   if ( !mLayer || !index.isValid() )
     return;
@@ -104,7 +104,7 @@ void QgsMapLayerStyleManagerWidget::styleClicked( QModelIndex index )
   mLayer->styleManager()->setCurrentStyle( name );
 }
 
-void QgsMapLayerStyleManagerWidget::currentStyleChanged( QString name )
+void QgsMapLayerStyleManagerWidget::currentStyleChanged( const QString& name )
 {
   QList<QStandardItem*> items = mModel->findItems( name );
   if ( items.isEmpty() )
@@ -115,14 +115,14 @@ void QgsMapLayerStyleManagerWidget::currentStyleChanged( QString name )
   mStyleList->setCurrentIndex( item->index() );
 }
 
-void QgsMapLayerStyleManagerWidget::styleAdded( QString name )
+void QgsMapLayerStyleManagerWidget::styleAdded( const QString& name )
 {
   QgsDebugMsg( "Style added" );
   QStandardItem* item = new QStandardItem( name );
   mModel->appendRow( item );
 }
 
-void QgsMapLayerStyleManagerWidget::styleRemoved( QString name )
+void QgsMapLayerStyleManagerWidget::styleRemoved( const QString& name )
 {
   QList<QStandardItem*> items = mModel->findItems( name );
   if ( items.isEmpty() )
@@ -132,7 +132,7 @@ void QgsMapLayerStyleManagerWidget::styleRemoved( QString name )
   mModel->removeRow( item->row() );
 }
 
-void QgsMapLayerStyleManagerWidget::styleRenamed( QString oldname, QString newname )
+void QgsMapLayerStyleManagerWidget::styleRenamed( const QString& oldname, const QString& newname )
 {
   QList<QStandardItem*> items = mModel->findItems( oldname );
   if ( items.isEmpty() )

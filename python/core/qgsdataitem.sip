@@ -160,12 +160,12 @@ class QgsDataItem : QObject
     typedef QFlags<QgsDataItem::Capability> Capabilities;
 
     // This will _write_ selected crs in data source
-    virtual bool setCrs( QgsCoordinateReferenceSystem crs );
+    virtual bool setCrs( const QgsCoordinateReferenceSystem& crs );
 
     // ### QGIS 3 - rename to capabilities()
     virtual Capabilities capabilities2() const;
 
-    virtual void setCapabilities( const Capabilities& capabilities );
+    virtual void setCapabilities( Capabilities capabilities );
 
     // static methods
 
@@ -208,7 +208,7 @@ class QgsDataItem : QObject
 
   protected:
     virtual void populate( const QVector<QgsDataItem*>& children );
-    virtual void refresh( QVector<QgsDataItem*> children );
+    virtual void refresh( const QVector<QgsDataItem*>& children );
     /** The item is scheduled to be deleted. E.g. if deleteLater() is called when
      * item is in Populating state (createChildren() running in another thread),
      * the deferredDelete() returns true and item will be deleted once Populating finished.
@@ -378,7 +378,7 @@ class QgsDirectoryItem : QgsDataCollectionItem
     // static QVector<QLibrary*> mLibraries;
 
     /** Check if the given path is hidden from the browser model */
-    static bool hiddenPath( QString path );
+    static bool hiddenPath( const QString& path );
 
   public slots:
     virtual void childrenCreated();
@@ -482,7 +482,7 @@ class QgsZipItem : QgsDataCollectionItem
 
     static QString vsiPrefix( const QString& uri );
 
-    static QgsDataItem* itemFromPath( QgsDataItem* parent, QString path, QString name ) /Factory/;
+    static QgsDataItem* itemFromPath( QgsDataItem* parent, const QString& path, const QString& name ) /Factory/;
     //! @note available in python as itemFromFilePath
     static QgsDataItem* itemFromPath( QgsDataItem* parent, const QString& filePath, const QString& name, const QString& path ) /Factory,PyName=itemFromFilePath/;
 

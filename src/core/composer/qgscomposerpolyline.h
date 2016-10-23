@@ -42,7 +42,7 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
      * @param polyline nodes of the shape
      * @param c parent composition
      */
-    QgsComposerPolyline( QPolygonF polyline, QgsComposition* c );
+    QgsComposerPolyline( const QPolygonF &polyline, QgsComposition* c );
 
     /** Destructor */
     ~QgsComposerPolyline();
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
 
     /** Add the node newPoint at the given position according to some
      * criteres. */
-    bool _addNode( const int indexPoint, const QPointF &newPoint, const double radius ) override;
+    bool _addNode( const int indexPoint, QPointF newPoint, const double radius ) override;
 
     bool _removeNode( const int nodeIndex ) override;
 

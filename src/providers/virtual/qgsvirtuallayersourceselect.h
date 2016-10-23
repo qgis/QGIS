@@ -56,7 +56,7 @@ class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerS
     long mSrid;
     QStringList mProviderList;
     QgsEmbeddedLayerSelectDialog* mEmbeddedSelectionDialog;
-    void addEmbeddedLayer( QString name, QString provider, QString encoding, QString source );
+    void addEmbeddedLayer( const QString &name, const QString &provider, const QString &encoding, const QString &source );
 };
 
 #endif

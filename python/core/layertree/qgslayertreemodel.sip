@@ -65,7 +65,7 @@ class QgsLayerTreeModel : QAbstractItemModel
     typedef QFlags<QgsLayerTreeModel::Flag> Flags;
 
     //! Set OR-ed combination of model flags
-    void setFlags( const Flags& f );
+    void setFlags( Flags f );
     //! Enable or disable a model flag
     void setFlag( Flag f, bool on = true );
     //! Return OR-ed combination of model flags

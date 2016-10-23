@@ -547,7 +547,7 @@ class QgsVectorLayer : QgsMapLayer
      * @see   deselect(QgsFeatureId)
      * @see selectByExpression()
      */
-    void modifySelection( QgsFeatureIds selectIds, QgsFeatureIds deselectIds );
+    void modifySelection( const QgsFeatureIds& selectIds, const QgsFeatureIds& deselectIds );
 
     /** Select not selected features and deselect selected ones */
     void invertSelection();
@@ -728,7 +728,7 @@ class QgsVectorLayer : QgsMapLayer
      */
     bool writeStyle( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const;
 
-    bool writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage, QgsStringMap& props ) const;
+    bool writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage, const QgsStringMap& props ) const;
     bool readSld( const QDomNode& node, QString& errorMessage );
 
     /**

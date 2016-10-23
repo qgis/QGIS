@@ -72,7 +72,7 @@ class CORE_EXPORT QgsRenderContext
     /** Set combination of flags that will be used for rendering.
      * @note added in QGIS 2.14
      */
-    void setFlags( const QgsRenderContext::Flags& flags );
+    void setFlags( QgsRenderContext::Flags flags );
 
     /** Enable or disable a particular flag (other flags are not affected)
      * @note added in QGIS 2.14

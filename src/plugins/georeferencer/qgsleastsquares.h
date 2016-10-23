@@ -25,12 +25,12 @@
 class QgsLeastSquares
 {
   public:
-    static void linear( QVector<QgsPoint> mapCoords,
-                        QVector<QgsPoint> pixelCoords,
+    static void linear( const QVector<QgsPoint> &mapCoords,
+                        const QVector<QgsPoint> &pixelCoords,
                         QgsPoint& origin, double& pixelXSize, double& pixelYSize );
 
-    static void helmert( QVector<QgsPoint> mapCoords,
-                         QVector<QgsPoint> pixelCoords,
+    static void helmert( const QVector<QgsPoint>& mapCoords,
+                         const QVector<QgsPoint>& pixelCoords,
                          QgsPoint& origin, double& pixelSize, double& rotation );
 
     static void affine( QVector<QgsPoint> mapCoords,

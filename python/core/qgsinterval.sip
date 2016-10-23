@@ -124,7 +124,7 @@ class QgsInterval
      */
     void setValid( bool valid );
 
-    bool operator==( const QgsInterval& other ) const;
+    bool operator==( QgsInterval other ) const;
 
     /** Converts a string to an interval
      * @param string string to parse

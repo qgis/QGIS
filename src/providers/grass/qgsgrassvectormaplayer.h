@@ -108,7 +108,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     /** Update attributes
      *   @param cat
      *   @param index ields  index */
-    void changeAttributeValue( int cat, QgsField field, QVariant value, QString &error );
+    void changeAttributeValue( int cat, const QgsField &field, const QVariant &value, QString &error );
 
     /** Insert new attributes to the table (it does not check if attributes already exists)
      *   @param cat */
@@ -166,7 +166,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     void printCachedAttributes();
 
   private:
-    QString quotedValue( QVariant value );
+    QString quotedValue( const QVariant &value );
     dbDriver * openDriver( QString &error );
     void addTopoField( QgsFields &fields );
     int mField;

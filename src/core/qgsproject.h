@@ -398,7 +398,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Set a list of layers which should not be taken into account on map identification
      */
-    void setNonIdentifiableLayers( QList<QgsMapLayer*> layers );
+    void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * Set a list of layers which should not be taken into account on map identification

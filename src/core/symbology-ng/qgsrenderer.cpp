@@ -258,7 +258,7 @@ QgsFeatureRenderer* QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
   return r;
 }
 
-QDomElement QgsFeatureRenderer::writeSld( QDomDocument& doc, const QString& styleName, QgsStringMap props ) const
+QDomElement QgsFeatureRenderer::writeSld( QDomDocument& doc, const QString& styleName, const QgsStringMap& props ) const
 {
   QDomElement userStyleElem = doc.createElement( "UserStyle" );
 

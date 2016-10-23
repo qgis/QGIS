@@ -2126,7 +2126,7 @@ QgsMapThemeCollection* QgsProject::mapThemeCollection()
   return mMapThemeCollection.data();
 }
 
-void QgsProject::setNonIdentifiableLayers( QList<QgsMapLayer*> layers )
+void QgsProject::setNonIdentifiableLayers( const QList<QgsMapLayer*>& layers )
 {
   QStringList currentLayers = nonIdentifiableLayers();
 
