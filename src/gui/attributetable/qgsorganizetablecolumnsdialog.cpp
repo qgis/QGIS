@@ -109,6 +109,7 @@ QgsOrganizeTableColumnsDialog::~QgsOrganizeTableColumnsDialog()
 QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const
 {
   QVector<QgsAttributeTableConfig::ColumnConfig> columns;
+  columns.reserve( mFieldsList->count() );
 
   for ( int i = 0 ; i < mFieldsList->count() ; i++ )
   {

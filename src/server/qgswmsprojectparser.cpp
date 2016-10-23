@@ -996,6 +996,7 @@ void QgsWmsProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument
   if ( !layerList.isEmpty() )
   {
     QStringList reversedList;
+    reversedList.reserve( layerList.size() );
     for ( int i = layerList.size() - 1; i >= 0; --i )
       reversedList << layerList[ i ];
 

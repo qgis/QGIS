@@ -3860,6 +3860,8 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 
   QgsSublayersDialog::LayerDefinitionList layers;
   QStringList names;
+  names.reserve( sublayers.size() );
+  layers.reserve( sublayers.size() );
   for ( int i = 0; i < sublayers.size(); i++ )
   {
     // simplify raster sublayer name - should add a function in gdal provider for this?

@@ -1052,6 +1052,7 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
 
   QList<QgsMapLayer*> joinedLayers;
   const QList< QgsVectorJoinInfo >& joins = mLayer->vectorJoins();
+  joinedLayers.reserve( joins.size() );
   for ( int i = 0; i < joins.size(); ++i )
   {
     joinedLayers.append( QgsMapLayerRegistry::instance()->mapLayer( joins[i].joinLayerId ) );

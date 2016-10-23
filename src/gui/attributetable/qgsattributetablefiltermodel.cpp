@@ -271,6 +271,7 @@ void QgsAttributeTableFilterModel::setFilteredFeatures( const QgsFeatureIds& ids
 QgsFeatureIds QgsAttributeTableFilterModel::filteredFeatures()
 {
   QgsFeatureIds ids;
+  ids.reserve( rowCount() );
   for ( int i = 0; i < rowCount(); ++i )
   {
     QModelIndex row = index( i, 0 );

@@ -220,11 +220,12 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument& doc )
   QStringList layerIds;
 
   QDomNodeList nl = doc.elementsByTagName( "maplayer" );
+  layerIds.reserve( nl.count() );
+  QVector<QString> deps; //avoid expensive allocation for list for every iteration
   for ( int i = 0; i < nl.count(); i++ )
   {
-    QVector<QString> deps;
+    deps.resize( 0 ); // preserve capacity - don't use clear
     QDomNode node = nl.item( i );
-    QDomElement element = node.toElement();
 
     QString id = node.namedItem( "id" ).toElement().text();
     layerIds << id;

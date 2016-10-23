@@ -172,6 +172,7 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
   // When fetching from server, fetch all attributes and geometry by default so that we can cache them
   QStringList fetchAttribNames;
   QList<int> fetchAttribIdx;
+  fetchAttribIdx.reserve( mFields.size() );
   for ( int idx = 0, n = mFields.size(); idx < n; ++idx )
   {
     fetchAttribNames.append( mFields.at( idx ).name() );
@@ -183,6 +184,7 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
   int startId = ( id / 100 ) * 100;
   int stopId = qMin( startId + 100, mObjectIds.length() );
   QList<quint32> objectIds;
+  objectIds.reserve( stopId );
   for ( int i = startId; i < stopId; ++i )
   {
     objectIds.append( mObjectIds[i] );

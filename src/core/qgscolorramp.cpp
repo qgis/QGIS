@@ -784,6 +784,7 @@ QgsColorRamp* QgsPresetSchemeColorRamp::create( const QgsStringMap& properties )
 QList<QColor> QgsPresetSchemeColorRamp::colors() const
 {
   QList< QColor > l;
+  l.reserve( mColors.count() );
   for ( int i = 0; i < mColors.count(); ++i )
   {
     l << mColors.at( i ).first;
