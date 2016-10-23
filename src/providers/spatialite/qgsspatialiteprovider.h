@@ -244,6 +244,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     private:
       char *errMsg;
+
+      SLException& operator=( const SLException& other );
     };
 
     /**

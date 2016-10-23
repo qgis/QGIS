@@ -175,6 +175,9 @@ namespace pal
 
     private:
 
+      Problem( const Problem& other );
+      Problem& operator=( const Problem& other );
+
       /**
        * How many layers are labelled ?
        */

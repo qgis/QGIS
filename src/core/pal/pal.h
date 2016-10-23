@@ -322,6 +322,12 @@ namespace pal
        * @return maximum # of iteration
        */
       int getMaxIt();
+
+    private:
+
+      Pal( const Pal& other );
+      Pal& operator=( const Pal& other );
+
   };
 
 } // end namespace pal

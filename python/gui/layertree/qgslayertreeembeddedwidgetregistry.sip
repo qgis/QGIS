@@ -69,4 +69,8 @@ class QgsLayerTreeEmbeddedWidgetRegistry
   protected:
     //! Protected constructor - use instance() to access the registry.
     QgsLayerTreeEmbeddedWidgetRegistry();
+
+  private:
+
+    QgsLayerTreeEmbeddedWidgetRegistry( const QgsLayerTreeEmbeddedWidgetRegistry& other );
 };

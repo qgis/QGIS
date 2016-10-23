@@ -27,7 +27,7 @@ class QgsMapCanvas;
  *
  * \note added in QGIS 3.0
  */
-class GUI_EXPORT QgsSymbolWidgetContext
+class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
 {
   public:
 

@@ -87,6 +87,11 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
 
     //! storage of all the providers
     QMap<QString, QgsLayerTreeEmbeddedWidgetProvider*> mProviders;
+
+  private:
+
+    QgsLayerTreeEmbeddedWidgetRegistry( const QgsLayerTreeEmbeddedWidgetRegistry& other );
+    QgsLayerTreeEmbeddedWidgetRegistry& operator=( const QgsLayerTreeEmbeddedWidgetRegistry& other );
 };
 
 

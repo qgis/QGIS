@@ -135,7 +135,7 @@ class CORE_EXPORT Qgis
  * @note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
-template<class Object> class QgsSignalBlocker
+template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
 {
   public:
 
