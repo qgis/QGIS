@@ -190,9 +190,6 @@ rm -rf src/core/gps/qextserialport/
 rm -rf src/core/gps/qextserialport/
 rm -rf "python/ext-libs/!(CMakeLists.txt|tests)"
 
-rm -rf src/plugins/dxf2shp_converter/
-sed -i '/dxf2shp_converter/d' src/plugins/CMakeLists.txt
-
 gzip ChangeLog
 
 
