@@ -383,7 +383,6 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"apps/%PACKAGENAME%/icons/" ^
 	"apps/%PACKAGENAME%/images/" ^
 	"apps/%PACKAGENAME%/plugins/coordinatecaptureplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/dxf2shpconverterplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/evis.dll" ^
 	"apps/%PACKAGENAME%/plugins/georefplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpsimporterplugin.dll" ^

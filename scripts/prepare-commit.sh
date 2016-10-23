@@ -61,7 +61,7 @@ for f in $MODIFIED; do
 	(( i++ )) || true
 
 	case "$f" in
-	src/core/gps/qextserialport/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
+	src/core/gps/qextserialport/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
 		echo $f skipped
 		continue
 		;;
